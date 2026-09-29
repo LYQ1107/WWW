@@ -25,7 +25,7 @@ from gtr.data.gtr_dataset_dataloader import build_gtr_test_loader
 from gtr.data.gtr_dataset_mapper import GMTDatasetMapper
 from gtr.evaluation.mot_evaluation import MOTEvaluator
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
 
 logger = logging.getLogger("detectron2")
 

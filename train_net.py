@@ -1,6 +1,8 @@
 import logging
 import os
 import torch
+from gmt_runtime_distributed import install_launch_backend
+install_launch_backend()
 from torch.nn.parallel import DistributedDataParallel
 import time
 import datetime
@@ -41,7 +43,7 @@ from gtr.costom_solver import build_custom_optimizer
 from gtr.evaluation.mot_evaluation import MOTEvaluator
 from gtr.modeling.freeze_layers import check_if_freeze_model
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "4,5"
+os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0,1,2,3,4,5,6,7,8,9")
 
 logger = logging.getLogger("detectron2")
 
@@ -72,6 +74,9 @@ def do_train(cfg, model, resume=False):
     model.train()
     assert cfg.SOLVER.USE_CUSTOM_SOLVER
     optimizer = build_custom_optimizer(cfg, model)
+    if comm.get_world_size() > 1 and os.environ.get("GMT_POST_BACKWARD_CPU") == "1":
+        from gmt_runtime_post_backward import install_optimizer_hook
+        install_optimizer_hook(optimizer, model)
     scheduler = build_lr_scheduler(cfg, optimizer)
 
     checkpointer = DetectionCheckpointer(
@@ -183,6 +188,12 @@ def main(args):
     cfg = setup(args)
 
     model = build_model(cfg)
+    if os.environ.get("GMT_TRAIN_PROGRESS") == "1" and not args.eval_only:
+        from gmt_runtime_progress import install as install_progress
+        install_progress(model, cfg.OUTPUT_DIR, comm.get_rank())
+    if os.environ.get("GMT_CHECKPOINT_BACKBONE") == "1" and not args.eval_only:
+        from gmt_runtime_checkpoint import install
+        logger.info("Runtime activation checkpointing with deterministic cuDNN and default TF32: %s", install(model))
     logger.info("Model:\n{}".format(model))
     if args.eval_only:
         DetectionCheckpointer(model, save_dir=cfg.OUTPUT_DIR).resume_or_load(
@@ -191,13 +202,28 @@ def main(args):
         return do_test(cfg, model)
 
     distributed = comm.get_world_size() > 1
-    if distributed:
+    post_backward_cpu = distributed and os.environ.get("GMT_POST_BACKWARD_CPU") == "1"
+    if post_backward_cpu:
+        if os.environ.get("GMT_CPU_COLLECTIVES") != "1" or os.environ.get("GMT_SYNC_DDP_BUCKETS") == "1":
+            raise RuntimeError("Post-backward averaging requires CPU collectives and no DDP hook")
+        from gmt_runtime_post_backward import synchronize_model
+        synchronize_model(model)
+        logger.info("Using CPU gradient averaging after independent backward, before optimizer clipping")
+    elif distributed:
         model = DistributedDataParallel(
             model, device_ids=[comm.get_local_rank()], broadcast_buffers=False,
             find_unused_parameters=cfg.FIND_UNUSED_PARAM
         )
 
 
+    if distributed and not post_backward_cpu and os.environ.get("GMT_CPU_COLLECTIVES") == "1":
+        from gmt_runtime_distributed import install_cpu_bucket_hook
+        install_cpu_bucket_hook(model)
+        logger.info("Using CPU-staged Gloo reductions and averaged DDP gradients")
+    if distributed and os.environ.get("GMT_SYNC_DDP_BUCKETS") == "1":
+        from gmt_runtime_distributed import install_synchronous_bucket_hook
+        install_synchronous_bucket_hook(model)
+        logger.info("Using standard averaged DDP buckets with explicit completion fences")
     do_train(cfg, model, resume=args.resume)
     return None
 

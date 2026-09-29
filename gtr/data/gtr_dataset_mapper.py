@@ -363,6 +363,7 @@ class GMTDatasetMapper(DatasetMapper):
             return ret
 
 
+class GMTMultimodalDatasetMapper(DatasetMapper):
     @configurable
     def __init__(
             self,
