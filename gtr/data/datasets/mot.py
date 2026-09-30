@@ -325,3 +325,13 @@ for key, (image_root, json_file) in _PREDEFINED_SPLITS.items():
         os.path.join("datasets", json_file) if "://" not in json_file else json_file,
         os.path.join("datasets", image_root),
     )
+
+# Audit-only dataset registration.  The released registrations above are
+# untouched when GMT_AUDIT_TEST_JSON is absent.
+if os.environ.get("GMT_AUDIT_TEST_JSON"):
+    register_mot_instances(
+        "VISION_test_audit",
+        _get_builtin_metadata(),
+        os.environ["GMT_AUDIT_TEST_JSON"],
+        os.environ.get("GMT_AUDIT_TEST_IMAGE_ROOT", "datasets/VisionTrack/images/test/"),
+    )

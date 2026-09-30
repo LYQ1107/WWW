@@ -1,0 +1,14 @@
+{
+  "table": "audit/cache/observation_table.parquet",
+  "matching_is_diagnostic": true,
+  "gt_dominant_definition": "majority predicted track per (scene, gt_instance_id), ties by lower track ID",
+  "streak_definition": "consecutive wrong matched observations in frame/view order",
+  "cross_view_definition": "other-view exact frame+k conditional versus arbitrary target baseline",
+  "survival_events": 16173,
+  "contamination_events": 19800,
+  "results": [
+    "audit/results/A4_error_survival.csv",
+    "audit/results/A4_contamination_events.csv",
+    "audit/results/A4_cross_view_cascade.csv"
+  ]
+}

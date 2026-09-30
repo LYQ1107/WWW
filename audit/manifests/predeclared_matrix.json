@@ -1,0 +1,22 @@
+{
+  "a0_scenes": "audit/manifests/sanity_subset.json",
+  "a0_seeds": [20260930, 20261001, 20261002],
+  "a0_test_len": 40,
+  "a0_bank": true,
+  "a0_bank_size": 10,
+  "a2": [
+    {"name": "uniform", "policy": null, "keep_ratio": 1.0, "bank": false},
+    {"name": "score_top75", "policy": "score", "keep_ratio": 0.75, "bank": false},
+    {"name": "score_top50", "policy": "score", "keep_ratio": 0.50, "bank": false},
+    {"name": "area_top75", "policy": "area", "keep_ratio": 0.75, "bank": false},
+    {"name": "area_top50", "policy": "area", "keep_ratio": 0.50, "bank": false}
+  ],
+  "a3": {
+    "test_len": [8, 16, 24, 40],
+    "bank_on_size": 10,
+    "bank_off": {"test_len": 40},
+    "seed": 20260930
+  },
+  "selection_rule": "All values were fixed before reading audit outcomes; no test-GT tuning.",
+  "scope_note": "A2/A3 runs are on the automatically selected three-scene subset to keep diagnosis bounded; the released full-test baseline remains the official reference."
+}

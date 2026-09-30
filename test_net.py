@@ -25,7 +25,11 @@ from gtr.data.gtr_dataset_dataloader import build_gtr_test_loader
 from gtr.data.gtr_dataset_mapper import GMTDatasetMapper
 from gtr.evaluation.mot_evaluation import MOTEvaluator
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+# Preserve the released default unless an explicit audit run supplies its own
+# visible device through GMT_AUDIT_DIR.  In particular, keeping the guard tied
+# to the audit marker preserves the original behavior for ordinary callers.
+if not os.environ.get("GMT_AUDIT_DIR"):
+    os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 logger = logging.getLogger("detectron2")
 

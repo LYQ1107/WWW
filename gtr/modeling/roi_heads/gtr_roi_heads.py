@@ -1,4 +1,5 @@
 import copy
+import os
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -396,11 +397,18 @@ class GTRROIHeads(CascadeROIHeads):
         proposals = [x[inds] for (x, inds) in zip(instances, fg_inds)]
         features = [features[f] for f in self.asso_in_features]
         proposal_boxes = [x.proposal_boxes for x in proposals] #
-        proposal_boxes = self.jitter_bboxes_center(proposal_boxes)
+        # Released inference jitters ROI centers.  The audit switch is
+        # explicit and defaults to the released behavior.
+        if not (
+            (not self.training)
+            and os.environ.get("GMT_AUDIT_DISABLE_TEST_JITTER", "0") == "1"
+        ):
+            proposal_boxes = self.jitter_bboxes_center(proposal_boxes)
         pool_features = self.asso_pooler(features, proposal_boxes)
         reid_features = self.asso_head(pool_features)
         reid_features = reid_features.view(
             1, -1, self.feature_dim) # 1 x N x F
+        raw_app_features = reid_features.view(-1, self.feature_dim)
         n_t = [len(x) for x in proposals]
         if not self.training: # delay transformer
             if self.concat_emb:
@@ -454,12 +462,16 @@ class GTRROIHeads(CascadeROIHeads):
 
                 reid_features = torch.cat([reid_features,s_t_feature],dim=2)
                 features = reid_features.view(-1, self.feature_dim+self.cat_dim).split(n_t, dim=0)
+                raw_features = raw_app_features.split(n_t, dim=0)
                 instances = [inst[inds] for inst, inds in zip(instances, fg_inds)]
             else:
                 instances = [inst[inds] for inst, inds in zip(instances, fg_inds)]
                 features = reid_features.view(-1, self.feature_dim).split(n_t, dim=0)
-            for inst, feat in zip(instances, features):
+                raw_features = raw_app_features.split(n_t, dim=0)
+            for inst, feat, raw_feat in zip(instances, features, raw_features):
                 inst.reid_features = feat
+                if os.environ.get("GMT_AUDIT_DUMP_FEATURES", "0") == "1":
+                    inst.audit_app_features = raw_feat
             return instances
         else:
             asso_outputs, pred_box, pred_time, query_inds = \

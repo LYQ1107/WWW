@@ -1,4 +1,5 @@
 import cv2
+import os
 import torch
 from scipy.optimize import linear_sum_assignment
 import torch.nn.functional as F
@@ -296,6 +297,13 @@ class GTRRCNN(CustomRCNN):
                 batch.append(batched_inputs[j*view_frames+i])
         if self.min_track_len > 0:
             instances = self._remove_short_track(instances)
+        if os.environ.get("GMT_AUDIT_DUMP_FEATURES", "0") == "1":
+            from ...audit.feature_dump import dump_scene_observations
+            dump_scene_observations(
+                instances,
+                batch,
+                os.environ.get("GMT_AUDIT_DIR", "audit"),
+            )
         if self.roi_heads.delay_cls:
             instances = self._delay_cls(
                 instances, video_id=batched_inputs[0]['video_id'])
@@ -320,7 +328,6 @@ class GTRRCNN(CustomRCNN):
 
         unique_ids = torch.unique(ids) # M
         id_inds = (unique_ids[None, :] == ids[:, None]).float() # Np x M
-
         traj_score = torch.mm(asso_nonk, id_inds) # n_k x M
 
         match_i, match_j = linear_sum_assignment((- traj_score).cpu()) #
@@ -447,13 +454,26 @@ class GTRRCNN(CustomRCNN):
 
         M = len(unique_ids) # number of existing tracks
         id_inds = (unique_ids[None, :] == ids[:, None]).float() # Np x M
-
-        traj_score = torch.mm(asso_nonk, id_inds) # n_k x M
+        audit_policy = os.environ.get("GMT_AUDIT_HISTORY_POLICY", "")
+        if audit_policy:
+            from ...audit.history_policy import build_history_weights
+            keep_ratio = float(os.environ.get("GMT_AUDIT_HISTORY_KEEP_RATIO", "1"))
+            history_instances = [x for t, x in enumerate(instances) if t != k]
+            weights = build_history_weights(
+                history_instances, None, ids, audit_policy, keep_ratio
+            ).to(device=id_inds.device, dtype=id_inds.dtype)
+            weighted_id_inds = id_inds * weights[:, None]
+            traj_score = torch.mm(asso_nonk, weighted_id_inds) # n_k x M
+            support = weighted_id_inds.sum(dim=0)
+        else:
+            weighted_id_inds = id_inds
+            traj_score = torch.mm(asso_nonk, id_inds) # n_k x M
+            support = id_inds.sum(dim=0)
 
         match_i, match_j = linear_sum_assignment((- traj_score).cpu()) #
         track_ids = ids.new_full((n_k,), -1)
         for i, j in zip(match_i, match_j):
-            thresh = self.overlap_thresh * id_inds[:, j].sum() \
+            thresh = self.overlap_thresh * support[j] \
                 if not (self.not_mult_thresh) else self.overlap_thresh
             if traj_score[i, j] > thresh:
                 track_ids[i] = unique_ids[j]

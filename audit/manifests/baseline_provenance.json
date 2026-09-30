@@ -1,0 +1,45 @@
+{
+  "created_utc": "2026-09-30T15:08:35Z",
+  "audit_root": "/data3/liuyeqiang/GMT_challenge_audit",
+  "git": {
+    "source_worktree": "/data3/liuyeqiang/GMT_paper_repro_clean",
+    "source_commit": "dfa9ca8e0b8da5c2af89ef3d3ac4f9d991162ebb",
+    "audit_worktree": "/data3/liuyeqiang/GMT_challenge_audit",
+    "audit_branch": "challenge-audit",
+    "audit_worktree_commit": "dfa9ca8e0b8da5c2af89ef3d3ac4f9d991162ebb",
+    "review_remote": "https://github.com/LYQ1107/WWW.git"
+  },
+  "baseline": {
+    "recipe": "official released-code single-GPU reproduction",
+    "stage2_checkpoint": "/data3/liuyeqiang/GMT_paper_repro_clean/outputs/release_single_gpu/stage2/model_20000.pth",
+    "stage2_checkpoint_symlink": "audit/links/stage2_model_20000.pth",
+    "stage2_checkpoint_sha256": "d1ab611670aa0284b910b25fd251f84b4cb13ba406d7ab89226adcd6ca702e17",
+    "baseline_prediction_root": "/data3/liuyeqiang/GMT_paper_repro_clean/outputs/release_single_gpu/inference/results",
+    "baseline_prediction_symlink": "audit/links/baseline_predictions",
+    "baseline_prediction_manifest": "audit/manifests/baseline_prediction_manifest.json",
+    "baseline_prediction_file_count": 44,
+    "baseline_prediction_combined_sha256": "3799cdd0d8bd1de24cbf92fefd3f3350f7c5f6afda6449fc7ee6b8c11e300d92",
+    "visiontrack_test_json": "/data3/liuyeqiang/GMT_paper_repro_clean/datasets/VisionTrack/annotations/test.json",
+    "visiontrack_test_json_sha256": "7a1e735bf25026a56148deaeb432e0520c6ad5dad97d5362aa58739255389593",
+    "baseline_evaluation_summary": "/data3/liuyeqiang/GMT_paper_repro_clean/outputs/release_single_gpu/evaluation/evaluation_summary.json",
+    "baseline_evaluation_summary_sha256": "eeea7f932202b1b06e892086374673b6c38e929402ae05cb7f7dbc28a8a4aba9",
+    "metrics": {
+      "CVMA": 75.63,
+      "CVIDF1": 78.74,
+      "MOTA": 80.35,
+      "HOTA": 66.645,
+      "IDF1": 81.201,
+      "AssA": 67.706
+    },
+    "prediction_format": "44 MOT text files (22 scenes x 2 views); no coco_instances_results.json was produced by the released inference wrapper"
+  },
+  "dataset": {
+    "symlink": "datasets/VisionTrack",
+    "target": "/data3/liuyeqiang/GMT_VisionTrack_repro/datasets/VisionTrack",
+    "test_annotation_sha256": "7a1e735bf25026a56148deaeb432e0520c6ad5dad97d5362aa58739255389593"
+  },
+  "preservation": {
+    "old_baseline_untouched": true,
+    "diagnostic_archive": "/data3/liuyeqiang/GMT_VisionTrack_repro"
+  }
+}
