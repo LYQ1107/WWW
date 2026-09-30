@@ -148,4 +148,4 @@ python audit_tools/run_official_cv_audit.py --run audit/runs/A2_score_top75 --ou
 
 ## 15. Provenance and stop point
 
-Audit branch: `challenge-audit`; base/source commit: `dfa9ca8e0b8da5c2af89ef3d3ac4f9d991162ebb`. Stage2 SHA256 is `d1ab611670aa0284b910b25fd251f84b4cb13ba406d7ab89226adcd6ca702e17`. The exact code/report commit is recorded after the final audit commit is created. All formal training remains paused; the worktree stops here and waits for an explicit next instruction.
+Audit branch: `challenge-audit`; base/source commit: `dfa9ca8e0b8da5c2af89ef3d3ac4f9d991162ebb`. Stage2 SHA256 is `d1ab611670aa0284b910b25fd251f84b4cb13ba406d7ab89226adcd6ca702e17`. The committed audit snapshot is the branch tip; verify it with `git rev-parse HEAD`. All formal training remains paused; the worktree stops here and waits for an explicit next instruction.
