@@ -22,6 +22,7 @@ export GMT_CAUSAL_AUDIT_MODE="$MODE"
 export GMT_CAUSAL_RUN="$RUN_NAME"
 export GMT_CAUSAL_EVENT_MANIFEST="$ROOT/causal/manifests/correction_events.json"
 export GMT_CAUSAL_INJECTION_MANIFEST="$ROOT/causal/manifests/injection_events.json"
+export GMT_CAUSAL_SHAM_KIND="${GMT_CAUSAL_SHAM_KIND:-correction}"
 export PYTHONHASHSEED=0
 export OMP_NUM_THREADS=1
 unset CUDA_LAUNCH_BLOCKING GMT_DISTRIBUTED_BACKEND GMT_CPU_COLLECTIVES GMT_POST_BACKWARD_CPU GMT_CPU_DDP_INIT GMT_SYNC_DDP_BUCKETS GMT_CHECKPOINT_BACKBONE
@@ -35,7 +36,7 @@ pushd "$OUT" >/dev/null
   OUTPUT_DIR "$OUT" \
   DATASETS.TEST "('VISION_test_audit',)" \
   INPUT.VIDEO.TEST_LEN 40 MODEL.ASSO_HEAD.WITH_BANK True MODEL.ASSO_HEAD.BANK_SIZE 10 SEED 20260930 \
-  "$@" >"$OUT/stdout_stderr.log" 2>&1
+  >"$OUT/stdout_stderr.log" 2>&1
 RC=$?
 popd >/dev/null
 set -e

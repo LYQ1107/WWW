@@ -70,7 +70,14 @@ class CausalIdentityAudit:
         self.last_correction: dict[int, int] = {}
         self.last_injection: dict[int, int] = {}
         self.current_scene: str | None = None
-        self.events = self._load_events(self.event_path) if mode in {"correction", "sham"} else {}
+        # A sham must use the same frozen schedule as its paired intervention.
+        # The default is the correction schedule for backwards compatibility;
+        # injection sham runs opt into the injection schedule explicitly.
+        sham_kind = os.environ.get("GMT_CAUSAL_SHAM_KIND", "correction")
+        if mode == "sham" and sham_kind == "injection":
+            self.events = self._load_events(self.injection_event_path)
+        else:
+            self.events = self._load_events(self.event_path) if mode in {"correction", "sham"} else {}
         self.events.update(self._load_events(self.injection_event_path) if mode == "injection" else {})
         atexit.register(self.close)
 
