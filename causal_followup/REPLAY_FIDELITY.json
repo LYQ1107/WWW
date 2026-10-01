@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "gate": "Replay Fidelity",
+  "per_scene_cache": [
+    {
+      "scene": "00001garden",
+      "cache_records": 2010,
+      "expected_records": 2010,
+      "status": "PASS"
+    },
+    {
+      "scene": "00003garden",
+      "cache_records": 3320,
+      "expected_records": 3320,
+      "status": "PASS"
+    },
+    {
+      "scene": "00005garden",
+      "cache_records": 1800,
+      "expected_records": 1800,
+      "status": "PASS"
+    }
+  ],
+  "pre_filter_trace_comparison": "/data3/liuyeqiang/JEV_GMT/causal_followup/REPLAY_TRACE_COMPARISON.json",
+  "post_filter_trace_comparison": "/data3/liuyeqiang/JEV_GMT/causal_followup/REPLAY_POSTFILTER_TRACE_COMPARISON.json",
+  "exact_track_id_and_count_equality": true,
+  "post_filter_trace_collected": false,
+  "baseline_reference_metrics": {
+    "HOTA": 83.06787536626467,
+    "AssA": 81.92432823733957,
+    "MOTA": 79.62186419480615,
+    "IDF1": 82.63379469998145,
+    "number_predictions": 48005,
+    "sequence_count": 6
+  },
+  "metrics_reference": "C0 baseline metrics are retained unchanged; exact post-filter trace equality is the fidelity criterion",
+  "fixed_stream": {
+    "seed": 20260930,
+    "test_len": 40,
+    "with_bank": true,
+    "bank_size": 10
+  }
+}

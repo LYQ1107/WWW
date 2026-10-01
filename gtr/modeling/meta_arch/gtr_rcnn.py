@@ -170,6 +170,29 @@ class GTRRCNN(CustomRCNN):
         return instances
     
     def sliding_inference_GMT(self, batched_inputs,view_num,time):
+        replay_dump = os.environ.get("GMT_ASSOC_REPLAY_DUMP", "0") == "1"
+        replay_load = os.environ.get("GMT_ASSOC_REPLAY_LOAD", "0") == "1"
+        replay_writer = None
+        replay_reader = None
+        replay_scene = None
+        if replay_dump and replay_load:
+            raise RuntimeError("GMT_ASSOC_REPLAY_DUMP and GMT_ASSOC_REPLAY_LOAD are mutually exclusive")
+        if replay_dump or replay_load:
+            from ...audit.association_replay import (
+                AssociationReplayReader,
+                AssociationReplayWriter,
+                scene_name,
+                observation_record,
+            )
+            replay_scene = scene_name(batched_inputs[0])
+            replay_root = os.environ.get(
+                "GMT_ASSOC_REPLAY_DIR",
+                os.path.join(os.environ.get("GMT_AUDIT_DIR", "audit"), "association_replay"),
+            )
+            if replay_dump:
+                replay_writer = AssociationReplayWriter(replay_root)
+            else:
+                replay_reader = AssociationReplayReader(replay_root, replay_scene)
         poss_ids.poss_ids = set()
         old_ids.old_ids = set()
         old_reids.old_reids = []
@@ -187,12 +210,32 @@ class GTRRCNN(CustomRCNN):
             time_per = time.copy()
             for view in range(view_num):
                 time_per[2] = time[2][st]
-                instances_wo_id += self.inference(
-                    batched_inputs[st: st + 1],
-                    view_num,
-                    time_per,
-                    view,
-                    do_postprocess=False)
+                if replay_reader is not None:
+                    instances_wo_id.append(
+                        replay_reader.get(frame_id, view, self.device)
+                    )
+                else:
+                    observed = self.inference(
+                        batched_inputs[st: st + 1],
+                        view_num,
+                        time_per,
+                        view,
+                        do_postprocess=False)
+                    instances_wo_id += observed
+                    if replay_writer is not None:
+                        if len(observed) != 1:
+                            raise RuntimeError(
+                                "GMT replay cache expects one observation per frame/view"
+                            )
+                        replay_writer.append(
+                            replay_scene,
+                            observation_record(
+                                observed[0],
+                                batched_inputs[st],
+                                frame_index=frame_id,
+                                view_index=view,
+                            ),
+                        )
                 st += view_frames
             instances.extend([x for x in instances_wo_id])
             activate_first = True
@@ -281,9 +324,11 @@ class GTRRCNN(CustomRCNN):
                 win_st = max(0, frame_id + 1 - self.test_len)*view_num
                 win_ed = view_num*frame_id
                # activate  = True
-                instances_kv = instances[win_st:win_ed]
+                instances_kv = self._gmt_filter_replay_history(
+                    instances[win_st:win_ed], win_st)
                 if  activate:
-                    instacnes_old = instances[:win_st]
+                    instacnes_old = self._gmt_filter_replay_history(
+                        instances[:win_st], 0)
                     for i in range(view_num):
                         instances_kv = instances_kv + [instances[win_ed+i]]
                         asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
@@ -337,6 +382,19 @@ class GTRRCNN(CustomRCNN):
                         instances[win_ed+i] = instances_kv[len(instances_kv)-1]
 
 
+        if replay_writer is not None:
+            replay_writer.write_scene(replay_scene)
+        if os.environ.get("GMT_ASSOC_REPLAY_TRACE", "0") == "1":
+            from ...audit.association_replay import write_tracking_trace, scene_name
+            write_tracking_trace(
+                os.environ.get(
+                    "GMT_ASSOC_REPLAY_TRACE_DIR",
+                    os.path.join(os.environ.get("GMT_AUDIT_DIR", "audit"), "association_trace"),
+                ),
+                scene_name(batched_inputs[0]),
+                instances,
+            )
+
         batch = []
         #调整batch的顺序，和instances一致，view1_frame1,view_2_frame1,view_3_frame1 
         for i in range(view_frames):
@@ -344,6 +402,16 @@ class GTRRCNN(CustomRCNN):
                 batch.append(batched_inputs[j*view_frames+i])
         if self.min_track_len > 0:
             instances = self._remove_short_track(instances)
+        if os.environ.get("GMT_ASSOC_REPLAY_TRACE_POST", "0") == "1":
+            from ...audit.association_replay import write_tracking_trace, scene_name
+            write_tracking_trace(
+                os.environ.get(
+                    "GMT_ASSOC_REPLAY_TRACE_POST_DIR",
+                    os.path.join(os.environ.get("GMT_AUDIT_DIR", "audit"), "association_trace_post"),
+                ),
+                scene_name(batched_inputs[0]),
+                instances,
+            )
         if os.environ.get("GMT_AUDIT_DUMP_FEATURES", "0") == "1":
             from ...audit.feature_dump import dump_scene_observations
             dump_scene_observations(
@@ -361,6 +429,25 @@ class GTRRCNN(CustomRCNN):
         for i in range(len(batch)):
             batch[i]['image'] = None        
         return instances,view_num
+
+    def _gmt_filter_replay_history(self, rows, start_index):
+        """Remove explicitly quarantined observations from future windows.
+
+        The released tracker has one list for public outputs and association
+        history. Follow-up audits keep the public list intact and use this
+        audit-only view when a C1b quarantine branch excludes an observation
+        from the persistent/sliding history.
+        """
+        quarantined = getattr(self, "_gmt_replay_quarantine", set())
+        if not quarantined:
+            return rows
+        filtered = []
+        for offset, inst in enumerate(rows):
+            seq = int(start_index) + int(offset)
+            indices = [i for i in range(len(inst))
+                       if (seq, i) not in quarantined]
+            filtered.append(inst if len(indices) == len(inst) else inst[indices])
+        return filtered
 
     def run_first_tracker_plus(self, instances,asso_output,pred_boxes,k,id_count,id_count_dict,id_reid_dict):
         n_t = [len(x) for x in instances]
@@ -549,6 +636,28 @@ class GTRRCNN(CustomRCNN):
         # This is the only causal intervention point.  It is intentionally
         # after the unchanged GMT candidate/Hungarian decision (and optional
         # memory-bank fallback), but before the normal history commit below.
+        # The follow-up replay engine uses the audit-only callback without
+        # changing ordinary GMT behavior.
+        replay_quarantine = set()
+        replay_action = getattr(self, "_gmt_replay_action", None)
+        if replay_action is not None:
+            context = getattr(self, "_gmt_audit_context", None)
+            if context is not None:
+                action = replay_action(
+                    context=context,
+                    instances=instances[k],
+                    track_ids=track_ids,
+                    unique_ids=unique_ids,
+                    traj_score=traj_score,
+                    support=support,
+                    id_count_dict=id_count_dict,
+                )
+                if action:
+                    track_ids = action.get("track_ids", track_ids)
+                    replay_quarantine = {
+                        int(x) for x in action.get("quarantine_indices", [])
+                    }
+                    self._gmt_replay_quarantine_current = replay_quarantine
         if os.environ.get("GMT_CAUSAL_AUDIT_MODE"):
             from ...audit.causal_identity import get_audit
             audit = get_audit(
@@ -566,8 +675,42 @@ class GTRRCNN(CustomRCNN):
                     support=support,
                     id_count_dict=id_count_dict,
                 )
+        # Event-isolated replay can intentionally assign a candidate ID that
+        # is present in the frozen observation history but whose mutable
+        # bookkeeping entry was not materialized by a prior memory-bank
+        # branch.  Reconstruct that audit-only entry before the normal commit
+        # loop.  This path is enabled only by replay_engine and never affects
+        # released GMT inference.
+        if getattr(self, "_gmt_replay_audit", False):
+            for candidate in sorted({int(x.item()) for x in track_ids if int(x.item()) >= 0}):
+                if candidate in id_count_dict and candidate in id_reid_dict:
+                    continue
+                history_rows = []
+                for row in instances:
+                    if not row.has("track_ids"):
+                        continue
+                    inds = torch.where(row.track_ids == candidate)[0]
+                    if len(inds):
+                        history_rows.append(row[inds])
+                if history_rows:
+                    id_reid_dict[candidate] = Instances.cat(history_rows)
+                    id_count_dict[candidate] = sum(len(x) for x in history_rows)
+                else:
+                    id_count_dict.setdefault(candidate, 0)
+                    id_reid_dict.setdefault(candidate, instances[k][:1])
+                    id_count_dict[candidate] = max(1, int(id_count_dict[candidate]))
+                reconciled = getattr(self, "_gmt_replay_reconciliations", None)
+                if reconciled is None:
+                    self._gmt_replay_reconciliations = []
+                self._gmt_replay_reconciliations.append(int(candidate))
         for i in range(n_k):
             id = track_ids[i].item()
+            if i in replay_quarantine:
+                # Keep the public current-frame assignment while excluding
+                # this observation from persistent state. The history filter
+                # above removes it from later sliding windows.
+                instances[k].track_ids = track_ids
+                continue
             if track_ids[i] < 0:
                 id_count = id_count + 1
                 track_ids[i] = id_count
