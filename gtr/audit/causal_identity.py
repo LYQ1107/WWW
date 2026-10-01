@@ -243,19 +243,32 @@ class CausalIdentityAudit:
                 "correct_existing_id": None if correct is None else correct["id"],
                 "wrong_existing_id": None if wrong is None else wrong["id"],
                 "selected_pred_id": p_base,
+                "intervention_target_id": None,
                 "intervention": "none",
             }
             event = self.events.get(key)
             if event and self.mode == "correction" and event.get("gt_id") == g:
-                out[i] = int(event["p_correct"])
-                row["selected_pred_id"] = int(event["p_correct"])
-                row["intervention"] = "correction"
-                self.last_correction[int(g)] = frame
+                target = int(event["p_correct"])
+                row["intervention_target_id"] = target
+                occupied_elsewhere = any(j != i and int(v) == target for j, v in enumerate(out.tolist()))
+                if occupied_elsewhere:
+                    row["intervention"] = "correction_conflict"
+                else:
+                    out[i] = target
+                    row["selected_pred_id"] = target
+                    row["intervention"] = "correction"
+                    self.last_correction[int(g)] = frame
             elif event and self.mode == "injection" and event.get("gt_id") == g:
-                out[i] = int(event["p_wrong"])
-                row["selected_pred_id"] = int(event["p_wrong"])
-                row["intervention"] = "injection"
-                self.last_injection[int(g)] = frame
+                target = int(event["p_wrong"])
+                row["intervention_target_id"] = target
+                occupied_elsewhere = any(j != i and int(v) == target for j, v in enumerate(out.tolist()))
+                if occupied_elsewhere:
+                    row["intervention"] = "injection_conflict"
+                else:
+                    out[i] = target
+                    row["selected_pred_id"] = target
+                    row["intervention"] = "injection"
+                    self.last_injection[int(g)] = frame
             elif event and self.mode == "sham" and event.get("gt_id") == g:
                 row["intervention"] = "sham"
             self._log.write(json.dumps(row, separators=(",", ":")) + "\n")

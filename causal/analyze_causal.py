@@ -30,19 +30,24 @@ def bootstrap_ci(values, seed=20260930, n=10000):
     return [float(np.quantile(means, .025)), float(np.quantile(means, .975))]
 
 
-def outcomes(events, run: pd.DataFrame, target_field: str, target_source: str):
+def outcomes(events, run: pd.DataFrame, target_field: str, target_source: str,
+             expected_intervention: str):
     rows = []
     if run.empty:
         return pd.DataFrame()
     for event in events:
         scene, gt, frame = str(event["scene"]), int(event["gt_id"]), int(event["frame"])
         target = int(event[target_field])
+        current = run[run.event_key.astype(str) == str(event["event_key"])]
+        applied = bool(len(current) and str(current.iloc[0].get("intervention")) == expected_intervention)
+        apply_reason = "applied" if applied else (str(current.iloc[0].get("intervention")) if len(current) else "missing")
         sub = run[(run.scene == scene) & (run.gt_id == gt)]
         for k in HORIZONS:
             f = sub[sub.frame == frame + k]
             if f.empty:
                 rows.append({"event_id": event["event_id"], "scene": scene, "gt_id": gt,
                              "event_frame": frame, "horizon": k, "estimable": False,
+                             "applied": applied, "apply_reason": apply_reason,
                              "error": np.nan, "n_future_observations": 0,
                              "cross_view_error": np.nan, "target_id": target})
                 continue
@@ -50,6 +55,7 @@ def outcomes(events, run: pd.DataFrame, target_field: str, target_source: str):
             other = f[f.view.astype(int) != int(event["view"])]
             rows.append({"event_id": event["event_id"], "scene": scene, "gt_id": gt,
                          "event_frame": frame, "horizon": k, "estimable": True,
+                         "applied": applied, "apply_reason": apply_reason,
                          "error": float(err.mean()), "n_future_observations": int(len(f)),
                          "cross_view_error": float((other.selected_pred_id.astype(int) != target).mean()) if len(other) else np.nan,
                          "target_id": target, "target_source": target_source})
@@ -58,7 +64,8 @@ def outcomes(events, run: pd.DataFrame, target_field: str, target_source: str):
 
 def paired(effect: pd.DataFrame, sham: pd.DataFrame, label: str):
     key = ["event_id", "horizon"]
-    a = effect[effect.estimable].merge(sham[sham.estimable], on=key, suffixes=("_effect", "_sham"))
+    a = effect[effect.estimable & effect.applied].merge(
+        sham[sham.estimable & sham.applied], on=key, suffixes=("_effect", "_sham"))
     if a.empty:
         return pd.DataFrame()
     a["difference"] = a.error_effect - a.error_sham
@@ -110,8 +117,9 @@ def main():
     ap.add_argument("--sham-metrics", type=Path)
     args = ap.parse_args()
     events = json.loads(args.events.read_text())["events"]
-    effect = outcomes(events, read_jsonl(args.effect), args.target_field, args.label)
-    sham = outcomes(events, read_jsonl(args.sham), args.target_field, "sham")
+    effect_kind = "correction" if args.target_field == "p_correct" else "injection"
+    effect = outcomes(events, read_jsonl(args.effect), args.target_field, args.label, effect_kind)
+    sham = outcomes(events, read_jsonl(args.sham), args.target_field, "sham", "sham")
     p = paired(effect, sham, args.label)
     s = summary(p)
     args.output_csv.parent.mkdir(parents=True, exist_ok=True)
@@ -119,7 +127,11 @@ def main():
     p.to_csv(args.output_csv, index=False)
     scene = (p.groupby(["scene", "horizon"], as_index=False)["difference"].mean()
              if not p.empty else pd.DataFrame())
-    report = [f"# {args.label}", "", f"Events in frozen manifest: {len(events)}", "",
+    applied_effect = int(effect[effect.applied].event_id.nunique()) if not effect.empty else 0
+    applied_sham = int(sham[sham.applied].event_id.nunique()) if not sham.empty else 0
+    report = [f"# {args.label}", "", f"Events in frozen manifest: {len(events)}",
+              f"Events applied in intervention run: {applied_effect}",
+              f"Events observed in sham run: {applied_sham}", "",
               "The intervention is compared with its same-event sham. The current event frame is excluded; future identity error is the fraction of matched observations for the same scene/GT at exactly t+k whose selected ID differs from the frozen target ID.", "",
               "## Paired horizon summary", "", s.to_markdown(index=False), "",
               "Bootstrap intervals resample events with seed 20260930. No result is used to select events.", "",
