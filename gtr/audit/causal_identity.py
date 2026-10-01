@@ -184,6 +184,7 @@ class CausalIdentityAudit:
         unique_ids,
         traj_score,
         support,
+        id_count_dict=None,
     ):
         """Return the possibly replaced ``track_ids`` and commit audit history."""
         scene = str(context["scene"])
@@ -251,8 +252,11 @@ class CausalIdentityAudit:
                 target = int(event["p_correct"])
                 row["intervention_target_id"] = target
                 occupied_elsewhere = any(j != i and int(v) == target for j, v in enumerate(out.tolist()))
+                active = id_count_dict is None or target in {int(x) for x in id_count_dict}
                 if occupied_elsewhere:
                     row["intervention"] = "correction_conflict"
+                elif not active:
+                    row["intervention"] = "correction_inactive"
                 else:
                     out[i] = target
                     row["selected_pred_id"] = target
@@ -262,8 +266,11 @@ class CausalIdentityAudit:
                 target = int(event["p_wrong"])
                 row["intervention_target_id"] = target
                 occupied_elsewhere = any(j != i and int(v) == target for j, v in enumerate(out.tolist()))
+                active = id_count_dict is None or target in {int(x) for x in id_count_dict}
                 if occupied_elsewhere:
                     row["intervention"] = "injection_conflict"
+                elif not active:
+                    row["intervention"] = "injection_inactive"
                 else:
                     out[i] = target
                     row["selected_pred_id"] = target

@@ -564,6 +564,7 @@ class GTRRCNN(CustomRCNN):
                     unique_ids=unique_ids,
                     traj_score=traj_score,
                     support=support,
+                    id_count_dict=id_count_dict,
                 )
         for i in range(n_k):
             id = track_ids[i].item()
