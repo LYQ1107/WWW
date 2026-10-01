@@ -6,6 +6,7 @@ MODE="${GMT_CAUSAL_AUDIT_MODE:?set GMT_CAUSAL_AUDIT_MODE=log|correction|sham|inj
 RUN_NAME="${1:?run name}"; shift
 OUT="$ROOT/causal/runs/$RUN_NAME"
 mkdir -p "$OUT"
+if [[ ! -e "$OUT/datasets" ]]; then ln -s "$ROOT/datasets" "$OUT/datasets"; fi
 SUBSET="$ROOT/../GMT_challenge_audit/audit/cache/sanity_subset_test.json"
 GT_JSON="${GMT_CAUSAL_GT_JSON:-$SUBSET}"
 RAW_NAME="VISIONT18000_13_640_60_objdetection0.525_multithred0.001_NMS0.65_MINLEN50"
