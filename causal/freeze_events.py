@@ -12,6 +12,8 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
+import pandas as pd
+
 
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
@@ -82,6 +84,9 @@ def main() -> None:
             last_injection[key] = frame
 
     args.output_root.mkdir(parents=True, exist_ok=True)
+    event_dir = args.output_root.parent / "events"
+    event_dir.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(rows).to_parquet(event_dir / "baseline_decisions.parquet", index=False)
     common = {
         "source_decisions": str(args.decisions),
         "source_sha256": sha256(args.decisions),
