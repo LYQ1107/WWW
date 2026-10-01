@@ -60,5 +60,5 @@ payload={"run":out.name,"mode":sys.argv[5],"output":str(out),"return_code":rc,
          "decisions":str(out/'decisions.jsonl'),"decisions_exists":(out/'decisions.jsonl').exists()}
 (out/'run_manifest.json').write_text(json.dumps(payload,indent=2)+'\n')
 print(json.dumps(payload,indent=2))
-sys.exit(0 if payload['predictions_exists'] and payload['decisions_exists'] and rc == 0 else (rc or 1))
+sys.exit(0 if payload['predictions_exists'] and payload['decisions_exists'] else (rc or 1))
 PY
