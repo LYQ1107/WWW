@@ -8,11 +8,10 @@ OUT="$ROOT/causal/runs/$RUN_NAME"
 mkdir -p "$OUT"
 SUBSET="$ROOT/../GMT_challenge_audit/audit/cache/sanity_subset_test.json"
 GT_JSON="${GMT_CAUSAL_GT_JSON:-$SUBSET}"
-RAW_ROOT="$ROOT/VISIONT18000_13_640_60_objdetection0.525_multithred0.001_NMS0.65_MINLEN50"
+RAW_NAME="VISIONT18000_13_640_60_objdetection0.525_multithred0.001_NMS0.65_MINLEN50"
+RAW_ROOT="$OUT/$RAW_NAME"
 if [[ -e "$OUT/raw_predictions" ]]; then echo "existing run: $OUT" >&2; exit 0; fi
-if [[ -e "$RAW_ROOT" ]]; then
-  stale="$ROOT/causal/runs/_stale_$(date +%s)"; mkdir -p "$stale"; mv "$RAW_ROOT" "$stale/raw_predictions"
-fi
+if [[ -e "$RAW_ROOT" ]]; then mv "$RAW_ROOT" "$OUT/_stale_raw_$(date +%s)"; fi
 export CUDA_VISIBLE_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 export GMT_AUDIT_DIR="$ROOT"
 export GMT_AUDIT_TEST_JSON="$GT_JSON"
@@ -28,6 +27,7 @@ unset CUDA_LAUNCH_BLOCKING GMT_DISTRIBUTED_BACKEND GMT_CPU_COLLECTIVES GMT_POST_
 export PYTHONPATH="$ROOT/third_party/CenterNet2:${PYTHONPATH:-}"
 START_NS=$(date +%s)
 set +e
+pushd "$OUT" >/dev/null
 "$GMT_PY" "$ROOT/test_net.py" --num-gpus 1 \
   --config-file "$ROOT/configs/VISION_test.yaml" \
   MODEL.WEIGHTS "$ROOT/audit/links/stage2_model_20000.pth" \
@@ -36,6 +36,7 @@ set +e
   INPUT.VIDEO.TEST_LEN 40 MODEL.ASSO_HEAD.WITH_BANK True MODEL.ASSO_HEAD.BANK_SIZE 10 SEED 20260930 \
   "$@" >"$OUT/stdout_stderr.log" 2>&1
 RC=$?
+popd >/dev/null
 set -e
 END_NS=$(date +%s)
 if [[ -e "$RAW_ROOT" ]]; then mv "$RAW_ROOT" "$OUT/raw_predictions"; fi
