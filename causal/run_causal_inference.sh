@@ -42,6 +42,13 @@ if [[ -e "$RAW_ROOT" ]]; then mv "$RAW_ROOT" "$OUT/raw_predictions"; fi
 if [[ -e "$OUT/raw_predictions" ]]; then
   "$GMT_PY" "$ROOT/audit_tools/convert_mot_results.py" --raw-root "$OUT/raw_predictions" --annotations "$GT_JSON" --output "$OUT/predictions.json" >"$OUT/convert.log" 2>&1 || true
 fi
+# The released Detectron2 evaluator writes the immutable per-image COCO
+# prediction file under the configured inference directory. Prefer it for
+# causal runs; the historical raw MOT root is retained when present.
+COCO_JSON="$OUT/inference_VISION_test_audit/coco_instances_results.json"
+if [[ ! -e "$OUT/predictions.json" && -e "$COCO_JSON" ]]; then
+  cp "$COCO_JSON" "$OUT/predictions.json"
+fi
 "$GMT_PY" - "$OUT" "$RC" "$START_NS" "$END_NS" "$MODE" <<'PY'
 import json, sys
 from pathlib import Path
@@ -49,8 +56,9 @@ out=Path(sys.argv[1]); rc=int(sys.argv[2]); start=int(sys.argv[3]); end=int(sys.
 payload={"run":out.name,"mode":sys.argv[5],"output":str(out),"return_code":rc,
          "start_epoch":start,"end_epoch":end,"runtime_sec":end-start,
          "raw_predictions":str(out/'raw_predictions'),"raw_predictions_exists":(out/'raw_predictions').exists(),
+         "predictions":str(out/'predictions.json'),"predictions_exists":(out/'predictions.json').exists(),
          "decisions":str(out/'decisions.jsonl'),"decisions_exists":(out/'decisions.jsonl').exists()}
 (out/'run_manifest.json').write_text(json.dumps(payload,indent=2)+'\n')
 print(json.dumps(payload,indent=2))
-sys.exit(0 if payload['raw_predictions_exists'] and rc == 0 else (rc or 1))
+sys.exit(0 if payload['predictions_exists'] and payload['decisions_exists'] and rc == 0 else (rc or 1))
 PY
