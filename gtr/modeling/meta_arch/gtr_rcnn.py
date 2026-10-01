@@ -254,6 +254,29 @@ class GTRRCNN(CustomRCNN):
                     id_count = 0
                     for i in range(view_num):
                         id_count = max(id_count,(max(instances[i].track_ids )).item())
+                if os.environ.get("GMT_CAUSAL_AUDIT_MODE"):
+                    from ...audit.causal_identity import get_audit
+                    import re
+                    contexts = []
+                    for j in range(view_num):
+                        item = batched_inputs[j * view_frames]
+                        name = str(item.get("file_name", "scene"))
+                        m = re.search(r"([^/\\]+)_View\d+", name)
+                        scene = m.group(1) if m else str(item.get("video_id", "scene"))
+                        fm = re.search(r"_(\d+)\.(?:jpg|jpeg|png)$", name, re.I)
+                        contexts.append({
+                            "scene": scene,
+                            "video_id": int(item.get("video_id", -1)),
+                            "image_id": int(item.get("image_id", -1)),
+                            "frame": int(fm.group(1)) if fm else 1,
+                            "view": int(item.get("view_id", j + 1)),
+                            "width": int(item.get("width", 0)),
+                            "height": int(item.get("height", 0)),
+                        })
+                    get_audit(
+                        os.environ["GMT_CAUSAL_AUDIT_MODE"],
+                        os.environ.get("GMT_AUDIT_DIR", "audit"),
+                    ).seed_initial(contexts, instances[:view_num])
             else:
                 win_st = max(0, frame_id + 1 - self.test_len)*view_num
                 win_ed = view_num*frame_id
@@ -266,6 +289,30 @@ class GTRRCNN(CustomRCNN):
                         asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
                             instances_kv,
                             k=len(instances_kv) - 1)
+
+                        # Causal audits receive only read-only metadata here.
+                        # The GT sidecar is loaded by the audit module and is
+                        # never placed in ``instances_kv`` or tracker tensors.
+                        if os.environ.get("GMT_CAUSAL_AUDIT_MODE"):
+                            # ``instances`` is frame-major after the mapper;
+                            # the source item for frame ``frame_id`` and
+                            # camera ``i`` is frame_id + i*view_frames.
+                            item = batched_inputs[frame_id + i * view_frames]
+                            name = str(item.get("file_name", "scene"))
+                            import re
+                            match = re.search(r"([^/\\]+)_View\d+", name)
+                            scene = match.group(1) if match else str(item.get("video_id", "scene"))
+                            frame_match = re.search(r"_(\d+)\.(?:jpg|jpeg|png)$", name, re.I)
+                            frame = int(frame_match.group(1)) if frame_match else int(item.get("frame_id", 0))
+                            self._gmt_audit_context = {
+                                "scene": scene,
+                                "video_id": int(item.get("video_id", -1)),
+                                "image_id": int(item.get("image_id", -1)),
+                                "frame": frame,
+                                "view": int(item.get("view_id", i + 1)),
+                                "width": int(item.get("width", 0)),
+                                "height": int(item.get("height", 0)),
+                            }
 
                         instances_kv, id_count,id_count_dict = self.run_global_tracker_plus(
                             view_num,
@@ -498,6 +545,26 @@ class GTRRCNN(CustomRCNN):
                             print(run_time)
                         count += 1
         #poss_ids.poss_ids = set()
+
+        # This is the only causal intervention point.  It is intentionally
+        # after the unchanged GMT candidate/Hungarian decision (and optional
+        # memory-bank fallback), but before the normal history commit below.
+        if os.environ.get("GMT_CAUSAL_AUDIT_MODE"):
+            from ...audit.causal_identity import get_audit
+            audit = get_audit(
+                os.environ["GMT_CAUSAL_AUDIT_MODE"],
+                os.environ.get("GMT_AUDIT_DIR", "audit"),
+            )
+            context = getattr(self, "_gmt_audit_context", None)
+            if context is not None:
+                track_ids = audit.intervene(
+                    context=context,
+                    instances=instances[k],
+                    track_ids=track_ids,
+                    unique_ids=unique_ids,
+                    traj_score=traj_score,
+                    support=support,
+                )
         for i in range(n_k):
             id = track_ids[i].item()
             if track_ids[i] < 0:
