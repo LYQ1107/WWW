@@ -106,6 +106,8 @@ def main():
     ap.add_argument("--output-csv", type=Path, required=True)
     ap.add_argument("--output-report", type=Path, required=True)
     ap.add_argument("--label", required=True)
+    ap.add_argument("--effect-metrics", type=Path)
+    ap.add_argument("--sham-metrics", type=Path)
     args = ap.parse_args()
     events = json.loads(args.events.read_text())["events"]
     effect = outcomes(events, read_jsonl(args.effect), args.target_field, args.label)
@@ -122,6 +124,12 @@ def main():
               "## Paired horizon summary", "", s.to_markdown(index=False), "",
               "Bootstrap intervals resample events with seed 20260930. No result is used to select events.", "",
               "## Scene-level paired effects", "", scene.to_markdown(index=False) if not scene.empty else "No estimable scene effects.", ""]
+    if args.effect_metrics or args.sham_metrics:
+        em = json.loads(args.effect_metrics.read_text()) if args.effect_metrics and args.effect_metrics.exists() else {}
+        sm = json.loads(args.sham_metrics.read_text()) if args.sham_metrics and args.sham_metrics.exists() else {}
+        report += ["", "## Tracking metrics", "", pd.DataFrame([
+            {"condition": "intervention", **em}, {"condition": "sham", **sm}
+        ]).to_markdown(index=False)]
     st = streaks(p)
     if not st.empty:
         report += ["", "## Future error streak", "", st.groupby("condition")["future_error_streak"].agg(["count", "mean", "median", "max"]).to_markdown()]
