@@ -1,0 +1,158 @@
+{
+  "project": "GMT Causal Error Audit + JEV-GMT Feasibility Study",
+  "worktree": "/data3/liuyeqiang/JEV_GMT",
+  "branch": "jev-gmt-causal-prototype",
+  "seed": 20260930,
+  "test_len": 40,
+  "with_bank": true,
+  "bank_size": 10,
+  "event_selection_frozen_before_outcomes": true,
+  "gt_used_in_tracker": false,
+  "formal_training_started": false,
+  "jev_implementation_started": false,
+  "causal_gate": "CONDITIONAL GO",
+  "runs": {
+    "C0_baseline_log": {
+      "run": "C0_baseline_log",
+      "mode": "log",
+      "output": "/data3/liuyeqiang/JEV_GMT/causal/runs/C0_baseline_log",
+      "return_code": 127,
+      "start_epoch": 1790828042,
+      "end_epoch": 1790829946,
+      "runtime_sec": 1904,
+      "raw_predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C0_baseline_log/raw_predictions",
+      "raw_predictions_exists": true,
+      "predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C0_baseline_log/predictions.json",
+      "predictions_exists": true,
+      "decisions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C0_baseline_log/decisions.jsonl",
+      "decisions_exists": true,
+      "return_code_note": "Artifacts are valid; the original wrapper appended an empty positional argument and exited 127 after inference."
+    },
+    "C1_correction": {
+      "run": "C1_correction",
+      "mode": "correction",
+      "output": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_correction",
+      "return_code": 0,
+      "start_epoch": 1790831403,
+      "end_epoch": 1790832428,
+      "runtime_sec": 1025,
+      "raw_predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_correction/raw_predictions",
+      "raw_predictions_exists": true,
+      "predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_correction/predictions.json",
+      "predictions_exists": true,
+      "decisions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_correction/decisions.jsonl",
+      "decisions_exists": true
+    },
+    "C1_sham": {
+      "run": "C1_sham",
+      "mode": "sham",
+      "output": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_sham",
+      "return_code": 0,
+      "start_epoch": 1790830174,
+      "end_epoch": 1790832066,
+      "runtime_sec": 1892,
+      "raw_predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_sham/raw_predictions",
+      "raw_predictions_exists": true,
+      "predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_sham/predictions.json",
+      "predictions_exists": true,
+      "decisions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_sham/decisions.jsonl",
+      "decisions_exists": true
+    },
+    "C1_correction_failed_conflict_20261001": {
+      "run": "C1_correction",
+      "mode": "correction",
+      "output": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_correction",
+      "return_code": 1,
+      "start_epoch": 1790830174,
+      "end_epoch": 1790831216,
+      "runtime_sec": 1042,
+      "raw_predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_correction/raw_predictions",
+      "raw_predictions_exists": true,
+      "predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_correction/predictions.json",
+      "predictions_exists": true,
+      "decisions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C1_correction/decisions.jsonl",
+      "decisions_exists": true,
+      "archive_path": "causal/runs/C1_correction_failed_conflict_20261001",
+      "artifact_status": "preserved_failed_attempt_not_used_for_effects"
+    },
+    "C2_injection": {
+      "run": "C2_injection",
+      "mode": "injection",
+      "output": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection",
+      "return_code": 0,
+      "start_epoch": 1790833463,
+      "end_epoch": 1790834503,
+      "runtime_sec": 1040,
+      "raw_predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection/raw_predictions",
+      "raw_predictions_exists": true,
+      "predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection/predictions.json",
+      "predictions_exists": true,
+      "decisions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection/decisions.jsonl",
+      "decisions_exists": true
+    },
+    "C2_injection_sham": {
+      "run": "C2_injection_sham",
+      "mode": "sham",
+      "output": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection_sham",
+      "return_code": 0,
+      "start_epoch": 1790832538,
+      "end_epoch": 1790834401,
+      "runtime_sec": 1863,
+      "raw_predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection_sham/raw_predictions",
+      "raw_predictions_exists": true,
+      "predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection_sham/predictions.json",
+      "predictions_exists": true,
+      "decisions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection_sham/decisions.jsonl",
+      "decisions_exists": true
+    },
+    "C2_injection_failed_inactive_20261001": {
+      "run": "C2_injection",
+      "mode": "injection",
+      "output": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection",
+      "return_code": 1,
+      "start_epoch": 1790832538,
+      "end_epoch": 1790833373,
+      "runtime_sec": 835,
+      "raw_predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection/raw_predictions",
+      "raw_predictions_exists": true,
+      "predictions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection/predictions.json",
+      "predictions_exists": true,
+      "decisions": "/data3/liuyeqiang/JEV_GMT/causal/runs/C2_injection/decisions.jsonl",
+      "decisions_exists": true,
+      "archive_path": "causal/runs/C2_injection_failed_inactive_20261001",
+      "artifact_status": "preserved_failed_attempt_not_used_for_effects"
+    }
+  },
+  "artifact_hashes": [
+    {
+      "path": "causal/manifests/correction_events.json",
+      "sha256": "4d73c06aa3add46e6b033ca79c16c47f621cf9562ad6a28e8b4081a88c2e3906",
+      "bytes": 29462
+    },
+    {
+      "path": "causal/manifests/injection_events.json",
+      "sha256": "ac5f3bfee795987570090994bab21c195584833e30fa09008018e9acb27904e3",
+      "bytes": 383353
+    },
+    {
+      "path": "causal/CAUSAL_EVIDENCE_MATRIX.md",
+      "sha256": "1ccfe1a39112a3dcc669b5eec90b84cf77a73ed447140b057694a85c9b09a6ea",
+      "bytes": 2994
+    },
+    {
+      "path": "FINAL_PROJECT_STATUS.md",
+      "sha256": "bc50a8e957dba0ae1ca3e22d566d91a64bd4133e3fdcbcab65935ff9fb9b3486",
+      "bytes": 439
+    },
+    {
+      "path": "causal/results/C1_oracle_correction.csv",
+      "sha256": "44a721cfa10f0171f389aa6e4116a884f4827ee2c19dec589ce9d5c44cbb1a5c",
+      "bytes": 51053
+    },
+    {
+      "path": "causal/results/C2_error_injection.csv",
+      "sha256": "05879aa93f9614ebd709a6dd410fa8f76000dec89e8e104ae9ded61293172bc0",
+      "bytes": 432119
+    }
+  ]
+}
