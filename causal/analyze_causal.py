@@ -70,6 +70,7 @@ def paired(effect: pd.DataFrame, sham: pd.DataFrame, label: str):
         return pd.DataFrame()
     a["difference"] = a.error_effect - a.error_sham
     a["cross_view_difference"] = a.cross_view_error_effect - a.cross_view_error_sham
+    a["scene"] = a["scene_effect"]
     a["intervention"] = label
     return a
 
