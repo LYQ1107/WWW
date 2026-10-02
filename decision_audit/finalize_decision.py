@@ -19,6 +19,7 @@ def main() -> None:
     coverage = load(root / "candidate_coverage.json")
     oracle = load(root / "oracle" / "ORACLE_CHOICE_HEADROOM.json")
     offline = load(root / "offline" / "offline_results.json")
+    online = load(root / "online" / "ONLINE_DEV_RESULTS.json")
     if coverage is None:
         raise RuntimeError("candidate_coverage.json is required")
     chosen = coverage.get("chosen_K")
@@ -27,6 +28,7 @@ def main() -> None:
         "oracle_headroom": bool(oracle and oracle.get("gate", {}).get("AssA_plus_0.5_or_IDF1_plus_0.5") and oracle.get("gate", {}).get("MOTA_drop_at_most_1")),
         "set_choice_support": False,
         "comparison_against_linear_mlp": False,
+        "online_set_choice_support": False,
     }
     comparison = {}
     if offline is not None:
@@ -53,18 +55,29 @@ def main() -> None:
         )
         gates["comparison_against_linear_mlp"] = all(name in offline["models"] for name in ("B1_LINEAR", "B2_MLP"))
 
+    if online is not None:
+        online_gate = online.get("gate", {})
+        gates["online_set_choice_support"] = bool(
+            online_gate.get("set_choice_beats_linear_and_mlp")
+            and online_gate.get("overhead_within_budget", True)
+        )
+
     if not gates["candidate_recall_ge_95"]:
         classification = "NO_DECISION_HEADROOM"
         reason = "K=16 candidate recall is below 95%; stop at candidate generation."
     elif not gates["oracle_headroom"]:
         classification = "NO_DECISION_HEADROOM"
         reason = "Oracle Choice does not pass the pre-registered practical tracking headroom gate."
-    elif gates["set_choice_support"]:
+    elif gates["set_choice_support"] and gates["online_set_choice_support"]:
         classification = "JEV_DECISION_GO"
-        reason = "SetChoice passes the pre-registered hard-decision and probability-quality support gate."
+        reason = "SetChoice passes the pre-registered offline and online association support gates."
     elif offline is not None:
-        classification = "LEARNED_ASSOCIATION_ONLY"
-        reason = "A learned association model may improve GMT, but SetChoice has no pre-registered advantage over independent MLP."
+        if gates["set_choice_support"]:
+            classification = "LEARNED_ASSOCIATION_ONLY"
+            reason = "Offline SetChoice support exists, but the required online dev association gate is absent or failed."
+        else:
+            classification = "LEARNED_ASSOCIATION_ONLY"
+            reason = "A learned association model may improve GMT, but SetChoice has no pre-registered advantage over independent MLP."
     else:
         classification = "NO_DECISION_HEADROOM"
         reason = "Offline decision models were not run because an earlier gate stopped the audit."
@@ -79,6 +92,7 @@ def main() -> None:
         "coverage": coverage,
         "oracle": oracle,
         "offline_results_present": offline is not None,
+        "online_results_present": online is not None,
         "visiontrack_test_used": False,
         "state_actions_implemented": False,
     }
@@ -91,6 +105,7 @@ def main() -> None:
         f"| Oracle Choice practical headroom | `{gates['oracle_headroom']}` |",
         f"| SetChoice hard-decision support over MLP | `{gates['set_choice_support']}` |",
         f"| Linear/MLP comparison present | `{gates['comparison_against_linear_mlp']}` |", "",
+        f"| Online SetChoice support and overhead gate | `{gates['online_set_choice_support']}` |", "",
         "Immutable prior causal state remains `STATE_CAUSAL_GO=NO-GO` and",
         "`MECHANISM_VALIDATED=NO`.  This audit implements choice and diagnostic",
         "verification only; no state action is enabled.  VisionTrack test GT was",
