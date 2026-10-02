@@ -79,6 +79,23 @@ class GTRRCNN(CustomRCNN):
         ret['multi_modal'] = cfg.MULTI_MODAL
         return ret
 
+    def _audit_compact_bank_instance(self, instance):
+        """Copy only fields consumed by the released memory-bank path.
+
+        Decision-record collection keeps this behind an explicit flag.  A
+        sliced Detectron2 ``Instances`` can retain the storage of a whole
+        frame, so clone the single detection tensors before putting them in
+        the persistent bank.  ``memory_bank`` and ``run_memory_tracker`` use
+        exactly these three fields; ordinary inference never enters this
+        helper.
+        """
+        compact = Instances(instance.image_size)
+        compact.pred_boxes = Boxes(instance.pred_boxes.tensor.detach().clone())
+        compact.reid_features = instance.reid_features.detach().clone()
+        if instance.has("track_ids"):
+            compact.track_ids = instance.track_ids.detach().clone()
+        return compact
+
 
     def forward(self, batched_inputs):
         """
@@ -203,6 +220,7 @@ class GTRRCNN(CustomRCNN):
         id_count_dict = dict()
         id_reid_dict = dict()
         memory_bank = []
+        released_instance_until = 0
         for frame_id in tqdm(range(view_frames)):
             batched_inputs_divo = []
             st = frame_id
@@ -254,7 +272,11 @@ class GTRRCNN(CustomRCNN):
                 id_count = len(instances[max_index]) 
                 for i in range(1, len(instances[max_index]) + 1):
                     id_count_dict[i] = 1
-                    id_reid_dict[i] = instances[max_index][i-1]
+                    id_reid_dict[i] = (
+                        self._audit_compact_bank_instance(instances[max_index][i-1])
+                        if os.environ.get("GMT_DECISION_RECORDS_CAP_REID") == "1"
+                        else instances[max_index][i-1]
+                    )
                 #id = ([i for i in range(view_num)])
                 sort_index.remove(max_index)
                 id = np.sort(sort_index)
@@ -381,9 +403,33 @@ class GTRRCNN(CustomRCNN):
                             id_count=id_count) # n_k x N
                         instances[win_ed+i] = instances_kv[len(instances_kv)-1]
 
+            # The collector consumes decisions through the audit hook and does
+            # not use the final Detectron2 Instances list.  Once a frame falls
+            # outside GMT's TEST_LEN sliding window, released inference keeps
+            # no association state that depends on its full tensor payload;
+            # id_count_dict/id_reid_dict above carry the tracker state.  Under
+            # the explicit collector flag, replace those old rows with empty
+            # placeholders so long scenes do not retain every GPU feature map.
+            if os.environ.get("GMT_DECISION_RECORDS_CAP_INSTANCES") == "1":
+                release_before = max(
+                    0, (frame_id + 1 - int(self.test_len)) * int(view_num)
+                )
+                for old_index in range(released_instance_until, release_before):
+                    old = instances[old_index]
+                    instances[old_index] = Instances(old.image_size)
+                released_instance_until = release_before
+
 
         if replay_writer is not None:
             replay_writer.write_scene(replay_scene)
+        # Decision collection consumes the pre-commit records and the replay
+        # writer output.  Its released-instance placeholders intentionally do
+        # not carry final public track fields, so skip postprocessing that
+        # would otherwise inspect every historical row (for example
+        # _remove_short_track).  This branch is collector-only and leaves
+        # ordinary inference unchanged.
+        if os.environ.get("GMT_DECISION_RECORDS_CAP_INSTANCES") == "1":
+            return instances, view_num
         if os.environ.get("GMT_ASSOC_REPLAY_TRACE", "0") == "1":
             from ...audit.association_replay import write_tracking_trace, scene_name
             write_tracking_trace(
@@ -479,12 +525,34 @@ class GTRRCNN(CustomRCNN):
                 track_ids[i] = id_count
                 id_count_dict[id_count] = 1
                 instances[k].track_ids = track_ids#修改
-                id_reid_dict[id_count] = instances[k][i]
+                id_reid_dict[id_count] = (
+                    self._audit_compact_bank_instance(instances[k][i])
+                    if os.environ.get("GMT_DECISION_RECORDS_CAP_REID") == "1"
+                    else instances[k][i]
+                )
             else :
                 id_count_dict[id] += 1
                 instances[k].track_ids = track_ids#修改
-                instance_cat = [id_reid_dict[id] , instances[k][i]]
+                bank_item = (
+                    self._audit_compact_bank_instance(instances[k][i])
+                    if os.environ.get("GMT_DECISION_RECORDS_CAP_REID") == "1"
+                    else instances[k][i]
+                )
+                instance_cat = [id_reid_dict[id], bank_item]
                 id_reid_dict[id] = Instances.cat(instance_cat)
+                # The released memory-bank path only reads the first entry
+                # (metadata anchor) and the most recent BANK_SIZE re-id
+                # features.  Decision-record collection can therefore retain
+                # exactly those entries under an explicit audit-only flag,
+                # preventing unbounded scene-length GPU growth while keeping
+                # the association inputs used by the released path unchanged.
+                if os.environ.get("GMT_DECISION_RECORDS_CAP_REID") == "1":
+                    keep = int(self.bank_size) + 1
+                    if len(id_reid_dict[id]) > keep:
+                        history = id_reid_dict[id]
+                        id_reid_dict[id] = Instances.cat(
+                            [history[:1], history[-int(self.bank_size):]]
+                        )
                 #id_reid_dict[id].reid_features = id_reid_dict[id].reid_features/id_count_dict[id]*(id_count_dict[id]-1)+instances[k][i].reid_features/id_count_dict[id]
         
         instances[k].track_ids = track_ids
@@ -716,14 +784,30 @@ class GTRRCNN(CustomRCNN):
                 track_ids[i] = id_count
                 id_count_dict[id_count] = 1
                 instances[k].track_ids = track_ids#修改
-                id_reid_dict[id_count] = instances[k][i]
+                id_reid_dict[id_count] = (
+                    self._audit_compact_bank_instance(instances[k][i])
+                    if os.environ.get("GMT_DECISION_RECORDS_CAP_REID") == "1"
+                    else instances[k][i]
+                )
             else :
                 id_count_dict[id] += 1
                 if id_count_dict[id]==self.bank_size+1:
                     poss_ids.poss_ids.add(id)
                 instances[k].track_ids = track_ids#修改
-                instance_cat = [id_reid_dict[id] , instances[k][i]]
+                bank_item = (
+                    self._audit_compact_bank_instance(instances[k][i])
+                    if os.environ.get("GMT_DECISION_RECORDS_CAP_REID") == "1"
+                    else instances[k][i]
+                )
+                instance_cat = [id_reid_dict[id], bank_item]
                 id_reid_dict[id] = Instances.cat(instance_cat)
+                if os.environ.get("GMT_DECISION_RECORDS_CAP_REID") == "1":
+                    keep = int(self.bank_size) + 1
+                    if len(id_reid_dict[id]) > keep:
+                        history = id_reid_dict[id]
+                        id_reid_dict[id] = Instances.cat(
+                            [history[:1], history[-int(self.bank_size):]]
+                        )
                 #id_reid_dict[id].reid_features = id_reid_dict[id].reid_features/id_count_dict[id]*(id_count_dict[id]-1)+instances[k][i].reid_features/id_count_dict[id]
         instances[k].track_ids = track_ids
 

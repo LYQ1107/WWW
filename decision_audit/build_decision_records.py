@@ -34,6 +34,8 @@ from gtr.config import add_gtr_config
 from gtr.data.custom_build_augmentation import build_custom_augmentation
 from gtr.data.gtr_dataset_dataloader import build_gtr_test_loader
 from gtr.data.gtr_dataset_mapper import GMTDatasetMapper
+from gtr.data.datasets.mot import _get_builtin_metadata, register_mot_instances
+from scipy.optimize import linear_sum_assignment
 
 
 HISTORY_FEATURE_NAMES = (
@@ -266,19 +268,57 @@ def build_cfg(config_file: Path, opts: list[str]):
     return cfg
 
 
+def register_scene_subset(dataset_name: str, scenes: set[str], output_root: Path) -> str:
+    """Register a train-only scene subset for parallel collection workers."""
+    source_path = Path("datasets/VisionTrack/annotations/train.json")
+    source = json.loads(source_path.read_text())
+    selected_images = [
+        image for image in source["images"] if scene_name(image["file_name"]) in scenes
+    ]
+    image_ids = {int(image["id"]) for image in selected_images}
+    payload = {
+        "images": selected_images,
+        "annotations": [
+            ann for ann in source["annotations"] if int(ann["image_id"]) in image_ids
+        ],
+        "categories": source["categories"],
+        # The released loader indexes this table with video_id - 1.  Retain
+        # metadata for every video while selecting no images outside scenes.
+        "videos": source["videos"],
+    }
+    path = output_root / "dataset_subsets" / f"{dataset_name}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload))
+    register_mot_instances(
+        dataset_name, _get_builtin_metadata(), str(path.resolve()),
+        "datasets/VisionTrack/images/train",
+    )
+    return dataset_name
+
+
 def collect(args) -> None:
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu)
-    os.environ.pop("GMT_ASSOC_REPLAY_LOAD", None)
-    os.environ["GMT_ASSOC_REPLAY_DUMP"] = "1"
+    replay_load = os.environ.get("GMT_DECISION_RECORDS_REPLAY_LOAD") == "1"
+    if replay_load:
+        os.environ["GMT_ASSOC_REPLAY_LOAD"] = "1"
+        os.environ.pop("GMT_ASSOC_REPLAY_DUMP", None)
+    else:
+        os.environ.pop("GMT_ASSOC_REPLAY_LOAD", None)
+        os.environ["GMT_ASSOC_REPLAY_DUMP"] = "1"
     os.environ["GMT_ASSOC_REPLAY_DIR"] = str((args.output / "observation_cache").resolve())
-    cfg = build_cfg(args.config, ["DATASETS.TEST", "('VISION_train',)",
+    dataset_name = "VISION_train"
+    if args.scenes:
+        dataset_name = register_scene_subset(
+            f"VISION_decision_collect_{args.gpu}", set(args.scenes), args.output
+        )
+    cfg = build_cfg(args.config, ["DATASETS.TEST", f"('{dataset_name}',)",
                                   "MODEL.WEIGHTS", str(args.weight),
                                   "OUTPUT_DIR", str(args.output)])
     model = build_model(cfg)
     model.eval()
     DetectionCheckpointer(model).resume_or_load(str(args.weight), resume=False)
     mapper = GMTDatasetMapper(cfg, False, augmentations=build_custom_augmentation(cfg, False))
-    loader = build_gtr_test_loader(cfg, "VISION_train", mapper)
+    loader = build_gtr_test_loader(cfg, dataset_name, mapper)
     recorder = OnlineDecisionRecorder(args.output)
     recorder.install(model)
     limit = args.scene_limit
@@ -320,11 +360,25 @@ def image_boxes(annotation: dict):
     return by_image
 
 
-def match_gt(box, anns):
-    if not anns:
-        return None
-    scored = sorted(((xyxy_iou(box, gtbox), gid) for gid, gtbox in anns), reverse=True)
-    return scored[0][1] if scored and scored[0][0] >= 0.5 else None
+def match_group_to_gt(rows: list[dict], anns: list[tuple[int, tuple[float, ...]]]) -> list[int | None]:
+    """One-to-one IoU matching for one current frame/view.
+
+    The supervision protocol specifies Hungarian IoU matching.  Keeping this
+    assignment at image level prevents two detections from receiving the same
+    GT identity merely because both overlap its box.
+    """
+    if not rows or not anns:
+        return [None] * len(rows)
+    matrix = np.asarray([
+        [xyxy_iou(row.get("bbox_xyxy", (0.0, 0.0, 0.0, 0.0)), gtbox) for _, gtbox in anns]
+        for row in rows
+    ], dtype=np.float64)
+    row_indices, col_indices = linear_sum_assignment(-matrix)
+    matched: list[int | None] = [None] * len(rows)
+    for row_index, col_index in zip(row_indices.tolist(), col_indices.tolist()):
+        if matrix[row_index, col_index] >= 0.5:
+            matched[row_index] = int(anns[col_index][0])
+    return matched
 
 
 def label(args) -> None:
@@ -353,12 +407,14 @@ def label(args) -> None:
             ordered_rows, key=lambda x: (x["frame_index"], x["view_index"])
         ):
             group = list(group_iter)
-            for row in group:
-                box = row.get("bbox_xyxy")
-                image_id = int(row.get("image_id", -1))
-                if image_id not in images:
-                    raise ValueError(f"record has no annotation image_id: {image_id}")
-                gid = match_gt(box, anns_by_image.get(image_id, [])) if box is not None else None
+            image_ids = {int(row.get("image_id", -1)) for row in group}
+            if len(image_ids) != 1:
+                raise ValueError(f"frame/view group contains multiple image IDs: {image_ids}")
+            image_id = next(iter(image_ids))
+            if image_id not in images:
+                raise ValueError(f"record has no annotation image_id: {image_id}")
+            matched_gids = match_group_to_gt(group, anns_by_image.get(image_id, []))
+            for row, gid in zip(group, matched_gids):
                 candidate_support = []
                 for candidate in row["candidates"]:
                     pid = int(candidate["global_id"])
@@ -424,6 +480,8 @@ def main():
     collect_ap.add_argument("--output", type=Path, required=True)
     collect_ap.add_argument("--gpu", default=os.environ.get("CUDA_VISIBLE_DEVICES", "5"))
     collect_ap.add_argument("--scene-limit", type=int, default=None)
+    collect_ap.add_argument("--scenes", nargs="+", default=None,
+                            help="optional train scene names for a parallel worker")
     collect_ap.set_defaults(func=collect)
     label_ap = sub.add_parser("label")
     label_ap.add_argument("--input", type=Path, required=True)
