@@ -43,7 +43,10 @@ def validate(cache_root: Path, annotation_path: Path, *, require_complete: bool)
             if str(payload.get("cache_version")) != CACHE_VERSION:
                 raise ValueError("cache version mismatch")
             boxes = payload["pred_boxes"]
-            scores = payload["scores"]
+            # The frozen payload stores the canonical score tensor under
+            # ``detection_scores``.  ``proposal_metadata['scores']`` is only
+            # an optional audit copy and is not guaranteed to be present.
+            scores = payload["detection_scores"]
             features = payload["reid_features"]
             if int(boxes.shape[0]) != int(scores.shape[0]) or int(boxes.shape[0]) != int(features.shape[0]):
                 raise ValueError("detection tensor length mismatch")
