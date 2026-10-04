@@ -55,10 +55,19 @@ def main() -> None:
         raise RuntimeError(f"refusing to overwrite existing inference output: {output}")
     output.mkdir(parents=True)
     log = output / "inference.log"
-    command = [
-        PYTHON,
-        "-u",
-        "test_net.py",
+    # A subprocess launched with ``cwd=ROOT`` puts the canonical repository
+    # directory ahead of PYTHONPATH, so merely prepending an overlay there
+    # does not guarantee that its gtr package wins.  Use the isolated runner
+    # when an overlay is requested; it inserts the overlay before executing
+    # test_net.py and records the actual source selected for the run.
+    if source_overlay is not None:
+        runner = source_overlay / "reproduction_tools/run_isolated_test_net.py"
+        if not runner.is_file():
+            raise FileNotFoundError(f"source overlay runner is missing: {runner}")
+        command = [PYTHON, "-u", str(runner)]
+    else:
+        command = [PYTHON, "-u", "test_net.py"]
+    command.extend([
         "--num-gpus",
         str(args.num_gpus),
         "--config-file",
@@ -69,7 +78,7 @@ def main() -> None:
         str(output),
         "DATASETS.TEST",
         "(" + repr(args.dataset) + ",)",
-    ]
+    ])
     if args.jev_mode is not None or args.jev_controller is not None or args.jev_trace is not None:
         mode = args.jev_mode or ("jev" if args.jev_controller is not None else "off")
         command.extend(["MODEL.JEV.ENABLED", "True", "MODEL.JEV.MODE", mode])
@@ -101,6 +110,7 @@ def main() -> None:
         environment["PYTHONPATH"] = ":".join(
             [str(source_overlay), str(ROOT), environment.get("PYTHONPATH", "")]
         )
+        environment["GMT_GTR_OVERLAY"] = str(source_overlay)
     environment.update(
         {
             "CUDA_VISIBLE_DEVICES": args.gpu,

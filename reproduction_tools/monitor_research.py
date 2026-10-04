@@ -29,7 +29,12 @@ STAGE1_VALIDATION = STAGE1_OUTPUT / "checkpoint_validation.json"
 STAGE2_FINAL = STAGE2_OUTPUT / "model_20000.pth"
 STATUS_DIR = ROOT / "outputs/research_monitor"
 STATUS_PATH = STATUS_DIR / "status.json"
-POST_PIPELINE_SCRIPT = ROOT / "reproduction_tools/chain_research_after_stage2.py"
+# The historical post-Stage2 supervisor targets the old proxy layout and must
+# never be started by this long-lived monitor.  The v2 supervisor is armed
+# explicitly only after its final-checkpoint paths and resumable gates have
+# been audited.
+POST_PIPELINE_SCRIPT = ROOT / "reproduction_tools/chain_research_after_stage2_v2.py"
+POST_PIPELINE_ARM = ROOT / "outputs/research_v2/ARM_FINAL_PIPELINE"
 POST_PIPELINE_DIR = ROOT / "outputs/research_pipeline"
 POST_PIPELINE_STATUS = POST_PIPELINE_DIR / "PIPELINE_COMPLETE.json"
 MAX_RESTARTS = 3
@@ -251,6 +256,10 @@ def post_pipeline_complete() -> bool:
 
 
 def start_post_pipeline() -> int:
+    if not POST_PIPELINE_SCRIPT.is_file():
+        raise FileNotFoundError(
+            f"v2 post-Stage2 supervisor is not armed: {POST_PIPELINE_SCRIPT}"
+        )
     POST_PIPELINE_DIR.mkdir(parents=True, exist_ok=True)
     log = (POST_PIPELINE_DIR / "monitor_restart.log").open("a", encoding="utf-8")
     process = subprocess.Popen(
@@ -288,7 +297,9 @@ def snapshot(
         if "outputs/stage2_single_gpu" in row["cmd"]
     ]
     stage2_supervisor = matching_processes("chain_stage2_single_gpu.sh")
-    post_processes = matching_processes("chain_research_after_stage2.py")
+    post_processes = matching_processes("chain_research_after_stage2.py") + matching_processes(
+        POST_PIPELINE_SCRIPT.name
+    )
     pipeline_status: Dict[str, object] = {}
     pipeline_status_path = POST_PIPELINE_DIR / "pipeline_status.json"
     if pipeline_status_path.is_file():
@@ -390,7 +401,17 @@ def main() -> None:
             # pipeline.  Do not launch it while the training process or its
             # original supervisor is still alive.
             if STAGE2_FINAL.exists() and not stage2 and not supervisor and not post_pipeline_complete():
-                post_processes = matching_processes("chain_research_after_stage2.py")
+                if not POST_PIPELINE_SCRIPT.is_file() or not POST_PIPELINE_ARM.is_file():
+                    last_error = (
+                        "post-Stage2 held: audited v2 supervisor is not armed; "
+                        "legacy supervisor will not be started"
+                    )
+                    write_status(snapshot(stage1_restarts, last_error, stage2_restarts, post_restarts))
+                    time.sleep(POLL_SECONDS)
+                    continue
+                post_processes = matching_processes("chain_research_after_stage2.py") + matching_processes(
+                    POST_PIPELINE_SCRIPT.name
+                )
                 if not post_processes:
                     if post_restarts >= MAX_RESTARTS:
                         last_error = "post-Stage2 pipeline exited; restart limit reached"
