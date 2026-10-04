@@ -10,6 +10,12 @@ from detectron2.structures import Boxes, pairwise_iou, Instances
 from detectron2.modeling.meta_arch.build import META_ARCH_REGISTRY
 from .custom_rcnn import CustomRCNN
 from ..roi_heads.custom_fast_rcnn import custom_fast_rcnn_inference
+from ..jev_runtime import (
+    DecisionTraceWriter,
+    JEVRuntimePolicy,
+    build_controller_from_checkpoint,
+)
+from ..jev_state import encode_state
 from tqdm import tqdm
 import time
 import copy
@@ -54,7 +60,31 @@ class GTRRCNN(CustomRCNN):
         self.bank_size = kwargs.pop('bank_size')
         self.with_bank = kwargs.pop('with_bank')
         self.multi_modal = kwargs.pop('multi_modal')
+        self.jev_enabled = bool(kwargs.pop('jev_enabled'))
+        self.jev_mode = str(kwargs.pop('jev_mode')).lower()
+        self.jev_state_dim = int(kwargs.pop('jev_state_dim'))
+        self.jev_max_reassociate = int(kwargs.pop('jev_max_reassociate'))
+        self.jev_trace_path = str(kwargs.pop('jev_trace_path'))
+        self.jev_controller_weights = str(kwargs.pop('jev_controller_weights'))
         super().__init__(**kwargs)
+        self.jev_policy = None
+        self.jev_trace_writer = None
+        self._jev_context = {}
+        if self.jev_enabled:
+            if self.jev_mode != 'off' and not self.jev_controller_weights:
+                raise ValueError(
+                    'MODEL.JEV.CONTROLLER_WEIGHTS is required for non-off JEV mode'
+                )
+            controller = None
+            if self.jev_mode != 'off':
+                controller = build_controller_from_checkpoint(
+                    self.jev_controller_weights, device=self.device
+                )
+            if self.jev_trace_path:
+                self.jev_trace_writer = DecisionTraceWriter(self.jev_trace_path)
+            self.jev_policy = JEVRuntimePolicy(
+                self.jev_mode, controller, self.jev_trace_writer
+            )
 
 
     @classmethod
@@ -76,7 +106,367 @@ class GTRRCNN(CustomRCNN):
         ret['bank_size'] = cfg.MODEL.ASSO_HEAD.BANK_SIZE
         ret['with_bank'] = cfg.MODEL.ASSO_HEAD.WITH_BANK
         ret['multi_modal'] = cfg.MULTI_MODAL
+        ret['jev_enabled'] = cfg.MODEL.JEV.ENABLED
+        ret['jev_mode'] = cfg.MODEL.JEV.MODE
+        ret['jev_state_dim'] = cfg.MODEL.JEV.STATE_DIM
+        ret['jev_max_reassociate'] = cfg.MODEL.JEV.MAX_REASSOCIATE
+        ret['jev_trace_path'] = cfg.MODEL.JEV.TRACE_PATH
+        ret['jev_controller_weights'] = cfg.MODEL.JEV.CONTROLLER_WEIGHTS
         return ret
+
+    def _jev_state(self, values):
+        """Encode finite online-only evidence for one typed decision."""
+        device = getattr(self, 'device', None)
+        if device is None:
+            device = next(self.parameters()).device
+        return encode_state(values, self.jev_state_dim).to(device)
+
+    def _jev_decide(self, state_values, question, legal_actions, off_action, context=None):
+        """Return the committed semantic action, preserving OFF semantics."""
+        if self.jev_policy is None:
+            return off_action
+        trace_context = dict(self._jev_context)
+        if context:
+            trace_context.update(context)
+        decision = self.jev_policy.decide(
+            self._jev_state(state_values),
+            question,
+            legal_actions,
+            off_action=off_action,
+            context=trace_context,
+        )
+        return decision.committed_action
+
+    @staticmethod
+    def _safe_unit(value):
+        value = float(value)
+        if not np.isfinite(value):
+            return 0.0
+        return max(0.0, min(1.0, value))
+
+    def _match_state_values(
+        self,
+        *,
+        accept_score,
+        reassociate_score,
+        threshold,
+        candidate_count,
+        candidate_entropy,
+        track_count,
+        track_age,
+        frame_index,
+        window_length,
+        view_index,
+        has_old_track=False,
+        current_is_unmatched=False,
+        memory_count=0,
+        track_score=0.0,
+    ):
+        accept_score = self._safe_unit(accept_score)
+        reassociate_score = self._safe_unit(reassociate_score)
+        scores = [accept_score, reassociate_score]
+        top1, top2 = sorted(scores, reverse=True)
+        return {
+            'accept_score': accept_score,
+            'reassociate_score': reassociate_score,
+            'write_memory_score': self._safe_unit(track_score),
+            'reactivate_score': reassociate_score,
+            'accept_threshold': self._safe_unit(threshold),
+            'unmatched_mass': self._safe_unit(1.0 - max(scores)),
+            'top1_top2_margin': self._safe_unit(top1 - top2),
+            'candidate_count_norm': self._safe_unit(candidate_count / 16.0),
+            'candidate_entropy': self._safe_unit(candidate_entropy),
+            'track_count_norm': self._safe_unit(track_count / 128.0),
+            'track_age_norm': self._safe_unit(track_age / 128.0),
+            'track_hits_norm': self._safe_unit(track_age / 128.0),
+            'memory_count_norm': self._safe_unit(memory_count / 64.0),
+            'track_score_mean': self._safe_unit(track_score),
+            'track_score_std': 0.0,
+            'frame_index_norm': self._safe_unit(frame_index / max(1.0, window_length)),
+            'window_length_norm': self._safe_unit(window_length / 32.0),
+            'view_index_norm': self._safe_unit(view_index / 8.0),
+            'current_is_unmatched': float(bool(current_is_unmatched)),
+            'has_old_track': float(bool(has_old_track)),
+            'can_reassociate': float(self.jev_max_reassociate > 0),
+            'memory_enabled': float(bool(self.with_bank)),
+            'with_iou': float(bool(self.with_iou)),
+            'not_mult_thresh': float(bool(self.not_mult_thresh)),
+            'state_validity_flag': 1.0,
+        }
+
+    @staticmethod
+    def _jev_tracker_state(
+        *,
+        id_count=0,
+        id_count_dict=None,
+        id_reid_dict=None,
+        active_ids=None,
+        memory_ids=None,
+    ):
+        """Serialize the mutable GMT containers at a decision boundary.
+
+        This snapshot is deliberately JSON-sized: it records container
+        membership, hit counts, memory lengths and stale-bank membership, but
+        never future GT or evaluator output.  Offline branch runners use it
+        to restore the same pre-action tracker state before applying each
+        typed action.
+        """
+        id_count_dict = id_count_dict or {}
+        id_reid_dict = id_reid_dict or {}
+        active = sorted({int(value) for value in (active_ids or [])})
+        memories = {
+            str(int(key)): int(len(value))
+            for key, value in id_reid_dict.items()
+        }
+        hits = {str(int(key)): int(value) for key, value in id_count_dict.items()}
+        return {
+            'id_count': int(id_count),
+            'active_track_ids': active,
+            'track_hits': hits,
+            'memory_lengths': memories,
+            'memory_track_ids': sorted(
+                {int(value) for value in (memory_ids or [])}
+            ),
+            'possible_memory_ids': sorted(int(value) for value in poss_ids.poss_ids),
+            'stale_ids': sorted(int(value) for value in old_ids.old_ids),
+            'old_reid_count': int(
+                sum(len(value) for value in old_reids.old_reids)
+                if old_reids.old_reids else 0
+            ),
+        }
+
+    def _apply_jev_match_decisions(
+        self,
+        track_ids,
+        traj_score,
+        unique_ids,
+        match_i,
+        match_j,
+        threshold,
+        *,
+        view=0,
+        frame_index=0,
+        window_length=1,
+        detection_boxes=None,
+        detection_scores=None,
+        detection_image_size=None,
+        tracker_state=None,
+    ):
+        """Gate GMT's ID proposal without changing GMT candidate ranking."""
+        if self.jev_policy is None:
+            return track_ids
+        n_k = int(traj_score.shape[0])
+        pair_by_row = {int(i): int(j) for i, j in zip(match_i, match_j)}
+        original = track_ids.clone()
+        # OFF is an instrumentation mode, not a second assignment
+        # implementation.  It still emits typed traces, but must return the
+        # exact IDs produced by the original GMT threshold branch so the
+        # native-OFF equivalence gate can compare a real golden stream.
+        preserve_off_ids = (
+            self.jev_policy is not None and getattr(self.jev_policy, 'mode', '') == 'off'
+        )
+        reserved = {
+            int(unique_ids[j].item())
+            for i, j in zip(match_i, match_j)
+            if original[int(i)].item() >= 0
+        }
+        result = track_ids.new_full((n_k,), -1)
+        used = set()
+        for row in range(n_k):
+            row_context = {
+                'decision_scope': 'match',
+                'detection_index': int(row),
+                'proposal_track_id': None,
+                'alternate_track_id': None,
+            }
+            if detection_boxes is not None and row < len(detection_boxes):
+                row_context['bbox_xyxy'] = [
+                    float(value) for value in detection_boxes[row].detach().cpu().tolist()
+                ]
+            if detection_scores is not None and row < len(detection_scores):
+                row_context['detection_score'] = float(detection_scores[row].detach().cpu().item())
+            if detection_image_size is not None:
+                row_context['model_image_size'] = [
+                    int(detection_image_size[0]), int(detection_image_size[1])
+                ]
+            if tracker_state is not None:
+                row_context['tracker_state_before'] = copy.deepcopy(tracker_state)
+            first_j = pair_by_row.get(row)
+            if first_j is None:
+                self._jev_decide(
+                    self._match_state_values(
+                        accept_score=0.0,
+                        reassociate_score=0.0,
+                        threshold=threshold,
+                        candidate_count=0,
+                        candidate_entropy=0.0,
+                        track_count=len(unique_ids),
+                        track_age=0,
+                        frame_index=frame_index,
+                        window_length=window_length,
+                        view_index=view,
+                        current_is_unmatched=True,
+                    ),
+                    'MATCH_DECISION',
+                    ['START_NEW'],
+                    'START_NEW',
+                    context=row_context,
+                )
+                continue
+            row_scores = traj_score[row]
+            order = torch.argsort(row_scores, descending=True).tolist()
+            first_id = int(unique_ids[first_j].item())
+            first_score = float(row_scores[first_j].item())
+            second_j = next(
+                (j for j in order if int(unique_ids[j].item()) != first_id), None
+            )
+            second_score = float(row_scores[second_j].item()) if second_j is not None else 0.0
+            row_context['candidate_track_ids'] = [
+                int(unique_ids[index].item()) for index in order
+            ]
+            row_context['candidate_scores'] = [
+                float(row_scores[index].item()) for index in order
+            ]
+            entropy = 0.0
+            probabilities = torch.softmax(row_scores, dim=0)
+            entropy = float((-(probabilities * (probabilities.clamp_min(1e-8).log())).sum()).item())
+            off_action = 'ACCEPT_CURRENT' if original[row].item() >= 0 else 'START_NEW'
+            legal = ['ACCEPT_CURRENT', 'START_NEW']
+            if self.jev_max_reassociate > 0 and second_j is not None:
+                legal.insert(1, 'REASSOCIATE')
+            action = self._jev_decide(
+                self._match_state_values(
+                    accept_score=first_score,
+                    reassociate_score=second_score,
+                    threshold=threshold,
+                    candidate_count=len(unique_ids),
+                    candidate_entropy=entropy,
+                    track_count=len(unique_ids),
+                    track_age=0,
+                    frame_index=frame_index,
+                    window_length=window_length,
+                    view_index=view,
+                    current_is_unmatched=original[row].item() < 0,
+                    memory_count=0,
+                    track_score=first_score,
+                ),
+                'MATCH_DECISION',
+                legal,
+                off_action,
+                context={
+                    **row_context,
+                    'proposal_track_id': first_id,
+                    'alternate_track_id': int(unique_ids[second_j].item()) if second_j is not None else None,
+                },
+            )
+            selected = None
+            if action == 'ACCEPT_CURRENT' and first_id not in used:
+                selected = first_id
+            elif action == 'REASSOCIATE' and second_j is not None:
+                for candidate_j in order:
+                    candidate_id = int(unique_ids[candidate_j].item())
+                    if candidate_id == first_id or candidate_id in used or candidate_id in reserved:
+                        continue
+                    candidate_score = float(row_scores[candidate_j].item())
+                    second_off = (
+                        'ACCEPT_CURRENT' if candidate_score > float(threshold) else 'START_NEW'
+                    )
+                    second_action = self._jev_decide(
+                        self._match_state_values(
+                            accept_score=candidate_score,
+                            reassociate_score=0.0,
+                            threshold=threshold,
+                            candidate_count=len(unique_ids),
+                            candidate_entropy=entropy,
+                            track_count=len(unique_ids),
+                            track_age=0,
+                            frame_index=frame_index,
+                            window_length=window_length,
+                            view_index=view,
+                            current_is_unmatched=True,
+                            track_score=candidate_score,
+                        ),
+                        'MATCH_DECISION',
+                        ['ACCEPT_CURRENT', 'START_NEW'],
+                        second_off,
+                        context={
+                            'decision_scope': 'match_reassociate_validation',
+                            'detection_index': int(row),
+                            'proposal_track_id': candidate_id,
+                            'rejected_track_id': first_id,
+                        },
+                    )
+                    if second_action == 'ACCEPT_CURRENT':
+                        selected = candidate_id
+                    break
+            if selected is not None:
+                result[row] = selected
+                used.add(selected)
+        return original if preserve_off_ids else result
+
+    def _jev_memory_action(self, *, score, threshold, track_count, memory_count, view, frame_index, window_length, track_id=None, detection_index=None, bbox=None, tracker_state=None):
+        memory_context = {
+            'decision_scope': 'memory',
+            'track_id': int(track_id) if track_id is not None else None,
+            'detection_index': int(detection_index) if detection_index is not None else None,
+        }
+        if bbox is not None:
+            memory_context['bbox_xyxy'] = [float(value) for value in bbox.detach().cpu().tolist()]
+        if tracker_state is not None:
+            memory_context['tracker_state_before'] = copy.deepcopy(tracker_state)
+        return self._jev_decide(
+            self._match_state_values(
+                accept_score=score,
+                reassociate_score=0.0,
+                threshold=threshold,
+                candidate_count=1,
+                candidate_entropy=0.0,
+                track_count=track_count,
+                track_age=memory_count,
+                frame_index=frame_index,
+                window_length=window_length,
+                view_index=view,
+                memory_count=memory_count,
+                track_score=score,
+            ),
+            'MEMORY_DECISION',
+            ['WRITE_MEMORY', 'SKIP_MEMORY'],
+            'WRITE_MEMORY',
+            context=memory_context,
+        )
+
+    def _jev_reactivation_action(self, *, score, threshold, track_count, memory_count, view, frame_index, window_length, track_id=None, detection_index=None, bbox=None, tracker_state=None):
+        reactivate_context = {
+            'decision_scope': 'reactivation',
+            'track_id': int(track_id) if track_id is not None else None,
+            'detection_index': int(detection_index) if detection_index is not None else None,
+        }
+        if bbox is not None:
+            reactivate_context['bbox_xyxy'] = [float(value) for value in bbox.detach().cpu().tolist()]
+        if tracker_state is not None:
+            reactivate_context['tracker_state_before'] = copy.deepcopy(tracker_state)
+        return self._jev_decide(
+            self._match_state_values(
+                accept_score=0.0,
+                reassociate_score=score,
+                threshold=threshold,
+                candidate_count=1,
+                candidate_entropy=0.0,
+                track_count=track_count,
+                track_age=memory_count,
+                frame_index=frame_index,
+                window_length=window_length,
+                view_index=view,
+                has_old_track=True,
+                current_is_unmatched=True,
+                memory_count=memory_count,
+                track_score=score,
+            ),
+            'REACTIVATION_DECISION',
+            ['REACTIVATE_OLD', 'START_NEW'],
+            'REACTIVATE_OLD' if score > threshold else 'START_NEW',
+            context=reactivate_context,
+        )
 
 
     def forward(self, batched_inputs):
@@ -172,6 +562,10 @@ class GTRRCNN(CustomRCNN):
         poss_ids.poss_ids = set()
         old_ids.old_ids = set()
         old_reids.old_reids = []
+        self._jev_context = {
+            'video_id': int(batched_inputs[0].get('video_id', -1)),
+            'view_num': int(view_num),
+        }
         view_num = batched_inputs[0]['view_num']
         view_frames = int(len(batched_inputs)/view_num)
         instances = []
@@ -180,6 +574,7 @@ class GTRRCNN(CustomRCNN):
         id_reid_dict = dict()
         memory_bank = []
         for frame_id in tqdm(range(view_frames)):
+            self._jev_context['frame'] = int(frame_id)
             batched_inputs_divo = []
             st = frame_id
             instances_wo_id = []
@@ -331,6 +726,28 @@ class GTRRCNN(CustomRCNN):
             if traj_score[i, j] > thresh:
                 track_ids[i] = unique_ids[j]
 
+        if self.jev_policy is not None:
+            track_ids = self._apply_jev_match_decisions(
+                track_ids,
+                traj_score,
+                unique_ids,
+                match_i,
+                match_j,
+                self.overlap_thresh,
+                frame_index=k,
+                window_length=max(1, T),
+                detection_boxes=instances[k].pred_boxes.tensor,
+                detection_scores=instances[k].scores if instances[k].has('scores') else instances[k].objectness_logits,
+                detection_image_size=instances[k].image_size,
+                tracker_state=self._jev_tracker_state(
+                    id_count=id_count,
+                    id_count_dict=id_count_dict,
+                    id_reid_dict=id_reid_dict,
+                    active_ids=unique_ids.tolist(),
+                    memory_ids=poss_ids.poss_ids,
+                ),
+            )
+
         for i in range(n_k):
             id =  track_ids[i].item()
             if track_ids[i] < 0:
@@ -342,8 +759,28 @@ class GTRRCNN(CustomRCNN):
             else :
                 id_count_dict[id] += 1
                 instances[k].track_ids = track_ids#修改
-                instance_cat = [id_reid_dict[id] , instances[k][i]]
-                id_reid_dict[id] = Instances.cat(instance_cat)
+                memory_action = self._jev_memory_action(
+                    score=float(traj_score[i].max().item()) if traj_score.shape[1] else 0.0,
+                    threshold=self.overlap_thresh,
+                    track_count=len(unique_ids),
+                    memory_count=len(id_reid_dict[id]),
+                    view=0,
+                    frame_index=k,
+                    window_length=max(1, T),
+                    track_id=id,
+                    detection_index=i,
+                    bbox=instances[k].pred_boxes.tensor[i],
+                    tracker_state=self._jev_tracker_state(
+                        id_count=id_count,
+                        id_count_dict=id_count_dict,
+                        id_reid_dict=id_reid_dict,
+                        active_ids=unique_ids.tolist(),
+                        memory_ids=poss_ids.poss_ids,
+                    ),
+                )
+                if memory_action == 'WRITE_MEMORY':
+                    instance_cat = [id_reid_dict[id] , instances[k][i]]
+                    id_reid_dict[id] = Instances.cat(instance_cat)
                 #id_reid_dict[id].reid_features = id_reid_dict[id].reid_features/id_count_dict[id]*(id_count_dict[id]-1)+instances[k][i].reid_features/id_count_dict[id]
         
         instances[k].track_ids = track_ids
@@ -457,6 +894,28 @@ class GTRRCNN(CustomRCNN):
                 if not (self.not_mult_thresh) else self.overlap_thresh
             if traj_score[i, j] > thresh:
                 track_ids[i] = unique_ids[j]
+        if self.jev_policy is not None:
+            track_ids = self._apply_jev_match_decisions(
+                track_ids,
+                traj_score,
+                unique_ids,
+                match_i,
+                match_j,
+                self.overlap_thresh,
+                view=view,
+                frame_index=k // max(1, view_num),
+                window_length=max(1, T // max(1, view_num)),
+                detection_boxes=instances[k].pred_boxes.tensor,
+                detection_scores=instances[k].scores if instances[k].has('scores') else instances[k].objectness_logits,
+                detection_image_size=instances[k].image_size,
+                tracker_state=self._jev_tracker_state(
+                    id_count=id_count,
+                    id_count_dict=id_count_dict,
+                    id_reid_dict=id_reid_dict,
+                    active_ids=unique_ids.tolist(),
+                    memory_ids=poss_ids.poss_ids,
+                ),
+            )
         if self.with_bank:
             flag = False
             #a = Instances(instances[0].image_size)
@@ -488,11 +947,31 @@ class GTRRCNN(CustomRCNN):
                 id_reid_dict[id_count] = instances[k][i]
             else :
                 id_count_dict[id] += 1
-                if id_count_dict[id]==self.bank_size+1:
+                memory_action = self._jev_memory_action(
+                    score=float(traj_score[i].max().item()) if traj_score.shape[1] else 0.0,
+                    threshold=self.overlap_thresh,
+                    track_count=len(unique_ids),
+                    memory_count=len(id_reid_dict[id]),
+                    view=view,
+                    frame_index=k // max(1, view_num),
+                    window_length=max(1, T // max(1, view_num)),
+                    track_id=id,
+                    detection_index=i,
+                    bbox=instances[k].pred_boxes.tensor[i],
+                    tracker_state=self._jev_tracker_state(
+                        id_count=id_count,
+                        id_count_dict=id_count_dict,
+                        id_reid_dict=id_reid_dict,
+                        active_ids=unique_ids.tolist(),
+                        memory_ids=poss_ids.poss_ids,
+                    ),
+                )
+                if memory_action == 'WRITE_MEMORY':
+                    instance_cat = [id_reid_dict[id] , instances[k][i]]
+                    id_reid_dict[id] = Instances.cat(instance_cat)
+                if len(id_reid_dict[id])==self.bank_size+1:
                     poss_ids.poss_ids.add(id)
                 instances[k].track_ids = track_ids#修改
-                instance_cat = [id_reid_dict[id] , instances[k][i]]
-                id_reid_dict[id] = Instances.cat(instance_cat)
                 #id_reid_dict[id].reid_features = id_reid_dict[id].reid_features/id_count_dict[id]*(id_count_dict[id]-1)+instances[k][i].reid_features/id_count_dict[id]
         instances[k].track_ids = track_ids
 
@@ -509,7 +988,7 @@ class GTRRCNN(CustomRCNN):
         memory_ids=[]
         for id in poss_ids.poss_ids.copy():
             sum_reid = 0
-            if id not in unique_ids:
+            if id not in unique_ids and len(id_reid_dict.get(id, [])) >= thred:
                 memory_ids.append(id)
                 #old_ids.old_ids.add(id)
                 poss_ids.poss_ids.remove(id)
@@ -563,15 +1042,38 @@ class GTRRCNN(CustomRCNN):
         for i, j in zip(match_i, match_j):
             thresh = self.thred_bank * id_inds[:, j].sum() \
                 if not (self.not_mult_thresh) else self.thred_bank
-            if traj_score[i, j] > thresh:
-                track_ids[i] = unique_ids[j]
-                #old_ids.old_ids.remove(unique_ids[j].item())
-                poss_ids.poss_ids.add(unique_ids[j].item())
-                a = len(old_reids.old_reids[0])
-                for i in range(a):
-                    if old_reids.old_reids[0][i].track_ids.item() ==unique_ids[j].item():
-                        old_reids.old_reids = [Instances.cat([old_reids.old_reids[0][:i],old_reids.old_reids[0][i+1:]])]
-                        break
+            # A traced/active JEV controller must see the typed reactivation
+            # question even when the legacy gate would reject the stale ID;
+            # OFF mode's helper still returns the original threshold action.
+            if self.jev_policy is not None or traj_score[i, j] > thresh:
+                action = self._jev_reactivation_action(
+                    score=float(traj_score[i, j].item()),
+                    threshold=thresh,
+                    track_count=len(unique_ids),
+                    memory_count=int(id_count_dict.get(int(unique_ids[j].item()), 0)),
+                    view=0,
+                    frame_index=k,
+                    window_length=max(1, T),
+                    track_id=int(unique_ids[j].item()),
+                    detection_index=int(i),
+                    bbox=instances[k].pred_boxes.tensor[i],
+                    tracker_state=self._jev_tracker_state(
+                        id_count=max(id_count_dict.keys(), default=0),
+                        id_count_dict=id_count_dict,
+                        id_reid_dict={},
+                        active_ids=unique_ids.tolist(),
+                        memory_ids=poss_ids.poss_ids,
+                    ),
+                )
+                if action == 'REACTIVATE_OLD':
+                    track_ids[i] = unique_ids[j]
+                    # old_ids.old_ids.remove(unique_ids[j].item())
+                    poss_ids.poss_ids.add(unique_ids[j].item())
+                    a = len(old_reids.old_reids[0])
+                    for old_index in range(a):
+                        if old_reids.old_reids[0][old_index].track_ids.item() == unique_ids[j].item():
+                            old_reids.old_reids = [Instances.cat([old_reids.old_reids[0][:old_index], old_reids.old_reids[0][old_index+1:]])]
+                            break
 
        # assert len(track_ids) == len(torch.unique(track_ids)), track_ids
         return track_ids

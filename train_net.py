@@ -83,11 +83,15 @@ def do_train(cfg, model, resume=False):
         model, cfg.OUTPUT_DIR, optimizer=optimizer, scheduler=scheduler
     )
 
-    start_iter = (
-        checkpointer.resume_or_load(
-            cfg.MODEL.WEIGHTS, resume=resume,
-            ).get("iteration", -1) + 1
+    checkpoint_state = checkpointer.resume_or_load(
+        cfg.MODEL.WEIGHTS, resume=resume,
     )
+    # The loop below increments its local index before the optimizer step.
+    # Checkpoints are written after that step, so resuming must begin at the
+    # saved index (not saved_index + 1) to avoid skipping one update.
+    start_iter = checkpoint_state.get("iteration", -1)
+    if start_iter < 0:
+        start_iter = 0
     if not resume:
         start_iter = 0
     max_iter = cfg.SOLVER.MAX_ITER if cfg.SOLVER.TRAIN_ITER < 0 else cfg.SOLVER.TRAIN_ITER
@@ -158,7 +162,11 @@ def do_train(cfg, model, resume=False):
                 for writer in writers:
                     writer.write()
             if iteration>0 and iteration%500==0:
-                checkpointer.save("model_{}".format(iteration))
+                # Store the loop position explicitly.  The custom training loop
+                # does not use PeriodicCheckpointer, so without this field
+                # --resume restores weights/optimizer but restarts the local
+                # iteration counter at zero.
+                checkpointer.save("model_{}".format(iteration), iteration=iteration)
         total_time = time.perf_counter() - start_time
         logger.info(
             "Total training time: {}".format(

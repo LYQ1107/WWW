@@ -1,0 +1,12 @@
+{
+  "source": "/data1/liuyeqiang/WWW/checkpoints/backbone/CH_FPN_1x.pth",
+  "source_sha256": "c60ae4dc51882b230a39f9783121bbf6f31651c63341f4353c46e5fcda1053e6",
+  "derived": "/data1/liuyeqiang/WWW/checkpoints/backbone/CH_FPN_1x_key_adapted.pth",
+  "derived_sha256": "5368aae363477bf1ad71c5f643ef3e776187c5b0effc1753ed4e6cace3ad9f20",
+  "mapping": {
+    "proposal_generator.centernet_head.bbox_tower.9.weight": "proposal_generator.centernet_head.bbox_tower.9.conv.weight",
+    "proposal_generator.centernet_head.bbox_tower.9.bias": "proposal_generator.centernet_head.bbox_tower.9.conv.bias"
+  },
+  "tensor_values": "Every model tensor bitwise unchanged; names only",
+  "reason": "Official checkpoint uses plain-convolution names; configured DFConv2d nests these same-shaped parameters under conv. Default loader drops both tensors, causing near-empty proposals and NaN on tested training clip. Offset initialization remains official."
+}
