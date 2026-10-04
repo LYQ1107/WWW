@@ -434,4 +434,17 @@ class FrozenEvidenceGMTBranchRunner:
             }
             if digest_state(base_state.snapshot()) != source_digest:
                 raise AssertionError(f"counterfactual action mutated source state: {action}")
+
+        # ``sample_weight`` belongs to the decision record, not to an
+        # individual action: the training target compares all legal actions
+        # from the same state.  If one branch has no future evidence, the
+        # decision cannot provide a common supervised weight.  Conservatively
+        # mark the whole decision uninformative instead of silently weighting
+        # only part of the action set.
+        weights = [float(outcome.get("sample_weight", 1.0)) for outcome in results.values()]
+        if weights and min(weights) != max(weights):
+            common_weight = min(weights)
+            for outcome in results.values():
+                outcome["sample_weight"] = common_weight
+                outcome["informative"] = bool(common_weight > 0.0)
         return results

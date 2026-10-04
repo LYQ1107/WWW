@@ -40,6 +40,12 @@
 
 The stored state must not contain future GT. `uses_future_gt=true` is permitted only in the offline counterfactual builder and labeler; strict online consumers must reject such records.
 
+`sample_weight` is a decision-level field: every legal action in one record
+must use the same weight because the target compares those actions from one
+state. If any branch lacks enough future evidence to be scored, the branch
+runner marks the whole decision with weight zero instead of training on a
+partially observed action set.
+
 ## State representation
 
 ### Observation
