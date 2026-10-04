@@ -1,4 +1,5 @@
 import cv2
+import os
 import torch
 from scipy.optimize import linear_sum_assignment
 import torch.nn.functional as F
@@ -16,6 +17,8 @@ from ..jev_runtime import (
     build_controller_from_checkpoint,
 )
 from ..jev_state import encode_state
+from ..jev_assignment import constrained_hungarian
+from ..jev_perception_cache import FrozenPerceptionCacheWriter
 from tqdm import tqdm
 import time
 import copy
@@ -70,6 +73,10 @@ class GTRRCNN(CustomRCNN):
         self.jev_policy = None
         self.jev_trace_writer = None
         self._jev_context = {}
+        cache_path = os.environ.get('JEV_PERCEPTION_CACHE_PATH', '').strip()
+        self.jev_perception_cache = (
+            FrozenPerceptionCacheWriter(cache_path) if cache_path else None
+        )
         if self.jev_enabled:
             if self.jev_mode != 'off' and not self.jev_controller_weights:
                 raise ValueError(
@@ -139,6 +146,7 @@ class GTRRCNN(CustomRCNN):
 
     @staticmethod
     def _safe_unit(value):
+        """Clip only values that are semantically probabilities."""
         value = float(value)
         if not np.isfinite(value):
             return 0.0
@@ -161,11 +169,18 @@ class GTRRCNN(CustomRCNN):
         current_is_unmatched=False,
         memory_count=0,
         track_score=0.0,
+        track_length=1.0,
+        score_variance=0.0,
     ):
-        accept_score = self._safe_unit(accept_score)
-        reassociate_score = self._safe_unit(reassociate_score)
+        raw_accept_score = float(accept_score)
+        raw_reassociate_score = float(reassociate_score)
+        raw_threshold = float(threshold)
+        accept_score = self._safe_unit(raw_accept_score)
+        reassociate_score = self._safe_unit(raw_reassociate_score)
         scores = [accept_score, reassociate_score]
         top1, top2 = sorted(scores, reverse=True)
+        safe_length = max(1.0, float(track_length))
+        safe_threshold = raw_threshold if abs(raw_threshold) > 1e-8 else 1e-8
         return {
             'accept_score': accept_score,
             'reassociate_score': reassociate_score,
@@ -192,6 +207,15 @@ class GTRRCNN(CustomRCNN):
             'with_iou': float(bool(self.with_iou)),
             'not_mult_thresh': float(bool(self.not_mult_thresh)),
             'state_validity_flag': 1.0,
+            # Accumulated association evidence is not a probability.  Keep
+            # raw and transformed views instead of saturating it at one.
+            'raw_traj_score': raw_accept_score,
+            'mean_traj_score': raw_accept_score / safe_length,
+            'log1p_traj_score': float(np.log1p(max(0.0, raw_accept_score))),
+            'score_minus_threshold': raw_accept_score - raw_threshold,
+            'score_over_threshold': raw_accept_score / safe_threshold,
+            'track_length_norm': self._safe_unit(safe_length / 128.0),
+            'raw_score_variance': max(0.0, float(score_variance)),
         }
 
     @staticmethod
@@ -251,11 +275,18 @@ class GTRRCNN(CustomRCNN):
         detection_scores=None,
         detection_image_size=None,
         tracker_state=None,
+        track_lengths=None,
     ):
-        """Gate GMT's ID proposal without changing GMT candidate ranking."""
+        """Apply typed actions around one global GMT assignment proposal.
+
+        REASSOCIATE rejects the current edge, masks all action-incompatible
+        edges, and triggers exactly one full constrained Hungarian solve.  It
+        never selects an identity by scanning the second-ranked candidates.
+        """
         if self.jev_policy is None:
             return track_ids
         n_k = int(traj_score.shape[0])
+        n_tracks = int(traj_score.shape[1])
         pair_by_row = {int(i): int(j) for i, j in zip(match_i, match_j)}
         original = track_ids.clone()
         # OFF is an instrumentation mode, not a second assignment
@@ -265,19 +296,31 @@ class GTRRCNN(CustomRCNN):
         preserve_off_ids = (
             self.jev_policy is not None and getattr(self.jev_policy, 'mode', '') == 'off'
         )
-        reserved = {
-            int(unique_ids[j].item())
-            for i, j in zip(match_i, match_j)
-            if original[int(i)].item() >= 0
-        }
-        result = track_ids.new_full((n_k,), -1)
-        used = set()
+        if track_lengths is None:
+            track_lengths = torch.ones(
+                n_tracks, dtype=traj_score.dtype, device=traj_score.device
+            )
+        else:
+            track_lengths = torch.as_tensor(
+                track_lengths, dtype=traj_score.dtype, device=traj_score.device
+            ).reshape(-1)
+            if track_lengths.numel() != n_tracks:
+                raise ValueError(
+                    "track_lengths must have one value per unique track: "
+                    f"{track_lengths.numel()} != {n_tracks}"
+                )
+
+        first_actions = {}
+        accepted_rows = {}
+        reassociate_rows = []
         for row in range(n_k):
             row_context = {
                 'decision_scope': 'match',
                 'detection_index': int(row),
                 'proposal_track_id': None,
                 'alternate_track_id': None,
+                'frame': int(frame_index),
+                'view': int(view),
             }
             if detection_boxes is not None and row < len(detection_boxes):
                 row_context['bbox_xyxy'] = [
@@ -293,6 +336,7 @@ class GTRRCNN(CustomRCNN):
                 row_context['tracker_state_before'] = copy.deepcopy(tracker_state)
             first_j = pair_by_row.get(row)
             if first_j is None:
+                first_actions[row] = 'START_NEW'
                 self._jev_decide(
                     self._match_state_values(
                         accept_score=0.0,
@@ -349,6 +393,8 @@ class GTRRCNN(CustomRCNN):
                     current_is_unmatched=original[row].item() < 0,
                     memory_count=0,
                     track_score=first_score,
+                    track_length=float(track_lengths[first_j].item()),
+                    score_variance=float(row_scores.var().item()) if row_scores.numel() > 1 else 0.0,
                 ),
                 'MATCH_DECISION',
                 legal,
@@ -359,49 +405,88 @@ class GTRRCNN(CustomRCNN):
                     'alternate_track_id': int(unique_ids[second_j].item()) if second_j is not None else None,
                 },
             )
-            selected = None
-            if action == 'ACCEPT_CURRENT' and first_id not in used:
-                selected = first_id
+            first_actions[row] = action
+            if action == 'ACCEPT_CURRENT':
+                accepted_rows[row] = first_j
             elif action == 'REASSOCIATE' and second_j is not None:
-                for candidate_j in order:
-                    candidate_id = int(unique_ids[candidate_j].item())
-                    if candidate_id == first_id or candidate_id in used or candidate_id in reserved:
-                        continue
-                    candidate_score = float(row_scores[candidate_j].item())
-                    second_off = (
-                        'ACCEPT_CURRENT' if candidate_score > float(threshold) else 'START_NEW'
-                    )
-                    second_action = self._jev_decide(
-                        self._match_state_values(
-                            accept_score=candidate_score,
-                            reassociate_score=0.0,
-                            threshold=threshold,
-                            candidate_count=len(unique_ids),
-                            candidate_entropy=entropy,
-                            track_count=len(unique_ids),
-                            track_age=0,
-                            frame_index=frame_index,
-                            window_length=window_length,
-                            view_index=view,
-                            current_is_unmatched=True,
-                            track_score=candidate_score,
-                        ),
-                        'MATCH_DECISION',
-                        ['ACCEPT_CURRENT', 'START_NEW'],
-                        second_off,
-                        context={
-                            'decision_scope': 'match_reassociate_validation',
-                            'detection_index': int(row),
-                            'proposal_track_id': candidate_id,
-                            'rejected_track_id': first_id,
-                        },
-                    )
-                    if second_action == 'ACCEPT_CURRENT':
-                        selected = candidate_id
-                    break
-            if selected is not None:
-                result[row] = selected
-                used.add(selected)
+                reassociate_rows.append(row)
+
+        if preserve_off_ids:
+            return original
+
+        result = track_ids.new_full((n_k,), -1)
+        for row, col in accepted_rows.items():
+            result[row] = unique_ids[col]
+        if not reassociate_rows:
+            return result
+
+        # Only rejected proposal edges are masked.  The solve receives the
+        # complete matrix, so an accepted row can move when another row's
+        # reassociation changes the globally optimal matching.  START_NEW is
+        # the one explicit no-edge constraint carried into round two.
+        banned_edges = set()
+        for row in range(n_k):
+            if first_actions.get(row) == 'START_NEW':
+                banned_edges.update((row, col) for col in range(n_tracks))
+        for row in reassociate_rows:
+            first_j = pair_by_row[row]
+            banned_edges.add((row, first_j))
+
+        second_pairs = constrained_hungarian(traj_score, banned_edges)
+        second_by_row = {row: col for row, col in second_pairs}
+        second_rows = [
+            row for row, action in first_actions.items()
+            if action in {'ACCEPT_CURRENT', 'REASSOCIATE'}
+        ]
+        result = track_ids.new_full((n_k,), -1)
+        used = set()
+        for row in second_rows:
+            second_j = second_by_row.get(row)
+            if second_j is None:
+                continue
+            candidate_id = int(unique_ids[second_j].item())
+            candidate_score = float(traj_score[row, second_j].item())
+            second_off = (
+                'ACCEPT_CURRENT' if candidate_score > float(threshold) else 'START_NEW'
+            )
+            second_action = self._jev_decide(
+                self._match_state_values(
+                    accept_score=candidate_score,
+                    reassociate_score=0.0,
+                    threshold=threshold,
+                    candidate_count=len(unique_ids),
+                    candidate_entropy=0.0,
+                    track_count=len(unique_ids),
+                    track_age=0,
+                    frame_index=frame_index,
+                    window_length=window_length,
+                    view_index=view,
+                    current_is_unmatched=(
+                        first_actions[row] == 'REASSOCIATE' or original[row].item() < 0
+                    ),
+                    track_score=candidate_score,
+                    track_length=float(track_lengths[second_j].item()),
+                    score_variance=float(traj_score[row].var().item())
+                    if traj_score[row].numel() > 1 else 0.0,
+                ),
+                'MATCH_DECISION',
+                ['ACCEPT_CURRENT', 'START_NEW'],
+                second_off,
+                context={
+                    'decision_scope': 'match_reassociate_validation',
+                    'proposal_round': 2,
+                    'constrained_hungarian': True,
+                    'detection_index': int(row),
+                    'proposal_track_id': candidate_id,
+                    'rejected_track_id': (
+                        int(unique_ids[pair_by_row[row]].item())
+                        if first_actions[row] == 'REASSOCIATE' else None
+                    ),
+                },
+            )
+            if second_action == 'ACCEPT_CURRENT' and candidate_id not in used:
+                result[row] = unique_ids[second_j]
+                used.add(candidate_id)
         return original if preserve_off_ids else result
 
     def _jev_memory_action(self, *, score, threshold, track_count, memory_count, view, frame_index, window_length, track_id=None, detection_index=None, bbox=None, tracker_state=None):
@@ -428,6 +513,7 @@ class GTRRCNN(CustomRCNN):
                 view_index=view,
                 memory_count=memory_count,
                 track_score=score,
+                track_length=max(1.0, float(memory_count)),
             ),
             'MEMORY_DECISION',
             ['WRITE_MEMORY', 'SKIP_MEMORY'],
@@ -461,6 +547,7 @@ class GTRRCNN(CustomRCNN):
                 current_is_unmatched=True,
                 memory_count=memory_count,
                 track_score=score,
+                track_length=max(1.0, float(memory_count)),
             ),
             'REACTIVATION_DECISION',
             ['REACTIVATE_OLD', 'START_NEW'],
@@ -580,6 +667,7 @@ class GTRRCNN(CustomRCNN):
             instances_wo_id = []
             time_per = time.copy()
             for view in range(view_num):
+                self._jev_context['view'] = int(view)
                 time_per[2] = time[2][st]
                 instances_wo_id += self.inference(
                     batched_inputs[st: st + 1],
@@ -587,6 +675,20 @@ class GTRRCNN(CustomRCNN):
                     time_per,
                     view,
                     do_postprocess=False)
+                if self.jev_perception_cache is not None:
+                    cache_input = batched_inputs[st]
+                    self.jev_perception_cache.write(
+                        video_id=int(cache_input.get('video_id', -1)),
+                        frame=int(frame_id),
+                        view=int(view),
+                        instances=instances_wo_id[-1],
+                        metadata={
+                            'file_name': str(cache_input.get('file_name', '')),
+                            'dataset_frame': int(time_per[2])
+                            if isinstance(time_per[2], (int, np.integer)) else str(time_per[2]),
+                            'view_num': int(view_num),
+                        },
+                    )
                 st += view_frames
             instances.extend([x for x in instances_wo_id])
             activate_first = True
@@ -630,7 +732,9 @@ class GTRRCNN(CustomRCNN):
                             len(instances_kv)-1,
                             id_count,
                             id_count_dict,
-                            id_reid_dict)           
+                            id_reid_dict,
+                            view=id[i],
+                            frame_index=frame_id)
                         #start = end
                         instances[id[i]] = instances_kv[len(instances_kv)-1]
                 else:
@@ -671,7 +775,8 @@ class GTRRCNN(CustomRCNN):
                             id_count_dict,
                             id_reid_dict,
                             instacnes_old,
-                            i)
+                            i,
+                            frame_index=frame_id)
                         instances[win_ed+i] = instances_kv[-1]
                 else :
                     for i in range(view_num):
@@ -702,7 +807,19 @@ class GTRRCNN(CustomRCNN):
             batch[i]['image'] = None        
         return instances,view_num
 
-    def run_first_tracker_plus(self, instances,asso_output,pred_boxes,k,id_count,id_count_dict,id_reid_dict):
+    def run_first_tracker_plus(
+        self,
+        instances,
+        asso_output,
+        pred_boxes,
+        k,
+        id_count,
+        id_count_dict,
+        id_reid_dict,
+        *,
+        view=0,
+        frame_index=0,
+    ):
         n_t = [len(x) for x in instances]
         N, T = sum(n_t), len(n_t)
         asso_nonk = self.roi_heads._activate_asso(asso_output)[0]
@@ -727,6 +844,7 @@ class GTRRCNN(CustomRCNN):
                 track_ids[i] = unique_ids[j]
 
         if self.jev_policy is not None:
+            self._jev_context['view'] = int(view)
             track_ids = self._apply_jev_match_decisions(
                 track_ids,
                 traj_score,
@@ -734,7 +852,8 @@ class GTRRCNN(CustomRCNN):
                 match_i,
                 match_j,
                 self.overlap_thresh,
-                frame_index=k,
+                view=view,
+                frame_index=frame_index,
                 window_length=max(1, T),
                 detection_boxes=instances[k].pred_boxes.tensor,
                 detection_scores=instances[k].scores if instances[k].has('scores') else instances[k].objectness_logits,
@@ -746,8 +865,12 @@ class GTRRCNN(CustomRCNN):
                     active_ids=unique_ids.tolist(),
                     memory_ids=poss_ids.poss_ids,
                 ),
+                track_lengths=id_inds.sum(dim=0),
             )
 
+        # Keep every current-frame slice field-compatible with the historical
+        # Instances stored in id_reid_dict before any memory concatenation.
+        instances[k].track_ids = track_ids
         for i in range(n_k):
             id =  track_ids[i].item()
             if track_ids[i] < 0:
@@ -764,8 +887,8 @@ class GTRRCNN(CustomRCNN):
                     threshold=self.overlap_thresh,
                     track_count=len(unique_ids),
                     memory_count=len(id_reid_dict[id]),
-                    view=0,
-                    frame_index=k,
+                    view=view,
+                    frame_index=frame_index,
                     window_length=max(1, T),
                     track_id=id,
                     detection_index=i,
@@ -854,7 +977,27 @@ class GTRRCNN(CustomRCNN):
                 start += n_t[id[i]]
         return    self.roi_heads._forward_transformer_attention(self.roi_heads.s_t_head(s_t_feature),query_inds)
                 
-    def run_global_tracker_plus(self, view_num,instances,asso_output,pred_boxes,k,id_count,id_count_dict,id_reid_dict,instances_old,view):
+    def run_global_tracker_plus(
+        self,
+        view_num,
+        instances,
+        asso_output,
+        pred_boxes,
+        k,
+        id_count,
+        id_count_dict,
+        id_reid_dict,
+        instances_old,
+        view,
+        *,
+        frame_index=None,
+    ):
+        self._jev_context['view'] = int(view)
+        if frame_index is None:
+            frame_index = int(k // max(1, view_num))
+        else:
+            frame_index = int(frame_index)
+        self._jev_context['frame'] = frame_index
         n_t = [len(x) for x in instances]
         N, T = sum(n_t), len(n_t)
         #view_num = 3 #这部分代码要把3替换调
@@ -903,7 +1046,7 @@ class GTRRCNN(CustomRCNN):
                 match_j,
                 self.overlap_thresh,
                 view=view,
-                frame_index=k // max(1, view_num),
+                frame_index=frame_index,
                 window_length=max(1, T // max(1, view_num)),
                 detection_boxes=instances[k].pred_boxes.tensor,
                 detection_scores=instances[k].scores if instances[k].has('scores') else instances[k].objectness_logits,
@@ -915,6 +1058,7 @@ class GTRRCNN(CustomRCNN):
                     active_ids=unique_ids.tolist(),
                     memory_ids=poss_ids.poss_ids,
                 ),
+                track_lengths=id_inds.sum(dim=0),
             )
         if self.with_bank:
             flag = False
@@ -937,6 +1081,9 @@ class GTRRCNN(CustomRCNN):
                             print(run_time)
                         count += 1
         #poss_ids.poss_ids = set()
+        # Memory concatenation requires the current slice to expose the same
+        # fields as the historical Instances, including track_ids.
+        instances[k].track_ids = track_ids
         for i in range(n_k):
             id = track_ids[i].item()
             if track_ids[i] < 0:
@@ -953,7 +1100,7 @@ class GTRRCNN(CustomRCNN):
                     track_count=len(unique_ids),
                     memory_count=len(id_reid_dict[id]),
                     view=view,
-                    frame_index=k // max(1, view_num),
+                    frame_index=frame_index,
                     window_length=max(1, T // max(1, view_num)),
                     track_id=id,
                     detection_index=i,

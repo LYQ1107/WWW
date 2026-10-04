@@ -1,5 +1,6 @@
 import copy
 import logging
+import os
 import torch
 import torch.utils.data
 from detectron2.utils.comm import get_world_size
@@ -78,6 +79,19 @@ def build_gtr_test_loader(cfg, dataset_name, mapper):
     dataset = get_GMT_video_dataset_dicts(
         [dataset_name],
     )
+    selected_video_ids = os.environ.get("GMT_TEST_VIDEO_IDS", "").strip()
+    if selected_video_ids:
+        wanted = {
+            int(value.strip())
+            for value in selected_video_ids.split(",")
+            if value.strip()
+        }
+        dataset = [item for item in dataset if int(item["video_id"]) in wanted]
+        if not dataset:
+            raise ValueError(
+                "GMT_TEST_VIDEO_IDS selected no videos for "
+                f"{dataset_name}: {sorted(wanted)}"
+            )
     dataset = DatasetFromList(dataset, copy=False)
     dataset = MapDataset(dataset, mapper)
 

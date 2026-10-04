@@ -9,6 +9,7 @@ implemented only in offline labeler code.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import gzip
 import hashlib
 import json
 from pathlib import Path
@@ -18,11 +19,16 @@ import torch
 from torch import Tensor, nn
 
 from .jev_baselines import (
+    ActionConditionedScorerNoQuestion,
     FixedThresholdPolicy,
     FixedSlotMLP,
     GlobalLearnedThreshold,
     IndependentMLPHeads,
     LogisticGate,
+    NonlinearStateConditionedThreshold,
+    QuestionConditionedFixedHead,
+    QuestionConditionedMLP,
+    QuestionConditionedThreshold,
     SharedEncoderSeparateHeads,
     StateConditionedThreshold,
 )
@@ -39,6 +45,11 @@ CONTROLLER_MODELS = {
     "logistic",
     "global_threshold",
     "state_threshold",
+    "nonlinear_state_threshold",
+    "question_threshold",
+    "question_conditioned_mlp",
+    "action_conditioned_no_question",
+    "question_conditioned_fixed_head",
 }
 QuestionLike = Union[str, int]
 ActionLike = Union[str, int]
@@ -93,8 +104,36 @@ def build_controller_from_checkpoint(
         model = LogisticGate(state_dim)
     elif model_name == "global_threshold":
         model = GlobalLearnedThreshold()
-    else:
+    elif model_name == "state_threshold":
         model = StateConditionedThreshold(state_dim)
+    elif model_name == "nonlinear_state_threshold":
+        model = NonlinearStateConditionedThreshold(state_dim, hidden_dim=hidden_dim)
+    elif model_name == "question_threshold":
+        model = QuestionConditionedThreshold(
+            state_dim,
+            hidden_dim=hidden_dim,
+            question_dim=int(payload.get("question_dim", max(8, hidden_dim // 4))),
+        )
+    elif model_name == "question_conditioned_mlp":
+        model = QuestionConditionedMLP(
+            state_dim,
+            hidden_dim=hidden_dim,
+            question_dim=int(payload.get("question_dim", max(8, hidden_dim // 4))),
+        )
+    elif model_name == "action_conditioned_no_question":
+        model = ActionConditionedScorerNoQuestion(
+            state_dim,
+            hidden_dim=hidden_dim,
+            action_dim=int(payload.get("action_dim", max(8, hidden_dim // 4))),
+        )
+    elif model_name == "question_conditioned_fixed_head":
+        model = QuestionConditionedFixedHead(
+            state_dim,
+            hidden_dim=hidden_dim,
+            question_dim=int(payload.get("question_dim", max(8, hidden_dim // 4))),
+        )
+    else:
+        raise ValueError(f"unsupported controller model in checkpoint: {model_name}")
     state = payload.get("model")
     if not isinstance(state, Mapping):
         # Permit a raw state_dict only when the caller explicitly labels it as
@@ -132,17 +171,23 @@ class RuntimeDecision:
 
 
 class DecisionTraceWriter:
-    """Append-only JSONL writer for online/shadow decision traces."""
+    """Append-only JSONL writer for online/shadow decision traces.
+
+    A ``.gz`` suffix enables lossless streaming compression.  This is useful
+    for long official online runs whose audit trace is much larger than the
+    prediction artifact; plain ``.jsonl`` behavior remains unchanged.
+    """
 
     def __init__(self, path: Union[str, Path]):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        opener = gzip.open if self.path.suffix == ".gz" else open
         if self.path.exists():
-            with self.path.open("r", encoding="utf-8") as existing:
+            with opener(self.path, "rt", encoding="utf-8") as existing:
                 self._event_order = sum(1 for line in existing if line.strip())
         else:
             self._event_order = 0
-        self.handle = self.path.open("a", encoding="utf-8")
+        self.handle = opener(self.path, "at", encoding="utf-8")
 
     def write(self, decision: RuntimeDecision) -> None:
         context = dict(decision.context)
@@ -229,8 +274,17 @@ class JEVRuntimePolicy:
             probabilities = {name: float(name == old_action) for name in legal_names}
         else:
             assert self.controller is not None
+            # Detectron2 constructs the controller before the parent GMT
+            # model is moved to CUDA.  Keep the checkpoint-owned controller
+            # device authoritative instead of assuming the incoming state
+            # tensor already lives there.
+            try:
+                controller_device = next(self.controller.parameters()).device
+            except StopIteration:
+                controller_device = state_features.device
+            controller_features = state_features.to(controller_device)
             with torch.no_grad():
-                output = self.controller(state_features, [q_name], [list(legal_names)])
+                output = self.controller(controller_features, [q_name], [list(legal_names)])
             probs = output["probs"][0].detach().float().cpu().tolist()
             ids = output["legal_actions"][0].detach().cpu().tolist()
             mask = output["legal_mask"][0].detach().cpu().tolist()

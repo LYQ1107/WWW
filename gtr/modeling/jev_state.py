@@ -14,6 +14,11 @@ import torch
 from torch import Tensor
 
 
+# State positions through ``state_validity_flag`` preserve the v1 schema.
+# The former reserved tail is now used for raw accumulated association
+# evidence.  Those values are deliberately not clipped to [0, 1].
+STATE_SCHEMA_VERSION = 2
+
 STATE_FEATURE_NAMES: Tuple[str, ...] = (
     "accept_score",
     "reassociate_score",
@@ -71,13 +76,13 @@ STATE_FEATURE_NAMES: Tuple[str, ...] = (
     "contamination_risk_proxy",
     "recovery_risk_proxy",
     "state_validity_flag",
-    "reserved_0",
-    "reserved_1",
-    "reserved_2",
-    "reserved_3",
-    "reserved_4",
-    "reserved_5",
-    "reserved_6",
+    "raw_traj_score",
+    "mean_traj_score",
+    "log1p_traj_score",
+    "score_minus_threshold",
+    "score_over_threshold",
+    "track_length_norm",
+    "raw_score_variance",
 )
 
 STATE_FEATURE_INDEX = {name: index for index, name in enumerate(STATE_FEATURE_NAMES)}
@@ -106,4 +111,3 @@ def encode_state(values: Mapping[str, float], state_dim: int = 64) -> Tensor:
             raise ValueError(f"non-finite JEV state feature: {name}")
         output[names.index(name)] = value
     return output
-

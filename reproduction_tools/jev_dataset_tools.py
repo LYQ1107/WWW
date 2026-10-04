@@ -100,6 +100,17 @@ def make_record(
     if set(action_outcomes) != set(legal):
         raise ValueError("action_outcomes must match legal_actions exactly")
     utilities = {name: scalar_utility(action_outcomes[name]) for name in legal}
+    weights = [
+        float(action_outcomes[name].get("sample_weight", 1.0))
+        if isinstance(action_outcomes[name], Mapping)
+        else 1.0
+        for name in legal
+    ]
+    if any(not math.isfinite(weight) or weight < 0 for weight in weights):
+        raise ValueError("action sample_weight values must be finite and non-negative")
+    if max(weights) - min(weights) > 1e-8:
+        raise ValueError("all actions in one decision must share sample_weight")
+    sample_weight = weights[0]
     best, target_probs = utility_target(
         question_type,
         legal,
@@ -123,10 +134,12 @@ def make_record(
         "target_probs": list(target_probs),
         "horizon": int(horizon),
         "uses_future_gt": True,
+        "sample_weight": sample_weight,
         "labeling": {
             "temperature": float(temperature),
             "tie_tolerance": float(tie_tolerance),
             "tie_break_order": list(TIE_BREAK[question_type]),
+            "sample_weight": sample_weight,
         },
     }
     validate_record(record, allow_future_gt=True)
@@ -166,4 +179,3 @@ def split_sequences(
     if set(result["val"]) & set(result["test"]):
         raise AssertionError("sequence split overlap")
     return result
-

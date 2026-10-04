@@ -4,6 +4,7 @@ import numpy as np
 import os
 from collections import defaultdict
 from multiprocessing import freeze_support
+from pathlib import Path
 import pycocotools.mask as mask_util
 from detectron2.structures import Boxes, BoxMode, pairwise_iou
 from fvcore.common.file_io import PathManager
@@ -155,6 +156,20 @@ class MOTEvaluator(COCOEvaluator):
     def __init__(self, dataset_name, cfg, distributed, output_dir=None, *, use_fast_impl=True):
         super().__init__(dataset_name, cfg, distributed, output_dir=output_dir, use_fast_impl=use_fast_impl)
         self.dataset_name = dataset_name
+        # VisionTrack train/test can contain close to a million detections.
+        # Keeping every prediction in COCOEvaluator._predictions and then
+        # flattening the complete list creates an avoidable host-memory peak.
+        # Stream these two benchmark splits to JSONL and flatten them once
+        # during final serialization instead. The model forward pass and JEV
+        # trace are unchanged; the stream is only an evaluator spool.
+        self._stream_visiontrack = dataset_name in {"VISION_train", "VISION_test"}
+        self._stream_path = None
+        self._stream_handle = None
+        if self._stream_visiontrack:
+            stream_dir = Path(output_dir or self._output_dir)
+            stream_dir.mkdir(parents=True, exist_ok=True)
+            self._stream_path = stream_dir / "predictions_stream.jsonl"
+            self._stream_handle = self._stream_path.open("w", encoding="utf-8")
 
 
     def process(self, inputs, outputs):
@@ -169,7 +184,26 @@ class MOTEvaluator(COCOEvaluator):
                     instances, input["image_id"])
             if "proposals" in output:
                 prediction["proposals"] = output["proposals"].to(self._cpu_device)
-            self._predictions.append(prediction)
+            if self._stream_visiontrack:
+                assert self._stream_handle is not None
+                # Only instances are consumed by _eval_predictions for
+                # VisionTrack. Excluding proposals keeps the spool bounded
+                # and matches the previous coco_instances_results payload.
+                self._stream_handle.write(
+                    json.dumps(
+                        {"image_id": prediction["image_id"], "instances": prediction.get("instances", [])},
+                        separators=(",", ":"),
+                    )
+                    + "\n"
+                )
+                # COCOEvaluator.evaluate() uses a non-empty prediction list
+                # as its dispatch signal. Keep one tiny sentinel so it calls
+                # our streaming _eval_predictions implementation rather than
+                # returning early; all real rows remain on disk.
+                if not self._predictions:
+                    self._predictions.append({"instances": []})
+            else:
+                self._predictions.append(prediction)
 
 
     def _eval_predictions(self, predictions, img_ids=None):
@@ -178,6 +212,46 @@ class MOTEvaluator(COCOEvaluator):
         Fill self._results with the metrics of the tasks.
         """
         assert img_ids is None
+        if self._stream_visiontrack:
+            assert self._stream_path is not None
+            assert self._stream_handle is not None
+            self._stream_handle.flush()
+            self._stream_handle.close()
+            self._stream_handle = None
+
+            reverse_id_mapping = None
+            if hasattr(self._metadata, "thing_dataset_id_to_contiguous_id"):
+                reverse_id_mapping = {
+                    v: k for k, v in self._metadata.thing_dataset_id_to_contiguous_id.items()
+                }
+            file_path = os.path.join(self._output_dir, "coco_instances_results.json")
+            self._logger.info("Streaming results to %s", file_path)
+            with self._stream_path.open("r", encoding="utf-8") as source, Path(file_path).open(
+                "w", encoding="utf-8"
+            ) as target:
+                target.write("[")
+                first = True
+                for line in source:
+                    record = json.loads(line)
+                    for result in record.get("instances", []):
+                        if reverse_id_mapping is not None:
+                            category_id = result["category_id"]
+                            if category_id not in reverse_id_mapping:
+                                raise ValueError(
+                                    f"unknown VisionTrack category_id={category_id}"
+                                )
+                            result["category_id"] = reverse_id_mapping[category_id]
+                        if not first:
+                            target.write(",")
+                        json.dump(result, target, separators=(",", ":"))
+                        first = False
+                target.write("]")
+            # Formal VisionTrack tracking/JEV metrics are computed from the
+            # trace and aligned counterfactual data; COCO's in-memory
+            # evaluator is not a required output for these two splits.
+            self._results = {}
+            return
+
         self._logger.info("Preparing results for COCO format ...")
         coco_results = list(itertools.chain(*[x["instances"] for x in predictions]))
         tasks = self._tasks or self._tasks_from_predictions(coco_results)

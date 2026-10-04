@@ -182,6 +182,44 @@ class FrozenEvidenceGMTBranchRunner:
             return FrozenEvidenceGMTBranchRunner._new_id(state)
         return int(value)
 
+    @staticmethod
+    def _pre_action_identity_utility(
+        state: TraceTrackerState,
+        event: Mapping[str, Any],
+        action: str,
+        target: Optional[int],
+    ) -> float:
+        """Score the current decision using state *before* applying it.
+
+        The old implementation applied the branch first and then looked up
+        ``track_targets``.  That made an already-wrong ACCEPT/REACTIVATE look
+        correct because the GT mapping had just been overwritten.  A new ID
+        is only immediately correct when the target has not already been
+        assigned to another persistent track; an unknown existing ID is
+        intentionally not awarded positive utility.
+        """
+
+        if target is None:
+            return 0.0
+        context = event.get("context", {})
+        if action == "START_NEW":
+            existing = state.target_tracks.get(int(target))
+            return 1.0 if existing is None else -1.0
+        if action == "ACCEPT_CURRENT":
+            identifier = context.get("proposal_track_id")
+        elif action == "REASSOCIATE":
+            identifier = context.get("alternate_track_id")
+        elif action == "REACTIVATE_OLD":
+            identifier = context.get("track_id")
+        else:
+            return 0.0
+        if identifier is None:
+            return -1.0
+        previous = state.track_targets.get(int(identifier))
+        if previous is None:
+            return 0.0
+        return 1.0 if int(previous) == int(target) else -1.0
+
     def apply(
         self,
         state: TraceTrackerState,
@@ -259,6 +297,12 @@ class FrozenEvidenceGMTBranchRunner:
         before_switches = branch.id_switches
         before_fragments = branch.fragments
         before_collisions = branch.collisions
+        # Evaluate this metric from the pre-action state.  Applying the
+        # action first would overwrite a wrong track->GT mapping and create
+        # an immediate-correctness label leak.
+        immediate = self._pre_action_identity_utility(
+            branch, current, action, current_target
+        )
         assigned = self.apply(
             branch,
             current,
@@ -266,7 +310,6 @@ class FrozenEvidenceGMTBranchRunner:
             target=current_target,
             position=position,
         )
-        immediate = float(assigned is not None and current_target is not None and branch.track_targets.get(assigned) == current_target)
         correct = 0
         total = 0
         for future_position, future in self._future_events(position, current, horizon):
@@ -289,6 +332,8 @@ class FrozenEvidenceGMTBranchRunner:
         collisions = branch.collisions - before_collisions
         return {
             "utility": float(immediate + consistency - 0.5 * switches - 0.25 * fragments - 0.5 * collisions),
+            "sample_weight": 1.0,
+            "informative": True,
             "immediate_identity": float(immediate),
             "future_identity_consistency": float(consistency),
             "future_identity_switches": float(switches),
@@ -330,7 +375,11 @@ class FrozenEvidenceGMTBranchRunner:
                 continue
             total += 1
             memory_target = branch.memory_targets.get(int(track))
-            consistent += int(memory_target in {None, future_target})
+            # ``None`` means that this branch has no informative memory
+            # evidence yet.  Treating it as correct systematically favors
+            # SKIP_MEMORY and is not a valid future-consistency label.
+            if memory_target is None:
+                total -= 1
             off_action = str(future.get("off_action") or future.get("proposed_action"))
             self.apply(
                 branch,
@@ -339,11 +388,20 @@ class FrozenEvidenceGMTBranchRunner:
                 target=future_target,
                 position=future_position,
             )
-        ratio = consistent / total if total else 0.0
+            if memory_target is None:
+                continue
+            consistent += int(memory_target == future_target)
+        informative = total > 0
+        ratio = consistent / total if informative else 0.0
+        contamination = branch.memory_contamination - before_contamination
         return {
-            "utility": float(ratio - (branch.memory_contamination - before_contamination)),
+            # Uninformative WRITE/SKIP branches are an explicit tie with zero
+            # training weight, not a hidden SKIP_MEMORY preference.
+            "utility": float(ratio - contamination) if informative else 0.0,
+            "sample_weight": 1.0 if informative else 0.0,
+            "informative": bool(informative),
             "future_memory_consistency": float(ratio),
-            "memory_contamination": float(branch.memory_contamination - before_contamination),
+            "memory_contamination": float(contamination),
             "memory_writes": float(branch.memory_writes - before_writes),
             "future_events": float(total),
         }
@@ -376,5 +434,17 @@ class FrozenEvidenceGMTBranchRunner:
             }
             if digest_state(base_state.snapshot()) != source_digest:
                 raise AssertionError(f"counterfactual action mutated source state: {action}")
-        return results
 
+        # ``sample_weight`` belongs to the decision record, not to an
+        # individual action: the training target compares all legal actions
+        # from the same state.  If one branch has no future evidence, the
+        # decision cannot provide a common supervised weight.  Conservatively
+        # mark the whole decision uninformative instead of silently weighting
+        # only part of the action set.
+        weights = [float(outcome.get("sample_weight", 1.0)) for outcome in results.values()]
+        if weights and min(weights) != max(weights):
+            common_weight = min(weights)
+            for outcome in results.values():
+                outcome["sample_weight"] = common_weight
+                outcome["informative"] = bool(common_weight > 0.0)
+        return results

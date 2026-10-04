@@ -16,6 +16,38 @@ import torch.nn.functional as F
 from torch import nn, Tensor
 
 
+_TRAJ_EMB_SLOTS = 400
+
+
+def _trajectory_slot_mapping(match_cues):
+    """Assign trajectory IDs to the fixed-size learned embedding table.
+
+    The released GMT checkpoint has 400 trajectory slots plus the historical
+    fallback slot.  Normal windows have at most 400 unique trajectories and
+    retain the original one-to-one random assignment.  A long or fragmented
+    online window can exceed that capacity; in that case, keep the first 400
+    IDs collision-free and reuse learned slots for the overflow IDs instead
+    of raising from ``random.sample``.
+    """
+    unique_trajs = list(set(int(x) for x in match_cues))
+    assigned = min(len(unique_trajs), _TRAJ_EMB_SLOTS)
+    unique_random_values = random.sample(range(_TRAJ_EMB_SLOTS), assigned)
+    mapping = {
+        int(num): int(val)
+        for num, val in zip(unique_trajs[:assigned], unique_random_values)
+    }
+    if len(unique_trajs) > _TRAJ_EMB_SLOTS:
+        overflow = unique_trajs[_TRAJ_EMB_SLOTS:]
+        mapping.update({
+            int(num): int(val)
+            for num, val in zip(
+                overflow,
+                random.choices(range(_TRAJ_EMB_SLOTS), k=len(overflow)),
+            )
+        })
+    return mapping
+
+
 class Transformer(nn.Module):
 
     def __init__(self, d_model=512, nhead=8, num_encoder_layers=6,
@@ -76,9 +108,7 @@ class Transformer(nn.Module):
             # flatten BxNxF to NxBxF
             N, B, f = src.shape
 
-            unique_trajs = set(int(x) for x in match_cues)
-            unique_random_values = random.sample(range(400), len(unique_trajs))
-            mapping = {int(num): val for num, val in zip(unique_trajs, unique_random_values)}
+            mapping = _trajectory_slot_mapping(match_cues)
 
             emb_ids = torch.tensor([mapping.get(int(x), 400) for x in match_cues], dtype=torch.long).cuda()
             emb_tensor = self.traj_emb(emb_ids).unsqueeze(1)
@@ -110,10 +140,7 @@ class Transformer(nn.Module):
             his_feature = src[mask_his]
             N, B, f = his_feature.shape
 
-            unique_trajs = set(int(x) for x in match_cues)
-            #print(len(unique_trajs))
-            unique_random_values = random.sample(range(400), len(unique_trajs))  # 生成不重复的随机数
-            mapping = {int(num): int(val) for num, val in zip(unique_trajs, unique_random_values)}
+            mapping = _trajectory_slot_mapping(match_cues)
 
             emb_ids = torch.tensor([mapping.get(int(x), 400) for x in match_cues], dtype=torch.long).cuda()
             emb_tensor = self.traj_emb(emb_ids).unsqueeze(1)

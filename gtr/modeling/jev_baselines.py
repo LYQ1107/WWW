@@ -245,6 +245,97 @@ class StateConditionedThreshold(nn.Module):
         return _result(logits, action_ids, legal_mask)
 
 
+class NonlinearStateConditionedThreshold(nn.Module):
+    """Strong threshold baseline using the complete online state.
+
+    The model still makes only a scalar ``score > tau(state)`` decision, but
+    the threshold conditioner is a two-layer nonlinear network.  It is kept
+    separate from :class:`StateConditionedThreshold` so the reviewer
+    comparison cannot accidentally stop at a linear conditioner.
+    """
+
+    def __init__(
+        self,
+        state_dim: int,
+        hidden_dim: int = 128,
+        initial_threshold: float = 0.5,
+        score_indices: Mapping[str, int] = FixedThresholdPolicy.DEFAULT_SCORE_INDICES,
+    ):
+        super().__init__()
+        self.base_threshold = nn.Parameter(torch.tensor(float(initial_threshold)))
+        self.conditioner = nn.Sequential(
+            nn.Linear(state_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, 1),
+        )
+        self.score_indices = dict(score_indices)
+
+    def forward(self, state_features, questions, legal_actions):
+        state, q, action_ids, legal_mask = _prepare_inputs(
+            state_features, questions, legal_actions
+        )
+        scores = _action_scores(state, action_ids, legal_mask, self.score_indices)
+        threshold = self.base_threshold + self.conditioner(state).squeeze(-1)
+        logits = scores - threshold[:, None]
+        for row, question in enumerate(q.tolist()):
+            if QUESTION_NAMES[question] == "MATCH_DECISION":
+                current = state[row, self.score_indices["ACCEPT_CURRENT"]]
+                reassoc = state[row, self.score_indices["REASSOCIATE"]]
+                logits[row] = torch.where(
+                    action_ids[row] == ACTION_TO_INDEX["START_NEW"],
+                    threshold[row] - torch.maximum(current, reassoc),
+                    logits[row],
+                )
+        return _result(logits, action_ids, legal_mask)
+
+
+class QuestionConditionedThreshold(nn.Module):
+    """Question-conditioned nonlinear scalar-threshold baseline."""
+
+    def __init__(
+        self,
+        state_dim: int,
+        hidden_dim: int = 128,
+        question_dim: int = 32,
+        initial_threshold: float = 0.5,
+        score_indices: Mapping[str, int] = FixedThresholdPolicy.DEFAULT_SCORE_INDICES,
+    ):
+        super().__init__()
+        self.base_threshold = nn.Parameter(torch.tensor(float(initial_threshold)))
+        self.question_embedding = nn.Embedding(len(QUESTION_NAMES), question_dim)
+        self.conditioner = nn.Sequential(
+            nn.Linear(state_dim + question_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, 1),
+        )
+        self.score_indices = dict(score_indices)
+
+    def forward(self, state_features, questions, legal_actions):
+        state, q, action_ids, legal_mask = _prepare_inputs(
+            state_features, questions, legal_actions
+        )
+        scores = _action_scores(state, action_ids, legal_mask, self.score_indices)
+        question_state = self.question_embedding(q)
+        threshold = self.base_threshold + self.conditioner(
+            torch.cat([state, question_state], dim=-1)
+        ).squeeze(-1)
+        logits = scores - threshold[:, None]
+        for row, question in enumerate(q.tolist()):
+            if QUESTION_NAMES[question] == "MATCH_DECISION":
+                current = state[row, self.score_indices["ACCEPT_CURRENT"]]
+                reassoc = state[row, self.score_indices["REASSOCIATE"]]
+                logits[row] = torch.where(
+                    action_ids[row] == ACTION_TO_INDEX["START_NEW"],
+                    threshold[row] - torch.maximum(current, reassoc),
+                    logits[row],
+                )
+        return _result(logits, action_ids, legal_mask)
+
+
 class LogisticGate(nn.Module):
     """Single fixed-slot linear/logistic gate with a runtime legal mask."""
 
@@ -280,6 +371,82 @@ class FixedSlotMLP(nn.Module):
         )
         logits = self.network(state).gather(1, action_ids.clamp_min(0))
         return _result(logits, action_ids, legal_mask)
+
+
+class QuestionConditionedMLP(nn.Module):
+    """Generic fixed-slot MLP with explicit typed-question conditioning."""
+
+    def __init__(self, state_dim: int, hidden_dim: int = 128, question_dim: int = 32):
+        super().__init__()
+        self.question_embedding = nn.Embedding(len(QUESTION_NAMES), question_dim)
+        self.network = nn.Sequential(
+            nn.Linear(state_dim + question_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, len(ACTION_NAMES)),
+        )
+
+    def forward(self, state_features, questions, legal_actions):
+        state, q, action_ids, legal_mask = _prepare_inputs(
+            state_features, questions, legal_actions
+        )
+        logits = self.network(torch.cat([state, self.question_embedding(q)], dim=-1))
+        return _result(logits.gather(1, action_ids.clamp_min(0)), action_ids, legal_mask)
+
+
+class ActionConditionedScorerNoQuestion(nn.Module):
+    """Action-conditioned scorer without a question embedding.
+
+    This isolates the value of explicit action conditioning from typed
+    question conditioning while retaining the same full state features.
+    """
+
+    def __init__(self, state_dim: int, hidden_dim: int = 128, action_dim: int = 32):
+        super().__init__()
+        self.encoder = JEVStateEncoder(state_dim, hidden_dim, num_layers=2)
+        self.query = nn.Sequential(
+            nn.Linear(hidden_dim, action_dim),
+            nn.GELU(),
+            nn.Linear(action_dim, action_dim),
+        )
+        self.action_embedding = nn.Embedding(len(ACTION_NAMES), action_dim)
+        self.key = nn.Sequential(
+            nn.Linear(action_dim, action_dim),
+            nn.GELU(),
+            nn.Linear(action_dim, action_dim),
+        )
+
+    def forward(self, state_features, questions, legal_actions):
+        state, _, action_ids, legal_mask = _prepare_inputs(
+            state_features, questions, legal_actions
+        )
+        query = self.query(self.encoder(state))
+        keys = self.key(self.action_embedding(action_ids.clamp_min(0)))
+        logits = (query.unsqueeze(1) * keys).sum(dim=-1) / (keys.shape[-1] ** 0.5)
+        return _result(logits, action_ids, legal_mask)
+
+
+class QuestionConditionedFixedHead(nn.Module):
+    """Question-conditioned fixed action slots without action embeddings."""
+
+    def __init__(self, state_dim: int, hidden_dim: int = 128, question_dim: int = 32):
+        super().__init__()
+        self.encoder = JEVStateEncoder(state_dim, hidden_dim, num_layers=2)
+        self.question_embedding = nn.Embedding(len(QUESTION_NAMES), question_dim)
+        self.head = nn.Sequential(
+            nn.Linear(hidden_dim + question_dim, hidden_dim),
+            nn.GELU(),
+            nn.Linear(hidden_dim, len(ACTION_NAMES)),
+        )
+
+    def forward(self, state_features, questions, legal_actions):
+        state, q, action_ids, legal_mask = _prepare_inputs(
+            state_features, questions, legal_actions
+        )
+        encoded = self.encoder(state)
+        logits = self.head(torch.cat([encoded, self.question_embedding(q)], dim=-1))
+        return _result(logits.gather(1, action_ids.clamp_min(0)), action_ids, legal_mask)
 
 
 class IndependentMLPHeads(nn.Module):
