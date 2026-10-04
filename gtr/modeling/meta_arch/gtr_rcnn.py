@@ -319,6 +319,8 @@ class GTRRCNN(CustomRCNN):
                 'detection_index': int(row),
                 'proposal_track_id': None,
                 'alternate_track_id': None,
+                'frame': int(frame_index),
+                'view': int(view),
             }
             if detection_boxes is not None and row < len(detection_boxes):
                 row_context['bbox_xyxy'] = [
@@ -665,6 +667,7 @@ class GTRRCNN(CustomRCNN):
             instances_wo_id = []
             time_per = time.copy()
             for view in range(view_num):
+                self._jev_context['view'] = int(view)
                 time_per[2] = time[2][st]
                 instances_wo_id += self.inference(
                     batched_inputs[st: st + 1],
@@ -729,7 +732,8 @@ class GTRRCNN(CustomRCNN):
                             len(instances_kv)-1,
                             id_count,
                             id_count_dict,
-                            id_reid_dict)           
+                            id_reid_dict,
+                            view=id[i])
                         #start = end
                         instances[id[i]] = instances_kv[len(instances_kv)-1]
                 else:
@@ -801,7 +805,18 @@ class GTRRCNN(CustomRCNN):
             batch[i]['image'] = None        
         return instances,view_num
 
-    def run_first_tracker_plus(self, instances,asso_output,pred_boxes,k,id_count,id_count_dict,id_reid_dict):
+    def run_first_tracker_plus(
+        self,
+        instances,
+        asso_output,
+        pred_boxes,
+        k,
+        id_count,
+        id_count_dict,
+        id_reid_dict,
+        *,
+        view=0,
+    ):
         n_t = [len(x) for x in instances]
         N, T = sum(n_t), len(n_t)
         asso_nonk = self.roi_heads._activate_asso(asso_output)[0]
@@ -826,6 +841,7 @@ class GTRRCNN(CustomRCNN):
                 track_ids[i] = unique_ids[j]
 
         if self.jev_policy is not None:
+            self._jev_context['view'] = int(view)
             track_ids = self._apply_jev_match_decisions(
                 track_ids,
                 traj_score,
@@ -833,6 +849,7 @@ class GTRRCNN(CustomRCNN):
                 match_i,
                 match_j,
                 self.overlap_thresh,
+                view=view,
                 frame_index=k,
                 window_length=max(1, T),
                 detection_boxes=instances[k].pred_boxes.tensor,
@@ -867,7 +884,7 @@ class GTRRCNN(CustomRCNN):
                     threshold=self.overlap_thresh,
                     track_count=len(unique_ids),
                     memory_count=len(id_reid_dict[id]),
-                    view=0,
+                    view=view,
                     frame_index=k,
                     window_length=max(1, T),
                     track_id=id,
@@ -958,6 +975,8 @@ class GTRRCNN(CustomRCNN):
         return    self.roi_heads._forward_transformer_attention(self.roi_heads.s_t_head(s_t_feature),query_inds)
                 
     def run_global_tracker_plus(self, view_num,instances,asso_output,pred_boxes,k,id_count,id_count_dict,id_reid_dict,instances_old,view):
+        self._jev_context['view'] = int(view)
+        self._jev_context['frame'] = int(k // max(1, view_num))
         n_t = [len(x) for x in instances]
         N, T = sum(n_t), len(n_t)
         #view_num = 3 #这部分代码要把3替换调
