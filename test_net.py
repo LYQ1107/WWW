@@ -48,7 +48,18 @@ def inference_on_dataset_with_evaluator(model, data_loader, evaluator):
         with torch.no_grad():
             for idx, inputs in enumerate(data_loader):
                 outputs, view_nums = model(inputs)
-                log_track(outputs, view_nums, idx)
+                try:
+                    log_track(outputs, view_nums, idx)
+                except IndexError:
+                    # The legacy MOT text writer has a fixed 22-sequence
+                    # lookup table, while VISION_train contains additional
+                    # video groups.  This side output is not consumed by the
+                    # formal COCO/JEV path; keep the typed trace and streamed
+                    # predictions alive when the legacy name table is short.
+                    logger.warning(
+                        "Skipping legacy MOT text logging for video batch %s",
+                        idx,
+                    )
                 evaluator.process(inputs, outputs)
                 del outputs
                 for item in inputs:
