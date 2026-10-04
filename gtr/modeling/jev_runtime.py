@@ -267,8 +267,17 @@ class JEVRuntimePolicy:
             probabilities = {name: float(name == old_action) for name in legal_names}
         else:
             assert self.controller is not None
+            # Detectron2 constructs the controller before the parent GMT
+            # model is moved to CUDA.  Keep the checkpoint-owned controller
+            # device authoritative instead of assuming the incoming state
+            # tensor already lives there.
+            try:
+                controller_device = next(self.controller.parameters()).device
+            except StopIteration:
+                controller_device = state_features.device
+            controller_features = state_features.to(controller_device)
             with torch.no_grad():
-                output = self.controller(state_features, [q_name], [list(legal_names)])
+                output = self.controller(controller_features, [q_name], [list(legal_names)])
             probs = output["probs"][0].detach().float().cpu().tolist()
             ids = output["legal_actions"][0].detach().cpu().tolist()
             mask = output["legal_mask"][0].detach().cpu().tolist()
