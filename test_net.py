@@ -1,4 +1,5 @@
 import logging
+import gc
 import os
 import torch
 import sys
@@ -40,14 +41,23 @@ def inference_on_dataset_with_evaluator(model, data_loader, evaluator):
     peak from collecting the complete dataset in RAM.
     """
     evaluator.reset()
-    for idx, inputs in enumerate(data_loader):
-        outputs, view_nums = model(inputs)
-        log_track(outputs, view_nums, idx)
-        evaluator.process(inputs, outputs)
-        del outputs
-        for item in inputs:
-            item["image"] = None
-        print(idx, flush=True)
+    training_mode = model.training if isinstance(model, torch.nn.Module) else None
+    if isinstance(model, torch.nn.Module):
+        model.eval()
+    try:
+        with torch.no_grad():
+            for idx, inputs in enumerate(data_loader):
+                outputs, view_nums = model(inputs)
+                log_track(outputs, view_nums, idx)
+                evaluator.process(inputs, outputs)
+                del outputs
+                for item in inputs:
+                    item["image"] = None
+                gc.collect()
+                print(idx, flush=True)
+    finally:
+        if isinstance(model, torch.nn.Module) and training_mode is not None:
+            model.train(training_mode)
     results = evaluator.evaluate()
     return {} if results is None else results
 
