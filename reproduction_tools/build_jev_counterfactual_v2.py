@@ -251,6 +251,14 @@ def build_v2_records(
         actions, memories, by_key = event_maps(events)
         keys = [key for key in cache.keys() if key[0] == int(video_id)]
         keys.sort(key=lambda key: (key[1], key[2]))
+        # A bounded protocol subset does not need to advance the mutable
+        # state through the remainder of the sequence.  Keep enough cached
+        # frames to evaluate every selected event's future horizon, while
+        # leaving the unbounded/full replay path unchanged.
+        if (max_events is not None or max_events_per_video is not None) and events:
+            last_selected_frame = max(int(event["_frame"]) for event in events)
+            replay_until = last_selected_frame + int(horizon)
+            keys = [key for key in keys if int(key[1]) <= replay_until]
         state = MutableGMTState()
         for key_index, key in enumerate(keys):
             payload = cache.load(*key)
