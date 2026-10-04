@@ -848,6 +848,9 @@ class GTRRCNN(CustomRCNN):
                 track_lengths=id_inds.sum(dim=0),
             )
 
+        # Keep every current-frame slice field-compatible with the historical
+        # Instances stored in id_reid_dict before any memory concatenation.
+        instances[k].track_ids = track_ids
         for i in range(n_k):
             id =  track_ids[i].item()
             if track_ids[i] < 0:
@@ -1038,6 +1041,9 @@ class GTRRCNN(CustomRCNN):
                             print(run_time)
                         count += 1
         #poss_ids.poss_ids = set()
+        # Memory concatenation requires the current slice to expose the same
+        # fields as the historical Instances, including track_ids.
+        instances[k].track_ids = track_ids
         for i in range(n_k):
             id = track_ids[i].item()
             if track_ids[i] < 0:
