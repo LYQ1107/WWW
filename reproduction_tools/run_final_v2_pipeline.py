@@ -737,7 +737,10 @@ class FinalPipeline:
         official = OUT / "official"
         official.mkdir(exist_ok=True)
         online_output = official / "online_jev"
-        online_trace = official / "online_jev.jsonl"
+        # The official trace contains the full online-only audit context and
+        # is substantially larger than predictions.  Keep it lossless while
+        # preventing the audit stream from exhausting the experiment volume.
+        online_trace = official / "online_jev.jsonl.gz"
         if not self.inference_complete(online_output, "VISION_test"):
             archive(online_output)
             archive(online_trace)

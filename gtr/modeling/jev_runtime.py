@@ -9,6 +9,7 @@ implemented only in offline labeler code.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import gzip
 import hashlib
 import json
 from pathlib import Path
@@ -170,17 +171,23 @@ class RuntimeDecision:
 
 
 class DecisionTraceWriter:
-    """Append-only JSONL writer for online/shadow decision traces."""
+    """Append-only JSONL writer for online/shadow decision traces.
+
+    A ``.gz`` suffix enables lossless streaming compression.  This is useful
+    for long official online runs whose audit trace is much larger than the
+    prediction artifact; plain ``.jsonl`` behavior remains unchanged.
+    """
 
     def __init__(self, path: Union[str, Path]):
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        opener = gzip.open if self.path.suffix == ".gz" else open
         if self.path.exists():
-            with self.path.open("r", encoding="utf-8") as existing:
+            with opener(self.path, "rt", encoding="utf-8") as existing:
                 self._event_order = sum(1 for line in existing if line.strip())
         else:
             self._event_order = 0
-        self.handle = self.path.open("a", encoding="utf-8")
+        self.handle = opener(self.path, "at", encoding="utf-8")
 
     def write(self, decision: RuntimeDecision) -> None:
         context = dict(decision.context)
