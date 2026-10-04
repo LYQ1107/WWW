@@ -207,12 +207,27 @@ def build_v2_records(
     association_backend: str,
     engine: Optional[CachedPerceptionMutableAssociationV2] = None,
     max_events: Optional[int] = None,
+    video_ids: Optional[Sequence[int]] = None,
+    max_events_per_video: Optional[int] = None,
 ):
     if association_backend not in {"cosine_contract", "formal_gmt_transformer"}:
         raise ValueError(f"unsupported association backend: {association_backend}")
     videos, images, gt_by_image, image_meta = load_gt(annotations)
     cache = FrozenPerceptionCache(cache_root)
     grouped = normalize_events(trace)
+    if video_ids is not None:
+        requested = {int(value) for value in video_ids}
+        missing = sorted(requested - set(grouped))
+        if missing:
+            raise ValueError(f"requested video ids are absent from trace: {missing}")
+        grouped = {video_id: grouped[video_id] for video_id in sorted(requested)}
+    if max_events_per_video is not None:
+        if max_events_per_video < 1:
+            raise ValueError("max_events_per_video must be positive")
+        grouped = {
+            video_id: events[: int(max_events_per_video)]
+            for video_id, events in grouped.items()
+        }
     if max_events is not None:
         if max_events < 1:
             raise ValueError("max_events must be positive")
@@ -411,6 +426,8 @@ def main() -> None:
         type=int,
         help="deterministic protocol/smoke limit; omit for a complete trace",
     )
+    parser.add_argument("--video-ids", type=int, nargs="*")
+    parser.add_argument("--max-events-per-video", type=int)
     args = parser.parse_args()
     if args.horizon < 1:
         raise ValueError("horizon must be positive")
@@ -440,6 +457,8 @@ def main() -> None:
         association_backend=args.association_backend,
         engine=engine,
         max_events=args.max_events,
+        video_ids=args.video_ids,
+        max_events_per_video=args.max_events_per_video,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8") as handle:
@@ -459,6 +478,8 @@ def main() -> None:
         "horizon": int(args.horizon),
         "records": len(records),
         "max_events": args.max_events,
+        "video_ids": args.video_ids,
+        "max_events_per_video": args.max_events_per_video,
         "records_by_question": stats,
         "skipped_events": skipped,
         "uses_future_gt": True,
