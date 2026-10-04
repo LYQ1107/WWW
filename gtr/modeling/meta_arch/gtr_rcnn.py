@@ -733,7 +733,8 @@ class GTRRCNN(CustomRCNN):
                             id_count,
                             id_count_dict,
                             id_reid_dict,
-                            view=id[i])
+                            view=id[i],
+                            frame_index=frame_id)
                         #start = end
                         instances[id[i]] = instances_kv[len(instances_kv)-1]
                 else:
@@ -816,6 +817,7 @@ class GTRRCNN(CustomRCNN):
         id_reid_dict,
         *,
         view=0,
+        frame_index=0,
     ):
         n_t = [len(x) for x in instances]
         N, T = sum(n_t), len(n_t)
@@ -850,7 +852,7 @@ class GTRRCNN(CustomRCNN):
                 match_j,
                 self.overlap_thresh,
                 view=view,
-                frame_index=k,
+                frame_index=frame_index,
                 window_length=max(1, T),
                 detection_boxes=instances[k].pred_boxes.tensor,
                 detection_scores=instances[k].scores if instances[k].has('scores') else instances[k].objectness_logits,
@@ -885,7 +887,7 @@ class GTRRCNN(CustomRCNN):
                     track_count=len(unique_ids),
                     memory_count=len(id_reid_dict[id]),
                     view=view,
-                    frame_index=k,
+                    frame_index=frame_index,
                     window_length=max(1, T),
                     track_id=id,
                     detection_index=i,
