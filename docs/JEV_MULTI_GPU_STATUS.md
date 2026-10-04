@@ -20,12 +20,13 @@ Last refreshed: 2026-10-04 (UTC)
 - val-only temperature calibration;
 - frozen perception cache writer/reader;
 - mutable-association v2 contract engine and label-builder scaffold;
+- formal GMT association-transformer builder backend;
 - CPU invariant tests for all of the above.
 
 ## Not yet formal evidence
 
-- cache generation from the fixed GMT proxy checkpoint;
-- fixed-model validation of the GMT association-transformer adapter for v2 replay;
+- full cache generation/checksum audit from the fixed GMT proxy checkpoint;
+- full-sequence fixed-model GMT association-transformer replay labels;
 - v2 train/val policy suite and capacity report;
 - final calibration/ablation selection;
 - `FINAL_SELECTION_LOCK.json`;
@@ -33,4 +34,6 @@ Last refreshed: 2026-10-04 (UTC)
 
 The v1 proxy traces remain running evidence for scheduling only. The cosine
 association backend is a protocol backend and must not be reported as the
-formal GMT causal result.
+formal GMT causal result. A real-cache two-view fixed-model adapter smoke
+replay passed on 2026-10-04; it is a contract check, not the final causal
+metric.
