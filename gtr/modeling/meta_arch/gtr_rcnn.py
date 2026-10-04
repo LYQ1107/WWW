@@ -775,7 +775,8 @@ class GTRRCNN(CustomRCNN):
                             id_count_dict,
                             id_reid_dict,
                             instacnes_old,
-                            i)
+                            i,
+                            frame_index=frame_id)
                         instances[win_ed+i] = instances_kv[-1]
                 else :
                     for i in range(view_num):
@@ -976,9 +977,27 @@ class GTRRCNN(CustomRCNN):
                 start += n_t[id[i]]
         return    self.roi_heads._forward_transformer_attention(self.roi_heads.s_t_head(s_t_feature),query_inds)
                 
-    def run_global_tracker_plus(self, view_num,instances,asso_output,pred_boxes,k,id_count,id_count_dict,id_reid_dict,instances_old,view):
+    def run_global_tracker_plus(
+        self,
+        view_num,
+        instances,
+        asso_output,
+        pred_boxes,
+        k,
+        id_count,
+        id_count_dict,
+        id_reid_dict,
+        instances_old,
+        view,
+        *,
+        frame_index=None,
+    ):
         self._jev_context['view'] = int(view)
-        self._jev_context['frame'] = int(k // max(1, view_num))
+        if frame_index is None:
+            frame_index = int(k // max(1, view_num))
+        else:
+            frame_index = int(frame_index)
+        self._jev_context['frame'] = frame_index
         n_t = [len(x) for x in instances]
         N, T = sum(n_t), len(n_t)
         #view_num = 3 #这部分代码要把3替换调
@@ -1027,7 +1046,7 @@ class GTRRCNN(CustomRCNN):
                 match_j,
                 self.overlap_thresh,
                 view=view,
-                frame_index=k // max(1, view_num),
+                frame_index=frame_index,
                 window_length=max(1, T // max(1, view_num)),
                 detection_boxes=instances[k].pred_boxes.tensor,
                 detection_scores=instances[k].scores if instances[k].has('scores') else instances[k].objectness_logits,
@@ -1081,7 +1100,7 @@ class GTRRCNN(CustomRCNN):
                     track_count=len(unique_ids),
                     memory_count=len(id_reid_dict[id]),
                     view=view,
-                    frame_index=k // max(1, view_num),
+                    frame_index=frame_index,
                     window_length=max(1, T // max(1, view_num)),
                     track_id=id,
                     detection_index=i,
