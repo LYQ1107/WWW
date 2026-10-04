@@ -206,12 +206,24 @@ def build_v2_records(
     horizon: int,
     association_backend: str,
     engine: Optional[CachedPerceptionMutableAssociationV2] = None,
+    max_events: Optional[int] = None,
 ):
     if association_backend not in {"cosine_contract", "formal_gmt_transformer"}:
         raise ValueError(f"unsupported association backend: {association_backend}")
     videos, images, gt_by_image, image_meta = load_gt(annotations)
     cache = FrozenPerceptionCache(cache_root)
     grouped = normalize_events(trace)
+    if max_events is not None:
+        if max_events < 1:
+            raise ValueError("max_events must be positive")
+        remaining = int(max_events)
+        limited = {}
+        for video_id in sorted(grouped):
+            if remaining <= 0:
+                break
+            limited[video_id] = grouped[video_id][:remaining]
+            remaining -= len(limited[video_id])
+        grouped = limited
     if engine is None:
         if association_backend != "cosine_contract":
             raise ValueError("formal_gmt_transformer requires an injected GMT engine")
@@ -394,6 +406,11 @@ def main() -> None:
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--view-num", type=int, default=2)
     parser.add_argument("--history-limit", type=int)
+    parser.add_argument(
+        "--max-events",
+        type=int,
+        help="deterministic protocol/smoke limit; omit for a complete trace",
+    )
     args = parser.parse_args()
     if args.horizon < 1:
         raise ValueError("horizon must be positive")
@@ -422,6 +439,7 @@ def main() -> None:
         horizon=args.horizon,
         association_backend=args.association_backend,
         engine=engine,
+        max_events=args.max_events,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8") as handle:
@@ -440,6 +458,7 @@ def main() -> None:
         "gmt_checkpoint_sha256": sha256(checkpoint),
         "horizon": int(args.horizon),
         "records": len(records),
+        "max_events": args.max_events,
         "records_by_question": stats,
         "skipped_events": skipped,
         "uses_future_gt": True,
