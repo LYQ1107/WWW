@@ -6,7 +6,7 @@
 
 ## 代码状态
 
-- 主仓库：`main`，当前本地 HEAD 为 `e3c2e06`；本地相对远端 `main` 含研究代码提交，远端 `main` 保持不改写。
+- 主仓库：`main`，当前本地 HEAD 为 `d7109ff`（研究代码基线为 `e3c2e06`）；本地相对远端 `main` 含研究代码提交，远端 `main` 保持不改写。
 - JEV 隔离实现：`/data1/liuyeqiang/WWW_jev_v2`，分支 `jev/reviewer-proof-v2`，最新本地提交为 `045886a`，包含最终在线 JEV 审计 trace 的 gzip 支持。
 - 两个分支均指向 GitHub 仓库 `LYQ1107/WWW`；主线远端存在未合并提交，因此推送时使用独立的研究进度分支，不改写远端 `main`。
 
