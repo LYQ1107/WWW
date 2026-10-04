@@ -227,6 +227,13 @@ class MOTEvaluator(COCOEvaluator):
             )
             self._results[task] = res
 
-        track_and_eval_mot(
-            self._output_dir, self._coco_api.dataset, coco_results,
-            dataset_name=self.dataset_name)
+        # The legacy helper infers an MOT17/MOT20 year from the dataset name.
+        # VisionTrack is a multi-view benchmark with its own downloaded GT and
+        # must be evaluated by the explicit current-repository evaluator.  We
+        # still persist COCO-style predictions above; silently routing them to
+        # an unrelated MOT year would produce invalid metrics or fail on a
+        # missing GT directory.
+        if self.dataset_name not in {"VISION_train", "VISION_test"}:
+            track_and_eval_mot(
+                self._output_dir, self._coco_api.dataset, coco_results,
+                dataset_name=self.dataset_name)

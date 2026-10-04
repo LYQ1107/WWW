@@ -7,7 +7,7 @@ import requests
 os.umask(0o077)
 private = Path.home()/'.local/state/gmt-baidu-auth'
 private.mkdir(parents=True, exist_ok=True);private.chmod(0o700)
-public = Path('/data3/liuyeqiang/GMT_VisionTrack_repro/outputs/baidu-login-qr.png')
+public = Path(os.environ.get('GMT_BAIDU_QR_PATH', '/data1/liuyeqiang/WWW/outputs/baidu-login-qr.png'))
 state = private/'status.json'
 def status(value):
  state.write_text(json.dumps({'status':value,'updated':time.time(),'pid':os.getpid()}))

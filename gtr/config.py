@@ -39,6 +39,24 @@ def add_gtr_config(cfg):
     _C.MODEL.ASSO_HEAD.BANK_SIZE = 20
     _C.MODEL.ASSO_HEAD.THRED = 0.1
     _C.MODEL.ASSO_HEAD.WITH_BANK = False
+
+    # Typed state-transition decision layer.  Disabled by default so the
+    # original GMT training/inference path remains unchanged until Stage2 is
+    # frozen and the OFF/SHADOW equivalence gate has passed.
+    _C.MODEL.JEV = CN()
+    _C.MODEL.JEV.ENABLED = False
+    _C.MODEL.JEV.MODE = 'off'
+    _C.MODEL.JEV.STATE_DIM = 64
+    _C.MODEL.JEV.HIDDEN_DIM = 128
+    _C.MODEL.JEV.QUESTION_DIM = 32
+    _C.MODEL.JEV.ACTION_DIM = 32
+    _C.MODEL.JEV.NUM_LAYERS = 2
+    _C.MODEL.JEV.TEMPERATURE = 1.0
+    _C.MODEL.JEV.USE_OPTION_INTERACTION = False
+    _C.MODEL.JEV.MAX_REASSOCIATE = 1
+    _C.MODEL.JEV.TRACE_PATH = ''
+    _C.MODEL.JEV.CONTROLLER_WEIGHTS = ''
+    _C.MODEL.JEV.BASELINE_THRESHOLD = 0.0
     
     
     _C.MODEL.SWIN = CN()
