@@ -31,6 +31,14 @@ STAGE2 = ROOT / "outputs/stage2_single_gpu/model_20000.pth"
 # Stage2 owns the checkout.  The identical one-line fix is applied to the
 # main source only after training exits and is regression-tested.
 FORMAL_SOURCE_OVERLAY = ROOT / "outputs/research_proxy/model_4500/isolated_source"
+# The proxy traces are produced outside this resumable final-chain process.
+# They use GPUs 2/3, which the formal Stage2 inference below also reserves.
+# Keep the final chain from starting on those cards while the proxy producers
+# are still active; this is a synchronization guard, not a data dependency.
+PROXY_INFERENCE_OUTPUTS = (
+    ROOT / "outputs/research_proxy/model_4500/inference_train_off_gpu2_isolated",
+    ROOT / "outputs/research_proxy/model_4500/inference_test_off_gpu3_isolated",
+)
 PIPE = ROOT / "outputs/research_pipeline"
 MARKERS = PIPE / "markers"
 LOG_PATH = PIPE / "pipeline.log"
@@ -245,6 +253,41 @@ class Pipeline:
         self.archive(target)
         if trace is not None:
             self.archive(trace)
+
+    @staticmethod
+    def active_proxy_inference() -> list[str]:
+        """Return live external proxy jobs that reserve the formal GPUs."""
+        try:
+            result = subprocess.run(
+                ["ps", "-eo", "args="],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        except OSError:
+            return []
+        output_names = tuple(str(path) for path in PROXY_INFERENCE_OUTPUTS)
+        return [
+            line
+            for line in result.stdout.splitlines()
+            if "run_isolated_test_net.py" in line
+            and any(output_name in line for output_name in output_names)
+        ]
+
+    def wait_for_proxy_inference(self) -> None:
+        """Wait for external model-4500 producers before using GPUs 2/3."""
+        while True:
+            active = self.active_proxy_inference()
+            if not active:
+                return
+            self.write_status("waiting_for_external_proxy_inference", "RUNNING")
+            self.log.write(
+                "[sync] waiting for external proxy inference jobs: "
+                + "; ".join(active)
+                + "\n"
+            )
+            self.log.flush()
+            time.sleep(POLL_SECONDS)
 
     def marker(self, name: str) -> Path:
         return MARKERS / f"{name}.done"
@@ -814,6 +857,7 @@ def run() -> None:
             raise RuntimeError(f"Stage2 final checkpoint is unavailable: {STAGE2}")
 
         pipeline.ensure_final_stage2_checkpoint()
+        pipeline.wait_for_proxy_inference()
 
         pipeline.log.write(f"[pipeline] starting with {STAGE2}\n")
         pipeline.log.flush()
