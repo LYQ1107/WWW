@@ -3,11 +3,16 @@
 import torch
 
 from gtr.modeling.jev_baselines import (
+    ActionConditionedScorerNoQuestion,
     FixedThresholdPolicy,
     FixedSlotMLP,
     GlobalLearnedThreshold,
     IndependentMLPHeads,
     LogisticGate,
+    NonlinearStateConditionedThreshold,
+    QuestionConditionedFixedHead,
+    QuestionConditionedMLP,
+    QuestionConditionedThreshold,
     SharedEncoderSeparateHeads,
     StateConditionedThreshold,
 )
@@ -54,6 +59,11 @@ def main():
         FixedSlotMLP(features.shape[1], hidden_dim=16),
         IndependentMLPHeads(features.shape[1], hidden_dim=16),
         SharedEncoderSeparateHeads(features.shape[1], hidden_dim=16),
+        NonlinearStateConditionedThreshold(features.shape[1], hidden_dim=16),
+        QuestionConditionedThreshold(features.shape[1], hidden_dim=16, question_dim=8),
+        QuestionConditionedMLP(features.shape[1], hidden_dim=16, question_dim=8),
+        ActionConditionedScorerNoQuestion(features.shape[1], hidden_dim=16, action_dim=8),
+        QuestionConditionedFixedHead(features.shape[1], hidden_dim=16, question_dim=8),
     ]
     for model in models:
         result = model(features, questions, actions)

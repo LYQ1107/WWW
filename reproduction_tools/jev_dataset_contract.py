@@ -8,6 +8,7 @@ allow_future_gt=False)``.
 
 import hashlib
 import json
+import math
 from typing import Any, Dict, Iterable, Mapping, Sequence
 
 from gtr.modeling.jev_decision import (
@@ -72,6 +73,10 @@ def validate_record(record: Mapping[str, Any], *, allow_future_gt: bool = False)
         raise ValueError(f"missing JEV record fields: {sorted(missing)}")
     if record["schema_version"] != SCHEMA_VERSION:
         raise ValueError(f"unsupported schema_version: {record['schema_version']}")
+    if "sample_weight" in record:
+        weight = float(record["sample_weight"])
+        if weight < 0 or not math.isfinite(weight):
+            raise ValueError("sample_weight must be finite and non-negative")
     question_id = question_index(record["question_type"])
     legal = list(record["legal_actions"])
     if not legal:

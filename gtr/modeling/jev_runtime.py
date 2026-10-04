@@ -18,11 +18,16 @@ import torch
 from torch import Tensor, nn
 
 from .jev_baselines import (
+    ActionConditionedScorerNoQuestion,
     FixedThresholdPolicy,
     FixedSlotMLP,
     GlobalLearnedThreshold,
     IndependentMLPHeads,
     LogisticGate,
+    NonlinearStateConditionedThreshold,
+    QuestionConditionedFixedHead,
+    QuestionConditionedMLP,
+    QuestionConditionedThreshold,
     SharedEncoderSeparateHeads,
     StateConditionedThreshold,
 )
@@ -39,6 +44,11 @@ CONTROLLER_MODELS = {
     "logistic",
     "global_threshold",
     "state_threshold",
+    "nonlinear_state_threshold",
+    "question_threshold",
+    "question_conditioned_mlp",
+    "action_conditioned_no_question",
+    "question_conditioned_fixed_head",
 }
 QuestionLike = Union[str, int]
 ActionLike = Union[str, int]
@@ -93,8 +103,36 @@ def build_controller_from_checkpoint(
         model = LogisticGate(state_dim)
     elif model_name == "global_threshold":
         model = GlobalLearnedThreshold()
-    else:
+    elif model_name == "state_threshold":
         model = StateConditionedThreshold(state_dim)
+    elif model_name == "nonlinear_state_threshold":
+        model = NonlinearStateConditionedThreshold(state_dim, hidden_dim=hidden_dim)
+    elif model_name == "question_threshold":
+        model = QuestionConditionedThreshold(
+            state_dim,
+            hidden_dim=hidden_dim,
+            question_dim=int(payload.get("question_dim", max(8, hidden_dim // 4))),
+        )
+    elif model_name == "question_conditioned_mlp":
+        model = QuestionConditionedMLP(
+            state_dim,
+            hidden_dim=hidden_dim,
+            question_dim=int(payload.get("question_dim", max(8, hidden_dim // 4))),
+        )
+    elif model_name == "action_conditioned_no_question":
+        model = ActionConditionedScorerNoQuestion(
+            state_dim,
+            hidden_dim=hidden_dim,
+            action_dim=int(payload.get("action_dim", max(8, hidden_dim // 4))),
+        )
+    elif model_name == "question_conditioned_fixed_head":
+        model = QuestionConditionedFixedHead(
+            state_dim,
+            hidden_dim=hidden_dim,
+            question_dim=int(payload.get("question_dim", max(8, hidden_dim // 4))),
+        )
+    else:
+        raise ValueError(f"unsupported controller model in checkpoint: {model_name}")
     state = payload.get("model")
     if not isinstance(state, Mapping):
         # Permit a raw state_dict only when the caller explicitly labels it as

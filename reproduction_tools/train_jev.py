@@ -19,11 +19,16 @@ import torch
 from torch import nn
 
 from gtr.modeling.jev_baselines import (
+    ActionConditionedScorerNoQuestion,
     FixedThresholdPolicy,
     FixedSlotMLP,
     GlobalLearnedThreshold,
     IndependentMLPHeads,
     LogisticGate,
+    NonlinearStateConditionedThreshold,
+    QuestionConditionedFixedHead,
+    QuestionConditionedMLP,
+    QuestionConditionedThreshold,
     SharedEncoderSeparateHeads,
     StateConditionedThreshold,
 )
@@ -43,6 +48,11 @@ MODEL_NAMES = {
     "logistic",
     "global_threshold",
     "state_threshold",
+    "nonlinear_state_threshold",
+    "question_threshold",
+    "question_conditioned_mlp",
+    "action_conditioned_no_question",
+    "question_conditioned_fixed_head",
 }
 
 
@@ -97,6 +107,24 @@ def choose_model(name: str, state_dim: int, hidden_dim: int, fixed_threshold: fl
         if state_dim < 4:
             raise ValueError("state_threshold requires the four-column baseline prefix")
         return StateConditionedThreshold(state_dim)
+    if name == "nonlinear_state_threshold":
+        return NonlinearStateConditionedThreshold(state_dim, hidden_dim=hidden_dim)
+    if name == "question_threshold":
+        return QuestionConditionedThreshold(
+            state_dim, hidden_dim=hidden_dim, question_dim=max(8, hidden_dim // 4)
+        )
+    if name == "question_conditioned_mlp":
+        return QuestionConditionedMLP(
+            state_dim, hidden_dim, question_dim=max(8, hidden_dim // 4)
+        )
+    if name == "action_conditioned_no_question":
+        return ActionConditionedScorerNoQuestion(
+            state_dim, hidden_dim, action_dim=max(8, hidden_dim // 4)
+        )
+    if name == "question_conditioned_fixed_head":
+        return QuestionConditionedFixedHead(
+            state_dim, hidden_dim, question_dim=max(8, hidden_dim // 4)
+        )
     raise ValueError(f"unknown model: {name}")
 
 
@@ -104,7 +132,20 @@ def batches(records: Sequence[Dict[str, Any]], batch_size: int, rng: random.Rand
     order = list(range(len(records)))
     rng.shuffle(order)
     for start in range(0, len(order), batch_size):
-        yield [records[index] for index in order[start : start + batch_size]]
+            yield [records[index] for index in order[start : start + batch_size]]
+
+
+def load_policy_split(path: Path) -> Dict[str, Tuple[str, ...]]:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    train = tuple(sorted(str(value) for value in payload.get("train_sequences", ())))
+    val = tuple(sorted(str(value) for value in payload.get("val_sequences", ())))
+    if not train or not val:
+        raise ValueError("policy split must contain non-empty train and val sequences")
+    if set(train) & set(val):
+        raise ValueError("policy split train/val overlap")
+    if payload.get("official_test_used_for_search") is not False:
+        raise ValueError("policy split is not marked official-test excluded")
+    return {"train": train, "val": val, "test": ()}
 
 
 def batch_tensors(records: Sequence[Dict[str, Any]], device: torch.device):
@@ -123,11 +164,15 @@ def forward_loss(model: nn.Module, records: Sequence[Dict[str, Any]], device: to
     features, questions, legal, targets = batch_tensors(records, device)
     output = model(features, questions, legal)
     losses = []
+    weights = []
     for row, target in enumerate(targets):
         target_tensor = torch.tensor(target, dtype=torch.float32, device=device)
         probability = output["probs"][row, : len(target)].clamp_min(1e-8)
         losses.append(-(target_tensor * probability.log()).sum())
-    return torch.stack(losses).mean(), output
+        weights.append(float(records[row].get("sample_weight", 1.0)))
+    weight_tensor = torch.tensor(weights, dtype=torch.float32, device=device)
+    denominator = weight_tensor.sum().clamp_min(1.0)
+    return (torch.stack(losses) * weight_tensor).sum() / denominator, output
 
 
 @torch.no_grad()
@@ -135,23 +180,31 @@ def evaluate(model: nn.Module, records: Sequence[Dict[str, Any]], device: torch.
     model.eval()
     if not records:
         return {"records": 0}
-    correct = 0
+    correct = 0.0
     nll = 0.0
+    weight_total = 0.0
+    ignored = 0
     by_question: Dict[str, List[float]] = {}
     metric_records: List[Mapping[str, Any]] = []
     metric_predictions: List[Mapping[str, Any]] = []
     for start in range(0, len(records), 256):
         group = records[start : start + 256]
         loss, output = forward_loss(model, group, device)
-        nll += float(loss.item()) * len(group)
+        group_weight = sum(float(record.get("sample_weight", 1.0)) for record in group)
+        nll += float(loss.item()) * group_weight
         predicted = output["probs"].argmax(dim=1)
         for row, record in enumerate(group):
+            weight = float(record.get("sample_weight", 1.0))
+            if weight <= 0:
+                ignored += 1
+                continue
             chosen = output["legal_actions"][row, predicted[row]].item()
             chosen_name = (
                 ACTION_NAMES[chosen]
             )
             hit = float(chosen_name in record["best_actions"])
-            correct += int(hit)
+            correct += weight * hit
+            weight_total += weight
             by_question.setdefault(record["question_type"], []).append(hit)
             metric_records.append(record)
             metric_predictions.append(
@@ -166,11 +219,13 @@ def evaluate(model: nn.Module, records: Sequence[Dict[str, Any]], device: torch.
                     ],
                 }
             )
-    decision_metrics = summarize_decision_metrics(metric_records, metric_predictions)
+    decision_metrics = summarize_decision_metrics(metric_records, metric_predictions) if metric_records else {}
     return {
         **decision_metrics,
-        "nll": nll / len(records),
-        "best_action_accuracy": correct / len(records),
+        "nll": nll / max(weight_total, 1e-8),
+        "best_action_accuracy": correct / max(weight_total, 1e-8),
+        "weighted_records": weight_total,
+        "ignored_uninformative_records": ignored,
         "by_question": {
             key: {"records": len(values), "accuracy": sum(values) / len(values)}
             for key, values in sorted(by_question.items())
@@ -190,6 +245,7 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=20261003)
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--fixed-threshold", type=float, default=0.2)
+    parser.add_argument("--split-manifest", type=Path)
     args = parser.parse_args()
     if args.epochs < 1 or args.batch_size < 1 or args.lr <= 0:
         raise ValueError("epochs, batch-size and lr must be positive")
@@ -200,10 +256,23 @@ def main() -> None:
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     records = read_records(args.dataset)
-    splits = split_sequences(
-        [record["sequence"] for record in records], seed=args.seed
-    )
+    if args.split_manifest is not None:
+        splits = load_policy_split(args.split_manifest)
+    else:
+        splits = split_sequences(
+            [record["sequence"] for record in records], seed=args.seed
+        )
     split_sets = {key: set(value) for key, value in splits.items()}
+    record_sequences = {record["sequence"] for record in records}
+    if args.split_manifest is not None:
+        expected_sequences = split_sets["train"] | split_sets["val"]
+        unexpected = record_sequences - expected_sequences
+        missing = expected_sequences - record_sequences
+        if unexpected or missing:
+            raise ValueError(
+                "dataset does not exactly match policy split: "
+                f"unexpected={sorted(unexpected)}, missing={sorted(missing)}"
+            )
     grouped = {
         key: [record for record in records if record["sequence"] in split_sets[key]]
         for key in splits
@@ -243,8 +312,18 @@ def main() -> None:
             "threshold": args.fixed_threshold if args.model == "fixed_threshold" else None,
             "state_dim": state_dim,
             "hidden_dim": args.hidden_dim,
-            "question_dim": max(8, args.hidden_dim // 4) if args.model == "jev" else None,
-            "action_dim": max(8, args.hidden_dim // 4) if args.model == "jev" else None,
+            "question_dim": max(8, args.hidden_dim // 4)
+            if args.model
+            in {
+                "jev",
+                "question_threshold",
+                "question_conditioned_mlp",
+                "question_conditioned_fixed_head",
+            }
+            else None,
+            "action_dim": max(8, args.hidden_dim // 4)
+            if args.model in {"jev", "action_conditioned_no_question"}
+            else None,
             "num_layers": 2 if args.model == "jev" else None,
             "temperature": 1.0 if args.model == "jev" else None,
             "use_option_interaction": False if args.model == "jev" else None,
