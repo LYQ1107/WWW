@@ -39,6 +39,7 @@ PROXY_INFERENCE_OUTPUTS = (
     ROOT / "outputs/research_proxy/model_4500/inference_train_off_gpu2_isolated",
     ROOT / "outputs/research_proxy/model_4500/inference_test_off_gpu3_isolated",
 )
+PROXY_POLICY_OUTPUT_ROOT = ROOT / "outputs/research_proxy/model_4500/policies"
 PIPE = ROOT / "outputs/research_pipeline"
 MARKERS = PIPE / "markers"
 LOG_PATH = PIPE / "pipeline.log"
@@ -283,6 +284,40 @@ class Pipeline:
             self.write_status("waiting_for_external_proxy_inference", "RUNNING")
             self.log.write(
                 "[sync] waiting for external proxy inference jobs: "
+                + "; ".join(active)
+                + "\n"
+            )
+            self.log.flush()
+            time.sleep(POLL_SECONDS)
+
+    @staticmethod
+    def active_proxy_policy_jobs() -> list[str]:
+        """Return live screening policy trainers that reserve GPUs 4/5."""
+        try:
+            result = subprocess.run(
+                ["ps", "-eo", "args="],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+        except OSError:
+            return []
+        policy_root = str(PROXY_POLICY_OUTPUT_ROOT)
+        return [
+            line
+            for line in result.stdout.splitlines()
+            if "train_jev.py" in line and policy_root in line
+        ]
+
+    def wait_for_proxy_policy_jobs(self) -> None:
+        """Wait for external proxy policy trainers before using GPUs 4/5."""
+        while True:
+            active = self.active_proxy_policy_jobs()
+            if not active:
+                return
+            self.write_status("waiting_for_external_proxy_policy_jobs", "RUNNING")
+            self.log.write(
+                "[sync] waiting for external proxy policy jobs: "
                 + "; ".join(active)
                 + "\n"
             )
@@ -858,6 +893,7 @@ def run() -> None:
 
         pipeline.ensure_final_stage2_checkpoint()
         pipeline.wait_for_proxy_inference()
+        pipeline.wait_for_proxy_policy_jobs()
 
         pipeline.log.write(f"[pipeline] starting with {STAGE2}\n")
         pipeline.log.flush()
