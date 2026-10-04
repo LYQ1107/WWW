@@ -79,10 +79,15 @@ def active_output(output: Path) -> bool:
 
 def wait_for_inference(output: Path, dataset_name: str, trace: Path) -> None:
     result = output / f"inference_{dataset_name}/coco_instances_results.json"
+    seen_active = False
     while True:
-        if result.is_file() and not active_output(output):
+        active = active_output(output)
+        seen_active = seen_active or active
+        if result.is_file() and not active:
             log(f"inference complete: {output}")
             return
+        if seen_active and not active and not result.is_file():
+            raise RuntimeError(f"inference exited without a result: {output}")
         write_status("WAITING_FOR_OFF_INFERENCE", waiting_for=str(output), trace=str(trace))
         time.sleep(30)
 
