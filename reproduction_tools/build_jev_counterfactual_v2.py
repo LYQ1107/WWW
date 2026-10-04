@@ -205,13 +205,17 @@ def build_v2_records(
     checkpoint_hash: str,
     horizon: int,
     association_backend: str,
+    engine: Optional[CachedPerceptionMutableAssociationV2] = None,
 ):
-    if association_backend != "cosine_contract":
-        raise ValueError("only cosine_contract is implemented in this checkout")
+    if association_backend not in {"cosine_contract", "formal_gmt_transformer"}:
+        raise ValueError(f"unsupported association backend: {association_backend}")
     videos, images, gt_by_image, image_meta = load_gt(annotations)
     cache = FrozenPerceptionCache(cache_root)
     grouped = normalize_events(trace)
-    engine = CachedPerceptionMutableAssociationV2()
+    if engine is None:
+        if association_backend != "cosine_contract":
+            raise ValueError("formal_gmt_transformer requires an injected GMT engine")
+        engine = CachedPerceptionMutableAssociationV2()
     records = []
     stats: Dict[str, int] = {}
     skipped = 0
@@ -323,6 +327,56 @@ def build_v2_records(
     return records, stats, skipped
 
 
+def build_formal_gmt_engine(
+    *,
+    config_file: Path,
+    checkpoint: Path,
+    device: str,
+    view_num: int,
+    history_limit: Optional[int],
+) -> CachedPerceptionMutableAssociationV2:
+    """Load the fixed GMT checkpoint used by formal cached replay.
+
+    The detector is never called here: all proposals come from the immutable
+    cache.  Only the repository association transformer is evaluated for the
+    branch-local historical state.
+    """
+    import torch
+    from detectron2.checkpoint import DetectionCheckpointer
+    from detectron2.config import get_cfg
+    from detectron2.modeling import build_model
+    from centernet.config import add_centernet_config
+    from gtr.config import add_gtr_config
+    from jev_counterfactual_v2 import CachedPerceptionMutableAssociationV2
+    from jev_gmt_association_adapter import GMTAssociationTransformerAdapter
+
+    cfg = get_cfg()
+    add_centernet_config(cfg)
+    add_gtr_config(cfg)
+    cfg.merge_from_file(str(config_file))
+    cfg.defrost()
+    cfg.MODEL.WEIGHTS = str(checkpoint)
+    # The cache already contains detector/ReID outputs.  This flag documents
+    # that formal replay must not invoke the live JEV runtime.
+    cfg.MODEL.JEV.ENABLED = False
+    cfg.freeze()
+    model = build_model(cfg)
+    model.to(torch.device(device))
+    model.eval()
+    DetectionCheckpointer(model).resume_or_load(str(checkpoint), resume=False)
+    if history_limit is None:
+        history_limit = int(cfg.INPUT.VIDEO.TEST_LEN) * max(1, int(view_num))
+    adapter = GMTAssociationTransformerAdapter(
+        model,
+        view_num=max(1, int(view_num)),
+        history_limit=max(1, int(history_limit)),
+    )
+    return CachedPerceptionMutableAssociationV2(
+        association_fn=adapter,
+        history_limit=max(1, int(history_limit)),
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--trace", type=Path, required=True)
@@ -331,7 +385,15 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--gmt-checkpoint", type=Path, required=True)
     parser.add_argument("--horizon", type=int, default=32)
-    parser.add_argument("--association-backend", choices=("cosine_contract",), default="cosine_contract")
+    parser.add_argument(
+        "--association-backend",
+        choices=("cosine_contract", "formal_gmt_transformer"),
+        default="cosine_contract",
+    )
+    parser.add_argument("--config-file", type=Path)
+    parser.add_argument("--device", default="cpu")
+    parser.add_argument("--view-num", type=int, default=2)
+    parser.add_argument("--history-limit", type=int)
     args = parser.parse_args()
     if args.horizon < 1:
         raise ValueError("horizon must be positive")
@@ -341,6 +403,17 @@ def main() -> None:
     cache = args.cache.resolve()
     annotations = args.annotations.resolve()
     checkpoint = args.gmt_checkpoint.resolve()
+    engine = None
+    if args.association_backend == "formal_gmt_transformer":
+        if args.config_file is None:
+            raise ValueError("--config-file is required for formal_gmt_transformer")
+        engine = build_formal_gmt_engine(
+            config_file=args.config_file.resolve(),
+            checkpoint=checkpoint,
+            device=args.device,
+            view_num=args.view_num,
+            history_limit=args.history_limit,
+        )
     records, stats, skipped = build_v2_records(
         trace=trace,
         cache_root=cache,
@@ -348,6 +421,7 @@ def main() -> None:
         checkpoint_hash=sha256(checkpoint),
         horizon=args.horizon,
         association_backend=args.association_backend,
+        engine=engine,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8") as handle:
@@ -371,8 +445,13 @@ def main() -> None:
         "uses_future_gt": True,
         "counterfactual_engine": ENGINE_VERSION,
         "association_backend": args.association_backend,
-        "formal_gmt_association_adapter": False,
-        "review_note": "cosine_contract is a protocol backend; do not use this manifest as formal GMT causal evidence",
+        "formal_gmt_association_adapter": args.association_backend == "formal_gmt_transformer",
+        "review_note": (
+            "formal GMT association-transformer replay over frozen perception and "
+            "branch-local state"
+            if args.association_backend == "formal_gmt_transformer"
+            else "cosine_contract is a protocol backend; do not use this manifest as formal GMT causal evidence"
+        ),
     }
     args.output.with_suffix(args.output.suffix + ".manifest.json").write_text(
         json.dumps(report, indent=2) + "\n", encoding="utf-8"
