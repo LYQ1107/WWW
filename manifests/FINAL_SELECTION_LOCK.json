@@ -1,0 +1,37 @@
+{
+  "code_commit": "fd1ecd4dc13ffda4b31618161be456ca1f5cdf2a",
+  "counterfactual_engine_version": "cached_perception_mutable_association_v2",
+  "created_at_utc": "2026-10-04T12:46:55.454694+00:00",
+  "gmt_checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_4500.pth",
+  "gmt_checkpoint_sha256": "sha256:d6a9556e1ac793fe77987538ac902c27001d878c1e42e65aa0e0fefab82de51f",
+  "horizon": 8,
+  "hyperparameters": {
+    "batch_size": 128,
+    "calibration_temperature": 2.0239131935092165,
+    "capacity_match_report": "results/capacity_match_formal_v1_v4_fine.json",
+    "capacity_target": "jev_h64",
+    "dataset_scope": "formal_train_v1_v4_1000",
+    "epochs": 50,
+    "formal_backend": "formal_gmt_transformer",
+    "learning_rate": 0.001,
+    "official_test_data_not_used_for_selection": true,
+    "policy_selection_metric": "policy_val_nll_then_best_action_accuracy",
+    "seed": 20261003
+  },
+  "lock_type": "FINAL_SELECTION_LOCK",
+  "official_test_gate": {
+    "lock_created_before_official_test": true,
+    "official_test_read_allowed_after_lock": true
+  },
+  "policy_split": "/data1/liuyeqiang/WWW_jev_v2/manifests/jev_policy_split_formal_v1_v4_1000.json",
+  "policy_split_sequence_hash": "sha256:0d8edc818ccf592b90d9dcc6d738d1107305baf687eee801c173a7c3f522d365",
+  "policy_split_sha256": "sha256:500aaaf517b8ae49fd480fea5e97230317da01557e2176b5fe0cf950083d864c",
+  "schema_version": 1,
+  "selected_calibration_method": "temperature_scaling_policy_val_only",
+  "selected_hidden_size": 64,
+  "selected_jev_architecture": "jev",
+  "selected_mlp_baseline": "independent_mlp_h32",
+  "selected_threshold_baseline": "question_threshold_h70",
+  "state_schema_version": 2,
+  "utility_definition": "future_correct_identity_duration - 0.5*future_identity_switches - 0.25*future_fragmentation - 0.5*future_collisions - memory_contamination; sample_weight=0 for uninformative futures"
+}
