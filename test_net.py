@@ -8,10 +8,8 @@ from detectron2.config import get_cfg
 from detectron2.data import MetadataCatalog
 from detectron2.engine import default_argument_parser, default_setup, launch
 
-from detectron2.evaluation import (
-    inference_on_dataset,
-    print_csv_format,
-)
+from detectron2.evaluation import print_csv_format
+from detectron2.evaluation.evaluator import log_track
 
 from detectron2.modeling import build_model
 from detectron2.utils.logger import setup_logger
@@ -29,6 +27,30 @@ os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")
 
 logger = logging.getLogger("detectron2")
 
+
+def inference_on_dataset_with_evaluator(model, data_loader, evaluator):
+    """Run GMT inference while retaining its typed trace and evaluator output.
+
+    This repository's patched Detectron2 helper historically disabled
+    ``evaluator.process``/``evaluate`` after adding GMT's multi-view trace
+    hook. That made a complete forward pass look successful while never
+    creating ``coco_instances_results.json``. Keep the trace hook, but hand
+    each output to the evaluator before releasing it. The VisionTrack
+    evaluator streams predictions, so this does not recreate the old memory
+    peak from collecting the complete dataset in RAM.
+    """
+    evaluator.reset()
+    for idx, inputs in enumerate(data_loader):
+        outputs, view_nums = model(inputs)
+        log_track(outputs, view_nums, idx)
+        evaluator.process(inputs, outputs)
+        del outputs
+        for item in inputs:
+            item["image"] = None
+        print(idx, flush=True)
+    results = evaluator.evaluate()
+    return {} if results is None else results
+
 def do_test(cfg, model):
     for dataset_name in cfg.DATASETS.TEST:
         output_folder = os.path.join(cfg.OUTPUT_DIR, "inference_{}".format(dataset_name))
@@ -44,7 +66,7 @@ def do_test(cfg, model):
             cfg, False, augmentations=build_custom_augmentation(cfg, False)
         )
         data_loader = build_gtr_test_loader(cfg, dataset_name, mapper)
-        results = inference_on_dataset(model, data_loader, evaluator)
+        results = inference_on_dataset_with_evaluator(model, data_loader, evaluator)
         if comm.is_main_process():
             logger.info("Evaluation results for {} in csv format:".format(
                 dataset_name))
