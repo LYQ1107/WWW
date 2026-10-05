@@ -16,7 +16,7 @@ import math
 import os
 from pathlib import Path
 import subprocess
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -127,6 +127,17 @@ def parse_assignments(values: list[str], required: tuple[int, ...], label: str) 
         if not path.is_file():
             raise FileNotFoundError(f"{label} H={horizon}: {path}")
     return parsed
+
+
+def mean_and_sample_std(values: Sequence[float]) -> tuple[float, float]:
+    """Return the seed mean and sample standard deviation."""
+    if not values:
+        raise ValueError("cannot aggregate an empty seed set")
+    mean = sum(float(value) for value in values) / len(values)
+    if len(values) < 2:
+        return mean, 0.0
+    variance = sum((float(value) - mean) ** 2 for value in values) / (len(values) - 1)
+    return mean, math.sqrt(max(0.0, variance))
 
 
 def validate_split(path: Path) -> Mapping[str, Any]:
@@ -393,22 +404,31 @@ def main() -> None:
                     }
                 )
 
-    # Aggregate seeds before selecting a horizon/model.  The seed used for the
-    # selected artifact is then the deterministic best validation run inside
-    # that aggregate, never a test-dependent choice.
+    # Aggregate seeds before selecting a horizon/model.  No individual seed is
+    # promoted by validation performance: the final controller is built from
+    # the complete seed set by the downstream pipeline.
     aggregates: list[dict[str, Any]] = []
     for horizon in HORIZONS:
         for model in MODELS:
             rows = [row for row in candidates if row["horizon"] == horizon and row["model"] == model]
+            if sorted(int(row["seed"]) for row in rows) != list(SEEDS):
+                raise RuntimeError(
+                    f"{model} H={horizon} does not contain the complete fixed seed set"
+                )
             nll = [float(row["metrics"]["nll"]) for row in rows]
             accuracy = [float(row["metrics"]["best_action_accuracy"]) for row in rows]
+            mean_nll, std_nll = mean_and_sample_std(nll)
+            mean_accuracy, std_accuracy = mean_and_sample_std(accuracy)
             aggregates.append(
                 {
                     "horizon": horizon,
                     "model": model,
                     "seed_count": len(rows),
-                    "mean_val_nll": sum(nll) / len(nll),
-                    "mean_val_best_action_accuracy": sum(accuracy) / len(accuracy),
+                    "seed_set": sorted(int(row["seed"]) for row in rows),
+                    "mean_val_nll": mean_nll,
+                    "std_val_nll": std_nll,
+                    "mean_val_best_action_accuracy": mean_accuracy,
+                    "std_val_best_action_accuracy": std_accuracy,
                     "seed_results": rows,
                 }
             )
@@ -421,10 +441,21 @@ def main() -> None:
             row["model"],
         ),
     )
-    selected = min(
-        selected_aggregate["seed_results"],
-        key=lambda row: (float(row["metrics"]["nll"]), -float(row["metrics"]["best_action_accuracy"]), row["seed"]),
-    )
+    selected = {
+        "horizon": selected_aggregate["horizon"],
+        "model": selected_aggregate["model"],
+        "seed_set": list(selected_aggregate["seed_set"]),
+        "seed_count": selected_aggregate["seed_count"],
+        "aggregation": "mean_probability_ensemble_over_seed_set",
+        "member_checkpoints": [
+            row["checkpoint"]
+            for row in sorted(selected_aggregate["seed_results"], key=lambda item: int(item["seed"]))
+        ],
+        "member_calibrated_checkpoints": [
+            row["calibrated_checkpoint"]
+            for row in sorted(selected_aggregate["seed_results"], key=lambda item: int(item["seed"]))
+        ],
+    }
 
     def best_control(names: set[str]) -> dict[str, Any]:
         options = [row for row in aggregates if row["model"] in names]
@@ -454,6 +485,13 @@ def main() -> None:
         "policy_split_sequence_hash": split_payload["sequence_hash"],
         "horizons": list(HORIZONS),
         "seeds": list(SEEDS),
+        "seed_aggregation": {
+            "method": "mean_probability_ensemble",
+            "seed_set": list(SEEDS),
+            "selection_metric": "mean validation NLL",
+            "reported_variability": "sample standard deviation across seeds",
+            "best_seed_used_for_selection": False,
+        },
         "models": list(MODELS),
         "equal_supervision": {
             "epochs": args.epochs,
@@ -472,23 +510,33 @@ def main() -> None:
         "selected_aggregate": {
             "horizon": selected_aggregate["horizon"],
             "model": selected_aggregate["model"],
+            "seed_set": selected_aggregate["seed_set"],
             "mean_val_nll": selected_aggregate["mean_val_nll"],
+            "std_val_nll": selected_aggregate["std_val_nll"],
             "mean_val_best_action_accuracy": selected_aggregate["mean_val_best_action_accuracy"],
+            "std_val_best_action_accuracy": selected_aggregate["std_val_best_action_accuracy"],
         },
         "selected_threshold_control": {
             "horizon": selected_threshold["horizon"],
             "model": selected_threshold["model"],
+            "seed_set": selected_threshold["seed_set"],
             "mean_val_nll": selected_threshold["mean_val_nll"],
+            "std_val_nll": selected_threshold["std_val_nll"],
             "mean_val_best_action_accuracy": selected_threshold["mean_val_best_action_accuracy"],
+            "std_val_best_action_accuracy": selected_threshold["std_val_best_action_accuracy"],
         },
         "selected_mlp_control": {
             "horizon": selected_mlp["horizon"],
             "model": selected_mlp["model"],
+            "seed_set": selected_mlp["seed_set"],
             "mean_val_nll": selected_mlp["mean_val_nll"],
+            "std_val_nll": selected_mlp["std_val_nll"],
             "mean_val_best_action_accuracy": selected_mlp["mean_val_best_action_accuracy"],
+            "std_val_best_action_accuracy": selected_mlp["std_val_best_action_accuracy"],
         },
         "selected": selected,
-        "selection_rule": "minimize mean policy-val NLL; tie-break by mean best-action accuracy, horizon, model; then choose best seed by the same val rule",
+        "selected_seed_ensemble": selected,
+        "selection_rule": "minimize mean policy-val NLL across the fixed seed set; tie-break by mean best-action accuracy, horizon, model; never select a best seed",
         "candidates": candidates,
         "aggregates": aggregates,
         "no_official_test_read": True,

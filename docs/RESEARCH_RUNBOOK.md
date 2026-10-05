@@ -1,6 +1,6 @@
 # WWW / GMT-JEV 科研任务运行说明书
 
-更新时间：2026-10-05 07:39 UTC（运行状态是快照；PID 和百分比会变化）。
+更新时间：2026-10-05 07:53 UTC（运行状态是快照；PID 和百分比会变化）。
 
 这份文档说明当前在跑什么、后续会跑什么、每一步的完成条件和保守估时。它是运行手册，不是最终实验结论；在 `PIPELINE_COMPLETE.json`、`FINAL_REPORT.json` 和最终锁都出现并通过校验前，不得宣称 JEV 有效或 GO。
 
@@ -12,6 +12,7 @@
 - canonical Stage2 checkpoint：`/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth`
 - checkpoint SHA256：`cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8`
 - Stage2 checkpoint 校验：`PASS`（iteration、scheduler/global iteration 均为 20000；optimizer、finite、reload 均通过）
+- Stage1 lineage：`model_16000.pth` 的本地 checkpoint iteration 是 16000，但它承接的 scheduler/global update lineage 是 20000；不得把文件名中的 local iteration 误读成少训了 4000 次。resume checkpoint、previous update count、local iteration、global iteration 以 checkpoint validation manifest 为准。
 - 配置：`/data1/liuyeqiang/WWW_jev_v2/configs/VISION_test.yaml`
 - 配置 SHA256：`bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a`
 
@@ -23,7 +24,7 @@ checkpoint、VisionTrack 数据、推理输出和训练结果不提交 Git。wor
 |---:|---|---|---|
 | 16606 → 16673 → 16699 | strict same-GPU OFF gate | GPU0 上顺序执行 native OFF；完成后才执行 traced OFF | 正式 replay 的前置 gate |
 | 10350 | formal TRAIN counterfactual shard 0 | 视频 `1 5 9 13 17 21`，canonical worktree | 输出完成前不合并 |
-| 29280 | formal TRAIN counterfactual shard 1 | 视频 `2 6 10 14 18 22`，低内存 legacy worktree | 结果仍绑定 canonical checkpoint |
+| 29280 | formal TRAIN counterfactual shard 1 | 视频 `2 6 10 14 18 22`，旧 low-memory legacy worktree | 仅作诊断；source commit 不同则 `REFUSE_TO_MERGE`，canonical worktree 必须重跑 |
 | 33788 | pre-lock TEST counterfactual diagnostic | 视频 `1 5 9 13 17 21` | 已降级为隔离诊断；`formal/test/DO_NOT_USE_FOR_SELECTION`；绝不用于 selection/final report |
 | 10016 | 原先启动的 pipeline parent | 等待/管理 formal 阶段 | 日志尾部可能包含旧失败记录，以当前 PID 和 manifest 为准 |
 
@@ -55,6 +56,8 @@ df -h /data1
 4B. **V2_SIMULATOR_OFF_REPLAY_GATE**：用同一 checkpoint/config、冻结 perception cache 和 formal GMT association adapter，完整重放“无干预 OFF”轨迹；比较 proposal、Hungarian assignment、track ID、memory write/length、stale bank、reactivation/new-ID 和最终轨迹 digest。报告为 `off/v2_simulator_off_replay_gate.json`。只有 4B PASS 才允许正式 policy labels。
 5. **完成 TRAIN formal counterfactual**：先保留当前 H=8 作为机制验证；正式 selection 改为一次 `Hmax=32` rollout，保存 `H=1/8/16/32` raw cumulative outcomes，再从同一 rollout 派生四个数据视图。此阶段不读取 TEST。
 6. **TRAIN-only policy selection**：按固定三 seeds（`20261003/20261004/20261005`）运行 threshold、nonlinear-threshold 和 generic-MLP controls，保持 equal supervision；完成 feature audit、same-score/different-state、reviewer controls、NLL/accuracy/Brier/ECE/risk-coverage 和 validation-only calibration。
+   - architecture/horizon 只按三 seed 的 validation mean 选择，并报告 mean ± sample std；不得挑 validation 最好的单个 seed。
+   - 选定控制器由完整 seed_set 做 probability ensemble；selection manifest 和 FINAL_SELECTION_LOCK 保存 seed_set、成员 digest 和 aggregation rule。
 7. **生成 canonical selection lock**：`outputs/research_final_v2/manifests/FINAL_SELECTION_LOCK.json` 必须绑定 canonical model-20000 digest、policy split digest、selection protocol digest、选定 horizon/architecture/threshold/MLP/calibration。TEST 在此之前保持 fail-closed。
 8. **锁后 TEST**：只有 lock PASS 后，才在 `formal/test_official/` 重新生成 official TEST counterfactual；`formal/test/` 下的 pre-lock 诊断即使完整也不得复用。随后运行 baseline、Oracle、threshold、state-threshold、MLP、JEV 的同 checkpoint 正式 replay。
 9. **正式评测与报告**：运行 TrackEval、cross-view CVIDF1/CVMA、Oracle gate、policy summary，写出 `FINAL_REPORT.json`；全部阶段完成后才写 `outputs/research_pipeline/PIPELINE_COMPLETE.json`。
@@ -69,7 +72,7 @@ df -h /data1
 | traced strict + trajectory gate + 4A/4B replay gates | 约 2–5 小时 | traced 必须在 GPU0 顺序复跑全 VISION_test；4B 还要逐序列重放 frozen cache |
 | 当前 TRAIN formal shards | 约 1–12 小时 | 只在完整 shard 结束时落盘；CPU、内存和 GMT association 开销不稳定 |
 | TRAIN Hmax=32 + 派生 H=1/8/16/32 | 约 2–8 小时 | 只做一次最慢的 H=32 association rollout；派生视图为 CPU/IO 操作 |
-| 三 seed selection、controls、audit、calibration | 约 2–8 小时 | 主要为 CPU 离线训练/评估，可与部分后处理重叠但不能读取 TEST |
+| 三 seed selection、controls、audit、calibration | 约 2–8 小时 | 主要为 CPU 离线训练/评估，可与部分后处理重叠但不能读取 TEST；按 seed mean±std 聚合 |
 | selection lock 后 TEST + Oracle/baseline/JEV + TrackEval | 约 2–8 小时 | 包括官方 replay、cross-view 和 Oracle gate |
 | **完整关键路径** | **从当前快照保守按约 10–36 小时** | 以 PASS manifest 和 lock 为结束条件，不以进程存活时间为结束条件；formal builder 和不同视频组耗时是最大不确定项 |
 
@@ -96,7 +99,8 @@ df -h /data1
 
 ## 6. 安全操作规则
 
-- 不杀当前 PID，不启动第二个 strict gate，不重复占用 GPU0。
+- 不因暂时无日志更新或进度缓慢而 kill；但若证据显示 wrong checkpoint、wrong source commit、TEST leak、OOM loop、corrupt manifest 或错误 shard video IDs，允许先 graceful terminate，再归档不完整证据并按正确 provenance 重启。不得启动第二个 strict gate，不得重复占用 GPU0。
+- formal builder 启动前必须通过资源 gate：host RAM used `<70%`、swap used `~=0`、`/data1` free `>30 GB`。资源不满足时等待，不以空闲 GPU 为理由追加 shard；目标是最大化科学吞吐而不是 GPU 利用率。
 - `formal/test/DO_NOT_USE_FOR_SELECTION` 下的 pre-lock TEST 只允许作为隔离诊断；完成后用 `reproduction_tools/quarantine_prelock_test.py` 生成 `prelock_quarantine_manifest.json`，其中必须含 `prelock=true`、`selection_authority=false`、`official_result_authority=false`，不得进入 selection 或 final report。
 - 不在 final selection lock 前读取或生成新的 official TEST counterfactual；锁后只允许写入 `formal/test_official/` 并重新生成。
 - 每个 shard manifest 必须锁定 `checkpoint_sha256/config_sha256/source_commit/counterfactual_engine_version/state_schema_version/utility_definition/association_backend/annotations_sha256/cache_sha256/trace_sha256/horizon` 及 authority 字段；任一不一致，merge 直接 `REFUSE_TO_MERGE`。
@@ -104,3 +108,12 @@ df -h /data1
 - 不删除 checkpoint、trace、cache、日志或 `.incomplete.*`；空间不足时先报告并做可恢复归档。
 - 不把 `/data1` 下大体量数据、checkpoint、outputs 或用户 `results/` 提交 Git；Git 只提交源码、协议和本说明书。
 - 当前旧 parent 完成或终止后，先核对所有子进程和 manifest，再启动最新 `run_final_v2_pipeline.py`；不得仅根据旧日志尾部的 FAILED 文本判断当前 live child 已失败。
+
+本地恢复备份（GitHub 凭据不可用时也必须保留）：
+
+```bash
+git bundle create /data1/liuyeqiang/WWW_jev_v2_20261005.bundle --all
+git format-patch origin/main..HEAD -o /data1/liuyeqiang/WWW_jev_v2_patches_20261005
+```
+
+bundle 和 patch 只备份源码/协议提交，不包含 checkpoint、数据、trace、cache、outputs 或用户 `results/`。

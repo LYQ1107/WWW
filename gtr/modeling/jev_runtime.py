@@ -55,6 +55,35 @@ QuestionLike = Union[str, int]
 ActionLike = Union[str, int]
 
 
+class SeedEnsembleController(nn.Module):
+    """Average policy probabilities over the complete preselected seed set."""
+
+    def __init__(self, controllers: Sequence[nn.Module]):
+        super().__init__()
+        if not controllers:
+            raise ValueError("seed ensemble must contain at least one controller")
+        self.controllers = nn.ModuleList(controllers)
+
+    def forward(self, state_features, questions, legal_actions):
+        outputs = [
+            controller(state_features, questions, legal_actions)
+            for controller in self.controllers
+        ]
+        reference = outputs[0]
+        for output in outputs[1:]:
+            if output["probs"].shape != reference["probs"].shape:
+                raise ValueError("seed ensemble members returned different policy shapes")
+            if not torch.equal(output["legal_actions"], reference["legal_actions"]):
+                raise ValueError("seed ensemble members disagree on legal action IDs")
+            if not torch.equal(output["legal_mask"], reference["legal_mask"]):
+                raise ValueError("seed ensemble members disagree on legal action masks")
+        result = dict(reference)
+        result["probs"] = torch.stack(
+            [output["probs"] for output in outputs], dim=0
+        ).mean(dim=0)
+        return result
+
+
 def build_controller_from_checkpoint(
     checkpoint: Union[str, Path],
     *,
@@ -73,6 +102,34 @@ def build_controller_from_checkpoint(
     payload = torch.load(str(path), map_location="cpu")
     if not isinstance(payload, Mapping):
         raise ValueError("JEV controller checkpoint must contain a mapping")
+    if payload.get("checkpoint_type") == "seed_ensemble":
+        members = payload.get("members")
+        if not isinstance(members, Sequence) or isinstance(members, (str, bytes)) or not members:
+            raise ValueError("seed ensemble checkpoint has no members")
+        controllers = []
+        member_model_names = set()
+        for member in members:
+            if not isinstance(member, Mapping) or not member.get("path"):
+                raise ValueError("seed ensemble member must contain a path")
+            member_path = Path(str(member["path"]))
+            if not member_path.is_absolute():
+                member_path = path.parent / member_path
+            if not member_path.is_file():
+                raise FileNotFoundError(member_path)
+            expected_digest = member.get("sha256")
+            if expected_digest:
+                digest = hashlib.sha256(member_path.read_bytes()).hexdigest()
+                if str(expected_digest) not in {digest, "sha256:" + digest}:
+                    raise ValueError(f"seed ensemble member digest mismatch: {member_path}")
+            member_payload = torch.load(str(member_path), map_location="cpu")
+            if not isinstance(member_payload, Mapping):
+                raise ValueError(f"invalid seed ensemble member: {member_path}")
+            member_model_names.add(str(member_payload.get("model_name", "jev")))
+            controllers.append(build_controller_from_checkpoint(member_path, device=device))
+        expected_model = str(payload.get("model_name", ""))
+        if len(member_model_names) != 1 or (expected_model and expected_model not in member_model_names):
+            raise ValueError("seed ensemble members do not share the declared model")
+        return SeedEnsembleController(controllers).to(device).eval()
     model_name = str(payload.get("model_name", "jev"))
     if model_name not in CONTROLLER_MODELS:
         raise ValueError(f"unsupported controller model in checkpoint: {model_name}")

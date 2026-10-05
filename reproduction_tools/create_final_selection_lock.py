@@ -112,6 +112,14 @@ def build_lock(args: argparse.Namespace) -> Mapping[str, Any]:
         selection_payload = json.loads(selection_manifest.read_text(encoding="utf-8"))
         if not isinstance(selection_payload, Mapping) or selection_payload.get("status") != "PASS":
             raise ValueError("selection protocol manifest must have status=PASS")
+        seed_set = sorted(int(value) for value in selection_payload.get("seeds", ()))
+        selected_seed_set = sorted(
+            int(value) for value in (selection_payload.get("selected") or {}).get("seed_set", ())
+        )
+        if not seed_set or selected_seed_set != seed_set:
+            raise ValueError("selection protocol must bind the complete seed set")
+        if (selection_payload.get("seed_aggregation") or {}).get("best_seed_used_for_selection") is not False:
+            raise ValueError("selection protocol must not choose a best seed")
     payload = {
         "schema_version": 1,
         "lock_type": "FINAL_SELECTION_LOCK",
@@ -145,6 +153,8 @@ def build_lock(args: argparse.Namespace) -> Mapping[str, Any]:
     if selection_manifest is not None:
         payload["selection_protocol"] = str(selection_manifest)
         payload["selection_protocol_sha256"] = sha256_file(selection_manifest)
+        payload["selection_seed_set"] = seed_set
+        payload["selection_seed_aggregation"] = "mean_probability_ensemble_over_seed_set"
     return payload
 
 

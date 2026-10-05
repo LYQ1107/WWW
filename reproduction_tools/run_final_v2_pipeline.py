@@ -44,6 +44,8 @@ UTILITY_DEFINITION = (
     "sample_weight=0 for uninformative futures"
 )
 FORMAL_CONFIG = ROOT / "configs/VISION_test.yaml"
+FORMAL_MIN_FREE_BYTES = 30 * 1024**3
+FORMAL_MAX_HOST_USED_FRACTION = 0.70
 
 
 def source_commit(root: Path = ROOT) -> str:
@@ -68,6 +70,44 @@ def sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def host_resource_snapshot(path: Path = CANONICAL) -> dict[str, Any]:
+    """Return the conservative host gate used before a formal builder."""
+    values: dict[str, int] = {}
+    try:
+        for line in Path("/proc/meminfo").read_text(encoding="ascii").splitlines():
+            name, raw = line.split(":", 1)
+            fields = raw.strip().split()
+            if fields and fields[0].isdigit():
+                values[name] = int(fields[0]) * 1024
+    except (OSError, ValueError):
+        values = {}
+    total = int(values.get("MemTotal", 0))
+    available = int(values.get("MemAvailable", values.get("MemFree", 0)))
+    swap_total = int(values.get("SwapTotal", 0))
+    swap_free = int(values.get("SwapFree", 0))
+    disk_free = int(shutil.disk_usage(path).free)
+    used_fraction = (1.0 - (available / total)) if total else 1.0
+    swap_used = max(0, swap_total - swap_free)
+    return {
+        "ram_total_bytes": total,
+        "ram_available_bytes": available,
+        "ram_used_fraction": used_fraction,
+        "ram_gate": bool(total and used_fraction < FORMAL_MAX_HOST_USED_FRACTION),
+        "swap_total_bytes": swap_total,
+        "swap_used_bytes": swap_used,
+        "swap_gate": bool(swap_used == 0),
+        "data_root": str(path),
+        "data_free_bytes": disk_free,
+        "disk_gate": bool(disk_free > FORMAL_MIN_FREE_BYTES),
+        "pass": bool(
+            total
+            and used_fraction < FORMAL_MAX_HOST_USED_FRACTION
+            and swap_used == 0
+            and disk_free > FORMAL_MIN_FREE_BYTES
+        ),
+    }
 
 
 def read_json(path: Path) -> Mapping[str, Any] | None:
@@ -147,6 +187,26 @@ class FinalPipeline:
     def mark(self, name: str, **extra: Any) -> None:
         payload = {"status": "PASS", "created_utc": now(), **extra}
         write_json(self.marker(name), payload)
+
+    def wait_for_formal_resources(self, purpose: str) -> dict[str, Any]:
+        """Do not start another builder while host RAM or disk is unsafe."""
+        while True:
+            snapshot = host_resource_snapshot()
+            if snapshot["pass"]:
+                return snapshot
+            self.status(
+                "formal_counterfactual",
+                "WAITING_FOR_RESOURCES",
+                purpose=purpose,
+                resource_gate=snapshot,
+            )
+            self.handle.write(
+                f"[WAITING_FOR_RESOURCES] {purpose}: "
+                + json.dumps(snapshot, sort_keys=True)
+                + "\n"
+            )
+            self.handle.flush()
+            time.sleep(POLL_SECONDS)
 
     def command(
         self,
@@ -233,6 +293,9 @@ class FinalPipeline:
             and gate.get("official_test_authority") is True
             and gate.get("lock_created_before_official_test") is True
             and gate.get("official_test_read_allowed_after_lock") is True
+            and isinstance(payload.get("selection_seed_set"), list)
+            and payload.get("selection_seed_aggregation")
+            == "mean_probability_ensemble_over_seed_set"
             and payload.get("selection_protocol")
             and payload.get("selection_protocol_sha256")
             and selection_digest_valid
@@ -892,6 +955,15 @@ class FinalPipeline:
             ]
             if split == "train" and int(horizon) == 32:
                 command.extend(["--derive-horizons", "1", "8", "16", "32"])
+            resource_snapshot = self.wait_for_formal_resources(
+                f"formal {split} H={horizon} shard={index}"
+            )
+            self.handle.write(
+                "[RESOURCE_GATE_PASS] "
+                + json.dumps(resource_snapshot, sort_keys=True)
+                + "\n"
+            )
+            self.handle.flush()
             process, handle = self.start(
                 command,
                 cwd=ROOT,
@@ -1066,6 +1138,9 @@ class FinalPipeline:
             and payload.get("official_test_used_for_search") is False
             and payload.get("official_test_access")
             == "BLOCKED_BEFORE_FINAL_SELECTION_LOCK"
+            and (payload.get("seed_aggregation") or {}).get("best_seed_used_for_selection") is False
+            and sorted(int(value) for value in (payload.get("selected") or {}).get("seed_set", ()))
+            == sorted(int(value) for value in payload.get("seeds", ()))
         ):
             return target
         protocol_root = OUT / "selection_protocol"
@@ -1098,6 +1173,12 @@ class FinalPipeline:
         if not payload or payload.get("status") != "PASS":
             raise RuntimeError("selection manifest is not PASS")
         selected_horizon = int((payload.get("selected_aggregate") or {}).get("horizon", -1))
+        seed_set = sorted(int(value) for value in payload.get("seeds", ()))
+        selected = payload.get("selected") or {}
+        if not seed_set or sorted(int(value) for value in selected.get("seed_set", ())) != seed_set:
+            raise RuntimeError("selection manifest does not bind the complete seed set")
+        if (payload.get("seed_aggregation") or {}).get("best_seed_used_for_selection") is not False:
+            raise RuntimeError("selection manifest permits best-seed selection")
         candidates = payload.get("candidates")
         if not isinstance(candidates, list) or selected_horizon not in (1, 8, 16, 32):
             raise RuntimeError("selection manifest has no valid selected horizon")
@@ -1111,23 +1192,90 @@ class FinalPipeline:
                 if int(row.get("horizon", -1)) == selected_horizon
                 and row.get("model") == model
             ]
-            if not rows:
+            if sorted(int(row.get("seed", -1)) for row in rows) != seed_set:
                 raise RuntimeError(f"selection manifest missing model={model}")
-            row = min(
-                rows,
-                key=lambda value: (
-                    float((value.get("metrics") or {}).get("nll", float("inf"))),
-                    -float((value.get("metrics") or {}).get("best_action_accuracy", 0.0)),
-                    int(value.get("seed", 0)),
-                ),
+            rows = sorted(rows, key=lambda value: int(value["seed"]))
+            ensemble_root = OUT / "selection_protocol" / "seed_ensembles" / f"h{selected_horizon}" / model
+            checkpoint = self.ensure_seed_ensemble(
+                rows, ensemble_root, "model.pth", "checkpoint", seed_set
             )
-            checkpoint = Path(str(row["checkpoint"])).resolve()
-            calibrated_checkpoint = Path(str(row["calibrated_checkpoint"])).resolve()
-            if not checkpoint.is_file() or not calibrated_checkpoint.is_file():
-                raise RuntimeError(f"selected policy artifact is missing for {model}")
+            calibrated_checkpoint = self.ensure_seed_ensemble(
+                rows, ensemble_root, "model_calibrated.pth", "calibrated_checkpoint", seed_set
+            )
             policies[model] = checkpoint.parent
             calibrated[model] = calibrated_checkpoint
         return policies, calibrated
+
+    def ensure_seed_ensemble(
+        self,
+        rows: Sequence[Mapping[str, Any]],
+        output_dir: Path,
+        filename: str,
+        member_field: str,
+        seed_set: Sequence[int],
+    ) -> Path:
+        """Materialize a digest-bound probability ensemble over every seed."""
+        members = []
+        for row in sorted(rows, key=lambda item: int(item["seed"])):
+            member_path = Path(str(row[member_field])).resolve()
+            if not member_path.is_file():
+                raise RuntimeError(f"seed ensemble member is missing: {member_path}")
+            members.append(
+                {
+                    "seed": int(row["seed"]),
+                    "path": str(member_path),
+                    "sha256": "sha256:" + sha256(member_path),
+                }
+            )
+        if [int(item["seed"]) for item in members] != list(seed_set):
+            raise RuntimeError("seed ensemble member set does not match selection seed_set")
+        model_name = str(rows[0].get("model", ""))
+        manifest_path = output_dir / f"{filename}.manifest.json"
+        target = output_dir / filename
+        expected_members = [
+            {"seed": item["seed"], "path": item["path"], "sha256": item["sha256"]}
+            for item in members
+        ]
+        existing = read_json(manifest_path)
+        if (
+            target.is_file()
+            and existing
+            and existing.get("status") == "PASS"
+            and existing.get("checkpoint_type") == "seed_ensemble"
+            and existing.get("model_name") == model_name
+            and existing.get("seed_set") == list(seed_set)
+            and existing.get("members") == expected_members
+        ):
+            return target
+        output_dir.mkdir(parents=True, exist_ok=True)
+        if target.exists():
+            archive(target)
+        if manifest_path.exists():
+            archive(manifest_path)
+        import torch
+
+        payload = {
+            "checkpoint_type": "seed_ensemble",
+            "model_name": model_name,
+            "seed_set": list(seed_set),
+            "aggregation": "mean_probability",
+            "members": members,
+        }
+        torch.save(payload, target)
+        write_json(
+            manifest_path,
+            {
+                "status": "PASS",
+                "checkpoint_type": "seed_ensemble",
+                "aggregation": "mean_probability",
+                "model_name": model_name,
+                "seed_set": list(seed_set),
+                "members": expected_members,
+                "checkpoint": str(target),
+                "checkpoint_sha256": "sha256:" + sha256(target),
+            },
+        )
+        return target
 
     def ensure_policies(self, train: Path, split: Path) -> Mapping[str, Path]:
         specs = (
@@ -1248,9 +1396,14 @@ class FinalPipeline:
         threshold_control = selection.get("selected_threshold_control") or {}
         mlp_control = selection.get("selected_mlp_control") or {}
         supervision = selection.get("equal_supervision") or {}
+        seed_set = sorted(int(value) for value in selection.get("seeds", ()))
         for field in ("horizon", "model"):
             if field not in selected_aggregate or field not in selected:
                 raise RuntimeError(f"selection manifest is missing selected {field}")
+        if not seed_set or sorted(int(value) for value in selected.get("seed_set", ())) != seed_set:
+            raise RuntimeError("selection manifest seed_set is not bound to the final lock")
+        if (selection.get("seed_aggregation") or {}).get("best_seed_used_for_selection") is not False:
+            raise RuntimeError("final lock refuses best-seed selection")
         payload = read_json(lock)
         if self.final_lock_valid(lock, checkpoint):
             return lock
@@ -1302,6 +1455,8 @@ class FinalPipeline:
                         "batch_size": supervision.get("batch_size"),
                         "learning_rate": supervision.get("learning_rate"),
                         "seeds": selection.get("seeds"),
+                        "seed_set": seed_set,
+                        "seed_aggregation": "mean_probability_ensemble_over_seed_set",
                         "selection_protocol": str(selection_manifest),
                     },
                     sort_keys=True,

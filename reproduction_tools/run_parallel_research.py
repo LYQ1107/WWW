@@ -29,6 +29,7 @@ import json
 import os
 from pathlib import Path
 import shlex
+import shutil
 import subprocess
 import time
 from typing import Any, Dict, List, Optional
@@ -39,6 +40,8 @@ DEFAULT_MANIFEST = ROOT / "manifests/parallel_research.json"
 STATUS_DIR = ROOT / "outputs/research_parallel"
 STATUS_PATH = STATUS_DIR / "status.json"
 DASHBOARD_PATH = ROOT / "docs/PARALLEL_EXPERIMENT_STATUS.md"
+MIN_FREE_BYTES = 30 * 1024**3
+MAX_HOST_USED_FRACTION = 0.70
 
 
 def now() -> str:
@@ -111,9 +114,46 @@ def gpu_memory() -> Dict[str, int]:
     return result
 
 
+def host_resources() -> Dict[str, Any]:
+    values: Dict[str, int] = {}
+    try:
+        for line in Path("/proc/meminfo").read_text(encoding="ascii").splitlines():
+            name, raw = line.split(":", 1)
+            fields = raw.strip().split()
+            if fields and fields[0].isdigit():
+                values[name] = int(fields[0]) * 1024
+    except (OSError, ValueError):
+        values = {}
+    total = int(values.get("MemTotal", 0))
+    available = int(values.get("MemAvailable", values.get("MemFree", 0)))
+    swap_total = int(values.get("SwapTotal", 0))
+    swap_free = int(values.get("SwapFree", 0))
+    disk_free = int(shutil.disk_usage(ROOT).free)
+    used_fraction = (1.0 - available / total) if total else 1.0
+    swap_used = max(0, swap_total - swap_free)
+    return {
+        "ram_total_bytes": total,
+        "ram_available_bytes": available,
+        "ram_used_fraction": used_fraction,
+        "swap_used_bytes": swap_used,
+        "data_free_bytes": disk_free,
+        "pass": bool(
+            total
+            and used_fraction < MAX_HOST_USED_FRACTION
+            and swap_used == 0
+            and disk_free > MIN_FREE_BYTES
+        ),
+    }
+
+
 def write_state(rows: List[Dict[str, Any]], gpu_state: Optional[Dict[str, int]] = None) -> None:
     STATUS_DIR.mkdir(parents=True, exist_ok=True)
-    payload = {"updated_utc": now(), "gpu_memory_mib": gpu_state or gpu_memory(), "experiments": rows}
+    payload = {
+        "updated_utc": now(),
+        "gpu_memory_mib": gpu_state or gpu_memory(),
+        "host_resources": host_resources(),
+        "experiments": rows,
+    }
     temporary = STATUS_PATH.with_suffix(".tmp")
     temporary.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     temporary.replace(STATUS_PATH)
@@ -147,7 +187,16 @@ def write_state(rows: List[Dict[str, Any]], gpu_state: Optional[Dict[str, int]] 
         [
             "",
             "Current physical GPU memory (MiB): "
-            + ", ".join(f"GPU{k}={v}" for k, v in sorted((payload["gpu_memory_mib"] or {}).items(), key=lambda item: int(item[0])))
+            + ", ".join(
+                f"GPU{k}={v}"
+                for k, v in sorted(
+                    (payload["gpu_memory_mib"] or {}).items(),
+                    key=lambda item: int(item[0]),
+                )
+            )
+            + ".",
+            "Host resource gate: "
+            + ("PASS" if payload["host_resources"].get("pass") else "WAITING")
             + ".",
         ]
     )
@@ -219,6 +268,7 @@ def run(manifest_path: Path, poll_seconds: int, once: bool) -> None:
     write_state(rows)
     while True:
         memory = gpu_memory()
+        resources = host_resources()
         reserved_gpus = {gpu for gpu, used in memory.items() if used > 0}
         row_by_id = {row["id"]: row for row in rows}
         for exp in specs:
@@ -248,6 +298,9 @@ def run(manifest_path: Path, poll_seconds: int, once: bool) -> None:
                 continue
             if any(status != "COMPLETE" for status in dependencies):
                 row["status"] = "WAITING_DEPENDENCY"
+                continue
+            if not resources["pass"]:
+                row["status"] = "WAITING_HOST_RESOURCES"
                 continue
             gpu = str(exp.get("gpu", ""))
             if gpu and (memory.get(gpu, 0) > 0 or gpu in reserved_gpus):
