@@ -264,6 +264,12 @@ def build_v2_records(
     else:
         videos, images, gt_by_image, image_meta = gt_bundle
     cache = cache_obj if cache_obj is not None else FrozenPerceptionCache(cache_root)
+    # Keep the legacy/equivalence path eager, while allowing the production
+    # worker to inject a bounded lazy cache.  Both paths return the same
+    # immutable payload values; only host-side residency differs.
+    eager_payloads = None
+    if cache_obj is None:
+        eager_payloads = {}
     grouped = normalize_events(trace, video_ids=video_ids, order_index=order_index)
     if video_ids is not None:
         requested = {int(value) for value in video_ids}
@@ -312,14 +318,15 @@ def build_v2_records(
             last_selected_frame = max(int(event["_frame"]) for event in events)
             replay_until = last_selected_frame + int(horizon)
             keys = [key for key in keys if int(key[1]) <= replay_until]
-        # The cache is immutable for the formal replay.  Loading each key
-        # once per shard avoids re-checking and torch-loading the same future
-        # payload for every candidate branch while preserving the exact
-        # payload bytes and branch semantics.
-        payloads = {key: cache.load(*key) for key in keys}
+        if eager_payloads is not None:
+            eager_payloads = {key: cache.load(*key) for key in keys}
+
+        def payload_for(key):
+            return eager_payloads[key] if eager_payloads is not None else cache.load(*key)
+
         state = MutableGMTState()
         for key_index, key in enumerate(keys):
-            payload = payloads[key]
+            payload = payload_for(key)
             current_events = by_key.get(key, ())
             for event in current_events:
                 question = str(event.get("question"))
@@ -358,7 +365,7 @@ def build_v2_records(
                     for future_key in keys[key_index + 1 :]:
                         if int(future_key[1]) > int(key[1]) + horizon:
                             break
-                        future_payload = payloads[future_key]
+                        future_payload = payload_for(future_key)
                         future_actions = dict(actions.get(future_key, {}))
                         future_memories = dict(memories.get(future_key, {}))
                         future_result = engine.step(
