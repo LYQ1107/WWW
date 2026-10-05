@@ -152,6 +152,40 @@ def custom_instances_to_coco_json(instances, img_id):
     
     return results
 
+
+def align_visiontrack_inputs_to_outputs(dataset_name, inputs, outputs):
+    """Return input records in the order used by GMT test outputs.
+
+    ``GMTDatasetMapper`` stores multi-view records in view blocks, while
+    ``GTRRCNN.sliding_inference_GMT`` appends each frame's views together and
+    postprocesses/returns them in frame-major order.  The evaluator must use
+    the same order when attaching ``image_id`` to each output.  Keep this
+    correction local to the VisionTrack evaluator so ordinary Detectron2
+    evaluators and single-view inputs retain their original behavior.
+    """
+    if dataset_name not in {"VISION_train", "VISION_test"} or len(inputs) <= 1:
+        return inputs
+    if len(inputs) != len(outputs):
+        raise ValueError(
+            "VisionTrack evaluator received different input/output lengths: "
+            f"{len(inputs)} != {len(outputs)}"
+        )
+    view_num = int(inputs[0].get("view_num", -1))
+    if view_num <= 1:
+        return inputs
+    if any(int(record.get("view_num", view_num)) != view_num for record in inputs):
+        raise ValueError("VisionTrack batch contains inconsistent view_num values")
+    frames, remainder = divmod(len(inputs), view_num)
+    if remainder:
+        raise ValueError(
+            "VisionTrack multi-view batch is not divisible by view_num: "
+            f"{len(inputs)} % {view_num} != 0"
+        )
+    # Input records are [view1 all frames, view2 all frames, ...]; model
+    # outputs are [frame1 all views, frame2 all views, ...].
+    return [inputs[view * frames + frame] for frame in range(frames) for view in range(view_num)]
+
+
 class MOTEvaluator(COCOEvaluator):
     def __init__(self, dataset_name, cfg, distributed, output_dir=None, *, use_fast_impl=True):
         super().__init__(dataset_name, cfg, distributed, output_dir=output_dir, use_fast_impl=use_fast_impl)
@@ -176,7 +210,10 @@ class MOTEvaluator(COCOEvaluator):
         """
         custom_instances_to_coco_json
         """
-        for input, output in zip(inputs, outputs):
+        aligned_inputs = align_visiontrack_inputs_to_outputs(
+            self.dataset_name, inputs, outputs
+        )
+        for input, output in zip(aligned_inputs, outputs):
             prediction = {"image_id": input["image_id"]}
             if "instances" in output:
                 instances = output["instances"].to(self._cpu_device)
