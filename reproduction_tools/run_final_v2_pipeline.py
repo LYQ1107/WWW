@@ -515,7 +515,13 @@ class FinalPipeline:
         groups = [[] for _ in GPU_GROUPS]
         for index, video_id in enumerate(video_ids):
             groups[index % len(groups)].append(video_id)
-        pending = []
+        # Each formal GMT shard materializes a large cache/association state
+        # on the host.  Launching all four shards together exhausted the
+        # 124-GiB machine (the kernel OOM-killed one shard before it emitted
+        # a manifest).  Keep the GPU rotation, but serialize shards so the
+        # previous process can release its host memory before the next one
+        # starts.
+        failures = []
         for index, video_group in enumerate(groups):
             output = split_root / f"shard_{index}.jsonl"
             manifest = Path(str(output) + ".manifest.json")
@@ -558,13 +564,11 @@ class FinalPipeline:
                 env={"CUDA_VISIBLE_DEVICES": GPU_GROUPS[index]},
                 log_name=f"formal_{split}_shard_{index}",
             )
-            pending.append((index, process, handle, output, manifest))
-        failures = []
-        for index, process, handle, output, manifest in pending:
             code = process.wait()
             handle.close()
             if code or not self.formal_manifest_pass(manifest):
                 failures.append({"shard": index, "code": code, "manifest": str(manifest)})
+                break
         if failures:
             raise RuntimeError(f"formal {split} shard failures: {failures}")
         shards = [split_root / f"shard_{index}.jsonl" for index in range(len(groups))]
