@@ -18,7 +18,7 @@ from typing import Any, Mapping
 
 import torch
 
-from build_jev_counterfactual_dataset import iou, load_gt, normalize_events
+from build_jev_counterfactual_dataset import iou, normalize_events
 from build_jev_counterfactual_v2 import build_formal_gmt_engine, event_maps
 from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
 from jev_counterfactual_v2 import CachedPerceptionMutableAssociationV2, MutableGMTState
@@ -30,6 +30,19 @@ def sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
             digest.update(block)
     return "sha256:" + digest.hexdigest()
+
+
+def load_image_index(path: Path):
+    """Read only image geometry/index metadata; never parse GT annotations."""
+
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    images = {}
+    image_meta = {}
+    for image in payload.get("images", ()):
+        image_id = int(image["id"])
+        images[(int(image["video_id"]), int(image["view_id"]), int(image["frame_id"]))] = image_id
+        image_meta[image_id] = image
+    return images, image_meta
 
 
 def _state_from_snapshot(snapshot: Mapping[str, Any], feature_dim: int) -> MutableGMTState:
@@ -123,7 +136,7 @@ def replay(
 ) -> Mapping[str, Any]:
     grouped = normalize_events(trace)
     cache = FrozenPerceptionCache(cache_root)
-    _videos, images, _gt_by_image, image_meta = load_gt(annotations)
+    images, image_meta = load_image_index(annotations)
     reference_payload = json.loads(reference_predictions.read_text(encoding="utf-8"))
     reference_by_image: dict[int, list[Mapping[str, Any]]] = {}
     for item in reference_payload:
