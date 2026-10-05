@@ -456,6 +456,9 @@ def main() -> None:
     # to enter the architecture/policy search pool.  A pre-lock diagnostic
     # process may already exist; this guard applies to every new process and
     # makes the protocol boundary fail closed.
+    official_test_generation_authorized = False
+    official_test_lock_sha256 = None
+    official_test_selection_protocol_sha256 = None
     if args.annotations.name == "test.json":
         try:
             lock = json.loads(FINAL_SELECTION_LOCK.read_text(encoding="utf-8"))
@@ -488,6 +491,11 @@ def main() -> None:
                 "official TEST counterfactual generation is blocked until the "
                 "canonical FINAL_SELECTION_LOCK for model_20000 exists"
             )
+        official_test_generation_authorized = True
+        official_test_lock_sha256 = "sha256:" + sha256(FINAL_SELECTION_LOCK)
+        official_test_selection_protocol_sha256 = (lock or {}).get(
+            "selection_protocol_sha256"
+        )
     if args.output.exists():
         raise RuntimeError(f"refusing to overwrite {args.output}")
     trace = args.trace.resolve()
@@ -543,6 +551,9 @@ def main() -> None:
         "counterfactual_engine": ENGINE_VERSION,
         "association_backend": args.association_backend,
         "formal_gmt_association_adapter": args.association_backend == "formal_gmt_transformer",
+        "official_test_generation_authorized": official_test_generation_authorized,
+        "official_test_lock_sha256": official_test_lock_sha256,
+        "official_test_selection_protocol_sha256": official_test_selection_protocol_sha256,
         "review_note": (
             "formal GMT association-transformer replay over frozen perception and "
             "branch-local state"

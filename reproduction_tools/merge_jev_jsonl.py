@@ -29,10 +29,29 @@ def merge(inputs: Sequence[Path], output: Path) -> Mapping[str, object]:
     horizons = set()
     checkpoints = set()
     backends = set()
+    official_test_locks = set()
+    official_test_selection_protocols = set()
+    official_test_authorized = set()
+    source_manifests = []
     with output.open("w", encoding="utf-8") as target:
         for path in inputs:
             if not path.is_file():
                 raise FileNotFoundError(path)
+            source_manifest_path = path.with_suffix(path.suffix + ".manifest.json")
+            if not source_manifest_path.is_file():
+                raise FileNotFoundError(source_manifest_path)
+            source_manifest = json.loads(source_manifest_path.read_text(encoding="utf-8"))
+            source_manifests.append(source_manifest)
+            if source_manifest.get("official_test_lock_sha256"):
+                official_test_locks.add(str(source_manifest["official_test_lock_sha256"]))
+            if source_manifest.get("official_test_selection_protocol_sha256"):
+                official_test_selection_protocols.add(
+                    str(source_manifest["official_test_selection_protocol_sha256"])
+                )
+            if "official_test_generation_authorized" in source_manifest:
+                official_test_authorized.add(
+                    bool(source_manifest["official_test_generation_authorized"])
+                )
             with path.open(encoding="utf-8") as source:
                 for line_number, line in enumerate(source, 1):
                     if not line.strip():
@@ -63,6 +82,22 @@ def merge(inputs: Sequence[Path], output: Path) -> Mapping[str, object]:
         "horizons": sorted(horizons),
         "gmt_checkpoint_sha256": sorted(checkpoints),
         "association_backends": sorted(backends),
+        "official_test_lock_sha256": (
+            next(iter(official_test_locks)) if len(official_test_locks) == 1 else None
+        ),
+        "official_test_selection_protocol_sha256": (
+            next(iter(official_test_selection_protocols))
+            if len(official_test_selection_protocols) == 1
+            else None
+        ),
+        "official_test_generation_authorized": (
+            len(official_test_authorized) == 1
+            and next(iter(official_test_authorized)) is True
+            and all(
+                manifest.get("official_test_generation_authorized") is True
+                for manifest in source_manifests
+            )
+        ),
     }
     output.with_suffix(output.suffix + ".manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"

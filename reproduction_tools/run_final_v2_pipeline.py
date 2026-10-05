@@ -646,6 +646,7 @@ class FinalPipeline:
         *,
         formal: bool = True,
         expected_horizon: int | None = None,
+        expected_official_test_lock_sha256: str | None = None,
     ) -> bool:
         payload = read_json(path)
         if not payload or payload.get("status") != "PASS":
@@ -656,6 +657,12 @@ class FinalPipeline:
             payload.get("association_backend") != "formal_gmt_transformer"
             or payload.get("formal_gmt_association_adapter") is not True
             or int(payload.get("skipped_events", -1)) != 0
+        ):
+            return False
+        if expected_official_test_lock_sha256 is not None and (
+            payload.get("official_test_generation_authorized") is not True
+            or payload.get("official_test_lock_sha256")
+            != expected_official_test_lock_sha256
         ):
             return False
         return True
@@ -674,6 +681,9 @@ class FinalPipeline:
                 raise RuntimeError(
                     "formal TEST counterfactual generation is blocked until FINAL_SELECTION_LOCK"
                 )
+            expected_official_test_lock_sha256 = "sha256:" + sha256(lock)
+        else:
+            expected_official_test_lock_sha256 = None
         annotation = DATASET / "annotations" / f"{split}.json"
         split_root = OUT / "formal" / split
         if horizon != 8:
@@ -684,9 +694,21 @@ class FinalPipeline:
         shard_paths = [split_root / f"shard_{index}.jsonl" for index in range(len(GPU_GROUPS))]
         shard_manifests = [Path(str(path) + ".manifest.json") for path in shard_paths]
         if (
-            self.formal_manifest_pass(merged_manifest, formal=False, expected_horizon=horizon)
+            self.formal_manifest_pass(
+                merged_manifest,
+                formal=False,
+                expected_horizon=horizon,
+                expected_official_test_lock_sha256=expected_official_test_lock_sha256,
+            )
             and merged.is_file()
-            and all(self.formal_manifest_pass(path, expected_horizon=horizon) for path in shard_manifests)
+            and all(
+                self.formal_manifest_pass(
+                    path,
+                    expected_horizon=horizon,
+                    expected_official_test_lock_sha256=expected_official_test_lock_sha256,
+                )
+                for path in shard_manifests
+            )
         ):
             return merged
         video_ids = self.annotation_videos(annotation)
@@ -703,7 +725,14 @@ class FinalPipeline:
         for index, video_group in enumerate(groups):
             output = split_root / f"shard_{index}.jsonl"
             manifest = Path(str(output) + ".manifest.json")
-            if self.formal_manifest_pass(manifest, expected_horizon=horizon) and output.is_file():
+            if (
+                self.formal_manifest_pass(
+                    manifest,
+                    expected_horizon=horizon,
+                    expected_official_test_lock_sha256=expected_official_test_lock_sha256,
+                )
+                and output.is_file()
+            ):
                 continue
             archive(output)
             archive(manifest)
@@ -752,7 +781,9 @@ class FinalPipeline:
         shards = [split_root / f"shard_{index}.jsonl" for index in range(len(groups))]
         if not all(
             self.formal_manifest_pass(
-                Path(str(path) + ".manifest.json"), expected_horizon=horizon
+                Path(str(path) + ".manifest.json"),
+                expected_horizon=horizon,
+                expected_official_test_lock_sha256=expected_official_test_lock_sha256,
             )
             for path in shards
         ):
@@ -760,7 +791,10 @@ class FinalPipeline:
         if not (
             merged.is_file()
             and self.formal_manifest_pass(
-                merged_manifest, formal=False, expected_horizon=horizon
+                merged_manifest,
+                formal=False,
+                expected_horizon=horizon,
+                expected_official_test_lock_sha256=expected_official_test_lock_sha256,
             )
         ):
             archive(merged)
@@ -770,7 +804,10 @@ class FinalPipeline:
                 log_name=f"merge_formal_{split}",
             )
         if not self.formal_manifest_pass(
-            merged_manifest, formal=False, expected_horizon=horizon
+            merged_manifest,
+            formal=False,
+            expected_horizon=horizon,
+            expected_official_test_lock_sha256=expected_official_test_lock_sha256,
         ):
             raise RuntimeError(f"merged formal dataset failed validation: {merged}")
         marker = f"formal_{split}" if horizon == 8 else f"formal_{split}_h{horizon}"
