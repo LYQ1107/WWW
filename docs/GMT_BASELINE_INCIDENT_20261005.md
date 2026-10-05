@@ -19,7 +19,7 @@ TrackEval 数值明显低于预期数量级；在 raw detection、映射、源�
 | canonical OFF prediction | `/data1/liuyeqiang/WWW/outputs/research_final_v2/off/inference_test/inference_VISION_test/coco_instances_results.json` |
 | prediction SHA256 | `a8d2f5c4cc758a887276e59671831215d36a8949d07486a34d78076aaf3e7b3d` |
 | formal worktree | `/data1/liuyeqiang/WWW_jev_v2` |
-| current audit worktree HEAD | `dfbbdb8` |
+| current audit worktree HEAD | `9c0546d` plus the pending diagnostic tools/evidence recorded below |
 | strict traced run source commit | `f3187b8` (later commits only changed documentation/configuration of Git publication) |
 | prediction-converter last source change | `8d7078c3e29bb333388cd2df78e97b95c6792374` |
 | exact historical evaluation commit in manifest | `NOT_RECORDED; must not be guessed` |
@@ -77,6 +77,81 @@ This makes `EVAL_MAPPING_BUG` the leading root-cause candidate, but it is not
 yet the final diagnosis. Full TRAIN evidence, COCO/MOT round-trip, corrected
 OFF evaluation, and pre-JEV/source regression must still pass before the
 baseline is declared recovered.
+
+## Full TRAIN order audit
+
+The same source-derived mapping was run on the complete canonical TRAIN
+prediction file. The result is a deterministic, data-independent mapping
+effect, not a mini-subset artifact:
+
+| Direct diagnostic | Before remap | After deterministic order remap |
+| --- | ---: | ---: |
+| mean max IoU | 0.1258 | 0.7888 |
+| median max IoU | 0.0000 | 0.8415 |
+| Recall@IoU 0.5 | 10.15% | 89.91% |
+| Precision@IoU 0.5 | 11.11% | 98.46% |
+| F1@IoU 0.5 | 10.61% | 93.99% |
+| TP / FP / FN @IoU 0.5 | 60,553 / 484,351 / 536,196 | 536,530 / 8,374 / 60,219 |
+
+All 24 audited two-view videos report `FRAME_MAJOR_OUTPUT_VS_VIEW_BLOCK_INPUT`.
+The full evidence is retained at
+`/data1/liuyeqiang/WWW/outputs/research_final_v2/baseline_debug/output_order_train.json`
+(SHA256:
+`07ce57732fe43a52d13fd5c2e9bc235c0e260a5b9074415fdbb979baafdc9816`).
+
+## Corrected TEST diagnostic copy
+
+The canonical TEST prediction was copied through the same deterministic
+source-order remap. This is a diagnostic copy; the canonical OFF prediction
+and its original report were not overwritten. The corrected copy changed
+527,026 prediction rows and 57,994 image labels. Its SHA256 is
+`263f6aaedbac159e6c3c4a2703dd31b0ca0d24bfe7f351bd0807872c5af57903` and its
+manifest is
+`/data1/liuyeqiang/WWW/outputs/research_final_v2/baseline_debug/canonical_test_predictions_order_fixed.json.manifest.json`
+with SHA256
+`5fa0cd9c227bf9b0bdc16382de1125545f8a12231f345fbaffe6ff3e8fffb8f0`.
+
+Using the corrected copy in the existing permissive diagnostic TrackEval
+conversion gives:
+
+| Metric | Corrected diagnostic value |
+| --- | ---: |
+| HOTA | 67.442 |
+| DetA | 66.278 |
+| AssA | 68.992 |
+| IDF1 | 82.239 |
+| MOTA | 80.942 |
+| IDSW | 3,092 |
+| Frag | 8,004 |
+
+The metrics file is
+`/data1/liuyeqiang/WWW/outputs/research_final_v2/baseline_debug/corrected_test_eval/evaluation/metrics.json`
+(SHA256:
+`dfb5e83f96f3e70fc412938ab7db694555c39efdf5d6536da52a890882e11041`).
+The corresponding diagnostic cross-view values are CVIDF1 `79.0248`,
+sequential CVMA `80.9276`, and interleaved CVMA `74.2925`; the cross-view file
+is
+`/data1/liuyeqiang/WWW/outputs/research_final_v2/baseline_debug/corrected_test_eval/crossview/metrics.json`
+(SHA256:
+`ef9c3ce4cdbe992fd012aa11b2be0b34e660c751f3845d2d2230de6812f789e5`).
+These numbers support the mapping diagnosis, but are not yet official final
+paper numbers because source regression and the formal evaluator fix remain
+outstanding.
+
+## COCO/MOT round-trip audit
+
+The corrected prediction was checked against the prepared MOT rows for all
+527,474 prediction rows and a seeded 1,000-row sample. The audit passed with
+zero unknown image IDs, zero missing sequences, zero mismatches, maximum bbox
+absolute error `5.0e-7`, and maximum score absolute error `5.0e-7`.
+
+Evidence:
+`/data1/liuyeqiang/WWW/outputs/research_final_v2/baseline_debug/coco_mot_roundtrip.json`
+(SHA256:
+`0412381b261a07d7bfd69cf0e30abcbef8e440d55afc4518b2f0eb3736937bae`).
+This rules out the COCO-to-MOT numeric conversion as the primary explanation
+for the original anomaly; it does not by itself validate the final evaluator
+patch.
 
 ## Mandatory audit order
 
