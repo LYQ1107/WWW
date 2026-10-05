@@ -12,6 +12,28 @@ from typing import Iterable, Mapping, Sequence
 from jev_dataset_contract import validate_record
 
 
+PROVENANCE_FIELDS = (
+    "gmt_checkpoint_sha256",
+    "config_sha256",
+    "source_commit",
+    "counterfactual_engine_version",
+    "state_schema_version",
+    "utility_definition",
+    "association_backend",
+    "annotations_sha256",
+    "cache_sha256",
+    "trace_sha256",
+    "horizon",
+    "derived_horizons",
+    "prelock",
+    "selection_authority",
+    "official_result_authority",
+    "official_test_generation_authorized",
+    "official_test_lock_sha256",
+    "official_test_selection_protocol_sha256",
+)
+
+
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -24,6 +46,36 @@ def merge(inputs: Sequence[Path], output: Path) -> Mapping[str, object]:
     if output.exists():
         raise RuntimeError(f"refusing to overwrite {output}")
     output.parent.mkdir(parents=True, exist_ok=True)
+    if not inputs:
+        raise ValueError("at least one input shard is required")
+    source_manifests = []
+    for path in inputs:
+        if not path.is_file():
+            raise FileNotFoundError(path)
+        source_manifest_path = path.with_suffix(path.suffix + ".manifest.json")
+        if not source_manifest_path.is_file():
+            raise FileNotFoundError(source_manifest_path)
+        source_manifests.append(
+            json.loads(source_manifest_path.read_text(encoding="utf-8"))
+        )
+    reference = source_manifests[0]
+    missing = [field for field in PROVENANCE_FIELDS if field not in reference]
+    if missing:
+        raise ValueError(
+            "REFUSE_TO_MERGE: source shard is missing provenance fields: "
+            + ", ".join(missing)
+        )
+    for index, manifest in enumerate(source_manifests[1:], 1):
+        mismatches = {
+            field: (reference.get(field), manifest.get(field))
+            for field in PROVENANCE_FIELDS
+            if reference.get(field) != manifest.get(field)
+        }
+        if mismatches:
+            raise ValueError(
+                "REFUSE_TO_MERGE: shard provenance mismatch at index "
+                f"{index}: {json.dumps(mismatches, sort_keys=True)}"
+            )
     records = 0
     sequences = Counter()
     horizons = set()
@@ -32,16 +84,8 @@ def merge(inputs: Sequence[Path], output: Path) -> Mapping[str, object]:
     official_test_locks = set()
     official_test_selection_protocols = set()
     official_test_authorized = set()
-    source_manifests = []
     with output.open("w", encoding="utf-8") as target:
-        for path in inputs:
-            if not path.is_file():
-                raise FileNotFoundError(path)
-            source_manifest_path = path.with_suffix(path.suffix + ".manifest.json")
-            if not source_manifest_path.is_file():
-                raise FileNotFoundError(source_manifest_path)
-            source_manifest = json.loads(source_manifest_path.read_text(encoding="utf-8"))
-            source_manifests.append(source_manifest)
+        for path, source_manifest in zip(inputs, source_manifests):
             if source_manifest.get("official_test_lock_sha256"):
                 official_test_locks.add(str(source_manifest["official_test_lock_sha256"]))
             if source_manifest.get("official_test_selection_protocol_sha256"):
@@ -99,6 +143,9 @@ def merge(inputs: Sequence[Path], output: Path) -> Mapping[str, object]:
             )
         ),
     }
+    for field in PROVENANCE_FIELDS:
+        manifest[field] = reference.get(field)
+    manifest["provenance_consistency"] = "PASS"
     output.with_suffix(output.suffix + ".manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )

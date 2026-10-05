@@ -13,6 +13,7 @@ import datetime as dt
 import hashlib
 import json
 from pathlib import Path
+import subprocess
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 import torch
@@ -41,6 +42,27 @@ CANONICAL_CHECKPOINT_SHA256 = (
 FINAL_SELECTION_LOCK = Path(
     "/data1/liuyeqiang/WWW/outputs/research_final_v2/manifests/FINAL_SELECTION_LOCK.json"
 )
+STATE_SCHEMA_VERSION = 2
+UTILITY_DEFINITION = (
+    "future_correct_identity_duration - 0.5*future_identity_switches - "
+    "0.25*future_fragmentation - 0.5*future_collisions - memory_contamination; "
+    "sample_weight=0 for uninformative futures"
+)
+PRELOCK_SENTINEL = "DO_NOT_USE_FOR_SELECTION"
+
+
+def source_commit(source_root: Path) -> str:
+    """Return the exact source revision that produced a shard."""
+
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=source_root,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise RuntimeError(f"cannot determine source commit for {source_root}") from exc
 
 
 def cache_digest(cache_root: Path) -> str:
@@ -90,6 +112,8 @@ def score_rollout(
     images,
     gt_by_image,
     image_meta,
+    start_frame: Optional[int] = None,
+    max_horizon: Optional[int] = None,
 ) -> Dict[str, float]:
     track_targets: Dict[int, int] = {}
     target_tracks: Dict[int, int] = {}
@@ -105,6 +129,9 @@ def score_rollout(
     memory_targets: Dict[int, int] = {}
     for item in steps:
         payload = item["payload"]
+        if start_frame is not None and max_horizon is not None:
+            if int(payload["frame"]) > int(start_frame) + int(max_horizon):
+                continue
         result = item["result"]
         video_id = int(payload["video_id"])
         frame = int(payload["frame"])
@@ -217,9 +244,16 @@ def build_v2_records(
     max_events: Optional[int] = None,
     video_ids: Optional[Sequence[int]] = None,
     max_events_per_video: Optional[int] = None,
+    derive_horizons: Optional[Sequence[int]] = None,
 ):
     if association_backend not in {"cosine_contract", "formal_gmt_transformer"}:
         raise ValueError(f"unsupported association backend: {association_backend}")
+    horizons = sorted({int(value) for value in (derive_horizons or (horizon,))})
+    if not horizons or any(value < 1 or value > int(horizon) for value in horizons):
+        raise ValueError("derive_horizons must be positive and no greater than horizon")
+    if int(horizon) not in horizons:
+        horizons.append(int(horizon))
+        horizons.sort()
     videos, images, gt_by_image, image_meta = load_gt(annotations)
     cache = FrozenPerceptionCache(cache_root)
     grouped = normalize_events(trace, video_ids=video_ids)
@@ -330,12 +364,17 @@ def build_v2_records(
                                 "memory_actions": future_memories,
                             }
                         )
-                    outcome_map[candidate] = score_rollout(
-                        branch_steps,
-                        images=images,
-                        gt_by_image=gt_by_image,
-                        image_meta=image_meta,
-                    )
+                    outcome_map[candidate] = {
+                        str(branch_horizon): score_rollout(
+                            branch_steps,
+                            images=images,
+                            gt_by_image=gt_by_image,
+                            image_meta=image_meta,
+                            start_frame=int(key[1]),
+                            max_horizon=branch_horizon,
+                        )
+                        for branch_horizon in horizons
+                    }
 
                 state_data = {
                     "feature_vector": [float(value) for value in event["state_feature_vector"]],
@@ -353,20 +392,32 @@ def build_v2_records(
                     "association_backend": association_backend,
                     "perception_cache_version": str(payload.get("cache_version")),
                 }
-                records.append(
-                    make_record(
-                        dataset="VisionTrack",
-                        sequence=sequence,
-                        frame=int(event["_frame"]),
-                        view=int(event["_view"]),
-                        question_type=question,
-                        state=state_data,
-                        legal_actions=legal,
-                        action_outcomes=outcome_map,
-                        gmt_checkpoint_sha256=checkpoint_hash,
-                        horizon=horizon,
-                    )
+                record = make_record(
+                    dataset="VisionTrack",
+                    sequence=sequence,
+                    frame=int(event["_frame"]),
+                    view=int(event["_view"]),
+                    question_type=question,
+                    state=state_data,
+                    legal_actions=legal,
+                    action_outcomes={
+                        candidate: outcome_map[candidate][str(horizon)]
+                        for candidate in legal
+                    },
+                    gmt_checkpoint_sha256=checkpoint_hash,
+                    horizon=horizon,
                 )
+                # Preserve raw cumulative outcomes from one max-horizon rollout
+                # so smaller policy horizons can be derived without a second
+                # association simulation.
+                record["horizon_outcomes"] = {
+                    str(branch_horizon): {
+                        candidate: outcome_map[candidate][str(branch_horizon)]
+                        for candidate in legal
+                    }
+                    for branch_horizon in horizons
+                }
+                records.append(record)
                 stats[question] = stats.get(question, 0) + 1
 
             state_actions = actions.get(key)
@@ -449,6 +500,17 @@ def main() -> None:
     )
     parser.add_argument("--video-ids", type=int, nargs="*")
     parser.add_argument("--max-events-per-video", type=int)
+    parser.add_argument(
+        "--derive-horizons",
+        type=int,
+        nargs="*",
+        help="store cumulative raw outcomes for these horizons in one max-horizon rollout",
+    )
+    parser.add_argument(
+        "--prelock-diagnostic",
+        action="store_true",
+        help="explicitly quarantine a TEST diagnostic; never an official artifact",
+    )
     args = parser.parse_args()
     if args.horizon < 1:
         raise ValueError("horizon must be positive")
@@ -459,7 +521,10 @@ def main() -> None:
     official_test_generation_authorized = False
     official_test_lock_sha256 = None
     official_test_selection_protocol_sha256 = None
-    if args.annotations.name == "test.json":
+    if args.prelock_diagnostic and args.annotations.name != "test.json":
+        raise ValueError("--prelock-diagnostic is only valid with TEST annotations")
+    prelock_diagnostic = bool(args.prelock_diagnostic)
+    if args.annotations.name == "test.json" and not prelock_diagnostic:
         try:
             lock = json.loads(FINAL_SELECTION_LOCK.read_text(encoding="utf-8"))
         except (OSError, ValueError):
@@ -498,10 +563,26 @@ def main() -> None:
         )
     if args.output.exists():
         raise RuntimeError(f"refusing to overwrite {args.output}")
+    sentinel = args.output.parent / PRELOCK_SENTINEL
+    if sentinel.exists() and not prelock_diagnostic:
+        raise RuntimeError(
+            f"refusing to read quarantined pre-lock TEST directory: {args.output.parent}"
+        )
     trace = args.trace.resolve()
     cache = args.cache.resolve()
     annotations = args.annotations.resolve()
     checkpoint = args.gmt_checkpoint.resolve()
+    source_root = Path(__file__).resolve().parents[1]
+    config_file = args.config_file.resolve() if args.config_file is not None else None
+    if prelock_diagnostic:
+        sentinel.parent.mkdir(parents=True, exist_ok=True)
+        if not sentinel.exists():
+            sentinel.write_text(
+                "QUARANTINED_PRELOCK_TEST_DIAGNOSTIC\n"
+                "NOT_FOR_SELECTION\n"
+                "NOT_FOR_FINAL_REPORT\n",
+                encoding="utf-8",
+            )
     engine = None
     if args.association_backend == "formal_gmt_transformer":
         if args.config_file is None:
@@ -524,6 +605,7 @@ def main() -> None:
         max_events=args.max_events,
         video_ids=args.video_ids,
         max_events_per_video=args.max_events_per_video,
+        derive_horizons=args.derive_horizons,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8") as handle:
@@ -541,6 +623,10 @@ def main() -> None:
         "gmt_checkpoint": str(checkpoint),
         "gmt_checkpoint_sha256": sha256(checkpoint),
         "horizon": int(args.horizon),
+        "derived_horizons": sorted(
+            {int(value) for value in (args.derive_horizons or (args.horizon,))}
+            | {int(args.horizon)}
+        ),
         "records": len(records),
         "max_events": args.max_events,
         "video_ids": args.video_ids,
@@ -549,16 +635,31 @@ def main() -> None:
         "skipped_events": skipped,
         "uses_future_gt": True,
         "counterfactual_engine": ENGINE_VERSION,
+        "counterfactual_engine_version": ENGINE_VERSION,
+        "state_schema_version": STATE_SCHEMA_VERSION,
+        "utility_definition": UTILITY_DEFINITION,
+        "source_root": str(source_root),
+        "source_commit": source_commit(source_root),
+        "config": str(config_file) if config_file is not None else None,
+        "config_sha256": sha256(config_file) if config_file is not None else None,
+        "cache_sha256": cache_digest(cache),
         "association_backend": args.association_backend,
         "formal_gmt_association_adapter": args.association_backend == "formal_gmt_transformer",
+        "prelock": prelock_diagnostic,
+        "selection_authority": annotations.name == "train.json" and not prelock_diagnostic,
+        "official_result_authority": annotations.name == "test.json" and not prelock_diagnostic,
         "official_test_generation_authorized": official_test_generation_authorized,
         "official_test_lock_sha256": official_test_lock_sha256,
         "official_test_selection_protocol_sha256": official_test_selection_protocol_sha256,
         "review_note": (
+            "QUARANTINED_PRELOCK_TEST_DIAGNOSTIC; NOT_FOR_SELECTION; NOT_FOR_FINAL_REPORT"
+            if prelock_diagnostic
+            else (
             "formal GMT association-transformer replay over frozen perception and "
             "branch-local state"
             if args.association_backend == "formal_gmt_transformer"
             else "cosine_contract is a protocol backend; do not use this manifest as formal GMT causal evidence"
+            )
         ),
     }
     args.output.with_suffix(args.output.suffix + ".manifest.json").write_text(

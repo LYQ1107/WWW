@@ -19,6 +19,8 @@ import subprocess
 import time
 from typing import Any, Iterable, Mapping, Sequence
 
+from off_equivalence import compare_predictions, compare_trace_events
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CANONICAL = Path("/data1/liuyeqiang/WWW")
@@ -34,6 +36,26 @@ CANONICAL_CHECKPOINT_SHA256 = (
     "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8"
 )
 CANONICAL_CHECKPOINT_DIGEST = "sha256:" + CANONICAL_CHECKPOINT_SHA256
+STATE_SCHEMA_VERSION = 2
+COUNTERFACTUAL_ENGINE_VERSION = "cached_perception_mutable_association_v2"
+UTILITY_DEFINITION = (
+    "future_correct_identity_duration - 0.5*future_identity_switches - "
+    "0.25*future_fragmentation - 0.5*future_collisions - memory_contamination; "
+    "sample_weight=0 for uninformative futures"
+)
+FORMAL_CONFIG = ROOT / "configs/VISION_test.yaml"
+
+
+def source_commit(root: Path = ROOT) -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise RuntimeError(f"cannot determine source commit for {root}") from exc
 
 
 def now() -> str:
@@ -413,7 +435,10 @@ class FinalPipeline:
                 raise RuntimeError(f"trace/cache alignment failed: {report}")
         self.ensure_off_equivalence(jobs[1]["output"], jobs[2]["output"])
         self.ensure_same_gpu_off_gate()
-        self.ensure_v2_off_replay_equivalence(jobs[1]["trace"])
+        self.ensure_trace_off_contract_gate(jobs[1]["trace"])
+        self.ensure_v2_simulator_off_replay_gate(
+            jobs[1]["trace"], jobs[1]["cache"]
+        )
         self.status("final_off_inference", "PASS", cache_validations={k: str(v) for k, v in validation_reports.items()})
         self.mark("final_off_inference")
         return {
@@ -540,23 +565,17 @@ class FinalPipeline:
         return output / "inference_VISION_test/coco_instances_results.json"
 
     def ensure_same_gpu_off_gate(self) -> Path:
-        """Run a strict traced/native OFF replay on one visible GPU.
-
-        The existing cross-GPU comparison is retained as a diagnostic.  It
-        cannot authorize formal replay because CUDA reduction order may differ
-        across devices.  This gate therefore uses fresh sequential runs on
-        one GPU and requires byte-for-byte equality of the final prediction
-        JSON list.
-        """
+        """Run the real-GMT native/traced trajectory comparison on one GPU."""
         root = OUT / "off/same_gpu_strict"
         native_output = root / "native"
         traced_output = root / "traced"
-        trace = root / "traced_off.jsonl"
+        native_trace = root / "native_off.jsonl"
+        traced_trace = root / "traced_off.jsonl"
         for name, output, trace_path in (
-            ("native", native_output, None),
-            ("traced", traced_output, trace),
+            ("native", native_output, native_trace),
+            ("traced", traced_output, traced_trace),
         ):
-            if not self.inference_complete(output, "VISION_test"):
+            if not self.inference_complete(output, "VISION_test") or not trace_path.is_file():
                 for path in (output, trace_path):
                     if isinstance(path, Path):
                         archive(path)
@@ -576,10 +595,26 @@ class FinalPipeline:
                 )
         native = json.loads(self._result_path(native_output).read_text(encoding="utf-8"))
         traced = json.loads(self._result_path(traced_output).read_text(encoding="utf-8"))
+        prediction_comparison = dict(
+            compare_predictions(
+                self._result_path(native_output),
+                self._result_path(traced_output),
+            )
+        )
+        prediction_comparison["native_sha256"] = sha256(self._result_path(native_output))
+        prediction_comparison["traced_sha256"] = sha256(self._result_path(traced_output))
+        trace_comparison = compare_trace_events(native_trace, traced_trace)
+        trajectory_pass = bool(
+            prediction_comparison["discrete_trajectory_equal"]
+            and prediction_comparison["float_evidence_equal"]
+            and trace_comparison["action_sequence_equal"]
+            and trace_comparison["trace_float_evidence_equal"]
+            and trace_comparison["future_gt_violations"] == 0
+        )
         report_path = OUT / "off/same_gpu_off_gate.json"
         report = {
-            "status": "PASS" if native == traced else "FAIL",
-            "gate_type": "STRICT_SAME_GPU_OFF",
+            "status": "PASS" if trajectory_pass else "FAIL",
+            "gate_type": "STRICT_SAME_GPU_OFF_TRAJECTORY",
             "gate_authority": "FORMAL_REPLAY_PREREQUISITE",
             "official_selection_authority": False,
             "official_test_authority": False,
@@ -589,19 +624,22 @@ class FinalPipeline:
             "config": str(ROOT / "configs/VISION_test.yaml"),
             "native_result": str(self._result_path(native_output)),
             "traced_result": str(self._result_path(traced_output)),
-            "native_result_sha256": sha256(self._result_path(native_output)),
-            "traced_result_sha256": sha256(self._result_path(traced_output)),
-            "native_detection_count": len(native),
-            "traced_detection_count": len(traced),
-            "prediction_json_equal": native == traced,
-            "image_id_set_equal": {int(x["image_id"]) for x in native}
-            == {int(x["image_id"]) for x in traced},
-            "track_id_set_equal": {int(x["track_id"]) for x in native}
-            == {int(x["track_id"]) for x in traced},
+            "native_trace": str(native_trace),
+            "traced_trace": str(traced_trace),
+            "native_result_sha256": prediction_comparison["native_sha256"],
+            "traced_result_sha256": prediction_comparison["traced_sha256"],
+            "prediction_json_equal": prediction_comparison["raw_json_equal"],
+            "prediction_comparison": prediction_comparison,
+            "trace_comparison": trace_comparison,
+            "new_id_events_exact": trace_comparison["action_sequence_equal"],
+            "reactivation_events_exact": trace_comparison["action_sequence_equal"],
+            "frame_assignment_exact": prediction_comparison["discrete_trajectory_equal"],
             "strict_definition": {
-                "row_order": True,
-                "all_prediction_fields": True,
-                "float_tolerance": 0.0,
+                "discrete_fields": ["image_id", "category_id", "track_id"],
+                "discrete_trajectory": "exact",
+                "float_fields": ["bbox", "score", "state_feature_vector", "probabilities"],
+                "float_tolerance": {"atol": 1e-6, "rtol": 1e-6},
+                "raw_json_equal": "audit_only",
             },
         }
         write_json(report_path, report)
@@ -610,8 +648,9 @@ class FinalPipeline:
         self.mark("same_gpu_off_gate", report=str(report_path))
         return report_path
 
-    def ensure_v2_off_replay_equivalence(self, trace: Path) -> Path:
-        output = OUT / "off/v2_off_replay_equivalence.json"
+    def ensure_trace_off_contract_gate(self, trace: Path) -> Path:
+        """Gate 4A: validate the causal OFF trace contract only."""
+        output = OUT / "off/trace_off_contract_gate.json"
         if (read_json(output) or {}).get("status") == "PASS":
             return output
         if output.exists():
@@ -628,11 +667,58 @@ class FinalPipeline:
                 "--output",
                 output,
             ],
-            log_name="validate_v2_off_replay_equivalence",
+            log_name="validate_trace_off_contract_gate",
         )
         if (read_json(output) or {}).get("status") != "PASS":
-            raise RuntimeError("v2 OFF replay equivalence failed")
-        self.mark("v2_off_replay_equivalence", report=str(output))
+            raise RuntimeError("4A OFF trace contract gate failed")
+        self.mark("trace_off_contract_gate", report=str(output))
+        return output
+
+    def ensure_v2_off_replay_equivalence(self, trace: Path) -> Path:
+        """Compatibility alias for the split 4A trace-contract gate."""
+        return self.ensure_trace_off_contract_gate(trace)
+
+    def ensure_v2_simulator_off_replay_gate(self, trace: Path, cache: Path) -> Path:
+        """Gate 4B: run the formal GMT no-intervention simulator replay."""
+        output = OUT / "off/v2_simulator_off_replay_gate.json"
+        if (read_json(output) or {}).get("status") == "PASS":
+            return output
+        contract = OUT / "off/trace_off_contract_gate.json"
+        if (read_json(contract) or {}).get("status") != "PASS":
+            raise RuntimeError("4B simulator replay is blocked until 4A PASS")
+        if output.exists():
+            archive(output)
+        self.command(
+            [
+                PYTHON,
+                "-u",
+                ROOT / "reproduction_tools/validate_v2_simulator_off_replay.py",
+                "--trace",
+                trace,
+                "--cache",
+                cache,
+                "--annotations",
+                DATASET / "annotations/test.json",
+                "--reference-predictions",
+                OUT / "off/same_gpu_strict/traced/inference_VISION_test/coco_instances_results.json",
+                "--gmt-checkpoint",
+                CHECKPOINT,
+                "--config-file",
+                FORMAL_CONFIG,
+                "--output",
+                output,
+                "--device",
+                "cuda:0",
+                "--view-num",
+                "2",
+                "--history-limit",
+                "80",
+            ],
+            log_name="validate_v2_simulator_off_replay",
+        )
+        if (read_json(output) or {}).get("status") != "PASS":
+            raise RuntimeError("4B v2 simulator OFF replay gate failed")
+        self.mark("v2_simulator_off_replay_gate", report=str(output))
         return output
 
     @staticmethod
@@ -647,11 +733,35 @@ class FinalPipeline:
         formal: bool = True,
         expected_horizon: int | None = None,
         expected_official_test_lock_sha256: str | None = None,
+        expected_selection_authority: bool | None = None,
+        expected_official_result_authority: bool | None = None,
     ) -> bool:
         payload = read_json(path)
         if not payload or payload.get("status") != "PASS":
             return False
         if expected_horizon is not None and int(payload.get("horizon", -1)) != int(expected_horizon):
+            return False
+        if expected_horizon == 32 and not {1, 8, 16, 32}.issubset(
+            {int(value) for value in payload.get("derived_horizons", ())}
+        ):
+            return False
+        if payload.get("gmt_checkpoint_sha256") != CANONICAL_CHECKPOINT_DIGEST:
+            return False
+        if payload.get("source_commit") != source_commit(ROOT):
+            return False
+        if payload.get("config_sha256") != sha256(FORMAL_CONFIG):
+            return False
+        if payload.get("counterfactual_engine_version") != COUNTERFACTUAL_ENGINE_VERSION:
+            return False
+        if int(payload.get("state_schema_version", -1)) != STATE_SCHEMA_VERSION:
+            return False
+        if payload.get("utility_definition") != UTILITY_DEFINITION:
+            return False
+        if payload.get("prelock") is not False:
+            return False
+        if expected_selection_authority is not None and payload.get("selection_authority") is not expected_selection_authority:
+            return False
+        if expected_official_result_authority is not None and payload.get("official_result_authority") is not expected_official_result_authority:
             return False
         if formal and (
             payload.get("association_backend") != "formal_gmt_transformer"
@@ -682,10 +792,19 @@ class FinalPipeline:
                     "formal TEST counterfactual generation is blocked until FINAL_SELECTION_LOCK"
                 )
             expected_official_test_lock_sha256 = "sha256:" + sha256(lock)
+            expected_selection_authority = False
+            expected_official_result_authority = True
         else:
             expected_official_test_lock_sha256 = None
+            expected_selection_authority = True
+            expected_official_result_authority = False
         annotation = DATASET / "annotations" / f"{split}.json"
         split_root = OUT / "formal" / split
+        if split == "test":
+            # Any pre-lock diagnostic lives under formal/test and is forever
+            # quarantined.  Official TEST gets a distinct namespace and must
+            # be regenerated after the canonical lock.
+            split_root = OUT / "formal" / "test_official"
         if horizon != 8:
             split_root = split_root / f"horizon_{horizon}"
         split_root.mkdir(parents=True, exist_ok=True)
@@ -699,6 +818,8 @@ class FinalPipeline:
                 formal=False,
                 expected_horizon=horizon,
                 expected_official_test_lock_sha256=expected_official_test_lock_sha256,
+                expected_selection_authority=expected_selection_authority,
+                expected_official_result_authority=expected_official_result_authority,
             )
             and merged.is_file()
             and all(
@@ -706,6 +827,8 @@ class FinalPipeline:
                     path,
                     expected_horizon=horizon,
                     expected_official_test_lock_sha256=expected_official_test_lock_sha256,
+                    expected_selection_authority=expected_selection_authority,
+                    expected_official_result_authority=expected_official_result_authority,
                 )
                 for path in shard_manifests
             )
@@ -730,6 +853,8 @@ class FinalPipeline:
                     manifest,
                     expected_horizon=horizon,
                     expected_official_test_lock_sha256=expected_official_test_lock_sha256,
+                    expected_selection_authority=expected_selection_authority,
+                    expected_official_result_authority=expected_official_result_authority,
                 )
                 and output.is_file()
             ):
@@ -765,6 +890,8 @@ class FinalPipeline:
                 "--video-ids",
                 *[str(value) for value in video_group],
             ]
+            if split == "train" and int(horizon) == 32:
+                command.extend(["--derive-horizons", "1", "8", "16", "32"])
             process, handle = self.start(
                 command,
                 cwd=ROOT,
@@ -773,7 +900,13 @@ class FinalPipeline:
             )
             code = process.wait()
             handle.close()
-            if code or not self.formal_manifest_pass(manifest, expected_horizon=horizon):
+            if code or not self.formal_manifest_pass(
+                manifest,
+                expected_horizon=horizon,
+                expected_official_test_lock_sha256=expected_official_test_lock_sha256,
+                expected_selection_authority=expected_selection_authority,
+                expected_official_result_authority=expected_official_result_authority,
+            ):
                 failures.append({"shard": index, "code": code, "manifest": str(manifest)})
                 break
         if failures:
@@ -784,6 +917,8 @@ class FinalPipeline:
                 Path(str(path) + ".manifest.json"),
                 expected_horizon=horizon,
                 expected_official_test_lock_sha256=expected_official_test_lock_sha256,
+                expected_selection_authority=expected_selection_authority,
+                expected_official_result_authority=expected_official_result_authority,
             )
             for path in shards
         ):
@@ -795,6 +930,8 @@ class FinalPipeline:
                 formal=False,
                 expected_horizon=horizon,
                 expected_official_test_lock_sha256=expected_official_test_lock_sha256,
+                expected_selection_authority=expected_selection_authority,
+                expected_official_result_authority=expected_official_result_authority,
             )
         ):
             archive(merged)
@@ -808,6 +945,8 @@ class FinalPipeline:
             formal=False,
             expected_horizon=horizon,
             expected_official_test_lock_sha256=expected_official_test_lock_sha256,
+            expected_selection_authority=expected_selection_authority,
+            expected_official_result_authority=expected_official_result_authority,
         ):
             raise RuntimeError(f"merged formal dataset failed validation: {merged}")
         marker = f"formal_{split}" if horizon == 8 else f"formal_{split}_h{horizon}"
@@ -832,12 +971,50 @@ class FinalPipeline:
     def ensure_train_horizon_datasets(
         self, trace: Path, cache: Path
     ) -> Mapping[int, Path]:
-        """Build every policy-search horizon from TRAIN counterfactuals only."""
+        """Build one TRAIN H=32 rollout and derive all policy horizons."""
+        max_horizon = self.ensure_formal_split("train", trace, cache, horizon=32)
         datasets: dict[int, Path] = {}
         for horizon in (1, 8, 16, 32):
-            datasets[horizon] = self.ensure_formal_split(
-                "train", trace, cache, horizon=horizon
+            if horizon == 32:
+                datasets[horizon] = max_horizon
+                continue
+            root = OUT / "formal" / "train" / f"horizon_{horizon}"
+            output = root / "formal_train_full_v2.jsonl"
+            manifest = Path(str(output) + ".manifest.json")
+            if output.is_file() and self.formal_manifest_pass(
+                manifest,
+                formal=False,
+                expected_horizon=horizon,
+                expected_selection_authority=True,
+                expected_official_result_authority=False,
+            ):
+                datasets[horizon] = output
+                continue
+            archive(output)
+            archive(manifest)
+            self.command(
+                [
+                    PYTHON,
+                    "-u",
+                    ROOT / "reproduction_tools/derive_jev_horizon.py",
+                    "--input",
+                    max_horizon,
+                    "--output",
+                    output,
+                    "--horizon",
+                    str(horizon),
+                ],
+                log_name=f"derive_train_horizon_{horizon}",
             )
+            if not self.formal_manifest_pass(
+                manifest,
+                formal=False,
+                expected_horizon=horizon,
+                expected_selection_authority=True,
+                expected_official_result_authority=False,
+            ):
+                raise RuntimeError(f"derived TRAIN horizon {horizon} failed provenance validation")
+            datasets[horizon] = output
         return datasets
 
     def ensure_policy_split(self, train: Path) -> Path:

@@ -45,15 +45,34 @@ The scalar utility is a documented analysis choice, not the only reported
 outcome. Uninformative windows receive zero sample weight rather than an
 implicit `SKIP_MEMORY` label.
 
+Each shard manifest also locks the checkpoint, config, source commit, engine
+version, state schema, utility definition, association backend, annotation/cache
+and trace digests, horizon, and authority flags. The merge tool refuses to mix
+different provenance, even when the checkpoint digest is the same. A low-memory
+implementation must first pass the bounded builder equivalence check (record
+count/state/legal actions/best action exact, utility within the declared
+tolerance).
+
+The formal policy suite uses one `Hmax=32` rollout. Each record preserves raw
+cumulative outcomes for `H=1/8/16/32`; smaller horizon datasets are derived
+from that evidence and do not rerun the association simulator.
+
 ## Limitations before formal use
 
 The v1 trace and labels cannot be relabeled as v2 merely by renaming a file.
 Formal v2 evidence requires a cache generated from the fixed proxy/final GMT
 checkpoint and a verified association-transformer adapter with cache/state
 replay equivalence checks. TEST generation is fail-closed until the canonical
-selection lock exists; an already-running pre-lock TEST diagnostic must be
-marked `PRELOCK_TEST_DIAGNOSTIC_DO_NOT_USE_FOR_SELECTION` and cannot affect
-policy or horizon selection.
+selection lock exists; an already-running pre-lock TEST diagnostic is marked
+`QUARANTINED_PRELOCK_TEST_DIAGNOSTIC`, gets a `DO_NOT_USE_FOR_SELECTION`
+sentinel, and cannot affect policy, horizon selection, or the final report.
+Official TEST is regenerated after the lock in a separate `test_official`
+namespace.
+
+The OFF validation is deliberately split: 4A validates the trace contract;
+4B reruns the frozen cache through the formal GMT simulator and compares the
+proposal, assignment, IDs, memory/stale-bank transitions, and final trajectory.
+4B must pass before counterfactual labels become authoritative.
 
 Every official TEST shard and merged manifest must also carry
 `official_test_generation_authorized: true` and the `sha256:` digest of the

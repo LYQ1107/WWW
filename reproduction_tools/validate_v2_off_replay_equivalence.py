@@ -32,7 +32,7 @@ def main() -> None:
     args = parser.parse_args()
     trace = args.trace.resolve()
     same_gpu = json.loads(args.same_gpu_report.resolve().read_text(encoding="utf-8"))
-    if same_gpu.get("status") != "PASS" or same_gpu.get("gate_type") != "STRICT_SAME_GPU_OFF":
+    if same_gpu.get("status") != "PASS" or same_gpu.get("gate_type") != "STRICT_SAME_GPU_OFF_TRAJECTORY":
         raise ValueError("strict same-GPU OFF gate is not PASS")
     counts = {
         "events": 0,
@@ -74,13 +74,18 @@ def main() -> None:
     bad = sum(value for key, value in counts.items() if key != "events" and value)
     report = {
         "status": "PASS" if counts["events"] and not bad else "FAIL",
-        "equivalence_mode": "v2_off_trace_replay_contract",
+        "equivalence_mode": "4A_trace_off_contract",
+        "gate_type": "TRACE_OFF_CONTRACT_GATE",
         "gate_authority": "FORMAL_REPLAY_PREREQUISITE",
         "official_selection_authority": False,
         "trace": str(trace),
         "trace_sha256": sha256(trace),
         "same_gpu_report": str(args.same_gpu_report.resolve()),
         "same_gpu_prediction_json_equal": same_gpu.get("prediction_json_equal"),
+        "same_gpu_discrete_trajectory_equal": (
+            same_gpu.get("prediction_comparison", {})
+            .get("discrete_trajectory_equal")
+        ),
         "counts": counts,
         "future_gt_access": False,
         "line_validation": "streamed_all_nonempty_lines",

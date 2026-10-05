@@ -20,13 +20,14 @@ carry `CANONICAL_MODEL20000_ONLY` and the canonical checkpoint digest.
 | 10016 | original v2 pipeline parent | running in formal counterfactual phase |
 | 10350 | original train formal shard 0, videos `1 5 9 13 17 21` | running |
 | 29280 | manually started low-memory train shard 1, videos `2 6 10 14 18 22` | running |
-| 33788 | pre-lock TEST shard 0 diagnostic, videos `1 5 9 13 17 21` | running; never used for selection |
+| 33788 | pre-lock TEST shard 0 diagnostic, videos `1 5 9 13 17 21` | running; quarantined by `formal/test/DO_NOT_USE_FOR_SELECTION`; never used for selection/final report |
 | 16606 | fresh strict same-GPU OFF gate | running sequential native then traced on visible GPU 0 |
 
 The existing formal processes are retained. New TEST counterfactual processes
 are fail-closed until the canonical final lock and selection-protocol digest
-exist; the already-running pre-lock diagnostic is retained and will be marked
-`PRELOCK_TEST_DIAGNOSTIC_DO_NOT_USE_FOR_SELECTION` if it completes.
+exist; the already-running pre-lock diagnostic is retained under a sentinel
+and will be marked `QUARANTINED_PRELOCK_TEST_DIAGNOSTIC` if it completes.
+Official TEST must be regenerated under `formal/test_official/` after the lock.
 
 ## Completed evidence
 
@@ -42,9 +43,9 @@ exist; the already-running pre-lock diagnostic is retained and will be marked
 
 ## Protocol gates still open
 
-1. Fresh strict same-GPU OFF exact equality and v2 replay-equivalence report.
+1. Fresh same-GPU OFF trajectory gate (discrete exact, float `1e-6` tolerance), 4A trace-contract gate, and 4B GMT simulator OFF replay gate.
 2. Complete formal TRAIN counterfactual shards and merged manifest.
-3. Generate TRAIN-only H=1/8/16/32 datasets without reading TEST.
+3. Generate one TRAIN Hmax=32 rollout and derive TRAIN-only H=1/8/16/32 datasets without reading TEST.
 4. Run all threshold/nonlinear-threshold and generic-MLP controls with equal
    supervision, three seeds, and validation-only calibration.
 5. Run feature audit, same-score/different-state analysis, reviewer controls,
@@ -53,3 +54,8 @@ exist; the already-running pre-lock diagnostic is retained and will be marked
    TEST counterfactuals and run official Oracle/baseline/JEV evaluation.
 
 No GO/NO-GO conclusion is authorized yet.
+
+Every formal shard must carry matching checkpoint/config/source-commit/engine/
+state-schema/utility/backend/annotation/cache/trace/horizon provenance. A
+different worktree is rejected at merge until its bounded semantic builder
+equivalence test passes.
