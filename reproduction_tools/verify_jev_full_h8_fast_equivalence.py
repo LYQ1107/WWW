@@ -69,6 +69,7 @@ def main() -> None:
     from build_jev_counterfactual_dataset import load_gt
     from build_jev_counterfactual_v2 import build_formal_gmt_engine, build_v2_records
     from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
+    from run_jev_full_h8_fast_worker import PayloadLRU
 
     partition_root = args.partition_root.resolve()
     partition_manifest = json.loads(
@@ -110,7 +111,7 @@ def main() -> None:
             max_events_per_video=args.events,
         )
         random.setstate(random_state)
-        fast_cache = FrozenPerceptionCache(args.cache.resolve())
+        fast_cache = PayloadLRU(FrozenPerceptionCache(args.cache.resolve()), max_entries=64)
         fast_records, fast_stats, fast_skipped = build_v2_records(
             trace=partition,
             cache_root=args.cache.resolve(),

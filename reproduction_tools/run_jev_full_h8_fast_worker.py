@@ -8,6 +8,7 @@ import fcntl
 import hashlib
 import json
 import os
+from collections import OrderedDict
 from pathlib import Path
 import threading
 import time
@@ -25,6 +26,27 @@ def sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+class PayloadLRU:
+    """Bound the host-side immutable payload cache without changing values."""
+
+    def __init__(self, cache: Any, max_entries: int = 512):
+        self.cache = cache
+        self.max_entries = max(32, int(max_entries))
+        self.payloads = OrderedDict()
+
+    def load(self, video_id: int, frame: int, view: int):
+        key = (int(video_id), int(frame), int(view))
+        payload = self.payloads.get(key)
+        if payload is None:
+            payload = self.cache.load(*key)
+            self.payloads[key] = payload
+            while len(self.payloads) > self.max_entries:
+                self.payloads.popitem(last=False)
+        else:
+            self.payloads.move_to_end(key)
+        return payload
 
 
 def atomic_json(path: Path, payload: Mapping[str, Any]) -> None:
@@ -250,6 +272,7 @@ def main() -> None:
     parser.add_argument("--view-num", type=int, default=2)
     parser.add_argument("--history-limit", type=int, default=80)
     parser.add_argument("--horizon", type=int, default=8)
+    parser.add_argument("--payload-cache-limit", type=int, default=512)
     args = parser.parse_args()
 
     import sys
@@ -269,7 +292,10 @@ def main() -> None:
         (partition_root / "cache_keys_by_video.json").read_text(encoding="utf-8")
     )
     args.output_root.resolve().mkdir(parents=True, exist_ok=True)
-    cache_obj = FrozenPerceptionCache(args.cache.resolve())
+    cache_obj = PayloadLRU(
+        FrozenPerceptionCache(args.cache.resolve()),
+        max_entries=args.payload_cache_limit,
+    )
     gt_bundle = load_gt(args.annotations.resolve())
     checkpoint_hash = sha256(args.checkpoint.resolve())
     source_commit_value = source_commit(Path(__file__).resolve().parents[1])
