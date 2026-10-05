@@ -1,4 +1,4 @@
-"""Train one locked H=8 comparison method over the fixed three seeds."""
+"""Train one locked H=8 comparison method for the first single-seed round."""
 
 from __future__ import annotations
 
@@ -19,7 +19,9 @@ from train_jev import choose_model
 
 ROOT = Path(__file__).resolve().parents[1]
 PYTHON = "/home/liuyeqiang/anaconda3/envs/GMT/bin/python"
-SEEDS = (20261003, 20261004, 20261005)
+# The first decision gate is intentionally speed-only.  Multi-seed robustness
+# is a later protocol phase and must not be mixed into this result.
+SEEDS = (20261003,)
 METHODS = {
     "question_threshold": "Learnable Threshold",
     "question_conditioned_mlp": "Generic MLP",
@@ -208,6 +210,8 @@ def main() -> None:
         "policy_split_sha256": sha256(split),
         "horizon": 8,
         "seeds": list(SEEDS),
+        "seed_policy": "TEMPORARILY_DISABLED_MULTI_SEED",
+        "multi_seed_robustness": "deferred_until_after_first_round_gate",
         "training": {
             "epochs": args.epochs,
             "batch_size": args.batch_size,

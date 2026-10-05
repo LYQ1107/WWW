@@ -8,15 +8,18 @@ import hashlib
 import json
 import math
 from pathlib import Path
-from typing import Any, Dict, Sequence
+from typing import Any, Dict, Mapping, Sequence
 
 import numpy as np
 import torch
 
-from aggregate_jev_three_way import METHODS, SEEDS, mean_std, write_markdown
+from aggregate_jev_three_way import METHODS
 from gtr.modeling.jev_runtime import build_controller_from_checkpoint
 from jev_compact_dataset import CompactJEVData, OUTCOME_FIELDS
 from train_jev import choose_model, load_policy_split
+
+
+SEEDS = (20261003,)
 
 
 def predict(model, data: CompactJEVData, indices: np.ndarray):
@@ -99,6 +102,51 @@ def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def write_first_round_markdown(report: Mapping[str, Any], path: Path) -> None:
+    lines = [
+        "# H=8 JEV Three-Way First-Round Validation",
+        "",
+        "This is the speed-only first round: one fixed seed (`20261003`) per method on the same full TRAIN H=8 dataset.",
+        "Multi-seed mean/std, ensemble, and robustness metrics are intentionally deferred.",
+        "Official TEST data is not read for this protocol.",
+        "",
+        "## Locked protocol",
+        "",
+        f"- Seed: `{report['seeds'][0]}`; sequence-disjoint split is fixed before training.",
+        f"- Training: `{report['training']['epochs']}` epochs, batch `{report['training']['batch_size']}`, AdamW, LR `{report['training']['learning_rate']}`.",
+        "- All methods consume identical state vectors, questions, legal actions, target probabilities, and sample weights.",
+        "- Temperature scaling is fitted on policy validation only and applied to all three methods.",
+        "",
+        "## First-round validation metrics",
+        "",
+        "| Method | Params | Val NLL | Best-action Accuracy | Brier | ECE | Validation Utility |",
+        "|---|---:|---:|---:|---:|---:|---:|",
+    ]
+    for item in report["methods"].values():
+        metrics = item["validation"]
+        lines.append(
+            f"| {item['label']} | {item['trainable_params']:,} | "
+            f"{metrics['nll']:.6f} | {metrics['accuracy']:.6f} | "
+            f"{metrics['brier']:.6f} | {metrics['ece']:.6f} | "
+            f"{metrics['val_utility']:.6f} |"
+        )
+    lines += [
+        "",
+        "## Gate for tracking comparison",
+        "",
+        f"`jev_beats_both_on_val_utility = {report['jev_beats_both_on_val_utility']}`.",
+        "The full tracking comparison is authorized only when this single-seed gate is true.",
+        "",
+        "## Reproducibility",
+        "",
+        f"- Shared dataset: `{report['dataset']}` (SHA-256 `{report['dataset_sha256']}`).",
+        f"- Policy split: `{report['policy_split']}` (SHA-256 `{report['policy_split_sha256']}`).",
+        f"- Generated UTC: `{report['created_utc']}`.",
+    ]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", type=Path, required=True)
@@ -139,24 +187,15 @@ def main() -> None:
     target_params = report_methods["jev"]["trainable_params"]
     scalar_fields = ("val_utility", "oracle_best_utility", "nll", "accuracy", "brier", "ece")
     for item in report_methods.values():
-        item["aggregate"] = {
-            field: mean_std([float(row[field]) for row in item["seed_metrics"]])
-            for field in scalar_fields
-        }
-        action_names = sorted({action for row in item["seed_metrics"] for action in row["action_distribution"]})
-        item["aggregate"]["action_distribution"] = {
-            action: mean_std([float(row["action_distribution"].get(action, 0.0)) for row in item["seed_metrics"]])
-            for action in action_names
-        }
-        mechanism_names = sorted({metric for row in item["seed_metrics"] for metric in row["mechanism"]})
-        item["aggregate"]["mechanism"] = {
-            metric: mean_std([float(row["mechanism"].get(metric, 0.0)) for row in item["seed_metrics"]])
-            for metric in mechanism_names
-        }
+        if len(item["seed_metrics"]) != 1 or item["seed_metrics"][0]["seed"] != 20261003:
+            raise ValueError("first-round report requires exactly seed 20261003")
+        # Keep the one observed validation result directly.  No mean/std or
+        # robustness statistic is computed in this temporary speed-only round.
+        item["validation"] = dict(item["seed_metrics"][0])
         item["relative_param_difference"] = abs(item["trainable_params"] - target_params) / max(1, target_params)
         if item["relative_param_difference"] >= 0.02:
             raise ValueError(f"parameter matching gate failed for {item['label']}")
-    jev_utility = report_methods["jev"]["aggregate"]["val_utility"]["mean"]
+    jev_utility = report_methods["jev"]["validation"]["val_utility"]
     manifest_path = args.dataset.resolve() / "manifest.json"
     report = {
         "status": "PASS",
@@ -168,18 +207,20 @@ def main() -> None:
         "horizon": 8,
         "state_dim": int(data.manifest["state_dim"]),
         "seeds": list(SEEDS),
+        "seed_policy": "TEMPORARILY_DISABLED_MULTI_SEED",
+        "multi_seed_robustness": "deferred_until_after_first_round_gate",
         "training": {"epochs": 50, "batch_size": 128, "optimizer": "AdamW", "learning_rate": 1e-3, "calibration": "temperature_scaling_policy_val_only"},
         "methods": report_methods,
         "jev_beats_both_on_val_utility": bool(
-            jev_utility > report_methods["question_threshold"]["aggregate"]["val_utility"]["mean"]
-            and jev_utility > report_methods["question_conditioned_mlp"]["aggregate"]["val_utility"]["mean"]
+            jev_utility > report_methods["question_threshold"]["validation"]["val_utility"]
+            and jev_utility > report_methods["question_conditioned_mlp"]["validation"]["val_utility"]
         ),
         "official_test_read": False,
-        "tracking_gate": "run Frozen GMT + three methods only if JEV mean validation utility beats both controls",
+        "tracking_gate": "run Frozen GMT + three methods only if single-seed JEV validation utility beats both controls",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    write_markdown(report, args.markdown)
+    write_first_round_markdown(report, args.markdown)
     print(json.dumps({"status": "PASS", "output": str(args.output), "jev_beats_both_on_val_utility": report["jev_beats_both_on_val_utility"]}, indent=2))
 
 

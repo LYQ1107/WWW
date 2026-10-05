@@ -69,39 +69,69 @@ def event_key(event: Mapping[str, Any], order: int) -> Tuple[int, int, int]:
 
 
 def normalize_events(
-    path: Path, *, video_ids: Optional[Sequence[int]] = None
+    path: Path,
+    *,
+    video_ids: Optional[Sequence[int]] = None,
+    order_index: Optional[Path] = None,
 ) -> Dict[int, List[Dict[str, Any]]]:
     grouped: Dict[int, List[Dict[str, Any]]] = {}
     wanted = {int(value) for value in video_ids} if video_ids is not None else None
     video_id_pattern = re.compile(rb'"video_id"\s*:\s*(-?\d+)') if wanted is not None else None
-    with path.open(encoding="utf-8") as handle:
-        for order, line in enumerate(handle):
-            if not line.strip():
-                continue
-            # Large canonical traces are partitioned by video for parallel
-            # replay.  Avoid JSON-decoding unrelated video records while
-            # preserving the original line order and full validation for all
-            # records that enter the selected partition.
-            if video_id_pattern is not None:
-                match = video_id_pattern.search(line.encode("utf-8"))
-                if match is not None and int(match.group(1)) not in wanted:
+    order_handle = order_index.open(encoding="utf-8") if order_index is not None else None
+    try:
+        with path.open(encoding="utf-8") as handle:
+            for local_order, line in enumerate(handle):
+                if not line.strip():
                     continue
-            event = json.loads(line)
-            context = dict(event.get("context", {}))
-            video_id = int(context.get("video_id", -1))
-            if video_id < 0:
-                raise ValueError("trace event is missing context.video_id")
-            if wanted is not None and video_id not in wanted:
-                continue
-            vector = event.get("state_feature_vector")
-            if not isinstance(vector, list) or not vector:
-                raise ValueError("trace event is missing state_feature_vector")
-            event["context"] = context
-            event["_order"] = order
-            event["_video_id"] = video_id
-            event["_frame"] = int(context.get("frame", 0))
-            event["_view"] = int(context.get("view", 0))
-            grouped.setdefault(video_id, []).append(event)
+                if order_handle is not None:
+                    order_line = order_handle.readline()
+                    if not order_line:
+                        raise ValueError(
+                            f"order index ended before trace at {path}:{local_order + 1}"
+                        )
+                    try:
+                        order_payload = json.loads(order_line)
+                        if isinstance(order_payload, Mapping):
+                            order = int(order_payload["source_line"])
+                        else:
+                            order = int(order_payload)
+                    except (KeyError, TypeError, ValueError, json.JSONDecodeError) as exc:
+                        raise ValueError(
+                            f"invalid source order at {order_index}:{local_order + 1}"
+                        ) from exc
+                else:
+                    order = local_order
+                # Large canonical traces are partitioned by video for parallel
+                # replay.  Avoid JSON-decoding unrelated video records while
+                # preserving the original line order and full validation for all
+                # records that enter the selected partition.
+                if video_id_pattern is not None:
+                    match = video_id_pattern.search(line.encode("utf-8"))
+                    if match is not None and int(match.group(1)) not in wanted:
+                        continue
+                event = json.loads(line)
+                context = dict(event.get("context", {}))
+                video_id = int(context.get("video_id", -1))
+                if video_id < 0:
+                    raise ValueError("trace event is missing context.video_id")
+                if wanted is not None and video_id not in wanted:
+                    continue
+                vector = event.get("state_feature_vector")
+                if not isinstance(vector, list) or not vector:
+                    raise ValueError("trace event is missing state_feature_vector")
+                event["context"] = context
+                event["_order"] = order
+                event["_video_id"] = video_id
+                event["_frame"] = int(context.get("frame", 0))
+                event["_view"] = int(context.get("view", 0))
+                grouped.setdefault(video_id, []).append(event)
+        if order_handle is not None:
+            for trailing in order_handle:
+                if trailing.strip():
+                    raise ValueError(f"order index has extra entries: {order_index}")
+    finally:
+        if order_handle is not None:
+            order_handle.close()
     for events in grouped.values():
         events.sort(key=lambda item: event_key(item, int(item["_order"])))
     return grouped

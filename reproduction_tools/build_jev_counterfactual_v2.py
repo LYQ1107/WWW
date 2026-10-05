@@ -241,6 +241,10 @@ def build_v2_records(
     horizon: int,
     association_backend: str,
     engine: Optional[CachedPerceptionMutableAssociationV2] = None,
+    cache_obj: Optional[FrozenPerceptionCache] = None,
+    gt_bundle: Optional[Tuple[Any, Any, Any, Any]] = None,
+    cache_keys_by_video: Optional[Mapping[int, Sequence[Sequence[int]]]] = None,
+    order_index: Optional[Path] = None,
     max_events: Optional[int] = None,
     video_ids: Optional[Sequence[int]] = None,
     max_events_per_video: Optional[int] = None,
@@ -254,9 +258,12 @@ def build_v2_records(
     if int(horizon) not in horizons:
         horizons.append(int(horizon))
         horizons.sort()
-    videos, images, gt_by_image, image_meta = load_gt(annotations)
-    cache = FrozenPerceptionCache(cache_root)
-    grouped = normalize_events(trace, video_ids=video_ids)
+    if gt_bundle is None:
+        videos, images, gt_by_image, image_meta = load_gt(annotations)
+    else:
+        videos, images, gt_by_image, image_meta = gt_bundle
+    cache = cache_obj if cache_obj is not None else FrozenPerceptionCache(cache_root)
+    grouped = normalize_events(trace, video_ids=video_ids, order_index=order_index)
     if video_ids is not None:
         requested = {int(value) for value in video_ids}
         missing = sorted(requested - set(grouped))
@@ -291,7 +298,10 @@ def build_v2_records(
     for video_id, events in grouped.items():
         sequence = str(videos.get(video_id, {}).get("file_name", video_id))
         actions, memories, by_key = event_maps(events)
-        keys = [key for key in cache.keys() if key[0] == int(video_id)]
+        if cache_keys_by_video is None:
+            keys = [key for key in cache.keys() if key[0] == int(video_id)]
+        else:
+            keys = [tuple(int(value) for value in key) for key in cache_keys_by_video.get(int(video_id), ())]
         keys.sort(key=lambda key: (key[1], key[2]))
         # A bounded protocol subset does not need to advance the mutable
         # state through the remainder of the sequence.  Keep enough cached
