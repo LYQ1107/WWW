@@ -644,7 +644,13 @@ class FinalPipeline:
                         archive(path)
                 environment = {"CUDA_VISIBLE_DEVICES": "0"}
                 if trace_path is not None:
-                    environment["JEV_PERCEPTION_CACHE_PATH"] = str(root / "cache")
+                    # Native and traced executions must each materialize their
+                    # own immutable writer cache.  Reusing the native cache
+                    # makes the second run hit the duplicate-key guard before
+                    # it can produce a valid trajectory trace.
+                    environment["JEV_PERCEPTION_CACHE_PATH"] = str(
+                        root / f"cache_{name}"
+                    )
                 self.command(
                     self._inference_args(
                         dataset="VISION_test",
