@@ -24,6 +24,8 @@ Official TEST is not an input to any of those files.
 `reproduction_tools/create_final_selection_lock.py` writes this atomically to
 `manifests/FINAL_SELECTION_LOCK.json` and refuses an unverified policy split,
 noncanonical checkpoint, or missing PASS selection-protocol digest.
+Official TEST counterfactual manifests are additionally bound to the final
+lock's SHA256 digest; pre-lock diagnostic manifests are rejected on restart.
 No official-test reader may run before this file exists. The official suite
 then runs every selected method once under the same checkpoint/data/evaluation
 conditions.

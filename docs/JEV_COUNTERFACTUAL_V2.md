@@ -54,3 +54,8 @@ replay equivalence checks. TEST generation is fail-closed until the canonical
 selection lock exists; an already-running pre-lock TEST diagnostic must be
 marked `PRELOCK_TEST_DIAGNOSTIC_DO_NOT_USE_FOR_SELECTION` and cannot affect
 policy or horizon selection.
+
+Every official TEST shard and merged manifest must also carry
+`official_test_generation_authorized: true` and the `sha256:` digest of the
+canonical `FINAL_SELECTION_LOCK`. This prevents a pre-lock diagnostic shard
+from being reused after the pipeline restarts.
