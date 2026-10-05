@@ -14,6 +14,7 @@
 
 - GMT Stage1：已完成并通过 checkpoint 验证，使用 `model_16000.pth`。
 - GMT Stage2：单卡已完成 `20000` iter，最终 checkpoint `/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth` 已通过 reload、finiteness、optimizer-state 验证；SHA256 为 `cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8`。
+- Stage2 指标明细已整理到 [`docs/STAGE2_RESULTS.md`](STAGE2_RESULTS.md)：最终 `total_loss=1.2422004495747387`、`loss_asso=0.6270861029624939`、`reid_loss=0.46364010870456696`，验证状态为 PASS；这些是训练指标，不冒充最终 MOT/COCO 评测数值。
 - 当前 Stage2 继续使用单 GPU 方案；不会因多卡同步而切换训练路径。
 
 ## Model 4500 研究流水线
