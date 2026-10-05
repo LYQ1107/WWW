@@ -1,6 +1,6 @@
 # WWW / GMT-JEV 科研任务运行说明书
 
-更新时间：2026-10-05 07:13 UTC（运行状态是快照；PID 和百分比会变化）。
+更新时间：2026-10-05 07:39 UTC（运行状态是快照；PID 和百分比会变化）。
 
 这份文档说明当前在跑什么、后续会跑什么、每一步的完成条件和保守估时。它是运行手册，不是最终实验结论；在 `PIPELINE_COMPLETE.json`、`FINAL_REPORT.json` 和最终锁都出现并通过校验前，不得宣称 JEV 有效或 GO。
 
@@ -27,7 +27,7 @@ checkpoint、VisionTrack 数据、推理输出和训练结果不提交 Git。wor
 | 33788 | pre-lock TEST counterfactual diagnostic | 视频 `1 5 9 13 17 21` | 已降级为隔离诊断；`formal/test/DO_NOT_USE_FOR_SELECTION`；绝不用于 selection/final report |
 | 10016 | 原先启动的 pipeline parent | 等待/管理 formal 阶段 | 日志尾部可能包含旧失败记录，以当前 PID 和 manifest 为准 |
 
-2026-10-05 07:13 UTC 快照中，strict native 仍为 `RUNNING`。注意日志中的 `1040/1040`、`1904/1904` 是单个视频组内部的进度，不是整个测试集的进度。当前正在处理测试集第 15/22 个视频组 `video_id=15 (00117wood)`，组内为 `1845/1904` 步；prediction stream 已写入 `39,541/58,038` 张图（约 68.1%，当前组结束后才会更新）。GPU0 正在工作，`/data1` 剩余空间约 47 GB；native 完成前不算 gate 完成。formal 目录尚无可合并的完整 shard manifest。
+2026-10-05 07:39 UTC 快照中，strict native 仍为 `RUNNING`。注意日志中的 `1040/1040`、`1904/1904`、`1001/1001` 是单个视频组内部的进度，不是整个测试集的进度。当前日志尾部视频组为 `65/1001` 步；prediction stream 已写入 `49,514/58,038` 张图（约 85.3%，当前组结束后才会更新）。GPU0 正在工作，`/data1` 剩余空间约 47 GB；native 完成前不算 gate 完成。formal 目录尚无可合并的完整 shard manifest。
 
 查看实时状态：
 
@@ -65,7 +65,7 @@ df -h /data1
 
 | 阶段 | 估计耗时 | 影响因素 |
 |---|---:|---|
-| native strict 剩余测试集 | 约 2–4 小时 | 当前仅完成约 68.1%；每个视频组耗时差异很大，必须等 22 组全部完成并写出 COMPLETE manifest |
+| native strict 剩余测试集 | 约 1–3 小时 | 当前 stream 约 85.3%，但按视频组落盘；每个视频组耗时差异很大，必须等 22 组全部完成并写出 COMPLETE manifest |
 | traced strict + trajectory gate + 4A/4B replay gates | 约 2–5 小时 | traced 必须在 GPU0 顺序复跑全 VISION_test；4B 还要逐序列重放 frozen cache |
 | 当前 TRAIN formal shards | 约 1–12 小时 | 只在完整 shard 结束时落盘；CPU、内存和 GMT association 开销不稳定 |
 | TRAIN Hmax=32 + 派生 H=1/8/16/32 | 约 2–8 小时 | 只做一次最慢的 H=32 association rollout；派生视图为 CPU/IO 操作 |
