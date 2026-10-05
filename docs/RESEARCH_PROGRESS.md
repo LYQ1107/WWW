@@ -1,13 +1,13 @@
 # WWW research progress snapshot
 
-更新时间：2026-10-05 01:14 UTC
+更新时间：2026-10-05 01:20 UTC
 
 这份文件只记录代码版本、实验阶段和本地运行状态。数据集、模型 checkpoint、推理 trace 以及机密配置不纳入 Git 提交。
 
 ## 代码状态
 
 - 主仓库：`main`，当前本地 HEAD 为 `370440c`（研究代码基线为 `e3c2e06`）；本地相对远端 `main` 含研究代码提交，远端 `main` 保持不改写。
-- JEV 隔离实现：`/data1/liuyeqiang/WWW_jev_v2`，分支 `jev/reviewer-proof-v2`，最新本地提交为 `ba63b71`；除旧版固定 22 序列名表的 MOT side writer 保护外，正式反事实 trace 现在会在解析阶段按 shard 的 `video_id` 过滤，不再把全量 trace 物化到内存。
+- JEV 隔离实现：`/data1/liuyeqiang/WWW_jev_v2`，分支 `jev/reviewer-proof-v2`，最新本地提交为 `dbf3ddb`；除旧版固定 22 序列名表的 MOT side writer 保护外，正式反事实 trace 现在会在解析阶段按 shard 的 `video_id` 过滤，不再把全量 trace 物化到内存；后续 shard 还会对不可变 cache payload 做一次性预加载，避免重复校验和反复 `torch.load`。
 - 两个分支均指向 GitHub 仓库 `LYQ1107/WWW`；主线远端存在未合并提交，因此推送时使用独立的研究进度分支，不改写远端 `main`。
 
 ## 训练状态
@@ -53,3 +53,4 @@
 - 代码和本进度文档同步到 GitHub 独立研究分支；生成的 checkpoint、数据集、trace、结果目录和凭据不会纳入提交。
 - 主研究分支：`codex/research-progress-20261004-api`（已推送研究快照）；JEV v2 基线分支：`codex/jev-reviewer-proof-v2-api-20261004`；本轮修复分支：`codex/jev-writer-guard-20261004`，远端 commit `d5c7170`。远端 `main` 保持不改写。
 - 反事实 shard 串行调度分支：`codex/sequential-formal-shards-20261005`，远端 commit `399abc5`；本轮流式过滤修复分支：`codex/filtered-counterfactual-shards-20261005`，远端 commit `c505714`。
+- 后续 cache 预加载优化分支：`codex/formal-cache-prefetch-20261005`，远端 commit `62b110e`；当前运行中的 shard0 不被打断，优化从后续新启动的 shard 生效。
