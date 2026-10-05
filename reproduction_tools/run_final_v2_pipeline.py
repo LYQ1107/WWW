@@ -412,6 +412,7 @@ class FinalPipeline:
                 raise RuntimeError(f"trace/cache alignment failed: {report}")
         self.ensure_off_equivalence(jobs[1]["output"], jobs[2]["output"])
         self.ensure_same_gpu_off_gate()
+        self.ensure_v2_off_replay_equivalence(jobs[1]["trace"])
         self.status("final_off_inference", "PASS", cache_validations={k: str(v) for k, v in validation_reports.items()})
         self.mark("final_off_inference")
         return {
@@ -579,7 +580,8 @@ class FinalPipeline:
             "status": "PASS" if native == traced else "FAIL",
             "gate_type": "STRICT_SAME_GPU_OFF",
             "gate_authority": "FORMAL_REPLAY_PREREQUISITE",
-            "official_selection_authority": True,
+            "official_selection_authority": False,
+            "official_test_authority": False,
             "visible_gpu": "0",
             "execution": "sequential_native_then_traced",
             "checkpoint_sha256": CANONICAL_CHECKPOINT_DIGEST,
@@ -606,6 +608,31 @@ class FinalPipeline:
             raise RuntimeError("strict same-GPU OFF equivalence gate failed")
         self.mark("same_gpu_off_gate", report=str(report_path))
         return report_path
+
+    def ensure_v2_off_replay_equivalence(self, trace: Path) -> Path:
+        output = OUT / "off/v2_off_replay_equivalence.json"
+        if (read_json(output) or {}).get("status") == "PASS":
+            return output
+        if output.exists():
+            archive(output)
+        self.command(
+            [
+                PYTHON,
+                "-u",
+                ROOT / "reproduction_tools/validate_v2_off_replay_equivalence.py",
+                "--trace",
+                trace,
+                "--same-gpu-report",
+                OUT / "off/same_gpu_off_gate.json",
+                "--output",
+                output,
+            ],
+            log_name="validate_v2_off_replay_equivalence",
+        )
+        if (read_json(output) or {}).get("status") != "PASS":
+            raise RuntimeError("v2 OFF replay equivalence failed")
+        self.mark("v2_off_replay_equivalence", report=str(output))
+        return output
 
     @staticmethod
     def annotation_videos(path: Path) -> list[int]:
