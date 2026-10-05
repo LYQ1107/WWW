@@ -26,6 +26,9 @@ def merge(inputs: Sequence[Path], output: Path) -> Mapping[str, object]:
     output.parent.mkdir(parents=True, exist_ok=True)
     records = 0
     sequences = Counter()
+    horizons = set()
+    checkpoints = set()
+    backends = set()
     with output.open("w", encoding="utf-8") as target:
         for path in inputs:
             if not path.is_file():
@@ -42,6 +45,10 @@ def merge(inputs: Sequence[Path], output: Path) -> Mapping[str, object]:
                     target.write(json.dumps(record, sort_keys=True) + "\n")
                     records += 1
                     sequences[str(record["sequence"])] += 1
+                    horizons.add(int(record["horizon"]))
+                    checkpoints.add(str(record["gmt_checkpoint_sha256"]))
+                    state = record.get("state") or {}
+                    backends.add(str(state.get("association_backend", "")))
     manifest = {
         "status": "PASS",
         "schema_version": 1,
@@ -52,6 +59,10 @@ def merge(inputs: Sequence[Path], output: Path) -> Mapping[str, object]:
         "record_count": records,
         "sequence_count": len(sequences),
         "records_by_sequence": dict(sorted(sequences.items())),
+        "horizon": next(iter(horizons)) if len(horizons) == 1 else None,
+        "horizons": sorted(horizons),
+        "gmt_checkpoint_sha256": sorted(checkpoints),
+        "association_backends": sorted(backends),
     }
     output.with_suffix(output.suffix + ".manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"

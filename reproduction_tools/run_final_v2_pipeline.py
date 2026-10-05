@@ -612,9 +612,17 @@ class FinalPipeline:
         payload = json.loads(path.read_text(encoding="utf-8"))
         return sorted(int(video["id"]) for video in payload["videos"])
 
-    def formal_manifest_pass(self, path: Path, *, formal: bool = True) -> bool:
+    def formal_manifest_pass(
+        self,
+        path: Path,
+        *,
+        formal: bool = True,
+        expected_horizon: int | None = None,
+    ) -> bool:
         payload = read_json(path)
         if not payload or payload.get("status") != "PASS":
+            return False
+        if expected_horizon is not None and int(payload.get("horizon", -1)) != int(expected_horizon):
             return False
         if formal and (
             payload.get("association_backend") != "formal_gmt_transformer"
@@ -624,7 +632,14 @@ class FinalPipeline:
             return False
         return True
 
-    def ensure_formal_split(self, split: str, trace: Path, cache: Path) -> Path:
+    def ensure_formal_split(
+        self,
+        split: str,
+        trace: Path,
+        cache: Path,
+        *,
+        horizon: int = 8,
+    ) -> Path:
         if split == "test":
             lock = OUT / "manifests/FINAL_SELECTION_LOCK.json"
             if not self.final_lock_valid(lock):
@@ -633,15 +648,17 @@ class FinalPipeline:
                 )
         annotation = DATASET / "annotations" / f"{split}.json"
         split_root = OUT / "formal" / split
+        if horizon != 8:
+            split_root = split_root / f"horizon_{horizon}"
         split_root.mkdir(parents=True, exist_ok=True)
         merged = split_root / f"formal_{split}_full_v2.jsonl"
         merged_manifest = Path(str(merged) + ".manifest.json")
         shard_paths = [split_root / f"shard_{index}.jsonl" for index in range(len(GPU_GROUPS))]
         shard_manifests = [Path(str(path) + ".manifest.json") for path in shard_paths]
         if (
-            self.formal_manifest_pass(merged_manifest, formal=False)
+            self.formal_manifest_pass(merged_manifest, formal=False, expected_horizon=horizon)
             and merged.is_file()
-            and all(self.formal_manifest_pass(path) for path in shard_manifests)
+            and all(self.formal_manifest_pass(path, expected_horizon=horizon) for path in shard_manifests)
         ):
             return merged
         video_ids = self.annotation_videos(annotation)
@@ -658,7 +675,7 @@ class FinalPipeline:
         for index, video_group in enumerate(groups):
             output = split_root / f"shard_{index}.jsonl"
             manifest = Path(str(output) + ".manifest.json")
-            if self.formal_manifest_pass(manifest) and output.is_file():
+            if self.formal_manifest_pass(manifest, expected_horizon=horizon) and output.is_file():
                 continue
             archive(output)
             archive(manifest)
@@ -677,7 +694,7 @@ class FinalPipeline:
                 "--gmt-checkpoint",
                 CHECKPOINT,
                 "--horizon",
-                "8",
+                str(horizon),
                 "--association-backend",
                 "formal_gmt_transformer",
                 "--config-file",
@@ -695,28 +712,41 @@ class FinalPipeline:
                 command,
                 cwd=ROOT,
                 env={"CUDA_VISIBLE_DEVICES": GPU_GROUPS[index]},
-                log_name=f"formal_{split}_shard_{index}",
+                log_name=f"formal_{split}_h{horizon}_shard_{index}",
             )
             code = process.wait()
             handle.close()
-            if code or not self.formal_manifest_pass(manifest):
+            if code or not self.formal_manifest_pass(manifest, expected_horizon=horizon):
                 failures.append({"shard": index, "code": code, "manifest": str(manifest)})
                 break
         if failures:
             raise RuntimeError(f"formal {split} shard failures: {failures}")
         shards = [split_root / f"shard_{index}.jsonl" for index in range(len(groups))]
-        if not all(self.formal_manifest_pass(Path(str(path) + ".manifest.json")) for path in shards):
+        if not all(
+            self.formal_manifest_pass(
+                Path(str(path) + ".manifest.json"), expected_horizon=horizon
+            )
+            for path in shards
+        ):
             raise RuntimeError(f"formal {split} shard validation failed before merge")
-        if not (merged.is_file() and self.formal_manifest_pass(merged_manifest, formal=False)):
+        if not (
+            merged.is_file()
+            and self.formal_manifest_pass(
+                merged_manifest, formal=False, expected_horizon=horizon
+            )
+        ):
             archive(merged)
             archive(merged_manifest)
             self.command(
                 [PYTHON, "-u", ROOT / "reproduction_tools/merge_jev_jsonl.py", "--input", *shards, "--output", merged],
                 log_name=f"merge_formal_{split}",
             )
-        if not self.formal_manifest_pass(merged_manifest, formal=False):
+        if not self.formal_manifest_pass(
+            merged_manifest, formal=False, expected_horizon=horizon
+        ):
             raise RuntimeError(f"merged formal dataset failed validation: {merged}")
-        self.mark(f"formal_{split}", dataset=str(merged), manifest=str(merged_manifest))
+        marker = f"formal_{split}" if horizon == 8 else f"formal_{split}_h{horizon}"
+        self.mark(marker, dataset=str(merged), manifest=str(merged_manifest), horizon=horizon)
         return merged
 
     def ensure_formal_data(
@@ -727,12 +757,23 @@ class FinalPipeline:
         include_test: bool = False,
     ) -> Mapping[str, Path]:
         self.status("formal_counterfactual", "RUNNING")
-        train = self.ensure_formal_split("train", traces["train"], caches["train"])
+        train = self.ensure_formal_split("train", traces["train"], caches["train"], horizon=8)
         result = {"train": train}
         if include_test:
-            result["test"] = self.ensure_formal_split("test", traces["test"], caches["test"])
+            result["test"] = self.ensure_formal_split("test", traces["test"], caches["test"], horizon=8)
         self.status("formal_counterfactual", "PASS")
         return result
+
+    def ensure_train_horizon_datasets(
+        self, trace: Path, cache: Path
+    ) -> Mapping[int, Path]:
+        """Build every policy-search horizon from TRAIN counterfactuals only."""
+        datasets: dict[int, Path] = {}
+        for horizon in (1, 8, 16, 32):
+            datasets[horizon] = self.ensure_formal_split(
+                "train", trace, cache, horizon=horizon
+            )
+        return datasets
 
     def ensure_policy_split(self, train: Path) -> Path:
         output = OUT / "manifests/jev_policy_split_final.json"
@@ -770,6 +811,81 @@ class FinalPipeline:
         ):
             raise RuntimeError("final policy split gate failed")
         return output
+
+    def ensure_selection_protocol(
+        self, datasets: Mapping[int, Path], split: Path
+    ) -> Path:
+        target = OUT / "manifests/jev_selection_protocol_final.json"
+        payload = read_json(target)
+        if (
+            payload
+            and payload.get("status") == "PASS"
+            and payload.get("canonical_checkpoint_sha256") == CANONICAL_CHECKPOINT_DIGEST
+            and payload.get("official_test_used_for_search") is False
+            and payload.get("official_test_access")
+            == "BLOCKED_BEFORE_FINAL_SELECTION_LOCK"
+        ):
+            return target
+        protocol_root = OUT / "selection_protocol"
+        result = protocol_root / "jev_selection_protocol_final.json"
+        command: list[str | Path] = [
+            PYTHON,
+            "-u",
+            ROOT / "reproduction_tools/run_jev_selection_protocol.py",
+            "--policy-split",
+            split,
+            "--output",
+            protocol_root,
+        ]
+        for horizon in (1, 8, 16, 32):
+            command.extend(["--dataset", f"{horizon}={datasets[horizon]}"])
+        self.command(command, log_name="jev_selection_protocol_final")
+        result_payload = read_json(result)
+        if not result_payload or result_payload.get("status") != "PASS":
+            raise RuntimeError("validation-only JEV selection protocol did not PASS")
+        if target.exists():
+            archive(target)
+        shutil.copy2(result, target)
+        self.mark("selection_protocol", manifest=str(target))
+        return target
+
+    def ensure_selected_policies(
+        self, selection_manifest: Path
+    ) -> tuple[Mapping[str, Path], Mapping[str, Path]]:
+        payload = read_json(selection_manifest)
+        if not payload or payload.get("status") != "PASS":
+            raise RuntimeError("selection manifest is not PASS")
+        selected_horizon = int((payload.get("selected_aggregate") or {}).get("horizon", -1))
+        candidates = payload.get("candidates")
+        if not isinstance(candidates, list) or selected_horizon not in (1, 8, 16, 32):
+            raise RuntimeError("selection manifest has no valid selected horizon")
+        policies: dict[str, Path] = {}
+        calibrated: dict[str, Path] = {}
+        model_names = sorted({str(row.get("model")) for row in candidates})
+        for model in model_names:
+            rows = [
+                row
+                for row in candidates
+                if int(row.get("horizon", -1)) == selected_horizon
+                and row.get("model") == model
+            ]
+            if not rows:
+                raise RuntimeError(f"selection manifest missing model={model}")
+            row = min(
+                rows,
+                key=lambda value: (
+                    float((value.get("metrics") or {}).get("nll", float("inf"))),
+                    -float((value.get("metrics") or {}).get("best_action_accuracy", 0.0)),
+                    int(value.get("seed", 0)),
+                ),
+            )
+            checkpoint = Path(str(row["checkpoint"])).resolve()
+            calibrated_checkpoint = Path(str(row["calibrated_checkpoint"])).resolve()
+            if not checkpoint.is_file() or not calibrated_checkpoint.is_file():
+                raise RuntimeError(f"selected policy artifact is missing for {model}")
+            policies[model] = checkpoint.parent
+            calibrated[model] = calibrated_checkpoint
+        return policies, calibrated
 
     def ensure_policies(self, train: Path, split: Path) -> Mapping[str, Path]:
         specs = (
@@ -879,11 +995,20 @@ class FinalPipeline:
     def ensure_lock(self, checkpoint: Path, split: Path) -> Path:
         lock = OUT / "manifests/FINAL_SELECTION_LOCK.json"
         selection_manifest = OUT / "manifests/jev_selection_protocol_final.json"
-        if (read_json(selection_manifest) or {}).get("status") != "PASS":
+        selection = read_json(selection_manifest)
+        if not selection or selection.get("status") != "PASS":
             raise RuntimeError(
                 "final selection lock is blocked until the reviewer-proof "
                 "policy/horizon/seed selection protocol passes"
             )
+        selected_aggregate = selection.get("selected_aggregate") or {}
+        selected = selection.get("selected") or {}
+        threshold_control = selection.get("selected_threshold_control") or {}
+        mlp_control = selection.get("selected_mlp_control") or {}
+        supervision = selection.get("equal_supervision") or {}
+        for field in ("horizon", "model"):
+            if field not in selected_aggregate or field not in selected:
+                raise RuntimeError(f"selection manifest is missing selected {field}")
         payload = read_json(lock)
         if self.final_lock_valid(lock, checkpoint):
             return lock
@@ -907,27 +1032,35 @@ class FinalPipeline:
                 "--utility-definition",
                 "future_correct_identity_duration - 0.5*future_identity_switches - 0.25*future_fragmentation - 0.5*future_collisions - memory_contamination; sample_weight=0 for uninformative futures",
                 "--horizon",
-                "8",
+                str(selected_aggregate["horizon"]),
                 "--jev-architecture",
-                "jev",
+                str(selected_aggregate["model"]),
                 "--hidden-size",
-                "64",
+                str(supervision.get("hidden_dim", 64)),
                 "--calibration-method",
                 "temperature_scaling_policy_val_only",
                 "--threshold-baseline",
-                "question_threshold_h70",
+                str(threshold_control.get("model", "threshold_control")),
                 "--mlp-baseline",
-                "independent_mlp_h32",
+                str(mlp_control.get("model", "mlp_control")),
                 "--hyperparameters",
                 json.dumps(
                     {
-                        "dataset_scope": str(OUT / "formal/train/formal_train_full_v2.jsonl"),
+                        "dataset_scope": str(
+                            OUT
+                            / "formal/train"
+                            / (
+                                "formal_train_full_v2.jsonl"
+                                if int(selected_aggregate["horizon"]) == 8
+                                else f"horizon_{int(selected_aggregate['horizon'])}/formal_train_full_v2.jsonl"
+                            )
+                        ),
                         "official_test_data_not_used_for_selection": True,
-                        "epochs": 50,
-                        "batch_size": 128,
-                        "learning_rate": 1e-3,
-                        "seed": 20261003,
-                        "calibration_temperature_path": str(OUT / "policies/jev/calibration_val_only.json"),
+                        "epochs": supervision.get("epochs"),
+                        "batch_size": supervision.get("batch_size"),
+                        "learning_rate": supervision.get("learning_rate"),
+                        "seeds": selection.get("seeds"),
+                        "selection_protocol": str(selection_manifest),
                     },
                     sort_keys=True,
                 ),
@@ -965,7 +1098,14 @@ class FinalPipeline:
             raise RuntimeError("final decision stress test failed")
         return output
 
-    def ensure_official(self, artifacts: Mapping[str, Path], test_data: Path, policies: Mapping[str, Path], calibrated: Path, lock: Path) -> Mapping[str, Path]:
+    def ensure_official(
+        self,
+        artifacts: Mapping[str, Path],
+        test_data: Path,
+        policies: Mapping[str, Path],
+        calibrated: Mapping[str, Path],
+        lock: Path,
+    ) -> Mapping[str, Path]:
         if not self.final_lock_valid(lock):
             raise RuntimeError(
                 "official TEST evaluation is blocked: canonical FINAL_SELECTION_LOCK is invalid"
@@ -980,9 +1120,12 @@ class FinalPipeline:
         if not self.inference_complete(online_output, "VISION_test"):
             archive(online_output)
             archive(online_trace)
+            online_controller = calibrated.get("jev")
+            if online_controller is None:
+                raise RuntimeError("selection protocol did not produce a calibrated JEV controller")
             self.command(
                 self._inference_args(dataset="VISION_test", output=online_output, gpu="7", trace=online_trace)
-                + ["--jev-controller", calibrated],
+                + ["--jev-controller", online_controller],
                 cwd=CANONICAL,
                 env={"CUDA_VISIBLE_DEVICES": "7"},
                 log_name="official_online_jev",
@@ -991,7 +1134,7 @@ class FinalPipeline:
         trace = artifacts["test_trace"]
         annotation = DATASET / "annotations/test.json"
         controller_paths = {
-            name: (calibrated if name == "jev" else path / "model.pth")
+            name: calibrated.get(name, path / "model.pth")
             for name, path in policies.items()
         }
         prediction_paths: dict[str, Path] = {"off": base_predictions, "online_jev": online_output / "inference_VISION_test/coco_instances_results.json"}
@@ -1148,8 +1291,11 @@ class FinalPipeline:
             include_test=False,
         )
         split = self.ensure_policy_split(formal_train["train"])
-        policies = self.ensure_policies(formal_train["train"], split)
-        calibrated = self.ensure_calibration(policies, formal_train["train"], split)
+        horizon_datasets = self.ensure_train_horizon_datasets(
+            artifacts["train_trace"], artifacts["train_cache"]
+        )
+        selection_manifest = self.ensure_selection_protocol(horizon_datasets, split)
+        policies, calibrated = self.ensure_selected_policies(selection_manifest)
         self.ensure_stress(formal_train["train"], policies)
         lock = self.ensure_lock(CHECKPOINT, split)
         # No official TEST counterfactual is materialized until the lock has

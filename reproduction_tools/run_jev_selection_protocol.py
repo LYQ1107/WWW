@@ -12,6 +12,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import subprocess
@@ -43,6 +44,14 @@ MODELS = (
     "question_conditioned_fixed_head",
     "jev",
 )
+THRESHOLD_MODELS = {
+    "fixed_threshold",
+    "global_threshold",
+    "state_threshold",
+    "nonlinear_state_threshold",
+    "question_threshold",
+}
+MLP_MODELS = set(MODELS) - THRESHOLD_MODELS - {"jev"}
 HIDDEN_DIM = 64
 EPOCHS = 50
 BATCH_SIZE = 128
@@ -168,6 +177,98 @@ def val_metrics(metrics: Mapping[str, Any]) -> Mapping[str, Any]:
     return value
 
 
+def _state_digest(state: Mapping[str, Any]) -> str:
+    raw = json.dumps(
+        state, sort_keys=True, separators=(",", ":"), ensure_ascii=True
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(raw).hexdigest()
+
+
+def _forbidden_state_keys(value: Any, path: str = "state") -> list[str]:
+    forbidden = {
+        "gt",
+        "ground_truth",
+        "future_gt",
+        "future_ground_truth",
+        "evaluator_feedback",
+        "future_metrics",
+    }
+    found: list[str] = []
+    if isinstance(value, Mapping):
+        for key, child in value.items():
+            if str(key).lower() in forbidden:
+                found.append(f"{path}.{key}")
+            found.extend(_forbidden_state_keys(child, f"{path}.{key}"))
+    elif isinstance(value, list):
+        for index, child in enumerate(value):
+            found.extend(_forbidden_state_keys(child, f"{path}[{index}]"))
+    return found
+
+
+def audit_features(path: Path, split_payload: Mapping[str, Any], horizon: int) -> Mapping[str, Any]:
+    allowed_sequences = set(split_payload["train_sequences"]) | set(split_payload["val_sequences"])
+    sequences: set[str] = set()
+    dimensions: set[int] = set()
+    record_count = 0
+    weighted_count = 0
+    checkpoint_hashes: set[str] = set()
+    forbidden: list[str] = []
+    digest_mismatches = 0
+    invalid = 0
+    with path.open(encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, 1):
+            if not line.strip():
+                continue
+            record_count += 1
+            try:
+                record = json.loads(line)
+                sequence = str(record["sequence"])
+                state = record["state"]
+                features = state["feature_vector"]
+                if not isinstance(features, list) or not features:
+                    raise ValueError("feature_vector is empty")
+                if not all(math.isfinite(float(value)) for value in features):
+                    raise ValueError("feature_vector contains non-finite values")
+                dimensions.add(len(features))
+                sequences.add(sequence)
+                checkpoint_hashes.add(str(record["gmt_checkpoint_sha256"]))
+                if int(record["horizon"]) != int(horizon):
+                    raise ValueError("record horizon mismatch")
+                if sequence not in allowed_sequences:
+                    raise ValueError("record sequence is outside policy split")
+                if record.get("state_digest") != _state_digest(state):
+                    digest_mismatches += 1
+                forbidden.extend(_forbidden_state_keys(state, f"{path}:{line_number}.state"))
+                if float(record.get("sample_weight", 1.0)) > 0:
+                    weighted_count += 1
+            except Exception:
+                invalid += 1
+    status = bool(
+        record_count
+        and not invalid
+        and len(dimensions) == 1
+        and digest_mismatches == 0
+        and not forbidden
+        and sequences == allowed_sequences
+        and checkpoint_hashes == {CANONICAL_CHECKPOINT_SHA256}
+    )
+    return {
+        "status": "PASS" if status else "FAIL",
+        "dataset": str(path),
+        "horizon": int(horizon),
+        "records": record_count,
+        "weighted_records": weighted_count,
+        "sequences": len(sequences),
+        "feature_dimensions": sorted(dimensions),
+        "checkpoint_hashes": sorted(checkpoint_hashes),
+        "state_digest_mismatches": digest_mismatches,
+        "forbidden_state_fields": sorted(set(forbidden))[:20],
+        "invalid_records": invalid,
+        "policy_split_sequence_exact": sequences == allowed_sequences,
+        "official_test_read": False,
+    }
+
+
 def calibrate(checkpoint: Path, dataset: Path, split: Path, output: Path, log: Path) -> Path:
     report = output / "calibration_val_only.json"
     calibrated = output / "model_calibrated.pth"
@@ -221,6 +322,12 @@ def main() -> None:
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     log = output / "selection_protocol.log"
+    feature_audits = {
+        horizon: audit_features(datasets[horizon], split_payload, horizon)
+        for horizon in HORIZONS
+    }
+    if any(report.get("status") != "PASS" for report in feature_audits.values()):
+        raise RuntimeError(f"feature audit failed: {feature_audits}")
     candidates: list[dict[str, Any]] = []
     for horizon in HORIZONS:
         dataset = datasets[horizon]
@@ -318,6 +425,23 @@ def main() -> None:
         selected_aggregate["seed_results"],
         key=lambda row: (float(row["metrics"]["nll"]), -float(row["metrics"]["best_action_accuracy"]), row["seed"]),
     )
+
+    def best_control(names: set[str]) -> dict[str, Any]:
+        options = [row for row in aggregates if row["model"] in names]
+        if not options:
+            raise RuntimeError("selection protocol control family is empty")
+        return min(
+            options,
+            key=lambda row: (
+                row["mean_val_nll"],
+                -row["mean_val_best_action_accuracy"],
+                row["horizon"],
+                row["model"],
+            ),
+        )
+
+    selected_threshold = best_control(THRESHOLD_MODELS)
+    selected_mlp = best_control(MLP_MODELS)
     payload = {
         "status": "PASS",
         "created_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
@@ -342,6 +466,7 @@ def main() -> None:
             "method": "temperature_scaling_policy_val_only",
             "all_candidates_calibrated": True,
         },
+        "feature_audits": feature_audits,
         "candidate_count": len(candidates),
         "aggregate_count": len(aggregates),
         "selected_aggregate": {
@@ -349,6 +474,18 @@ def main() -> None:
             "model": selected_aggregate["model"],
             "mean_val_nll": selected_aggregate["mean_val_nll"],
             "mean_val_best_action_accuracy": selected_aggregate["mean_val_best_action_accuracy"],
+        },
+        "selected_threshold_control": {
+            "horizon": selected_threshold["horizon"],
+            "model": selected_threshold["model"],
+            "mean_val_nll": selected_threshold["mean_val_nll"],
+            "mean_val_best_action_accuracy": selected_threshold["mean_val_best_action_accuracy"],
+        },
+        "selected_mlp_control": {
+            "horizon": selected_mlp["horizon"],
+            "model": selected_mlp["model"],
+            "mean_val_nll": selected_mlp["mean_val_nll"],
+            "mean_val_best_action_accuracy": selected_mlp["mean_val_best_action_accuracy"],
         },
         "selected": selected,
         "selection_rule": "minimize mean policy-val NLL; tie-break by mean best-action accuracy, horizon, model; then choose best seed by the same val rule",
