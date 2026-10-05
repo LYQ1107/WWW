@@ -56,6 +56,15 @@ def main():
     assert accept_state.counters.get("new_ids", 0) < new_state.counters.get("new_ids", 0)
     assert accept_state.track_hits != new_state.track_hits
 
+    frozen = perception([[1.0, 0.0]])
+    history_state = MutableGMTState(
+        association_history=[{"perception": frozen, "assignments": {0: 4}}]
+    )
+    history_clone = history_state.clone()
+    assert history_clone.association_history[0]["perception"] is frozen
+    history_clone.association_history[0]["assignments"][0] = 9
+    assert history_state.association_history[0]["assignments"][0] == 4
+
     reassoc_state = initial.clone()
     reassoc = engine.step(
         perception([[0.70, 0.70], [0.99, 0.01]]),
