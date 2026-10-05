@@ -1,6 +1,6 @@
 # WWW / GMT-JEV 阶段研究报告与结果说明
 
-更新时间：2026-10-05 21:11 UTC。本报告是当前可审计进度快照；在三方法第一轮验证、gate 和正式 tracking 评测完成之前，不把阶段结果表述为最终 JEV 结论。
+更新时间：2026-10-05 21:22 UTC。本报告是当前可审计进度快照；在三方法第一轮验证、gate 和正式 tracking 评测完成之前，不把阶段结果表述为最终 JEV 结论。
 
 ## 1. 结论摘要
 
@@ -10,6 +10,7 @@
 - Frozen canonical GMT baseline 的 TrackEval/CV 数值已经锁定，本轮不重新训练 GMT、不重新执行完整 baseline inference，也不重复生成 baseline trace/cache/predictions。
 - 全量 TRAIN H=8 正式反事实数据已经按 24 个视频分片启动；每个视频由一个独立 worker 顺序生成，使用同一个 canonical Stage2 checkpoint、cache、trace 和 H=8 协议。
 - `finalize_jev_full_h8.py` 已加入并推送，用于在 24 个分片全部 COMPLETE 后做 provenance、记录数、schema、hash 和重复事件审计，再原子合并。
+- `aftercare_jev_full_h8.py` 已加入并以独立会话运行：它只在 24 个官方分片和队列都 COMPLETE 后执行 finalizer、compact、policy split，并自动启动三方法各一次的单 seed 训练/校准/聚合。
 - 第一轮三方法脚本已锁定为 `seed=20261003`：Learnable Threshold、Generic MLP、Full JEV；训练超参数、样本权重、targets 和 shared H=8 数据保持一致。
 
 尚未完成的部分：24 个 H=8 分片、正式合并与审计、compact dataset/policy split、三方法单 seed 训练与 validation 指标、JEV gate，以及 gate 通过后的三方案 tracking comparison。因此目前不能宣称“JEV 最终有效”或给出最终 GO/NO-GO。
@@ -21,7 +22,7 @@
 | canonical repo | `/data1/liuyeqiang/WWW` |
 | formal worktree | `/data1/liuyeqiang/WWW_jev_v2` |
 | branch | `jev/reviewer-proof-v2` |
-| latest code commit | `6ba4424` (`Add full H8 per-video shard finalizer`) |
+| latest protocol code | 当前分支 HEAD（包含 H=8 finalizer 和单 seed aftercare automation） |
 | checkpoint | `/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth` |
 | checkpoint SHA256 | `cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8` |
 | config | `/data1/liuyeqiang/WWW_jev_v2/configs/VISION_test.yaml` |
@@ -53,7 +54,7 @@ Stage1 checkpoint 为 `model_16000.pth`；其文件名中的 local iteration 不
 - 第一轮单 seed validation 聚合（`20261003`）；三 seed mean/std、ensemble 和 robustness 暂时延期；
 - selection 前 host RAM、swap、磁盘资源 gate；
 - pre-lock TEST 隔离和最终 `FINAL_SELECTION_LOCK` 约束；
-- 2026-10-05 新增：全量 H=8 per-video shard finalizer，拒绝缺片、采样/截断、provenance 不一致、记录数不一致和重复事件。
+- 2026-10-05 新增：全量 H=8 per-video shard finalizer，拒绝缺片、采样/截断、provenance 不一致、记录数不一致和重复事件；aftercare 另行 fail-closed 等待并自动推进第一轮。
 
 ## 4. 已产生的结果
 
@@ -72,7 +73,7 @@ Stage1 checkpoint 为 `model_16000.pth`；其文件名中的 local iteration 不
 运行根目录：`/home/liuyeqiang/WWW_jev_full_h8_runtime`。
 
 - partition manifest：`status=COMPLETE`，24 个视频，预期 `1,112,173` 条 decision。
-- 当前快照：`RUNNING=24`、`PENDING=0`、`COMPLETE=0`、`FAILED=0`；累计写入约 `27,130` 条（约 `2.44%`）。
+- 当前快照：`RUNNING=24`、`PENDING=0`、`COMPLETE=0`、`FAILED=0`；累计写入约 `28,849` 条（约 `2.59%`）。
 - 当前 24 个临时分片仍在更新；GPU 0/4/6/8/9 均接近满载。当前短窗速率约 `3.4 decision/s`，剩余时间按负载估计约 65–90 小时，随视频和机器负载变化。
 - 正式 `video_XX/manifest.json` 尚未出现；因此现在禁止运行 finalizer、compact、policy split 或训练。
 
@@ -87,7 +88,7 @@ Stage1 checkpoint 为 `model_16000.pth`；其文件名中的 local iteration 不
 
 ## 5. 当前运行与下一步
 
-当前正在运行的是全量 H=8 formal shard build；正式分片完成后的强制顺序是：
+当前正在运行的是全量 H=8 formal shard build；aftercare 已在后台等待完成事件。正式分片完成后的强制顺序是：
 
 1. 等待并审计 24 个 `video_XX/manifest.json`；
 2. 运行 `finalize_jev_full_h8.py`，得到单一完整 JSONL 及 PASS manifest；
