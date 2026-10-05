@@ -8,6 +8,7 @@ not own tracker state or choose actions.
 
 from __future__ import annotations
 
+from collections import OrderedDict
 from typing import Mapping, Sequence
 
 import torch
@@ -23,17 +24,49 @@ class GMTAssociationTransformerAdapter:
         self.model = model
         self.view_num = max(1, int(view_num))
         self.history_limit = max(1, int(history_limit))
+        # Cache only the device-side immutable tensors.  Formal replay calls
+        # the adapter repeatedly for the same current/future payload while
+        # exploring action branches; rebuilding these tensors dominated the
+        # host-side overhead.  Keep a bounded LRU so a long shard cannot
+        # consume the whole GPU with cached perceptions.
+        self._payload_tensors = OrderedDict()
+        self._payload_cache_limit = max(512, self.history_limit * 4)
 
     @staticmethod
-    def _instances(payload: Mapping[str, object], device: torch.device) -> Instances:
-        image_size = tuple(int(value) for value in payload["image_size"])
+    def _payload_key(payload: Mapping[str, object]):
+        try:
+            return (
+                int(payload["video_id"]),
+                int(payload["frame"]),
+                int(payload["view"]),
+            )
+        except (KeyError, TypeError, ValueError):
+            # Keep the lightweight adapter test and any legacy in-memory
+            # payloads valid when they do not carry cache coordinates.
+            return ("object", id(payload))
+
+    def _instances(self, payload: Mapping[str, object], device: torch.device) -> Instances:
+        key = self._payload_key(payload)
+        cached = self._payload_tensors.get(key)
+        if cached is None:
+            image_size = tuple(int(value) for value in payload["image_size"])
+            boxes = torch.as_tensor(
+                payload["pred_boxes"], dtype=torch.float32, device=device
+            )
+            reid_features = torch.as_tensor(
+                payload["reid_features"], dtype=torch.float32, device=device
+            )
+            cached = (image_size, boxes, reid_features)
+            self._payload_tensors[key] = cached
+            while len(self._payload_tensors) > self._payload_cache_limit:
+                self._payload_tensors.popitem(last=False)
+        else:
+            self._payload_tensors.move_to_end(key)
+
+        image_size, boxes, reid_features = cached
         instance = Instances(image_size)
-        instance.pred_boxes = Boxes(
-            torch.as_tensor(payload["pred_boxes"], dtype=torch.float32, device=device)
-        )
-        instance.reid_features = torch.as_tensor(
-            payload["reid_features"], dtype=torch.float32, device=device
-        )
+        instance.pred_boxes = Boxes(boxes)
+        instance.reid_features = reid_features
         return instance
 
     def __call__(self, perception, track_ids: Sequence[int], state) -> torch.Tensor:
@@ -88,4 +121,3 @@ class GMTAssociationTransformerAdapter:
         unique = torch.tensor(track_ids, dtype=torch.long, device=device)
         id_inds = (unique[None, :] == traj_ids[:, None]).float()
         return torch.mm(active, id_inds).detach().cpu()
-
