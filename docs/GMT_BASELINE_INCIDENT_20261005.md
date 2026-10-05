@@ -1,0 +1,80 @@
+STATUS: BASELINE_ANOMALY_UNRESOLVED
+
+# GMT/VisionTrack baseline incident — 2026-10-05
+
+这是一份 baseline root-cause audit 的主记录。当前 canonical Stage2 OFF 的
+TrackEval 数值明显低于预期数量级；在 raw detection、映射、源码语义、配置
+和训练 exposure 审计完成前，不允许把任何 JEV 相对提升解释为论文有效性。
+
+## Immutable inputs
+
+| Item | Value |
+| --- | --- |
+| canonical checkpoint | `/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth` |
+| checkpoint SHA256 | `cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8` |
+| inference config | `/data1/liuyeqiang/WWW_jev_v2/configs/VISION_test.yaml` |
+| config SHA256 | `bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a` |
+| TEST annotation | `/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/test.json` |
+| TEST annotation SHA256 | `7a1e735bf25026a56148deaeb432e0520c6ad5dad97d5362aa58739255389593` |
+| canonical OFF prediction | `/data1/liuyeqiang/WWW/outputs/research_final_v2/off/inference_test/inference_VISION_test/coco_instances_results.json` |
+| prediction SHA256 | `a8d2f5c4cc758a887276e59671831215d36a8949d07486a34d78076aaf3e7b3d` |
+| formal worktree | `/data1/liuyeqiang/WWW_jev_v2` |
+| current audit worktree HEAD | `dfbbdb8` |
+| strict traced run source commit | `f3187b8` (later commits only changed documentation/configuration of Git publication) |
+| prediction-converter last source change | `8d7078c3e29bb333388cd2df78e97b95c6792374` |
+| exact historical evaluation commit in manifest | `NOT_RECORDED; must not be guessed` |
+
+The Stage2 OFF baseline artifact is a diagnostic/reporting result, not a policy
+selection input. The downloaded GT is retained without deduplication or label
+changes; the existing permissive TrackEval audit mode is recorded separately.
+
+## Observed anomaly
+
+| Metric | Current artifact |
+| --- | ---: |
+| HOTA | 8.3140 |
+| DetA | 6.4506 |
+| AssA | 11.9220 |
+| IDF1 | 8.5297 |
+| MOTA | -70.2413 |
+| IDSW | 3,247 |
+| Frag | 60,103 |
+| predicted detections | 527,474 |
+| GT detections | 580,178 |
+| CVIDF1 | 8.1854 |
+
+These values do not identify the cause. The possible causes remain evaluator or
+conversion mapping, bbox scale, frame/view mapping, category policy, score or
+short-track filtering, JEV-disabled baseline regression, inference-config
+mismatch, training-budget mismatch, model failure, or multiple causes.
+
+## Mandatory audit order
+
+1. Run `reproduction_tools/diagnose_raw_detection_alignment.py` on TRAIN, with
+   raw COCO boxes and annotations only. Report direct IoU, coordinate bounds,
+   1560-coordinate diagnostic scaling, frame offsets, scene/view/video splits,
+   category counts, and score thresholds.
+2. Freeze a two-scene/all-view TRAIN mini subset in
+   `manifests/baseline_debug_subset.json` and use it for all cheap diagnostics.
+3. Audit COCO→MOT→COCO round-trip and image/frame/view mapping; do not silently
+   alter official results.
+4. Compare pre-JEV GMT source, current JEV-disabled semantics, and current
+   `MODEL.JEV.MODE=off` on the same TRAIN subset/checkpoint/GPU when the live
+   strict GPU0 run is no longer competing for that device.
+5. Audit released/current inference configs and Stage1/Stage2 effective sample
+   exposure, LR scaling, and checkpoint-load warnings.
+6. Write `docs/GMT_BASELINE_ROOT_CAUSE_REPORT.md` and
+   `outputs/research_final_v2/baseline_debug/DIAGNOSIS.json` only after the
+   evidence chain is complete.
+
+## Formal JEV hold
+
+The live strict traced OFF process must not be stopped. Same-GPU OFF, 4A trace
+contract, and 4B simulator checks may complete as evidence, but final policy
+selection, `FINAL_SELECTION_LOCK`, official TEST, and any official JEV claim
+are held until this baseline incident reaches a supported diagnosis.
+
+No new TEST hyperparameter tuning is allowed during this audit. Old-server
+checkpoints are out of scope; only `model_20000.pth`, current-run checkpoints,
+the current Stage1 checkpoint, repository/config history, and current
+predictions/traces/caches may be used.
