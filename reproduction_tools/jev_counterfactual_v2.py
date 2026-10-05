@@ -37,7 +37,40 @@ class MutableGMTState:
     association_history: List[Mapping[str, object]] = field(default_factory=list)
 
     def clone(self) -> "MutableGMTState":
-        return copy.deepcopy(self)
+        """Copy mutable tracker state while sharing frozen perception payloads.
+
+        Counterfactual branches are intentionally isolated, but cache payloads
+        are immutable evidence.  Deep-copying the recent history for every
+        legal action duplicated large CPU tensors and dominated shard runtime;
+        only the assignments and mutable GMT containers need branch-local
+        copies.
+        """
+        history = []
+        for item in self.association_history:
+            copied = {
+                key: (value if key == "perception" else copy.deepcopy(value))
+                for key, value in item.items()
+            }
+            if "assignments" in item:
+                copied["assignments"] = dict(item["assignments"])
+            history.append(copied)
+        return MutableGMTState(
+            next_id=int(self.next_id),
+            active_ids=set(self.active_ids),
+            stale_ids=set(self.stale_ids),
+            track_embeddings={
+                int(key): value.detach().clone()
+                for key, value in self.track_embeddings.items()
+            },
+            track_hits={int(key): int(value) for key, value in self.track_hits.items()},
+            memory={
+                int(key): [value.detach().clone() for value in values]
+                for key, values in self.memory.items()
+            },
+            assignments=dict(self.assignments),
+            counters={str(key): int(value) for key, value in self.counters.items()},
+            association_history=history,
+        )
 
 
 @dataclass(frozen=True)
