@@ -30,6 +30,10 @@ PIPE = CANONICAL / "outputs/research_pipeline"
 LOG = OUT / "final_v2_pipeline.log"
 POLL_SECONDS = 30
 GPU_GROUPS = ("4", "5", "8", "9")
+CANONICAL_CHECKPOINT_SHA256 = (
+    "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8"
+)
+CANONICAL_CHECKPOINT_DIGEST = "sha256:" + CANONICAL_CHECKPOINT_SHA256
 
 
 def now() -> str:
@@ -185,10 +189,48 @@ class FinalPipeline:
             and result.is_file()
         )
 
+    @staticmethod
+    def final_lock_valid(lock: Path, checkpoint: Path = CHECKPOINT) -> bool:
+        payload = read_json(lock)
+        gate = (payload or {}).get("official_test_gate") or {}
+        selection_path = Path(str((payload or {}).get("selection_protocol", "")))
+        selection_digest_valid = bool(
+            selection_path.is_file()
+            and payload.get("selection_protocol_sha256") == sha256(selection_path)
+        ) if payload else False
+        return bool(
+            payload
+            and payload.get("lock_type") == "FINAL_SELECTION_LOCK"
+            and payload.get("selection_scope") == "CANONICAL_MODEL20000_ONLY"
+            and payload.get("official_test_authority") is True
+            and payload.get("canonical_checkpoint_authority") is True
+            and payload.get("gmt_checkpoint") == str(checkpoint.resolve())
+            and payload.get("gmt_checkpoint_sha256") == CANONICAL_CHECKPOINT_DIGEST
+            and gate.get("selection_scope") == "CANONICAL_MODEL20000_ONLY"
+            and gate.get("official_test_authority") is True
+            and gate.get("lock_created_before_official_test") is True
+            and gate.get("official_test_read_allowed_after_lock") is True
+            and payload.get("selection_protocol")
+            and payload.get("selection_protocol_sha256")
+            and selection_digest_valid
+        )
+
     def ensure_checkpoint(self) -> None:
         if not CHECKPOINT.is_file():
             self.status("stage2_checkpoint", "WAITING")
             raise RuntimeError(f"canonical final checkpoint is not present: {CHECKPOINT}")
+        checkpoint_digest = sha256(CHECKPOINT)
+        if checkpoint_digest != CANONICAL_CHECKPOINT_SHA256:
+            self.status(
+                "stage2_checkpoint",
+                "FAILED",
+                error="canonical checkpoint SHA256 mismatch",
+                observed_sha256=checkpoint_digest,
+                expected_sha256=CANONICAL_CHECKPOINT_SHA256,
+            )
+            raise RuntimeError(
+                "refusing to continue: model_20000 is not the locked canonical checkpoint"
+            )
         validation = CANONICAL / "outputs/stage2_single_gpu/validations/model_20000.json"
         payload = read_json(validation)
         valid = bool(
@@ -369,6 +411,7 @@ class FinalPipeline:
             if (read_json(report) or {}).get("status") != "PASS":
                 raise RuntimeError(f"trace/cache alignment failed: {report}")
         self.ensure_off_equivalence(jobs[1]["output"], jobs[2]["output"])
+        self.ensure_same_gpu_off_gate()
         self.status("final_off_inference", "PASS", cache_validations={k: str(v) for k, v in validation_reports.items()})
         self.mark("final_off_inference")
         return {
@@ -382,7 +425,15 @@ class FinalPipeline:
 
     def ensure_off_equivalence(self, traced_output: Path, native_output: Path) -> None:
         report_path = OUT / "off" / "off_equivalence.json"
-        if (read_json(report_path) or {}).get("status") == "PASS":
+        existing = read_json(report_path)
+        if existing and existing.get("status") == "PASS":
+            # Historical evidence predates the protocol distinction.  Mark it
+            # in place so downstream readers cannot mistake it for the strict
+            # same-GPU gate.
+            if existing.get("gate_authority") != "CROSS_GPU_STRUCTURAL_DIAGNOSTIC_ONLY":
+                existing["gate_authority"] = "CROSS_GPU_STRUCTURAL_DIAGNOSTIC_ONLY"
+                existing["official_selection_authority"] = False
+                write_json(report_path, existing)
             return
         traced_manifest = read_json(traced_output / "inference_manifest.json") or {}
         native_manifest = read_json(native_output / "inference_manifest.json") or {}
@@ -448,6 +499,8 @@ class FinalPipeline:
         report = {
             "status": "PASS" if structural_equivalence else "FAIL",
             "equivalence_mode": "structural_cross_gpu_off",
+            "gate_authority": "CROSS_GPU_STRUCTURAL_DIAGNOSTIC_ONLY",
+            "official_selection_authority": False,
             "prediction_json_equal": traced == native,
             "checkpoint_sha256_equal": checkpoint_equal,
             "config_sha256_equal": config_equal,
@@ -477,8 +530,82 @@ class FinalPipeline:
             "native_sha256": sha256(native_output / "inference_VISION_test/coco_instances_results.json"),
         }
         write_json(report_path, report)
+        # This report is deliberately non-blocking.  Formal replay is gated by
+        # the fresh same-GPU exact comparison below.
+
+    @staticmethod
+    def _result_path(output: Path) -> Path:
+        return output / "inference_VISION_test/coco_instances_results.json"
+
+    def ensure_same_gpu_off_gate(self) -> Path:
+        """Run a strict traced/native OFF replay on one visible GPU.
+
+        The existing cross-GPU comparison is retained as a diagnostic.  It
+        cannot authorize formal replay because CUDA reduction order may differ
+        across devices.  This gate therefore uses fresh sequential runs on
+        one GPU and requires byte-for-byte equality of the final prediction
+        JSON list.
+        """
+        root = OUT / "off/same_gpu_strict"
+        native_output = root / "native"
+        traced_output = root / "traced"
+        trace = root / "traced_off.jsonl"
+        for name, output, trace_path in (
+            ("native", native_output, None),
+            ("traced", traced_output, trace),
+        ):
+            if not self.inference_complete(output, "VISION_test"):
+                for path in (output, trace_path):
+                    if isinstance(path, Path):
+                        archive(path)
+                environment = {"CUDA_VISIBLE_DEVICES": "0"}
+                if trace_path is not None:
+                    environment["JEV_PERCEPTION_CACHE_PATH"] = str(root / "cache")
+                self.command(
+                    self._inference_args(
+                        dataset="VISION_test",
+                        output=output,
+                        gpu="0",
+                        trace=trace_path,
+                    ),
+                    cwd=CANONICAL,
+                    env=environment,
+                    log_name=f"same_gpu_off_{name}",
+                )
+        native = json.loads(self._result_path(native_output).read_text(encoding="utf-8"))
+        traced = json.loads(self._result_path(traced_output).read_text(encoding="utf-8"))
+        report_path = OUT / "off/same_gpu_off_gate.json"
+        report = {
+            "status": "PASS" if native == traced else "FAIL",
+            "gate_type": "STRICT_SAME_GPU_OFF",
+            "gate_authority": "FORMAL_REPLAY_PREREQUISITE",
+            "official_selection_authority": True,
+            "visible_gpu": "0",
+            "execution": "sequential_native_then_traced",
+            "checkpoint_sha256": CANONICAL_CHECKPOINT_DIGEST,
+            "config": str(ROOT / "configs/VISION_test.yaml"),
+            "native_result": str(self._result_path(native_output)),
+            "traced_result": str(self._result_path(traced_output)),
+            "native_result_sha256": sha256(self._result_path(native_output)),
+            "traced_result_sha256": sha256(self._result_path(traced_output)),
+            "native_detection_count": len(native),
+            "traced_detection_count": len(traced),
+            "prediction_json_equal": native == traced,
+            "image_id_set_equal": {int(x["image_id"]) for x in native}
+            == {int(x["image_id"]) for x in traced},
+            "track_id_set_equal": {int(x["track_id"]) for x in native}
+            == {int(x["track_id"]) for x in traced},
+            "strict_definition": {
+                "row_order": True,
+                "all_prediction_fields": True,
+                "float_tolerance": 0.0,
+            },
+        }
+        write_json(report_path, report)
         if report["status"] != "PASS":
-            raise RuntimeError("final OFF equivalence gate failed")
+            raise RuntimeError("strict same-GPU OFF equivalence gate failed")
+        self.mark("same_gpu_off_gate", report=str(report_path))
+        return report_path
 
     @staticmethod
     def annotation_videos(path: Path) -> list[int]:
@@ -498,6 +625,12 @@ class FinalPipeline:
         return True
 
     def ensure_formal_split(self, split: str, trace: Path, cache: Path) -> Path:
+        if split == "test":
+            lock = OUT / "manifests/FINAL_SELECTION_LOCK.json"
+            if not self.final_lock_valid(lock):
+                raise RuntimeError(
+                    "formal TEST counterfactual generation is blocked until FINAL_SELECTION_LOCK"
+                )
         annotation = DATASET / "annotations" / f"{split}.json"
         split_root = OUT / "formal" / split
         split_root.mkdir(parents=True, exist_ok=True)
@@ -586,22 +719,30 @@ class FinalPipeline:
         self.mark(f"formal_{split}", dataset=str(merged), manifest=str(merged_manifest))
         return merged
 
-    def ensure_formal_data(self, traces: Mapping[str, Path], caches: Mapping[str, Path]) -> Mapping[str, Path]:
-        if self.done("formal_train") and self.done("formal_test"):
-            return {
-                "train": OUT / "formal/train/formal_train_full_v2.jsonl",
-                "test": OUT / "formal/test/formal_test_full_v2.jsonl",
-            }
+    def ensure_formal_data(
+        self,
+        traces: Mapping[str, Path],
+        caches: Mapping[str, Path],
+        *,
+        include_test: bool = False,
+    ) -> Mapping[str, Path]:
         self.status("formal_counterfactual", "RUNNING")
         train = self.ensure_formal_split("train", traces["train"], caches["train"])
-        test = self.ensure_formal_split("test", traces["test"], caches["test"])
+        result = {"train": train}
+        if include_test:
+            result["test"] = self.ensure_formal_split("test", traces["test"], caches["test"])
         self.status("formal_counterfactual", "PASS")
-        return {"train": train, "test": test}
+        return result
 
-    def ensure_policy_split(self, train: Path, test: Path) -> Path:
+    def ensure_policy_split(self, train: Path) -> Path:
         output = OUT / "manifests/jev_policy_split_final.json"
         payload = read_json(output)
-        if payload and payload.get("official_test_used_for_search") is False:
+        if (
+            payload
+            and payload.get("official_test_used_for_search") is False
+            and payload.get("official_test_access") == "BLOCKED_BEFORE_FINAL_SELECTION_LOCK"
+            and not payload.get("official_test_files")
+        ):
             return output
         if output.exists():
             archive(output)
@@ -612,8 +753,6 @@ class FinalPipeline:
                 ROOT / "reproduction_tools/create_jev_policy_split.py",
                 "--input",
                 train,
-                "--official-test",
-                test,
                 "--output",
                 output,
                 "--seed",
@@ -623,7 +762,12 @@ class FinalPipeline:
             ],
             log_name="create_final_policy_split",
         )
-        if not (read_json(output) or {}).get("official_test_used_for_search") is False:
+        split = read_json(output) or {}
+        if not (
+            split.get("official_test_used_for_search") is False
+            and split.get("official_test_access") == "BLOCKED_BEFORE_FINAL_SELECTION_LOCK"
+            and not split.get("official_test_files")
+        ):
             raise RuntimeError("final policy split gate failed")
         return output
 
@@ -734,8 +878,14 @@ class FinalPipeline:
 
     def ensure_lock(self, checkpoint: Path, split: Path) -> Path:
         lock = OUT / "manifests/FINAL_SELECTION_LOCK.json"
+        selection_manifest = OUT / "manifests/jev_selection_protocol_final.json"
+        if (read_json(selection_manifest) or {}).get("status") != "PASS":
+            raise RuntimeError(
+                "final selection lock is blocked until the reviewer-proof "
+                "policy/horizon/seed selection protocol passes"
+            )
         payload = read_json(lock)
-        if payload and payload.get("gmt_checkpoint_sha256") == "sha256:" + sha256(checkpoint):
+        if self.final_lock_valid(lock, checkpoint):
             return lock
         if lock.exists():
             archive(lock)
@@ -783,10 +933,12 @@ class FinalPipeline:
                 ),
                 "--code-commit",
                 subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+                "--selection-manifest",
+                selection_manifest,
             ],
-            log_name="create_final_selection_lock",
+                log_name="create_final_selection_lock",
         )
-        if not (read_json(lock) or {}).get("official_test_gate", {}).get("lock_created_before_official_test"):
+        if not self.final_lock_valid(lock, checkpoint):
             raise RuntimeError("final selection lock gate failed")
         return lock
 
@@ -814,6 +966,10 @@ class FinalPipeline:
         return output
 
     def ensure_official(self, artifacts: Mapping[str, Path], test_data: Path, policies: Mapping[str, Path], calibrated: Path, lock: Path) -> Mapping[str, Path]:
+        if not self.final_lock_valid(lock):
+            raise RuntimeError(
+                "official TEST evaluation is blocked: canonical FINAL_SELECTION_LOCK is invalid"
+            )
         official = OUT / "official"
         official.mkdir(exist_ok=True)
         online_output = official / "online_jev"
@@ -986,16 +1142,24 @@ class FinalPipeline:
     def run(self) -> None:
         self.ensure_checkpoint()
         artifacts = self.ensure_off_inference()
-        formal = self.ensure_formal_data(
+        formal_train = self.ensure_formal_data(
             {"train": artifacts["train_trace"], "test": artifacts["test_trace"]},
             {"train": artifacts["train_cache"], "test": artifacts["test_cache"]},
+            include_test=False,
         )
-        split = self.ensure_policy_split(formal["train"], formal["test"])
-        policies = self.ensure_policies(formal["train"], split)
-        calibrated = self.ensure_calibration(policies, formal["train"], split)
-        self.ensure_stress(formal["train"], policies)
+        split = self.ensure_policy_split(formal_train["train"])
+        policies = self.ensure_policies(formal_train["train"], split)
+        calibrated = self.ensure_calibration(policies, formal_train["train"], split)
+        self.ensure_stress(formal_train["train"], policies)
         lock = self.ensure_lock(CHECKPOINT, split)
-        result = self.ensure_official(artifacts, formal["test"], policies, calibrated, lock)
+        # No official TEST counterfactual is materialized until the lock has
+        # passed all canonical-checkpoint and policy-val gates above.
+        formal_test = self.ensure_formal_data(
+            {"train": artifacts["train_trace"], "test": artifacts["test_trace"]},
+            {"train": artifacts["train_cache"], "test": artifacts["test_cache"]},
+            include_test=True,
+        )["test"]
+        result = self.ensure_official(artifacts, formal_test, policies, calibrated, lock)
         complete = {
             "status": "COMPLETE",
             "finished_utc": now(),

@@ -35,6 +35,14 @@ from jev_dataset_tools import make_record
 from jev_mutable_branch import is_main_decision
 
 
+CANONICAL_CHECKPOINT_SHA256 = (
+    "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8"
+)
+FINAL_SELECTION_LOCK = Path(
+    "/data1/liuyeqiang/WWW/outputs/research_final_v2/manifests/FINAL_SELECTION_LOCK.json"
+)
+
+
 def cache_digest(cache_root: Path) -> str:
     index = cache_root / "index.jsonl"
     return sha256(index)
@@ -444,6 +452,41 @@ def main() -> None:
     args = parser.parse_args()
     if args.horizon < 1:
         raise ValueError("horizon must be positive")
+    # TEST counterfactual records contain official labels and are not allowed
+    # to enter the architecture/policy search pool.  A pre-lock diagnostic
+    # process may already exist; this guard applies to every new process and
+    # makes the protocol boundary fail closed.
+    if args.annotations.name == "test.json":
+        try:
+            lock = json.loads(FINAL_SELECTION_LOCK.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            lock = None
+        selection_path = Path(str((lock or {}).get("selection_protocol", "")))
+        selection_valid = bool(
+            selection_path.is_file()
+            and sha256(selection_path) == (lock or {}).get("selection_protocol_sha256")
+        ) if isinstance(lock, dict) else False
+        allowed = bool(
+            isinstance(lock, dict)
+            and lock.get("lock_type") == "FINAL_SELECTION_LOCK"
+            and lock.get("selection_scope") == "CANONICAL_MODEL20000_ONLY"
+            and lock.get("official_test_authority") is True
+            and lock.get("canonical_checkpoint_authority") is True
+            and lock.get("gmt_checkpoint_sha256")
+            == "sha256:" + CANONICAL_CHECKPOINT_SHA256
+            and (lock.get("official_test_gate") or {}).get(
+                "lock_created_before_official_test"
+            ) is True
+            and (lock.get("official_test_gate") or {}).get(
+                "official_test_read_allowed_after_lock"
+            ) is True
+            and selection_valid
+        )
+        if not allowed:
+            raise RuntimeError(
+                "official TEST counterfactual generation is blocked until the "
+                "canonical FINAL_SELECTION_LOCK for model_20000 exists"
+            )
     if args.output.exists():
         raise RuntimeError(f"refusing to overwrite {args.output}")
     trace = args.trace.resolve()

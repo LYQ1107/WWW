@@ -1,10 +1,31 @@
 # GMT/JEV Final Report（持续更新）
 
+## 2026-10-05 protocol update
+
+The canonical Stage2 checkpoint is now fixed to
+`/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth`, SHA256
+`cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8`, with
+independent validation PASS. The historical `model_4500` artifact is proxy
+screening only and cannot authorize official TEST.
+
+Canonical OFF TEST reporting has been completed for this checkpoint (not used
+for policy selection): TrackEval HOTA `8.3140`, DetA `6.4506`, AssA `11.9220`,
+IDF1 `8.5297`, MOTA `-70.2413`, IDSW `3247`, Frag `60103`; cross-view audit
+reports sequential CVIDF1/CVMA `8.1854/-70.2676` and interleaved
+`8.1854/-70.9970`. Full provenance is in
+`docs/STAGE2_OFF_TRACKING_RESULTS.md`.
+
+The final report remains **IN PROGRESS**. A fresh strict same-GPU OFF gate,
+formal TRAIN counterfactuals, H=1/8/16/32 three-seed policy-val selection,
+validation-only calibration, reviewer controls, canonical selection lock, and
+only then official TEST/Oracle/JEV evaluation are still required. No GO/NO-GO
+claim is made here.
+
 ## 当前状态
 
-截至 2026-10-04 05:18 UTC，项目已完成数据归档、完整性校验、GMT 环境安装、Detectron2 适配、VisionTrack JSON 生成和 JEV 源码/决策路径审计。Stage1 已完成并通过独立 checkpoint/reload 校验；Stage2 正在 GPU0 单卡稳定运行，最新观测日志为 local iteration 约 2020/20000，重启次数为 0。`model_2000.pth` 已通过独立 checkpoint/reload 校验。完成后持久 monitor 会自动接续正式推理、counterfactual、baseline/Oracle/JEV 和 TrackEval/CV 评测。
+截至 2026-10-05 UTC，项目已完成数据归档、完整性校验、GMT 环境安装、Detectron2 适配、VisionTrack JSON 生成和 JEV 源码/决策路径审计。Stage1 和 Stage2 均已完成；canonical `model_20000.pth` 已通过独立 checkpoint/reload 校验。正式 OFF baseline 已计算，但 formal v2 counterfactual、策略选择、selection lock 和官方 TEST 仍在推进。
 
-因此本文档目前只记录已验证事实，不提前填写 HOTA/IDF1/AssA/CVIDF1/CVMA 或 GO/NO-GO 结论。
+因此本文档只记录已验证事实；OFF baseline 数值见顶部更新和 `STAGE2_OFF_TRACKING_RESULTS.md`，不把它们当作 JEV 的 GO/NO-GO 结论。
 
 ## 已验证事实
 
@@ -18,7 +39,7 @@
 - 已验证 typed JEV controller、online runtime/commit boundary、frozen-evidence mutable GMT-state counterfactual runner、状态 schema、baseline family、离线 trainer、NLL/Brier/ECE/risk-coverage 指标和结构性 stress tests；对应 CPU invariant tests 全部通过。这些是接口/防泄漏证据，不是 tracking 结果。
 - 结构性压力测试已保存至 `outputs/jev_stress_contract.json` 并 PASS；项目完整回归套件在正确 `PYTHONPATH` 下 16/16 PASS。该结果不替代真实冻结 Stage2 的 tracking/counterfactual 结果。
 - VisionTrack 空预测评测回归已覆盖全部 44 个 test 序列；原始 GT 未改动，并审计记录了重复 ID 行。严格唯一 ID 检查与显式 permissive 审计模式均有区分，尚未产生正式 GMT tracking 指标。
-- Stage1 最终 checkpoint 为 `outputs/stage1_single_gpu/model_16000.pth`，local iteration=16000、scheduler/global iteration=20000；大小、411 个模型 key、参数有限性、优化器状态和 reload 均已 PASS。Stage2 从该 checkpoint 启动；`model_2000.pth` 已独立校验 PASS（SHA256 `9dee258d1a13a285435b1ef98ea4d29060fa7c77e842173b03249bbac69c9438`），iteration/scheduler/global=2000、411 个模型 key、optimizer state、finite 参数和 reload 均通过；进程组仍存活且无 OOM/NaN/Traceback。
+- Stage1 最终 checkpoint 为 `outputs/stage1_single_gpu/model_16000.pth`；Stage2 canonical checkpoint 为 `outputs/stage2_single_gpu/model_20000.pth`，SHA256 `cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8`。Stage2 iteration/scheduler/global=20000、411 个模型 key、optimizer state、finite 参数和 reload 均通过。
 
 ## 正式训练约定
 

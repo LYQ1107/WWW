@@ -27,6 +27,19 @@ class PermissiveVisionTrackDataset(trackeval.datasets.MotChallenge2DBox):
         return None
 
 
+def native(value):
+    """Convert TrackEval/numpy scalars and arrays before JSON serialization."""
+    if isinstance(value, dict):
+        return {str(key): native(item) for key, item in value.items()}
+    if hasattr(value, "tolist"):
+        return native(value.tolist())
+    if isinstance(value, (list, tuple)):
+        return [native(item) for item in value]
+    if hasattr(value, "item"):
+        return value.item()
+    return value
+
+
 def read_rows(path: Path) -> List[List[str]]:
     rows = []
     if not path.is_file():
@@ -165,7 +178,7 @@ def main() -> None:
         )
         identity = combined["Identity"]
         clear = combined["CLEAR"]
-        reports[name] = {
+        reports[name] = native({
             "time_axis": convention,
             "CVIDF1": float(identity["IDF1"] * 100.0),
             "CVMA": float(clear["MOTA"] * 100.0),
@@ -174,7 +187,7 @@ def main() -> None:
             "identity": identity,
             "clear": clear,
             "sequence_lengths": lengths,
-        }
+        })
     report = {
         "status": "PASS",
         "source_manifest": str(manifest_path.resolve()),

@@ -45,8 +45,16 @@ def main():
         assert set(manifest["train_sequences"]).isdisjoint(manifest["val_sequences"])
         split = root / "split.json"
         split.write_text(json.dumps(manifest), encoding="utf-8")
-        checkpoint = root / "controller.pth"
-        checkpoint.write_bytes(b"fixture checkpoint")
+        try:
+            build_manifest([source], seed=7, val_fraction=0.25, official_test=[source])
+        except ValueError as exc:
+            assert "blocked before FINAL_SELECTION_LOCK" in str(exc)
+        else:
+            raise AssertionError("official TEST records entered policy split construction")
+        proxy = root / "model_4500.pth"
+        proxy.write_bytes(b"proxy checkpoint")
+        checkpoint = Path("/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth")
+        assert checkpoint.is_file()
         args = argparse.Namespace(
             checkpoint=checkpoint,
             policy_split=split,
@@ -62,12 +70,22 @@ def main():
             mlp_baseline="question_conditioned_mlp",
             hyperparameters='{"seed": 7}',
         )
+        bad_args = argparse.Namespace(**vars(args))
+        bad_args.checkpoint = proxy
+        try:
+            build_lock(bad_args)
+        except ValueError as exc:
+            assert "canonical model_20000" in str(exc)
+        else:
+            raise AssertionError("proxy checkpoint was accepted as a final lock")
         lock = build_lock(args)
         assert lock["policy_split_sequence_hash"] == manifest["sequence_hash"]
-        assert lock["gmt_checkpoint_sha256"].startswith("sha256:")
+        assert lock["canonical_checkpoint_authority"] is True
+        assert lock["gmt_checkpoint_sha256"].endswith(
+            "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8"
+        )
     print("JEV selection gate invariants: PASS")
 
 
 if __name__ == "__main__":
     main()
-

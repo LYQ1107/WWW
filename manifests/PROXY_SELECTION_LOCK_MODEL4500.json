@@ -18,10 +18,13 @@
     "policy_selection_metric": "policy_val_nll_then_best_action_accuracy",
     "seed": 20261003
   },
-  "lock_type": "FINAL_SELECTION_LOCK",
+  "lock_type": "PROXY_SELECTION_LOCK_MODEL4500",
+  "selection_scope": "PROXY_SCREENING_ONLY",
+  "official_test_authority": false,
   "official_test_gate": {
-    "lock_created_before_official_test": true,
-    "official_test_read_allowed_after_lock": true
+    "lock_created_before_official_test": false,
+    "official_test_read_allowed_after_lock": false,
+    "reason": "Historical model_4500 screening artifact; never a canonical or official-test authority."
   },
   "policy_split": "/data1/liuyeqiang/WWW_jev_v2/manifests/jev_policy_split_formal_v1_v4_1000.json",
   "policy_split_sequence_hash": "sha256:0d8edc818ccf592b90d9dcc6d738d1107305baf687eee801c173a7c3f522d365",

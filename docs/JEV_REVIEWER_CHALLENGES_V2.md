@@ -6,14 +6,14 @@ evidence only.
 
 | Reviewer challenge | Required evidence | Current status |
 | --- | --- | --- |
-| Is the gain only a nonlinear threshold? | State-conditioned threshold and question-conditioned threshold with the same data, labels, and budget | Implemented; formal v2 training pending |
-| Is the gain only a generic MLP? | Question-conditioned generic MLP, parameter-matched shared heads, and action-conditioned scorer without question | Implemented; capacity suite pending |
+| Is the gain only a nonlinear threshold? | State-conditioned, question-conditioned, and nonlinear full-state threshold controls with the same data, labels, supervision, and three seeds | Code present; formal H×seed suite pending |
+| Is the gain only a generic MLP? | Fixed-slot, independent-head, shared-head, question-conditioned, parameter-matched, and action-conditioned generic MLP controls | Code present; formal H×seed suite pending |
 | Does the controller choose identities? | GMT proposes identities; JEV chooses typed actions only | Runtime contract implemented |
 | Is REASSOCIATE just top-2? | Mask rejected edges and run one complete constrained Hungarian solve | Implemented and regression-tested |
 | Is there future/GT leakage? | Online trace has no future GT; labels and official evaluation are separated | Contract tests pass; formal trace audit pending |
-| Are counterfactuals causal? | Same frozen perception, branch-local association/state/memory dynamics | v2 protocol and builder implemented; GMT association adapter pending |
-| Was official test used for selection? | Sequence split manifest and `FINAL_SELECTION_LOCK.json` before official test | Gate scripts implemented; lock not yet issued |
-| Are calibration and confidence comparable? | Val-only temperature fitting plus NLL/Brier/ECE/risk-coverage | Implemented; formal suite pending |
+| Are counterfactuals causal? | Same frozen perception, branch-local association/state/memory dynamics | v2 protocol, cached adapter, and shard execution in progress |
+| Was official test used for selection? | Sequence split manifest and canonical `FINAL_SELECTION_LOCK.json` before official test | Fail-closed gate implemented; lock not yet issued |
+| Are calibration and confidence comparable? | Val-only temperature fitting for every candidate plus NLL/Brier/ECE/risk-coverage | Protocol runner added; formal suite pending |
 | Is the result persistent-state reasoning? | Horizon sweep, memory/reactivation ablations, and state-transition metrics | Analysis protocol documented; runs pending |
 
 ## Evidence labels
@@ -26,5 +26,5 @@ evidence only.
   selection, and one-time official-test evaluation.
 
 No formal GO claim is allowed while the v2 cache uses the cosine contract
-backend or while the final-selection lock is absent.
-
+backend, while same-GPU OFF equality is unverified, or while the final-selection
+lock is absent.

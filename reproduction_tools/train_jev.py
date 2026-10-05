@@ -145,6 +145,10 @@ def load_policy_split(path: Path) -> Dict[str, Tuple[str, ...]]:
         raise ValueError("policy split train/val overlap")
     if payload.get("official_test_used_for_search") is not False:
         raise ValueError("policy split is not marked official-test excluded")
+    if payload.get("official_test_access") != "BLOCKED_BEFORE_FINAL_SELECTION_LOCK":
+        raise ValueError("policy split does not block official TEST before final lock")
+    if payload.get("official_test_files"):
+        raise ValueError("policy split includes official TEST files")
     return {"train": train, "val": val, "test": ()}
 
 

@@ -26,8 +26,11 @@ the GMT association transformer; the repository currently also provides a
 deterministic cosine backend for protocol tests, explicitly marked
 `formal_gmt_association_adapter: false`. The `GMTAssociationTransformerAdapter`
 now reconstructs the GMT association window and calls the repository
-transformer; it still requires fixed-model cache replay validation before its
-output is accepted as formal evidence.
+transformer; the current full-sequence shards are still running and require
+fixed-model replay validation before their output is accepted as formal
+evidence. All formal v2 artifacts must bind to canonical Stage2
+`model_20000.pth` (SHA256
+`cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8`).
 
 ## Raw utility fields
 
@@ -47,4 +50,7 @@ implicit `SKIP_MEMORY` label.
 The v1 trace and labels cannot be relabeled as v2 merely by renaming a file.
 Formal v2 evidence requires a cache generated from the fixed proxy/final GMT
 checkpoint and a verified association-transformer adapter with cache/state
-replay equivalence checks.
+replay equivalence checks. TEST generation is fail-closed until the canonical
+selection lock exists; an already-running pre-lock TEST diagnostic must be
+marked `PRELOCK_TEST_DIAGNOSTIC_DO_NOT_USE_FOR_SELECTION` and cannot affect
+policy or horizon selection.

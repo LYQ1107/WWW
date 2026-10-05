@@ -1,8 +1,8 @@
 """Create a sequence-disjoint train/validation manifest for JEV search.
 
-The command accepts only the policy-search pool.  Official-test records can be
-passed separately for an overlap audit, but are never assigned to train or
-validation and are marked as excluded in the manifest.
+The command accepts only the policy-search pool.  Official-test records are
+blocked entirely until the canonical final-selection lock exists; this keeps
+the train/validation manifest auditable and fail-closed.
 """
 
 from __future__ import annotations
@@ -82,18 +82,13 @@ def build_manifest(
     val_fraction: float,
     official_test: Sequence[Path] = (),
 ) -> Mapping[str, object]:
+    if official_test:
+        raise ValueError(
+            "official TEST data is blocked before FINAL_SELECTION_LOCK; "
+            "create the policy split from TRAIN counterfactual records only"
+        )
     sequences, record_count = read_sequences(inputs)
     split = split_policy_sequences(sequences, seed=seed, val_fraction=val_fraction)
-    official_sequences, official_records = ([], 0)
-    if official_test:
-        official_sequences, official_records = read_sequences(official_test)
-        overlap = set(split["train"]) | set(split["val"])
-        overlap &= set(official_sequences)
-        if overlap:
-            raise ValueError(
-                "policy-search and official-test sequence overlap: "
-                + ", ".join(sorted(overlap))
-            )
     return {
         "schema_version": 1,
         "purpose": "jev_policy_architecture_search",
@@ -107,12 +102,11 @@ def build_manifest(
         "train_record_count": sum(sequences.count(name) for name in split["train"]),
         "val_record_count": sum(sequences.count(name) for name in split["val"]),
         "official_test_used_for_search": False,
-        "official_test_files": [str(path) for path in official_test],
-        "official_test_sha256": {
-            str(path): sha256_file(path) for path in official_test
-        },
-        "official_test_record_count_audited": int(official_records),
-        "official_test_sequence_count_audited": len(set(official_sequences)),
+        "official_test_files": [],
+        "official_test_sha256": {},
+        "official_test_record_count_audited": 0,
+        "official_test_sequence_count_audited": 0,
+        "official_test_access": "BLOCKED_BEFORE_FINAL_SELECTION_LOCK",
         "sequence_hash": canonical_sequence_hash(split["train"], split["val"]),
         "rules": {
             "split_unit": "complete_sequence",
@@ -144,4 +138,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
