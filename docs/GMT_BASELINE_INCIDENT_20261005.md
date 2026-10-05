@@ -48,6 +48,36 @@ conversion mapping, bbox scale, frame/view mapping, category policy, score or
 short-track filtering, JEV-disabled baseline regression, inference-config
 mismatch, training-budget mismatch, model failure, or multiple causes.
 
+## Preliminary TRAIN mini-subset evidence
+
+The fixed two-scene/all-view TRAIN subset (`00002garden`, `00004garden`, 5,636
+images) was evaluated directly from raw COCO predictions and annotations. The
+unmodified raw `image_id` alignment is very poor, but a deterministic remap
+derived only from the source order contracts changes the result dramatically:
+
+| Direct diagnostic | Before remap | After deterministic order remap |
+| --- | ---: | ---: |
+| mean max IoU | 0.0945 | 0.8243 |
+| median max IoU | 0.0000 | 0.8746 |
+| Recall@IoU 0.5 | 5.39% | 95.57% |
+| Precision@IoU 0.5 | 5.55% | 98.39% |
+| TP / FP / FN @IoU 0.5 | 991 / 16,856 / 17,402 | 17,560 / 287 / 833 |
+
+The remap is not a tuned threshold or a model change. `GMTDatasetMapper` feeds
+view-block order; `GTRRCNN.sliding_inference_GMT` returns frame-major order;
+`MOTEvaluator.process` currently zips the original inputs with those reordered
+outputs. On this subset, 57,460 of 57,508 image labels change under the
+deterministic mapping. Evidence file:
+
+`/data1/liuyeqiang/WWW/outputs/research_final_v2/baseline_debug/output_order_mini.json`
+
+SHA256: `9e007a05191fa3839ceb33aecbda3eb912e98339e7fb82a402fed80dfdc8d0e3`.
+
+This makes `EVAL_MAPPING_BUG` the leading root-cause candidate, but it is not
+yet the final diagnosis. Full TRAIN evidence, COCO/MOT round-trip, corrected
+OFF evaluation, and pre-JEV/source regression must still pass before the
+baseline is declared recovered.
+
 ## Mandatory audit order
 
 1. Run `reproduction_tools/diagnose_raw_detection_alignment.py` on TRAIN, with
