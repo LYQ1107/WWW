@@ -7,10 +7,11 @@ import datetime as dt
 import json
 import os
 from pathlib import Path
+import re
 import signal
 import subprocess
 import time
-from typing import Any, Mapping
+from typing import Any, Mapping, Optional
 
 from run_jev_full_h8_fast_worker import atomic_json, complete_artifact, modify_queue, utc_now
 
@@ -108,8 +109,9 @@ def gpu_memory_used_bytes(gpu: int) -> int:
         return 0
 
 
-def worker_command(args: argparse.Namespace, gpu: int) -> list[str]:
+def worker_command(args: argparse.Namespace, gpu: int, slot: int = 1) -> list[str]:
     root = Path(__file__).resolve().parents[1]
+    worker_id = f"gpu{gpu}" if int(slot) == 1 else f"gpu{gpu}-slot{int(slot)}"
     return [
         "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
         "-u",
@@ -129,7 +131,7 @@ def worker_command(args: argparse.Namespace, gpu: int) -> list[str]:
         "--queue",
         str(args.queue.resolve()),
         "--worker-id",
-        f"gpu{gpu}",
+        worker_id,
         "--device",
         "cuda:0",
         "--view-num",
@@ -220,7 +222,94 @@ def snapshot(queue_path: Path) -> dict[str, Any]:
     return json.loads(queue_path.read_text(encoding="utf-8"))
 
 
-def write_resource_manifest(args: argparse.Namespace, events: list[dict[str, Any]], started: str) -> None:
+def pid_is_worker(pid: Any) -> bool:
+    try:
+        pid_value = int(pid)
+    except (TypeError, ValueError):
+        return False
+    try:
+        command = Path(f"/proc/{pid_value}/cmdline").read_bytes()
+    except OSError:
+        return False
+    command = command.replace(b"\x00", b" ").decode("utf-8", "replace")
+    return "run_jev_full_h8_fast_worker.py" in command
+
+
+def worker_gpu(worker_id: Any) -> Optional[int]:
+    match = re.fullmatch(r"gpu(\d+)(?:-slot\d+)?", str(worker_id or ""))
+    return int(match.group(1)) if match else None
+
+
+def recover_stale_queue(args: argparse.Namespace) -> list[dict[str, Any]]:
+    """Requeue dead workers and promote already-complete shards.
+
+    The queue is intentionally restart-safe: a supervisor restart must not
+    leave an incomplete RUNNING item blocking the full build forever.
+    """
+
+    recovered: list[dict[str, Any]] = []
+
+    def update(state: dict[str, Any]):
+        for key, item in sorted(state["videos"].items(), key=lambda pair: int(pair[0])):
+            video_root = Path(
+                item.get("output_root")
+                or (args.output_root.resolve() / f"video_{int(key):02d}")
+            )
+            if complete_artifact(video_root):
+                if item.get("status") != "COMPLETE":
+                    try:
+                        records = int(
+                            json.loads(
+                                (video_root / "manifest.json").read_text(encoding="utf-8")
+                            )["records"]
+                        )
+                    except (OSError, ValueError, KeyError):
+                        records = None
+                    item.update(
+                        {
+                            "status": "COMPLETE",
+                            "records": records,
+                            "manifest": str(video_root / "manifest.json"),
+                            "finished_utc": utc_now(),
+                        }
+                    )
+                    recovered.append(
+                        {"video_id": int(key), "event": "promote_complete_shard"}
+                    )
+                continue
+            if item.get("status") != "RUNNING":
+                continue
+            if pid_is_worker(item.get("pid")):
+                continue
+            worker = item.get("worker")
+            item.update(
+                {
+                    "status": "PENDING",
+                    "worker": None,
+                    "pid": None,
+                    "records": None,
+                    "requeued_reason": "worker PID disappeared; incomplete shard is not official",
+                    "requeued_utc": utc_now(),
+                }
+            )
+            recovered.append(
+                {
+                    "video_id": int(key),
+                    "event": "requeue_stale_worker",
+                    "worker": worker,
+                }
+            )
+
+    modify_queue(args.queue, update)
+    return recovered
+
+
+def write_resource_manifest(
+    args: argparse.Namespace,
+    events: list[dict[str, Any]],
+    started: str,
+    active_slots: Optional[Mapping[str, Any]] = None,
+) -> None:
     state = snapshot(args.queue)
     report = {
         "status": "RUNNING" if any(item.get("status") in {"PENDING", "RUNNING"} for item in state["videos"].values()) else "COMPLETE",
@@ -235,6 +324,8 @@ def write_resource_manifest(args: argparse.Namespace, events: list[dict[str, Any
         "min_mem_available_gate_bytes": MIN_AVAILABLE_BYTES,
         "current_mem_available_bytes": available_memory(),
         "gpu_compute_pids": {str(gpu): gpu_compute_pids(gpu) for gpu in (*SAFE_GPUS, DEFERRED_GPU)},
+        "slots_per_gpu": int(args.slots_per_gpu),
+        "active_slots": dict(active_slots or {}),
         "events": events[-200:],
         "video_status": {
             key: {
@@ -245,7 +336,7 @@ def write_resource_manifest(args: argparse.Namespace, events: list[dict[str, Any
             }
             for key, value in sorted(state["videos"].items(), key=lambda pair: int(pair[0]))
         },
-        "scheduling_policy": "one persistent formal GMT worker per safe GPU; largest remaining workload first; no sampling or truncation",
+        "scheduling_policy": "persistent formal GMT workers with bounded slots per safe GPU; largest remaining workload first; no sampling or truncation",
     }
     atomic_json(args.output_root.resolve() / "RESOURCE_SCHEDULING_MANIFEST.json", report)
 
@@ -265,11 +356,19 @@ def main() -> None:
     parser.add_argument("--history-limit", type=int, default=80)
     parser.add_argument("--poll-seconds", type=float, default=20.0)
     parser.add_argument("--include-gpu0", action="store_true")
+    parser.add_argument(
+        "--slots-per-gpu",
+        type=int,
+        default=1,
+        help="maximum supervised formal replay workers per permitted GPU",
+    )
     args = parser.parse_args()
     if any(gpu in FOREIGN_GPUS for gpu in SAFE_GPUS):
         raise AssertionError("safe GPU list overlaps explicitly reserved GPU")
     if args.horizon != 8:
         raise ValueError("full H=8 scheduler is locked to horizon 8")
+    if args.slots_per_gpu < 1:
+        raise ValueError("slots-per-gpu must be positive")
     args.output_root.resolve().mkdir(parents=True, exist_ok=True)
     args.log_root.resolve().mkdir(parents=True, exist_ok=True)
     manifest = json.loads(
@@ -278,25 +377,100 @@ def main() -> None:
     if manifest.get("status") != "COMPLETE":
         raise RuntimeError("partition manifest is not COMPLETE")
     init_queue(args, manifest)
+    recovery_events = recover_stale_queue(args)
     started = utc_now()
-    events: list[dict[str, Any]] = []
-    children: dict[int, subprocess.Popen] = {}
-    launched: set[int] = set()
+    events: list[dict[str, Any]] = list(recovery_events)
+    children: dict[str, tuple[subprocess.Popen, Any, int]] = {}
 
-    def launch(gpu: int) -> None:
-        if gpu in children:
-            return
+    def queue_worker_pids(state: Mapping[str, Any]) -> set[int]:
+        return {
+            int(item["pid"])
+            for item in state["videos"].values()
+            if item.get("status") == "RUNNING"
+            and pid_is_worker(item.get("pid"))
+        }
+
+    def active_slot_counts(state: Mapping[str, Any]) -> dict[int, int]:
+        active_workers: set[str] = set()
+        for item in state["videos"].values():
+            if item.get("status") != "RUNNING" or not pid_is_worker(item.get("pid")):
+                continue
+            if worker_gpu(item.get("worker")) is not None:
+                active_workers.add(str(item.get("worker")))
+        # Include children during the short interval before their queue claim
+        # becomes visible.  Use worker IDs so a claimed child is not counted
+        # twice.
+        for worker_id, (process, _handle, _gpu) in children.items():
+            if process.poll() is None:
+                active_workers.add(worker_id)
+        counts: dict[int, int] = {}
+        for worker_id in active_workers:
+            gpu = worker_gpu(worker_id)
+            if gpu is not None:
+                counts[gpu] = counts.get(gpu, 0) + 1
+        return counts
+
+    def active_worker_ids(state: Mapping[str, Any]) -> set[str]:
+        worker_ids = {
+            str(item.get("worker"))
+            for item in state["videos"].values()
+            if item.get("status") == "RUNNING"
+            and pid_is_worker(item.get("pid"))
+            and worker_gpu(item.get("worker")) is not None
+        }
+        worker_ids.update(
+            worker_id
+            for worker_id, (process, _handle, _gpu) in children.items()
+            if process.poll() is None
+        )
+        return worker_ids
+
+    def launch(gpu: int, slot: int, known_pids: set[int]) -> bool:
+        worker_id = f"gpu{gpu}" if int(slot) == 1 else f"gpu{gpu}-slot{int(slot)}"
+        if worker_id in children:
+            return False
         if available_memory() < MIN_AVAILABLE_BYTES:
-            events.append({"time": utc_now(), "event": "memory_gate_stop", "gpu": gpu, "available": available_memory()})
-            return
+            events.append(
+                {
+                    "time": utc_now(),
+                    "event": "memory_gate_stop",
+                    "gpu": gpu,
+                    "slot": slot,
+                    "available": available_memory(),
+                }
+            )
+            return False
         pids = gpu_compute_pids(gpu)
         used_bytes = gpu_memory_used_bytes(gpu)
-        if pids or used_bytes > 512 * 1024**2:
-            events.append({"time": utc_now(), "event": "gpu_busy_defer", "gpu": gpu, "pids": pids, "memory_used_bytes": used_bytes})
-            return
-        log_path = args.log_root.resolve() / f"worker_gpu{gpu}.log"
+        unknown_pids = sorted(set(pids) - set(known_pids))
+        if unknown_pids:
+            events.append(
+                {
+                    "time": utc_now(),
+                    "event": "gpu_busy_defer",
+                    "gpu": gpu,
+                    "slot": slot,
+                    "pids": unknown_pids,
+                    "memory_used_bytes": used_bytes,
+                }
+            )
+            return False
+        # A V100 has 32 GiB.  Normal workers use below 4 GiB; leave driver
+        # headroom and refuse to launch into a nearly-full device.
+        if used_bytes > 28 * 1024**3:
+            events.append(
+                {
+                    "time": utc_now(),
+                    "event": "gpu_memory_gate_stop",
+                    "gpu": gpu,
+                    "slot": slot,
+                    "memory_used_bytes": used_bytes,
+                }
+            )
+            return False
+        log_path = args.log_root.resolve() / f"worker_gpu{gpu}_slot{slot}.log"
         handle = log_path.open("a", encoding="utf-8")
-        command = worker_command(args, gpu)
+        command = worker_command(args, gpu, slot)
         process = subprocess.Popen(
             command,
             cwd=str(Path(__file__).resolve().parents[1]),
@@ -306,36 +480,78 @@ def main() -> None:
             stderr=subprocess.STDOUT,
             start_new_session=True,
         )
-        children[gpu] = (process, handle)
-        launched.add(gpu)
-        events.append({"time": utc_now(), "event": "worker_launched", "gpu": gpu, "pid": process.pid})
+        children[worker_id] = (process, handle, gpu)
+        known_pids.add(process.pid)
+        events.append(
+            {
+                "time": utc_now(),
+                "event": "worker_launched",
+                "gpu": gpu,
+                "slot": slot,
+                "worker": worker_id,
+                "pid": process.pid,
+            }
+        )
+        return True
 
     try:
         while True:
-            for gpu, pair in list(children.items()):
-                process, handle = pair
+            for worker_id, pair in list(children.items()):
+                process, handle, gpu = pair
                 code = process.poll()
                 if code is not None:
                     handle.close()
-                    del children[gpu]
-                    events.append({"time": utc_now(), "event": "worker_exit", "gpu": gpu, "pid": process.pid, "returncode": code})
+                    del children[worker_id]
+                    events.append(
+                        {
+                            "time": utc_now(),
+                            "event": "worker_exit",
+                            "gpu": gpu,
+                            "worker": worker_id,
+                            "pid": process.pid,
+                            "returncode": code,
+                        }
+                    )
 
+            events.extend(recover_stale_queue(args))
             state = snapshot(args.queue)
             pending = [item for item in state["videos"].values() if item.get("status") == "PENDING"]
             running = [item for item in state["videos"].values() if item.get("status") == "RUNNING"]
             if not pending and not running and not children:
                 break
 
-            for gpu in SAFE_GPUS:
-                launch(gpu)
+            target_gpus = list(SAFE_GPUS)
             if args.include_gpu0:
                 # GPU0 is intentionally polled only after the strict baseline
                 # trace process has released it.  No process is terminated here.
-                launch(DEFERRED_GPU)
-            write_resource_manifest(args, events, started)
+                target_gpus.append(DEFERRED_GPU)
+            active = active_slot_counts(state)
+            active_ids = active_worker_ids(state)
+            known_pids = queue_worker_pids(state)
+            known_pids.update(
+                process.pid
+                for process, _handle, _gpu in children.values()
+                if process.poll() is None
+            )
+            for gpu in target_gpus:
+                for slot in range(1, int(args.slots_per_gpu) + 1):
+                    worker_id = f"gpu{gpu}" if int(slot) == 1 else f"gpu{gpu}-slot{int(slot)}"
+                    if worker_id in active_ids:
+                        continue
+                    if active.get(gpu, 0) >= int(args.slots_per_gpu):
+                        break
+                    if launch(gpu, slot, known_pids):
+                        active[gpu] = active.get(gpu, 0) + 1
+                        active_ids.add(worker_id)
+            write_resource_manifest(
+                args,
+                events,
+                started,
+                active_slots={str(gpu): active.get(gpu, 0) for gpu in target_gpus},
+            )
             time.sleep(max(2.0, float(args.poll_seconds)))
     finally:
-        for _gpu, (process, handle) in children.items():
+        for _worker_id, (process, handle, _gpu) in children.items():
             if process.poll() is None:
                 process.send_signal(signal.SIGTERM)
             handle.close()
