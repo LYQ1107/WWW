@@ -122,11 +122,13 @@ def main() -> None:
         "after": metrics(raw, data, indices, temperature),
         "official_test_read": False,
     }
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    args.output.mkdir(parents=True, exist_ok=True)
+    (args.output / "calibration_val_only.json").write_text(
+        json.dumps(report, indent=2) + "\n", encoding="utf-8"
+    )
     payload = torch.load(args.checkpoint.resolve(), map_location="cpu")
     payload["temperature"] = temperature
-    torch.save(payload, args.output.parent / "model_calibrated.pth")
+    torch.save(payload, args.output / "model_calibrated.pth")
     print(json.dumps(report, indent=2))
 
 
