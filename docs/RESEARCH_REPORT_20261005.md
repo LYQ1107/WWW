@@ -1,6 +1,6 @@
 # WWW / GMT-JEV 阶段研究报告与结果说明
 
-更新时间：2026-10-05 21:25（Asia/Shanghai）。本报告是当前可审计进度快照；在最终 selection lock、official TEST、完整评测和 `PIPELINE_COMPLETE.json` 出现之前，不把阶段结果表述为最终 JEV 结论。
+更新时间：2026-10-05 21:51（Asia/Shanghai）。本报告是当前可审计进度快照；在最终 selection lock、official TEST、完整评测和 `PIPELINE_COMPLETE.json` 出现之前，不把阶段结果表述为最终 JEV 结论。
 
 ## 1. 结论摘要
 
@@ -107,18 +107,15 @@ traced 完成后的强制顺序是：
 
 ## 6. GitHub 推送状态
 
-本地 branch 和提交已准备好，当前 worktree 仅有用户原有的未跟踪 `results/`，没有把它加入提交。已尝试：
+当前分支已经成功推送到 GitHub，远端已核验：
 
-```bash
-cd /data1/liuyeqiang/WWW_jev_v2
-git push origin jev/reviewer-proof-v2
-```
+- repository：<https://github.com/LYQ1107/WWW>
+- branch：<https://github.com/LYQ1107/WWW/tree/jev/reviewer-proof-v2>
+- 阶段报告：<https://github.com/LYQ1107/WWW/blob/jev/reviewer-proof-v2/docs/RESEARCH_REPORT_20261005.md>
+- 运行说明书：<https://github.com/LYQ1107/WWW/blob/jev/reviewer-proof-v2/docs/RESEARCH_RUNBOOK.md>
+- 已核验远端 commit：`d49c634809de861d313e46c552f6e64376896154`
 
-但当前环境没有 GitHub HTTPS username/token 或 SSH 凭据，返回：
-
-`fatal: could not read Username for 'https://github.com': No such device or address`
-
-因此目前不能诚实地声称已经上传到 GitHub。认证配置完成后，直接执行同一条命令即可推送当前分支；推送目标为 `https://github.com/LYQ1107/WWW.git`。本地源码备份还包括 `/data1/liuyeqiang/WWW_jev_v2_20261005.bundle`。
+第一次 HTTPS 推送因缺少 username/token 失败；随后使用专用 SSH 公钥认证，并通过 GitHub SSH-over-443 和当前代理完成推送。worktree 的 SSH 配置已保留，后续提交可以继续推送。用户原有的未跟踪 `results/`、数据、checkpoint、trace、cache 和 outputs 没有加入 Git。本地源码备份还包括 `/data1/liuyeqiang/WWW_jev_v2_20261005.bundle`。
 
 ## 7. 最终结果判定标准
 
