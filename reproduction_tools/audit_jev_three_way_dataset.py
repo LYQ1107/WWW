@@ -89,10 +89,13 @@ def trace_matches(trace: Path, samples: Sequence[Mapping[str, Any]]) -> Dict[str
             record_context = record["state"]["online_context"]
             features = event.get("state_feature_vector")
             expected = record["state"]["feature_vector"]
-            feature_error = max(
-                (abs(float(left) - float(right)) for left, right in zip(features or (), expected)),
-                default=float("inf"),
-            )
+            if not isinstance(features, list) or len(features) != len(expected):
+                feature_error = float("inf")
+            else:
+                feature_error = max(
+                    (abs(float(left) - float(right)) for left, right in zip(features, expected)),
+                    default=float("inf"),
+                )
             found[key] = {
                 "frame_match": int(context.get("frame", -1)) == int(record_context["frame"]),
                 "view_match": int(context.get("view", -1)) == int(record_context["view"]),

@@ -123,7 +123,7 @@ def main() -> None:
                 [
                     PYTHON,
                     "-u",
-                    ROOT / "reproduction_tools/train_jev.py",
+                    ROOT / "reproduction_tools/train_jev_compact.py",
                     "--dataset",
                     dataset,
                     "--output",
@@ -161,7 +161,7 @@ def main() -> None:
                 [
                     PYTHON,
                     "-u",
-                    ROOT / "reproduction_tools/calibrate_jev.py",
+                    ROOT / "reproduction_tools/calibrate_jev_compact.py",
                     "--dataset",
                     dataset,
                     "--checkpoint",
