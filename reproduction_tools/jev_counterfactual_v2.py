@@ -276,7 +276,12 @@ class CachedPerceptionMutableAssociationV2:
                 state.counters["memory_writes"] = state.counters.get("memory_writes", 0) + 1
 
         history_item = {
-            "perception": copy.deepcopy(dict(perception)),
+            # FrozenPerceptionCache payloads are immutable evidence. Sharing
+            # the mapping is exact: branch cloning already preserves the
+            # perception object by identity, and all mutable state lives in
+            # assignments/track containers. Deep-copying every cached payload
+            # at every replay step dominated formal H=8 runtime.
+            "perception": perception,
             "assignments": dict(committed),
         }
         state.association_history.append(history_item)
