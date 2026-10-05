@@ -259,9 +259,14 @@ def build_v2_records(
             last_selected_frame = max(int(event["_frame"]) for event in events)
             replay_until = last_selected_frame + int(horizon)
             keys = [key for key in keys if int(key[1]) <= replay_until]
+        # The cache is immutable for the formal replay.  Loading each key
+        # once per shard avoids re-checking and torch-loading the same future
+        # payload for every candidate branch while preserving the exact
+        # payload bytes and branch semantics.
+        payloads = {key: cache.load(*key) for key in keys}
         state = MutableGMTState()
         for key_index, key in enumerate(keys):
-            payload = cache.load(*key)
+            payload = payloads[key]
             current_events = by_key.get(key, ())
             for event in current_events:
                 question = str(event.get("question"))
@@ -300,7 +305,7 @@ def build_v2_records(
                     for future_key in keys[key_index + 1 :]:
                         if int(future_key[1]) > int(key[1]) + horizon:
                             break
-                        future_payload = cache.load(*future_key)
+                        future_payload = payloads[future_key]
                         future_actions = dict(actions.get(future_key, {}))
                         future_memories = dict(memories.get(future_key, {}))
                         future_result = engine.step(
