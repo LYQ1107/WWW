@@ -67,20 +67,25 @@ def event_key(event: Mapping[str, Any], order: int) -> Tuple[int, int, int]:
     return (int(context.get("frame", 0)), int(context.get("view", 0)), order)
 
 
-def normalize_events(path: Path) -> Dict[int, List[Dict[str, Any]]]:
+def normalize_events(
+    path: Path, *, video_ids: Optional[Sequence[int]] = None
+) -> Dict[int, List[Dict[str, Any]]]:
     grouped: Dict[int, List[Dict[str, Any]]] = {}
+    wanted = {int(value) for value in video_ids} if video_ids is not None else None
     with path.open(encoding="utf-8") as handle:
         for order, line in enumerate(handle):
             if not line.strip():
                 continue
             event = json.loads(line)
-            vector = event.get("state_feature_vector")
-            if not isinstance(vector, list) or not vector:
-                raise ValueError("trace event is missing state_feature_vector")
             context = dict(event.get("context", {}))
             video_id = int(context.get("video_id", -1))
             if video_id < 0:
                 raise ValueError("trace event is missing context.video_id")
+            if wanted is not None and video_id not in wanted:
+                continue
+            vector = event.get("state_feature_vector")
+            if not isinstance(vector, list) or not vector:
+                raise ValueError("trace event is missing state_feature_vector")
             event["context"] = context
             event["_order"] = order
             event["_video_id"] = video_id

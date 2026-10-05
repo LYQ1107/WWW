@@ -214,7 +214,7 @@ def build_v2_records(
         raise ValueError(f"unsupported association backend: {association_backend}")
     videos, images, gt_by_image, image_meta = load_gt(annotations)
     cache = FrozenPerceptionCache(cache_root)
-    grouped = normalize_events(trace)
+    grouped = normalize_events(trace, video_ids=video_ids)
     if video_ids is not None:
         requested = {int(value) for value in video_ids}
         missing = sorted(requested - set(grouped))
