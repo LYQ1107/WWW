@@ -21,7 +21,7 @@
 | canonical repo | `/data1/liuyeqiang/WWW` |
 | formal worktree | `/data1/liuyeqiang/WWW_jev_v2` |
 | branch | `jev/reviewer-proof-v2` |
-| latest local commit | `a23f130` (`Update research report for frozen baseline H8 run`) |
+| latest code commit | `6ba4424` (`Add full H8 per-video shard finalizer`) |
 | checkpoint | `/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth` |
 | checkpoint SHA256 | `cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8` |
 | config | `/data1/liuyeqiang/WWW_jev_v2/configs/VISION_test.yaml` |
@@ -104,7 +104,7 @@ Stage1 checkpoint 为 `model_16000.pth`；其文件名中的 local iteration 不
 - branch：<https://github.com/LYQ1107/WWW/tree/jev/reviewer-proof-v2>
 - 阶段报告：<https://github.com/LYQ1107/WWW/blob/jev/reviewer-proof-v2/docs/RESEARCH_REPORT_20261005.md>
 - 运行说明书：<https://github.com/LYQ1107/WWW/blob/jev/reviewer-proof-v2/docs/RESEARCH_RUNBOOK.md>
-- 已核验远端 commit：`a23f130`（本报告提交后以远端分支 HEAD 为准）
+- 远端分支 HEAD 已通过 `git ls-remote` 核验；本报告随分支最新提交同步。
 
 第一次 HTTPS 推送因缺少 username/token 失败；随后使用专用 SSH 公钥认证，并通过 GitHub SSH-over-443 和当前代理完成推送。worktree 的 SSH 配置已保留，后续提交可以继续推送。用户原有的未跟踪 `results/`、数据、checkpoint、trace、cache 和 outputs 没有加入 Git。本地源码备份还包括 `/data1/liuyeqiang/WWW_jev_v2_20261005.bundle`。
 
