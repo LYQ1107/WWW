@@ -32,6 +32,9 @@ Updated: 2026-10-05 UTC
   validation-only selection manifest exist.
 - Cross-GPU OFF comparison is marked diagnostic-only; same-GPU exact equality is
   the formal prerequisite.
+- A streamed v2 OFF replay-contract validator now checks every OFF trace event
+  (`off_action == proposed_action == committed_action`, one-hot probabilities,
+  state digest, and no future-GT access) after that same-GPU gate.
 - Automatic protocol runner added for H=1/8/16/32, all threshold/nonlinear
   threshold and generic-MLP controls, three seeds, equal supervision, and
   calibration for every candidate.
