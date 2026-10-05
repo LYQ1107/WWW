@@ -73,6 +73,7 @@ def normalize_events(
     *,
     video_ids: Optional[Sequence[int]] = None,
     order_index: Optional[Path] = None,
+    minimal: bool = False,
 ) -> Dict[int, List[Dict[str, Any]]]:
     grouped: Dict[int, List[Dict[str, Any]]] = {}
     wanted = {int(value) for value in video_ids} if video_ids is not None else None
@@ -119,6 +120,32 @@ def normalize_events(
                 vector = event.get("state_feature_vector")
                 if not isinstance(vector, list) or not vector:
                     raise ValueError("trace event is missing state_feature_vector")
+                if minimal:
+                    # Formal v2 replay never reads the large diagnostic fields
+                    # (candidate score arrays, tracker_state_before, and raw
+                    # probability vectors).  Keep only the causal decision
+                    # fields consumed by event_maps and record construction.
+                    context = {
+                        key: context.get(key)
+                        for key in (
+                            "video_id",
+                            "frame",
+                            "view",
+                            "decision_scope",
+                            "detection_index",
+                            "proposal_track_id",
+                            "alternate_track_id",
+                            "track_id",
+                        )
+                    }
+                    event = {
+                        "context": context,
+                        "state_feature_vector": vector,
+                        "question": event.get("question"),
+                        "legal_actions": event.get("legal_actions"),
+                        "off_action": event.get("off_action"),
+                        "proposed_action": event.get("proposed_action"),
+                    }
                 event["context"] = context
                 event["_order"] = order
                 event["_video_id"] = video_id

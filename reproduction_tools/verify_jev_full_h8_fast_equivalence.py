@@ -125,6 +125,7 @@ def main() -> None:
             cache_keys_by_video={int(args.video_id): cache_keys_for_video},
             order_index=order_index,
             max_events_per_video=args.events,
+            minimal_events=True,
         )
 
     exact = old_records == fast_records and old_stats == fast_stats and old_skipped == fast_skipped

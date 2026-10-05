@@ -208,6 +208,7 @@ def build_one(
             cache_keys_by_video={video_id: cache_keys_by_video[str(video_id)]},
             order_index=order_path,
             record_sink=record_sink,
+            minimal_events=True,
         )
         record_handle.flush()
         os.fsync(record_handle.fileno())

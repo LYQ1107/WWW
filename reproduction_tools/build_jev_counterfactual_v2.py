@@ -246,6 +246,7 @@ def build_v2_records(
     cache_keys_by_video: Optional[Mapping[int, Sequence[Sequence[int]]]] = None,
     order_index: Optional[Path] = None,
     record_sink: Optional[Callable[[Mapping[str, Any]], None]] = None,
+    minimal_events: bool = False,
     max_events: Optional[int] = None,
     video_ids: Optional[Sequence[int]] = None,
     max_events_per_video: Optional[int] = None,
@@ -270,7 +271,12 @@ def build_v2_records(
     eager_payloads = None
     if cache_obj is None:
         eager_payloads = {}
-    grouped = normalize_events(trace, video_ids=video_ids, order_index=order_index)
+    grouped = normalize_events(
+        trace,
+        video_ids=video_ids,
+        order_index=order_index,
+        minimal=minimal_events,
+    )
     if video_ids is not None:
         requested = {int(value) for value in video_ids}
         missing = sorted(requested - set(grouped))
