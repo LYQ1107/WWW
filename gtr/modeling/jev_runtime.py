@@ -84,6 +84,30 @@ class SeedEnsembleController(nn.Module):
         return result
 
 
+class TemperatureScaledController(nn.Module):
+    """Apply validation-only temperature scaling to any policy family."""
+
+    def __init__(self, controller: nn.Module, temperature: float):
+        super().__init__()
+        if not float(temperature) > 0:
+            raise ValueError("temperature must be positive")
+        self.controller = controller
+        self.temperature = float(temperature)
+
+    def forward(self, state_features, questions, legal_actions):
+        output = self.controller(state_features, questions, legal_actions)
+        if self.temperature == 1.0:
+            return output
+        logits = output["logits"] / self.temperature
+        logits = logits.masked_fill(
+            ~output["legal_mask"], torch.finfo(logits.dtype).min
+        )
+        result = dict(output)
+        result["logits"] = logits
+        result["probs"] = torch.softmax(logits, dim=-1)
+        return result
+
+
 def build_controller_from_checkpoint(
     checkpoint: Union[str, Path],
     *,
@@ -205,7 +229,13 @@ def build_controller_from_checkpoint(
             f"controller checkpoint mismatch: missing={list(missing)}, "
             f"unexpected={list(unexpected)}"
         )
-    return model.to(device).eval()
+    model = model.to(device).eval()
+    calibration_temperature = payload.get("temperature")
+    if model_name != "jev" and calibration_temperature is not None:
+        model = TemperatureScaledController(
+            model, float(calibration_temperature)
+        ).to(device).eval()
+    return model
 
 
 def _canonical_digest(value: object) -> str:

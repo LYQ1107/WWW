@@ -13,6 +13,7 @@ import copy
 import datetime as dt
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Optional, Sequence, Tuple
 
@@ -72,10 +73,19 @@ def normalize_events(
 ) -> Dict[int, List[Dict[str, Any]]]:
     grouped: Dict[int, List[Dict[str, Any]]] = {}
     wanted = {int(value) for value in video_ids} if video_ids is not None else None
+    video_id_pattern = re.compile(rb'"video_id"\s*:\s*(-?\d+)') if wanted is not None else None
     with path.open(encoding="utf-8") as handle:
         for order, line in enumerate(handle):
             if not line.strip():
                 continue
+            # Large canonical traces are partitioned by video for parallel
+            # replay.  Avoid JSON-decoding unrelated video records while
+            # preserving the original line order and full validation for all
+            # records that enter the selected partition.
+            if video_id_pattern is not None:
+                match = video_id_pattern.search(line.encode("utf-8"))
+                if match is not None and int(match.group(1)) not in wanted:
+                    continue
             event = json.loads(line)
             context = dict(event.get("context", {}))
             video_id = int(context.get("video_id", -1))
