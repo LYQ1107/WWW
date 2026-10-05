@@ -196,7 +196,8 @@ class FinalPipeline:
         selection_path = Path(str((payload or {}).get("selection_protocol", "")))
         selection_digest_valid = bool(
             selection_path.is_file()
-            and payload.get("selection_protocol_sha256") == sha256(selection_path)
+            and payload.get("selection_protocol_sha256")
+            == "sha256:" + sha256(selection_path)
         ) if payload else False
         return bool(
             payload

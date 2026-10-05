@@ -464,7 +464,8 @@ def main() -> None:
         selection_path = Path(str((lock or {}).get("selection_protocol", "")))
         selection_valid = bool(
             selection_path.is_file()
-            and sha256(selection_path) == (lock or {}).get("selection_protocol_sha256")
+            and "sha256:" + sha256(selection_path)
+            == (lock or {}).get("selection_protocol_sha256")
         ) if isinstance(lock, dict) else False
         allowed = bool(
             isinstance(lock, dict)
