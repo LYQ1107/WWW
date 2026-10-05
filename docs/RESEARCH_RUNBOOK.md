@@ -27,7 +27,7 @@ checkpoint、VisionTrack 数据、推理输出和训练结果不提交 Git。wor
 | 33788 | pre-lock TEST counterfactual diagnostic | 视频 `1 5 9 13 17 21` | 仅诊断，绝不用于 policy selection 或 official TEST |
 | 10016 | 原先启动的 pipeline parent | 等待/管理 formal 阶段 | 日志尾部可能包含旧失败记录，以当前 PID 和 manifest 为准 |
 
-最近快照中，strict native 最后一组为 `1040` 帧，约 `270/1040`；native manifest 仍为 `RUNNING`。formal 目录尚无可合并的完整 shard manifest。GPU0 正在工作，`/data1` 剩余空间约 47 GB。
+2026-10-05 06:11 UTC 快照中，strict native 的推理循环已到 `1040/1040`；进程仍在写最后的 prediction/结果文件，native manifest 仍为 `RUNNING`，所以尚未算 gate 完成。formal 目录尚无可合并的完整 shard manifest。GPU0 正在工作，`/data1` 剩余空间约 47 GB。
 
 查看实时状态：
 
@@ -58,19 +58,19 @@ df -h /data1
 8. **锁后 TEST**：只有 lock PASS 后，才生成 official TEST counterfactual，并运行 baseline、Oracle、threshold、state-threshold、MLP、JEV 的同 checkpoint 正式 replay。
 9. **正式评测与报告**：运行 TrackEval、cross-view CVIDF1/CVMA、Oracle gate、policy summary，写出 `FINAL_REPORT.json`；全部阶段完成后才写 `outputs/research_pipeline/PIPELINE_COMPLETE.json`。
 
-## 4. 保守时间估计（从 2026-10-05 约 05:42 UTC 快照开始）
+## 4. 保守时间估计（从 2026-10-05 约 06:12 UTC 快照开始）
 
 这些是资源和当前速度推导的区间，不是承诺；formal builder 没有可靠的中间百分比，只有终态 manifest 才算完成。
 
 | 阶段 | 估计耗时 | 影响因素 |
 |---|---:|---|
-| native strict 当前最后一组及收尾 | 约 30–60 分钟 | 当前约 270/1040；随后还有结果整理和写 manifest |
-| traced strict + strict gate + OFF replay | 约 3–6 小时 | traced 必须在 GPU0 顺序复跑全 VISION_test；gate/replay 本身较短 |
-| 当前 TRAIN formal shards | 约数小时至十余小时 | 只在完整 shard 结束时落盘；CPU、内存和 GMT association 开销不稳定 |
+| native strict 当前收尾 | 约 1–15 分钟 | 推理循环已到 1040/1040；仍需等待结果文件关闭并写出 COMPLETE manifest |
+| traced strict + strict gate + OFF replay | 约 1–3 小时 | traced 必须在 GPU0 顺序复跑全 VISION_test；gate/replay 本身较短 |
+| 当前 TRAIN formal shards | 约 1–12 小时 | 只在完整 shard 结束时落盘；CPU、内存和 GMT association 开销不稳定 |
 | H=1/8/16/32 TRAIN 数据 | 约 4–12 小时 | 取决于 TRAIN shard 合并规模和可用内存 |
 | 三 seed selection、controls、audit、calibration | 约 2–8 小时 | 主要为 CPU 离线训练/评估，可与部分后处理重叠但不能读取 TEST |
 | selection lock 后 TEST + Oracle/baseline/JEV + TrackEval | 约 2–8 小时 | 包括官方 replay、cross-view 和 Oracle gate |
-| **完整关键路径** | **保守按约 12–36 小时** | 以 PASS manifest 和 lock 为结束条件，不以进程存活时间为结束条件 |
+| **完整关键路径** | **保守按约 8–32 小时** | 以 PASS manifest 和 lock 为结束条件，不以进程存活时间为结束条件；formal builder 是最大不确定项 |
 
 当前最不确定的是 formal counterfactual builder；如果 shard 因 OOM/终止失败，保留 `.incomplete.*` 和日志，再按同一 shard 分片策略恢复，不能把部分 JSON 当作有效结果。
 
