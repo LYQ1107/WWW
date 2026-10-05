@@ -14,7 +14,7 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
-from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
+from typing import Any, Callable, Dict, List, Mapping, Optional, Sequence, Tuple
 
 import torch
 
@@ -245,6 +245,7 @@ def build_v2_records(
     gt_bundle: Optional[Tuple[Any, Any, Any, Any]] = None,
     cache_keys_by_video: Optional[Mapping[int, Sequence[Sequence[int]]]] = None,
     order_index: Optional[Path] = None,
+    record_sink: Optional[Callable[[Mapping[str, Any]], None]] = None,
     max_events: Optional[int] = None,
     video_ids: Optional[Sequence[int]] = None,
     max_events_per_video: Optional[int] = None,
@@ -292,7 +293,7 @@ def build_v2_records(
         if association_backend != "cosine_contract":
             raise ValueError("formal_gmt_transformer requires an injected GMT engine")
         engine = CachedPerceptionMutableAssociationV2()
-    records = []
+    records = [] if record_sink is None else None
     stats: Dict[str, int] = {}
     skipped = 0
     for video_id, events in grouped.items():
@@ -427,13 +428,16 @@ def build_v2_records(
                     }
                     for branch_horizon in horizons
                 }
-                records.append(record)
+                if record_sink is None:
+                    records.append(record)
+                else:
+                    record_sink(record)
                 stats[question] = stats.get(question, 0) + 1
 
             state_actions = actions.get(key)
             state_memories = memories.get(key)
             engine.step(payload, state, actions=state_actions, memory_actions=state_memories)
-    return records, stats, skipped
+    return (records if records is not None else []), stats, skipped
 
 
 def build_formal_gmt_engine(

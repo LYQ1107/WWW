@@ -130,16 +130,15 @@ class Heartbeat:
         self.thread.join(timeout=5.0)
 
 
-def write_records(path: Path, records: list[Mapping[str, Any]]) -> str:
+def open_record_sink(path: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_name(path.name + f".tmp.{os.getpid()}")
-    with temporary.open("w", encoding="utf-8") as handle:
-        for record in records:
-            handle.write(json.dumps(record, sort_keys=True) + "\n")
-        handle.flush()
-        os.fsync(handle.fileno())
-    os.replace(temporary, path)
-    return sha256(path)
+    handle = temporary.open("w", encoding="utf-8")
+
+    def sink(record: Mapping[str, Any]) -> None:
+        handle.write(json.dumps(record, sort_keys=True) + "\n")
+
+    return handle, temporary, sink
 
 
 def build_one(
@@ -172,20 +171,31 @@ def build_one(
     if not trace_path.is_file() or not order_path.is_file():
         raise FileNotFoundError(f"missing partition for video {video_id}: {trace_path}")
 
-    records, stats, skipped = build_v2_records(
-        trace=trace_path,
-        cache_root=args.cache.resolve(),
-        annotations=args.annotations.resolve(),
-        checkpoint_hash=checkpoint_hash,
-        horizon=int(args.horizon),
-        association_backend="formal_gmt_transformer",
-        engine=engine,
-        cache_obj=cache_obj,
-        gt_bundle=gt_bundle,
-        cache_keys_by_video={video_id: cache_keys_by_video[str(video_id)]},
-        order_index=order_path,
-    )
-    artifact_hash = write_records(records_path, records)
+    record_handle, temporary_records, record_sink = open_record_sink(records_path)
+    try:
+        _records, stats, skipped = build_v2_records(
+            trace=trace_path,
+            cache_root=args.cache.resolve(),
+            annotations=args.annotations.resolve(),
+            checkpoint_hash=checkpoint_hash,
+            horizon=int(args.horizon),
+            association_backend="formal_gmt_transformer",
+            engine=engine,
+            cache_obj=cache_obj,
+            gt_bundle=gt_bundle,
+            cache_keys_by_video={video_id: cache_keys_by_video[str(video_id)]},
+            order_index=order_path,
+            record_sink=record_sink,
+        )
+        record_handle.flush()
+        os.fsync(record_handle.fileno())
+        record_handle.close()
+        os.replace(temporary_records, records_path)
+    except Exception:
+        record_handle.close()
+        raise
+    artifact_hash = sha256(records_path)
+    record_count = sum(int(value) for value in stats.values())
     report = {
         "status": "COMPLETE",
         "created_utc": utc_now(),
@@ -210,7 +220,7 @@ def build_one(
         "counterfactual_engine": "cached_perception_mutable_association_v2",
         "state_schema_version": 2,
         "utility_definition": "future_correct_identity_duration - 0.5*future_identity_switches - 0.25*future_fragmentation - 0.5*future_collisions - memory_contamination; sample_weight=0 for uninformative futures",
-        "records": len(records),
+        "records": record_count,
         "records_by_question": stats,
         "skipped_events": int(skipped),
         "records_artifact": str(records_path),
