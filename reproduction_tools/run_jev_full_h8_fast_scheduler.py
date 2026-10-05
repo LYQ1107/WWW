@@ -30,6 +30,45 @@ def available_memory() -> int:
 
 def gpu_compute_pids(gpu: int) -> list[int]:
     try:
+        uuid_result = subprocess.run(
+            [
+                "nvidia-smi",
+                "--query-gpu=index,uuid",
+                "--format=csv,noheader,nounits",
+            ],
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        target_uuid = None
+        for line in uuid_result.stdout.splitlines():
+            fields = [value.strip() for value in line.split(",", 1)]
+            if len(fields) == 2 and fields[0].isdigit() and int(fields[0]) == int(gpu):
+                target_uuid = fields[1]
+                break
+        if target_uuid:
+            app_result = subprocess.run(
+                [
+                    "nvidia-smi",
+                    "--query-compute-apps=pid,gpu_uuid",
+                    "--format=csv,noheader,nounits",
+                ],
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
+            matched = []
+            for line in app_result.stdout.splitlines():
+                fields = [value.strip() for value in line.split(",", 1)]
+                if len(fields) == 2 and fields[1] == target_uuid and fields[0].isdigit():
+                    matched.append(int(fields[0]))
+            if matched or int(gpu) != DEFERRED_GPU:
+                return matched
+    except OSError:
+        pass
+    try:
         by_gpu = subprocess.run(
             [
                 "nvidia-smi",
@@ -52,8 +91,7 @@ def gpu_memory_used_bytes(gpu: int) -> int:
         result = subprocess.run(
             [
                 "nvidia-smi",
-                f"--id={gpu}",
-                "--query-gpu=memory.used",
+                "--query-gpu=index,memory.used",
                 "--format=csv,noheader,nounits",
             ],
             text=True,
@@ -61,8 +99,11 @@ def gpu_memory_used_bytes(gpu: int) -> int:
             stderr=subprocess.DEVNULL,
             check=False,
         )
-        value = next((line.strip() for line in result.stdout.splitlines() if line.strip()), "0")
-        return int(float(value)) * 1024**2
+        for line in result.stdout.splitlines():
+            fields = [value.strip() for value in line.split(",", 1)]
+            if len(fields) == 2 and fields[0].isdigit() and int(fields[0]) == int(gpu):
+                return int(float(fields[1])) * 1024**2
+        return 0
     except (OSError, ValueError):
         return 0
 
