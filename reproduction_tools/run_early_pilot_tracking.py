@@ -281,6 +281,7 @@ def run_method(
     legacy_acceptance_threshold,
     feature_source_mode,
     parity_report,
+    max_frame=None,
 ):
     controller = (
         build_controller_from_checkpoint(checkpoint_path, device="cpu")
@@ -303,6 +304,10 @@ def run_method(
     engine.association_fn.model.eval()
     cache = FrozenPerceptionCache(CACHE)
     keys, seed_key, first_counts = ordered_replay_keys(cache, VIDEO_ID, view_num=2)
+    if max_frame is not None:
+        keys = [key for key in keys if int(key[1]) <= int(max_frame)]
+        if not keys or keys[0] != seed_key:
+            raise RuntimeError("max_frame smoke limit removed the production seed")
     state, seed_payload = seed_production_state(cache, MutableGMTState, seed_key)
     predictions = []
     decisions = []
@@ -660,6 +665,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--device", default="cpu", choices=("cpu",))
     parser.add_argument("--feature-source", choices=("runtime", "trace_debug"), default="runtime")
+    parser.add_argument(
+        "--methods",
+        default="all",
+        help="comma-separated subset for CPU smoke/debug runs; default is all methods",
+    )
+    parser.add_argument("--max-frame", type=int, help="stop after this cache frame; smoke/debug only")
     args = parser.parse_args()
     for path in (CHECKPOINT, CONFIG, CACHE, TRACE, ANNOTATIONS):
         if not path.exists():
@@ -709,7 +720,16 @@ def main() -> None:
         "controller_feature_source": args.feature_source,
         "methods": {},
     }
-    for name, relative in METHODS.items():
+    selected_names = list(METHODS)
+    if args.methods != "all":
+        selected_names = [name.strip() for name in args.methods.split(",") if name.strip()]
+        unknown = sorted(set(selected_names) - set(METHODS))
+        if unknown:
+            raise ValueError(f"unknown pilot methods: {unknown}")
+        if args.max_frame is None:
+            raise ValueError("--methods subsets require --max-frame smoke mode")
+    selected_methods = {name: METHODS[name] for name in selected_names}
+    for name, relative in selected_methods.items():
         checkpoint_path = None if relative is None else PILOT / relative
         if checkpoint_path is not None and not checkpoint_path.is_file():
             raise FileNotFoundError(checkpoint_path)
@@ -733,8 +753,15 @@ def main() -> None:
             legacy_acceptance_threshold=legacy_acceptance_threshold,
             feature_source_mode=args.feature_source,
             parity_report=parity_report,
+            max_frame=args.max_frame,
         )
         json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)
+    if args.max_frame is not None:
+        raw["status"] = "SMOKE_ONLY"
+        raw["max_frame"] = int(args.max_frame)
+        json_write(PILOT / "PILOT_TRACKING_RAW_SMOKE.json", raw)
+        print(json.dumps(raw, indent=2))
+        return
     dataset_root = prepare_eval_dataset(subset_annotation)
     evaluations = {}
     for name in METHODS:
