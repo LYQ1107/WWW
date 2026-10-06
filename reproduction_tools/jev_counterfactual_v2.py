@@ -651,6 +651,15 @@ class CachedPerceptionMutableAssociationV2:
         state.association_history.append(history_item)
         if len(state.association_history) > self.history_limit:
             del state.association_history[:-self.history_limit]
+        # Native GMT forms the next proposal from the current sliding window,
+        # not from every ID ever created in the video.  Keep ``active_ids`` as
+        # that window-derived set while retaining ``next_id``/hit/memory
+        # provenance for identities that have moved to the stale bank.
+        state.active_ids = {
+            int(track_id)
+            for item in state.association_history
+            for track_id in dict(item.get("assignments", {})).values()
+        }
 
         return {
             "engine_version": ENGINE_VERSION,
