@@ -22,6 +22,13 @@ from typing import Any, Iterable, Mapping, Sequence
 from jev_dataset_contract import validate_record
 
 
+def _normalise_sha256(value: Any) -> str:
+    """Compare record and manifest hashes independent of display prefix."""
+
+    text = str(value)
+    return text[len("sha256:") :] if text.startswith("sha256:") else text
+
+
 def sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -60,7 +67,7 @@ def _iter_validated_records(
     expected_manifest: Mapping[str, Any],
     seen_keys: set[tuple[Any, ...]],
 ) -> Iterable[str]:
-    checkpoint = str(expected_manifest["gmt_checkpoint_sha256"])
+    checkpoint = _normalise_sha256(expected_manifest["gmt_checkpoint_sha256"])
     expected_horizon = int(expected_manifest["horizon"])
     with path.open(encoding="utf-8") as handle:
         for line_number, line in enumerate(handle, 1):
@@ -71,7 +78,7 @@ def _iter_validated_records(
                 validate_record(record, allow_future_gt=True)
                 if int(record["horizon"]) != expected_horizon or expected_horizon != 8:
                     raise ValueError("record horizon is not canonical H=8")
-                if str(record["gmt_checkpoint_sha256"]) != checkpoint:
+                if _normalise_sha256(record["gmt_checkpoint_sha256"]) != checkpoint:
                     raise ValueError("record/checkpoint provenance mismatch")
                 context = record["state"]["online_context"]
                 if int(context["video_id"]) != int(video_id):

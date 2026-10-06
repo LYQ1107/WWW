@@ -1,0 +1,38 @@
+{
+  "status": "FORMAL_BUILD_IN_PROGRESS_FINALIZER_FIXED",
+  "observed_utc": "2026-10-06T06:50:00Z",
+  "scope": "formal H=8 shard boundary and merge readiness",
+  "finalizer_fix": {
+    "file": "reproduction_tools/finalize_jev_full_h8.py",
+    "issue": "Records store the checkpoint digest without the display prefix, while shard manifests store the same digest as sha256:<digest>.",
+    "fix": "Normalize the optional sha256: prefix before record/manifest comparison; keep the manifest representation unchanged.",
+    "source_commit_consistency_check": "UNCHANGED_STRICT"
+  },
+  "validation": {
+    "finalizer_fixture_test": "PASS",
+    "video_08_record_count": 3950,
+    "video_08_manifest_record_count": 3950,
+    "video_08_contract_invalid_records": 0,
+    "video_08_questions": {
+      "MATCH_DECISION": 1997,
+      "MEMORY_DECISION": 1953
+    },
+    "video_08_event_order_range": [136569, 140518],
+    "video_08_records_artifact_sha256_matches_manifest": true,
+    "video_08_checkpoint_digest_matches_manifest_after_normalization": true
+  },
+  "source_lineage_risk": {
+    "video_08_manifest_source_commit": "1bf00c95cc07c6037bd5df1767f64fb6d912d1a5",
+    "current_head": "eee26d10dfc0a50c9408b73752c3a8d044f07859",
+    "monitor_startup_source_label": "afa98766c0e90ab3138f163bed2dd5799f1896e1",
+    "1bf_to_afa_formal_code_diff": "Only docs/RESEARCH_REPORT_20261005.md changed.",
+    "1bf_to_current_formal_runtime_change": "The current branch includes the empty-zero-detection ReID adapter fix; a future video_04 retry will have a different raw source commit unless an explicit compatibility/provenance decision is made.",
+    "merge_policy": "Do not weaken the strict source_commit consistency gate silently; resolve the retry provenance before declaring the full merged dataset PASS."
+  },
+  "runtime_impact": {
+    "active_builders_stopped": false,
+    "queue_modified": false,
+    "video_04_retry_started": false,
+    "official_shards_ready": false
+  }
+}
