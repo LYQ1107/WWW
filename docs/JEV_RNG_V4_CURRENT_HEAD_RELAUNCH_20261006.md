@@ -17,10 +17,10 @@ The previous small-gate three-way report is preserved as
 
 - v6/v7 rebuild root:
   `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current_head_75b0aea`
-- corrected training root:
-  `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v4_current_head_75b0aea`
+- corrected canonical-feature training root:
+  `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v4_canonical_features`
 - pinned formal equivalence root:
-  `/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_same_code_video7_v8_pinned`
+  `/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_same_code_video7_v9_head`
 - corrected video1 root (existing worker is preserved and not migrated):
   `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current/video_01`
 
@@ -44,3 +44,15 @@ source commit. The policy split and all three controllers use seed `20261003`.
 
 Full 24-video H=8 generation and intra-video chunking remain unauthorized until
 the same-code formal equivalence report is PASS.
+
+## Continuation state
+
+The explicitly authorized canonical-feature v6/v7 pool has now been compacted
+to 8501 records and trained once per method with seed `20261003`; the aggregate
+report is pushed to GitHub.  The current-head v6 rebuild continues separately
+for provenance/audit and must not silently replace that report.  Corrected v7
+has 3337 records; corrected v6 and video1 remain live.  Formal v9 has completed
+warm-up and is generating the single reference plus three chunks.  The bounded
+native video1 v3 trace has been validated to contain only `video_id=1`; candidate
+parity and full three-question video1 parity remain waiting on the corrected
+video1 manifest.

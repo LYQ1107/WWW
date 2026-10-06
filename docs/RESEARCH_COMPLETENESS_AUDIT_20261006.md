@@ -22,17 +22,21 @@ mutated-state tracking gates pass.
 
 ## Corrected-v4 state
 
-The current canonical rebuild is pinned to source commit
-`75b0aeaa7bfd3caaae942bc57b001c7c61edc8e4`.
+The v6/v7 canonical rebuild is pinned to source commit
+`75b0aeaa7bfd3caaae942bc57b001c7c61edc8e4`; the video1 continuation includes
+the later stale-bank promotion fix from the current branch.
 
-- corrected v6/v7 builders are running under
+- corrected v6 is still running under
   `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current_head_75b0aea`;
+- corrected v7 is complete (3337 records) under the same root;
 - corrected video1 continues under
   `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current/video_01`;
-- corrected training is waiting under
-  `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v4_current_head_75b0aea`;
-- same-code formal video7 single/chunk work is waiting under
-  `/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_same_code_video7_v8_pinned`.
+- corrected canonical-feature training is PASS under
+  `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v4_canonical_features`;
+  its report is `CORRECTED_V4_SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json` and uses
+  seed `20261003`;
+- same-code formal video7 single/chunk work is running under
+  `/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_same_code_video7_v9_head`.
 
 The earlier v6/v7 artifacts built from `5cd989d` remain diagnostic only.  The
 old three-way report is preserved as
@@ -44,11 +48,11 @@ old three-way report is preserved as
 | --- | --- | --- |
 | Stage1/Stage2 checkpoint | PASS | Existing validation/reload manifests and checkpoint SHA |
 | Frozen GMT baseline | FROZEN | Reuse the approved canonical row; do not rerun full baseline |
-| corrected v6/v7 records | RUNNING | Require source commit `75b0aea`, complete manifests, schema and SHA checks |
-| corrected three-way training | WAITING | Start only from corrected v6/v7, seed `20261003`, sequence-disjoint split |
+| corrected v6/v7 records | v7 PASS / v6 RUNNING | Require source commit `75b0aea`, complete manifests, schema and SHA checks |
+| corrected three-way training | PASS (canonical-feature v6/v7) | 8501 records, sequence-disjoint split, seed `20261003`, calibration and aggregate complete |
 | runtime feature parity | WAITING | Three repeated runs, tolerance `2e-5`, exact structural fields |
-| reactivation candidate parity | WAITING | Exact IDs/order/action/event coverage; scores within `2e-5` |
-| formal single/chunk equivalence | WAITING | Same source/checkpoint/cache/trace/RNG provenance and exact 3337 records |
+| reactivation candidate parity | WAITING FOR VIDEO1 | Bounded native v3 trace is video1-only; exact IDs/order/action/event coverage remains required |
+| formal single/chunk equivalence | RUNNING | Same source/checkpoint/cache/trace/RNG provenance and exact 3337 records |
 | corrected video1 full parity | WAITING | MATCH, MEMORY, REACTIVATION, and TOTAL reported separately |
 | final mutated-state tracking | BLOCKED BY GATES | No final checkpoint/runtime comparison before all gates pass |
 | Full 24-video H=8 chunked rebuild | NOT AUTHORIZED | Formal same-code equivalence must PASS first |
