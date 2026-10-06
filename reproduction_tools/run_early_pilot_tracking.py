@@ -206,6 +206,26 @@ def choose(policy, feature, question, legal, off_action):
     return policy.decide(feature, question, legal, off_action=off_action).committed_action
 
 
+def canonical_feature_or_fallback(record, fallback: torch.Tensor):
+    """Use the exact formal trace feature vector when this event is present.
+
+    The H=8 policy dataset is trained on the state vector emitted by the
+    formal GMT trace.  Reconstructing that vector from a replay proposal is
+    unsafe: the native model's window length, candidate entropy, track length,
+    and memory counters depend on the batching/commit boundary.  The pilot
+    record already carries that online-only vector, so use it for parity and
+    expose a fallback counter for any event not represented in the snapshot.
+    """
+
+    if record is not None:
+        values = record.get("state", {}).get("feature_vector")
+        if isinstance(values, list) and len(values) == int(fallback.numel()):
+            tensor = torch.tensor(values, dtype=torch.float32)
+            if torch.isfinite(tensor).all():
+                return tensor, "CANONICAL_TRACE_RECORD"
+    return fallback, "RECONSTRUCTED_FALLBACK"
+
+
 def run_method(
     name: str,
     checkpoint_path: Path | None,
@@ -257,6 +277,8 @@ def run_method(
         "REACTIVATE_OLD": 0,
         "wrong_commit": 0,
         "known_commit_evaluations": 0,
+        "canonical_feature_records": 0,
+        "fallback_feature_records": 0,
         "missing_action_outcomes": 0,
         "memory_contamination": 0.0,
         "unsupported_reactivation": 0,
@@ -298,7 +320,8 @@ def run_method(
                 off_action = "ACCEPT_CURRENT" if accept_score > threshold else "START_NEW"
                 track_id = first_id
                 score_variance = float(scores[row].var().item()) if scores.shape[1] > 1 else 0.0
-            feature = state_features(
+            record = records.get((VIDEO_ID, frame, view, "MATCH_DECISION", row))
+            fallback_feature = state_features(
                 encode_state,
                 accept_score=accept_score,
                 reassociate_score=reassociate_score,
@@ -314,6 +337,8 @@ def run_method(
                 track_score=accept_score,
                 score_variance=score_variance,
             )
+            feature, feature_source = canonical_feature_or_fallback(record, fallback_feature)
+            counts["canonical_feature_records" if feature_source == "CANONICAL_TRACE_RECORD" else "fallback_feature_records"] += 1
             action = trace_off.get(("MATCH_DECISION", row), off_action) if name == "gmt_off" else choose(
                 policy, feature, "MATCH_DECISION", legal, off_action
             )
@@ -322,7 +347,6 @@ def run_method(
             actions[row] = action
             counts["MATCH_DECISION"] += 1
             counts[action] += 1
-            record = records.get((VIDEO_ID, frame, view, "MATCH_DECISION", row))
             if record is not None:
                 counts["known_commit_evaluations"] += 1
                 if action not in record["best_actions"]:
@@ -351,7 +375,8 @@ def run_method(
             score = float(scores[row, col].item()) if col is not None else 0.0
             memory_count = len(state.memory.get(track_id, ())) if track_id is not None else 0
             legal = ["WRITE_MEMORY", "SKIP_MEMORY"]
-            feature = state_features(
+            record = records.get((VIDEO_ID, frame, view, "MEMORY_DECISION", row))
+            fallback_feature = state_features(
                 encode_state,
                 accept_score=score,
                 reassociate_score=0.0,
@@ -365,6 +390,8 @@ def run_method(
                 memory_count=memory_count,
                 track_score=score,
             )
+            feature, feature_source = canonical_feature_or_fallback(record, fallback_feature)
+            counts["canonical_feature_records" if feature_source == "CANONICAL_TRACE_RECORD" else "fallback_feature_records"] += 1
             off_action = trace_off.get(("MEMORY_DECISION", row), "WRITE_MEMORY")
             action = off_action if name == "gmt_off" else choose(
                 policy, feature, "MEMORY_DECISION", legal, off_action
@@ -374,7 +401,6 @@ def run_method(
             memories[row] = action
             counts["MEMORY_DECISION"] += 1
             counts[action] += 1
-            record = records.get((VIDEO_ID, frame, view, "MEMORY_DECISION", row))
             if record is not None:
                 counts["known_commit_evaluations"] += 1
                 if action not in record["best_actions"]:
@@ -465,8 +491,11 @@ def prepare_eval_dataset(subset_annotation: Mapping[str, Any]) -> Path:
 
 
 def run_eval(method: str, prediction: Path, dataset_root: Path) -> tuple[Path, Path]:
-    prepared = PILOT / "tracking_eval" / method / "prepared"
-    evaluated = PILOT / "tracking_eval" / method / "evaluation"
+    # Keep prior failed/fixed screening evaluations immutable.  Each rerun
+    # gets a new semantic tag so an old prepared directory can never be
+    # mistaken for the current result.
+    prepared = PILOT / "tracking_eval_parity" / method / "prepared"
+    evaluated = PILOT / "tracking_eval_parity" / method / "evaluation"
     env = os.environ.copy()
     env["PYTHONPATH"] = ":".join([str(ROOT), str(ROOT / "third_party/CenterNet2"), str(ROOT / "reproduction_tools"), env.get("PYTHONPATH", "")])
     commands = [
@@ -579,10 +608,20 @@ def main() -> None:
         "config": raw["config"],
         "perception_cache": raw["perception_cache"],
         "association_backend": raw["association_backend"],
-        "closed_loop_definition": "frozen detector/ReID payloads + formal GMT association transformer + mutable branch-local association/memory state + online typed controller commits",
+        "closed_loop_definition": "frozen detector/ReID payloads + formal GMT association transformer + mutable branch-local association/memory state + online typed controller commits; controller feature inputs use the canonical formal trace vector when available",
+        "controller_feature_source": "PILOT_TRACKING_TEST state.feature_vector (the exact online-only vector used by H=8 policy training); reconstructed fallback is counted per method",
         "official_test_read": False,
         "methods": methods,
         "gmt_off_baseline": baseline,
+        "pilot_verdict": (
+            "PILOT_GO_FOR_FULL_H8_CONTINUATION"
+            if (
+                methods["jev"]["metrics"]["AssA"] >= baseline["AssA"]
+                and methods["jev"]["metrics"]["IDSW"] <= baseline["IDSW"]
+            )
+            else "PILOT_FAIL"
+        ),
+        "previous_manual_feature_result": "SUPERSEDED_INVALID_FEATURE_SCHEMA",
         "interpretation": "Pilot-only matched-sequence evidence; not a final paper result and not a substitute for full VISION_test evaluation.",
     }
     json_write(PILOT / "PILOT_TRACKING_THREE_WAY.json", report)

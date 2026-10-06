@@ -2,9 +2,10 @@
   "association_backend": "formal_gmt_transformer",
   "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
   "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
-  "closed_loop_definition": "frozen detector/ReID payloads + formal GMT association transformer + mutable branch-local association/memory state + online typed controller commits",
+  "closed_loop_definition": "frozen detector/ReID payloads + formal GMT association transformer + mutable branch-local association/memory state + online typed controller commits; controller feature inputs use the canonical formal trace vector when available",
   "config": "/data1/liuyeqiang/WWW_jev_v2/configs/VISION_test.yaml",
-  "created_utc": "2026-10-06T05:46:47.698149+00:00",
+  "controller_feature_source": "PILOT_TRACKING_TEST state.feature_vector (the exact online-only vector used by H=8 policy training); reconstructed fallback is counted per method",
+  "created_utc": "2026-10-06T06:15:25.561040+00:00",
   "gmt_off_baseline": {
     "AssA": 85.07448334678448,
     "DetA": 86.16851180040074,
@@ -35,6 +36,8 @@
           "START_NEW": 0.01150575287643822,
           "WRITE_MEMORY": 0.5
         },
+        "canonical_feature_records": 3950,
+        "fallback_feature_records": 48,
         "known_commit_evaluations": 3950,
         "memory_contamination": 7990.0,
         "missing_action_outcomes": 0,
@@ -51,7 +54,7 @@
         "\u0394MOTA": 0.0
       },
       "evaluation": {
-        "evaluation": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_fixed/gmt_off/evaluation",
+        "evaluation": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_parity/gmt_off/evaluation",
         "metrics": {
           "AssA": 85.07448334678448,
           "DetA": 86.16851180040074,
@@ -61,7 +64,7 @@
           "IDSW": 67.0,
           "MOTA": 89.10133843212236
         },
-        "prepared": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_fixed/gmt_off/prepared"
+        "prepared": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_parity/gmt_off/prepared"
       },
       "metrics": {
         "AssA": 85.07448334678448,
@@ -75,179 +78,188 @@
     },
     "jev": {
       "action_counts": {
-        "ACCEPT_CURRENT": 0,
+        "ACCEPT_CURRENT": 1957,
         "MATCH_DECISION": 1999,
         "MEMORY_DECISION": 1999,
         "REACTIVATE_OLD": 0,
         "REACTIVATION_DECISION": 0,
-        "REASSOCIATE": 591,
-        "SKIP_MEMORY": 0,
-        "START_NEW": 1408,
-        "WRITE_MEMORY": 1999,
+        "REASSOCIATE": 15,
+        "SKIP_MEMORY": 1942,
+        "START_NEW": 27,
+        "WRITE_MEMORY": 57,
         "action_rates": {
-          "ACCEPT_CURRENT": 0.0,
+          "ACCEPT_CURRENT": 0.48949474737368687,
           "REACTIVATE_OLD": 0.0,
-          "REASSOCIATE": 0.147823911955978,
-          "SKIP_MEMORY": 0.0,
-          "START_NEW": 0.352176088044022,
-          "WRITE_MEMORY": 0.5
+          "REASSOCIATE": 0.0037518759379689846,
+          "SKIP_MEMORY": 0.48574287143571787,
+          "START_NEW": 0.006753376688344172,
+          "WRITE_MEMORY": 0.014257128564282141
         },
+        "canonical_feature_records": 3950,
+        "fallback_feature_records": 48,
         "known_commit_evaluations": 3950,
-        "memory_contamination": 7834.0,
+        "memory_contamination": 7850.0,
         "missing_action_outcomes": 1,
         "unsupported_reactivation": 0,
-        "wrong_commit": 1928,
-        "wrong_commit_rate": 0.4881012658227848
+        "wrong_commit": 219,
+        "wrong_commit_rate": 0.05544303797468354
       },
       "delta_vs_gmt_off": {
-        "\u0394AssA": -81.7818042182433,
-        "\u0394Frag": 1.0,
-        "\u0394HOTA": -68.7367652908145,
-        "\u0394IDF1": -82.22928379369347,
-        "\u0394IDSW": 1665.0,
-        "\u0394MOTA": -79.0152963671128
+        "\u0394AssA": 0.8291382858126894,
+        "\u0394Frag": -1.0,
+        "\u0394HOTA": 0.43168269058533326,
+        "\u0394IDF1": 0.537765827426071,
+        "\u0394IDSW": -23.0,
+        "\u0394MOTA": 1.0994263862332758
       },
       "evaluation": {
-        "evaluation": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_fixed/jev/evaluation",
+        "evaluation": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_parity/jev/evaluation",
         "metrics": {
-          "AssA": 3.292679128541186,
-          "DetA": 87.49403261891496,
-          "Frag": 15.0,
-          "HOTA": 16.88207144116496,
-          "IDF1": 12.710828648252262,
-          "IDSW": 1732.0,
-          "MOTA": 10.086042065009561
+          "AssA": 85.90362163259717,
+          "DetA": 86.1991093710352,
+          "Frag": 13.0,
+          "HOTA": 86.05051942256479,
+          "IDF1": 95.4778782693718,
+          "IDSW": 44.0,
+          "MOTA": 90.20076481835564
         },
-        "prepared": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_fixed/jev/prepared"
+        "prepared": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_parity/jev/prepared"
       },
       "metrics": {
-        "AssA": 3.292679128541186,
-        "DetA": 87.49403261891496,
-        "Frag": 15.0,
-        "HOTA": 16.88207144116496,
-        "IDF1": 12.710828648252262,
-        "IDSW": 1732.0,
-        "MOTA": 10.086042065009561
+        "AssA": 85.90362163259717,
+        "DetA": 86.1991093710352,
+        "Frag": 13.0,
+        "HOTA": 86.05051942256479,
+        "IDF1": 95.4778782693718,
+        "IDSW": 44.0,
+        "MOTA": 90.20076481835564
       }
     },
     "question_conditioned_mlp": {
       "action_counts": {
-        "ACCEPT_CURRENT": 600,
+        "ACCEPT_CURRENT": 1838,
         "MATCH_DECISION": 1999,
         "MEMORY_DECISION": 1999,
         "REACTIVATE_OLD": 0,
         "REACTIVATION_DECISION": 0,
-        "REASSOCIATE": 0,
-        "SKIP_MEMORY": 0,
-        "START_NEW": 1399,
-        "WRITE_MEMORY": 1999,
+        "REASSOCIATE": 124,
+        "SKIP_MEMORY": 413,
+        "START_NEW": 37,
+        "WRITE_MEMORY": 1586,
         "action_rates": {
-          "ACCEPT_CURRENT": 0.1500750375187594,
+          "ACCEPT_CURRENT": 0.45972986493246626,
           "REACTIVATE_OLD": 0.0,
-          "REASSOCIATE": 0.0,
-          "SKIP_MEMORY": 0.0,
-          "START_NEW": 0.3499249624812406,
-          "WRITE_MEMORY": 0.5
+          "REASSOCIATE": 0.031015507753876938,
+          "SKIP_MEMORY": 0.1033016508254127,
+          "START_NEW": 0.009254627313656828,
+          "WRITE_MEMORY": 0.3966983491745873
         },
+        "canonical_feature_records": 3950,
+        "fallback_feature_records": 48,
         "known_commit_evaluations": 3950,
-        "memory_contamination": 7854.0,
+        "memory_contamination": 7969.0,
         "missing_action_outcomes": 0,
         "unsupported_reactivation": 0,
-        "wrong_commit": 1410,
-        "wrong_commit_rate": 0.3569620253164557
+        "wrong_commit": 459,
+        "wrong_commit_rate": 0.11620253164556962
       },
       "delta_vs_gmt_off": {
-        "\u0394AssA": -76.56147775168891,
-        "\u0394Frag": 1.0,
-        "\u0394HOTA": -58.356301461134294,
-        "\u0394IDF1": -65.50965534099242,
-        "\u0394IDSW": 1322.0,
-        "\u0394MOTA": -62.61950286806882
+        "\u0394AssA": -19.164595908217407,
+        "\u0394Frag": -1.0,
+        "\u0394HOTA": -11.07673817086824,
+        "\u0394IDF1": -9.044243461256414,
+        "\u0394IDSW": 44.0,
+        "\u0394MOTA": -2.1032504780114607
       },
       "evaluation": {
-        "evaluation": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_fixed/question_conditioned_mlp/evaluation",
+        "evaluation": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_parity/question_conditioned_mlp/evaluation",
         "metrics": {
-          "AssA": 8.513005595095567,
-          "DetA": 87.4113275928071,
-          "Frag": 15.0,
-          "HOTA": 27.262535270845163,
-          "IDF1": 29.430457100953312,
-          "IDSW": 1389.0,
-          "MOTA": 26.481835564053537
+          "AssA": 65.90988743856707,
+          "DetA": 84.30576893069536,
+          "Frag": 13.0,
+          "HOTA": 74.54209856111122,
+          "IDF1": 85.89586898068931,
+          "IDSW": 111.0,
+          "MOTA": 86.9980879541109
         },
-        "prepared": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_fixed/question_conditioned_mlp/prepared"
+        "prepared": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_parity/question_conditioned_mlp/prepared"
       },
       "metrics": {
-        "AssA": 8.513005595095567,
-        "DetA": 87.4113275928071,
-        "Frag": 15.0,
-        "HOTA": 27.262535270845163,
-        "IDF1": 29.430457100953312,
-        "IDSW": 1389.0,
-        "MOTA": 26.481835564053537
+        "AssA": 65.90988743856707,
+        "DetA": 84.30576893069536,
+        "Frag": 13.0,
+        "HOTA": 74.54209856111122,
+        "IDF1": 85.89586898068931,
+        "IDSW": 111.0,
+        "MOTA": 86.9980879541109
       }
     },
     "question_threshold": {
       "action_counts": {
-        "ACCEPT_CURRENT": 1965,
+        "ACCEPT_CURRENT": 1954,
         "MATCH_DECISION": 1999,
         "MEMORY_DECISION": 1999,
         "REACTIVATE_OLD": 0,
         "REACTIVATION_DECISION": 0,
-        "REASSOCIATE": 28,
+        "REASSOCIATE": 16,
         "SKIP_MEMORY": 0,
-        "START_NEW": 6,
+        "START_NEW": 29,
         "WRITE_MEMORY": 1999,
         "action_rates": {
-          "ACCEPT_CURRENT": 0.49149574787393696,
+          "ACCEPT_CURRENT": 0.48874437218609307,
           "REACTIVATE_OLD": 0.0,
-          "REASSOCIATE": 0.007003501750875438,
+          "REASSOCIATE": 0.00400200100050025,
           "SKIP_MEMORY": 0.0,
-          "START_NEW": 0.0015007503751875938,
+          "START_NEW": 0.007253626813406703,
           "WRITE_MEMORY": 0.5
         },
+        "canonical_feature_records": 3950,
+        "fallback_feature_records": 48,
         "known_commit_evaluations": 3950,
         "memory_contamination": 7989.0,
         "missing_action_outcomes": 1,
         "unsupported_reactivation": 0,
-        "wrong_commit": 358,
-        "wrong_commit_rate": 0.09063291139240506
+        "wrong_commit": 364,
+        "wrong_commit_rate": 0.09215189873417722
       },
       "delta_vs_gmt_off": {
-        "\u0394AssA": 1.1647727556756138,
-        "\u0394Frag": -2.0,
-        "\u0394HOTA": 0.6038408600631158,
-        "\u0394IDF1": 0.635541432412623,
-        "\u0394IDSW": -27.0,
-        "\u0394MOTA": 1.5774378585086168
+        "\u0394AssA": 0.43254425969590216,
+        "\u0394Frag": -1.0,
+        "\u0394HOTA": 0.22401835313830532,
+        "\u0394IDF1": 0.19555120997311803,
+        "\u0394IDSW": -11.0,
+        "\u0394MOTA": 0.5258126195028865
       },
       "evaluation": {
-        "evaluation": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_fixed/question_threshold/evaluation",
+        "evaluation": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_parity/question_threshold/evaluation",
         "metrics": {
-          "AssA": 86.23925610246009,
-          "DetA": 86.20747678065905,
-          "Frag": 12.0,
-          "HOTA": 86.22267759204257,
-          "IDF1": 95.57565387435835,
-          "IDSW": 40.0,
-          "MOTA": 90.67877629063098
+          "AssA": 85.50702760648038,
+          "DetA": 86.18160216701607,
+          "Frag": 13.0,
+          "HOTA": 85.84285508511776,
+          "IDF1": 95.13566365191885,
+          "IDSW": 56.0,
+          "MOTA": 89.62715105162525
         },
-        "prepared": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_fixed/question_threshold/prepared"
+        "prepared": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/tracking_eval_parity/question_threshold/prepared"
       },
       "metrics": {
-        "AssA": 86.23925610246009,
-        "DetA": 86.20747678065905,
-        "Frag": 12.0,
-        "HOTA": 86.22267759204257,
-        "IDF1": 95.57565387435835,
-        "IDSW": 40.0,
-        "MOTA": 90.67877629063098
+        "AssA": 85.50702760648038,
+        "DetA": 86.18160216701607,
+        "Frag": 13.0,
+        "HOTA": 85.84285508511776,
+        "IDF1": 95.13566365191885,
+        "IDSW": 56.0,
+        "MOTA": 89.62715105162525
       }
     }
   },
   "official_test_read": false,
   "perception_cache": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train",
+  "pilot_verdict": "PILOT_GO_FOR_FULL_H8_CONTINUATION",
+  "previous_manual_feature_result": "SUPERSEDED_INVALID_FEATURE_SCHEMA",
   "sequence": "00021gate",
   "status": "PASS",
+  "tracking_feature_parity": "PASS_CANONICAL_TRACE_STATE_VECTOR",
   "video_id": 8
 }

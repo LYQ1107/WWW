@@ -5,21 +5,25 @@
 
 ## Executive conclusion
 
-The read-only H=8 snapshot is structurally healthy, but the current controller
-runtime integration is not ready for a full tracking comparison.
+The read-only H=8 snapshot is structurally healthy. The first tracking replay
+did expose a real engineering bug in the pilot harness: it reconstructed the
+controller feature vector with the wrong GMT window semantics. That result is
+preserved in Git history but is superseded by the canonical-feature parity
+replay below.
 
 - The snapshot passed schema, checkpoint, state, utility, and finiteness checks.
 - All three models learned an offline signal in the narrow sense that their
-  validation NLL/accuracy are non-random, but none beats the majority policy in
-  validation utility. Full JEV does not beat Generic MLP.
-- The held-out closed-loop replay is decisive for this screening run:
-  Learnable Threshold is slightly positive, while Generic MLP and Full JEV
-  catastrophically damage association. Full JEV is therefore **not a GO**.
-- The strict screening verdict is **`PILOT_FAIL` for the current learned-policy
-  runtime path**. The formal Full H=8 builders were not stopped or modified;
-  however, the remaining data must not be treated as sufficient justification
-  for final controller selection until the offline/runtime semantic mismatch is
-  diagnosed.
+  validation NLL/accuracy are non-random, but the majority policy remains
+  slightly better in validation utility. Full JEV is not yet selected over
+  Generic MLP by the offline gate.
+- After replacing the incorrect hand-built feature vector with the exact
+  formal `state.feature_vector`, Full JEV and Learnable Threshold show
+  plausible positive association signal on held-out `00021gate`. Generic MLP
+  regresses but no longer catastrophically collapses.
+- The corrected screening verdict is
+  **`PILOT_GO_FOR_FULL_H8_CONTINUATION`**. This is not a paper result or a
+  final controller-selection GO. The formal Full H=8 builders were not stopped
+  or modified.
 
 ## Provenance and isolation
 
@@ -89,7 +93,7 @@ method's `training.loss_curve` field.
 
 ## 3. Held-out closed-loop tracking replay
 
-This is a real mutable-state replay using the formal GMT association transformer
+This is a mutable-state replay using the formal GMT association transformer
 and typed controller commits. It reuses frozen detector/ReID perception
 payloads from the formal cache; it does **not** rerun live detector inference
 and it is not the official full `VISION_test` evaluation. The same payloads,
@@ -97,71 +101,74 @@ GT, checkpoint, evaluation mapping, and TrackEval procedure were used for all
 four rows. The evaluation was strict-online and used raw GT; this sequence had
 zero duplicate GT rows.
 
+The first run used a hand-built feature vector with `window_length=523` and
+missing canonical counters. It produced the previously committed catastrophic
+MLP/JEV numbers, but those numbers are **invalid for scientific interpretation**
+because the controller did not receive the same feature schema used in
+training. The corrected run uses the exact online-only `state.feature_vector`
+from the formal H=8 trace wherever the held-out record exists: 3,950 canonical
+decision records, with 48 explicitly counted fallbacks. Its result is the
+authoritative pilot output.
+
 ### Absolute metrics
 
 | Method | HOTA | DetA | AssA | IDF1 | MOTA | IDSW | Frag |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | GMT OFF | 85.6188 | 86.1685 | 85.0745 | 94.9401 | 89.1013 | 67 | 14 |
-| Learnable Threshold | 86.2227 | 86.2075 | 86.2393 | 95.5757 | 90.6788 | 40 | 12 |
-| Generic MLP | 27.2625 | 87.4113 | 8.5130 | 29.4305 | 26.4818 | 1,389 | 15 |
-| Full JEV | 16.8821 | 87.4940 | 3.2927 | 12.7108 | 10.0860 | 1,732 | 15 |
+| Learnable Threshold | 85.8429 | 86.1816 | 85.5070 | 95.1357 | 89.6272 | 56 | 13 |
+| Generic MLP | 74.5421 | 84.3058 | 65.9099 | 85.8959 | 86.9981 | 111 | 13 |
+| Full JEV | **86.0505** | **86.1991** | **85.9036** | **95.4779** | **90.2008** | **44** | 13 |
 
 ### Delta versus the same GMT OFF replay
 
 | Method | ΔHOTA | ΔAssA | ΔIDF1 | ΔMOTA | ΔIDSW | ΔFrag |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Learnable Threshold | +0.6038 | +1.1648 | +0.6355 | +1.5774 | -27 | -2 |
-| Generic MLP | -58.3563 | -76.5615 | -65.5097 | -62.6195 | +1,322 | +1 |
-| Full JEV | -68.7368 | -81.7818 | -82.2293 | -79.0153 | +1,665 | +1 |
+| Learnable Threshold | +0.2240 | +0.4325 | +0.1956 | +0.5258 | -11 | -1 |
+| Generic MLP | -11.0767 | -19.1646 | -9.0442 | -2.1033 | +44 | -1 |
+| Full JEV | **+0.4317** | **+0.8291** | **+0.5378** | **+1.0994** | **-23** | -1 |
 
-The controller action-rate diagnostic explains the collapse:
+The corrected controller action-rate diagnostic is:
 
-| Method | ACCEPT | REASSOCIATE | START_NEW | WRITE_MEMORY | wrong-commit rate |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| GMT OFF | 48.849% | 0.000% | 1.151% | 50.000% | 9.241% |
-| Threshold | 49.150% | 0.700% | 0.150% | 50.000% | 9.063% |
-| Generic MLP | 15.008% | 0.000% | 34.992% | 50.000% | 35.696% |
-| Full JEV | 0.000% | 14.782% | 35.218% | 50.000% | 48.810% |
+| Method | ACCEPT | REASSOCIATE | START_NEW | WRITE_MEMORY | SKIP_MEMORY | wrong-commit rate |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| GMT OFF | 48.849% | 0.000% | 1.151% | 50.000% | 0.000% | 9.241% |
+| Threshold | 48.874% | 0.400% | 0.725% | 50.000% | 0.000% | 9.215% |
+| Generic MLP | 45.973% | 3.102% | 0.925% | 39.670% | 10.330% | 11.620% |
+| Full JEV | 48.949% | 0.375% | 0.675% | 1.426% | 48.574% | 5.544% |
 
-The replay recorded one missing action-outcome lookup for Threshold and one
-for Full JEV. These were retained as diagnostics and treated as zero
-contamination contribution; they did not change the controller decision or
-the GMT state. This is another reason the result is a screening warning and
-not a paper claim.
+The corrected replay recorded one missing action-outcome lookup for Threshold
+and one for Full JEV. These were retained as diagnostics and treated as zero
+contamination contribution; they did not change the controller decision or the
+GMT state. The corrected Full JEV signal is still screening-only and must be
+validated on the completed H=8 data and additional seeds.
 
 ## 4. Direct answers to the pilot questions
 
 1. **Does the current H=8 data look reasonable?** Yes at the schema/state/
    utility level. It is not obviously degenerate, although ties are high.
-2. **Can the three controllers learn?** They learn an offline predictive
-   signal, but offline utility is effectively at the majority-policy ceiling;
-   Full JEV is not superior. Runtime replay shows a serious semantic mismatch
-   for MLP/JEV.
-3. **Is there positive tracking signal?** Threshold shows a preliminary
-   positive signal on `00021gate`; Generic MLP and Full JEV show catastrophic
-   negative association signal. There is no positive Full JEV signal.
+2. **Can the three controllers learn?** Yes, all three learn an offline
+   predictive signal. Offline utility is close to the majority-policy ceiling,
+   so this does not select Full JEV by itself.
+3. **Is there positive tracking signal?** Yes after feature parity: Full JEV
+   improves HOTA by `+0.4317`, AssA by `+0.8291`, and reduces IDSW by 23 on
+   this held-out sequence. Threshold is also slightly positive; MLP is a
+   moderate regression, not a catastrophic collapse.
 4. **Should we continue generating the remaining roughly one million records?**
-   Do not wait blindly for a final controller result. The already-running
-   formal builders remain untouched as required, but learned-policy expansion
-   and final tracking selection should pause behind a runtime/offline parity
-   investigation. First fix and unit-test feature/action/commit semantics on
-   a tiny held-out subset, then rerun this pilot before using additional H=8
-   data for final selection.
+   Yes, continue the already-running formal Full H=8 builders. The corrected
+   pilot no longer shows a catastrophic runtime failure, but do not freeze the
+   final method from one sequence/one seed; finish Full H=8, then run the
+   locked multi-seed and official evaluation protocol.
 
 ## 5. Immediate follow-up plan
 
-1. Compare the exact feature vector and legal-action ordering emitted by
-   `train_jev.py` with those emitted by `run_early_pilot_tracking.py` for the
-   same record/context.
-2. Add a checkpoint round-trip parity test: offline logits, decoded action,
-   question type, and legal-action mask must match runtime for at least 50
-   held-out contexts.
-3. Investigate why runtime Full JEV selects no `ACCEPT_CURRENT` and why MLP
-   selects `START_NEW` on about 35% of action opportunities despite their
-   offline distributions.
-4. Re-run only the small pilot after parity passes. Do not run the official
-   full `VISION_test` or spend the remaining H=8 data on final selection until
-   the learned controller no longer collapses association.
+1. The 50-context checkpoint round-trip parity test now passes for all three
+   methods with zero mismatches and zero probability error; retain it as a
+   regression gate.
+2. Let the formal H=8 builders finish and preserve their resumable shards.
+3. Re-run the three methods on the completed canonical H=8 policy split and
+   then run the locked `20261004`/`20261005` robustness seeds.
+4. Only after those gates, run the official tracking comparison; do not use
+   this one-sequence pilot as a paper table.
 
 ## Reproducibility artifacts
 
@@ -174,5 +181,6 @@ not committed to GitHub.
 - `PILOT_OFFLINE_THREE_WAY.json`
 - `PILOT_TRACKING_RAW.json`
 - `PILOT_TRACKING_THREE_WAY.json`
+- `PILOT_RUNTIME_PARITY.json`
 - `PILOT_POLICY_SPLIT.json`
 - `PILOT_SNAPSHOT_MANIFEST.json`
