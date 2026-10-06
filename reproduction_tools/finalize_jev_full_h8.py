@@ -127,12 +127,45 @@ def _load_official_video(
     return records, manifest
 
 
+def _load_source_compatibility(
+    path: Path,
+    source_commits: Sequence[str],
+) -> Mapping[str, Any]:
+    """Validate an explicit, opt-in source-lineage compatibility decision.
+
+    The normal finalizer path remains a strict raw ``source_commit`` equality
+    gate.  A mixed-source merge is accepted only when a separately audited
+    manifest is supplied and its allowlist is exactly the set of source
+    commits present in the shards being merged.
+    """
+
+    compatibility = json.loads(path.read_text(encoding="utf-8"))
+    if compatibility.get("status") != "PASS":
+        raise ValueError("source compatibility manifest is not PASS")
+    if compatibility.get("equivalence_gate") != "PASS":
+        raise ValueError("source compatibility equivalence gate is not PASS")
+    allowed = compatibility.get("allowed_source_commits")
+    if not isinstance(allowed, list) or not all(isinstance(value, str) for value in allowed):
+        raise ValueError("source compatibility manifest has no string allowlist")
+    observed = {str(value) for value in source_commits}
+    if set(allowed) != observed:
+        raise ValueError(
+            "source compatibility allowlist does not exactly match observed commits: "
+            f"allowed={sorted(set(allowed))!r} observed={sorted(observed)!r}"
+        )
+    base_commit = compatibility.get("base_source_commit")
+    if not isinstance(base_commit, str) or base_commit not in observed:
+        raise ValueError("source compatibility manifest has no observed base_source_commit")
+    return compatibility
+
+
 def finalize(
     *,
     shard_root: Path,
     partition_root: Path,
     output: Path,
     output_manifest: Path | None = None,
+    source_compatibility_manifest: Path | None = None,
 ) -> Mapping[str, Any]:
     if output.exists():
         raise RuntimeError(f"refusing to overwrite existing output: {output}")
@@ -154,7 +187,6 @@ def finalize(
     reference: Mapping[str, Any] | None = None
     consistency_fields = (
         "gmt_checkpoint_sha256",
-        "source_commit",
         "cache_index_sha256",
         "source_trace_sha256",
         "annotations_sha256",
@@ -188,6 +220,23 @@ def finalize(
         official.append((video_id, records, manifest))
 
     assert reference is not None
+    source_commits = sorted({str(manifest.get("source_commit")) for _, _, manifest in official})
+    compatibility: Mapping[str, Any] | None = None
+    if len(source_commits) > 1:
+        if source_compatibility_manifest is None:
+            raise ValueError(
+                "source_commit provenance mismatch; refusing mixed-source merge "
+                "without --source-compatibility-manifest"
+            )
+        compatibility = _load_source_compatibility(
+            source_compatibility_manifest,
+            source_commits,
+        )
+    elif source_compatibility_manifest is not None:
+        compatibility = _load_source_compatibility(
+            source_compatibility_manifest,
+            source_commits,
+        )
     output.parent.mkdir(parents=True, exist_ok=True)
     temporary = output.with_name(output.name + f".tmp.{os.getpid()}")
     seen_keys: set[tuple[Any, ...]] = set()
@@ -233,7 +282,11 @@ def finalize(
         "expected_record_count": expected_total,
         "records_by_video": records_by_video,
         "gmt_checkpoint_sha256": reference["gmt_checkpoint_sha256"],
-        "source_commit": reference.get("source_commit"),
+        "source_commit": reference.get("source_commit") if len(source_commits) == 1 else None,
+        "source_commits": source_commits,
+        "source_compatibility": (
+            "EXPLICIT_ALLOWLIST_PASS" if compatibility is not None else "STRICT_EXACT_PASS"
+        ),
         "cache_index_sha256": reference["cache_index_sha256"],
         "source_trace_sha256": reference["source_trace_sha256"],
         "annotations_sha256": reference["annotations_sha256"],
@@ -257,6 +310,13 @@ def finalize(
             for manifest_path in [shard_root / f"video_{video_id:02d}" / "manifest.json"]
         ],
     }
+    if compatibility is not None:
+        report["source_compatibility_manifest"] = str(
+            source_compatibility_manifest.resolve()
+        )
+        report["source_compatibility_manifest_sha256"] = sha256(
+            source_compatibility_manifest
+        )
     if output_manifest is None:
         output_manifest = output.with_suffix(output.suffix + ".manifest.json")
     if output_manifest.exists():
@@ -271,12 +331,18 @@ def main() -> None:
     parser.add_argument("--partition-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--output-manifest", type=Path)
+    parser.add_argument("--source-compatibility-manifest", type=Path)
     args = parser.parse_args()
     report = finalize(
         shard_root=args.shard_root.resolve(),
         partition_root=args.partition_root.resolve(),
         output=args.output.resolve(),
         output_manifest=args.output_manifest.resolve() if args.output_manifest else None,
+        source_compatibility_manifest=(
+            args.source_compatibility_manifest.resolve()
+            if args.source_compatibility_manifest
+            else None
+        ),
     )
     print(json.dumps(report, indent=2, sort_keys=True))
 
