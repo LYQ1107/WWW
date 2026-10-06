@@ -1,6 +1,6 @@
 {
   "status": "PREPARED_NOT_AUTHORIZED",
-  "observed_utc": "2026-10-06T07:23:48Z",
+  "observed_utc": "2026-10-06T07:27:06Z",
   "base_source_commit": "1bf00c95cc07c6037bd5df1767f64fb6d912d1a5",
   "retry_branch": "jev/h8-video04-retry-source",
   "retry_source_commit": "905a5dde15139ebb1fadbcabed6916b54160a150",
@@ -16,6 +16,14 @@
     "empty_reid_adapter_invariants": "PASS",
     "retry_branch_pushed": true,
     "bounded_builder_equivalence": "PENDING",
+    "bounded_builder_equivalence_cpu_attempt": {
+      "status": "NOT_A_FORMAL_RESULT",
+      "error": "RuntimeError: No CUDA GPUs are available",
+      "cause": "formal model construction reaches CenterLoss(use_gpu=True)",
+      "records_produced": 0,
+      "formal_queue_modified": false,
+      "next_required_runtime": "safe GPU"
+    },
     "safe_gpu_slot": "PENDING",
     "video_04_complete_manifest": "PENDING",
     "source_compatibility_manifest": "PENDING"

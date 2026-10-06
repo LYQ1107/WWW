@@ -25,11 +25,18 @@ to the already validated empty-ReID-frame fix on the main research branch:
   frames: PASS.
 - Retry branch pushed to GitHub: PASS.
 
+A CPU attempt at the bounded formal-builder comparison was deliberately not
+counted as an equivalence result. Formal GMT model construction reaches the
+repository's `CenterLoss(use_gpu=True)` path and fails with
+`RuntimeError: No CUDA GPUs are available`; it produced no records and did
+not touch the formal queue. The real equivalence gate therefore remains a
+GPU-backed pending gate.
+
 ## Gates still required
 
 The following are intentionally still `PENDING`:
 
-1. A bounded builder/equivalence check against the existing formal source
+1. A GPU-backed bounded builder/equivalence check against the existing formal source
    lineage, including exact record count, state, legal actions, best action,
    and declared utility tolerance.
 2. A safe GPU slot while all currently valid builders remain untouched.
