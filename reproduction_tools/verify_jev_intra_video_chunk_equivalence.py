@@ -167,6 +167,14 @@ def main() -> None:
     parser.add_argument("--chunk-manifests", nargs="+", type=Path)
     parser.add_argument("--chunk-plan", type=Path)
     parser.add_argument("--warmup-manifest", type=Path)
+    parser.add_argument(
+        "--expected-source-commit",
+        help="exact source-commit value recorded in all manifests (usually a short SHA)",
+    )
+    parser.add_argument(
+        "--expected-source-commit-full",
+        help="full SHA corresponding to --expected-source-commit, recorded for audit",
+    )
     args = parser.parse_args()
     single = read_records(args.single_records)
     chunked = []
@@ -193,6 +201,20 @@ def main() -> None:
         report["rng_provenance_gate"] = compare_provenance(
             single_manifest, chunk_manifests, warmup_manifest
         )
+        source_values = [single_manifest.get("source_commit")]
+        source_values.extend(item.get("source_commit") for item in chunk_manifests)
+        source_values.append(warmup_manifest.get("source_commit"))
+        source_commit_exact = True
+        if args.expected_source_commit is not None:
+            source_commit_exact = all(
+                value == args.expected_source_commit for value in source_values
+            )
+            report["source_commit_expectation"] = {
+                "expected_recorded_value": args.expected_source_commit,
+                "expected_full_sha": args.expected_source_commit_full,
+                "observed_values": source_values,
+                "exact": source_commit_exact,
+            }
         report["status"] = "PASS" if (
             report["status"] == "PASS"
             and all(
@@ -201,6 +223,7 @@ def main() -> None:
             )
             and report["chunk_range_gate"]["pass"]
             and report["rng_provenance_gate"]["pass"]
+            and source_commit_exact
         ) else "FAIL"
         report["final_gate"] = {
             "raw_canonical_records_exact": report["record_mismatches"] == 0

@@ -14,26 +14,32 @@ QUEUE=$RUNTIME/single_queue.json
 SINGLE=$RUNTIME/single/video_07
 CHUNKED=$RUNTIME/chunked/video_07
 LOG=$RUNTIME/verifier.log
-EXPECTED=161331e2ea2636396eaf30e001aff61deb49cba4
+EXPECTED_SOURCE=161331e
+EXPECTED_SOURCE_FULL=161331e2ea2636396eaf30e001aff61deb49cba4
 
 exec > >(tee -a "$LOG") 2>&1
-echo "verifier_started=$(date -Is) expected_source=$EXPECTED"
+echo "verifier_started=$(date -Is) expected_source=$EXPECTED_SOURCE expected_source_full=$EXPECTED_SOURCE_FULL"
+RESOLVED_SOURCE=$(git -C "$REPO" rev-parse "${EXPECTED_SOURCE}^{commit}" 2>/dev/null || true)
+if [ "$RESOLVED_SOURCE" != "$EXPECTED_SOURCE_FULL" ]; then
+    echo "source_commit_mapping_failed=$RESOLVED_SOURCE"
+    exit 3
+fi
 
 while true; do
     if jq -e '.videos["7"].status == "FAILED"' "$QUEUE" >/dev/null 2>&1; then
         echo "single_queue_failed=$(date -Is)"
         exit 2
     fi
-    if jq -e --arg c "$EXPECTED" \
+    if jq -e --arg c "$EXPECTED_SOURCE" \
         '.source_commit == $c and .status == "COMPLETE" and (.records | tonumber) == 3337' \
         "$SINGLE/manifest.json" >/dev/null 2>&1 && \
-       jq -e --arg c "$EXPECTED" \
+       jq -e --arg c "$EXPECTED_SOURCE" \
         '.source_commit == $c and .status == "COMPLETE" and (.records | tonumber) == 1500' \
         "$CHUNKED/chunk_0000/manifest.json" >/dev/null 2>&1 && \
-       jq -e --arg c "$EXPECTED" \
+       jq -e --arg c "$EXPECTED_SOURCE" \
         '.source_commit == $c and .status == "COMPLETE" and (.records | tonumber) == 1503' \
         "$CHUNKED/chunk_0001/manifest.json" >/dev/null 2>&1 && \
-       jq -e --arg c "$EXPECTED" \
+       jq -e --arg c "$EXPECTED_SOURCE" \
         '.source_commit == $c and .status == "COMPLETE" and (.records | tonumber) == 334' \
         "$CHUNKED/chunk_0002/manifest.json" >/dev/null 2>&1 && \
        jq -e --arg c "$EXPECTED" '.source_commit == $c and .status == "PASS"' \
@@ -60,6 +66,8 @@ PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2" \
         "$CHUNKED/chunk_0002/manifest.json" \
     --chunk-plan "$PLAN" \
     --warmup-manifest "$WARMUP" \
+    --expected-source-commit "$EXPECTED_SOURCE" \
+    --expected-source-commit-full "$EXPECTED_SOURCE_FULL" \
     --output "$REPORT"
 RC=$?
 set -e
