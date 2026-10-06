@@ -13,8 +13,8 @@ NATIVE_PID=${NATIVE_PID:-24960}
 V1=$RUNTIME/small_h8_rng_controlled_v4_current/video_01
 MANIFEST=$V1/manifest.json
 REPORT=$REPO/reports/JEV_RNG_V4/REACTIVATION_CANDIDATE_PARITY.json
-REPLAY=$RUNTIME/reactivation_candidate_replay_corrected_v1
-LOG=$RUNTIME/corrected_video1_candidate_parity_waiter_v2.log
+REPLAY=${REPLAY_ROOT:-$RUNTIME/reactivation_candidate_replay_corrected_v1}
+LOG=${CANDIDATE_WAITER_LOG:-$RUNTIME/corrected_video1_candidate_parity_waiter_v2.log}
 
 mkdir -p "$REPLAY"
 exec > >(tee -a "$LOG") 2>&1
