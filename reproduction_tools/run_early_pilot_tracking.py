@@ -612,13 +612,28 @@ def main() -> None:
         "official_test_read": False,
         "methods": methods,
         "gmt_off_baseline": baseline,
+        "runtime_feature_parity_gate": {
+            "required_for_runtime_claim": args.feature_source == "runtime",
+            "gmt_off_compared_records": methods["gmt_off"]["action_counts"]["feature_parity_records"],
+            "gmt_off_max_abs_error": methods["gmt_off"]["action_counts"]["feature_parity_max_abs_error"],
+            "pass": (
+                methods["gmt_off"]["action_counts"]["feature_parity_records"] > 0
+                and methods["gmt_off"]["action_counts"]["feature_parity_max_abs_error"] <= 1e-6
+            ),
+        },
         "pilot_verdict": (
-            "PILOT_GO_FOR_FULL_H8_CONTINUATION"
-            if (
-                methods["jev"]["metrics"]["AssA"] >= baseline["AssA"]
-                and methods["jev"]["metrics"]["IDSW"] <= baseline["IDSW"]
+            "TRACE_DEBUG_ONLY"
+            if args.feature_source == "trace_debug"
+            else (
+                "PILOT_GO_FOR_FULL_H8_CONTINUATION"
+                if (
+                    methods["gmt_off"]["action_counts"]["feature_parity_records"] > 0
+                    and methods["gmt_off"]["action_counts"]["feature_parity_max_abs_error"] <= 1e-6
+                    and methods["jev"]["metrics"]["AssA"] >= baseline["AssA"]
+                    and methods["jev"]["metrics"]["IDSW"] <= baseline["IDSW"]
+                )
+                else "PILOT_FAIL_RUNTIME_STATE_PARITY_OR_TRACKING"
             )
-            else "PILOT_FAIL"
         ),
         "previous_manual_feature_result": "SUPERSEDED_INVALID_FEATURE_SCHEMA",
         "interpretation": "Pilot-only matched-sequence evidence; not a final paper result and not a substitute for full VISION_test evaluation.",
