@@ -32,13 +32,17 @@ plan:
 |---|---|---:|---:|
 | video6 current-head rebuild | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current/video_06` | running | 5 |
 | video7 current-head rebuild | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current/video_07` | running | 3 |
+| video1 current-head replacement | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current/video_01` | queued; starts after GPU8 formal single | pending |
 | formal video7 single reference | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_same_code_video7_v6_current/single/video_07` | running | 8 |
 | formal video7 chunk warm-up | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_same_code_video7_v6_current/warmup` | PASS, 3 snapshots | 7 |
 | formal video7 chunk0/chunk1 | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_same_code_video7_v6_current/chunked/video_07` | running | 0/7 |
 
 The in-flight corrected video1 worker and the older video6/formal workers were
 not stopped or migrated. Their outputs remain separate and will be checked by
-source/provenance gates before use.
+source/provenance gates before use. Because the in-flight video1 process was
+started before the current production-seed/state corrections, a current-HEAD
+video1 replacement is queued rather than silently treating the older output as
+final.
 
 ## Required order after builders finish
 
