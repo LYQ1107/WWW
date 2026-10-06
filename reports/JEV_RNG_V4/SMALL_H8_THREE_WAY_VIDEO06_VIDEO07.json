@@ -8,6 +8,7 @@
       },
       "best_action_accuracy": 0.9998063516653757,
       "fit_scope": "policy_train_sequences",
+      "oracle_best_utility": 36.64494577846631,
       "records": 5164,
       "val_utility": 36.64465530596437,
       "weighted_records": 5164.0
@@ -22,16 +23,20 @@
       },
       "best_action_accuracy": 0.6789310611928945,
       "fit_scope": "none",
+      "oracle_best_utility": 36.64494577846631,
       "records": 5164,
       "val_utility": 36.51065065840481,
       "weighted_records": 5164.0
     }
   },
-  "created_utc": "2026-10-06T14:54:59.035210+00:00",
+  "created_utc": "2026-10-06T15:45:31.644009+00:00",
   "dataset": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/compact_v1",
   "dataset_sha256": "ae3f7dbfca79d45fe55134127edcd03603b2f36f2b9dae208eb0fa603fd050f4",
   "horizon": 8,
   "jev_beats_both_on_val_utility": true,
+  "jev_beats_majority_reference": false,
+  "jev_matches_majority_reference": true,
+  "meaningful_learned_policy_advantage": false,
   "methods": {
     "jev": {
       "hidden_dim": 128,
@@ -53,7 +58,7 @@
             "WRITE_MEMORY": 0.4965143299767622
           },
           "brier": 0.008971413997788596,
-          "ece": 1.1521536588299468,
+          "ece": 0.5760768294149734,
           "mechanism": {
             "contamination_duration": 0.0,
             "false_reactivation": 0.0,
@@ -71,7 +76,7 @@
             "window_idf1": 0.9999952768743915
           },
           "nll": 0.8946326187107695,
-          "oracle_best_utility": 36.6391454965358,
+          "oracle_best_utility": 36.64494577846631,
           "records": 5164,
           "seed": 20261003,
           "temperature": 6.591700366270177,
@@ -95,7 +100,7 @@
           "WRITE_MEMORY": 0.4965143299767622
         },
         "brier": 0.008971413997788596,
-        "ece": 1.1521536588299468,
+        "ece": 0.5760768294149734,
         "mechanism": {
           "contamination_duration": 0.0,
           "false_reactivation": 0.0,
@@ -113,7 +118,7 @@
           "window_idf1": 0.9999952768743915
         },
         "nll": 0.8946326187107695,
-        "oracle_best_utility": 36.6391454965358,
+        "oracle_best_utility": 36.64494577846631,
         "records": 5164,
         "seed": 20261003,
         "temperature": 6.591700366270177,
@@ -142,7 +147,7 @@
             "WRITE_MEMORY": 0.4965143299767622
           },
           "brier": 0.008616990950833398,
-          "ece": 1.0727140035488918,
+          "ece": 0.543081480048822,
           "mechanism": {
             "contamination_duration": 0.0,
             "false_reactivation": 0.0,
@@ -160,7 +165,7 @@
             "window_idf1": 1.0
           },
           "nll": 0.8941625818633602,
-          "oracle_best_utility": 36.6391454965358,
+          "oracle_best_utility": 36.64494577846631,
           "records": 5164,
           "seed": 20261003,
           "temperature": 4.8866352538840765,
@@ -185,7 +190,7 @@
           "WRITE_MEMORY": 0.4965143299767622
         },
         "brier": 0.008616990950833398,
-        "ece": 1.0727140035488918,
+        "ece": 0.543081480048822,
         "mechanism": {
           "contamination_duration": 0.0,
           "false_reactivation": 0.0,
@@ -203,7 +208,7 @@
           "window_idf1": 1.0
         },
         "nll": 0.8941625818633602,
-        "oracle_best_utility": 36.6391454965358,
+        "oracle_best_utility": 36.64494577846631,
         "records": 5164,
         "seed": 20261003,
         "temperature": 4.8866352538840765,
@@ -231,7 +236,7 @@
             "WRITE_MEMORY": 0.4965143299767622
           },
           "brier": 0.00997911368363608,
-          "ece": 0.6876120232132219,
+          "ece": 0.3438060116066109,
           "mechanism": {
             "contamination_duration": 0.0,
             "false_reactivation": 0.0,
@@ -249,7 +254,7 @@
             "window_idf1": 1.0
           },
           "nll": 0.8956568180644127,
-          "oracle_best_utility": 36.6391454965358,
+          "oracle_best_utility": 36.64494577846631,
           "records": 5164,
           "seed": 20261003,
           "temperature": 8.58418995896681,
@@ -273,7 +278,7 @@
           "WRITE_MEMORY": 0.4965143299767622
         },
         "brier": 0.00997911368363608,
-        "ece": 0.6876120232132219,
+        "ece": 0.3438060116066109,
         "mechanism": {
           "contamination_duration": 0.0,
           "false_reactivation": 0.0,
@@ -291,7 +296,7 @@
           "window_idf1": 1.0
         },
         "nll": 0.8956568180644127,
-        "oracle_best_utility": 36.6391454965358,
+        "oracle_best_utility": 36.64494577846631,
         "records": 5164,
         "seed": 20261003,
         "temperature": 8.58418995896681,
@@ -302,6 +307,13 @@
   },
   "multi_seed_robustness": "deferred_until_after_first_round_gate",
   "official_test_read": false,
+  "oracle_invariant": {
+    "learned_policies_le_oracle": true,
+    "majority_le_oracle": true,
+    "oracle_best_utility": 36.64494577846631,
+    "tolerance": 1e-06,
+    "uniform_le_oracle": true
+  },
   "policy_split": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/policy_split_seed20261003.json",
   "policy_split_sha256": "f353252fc68ca3f038686b06d20579b7bc9c732b4051506562664b1b8ae0f436",
   "seed_policy": "TEMPORARILY_DISABLED_MULTI_SEED",
@@ -310,7 +322,135 @@
   ],
   "state_dim": 64,
   "status": "PASS",
-  "tracking_gate": "run Frozen GMT + three methods only if single-seed JEV validation utility beats both controls",
+  "tie_margin_diagnostics": {
+    "by_question": {
+      "ALL_QUESTIONS": {
+        "ALL": {
+          "best_action_tie_rate": 0.5183965917893106,
+          "records": 5164,
+          "unique_best_action_rate": 0.48160340821068937,
+          "utility_best_second_margin": {
+            "mean": 0.12257939581719597,
+            "median": 0.0,
+            "p10": 0.0,
+            "p50": 0.0,
+            "p90": 0.25
+          },
+          "weighted_records": 5164.0
+        },
+        "POSITIVE_MARGIN": {
+          "best_action_tie_rate": 0.0016070711128967456,
+          "records": 2489,
+          "unique_best_action_rate": 0.9983929288871033,
+          "utility_best_second_margin": {
+            "mean": 0.25431900361591,
+            "median": 0.25,
+            "p10": 0.25,
+            "p50": 0.25,
+            "p90": 0.25
+          },
+          "weighted_records": 2489.0
+        },
+        "UNIQUE_BEST": {
+          "best_action_tie_rate": 0.0,
+          "records": 2487,
+          "unique_best_action_rate": 1.0,
+          "utility_best_second_margin": {
+            "mean": 0.2497989545637314,
+            "median": 0.25,
+            "p10": 0.25,
+            "p50": 0.25,
+            "p90": 0.25
+          },
+          "weighted_records": 2487.0
+        }
+      },
+      "MATCH_DECISION": {
+        "ALL": {
+          "best_action_tie_rate": 0.04346153846153846,
+          "records": 2600,
+          "unique_best_action_rate": 0.9565384615384616,
+          "utility_best_second_margin": {
+            "mean": 0.24346153846153845,
+            "median": 0.25,
+            "p10": 0.25,
+            "p50": 0.25,
+            "p90": 0.25
+          },
+          "weighted_records": 2600.0
+        },
+        "POSITIVE_MARGIN": {
+          "best_action_tie_rate": 0.0016070711128967456,
+          "records": 2489,
+          "unique_best_action_rate": 0.9983929288871033,
+          "utility_best_second_margin": {
+            "mean": 0.25431900361591,
+            "median": 0.25,
+            "p10": 0.25,
+            "p50": 0.25,
+            "p90": 0.25
+          },
+          "weighted_records": 2489.0
+        },
+        "UNIQUE_BEST": {
+          "best_action_tie_rate": 0.0,
+          "records": 2487,
+          "unique_best_action_rate": 1.0,
+          "utility_best_second_margin": {
+            "mean": 0.2497989545637314,
+            "median": 0.25,
+            "p10": 0.25,
+            "p50": 0.25,
+            "p90": 0.25
+          },
+          "weighted_records": 2487.0
+        }
+      },
+      "MEMORY_DECISION": {
+        "ALL": {
+          "best_action_tie_rate": 1.0,
+          "records": 2564,
+          "unique_best_action_rate": 0.0,
+          "utility_best_second_margin": {
+            "mean": 0.0,
+            "median": 0.0,
+            "p10": 0.0,
+            "p50": 0.0,
+            "p90": 0.0
+          },
+          "weighted_records": 2564.0
+        },
+        "POSITIVE_MARGIN": {
+          "best_action_tie_rate": 0.0,
+          "records": 0,
+          "unique_best_action_rate": 0.0,
+          "utility_best_second_margin": {
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p50": null,
+            "p90": null
+          },
+          "weighted_records": 0.0
+        },
+        "UNIQUE_BEST": {
+          "best_action_tie_rate": 0.0,
+          "records": 0,
+          "unique_best_action_rate": 0.0,
+          "utility_best_second_margin": {
+            "mean": null,
+            "median": null,
+            "p10": null,
+            "p50": null,
+            "p90": null
+          },
+          "weighted_records": 0.0
+        }
+      }
+    },
+    "tie_tolerance": 1e-08
+  },
+  "tracking_gate": "runtime parity and reactivation coverage are required; offline JEV must beat both learned controls and the majority reference for a meaningful architecture claim",
   "training": {
     "batch_size": 128,
     "calibration": "temperature_scaling_policy_val_only",

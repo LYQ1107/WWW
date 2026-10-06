@@ -509,8 +509,10 @@ class CachedPerceptionMutableAssociationV2:
         *,
         actions: Optional[Mapping[int, str]] = None,
         memory_actions: Optional[Mapping[int, str]] = None,
+        reactivation_assignments: Optional[Mapping[int, int]] = None,
         threshold: Optional[float] = None,
         proposal: Optional[AssociationProposal] = None,
+        reactivation_proposal: Optional[AssociationProposal] = None,
     ) -> Mapping[str, object]:
         """Commit one frame/view from an isolated mutable state.
 
@@ -529,6 +531,10 @@ class CachedPerceptionMutableAssociationV2:
         proposal = resolution["initial_proposal"]
         second = resolution["final_proposal"]
         action_map = dict(resolution["actions"])
+        reactivation_assignments = {
+            int(row): int(track_id)
+            for row, track_id in (reactivation_assignments or {}).items()
+        }
         reassociate_rows = list(resolution["reassociate_rows"])
         if supplied_proposal is not None and supplied_proposal.scores is not proposal.scores:
             raise AssertionError("step did not reuse the supplied association proposal")
@@ -550,6 +556,16 @@ class CachedPerceptionMutableAssociationV2:
             state.trajectory_rng_calls = int(state.trajectory_rng_calls) + int(
                 resolution["initial_proposal"].transformer_calls
             )
+        if reactivation_proposal is not None and reactivation_proposal.rng_state_after is not None:
+            # The native memory-bank path performs a second association pass
+            # for stale identities.  Keep that pass explicit and branch-local
+            # when a runtime replay supplies a reactivation proposal.
+            state.trajectory_rng_state = copy.deepcopy(
+                reactivation_proposal.rng_state_after
+            )
+            state.trajectory_rng_calls = int(state.trajectory_rng_calls) + int(
+                reactivation_proposal.transformer_calls
+            )
 
         features = _normalise_features(
             torch.as_tensor(perception["reid_features"], dtype=torch.float32)
@@ -558,7 +574,14 @@ class CachedPerceptionMutableAssociationV2:
         for row in range(features.shape[0]):
             action = action_map[row]
             col = second.pairs.get(row)
-            if action == "START_NEW" or col is None:
+            if row in reactivation_assignments:
+                track_id = int(reactivation_assignments[row])
+                state.active_ids.add(track_id)
+                state.stale_ids.discard(track_id)
+                state.counters["reactivated_rows"] = state.counters.get(
+                    "reactivated_rows", 0
+                ) + 1
+            elif action == "START_NEW" or col is None:
                 track_id = self._new_id(state)
             else:
                 track_id = int(second.track_ids[col])

@@ -15,14 +15,15 @@ Official TEST data is not read for this protocol.
 
 | Method | Params | Val NLL | Best-action Accuracy | Brier | ECE | Validation Utility |
 |---|---:|---:|---:|---:|---:|---:|
-| Learnable Threshold | 33,987 | 0.895657 | 0.780015 | 0.009979 | 0.687612 | 36.589950 |
-| Generic MLP | 34,163 | 0.894163 | 0.962432 | 0.008617 | 1.072714 | 36.635554 |
-| Full JEV | 34,080 | 0.894633 | 0.999806 | 0.008971 | 1.152154 | 36.644655 |
+| Learnable Threshold | 33,987 | 0.895657 | 0.780015 | 0.009979 | 0.343806 | 36.589950 |
+| Generic MLP | 34,163 | 0.894163 | 0.962432 | 0.008617 | 0.543081 | 36.635554 |
+| Full JEV | 34,080 | 0.894633 | 0.999806 | 0.008971 | 0.576077 | 36.644655 |
 
 ## Gate for tracking comparison
 
 `jev_beats_both_on_val_utility = True`.
-The full tracking comparison is authorized only when this single-seed gate is true.
+`jev_beats_majority_reference = False`; `jev_matches_majority_reference = True`.
+A majority tie is not evidence of a meaningful learned-policy advantage; runtime parity and reactivation coverage are separate hard gates.
 
 ## Non-learned validation references
 
@@ -35,4 +36,4 @@ The full tracking comparison is authorized only when this single-seed gate is tr
 
 - Shared dataset: `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/compact_v1` (SHA-256 `ae3f7dbfca79d45fe55134127edcd03603b2f36f2b9dae208eb0fa603fd050f4`).
 - Policy split: `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/policy_split_seed20261003.json` (SHA-256 `f353252fc68ca3f038686b06d20579b7bc9c732b4051506562664b1b8ae0f436`).
-- Generated UTC: `2026-10-06T14:54:59.035210+00:00`.
+- Generated UTC: `2026-10-06T15:45:31.644009+00:00`.

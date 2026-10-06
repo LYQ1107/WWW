@@ -33,6 +33,11 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--partition-manifest", type=Path, required=True)
     parser.add_argument("--chunk-plan", type=Path, required=True)
+    parser.add_argument(
+        "--warmup-root",
+        type=Path,
+        help="directory containing snapshots/ from warmup_jev_intra_video_chunks.py",
+    )
     parser.add_argument("--chunk-index", type=int, required=True)
     parser.add_argument("--cache", type=Path, required=True)
     parser.add_argument("--annotations", type=Path, required=True)
@@ -79,7 +84,12 @@ def main() -> None:
     cache_keys, _seed_key = ordered_production_keys(
         cache_keys, lambda key: cache_for_order.load(*key)
     )
-    snapshot = args.chunk_plan.parent / "snapshots" / f"chunk_{chunk_index:04d}.pt"
+    warmup_root = (
+        args.warmup_root.resolve()
+        if args.warmup_root is not None
+        else args.chunk_plan.parent.resolve()
+    )
+    snapshot = warmup_root / "snapshots" / f"chunk_{chunk_index:04d}.pt"
     state, snapshot_metadata = load_state_snapshot(snapshot)
     if int(snapshot_metadata.get("key_start", -1)) != int(chunk["key_start"]):
         raise ValueError("chunk snapshot key_start does not match chunk plan")

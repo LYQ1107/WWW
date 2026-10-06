@@ -284,6 +284,50 @@ def trace_action_for(events, question: str, row: int):
     return None
 
 
+def reactivation_candidates(state, *, bank_size: int = 10):
+    """Return stale memory identities using only the mutable online state.
+
+    This mirrors the native memory-bank boundary: a track must have enough
+    online memory observations and must be absent from the recent association
+    window before it can be offered as ``REACTIVATE_OLD``.  No trace label,
+    annotation, or future frame is consulted.
+    """
+
+    recent_ids = set()
+    for item in state.association_history:
+        for value in dict(item.get("assignments", {})).values():
+            recent_ids.add(int(value))
+    candidates = []
+    for track_id, values in state.memory.items():
+        if len(values) >= int(bank_size) and int(track_id) not in recent_ids:
+            candidates.append(int(track_id))
+    candidates.extend(
+        int(track_id)
+        for track_id in state.stale_ids
+        if int(track_id) not in recent_ids and int(track_id) not in candidates
+    )
+    return sorted(set(candidates)), recent_ids
+
+
+def build_reactivation_proposal(engine, payload, state, candidate_ids, proposal):
+    """Run the formal GMT stale-bank association on an isolated state clone."""
+
+    if not candidate_ids:
+        return None
+    probe = state.clone()
+    if proposal is not None and proposal.rng_state_after is not None:
+        probe.trajectory_rng_state = proposal.rng_state_after
+    probe.active_ids = set(int(value) for value in candidate_ids)
+    for track_id in candidate_ids:
+        values = state.memory.get(int(track_id), ())
+        if values:
+            probe.track_embeddings[int(track_id)] = torch.stack(
+                [torch.as_tensor(value, dtype=torch.float32) for value in values[-10:]],
+                dim=0,
+            ).mean(dim=0)
+    return engine.propose(payload, probe)
+
+
 def run_method(
     name: str,
     checkpoint_path: Path | None,
@@ -364,6 +408,10 @@ def run_method(
         "missing_action_outcomes": 0,
         "memory_contamination": 0.0,
         "unsupported_reactivation": 0,
+        "false_reactivation": 0.0,
+        "reactivation_wrong_commit": 0,
+        "reactivation_candidate_evaluations": 0,
+        "reactivation_no_candidate": 0,
         "off_action_mismatches": 0,
         "trace_action_records": 0,
     }
@@ -671,12 +719,131 @@ def run_method(
                 else:
                     counts["memory_contamination"] += float(outcome.get("memory_contamination", 0.0))
             decisions.append({"frame": frame, "view": view, "row": row, "question": "MEMORY_DECISION", "action": action})
+
+        # Phase 3: reproduce the native memory-bank reactivation boundary.
+        # The controller sees only a stale online memory proposal; labels and
+        # future annotations remain outside this path.
+        reactivation_assignments = {}
+        reactivation_proposal = None
+        bank_size = int(getattr(runtime_model, "bank_size", 10))
+        bank_threshold = float(getattr(runtime_model, "thred_bank", 0.4))
+        stale_ids, recent_ids = reactivation_candidates(state, bank_size=bank_size)
+        if stale_ids:
+            state.stale_ids.update(stale_ids)
+            reactivation_proposal = build_reactivation_proposal(
+                engine, payload, state, stale_ids, proposal
+            )
+        for row in range(int(scores.shape[0])):
+            if final_existing.get(row) is not None:
+                continue
+            if reactivation_proposal is None:
+                counts["reactivation_no_candidate"] += 1
+                continue
+            col = reactivation_proposal.pairs.get(row)
+            if col is None:
+                counts["reactivation_no_candidate"] += 1
+                continue
+            stale_id = int(reactivation_proposal.track_ids[col])
+            score = float(reactivation_proposal.scores[row, col].item())
+            memory_count = max(1, len(state.memory.get(stale_id, ())) + 1)
+            off_action = (
+                "REACTIVATE_OLD"
+                if score > bank_threshold
+                else "START_NEW"
+            )
+            legal = ["REACTIVATE_OLD", "START_NEW"]
+            runtime_feature = build_state_features(
+                state_dim=64,
+                accept_score=0.0,
+                reassociate_score=score,
+                threshold=bank_threshold,
+                candidate_count=1,
+                candidate_entropy=0.0,
+                track_count=len(recent_ids),
+                track_age=memory_count,
+                frame_index=frame,
+                window_length=window_length,
+                view_index=view,
+                can_reassociate=can_reassociate,
+                memory_enabled=memory_enabled,
+                with_iou=with_iou,
+                not_mult_thresh=not_mult_thresh,
+                has_old_track=True,
+                current_is_unmatched=True,
+                memory_count=memory_count,
+                track_score=score,
+                track_length=max(1, memory_count),
+                score_variance=0.0,
+            )
+            record = records.get((VIDEO_ID, frame, view, "REACTIVATION_DECISION", row))
+            feature = select_feature(record, runtime_feature)
+            reactivation_context = {
+                "video_id": VIDEO_ID,
+                "view_num": 2,
+                "frame": frame,
+                "view": view,
+                "decision_scope": "reactivation",
+                "detection_index": row,
+                "track_id": stale_id,
+                "candidate_track_ids": [int(value) for value in reactivation_proposal.track_ids],
+                "candidate_scores": [
+                    float(reactivation_proposal.scores[row, index].item())
+                    for index in range(len(reactivation_proposal.track_ids))
+                ],
+                "reactivation_score": score,
+                "bank_threshold": bank_threshold,
+                "tracker_state_before": runtime_tracker_context(state),
+            }
+            action = choose(
+                policy,
+                feature,
+                "REACTIVATION_DECISION",
+                legal,
+                off_action,
+                context=reactivation_context,
+            )
+            if action not in legal:
+                action = off_action
+            trace_action = trace_action_for(events_here, "REACTIVATION_DECISION", row)
+            if name == "gmt_off" and trace_action is not None:
+                counts["trace_action_records"] += 1
+                if action != trace_action:
+                    counts["off_action_mismatches"] += 1
+            counts["REACTIVATION_DECISION"] += 1
+            counts["reactivation_candidate_evaluations"] += 1
+            counts[action] += 1
+            if action == "REACTIVATE_OLD":
+                reactivation_assignments[row] = stale_id
+            if record is not None:
+                counts["known_commit_evaluations"] += 1
+                if action not in record["best_actions"]:
+                    counts["wrong_commit"] += 1
+                    counts["reactivation_wrong_commit"] += 1
+                outcome = record["action_outcomes"].get(action)
+                if outcome is None:
+                    counts["missing_action_outcomes"] += 1
+                else:
+                    counts["memory_contamination"] += float(outcome.get("memory_contamination", 0.0))
+                    counts["false_reactivation"] += float(outcome.get("false_reactivation", 0.0))
+            decisions.append(
+                {
+                    "frame": frame,
+                    "view": view,
+                    "row": row,
+                    "question": "REACTIVATION_DECISION",
+                    "action": action,
+                    "track_id": stale_id,
+                    "score": score,
+                }
+            )
         result = engine.step(
             payload,
             state,
             actions=actions,
             memory_actions=memories,
             proposal=proposal,
+            reactivation_assignments=reactivation_assignments,
+            reactivation_proposal=reactivation_proposal,
         )
         if frame == seed_frame and view != seed_view:
             # The native first-frame path processes the seed view first but

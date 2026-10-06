@@ -16,6 +16,32 @@ from jev_compact_dataset import CompactJEVData
 from train_jev import choose_model, load_policy_split
 
 
+def assert_probability_contract(
+    probabilities: torch.Tensor,
+    legal: torch.Tensor,
+    sample_weight: torch.Tensor | None = None,
+    *,
+    tolerance: float = 1e-6,
+) -> None:
+    """Fail closed on invalid masked distributions and weights."""
+
+    if not torch.isfinite(probabilities).all():
+        raise AssertionError("policy probabilities contain non-finite values")
+    if bool((probabilities < -tolerance).any()) or bool((probabilities > 1.0 + tolerance).any()):
+        raise AssertionError("policy probabilities are outside [0, 1]")
+    valid = legal >= 0
+    if not bool(valid.any(dim=1).all()):
+        raise AssertionError("a batch record has no legal action")
+    legal_sum = probabilities.masked_fill(~valid, 0.0).sum(dim=1)
+    if bool((legal_sum - 1.0).abs().gt(tolerance).any()):
+        raise AssertionError("legal-action probabilities do not sum to one")
+    if bool(probabilities.masked_fill(valid, 0.0).abs().gt(tolerance).any()):
+        raise AssertionError("masked illegal-action probabilities are non-zero")
+    if sample_weight is not None:
+        if not torch.isfinite(sample_weight).all() or bool((sample_weight < 0).any()):
+            raise AssertionError("sample_weight must be finite and non-negative")
+
+
 def batch_forward(model, data: CompactJEVData, indices: np.ndarray, device: torch.device):
     features = torch.as_tensor(np.asarray(data.features[indices]), dtype=torch.float32, device=device)
     questions = torch.as_tensor(np.asarray(data.questions[indices]), dtype=torch.long, device=device)
@@ -23,6 +49,9 @@ def batch_forward(model, data: CompactJEVData, indices: np.ndarray, device: torc
     targets = torch.as_tensor(np.asarray(data.target_probs[indices]), dtype=torch.float32, device=device)
     weights = torch.as_tensor(np.asarray(data.sample_weight[indices]), dtype=torch.float32, device=device)
     output = model(features, questions, legal)
+    assert_probability_contract(output["probs"], legal, weights)
+    if not torch.isfinite(targets).all():
+        raise AssertionError("target probabilities contain non-finite values")
     loss_rows = -(targets * output["probs"].clamp_min(1e-8).log()).sum(dim=1)
     return (loss_rows * weights).sum() / weights.sum().clamp_min(1.0), output, loss_rows, weights
 
@@ -49,11 +78,15 @@ def evaluate(model, data: CompactJEVData, indices: np.ndarray, device: torch.dev
         chosen_columns = probs.argmax(axis=1)
         for row in range(len(group)):
             weight = float(row_weights[row])
+            if not np.isfinite(weight) or weight < 0:
+                raise AssertionError("sample_weight must be finite and non-negative")
             if weight <= 0:
                 ignored += 1
                 continue
             chosen_id = int(legal[row, chosen_columns[row]])
             hit = float(best[row, chosen_id]) if 0 <= chosen_id < best.shape[1] else 0.0
+            if hit not in (0.0, 1.0):
+                raise AssertionError(f"correct must be binary, got {hit}")
             valid = legal[row] >= 0
             nll += weight * float(-(targets[row, valid] * np.log(np.maximum(probs[row, valid], 1e-8))).sum())
             brier += weight * float(((probs[row, valid] - targets[row, valid]) ** 2).sum())
@@ -64,19 +97,29 @@ def evaluate(model, data: CompactJEVData, indices: np.ndarray, device: torch.dev
     ece = 0.0
     for bucket in range(10):
         lower, upper = bucket / 10.0, (bucket + 1) / 10.0
-        selected = [item for item in confidence if lower <= item[0] < upper or (bucket == 9 and item[0] <= upper)]
+        selected = [
+            item
+            for item in confidence
+            if lower <= item[0] < upper
+            or (bucket == 9 and lower <= item[0] <= upper)
+        ]
         bucket_weight = sum(item[2] for item in selected)
         if bucket_weight:
             ece += bucket_weight / total_weight * abs(
                 sum(item[0] * item[2] for item in selected) / bucket_weight
                 - sum(item[1] * item[2] for item in selected) / bucket_weight
             )
+    if not np.isfinite(ece) or not (0.0 <= ece <= 1.0 + 1e-12):
+        raise AssertionError(f"ECE is outside [0, 1]: {ece}")
+    accuracy = correct / max(total_weight, 1e-8)
+    if not (0.0 <= accuracy <= 1.0 + 1e-12):
+        raise AssertionError(f"accuracy is outside [0, 1]: {accuracy}")
     return {
         "records": int(len(indices)),
         "nll": nll / max(total_weight, 1e-8),
         "brier": brier / max(total_weight, 1e-8),
-        "ece": ece,
-        "best_action_accuracy": correct / max(total_weight, 1e-8),
+        "ece": min(1.0, max(0.0, ece)),
+        "best_action_accuracy": accuracy,
         "weighted_records": total_weight,
         "ignored_uninformative_records": ignored,
         "by_question": {

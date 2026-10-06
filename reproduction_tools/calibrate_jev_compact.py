@@ -16,6 +16,29 @@ from jev_compact_dataset import CompactJEVData
 from train_jev import load_policy_split
 
 
+def assert_probability_contract(
+    probabilities: torch.Tensor,
+    legal: torch.Tensor,
+    weights: torch.Tensor,
+    *,
+    tolerance: float = 1e-6,
+) -> None:
+    if not torch.isfinite(probabilities).all():
+        raise AssertionError("policy probabilities contain non-finite values")
+    if bool((probabilities < -tolerance).any()) or bool((probabilities > 1.0 + tolerance).any()):
+        raise AssertionError("policy probabilities are outside [0, 1]")
+    valid = legal >= 0
+    if not bool(valid.any(dim=1).all()):
+        raise AssertionError("a validation record has no legal action")
+    legal_sum = probabilities.masked_fill(~valid, 0.0).sum(dim=1)
+    if bool((legal_sum - 1.0).abs().gt(tolerance).any()):
+        raise AssertionError("legal-action probabilities do not sum to one")
+    if bool(probabilities.masked_fill(valid, 0.0).abs().gt(tolerance).any()):
+        raise AssertionError("masked illegal-action probabilities are non-zero")
+    if not torch.isfinite(weights).all() or bool((weights < 0).any()):
+        raise AssertionError("sample_weight must be finite and non-negative")
+
+
 def predict(model, data: CompactJEVData, indices: np.ndarray):
     rows = []
     model.eval()
@@ -34,18 +57,22 @@ def metrics(probabilities: torch.Tensor, data: CompactJEVData, indices: np.ndarr
     legal = torch.as_tensor(np.asarray(data.legal_actions[indices]), dtype=torch.long)
     target = torch.as_tensor(np.asarray(data.target_probs[indices]), dtype=torch.float64)
     weights = torch.as_tensor(np.asarray(data.sample_weight[indices]), dtype=torch.float64)
+    assert_probability_contract(probabilities, legal, weights)
     valid = legal >= 0
     logits = probabilities.double().clamp_min(1e-8).log()
     if temperature != 1.0:
         logits = logits / float(temperature)
         logits = logits.masked_fill(~valid, torch.finfo(logits.dtype).min)
         probabilities = torch.softmax(logits.float(), dim=-1)
+        assert_probability_contract(probabilities, legal, weights)
     probs = probabilities.double()
     denom = weights.sum().clamp_min(1e-8)
     nll = (-(target * probs.clamp_min(1e-8).log()).sum(dim=1) * weights).sum() / denom
     brier = (((probs - target) ** 2).masked_fill(~valid, 0.0).sum(dim=1) * weights).sum() / denom
     chosen = probs.argmax(dim=1)
     best = torch.as_tensor(np.asarray(data.best_mask[indices]), dtype=torch.bool)
+    if bool((~valid.gather(1, chosen[:, None]).squeeze(1)).any()):
+        raise AssertionError("policy selected a masked illegal action")
     chosen_ids = legal.gather(1, chosen[:, None]).squeeze(1)
     correct = best.gather(1, chosen_ids.clamp_min(0)[:, None]).squeeze(1).double()
     confidence = probs.gather(1, chosen[:, None]).squeeze(1)
@@ -53,20 +80,26 @@ def metrics(probabilities: torch.Tensor, data: CompactJEVData, indices: np.ndarr
     ece = torch.tensor(0.0, dtype=torch.float64)
     for bucket in range(10):
         lower, upper = bucket / 10.0, (bucket + 1) / 10.0
-        selected = (confidence >= lower) & ((confidence < upper) | ((bucket == 9) & (confidence <= upper)))
+        selected = (confidence >= lower) & (
+            (confidence < upper) | ((bucket == 9) & (confidence <= upper))
+        )
         bucket_weight = weights.masked_fill(~selected, 0.0).sum()
         if bucket_weight > 0:
             ece += bucket_weight / denom * abs(
                 (confidence * weights).masked_fill(~selected, 0.0).sum() / bucket_weight
                 - (correct * weights).masked_fill(~selected, 0.0).sum() / bucket_weight
             )
+    if not torch.isfinite(ece) or not (0.0 <= float(ece) <= 1.0 + 1e-12):
+        raise AssertionError(f"ECE is outside [0, 1]: {float(ece)}")
+    if not (0.0 <= float(accuracy) <= 1.0 + 1e-12):
+        raise AssertionError(f"accuracy is outside [0, 1]: {float(accuracy)}")
     return {
         "records": int(len(indices)),
         "weighted_records": float(denom),
         "nll": float(nll),
         "brier": float(brier),
-        "ece": float(ece),
-        "best_action_accuracy": float(accuracy),
+        "ece": float(min(1.0, max(0.0, float(ece)))),
+        "best_action_accuracy": float(min(1.0, max(0.0, float(accuracy)))),
     }
 
 

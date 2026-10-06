@@ -40,6 +40,10 @@ paused with SIGTERM and preserved. Its records are
   state feature vector as training input.
 - The runtime pilot recomputes controller features from the mutated state and
   passes one proposal through feature extraction, resolution, and commit.
+- The runtime pilot now also evaluates stale online memory through the formal
+  GMT association proposal and exposes `REACTIVATION_OLD`/`START_NEW` as a
+  typed `REACTIVATION_DECISION`, with reactivation assignments committed through
+  mutable state only. GT and future records are not used to trigger it.
 
 ## Completed deterministic gates
 
@@ -73,14 +77,17 @@ held out for tracking.
 
 | Method | Val NLL | Accuracy | Brier | ECE | Validation utility |
 |---|---:|---:|---:|---:|---:|
-| Learnable Threshold | 0.895657 | 0.780015 | 0.009979 | 0.687612 | 36.58994965 |
-| Generic MLP | 0.894163 | 0.962432 | 0.008617 | 1.072714 | 36.63555383 |
-| Full JEV | 0.894633 | 0.999806 | 0.008971 | 1.152154 | 36.64465531 |
+| Learnable Threshold | 0.895657 | 0.780015 | 0.009979 | 0.343806 | 36.58994965 |
+| Generic MLP | 0.894163 | 0.962432 | 0.008617 | 0.543081 | 36.63555383 |
+| Full JEV | 0.894633 | 0.999806 | 0.008971 | 0.576077 | 36.64465531 |
 | Majority-action reference | — | 0.999806 | — | — | 36.64465531 |
 
-JEV technically beats both learned controls, but its validation utility is
-exactly the majority-action reference and its margin over MLP is only about
-`0.0091`. This is not strong evidence for a closed-loop tracking claim.
+The ECE implementation now passes hard probability/calibration invariants. JEV
+technically beats both learned controls, but its validation utility is exactly
+the majority-action reference and its margin over MLP is only about `0.0091`.
+The tie/margin audit reports a 51.84% best-action tie rate on validation, so
+this is not evidence for a meaningful learned-policy advantage or a closed-loop
+tracking claim.
 The full report is `reports/JEV_RNG_V4/SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json`.
 
 ## Train/runtime mismatch diagnosis and correction
@@ -121,10 +128,11 @@ mismatches), so these metrics must not be treated as final paper results.
 | Generic MLP | 59.0078 | 39.6298 | 48.9800 | 52.9238 | 1893 | 6 | −45.5166 |
 | Full JEV | 86.1798 | 84.4984 | 93.0509 | 95.9044 | 4 | 6 | −0.6480 |
 
-The Threshold screening run is positive, but it does not satisfy the required
-“MLP/JEV positive” condition. The Generic MLP catastrophically collapses
-association. JEV sharply reduces ID switches but lowers HOTA/AssA/IDF1. The
-pilot result is therefore `PILOT_FAIL_NO_GO_FOR_CANONICAL_REBUILD`.
+These numbers are retained only as legacy-trace screening. Because the v4
+record parity gate had zero expected records and the runtime had no
+REACTIVATION coverage, the tracking result is
+`RUNTIME_PARITY_BLOCKED_INCONCLUSIVE_FOR_MODEL_SELECTION`; it is not model
+FAIL evidence.
 See `reports/JEV_RNG_V4/SMALL_H8_RUNTIME_TRACKING.json` and
 `reports/JEV_RNG_V4/FINAL_GO_NO_GO.json`.
 
@@ -133,14 +141,15 @@ See `reports/JEV_RNG_V4/SMALL_H8_RUNTIME_TRACKING.json` and
 `canonical_full_h8_rebuild_authorized = false`.
 
 Keep the current video1 small-gate builder running. Do not launch the 24-video
-canonical H=8 rebuild yet. The immediate investigations are:
+canonical H=8 rebuild yet. The immediate gates are:
 
-1. verify controller label/action semantics against the runtime commit path;
-2. explain the MLP `REASSOCIATE`/`SKIP_MEMORY` collapse and JEV association
-   regression;
-3. finish video1, then rerun a parity-valid pilot using v4 records;
-4. evaluate and validate deterministic intra-video chunking before any
-   canonical rebuild authorization.
+1. finish video1 without stopping or migrating its current worker;
+2. build the corrected v4 video1 artifact and run provenance/SHA plus the
+   old-vs-new audit;
+3. pass v4 runtime feature parity and REACTIVATION coverage, then rerun the
+   true closed-loop pilot with the already-trained checkpoints;
+4. complete the formal-GMT video7 chunk equivalence gate before any canonical
+   rebuild authorization.
 
 ## Required canonical-only chunking design
 
@@ -171,8 +180,8 @@ The implementation is now present in `jev_intra_video_chunking.py`,
 `verify_jev_intra_video_chunk_equivalence.py`. A bounded CPU cosine-contract
 probe on the first 120 video7 trace lines split the data into three chunks and
 matched all 120/120 records exactly with identical canonical SHA-256. This is
-an orchestration test only; a bounded formal-GMT equivalence run remains a
-mandatory precondition for canonical authorization.
+an orchestration test only; the current formal-GMT 3-chunk run is the mandatory
+precondition for canonical authorization.
 
 This design targets the future video15/video23/video24 tail bottlenecks and is
 not applied to the active video1 small gate.

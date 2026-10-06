@@ -3,9 +3,8 @@
   "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
   "created_utc": "2026-10-06T15:09:35.880459+00:00",
   "failure_reasons": [
-    "generic_mlp_tracking_collapse",
-    "full_jev_association_metrics_below_gmt_off",
-    "runtime_parity_blocked"
+    "runtime_parity_blocked",
+    "reactivation_coverage_missing_at_legacy_run"
   ],
   "gmt_off_baseline": {
     "AssA": 85.1463909945043,
@@ -17,7 +16,7 @@
     "MOTA": 89.62457337883959
   },
   "held_out_tracking_sequence": true,
-  "interpretation": "The threshold controller is positive on this screening sequence, but the required MLP/JEV condition is not met. The MLP collapses association; JEV lowers HOTA/AssA/IDF1 despite reducing IDSW. The runtime comparison used a legacy trace and is not a final closed-loop result.",
+  "interpretation": "This artifact is legacy-trace screening only. Because new v4 records were unavailable, strict runtime feature parity was blocked and REACTIVATION coverage was zero; the Threshold/MLP/JEV tracking numbers are inconclusive for model selection and must not be used as model FAIL evidence.",
   "legacy_trace_rng_provenance": "BLOCKED_BY_MISSING_LEGACY_RNG_PROVENANCE",
   "methods": {
     "gmt_off": {
@@ -230,7 +229,7 @@
     }
   },
   "new_h8_records_for_tracking_video": 0,
-  "pilot_verdict": "PILOT_FAIL_NO_GO_FOR_CANONICAL_REBUILD",
+  "pilot_verdict": "RUNTIME_PARITY_BLOCKED_INCONCLUSIVE_FOR_MODEL_SELECTION",
   "policy_train_sequences": [
     "00020court3"
   ],
@@ -264,7 +263,7 @@
   },
   "schema_version": "jev_rng_v4_small_h8_runtime_tracking_v1",
   "sequence": "00002garden",
-  "status": "PILOT_FAIL",
+  "status": "BLOCKED",
   "train_val_tracking_sequence_disjoint": true,
   "video_id": 1
 }

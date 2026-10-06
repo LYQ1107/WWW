@@ -22,6 +22,139 @@ from train_jev import choose_model, load_policy_split
 SEEDS = (20261003,)
 
 
+def _assert_probability_contract(
+    probabilities: np.ndarray,
+    legal: np.ndarray,
+    *,
+    tolerance: float = 1e-6,
+) -> None:
+    """Fail closed if a policy emits an invalid masked distribution."""
+
+    values = np.asarray(probabilities, dtype=np.float64)
+    legal_values = np.asarray(legal, dtype=np.int64)
+    if values.ndim != 2 or legal_values.shape != values.shape:
+        raise AssertionError(
+            f"probability/legal shape mismatch: {values.shape} != {legal_values.shape}"
+        )
+    if not np.isfinite(values).all():
+        raise AssertionError("policy probabilities contain non-finite values")
+    if float(values.min(initial=0.0)) < -tolerance or float(values.max(initial=0.0)) > 1.0 + tolerance:
+        raise AssertionError("policy probabilities are outside [0, 1]")
+    valid = legal_values >= 0
+    if not valid.any(axis=1).all():
+        raise AssertionError("a validation record has no legal action")
+    legal_sums = np.where(valid, values, 0.0).sum(axis=1)
+    if not np.all(np.abs(legal_sums - 1.0) <= tolerance):
+        raise AssertionError("legal-action probabilities do not sum to one")
+    if np.any(np.abs(values[~valid]) > tolerance):
+        raise AssertionError("masked illegal-action probabilities are non-zero")
+
+
+def _ece(confidence: Sequence[tuple[float, float, float]], denominator: float) -> float:
+    value = 0.0
+    for bucket in range(10):
+        lower, upper = bucket / 10.0, (bucket + 1) / 10.0
+        selected = [
+            item
+            for item in confidence
+            if lower <= item[0] < upper
+            or (lower <= item[0] <= upper and bucket == 9)
+        ]
+        bucket_weight = sum(item[2] for item in selected)
+        if bucket_weight:
+            value += bucket_weight / denominator * abs(
+                sum(item[0] * item[2] for item in selected) / bucket_weight
+                - sum(item[1] * item[2] for item in selected) / bucket_weight
+            )
+    if not math.isfinite(value) or not (-1e-12 <= value <= 1.0 + 1e-12):
+        raise AssertionError(f"ECE is outside [0, 1]: {value}")
+    return float(min(1.0, max(0.0, value)))
+
+
+def _summary(values: Sequence[float]) -> Dict[str, float | None]:
+    if not values:
+        return {
+            "mean": None,
+            "median": None,
+            "p10": None,
+            "p50": None,
+            "p90": None,
+        }
+    array = np.asarray(values, dtype=np.float64)
+    return {
+        "mean": float(np.mean(array)),
+        "median": float(np.median(array)),
+        "p10": float(np.percentile(array, 10)),
+        "p50": float(np.percentile(array, 50)),
+        "p90": float(np.percentile(array, 90)),
+    }
+
+
+def utility_tie_margin_diagnostics(
+    data: CompactJEVData,
+    indices: np.ndarray,
+    *,
+    tolerance: float = 1e-8,
+) -> Dict[str, Any]:
+    """Describe whether validation labels contain a real decision margin."""
+
+    utility_index = OUTCOME_FIELDS.index("utility")
+    question_names = data.manifest["question_names"]
+    # Keep the full margin values so percentile diagnostics are not reduced to
+    # a boolean tie/non-tie flag.
+    detailed: Dict[str, list[tuple[float, bool, float]]] = {}
+    for index in np.asarray(indices, dtype=np.int64):
+        weight = float(data.sample_weight[index])
+        if not math.isfinite(weight) or weight < 0:
+            raise AssertionError("sample_weight must be finite and non-negative")
+        if weight <= 0:
+            continue
+        question = question_names[int(data.questions[index])]
+        legal_ids = np.asarray(data.legal_actions[index], dtype=np.int64)
+        legal_ids = legal_ids[legal_ids >= 0]
+        utilities = np.asarray(data.outcomes[index], dtype=np.float64)[legal_ids, utility_index]
+        if not np.isfinite(utilities).all():
+            raise AssertionError("legal action utilities contain non-finite values")
+        best_value = float(np.max(utilities))
+        best_count = int(np.sum(np.isclose(utilities, best_value, atol=tolerance, rtol=0.0)))
+        distinct = np.unique(np.sort(utilities))[::-1]
+        margin = float(best_value - distinct[1]) if len(distinct) > 1 else 0.0
+        detailed.setdefault(question, []).append((weight, best_count > 1, margin))
+
+    def detailed_summary(items: Sequence[tuple[float, bool, float]]) -> Dict[str, Any]:
+        total = sum(item[0] for item in items)
+        return {
+            "records": int(len(items)),
+            "weighted_records": float(total),
+            "best_action_tie_rate": float(sum(item[0] for item in items if item[1]) / max(1e-12, total)),
+            "unique_best_action_rate": float(sum(item[0] for item in items if not item[1]) / max(1e-12, total)),
+            "utility_best_second_margin": _summary([item[2] for item in items]),
+        }
+
+    output: Dict[str, Any] = {}
+    for question, items in sorted(detailed.items()):
+        output[question] = {}
+        subsets = {
+            "ALL": list(items),
+            "UNIQUE_BEST": [item for item in items if not item[1]],
+            "POSITIVE_MARGIN": [item for item in items if item[2] > tolerance],
+        }
+        for subset_name, subset in subsets.items():
+            output[question][subset_name] = detailed_summary(subset)
+    all_items = [item for items in detailed.values() for item in items]
+    output["ALL_QUESTIONS"] = {}
+    for subset_name, subset in {
+        "ALL": all_items,
+        "UNIQUE_BEST": [item for item in all_items if not item[1]],
+        "POSITIVE_MARGIN": [item for item in all_items if item[2] > tolerance],
+    }.items():
+        output["ALL_QUESTIONS"][subset_name] = detailed_summary(subset)
+    return {
+        "tie_tolerance": tolerance,
+        "by_question": output,
+    }
+
+
 def predict(model, data: CompactJEVData, indices: np.ndarray):
     rows = []
     model.eval()
@@ -41,7 +174,12 @@ def validation_metrics(data: CompactJEVData, indices: np.ndarray, probabilities:
     best = np.asarray(data.best_mask[indices])
     weights = np.asarray(data.sample_weight[indices], dtype=np.float64)
     outcomes = np.asarray(data.outcomes[indices], dtype=np.float64)
+    _assert_probability_contract(probabilities, legal)
+    if not np.isfinite(weights).all() or (weights < 0).any():
+        raise AssertionError("sample_weight must be finite and non-negative")
     denominator = float(weights.sum())
+    if denominator <= 0:
+        raise AssertionError("validation has no positive sample weight")
     nll = brier = correct = 0.0
     confidence = []
     action_distribution: Dict[str, float] = {}
@@ -51,10 +189,14 @@ def validation_metrics(data: CompactJEVData, indices: np.ndarray, probabilities:
         valid = legal[row] >= 0
         probs = probabilities[row]
         chosen_col = int(np.argmax(probs))
+        if not valid[chosen_col]:
+            raise AssertionError("policy selected a masked illegal action")
         chosen_id = int(legal[row, chosen_col])
         weight = float(weights[row])
         chosen_name = data.manifest["action_names"][chosen_id]
         hit = float(best[row, chosen_id])
+        if hit not in (0.0, 1.0):
+            raise AssertionError(f"correct must be binary, got {hit}")
         nll += weight * float(-(target[row, valid] * np.log(np.maximum(probs[valid], 1e-8))).sum())
         brier += weight * float(((probs[valid] - target[row, valid]) ** 2).sum())
         correct += weight * hit
@@ -68,22 +210,14 @@ def validation_metrics(data: CompactJEVData, indices: np.ndarray, probabilities:
             value = outcomes[row, chosen_id, field_index]
             if math.isfinite(float(value)):
                 mechanism[field] = mechanism.get(field, 0.0) + weight * float(value)
-    ece = 0.0
-    for bucket in range(10):
-        lower, upper = bucket / 10.0, (bucket + 1) / 10.0
-        selected = [item for item in confidence if lower <= item[0] < upper or (bucket == 9 and item[0] <= upper)]
-        bucket_weight = sum(item[2] for item in selected)
-        if bucket_weight:
-            ece += bucket_weight / denominator * abs(
-                sum(item[0] * item[2] for item in selected) / bucket_weight
-                - sum(item[1] * item[2] for item in selected) / bucket_weight
-            )
+    ece = _ece(confidence, denominator)
     oracle = 0.0
     oracle_weight = 0.0
     utility_index = OUTCOME_FIELDS.index("utility")
     for row in range(len(indices)):
         valid = legal[row] >= 0
-        utility_values = outcomes[row, valid, utility_index]
+        legal_ids = legal[row][valid].astype(np.int64)
+        utility_values = outcomes[row, legal_ids, utility_index]
         finite_utility = utility_values[np.isfinite(utility_values)]
         if len(finite_utility) == 0:
             continue
@@ -207,7 +341,8 @@ def write_first_round_markdown(report: Mapping[str, Any], path: Path) -> None:
         "## Gate for tracking comparison",
         "",
         f"`jev_beats_both_on_val_utility = {report['jev_beats_both_on_val_utility']}`.",
-        "The full tracking comparison is authorized only when this single-seed gate is true.",
+        f"`jev_beats_majority_reference = {report['jev_beats_majority_reference']}`; `jev_matches_majority_reference = {report['jev_matches_majority_reference']}`.",
+        "A majority tie is not evidence of a meaningful learned-policy advantage; runtime parity and reactivation coverage are separate hard gates.",
         "",
         "## Non-learned validation references",
         "",
@@ -291,6 +426,28 @@ def main() -> None:
     ):
         raise ValueError("three-way methods do not share the locked training configuration")
     baselines = action_baseline_metrics(data, train_indices, val_indices)
+    oracle_best_utility = report_methods["jev"]["validation"]["oracle_best_utility"]
+    if oracle_best_utility is None or not math.isfinite(float(oracle_best_utility)):
+        raise AssertionError("oracle_best_utility is not finite")
+    for method, item in report_methods.items():
+        observed = float(item["validation"]["val_utility"])
+        if observed > float(oracle_best_utility) + 1e-6:
+            raise AssertionError(
+                f"{method} val_utility exceeds oracle_best_utility: "
+                f"{observed} > {oracle_best_utility}"
+            )
+    for baseline, item in baselines.items():
+        item["oracle_best_utility"] = float(oracle_best_utility)
+        observed = float(item["val_utility"])
+        if observed > float(oracle_best_utility) + 1e-6:
+            raise AssertionError(
+                f"{baseline} val_utility exceeds oracle_best_utility: "
+                f"{observed} > {oracle_best_utility}"
+            )
+    tie_margin_diagnostics = utility_tie_margin_diagnostics(data, val_indices)
+    majority_utility = float(baselines["majority_action"]["val_utility"])
+    jev_beats_majority = bool(jev_utility > majority_utility + 1e-6)
+    jev_matches_majority = bool(abs(jev_utility - majority_utility) <= 1e-6)
     manifest_path = args.dataset.resolve() / "manifest.json"
     report = {
         "status": "PASS",
@@ -313,12 +470,27 @@ def main() -> None:
         },
         "methods": report_methods,
         "baselines": baselines,
+        "oracle_invariant": {
+            "oracle_best_utility": float(oracle_best_utility),
+            "learned_policies_le_oracle": True,
+            "majority_le_oracle": True,
+            "uniform_le_oracle": True,
+            "tolerance": 1e-6,
+        },
+        "tie_margin_diagnostics": tie_margin_diagnostics,
         "jev_beats_both_on_val_utility": bool(
             jev_utility > report_methods["question_threshold"]["validation"]["val_utility"]
             and jev_utility > report_methods["question_conditioned_mlp"]["validation"]["val_utility"]
         ),
+        "jev_beats_majority_reference": jev_beats_majority,
+        "jev_matches_majority_reference": jev_matches_majority,
+        "meaningful_learned_policy_advantage": bool(
+            jev_utility > report_methods["question_threshold"]["validation"]["val_utility"]
+            and jev_utility > report_methods["question_conditioned_mlp"]["validation"]["val_utility"]
+            and jev_beats_majority
+        ),
         "official_test_read": False,
-        "tracking_gate": "run Frozen GMT + three methods only if single-seed JEV validation utility beats both controls",
+        "tracking_gate": "runtime parity and reactivation coverage are required; offline JEV must beat both learned controls and the majority reference for a meaningful architecture claim",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")

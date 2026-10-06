@@ -1,10 +1,10 @@
 {
   "answers": {
     "canonical_rebuild": "NO-GO. Do not launch the 24-video canonical H8 rebuild yet; keep the current video1 small-gate worker running.",
-    "closed_loop_signal": "Threshold is positive on this screening sequence; Generic MLP catastrophically collapses association; Full JEV slightly decreases HOTA/AssA/IDF1 while reducing IDSW.",
+    "closed_loop_signal": "BLOCKED_PENDING_V4_VIDEO1_RUNTIME_PARITY; the legacy-trace Threshold/MLP/JEV numbers are screening-only and inconclusive for model selection.",
     "data_reasonable": "Videos 6/7 v4 records pass schema/provenance and video7 repeats exactly; old-vs-new is screening-only because legacy RNG provenance is unavailable; video1 is still building.",
     "models_learn": "Offline optimization runs, but the first round is weak: JEV equals the majority baseline on validation utility and its margin over MLP is about 0.0091; this is not sufficient evidence.",
-    "next_work": "Investigate label/runtime semantics and MLP/JEV action calibration; finish video1; then run the same exact-equivalence verifier with the formal GMT backend before any canonical rebuild authorization.",
+    "next_work": "Finish video1, build corrected v4 records, pass provenance/SHA, v4 runtime feature parity, and REACTIVATION coverage; only then run the true closed-loop comparison and decide whether a canonical rebuild is authorized.",
     "repeatable": "Yes for the completed video7 artifact: 3337/3337 exact canonical records, identical raw SHA, zero semantic deltas.",
     "runtime_parity": "No final parity claim: the held-out video1 pilot used a preserved legacy trace, with 0 new v4 records available and 24 OFF action mismatches."
   },
@@ -17,7 +17,7 @@
     "video6": "COMPLETE",
     "video7": "COMPLETE"
   },
-  "decision": "PILOT_FAIL_NO_GO_FOR_CANONICAL_REBUILD",
+  "decision": "BLOCKED_PENDING_V4_VIDEO1_RUNTIME_PARITY",
   "gates": {
     "action_order_invariance": {
       "report": "reports/JEV_RNG_V4/ACTION_ORDER_INVARIANCE.json",
@@ -28,7 +28,7 @@
       "jev_delta_hota": -0.342072716868671,
       "mlp_delta_ass_a": -45.51655819607266,
       "report": "reports/JEV_RNG_V4/SMALL_H8_RUNTIME_TRACKING.json",
-      "status": "PILOT_FAIL"
+      "status": "BLOCKED",
     },
     "intra_video_chunking_contract_probe": {
       "classification": "BOUNDED_CPU_CONTRACT_PROBE_NOT_FORMAL_GMT_AUTHORIZATION",
@@ -63,7 +63,7 @@
       "off_action_mismatches": 24,
       "pass": false,
       "report": "reports/JEV_RUNTIME_STATE_V3/STATE_FEATURE_PARITY.json",
-      "status": "FAIL"
+      "status": "BLOCKED_PENDING_V4_VIDEO1_RUNTIME_PARITY"
     },
     "synthetic_repeatability": {
       "report": "reports/JEV_RNG_V4/REPEATABILITY.json",
@@ -89,5 +89,5 @@
     }
   },
   "schema_version": "jev_rng_v4_final_go_no_go_v1",
-  "status": "NO_GO"
+  "status": "BLOCKED"
 }
