@@ -107,7 +107,7 @@ def main() -> None:
     dataset = args.dataset.resolve()
     split = args.split_manifest.resolve()
     output = args.output.resolve()
-    if not dataset.is_file() or not split.is_file():
+    if not (dataset / "manifest.json").is_file() or not split.is_file():
         raise FileNotFoundError("shared dataset and policy split are required")
     if args.hidden_dim < 1 or args.epochs < 1 or args.batch_size < 1 or args.lr <= 0:
         raise ValueError("training parameters must be positive")

@@ -146,7 +146,37 @@ def main() -> None:
     parser.add_argument("--target-model", choices=sorted(MODEL_NAMES), default="jev")
     parser.add_argument("--target-hidden", type=int, default=128)
     parser.add_argument("--candidates", nargs="+", default=list(DEFAULT_CANDIDATES))
-    parser.add_argument("--hidden-widths", nargs="+", type=int, default=[16, 24, 32, 48, 64, 80, 96, 112, 128, 160, 192, 224, 256])
+    parser.add_argument(
+        "--hidden-widths",
+        nargs="+",
+        type=int,
+        default=[
+            16,
+            24,
+            32,
+            48,
+            64,
+            80,
+            96,
+            112,
+            128,
+            132,
+            136,
+            137,
+            138,
+            139,
+            140,
+            141,
+            142,
+            144,
+            148,
+            152,
+            160,
+            192,
+            224,
+            256,
+        ],
+    )
     parser.add_argument("--device", default="cpu")
     parser.add_argument("--output", type=Path, default=Path("results/capacity_match.json"))
     args = parser.parse_args()
