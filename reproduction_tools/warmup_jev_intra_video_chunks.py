@@ -35,8 +35,9 @@ def main() -> None:
         advance_off_state_for_key,
         build_formal_gmt_engine,
         event_maps,
+        ordered_production_keys,
     )
-    from jev_counterfactual_v2 import MutableGMTState
+    from jev_counterfactual_v2 import seed_production_state_from_payload
     from jev_intra_video_chunking import file_sha256, save_state_snapshot
     from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
     from run_jev_full_h8_fast_worker import PayloadLRU
@@ -51,13 +52,14 @@ def main() -> None:
     cache_keys = json.loads(
         (args.partition_manifest.parent / "cache_keys_by_video.json").read_text(encoding="utf-8")
     )[str(video_id)]
-    keys = [tuple(int(value) for value in key) for key in cache_keys]
-    keys.sort(key=lambda key: (key[1], key[2]))
+    cache = FrozenPerceptionCache(args.cache.resolve())
+    cache_obj = PayloadLRU(cache, max_entries=512)
+    keys, _seed_key = ordered_production_keys(
+        cache_keys, lambda key: cache_obj.load(*key)
+    )
     if not plan.get("chunks"):
         raise ValueError("chunk plan is empty")
 
-    cache = FrozenPerceptionCache(args.cache.resolve())
-    cache_obj = PayloadLRU(cache, max_entries=512)
     engine = build_formal_gmt_engine(
         config_file=args.config_file.resolve(),
         checkpoint=args.checkpoint.resolve(),
@@ -65,12 +67,14 @@ def main() -> None:
         view_num=args.view_num,
         history_limit=args.history_limit,
     )
-    state = MutableGMTState().initialize_trajectory_rng(video_id)
+    state, _seed_payload = seed_production_state_from_payload(
+        cache_obj.load(*keys[0]), keys[0]
+    )
     output = args.output.resolve()
     snapshot_dir = output / "snapshots"
     snapshot_dir.mkdir(parents=True, exist_ok=True)
     snapshots = []
-    cursor = 0
+    cursor = 1
     for chunk in plan["chunks"]:
         start = int(chunk["key_start"])
         if start < cursor:

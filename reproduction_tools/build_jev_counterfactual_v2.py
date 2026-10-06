@@ -33,9 +33,18 @@ from jev_counterfactual_v2 import (
     TRAJECTORY_RNG_POLICY,
     CachedPerceptionMutableAssociationV2,
     MutableGMTState,
+    seed_production_state_from_payload,
 )
 from jev_dataset_tools import make_record
 from jev_mutable_branch import is_main_decision
+from gtr.modeling.jev_state import (
+    association_window_length,
+    build_state_features,
+    candidate_entropy,
+    count_memory_observations,
+    count_track_history,
+    legacy_acceptance_threshold,
+)
 
 
 CANONICAL_CHECKPOINT_SHA256 = (
@@ -234,6 +243,176 @@ def event_maps(events: Sequence[Mapping[str, Any]]):
     return actions, memories, by_key
 
 
+def ordered_production_keys(
+    keys: Sequence[Sequence[int]],
+    payload_for: Callable[[Tuple[int, int, int]], Mapping[str, Any]],
+) -> Tuple[List[Tuple[int, int, int]], Tuple[int, int, int]]:
+    """Return the native GMT first-frame seed order plus later keys."""
+
+    normalized = [tuple(int(value) for value in key) for key in keys]
+    normalized.sort(key=lambda key: (key[1], key[2]))
+    if not normalized:
+        raise ValueError("cannot order an empty production cache-key list")
+    first_frame = min(int(key[1]) for key in normalized)
+    first_keys = [key for key in normalized if int(key[1]) == first_frame]
+    first_keys.sort(key=lambda key: int(key[2]))
+    first_counts = {
+        key: int(torch.as_tensor(payload_for(key)["pred_boxes"]).shape[0])
+        for key in first_keys
+    }
+    seed_key = max(first_keys, key=lambda key: (first_counts[key], int(key[2])))
+    ordered = [seed_key]
+    ordered.extend(key for key in first_keys if key != seed_key)
+    ordered.extend(
+        key
+        for key in normalized
+        if int(key[1]) != first_frame
+    )
+    return ordered, seed_key
+
+
+def _controller_semantics(engine: CachedPerceptionMutableAssociationV2):
+    model = getattr(getattr(engine, "association_fn", None), "model", None)
+    return {
+        "threshold": float(
+            getattr(model, "overlap_thresh", engine.acceptance_threshold)
+        ),
+        "can_reassociate": bool(getattr(model, "jev_max_reassociate", 1)),
+        "memory_enabled": bool(getattr(model, "with_bank", True)),
+        "with_iou": bool(getattr(model, "with_iou", True)),
+        "not_mult_thresh": bool(
+            getattr(model, "not_mult_thresh", engine.not_mult_thresh)
+        ),
+    }
+
+
+def canonical_state_feature_for_event(
+    *,
+    event: Mapping[str, Any],
+    payload: Mapping[str, Any],
+    state: MutableGMTState,
+    proposal,
+    engine: CachedPerceptionMutableAssociationV2,
+    key: Tuple[int, int, int],
+    seed_key: Tuple[int, int, int],
+    actions: Mapping[Tuple[int, int, int], Mapping[int, str]],
+) -> torch.Tensor:
+    """Build the exact runtime feature from the current mutable OFF state."""
+
+    semantics = _controller_semantics(engine)
+    question = str(event.get("question"))
+    row = int(event["context"]["detection_index"])
+    scores = proposal.scores
+    track_ids = proposal.track_ids
+    col = proposal.pairs.get(row)
+    frame = int(event["_frame"])
+    view = int(event["_view"])
+    first_frame_secondary_view = (
+        frame == int(seed_key[1]) and view != int(seed_key[2])
+    )
+    window_length = association_window_length(
+        history_instances=len(state.association_history),
+        view_num=2,
+        view_index=view,
+        first_frame_secondary_view=first_frame_secondary_view,
+    )
+    if question in {"MATCH_DECISION", "REACTIVATION_DECISION"}:
+        if col is None:
+            accept_score = reassociate_score = 0.0
+            candidate_entropy_value = 0.0
+            track_length = 1
+            score_variance = 0.0
+            candidate_count = 0
+            off_action = "START_NEW"
+        else:
+            order = torch.argsort(scores[row], descending=True).tolist()
+            first_col = int(col)
+            second_col = next(
+                (int(item) for item in order if int(item) != first_col), None
+            )
+            accept_score = float(scores[row, first_col].item())
+            reassociate_score = (
+                float(scores[row, second_col].item())
+                if second_col is not None
+                else 0.0
+            )
+            candidate_entropy_value = candidate_entropy(scores[row])
+            track_length = count_track_history(
+                state.association_history, int(track_ids[first_col])
+            )
+            legacy_threshold = legacy_acceptance_threshold(
+                semantics["threshold"], track_length, semantics["not_mult_thresh"]
+            )
+            off_action = (
+                "ACCEPT_CURRENT"
+                if accept_score > legacy_threshold
+                else "START_NEW"
+            )
+            score_variance = (
+                float(scores[row].var().item()) if scores.shape[1] > 1 else 0.0
+            )
+            candidate_count = len(track_ids)
+        return build_state_features(
+            state_dim=64,
+            accept_score=accept_score,
+            reassociate_score=reassociate_score,
+            threshold=semantics["threshold"],
+            candidate_count=candidate_count,
+            candidate_entropy=candidate_entropy_value,
+            track_count=len(track_ids),
+            track_age=0,
+            frame_index=frame,
+            window_length=window_length,
+            view_index=view,
+            can_reassociate=semantics["can_reassociate"],
+            memory_enabled=semantics["memory_enabled"],
+            with_iou=semantics["with_iou"],
+            not_mult_thresh=semantics["not_mult_thresh"],
+            current_is_unmatched=(off_action == "START_NEW"),
+            memory_count=0,
+            track_score=accept_score,
+            track_length=track_length,
+            score_variance=score_variance,
+        )
+
+    if question == "MEMORY_DECISION":
+        resolution = engine.resolve_actions(
+            payload,
+            state,
+            actions=actions.get(key),
+            proposal=proposal,
+        )
+        track_id = resolution["existing_track_ids"].get(row)
+        if track_id is None:
+            memory_count = 1
+            score = 0.0
+        else:
+            memory_count = count_memory_observations(state.memory, int(track_id))
+            score = float(scores[row].max().item()) if scores.shape[1] else 0.0
+        return build_state_features(
+            state_dim=64,
+            accept_score=score,
+            reassociate_score=0.0,
+            threshold=semantics["threshold"],
+            candidate_count=1,
+            candidate_entropy=0.0,
+            track_count=len(track_ids),
+            track_age=memory_count,
+            frame_index=frame,
+            window_length=window_length,
+            view_index=view,
+            can_reassociate=semantics["can_reassociate"],
+            memory_enabled=semantics["memory_enabled"],
+            with_iou=semantics["with_iou"],
+            not_mult_thresh=semantics["not_mult_thresh"],
+            memory_count=memory_count,
+            track_score=score,
+            track_length=max(1, memory_count),
+            score_variance=0.0,
+        )
+    raise ValueError(f"unsupported decision question: {question}")
+
+
 def advance_off_state_for_key(
     *,
     payload: Mapping[str, Any],
@@ -361,7 +540,6 @@ def build_v2_records(
             keys = [key for key in cache.keys() if key[0] == int(video_id)]
         else:
             keys = [tuple(int(value) for value in key) for key in cache_keys_by_video.get(int(video_id), ())]
-        keys.sort(key=lambda key: (key[1], key[2]))
         # A bounded protocol subset does not need to advance the mutable
         # state through the remainder of the sequence.  Keep enough cached
         # frames to evaluate every selected event's future horizon, while
@@ -376,14 +554,21 @@ def build_v2_records(
         def payload_for(key):
             return eager_payloads[key] if eager_payloads is not None else cache.load(*key)
 
+        keys, seed_key = ordered_production_keys(keys, payload_for)
+
         if int(key_start_index) < 0 or int(key_start_index) > len(keys):
             raise ValueError("key_start_index is outside the ordered cache-key range")
-        replay_start = int(key_start_index)
+        # The first production key is already committed by GMT as the initial
+        # tracker seed.  Policy decisions begin at the next key (normally the
+        # other view of frame zero).
+        replay_start = max(1, int(key_start_index))
         replay_end = len(keys) if key_end_index is None else int(key_end_index)
         if replay_end < replay_start or replay_end > len(keys):
             raise ValueError("key_end_index is outside the ordered cache-key range")
         if initial_state is None:
-            state = MutableGMTState().initialize_trajectory_rng(video_id)
+            state, _seed_payload = seed_production_state_from_payload(
+                payload_for(seed_key), seed_key
+            )
         else:
             state = initial_state.clone()
             if state.trajectory_rng_seed is None or state.trajectory_rng_state is None:
@@ -394,6 +579,7 @@ def build_v2_records(
                 int(selected_key_range[0]),
                 int(selected_key_range[1]),
             )
+            selected_start = max(1, selected_start)
             if (
                 selected_start < replay_start
                 or selected_end > replay_end
@@ -480,8 +666,20 @@ def build_v2_records(
                             for branch_horizon in horizons
                         }
 
+                    canonical_feature = canonical_state_feature_for_event(
+                        event=event,
+                        payload=payload,
+                        state=state,
+                        proposal=current_proposal,
+                        engine=engine,
+                        key=key,
+                        seed_key=seed_key,
+                        actions=actions,
+                    )
                     state_data = {
-                        "feature_vector": [float(value) for value in event["state_feature_vector"]],
+                        "feature_vector": [float(value) for value in canonical_feature.tolist()],
+                        "feature_source": "canonical_mutable_off_state_v2",
+                        "feature_schema_version": "jev_runtime_state_v2",
                         "online_context": {
                             "video_id": int(video_id),
                             "frame": int(event["_frame"]),

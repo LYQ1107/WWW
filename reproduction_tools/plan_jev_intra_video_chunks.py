@@ -8,8 +8,9 @@ import hashlib
 import json
 from pathlib import Path
 
-from build_jev_counterfactual_v2 import event_maps
+from build_jev_counterfactual_v2 import event_maps, ordered_production_keys
 from build_jev_counterfactual_dataset import normalize_events
+from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
 from jev_intra_video_chunking import CHUNKING_SCHEMA_VERSION, plan_chunks
 
 
@@ -26,6 +27,7 @@ def main() -> None:
     parser.add_argument("--partition-manifest", type=Path, required=True)
     parser.add_argument("--video-id", type=int, required=True)
     parser.add_argument("--records-per-chunk", type=int, default=2000)
+    parser.add_argument("--initial-key-index", type=int, default=1)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     partition = json.loads(args.partition_manifest.read_text(encoding="utf-8"))
@@ -38,12 +40,16 @@ def main() -> None:
     cache_keys_payload = json.loads(
         (Path(args.partition_manifest).parent / "cache_keys_by_video.json").read_text(encoding="utf-8")
     )
-    keys = cache_keys_payload[str(video_id)]
+    cache = FrozenPerceptionCache(partition["cache"])
+    keys, seed_key = ordered_production_keys(
+        cache_keys_payload[str(video_id)], lambda key: cache.load(*key)
+    )
     chunks = plan_chunks(
         video_id=video_id,
         ordered_keys=keys,
         events_by_key=by_key,
         target_records=args.records_per_chunk,
+        initial_key_index=args.initial_key_index,
     )
     report = {
         "schema_version": CHUNKING_SCHEMA_VERSION,
@@ -58,6 +64,8 @@ def main() -> None:
         "partition_manifest": str(args.partition_manifest.resolve()),
         "partition_manifest_sha256": sha256(args.partition_manifest.resolve()),
         "cache_keys": len(keys),
+        "initial_key_index": int(args.initial_key_index),
+        "seed_key": list(seed_key) if keys else None,
         "source_main_decisions": int(video_meta["main_decisions"]),
         "records_per_chunk_target": int(args.records_per_chunk),
         "chunk_boundary_unit": "complete ordered (video_id, frame, view) cache-key decision unit",

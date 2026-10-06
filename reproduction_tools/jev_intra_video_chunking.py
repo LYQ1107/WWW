@@ -68,6 +68,7 @@ def plan_chunks(
     ordered_keys: Sequence[Sequence[int]],
     events_by_key: Mapping[tuple[int, int, int], Sequence[Mapping[str, Any]]],
     target_records: int,
+    initial_key_index: int = 0,
 ) -> list[dict[str, Any]]:
     """Create stable non-overlapping key ranges for one video."""
 
@@ -75,13 +76,19 @@ def plan_chunks(
     if target < 1:
         raise ValueError("target_records must be positive")
     keys = [tuple(int(value) for value in key) for key in ordered_keys]
-    keys.sort(key=lambda key: (key[1], key[2]))
-    counts = [decision_count_for_key(events_by_key.get(key, ())) for key in keys]
+    first_decision_key = max(0, int(initial_key_index))
+    if first_decision_key > len(keys):
+        raise ValueError("initial_key_index is outside the ordered key range")
+    counts = [
+        decision_count_for_key(events_by_key.get(key, ()))
+        for key in keys[first_decision_key:]
+    ]
     chunks: list[dict[str, Any]] = []
-    start = 0
+    start = first_decision_key
     record_start = 0
     accumulated = 0
-    for index, count in enumerate(counts):
+    for local_index, count in enumerate(counts):
+        index = first_decision_key + local_index
         accumulated += int(count)
         # A boundary is legal only after the complete current key.  Do not
         # create a zero-record chunk for a run of cache keys without decisions.
@@ -105,7 +112,7 @@ def plan_chunks(
             record_start += accumulated
             accumulated = 0
     if start < len(keys):
-        tail_count = sum(counts[start:])
+        tail_count = sum(counts[start - first_decision_key :])
         if tail_count > 0:
             chunks.append(
                 {
@@ -123,8 +130,8 @@ def plan_chunks(
             )
     if sum(item["decision_count"] for item in chunks) != sum(counts):
         raise AssertionError("chunk plan does not cover all decision records")
-    if chunks and chunks[0]["key_start"] != 0:
-        raise AssertionError("chunk plan has a prefix gap")
+    if chunks and chunks[0]["key_start"] != first_decision_key:
+        raise AssertionError("chunk plan has a decision-prefix gap")
     for left, right in zip(chunks, chunks[1:]):
         if left["key_end"] != right["key_start"]:
             raise AssertionError("chunk plan contains a key-range gap or overlap")

@@ -52,7 +52,11 @@ def main() -> None:
     sys.path.insert(0, str(ROOT / "reproduction_tools"))
     sys.path.insert(0, str(ROOT / "third_party/CenterNet2"))
     from build_jev_counterfactual_dataset import load_gt
-    from build_jev_counterfactual_v2 import build_formal_gmt_engine, source_commit
+    from build_jev_counterfactual_v2 import (
+        build_formal_gmt_engine,
+        ordered_production_keys,
+        source_commit,
+    )
     from jev_intra_video_chunking import load_state_snapshot, file_sha256
     from run_jev_full_h8_fast_worker import PayloadLRU
     from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
@@ -71,6 +75,10 @@ def main() -> None:
     cache_keys = json.loads(
         (args.partition_manifest.parent / "cache_keys_by_video.json").read_text(encoding="utf-8")
     )[str(video_id)]
+    cache_for_order = FrozenPerceptionCache(args.cache.resolve())
+    cache_keys, _seed_key = ordered_production_keys(
+        cache_keys, lambda key: cache_for_order.load(*key)
+    )
     snapshot = args.chunk_plan.parent / "snapshots" / f"chunk_{chunk_index:04d}.pt"
     state, snapshot_metadata = load_state_snapshot(snapshot)
     if int(snapshot_metadata.get("key_start", -1)) != int(chunk["key_start"]):

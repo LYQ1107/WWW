@@ -265,30 +265,9 @@ def append_predictions(predictions, payload, image, committed):
 
 def seed_production_state(cache, MutableGMTState, seed_key):
     """Seed the mutable replay exactly as ``sliding_inference_GMT`` does."""
+    from jev_counterfactual_v2 import seed_production_state_from_payload
 
-    payload = cache.load(*seed_key)
-    detection_count = int(torch.as_tensor(payload["pred_boxes"]).shape[0])
-    if detection_count < 1:
-        raise RuntimeError(f"production seed view is empty: {seed_key}")
-    state = MutableGMTState(
-        next_id=detection_count,
-        active_ids=set(range(1, detection_count + 1)),
-        track_hits={track_id: 1 for track_id in range(1, detection_count + 1)},
-        track_embeddings={
-            track_id: torch.as_tensor(payload["reid_features"][track_id - 1]).detach().cpu().clone()
-            for track_id in range(1, detection_count + 1)
-        },
-    )
-    state.initialize_trajectory_rng(int(seed_key[0]))
-    state.association_history.append(
-        {
-            "perception": payload,
-            "assignments": {
-                row: row + 1 for row in range(detection_count)
-            },
-        }
-    )
-    return state, payload
+    return seed_production_state_from_payload(cache.load(*seed_key), seed_key)
 
 
 def trace_action_for(events, question: str, row: int):
@@ -325,6 +304,7 @@ def run_method(
     legacy_acceptance_threshold,
     feature_source_mode,
     parity_report,
+    device="cpu",
     max_frame=None,
     trace_writer=None,
 ):
@@ -341,7 +321,7 @@ def run_method(
     engine = build_formal_gmt_engine(
         config_file=CONFIG,
         checkpoint=CHECKPOINT,
-        device="cpu",
+        device=device,
         view_num=2,
         history_limit=80,
     )
@@ -349,7 +329,7 @@ def run_method(
     # when the model was initially constructed with ``device=cpu``.  This is
     # local to the pilot CPU replay; formal GPU workers are separate
     # processes and are not changed.
-    engine.association_fn.model.cpu()
+    engine.association_fn.model.to(torch.device(device))
     engine.association_fn.model.eval()
     cache = FrozenPerceptionCache(CACHE)
     keys, seed_key, first_counts = ordered_replay_keys(cache, VIDEO_ID, view_num=2)
@@ -893,7 +873,11 @@ def blocked_runtime_report(raw: Mapping[str, Any], parity_report: Mapping[str, A
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--device", default="cpu", choices=("cpu",))
+    parser.add_argument(
+        "--device",
+        default=os.environ.get("JEV_PILOT_DEVICE", "cpu"),
+        help="formal replay device; use a visible CUDA device for exact GPU parity",
+    )
     parser.add_argument("--feature-source", choices=("runtime", "trace_debug"), default="runtime")
     parser.add_argument(
         "--allow-runtime-with-legacy-trace",
@@ -1002,6 +986,7 @@ def main() -> None:
             legacy_acceptance_threshold=legacy_acceptance_threshold,
             feature_source_mode=args.feature_source,
             parity_report=parity_report,
+            device=args.device,
             max_frame=args.max_frame,
         )
         json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)

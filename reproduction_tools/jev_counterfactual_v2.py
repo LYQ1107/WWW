@@ -143,6 +143,43 @@ class MutableGMTState:
         )
 
 
+def seed_production_state_from_payload(
+    payload: Mapping[str, object],
+    seed_key: Sequence[int],
+) -> Tuple[MutableGMTState, Mapping[str, object]]:
+    """Seed GMT exactly as the native production replay does.
+
+    The first-frame view with the most detections is already committed by GMT
+    before policy decisions begin.  Counterfactual data generation must start
+    from that same tracker/history state; treating the seed view as an empty
+    association step produces tied labels and a train/runtime mismatch.
+    """
+
+    detection_count = int(torch.as_tensor(payload["pred_boxes"]).shape[0])
+    if detection_count < 1:
+        raise RuntimeError(f"production seed view is empty: {tuple(seed_key)}")
+    state = MutableGMTState(
+        next_id=detection_count,
+        active_ids=set(range(1, detection_count + 1)),
+        track_hits={track_id: 1 for track_id in range(1, detection_count + 1)},
+        track_embeddings={
+            track_id: torch.as_tensor(payload["reid_features"][track_id - 1])
+            .detach()
+            .cpu()
+            .clone()
+            for track_id in range(1, detection_count + 1)
+        },
+    )
+    state.initialize_trajectory_rng(int(seed_key[0]))
+    state.association_history.append(
+        {
+            "perception": payload,
+            "assignments": {row: row + 1 for row in range(detection_count)},
+        }
+    )
+    return state, payload
+
+
 @dataclass(frozen=True)
 class AssociationProposal:
     track_ids: Tuple[int, ...]

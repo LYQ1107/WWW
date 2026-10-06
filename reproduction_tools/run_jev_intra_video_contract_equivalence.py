@@ -32,9 +32,17 @@ def main() -> None:
     sys.path.insert(0, str(ROOT / "reproduction_tools"))
     sys.path.insert(0, str(ROOT / "third_party/CenterNet2"))
     from build_jev_counterfactual_dataset import load_gt, normalize_events
-    from build_jev_counterfactual_v2 import advance_off_state_for_key, event_maps, build_v2_records
+    from build_jev_counterfactual_v2 import (
+        advance_off_state_for_key,
+        build_v2_records,
+        event_maps,
+        ordered_production_keys,
+    )
     from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
-    from jev_counterfactual_v2 import CachedPerceptionMutableAssociationV2, MutableGMTState
+    from jev_counterfactual_v2 import (
+        CachedPerceptionMutableAssociationV2,
+        seed_production_state_from_payload,
+    )
     from jev_intra_video_chunking import compare_records_exact, plan_chunks
 
     partition = json.loads(args.partition_manifest.read_text(encoding="utf-8"))
@@ -57,15 +65,17 @@ def main() -> None:
         cache_keys = json.loads(
             (args.partition_manifest.parent / "cache_keys_by_video.json").read_text(encoding="utf-8")
         )[str(video_id)]
-        keys = [tuple(int(value) for value in key) for key in cache_keys]
-        keys.sort(key=lambda key: (key[1], key[2]))
+        cache = FrozenPerceptionCache(partition["cache"])
+        keys, _seed_key = ordered_production_keys(
+            cache_keys, lambda key: cache.load(*key)
+        )
         chunks = plan_chunks(
             video_id=video_id,
             ordered_keys=keys,
             events_by_key=by_key,
             target_records=args.records_per_chunk,
+            initial_key_index=1,
         )
-        cache = FrozenPerceptionCache(partition["cache"])
         gt_bundle = load_gt(Path("/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"))
         single, single_stats, single_skipped = build_v2_records(
             trace=trace,
@@ -83,8 +93,10 @@ def main() -> None:
         )
 
         chunk_records = []
-        state = MutableGMTState().initialize_trajectory_rng(video_id)
-        cursor = 0
+        state, _seed_payload = seed_production_state_from_payload(
+            cache.load(*keys[0]), keys[0]
+        )
+        cursor = 1
         for chunk in chunks:
             for key_index in range(cursor, int(chunk["key_start"])):
                 key = keys[key_index]
