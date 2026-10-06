@@ -35,6 +35,13 @@ def read_jsonl(path: Path):
                 raise ValueError(f"invalid JSON at {path}:{line_number}: {exc}") from exc
 
 
+def read_json_value(path: Path):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"invalid JSON at {path}: {exc}") from exc
+
+
 def event_key(payload: Mapping[str, Any]):
     context = payload.get("context", payload)
     return (
@@ -72,7 +79,12 @@ def native_events(path: Path, video_id: int, max_frame: int):
 def replay_events(path: Path):
     events = {}
     duplicate_keys = []
-    for payload in read_jsonl(path):
+    payloads = read_json_value(path)
+    if not isinstance(payloads, list):
+        raise ValueError(f"replay decisions must be a JSON list: {path}")
+    for payload in payloads:
+        if not isinstance(payload, Mapping):
+            raise ValueError(f"replay decision is not an object: {path}")
         if payload.get("question") != "REACTIVATION_DECISION":
             continue
         key = event_key(payload)
