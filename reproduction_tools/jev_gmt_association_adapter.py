@@ -96,6 +96,38 @@ class GMTAssociationTransformerAdapter:
                 (len(current), len(track_ids)), dtype=torch.float32, device=device
             )
 
+        # The frozen cache represents a legal zero-detection frame as
+        # ``reid_features.shape == (0, 0)``.  That representation is useful
+        # at the cache boundary, but it cannot be concatenated with the
+        # model's normal 1152-dimensional features when the frame is inside
+        # the bounded association history.  Preserve the zero rows and
+        # recover only the feature width from a non-empty neighboring frame.
+        feature_dims = {
+            int(instance.reid_features.shape[1])
+            for instance in instances
+            if len(instance) > 0
+        }
+        if len(feature_dims) != 1:
+            raise ValueError(
+                "GMT association transformer requires one non-empty ReID "
+                f"feature width, got {sorted(feature_dims)}"
+            )
+        feature_dim = next(iter(feature_dims))
+        if feature_dim <= 0:
+            raise ValueError(
+                "GMT association transformer received detections without "
+                f"ReID features: width={feature_dim}"
+            )
+        for instance in instances:
+            features = instance.reid_features
+            if len(instance) == 0 and features.shape[1] == 0:
+                instance.reid_features = features.new_empty((0, feature_dim))
+            elif features.shape[1] != feature_dim:
+                raise ValueError(
+                    "GMT association transformer ReID feature width mismatch: "
+                    f"{features.shape[1]} != {feature_dim}"
+                )
+
         traj_ids = torch.tensor(previous_ids, dtype=torch.long, device=device)
         reid_features = torch.cat(
             [instance.reid_features for instance in instances], dim=0

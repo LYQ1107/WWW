@@ -1,0 +1,55 @@
+{
+  "status": "DIAGNOSED_FIX_VALIDATED_RETRY_PENDING",
+  "observed_utc": "2026-10-06T06:42:14Z",
+  "scope": "formal H=8 counterfactual dataset builder",
+  "source_base_commit": "36b10859cbc1d4a38d5dfae10e7528c7c5fb4bdb",
+  "queue_snapshot": {
+    "running": 22,
+    "failed": 1,
+    "complete": 1,
+    "complete_video": 8,
+    "complete_records_video_08": 3950,
+    "active_builders_changed": false
+  },
+  "failed_video": {
+    "video_id": 4,
+    "worker": "gpu8-slot5",
+    "pid": 3455,
+    "source_lines_processed": 7203,
+    "last_written_temp_bytes": 18058312,
+    "error": "RuntimeError: Sizes of tensors must match except in dimension 0. Expected size 1152 but got size 0 for tensor number 80 in the list.",
+    "call_site": "reproduction_tools/jev_gmt_association_adapter.py:torch.cat(reid_features)"
+  },
+  "cache_evidence": {
+    "total_index_rows": 57508,
+    "zero_detection_rows": 29,
+    "zero_detection_video_ids": [4],
+    "zero_detection_views": [0],
+    "zero_detection_shape": {
+      "pred_boxes": [0, 4],
+      "reid_features": [0, 0]
+    },
+    "nonempty_detection_rows_with_zero_reid_dim": 0,
+    "interpretation": "The 29 zero-detection payloads are valid frozen-cache records; the cache is not corrupted."
+  },
+  "root_cause": "The formal GMT adapter assumed that every payload had the model ReID width. A legal zero-detection payload uses shape [0, 0], which cannot be concatenated with neighboring [N, 1152] history tensors.",
+  "source_fix": {
+    "file": "reproduction_tools/jev_gmt_association_adapter.py",
+    "behavior": "Preserve zero rows and normalize only empty [0, 0] tensors to [0, 1152] using the single non-empty neighboring feature width; reject inconsistent non-empty widths.",
+    "cache_modified": false,
+    "active_workers_restarted": false
+  },
+  "validation": {
+    "py_compile": "PASS",
+    "adapter_invariants_with_empty_history": "PASS",
+    "jev_decision_invariants": "PASS",
+    "jev_policy_replay_invariants": "PASS",
+    "full_video_04_retry": "PENDING"
+  },
+  "continuation": {
+    "official_shards_ready": false,
+    "video_04_temp_is_official": false,
+    "next_safe_action": "Retry only video_04 with the patched adapter when a scheduler slot is available; leave all current RUNNING builders untouched, then require a COMPLETE manifest before aftercare.",
+    "pilot_results_remain_valid": true
+  }
+}
