@@ -509,11 +509,43 @@ class GTRRCNN(CustomRCNN):
             context=memory_context,
         )
 
-    def _jev_reactivation_action(self, *, score, threshold, track_count, memory_count, view, frame_index, window_length, track_id=None, detection_index=None, bbox=None, tracker_state=None):
+    def _jev_reactivation_action(
+        self,
+        *,
+        score,
+        threshold,
+        track_count,
+        memory_count,
+        view,
+        frame_index,
+        window_length,
+        track_id=None,
+        detection_index=None,
+        bbox=None,
+        tracker_state=None,
+        candidate_track_ids=None,
+        candidate_scores=None,
+        bank_threshold=None,
+    ):
         reactivate_context = {
             'decision_scope': 'reactivation',
             'track_id': int(track_id) if track_id is not None else None,
             'detection_index': int(detection_index) if detection_index is not None else None,
+            # These fields are diagnostic only.  They expose the native GMT
+            # stale-bank proposal so the mutable replay can be compared to
+            # the same OFF trajectory without using GT or future frames.
+            'native_candidate_track_ids': [
+                int(value) for value in (candidate_track_ids or [])
+            ],
+            'native_candidate_scores': [
+                float(value) for value in (candidate_scores or [])
+            ],
+            'native_candidate_order': 'torch_unique_sorted',
+            'native_candidate_count': int(len(candidate_track_ids or [])),
+            'native_bank_threshold': (
+                float(bank_threshold) if bank_threshold is not None else float(threshold)
+            ),
+            'native_bank_threshold_base': float(self.thred_bank),
         }
         if bbox is not None:
             reactivate_context['bbox_xyxy'] = [float(value) for value in bbox.detach().cpu().tolist()]
@@ -1201,6 +1233,9 @@ class GTRRCNN(CustomRCNN):
                     track_id=int(unique_ids[j].item()),
                     detection_index=int(i),
                     bbox=instances[k].pred_boxes.tensor[i],
+                    candidate_track_ids=unique_ids.detach().cpu().tolist(),
+                    candidate_scores=traj_score[i].detach().cpu().tolist(),
+                    bank_threshold=self.thred_bank,
                     tracker_state=self._jev_tracker_state(
                         id_count=max(id_count_dict.keys(), default=0),
                         id_count_dict=id_count_dict,

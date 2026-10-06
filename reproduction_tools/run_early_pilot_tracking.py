@@ -509,6 +509,15 @@ def run_method(
                         if feature_source_mode == "trace_debug":
                             counts["trace_debug_feature_records"] += 1
                             return trace_feature
+                        if parity_report.get("collect_error_values"):
+                            parity_report.setdefault("error_values", []).extend(
+                                float(value) for value in error_vector.tolist()
+                            )
+                            per_feature_values = parity_report.setdefault(
+                                "per_feature_error_values", [[] for _ in range(64)]
+                            )
+                            for index, value in enumerate(error_vector.tolist()):
+                                per_feature_values[index].append(float(value))
             counts["runtime_feature_records"] += 1
             return runtime_feature
 
@@ -841,6 +850,18 @@ def run_method(
                     "action": action,
                     "track_id": stale_id,
                     "score": score,
+                    "off_action": off_action,
+                    "legal_actions": list(legal),
+                    "candidate_track_ids": [
+                        int(value) for value in reactivation_proposal.track_ids
+                    ],
+                    "candidate_scores": [
+                        float(reactivation_proposal.scores[row, index].item())
+                        for index in range(len(reactivation_proposal.track_ids))
+                    ],
+                    "candidate_order": "sorted_mutable_stale_ids",
+                    "candidate_count": len(reactivation_proposal.track_ids),
+                    "bank_threshold": bank_threshold,
                 }
             )
         result = engine.step(
