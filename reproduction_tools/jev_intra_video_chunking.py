@@ -11,6 +11,7 @@ from __future__ import annotations
 import copy
 import hashlib
 import json
+import math
 from pathlib import Path
 from typing import Any, Iterable, Mapping, MutableMapping, Sequence
 
@@ -182,16 +183,113 @@ def canonical_record_digest(records: Iterable[Mapping[str, Any]]) -> str:
     return "sha256:" + digest.hexdigest()
 
 
+def _numeric_max_abs(left: Any, right: Any) -> tuple[bool, float]:
+    """Compare JSON values with a numeric tolerance and return max error."""
+
+    if isinstance(left, bool) or isinstance(right, bool):
+        return (left == right, 0.0 if left == right else math.inf)
+    if isinstance(left, (int, float)) and isinstance(right, (int, float)):
+        if not (math.isfinite(float(left)) and math.isfinite(float(right))):
+            return (left == right, 0.0 if left == right else math.inf)
+        error = abs(float(left) - float(right))
+        return (error <= 1e-6, error)
+    if isinstance(left, Mapping) and isinstance(right, Mapping):
+        if set(left) != set(right):
+            return (False, math.inf)
+        equal = True
+        maximum = 0.0
+        for key in left:
+            item_equal, item_error = _numeric_max_abs(left[key], right[key])
+            equal = equal and item_equal
+            maximum = max(maximum, item_error)
+        return (equal, maximum)
+    if isinstance(left, (list, tuple)) and isinstance(right, (list, tuple)):
+        if len(left) != len(right):
+            return (False, math.inf)
+        equal = True
+        maximum = 0.0
+        for left_item, right_item in zip(left, right):
+            item_equal, item_error = _numeric_max_abs(left_item, right_item)
+            equal = equal and item_equal
+            maximum = max(maximum, item_error)
+        return (equal, maximum)
+    return (left == right, 0.0 if left == right else math.inf)
+
+
+def _utility_values(value: Any, path: tuple[str, ...] = ()) -> dict[tuple[str, ...], Any]:
+    values: dict[tuple[str, ...], Any] = {}
+    if isinstance(value, Mapping):
+        for key, item in value.items():
+            next_path = path + (str(key),)
+            if str(key) == "utility":
+                values[next_path] = item
+            else:
+                values.update(_utility_values(item, next_path))
+    elif isinstance(value, (list, tuple)):
+        for index, item in enumerate(value):
+            values.update(_utility_values(item, path + (str(index),)))
+    return values
+
+
+def _record_field_comparison(
+    common: Sequence[Any],
+    left: Mapping[Any, Mapping[str, Any]],
+    right: Mapping[Any, Mapping[str, Any]],
+    field: str,
+) -> dict[str, Any]:
+    mismatches = []
+    maximum = 0.0
+    for key in common:
+        left_value = left[key].get(field)
+        right_value = right[key].get(field)
+        equal, error = _numeric_max_abs(left_value, right_value)
+        maximum = max(maximum, error)
+        if not equal:
+            mismatches.append(list(key))
+    return {
+        "equal_within_1e-6": not mismatches,
+        "compared": len(common),
+        "mismatches": len(mismatches),
+        "mismatch_key_sample": mismatches[:20],
+        "max_abs_error": maximum,
+    }
+
+
+def _utility_field_comparison(
+    common: Sequence[Any],
+    left: Mapping[Any, Mapping[str, Any]],
+    right: Mapping[Any, Mapping[str, Any]],
+) -> dict[str, Any]:
+    mismatches = []
+    maximum = 0.0
+    for key in common:
+        left_value = _utility_values(left[key])
+        right_value = _utility_values(right[key])
+        equal, error = _numeric_max_abs(left_value, right_value)
+        maximum = max(maximum, error)
+        if not equal:
+            mismatches.append(list(key))
+    return {
+        "equal_within_1e-6": not mismatches,
+        "compared": len(common),
+        "mismatches": len(mismatches),
+        "mismatch_key_sample": mismatches[:20],
+        "max_abs_error": maximum,
+    }
+
+
 def compare_records_exact(
     single_records: Sequence[Mapping[str, Any]],
     chunked_records: Sequence[Mapping[str, Any]],
 ) -> dict[str, Any]:
     """Compare two builds by semantic key and exact canonical JSON value."""
 
+    left_keys = [semantic_record_key(item) for item in single_records]
+    right_keys = [semantic_record_key(item) for item in chunked_records]
+    left_duplicates = sorted({key for key in left_keys if left_keys.count(key) > 1})
+    right_duplicates = sorted({key for key in right_keys if right_keys.count(key) > 1})
     left = {semantic_record_key(item): item for item in single_records}
     right = {semantic_record_key(item): item for item in chunked_records}
-    if len(left) != len(single_records) or len(right) != len(chunked_records):
-        raise ValueError("duplicate semantic record key in comparison input")
     common = sorted(set(left) & set(right))
     mismatches = [
         key
@@ -199,10 +297,22 @@ def compare_records_exact(
         if json.dumps(left[key], sort_keys=True, separators=(",", ":"), allow_nan=False)
         != json.dumps(right[key], sort_keys=True, separators=(",", ":"), allow_nan=False)
     ]
+    best_action_comparison = _record_field_comparison(common, left, right, "best_actions")
+    target_probability_comparison = _record_field_comparison(common, left, right, "target_probs")
+    state_feature_comparison = _record_field_comparison(
+        common,
+        {key: {"feature_vector": value.get("state", {}).get("feature_vector")} for key, value in left.items()},
+        {key: {"feature_vector": value.get("state", {}).get("feature_vector")} for key, value in right.items()},
+        "feature_vector",
+    )
+    utility_comparison = _utility_field_comparison(common, left, right)
+    semantic_keys_exact = set(left) == set(right)
+    duplicate_free = not left_duplicates and not right_duplicates
+    canonical_sha_equal = canonical_record_digest(single_records) == canonical_record_digest(chunked_records)
     return {
         "schema_version": CHUNKING_SCHEMA_VERSION,
         "status": "PASS"
-        if not mismatches and set(left) == set(right)
+        if not mismatches and semantic_keys_exact and duplicate_free
         else "FAIL",
         "single_records": len(single_records),
         "chunked_records": len(chunked_records),
@@ -214,4 +324,15 @@ def compare_records_exact(
         "mismatch_key_sample": [list(key) for key in mismatches[:20]],
         "single_canonical_sha256": canonical_record_digest(single_records),
         "chunked_canonical_sha256": canonical_record_digest(chunked_records),
+        "canonical_sha_identical": canonical_sha_equal,
+        "semantic_keys_exact": semantic_keys_exact,
+        "duplicate_free": duplicate_free,
+        "duplicate_semantic_keys_single": [list(key) for key in left_duplicates[:20]],
+        "duplicate_semantic_keys_chunked": [list(key) for key in right_duplicates[:20]],
+        "field_comparisons": {
+            "best_actions": best_action_comparison,
+            "target_probs": target_probability_comparison,
+            "utilities": utility_comparison,
+            "state_features": state_feature_comparison,
+        },
     }
