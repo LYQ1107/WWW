@@ -31,6 +31,11 @@ tracking.
   events vs `1` replay event). IDs/order on the overlapping event agree, but
   event coverage and one score disagree. This is a runtime-semantic gate, not
   a tracking result, and must be rerun on the final corrected video1 source.
+- A separate canonical-cache native GMT OFF replay now completes successfully
+  for all 932 video1 frames and emits 8,995 trace lines (`4524/4297/174` for
+  MATCH/MEMORY/REACTIVATION). This only validates native trace generation and
+  cache provenance; it does not replace the pending final candidate-parity
+  comparison against current-head mutable records.
 
 ## What has already run
 

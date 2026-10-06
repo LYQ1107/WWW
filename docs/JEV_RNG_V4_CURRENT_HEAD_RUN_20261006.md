@@ -44,6 +44,18 @@ started before the current production-seed/state corrections, a current-HEAD
 video1 replacement is queued rather than silently treating the older output as
 final.
 
+## Native cache replay diagnostic
+
+The canonical frozen perception cache was replayed through native GMT OFF on
+video1, using the same 932-frame train sequence and the frozen
+`model_20000.pth`. The run completed successfully and produced 8,995 decision
+trace lines: MATCH/MEMORY/REACTIVATION counts were `4524/4297/174`.
+`pred_classes` is restored from the cache proposal metadata so the native
+evaluator output schema remains intact. This is native trace provenance only;
+it is not a native-vs-mutable candidate-parity result. The evidence is recorded
+in `reports/JEV_RNG_V4/NATIVE_GMT_CACHE_REPLAY_VIDEO01_CORRECTED.json`, while
+the final candidate gate still waits for the current-head video1 records.
+
 ## Required order after builders finish
 
 1. Validate current-head manifests, SHA, exact question counts, finite state,
