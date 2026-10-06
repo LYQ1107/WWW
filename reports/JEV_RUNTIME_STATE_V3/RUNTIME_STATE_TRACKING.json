@@ -1,0 +1,22 @@
+{
+  "status": "BLOCKED",
+  "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
+  "controller_feature_source": "runtime",
+  "official_test_read": false,
+  "pilot_verdict": "PILOT_FAIL_RUNTIME_STATE_PARITY",
+  "runtime_controller_claim_allowed": false,
+  "learned_controller_tracking_metrics": null,
+  "learned_controllers_executed": false,
+  "blocked_before_learned_controller": true,
+  "parity_report": "reports/JEV_RUNTIME_STATE_V3/STATE_FEATURE_PARITY.json",
+  "divergence_report": "reports/JEV_RUNTIME_STATE_V3/DIVERGENCE_ANALYSIS.json",
+  "checkpoint_runtime_parity": "reports/JEV_RUNTIME_STATE_V3/CHECKPOINT_RUNTIME_PARITY.json",
+  "observed_probe": {
+    "scope": "bounded_smoke_probe",
+    "max_frame": 6,
+    "off_action_mismatches": 0,
+    "feature_max_abs_error": 2.4690799713134766,
+    "required_feature_max_abs_error": 1e-06
+  },
+  "reason": "The frozen OFF trace cannot be reproduced bitwise from the canonical mutated runtime state because its historical process-global trajectory-slot RNG provenance is missing. No learned-method tracking number is accepted."
+}

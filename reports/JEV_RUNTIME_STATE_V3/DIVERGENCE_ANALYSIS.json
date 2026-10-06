@@ -1,0 +1,64 @@
+{
+  "affected_feature_names": [
+    "accept_score",
+    "reassociate_score",
+    "raw_traj_score",
+    "mean_traj_score",
+    "log1p_traj_score",
+    "score_minus_threshold",
+    "score_over_threshold",
+    "raw_score_variance"
+  ],
+  "classification": "SCREENING_DIAGNOSTIC_NOT_A_PAPER_RESULT",
+  "created_utc": "2026-10-06T10:45:35.022756+00:00",
+  "fixed_seed_runtime_probe": {
+    "created_utc": "2026-10-06T10:38:16.939770+00:00",
+    "feature_parity_max_abs_error": 2.4690799713134766,
+    "feature_parity_records": 52,
+    "max_frame": 6,
+    "off_action_mismatches": 0,
+    "payloads": 14,
+    "runtime_feature_records": 52,
+    "seed": 20261003,
+    "trace_action_records": 52
+  },
+  "historical_trace_probe": {
+    "rng_or_random_fields": [],
+    "rng_provenance_present": false,
+    "sampled_events": 128,
+    "sampled_events_with_candidate_scores": 65
+  },
+  "parity_gate": {
+    "interpretation": "The short fixed-seed probe is useful for isolating the provenance issue; it is not a full-sequence runtime result.",
+    "observed_max_abs_error": 2.4690799713134766,
+    "observed_off_action_mismatches": 0,
+    "pass": false,
+    "required_max_abs_error": 1e-06
+  },
+  "record_count": 3950,
+  "records": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/PILOT_TRACKING_TEST.jsonl",
+  "required_remediation": [
+    "Make trajectory-slot assignment reproducible and record its seed/state or exact per-window mapping in the formal trace.",
+    "Generate a new pilot trace with that provenance using the frozen detector/ReID payloads and checkpoint.",
+    "Rebuild pilot counterfactual records from the same trace and rerun the <=1e-6 OFF feature gate.",
+    "Only after the gate passes, run Threshold, MLP and JEV true mutated-state tracking."
+  ],
+  "root_cause": {
+    "component": "gtr/modeling/roi_heads/transformer.py",
+    "consequence": "A new replay process can have the same mutable tracker state, history order, checkpoint and perception payloads but still select different learned trajectory embedding slots, changing association scores and raw score features.",
+    "historical_trace_contains_candidate_scores": true,
+    "historical_trace_contains_rng_provenance": false,
+    "mechanism": "_trajectory_slot_mapping uses process-global random.sample/random.choices on every transformer call",
+    "source_uses_process_global_random": true
+  },
+  "schema_version": "jev_runtime_state_contract_v3_divergence_v1",
+  "scientific_decision": {
+    "full_h8_builders_to_stop": false,
+    "learned_controller_tracking_metrics_accepted": false,
+    "reason": "The existing Full H=8 builders are independent frozen-data production. This branch must repair trace provenance and rebuild a matching pilot before claiming closed-loop controller behavior.",
+    "runtime_controller_claim_allowed": false
+  },
+  "source_revision": "1db9966cf0a294a247684854067e6e7f1d7dadb8",
+  "status": "FAIL",
+  "trace": "/home/liuyeqiang/WWW_jev_full_h8_runtime/partition/trace_by_video/video_08.jsonl"
+}

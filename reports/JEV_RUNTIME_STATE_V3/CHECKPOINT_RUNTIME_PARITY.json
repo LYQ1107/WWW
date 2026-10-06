@@ -1,0 +1,54 @@
+{
+  "classification": "SCREENING_PARITY_NOT_A_PAPER_RESULT",
+  "created_utc": "2026-10-06T10:45:56.972972+00:00",
+  "methods": {
+    "jev": {
+      "checkpoint": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/offline/jev/model.pth",
+      "future_gt_read_for_model": false,
+      "label": "Full JEV",
+      "max_probability_error": 0.0,
+      "mismatch_count": 0,
+      "mismatches": [],
+      "model_input_fields": [
+        "state.feature_vector",
+        "question_type",
+        "legal_actions"
+      ],
+      "records": 1000,
+      "status": "PASS"
+    },
+    "question_conditioned_mlp": {
+      "checkpoint": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/offline/question_conditioned_mlp/model.pth",
+      "future_gt_read_for_model": false,
+      "label": "Generic MLP",
+      "max_probability_error": 0.0,
+      "mismatch_count": 0,
+      "mismatches": [],
+      "model_input_fields": [
+        "state.feature_vector",
+        "question_type",
+        "legal_actions"
+      ],
+      "records": 1000,
+      "status": "PASS"
+    },
+    "question_threshold": {
+      "checkpoint": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/offline/question_threshold/model.pth",
+      "future_gt_read_for_model": false,
+      "label": "Learnable Threshold",
+      "max_probability_error": 0.0,
+      "mismatch_count": 0,
+      "mismatches": [],
+      "model_input_fields": [
+        "state.feature_vector",
+        "question_type",
+        "legal_actions"
+      ],
+      "records": 1000,
+      "status": "PASS"
+    }
+  },
+  "official_test_read": false,
+  "records": 1000,
+  "status": "PASS"
+}

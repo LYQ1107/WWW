@@ -14,6 +14,7 @@ import datetime as dt
 import json
 import os
 from pathlib import Path
+import random
 import subprocess
 import sys
 from collections import defaultdict
@@ -283,6 +284,11 @@ def run_method(
     parity_report,
     max_frame=None,
 ):
+    # The released GMT transformer uses process-global Python RNG for its
+    # trajectory-slot assignment.  A fixed replay seed makes this pilot
+    # internally reproducible; it cannot recover an historical trace's
+    # unrecorded RNG state, which is checked separately by the parity gate.
+    random.seed(SEED)
     controller = (
         build_controller_from_checkpoint(checkpoint_path, device="cpu")
         if checkpoint_path is not None
@@ -682,6 +688,86 @@ def extract_metrics(evaluated: Path) -> Dict[str, float]:
     }
 
 
+def finalize_feature_parity(
+    parity_report: Dict[str, Any],
+    records: Mapping[Any, Any],
+    off_action_counts: Mapping[str, Any],
+) -> Dict[str, Any]:
+    """Finalize and serialize-freeze the OFF runtime parity accounting."""
+
+    expected_keys = set(records)
+    missing_keys = sorted(expected_keys - parity_report["seen_record_keys"])
+    per_feature = []
+    for index, feature_name in enumerate(parity_report["feature_names"]):
+        count = int(parity_report["per_feature_count"][index])
+        per_feature.append(
+            {
+                "index": index,
+                "name": feature_name,
+                "count": count,
+                "max_abs_error": float(parity_report["per_feature_max_abs_error"][index]),
+                "mean_abs_error": (
+                    float(parity_report["per_feature_sum_abs_error"][index]) / count
+                    if count else None
+                ),
+            }
+        )
+    parity_report["missing_record_count"] = len(missing_keys)
+    parity_report["missing_record_keys_sample"] = [list(key) for key in missing_keys[:20]]
+    parity_report["mean_abs_error"] = (
+        float(parity_report["sum_abs_error"])
+        / max(1, int(parity_report["compared_records"]) * len(parity_report["feature_names"]))
+    )
+    parity_report["per_feature"] = per_feature
+    parity_report["off_action_mismatches"] = int(off_action_counts["off_action_mismatches"])
+    parity_report["pass"] = bool(
+        parity_report["expected_record_count"] == parity_report["compared_records"]
+        and parity_report["missing_record_count"] == 0
+        and parity_report["finite_runtime_records"] == parity_report["compared_records"]
+        and parity_report["max_abs_error"] <= parity_report["tolerance"]
+        and parity_report["off_action_mismatches"] == 0
+    )
+    parity_report["status"] = "PASS" if parity_report["pass"] else "FAIL"
+    parity_report.pop("seen_record_keys", None)
+    return parity_report
+
+
+def blocked_runtime_report(raw: Mapping[str, Any], parity_report: Mapping[str, Any]) -> Dict[str, Any]:
+    """Describe a fail-closed runtime pilot without inventing metrics."""
+
+    off = raw["methods"].get("gmt_off", {})
+    return {
+        "status": "BLOCKED",
+        "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
+        "created_utc": raw["created_utc"],
+        "video_id": raw["video_id"],
+        "sequence": raw["sequence"],
+        "checkpoint": raw["checkpoint"],
+        "config": raw["config"],
+        "perception_cache": raw["perception_cache"],
+        "association_backend": raw["association_backend"],
+        "controller_feature_source": raw["controller_feature_source"],
+        "official_test_read": False,
+        "methods": {"gmt_off": off},
+        "runtime_feature_parity_gate": {
+            "required_for_runtime_claim": True,
+            "report": str(ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json"),
+            "compared_records": parity_report["compared_records"],
+            "expected_records": parity_report["expected_record_count"],
+            "missing_records": parity_report["missing_record_count"],
+            "max_abs_error": parity_report["max_abs_error"],
+            "off_action_mismatches": parity_report["off_action_mismatches"],
+            "pass": False,
+        },
+        "pilot_verdict": "PILOT_FAIL_RUNTIME_STATE_PARITY",
+        "blocked_before_learned_controller": True,
+        "interpretation": (
+            "No learned-controller tracking metrics were produced because the "
+            "frozen OFF trace could not be reproduced from the mutated runtime state."
+        ),
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--device", default="cpu", choices=("cpu",))
@@ -750,7 +836,8 @@ def main() -> None:
         if args.max_frame is None:
             raise ValueError("--methods subsets require --max-frame smoke mode")
     selected_methods = {name: METHODS[name] for name in selected_names}
-    for name, relative in selected_methods.items():
+    def execute_method(name: str) -> None:
+        relative = selected_methods[name]
         checkpoint_path = None if relative is None else PILOT / relative
         if checkpoint_path is not None and not checkpoint_path.is_file():
             raise FileNotFoundError(checkpoint_path)
@@ -777,12 +864,58 @@ def main() -> None:
             max_frame=args.max_frame,
         )
         json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)
+
+    # In runtime mode, the OFF replay is the only method allowed to run
+    # before the parity gate.  Learned controllers must never get a chance to
+    # mutate state when the frozen formal trace itself is not reproducible.
+    if args.max_frame is None and args.feature_source == "runtime":
+        if selected_names != list(METHODS) or "gmt_off" not in selected_methods:
+            raise ValueError("full runtime mode requires the complete method set including gmt_off")
+        execute_method("gmt_off")
+        parity_report = finalize_feature_parity(
+            parity_report,
+            records,
+            raw["methods"]["gmt_off"]["counts"],
+        )
+        json_write(ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json", parity_report)
+        if not parity_report["pass"]:
+            raw["status"] = "BLOCKED_RUNTIME_STATE_PARITY"
+            raw["runtime_feature_parity_gate"] = parity_report
+            json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)
+            report = blocked_runtime_report(raw, parity_report)
+            json_write(
+                ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "RUNTIME_STATE_TRACKING.json",
+                report,
+            )
+            json_write(PILOT / "PILOT_TRACKING_THREE_WAY.json", report)
+            print(json.dumps(report, indent=2))
+            raise SystemExit("runtime pilot blocked by failed OFF state-feature parity gate")
+        for name in selected_names:
+            if name != "gmt_off":
+                execute_method(name)
+    else:
+        for name in selected_names:
+            execute_method(name)
     if args.max_frame is not None:
+        if "gmt_off" in raw["methods"]:
+            parity_report = finalize_feature_parity(
+                parity_report,
+                records,
+                raw["methods"]["gmt_off"]["counts"],
+            )
+            parity_report["scope"] = "bounded_smoke_probe"
+            parity_report["max_frame"] = int(args.max_frame)
+            json_write(
+                ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json",
+                parity_report,
+            )
+            raw["runtime_feature_parity_gate"] = parity_report
         raw["status"] = "SMOKE_ONLY"
         raw["max_frame"] = int(args.max_frame)
         json_write(PILOT / "PILOT_TRACKING_RAW_SMOKE.json", raw)
         print(json.dumps(raw, indent=2))
         return
+
     dataset_root = prepare_eval_dataset(subset_annotation)
     evaluations = {}
     for name in METHODS:
@@ -813,38 +946,15 @@ def main() -> None:
             "action_counts": item["counts"],
             "evaluation": evaluations[name],
         }
-    expected_keys = set(records)
-    missing_keys = sorted(expected_keys - parity_report["seen_record_keys"])
-    per_feature = []
-    for index, feature_name in enumerate(parity_report["feature_names"]):
-        count = int(parity_report["per_feature_count"][index])
-        per_feature.append(
-            {
-                "index": index,
-                "name": feature_name,
-                "count": count,
-                "max_abs_error": float(parity_report["per_feature_max_abs_error"][index]),
-                "mean_abs_error": (
-                    float(parity_report["per_feature_sum_abs_error"][index]) / count
-                    if count else None
-                ),
-            }
+    # Runtime mode was finalized and gated above.  Trace-debug mode reaches
+    # here only to produce a clearly labelled diagnostic tracking report.
+    if args.feature_source == "trace_debug":
+        parity_report = finalize_feature_parity(
+            parity_report,
+            records,
+            raw["methods"]["gmt_off"]["counts"],
         )
-    parity_report["missing_record_count"] = len(missing_keys)
-    parity_report["missing_record_keys_sample"] = [list(key) for key in missing_keys[:20]]
-    parity_report["mean_abs_error"] = (
-        float(parity_report["sum_abs_error"])
-        / max(1, int(parity_report["compared_records"]) * len(parity_report["feature_names"]))
-    )
-    parity_report["per_feature"] = per_feature
-    parity_report["pass"] = bool(
-        parity_report["expected_record_count"] == parity_report["compared_records"]
-        and parity_report["missing_record_count"] == 0
-        and parity_report["finite_runtime_records"] == parity_report["compared_records"]
-        and parity_report["max_abs_error"] <= parity_report["tolerance"]
-        and methods["gmt_off"]["action_counts"]["off_action_mismatches"] == 0
-    )
-    parity_report.pop("seen_record_keys", None)
+        json_write(ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json", parity_report)
     json_write(ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json", parity_report)
     report = {
         "status": "PASS",

@@ -35,6 +35,26 @@ trajectory tail remains raw evidence (`raw_traj_score`, mean, `log1p`,
 score-minus-threshold and score-over-threshold).  This preserves the existing
 checkpoint/training semantics.
 
+## Association RNG provenance
+
+The released GMT transformer currently assigns trajectory embedding slots with
+the process-global Python RNG on every association call.  This is part of the
+association implementation, not controller state.  A historical trace is
+therefore replayable only if it records the RNG seed/state or the exact slot
+mapping used for each window.  The existing H=8 trace does not record either.
+
+The v3 pilot sets `random.seed(20261003)` to make a new replay internally
+repeatable, but that cannot reconstruct the old process's unrecorded RNG
+stream.  The bounded probe consequently reports a parity failure (maximum
+feature error `2.4690799713134766` versus the `1e-6` gate) even though the OFF
+actions still match on that probe.  This is a provenance failure, not evidence
+that the mutable-state contract is correct.
+
+Until a trace with explicit association-RNG provenance is generated, runtime
+mode is fail-closed: it runs OFF only, writes the parity and divergence
+reports, and does not execute learned controllers or publish tracking metrics.
+`trace_debug` remains diagnostic-only and cannot bypass this runtime gate.
+
 ## GMT threshold contract
 
 `cfg.VIDEO_TEST.OVERLAP_THRESH` is the base threshold and is passed unchanged
@@ -86,7 +106,8 @@ The runtime pilot is valid only if the OFF branch passes all of these gates:
 `trace_debug` may substitute the saved vector for controller checkpoint
 debugging, but its tracking result is labelled `TRACE_DEBUG_ONLY`.  It is not
 evidence for a closed-loop claim.  Runtime mode always recomputes the vector
-from the mutated state and fails closed if the OFF gate is not satisfied.
+from the mutated state and fails closed if the OFF gate is not satisfied.  A
+short smoke pass is not a full-sequence parity pass.
 
 ## Required artifacts
 
