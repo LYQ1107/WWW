@@ -128,14 +128,14 @@ def main():
 
     def evaluate_in_order(order):
         outcomes = {}
+        shared_proposal = order_engine.propose(perception, source.clone())
         for action in order:
             branch = source.clone()
-            proposal = order_engine.propose(perception, branch)
             result = order_engine.step(
                 perception,
                 branch,
                 actions={0: action, 1: "ACCEPT_CURRENT"},
-                proposal=proposal,
+                proposal=shared_proposal,
             )
             outcomes[action] = {
                 "committed": dict(result["committed_track_ids"]),
@@ -156,6 +156,7 @@ def main():
         assert candidates_a[action]["pairs"] == candidates_b[action]["pairs"]
         assert torch.equal(candidates_a[action]["scores"], candidates_b[action]["scores"])
         assert candidates_a[action]["state"] == candidates_b[action]["state"]
+    assert order_association.calls == 2, "candidate actions did not share one proposal per order"
 
     # The action map insertion order cannot change the constrained proposal.
     actions_one = OrderedDict(((0, "REASSOCIATE"), (1, "ACCEPT_CURRENT")))

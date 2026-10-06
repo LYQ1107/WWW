@@ -151,14 +151,14 @@ def main() -> None:
 
     def candidate_order_results(order):
         results = {}
+        shared_proposal = order_engine.propose(payload, source.clone())
         for action in order:
             branch = source.clone()
-            proposal = order_engine.propose(payload, branch)
             result = order_engine.step(
                 payload,
                 branch,
                 actions={0: action, 1: "ACCEPT_CURRENT"},
-                proposal=proposal,
+                proposal=shared_proposal,
             )
             results[action] = {
                 "committed": dict(result["committed_track_ids"]),
@@ -186,6 +186,7 @@ def main() -> None:
             "transformer_calls_after_two_proposals": association.calls,
             "candidate_order_outcomes_equal": candidate_order_equal,
             "candidate_order_transformer_calls": order_association.calls,
+            "candidate_order_shared_proposal_permutation": order_association.calls == 2,
         },
     )
     final_left = order_left["final_proposal"]
