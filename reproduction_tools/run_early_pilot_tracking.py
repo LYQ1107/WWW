@@ -364,6 +364,27 @@ def run_method(
             state.association_history = state.association_history[-required_history:]
         proposal = engine.propose(payload, state)
         track_ids, scores = proposal.track_ids, proposal.scores
+        if os.environ.get("JEV_DEBUG_PROPOSALS") and frame <= 6:
+            print(
+                json.dumps(
+                    {
+                        "debug": "proposal",
+                        "key": [video_id, frame, view],
+                        "history": [
+                            [
+                                int(item["perception"]["frame"]),
+                                int(item["perception"]["view"]),
+                            ]
+                            for item in state.association_history
+                        ],
+                        "pairs": {str(row): int(col) for row, col in proposal.pairs.items()},
+                        "track_ids": [int(value) for value in track_ids],
+                        "scores": scores.tolist(),
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
         actions: Dict[int, str] = {}
         memories: Dict[int, str] = {}
         events_here = by_key.get((video_id, frame, view), ())
