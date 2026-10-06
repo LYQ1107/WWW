@@ -1,12 +1,15 @@
 # JEV counterfactual RNG isolation and REASSOCIATE semantics — v4
 
 Status: the v4 implementation gates pass, the first closed-loop pilot exposed a
-train/runtime state mismatch, and the corrected video6/video7 rebuild is now
-running. The 24-video canonical H=8 rebuild is not authorized yet.
+train/runtime state mismatch, and the 24-video canonical H=8 rebuild is not
+authorized yet. The original video1 small gate is complete; its corrected v4
+rebuild is now running for final parity.
 
-The active small-gate worker for video1 remains running on GPU6. It must not be
-stopped or migrated: its throughput is about 35 records/min, comparable to
-video6/video7 per record; it is slower only because it has 8,996 decisions.
+The original video1 small-gate worker was allowed to finish naturally on GPU6
+and was not stopped or migrated. It produced 8,996 atomic records at about 35
+records/min. A separate corrected v4 video1 worker now uses the same free GPU6
+only after that small gate completed; its output is the parity artifact, not a
+replacement for the historical small-gate record set.
 
 ## Scope and frozen inputs
 
@@ -106,20 +109,21 @@ corrected video6 records reduced the maximum feature error to `1.53e-5`, mean
 error to `9.74e-9`, with zero OFF action mismatches. The diagnostic is recorded
 in `reports/JEV_RNG_V4/TRAIN_RUNTIME_FEATURE_MISMATCH_DIAGNOSTIC.json`.
 
-The corrected full video6/video7 rebuild is isolated under
+An earlier corrected full video6/video7 rebuild is isolated under
 `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v3_canonical_features`
-and runs in parallel on GPU2/GPU3. The original video1 small-gate worker on
-GPU6 is unchanged.
+and remains separate from the completed small-gate artifacts. No new video6,
+video7, or repeat7 generation is required for the current gate.
 
 ## Early closed-loop pilot
 
 The pilot uses held-out video1 (`00002garden`) and the same frozen detector/ReID
 cache and formal GMT backend for GMT OFF, Threshold, MLP, and JEV. It is
 explicitly screening-only: the tracking trace is the preserved legacy trace,
-not a new v4 H=8 record set. There are currently zero new v4 records available
-for video1 while its builder is still running. The runtime state-feature parity
-gate is blocked (`expected_records=0`, `compared_records=0`, and 24 OFF action
-mismatches), so these metrics must not be treated as final paper results.
+not a new v4 H=8 record set. The bounded legacy smoke exercised four
+`REACTIVATION_DECISION` records (`REACTIVATE_OLD=0`, `START_NEW=63`) but failed
+legacy runtime feature parity (`expected_records=8790`, `compared_records=2297`,
+`missing_records=6493`, maximum error `1357.4833984375`). These metrics must not
+be treated as final paper results; corrected v4 parity is still pending.
 
 | Method | HOTA | AssA | IDF1 | MOTA | IDSW | Frag | ΔAssA |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -129,8 +133,8 @@ mismatches), so these metrics must not be treated as final paper results.
 | Full JEV | 86.1798 | 84.4984 | 93.0509 | 95.9044 | 4 | 6 | −0.6480 |
 
 These numbers are retained only as legacy-trace screening. Because the v4
-record parity gate had zero expected records and the runtime had no
-REACTIVATION coverage, the tracking result is
+record parity gate has not passed and this smoke is not the corrected v4
+artifact, the tracking result is
 `RUNTIME_PARITY_BLOCKED_INCONCLUSIVE_FOR_MODEL_SELECTION`; it is not model
 FAIL evidence.
 See `reports/JEV_RNG_V4/SMALL_H8_RUNTIME_TRACKING.json` and
@@ -140,11 +144,11 @@ See `reports/JEV_RNG_V4/SMALL_H8_RUNTIME_TRACKING.json` and
 
 `canonical_full_h8_rebuild_authorized = false`.
 
-Keep the current video1 small-gate builder running. Do not launch the 24-video
+Keep the corrected v4 video1 rebuild running. Do not launch the 24-video
 canonical H=8 rebuild yet. The immediate gates are:
 
-1. finish video1 without stopping or migrating its current worker;
-2. build the corrected v4 video1 artifact and run provenance/SHA plus the
+1. finish the corrected v4 video1 artifact without stopping or migrating it;
+2. run provenance/SHA plus the
    old-vs-new audit;
 3. pass v4 runtime feature parity and REACTIVATION coverage, then rerun the
    true closed-loop pilot with the already-trained checkpoints;
