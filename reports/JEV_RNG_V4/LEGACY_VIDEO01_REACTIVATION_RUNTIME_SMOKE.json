@@ -1,0 +1,39 @@
+{
+  "status": "SMOKE_ONLY",
+  "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
+  "created_utc": "2026-10-06T15:58:10.265443+00:00",
+  "video_id": 1,
+  "sequence": "00002garden",
+  "max_frame": 230,
+  "records_source": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v2/video_01/records.jsonl.tmp.28025",
+  "trace_source": "/home/liuyeqiang/WWW_jev_full_h8_runtime/partition/trace_by_video/video_01.jsonl",
+  "scope_note": "Read-only bounded smoke against the legacy temporary builder output. This is not v4 runtime parity and is not a model-selection result.",
+  "reactivation_coverage": {
+    "REACTIVATION_DECISION": 4,
+    "REACTIVATE_OLD": 0,
+    "START_NEW": 63,
+    "reactivation_candidate_evaluations": 4,
+    "reactivation_no_candidate": 55,
+    "reactivation_wrong_commit": 3,
+    "false_reactivation": 0.0,
+    "unsupported_reactivation": 0
+  },
+  "runtime_feature_parity": {
+    "schema_version": "jev_runtime_state_contract_v3",
+    "expected_record_count": 8790,
+    "compared_records": 2297,
+    "missing_record_count": 6493,
+    "finite_runtime_records": 2297,
+    "max_abs_error": 1357.4833984375,
+    "sum_abs_error": 271987.6638893932,
+    "off_action_mismatches": 4,
+    "pass": false,
+    "status": "FAIL",
+    "failure_reason": "LEGACY_TRACE_AND_LEGACY_TEMP_RECORDS_ARE_NOT_FINAL_V4_PARITY_TRUTH"
+  },
+  "interpretation": {
+    "reactivation_path_exercised": true,
+    "final_runtime_gate": "BLOCKED_PENDING_V4_VIDEO1_RUNTIME_PARITY",
+    "next_step": "Wait for video1 completion, validate corrected v4 records, then rerun full parity before learned closed-loop evaluation."
+  }
+}
