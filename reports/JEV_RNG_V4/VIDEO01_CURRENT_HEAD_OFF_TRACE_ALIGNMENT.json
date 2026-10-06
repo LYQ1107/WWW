@@ -46,6 +46,15 @@
     "comparison_off_action_mismatches": 24,
     "status": "COMPLETE"
   },
+  "legacy_builder_attempt": {
+    "output_root": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current/video_01",
+    "queue": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current_video01_queue.json",
+    "source_lines": 8996,
+    "status": "FAILED_EXPECTED_LEGACY_SEMANTICS",
+    "failure_key": [1, 216, 1],
+    "failure": "native reactivation events exist but mutable stale bank is empty",
+    "interpretation": "The legacy action/event layout is not replayable by the corrected mutable state; this artifact is not a corrected-data failure."
+  },
   "diagnosis": [
     "The current-head replay changes the decision/event layout at video1 boundaries, including reactivation events.",
     "The 24 action mismatches are a semantic provenance signal, not a floating-point tolerance issue.",
@@ -54,6 +63,7 @@
   "gates": {
     "legacy_video1_records_for_final_training": "BLOCKED",
     "legacy_video1_records_for_final_tracking": "BLOCKED",
+    "legacy_builder_attempt": "TERMINAL_FAILURE_DOCUMENTED",
     "current_head_video1_record_rebuild": "STARTED_IN_SEPARATE_OUTPUT_ROOT",
     "next_required": [
       "complete current-head video1 records",

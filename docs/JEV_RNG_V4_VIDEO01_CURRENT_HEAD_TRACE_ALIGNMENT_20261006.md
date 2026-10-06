@@ -27,7 +27,11 @@ records must pass provenance, exact three-question key parity, runtime feature
 parity, and reactivation candidate parity before they can enter compact dataset
 construction or policy training.
 
+The old GPU8 attempt has now reached a documented terminal failure at
+`(video=1, frame=216, view=1)`: the legacy trace requested a reactivation while
+the corrected mutable stale bank was empty. This confirms the legacy semantic
+mismatch; it is not evidence against the new current-head rebuild.
+
 The raw trace and its manifest are runtime artifacts outside Git. Their paths,
 SHA256 values, and all gate decisions are recorded in
 `reports/JEV_RNG_V4/VIDEO01_CURRENT_HEAD_OFF_TRACE_ALIGNMENT.json`.
-
