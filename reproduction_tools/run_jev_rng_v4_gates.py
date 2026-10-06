@@ -143,16 +143,49 @@ def main() -> None:
         actions={1: "ACCEPT_CURRENT", 0: "REASSOCIATE"},
         proposal=proposal_right,
     )
+    order_association = CountingFormalAssociation()
+    order_engine = CachedPerceptionMutableAssociationV2(
+        association_fn=order_association,
+        acceptance_threshold=-1.0,
+    )
+
+    def candidate_order_results(order):
+        results = {}
+        for action in order:
+            branch = source.clone()
+            proposal = order_engine.propose(payload, branch)
+            result = order_engine.step(
+                payload,
+                branch,
+                actions={0: action, 1: "ACCEPT_CURRENT"},
+                proposal=proposal,
+            )
+            results[action] = {
+                "committed": dict(result["committed_track_ids"]),
+                "pairs": dict(result["final_pairs"]),
+                "scores": result["final_scores"].tolist(),
+            }
+        return results
+
+    candidates_a = candidate_order_results(
+        ("ACCEPT_CURRENT", "REASSOCIATE", "START_NEW")
+    )
+    candidates_b = candidate_order_results(
+        ("START_NEW", "ACCEPT_CURRENT", "REASSOCIATE")
+    )
+    candidate_order_equal = candidates_a == candidates_b
     write(
         output_dir / "ACTION_ORDER_INVARIANCE.json",
         {
             **common,
-            "status": "PASS" if order_left["existing_track_ids"] == order_right["existing_track_ids"] else "FAIL",
+            "status": "PASS" if order_left["existing_track_ids"] == order_right["existing_track_ids"] and candidate_order_equal else "FAIL",
             "existing_track_ids_equal": order_left["existing_track_ids"] == order_right["existing_track_ids"],
             "score_matrix_equal": bool(torch.equal(proposal_left.scores, proposal_right.scores)),
             "mapping_digest_equal": proposal_left.trajectory_slot_mapping_digest == proposal_right.trajectory_slot_mapping_digest,
             "source_state_unchanged": _state_signature(source) == source_signature,
             "transformer_calls_after_two_proposals": association.calls,
+            "candidate_order_outcomes_equal": candidate_order_equal,
+            "candidate_order_transformer_calls": order_association.calls,
         },
     )
     final_left = order_left["final_proposal"]
