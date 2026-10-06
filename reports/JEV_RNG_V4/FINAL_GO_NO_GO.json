@@ -1,19 +1,19 @@
 {
   "answers": {
-    "canonical_rebuild": "NO-GO. Do not launch the 24-video canonical H8 rebuild yet; keep the current video1 small-gate worker running.",
+    "canonical_rebuild": "BLOCKED. Do not launch the 24-video canonical H8 rebuild yet; the legacy video1 small gate is complete, but corrected v4 video1 records and runtime parity are still pending.",
     "closed_loop_signal": "BLOCKED_PENDING_V4_VIDEO1_RUNTIME_PARITY; the legacy-trace Threshold/MLP/JEV numbers are screening-only and inconclusive for model selection.",
-    "data_reasonable": "Videos 6/7 v4 records pass schema/provenance and video7 repeats exactly; old-vs-new is screening-only because legacy RNG provenance is unavailable; video1 is still building.",
+    "data_reasonable": "Videos 6/7 and repeat7 small-gate artifacts are complete; the legacy video1 small gate has 8996 valid atomic records, while the corrected v4 video1 rebuild is now running for final parity.",
     "models_learn": "Offline optimization runs, but the first round is weak: JEV equals the majority baseline on validation utility and its margin over MLP is about 0.0091; this is not sufficient evidence.",
     "next_work": "Finish video1, build corrected v4 records, pass provenance/SHA, v4 runtime feature parity, and REACTIVATION coverage; only then run the true closed-loop comparison and decide whether a canonical rebuild is authorized.",
     "repeatable": "Yes for the completed video7 artifact: 3337/3337 exact canonical records, identical raw SHA, zero semantic deltas.",
-    "runtime_parity": "No final parity claim: the held-out video1 pilot used a preserved legacy trace, with 0 new v4 records available and 24 OFF action mismatches."
+    "runtime_parity": "No final parity claim: the bounded legacy video1 smoke exercised 4 REACTIVATION_DECISION records but failed legacy runtime feature parity; final v4 parity remains pending."
   },
   "canonical_baseline": "FROZEN_GMT_BASELINE_REUSED; no complete VISION_test baseline rerun",
   "canonical_full_h8_rebuild_authorized": false,
-  "created_utc": "2026-10-06T15:09:35.881251+00:00",
+  "created_utc": "2026-10-06T16:09:25.516130+00:00",
   "current_small_gate": {
     "repeat7": "COMPLETE_AND_EXACTLY_REPEATABLE",
-    "video1": "RUNNING_ON_GPU6_DO_NOT_STOP_OR_MIGRATE",
+    "video1": "LEGACY_SMALL_GATE_COMPLETE_8996; CORRECTED_V4_REBUILD_RUNNING_GPU6",
     "video6": "COMPLETE",
     "video7": "COMPLETE"
   },
@@ -28,7 +28,8 @@
       "jev_delta_hota": -0.342072716868671,
       "mlp_delta_ass_a": -45.51655819607266,
       "report": "reports/JEV_RNG_V4/SMALL_H8_RUNTIME_TRACKING.json",
-      "status": "BLOCKED",
+      "metrics_are_legacy_screening_only": true,
+      "status": "BLOCKED"
     },
     "intra_video_chunking_contract_probe": {
       "classification": "BOUNDED_CPU_CONTRACT_PROBE_NOT_FORMAL_GMT_AUTHORIZATION",
@@ -38,6 +39,13 @@
       "planned_chunks": 3,
       "probe_report": "reports/JEV_RNG_V4/INTRA_VIDEO_CHUNK_CONTRACT_EQUIVALENCE_VIDEO07.json",
       "status": "PASS"
+    },
+    "formal_gmt_intra_video_chunk_equivalence": {
+      "reference": "small_h8_rng_controlled_v2/video_07/records.jsonl",
+      "planned_chunks": 3,
+      "report": "reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07.json",
+      "status": "RUNNING",
+      "authorization": "NOT_AUTHORIZED_UNTIL_EXACT_EQUIVALENCE_PASS"
     },
     "offline_three_way": {
       "interpretation": "JEV beats the two learned controls by a tiny margin, but matches the majority-action baseline exactly; this is not a meaningful closed-loop authorization signal.",
@@ -58,12 +66,25 @@
       "status": "PASS"
     },
     "runtime_state_feature_parity": {
-      "compared_records": 0,
-      "expected_records": 0,
-      "off_action_mismatches": 24,
+      "compared_records": 2297,
+      "expected_records": 8790,
+      "missing_records": 6493,
+      "off_action_mismatches": 4,
+      "max_abs_error": 1357.4833984375,
       "pass": false,
       "report": "reports/JEV_RUNTIME_STATE_V3/STATE_FEATURE_PARITY.json",
       "status": "BLOCKED_PENDING_V4_VIDEO1_RUNTIME_PARITY"
+    },
+    "video1_legacy_small_gate_validation": {
+      "records": 8996,
+      "records_sha256": "sha256:541a788bce77042b540c62b61e8e798a1bacc9ea5dc835a4106fda915cc7ab7d",
+      "records_by_question": {
+        "MATCH_DECISION": 4524,
+        "MEMORY_DECISION": 4305,
+        "REACTIVATION_DECISION": 167
+      },
+      "report": "reports/JEV_RNG_V4/VIDEO01_LEGACY_SMALL_GATE_VALIDATION.json",
+      "status": "PASS_SCREENING_ONLY_LEGACY_FEATURE_SCHEMA"
     },
     "synthetic_repeatability": {
       "report": "reports/JEV_RNG_V4/REPEATABILITY.json",
