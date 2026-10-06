@@ -110,7 +110,11 @@ class Transformer(nn.Module):
 
             mapping = _trajectory_slot_mapping(match_cues)
 
-            emb_ids = torch.tensor([mapping.get(int(x), 400) for x in match_cues], dtype=torch.long).cuda()
+            emb_ids = torch.tensor(
+                [mapping.get(int(x), 400) for x in match_cues],
+                dtype=torch.long,
+                device=src.device,
+            )
             emb_tensor = self.traj_emb(emb_ids).unsqueeze(1)
 
             ###########自注意力，聚特征#########
@@ -142,7 +146,11 @@ class Transformer(nn.Module):
 
             mapping = _trajectory_slot_mapping(match_cues)
 
-            emb_ids = torch.tensor([mapping.get(int(x), 400) for x in match_cues], dtype=torch.long).cuda()
+            emb_ids = torch.tensor(
+                [mapping.get(int(x), 400) for x in match_cues],
+                dtype=torch.long,
+                device=src.device,
+            )
             emb_tensor = self.traj_emb(emb_ids).unsqueeze(1)
             ###########自注意力，聚特征#########
             traj_feature = self.encoder(

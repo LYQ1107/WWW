@@ -1,0 +1,355 @@
+{
+  "baselines": {
+    "majority_action": {
+      "best_action_accuracy": 0.9948689756276342,
+      "random_uniform_expected_utility": 40.93001343839856,
+      "records": 5457,
+      "validation_utility": 41.08150082462892,
+      "weighted_records": 5457.0
+    },
+    "majority_by_question": {
+      "MATCH_DECISION": "ACCEPT_CURRENT",
+      "MEMORY_DECISION": "SKIP_MEMORY",
+      "REACTIVATION_DECISION": "REACTIVATE_OLD"
+    },
+    "random_uniform": {
+      "best_action_accuracy": 0.6815710707959427,
+      "policy": "uniform over legal actions",
+      "records": 5457,
+      "validation_utility": 40.93001343839856,
+      "weighted_records": 5457.0
+    }
+  },
+  "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
+  "created_utc": "2026-10-06T05:36:23.236547+00:00",
+  "dataset": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/PILOT_POLICY.jsonl",
+  "gate": {
+    "jev_beats_mlp_on_validation_utility": false,
+    "jev_beats_threshold_on_validation_utility": true,
+    "pilot_offline_signal": false
+  },
+  "methods": {
+    "jev": {
+      "checkpoint": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/offline/jev/model.pth",
+      "label": "Full JEV",
+      "seed": 20261003,
+      "training": {
+        "batch_size": 256,
+        "device": "cpu",
+        "epochs": 10,
+        "learning_rate": 0.001,
+        "loss_curve": [
+          {
+            "epoch": 1,
+            "train_loss": 0.8679116749093507,
+            "val_nll": 0.9082466670504328
+          },
+          {
+            "epoch": 2,
+            "train_loss": 0.8661842938778131,
+            "val_nll": 0.9083248473292899
+          },
+          {
+            "epoch": 3,
+            "train_loss": 0.865663946803734,
+            "val_nll": 0.9042889480300716
+          },
+          {
+            "epoch": 4,
+            "train_loss": 0.865295918087813,
+            "val_nll": 0.9000212195834026
+          },
+          {
+            "epoch": 5,
+            "train_loss": 0.865184612792042,
+            "val_nll": 0.9035949970702888
+          },
+          {
+            "epoch": 6,
+            "train_loss": 0.8648818219782678,
+            "val_nll": 0.9080213810992542
+          },
+          {
+            "epoch": 7,
+            "train_loss": 0.8645801562745611,
+            "val_nll": 0.9067549503327988
+          },
+          {
+            "epoch": 8,
+            "train_loss": 0.8644792669419766,
+            "val_nll": 0.9035319108130273
+          },
+          {
+            "epoch": 9,
+            "train_loss": 0.8643702956181962,
+            "val_nll": 0.895369003931856
+          },
+          {
+            "epoch": 10,
+            "train_loss": 0.8641094217459161,
+            "val_nll": 0.9007620979888942
+          }
+        ],
+        "optimizer": "AdamW"
+      },
+      "validation": {
+        "accuracy": 0.9780098955470038,
+        "action_distribution": {
+          "ACCEPT_CURRENT": 0.4727872457394173,
+          "REACTIVATE_OLD": 0.01191130657870625,
+          "REASSOCIATE": 0.006413780465457211,
+          "SKIP_MEMORY": 0.4771852666300165,
+          "START_NEW": 0.025655121861828844,
+          "WRITE_MEMORY": 0.006047278724573941
+        },
+        "best_action_distribution": {
+          "ACCEPT_CURRENT": 0.5011911306578706,
+          "REACTIVATE_OLD": 0.01191130657870625,
+          "REASSOCIATE": 0.003115264797507788,
+          "SKIP_MEMORY": 0.4817665383910574,
+          "START_NEW": 0.0005497526113249038,
+          "WRITE_MEMORY": 0.0014660069635330768
+        },
+        "brier": 0.012484820590814545,
+        "ece": 1.0143172345647273,
+        "mechanism": {
+          "contamination_duration": 0.0,
+          "false_reactivation": 0.01191130657870625,
+          "future_collisions": 0.0,
+          "future_correct_identity_duration": 41.88949972512369,
+          "future_events": 41.890415979475904,
+          "future_fragmentation": 3.249770936411948,
+          "future_identity_switches": 0.000916254352208173,
+          "informative": 1.0,
+          "memory_contamination": 0.0,
+          "new_id_fragmentation": 1.6397287887117464,
+          "recovery_latency": 0.0,
+          "utility": 41.0765988638446,
+          "window_assa_proxy": 0.9999780897434207,
+          "window_idf1": 0.9999780897434207
+        },
+        "nll": 0.9007620982615712,
+        "oracle_best_utility": 41.08521165475536,
+        "records": 5457,
+        "val_utility": 41.0765988638446,
+        "weighted_records": 5457.0
+      }
+    },
+    "question_conditioned_mlp": {
+      "checkpoint": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/offline/question_conditioned_mlp/model.pth",
+      "label": "Generic MLP",
+      "seed": 20261003,
+      "training": {
+        "batch_size": 256,
+        "device": "cpu",
+        "epochs": 10,
+        "learning_rate": 0.001,
+        "loss_curve": [
+          {
+            "epoch": 1,
+            "train_loss": 0.9238897486999409,
+            "val_nll": 0.9060735115861639
+          },
+          {
+            "epoch": 2,
+            "train_loss": 0.882214323721603,
+            "val_nll": 0.9111578917577631
+          },
+          {
+            "epoch": 3,
+            "train_loss": 0.8722227443175775,
+            "val_nll": 0.9076514202901377
+          },
+          {
+            "epoch": 4,
+            "train_loss": 0.8742174263865159,
+            "val_nll": 0.9204500721928311
+          },
+          {
+            "epoch": 5,
+            "train_loss": 0.8694217676248842,
+            "val_nll": 0.8998387727039254
+          },
+          {
+            "epoch": 6,
+            "train_loss": 0.8696968547515512,
+            "val_nll": 0.9093404153076222
+          },
+          {
+            "epoch": 7,
+            "train_loss": 0.8696500941546744,
+            "val_nll": 0.9181765051405356
+          },
+          {
+            "epoch": 8,
+            "train_loss": 0.8667726910104724,
+            "val_nll": 0.8995052674696169
+          },
+          {
+            "epoch": 9,
+            "train_loss": 0.867235183141955,
+            "val_nll": 0.8990511430015445
+          },
+          {
+            "epoch": 10,
+            "train_loss": 0.8654289631642029,
+            "val_nll": 0.8998312581059521
+          }
+        ],
+        "optimizer": "AdamW"
+      },
+      "validation": {
+        "accuracy": 0.9897379512552684,
+        "action_distribution": {
+          "ACCEPT_CURRENT": 0.4867143118929815,
+          "REACTIVATE_OLD": 0.01191130657870625,
+          "SKIP_MEMORY": 0.18709913872090891,
+          "START_NEW": 0.018141836173721827,
+          "WRITE_MEMORY": 0.2961334066336815
+        },
+        "best_action_distribution": {
+          "ACCEPT_CURRENT": 0.5011911306578706,
+          "REACTIVATE_OLD": 0.01191130657870625,
+          "REASSOCIATE": 0.003115264797507788,
+          "SKIP_MEMORY": 0.4817665383910574,
+          "START_NEW": 0.0005497526113249038,
+          "WRITE_MEMORY": 0.0014660069635330768
+        },
+        "brier": 0.012880936747509668,
+        "ece": 1.0130319732087902,
+        "mechanism": {
+          "contamination_duration": 0.0,
+          "false_reactivation": 0.01191130657870625,
+          "future_collisions": 0.0,
+          "future_correct_identity_duration": 41.890415979475904,
+          "future_events": 41.890415979475904,
+          "future_fragmentation": 3.2435404068169325,
+          "future_identity_switches": 0.0,
+          "informative": 1.0,
+          "memory_contamination": 0.0,
+          "new_id_fragmentation": 1.6397287887117464,
+          "recovery_latency": 0.0,
+          "utility": 41.07953087777167,
+          "window_assa_proxy": 1.0,
+          "window_idf1": 1.0
+        },
+        "nll": 0.8998312804746336,
+        "oracle_best_utility": 41.08521165475536,
+        "records": 5457,
+        "val_utility": 41.07953087777167,
+        "weighted_records": 5457.0
+      }
+    },
+    "question_threshold": {
+      "checkpoint": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/offline/question_threshold/model.pth",
+      "label": "Learnable Threshold",
+      "seed": 20261003,
+      "training": {
+        "batch_size": 256,
+        "device": "cpu",
+        "epochs": 10,
+        "learning_rate": 0.001,
+        "loss_curve": [
+          {
+            "epoch": 1,
+            "train_loss": 0.9931186902921795,
+            "val_nll": 1.0031275858869477
+          },
+          {
+            "epoch": 2,
+            "train_loss": 0.9478369411023696,
+            "val_nll": 0.955125901863779
+          },
+          {
+            "epoch": 3,
+            "train_loss": 0.9430347387606736,
+            "val_nll": 0.9541987031943986
+          },
+          {
+            "epoch": 4,
+            "train_loss": 0.9413300402145071,
+            "val_nll": 0.9555042231172481
+          },
+          {
+            "epoch": 5,
+            "train_loss": 0.9399369957701937,
+            "val_nll": 0.9562902322220938
+          },
+          {
+            "epoch": 6,
+            "train_loss": 0.938163498120736,
+            "val_nll": 0.9544489438310525
+          },
+          {
+            "epoch": 7,
+            "train_loss": 0.9367273346531172,
+            "val_nll": 0.954105126272306
+          },
+          {
+            "epoch": 8,
+            "train_loss": 0.939009000837696,
+            "val_nll": 0.9589873392524705
+          },
+          {
+            "epoch": 9,
+            "train_loss": 0.9368851092300342,
+            "val_nll": 0.9552760782074924
+          },
+          {
+            "epoch": 10,
+            "train_loss": 0.9366540465414006,
+            "val_nll": 0.9538586185116984
+          }
+        ],
+        "optimizer": "AdamW"
+      },
+      "validation": {
+        "accuracy": 0.976910390324354,
+        "action_distribution": {
+          "ACCEPT_CURRENT": 0.4766355140186916,
+          "REACTIVATE_OLD": 0.01191130657870625,
+          "REASSOCIATE": 0.00678028220634048,
+          "START_NEW": 0.021440351841671246,
+          "WRITE_MEMORY": 0.4832325453545904
+        },
+        "best_action_distribution": {
+          "ACCEPT_CURRENT": 0.5011911306578706,
+          "REACTIVATE_OLD": 0.01191130657870625,
+          "REASSOCIATE": 0.003115264797507788,
+          "SKIP_MEMORY": 0.4817665383910574,
+          "START_NEW": 0.0005497526113249038,
+          "WRITE_MEMORY": 0.0014660069635330768
+        },
+        "brier": 0.06264706907628174,
+        "ece": 0.795173382199857,
+        "mechanism": {
+          "contamination_duration": 0.0,
+          "false_reactivation": 0.01191130657870625,
+          "future_collisions": 0.0,
+          "future_correct_identity_duration": 41.89023272860546,
+          "future_events": 41.890415979475904,
+          "future_fragmentation": 3.2545354590434306,
+          "future_identity_switches": 0.0001832508704416346,
+          "informative": 1.0,
+          "memory_contamination": 0.0,
+          "new_id_fragmentation": 1.6397287887117464,
+          "recovery_latency": 0.0,
+          "utility": 41.076507238409384,
+          "window_assa_proxy": 0.9999966064653623,
+          "window_idf1": 0.9999966064653623
+        },
+        "nll": 0.9538586855630687,
+        "oracle_best_utility": 41.08521165475536,
+        "records": 5457,
+        "val_utility": 41.076507238409384,
+        "weighted_records": 5457.0
+      }
+    }
+  },
+  "official_test_read": false,
+  "policy_split": "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot/PILOT_POLICY_SPLIT.json",
+  "seed": 20261003,
+  "status": "PASS",
+  "train_records": 100957,
+  "val_records": 5457
+}
