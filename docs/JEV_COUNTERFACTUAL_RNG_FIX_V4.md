@@ -188,7 +188,8 @@ an orchestration test only. The formal-GMT 3-chunk run completed with
 `3337/3337` semantic keys and valid contiguous ranges, but failed exact
 equivalence against the existing `small_h8_rng_controlled_v2/video_07`
 reference: raw canonical matches were `0/3337`, state features differed on
-`3337/3337`, and the trace provenance hashes were not equal. This is a
+`3337/3337`; the shared partition/range/RNG provenance checks pass, but the
+legacy source commit and feature schema differ. This is a
 data-generation/chunk-reference failure, not evidence that Threshold, MLP, or
 JEV failed. The result is recorded in
 `reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07.json`,

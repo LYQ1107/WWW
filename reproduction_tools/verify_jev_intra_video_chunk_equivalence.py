@@ -72,7 +72,13 @@ def compare_provenance(single_manifest, chunk_manifests, warmup_manifest):
         return {
             "association_backend": manifest.get("association_backend"),
             "checkpoint_sha256": manifest.get("gmt_checkpoint_sha256", manifest.get("checkpoint_sha256")),
-            "trace_sha256": manifest.get("source_trace_sha256", manifest.get("trace_sha256")),
+            # Single-worker manifests retain both the full-trace hash and the
+            # per-video partition hash.  Chunk manifests necessarily carry
+            # the latter; compare like-for-like provenance here.
+            "trace_sha256": manifest.get(
+                "trace_partition_sha256",
+                manifest.get("trace_sha256", manifest.get("source_trace_sha256")),
+            ),
             "order_index_sha256": manifest.get("source_order_index_sha256", manifest.get("order_index_sha256")),
             "cache_index_sha256": manifest.get("cache_index_sha256"),
         }
