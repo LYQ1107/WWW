@@ -47,5 +47,19 @@
     "failed_video01_partial_files": "preserved; not deleted or overwritten",
     "official_full_tracking": "not started"
   },
-  "next_step": "Reset only the confirmed FAILED video01 queue entry and relaunch video01 on GPU8 with source commit f2e9c16."
+  "next_step": "Monitor the corrected video01 worker; after its COMPLETE manifest, run the existing provenance, candidate-parity, and runtime-feature-parity waiters.",
+  "relaunch": {
+    "queue_reset_scope": "video_id=1 only",
+    "queue_status": "RUNNING",
+    "pid": 8960,
+    "worker": "current-head-video01-dynamic-window-cache-fix-gpu8",
+    "cuda_visible_devices": "8",
+    "source_commit": "c9ef897",
+    "started_utc": "2026-10-06T21:29:13.901343+00:00",
+    "log": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/video01_dynamic_window_cache_fix_c9ef897.log",
+    "preserved_previous_temporary_files": [
+      "records.jsonl.tmp.29780",
+      "records.jsonl.failed_stale_bank_40926"
+    ]
+  }
 }
