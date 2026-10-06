@@ -130,8 +130,9 @@ Full H=8 partition.
 ## Live continuation update — 23:02 UTC
 
 The current branch is
-`jev/counterfactual-rng-isolation-v4-20261006` at pushed HEAD `16b5bc3`,
-which is a descendant of the requested `13a0c679` source gate. The strict
+`jev/counterfactual-rng-isolation-v4-20261006` at pushed HEAD `947a951`
+(the official runner was added in `16b5bc3`), which is a descendant of the
+requested `13a0c679` source gate. The strict
 same-code formal single/chunk equivalence report is `PASS`; the authorized
 supervisor has consequently launched the production 24-video Full H=8
 scheduler using the locked partition with `1,112,173` main decisions.
