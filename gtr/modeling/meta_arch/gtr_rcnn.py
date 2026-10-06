@@ -22,7 +22,7 @@ from ..jev_state import (
     legacy_acceptance_threshold,
 )
 from ..jev_assignment import constrained_hungarian
-from ..jev_perception_cache import FrozenPerceptionCacheWriter
+from ..jev_perception_cache import FrozenPerceptionCache, FrozenPerceptionCacheWriter
 from tqdm import tqdm
 import time
 import copy
@@ -81,6 +81,14 @@ class GTRRCNN(CustomRCNN):
         cache_path = os.environ.get('JEV_PERCEPTION_CACHE_PATH', '').strip()
         self.jev_perception_cache = (
             FrozenPerceptionCacheWriter(cache_path) if cache_path else None
+        )
+        # A native GMT trace can be replayed against the exact immutable
+        # detector/ReID source used by the mutable formal runner.  This is a
+        # read-only diagnostic path and is deliberately separate from the
+        # writer above so a trace run cannot overwrite canonical cache files.
+        cache_read_path = os.environ.get('JEV_PERCEPTION_CACHE_READ_PATH', '').strip()
+        self.jev_perception_cache_reader = (
+            FrozenPerceptionCache(cache_read_path) if cache_read_path else None
         )
         if self.jev_enabled:
             if self.jev_mode != 'off' and not self.jev_controller_weights:
@@ -698,12 +706,40 @@ class GTRRCNN(CustomRCNN):
             for view in range(view_num):
                 self._jev_context['view'] = int(view)
                 time_per[2] = time[2][st]
-                instances_wo_id += self.inference(
-                    batched_inputs[st: st + 1],
-                    view_num,
-                    time_per,
-                    view,
-                    do_postprocess=False)
+                if self.jev_perception_cache_reader is not None:
+                    cached = self.jev_perception_cache_reader.load(
+                        int(batched_inputs[st].get('video_id', -1)),
+                        int(frame_id),
+                        int(view),
+                    )
+                    cached_instances = Instances(
+                        tuple(int(value) for value in cached['image_size'])
+                    )
+                    cached_instances.pred_boxes = Boxes(
+                        torch.as_tensor(
+                            cached['pred_boxes'],
+                            dtype=torch.float32,
+                            device=self.device,
+                        )
+                    )
+                    cached_instances.scores = torch.as_tensor(
+                        cached['detection_scores'],
+                        dtype=torch.float32,
+                        device=self.device,
+                    )
+                    cached_instances.reid_features = torch.as_tensor(
+                        cached['reid_features'],
+                        dtype=torch.float32,
+                        device=self.device,
+                    )
+                    instances_wo_id.append(cached_instances)
+                else:
+                    instances_wo_id += self.inference(
+                        batched_inputs[st: st + 1],
+                        view_num,
+                        time_per,
+                        view,
+                        do_postprocess=False)
                 if self.jev_perception_cache is not None:
                     cache_input = batched_inputs[st]
                     self.jev_perception_cache.write(
