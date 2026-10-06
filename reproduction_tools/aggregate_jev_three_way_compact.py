@@ -98,6 +98,71 @@ def validation_metrics(data: CompactJEVData, indices: np.ndarray, probabilities:
     }
 
 
+def action_baseline_metrics(
+    data: CompactJEVData,
+    train_indices: np.ndarray,
+    val_indices: np.ndarray,
+) -> Dict[str, Any]:
+    """Report non-learned references on held-out sequences.
+
+    The majority policy is fitted only from policy-training sequences.  The
+    uniform policy is reported as an expectation over legal actions, so it
+    does not depend on a process-global random stream.
+    """
+    counts: Dict[int, Dict[int, float]] = {}
+    for index in np.asarray(train_indices, dtype=np.int64):
+        if float(data.sample_weight[index]) <= 0:
+            continue
+        question = int(data.questions[index])
+        row = counts.setdefault(question, {})
+        legal = np.asarray(data.legal_actions[index])
+        best = np.asarray(data.best_mask[index])
+        for action_id in legal[legal >= 0]:
+            if bool(best[int(action_id)]):
+                row[int(action_id)] = row.get(int(action_id), 0.0) + float(data.sample_weight[index])
+
+    methods: Dict[str, Dict[str, Any]] = {}
+    utility_index = OUTCOME_FIELDS.index("utility")
+    for mode in ("majority_action", "uniform_legal_action"):
+        total_weight = 0.0
+        correct = 0.0
+        utility = 0.0
+        action_distribution: Dict[str, float] = {}
+        for index in np.asarray(val_indices, dtype=np.int64):
+            weight = float(data.sample_weight[index])
+            if weight <= 0:
+                continue
+            legal = [int(value) for value in np.asarray(data.legal_actions[index]) if int(value) >= 0]
+            if not legal:
+                continue
+            if mode == "majority_action":
+                question_counts = counts.get(int(data.questions[index]), {})
+                chosen = max(legal, key=lambda action: (question_counts.get(action, 0.0), -action))
+                choices = [chosen]
+            else:
+                choices = legal
+            best = np.asarray(data.best_mask[index])
+            outcomes = np.asarray(data.outcomes[index], dtype=np.float64)
+            correct += weight * sum(float(best[action]) for action in choices) / len(choices)
+            utility += weight * sum(float(outcomes[action, utility_index]) for action in choices) / len(choices)
+            for action in choices:
+                name = data.manifest["action_names"][action]
+                action_distribution[name] = action_distribution.get(name, 0.0) + weight / len(choices)
+            total_weight += weight
+        methods[mode] = {
+            "records": int(len(val_indices)),
+            "weighted_records": total_weight,
+            "best_action_accuracy": correct / max(total_weight, 1e-8),
+            "val_utility": utility / max(total_weight, 1e-8),
+            "action_distribution": {
+                name: value / max(total_weight, 1e-8)
+                for name, value in sorted(action_distribution.items())
+            },
+            "fit_scope": "policy_train_sequences" if mode == "majority_action" else "none",
+        }
+    return methods
+
+
 def sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -137,6 +202,18 @@ def write_first_round_markdown(report: Mapping[str, Any], path: Path) -> None:
         f"`jev_beats_both_on_val_utility = {report['jev_beats_both_on_val_utility']}`.",
         "The full tracking comparison is authorized only when this single-seed gate is true.",
         "",
+        "## Non-learned validation references",
+        "",
+        "| Reference | Best-action Accuracy | Validation Utility |",
+        "|---|---:|---:|",
+    ]
+    for name, baseline in report["baselines"].items():
+        lines.append(
+            f"| {name} | {baseline['best_action_accuracy']:.6f} | "
+            f"{baseline['val_utility']:.6f} |"
+        )
+    lines += [
+        "",
         "## Reproducibility",
         "",
         f"- Shared dataset: `{report['dataset']}` (SHA-256 `{report['dataset_sha256']}`).",
@@ -157,17 +234,21 @@ def main() -> None:
     args = parser.parse_args()
     data = CompactJEVData(args.dataset.resolve())
     split = load_policy_split(args.split_manifest.resolve())
+    train_indices = data.indices_for_sequences(split["train"])
+    train_indices = train_indices[np.asarray(data.sample_weight[train_indices]) > 0]
     val_indices = data.indices_for_sequences(split["val"])
     val_indices = val_indices[np.asarray(data.sample_weight[val_indices]) > 0]
     if len(val_indices) == 0:
         raise ValueError("validation split has no positive-weight compact records")
 
     report_methods: Dict[str, Any] = {}
+    training_configs = []
     for method, label in METHODS.items():
         root = args.methods_root.resolve() / method
         manifest = json.loads((root / "method_manifest.json").read_text(encoding="utf-8"))
         if manifest.get("status") != "PASS" or list(manifest.get("seeds", ())) != list(SEEDS):
             raise ValueError(f"method manifest incomplete: {root}")
+        training_configs.append(dict(manifest["training"]))
         seed_metrics = []
         for member in manifest["members"]:
             controller = build_controller_from_checkpoint(member["calibrated_checkpoint"], device="cpu")
@@ -196,6 +277,13 @@ def main() -> None:
         if item["relative_param_difference"] >= 0.02:
             raise ValueError(f"parameter matching gate failed for {item['label']}")
     jev_utility = report_methods["jev"]["validation"]["val_utility"]
+    shared_training_fields = ("epochs", "batch_size", "optimizer", "learning_rate")
+    if any(
+        any(config.get(field) != training_configs[0].get(field) for field in shared_training_fields)
+        for config in training_configs[1:]
+    ):
+        raise ValueError("three-way methods do not share the locked training configuration")
+    baselines = action_baseline_metrics(data, train_indices, val_indices)
     manifest_path = args.dataset.resolve() / "manifest.json"
     report = {
         "status": "PASS",
@@ -209,8 +297,15 @@ def main() -> None:
         "seeds": list(SEEDS),
         "seed_policy": "TEMPORARILY_DISABLED_MULTI_SEED",
         "multi_seed_robustness": "deferred_until_after_first_round_gate",
-        "training": {"epochs": 50, "batch_size": 128, "optimizer": "AdamW", "learning_rate": 1e-3, "calibration": "temperature_scaling_policy_val_only"},
+        "training": {
+            **{field: training_configs[0][field] for field in shared_training_fields},
+            "calibration": "temperature_scaling_policy_val_only",
+            "hidden_dim_by_method": {
+                method: int(report_methods[method]["hidden_dim"]) for method in report_methods
+            },
+        },
         "methods": report_methods,
+        "baselines": baselines,
         "jev_beats_both_on_val_utility": bool(
             jev_utility > report_methods["question_threshold"]["validation"]["val_utility"]
             and jev_utility > report_methods["question_conditioned_mlp"]["validation"]["val_utility"]
