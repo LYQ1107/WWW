@@ -9,7 +9,8 @@ from jev_gmt_association_adapter import GMTAssociationTransformerAdapter
 
 class FakeROIHeads:
     def _forward_transformer(self, instances, reid_features, view_num, query_frame,
-                             target_box, target_time, target_inst_id):
+                             target_box, target_time, target_inst_id,
+                             trajectory_rng=None):
         # One current row and two historical columns.  Native inference has
         # already removed the current query columns before this return.
         return [torch.zeros((1, 2))], None, None, None, None, None
@@ -51,12 +52,16 @@ def main():
             {"perception": second, "assignments": {0: 2}},
         ]
     )
+    state.initialize_trajectory_rng(8)
     adapter = GMTAssociationTransformerAdapter(FakeModel(), view_num=2, history_limit=8)
-    scores = adapter(current, (1, 2), state)
+    result = adapter(current, (1, 2), state)
+    scores = result.scores
     # Each historical slice is softmaxed with its own dummy unmatched column:
     # 1 / (1 + 1), not one softmax over both slices (1 / (2 + 1)).
     assert scores.shape == (1, 2)
     assert torch.allclose(scores, torch.full((1, 2), 1.0 / 2.0), atol=1e-7)
+    assert result.transformer_calls == 1
+    assert result.rng_state_before == result.rng_state_after
     print("GMT association adapter slice-normalization invariant: PASS")
 
 

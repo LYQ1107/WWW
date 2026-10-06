@@ -479,7 +479,7 @@ class GTRROIHeads(CascadeROIHeads):
             for x in asso_outputs:
                 asso_loss += self.detr_asso_loss(x, asso_gt, match_cues, n_t)
             return {'loss_asso': self.asso_weight * asso_loss}
-    def _forward_transformer(self, proposals, reid_features,view_num, query_frame=None, target_box=None, target_time=None, target_inst_id=None):
+    def _forward_transformer(self, proposals, reid_features, view_num, query_frame=None, target_box=None, target_time=None, target_inst_id=None, trajectory_rng=None):
         T = len(proposals)
         n_t = [len(x) for x in proposals]
 
@@ -518,7 +518,8 @@ class GTRROIHeads(CascadeROIHeads):
             match_cues =target_inst_id
         feats, memory = self.transformer(
             reid_features, pos_embed=pos_emb, query_embed=query,
-            query_inds=query_inds,match_cues=match_cues)
+            query_inds=query_inds, match_cues=match_cues,
+            trajectory_rng=trajectory_rng)
 
         if not self.training:
             N=N-M

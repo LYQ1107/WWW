@@ -10,6 +10,8 @@ backend is a deterministic contract-test backend, not a replacement for GMT.
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
 from dataclasses import dataclass, field
 from typing import Callable, Dict, Iterable, List, Mapping, MutableMapping, Optional, Sequence, Set, Tuple
 
@@ -18,9 +20,51 @@ import torch
 from gtr.modeling.jev_assignment import constrained_hungarian
 from gtr.modeling.jev_perception_cache import CACHE_VERSION
 from gtr.modeling.jev_state import count_track_history, legacy_acceptance_threshold
+from gtr.modeling.roi_heads.transformer import TrajectoryRandom
 
 
 ENGINE_VERSION = "cached_perception_mutable_association_v2"
+TRAJECTORY_RNG_POLICY = "branch_local_explicit_python_random_v1"
+TRAJECTORY_RNG_MASTER_SEED = 20261006
+
+
+def trajectory_rng_seed_for_video(
+    video_id: int,
+    *,
+    master_seed: int = TRAJECTORY_RNG_MASTER_SEED,
+) -> int:
+    """Derive a stable per-video stream without using process state.
+
+    The formal replay protocol deliberately keeps this mapping simple and
+    auditable: changing worker/GPU/PID or action evaluation order cannot change
+    a video's initial trajectory RNG stream.
+    """
+
+    return int(master_seed) + int(video_id)
+
+
+def _empty_trajectory_mapping_digest() -> str:
+    payload = json.dumps([], separators=(",", ":")).encode("utf-8")
+    return "sha256:" + hashlib.sha256(payload).hexdigest()
+
+
+def proposal_state_for_output(state: object) -> object:
+    """Convert Python ``random`` state tuples to JSON-safe provenance."""
+
+    if state is None:
+        return None
+    return json.loads(json.dumps(state))
+
+
+@dataclass(frozen=True)
+class AssociationScoreResult:
+    """Association scores plus the explicit RNG provenance for one proposal."""
+
+    scores: torch.Tensor
+    rng_state_before: object = None
+    rng_state_after: object = None
+    trajectory_slot_mapping_digest: Optional[str] = None
+    transformer_calls: int = 0
 
 
 @dataclass
@@ -36,6 +80,24 @@ class MutableGMTState:
     assignments: Dict[str, int] = field(default_factory=dict)
     counters: Dict[str, int] = field(default_factory=dict)
     association_history: List[Mapping[str, object]] = field(default_factory=list)
+    trajectory_rng_state: Optional[object] = None
+    trajectory_rng_seed: Optional[int] = None
+    trajectory_rng_calls: int = 0
+
+    def initialize_trajectory_rng(
+        self,
+        video_id: int,
+        *,
+        master_seed: int = TRAJECTORY_RNG_MASTER_SEED,
+    ) -> "MutableGMTState":
+        """Initialize the video's branch-local trajectory-slot RNG."""
+
+        seed = trajectory_rng_seed_for_video(video_id, master_seed=master_seed)
+        rng = TrajectoryRandom(seed)
+        self.trajectory_rng_seed = int(seed)
+        self.trajectory_rng_state = copy.deepcopy(rng.getstate())
+        self.trajectory_rng_calls = 0
+        return self
 
     def clone(self) -> "MutableGMTState":
         """Copy mutable tracker state while sharing frozen perception payloads.
@@ -71,6 +133,13 @@ class MutableGMTState:
             assignments=dict(self.assignments),
             counters={str(key): int(value) for key, value in self.counters.items()},
             association_history=history,
+            trajectory_rng_state=copy.deepcopy(self.trajectory_rng_state),
+            trajectory_rng_seed=(
+                None
+                if self.trajectory_rng_seed is None
+                else int(self.trajectory_rng_seed)
+            ),
+            trajectory_rng_calls=int(self.trajectory_rng_calls),
         )
 
 
@@ -80,6 +149,11 @@ class AssociationProposal:
     scores: torch.Tensor
     pairs: Mapping[int, int]
     banned_edges: Tuple[Tuple[int, int], ...] = ()
+    rng_state_before: object = None
+    rng_state_after: object = None
+    trajectory_slot_mapping_digest: Optional[str] = None
+    transformer_calls: int = 0
+    proposal_reused: bool = False
 
 
 def _normalise_features(features: torch.Tensor) -> torch.Tensor:
@@ -142,19 +216,88 @@ class CachedPerceptionMutableAssociationV2:
         perception: Mapping[str, object],
         state: MutableGMTState,
     ) -> Tuple[Tuple[int, ...], torch.Tensor]:
+        """Return the public legacy pair while preserving formal provenance."""
+
+        result = self._score_matrix_with_provenance(perception, state)
+        return self._track_ids(state), result.scores
+
+    def _score_matrix_with_provenance(
+        self,
+        perception: Mapping[str, object],
+        state: MutableGMTState,
+    ) -> AssociationScoreResult:
         track_ids = self._track_ids(state)
         if self.association_fn is None:
             scores = self._cosine_scores(perception, track_ids, state)
+            result = AssociationScoreResult(
+                scores=scores,
+                rng_state_before=copy.deepcopy(state.trajectory_rng_state),
+                rng_state_after=copy.deepcopy(state.trajectory_rng_state),
+                trajectory_slot_mapping_digest=_empty_trajectory_mapping_digest(),
+                transformer_calls=0,
+            )
         else:
-            scores = self.association_fn(perception, track_ids, state)
-            scores = torch.as_tensor(scores, dtype=torch.float32)
+            if getattr(self.association_fn, "formal_gmt_association_adapter", False):
+                if state.trajectory_rng_state is None or state.trajectory_rng_seed is None:
+                    raise RuntimeError(
+                        "formal replay requires an initialized trajectory_rng_state and trajectory_rng_seed"
+                    )
+            raw_result = self.association_fn(perception, track_ids, state)
+            if isinstance(raw_result, AssociationScoreResult):
+                result = raw_result
+            elif all(
+                hasattr(raw_result, name)
+                for name in (
+                    "scores",
+                    "rng_state_before",
+                    "rng_state_after",
+                    "trajectory_slot_mapping_digest",
+                    "transformer_calls",
+                )
+            ):
+                result = AssociationScoreResult(
+                    scores=raw_result.scores,
+                    rng_state_before=raw_result.rng_state_before,
+                    rng_state_after=raw_result.rng_state_after,
+                    trajectory_slot_mapping_digest=raw_result.trajectory_slot_mapping_digest,
+                    transformer_calls=int(raw_result.transformer_calls),
+                )
+            else:
+                if getattr(self.association_fn, "formal_gmt_association_adapter", False):
+                    raise RuntimeError(
+                        "formal counterfactual association must return explicit RNG provenance"
+                    )
+                result = AssociationScoreResult(
+                    scores=raw_result,
+                    rng_state_before=copy.deepcopy(state.trajectory_rng_state),
+                    rng_state_after=copy.deepcopy(state.trajectory_rng_state),
+                    trajectory_slot_mapping_digest=_empty_trajectory_mapping_digest(),
+                    transformer_calls=0,
+                )
+            if getattr(self.association_fn, "formal_gmt_association_adapter", False):
+                if result.rng_state_before is None or result.rng_state_after is None:
+                    raise RuntimeError(
+                        "formal replay association result is missing RNG state provenance"
+                    )
+                if result.trajectory_slot_mapping_digest is None:
+                    raise RuntimeError(
+                        "formal replay association result is missing trajectory mapping digest"
+                    )
+            result = AssociationScoreResult(
+                scores=torch.as_tensor(result.scores, dtype=torch.float32),
+                rng_state_before=copy.deepcopy(result.rng_state_before),
+                rng_state_after=copy.deepcopy(result.rng_state_after),
+                trajectory_slot_mapping_digest=result.trajectory_slot_mapping_digest,
+                transformer_calls=int(result.transformer_calls),
+            )
+        scores = result.scores
         detection_count = int(torch.as_tensor(perception["pred_boxes"]).shape[0])
         expected = (detection_count, len(track_ids))
         if tuple(scores.shape) != expected:
             raise ValueError(f"association backend returned {tuple(scores.shape)}, expected {expected}")
         if not torch.isfinite(scores).all():
             raise ValueError("association backend returned non-finite scores")
-        return track_ids, scores
+        return result
 
     def propose(
         self,
@@ -163,10 +306,21 @@ class CachedPerceptionMutableAssociationV2:
         *,
         banned_edges: Iterable[Tuple[int, int]] = (),
     ) -> AssociationProposal:
-        track_ids, scores = self.score_matrix(perception, state)
+        track_ids = self._track_ids(state)
+        score_result = self._score_matrix_with_provenance(perception, state)
+        scores = score_result.scores
         banned = tuple(sorted((int(row), int(col)) for row, col in banned_edges))
         pairs = dict(constrained_hungarian(scores, banned))
-        return AssociationProposal(track_ids, scores, pairs, banned)
+        return AssociationProposal(
+            track_ids,
+            scores,
+            pairs,
+            banned,
+            rng_state_before=copy.deepcopy(score_result.rng_state_before),
+            rng_state_after=copy.deepcopy(score_result.rng_state_after),
+            trajectory_slot_mapping_digest=score_result.trajectory_slot_mapping_digest,
+            transformer_calls=int(score_result.transformer_calls),
+        )
 
     @staticmethod
     def _new_id(state: MutableGMTState) -> int:
@@ -229,6 +383,7 @@ class CachedPerceptionMutableAssociationV2:
         *,
         actions: Optional[Mapping[int, str]] = None,
         threshold: Optional[float] = None,
+        proposal: Optional[AssociationProposal] = None,
     ) -> Mapping[str, object]:
         """Resolve semantic association actions without mutating tracker state.
 
@@ -238,12 +393,11 @@ class CachedPerceptionMutableAssociationV2:
         identity are returned with None as their existing track id.
         """
 
-        proposal = self.propose(perception, state)
+        proposal = proposal or self.propose(perception, state)
         action_map = dict(
-            actions
-            or self._actions_for_proposal(
-                proposal, state, threshold=threshold
-            )
+            self._actions_for_proposal(proposal, state, threshold=threshold)
+            if actions is None
+            else actions
         )
         for row in range(proposal.scores.shape[0]):
             action_map.setdefault(row, "START_NEW")
@@ -261,7 +415,21 @@ class CachedPerceptionMutableAssociationV2:
                 current = proposal.pairs.get(row)
                 if current is not None:
                     banned.add((row, current))
-            second = self.propose(perception, state, banned_edges=banned)
+            # REASSOCIATE is a constrained solve over the exact proposal that
+            # produced the legal actions.  Re-running the transformer here
+            # would consume a different trajectory-slot RNG stream and would
+            # make action semantics depend on evaluation order.
+            second = AssociationProposal(
+                track_ids=proposal.track_ids,
+                scores=proposal.scores,
+                pairs=dict(constrained_hungarian(proposal.scores, banned)),
+                banned_edges=tuple(sorted(banned)),
+                rng_state_before=copy.deepcopy(proposal.rng_state_before),
+                rng_state_after=copy.deepcopy(proposal.rng_state_after),
+                trajectory_slot_mapping_digest=proposal.trajectory_slot_mapping_digest,
+                transformer_calls=0,
+                proposal_reused=True,
+            )
 
         existing_track_ids: Dict[int, Optional[int]] = {}
         for row in range(proposal.scores.shape[0]):
@@ -305,6 +473,7 @@ class CachedPerceptionMutableAssociationV2:
         actions: Optional[Mapping[int, str]] = None,
         memory_actions: Optional[Mapping[int, str]] = None,
         threshold: Optional[float] = None,
+        proposal: Optional[AssociationProposal] = None,
     ) -> Mapping[str, object]:
         """Commit one frame/view from an isolated mutable state.
 
@@ -312,18 +481,38 @@ class CachedPerceptionMutableAssociationV2:
         masked and the complete matrix is solved once.  The result is then
         consumed by the semantic actions; no ranked-candidate fallback exists.
         """
+        supplied_proposal = proposal
         resolution = self.resolve_actions(
             perception,
             state,
             actions=actions,
             threshold=threshold,
+            proposal=proposal,
         )
         proposal = resolution["initial_proposal"]
         second = resolution["final_proposal"]
         action_map = dict(resolution["actions"])
         reassociate_rows = list(resolution["reassociate_rows"])
+        if supplied_proposal is not None and supplied_proposal.scores is not proposal.scores:
+            raise AssertionError("step did not reuse the supplied association proposal")
+        if resolution["final_proposal"].proposal_reused and (
+            resolution["final_proposal"].scores is not proposal.scores
+        ):
+            raise AssertionError("REASSOCIATE proposal does not reuse the original score matrix")
         if reassociate_rows:
             state.counters["reassociation_calls"] = state.counters.get("reassociation_calls", 0) + 1
+
+        # ``propose`` and ``resolve_actions`` are observational.  Only a
+        # committed step advances the branch-local RNG provenance, and it does
+        # so once for the initial transformer call (never for constrained
+        # Hungarian re-solves).
+        if resolution["initial_proposal"].rng_state_after is not None:
+            state.trajectory_rng_state = copy.deepcopy(
+                resolution["initial_proposal"].rng_state_after
+            )
+            state.trajectory_rng_calls = int(state.trajectory_rng_calls) + int(
+                resolution["initial_proposal"].transformer_calls
+            )
 
         features = _normalise_features(
             torch.as_tensor(perception["reid_features"], dtype=torch.float32)
@@ -379,6 +568,23 @@ class CachedPerceptionMutableAssociationV2:
             "initial_scores": proposal.scores.detach().cpu(),
             "final_scores": second.scores.detach().cpu(),
             "banned_edges": list(second.banned_edges),
+            "proposal_provenance": {
+                "rng_state_before": proposal_state_for_output(
+                    proposal.rng_state_before
+                ),
+                "rng_state_after": proposal_state_for_output(
+                    proposal.rng_state_after
+                ),
+                "trajectory_slot_mapping_digest": resolution[
+                    "initial_proposal"
+                ].trajectory_slot_mapping_digest,
+                "transformer_calls": int(
+                    resolution["initial_proposal"].transformer_calls
+                ),
+                "reassociate_reused_score_matrix": bool(
+                    second.proposal_reused
+                ),
+            },
         }
 
     def rollout(
@@ -396,7 +602,14 @@ class CachedPerceptionMutableAssociationV2:
         for index, perception in enumerate(perceptions):
             proposal = self.propose(perception, branch)
             actions = action_provider(index, proposal, branch) if action_provider else None
-            steps.append(self.step(perception, branch, actions=actions))
+            steps.append(
+                self.step(
+                    perception,
+                    branch,
+                    actions=actions,
+                    proposal=proposal,
+                )
+            )
         return branch, steps
 
 
@@ -462,4 +675,7 @@ def _state_signature(state: MutableGMTState):
             )
             for item in state.association_history
         ),
+        repr(state.trajectory_rng_state),
+        None if state.trajectory_rng_seed is None else int(state.trajectory_rng_seed),
+        int(state.trajectory_rng_calls),
     )

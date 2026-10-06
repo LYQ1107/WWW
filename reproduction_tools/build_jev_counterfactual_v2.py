@@ -29,6 +29,8 @@ from build_jev_counterfactual_dataset import (
 from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
 from jev_counterfactual_v2 import (
     ENGINE_VERSION,
+    TRAJECTORY_RNG_MASTER_SEED,
+    TRAJECTORY_RNG_POLICY,
     CachedPerceptionMutableAssociationV2,
     MutableGMTState,
 )
@@ -330,7 +332,7 @@ def build_v2_records(
         def payload_for(key):
             return eager_payloads[key] if eager_payloads is not None else cache.load(*key)
 
-        state = MutableGMTState()
+        state = MutableGMTState().initialize_trajectory_rng(video_id)
         for key_index, key in enumerate(keys):
             payload = payload_for(key)
             current_events = by_key.get(key, ())
@@ -673,11 +675,26 @@ def main() -> None:
         "counterfactual_engine_version": ENGINE_VERSION,
         "state_schema_version": STATE_SCHEMA_VERSION,
         "utility_definition": UTILITY_DEFINITION,
+        "trajectory_rng_policy": TRAJECTORY_RNG_POLICY,
+        "trajectory_rng_master_seed": TRAJECTORY_RNG_MASTER_SEED,
+        "trajectory_rng_state_cloned_per_counterfactual_branch": True,
+        "proposal_reused_across_legal_actions": True,
+        "reassociate_reuses_score_matrix": True,
+        "second_transformer_call_for_reassociate": False,
         "source_root": str(source_root),
         "source_commit": source_commit(source_root),
         "config": str(config_file) if config_file is not None else None,
         "config_sha256": sha256(config_file) if config_file is not None else None,
         "cache_sha256": cache_digest(cache),
+        "trajectory_rng_transformer_sha256": "sha256:" + sha256(
+            source_root / "gtr" / "modeling" / "roi_heads" / "transformer.py"
+        ),
+        "trajectory_rng_counterfactual_engine_sha256": "sha256:" + sha256(
+            source_root / "reproduction_tools" / "jev_counterfactual_v2.py"
+        ),
+        "trajectory_rng_adapter_sha256": "sha256:" + sha256(
+            source_root / "reproduction_tools" / "jev_gmt_association_adapter.py"
+        ),
         "association_backend": args.association_backend,
         "formal_gmt_association_adapter": args.association_backend == "formal_gmt_transformer",
         "prelock": prelock_diagnostic,

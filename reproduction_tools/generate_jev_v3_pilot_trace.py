@@ -2,9 +2,9 @@
 
 This is a bounded v3 pilot artifact.  It does not touch the live Full H=8
 builders or their output directory.  The replay uses the formal GMT
-association transformer, the canonical runtime state builder, and an
-explicit Python trajectory-slot seed.  Every event records that seed so a
-fresh process can reproduce the same association RNG stream.
+association transformer and the canonical runtime state builder.  The
+trajectory-slot RNG is branch-local state initialized from a stable per-video
+master seed, independent of the policy-training seed.
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 PILOT_ROOT = Path("/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot_v3")
-SEED = 20261003
+POLICY_SEED = 20261003
 
 
 def sha256(path: Path) -> str:
@@ -47,7 +47,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-root", type=Path, default=PILOT_ROOT)
     parser.add_argument("--video-id", type=int, default=8)
-    parser.add_argument("--seed", type=int, default=SEED)
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=POLICY_SEED,
+        help="policy-seed metadata only; never used for association RNG",
+    )
     parser.add_argument("--max-frame", type=int, default=None)
     args = parser.parse_args()
     if int(args.video_id) != 8:
@@ -97,9 +102,7 @@ def main() -> None:
         "seen_record_keys": set(),
     }
     previous_pilot_root = pilot.PILOT
-    previous_seed = pilot.SEED
     pilot.PILOT = output_root
-    pilot.SEED = int(args.seed)
     try:
         with DecisionTraceWriter(trace_path) as trace_writer:
             result = pilot.run_method(
@@ -126,7 +129,6 @@ def main() -> None:
             )
     finally:
         pilot.PILOT = previous_pilot_root
-        pilot.SEED = previous_seed
 
     event_count = sum(1 for line in trace_path.open(encoding="utf-8") if line.strip())
     if event_count != int(result["counts"]["MATCH_DECISION"] + result["counts"]["MEMORY_DECISION"]):
@@ -150,12 +152,28 @@ def main() -> None:
         "perception_cache": str(pilot.CACHE),
         "perception_cache_index_sha256": "sha256:" + sha256(pilot.CACHE / "index.jsonl"),
         "association_backend": "formal_gmt_transformer",
+        "policy_seed": int(args.seed),
         "trajectory_slot_rng": {
-            "mode": "process_global_python_random_seeded",
-            "seed": int(args.seed),
+            "mode": "branch_local_explicit_python_random_v1",
+            "master_seed": 20261006,
+            "video_seed": 20261006 + int(args.video_id),
+            "state_initialized_per_video": True,
+            "state_cloned_per_counterfactual_branch": True,
             "recorded_in_every_event_context": True,
-            "replay_requirement": "seed before model construction and before the first association proposal",
+            "replay_requirement": "restore state.getstate() into a fresh branch-local RNG before each formal proposal",
         },
+        "proposal_reused_across_legal_actions": True,
+        "reassociate_reuses_score_matrix": True,
+        "second_transformer_call_for_reassociate": False,
+        "transformer_sha256": "sha256:" + sha256(
+            ROOT / "gtr" / "modeling" / "roi_heads" / "transformer.py"
+        ),
+        "counterfactual_engine_sha256": "sha256:" + sha256(
+            ROOT / "reproduction_tools" / "jev_counterfactual_v2.py"
+        ),
+        "adapter_sha256": "sha256:" + sha256(
+            ROOT / "reproduction_tools" / "jev_gmt_association_adapter.py"
+        ),
         "runtime_state_source": "gtr/modeling/jev_state.py",
         "runtime_counts": result["counts"],
         "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",

@@ -13,6 +13,8 @@ from typing import Mapping, Sequence
 
 import torch
 from detectron2.structures import Boxes, Instances
+from gtr.modeling.roi_heads.transformer import TrajectoryRandom
+from jev_counterfactual_v2 import AssociationScoreResult
 
 
 class GMTAssociationTransformerAdapter:
@@ -69,13 +71,32 @@ class GMTAssociationTransformerAdapter:
         instance.reid_features = reid_features
         return instance
 
-    def __call__(self, perception, track_ids: Sequence[int], state) -> torch.Tensor:
+    def __call__(self, perception, track_ids: Sequence[int], state) -> AssociationScoreResult:
+        if state.trajectory_rng_state is None or state.trajectory_rng_seed is None:
+            raise RuntimeError(
+                "formal GMT association requires state.trajectory_rng_state and "
+                "state.trajectory_rng_seed; legacy global RNG fallback is forbidden"
+            )
+        # Restore a new RNG object for every observational proposal.  The
+        # mutable state stores only immutable getstate() data, so this call
+        # cannot advance the caller's RNG or any process-global stream.
+        trajectory_rng = TrajectoryRandom(0)
+        trajectory_rng.setstate(state.trajectory_rng_state)
+        rng_state_before = trajectory_rng.getstate()
         device = next(self.model.parameters()).device
         current = self._instances(perception, device)
         history = list(state.association_history[-self.history_limit :])
         if not history:
-            return torch.zeros(
-                (len(current), len(track_ids)), dtype=torch.float32, device=device
+            return AssociationScoreResult(
+                scores=torch.zeros(
+                    (len(current), len(track_ids)),
+                    dtype=torch.float32,
+                    device=device,
+                ).cpu(),
+                rng_state_before=rng_state_before,
+                rng_state_after=trajectory_rng.getstate(),
+                trajectory_slot_mapping_digest=trajectory_rng.trajectory_mapping_digest(),
+                transformer_calls=0,
             )
 
         instances = []
@@ -92,8 +113,16 @@ class GMTAssociationTransformerAdapter:
             previous_ids.extend(historical.track_ids.tolist())
         instances.append(current)
         if not previous_ids:
-            return torch.zeros(
-                (len(current), len(track_ids)), dtype=torch.float32, device=device
+            return AssociationScoreResult(
+                scores=torch.zeros(
+                    (len(current), len(track_ids)),
+                    dtype=torch.float32,
+                    device=device,
+                ).cpu(),
+                rng_state_before=rng_state_before,
+                rng_state_after=trajectory_rng.getstate(),
+                trajectory_slot_mapping_digest=trajectory_rng.trajectory_mapping_digest(),
+                transformer_calls=0,
             )
 
         traj_ids = torch.tensor(previous_ids, dtype=torch.long, device=device)
@@ -109,6 +138,7 @@ class GMTAssociationTransformerAdapter:
                 None,
                 None,
                 traj_ids,
+                trajectory_rng=trajectory_rng,
             )
             # Native GMT normalizes association logits independently for each
             # historical slice.  ``run_first_tracker_plus`` receives one
@@ -132,4 +162,10 @@ class GMTAssociationTransformerAdapter:
             )
         unique = torch.tensor(track_ids, dtype=torch.long, device=device)
         id_inds = (unique[None, :] == traj_ids[:, None]).float()
-        return torch.mm(active, id_inds).detach().cpu()
+        return AssociationScoreResult(
+            scores=torch.mm(active, id_inds).detach().cpu(),
+            rng_state_before=rng_state_before,
+            rng_state_after=trajectory_rng.getstate(),
+            trajectory_slot_mapping_digest=trajectory_rng.trajectory_mapping_digest(),
+            transformer_calls=1,
+        )

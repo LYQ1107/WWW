@@ -178,7 +178,11 @@ def build_one(
     # Imports happen after the worker has been launched with its physical GPU
     # in CUDA_VISIBLE_DEVICES.  The model and cache are still reused between
     # all videos claimed by this process.
-    from build_jev_counterfactual_v2 import build_v2_records
+    from build_jev_counterfactual_v2 import (
+        TRAJECTORY_RNG_MASTER_SEED,
+        TRAJECTORY_RNG_POLICY,
+        build_v2_records,
+    )
 
     video_id = int(task["video_id"])
     video_name = f"video_{video_id:02d}"
@@ -243,6 +247,25 @@ def build_one(
         "counterfactual_engine": "cached_perception_mutable_association_v2",
         "state_schema_version": 2,
         "utility_definition": "future_correct_identity_duration - 0.5*future_identity_switches - 0.25*future_fragmentation - 0.5*future_collisions - memory_contamination; sample_weight=0 for uninformative futures",
+        "trajectory_rng_policy": TRAJECTORY_RNG_POLICY,
+        "trajectory_rng_master_seed": TRAJECTORY_RNG_MASTER_SEED,
+        "trajectory_rng_video_seed": TRAJECTORY_RNG_MASTER_SEED + video_id,
+        "trajectory_rng_state_cloned_per_counterfactual_branch": True,
+        "proposal_reused_across_legal_actions": True,
+        "reassociate_reuses_score_matrix": True,
+        "second_transformer_call_for_reassociate": False,
+        "trajectory_rng_transformer_sha256": "sha256:" + sha256(
+            Path(__file__).resolve().parents[1]
+            / "gtr" / "modeling" / "roi_heads" / "transformer.py"
+        ),
+        "trajectory_rng_counterfactual_engine_sha256": "sha256:" + sha256(
+            Path(__file__).resolve().parents[1]
+            / "reproduction_tools" / "jev_counterfactual_v2.py"
+        ),
+        "trajectory_rng_adapter_sha256": "sha256:" + sha256(
+            Path(__file__).resolve().parents[1]
+            / "reproduction_tools" / "jev_gmt_association_adapter.py"
+        ),
         "records": record_count,
         "records_by_question": stats,
         "skipped_events": int(skipped),

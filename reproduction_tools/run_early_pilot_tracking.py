@@ -14,7 +14,6 @@ import datetime as dt
 import json
 import os
 from pathlib import Path
-import random
 import subprocess
 import sys
 from collections import defaultdict
@@ -189,6 +188,9 @@ def runtime_tracker_context(state) -> Dict[str, Any]:
         "possible_memory_ids": sorted(int(value) for value in state.stale_ids),
         "stale_ids": sorted(int(value) for value in state.stale_ids),
         "old_reid_count": 0,
+        "trajectory_rng_policy": "branch_local_explicit_python_random_v1",
+        "trajectory_rng_seed": state.trajectory_rng_seed,
+        "trajectory_rng_calls": int(state.trajectory_rng_calls),
     }
 
 
@@ -275,6 +277,7 @@ def seed_production_state(cache, MutableGMTState, seed_key):
             for track_id in range(1, detection_count + 1)
         },
     )
+    state.initialize_trajectory_rng(int(seed_key[0]))
     state.association_history.append(
         {
             "perception": payload,
@@ -323,11 +326,6 @@ def run_method(
     max_frame=None,
     trace_writer=None,
 ):
-    # The released GMT transformer uses process-global Python RNG for its
-    # trajectory-slot assignment.  A fixed replay seed makes this pilot
-    # internally reproducible; it cannot recover an historical trace's
-    # unrecorded RNG state, which is checked separately by the parity gate.
-    random.seed(SEED)
     controller = (
         build_controller_from_checkpoint(checkpoint_path, device="cpu")
         if checkpoint_path is not None
@@ -548,8 +546,11 @@ def run_method(
                 "bbox_xyxy": [float(value) for value in payload["pred_boxes"][row].tolist()],
                 "detection_score": float(payload["detection_scores"][row].item()),
                 "tracker_state_before": runtime_tracker_context(state),
-                "association_rng_mode": "process_global_python_random_seeded",
-                "association_rng_seed": SEED,
+                "association_rng_mode": "branch_local_explicit_python_random_v1",
+                "association_rng_seed": state.trajectory_rng_seed,
+                "association_rng_calls_before": state.trajectory_rng_calls,
+                "association_rng_mapping_digest": proposal.trajectory_slot_mapping_digest,
+                "association_transformer_calls": proposal.transformer_calls,
             }
             if col is not None:
                 match_context.update(
@@ -602,7 +603,12 @@ def run_method(
 
         # Resolve MATCH without mutating state so MEMORY sees the final
         # existing committed identity. START_NEW has no same-step memory gate.
-        resolution = engine.resolve_actions(payload, state, actions=actions)
+        resolution = engine.resolve_actions(
+            payload,
+            state,
+            actions=actions,
+            proposal=proposal,
+        )
         final_existing = resolution["existing_track_ids"]
 
         # Phase 2: MEMORY decisions are computed only for rows committed to an
@@ -649,8 +655,11 @@ def run_method(
                 "model_image_size": [int(payload["image_size"][0]), int(payload["image_size"][1])],
                 "bbox_xyxy": [float(value) for value in payload["pred_boxes"][row].tolist()],
                 "tracker_state_before": runtime_tracker_context(state),
-                "association_rng_mode": "process_global_python_random_seeded",
-                "association_rng_seed": SEED,
+                "association_rng_mode": "branch_local_explicit_python_random_v1",
+                "association_rng_seed": state.trajectory_rng_seed,
+                "association_rng_calls_before": state.trajectory_rng_calls,
+                "association_rng_mapping_digest": proposal.trajectory_slot_mapping_digest,
+                "association_transformer_calls": proposal.transformer_calls,
             }
             action = choose(
                 policy,
@@ -680,7 +689,13 @@ def run_method(
                 else:
                     counts["memory_contamination"] += float(outcome.get("memory_contamination", 0.0))
             decisions.append({"frame": frame, "view": view, "row": row, "question": "MEMORY_DECISION", "action": action})
-        result = engine.step(payload, state, actions=actions, memory_actions=memories)
+        result = engine.step(
+            payload,
+            state,
+            actions=actions,
+            memory_actions=memories,
+            proposal=proposal,
+        )
         if frame == seed_frame and view != seed_view:
             # The native first-frame path processes the seed view first but
             # stores the completed frame in natural view order before the next
@@ -928,6 +943,11 @@ def main() -> None:
         "config": str(CONFIG),
         "perception_cache": str(CACHE),
         "association_backend": "formal_gmt_transformer",
+        "trajectory_rng_policy": "branch_local_explicit_python_random_v1",
+        "trajectory_rng_master_seed": 20261006,
+        "proposal_reused_across_legal_actions": True,
+        "reassociate_reuses_score_matrix": True,
+        "second_transformer_call_for_reassociate": False,
         "device": args.device,
         "controller_feature_source": args.feature_source,
         "methods": {},

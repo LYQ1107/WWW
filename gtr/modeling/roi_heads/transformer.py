@@ -9,6 +9,8 @@ Copy-paste from torch.nn.Transformer with modifications:
     * decoder returns a stack of activations from all decoding layers
 """
 import copy
+import hashlib
+import json
 from typing import Optional
 import random
 import torch
@@ -19,7 +21,41 @@ from torch import nn, Tensor
 _TRAJ_EMB_SLOTS = 400
 
 
-def _trajectory_slot_mapping(match_cues):
+class TrajectoryRandom(random.Random):
+    """Cloneable Python RNG that records trajectory-slot draws.
+
+    GMT's released slot assignment deliberately remains ``sample`` followed
+    by ``choices`` for overflow IDs.  The wrapper only makes the RNG explicit
+    and records a compact digest of the draws; it does not change the random
+    distribution or the learned embedding table.
+    """
+
+    def __init__(self, seed=None):
+        super().__init__(seed)
+        self._trajectory_draws = []
+
+    def sample(self, population, k):
+        result = super().sample(population, k)
+        self._trajectory_draws.append({"op": "sample", "result": list(result)})
+        return result
+
+    def choices(self, population, weights=None, *, cum_weights=None, k=1):
+        result = super().choices(
+            population, weights=weights, cum_weights=cum_weights, k=k
+        )
+        self._trajectory_draws.append({"op": "choices", "result": list(result)})
+        return result
+
+    def trajectory_mapping_digest(self) -> str:
+        payload = json.dumps(
+            self._trajectory_draws,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+        return "sha256:" + hashlib.sha256(payload).hexdigest()
+
+
+def _trajectory_slot_mapping(match_cues, rng):
     """Assign trajectory IDs to the fixed-size learned embedding table.
 
     The released GMT checkpoint has 400 trajectory slots plus the historical
@@ -31,7 +67,7 @@ def _trajectory_slot_mapping(match_cues):
     """
     unique_trajs = list(set(int(x) for x in match_cues))
     assigned = min(len(unique_trajs), _TRAJ_EMB_SLOTS)
-    unique_random_values = random.sample(range(_TRAJ_EMB_SLOTS), assigned)
+    unique_random_values = rng.sample(range(_TRAJ_EMB_SLOTS), assigned)
     mapping = {
         int(num): int(val)
         for num, val in zip(unique_trajs[:assigned], unique_random_values)
@@ -42,7 +78,7 @@ def _trajectory_slot_mapping(match_cues):
             int(num): int(val)
             for num, val in zip(
                 overflow,
-                random.choices(range(_TRAJ_EMB_SLOTS), k=len(overflow)),
+                rng.choices(range(_TRAJ_EMB_SLOTS), k=len(overflow)),
             )
         })
     return mapping
@@ -90,7 +126,8 @@ class Transformer(nn.Module):
                 nn.init.xavier_uniform_(p)
 
     def forward(self, src, pos_embed=None, mask=None, \
-        query_embed=None, query_inds=None, match_cues=None):
+        query_embed=None, query_inds=None, match_cues=None,
+        trajectory_rng=None):
         '''
         change HW to F
         Inputs:
@@ -102,13 +139,19 @@ class Transformer(nn.Module):
             L x B x M x f 没搞明白L是啥
         '''
         src = src.permute(1, 0, 2)  # N x B x F
+        legacy_global_rng = trajectory_rng is None
+        if legacy_global_rng:
+            # Native GMT callers predating controlled replay remain
+            # compatible, but this path is explicitly legacy-only.  Formal
+            # counterfactual replay always passes TrajectoryRandom.
+            trajectory_rng = random
         if pos_embed is not None:
             pos_embed = pos_embed.permute(1, 0, 2)  # N x B x F
         if self.training:
             # flatten BxNxF to NxBxF
             N, B, f = src.shape
 
-            mapping = _trajectory_slot_mapping(match_cues)
+            mapping = _trajectory_slot_mapping(match_cues, trajectory_rng)
 
             emb_ids = torch.tensor(
                 [mapping.get(int(x), 400) for x in match_cues],
@@ -144,7 +187,7 @@ class Transformer(nn.Module):
             his_feature = src[mask_his]
             N, B, f = his_feature.shape
 
-            mapping = _trajectory_slot_mapping(match_cues)
+            mapping = _trajectory_slot_mapping(match_cues, trajectory_rng)
 
             emb_ids = torch.tensor(
                 [mapping.get(int(x), 400) for x in match_cues],
