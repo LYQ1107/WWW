@@ -49,10 +49,23 @@ if [ "$VALIDATION_RC" -ne 0 ]; then
     exit 2
 fi
 
+# First run the complete feature replay gate. This intentionally covers all
+# question types (MATCH, MEMORY, and REACTIVATION); candidate parity is a
+# separate native-vs-mutable semantic gate below.
+set +e
+CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+    JEV_CACHE_PATH=/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train \
+    "$PYTHON" -u "$REPO/reproduction_tools/run_jev_feature_parity_stability.py" \
+    --video-id 1 --trace "$TRACE" --records "$RECORDS" \
+    --output "$PARITY" --runtime-root "$RUNTIME/formal_current_head_video01_parity" \
+    --device cuda:0 --max-frame 1000000 --repetitions 3 --tolerance 2e-5
+PARITY_RC=$?
+set -e
+
 # The v3 native trace was produced by the actual current-head GMT runtime,
 # contains exactly video01, and carries native_candidate_* fields. Compare it
-# before the mutable replay feature gate; the legacy candidate report is not
-# reused.
+# only after the full three-question feature gate; the legacy candidate report
+# is not reused.
 if [ ! -f "$NATIVE_TRACE" ]; then
     echo "missing_current_head_native_trace=$NATIVE_TRACE"
     exit 3
@@ -66,16 +79,6 @@ CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
     --replay-root "$RUNTIME/reactivation_candidate_replay_current_head_video01" \
     --device cuda:0 --max-frame 1000000 --tolerance 2e-5
 CANDIDATE_RC=$?
-set -e
-
-set +e
-CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
-    JEV_CACHE_PATH=/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train \
-    "$PYTHON" -u "$REPO/reproduction_tools/run_jev_feature_parity_stability.py" \
-    --video-id 1 --trace "$TRACE" --records "$RECORDS" \
-    --output "$PARITY" --runtime-root "$RUNTIME/formal_current_head_video01_parity" \
-    --device cuda:0 --max-frame 1000000 --repetitions 3 --tolerance 2e-5
-PARITY_RC=$?
 set -e
 
 cd "$REPO"
