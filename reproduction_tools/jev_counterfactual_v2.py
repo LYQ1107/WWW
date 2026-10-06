@@ -210,6 +210,60 @@ class CachedPerceptionMutableAssociationV2:
                 actions[row] = "ACCEPT_CURRENT"
         return actions
 
+    def resolve_actions(
+        self,
+        perception: Mapping[str, object],
+        state: MutableGMTState,
+        *,
+        actions: Optional[Mapping[int, str]] = None,
+        threshold: Optional[float] = None,
+    ) -> Mapping[str, object]:
+        """Resolve semantic association actions without mutating tracker state.
+
+        This mirrors the association-resolution prefix of step() and is used
+        by closed-loop runtimes that must decide memory writes only after the
+        final existing-track assignment is known. Rows that will create a new
+        identity are returned with None as their existing track id.
+        """
+
+        proposal = self.propose(perception, state)
+        action_map = dict(
+            actions or self._actions_for_proposal(proposal, threshold=threshold)
+        )
+        for row in range(proposal.scores.shape[0]):
+            action_map.setdefault(row, "START_NEW")
+
+        reassociate_rows = [
+            row for row, action in action_map.items() if action == "REASSOCIATE"
+        ]
+        second = proposal
+        if reassociate_rows:
+            banned = set(proposal.banned_edges)
+            for row, action in action_map.items():
+                if action == "START_NEW":
+                    banned.update((row, col) for col in range(proposal.scores.shape[1]))
+            for row in reassociate_rows:
+                current = proposal.pairs.get(row)
+                if current is not None:
+                    banned.add((row, current))
+            second = self.propose(perception, state, banned_edges=banned)
+
+        existing_track_ids: Dict[int, Optional[int]] = {}
+        for row in range(proposal.scores.shape[0]):
+            action = action_map[row]
+            col = second.pairs.get(row)
+            if action == "START_NEW" or col is None:
+                existing_track_ids[row] = None
+            else:
+                existing_track_ids[row] = int(second.track_ids[col])
+
+        return {
+            "initial_proposal": proposal,
+            "final_proposal": second,
+            "actions": action_map,
+            "reassociate_rows": tuple(reassociate_rows),
+            "existing_track_ids": existing_track_ids,
+        }
     def step(
         self,
         perception: Mapping[str, object],
@@ -225,24 +279,17 @@ class CachedPerceptionMutableAssociationV2:
         masked and the complete matrix is solved once.  The result is then
         consumed by the semantic actions; no ranked-candidate fallback exists.
         """
-        proposal = self.propose(perception, state)
-        action_map = dict(actions or self._actions_for_proposal(proposal, threshold=threshold))
-        for row in range(proposal.scores.shape[0]):
-            action_map.setdefault(row, "START_NEW")
-        reassociate_rows = [
-            row for row, action in action_map.items() if action == "REASSOCIATE"
-        ]
-        second = proposal
+        resolution = self.resolve_actions(
+            perception,
+            state,
+            actions=actions,
+            threshold=threshold,
+        )
+        proposal = resolution["initial_proposal"]
+        second = resolution["final_proposal"]
+        action_map = dict(resolution["actions"])
+        reassociate_rows = list(resolution["reassociate_rows"])
         if reassociate_rows:
-            banned = set(proposal.banned_edges)
-            for row, action in action_map.items():
-                if action == "START_NEW":
-                    banned.update((row, col) for col in range(proposal.scores.shape[1]))
-            for row in reassociate_rows:
-                current = proposal.pairs.get(row)
-                if current is not None:
-                    banned.add((row, current))
-            second = self.propose(perception, state, banned_edges=banned)
             state.counters["reassociation_calls"] = state.counters.get("reassociation_calls", 0) + 1
 
         features = _normalise_features(
