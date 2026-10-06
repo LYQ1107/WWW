@@ -1195,6 +1195,15 @@ def main() -> None:
         ),
     )
     parser.add_argument(
+        "--runtime-feature-tolerance",
+        type=float,
+        default=2e-5,
+        help=(
+            "explicit FLOAT32 runtime-feature tolerance; final use requires "
+            "the repeated stability gate to pass"
+        ),
+    )
+    parser.add_argument(
         "--methods",
         default="all",
         help="comma-separated subset for CPU smoke/debug runs; default is all methods",
@@ -1223,7 +1232,7 @@ def main() -> None:
     parity_report = {
         "schema_version": "jev_runtime_state_contract_v3",
         "source_trace": str(TRACE),
-        "tolerance": 1e-6,
+        "tolerance": float(args.runtime_feature_tolerance),
         "feature_names": list(feature_names(64)),
         "expected_record_count": len(records),
         "compared_records": 0,
@@ -1253,6 +1262,7 @@ def main() -> None:
         "device": args.device,
         "controller_feature_source": args.feature_source,
         "allow_runtime_with_legacy_trace": bool(args.allow_runtime_with_legacy_trace),
+        "runtime_feature_tolerance": float(args.runtime_feature_tolerance),
         "methods": {},
     }
     selected_names = list(METHODS)

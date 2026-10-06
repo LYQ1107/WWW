@@ -74,5 +74,11 @@ the final candidate gate still waits for the current-head video1 records.
    parity, rerun candidate parity on the matching perception source, then run
    wrapper parity and only afterward the corrected closed-loop comparison.
 
+The runtime parity wrappers now take an explicit numeric tolerance instead of
+silently mixing the historical `1e-6` and `1e-4` values. The current candidate
+is `2e-5`, and the full wrapper records exact expected/runtime counts for each
+of MATCH, MEMORY, REACTIVATION, and TOTAL. That candidate is not a final
+authorization until all three corrected video6 stability repetitions pass.
+
 Until all gates pass, the verdict remains `BLOCKED` for corrected-v4 final
 tracking and for the 24-video canonical H=8 rebuild.

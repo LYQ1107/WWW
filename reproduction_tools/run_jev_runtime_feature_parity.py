@@ -8,6 +8,7 @@ repository's V3 pilot reports and it does not run a learned controller.
 from __future__ import annotations
 
 import argparse
+import collections
 import datetime as dt
 import json
 import os
@@ -25,6 +26,15 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--max-frame", type=int)
+    parser.add_argument(
+        "--tolerance",
+        type=float,
+        default=2e-5,
+        help=(
+            "explicit FLOAT32 runtime-feature tolerance; this is only a valid "
+            "frozen value after the repeated stability gate passes"
+        ),
+    )
     args = parser.parse_args()
 
     pilot_root = args.output.resolve().parent / (args.output.stem + "_runtime")
@@ -44,6 +54,13 @@ def main() -> None:
     import run_early_pilot_tracking as pilot
 
     _annotations, _subset, image_lookup, by_key, records = pilot.load_inputs()
+    if args.max_frame is not None:
+        records = {
+            key: value
+            for key, value in records.items()
+            if int(value["state"]["online_context"].get("frame", -1))
+            <= int(args.max_frame)
+        }
     modules = pilot.load_runtime_modules()
     (
         build_formal_gmt_engine,
@@ -59,10 +76,13 @@ def main() -> None:
         feature_names,
         legacy_acceptance_threshold,
     ) = modules
+    expected_question_counts = collections.Counter(
+        str(record.get("question_type")) for record in records.values()
+    )
     parity = {
         "schema_version": "jev_runtime_feature_parity_v4",
         "source_trace": str(args.trace.resolve()),
-        "tolerance": 1e-4,
+        "tolerance": float(args.tolerance),
         "feature_names": list(feature_names(64)),
         "expected_record_count": len(records),
         "compared_records": 0,
@@ -106,6 +126,31 @@ def main() -> None:
         parity["status"] = "BOUNDED_PASS" if parity["max_abs_error"] <= parity["tolerance"] else "BOUNDED_FAIL"
         parity["pass"] = parity["max_abs_error"] <= parity["tolerance"]
         parity.pop("seen_record_keys", None)
+    runtime_counts = item["counts"]
+    question_types = (
+        "MATCH_DECISION",
+        "MEMORY_DECISION",
+        "REACTIVATION_DECISION",
+    )
+    question_parity = {
+        question: {
+            "expected": int(expected_question_counts.get(question, 0)),
+            "runtime": int(runtime_counts.get(question, 0)),
+            "exact": int(expected_question_counts.get(question, 0))
+            == int(runtime_counts.get(question, 0)),
+        }
+        for question in question_types
+    }
+    question_parity["TOTAL"] = {
+        "expected": int(len(records)),
+        "runtime": int(sum(runtime_counts.get(question, 0) for question in question_types)),
+        "exact": int(len(records))
+        == int(sum(runtime_counts.get(question, 0) for question in question_types)),
+    }
+    question_parity_pass = all(item["exact"] for item in question_parity.values())
+    parity["question_type_parity"] = question_parity
+    parity["question_type_parity_pass"] = bool(question_parity_pass)
+    parity["pass"] = bool(parity.get("pass") and question_parity_pass)
     report = {
         "schema_version": "jev_runtime_feature_parity_v4",
         "status": "PASS" if parity.get("pass") else "FAIL",
@@ -115,9 +160,10 @@ def main() -> None:
         "trace": str(args.trace.resolve()),
         "device": str(args.device),
         "max_frame": args.max_frame,
+        "tolerance": float(args.tolerance),
         "classification": "CANONICAL_FEATURE_PARITY_DIAGNOSTIC_NOT_TRACKING_RESULT",
         "parity": parity,
-        "runtime_counts": item["counts"],
+        "runtime_counts": runtime_counts,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
