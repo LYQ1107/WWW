@@ -117,7 +117,8 @@ git push origin HEAD || {
 echo "parity_waiter_complete=$(date -Is) video06_rc=$RC6 video07_tol2e5_rc=$RC7 video07_tol4e5_rc=$RC7_TOL4E5"
 
 # A failed strict gate is evidence for review, not permission to continue to
-# training or to authorize the 24-video rebuild.
-if [ "$RC6" -ne 0 ] || [ "$RC7_TOL4E5" -ne 0 ]; then
+# training or to authorize the 24-video rebuild.  The 4e-5 run above is kept
+# as a diagnostic envelope only; it must never authorize downstream work.
+if [ "$RC6" -ne 0 ] || [ "$RC7" -ne 0 ]; then
     exit 3
 fi

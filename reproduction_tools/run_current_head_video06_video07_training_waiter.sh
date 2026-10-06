@@ -34,7 +34,7 @@ while true; do
         "$REPORT_ROOT/CURRENT_HEAD_VIDEO06_PROVENANCE.json" \
         "$REPORT_ROOT/CURRENT_HEAD_VIDEO07_PROVENANCE.json" \
         "$REPORT_ROOT/RUNTIME_FEATURE_PARITY_VIDEO06_CURRENT_HEAD.json" \
-        "$REPORT_ROOT/RUNTIME_FEATURE_PARITY_VIDEO07_CURRENT_HEAD_TOL4E5.json"; do
+        "$REPORT_ROOT/RUNTIME_FEATURE_PARITY_VIDEO07_CURRENT_HEAD_TOL2E5.json"; do
         if [ -f "$report" ] && ! gate_ready "$report"; then
             echo "gate_failed=$report"
             exit 2
@@ -43,7 +43,7 @@ while true; do
     if gate_ready "$REPORT_ROOT/CURRENT_HEAD_VIDEO06_PROVENANCE.json" && \
        gate_ready "$REPORT_ROOT/CURRENT_HEAD_VIDEO07_PROVENANCE.json" && \
        gate_ready "$REPORT_ROOT/RUNTIME_FEATURE_PARITY_VIDEO06_CURRENT_HEAD.json" && \
-       gate_ready "$REPORT_ROOT/RUNTIME_FEATURE_PARITY_VIDEO07_CURRENT_HEAD_TOL4E5.json"; then
+       gate_ready "$REPORT_ROOT/RUNTIME_FEATURE_PARITY_VIDEO07_CURRENT_HEAD_TOL2E5.json"; then
         break
     fi
     sleep 30
