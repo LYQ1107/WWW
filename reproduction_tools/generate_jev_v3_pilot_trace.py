@@ -54,6 +54,14 @@ def main() -> None:
         help="policy-seed metadata only; never used for association RNG",
     )
     parser.add_argument("--max-frame", type=int, default=None)
+    parser.add_argument(
+        "--compare-trace",
+        type=Path,
+        help=(
+            "optional legacy/current trace used only as an action-layout "
+            "comparison; the generated trace always follows the current replay"
+        ),
+    )
     args = parser.parse_args()
     output_root = args.output_root.resolve()
     trace_path = output_root / f"trace_video_{int(args.video_id):02d}.jsonl"
@@ -90,6 +98,30 @@ def main() -> None:
     cache = FrozenPerceptionCache(pilot.CACHE)
     image_lookup = image_lookup_for_video(pilot.ANNOTATIONS, args.video_id)
     output_root.mkdir(parents=True, exist_ok=False)
+    comparison_by_key = {}
+    comparison_trace_sha256 = None
+    comparison_trace_events = 0
+    if args.compare_trace is not None:
+        comparison_trace = args.compare_trace.resolve()
+        if not comparison_trace.is_file():
+            raise FileNotFoundError(comparison_trace)
+        # Reuse the production parser only for the optional action-layout
+        # comparison.  /dev/null keeps the parser from requiring policy
+        # records; the generated trace itself is still driven by an empty
+        # record map and the current formal replay.
+        previous_trace = pilot.TRACE
+        previous_records = pilot.RECORDS
+        try:
+            pilot.TRACE = comparison_trace
+            pilot.RECORDS = Path("/dev/null")
+            _annotations, _subset, _lookup, comparison_by_key, _records = pilot.load_inputs()
+        finally:
+            pilot.TRACE = previous_trace
+            pilot.RECORDS = previous_records
+        comparison_trace_sha256 = "sha256:" + sha256(comparison_trace)
+        comparison_trace_events = sum(
+            1 for line in comparison_trace.open(encoding="utf-8") if line.strip()
+        )
     parity_report = {
         "schema_version": "jev_runtime_state_contract_v3",
         "source_trace": str(trace_path),
@@ -113,7 +145,7 @@ def main() -> None:
                 "gmt_off",
                 None,
                 image_lookup=image_lookup,
-                by_key={},
+                by_key=comparison_by_key,
                 records={},
                 build_formal_gmt_engine=build_formal_gmt_engine,
                 MutableGMTState=MutableGMTState,
@@ -185,6 +217,15 @@ def main() -> None:
         ),
         "runtime_state_source": "gtr/modeling/jev_state.py",
         "runtime_counts": result["counts"],
+        "comparison_trace": str(args.compare_trace.resolve())
+        if args.compare_trace is not None
+        else None,
+        "comparison_trace_sha256": comparison_trace_sha256,
+        "comparison_trace_events": comparison_trace_events,
+        "comparison_trace_is_reference_only": args.compare_trace is not None,
+        "comparison_off_action_mismatches": int(
+            result["counts"].get("off_action_mismatches", 0)
+        ),
         "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
     }
     (output_root / "TRACE_MANIFEST.json").write_text(
