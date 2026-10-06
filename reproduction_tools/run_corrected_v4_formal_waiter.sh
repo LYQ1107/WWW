@@ -53,6 +53,39 @@ CUDA_VISIBLE_DEVICES=7 "$REPO/reproduction_tools/warmup_jev_intra_video_chunks.p
     --device cuda:0 --view-num 2 --history-limit 80
 echo "warmup_done=$(date -Is)"
 
+if [ ! -f "$QUEUE" ]; then
+    /home/liuyeqiang/anaconda3/envs/GMT/bin/python - "$QUEUE" "$FORMAL" "$CHECKPOINT" "$PARTITION" <<'PY'
+import datetime as dt
+import json
+import sys
+from pathlib import Path
+
+queue_path, formal_root, checkpoint, partition_root = sys.argv[1:]
+payload = {
+    "association_backend": "formal_gmt_transformer",
+    "checkpoint": checkpoint,
+    "created_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+    "dataset_classification": "SAME_CODE_FORMAL_CHUNK_EQUIVALENCE",
+    "horizon": 8,
+    "output_root": str(Path(formal_root).resolve() / "single"),
+    "partition_root": partition_root,
+    "purpose": "corrected-v4-same-code-video07-single-reference",
+    "schema_version": 1,
+    "status": "PENDING",
+    "videos": {
+        "7": {
+            "video_id": 7,
+            "status": "PENDING",
+            "main_decisions": 3337,
+            "workload_score": 3337,
+            "output_root": str(Path(formal_root).resolve() / "single" / "video_07"),
+        }
+    },
+}
+Path(queue_path).write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+PY
+fi
+
 pids=()
 CUDA_VISIBLE_DEVICES=1 "$REPO/reproduction_tools/run_jev_full_h8_fast_worker.py" \
     --partition-root "$PARTITION" --cache "$CACHE" --annotations "$ANNOTATIONS" \
