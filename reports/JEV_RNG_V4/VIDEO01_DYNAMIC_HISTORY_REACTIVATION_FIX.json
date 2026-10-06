@@ -1,0 +1,51 @@
+{
+  "schema_version": "jev_video01_reactivation_fix_v1",
+  "status": "PASS",
+  "created_utc": "2026-10-06T21:27:42Z",
+  "branch": "jev/counterfactual-rng-isolation-v4-20261006",
+  "source_commit": "f2e9c16",
+  "scope": "diagnostic short replay only; no official tracking result",
+  "prior_failure": {
+    "worker": "current-head-video01-gpu8-stale-bank-fix",
+    "key": [1, 214, 1],
+    "error": "native reactivation events exist but mutable stale bank is empty",
+    "root_cause": "The replay retained a generic 80-slice history, while native VISION_test TEST_LEN=40 had already removed the oldest frame before the current view."
+  },
+  "fixes": [
+    "Added sync_production_history_for_key() and applied it before current, future, chunk-warmup, and pilot proposals.",
+    "Recomputed active_ids from the trimmed native-equivalent window before stale-bank promotion.",
+    "Included source_detection_indices in the GMT adapter payload-cache key so a subset reactivation payload cannot reuse a full-frame tensor."
+  ],
+  "regression_tests": {
+    "py_compile": "PASS",
+    "jev_reactivation_semantics": "PASS",
+    "jev_counterfactual_v2": "PASS",
+    "jev_gmt_association_adapter": "PASS",
+    "jev_state": "PASS"
+  },
+  "short_replay": {
+    "status": "PASS",
+    "cuda_visible_devices": "9",
+    "association_backend": "formal_gmt_transformer",
+    "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+    "trace": "/home/liuyeqiang/WWW_jev_full_h8_runtime/partition/trace_by_video/video_01.jsonl",
+    "cache": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train",
+    "seed_key": [1, 0, 1],
+    "former_failure_key": [1, 214, 1],
+    "former_failure_key_index": 429,
+    "last_processed_key_index": 430,
+    "last_processed_key": [1, 215, 0],
+    "records_emitted": 0,
+    "stats": {},
+    "skipped": 0,
+    "interpretation": "The corrected formal replay crossed the exact former failure and completed through the next production key without either failure."
+  },
+  "runtime_safety": {
+    "formal_v9_workers": "left running",
+    "video06_worker": "left running",
+    "video07_completed_artifact": "not regenerated",
+    "failed_video01_partial_files": "preserved; not deleted or overwritten",
+    "official_full_tracking": "not started"
+  },
+  "next_step": "Reset only the confirmed FAILED video01 queue entry and relaunch video01 on GPU8 with source commit f2e9c16."
+}
