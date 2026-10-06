@@ -325,6 +325,35 @@ def reactivation_candidates(state, *, bank_size: int = 10):
         ).mean(dim=0).detach().cpu().clone()
         state.possible_memory_ids.discard(track_id)
 
+    if os.environ.get("JEV_DEBUG_REACTIVATION") and state.association_history:
+        latest = state.association_history[-1]["perception"]
+        debug_frame = int(latest.get("frame", -1))
+        if 200 <= debug_frame <= 260:
+            print(
+                json.dumps(
+                    {
+                        "debug": "reactivation_bank",
+                        "frame": debug_frame,
+                        "view": int(latest.get("view", -1)),
+                        "recent_count": len(recent_ids),
+                        "active_ids": sorted(int(value) for value in state.active_ids),
+                        "possible_memory_ids": sorted(
+                            int(value) for value in state.possible_memory_ids
+                        ),
+                        "old_reid_ids": sorted(
+                            int(value) for value in state.reactivation_bank
+                        ),
+                        "memory_lengths": {
+                            str(int(track_id)): int(len(values))
+                            for track_id, values in sorted(state.memory.items())
+                            if int(track_id) in {3, 36, 59, 150, 162, 234}
+                        },
+                    },
+                    sort_keys=True,
+                ),
+                flush=True,
+            )
+
     return sorted(int(track_id) for track_id in state.reactivation_bank), recent_ids
 
 
