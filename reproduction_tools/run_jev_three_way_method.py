@@ -172,8 +172,6 @@ def main() -> None:
                     split,
                     "--output",
                     calibration_root,
-                    "--device",
-                    "cpu",
                 ],
                 run_root / "calibration.log",
             )
