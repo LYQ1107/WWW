@@ -546,9 +546,13 @@ def run_method(
                                 parity_report["per_feature_sum_abs_error"][index] += float(value)
                                 parity_report["per_feature_count"][index] += 1
                             if error > float(parity_report.get("tolerance", 0.0)):
-                                examples = parity_report.setdefault(
-                                    "feature_mismatch_examples", []
-                                )
+                                example_key = "feature_mismatch_examples"
+                                if error > max(
+                                    1e-2,
+                                    10.0 * float(parity_report.get("tolerance", 0.0)),
+                                ):
+                                    example_key = "feature_large_mismatch_examples"
+                                examples = parity_report.setdefault(example_key, [])
                                 if len(examples) < 20:
                                     row = int(
                                         record["state"]["online_context"]
