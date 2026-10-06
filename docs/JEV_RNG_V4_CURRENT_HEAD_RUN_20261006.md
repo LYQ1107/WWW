@@ -89,3 +89,32 @@ authorization until all three corrected video6 stability repetitions pass.
 
 Until all gates pass, the verdict remains `BLOCKED` for corrected-v4 final
 tracking and for the 24-video canonical H=8 rebuild.
+
+## Live continuation update — 22:30 UTC
+
+The historical launch table above is retained for provenance. The active
+artifacts are now the separate current-head paths below; none of the old
+small-gate records or checkpoints is used for corrected-v4 final tracking.
+
+- Branch: `jev/counterfactual-rng-isolation-v4-20261006`, pushed HEAD
+  `9935053`, a descendant of the requested `13a0c679` gate commit.
+- Corrected video1 rebuild: `formal_current_head_corrected_full/` from the
+  current-head OFF trace, expected `8995` records; the builder remains live
+  and its output is intentionally committed only after the final manifest is
+  complete.
+- Corrected video6/video7 rebuilds: the same `formal_current_head_corrected_full/`
+  root, expected `5162` and `3334` records; both builders remain live.
+- Same-code formal video7 gate: the three chunk artifacts are complete and
+  the single-worker reference is still running (`2430/3337` records at the
+  last check). The verifier will write
+  `FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json`
+  only after the single manifest is complete.
+- After video1 completion, the active aftercare order is: provenance, full
+  four-way question-count/runtime-feature parity, native-vs-mutable
+  reactivation candidate parity, then three-repeat numerical stability. The
+  closed-loop waiter consumes only these current-head reports and the new
+  current-head v6/v7 training bundle.
+
+The frozen GMT baseline is still reused without rerun, and the 24-video H=8
+build remains fail-closed until the same-code formal equivalence report has a
+complete `PASS` final gate.
