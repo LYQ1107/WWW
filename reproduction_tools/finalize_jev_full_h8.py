@@ -61,6 +61,7 @@ def _iter_validated_records(
     seen_keys: set[tuple[Any, ...]],
 ) -> Iterable[str]:
     checkpoint = str(expected_manifest["gmt_checkpoint_sha256"])
+    checkpoint_without_prefix = checkpoint.removeprefix("sha256:")
     expected_horizon = int(expected_manifest["horizon"])
     with path.open(encoding="utf-8") as handle:
         for line_number, line in enumerate(handle, 1):
@@ -71,7 +72,10 @@ def _iter_validated_records(
                 validate_record(record, allow_future_gt=True)
                 if int(record["horizon"]) != expected_horizon or expected_horizon != 8:
                     raise ValueError("record horizon is not canonical H=8")
-                if str(record["gmt_checkpoint_sha256"]) != checkpoint:
+                if str(record["gmt_checkpoint_sha256"]) not in {
+                    checkpoint,
+                    checkpoint_without_prefix,
+                }:
                     raise ValueError("record/checkpoint provenance mismatch")
                 context = record["state"]["online_context"]
                 if int(context["video_id"]) != int(video_id):
