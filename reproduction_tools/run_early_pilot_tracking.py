@@ -843,7 +843,8 @@ def finalize_feature_parity(
     parity_report["per_feature"] = per_feature
     parity_report["off_action_mismatches"] = int(off_action_counts["off_action_mismatches"])
     parity_report["pass"] = bool(
-        parity_report["expected_record_count"] == parity_report["compared_records"]
+        parity_report["expected_record_count"] > 0
+        and parity_report["expected_record_count"] == parity_report["compared_records"]
         and parity_report["missing_record_count"] == 0
         and parity_report["finite_runtime_records"] == parity_report["compared_records"]
         and parity_report["max_abs_error"] <= parity_report["tolerance"]
