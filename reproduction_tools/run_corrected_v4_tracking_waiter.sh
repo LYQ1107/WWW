@@ -36,8 +36,15 @@ if [ -z "$TRACE" ] || [ ! -f "$TRACE" ]; then
     exit 3
 fi
 
-while [ ! -f "$PROV" ] || [ ! -f "$PARITY" ] || \
-      [ ! -f "$STABILITY" ] || [ ! -f "$FORMAL" ] || [ ! -f "$TRAIN" ]; do
+all_hard_gates_pass() {
+    for report in "$PROV" "$CAND" "$PARITY" "$STABILITY" "$FORMAL" "$TRAIN"; do
+        if ! jq -e '.status == "PASS"' "$report" >/dev/null 2>&1; then
+            return 1
+        fi
+    done
+    return 0
+}
+while ! all_hard_gates_pass; do
     sleep 30
 done
 while [ ! -f "$CAND" ] || [ "$(stat -c %Y "$CAND")" -le "$MANIFEST_MTIME" ]; do
