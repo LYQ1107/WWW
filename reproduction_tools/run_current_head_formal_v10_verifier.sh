@@ -42,7 +42,7 @@ while true; do
        jq -e --arg c "$EXPECTED_SOURCE" \
         '.source_commit == $c and .status == "COMPLETE" and (.records | tonumber) == 334' \
         "$CHUNKED/chunk_0002/manifest.json" >/dev/null 2>&1 && \
-       jq -e --arg c "$EXPECTED" '.source_commit == $c and .status == "PASS"' \
+       jq -e --arg c "$EXPECTED_SOURCE" '.source_commit == $c and .status == "PASS"' \
         "$WARMUP" >/dev/null 2>&1; then
         break
     fi
