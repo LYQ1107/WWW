@@ -27,7 +27,13 @@ if [ ! -s "$NATIVE_TRACE" ]; then
     echo "native_trace_missing=$NATIVE_TRACE"
     exit 3
 fi
-echo "native_done=$(date -Is) native_lines=$(wc -l < "$NATIVE_TRACE")"
+NATIVE_VIDEO_IDS=$(jq -r '.context.video_id // empty' "$NATIVE_TRACE" | sort -nu | paste -sd, -)
+NATIVE_EVENTS=$(jq -s 'length' "$NATIVE_TRACE")
+if [ "$NATIVE_VIDEO_IDS" != "1" ]; then
+    echo "native_trace_mixed_videos=$NATIVE_VIDEO_IDS"
+    exit 4
+fi
+echo "native_done=$(date -Is) native_events=$NATIVE_EVENTS native_video_ids=$NATIVE_VIDEO_IDS"
 
 while ! jq -e '.status == "COMPLETE" and (.records | tonumber) == 8996' \
     "$MANIFEST" >/dev/null 2>&1; do
