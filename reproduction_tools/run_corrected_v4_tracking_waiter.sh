@@ -10,14 +10,14 @@ RUNTIME=/home/liuyeqiang/WWW_jev_rng_v4_runtime
 REPO=/data1/liuyeqiang/WWW_rng_fix_v4
 V1="$RUNTIME/small_h8_rng_controlled_v4_current/video_01"
 MANIFEST="$V1/manifest.json"
-METHODS="$RUNTIME/small_h8_training_v4_current_head_75b0aea/methods_v1"
+METHODS="${METHODS_ROOT:-$RUNTIME/small_h8_training_v4_current_head_75b0aea/methods_v1}"
 PROV="$REPO/reports/JEV_RNG_V4/VIDEO01_CORRECTED_CURRENT_HEAD_PROVENANCE.json"
 CAND="$REPO/reports/JEV_RNG_V4/REACTIVATION_CANDIDATE_PARITY.json"
 PARITY="$REPO/reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_VIDEO01_CORRECTED_CURRENT_HEAD.json"
 STABILITY="$REPO/reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_STABILITY_VIDEO06_CORRECTED_CURRENT_HEAD.json"
 FORMAL="$REPO/reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CORRECTED_PINNED.json"
 TRAIN="$REPO/reports/JEV_RNG_V4/CORRECTED_V4_SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json"
-OUTROOT="$RUNTIME/corrected_v4_video01_tracking_current_head_75b0aea"
+OUTROOT="${TRACKING_OUTPUT_ROOT:-$RUNTIME/corrected_v4_video01_tracking_current_head_75b0aea}"
 OUTREPORT="$REPO/reports/JEV_RNG_V4/CORRECTED_V4_VIDEO01_THREE_WAY_TRACKING.json"
 
 echo "watcher_started=$(date -Is)"
