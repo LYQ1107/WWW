@@ -15,7 +15,12 @@
     "video_id": 4,
     "worker": "gpu8-slot5",
     "pid": 3455,
-    "source_lines_processed": 7203,
+    "expected_source_lines": 7203,
+    "persisted_partial_records": 4937,
+    "partial_prefix_integrity": "PASS",
+    "partial_first_event_order": 107080,
+    "partial_last_event_order": 112016,
+    "next_expected_event_order": 112017,
     "last_written_temp_bytes": 18058312,
     "error": "RuntimeError: Sizes of tensors must match except in dimension 0. Expected size 1152 but got size 0 for tensor number 80 in the list.",
     "call_site": "reproduction_tools/jev_gmt_association_adapter.py:torch.cat(reid_features)"
@@ -49,7 +54,7 @@
   "continuation": {
     "official_shards_ready": false,
     "video_04_temp_is_official": false,
-    "next_safe_action": "Retry only video_04 with the patched adapter when a scheduler slot is available; leave all current RUNNING builders untouched, then require a COMPLETE manifest before aftercare.",
+    "next_safe_action": "Retry only video_04 from the audited 4937-record prefix with the patched adapter when a scheduler slot is available; leave all current RUNNING builders untouched, then require a COMPLETE manifest before aftercare.",
     "pilot_results_remain_valid": true
   }
 }

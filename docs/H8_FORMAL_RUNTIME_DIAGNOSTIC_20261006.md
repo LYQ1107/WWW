@@ -6,7 +6,7 @@ This report records the first formal-builder failure after the early closed-loop
 
 At the diagnostic snapshot, the formal queue contained 22 `RUNNING` videos, one `FAILED` video, and one `COMPLETE` video. `video_08` was complete with 3,950 records. No running builder was stopped, restarted, or migrated for this diagnosis.
 
-The failed item was `video_04` on `gpu8-slot5` after 7,203 source lines. Its temporary output contained 18,058,312 bytes, but it is not an official shard because the worker did not produce a complete manifest.
+The failed item was `video_04` on `gpu8-slot5`. Its partition contains 7,203 expected decisions; the worker persisted a 4,937-record temporary prefix (18,058,312 bytes) before failing. The prefix is not an official shard because the worker did not reach the complete boundary or produce a manifest.
 
 ## Cause
 
@@ -18,6 +18,8 @@ Expected size 1152 but got size 0 for tensor number 80 in the list.
 ```
 
 The cache audit found 57,508 indexed payloads in total. Only 29 have zero detections; all 29 are `video_04/view_0` records with the valid representation `pred_boxes=[0,4]` and `reid_features=[0,0]`. There are no records with detections but a zero ReID dimension. Therefore the cache is not corrupted. The failure was an adapter boundary bug: an empty frame inside the 80-step association history was concatenated directly with normal 1,152-dimensional ReID features.
+
+The partial-output audit found zero invalid JSON/schema records in the 4,937 lines. Their event orders are 107,080–112,016 and exactly match the first 4,937 events of the source trace; event 112,017 is the next missing event. Because the prefix does not reach the expected 7,203-record boundary, it is retained only as evidence and is not promoted or merged.
 
 ## Fix and validation
 
