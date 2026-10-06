@@ -177,14 +177,15 @@ class GMTAssociationTransformerAdapter:
                 traj_ids,
                 trajectory_rng=trajectory_rng,
             )
-            # Native GMT normalizes association logits independently for each
-            # historical slice.  ``run_first_tracker_plus`` receives one
-            # slice; ``run_global_tracker_plus`` splits the final transformer
-            # output by ``n_t[:-1]``, applies _activate_asso to every slice,
-            # and concatenates the results.  A single softmax over the whole
-            # history changes accumulated trajectory scores and breaks OFF
-            # parity after only a few frames.
-            final_output = outputs[-1].split(
+            # Native GMT removes the current query columns *before* applying
+            # the background softmax: ``get_asso`` returns the full matrix,
+            # then ``run_first_tracker_plus``/``run_global_tracker_plus``
+            # slice ``:Np`` and call ``_activate_asso`` on each historical
+            # slice. Including the query column in the denominator changes
+            # every score and causes an immediate OFF trajectory fork.
+            historical_count = len(previous_ids)
+            historical_logits = outputs[-1][:, :historical_count]
+            final_output = historical_logits.split(
                 [len(instance) for instance in instances[:-1]], dim=1
             )
             active = torch.cat(
