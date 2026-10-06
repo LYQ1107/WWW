@@ -24,13 +24,26 @@ import torch
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PILOT = Path("/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot")
+PILOT = Path(
+    os.environ.get("JEV_PILOT_ROOT", "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot")
+)
 VIDEO_ID = 8
 CHECKPOINT = Path("/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth")
 CONFIG = ROOT / "configs/VISION_test.yaml"
 CACHE = Path("/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train")
-TRACE = Path("/home/liuyeqiang/WWW_jev_full_h8_runtime/partition/trace_by_video/video_08.jsonl")
+TRACE = Path(
+    os.environ.get(
+        "JEV_TRACE_PATH",
+        "/home/liuyeqiang/WWW_jev_full_h8_runtime/partition/trace_by_video/video_08.jsonl",
+    )
+)
 ANNOTATIONS = Path("/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json")
+RECORDS = Path(
+    os.environ.get("JEV_RECORDS_PATH", str(PILOT / "PILOT_TRACKING_TEST.jsonl"))
+)
+OFFLINE_ROOT = Path(
+    os.environ.get("JEV_OFFLINE_ROOT", str(PILOT / "offline"))
+)
 SEED = 20261003
 METHODS = {
     "gmt_off": None,
@@ -95,7 +108,7 @@ def load_inputs():
         key = (VIDEO_ID, int(context.get("frame", 0)), int(context.get("view", 0)))
         by_key[key].append(event)
     records = {}
-    record_path = PILOT / "PILOT_TRACKING_TEST.jsonl"
+    record_path = RECORDS
     with record_path.open(encoding="utf-8") as handle:
         for line in handle:
             if not line.strip():
@@ -150,8 +163,33 @@ def load_runtime_modules():
     )
 
 
-def choose(policy, feature, question, legal, off_action):
-    return policy.decide(feature, question, legal, off_action=off_action).committed_action
+def choose(policy, feature, question, legal, off_action, context=None):
+    return policy.decide(
+        feature,
+        question,
+        legal,
+        off_action=off_action,
+        context=context,
+    ).committed_action
+
+
+def runtime_tracker_context(state) -> Dict[str, Any]:
+    """Serialize only mutable online containers for a generated pilot trace."""
+
+    return {
+        "active_track_ids": sorted(int(value) for value in state.active_ids),
+        "id_count": int(max(state.active_ids or {0})),
+        "track_hits": {
+            str(int(key)): int(value) for key, value in sorted(state.track_hits.items())
+        },
+        "memory_lengths": {
+            str(int(key)): int(len(value)) for key, value in sorted(state.memory.items())
+        },
+        "memory_track_ids": sorted(int(value) for value in state.memory),
+        "possible_memory_ids": sorted(int(value) for value in state.stale_ids),
+        "stale_ids": sorted(int(value) for value in state.stale_ids),
+        "old_reid_count": 0,
+    }
 
 
 def ordered_replay_keys(cache, video_id: int, view_num: int):
@@ -283,6 +321,7 @@ def run_method(
     feature_source_mode,
     parity_report,
     max_frame=None,
+    trace_writer=None,
 ):
     # The released GMT transformer uses process-global Python RNG for its
     # trajectory-slot assignment.  A fixed replay seed makes this pilot
@@ -294,7 +333,11 @@ def run_method(
         if checkpoint_path is not None
         else None
     )
-    policy = JEVRuntimePolicy("jev", controller) if controller is not None else JEVRuntimePolicy("off")
+    policy = (
+        JEVRuntimePolicy("jev", controller, trace_writer)
+        if controller is not None
+        else JEVRuntimePolicy("off", trace_writer=trace_writer)
+    )
     engine = build_formal_gmt_engine(
         config_file=CONFIG,
         checkpoint=CHECKPOINT,
@@ -494,7 +537,48 @@ def run_method(
             )
             record = records.get((VIDEO_ID, frame, view, "MATCH_DECISION", row))
             feature = select_feature(record, runtime_feature)
-            action = choose(policy, feature, "MATCH_DECISION", legal, off_action)
+            match_context = {
+                "video_id": VIDEO_ID,
+                "view_num": 2,
+                "frame": frame,
+                "view": view,
+                "decision_scope": "match",
+                "detection_index": row,
+                "model_image_size": [int(payload["image_size"][0]), int(payload["image_size"][1])],
+                "bbox_xyxy": [float(value) for value in payload["pred_boxes"][row].tolist()],
+                "detection_score": float(payload["detection_scores"][row].item()),
+                "tracker_state_before": runtime_tracker_context(state),
+                "association_rng_mode": "process_global_python_random_seeded",
+                "association_rng_seed": SEED,
+            }
+            if col is not None:
+                match_context.update(
+                    {
+                        "candidate_track_ids": [int(track_ids[index]) for index in order],
+                        "candidate_scores": [float(scores[row, index].item()) for index in order],
+                        "proposal_track_id": int(first_id),
+                        "alternate_track_id": (
+                            int(track_ids[second_col]) if second_col is not None else None
+                        ),
+                    }
+                )
+            else:
+                match_context.update(
+                    {
+                        "candidate_track_ids": [],
+                        "candidate_scores": [],
+                        "proposal_track_id": None,
+                        "alternate_track_id": None,
+                    }
+                )
+            action = choose(
+                policy,
+                feature,
+                "MATCH_DECISION",
+                legal,
+                off_action,
+                context=match_context,
+            )
             if action not in legal:
                 action = off_action
             trace_action = trace_action_for(events_here, "MATCH_DECISION", row)
@@ -554,7 +638,28 @@ def run_method(
             record = records.get((VIDEO_ID, frame, view, "MEMORY_DECISION", row))
             feature = select_feature(record, runtime_feature)
             off_action = "WRITE_MEMORY"
-            action = choose(policy, feature, "MEMORY_DECISION", legal, off_action)
+            memory_context = {
+                "video_id": VIDEO_ID,
+                "view_num": 2,
+                "frame": frame,
+                "view": view,
+                "decision_scope": "memory",
+                "detection_index": row,
+                "track_id": int(track_id),
+                "model_image_size": [int(payload["image_size"][0]), int(payload["image_size"][1])],
+                "bbox_xyxy": [float(value) for value in payload["pred_boxes"][row].tolist()],
+                "tracker_state_before": runtime_tracker_context(state),
+                "association_rng_mode": "process_global_python_random_seeded",
+                "association_rng_seed": SEED,
+            }
+            action = choose(
+                policy,
+                feature,
+                "MEMORY_DECISION",
+                legal,
+                off_action,
+                context=memory_context,
+            )
             if action not in legal:
                 action = off_action
             trace_action = trace_action_for(events_here, "MEMORY_DECISION", row)
@@ -838,7 +943,11 @@ def main() -> None:
     selected_methods = {name: METHODS[name] for name in selected_names}
     def execute_method(name: str) -> None:
         relative = selected_methods[name]
-        checkpoint_path = None if relative is None else PILOT / relative
+        checkpoint_path = (
+            None
+            if relative is None
+            else OFFLINE_ROOT / name / "model.pth"
+        )
         if checkpoint_path is not None and not checkpoint_path.is_file():
             raise FileNotFoundError(checkpoint_path)
         print(json.dumps({"starting": name}), flush=True)
