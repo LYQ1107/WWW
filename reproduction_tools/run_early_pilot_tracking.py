@@ -12,7 +12,6 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import json
-import math
 import os
 from pathlib import Path
 import subprocess
@@ -124,7 +123,7 @@ def load_runtime_modules():
     from jev_counterfactual_v2 import MutableGMTState
     from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
     from gtr.modeling.jev_runtime import JEVRuntimePolicy, build_controller_from_checkpoint
-    from gtr.modeling.jev_state import encode_state
+    from gtr.modeling.jev_state import build_state_features
 
     return (
         build_formal_gmt_engine,
@@ -132,75 +131,24 @@ def load_runtime_modules():
         FrozenPerceptionCache,
         JEVRuntimePolicy,
         build_controller_from_checkpoint,
-        encode_state,
+        build_state_features,
     )
 
 
-def state_features(
-    encode_state,
-    *,
-    accept_score: float,
-    reassociate_score: float,
-    threshold: float,
-    candidate_count: int,
-    track_count: int,
-    track_id: int | None,
-    frame: int,
-    view: int,
-    window_length: int,
-    current_is_unmatched: bool = False,
-    memory_count: int = 0,
-    track_score: float = 0.0,
-    score_variance: float = 0.0,
-):
-    def unit(value: float) -> float:
-        value = float(value)
-        if not math.isfinite(value):
-            return 0.0
-        return max(0.0, min(1.0, value))
+def history_track_length(state, track_id: int | None) -> int:
+    """Count one track's occurrences in the bounded mutable association history."""
+    if track_id is None:
+        return 1
+    count = 0
+    for item in state.association_history:
+        assignments = item.get("assignments", {})
+        count += sum(int(value) == int(track_id) for value in assignments.values())
+    return max(1, int(count))
 
-    scores = [unit(accept_score), unit(reassociate_score)]
-    top1, top2 = sorted(scores, reverse=True)
-    safe_length = max(1.0, float((0 if track_id is None else 1)))
-    raw_threshold = float(threshold)
-    safe_threshold = raw_threshold if abs(raw_threshold) > 1e-8 else 1e-8
-    raw_score = float(accept_score)
-    values = {
-        "accept_score": scores[0],
-        "reassociate_score": scores[1],
-        "write_memory_score": unit(track_score),
-        "reactivate_score": scores[1],
-        "accept_threshold": unit(threshold),
-        "unmatched_mass": unit(1.0 - max(scores)),
-        "top1_top2_margin": unit(top1 - top2),
-        "candidate_count_norm": unit(candidate_count / 16.0),
-        "candidate_entropy": 0.0,
-        "track_count_norm": unit(track_count / 128.0),
-        "track_age_norm": 0.0,
-        "track_hits_norm": 0.0,
-        "memory_count_norm": unit(memory_count / 64.0),
-        "track_score_mean": unit(track_score),
-        "track_score_std": 0.0,
-        "frame_index_norm": unit(frame / max(1.0, window_length)),
-        "window_length_norm": unit(window_length / 32.0),
-        "view_index_norm": unit(view / 8.0),
-        "current_is_unmatched": float(bool(current_is_unmatched)),
-        "has_old_track": 0.0,
-        "can_reassociate": 1.0,
-        "memory_enabled": 1.0,
-        "with_iou": 0.0,
-        "not_mult_thresh": 0.0,
-        "state_validity_flag": 1.0,
-        "raw_traj_score": raw_score,
-        "mean_traj_score": raw_score / safe_length,
-        "log1p_traj_score": math.log1p(max(0.0, raw_score)),
-        "score_minus_threshold": raw_score - raw_threshold,
-        "score_over_threshold": raw_score / safe_threshold,
-        "track_length_norm": unit(safe_length / 128.0),
-        "raw_score_variance": max(0.0, float(score_variance)),
-    }
-    return encode_state(values, 64)
 
+def formal_memory_count(state, track_id: int) -> int:
+    """Mirror GTRRCNN id_reid_dict length: initial observation plus writes."""
+    return max(1, 1 + len(state.memory.get(int(track_id), ())))
 
 def choose(policy, feature, question, legal, off_action):
     return policy.decide(feature, question, legal, off_action=off_action).committed_action
@@ -238,7 +186,8 @@ def run_method(
     FrozenPerceptionCache,
     JEVRuntimePolicy,
     build_controller_from_checkpoint,
-    encode_state,
+    build_state_features,
+    feature_source_mode,
 ):
     controller = (
         build_controller_from_checkpoint(checkpoint_path, device="cpu")
@@ -283,7 +232,17 @@ def run_method(
         "memory_contamination": 0.0,
         "unsupported_reactivation": 0,
     }
-    threshold = float(engine.acceptance_threshold)
+    runtime_model = engine.association_fn.model
+    threshold = float(runtime_model.overlap_thresh)
+    can_reassociate = int(runtime_model.jev_max_reassociate) > 0
+    memory_enabled = bool(runtime_model.with_bank)
+    with_iou = bool(runtime_model.with_iou)
+    not_mult_thresh = bool(runtime_model.not_mult_thresh)
+    counts["runtime_feature_records"] = 0
+    counts["trace_debug_feature_records"] = 0
+    counts["feature_parity_records"] = 0
+    counts["feature_parity_max_abs_error"] = 0.0
+
     for key_index, key in enumerate(keys):
         payload = cache.load(*key)
         video_id, frame, view = [int(value) for value in key]
@@ -299,6 +258,27 @@ def run_method(
             for event in events_here
             if event.get("context", {}).get("detection_index") is not None
         }
+        window_length = max(1, len(state.association_history) + 1)
+
+        def select_feature(record, runtime_feature):
+            if record is not None:
+                values = record.get("state", {}).get("feature_vector")
+                if isinstance(values, list) and len(values) == int(runtime_feature.numel()):
+                    trace_feature = torch.tensor(values, dtype=torch.float32)
+                    if torch.isfinite(trace_feature).all():
+                        error = float((trace_feature - runtime_feature.cpu()).abs().max().item())
+                        counts["feature_parity_records"] += 1
+                        counts["feature_parity_max_abs_error"] = max(
+                            float(counts["feature_parity_max_abs_error"]), error
+                        )
+                        if feature_source_mode == "trace_debug":
+                            counts["trace_debug_feature_records"] += 1
+                            return trace_feature
+            counts["runtime_feature_records"] += 1
+            return runtime_feature
+
+        # Phase 1: MATCH decisions use the same feature-value semantics as
+        # production GTRRCNN, but are computed from the current mutable state.
         for row in range(int(scores.shape[0])):
             col = proposal.pairs.get(row)
             if col is None:
@@ -306,7 +286,10 @@ def run_method(
                 off_action = "START_NEW"
                 accept_score = reassociate_score = 0.0
                 track_id = None
+                candidate_entropy = 0.0
+                track_length = 1
                 score_variance = 0.0
+                candidate_count = 0
             else:
                 order = torch.argsort(scores[row], descending=True).tolist()
                 first_col = int(col)
@@ -314,31 +297,44 @@ def run_method(
                 first_id = int(track_ids[first_col])
                 accept_score = float(scores[row, first_col].item())
                 reassociate_score = float(scores[row, second_col].item()) if second_col is not None else 0.0
+                probabilities = torch.softmax(scores[row], dim=0)
+                candidate_entropy = float(
+                    (-(probabilities * probabilities.clamp_min(1e-8).log()).sum()).item()
+                )
+                track_length = history_track_length(state, first_id)
+                legacy_threshold = threshold if not_mult_thresh else threshold * float(track_length)
+                off_action = "ACCEPT_CURRENT" if accept_score > legacy_threshold else "START_NEW"
                 legal = ["ACCEPT_CURRENT", "START_NEW"]
-                if second_col is not None:
+                if can_reassociate and second_col is not None:
                     legal.insert(1, "REASSOCIATE")
-                off_action = "ACCEPT_CURRENT" if accept_score > threshold else "START_NEW"
                 track_id = first_id
                 score_variance = float(scores[row].var().item()) if scores.shape[1] > 1 else 0.0
-            record = records.get((VIDEO_ID, frame, view, "MATCH_DECISION", row))
-            fallback_feature = state_features(
-                encode_state,
+                candidate_count = len(track_ids)
+
+            runtime_feature = build_state_features(
+                state_dim=64,
                 accept_score=accept_score,
                 reassociate_score=reassociate_score,
                 threshold=threshold,
-                candidate_count=len(track_ids),
+                candidate_count=candidate_count,
+                candidate_entropy=candidate_entropy,
                 track_count=len(track_ids),
-                track_id=track_id,
-                frame=frame,
-                view=view,
-                window_length=523,
-                current_is_unmatched=col is None,
-                memory_count=len(state.memory.get(track_id, ())) if track_id is not None else 0,
+                track_age=0,
+                frame_index=frame,
+                window_length=window_length,
+                view_index=view,
+                can_reassociate=can_reassociate,
+                memory_enabled=memory_enabled,
+                with_iou=with_iou,
+                not_mult_thresh=not_mult_thresh,
+                current_is_unmatched=(off_action == "START_NEW"),
+                memory_count=0,
                 track_score=accept_score,
+                track_length=track_length,
                 score_variance=score_variance,
             )
-            feature, feature_source = canonical_feature_or_fallback(record, fallback_feature)
-            counts["canonical_feature_records" if feature_source == "CANONICAL_TRACE_RECORD" else "fallback_feature_records"] += 1
+            record = records.get((VIDEO_ID, frame, view, "MATCH_DECISION", row))
+            feature = select_feature(record, runtime_feature)
             action = trace_off.get(("MATCH_DECISION", row), off_action) if name == "gmt_off" else choose(
                 policy, feature, "MATCH_DECISION", legal, off_action
             )
@@ -353,47 +349,50 @@ def run_method(
                     counts["wrong_commit"] += 1
                 outcome = record["action_outcomes"].get(action)
                 if outcome is None:
-                    # The pilot replays the formal mutable state, while the
-                    # counterfactual record was generated from its own branch
-                    # state.  A lookup can therefore land on an action that
-                    # was not legal in the recorded context.  Keep the
-                    # diagnostic, but never let one such row abort the
-                    # screening run.
                     counts["missing_action_outcomes"] += 1
                 else:
-                    counts["memory_contamination"] += float(
-                        outcome.get("memory_contamination", 0.0)
-                    )
+                    counts["memory_contamination"] += float(outcome.get("memory_contamination", 0.0))
             decisions.append({"frame": frame, "view": view, "row": row, "question": "MATCH_DECISION", "action": action})
 
-        # Memory is a typed commit made on the same current detections.  The
-        # formal engine applies these after the association assignments in the
-        # same step, exactly like the runtime commit boundary.
+        # Resolve MATCH without mutating state so MEMORY sees the final
+        # existing committed identity. START_NEW has no same-step memory gate.
+        resolution = engine.resolve_actions(payload, state, actions=actions)
+        final_existing = resolution["existing_track_ids"]
+
+        # Phase 2: MEMORY decisions are computed only for rows committed to an
+        # existing identity, matching production GTRRCNN commit order.
         for row in range(int(scores.shape[0])):
-            col = proposal.pairs.get(row)
-            track_id = int(track_ids[col]) if col is not None else None
-            score = float(scores[row, col].item()) if col is not None else 0.0
-            memory_count = len(state.memory.get(track_id, ())) if track_id is not None else 0
+            track_id = final_existing.get(row)
+            if track_id is None:
+                continue
+            score = float(scores[row].max().item()) if scores.shape[1] else 0.0
+            memory_count = formal_memory_count(state, int(track_id))
             legal = ["WRITE_MEMORY", "SKIP_MEMORY"]
-            record = records.get((VIDEO_ID, frame, view, "MEMORY_DECISION", row))
-            fallback_feature = state_features(
-                encode_state,
+            runtime_feature = build_state_features(
+                state_dim=64,
                 accept_score=score,
                 reassociate_score=0.0,
                 threshold=threshold,
                 candidate_count=1,
+                candidate_entropy=0.0,
                 track_count=len(track_ids),
-                track_id=track_id,
-                frame=frame,
-                view=view,
-                window_length=523,
+                track_age=memory_count,
+                frame_index=frame,
+                window_length=window_length,
+                view_index=view,
+                can_reassociate=can_reassociate,
+                memory_enabled=memory_enabled,
+                with_iou=with_iou,
+                not_mult_thresh=not_mult_thresh,
                 memory_count=memory_count,
                 track_score=score,
+                track_length=max(1, memory_count),
+                score_variance=0.0,
             )
-            feature, feature_source = canonical_feature_or_fallback(record, fallback_feature)
-            counts["canonical_feature_records" if feature_source == "CANONICAL_TRACE_RECORD" else "fallback_feature_records"] += 1
-            off_action = trace_off.get(("MEMORY_DECISION", row), "WRITE_MEMORY")
-            action = off_action if name == "gmt_off" else choose(
+            record = records.get((VIDEO_ID, frame, view, "MEMORY_DECISION", row))
+            feature = select_feature(record, runtime_feature)
+            off_action = "WRITE_MEMORY"
+            action = trace_off.get(("MEMORY_DECISION", row), off_action) if name == "gmt_off" else choose(
                 policy, feature, "MEMORY_DECISION", legal, off_action
             )
             if action not in legal:
@@ -409,11 +408,8 @@ def run_method(
                 if outcome is None:
                     counts["missing_action_outcomes"] += 1
                 else:
-                    counts["memory_contamination"] += float(
-                        outcome.get("memory_contamination", 0.0)
-                    )
+                    counts["memory_contamination"] += float(outcome.get("memory_contamination", 0.0))
             decisions.append({"frame": frame, "view": view, "row": row, "question": "MEMORY_DECISION", "action": action})
-
         result = engine.step(payload, state, actions=actions, memory_actions=memories)
         image = image_lookup[(VIDEO_ID, view + 1, frame + 1)]
         committed = result["committed_track_ids"]
@@ -494,8 +490,8 @@ def run_eval(method: str, prediction: Path, dataset_root: Path) -> tuple[Path, P
     # Keep prior failed/fixed screening evaluations immutable.  Each rerun
     # gets a new semantic tag so an old prepared directory can never be
     # mistaken for the current result.
-    prepared = PILOT / "tracking_eval_parity" / method / "prepared"
-    evaluated = PILOT / "tracking_eval_parity" / method / "evaluation"
+    prepared = PILOT / "tracking_eval_runtime_state" / method / "prepared"
+    evaluated = PILOT / "tracking_eval_runtime_state" / method / "evaluation"
     env = os.environ.copy()
     env["PYTHONPATH"] = ":".join([str(ROOT), str(ROOT / "third_party/CenterNet2"), str(ROOT / "reproduction_tools"), env.get("PYTHONPATH", "")])
     commands = [
@@ -529,13 +525,14 @@ def extract_metrics(evaluated: Path) -> Dict[str, float]:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--device", default="cpu", choices=("cpu",))
+    parser.add_argument("--feature-source", choices=("runtime", "trace_debug"), default="runtime")
     args = parser.parse_args()
     for path in (CHECKPOINT, CONFIG, CACHE, TRACE, ANNOTATIONS):
         if not path.exists():
             raise FileNotFoundError(path)
     annotations, subset_annotation, image_lookup, by_key, records = load_inputs()
     modules = load_runtime_modules()
-    build_formal_gmt_engine, MutableGMTState, FrozenPerceptionCache, JEVRuntimePolicy, build_controller_from_checkpoint, encode_state = modules
+    build_formal_gmt_engine, MutableGMTState, FrozenPerceptionCache, JEVRuntimePolicy, build_controller_from_checkpoint, build_state_features = modules
     raw = {
         "status": "RUNNING",
         "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
@@ -565,7 +562,8 @@ def main() -> None:
             FrozenPerceptionCache=FrozenPerceptionCache,
             JEVRuntimePolicy=JEVRuntimePolicy,
             build_controller_from_checkpoint=build_controller_from_checkpoint,
-            encode_state=encode_state,
+            build_state_features=build_state_features,
+            feature_source_mode=args.feature_source,
         )
         json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)
     dataset_root = prepare_eval_dataset(subset_annotation)
@@ -608,8 +606,9 @@ def main() -> None:
         "config": raw["config"],
         "perception_cache": raw["perception_cache"],
         "association_backend": raw["association_backend"],
-        "closed_loop_definition": "frozen detector/ReID payloads + formal GMT association transformer + mutable branch-local association/memory state + online typed controller commits; controller feature inputs use the canonical formal trace vector when available",
-        "controller_feature_source": "PILOT_TRACKING_TEST state.feature_vector (the exact online-only vector used by H=8 policy training); reconstructed fallback is counted per method",
+        "closed_loop_definition": "frozen detector/ReID payloads + formal GMT association transformer + mutable branch-local association/memory state + online typed controller commits; runtime mode recomputes controller features from the mutated state through the canonical shared builder",
+        "controller_feature_source": args.feature_source,
+        "trace_feature_policy": "trace_debug is parity-only and must not be interpreted as a closed-loop scientific result",
         "official_test_read": False,
         "methods": methods,
         "gmt_off_baseline": baseline,
