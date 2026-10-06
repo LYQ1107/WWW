@@ -117,6 +117,46 @@ def main():
     assert branch_a.trajectory_rng_calls == 0
     assert branch_b.trajectory_rng_calls == 0
 
+    # Candidate evaluation order is also a gate: each legal action starts
+    # from the same pre-decision state, so its committed result is invariant
+    # to the order in which the caller enumerates actions.
+    order_association = CountingFormalAssociation()
+    order_engine = CachedPerceptionMutableAssociationV2(
+        association_fn=order_association,
+        acceptance_threshold=-1.0,
+    )
+
+    def evaluate_in_order(order):
+        outcomes = {}
+        for action in order:
+            branch = source.clone()
+            proposal = order_engine.propose(perception, branch)
+            result = order_engine.step(
+                perception,
+                branch,
+                actions={0: action, 1: "ACCEPT_CURRENT"},
+                proposal=proposal,
+            )
+            outcomes[action] = {
+                "committed": dict(result["committed_track_ids"]),
+                "pairs": dict(result["final_pairs"]),
+                "scores": result["final_scores"].clone(),
+                "state": _state_signature(branch),
+            }
+        return outcomes
+
+    candidates_a = evaluate_in_order(
+        ("ACCEPT_CURRENT", "REASSOCIATE", "START_NEW")
+    )
+    candidates_b = evaluate_in_order(
+        ("START_NEW", "ACCEPT_CURRENT", "REASSOCIATE")
+    )
+    for action in candidates_a:
+        assert candidates_a[action]["committed"] == candidates_b[action]["committed"]
+        assert candidates_a[action]["pairs"] == candidates_b[action]["pairs"]
+        assert torch.equal(candidates_a[action]["scores"], candidates_b[action]["scores"])
+        assert candidates_a[action]["state"] == candidates_b[action]["state"]
+
     # The action map insertion order cannot change the constrained proposal.
     actions_one = OrderedDict(((0, "REASSOCIATE"), (1, "ACCEPT_CURRENT")))
     actions_two = OrderedDict(((1, "ACCEPT_CURRENT"), (0, "REASSOCIATE")))
