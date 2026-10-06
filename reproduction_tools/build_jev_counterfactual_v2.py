@@ -305,6 +305,7 @@ def _prepare_reactivation_context(
     proposal,
     events: Sequence[Mapping[str, Any]],
     engine: CachedPerceptionMutableAssociationV2,
+    strict: bool = True,
 ):
     """Build the native stale-bank proposal for one frame/view.
 
@@ -331,33 +332,78 @@ def _prepare_reactivation_context(
         state, bank_size=_reactivation_bank_size(engine, state)
     )
     if not candidate_ids:
-        raise RuntimeError(
-            "native reactivation events exist but mutable stale bank is empty "
-            f"at key={(payload.get('video_id'), payload.get('frame'), payload.get('view'))}"
-        )
-    state.stale_ids.update(candidate_ids)
-    reactivation_payload = subset_perception_payload(payload, rows)
-    reactivation_proposal = build_reactivation_proposal(
-        engine, reactivation_payload, state, candidate_ids, proposal
-    )
-    if reactivation_proposal is None:
-        raise RuntimeError("failed to build a non-empty reactivation proposal")
-    row_map = {source_row: index for index, source_row in enumerate(rows)}
+        if strict:
+            raise RuntimeError(
+                "native reactivation events exist but mutable stale bank is empty "
+                f"at key={(payload.get('video_id'), payload.get('frame'), payload.get('view'))}"
+            )
+        # A counterfactual branch may have reactivated the identity that is
+        # stale in the OFF trace.  In that branch the OFF reactivation event
+        # is no longer applicable; let the ordinary association proposal
+        # resolve the unmatched row instead of borrowing an invalid stale
+        # bank.  The production OFF path keeps strict=True and therefore
+        # still fails closed on a real native/replay mismatch.
+        return None, {}
+
     expected_ids = []
     for event in reactivation_events:
         native_ids = event.get("context", {}).get("native_candidate_track_ids")
         if isinstance(native_ids, list):
             expected_ids.append(tuple(int(value) for value in native_ids))
     if expected_ids and any(
-        tuple(int(value) for value in reactivation_proposal.track_ids) != value
+        tuple(int(value) for value in candidate_ids) != value
         for value in expected_ids
     ):
-        raise RuntimeError(
-            "mutable stale-bank candidate IDs disagree with native trace: "
-            f"native={expected_ids!r} "
-            f"replay={list(reactivation_proposal.track_ids)!r}"
-        )
+        if strict:
+            raise RuntimeError(
+                "mutable stale-bank candidate IDs disagree with native trace: "
+                f"native={expected_ids!r} replay={candidate_ids!r}"
+            )
+        # The branch has a different stale-bank history from the OFF trace.
+        # Do not apply an OFF reactivation action to that branch.  Its normal
+        # MATCH proposal remains valid and is handled by the caller.
+        return None, {}
+
+    state.stale_ids.update(candidate_ids)
+    reactivation_payload = subset_perception_payload(payload, rows)
+    reactivation_proposal = build_reactivation_proposal(
+        engine, reactivation_payload, state, candidate_ids, proposal
+    )
+    if reactivation_proposal is None:
+        if strict:
+            raise RuntimeError("failed to build a non-empty reactivation proposal")
+        return None, {}
+    row_map = {source_row: index for index, source_row in enumerate(rows)}
     return reactivation_proposal, row_map
+
+
+def _future_branch_actions(
+    events: Sequence[Mapping[str, Any]],
+    *,
+    reactivation_applicable: bool,
+) -> Dict[int, str]:
+    """Select OFF actions that remain meaningful for a branch state.
+
+    MATCH and REACTIVATION questions can share a detection row.  The legacy
+    event map intentionally collapses them for the native OFF trajectory,
+    but a counterfactual branch can make the reactivation question disappear
+    (for example after choosing REACTIVATE_OLD).  Rebuild the action map from
+    typed events so an inapplicable OFF reactivation action cannot overwrite
+    the branch's ordinary MATCH action.
+    """
+
+    selected: Dict[int, str] = {}
+    for event in events:
+        question = str(event.get("question"))
+        if question not in {"MATCH_DECISION", "REACTIVATION_DECISION"}:
+            continue
+        row = event.get("context", {}).get("detection_index")
+        if row is None:
+            continue
+        if question == "REACTIVATION_DECISION" and not reactivation_applicable:
+            continue
+        selected[int(row)] = str(event.get("off_action") or event.get("proposed_action"))
+    return selected
 
 
 def _reactivation_assignments(
@@ -858,7 +904,6 @@ def build_v2_records(
                                 ),
                             )
                             future_events = by_key.get(future_key, ())
-                            future_actions = dict(actions.get(future_key, {}))
                             future_memories = dict(memories.get(future_key, {}))
                             future_proposal = None
                             if any(
@@ -881,6 +926,13 @@ def build_v2_records(
                                 proposal=future_proposal,
                                 events=future_events,
                                 engine=engine,
+                                strict=False,
+                            )
+                            future_actions = _future_branch_actions(
+                                future_events,
+                                reactivation_applicable=(
+                                    future_reactivation_proposal is not None
+                                ),
                             )
                             future_result = engine.step(
                                 future_payload,

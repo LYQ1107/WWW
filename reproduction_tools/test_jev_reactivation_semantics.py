@@ -2,6 +2,10 @@
 
 import torch
 
+from build_jev_counterfactual_v2 import (
+    _future_branch_actions,
+    _prepare_reactivation_context,
+)
 from jev_counterfactual_v2 import (
     MutableGMTState,
     build_reactivation_proposal,
@@ -82,6 +86,58 @@ def main():
     }
     assert 3 not in window_state.active_ids
     assert window_state.active_ids == {1}
+
+    branch_events = [
+        {
+            "question": "MATCH_DECISION",
+            "off_action": "ACCEPT_CURRENT",
+            "context": {"detection_index": 0},
+        },
+        {
+            "question": "REACTIVATION_DECISION",
+            "off_action": "START_NEW",
+            "context": {"detection_index": 0},
+        },
+    ]
+    assert _future_branch_actions(
+        branch_events, reactivation_applicable=False
+    ) == {0: "ACCEPT_CURRENT"}
+    assert _future_branch_actions(
+        branch_events, reactivation_applicable=True
+    ) == {0: "START_NEW"}
+
+    empty_state = MutableGMTState()
+    reactivation_event = {
+        "question": "REACTIVATION_DECISION",
+        "context": {"detection_index": 0},
+    }
+    no_bank_payload = {
+        "video_id": 1,
+        "frame": 216,
+        "view": 1,
+        "pred_boxes": torch.zeros((1, 4)),
+        "reid_features": torch.zeros((1, 2)),
+    }
+    try:
+        _prepare_reactivation_context(
+            payload=no_bank_payload,
+            state=empty_state,
+            proposal=None,
+            events=[reactivation_event],
+            engine=engine,
+        )
+    except RuntimeError as exc:
+        assert "stale bank is empty" in str(exc)
+    else:
+        raise AssertionError("strict OFF reactivation mismatch must fail closed")
+    assert _prepare_reactivation_context(
+        payload=no_bank_payload,
+        state=empty_state,
+        proposal=None,
+        events=[reactivation_event],
+        engine=engine,
+        strict=False,
+    ) == (None, {})
     print("JEV reactivation row-filter semantics: PASS")
 
 
