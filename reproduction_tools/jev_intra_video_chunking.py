@@ -75,6 +75,7 @@ def plan_chunks(
     if target < 1:
         raise ValueError("target_records must be positive")
     keys = [tuple(int(value) for value in key) for key in ordered_keys]
+    keys.sort(key=lambda key: (key[1], key[2]))
     counts = [decision_count_for_key(events_by_key.get(key, ())) for key in keys]
     chunks: list[dict[str, Any]] = []
     start = 0
