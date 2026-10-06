@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "created_utc": "2026-10-06T08:16:07.176073+00:00",
+  "runner": "direct_builtin_assertion_entrypoints",
+  "pytest_available": false,
+  "gpu_used": false,
+  "live_formal_h8_workers_modified": false,
+  "tests": [
+    {
+      "file": "reproduction_tools/test_finalize_jev_full_h8.py",
+      "status": "PASS",
+      "checks": ["finalizer_invariants", "explicit_source_compatibility_invariants"]
+    },
+    {
+      "file": "reproduction_tools/test_jev_contract.py",
+      "status": "PASS",
+      "checks": ["data_contract_invariants"]
+    },
+    {
+      "file": "reproduction_tools/test_jev_counterfactual_v2.py",
+      "status": "PASS",
+      "checks": ["cached_perception_v2_invariants"]
+    },
+    {
+      "file": "reproduction_tools/test_jev_decision.py",
+      "status": "PASS",
+      "checks": ["question_conditioned_decision_invariants"]
+    },
+    {
+      "file": "reproduction_tools/test_replay_jev_policy.py",
+      "status": "PASS",
+      "checks": [
+        "online_replay_future_gt_access_false",
+        "offline_oracle_replay_future_gt_access_true"
+      ]
+    },
+    {
+      "file": "reproduction_tools/test_jev_selection_gates.py",
+      "status": "PASS",
+      "checks": ["validation_only_selection_gate_invariants"]
+    },
+    {
+      "file": "reproduction_tools/test_gmt_jev_integration.py",
+      "status": "PASS",
+      "checks": ["gmt_jev_integration_invariants"]
+    }
+  ]
+}
