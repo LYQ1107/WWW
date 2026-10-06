@@ -403,6 +403,8 @@ def run_method(
     max_frame=None,
     trace_writer=None,
 ):
+    from jev_counterfactual_v2 import subset_perception_payload
+
     controller = (
         build_controller_from_checkpoint(checkpoint_path, device="cpu")
         if checkpoint_path is not None
@@ -806,27 +808,36 @@ def run_method(
         # future annotations remain outside this path.
         reactivation_assignments = {}
         reactivation_proposal = None
+        reactivation_rows = [
+            row
+            for row in range(int(scores.shape[0]))
+            if final_existing.get(row) is None
+        ]
         bank_size = int(getattr(runtime_model, "bank_size", 10))
         bank_threshold = float(getattr(runtime_model, "thred_bank", 0.4))
         stale_ids, recent_ids = reactivation_candidates(state, bank_size=bank_size)
-        if stale_ids:
+        if stale_ids and reactivation_rows:
             state.stale_ids.update(stale_ids)
-            reactivation_proposal = build_reactivation_proposal(
-                engine, payload, state, stale_ids, proposal
+            reactivation_payload = subset_perception_payload(
+                payload, reactivation_rows
             )
-        for row in range(int(scores.shape[0])):
-            if final_existing.get(row) is not None:
-                continue
+            reactivation_proposal = build_reactivation_proposal(
+                engine, reactivation_payload, state, stale_ids, proposal
+            )
+        for reactivation_row, row in enumerate(reactivation_rows):
             if reactivation_proposal is None:
                 counts["reactivation_no_candidate"] += 1
                 continue
-            col = reactivation_proposal.pairs.get(row)
+            col = reactivation_proposal.pairs.get(reactivation_row)
             if col is None:
                 counts["reactivation_no_candidate"] += 1
                 continue
             stale_id = int(reactivation_proposal.track_ids[col])
-            score = float(reactivation_proposal.scores[row, col].item())
-            memory_count = max(1, len(state.memory.get(stale_id, ())) + 1)
+            score = float(reactivation_proposal.scores[reactivation_row, col].item())
+            # Native ``run_memory_tracker`` supplies id_count_dict here,
+            # i.e. total committed observations for the stale identity, not
+            # the number of samples written to its memory bank.
+            memory_count = max(1, int(state.track_hits.get(stale_id, 1)))
             off_action = (
                 "REACTIVATE_OLD"
                 if score > bank_threshold
@@ -840,7 +851,7 @@ def run_method(
                 threshold=bank_threshold,
                 candidate_count=1,
                 candidate_entropy=0.0,
-                track_count=len(recent_ids),
+                track_count=len(reactivation_proposal.track_ids),
                 track_age=memory_count,
                 frame_index=frame,
                 window_length=window_length,
@@ -868,7 +879,7 @@ def run_method(
                 "track_id": stale_id,
                 "candidate_track_ids": [int(value) for value in reactivation_proposal.track_ids],
                 "candidate_scores": [
-                    float(reactivation_proposal.scores[row, index].item())
+                    float(reactivation_proposal.scores[reactivation_row, index].item())
                     for index in range(len(reactivation_proposal.track_ids))
                 ],
                 "reactivation_score": score,
@@ -924,7 +935,7 @@ def run_method(
                         int(value) for value in reactivation_proposal.track_ids
                     ],
                     "candidate_scores": [
-                        float(reactivation_proposal.scores[row, index].item())
+                        float(reactivation_proposal.scores[reactivation_row, index].item())
                         for index in range(len(reactivation_proposal.track_ids))
                     ],
                     "candidate_order": "sorted_mutable_stale_ids",

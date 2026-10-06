@@ -56,6 +56,103 @@ def proposal_state_for_output(state: object) -> object:
     return json.loads(json.dumps(state))
 
 
+def subset_perception_payload(
+    payload: Mapping[str, object], rows: Sequence[int]
+) -> Mapping[str, object]:
+    """Return an immutable-cache payload restricted to detection ``rows``.
+
+    Native GMT's stale-bank pass receives only the detections that failed the
+    ordinary association in the current view.  Passing the complete current
+    frame changes the transformer query set and therefore changes every stale
+    candidate score.  Keep this operation in the shared counterfactual module
+    so the formal builder and runtime replay cannot implement different row
+    filtering rules.
+    """
+
+    selected = [int(row) for row in rows]
+    total = int(torch.as_tensor(payload["pred_boxes"]).shape[0])
+    if any(row < 0 or row >= total for row in selected):
+        raise IndexError(f"payload row is outside detection range: {selected}")
+    indices = torch.as_tensor(selected, dtype=torch.long)
+    result = dict(payload)
+    for name in ("pred_boxes", "detection_scores", "reid_features"):
+        if name in payload:
+            value = torch.as_tensor(payload[name])
+            result[name] = value.index_select(0, indices)
+    metadata = dict(payload.get("proposal_metadata", {}) or {})
+    for name, value in list(metadata.items()):
+        if isinstance(value, list) and len(value) == total:
+            metadata[name] = [value[row] for row in selected]
+    result["proposal_metadata"] = metadata
+    result["source_detection_indices"] = selected
+    return result
+
+
+def reactivation_candidates(
+    state: "MutableGMTState", *, bank_size: int = 10
+) -> Tuple[List[int], Set[int]]:
+    """Advance the mutable mirror of native ``poss_ids``/``old_reids``.
+
+    A completed online memory bank first becomes eligible in ``poss_ids`` and
+    is moved to the persistent stale bank only after the identity is outside
+    the current association window.  The averaged bank entry then persists
+    until successful reactivation.  This function is deliberately free of
+    detector, GT, and future-frame access.
+    """
+
+    recent_ids: Set[int] = set()
+    for item in state.association_history:
+        for value in dict(item.get("assignments", {})).values():
+            recent_ids.add(int(value))
+    state.memory_bank_size = max(1, int(bank_size))
+    for track_id, values in state.memory.items():
+        track_id = int(track_id)
+        if (
+            len(values) >= state.memory_bank_size
+            and track_id not in state.reactivation_bank
+        ):
+            state.possible_memory_ids.add(track_id)
+
+    for track_id in sorted(tuple(state.possible_memory_ids)):
+        track_id = int(track_id)
+        if track_id in recent_ids:
+            continue
+        values = state.memory.get(track_id, ())
+        if len(values) < state.memory_bank_size:
+            continue
+        recent_values = values[-state.memory_bank_size :]
+        state.reactivation_bank[track_id] = torch.stack(
+            [torch.as_tensor(value, dtype=torch.float32) for value in recent_values],
+            dim=0,
+        ).mean(dim=0).detach().cpu().clone()
+        state.possible_memory_ids.discard(track_id)
+
+    return sorted(int(track_id) for track_id in state.reactivation_bank), recent_ids
+
+
+def build_reactivation_proposal(
+    engine,
+    payload: Mapping[str, object],
+    state: "MutableGMTState",
+    candidate_ids: Sequence[int],
+    proposal: Optional["AssociationProposal"],
+):
+    """Run the formal GMT stale-bank association on an isolated state clone."""
+
+    if not candidate_ids:
+        return None
+    probe = state.clone()
+    if proposal is not None and proposal.rng_state_after is not None:
+        probe.trajectory_rng_state = proposal.rng_state_after
+    probe.active_ids = set(int(value) for value in candidate_ids)
+    probe.reactivation_bank = {
+        int(track_id): state.reactivation_bank[int(track_id)].detach().cpu().clone()
+        for track_id in candidate_ids
+    }
+    probe.reactivation_mode = True
+    return engine.propose(payload, probe)
+
+
 @dataclass(frozen=True)
 class AssociationScoreResult:
     """Association scores plus the explicit RNG provenance for one proposal."""

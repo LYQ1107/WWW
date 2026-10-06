@@ -33,7 +33,10 @@ from jev_counterfactual_v2 import (
     TRAJECTORY_RNG_POLICY,
     CachedPerceptionMutableAssociationV2,
     MutableGMTState,
+    build_reactivation_proposal,
+    reactivation_candidates,
     seed_production_state_from_payload,
+    subset_perception_payload,
 )
 from jev_dataset_tools import make_record
 from jev_mutable_branch import is_main_decision
@@ -286,6 +289,95 @@ def _controller_semantics(engine: CachedPerceptionMutableAssociationV2):
     }
 
 
+def _reactivation_bank_size(
+    engine: CachedPerceptionMutableAssociationV2,
+    state: MutableGMTState,
+) -> int:
+    model = getattr(getattr(engine, "association_fn", None), "model", None)
+    return max(1, int(getattr(model, "bank_size", state.memory_bank_size)))
+
+
+def _prepare_reactivation_context(
+    *,
+    payload: Mapping[str, Any],
+    state: MutableGMTState,
+    proposal,
+    events: Sequence[Mapping[str, Any]],
+    engine: CachedPerceptionMutableAssociationV2,
+):
+    """Build the native stale-bank proposal for one frame/view.
+
+    The native memory-bank pass receives exactly the rows that were unmatched
+    by the ordinary association.  The trace is the immutable source of that
+    row set; the mutable state supplies the stale-bank identities/features.
+    """
+
+    reactivation_events = [
+        event
+        for event in events
+        if str(event.get("question")) == "REACTIVATION_DECISION"
+        and event.get("context", {}).get("detection_index") is not None
+    ]
+    if not reactivation_events:
+        return None, {}
+    rows = sorted(
+        {
+            int(event["context"]["detection_index"])
+            for event in reactivation_events
+        }
+    )
+    candidate_ids, _recent_ids = reactivation_candidates(
+        state, bank_size=_reactivation_bank_size(engine, state)
+    )
+    if not candidate_ids:
+        raise RuntimeError(
+            "native reactivation events exist but mutable stale bank is empty "
+            f"at key={(payload.get('video_id'), payload.get('frame'), payload.get('view'))}"
+        )
+    state.stale_ids.update(candidate_ids)
+    reactivation_payload = subset_perception_payload(payload, rows)
+    reactivation_proposal = build_reactivation_proposal(
+        engine, reactivation_payload, state, candidate_ids, proposal
+    )
+    if reactivation_proposal is None:
+        raise RuntimeError("failed to build a non-empty reactivation proposal")
+    row_map = {source_row: index for index, source_row in enumerate(rows)}
+    expected_ids = []
+    for event in reactivation_events:
+        native_ids = event.get("context", {}).get("native_candidate_track_ids")
+        if isinstance(native_ids, list):
+            expected_ids.append(tuple(int(value) for value in native_ids))
+    if expected_ids and any(
+        tuple(int(value) for value in reactivation_proposal.track_ids) != value
+        for value in expected_ids
+    ):
+        raise RuntimeError(
+            "mutable stale-bank candidate IDs disagree with native trace: "
+            f"native={expected_ids!r} "
+            f"replay={list(reactivation_proposal.track_ids)!r}"
+        )
+    return reactivation_proposal, row_map
+
+
+def _reactivation_assignments(
+    actions: Mapping[int, str], reactivation_proposal, row_map: Mapping[int, int]
+) -> Dict[int, int]:
+    if reactivation_proposal is None:
+        return {}
+    assignments: Dict[int, int] = {}
+    for source_row, proposal_row in row_map.items():
+        if actions.get(int(source_row)) != "REACTIVATE_OLD":
+            continue
+        column = reactivation_proposal.pairs.get(int(proposal_row))
+        if column is None:
+            raise RuntimeError(
+                "REACTIVATE_OLD has no legal stale-bank assignment: "
+                f"row={source_row} proposal_row={proposal_row}"
+            )
+        assignments[int(source_row)] = int(reactivation_proposal.track_ids[column])
+    return assignments
+
+
 def canonical_state_feature_for_event(
     *,
     event: Mapping[str, Any],
@@ -296,15 +388,14 @@ def canonical_state_feature_for_event(
     key: Tuple[int, int, int],
     seed_key: Tuple[int, int, int],
     actions: Mapping[Tuple[int, int, int], Mapping[int, str]],
+    reactivation_proposal=None,
+    reactivation_row: Optional[int] = None,
 ) -> torch.Tensor:
     """Build the exact runtime feature from the current mutable OFF state."""
 
     semantics = _controller_semantics(engine)
     question = str(event.get("question"))
     row = int(event["context"]["detection_index"])
-    scores = proposal.scores
-    track_ids = proposal.track_ids
-    col = proposal.pairs.get(row)
     frame = int(event["_frame"])
     view = int(event["_view"])
     first_frame_secondary_view = (
@@ -316,7 +407,49 @@ def canonical_state_feature_for_event(
         view_index=view,
         first_frame_secondary_view=first_frame_secondary_view,
     )
-    if question in {"MATCH_DECISION", "REACTIVATION_DECISION"}:
+    if question == "REACTIVATION_DECISION":
+        if reactivation_proposal is None or reactivation_row is None:
+            raise RuntimeError("reactivation feature is missing stale-bank proposal")
+        scores = reactivation_proposal.scores
+        track_ids = reactivation_proposal.track_ids
+        proposal_row = int(reactivation_row)
+        col = reactivation_proposal.pairs.get(proposal_row)
+        if col is None:
+            raise RuntimeError(
+                "reactivation event has no stale-bank proposal assignment: "
+                f"key={key} row={row}"
+            )
+        score = float(scores[proposal_row, col].item())
+        track_id = int(track_ids[col])
+        memory_count = max(1, int(state.track_hits.get(track_id, 1)))
+        return build_state_features(
+            state_dim=64,
+            accept_score=0.0,
+            reassociate_score=score,
+            threshold=semantics["threshold"],
+            candidate_count=1,
+            candidate_entropy=0.0,
+            track_count=len(track_ids),
+            track_age=memory_count,
+            frame_index=frame,
+            window_length=window_length,
+            view_index=view,
+            can_reassociate=semantics["can_reassociate"],
+            memory_enabled=semantics["memory_enabled"],
+            with_iou=semantics["with_iou"],
+            not_mult_thresh=semantics["not_mult_thresh"],
+            has_old_track=True,
+            current_is_unmatched=True,
+            memory_count=memory_count,
+            track_score=score,
+            track_length=max(1, memory_count),
+            score_variance=0.0,
+        )
+
+    scores = proposal.scores
+    track_ids = proposal.track_ids
+    col = proposal.pairs.get(row)
+    if question == "MATCH_DECISION":
         if col is None:
             accept_score = reassociate_score = 0.0
             candidate_entropy_value = 0.0
@@ -432,8 +565,9 @@ def advance_off_state_for_key(
     the single-worker replay before its state snapshot is taken.
     """
 
+    current_events = by_key.get(key, ())
     if proposal is None:
-        for event in by_key.get(key, ()):
+        for event in current_events:
             question = str(event.get("question"))
             row = event.get("context", {}).get("detection_index")
             if (
@@ -443,12 +577,24 @@ def advance_off_state_for_key(
             ):
                 proposal = engine.propose(payload, state)
                 break
+    reactivation_proposal, reactivation_row_map = _prepare_reactivation_context(
+        payload=payload,
+        state=state,
+        proposal=proposal,
+        events=current_events,
+        engine=engine,
+    )
+    current_actions = actions.get(key, {})
     engine.step(
         payload,
         state,
-        actions=actions.get(key),
+        actions=current_actions,
         memory_actions=memories.get(key),
         proposal=proposal,
+        reactivation_assignments=_reactivation_assignments(
+            current_actions, reactivation_proposal, reactivation_row_map
+        ),
+        reactivation_proposal=reactivation_proposal,
     )
     return proposal
 
@@ -595,8 +741,30 @@ def build_v2_records(
             # clone the same pre-decision state and reuse this proposal; they
             # must never independently invoke the transformer.
             current_proposal = None
+            current_reactivation_proposal = None
+            current_reactivation_row_map = {}
             emit_records = selected_start <= key_index < selected_end
             if emit_records:
+                typed_events = [
+                    event
+                    for event in current_events
+                    if str(event.get("question"))
+                    in {"MATCH_DECISION", "MEMORY_DECISION", "REACTIVATION_DECISION"}
+                    and event.get("context", {}).get("detection_index") is not None
+                    and event.get("legal_actions")
+                ]
+                if typed_events:
+                    current_proposal = engine.propose(payload, state)
+                    (
+                        current_reactivation_proposal,
+                        current_reactivation_row_map,
+                    ) = _prepare_reactivation_context(
+                        payload=payload,
+                        state=state,
+                        proposal=current_proposal,
+                        events=current_events,
+                        engine=engine,
+                    )
                 for event in current_events:
                     question = str(event.get("question"))
                     if question not in {"MATCH_DECISION", "MEMORY_DECISION", "REACTIVATION_DECISION"}:
@@ -607,8 +775,20 @@ def build_v2_records(
                         skipped += 1
                         continue
                     row = int(row)
-                    if current_proposal is None:
-                        current_proposal = engine.propose(payload, state)
+                    event_proposal = (
+                        current_reactivation_proposal
+                        if question == "REACTIVATION_DECISION"
+                        else current_proposal
+                    )
+                    event_proposal_row = (
+                        current_reactivation_row_map.get(row)
+                        if question == "REACTIVATION_DECISION"
+                        else None
+                    )
+                    if event_proposal is None:
+                        raise RuntimeError(
+                            f"missing proposal for {question} at key={key} row={row}"
+                        )
                     outcome_map = {}
                     for candidate in legal:
                         branch = state.clone()
@@ -619,12 +799,19 @@ def build_v2_records(
                             current_memories[row] = candidate
                         else:
                             current_actions[row] = candidate
+                        current_reactivation_assignments = _reactivation_assignments(
+                            current_actions,
+                            current_reactivation_proposal,
+                            current_reactivation_row_map,
+                        )
                         current_result = engine.step(
                             payload,
                             branch,
                             actions=current_actions,
                             memory_actions=current_memories,
                             proposal=current_proposal,
+                            reactivation_assignments=current_reactivation_assignments,
+                            reactivation_proposal=current_reactivation_proposal,
                         )
                         branch_steps.append(
                             {
@@ -638,13 +825,43 @@ def build_v2_records(
                             if int(future_key[1]) > int(key[1]) + horizon:
                                 break
                             future_payload = payload_for(future_key)
+                            future_events = by_key.get(future_key, ())
                             future_actions = dict(actions.get(future_key, {}))
                             future_memories = dict(memories.get(future_key, {}))
+                            future_proposal = None
+                            if any(
+                                str(future_event.get("question"))
+                                in {
+                                    "MATCH_DECISION",
+                                    "MEMORY_DECISION",
+                                    "REACTIVATION_DECISION",
+                                }
+                                and future_event.get("legal_actions")
+                                for future_event in future_events
+                            ):
+                                future_proposal = engine.propose(future_payload, branch)
+                            (
+                                future_reactivation_proposal,
+                                future_reactivation_row_map,
+                            ) = _prepare_reactivation_context(
+                                payload=future_payload,
+                                state=branch,
+                                proposal=future_proposal,
+                                events=future_events,
+                                engine=engine,
+                            )
                             future_result = engine.step(
                                 future_payload,
                                 branch,
                                 actions=future_actions,
                                 memory_actions=future_memories,
+                                proposal=future_proposal,
+                                reactivation_assignments=_reactivation_assignments(
+                                    future_actions,
+                                    future_reactivation_proposal,
+                                    future_reactivation_row_map,
+                                ),
+                                reactivation_proposal=future_reactivation_proposal,
                             )
                             branch_steps.append(
                                 {
@@ -675,6 +892,8 @@ def build_v2_records(
                         key=key,
                         seed_key=seed_key,
                         actions=actions,
+                        reactivation_proposal=current_reactivation_proposal,
+                        reactivation_row=event_proposal_row,
                     )
                     state_data = {
                         "feature_vector": [float(value) for value in canonical_feature.tolist()],
