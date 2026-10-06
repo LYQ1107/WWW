@@ -238,6 +238,7 @@ def _record_field_comparison(
     field: str,
 ) -> dict[str, Any]:
     mismatches = []
+    non_numeric_mismatches = 0
     maximum = 0.0
     for key in common:
         left_value = left[key].get(field)
@@ -246,12 +247,15 @@ def _record_field_comparison(
         maximum = max(maximum, error)
         if not equal:
             mismatches.append(list(key))
+            if not math.isfinite(error):
+                non_numeric_mismatches += 1
     return {
         "equal_within_1e-6": not mismatches,
         "compared": len(common),
         "mismatches": len(mismatches),
         "mismatch_key_sample": mismatches[:20],
-        "max_abs_error": maximum,
+        "max_abs_error": maximum if math.isfinite(maximum) else None,
+        "non_numeric_mismatches": non_numeric_mismatches,
     }
 
 
@@ -261,6 +265,7 @@ def _utility_field_comparison(
     right: Mapping[Any, Mapping[str, Any]],
 ) -> dict[str, Any]:
     mismatches = []
+    non_numeric_mismatches = 0
     maximum = 0.0
     for key in common:
         left_value = _utility_values(left[key])
@@ -269,12 +274,15 @@ def _utility_field_comparison(
         maximum = max(maximum, error)
         if not equal:
             mismatches.append(list(key))
+            if not math.isfinite(error):
+                non_numeric_mismatches += 1
     return {
         "equal_within_1e-6": not mismatches,
         "compared": len(common),
         "mismatches": len(mismatches),
         "mismatch_key_sample": mismatches[:20],
-        "max_abs_error": maximum,
+        "max_abs_error": maximum if math.isfinite(maximum) else None,
+        "non_numeric_mismatches": non_numeric_mismatches,
     }
 
 

@@ -184,8 +184,16 @@ The implementation is now present in `jev_intra_video_chunking.py`,
 `verify_jev_intra_video_chunk_equivalence.py`. A bounded CPU cosine-contract
 probe on the first 120 video7 trace lines split the data into three chunks and
 matched all 120/120 records exactly with identical canonical SHA-256. This is
-an orchestration test only; the current formal-GMT 3-chunk run is the mandatory
-precondition for canonical authorization.
+an orchestration test only. The formal-GMT 3-chunk run completed with
+`3337/3337` semantic keys and valid contiguous ranges, but failed exact
+equivalence against the existing `small_h8_rng_controlled_v2/video_07`
+reference: raw canonical matches were `0/3337`, state features differed on
+`3337/3337`, and the trace provenance hashes were not equal. This is a
+data-generation/chunk-reference failure, not evidence that Threshold, MLP, or
+JEV failed. The result is recorded in
+`reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07.json`,
+and intra-video chunking remains unauthorized. A same-code corrected
+single-worker reference is required before reconsidering chunk authorization.
 
 This design targets the future video15/video23/video24 tail bottlenecks and is
 not applied to the active video1 small gate.
