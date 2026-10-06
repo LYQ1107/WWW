@@ -14,6 +14,7 @@ CACHE=/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train
 ANNOTATIONS=/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json
 CHECKPOINT=/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth
 CONFIG=$REPO/configs/VISION_test.yaml
+PYTHON=/home/liuyeqiang/anaconda3/envs/GMT/bin/python
 V7=$RUNTIME/small_h8_rng_controlled_v4_current_head_75b0aea/video_07
 FORMAL=$RUNTIME/formal_same_code_video7_v9_head
 QUEUE=$FORMAL/single_queue.json
@@ -42,7 +43,7 @@ export PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2"
 export JEV_PROVENANCE_SOURCE_COMMIT="$SOURCE_COMMIT"
 
 echo "warmup_started=$(date -Is)"
-CUDA_VISIBLE_DEVICES=7 "$REPO/reproduction_tools/warmup_jev_intra_video_chunks.py" \
+CUDA_VISIBLE_DEVICES=7 "$PYTHON" -u "$REPO/reproduction_tools/warmup_jev_intra_video_chunks.py" \
     --partition-manifest "$PARTITION/partition_manifest.json" \
     --chunk-plan "$PLAN" \
     --cache "$CACHE" \
@@ -87,7 +88,7 @@ PY
 fi
 
 pids=()
-CUDA_VISIBLE_DEVICES=1 "$REPO/reproduction_tools/run_jev_full_h8_fast_worker.py" \
+CUDA_VISIBLE_DEVICES=1 "$PYTHON" -u "$REPO/reproduction_tools/run_jev_full_h8_fast_worker.py" \
     --partition-root "$PARTITION" --cache "$CACHE" --annotations "$ANNOTATIONS" \
     --checkpoint "$CHECKPOINT" --config-file "$CONFIG" --output-root "$FORMAL/single" \
     --queue "$QUEUE" --worker-id corrected-v4-v9-single-gpu1 --device cuda:0 \
@@ -98,7 +99,7 @@ for spec in "0 3" "1 5" "2 7"; do
     set -- $spec
     IDX=$1
     GPU=$2
-    CUDA_VISIBLE_DEVICES=$GPU "$REPO/reproduction_tools/run_jev_intra_video_chunk.py" \
+    CUDA_VISIBLE_DEVICES=$GPU "$PYTHON" -u "$REPO/reproduction_tools/run_jev_intra_video_chunk.py" \
         --partition-manifest "$PARTITION/partition_manifest.json" \
         --chunk-plan "$PLAN" --warmup-root "$FORMAL/warmup" \
         --chunk-index "$IDX" --cache "$CACHE" --annotations "$ANNOTATIONS" \
