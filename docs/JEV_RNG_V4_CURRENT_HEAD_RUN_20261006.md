@@ -118,3 +118,11 @@ small-gate records or checkpoints is used for corrected-v4 final tracking.
 The frozen GMT baseline is still reused without rerun, and the 24-video H=8
 build remains fail-closed until the same-code formal equivalence report has a
 complete `PASS` final gate.
+
+An authorized supervisor is now armed at
+`reproduction_tools/run_authorized_full_h8_pipeline_waiter.sh` (PID recorded
+in the runtime log). It waits on the formal report and, only after the strict
+authorization helper accepts it, uses the locked 24-video partition at
+`/home/liuyeqiang/WWW_jev_full_h8_runtime/partition`. The separate
+`small_h8_partition_fixed` three-video fixture is never used as the production
+Full H=8 partition.
