@@ -8,30 +8,29 @@ set -u
 
 RUNTIME=/home/liuyeqiang/WWW_jev_rng_v4_runtime
 REPO=/data1/liuyeqiang/WWW_rng_fix_v4
-V1="$RUNTIME/small_h8_rng_controlled_v4_current/video_01"
-MANIFEST="$V1/manifest.json"
-# The old small-gate checkpoints are screening-only.  The corrected-v4
-# tracking run must consume the three controllers trained from the canonical
-# mutable-state feature dataset.
-METHODS="${METHODS_ROOT:-$RUNTIME/small_h8_training_v4_canonical_features/methods_v1}"
-PROV="$REPO/reports/JEV_RNG_V4/VIDEO01_CORRECTED_CURRENT_HEAD_PROVENANCE.json"
-CAND="$REPO/reports/JEV_RNG_V4/REACTIVATION_CANDIDATE_PARITY.json"
-PARITY="$REPO/reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_VIDEO01_CORRECTED_CURRENT_HEAD.json"
-STABILITY="$REPO/reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_STABILITY_VIDEO06_CORRECTED_CURRENT_HEAD.json"
+V1="$RUNTIME/formal_current_head_corrected_full"
+RECORDS="$V1/video01_records.jsonl"
+MANIFEST="$RECORDS.manifest.json"
+# The old small-gate checkpoints and records are screening-only. The
+# corrected-v4 tracking run consumes the current-head controllers trained
+# from the current corrected v6/v7 records unless an explicit compatible
+# methods root is supplied.
+METHODS="${METHODS_ROOT:-$RUNTIME/small_h8_training_current_head_video06_video07/methods_v1}"
+TRACE="$RUNTIME/formal_current_head_off_trace/video01/trace_video_01.jsonl"
+PROV="$REPO/reports/JEV_RNG_V4/CURRENT_HEAD_VIDEO01_PROVENANCE.json"
+CAND="$REPO/reports/JEV_RNG_V4/REACTIVATION_CANDIDATE_PARITY_CURRENT_HEAD_VIDEO01.json"
+PARITY="$REPO/reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_VIDEO01_CURRENT_HEAD.json"
+STABILITY="$REPO/reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_STABILITY_VIDEO01_CURRENT_HEAD.json"
 FORMAL="$REPO/reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json"
-TRAIN="$REPO/reports/JEV_RNG_V4/CORRECTED_V4_SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json"
-OUTROOT="${TRACKING_OUTPUT_ROOT:-$RUNTIME/corrected_v4_video01_tracking_current_head_75b0aea}"
-OUTREPORT="$REPO/reports/JEV_RNG_V4/CORRECTED_V4_VIDEO01_THREE_WAY_TRACKING.json"
+TRAIN="$REPO/reports/JEV_RNG_V4/CURRENT_HEAD_VIDEO06_VIDEO07_THREE_WAY.json"
+OUTROOT="${TRACKING_OUTPUT_ROOT:-$RUNTIME/current_head_video01_tracking}"
+OUTREPORT="$REPO/reports/JEV_RNG_V4/CURRENT_HEAD_VIDEO01_THREE_WAY_TRACKING.json"
 
 echo "watcher_started=$(date -Is)"
-while ! jq -e '.status == "COMPLETE"' "$MANIFEST" >/dev/null 2>&1; do
+while ! jq -e '.status == "PASS" and (.records | tonumber) == 8995' "$MANIFEST" >/dev/null 2>&1; do
     sleep 30
 done
 
-# Use the exact partition used by the builder, rather than reconstructing a
-# path from the runtime root. This prevents a stale/nonexistent trace from
-# reaching the final tracking wrapper.
-TRACE=$(jq -r '.trace_partition // .source_trace // empty' "$MANIFEST")
 MANIFEST_MTIME=$(stat -c %Y "$MANIFEST")
 echo "manifest_ready=$(date -Is) trace=$TRACE"
 if [ -z "$TRACE" ] || [ ! -f "$TRACE" ]; then
@@ -61,7 +60,7 @@ PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2" \
     "$REPO/reproduction_tools/run_corrected_v4_tracking.py" \
     --video-id 1 \
     --trace "$TRACE" \
-    --records "$V1/records.jsonl" \
+    --records "$RECORDS" \
     --methods-root "$METHODS" \
     --output-root "$OUTROOT" \
     --output-report "$OUTREPORT" \

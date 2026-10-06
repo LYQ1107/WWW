@@ -20,6 +20,10 @@ from typing import Any, Mapping
 
 
 ROOT = Path(__file__).resolve().parents[1]
+CORRECTED_DATASET_MARKERS = (
+    "small_h8_training_current_head_video06_video07",
+    "small_h8_training_v4_canonical_features",
+)
 
 
 def float_matches(value: Any, expected: float, tolerance: float = 1e-12) -> bool:
@@ -152,7 +156,7 @@ def validate_corrected_method_root(methods_root: Path) -> tuple[dict[str, Any], 
             failures.append(f"corrected_method_manifest_failed_{method}")
             continue
         dataset = str(manifest.get("dataset", ""))
-        if "small_h8_training_v4_canonical_features" not in dataset:
+        if not any(marker in dataset for marker in CORRECTED_DATASET_MARKERS):
             failures.append(f"legacy_or_noncanonical_method_dataset_{method}")
         if manifest.get("seeds") != [20261003]:
             failures.append(f"unexpected_method_seed_policy_{method}")

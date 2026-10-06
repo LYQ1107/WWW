@@ -18,6 +18,7 @@ REPORT_ROOT=$REPO/reports/JEV_RNG_V4
 PROVENANCE=$REPORT_ROOT/CURRENT_HEAD_VIDEO01_PROVENANCE.json
 CANDIDATE=$REPORT_ROOT/REACTIVATION_CANDIDATE_PARITY_CURRENT_HEAD_VIDEO01.json
 PARITY=$REPORT_ROOT/RUNTIME_FEATURE_PARITY_VIDEO01_CURRENT_HEAD.json
+STABILITY=$REPORT_ROOT/RUNTIME_FEATURE_PARITY_STABILITY_VIDEO01_CURRENT_HEAD.json
 LOG=$RUNTIME/formal_current_head_video01_aftercare.log
 
 export PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2"
@@ -50,15 +51,15 @@ if [ "$VALIDATION_RC" -ne 0 ]; then
 fi
 
 # First run the complete feature replay gate. This intentionally covers all
-# question types (MATCH, MEMORY, and REACTIVATION); candidate parity is a
-# separate native-vs-mutable semantic gate below.
+# question types (MATCH, MEMORY, and REACTIVATION) and writes the explicit
+# per-question TOTAL parity table; candidate parity is a separate
+# native-vs-mutable semantic gate below.
 set +e
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
     JEV_CACHE_PATH=/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train \
-    "$PYTHON" -u "$REPO/reproduction_tools/run_jev_feature_parity_stability.py" \
+    "$PYTHON" -u "$REPO/reproduction_tools/run_jev_runtime_feature_parity.py" \
     --video-id 1 --trace "$TRACE" --records "$RECORDS" \
-    --output "$PARITY" --runtime-root "$RUNTIME/formal_current_head_video01_parity" \
-    --device cuda:0 --max-frame 1000000 --repetitions 3 --tolerance 2e-5
+    --output "$PARITY" --device cuda:0 --tolerance 2e-5
 PARITY_RC=$?
 set -e
 
@@ -81,17 +82,30 @@ CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 CANDIDATE_RC=$?
 set -e
 
+# Repeat the same corrected OFF replay three times after the explicit parity
+# table has passed. This freezes the numerical tolerance independently from
+# the semantic candidate gate.
+set +e
+CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+    JEV_CACHE_PATH=/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train \
+    "$PYTHON" -u "$REPO/reproduction_tools/run_jev_feature_parity_stability.py" \
+    --video-id 1 --trace "$TRACE" --records "$RECORDS" \
+    --output "$STABILITY" --runtime-root "$RUNTIME/formal_current_head_video01_parity_stability" \
+    --device cuda:0 --max-frame 1000000 --repetitions 3 --tolerance 2e-5
+STABILITY_RC=$?
+set -e
+
 cd "$REPO"
 while [ -e .git/index.lock ]; do sleep 5; done
-git add "$PROVENANCE" "$PARITY"
+git add "$PROVENANCE" "$PARITY" "$STABILITY"
 git add "$CANDIDATE"
 git commit -m "Record current-head video01 runtime parity" || true
 git push origin HEAD || {
     git pull --rebase origin jev/counterfactual-rng-isolation-v4-20261006
     git push origin HEAD
 }
-echo "video01_aftercare_complete=$(date -Is) validation_rc=$VALIDATION_RC candidate_rc=$CANDIDATE_RC parity_rc=$PARITY_RC"
-if [ "$CANDIDATE_RC" -ne 0 ] || [ "$PARITY_RC" -ne 0 ]; then
+echo "video01_aftercare_complete=$(date -Is) validation_rc=$VALIDATION_RC parity_rc=$PARITY_RC candidate_rc=$CANDIDATE_RC stability_rc=$STABILITY_RC"
+if [ "$CANDIDATE_RC" -ne 0 ] || [ "$PARITY_RC" -ne 0 ] || [ "$STABILITY_RC" -ne 0 ]; then
     exit 4
 fi
 exit 0
