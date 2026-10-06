@@ -44,10 +44,22 @@ def read_json_value(path: Path):
 
 def event_key(payload: Mapping[str, Any]):
     context = payload.get("context", payload)
+    detection_index = context.get("detection_index")
+    if detection_index is None:
+        # Native trace records call this field ``detection_index`` while the
+        # replay decision schema calls the same within-frame position ``row``.
+        # Both are produced by the same frozen detection ordering and are
+        # required for an exact event join; do not fall back to frame alone.
+        detection_index = context.get("row")
+    if detection_index is None:
+        raise ValueError(
+            "reactivation event is missing detection_index/row: "
+            f"frame={context.get('frame')!r}, view={context.get('view')!r}"
+        )
     return (
         int(context.get("frame")),
         int(context.get("view")),
-        int(context.get("detection_index")),
+        int(detection_index),
     )
 
 
