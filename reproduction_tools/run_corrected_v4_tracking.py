@@ -149,6 +149,12 @@ def main() -> None:
         "training": args.training_report,
     }
     evidence, failures = gate_snapshot(gate_paths, args.tolerance)
+    evidence["trace"] = {
+        "path": str(args.trace.resolve()),
+        "exists": args.trace.is_file(),
+    }
+    if not args.trace.is_file():
+        failures.append("missing_runtime_trace")
     args.output_root.mkdir(parents=True, exist_ok=True)
     log_path = args.output_root / "corrected_v4_tracking.log"
     report: dict[str, Any] = {
