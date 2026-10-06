@@ -1,9 +1,15 @@
 # JEV counterfactual RNG isolation and REASSOCIATE semantics — v4
 
-Status: the v4 implementation gates pass, the first closed-loop pilot exposed a
-train/runtime state mismatch, and the 24-video canonical H=8 rebuild is not
-authorized yet. The original video1 small gate is complete; its corrected v4
-rebuild is now running for final parity.
+Status: the corrected-v4 implementation is still fail-closed: the first
+closed-loop pilot exposed a train/runtime state mismatch, the bounded
+reactivation candidate gate currently fails, and the 24-video canonical H=8
+rebuild is not authorized. The original video1 small gate is complete; its
+corrected v4 rebuild is still running for final parity.
+
+The old small-gate Threshold/MLP/JEV checkpoints remain preserved as
+`LEGACY_SMALL_GATE_SCREENING_ONLY` and are not valid for corrected-v4 final
+tracking. Corrected video6/video7 data must be compacted and retrained before
+any final tracking claim.
 
 The original video1 small-gate worker was allowed to finish naturally on GPU6
 and was not stopped or migrated. It produced 8,996 atomic records at about 35
@@ -48,6 +54,14 @@ paused with SIGTERM and preserved. Its records are
   typed `REACTIVATION_DECISION`, with reactivation assignments committed through
   mutable state only. GT and future records are not used to trigger it.
 
+A bounded native-vs-mutable reactivation candidate comparison has also been
+added. The first legacy-input probe is recorded in
+`reports/JEV_RNG_V4/REACTIVATION_CANDIDATE_PARITY.json`: native and replay
+candidate IDs/order and legacy OFF actions agree on overlapping events, but
+event coverage is `14` native versus `5` replay and candidate scores diverge.
+This is a runtime-semantic FAIL, not a tracking result or a corrected-v4 final
+verdict; it must be repeated after corrected video1 finalization.
+
 ## Completed deterministic gates
 
 All five synthetic/source-level gates are `PASS`:
@@ -72,11 +86,14 @@ trace has no complete RNG state/call provenance. See
 
 ## First single-seed offline comparison
 
-The completed v6/v7 compact dataset uses the sequence-disjoint split and the
-locked seed `20261003`. Training is one run per method, 20 epochs, batch 128,
-AdamW, learning rate `1e-3`, with matched trainable capacity. The validation
-sequence is video6; video7 is the policy-training sequence. Video1 remains
-held out for tracking.
+The completed legacy v6/v7 compact dataset uses the sequence-disjoint split
+and the locked seed `20261003`. Training was one run per method, 20 epochs,
+batch 128, AdamW, learning rate `1e-3`, with matched trainable capacity. The
+validation sequence is video6; video7 is the policy-training sequence. These
+checkpoints are screening-only because their records predate the corrected
+canonical mutable-state rebuild. Corrected v6/v7 compaction, split, retraining,
+calibration, and aggregation are still pending; those new checkpoints are the
+only ones eligible for final tracking.
 
 | Method | Val NLL | Accuracy | Brier | ECE | Validation utility |
 |---|---:|---:|---:|---:|---:|
@@ -148,12 +165,16 @@ Keep the corrected v4 video1 rebuild running. Do not launch the 24-video
 canonical H=8 rebuild yet. The immediate gates are:
 
 1. finish the corrected v4 video1 artifact without stopping or migrating it;
-2. run provenance/SHA plus the
-   old-vs-new audit;
-3. pass v4 runtime feature parity and REACTIVATION coverage, then rerun the
-   true closed-loop pilot with the already-trained checkpoints;
-4. complete the formal-GMT video7 chunk equivalence gate before any canonical
-   rebuild authorization.
+2. run provenance/SHA plus the old-vs-new audit;
+3. finish corrected v6/v7 compaction and retrain all three controllers with
+   seed `20261003`;
+4. complete the three-repeat numeric parity stability probe and freeze the
+   tolerance (candidate `2e-5`, with structural fields still exact);
+5. pass corrected video1 MATCH/MEMORY/REACTIVATION parity, candidate parity,
+   and wrapper parity, then run the true closed-loop pilot with the corrected
+   checkpoints;
+6. complete the formal-GMT video7 same-code chunk equivalence gate before any
+   canonical rebuild authorization.
 
 ## Required canonical-only chunking design
 
