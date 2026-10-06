@@ -205,7 +205,7 @@ def main() -> None:
         "method": args.model,
         "method_label": METHODS[args.model],
         "dataset": str(dataset),
-        "dataset_sha256": sha256(dataset),
+        "dataset_sha256": sha256(dataset / "manifest.json"),
         "policy_split": str(split),
         "policy_split_sha256": sha256(split),
         "horizon": 8,
