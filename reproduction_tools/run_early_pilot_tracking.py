@@ -114,6 +114,8 @@ def load_inputs():
                 continue
             record = json.loads(line)
             context = record["state"]["online_context"]
+            if int(context.get("video_id", -1)) != VIDEO_ID:
+                continue
             row = context.get("detection_index")
             if row is None:
                 continue
