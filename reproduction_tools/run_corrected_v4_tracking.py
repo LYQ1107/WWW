@@ -122,6 +122,43 @@ def gate_snapshot(paths: Mapping[str, Path], tolerance: float) -> tuple[dict[str
     return evidence, sorted(set(failures))
 
 
+def validate_corrected_method_root(methods_root: Path) -> tuple[dict[str, Any], list[str]]:
+    """Require the current canonical-feature, single-seed controller bundle.
+
+    The legacy small-gate checkpoints remain useful for historical screening,
+    but are explicitly invalid for corrected-v4 closed-loop tracking.
+    """
+    expected = ("question_threshold", "question_conditioned_mlp", "jev")
+    evidence: dict[str, Any] = {
+        "path": str(methods_root.resolve()),
+        "exists": methods_root.is_dir(),
+        "methods": {},
+    }
+    failures: list[str] = []
+    if not methods_root.is_dir():
+        return evidence, ["corrected_method_root_missing"]
+    for method in expected:
+        manifest_path = methods_root / method / "method_manifest.json"
+        manifest = read_json(manifest_path)
+        entry = {
+            "manifest": str(manifest_path.resolve()),
+            "exists": manifest_path.is_file(),
+            "status": None if manifest is None else manifest.get("status"),
+            "dataset": None if manifest is None else manifest.get("dataset"),
+            "seeds": None if manifest is None else manifest.get("seeds"),
+        }
+        evidence["methods"][method] = entry
+        if manifest is None or manifest.get("status") != "PASS":
+            failures.append(f"corrected_method_manifest_failed_{method}")
+            continue
+        dataset = str(manifest.get("dataset", ""))
+        if "small_h8_training_v4_canonical_features" not in dataset:
+            failures.append(f"legacy_or_noncanonical_method_dataset_{method}")
+        if manifest.get("seeds") != [20261003]:
+            failures.append(f"unexpected_method_seed_policy_{method}")
+    return evidence, sorted(set(failures))
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--video-id", type=int, required=True)
@@ -149,6 +186,9 @@ def main() -> None:
         "training": args.training_report,
     }
     evidence, failures = gate_snapshot(gate_paths, args.tolerance)
+    method_evidence, method_failures = validate_corrected_method_root(args.methods_root)
+    evidence["corrected_methods"] = method_evidence
+    failures.extend(method_failures)
     evidence["trace"] = {
         "path": str(args.trace.resolve()),
         "exists": args.trace.is_file(),
