@@ -29,7 +29,12 @@ PILOT = Path(
 VIDEO_ID = int(os.environ.get("JEV_VIDEO_ID", "8"))
 CHECKPOINT = Path("/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth")
 CONFIG = ROOT / "configs/VISION_test.yaml"
-CACHE = Path("/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train")
+CACHE = Path(
+    os.environ.get(
+        "JEV_CACHE_PATH",
+        "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train",
+    )
+)
 TRACE = Path(
     os.environ.get(
         "JEV_TRACE_PATH",
