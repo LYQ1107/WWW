@@ -689,7 +689,23 @@ def run_method(
                     counts["missing_action_outcomes"] += 1
                 else:
                     counts["memory_contamination"] += float(outcome.get("memory_contamination", 0.0))
-            decisions.append({"frame": frame, "view": view, "row": row, "question": "MATCH_DECISION", "action": action})
+            decisions.append(
+                {
+                    "frame": frame,
+                    "view": view,
+                    "row": row,
+                    "question": "MATCH_DECISION",
+                    "action": action,
+                    "off_action": off_action,
+                    "track_id": track_id,
+                    "candidate_track_ids": [
+                        int(track_ids[index]) for index in order
+                    ] if col is not None else [],
+                    "candidate_scores": [
+                        float(scores[row, index].item()) for index in order
+                    ] if col is not None else [],
+                }
+            )
 
         # Resolve MATCH without mutating state so MEMORY sees the final
         # existing committed identity. START_NEW has no same-step memory gate.
