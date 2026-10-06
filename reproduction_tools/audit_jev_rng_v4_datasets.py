@@ -23,7 +23,13 @@ def iter_records(path: Path):
         for line_number, line in enumerate(handle, 1):
             if not line.strip():
                 continue
-            yield line_number, json.loads(line)
+            try:
+                yield line_number, json.loads(line)
+            except json.JSONDecodeError:
+                # A graceful SIGTERM may leave only the final JSONL line
+                # incomplete.  Preserve that fact in the audit instead of
+                # making the whole old screening shard unreadable.
+                yield line_number, None
 
 
 def key(record: dict, video_id: int) -> tuple:
@@ -59,6 +65,9 @@ def read_shard(path: Path, video_id: int) -> tuple[dict[tuple, dict], dict]:
     invalid = 0
     questions = Counter()
     for line_number, record in iter_records(path):
+        if record is None:
+            invalid += 1
+            continue
         try:
             record_key = key(record, video_id)
             if record_key in records:
