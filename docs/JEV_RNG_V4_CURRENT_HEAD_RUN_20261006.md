@@ -74,6 +74,13 @@ the final candidate gate still waits for the current-head video1 records.
    parity, rerun candidate parity on the matching perception source, then run
    wrapper parity and only afterward the corrected closed-loop comparison.
 
+The post-builder provenance gate is implemented by
+`reproduction_tools/validate_jev_video_artifact.py`. It refuses incomplete or
+source-mixed artifacts and checks the manifest-bound record/trace/order/
+checkpoint/annotation hashes, JSONL semantic-key uniqueness, finite 64-D
+canonical state features, and exact typed-question counts before runtime
+parity is allowed to run.
+
 The runtime parity wrappers now take an explicit numeric tolerance instead of
 silently mixing the historical `1e-6` and `1e-4` values. The current candidate
 is `2e-5`, and the full wrapper records exact expected/runtime counts for each
