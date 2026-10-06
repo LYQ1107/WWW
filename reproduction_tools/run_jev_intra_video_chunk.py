@@ -147,6 +147,9 @@ def main() -> None:
         raise
 
     record_count = sum(int(value) for value in stats.values())
+    provenance_source_commit = os.environ.get("JEV_PROVENANCE_SOURCE_COMMIT", "").strip()
+    if not provenance_source_commit:
+        provenance_source_commit = source_commit(ROOT)
     manifest = {
         "status": "COMPLETE",
         "schema_version": "jev_deterministic_intra_video_chunk_v1",
@@ -162,7 +165,12 @@ def main() -> None:
         "checkpoint_sha256": "sha256:" + sha256(args.checkpoint.resolve()),
         "horizon": int(args.horizon),
         "association_backend": "formal_gmt_transformer",
-        "source_commit": source_commit(ROOT),
+        "source_commit": provenance_source_commit,
+        "source_commit_capture": (
+            "explicit_env_override"
+            if os.environ.get("JEV_PROVENANCE_SOURCE_COMMIT", "").strip()
+            else "process_completion_fallback"
+        ),
         "initial_state_snapshot": str(snapshot),
         "initial_state_snapshot_sha256": file_sha256(snapshot),
         "initial_state_metadata": snapshot_metadata,

@@ -272,6 +272,11 @@ def build_one(
         "records_artifact": str(records_path),
         "records_artifact_sha256": "sha256:" + artifact_hash,
         "source_commit": source_commit_value,
+        "source_commit_capture": (
+            "explicit_env_override"
+            if os.environ.get("JEV_PROVENANCE_SOURCE_COMMIT", "").strip()
+            else "process_start"
+        ),
         "official_test_read": False,
         "sampling": False,
         "truncation": False,
@@ -322,7 +327,13 @@ def main() -> None:
     )
     gt_bundle = load_gt(args.annotations.resolve())
     checkpoint_hash = sha256(args.checkpoint.resolve())
-    source_commit_value = source_commit(Path(__file__).resolve().parents[1])
+    # Capture one immutable provenance value for the whole worker.  The
+    # scheduler may push documentation/results while a long build is running;
+    # an explicit pin prevents the manifest from silently recording whatever
+    # Git HEAD happens to exist at a later completion time.
+    source_commit_value = os.environ.get("JEV_PROVENANCE_SOURCE_COMMIT", "").strip()
+    if not source_commit_value:
+        source_commit_value = source_commit(Path(__file__).resolve().parents[1])
     engine = build_formal_gmt_engine(
         config_file=args.config_file.resolve(),
         checkpoint=args.checkpoint.resolve(),
