@@ -104,13 +104,25 @@ class GMTAssociationTransformerAdapter:
             outputs, _, _, _, _, _ = self.model.roi_heads._forward_transformer(
                 instances,
                 reid_features,
-                self.view_num,
+                None,
                 len(instances) - 1,
                 None,
                 None,
                 traj_ids,
             )
-            active = self.model.roi_heads._activate_asso(outputs)[0]
+            # Native GMT normalizes association logits independently for each
+            # historical slice.  ``run_first_tracker_plus`` receives one
+            # slice; ``run_global_tracker_plus`` splits the final transformer
+            # output by ``n_t[:-1]``, applies _activate_asso to every slice,
+            # and concatenates the results.  A single softmax over the whole
+            # history changes accumulated trajectory scores and breaks OFF
+            # parity after only a few frames.
+            final_output = outputs[-1].split(
+                [len(instance) for instance in instances[:-1]], dim=1
+            )
+            active = torch.cat(
+                self.model.roi_heads._activate_asso(final_output), dim=1
+            )
         current_count = len(current)
         historical_count = len(previous_ids)
         if tuple(active.shape) != (current_count, historical_count):
