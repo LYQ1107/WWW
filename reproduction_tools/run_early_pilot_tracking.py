@@ -167,7 +167,7 @@ def run_method(
     FrozenPerceptionCache,
     JEVRuntimePolicy,
     build_controller_from_checkpoint,
-    encode_state,
+    build_state_features,
 ):
     controller = (
         build_controller_from_checkpoint(checkpoint_path, device="cpu")
@@ -516,7 +516,7 @@ def main() -> None:
             FrozenPerceptionCache=FrozenPerceptionCache,
             JEVRuntimePolicy=JEVRuntimePolicy,
             build_controller_from_checkpoint=build_controller_from_checkpoint,
-            encode_state=encode_state,
+            build_state_features=build_state_features,
         )
         json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)
     dataset_root = prepare_eval_dataset(subset_annotation)
