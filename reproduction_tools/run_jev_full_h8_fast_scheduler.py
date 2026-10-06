@@ -14,6 +14,7 @@ import time
 from typing import Any, Mapping, Optional
 
 from run_jev_full_h8_fast_worker import atomic_json, complete_artifact, modify_queue, utc_now
+from jev_full_h8_authorization import read_formal_authorization
 
 
 SAFE_GPUS = (1, 4, 6, 8, 9)
@@ -342,6 +343,7 @@ def write_resource_manifest(
 
 
 def main() -> None:
+    root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser()
     parser.add_argument("--partition-root", type=Path, required=True)
     parser.add_argument("--cache", type=Path, required=True)
@@ -357,6 +359,12 @@ def main() -> None:
     parser.add_argument("--poll-seconds", type=float, default=20.0)
     parser.add_argument("--include-gpu0", action="store_true")
     parser.add_argument(
+        "--formal-gate-report",
+        type=Path,
+        default=root / "reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json",
+        help="PASS report required before any 24-video canonical H=8 worker is launched",
+    )
+    parser.add_argument(
         "--slots-per-gpu",
         type=int,
         default=1,
@@ -369,6 +377,8 @@ def main() -> None:
         raise ValueError("full H=8 scheduler is locked to horizon 8")
     if args.slots_per_gpu < 1:
         raise ValueError("slots-per-gpu must be positive")
+    formal_gate_report = args.formal_gate_report.resolve()
+    read_formal_authorization(formal_gate_report)
     args.output_root.resolve().mkdir(parents=True, exist_ok=True)
     args.log_root.resolve().mkdir(parents=True, exist_ok=True)
     manifest = json.loads(
@@ -473,7 +483,7 @@ def main() -> None:
         command = worker_command(args, gpu, slot)
         process = subprocess.Popen(
             command,
-            cwd=str(Path(__file__).resolve().parents[1]),
+            cwd=str(root),
             env=worker_environment(gpu),
             stdin=subprocess.DEVNULL,
             stdout=handle,

@@ -20,6 +20,8 @@ import sys
 import time
 from typing import Any, Mapping
 
+from jev_full_h8_authorization import read_formal_authorization
+
 
 PYTHON = "/home/liuyeqiang/anaconda3/envs/GMT/bin/python"
 SEED = 20261003
@@ -407,8 +409,17 @@ def run_first_round(
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runtime-root", type=Path, required=True)
+    parser.add_argument(
+        "--formal-gate-report",
+        type=Path,
+        default=Path(__file__).resolve().parents[1]
+        / "reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json",
+        help="PASS report required before full-H8 postprocessing is allowed",
+    )
     parser.add_argument("--poll-seconds", type=float, default=60.0)
     args = parser.parse_args()
+    formal_gate_report = args.formal_gate_report.resolve()
+    read_formal_authorization(formal_gate_report)
     runtime = args.runtime_root.resolve()
     paths = derived_paths(runtime)
     root = Path(__file__).resolve().parents[1]
