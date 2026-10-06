@@ -187,9 +187,13 @@ def runtime_tracker_context(state) -> Dict[str, Any]:
             str(int(key)): int(len(value)) for key, value in sorted(state.memory.items())
         },
         "memory_track_ids": sorted(int(value) for value in state.memory),
-        "possible_memory_ids": sorted(int(value) for value in state.stale_ids),
+        "possible_memory_ids": sorted(
+            int(value) for value in state.possible_memory_ids
+        ),
         "stale_ids": sorted(int(value) for value in state.stale_ids),
-        "old_reid_count": 0,
+        "old_reid_count": int(len(state.reactivation_bank)),
+        "old_reid_ids": sorted(int(value) for value in state.reactivation_bank),
+        "memory_bank_size": int(state.memory_bank_size),
         "trajectory_rng_policy": "branch_local_explicit_python_random_v1",
         "trajectory_rng_seed": state.trajectory_rng_seed,
         "trajectory_rng_calls": int(state.trajectory_rng_calls),
@@ -285,28 +289,43 @@ def trace_action_for(events, question: str, row: int):
 
 
 def reactivation_candidates(state, *, bank_size: int = 10):
-    """Return stale memory identities using only the mutable online state.
+    """Advance and return the native ``poss_ids``/``old_reids`` bank.
 
-    This mirrors the native memory-bank boundary: a track must have enough
-    online memory observations and must be absent from the recent association
-    window before it can be offered as ``REACTIVATE_OLD``.  No trace label,
-    annotation, or future frame is consulted.
+    Native GMT promotes a completed online memory bank into ``old_reids`` only
+    when the ID leaves the current association window.  The old-reid proposal
+    then persists until that ID is successfully reactivated.  Recomputing
+    candidates from ``state.memory`` every frame loses this persistence and
+    does not reproduce the native score matrix.
     """
 
     recent_ids = set()
     for item in state.association_history:
         for value in dict(item.get("assignments", {})).values():
             recent_ids.add(int(value))
-    candidates = []
+    state.memory_bank_size = max(1, int(bank_size))
     for track_id, values in state.memory.items():
-        if len(values) >= int(bank_size) and int(track_id) not in recent_ids:
-            candidates.append(int(track_id))
-    candidates.extend(
-        int(track_id)
-        for track_id in state.stale_ids
-        if int(track_id) not in recent_ids and int(track_id) not in candidates
-    )
-    return sorted(set(candidates)), recent_ids
+        track_id = int(track_id)
+        if (
+            len(values) >= state.memory_bank_size
+            and track_id not in state.reactivation_bank
+        ):
+            state.possible_memory_ids.add(track_id)
+
+    for track_id in sorted(tuple(state.possible_memory_ids)):
+        track_id = int(track_id)
+        if track_id in recent_ids:
+            continue
+        values = state.memory.get(track_id, ())
+        if len(values) < state.memory_bank_size:
+            continue
+        recent_values = values[-state.memory_bank_size :]
+        state.reactivation_bank[track_id] = torch.stack(
+            [torch.as_tensor(value, dtype=torch.float32) for value in recent_values],
+            dim=0,
+        ).mean(dim=0).detach().cpu().clone()
+        state.possible_memory_ids.discard(track_id)
+
+    return sorted(int(track_id) for track_id in state.reactivation_bank), recent_ids
 
 
 def build_reactivation_proposal(engine, payload, state, candidate_ids, proposal):
@@ -318,13 +337,11 @@ def build_reactivation_proposal(engine, payload, state, candidate_ids, proposal)
     if proposal is not None and proposal.rng_state_after is not None:
         probe.trajectory_rng_state = proposal.rng_state_after
     probe.active_ids = set(int(value) for value in candidate_ids)
-    for track_id in candidate_ids:
-        values = state.memory.get(int(track_id), ())
-        if values:
-            probe.track_embeddings[int(track_id)] = torch.stack(
-                [torch.as_tensor(value, dtype=torch.float32) for value in values[-10:]],
-                dim=0,
-            ).mean(dim=0)
+    probe.reactivation_bank = {
+        int(track_id): state.reactivation_bank[int(track_id)].detach().cpu().clone()
+        for track_id in candidate_ids
+    }
+    probe.reactivation_mode = True
     return engine.propose(payload, probe)
 
 
@@ -423,6 +440,7 @@ def run_method(
     threshold = float(runtime_model.overlap_thresh)
     can_reassociate = int(runtime_model.jev_max_reassociate) > 0
     memory_enabled = bool(runtime_model.with_bank)
+    state.memory_bank_size = int(getattr(runtime_model, "bank_size", 10))
     with_iou = bool(runtime_model.with_iou)
     not_mult_thresh = bool(runtime_model.not_mult_thresh)
     counts["runtime_feature_records"] = 0

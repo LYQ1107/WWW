@@ -74,6 +74,14 @@ class MutableGMTState:
     next_id: int = 0
     active_ids: Set[int] = field(default_factory=set)
     stale_ids: Set[int] = field(default_factory=set)
+    # These two containers mirror native GMT's process-local ``poss_ids``
+    # and persistent ``old_reids`` stale bank.  A candidate is promoted only
+    # after its online memory reaches the configured bank size, then remains
+    # in the old-reid bank until a successful reactivation removes it.
+    possible_memory_ids: Set[int] = field(default_factory=set)
+    reactivation_bank: Dict[int, torch.Tensor] = field(default_factory=dict)
+    memory_bank_size: int = 10
+    reactivation_mode: bool = False
     track_embeddings: Dict[int, torch.Tensor] = field(default_factory=dict)
     track_hits: Dict[int, int] = field(default_factory=dict)
     memory: Dict[int, List[torch.Tensor]] = field(default_factory=dict)
@@ -121,6 +129,13 @@ class MutableGMTState:
             next_id=int(self.next_id),
             active_ids=set(self.active_ids),
             stale_ids=set(self.stale_ids),
+            possible_memory_ids=set(self.possible_memory_ids),
+            reactivation_bank={
+                int(key): value.detach().clone()
+                for key, value in self.reactivation_bank.items()
+            },
+            memory_bank_size=int(self.memory_bank_size),
+            reactivation_mode=bool(self.reactivation_mode),
             track_embeddings={
                 int(key): value.detach().clone()
                 for key, value in self.track_embeddings.items()
@@ -388,6 +403,16 @@ class CachedPerceptionMutableAssociationV2:
             state.memory.setdefault(int(track_id), []).append(feature)
             state.counters["memory_writes"] = state.counters.get("memory_writes", 0) + 1
 
+    @staticmethod
+    def _update_memory_eligibility(state: MutableGMTState) -> None:
+        """Promote completed online memory banks to native ``poss_ids``."""
+
+        bank_size = max(1, int(state.memory_bank_size))
+        for track_id, values in state.memory.items():
+            track_id = int(track_id)
+            if len(values) >= bank_size and track_id not in state.reactivation_bank:
+                state.possible_memory_ids.add(track_id)
+
     def _actions_for_proposal(
         self,
         proposal: AssociationProposal,
@@ -578,6 +603,14 @@ class CachedPerceptionMutableAssociationV2:
                 track_id = int(reactivation_assignments[row])
                 state.active_ids.add(track_id)
                 state.stale_ids.discard(track_id)
+                # Native ``run_memory_tracker`` removes a successfully
+                # reactivated ID from ``old_reids`` and returns it to
+                # ``poss_ids`` for future bank updates.
+                state.reactivation_bank.pop(track_id, None)
+                if len(state.memory.get(track_id, ())) >= max(
+                    1, int(state.memory_bank_size)
+                ):
+                    state.possible_memory_ids.add(track_id)
                 state.counters["reactivated_rows"] = state.counters.get(
                     "reactivated_rows", 0
                 ) + 1
@@ -603,6 +636,8 @@ class CachedPerceptionMutableAssociationV2:
                 feature = features[row] if features.shape[1] else torch.empty(0)
                 state.memory.setdefault(track_id, []).append(feature.detach().cpu().clone())
                 state.counters["memory_writes"] = state.counters.get("memory_writes", 0) + 1
+
+        self._update_memory_eligibility(state)
 
         history_item = {
             # FrozenPerceptionCache payloads are immutable evidence. Sharing

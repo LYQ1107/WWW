@@ -85,8 +85,46 @@ class GMTAssociationTransformerAdapter:
         rng_state_before = trajectory_rng.getstate()
         device = next(self.model.parameters()).device
         current = self._instances(perception, device)
+
+        # Native GMT's memory-bank pass does not reuse the ordinary sliding
+        # history.  It builds a short proposal from the persistent
+        # ``old_reids`` Instances (one averaged feature per stale ID) plus
+        # the current unmatched detections.  The mutable replay marks this
+        # path explicitly so a normal proposal cannot accidentally be reused
+        # for reactivation and produce a different score matrix.
+        reactivation_mode = bool(getattr(state, "reactivation_mode", False))
+        reactivation_bank = (
+            getattr(state, "reactivation_bank", {}) if reactivation_mode else {}
+        )
+        if reactivation_bank:
+            instances = []
+            previous_ids = []
+            for track_id in track_ids:
+                if int(track_id) not in reactivation_bank:
+                    raise RuntimeError(
+                        "reactivation proposal is missing old-reid feature for "
+                        f"track {int(track_id)}"
+                    )
+                historical = Instances(current.image_size)
+                historical.pred_boxes = Boxes(
+                    torch.zeros((1, 4), dtype=torch.float32, device=device)
+                )
+                historical.reid_features = torch.as_tensor(
+                    reactivation_bank[int(track_id)],
+                    dtype=torch.float32,
+                    device=device,
+                ).reshape(1, -1)
+                historical.track_ids = torch.tensor(
+                    [int(track_id)], dtype=torch.long, device=device
+                )
+                instances.append(historical)
+                previous_ids.append(int(track_id))
+            instances.append(current)
+        else:
+            instances = []
+            previous_ids = []
         history = list(state.association_history[-self.history_limit :])
-        if not history:
+        if not reactivation_bank and not history:
             return AssociationScoreResult(
                 scores=torch.zeros(
                     (len(current), len(track_ids)),
@@ -99,19 +137,18 @@ class GMTAssociationTransformerAdapter:
                 transformer_calls=0,
             )
 
-        instances = []
-        previous_ids = []
-        for item in history:
-            historical = self._instances(item["perception"], device)
-            assignments = dict(item["assignments"])
-            historical.track_ids = torch.tensor(
-                [int(assignments[row]) for row in range(len(historical))],
-                dtype=torch.long,
-                device=device,
-            )
-            instances.append(historical)
-            previous_ids.extend(historical.track_ids.tolist())
-        instances.append(current)
+        if not reactivation_bank:
+            for item in history:
+                historical = self._instances(item["perception"], device)
+                assignments = dict(item["assignments"])
+                historical.track_ids = torch.tensor(
+                    [int(assignments[row]) for row in range(len(historical))],
+                    dtype=torch.long,
+                    device=device,
+                )
+                instances.append(historical)
+                previous_ids.extend(historical.track_ids.tolist())
+            instances.append(current)
         if not previous_ids:
             return AssociationScoreResult(
                 scores=torch.zeros(
