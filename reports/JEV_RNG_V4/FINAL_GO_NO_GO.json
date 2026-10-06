@@ -1,0 +1,93 @@
+{
+  "answers": {
+    "canonical_rebuild": "NO-GO. Do not launch the 24-video canonical H8 rebuild yet; keep the current video1 small-gate worker running.",
+    "closed_loop_signal": "Threshold is positive on this screening sequence; Generic MLP catastrophically collapses association; Full JEV slightly decreases HOTA/AssA/IDF1 while reducing IDSW.",
+    "data_reasonable": "Videos 6/7 v4 records pass schema/provenance and video7 repeats exactly; old-vs-new is screening-only because legacy RNG provenance is unavailable; video1 is still building.",
+    "models_learn": "Offline optimization runs, but the first round is weak: JEV equals the majority baseline on validation utility and its margin over MLP is about 0.0091; this is not sufficient evidence.",
+    "next_work": "Investigate label/runtime semantics and MLP/JEV action calibration; finish video1; then run the same exact-equivalence verifier with the formal GMT backend before any canonical rebuild authorization.",
+    "repeatable": "Yes for the completed video7 artifact: 3337/3337 exact canonical records, identical raw SHA, zero semantic deltas.",
+    "runtime_parity": "No final parity claim: the held-out video1 pilot used a preserved legacy trace, with 0 new v4 records available and 24 OFF action mismatches."
+  },
+  "canonical_baseline": "FROZEN_GMT_BASELINE_REUSED; no complete VISION_test baseline rerun",
+  "canonical_full_h8_rebuild_authorized": false,
+  "created_utc": "2026-10-06T15:06:47.017541+00:00",
+  "current_small_gate": {
+    "repeat7": "COMPLETE_AND_EXACTLY_REPEATABLE",
+    "video1": "RUNNING_ON_GPU6_DO_NOT_STOP_OR_MIGRATE",
+    "video6": "COMPLETE",
+    "video7": "COMPLETE"
+  },
+  "decision": "PILOT_FAIL_NO_GO_FOR_CANONICAL_REBUILD",
+  "gates": {
+    "action_order_invariance": {
+      "report": "reports/JEV_RNG_V4/ACTION_ORDER_INVARIANCE.json",
+      "status": "PASS"
+    },
+    "closed_loop_tracking_pilot": {
+      "jev_delta_ass_a": -0.6480111044248389,
+      "jev_delta_hota": -0.342072716868671,
+      "mlp_delta_ass_a": -45.51655819607266,
+      "report": "reports/JEV_RNG_V4/SMALL_H8_RUNTIME_TRACKING.json",
+      "status": "PILOT_FAIL"
+    },
+    "intra_video_chunking_contract_probe": {
+      "classification": "BOUNDED_CPU_CONTRACT_PROBE_NOT_FORMAL_GMT_AUTHORIZATION",
+      "exact_record_matches": 120,
+      "formal_gmt_authorization": false,
+      "plan_report": "reports/JEV_RNG_V4/INTRA_VIDEO_CHUNK_PLAN_VIDEO07.json",
+      "planned_chunks": 3,
+      "probe_report": "reports/JEV_RNG_V4/INTRA_VIDEO_CHUNK_CONTRACT_EQUIVALENCE_VIDEO07.json",
+      "status": "PASS"
+    },
+    "offline_three_way": {
+      "interpretation": "JEV beats the two learned controls by a tiny margin, but matches the majority-action baseline exactly; this is not a meaningful closed-loop authorization signal.",
+      "jev_beats_both_on_val_utility": true,
+      "jev_val_utility": 36.64465530596437,
+      "majority_val_utility": 36.64465530596437,
+      "mlp_val_utility": 36.63555383423702,
+      "report": "reports/JEV_RNG_V4/SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json",
+      "status": "PASS",
+      "threshold_val_utility": 36.589949651432995
+    },
+    "reassociate_proposal_reuse": {
+      "report": "reports/JEV_RNG_V4/REASSOCIATE_PROPOSAL_REUSE.json",
+      "status": "PASS"
+    },
+    "rng_branch_isolation": {
+      "report": "reports/JEV_RNG_V4/RNG_BRANCH_ISOLATION.json",
+      "status": "PASS"
+    },
+    "runtime_state_feature_parity": {
+      "compared_records": 0,
+      "expected_records": 0,
+      "off_action_mismatches": 24,
+      "pass": false,
+      "report": "reports/JEV_RUNTIME_STATE_V3/STATE_FEATURE_PARITY.json",
+      "status": "FAIL"
+    },
+    "synthetic_repeatability": {
+      "report": "reports/JEV_RNG_V4/REPEATABILITY.json",
+      "status": "PASS"
+    },
+    "video6_video7_old_vs_new_audit": {
+      "best_action_agreement_rate": 0.9741206916833314,
+      "old_trace_rng_provenance": "BLOCKED_BY_MISSING_LEGACY_RNG_PROVENANCE",
+      "records_compared": 8501,
+      "report": "reports/JEV_RNG_V4/OLD_VS_RNG_FIXED_DATASET_AUDIT_VIDEO06_VIDEO07.json",
+      "status": "PASS",
+      "strict_old_trace_parity": false
+    },
+    "video7_artifact_repeatability": {
+      "exact_canonical_record_matches": 3337,
+      "raw_records_sha256_equal": true,
+      "report": "reports/JEV_RNG_V4/REPEATABILITY_ARTIFACTS_VIDEO07.json",
+      "status": "PASS"
+    },
+    "worker_independence": {
+      "report": "reports/JEV_RNG_V4/WORKER_INDEPENDENCE.json",
+      "status": "PASS"
+    }
+  },
+  "schema_version": "jev_rng_v4_final_go_no_go_v1",
+  "status": "NO_GO"
+}

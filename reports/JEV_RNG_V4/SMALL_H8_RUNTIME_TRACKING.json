@@ -1,11 +1,12 @@
 {
-  "association_backend": "formal_gmt_transformer",
-  "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+  "canonical_full_h8_rebuild_authorized": false,
   "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
-  "closed_loop_definition": "frozen detector/ReID payloads + formal GMT association transformer + mutable branch-local association/memory state + online typed controller commits; runtime mode recomputes controller features from the mutated state through the canonical shared builder",
-  "config": "/data1/liuyeqiang/WWW_rng_fix_v4/configs/VISION_test.yaml",
-  "controller_feature_source": "runtime",
-  "created_utc": "2026-10-06T14:29:49.663412+00:00",
+  "created_utc": "2026-10-06T15:06:47.016622+00:00",
+  "failure_reasons": [
+    "generic_mlp_tracking_collapse",
+    "full_jev_association_metrics_below_gmt_off",
+    "runtime_parity_blocked"
+  ],
   "gmt_off_baseline": {
     "AssA": 85.1463909945043,
     "DetA": 87.94461028006626,
@@ -15,7 +16,9 @@
     "IDSW": 280.0,
     "MOTA": 89.62457337883959
   },
-  "interpretation": "Pilot-only matched-sequence evidence; not a final paper result and not a substitute for full VISION_test evaluation.",
+  "held_out_tracking_sequence": true,
+  "interpretation": "The threshold controller is positive on this screening sequence, but the required MLP/JEV condition is not met. The MLP collapses association; JEV lowers HOTA/AssA/IDF1 despite reducing IDSW. The runtime comparison used a legacy trace and is not a final closed-loop result.",
+  "legacy_trace_rng_provenance": "BLOCKED_BY_MISSING_LEGACY_RNG_PROVENANCE",
   "methods": {
     "gmt_off": {
       "action_counts": {
@@ -58,19 +61,6 @@
         "\u0394IDF1": 0.0,
         "\u0394IDSW": 0.0,
         "\u0394MOTA": 0.0
-      },
-      "evaluation": {
-        "evaluation": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/pilot_video1_runtime_v1/tracking_eval_runtime_state/gmt_off/evaluation",
-        "metrics": {
-          "AssA": 85.1463909945043,
-          "DetA": 87.94461028006626,
-          "Frag": 6.0,
-          "HOTA": 86.52183155510353,
-          "IDF1": 94.64245684824031,
-          "IDSW": 280.0,
-          "MOTA": 89.62457337883959
-        },
-        "prepared": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/pilot_video1_runtime_v1/tracking_eval_runtime_state/gmt_off/prepared"
       },
       "metrics": {
         "AssA": 85.1463909945043,
@@ -124,19 +114,6 @@
         "\u0394IDSW": -276.0,
         "\u0394MOTA": 6.2798634812286735
       },
-      "evaluation": {
-        "evaluation": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/pilot_video1_runtime_v1/tracking_eval_runtime_state/jev/evaluation",
-        "metrics": {
-          "AssA": 84.49837989007946,
-          "DetA": 87.9136936006602,
-          "Frag": 6.0,
-          "HOTA": 86.17975883823486,
-          "IDF1": 93.05088545169244,
-          "IDSW": 4.0,
-          "MOTA": 95.90443686006826
-        },
-        "prepared": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/pilot_video1_runtime_v1/tracking_eval_runtime_state/jev/prepared"
-      },
       "metrics": {
         "AssA": 84.49837989007946,
         "DetA": 87.9136936006602,
@@ -188,19 +165,6 @@
         "\u0394IDF1": -45.66240753194352,
         "\u0394IDSW": 1613.0,
         "\u0394MOTA": -36.70079635949943
-      },
-      "evaluation": {
-        "evaluation": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/pilot_video1_runtime_v1/tracking_eval_runtime_state/question_conditioned_mlp/evaluation",
-        "metrics": {
-          "AssA": 39.62983279843164,
-          "DetA": 87.94461028006626,
-          "Frag": 6.0,
-          "HOTA": 59.00781945366952,
-          "IDF1": 48.98004931629679,
-          "IDSW": 1893.0,
-          "MOTA": 52.92377701934016
-        },
-        "prepared": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/pilot_video1_runtime_v1/tracking_eval_runtime_state/question_conditioned_mlp/prepared"
       },
       "metrics": {
         "AssA": 39.62983279843164,
@@ -254,19 +218,6 @@
         "\u0394IDSW": -198.0,
         "\u0394MOTA": 4.5051194539249195
       },
-      "evaluation": {
-        "evaluation": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/pilot_video1_runtime_v1/tracking_eval_runtime_state/question_threshold/evaluation",
-        "metrics": {
-          "AssA": 88.73421614710149,
-          "DetA": 87.92441183801441,
-          "Frag": 6.0,
-          "HOTA": 88.31907897298461,
-          "IDF1": 97.06343869087648,
-          "IDSW": 82.0,
-          "MOTA": 94.1296928327645
-        },
-        "prepared": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/pilot_video1_runtime_v1/tracking_eval_runtime_state/question_threshold/prepared"
-      },
       "metrics": {
         "AssA": 88.73421614710149,
         "DetA": 87.92441183801441,
@@ -278,22 +229,42 @@
       }
     }
   },
-  "official_test_read": false,
-  "perception_cache": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train",
-  "pilot_verdict": "PILOT_SCREENING_RUNTIME_STATE_WITH_LEGACY_TRACE_PARITY_BLOCK",
-  "previous_manual_feature_result": "SUPERSEDED_INVALID_FEATURE_SCHEMA",
+  "new_h8_records_for_tracking_video": 0,
+  "pilot_verdict": "PILOT_FAIL_NO_GO_FOR_CANONICAL_REBUILD",
+  "policy_train_sequences": [
+    "00020court3"
+  ],
+  "policy_val_sequences": [
+    "00017court1"
+  ],
   "runtime_feature_parity_gate": {
     "compared_records": 0,
     "expected_records": 0,
     "max_abs_error": 0.0,
     "missing_records": 0,
+    "observed_report_pass": false,
+    "observed_report_status": "FAIL",
     "off_action_mismatches": 24,
     "pass": false,
-    "report": "/data1/liuyeqiang/WWW_rng_fix_v4/reports/JEV_RUNTIME_STATE_V3/STATE_FEATURE_PARITY.json",
+    "report": "reports/JEV_RUNTIME_STATE_V3/STATE_FEATURE_PARITY.json",
     "required_for_runtime_claim": true
   },
+  "runtime_trace": {
+    "evaluation": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/pilot_video1_runtime_v1/tracking_eval_runtime_state/gmt_off/evaluation",
+    "metrics": {
+      "AssA": 85.1463909945043,
+      "DetA": 87.94461028006626,
+      "Frag": 6.0,
+      "HOTA": 86.52183155510353,
+      "IDF1": 94.64245684824031,
+      "IDSW": 280.0,
+      "MOTA": 89.62457337883959
+    },
+    "prepared": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7/pilot_video1_runtime_v1/tracking_eval_runtime_state/gmt_off/prepared"
+  },
+  "schema_version": "jev_rng_v4_small_h8_runtime_tracking_v1",
   "sequence": "00002garden",
-  "status": "PASS",
-  "trace_feature_policy": "trace_debug is parity-only and must not be interpreted as a closed-loop scientific result",
+  "status": "PILOT_FAIL",
+  "train_val_tracking_sequence_disjoint": true,
   "video_id": 1
 }

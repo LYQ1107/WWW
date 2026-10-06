@@ -234,6 +234,46 @@ def event_maps(events: Sequence[Mapping[str, Any]]):
     return actions, memories, by_key
 
 
+def advance_off_state_for_key(
+    *,
+    payload: Mapping[str, Any],
+    key: Tuple[int, int, int],
+    by_key: Mapping[Tuple[int, int, int], Sequence[Mapping[str, Any]]],
+    actions: Mapping[Tuple[int, int, int], Mapping[int, str]],
+    memories: Mapping[Tuple[int, int, int], Mapping[int, str]],
+    engine: CachedPerceptionMutableAssociationV2,
+    state: MutableGMTState,
+    proposal=None,
+):
+    """Commit one production-order OFF step and return its proposal.
+
+    This helper is shared by the normal builder and future intra-video chunk
+    warm-ups.  Keeping the proposal-discovery rule in one place is important:
+    a chunk start must consume exactly the same formal transformer/RNG calls as
+    the single-worker replay before its state snapshot is taken.
+    """
+
+    if proposal is None:
+        for event in by_key.get(key, ()):
+            question = str(event.get("question"))
+            row = event.get("context", {}).get("detection_index")
+            if (
+                question in {"MATCH_DECISION", "MEMORY_DECISION", "REACTIVATION_DECISION"}
+                and row is not None
+                and event.get("legal_actions")
+            ):
+                proposal = engine.propose(payload, state)
+                break
+    engine.step(
+        payload,
+        state,
+        actions=actions.get(key),
+        memory_actions=memories.get(key),
+        proposal=proposal,
+    )
+    return proposal
+
+
 def build_v2_records(
     *,
     trace: Path,
@@ -253,6 +293,10 @@ def build_v2_records(
     video_ids: Optional[Sequence[int]] = None,
     max_events_per_video: Optional[int] = None,
     derive_horizons: Optional[Sequence[int]] = None,
+    initial_state: Optional[MutableGMTState] = None,
+    key_start_index: int = 0,
+    key_end_index: Optional[int] = None,
+    selected_key_range: Optional[Tuple[int, int]] = None,
 ):
     if association_backend not in {"cosine_contract", "formal_gmt_transformer"}:
         raise ValueError(f"unsupported association backend: {association_backend}")
@@ -332,8 +376,32 @@ def build_v2_records(
         def payload_for(key):
             return eager_payloads[key] if eager_payloads is not None else cache.load(*key)
 
-        state = MutableGMTState().initialize_trajectory_rng(video_id)
-        for key_index, key in enumerate(keys):
+        if int(key_start_index) < 0 or int(key_start_index) > len(keys):
+            raise ValueError("key_start_index is outside the ordered cache-key range")
+        replay_start = int(key_start_index)
+        replay_end = len(keys) if key_end_index is None else int(key_end_index)
+        if replay_end < replay_start or replay_end > len(keys):
+            raise ValueError("key_end_index is outside the ordered cache-key range")
+        if initial_state is None:
+            state = MutableGMTState().initialize_trajectory_rng(video_id)
+        else:
+            state = initial_state.clone()
+            if state.trajectory_rng_seed is None or state.trajectory_rng_state is None:
+                raise ValueError("chunk initial_state must contain trajectory RNG provenance")
+        selected_start, selected_end = replay_start, replay_end
+        if selected_key_range is not None:
+            selected_start, selected_end = (
+                int(selected_key_range[0]),
+                int(selected_key_range[1]),
+            )
+            if (
+                selected_start < replay_start
+                or selected_end > replay_end
+                or selected_end < selected_start
+            ):
+                raise ValueError("selected_key_range must be contained in replay range")
+        for key_index in range(replay_start, replay_end):
+            key = keys[key_index]
             payload = payload_for(key)
             current_events = by_key.get(key, ())
             # One immutable association proposal is the evidence for every
@@ -341,129 +409,132 @@ def build_v2_records(
             # clone the same pre-decision state and reuse this proposal; they
             # must never independently invoke the transformer.
             current_proposal = None
-            for event in current_events:
-                question = str(event.get("question"))
-                if question not in {"MATCH_DECISION", "MEMORY_DECISION", "REACTIVATION_DECISION"}:
-                    continue
-                legal = list(event.get("legal_actions", ()))
-                row = event["context"].get("detection_index")
-                if row is None or not legal:
-                    skipped += 1
-                    continue
-                row = int(row)
-                if current_proposal is None:
-                    current_proposal = engine.propose(payload, state)
-                outcome_map = {}
-                for candidate in legal:
-                    branch = state.clone()
-                    branch_steps = []
-                    current_actions = dict(actions.get(key, {}))
-                    current_memories = dict(memories.get(key, {}))
-                    if question == "MEMORY_DECISION":
-                        current_memories[row] = candidate
-                    else:
-                        current_actions[row] = candidate
-                    current_result = engine.step(
-                        payload,
-                        branch,
-                        actions=current_actions,
-                        memory_actions=current_memories,
-                        proposal=current_proposal,
-                    )
-                    branch_steps.append(
-                        {
-                            "payload": payload,
-                            "result": current_result,
-                            "actions": current_actions,
-                            "memory_actions": current_memories,
-                        }
-                    )
-                    for future_key in keys[key_index + 1 :]:
-                        if int(future_key[1]) > int(key[1]) + horizon:
-                            break
-                        future_payload = payload_for(future_key)
-                        future_actions = dict(actions.get(future_key, {}))
-                        future_memories = dict(memories.get(future_key, {}))
-                        future_result = engine.step(
-                            future_payload,
+            emit_records = selected_start <= key_index < selected_end
+            if emit_records:
+                for event in current_events:
+                    question = str(event.get("question"))
+                    if question not in {"MATCH_DECISION", "MEMORY_DECISION", "REACTIVATION_DECISION"}:
+                        continue
+                    legal = list(event.get("legal_actions", ()))
+                    row = event["context"].get("detection_index")
+                    if row is None or not legal:
+                        skipped += 1
+                        continue
+                    row = int(row)
+                    if current_proposal is None:
+                        current_proposal = engine.propose(payload, state)
+                    outcome_map = {}
+                    for candidate in legal:
+                        branch = state.clone()
+                        branch_steps = []
+                        current_actions = dict(actions.get(key, {}))
+                        current_memories = dict(memories.get(key, {}))
+                        if question == "MEMORY_DECISION":
+                            current_memories[row] = candidate
+                        else:
+                            current_actions[row] = candidate
+                        current_result = engine.step(
+                            payload,
                             branch,
-                            actions=future_actions,
-                            memory_actions=future_memories,
+                            actions=current_actions,
+                            memory_actions=current_memories,
+                            proposal=current_proposal,
                         )
                         branch_steps.append(
                             {
-                                "payload": future_payload,
-                                "result": future_result,
-                                "actions": future_actions,
-                                "memory_actions": future_memories,
+                                "payload": payload,
+                                "result": current_result,
+                                "actions": current_actions,
+                                "memory_actions": current_memories,
                             }
                         )
-                    outcome_map[candidate] = {
-                        str(branch_horizon): score_rollout(
-                            branch_steps,
-                            images=images,
-                            gt_by_image=gt_by_image,
-                            image_meta=image_meta,
-                            start_frame=int(key[1]),
-                            max_horizon=branch_horizon,
-                        )
+                        for future_key in keys[key_index + 1 :]:
+                            if int(future_key[1]) > int(key[1]) + horizon:
+                                break
+                            future_payload = payload_for(future_key)
+                            future_actions = dict(actions.get(future_key, {}))
+                            future_memories = dict(memories.get(future_key, {}))
+                            future_result = engine.step(
+                                future_payload,
+                                branch,
+                                actions=future_actions,
+                                memory_actions=future_memories,
+                            )
+                            branch_steps.append(
+                                {
+                                    "payload": future_payload,
+                                    "result": future_result,
+                                    "actions": future_actions,
+                                    "memory_actions": future_memories,
+                                }
+                            )
+                        outcome_map[candidate] = {
+                            str(branch_horizon): score_rollout(
+                                branch_steps,
+                                images=images,
+                                gt_by_image=gt_by_image,
+                                image_meta=image_meta,
+                                start_frame=int(key[1]),
+                                max_horizon=branch_horizon,
+                            )
+                            for branch_horizon in horizons
+                        }
+
+                    state_data = {
+                        "feature_vector": [float(value) for value in event["state_feature_vector"]],
+                        "online_context": {
+                            "video_id": int(video_id),
+                            "frame": int(event["_frame"]),
+                            "view": int(event["_view"]),
+                            "event_order": int(event["_order"]),
+                            "detection_index": row,
+                            "proposal_track_id": event["context"].get("proposal_track_id"),
+                            "alternate_track_id": event["context"].get("alternate_track_id"),
+                            "track_id": event["context"].get("track_id"),
+                        },
+                        "counterfactual_engine": ENGINE_VERSION,
+                        "association_backend": association_backend,
+                        "perception_cache_version": str(payload.get("cache_version")),
+                    }
+                    record = make_record(
+                        dataset="VisionTrack",
+                        sequence=sequence,
+                        frame=int(event["_frame"]),
+                        view=int(event["_view"]),
+                        question_type=question,
+                        state=state_data,
+                        legal_actions=legal,
+                        action_outcomes={
+                            candidate: outcome_map[candidate][str(horizon)]
+                            for candidate in legal
+                        },
+                        gmt_checkpoint_sha256=checkpoint_hash,
+                        horizon=horizon,
+                    )
+                    # Preserve raw cumulative outcomes from one max-horizon rollout
+                    # so smaller policy horizons can be derived without a second
+                    # association simulation.
+                    record["horizon_outcomes"] = {
+                        str(branch_horizon): {
+                            candidate: outcome_map[candidate][str(branch_horizon)]
+                            for candidate in legal
+                        }
                         for branch_horizon in horizons
                     }
+                    if record_sink is None:
+                        records.append(record)
+                    else:
+                        record_sink(record)
+                    stats[question] = stats.get(question, 0) + 1
 
-                state_data = {
-                    "feature_vector": [float(value) for value in event["state_feature_vector"]],
-                    "online_context": {
-                        "video_id": int(video_id),
-                        "frame": int(event["_frame"]),
-                        "view": int(event["_view"]),
-                        "event_order": int(event["_order"]),
-                        "detection_index": row,
-                        "proposal_track_id": event["context"].get("proposal_track_id"),
-                        "alternate_track_id": event["context"].get("alternate_track_id"),
-                        "track_id": event["context"].get("track_id"),
-                    },
-                    "counterfactual_engine": ENGINE_VERSION,
-                    "association_backend": association_backend,
-                    "perception_cache_version": str(payload.get("cache_version")),
-                }
-                record = make_record(
-                    dataset="VisionTrack",
-                    sequence=sequence,
-                    frame=int(event["_frame"]),
-                    view=int(event["_view"]),
-                    question_type=question,
-                    state=state_data,
-                    legal_actions=legal,
-                    action_outcomes={
-                        candidate: outcome_map[candidate][str(horizon)]
-                        for candidate in legal
-                    },
-                    gmt_checkpoint_sha256=checkpoint_hash,
-                    horizon=horizon,
-                )
-                # Preserve raw cumulative outcomes from one max-horizon rollout
-                # so smaller policy horizons can be derived without a second
-                # association simulation.
-                record["horizon_outcomes"] = {
-                    str(branch_horizon): {
-                        candidate: outcome_map[candidate][str(branch_horizon)]
-                        for candidate in legal
-                    }
-                    for branch_horizon in horizons
-                }
-                if record_sink is None:
-                    records.append(record)
-                else:
-                    record_sink(record)
-                stats[question] = stats.get(question, 0) + 1
-
-            state_actions = actions.get(key)
-            state_memories = memories.get(key)
-            engine.step(
-                payload,
-                state,
-                actions=state_actions,
-                memory_actions=state_memories,
+            advance_off_state_for_key(
+                payload=payload,
+                key=key,
+                by_key=by_key,
+                actions=actions,
+                memories=memories,
+                engine=engine,
+                state=state,
                 proposal=current_proposal,
             )
     return (records if records is not None else []), stats, skipped

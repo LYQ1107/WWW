@@ -79,15 +79,22 @@ def validation_metrics(data: CompactJEVData, indices: np.ndarray, probabilities:
                 - sum(item[1] * item[2] for item in selected) / bucket_weight
             )
     oracle = 0.0
+    oracle_weight = 0.0
     utility_index = OUTCOME_FIELDS.index("utility")
     for row in range(len(indices)):
         valid = legal[row] >= 0
-        oracle += weights[row] * float(np.nanmax(outcomes[row, valid, utility_index]))
+        utility_values = outcomes[row, valid, utility_index]
+        finite_utility = utility_values[np.isfinite(utility_values)]
+        if len(finite_utility) == 0:
+            continue
+        oracle += weights[row] * float(np.max(finite_utility))
+        oracle_weight += weights[row]
+    oracle_best_utility = None if oracle_weight <= 0 else oracle / oracle_weight
     return {
         "records": int(len(indices)),
         "weighted_records": denominator,
         "val_utility": mechanism.get("utility", 0.0) / denominator,
-        "oracle_best_utility": oracle / denominator,
+        "oracle_best_utility": oracle_best_utility,
         "nll": nll / denominator,
         "accuracy": correct / denominator,
         "brier": brier / denominator,
