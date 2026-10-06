@@ -16,7 +16,7 @@ from ..jev_runtime import (
     JEVRuntimePolicy,
     build_controller_from_checkpoint,
 )
-from ..jev_state import encode_state
+from ..jev_state import build_state_values, encode_state
 from ..jev_assignment import constrained_hungarian
 from ..jev_perception_cache import FrozenPerceptionCacheWriter
 from tqdm import tqdm
@@ -144,14 +144,6 @@ class GTRRCNN(CustomRCNN):
         )
         return decision.committed_action
 
-    @staticmethod
-    def _safe_unit(value):
-        """Clip only values that are semantically probabilities."""
-        value = float(value)
-        if not np.isfinite(value):
-            return 0.0
-        return max(0.0, min(1.0, value))
-
     def _match_state_values(
         self,
         *,
@@ -172,51 +164,30 @@ class GTRRCNN(CustomRCNN):
         track_length=1.0,
         score_variance=0.0,
     ):
-        raw_accept_score = float(accept_score)
-        raw_reassociate_score = float(reassociate_score)
-        raw_threshold = float(threshold)
-        accept_score = self._safe_unit(raw_accept_score)
-        reassociate_score = self._safe_unit(raw_reassociate_score)
-        scores = [accept_score, reassociate_score]
-        top1, top2 = sorted(scores, reverse=True)
-        safe_length = max(1.0, float(track_length))
-        safe_threshold = raw_threshold if abs(raw_threshold) > 1e-8 else 1e-8
-        return {
-            'accept_score': accept_score,
-            'reassociate_score': reassociate_score,
-            'write_memory_score': self._safe_unit(track_score),
-            'reactivate_score': reassociate_score,
-            'accept_threshold': self._safe_unit(threshold),
-            'unmatched_mass': self._safe_unit(1.0 - max(scores)),
-            'top1_top2_margin': self._safe_unit(top1 - top2),
-            'candidate_count_norm': self._safe_unit(candidate_count / 16.0),
-            'candidate_entropy': self._safe_unit(candidate_entropy),
-            'track_count_norm': self._safe_unit(track_count / 128.0),
-            'track_age_norm': self._safe_unit(track_age / 128.0),
-            'track_hits_norm': self._safe_unit(track_age / 128.0),
-            'memory_count_norm': self._safe_unit(memory_count / 64.0),
-            'track_score_mean': self._safe_unit(track_score),
-            'track_score_std': 0.0,
-            'frame_index_norm': self._safe_unit(frame_index / max(1.0, window_length)),
-            'window_length_norm': self._safe_unit(window_length / 32.0),
-            'view_index_norm': self._safe_unit(view_index / 8.0),
-            'current_is_unmatched': float(bool(current_is_unmatched)),
-            'has_old_track': float(bool(has_old_track)),
-            'can_reassociate': float(self.jev_max_reassociate > 0),
-            'memory_enabled': float(bool(self.with_bank)),
-            'with_iou': float(bool(self.with_iou)),
-            'not_mult_thresh': float(bool(self.not_mult_thresh)),
-            'state_validity_flag': 1.0,
-            # Accumulated association evidence is not a probability.  Keep
-            # raw and transformed views instead of saturating it at one.
-            'raw_traj_score': raw_accept_score,
-            'mean_traj_score': raw_accept_score / safe_length,
-            'log1p_traj_score': float(np.log1p(max(0.0, raw_accept_score))),
-            'score_minus_threshold': raw_accept_score - raw_threshold,
-            'score_over_threshold': raw_accept_score / safe_threshold,
-            'track_length_norm': self._safe_unit(safe_length / 128.0),
-            'raw_score_variance': max(0.0, float(score_variance)),
-        }
+        """Delegate JEV feature semantics to the canonical shared builder."""
+
+        return build_state_values(
+            accept_score=accept_score,
+            reassociate_score=reassociate_score,
+            threshold=threshold,
+            candidate_count=candidate_count,
+            candidate_entropy=candidate_entropy,
+            track_count=track_count,
+            track_age=track_age,
+            frame_index=frame_index,
+            window_length=window_length,
+            view_index=view_index,
+            can_reassociate=self.jev_max_reassociate > 0,
+            memory_enabled=self.with_bank,
+            with_iou=self.with_iou,
+            not_mult_thresh=self.not_mult_thresh,
+            has_old_track=has_old_track,
+            current_is_unmatched=current_is_unmatched,
+            memory_count=memory_count,
+            track_score=track_score,
+            track_length=track_length,
+            score_variance=score_variance,
+        )
 
     @staticmethod
     def _jev_tracker_state(
