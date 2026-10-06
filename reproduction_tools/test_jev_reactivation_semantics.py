@@ -7,6 +7,7 @@ from jev_counterfactual_v2 import (
     build_reactivation_proposal,
     reactivation_candidates,
     subset_perception_payload,
+    sync_production_history_for_key,
 )
 
 
@@ -46,6 +47,41 @@ def main():
     proposal = build_reactivation_proposal(engine, subset, state, candidate_ids, None)
     assert proposal == "proposal"
     assert engine.payload_rows == [2, 0]
+
+    # At (frame=214, view=1), native VISION_test TEST_LEN=40 retains the
+    # preceding 79 slices, not the generic 80-slice cap.  Track 3 exists only
+    # in frame 174/view 1 and must therefore leave the active window before
+    # the current reactivation decision.
+    history = [
+        {"perception": {"frame": 174, "view": 1}, "assignments": {0: 3}},
+    ]
+    for frame in range(175, 214):
+        for view in (0, 1):
+            history.append(
+                {
+                    "perception": {"frame": frame, "view": view},
+                    "assignments": {0: 1},
+                }
+            )
+    history.append(
+        {
+            "perception": {"frame": 214, "view": 0},
+            "assignments": {0: 1},
+        }
+    )
+    assert len(history) == 80
+    window_state = MutableGMTState(association_history=history)
+    required = sync_production_history_for_key(
+        window_state, frame=214, view=1, view_num=2, history_limit=80
+    )
+    assert required == 79
+    assert len(window_state.association_history) == 79
+    assert window_state.association_history[0]["perception"] == {
+        "frame": 175,
+        "view": 0,
+    }
+    assert 3 not in window_state.active_ids
+    assert window_state.active_ids == {1}
     print("JEV reactivation row-filter semantics: PASS")
 
 

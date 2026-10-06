@@ -383,7 +383,10 @@ def run_method(
     max_frame=None,
     trace_writer=None,
 ):
-    from jev_counterfactual_v2 import subset_perception_payload
+    from jev_counterfactual_v2 import (
+        subset_perception_payload,
+        sync_production_history_for_key,
+    )
 
     controller = (
         build_controller_from_checkpoint(checkpoint_path, device="cpu")
@@ -467,16 +470,18 @@ def run_method(
     for key_index, key in enumerate(keys[1:], start=1):
         payload = cache.load(*key)
         video_id, frame, view = [int(value) for value in key]
-        required_history = min(frame, 39) * 2 + view
-        if required_history < 1:
-            required_history = 1
+        required_history = sync_production_history_for_key(
+            state,
+            frame=frame,
+            view=view,
+            view_num=2,
+            history_limit=int(getattr(engine, "history_limit", 80)),
+        )
         if len(state.association_history) < required_history:
             raise RuntimeError(
                 f"replay history underflow at frame={frame} view={view}: "
                 f"{len(state.association_history)} < {required_history}"
             )
-        if len(state.association_history) > required_history:
-            state.association_history = state.association_history[-required_history:]
         proposal = engine.propose(payload, state)
         track_ids, scores = proposal.track_ids, proposal.scores
         if os.environ.get("JEV_DEBUG_PROPOSALS") and frame <= 6:

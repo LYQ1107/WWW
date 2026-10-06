@@ -320,6 +320,47 @@ def seed_production_state_from_payload(
     return state, payload
 
 
+def sync_production_history_for_key(
+    state: "MutableGMTState",
+    *,
+    frame: int,
+    view: int,
+    view_num: int = 2,
+    history_limit: int = 80,
+) -> int:
+    """Synchronize replay history with GMT's native sliding window.
+
+    The mutable replay keeps a bounded history, while native
+    ``sliding_inference_GMT`` uses a shorter warm-up window until
+    ``TEST_LEN`` frames have elapsed and then drops the complete oldest frame
+    (all views) before proposing the current view.  An identity that has left
+    that native window must not remain in ``active_ids`` or stale-bank
+    promotion will diverge from GMT.
+    """
+
+    view_count = max(1, int(view_num))
+    limit = max(1, int(history_limit))
+    test_len = max(1, limit // view_count)
+    frame_index = max(0, int(frame))
+    view_index = int(view)
+    if view_index < 0 or view_index >= view_count:
+        raise ValueError(
+            f"production view {view_index} is outside view_num={view_count}"
+        )
+    required_history = max(
+        1,
+        min(frame_index, max(0, test_len - 1)) * view_count + view_index,
+    )
+    if len(state.association_history) > required_history:
+        state.association_history = state.association_history[-required_history:]
+    state.active_ids = {
+        int(track_id)
+        for item in state.association_history
+        for track_id in dict(item.get("assignments", {})).values()
+    }
+    return required_history
+
+
 @dataclass(frozen=True)
 class AssociationProposal:
     track_ids: Tuple[int, ...]

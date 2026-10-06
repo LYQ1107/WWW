@@ -54,6 +54,9 @@ def main():
     )
     state.initialize_trajectory_rng(8)
     adapter = GMTAssociationTransformerAdapter(FakeModel(), view_num=2, history_limit=8)
+    subset = dict(current)
+    subset["source_detection_indices"] = [0]
+    assert adapter._payload_key(current) != adapter._payload_key(subset)
     result = adapter(current, (1, 2), state)
     scores = result.scores
     # Each historical slice is softmaxed with its own dummy unmatched column:

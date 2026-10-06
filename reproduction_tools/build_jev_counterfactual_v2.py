@@ -37,6 +37,7 @@ from jev_counterfactual_v2 import (
     reactivation_candidates,
     seed_production_state_from_payload,
     subset_perception_payload,
+    sync_production_history_for_key,
 )
 from jev_dataset_tools import make_record
 from jev_mutable_branch import is_main_decision
@@ -565,6 +566,13 @@ def advance_off_state_for_key(
     the single-worker replay before its state snapshot is taken.
     """
 
+    sync_production_history_for_key(
+        state,
+        frame=int(key[1]),
+        view=int(key[2]),
+        view_num=int(getattr(getattr(engine, "association_fn", None), "view_num", 2)),
+        history_limit=int(getattr(engine, "history_limit", 80)),
+    )
     current_events = by_key.get(key, ())
     if proposal is None:
         for event in current_events:
@@ -735,6 +743,15 @@ def build_v2_records(
         for key_index in range(replay_start, replay_end):
             key = keys[key_index]
             payload = payload_for(key)
+            sync_production_history_for_key(
+                state,
+                frame=int(key[1]),
+                view=int(key[2]),
+                view_num=int(
+                    getattr(getattr(engine, "association_fn", None), "view_num", 2)
+                ),
+                history_limit=int(getattr(engine, "history_limit", 80)),
+            )
             current_events = by_key.get(key, ())
             # One immutable association proposal is the evidence for every
             # typed question emitted at this frame/view.  Candidate branches
@@ -825,6 +842,21 @@ def build_v2_records(
                             if int(future_key[1]) > int(key[1]) + horizon:
                                 break
                             future_payload = payload_for(future_key)
+                            sync_production_history_for_key(
+                                branch,
+                                frame=int(future_key[1]),
+                                view=int(future_key[2]),
+                                view_num=int(
+                                    getattr(
+                                        getattr(engine, "association_fn", None),
+                                        "view_num",
+                                        2,
+                                    )
+                                ),
+                                history_limit=int(
+                                    getattr(engine, "history_limit", 80)
+                                ),
+                            )
                             future_events = by_key.get(future_key, ())
                             future_actions = dict(actions.get(future_key, {}))
                             future_memories = dict(memories.get(future_key, {}))

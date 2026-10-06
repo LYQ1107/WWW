@@ -37,10 +37,19 @@ class GMTAssociationTransformerAdapter:
     @staticmethod
     def _payload_key(payload: Mapping[str, object]):
         try:
+            # A stale-bank proposal uses the same video/frame/view as the
+            # ordinary proposal but contains only the unmatched detection
+            # rows. Include that immutable row selection in the cache key;
+            # otherwise an earlier full-frame tensor can be returned for the
+            # one-row reactivation payload.
+            source_rows = tuple(
+                int(value) for value in payload.get("source_detection_indices", ())
+            )
             return (
                 int(payload["video_id"]),
                 int(payload["frame"]),
                 int(payload["view"]),
+                source_rows,
             )
         except (KeyError, TypeError, ValueError):
             # Keep the lightweight adapter test and any legacy in-memory
