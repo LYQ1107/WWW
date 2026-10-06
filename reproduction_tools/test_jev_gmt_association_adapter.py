@@ -33,6 +33,14 @@ def payload(value):
     }
 
 
+def empty_payload():
+    return {
+        "pred_boxes": torch.empty((0, 4)),
+        "reid_features": torch.empty((0, 0)),
+        "image_size": (8, 8),
+    }
+
+
 def main():
     state = MutableGMTState(
         next_id=1,
@@ -43,12 +51,25 @@ def main():
     engine = CachedPerceptionMutableAssociationV2(
         association_fn=GMTAssociationTransformerAdapter(FakeModel())
     )
-    engine.step(payload(1.0), state, actions={0: "ACCEPT_CURRENT"})
-    scores = engine.score_matrix(payload(1.0), state)[1]
+    first_payload = payload(1.0)
+    second_payload = payload(2.0)
+    zero_detection_payload = empty_payload()
+    engine.step(first_payload, state, actions={0: "ACCEPT_CURRENT"})
+    scores = engine.score_matrix(first_payload, state)[1]
     assert scores.shape == (1, 1), scores.shape
+
+    # Empty detections are legal frozen-cache payloads.  They must remain
+    # zero-row tensors while borrowing the neighboring 2-D feature width for
+    # the transformer concatenation.
+    state.association_history.append(
+        {"perception": zero_detection_payload, "assignments": {}}
+    )
+    scores = engine.score_matrix(second_payload, state)[1]
+    assert scores.shape == (1, 1), scores.shape
+    empty_scores = engine.score_matrix(zero_detection_payload, state)[1]
+    assert empty_scores.shape == (0, 1), empty_scores.shape
     print("JEV GMT association-adapter invariants: PASS")
 
 
 if __name__ == "__main__":
     main()
-
