@@ -49,14 +49,18 @@ def old_path_for(snapshot: dict, video_id: int) -> Path | None:
     for item in snapshot.get("workers", []):
         if int(item.get("video_id", -1)) != int(video_id):
             continue
-        for candidate in (item.get("manifest"), item.get("tmp_records_path")):
-            if candidate and Path(candidate).is_file():
-                return Path(candidate)
         root = Path(str(item.get("output_root", "")))
+        # ``manifest`` is metadata, not a JSONL shard.  Prefer the official
+        # records file even when the pause snapshot also contains a stale
+        # temporary path; otherwise the audit silently compares zero records
+        # from ``manifest.json`` and can report a false PASS.
         candidates = [root / "records.jsonl"] + sorted(root.glob("records.jsonl.tmp.*"))
-        for candidate in reversed(candidates):
+        for candidate in candidates:
             if candidate.is_file():
                 return candidate
+        for candidate in (item.get("tmp_records_path"), item.get("manifest")):
+            if candidate and Path(candidate).is_file() and Path(candidate).suffix != ".json":
+                return Path(candidate)
     return None
 
 
