@@ -130,9 +130,9 @@ Full H=8 partition.
 ## Live continuation update — 23:02 UTC
 
 The current branch is
-`jev/counterfactual-rng-isolation-v4-20261006` at pushed HEAD `947a951`
-(the official runner was added in `16b5bc3`), which is a descendant of the
-requested `13a0c679` source gate. The strict
+`jev/counterfactual-rng-isolation-v4-20261006`, descending from the pushed
+official-runner commit `16b5bc3` and the requested `13a0c679` source gate. The
+strict
 same-code formal single/chunk equivalence report is `PASS`; the authorized
 supervisor has consequently launched the production 24-video Full H=8
 scheduler using the locked partition with `1,112,173` main decisions.
@@ -164,3 +164,18 @@ run the three learned controllers in parallel on GPUs 4/8/9 using the same
 Stage2 checkpoint, frozen TEST perception cache, and explicit trajectory RNG
 seed. It reuses the frozen GMT OFF baseline and never reruns the full OFF
 baseline. No official TEST controller result exists yet.
+
+## Live throughput check — 23:05 UTC
+
+A read-only 25-second sample of the three active Full H=8 temporary shards
+added `16`, `15`, and `22` JSONL records respectively (`53` total, about
+`2.12 records/second` across the three workers). Their worker CPU counters and
+temporary-file sizes also increased, so the build is progressing rather than
+stalled. At this observed three-slot rate, the remaining 24-video build is
+roughly a `5–7 day` wall-clock operation; this remains an estimate because
+workloads differ by video and GPU6 may become available later.
+
+The scheduler is polling GPU6 and deferring it only while the live corrected
+video6 builder owns PID `33861`; GPU1 is deferred because of the unrelated
+external PID `16536`. GPUs 2/3/5/7 remain protocol-reserved and are not used
+just because their utilization is low. No process was stopped or migrated.
