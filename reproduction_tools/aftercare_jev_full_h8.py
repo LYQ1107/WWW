@@ -154,6 +154,32 @@ def update_status(path: Path, status: str, **fields: Any) -> None:
     atomic_json(path, current)
 
 
+def resolve_source_compatibility_manifest(
+    root: Path,
+    explicit: Path | None = None,
+) -> Path | None:
+    """Return an audited compatibility manifest, if one was explicitly prepared.
+
+    The default remains strict: absence of this file means the finalizer is
+    invoked without a compatibility override.  A present file must already be
+    ``status=PASS``; a pending or failed report is never forwarded as authority.
+    """
+
+    path = (
+        explicit.resolve()
+        if explicit is not None
+        else root / "reports/H8_FORMAL_SOURCE_COMPATIBILITY_PASS.json"
+    )
+    if not path.is_file():
+        return None
+    payload = read_json(path)
+    if payload.get("status") != "PASS":
+        raise RuntimeError(
+            f"source compatibility manifest exists but is not PASS: {path}"
+        )
+    return path
+
+
 def capacity_match(root: Path, state_dim: int) -> dict[str, Any]:
     """Select widths by the same <2% trainable-parameter gate as aggregation."""
     sys.path.insert(0, str(root))
@@ -408,11 +434,16 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--poll-seconds", type=float, default=60.0)
+    parser.add_argument("--source-compatibility-manifest", type=Path)
     args = parser.parse_args()
     runtime = args.runtime_root.resolve()
     paths = derived_paths(runtime)
     root = Path(__file__).resolve().parents[1]
     queue = runtime / "queue_state.json"
+    source_compatibility_manifest = resolve_source_compatibility_manifest(
+        root,
+        args.source_compatibility_manifest,
+    )
     partition_manifest_path = paths["partition"] / "partition_manifest.json"
     if not partition_manifest_path.is_file():
         raise FileNotFoundError(partition_manifest_path)
@@ -432,6 +463,11 @@ def main() -> int:
         seed=SEED,
         official_test_read=False,
         gpu_training_started=False,
+        source_compatibility_manifest=(
+            str(source_compatibility_manifest)
+            if source_compatibility_manifest is not None
+            else None
+        ),
     )
     try:
         while True:
@@ -457,7 +493,15 @@ def main() -> int:
                     paths["partition"],
                     "--output",
                     paths["records"],
-                ],
+                ]
+                + (
+                    [
+                        "--source-compatibility-manifest",
+                        source_compatibility_manifest,
+                    ]
+                    if source_compatibility_manifest is not None
+                    else []
+                ),
                 paths["log"],
                 root,
             )
