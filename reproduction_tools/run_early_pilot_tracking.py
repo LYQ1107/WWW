@@ -544,6 +544,15 @@ def run_method(
                     counts["memory_contamination"] += float(outcome.get("memory_contamination", 0.0))
             decisions.append({"frame": frame, "view": view, "row": row, "question": "MEMORY_DECISION", "action": action})
         result = engine.step(payload, state, actions=actions, memory_actions=memories)
+        if frame == seed_frame and view != seed_view:
+            # The native first-frame path processes the seed view first but
+            # stores the completed frame in natural view order before the next
+            # frame's global window is built.  Keep that order in the mutable
+            # replay history; otherwise the transformer sees view1,view0
+            # instead of view0,view1 and the OFF branch diverges later.
+            state.association_history.sort(
+                key=lambda item: int(item["perception"]["view"])
+            )
         append_predictions(
             predictions,
             payload,
