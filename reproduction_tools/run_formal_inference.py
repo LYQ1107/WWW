@@ -36,6 +36,21 @@ def main() -> None:
     parser.add_argument("--jev-mode", choices=("off", "shadow", "jev"), default=None)
     parser.add_argument("--jev-controller", type=Path, default=None)
     parser.add_argument("--jev-trace", type=Path, default=None)
+    parser.add_argument(
+        "--perception-cache-read",
+        type=Path,
+        default=None,
+        help=(
+            "read-only frozen detector/ReID cache used by the native GMT run; "
+            "the cache must already contain index.jsonl"
+        ),
+    )
+    parser.add_argument(
+        "--trajectory-rng-master-seed",
+        type=int,
+        default=None,
+        help="explicit branch-local trajectory RNG master seed for provenance",
+    )
     parser.add_argument("--source-overlay", type=Path, default=None)
     args = parser.parse_args()
     checkpoint = args.checkpoint if args.checkpoint.is_absolute() else ROOT / args.checkpoint
@@ -51,6 +66,13 @@ def main() -> None:
         raise FileNotFoundError(checkpoint)
     if not config.is_file():
         raise FileNotFoundError(config)
+    perception_cache_read = None
+    if args.perception_cache_read is not None:
+        perception_cache_read = args.perception_cache_read.resolve()
+        if not (perception_cache_read / "index.jsonl").is_file():
+            raise FileNotFoundError(
+                f"perception cache index is missing: {perception_cache_read / 'index.jsonl'}"
+            )
     if output.exists():
         raise RuntimeError(f"refusing to overwrite existing inference output: {output}")
     output.mkdir(parents=True)
@@ -93,6 +115,8 @@ def main() -> None:
         "jev_mode": args.jev_mode,
         "jev_controller": str(args.jev_controller) if args.jev_controller else None,
         "jev_trace": str(args.jev_trace) if args.jev_trace else None,
+        "perception_cache_read": str(perception_cache_read) if perception_cache_read else None,
+        "trajectory_rng_master_seed": args.trajectory_rng_master_seed,
         "source_overlay": str(source_overlay) if source_overlay else None,
     }
     (output / "inference_manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
@@ -109,6 +133,12 @@ def main() -> None:
             "GMT_CPU_COLLECTIVES": "1",
         }
     )
+    if perception_cache_read is not None:
+        environment["JEV_PERCEPTION_CACHE_READ_PATH"] = str(perception_cache_read)
+    if args.trajectory_rng_master_seed is not None:
+        environment["JEV_TRAJECTORY_RNG_MASTER_SEED"] = str(
+            int(args.trajectory_rng_master_seed)
+        )
     started = time.monotonic()
     with log.open("w", encoding="utf-8") as handle:
         process = subprocess.Popen(
