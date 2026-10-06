@@ -126,3 +126,40 @@ authorization helper accepts it, uses the locked 24-video partition at
 `/home/liuyeqiang/WWW_jev_full_h8_runtime/partition`. The separate
 `small_h8_partition_fixed` three-video fixture is never used as the production
 Full H=8 partition.
+
+## Live continuation update — 23:02 UTC
+
+The current branch is
+`jev/counterfactual-rng-isolation-v4-20261006` at pushed HEAD `16b5bc3`,
+which is a descendant of the requested `13a0c679` source gate. The strict
+same-code formal single/chunk equivalence report is `PASS`; the authorized
+supervisor has consequently launched the production 24-video Full H=8
+scheduler using the locked partition with `1,112,173` main decisions.
+
+At this update the queue is `RUNNING` with `21 PENDING` and `3 RUNNING`
+videos. The active workers are video15/video23/video24 on the designated
+GPU4/GPU8/GPU9 slots, with live heartbeats. Their outputs are intentionally
+kept in worker temporary JSONL files until each video finishes; a missing
+per-video final manifest is not treated as completion. The corrected video1,
+video6, and video7 current-head builders remain separate and live; none was
+stopped, migrated, or replaced.
+
+The current measured Full H=8 worker throughput is approximately
+`0.8–1.0 records/second/worker` over a short observation window. With the
+currently available three slots this implies roughly `4–6 days` for the full
+record build; this is an estimate, not a completion claim, and may change if a
+designated slot becomes available. The v6/v7 current-head training waiter is
+independent and starts the one-seed Threshold/MLP/JEV screening bundle as soon
+as its own corrected builder and parity gates pass; it does not wait for
+video1.
+
+The formal official TEST runner is now recorded in
+`reproduction_tools/run_full_h8_official_tracking.py`, with its fail-closed
+waiter in `reproduction_tools/run_full_h8_official_tracking_waiter.sh`. The
+waiter is live and currently waiting for the corrected video1 provenance,
+feature parity, candidate parity, stability, closed-loop gate, Full H=8
+postprocess, and first-round training reports. Once all are `PASS`, it will
+run the three learned controllers in parallel on GPUs 4/8/9 using the same
+Stage2 checkpoint, frozen TEST perception cache, and explicit trajectory RNG
+seed. It reuses the frozen GMT OFF baseline and never reruns the full OFF
+baseline. No official TEST controller result exists yet.
