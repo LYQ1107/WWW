@@ -10,7 +10,9 @@ set -u
 REPO=/data1/liuyeqiang/WWW_rng_fix_v4
 RUNTIME=${FULL_H8_RUNTIME_ROOT:-/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head}
 PYTHON=/home/liuyeqiang/anaconda3/envs/GMT/bin/python
-PARTITION_SOURCE=/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_partition_fixed
+# The 3-video small_h8_partition_fixed is only the formal gate fixture. The
+# canonical production build must use the locked 24-video partition.
+PARTITION_SOURCE=/home/liuyeqiang/WWW_jev_full_h8_runtime/partition
 PARTITION=$RUNTIME/partition
 FORMAL=$REPO/reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json
 QUEUE=$RUNTIME/queue_state.json
