@@ -1,8 +1,8 @@
 # JEV counterfactual RNG isolation and REASSOCIATE semantics — v4
 
-Status: the v4 implementation gates pass, the completed small-gate artifacts
-are reproducible, and the first closed-loop pilot is `PILOT_FAIL`. The 24-video
-canonical H=8 rebuild is therefore not authorized yet.
+Status: the v4 implementation gates pass, the first closed-loop pilot exposed a
+train/runtime state mismatch, and the corrected video6/video7 rebuild is now
+running. The 24-video canonical H=8 rebuild is not authorized yet.
 
 The active small-gate worker for video1 remains running on GPU6. It must not be
 stopped or migrated: its throughput is about 35 records/min, comparable to
@@ -34,6 +34,10 @@ paused with SIGTERM and preserved. Its records are
 - `resolve_actions()` and `step()` accept a precomputed proposal.
   `REASSOCIATE` reuses its score tensor and performs only constrained Hungarian;
   it makes no second transformer call.
+- Counterfactual records now seed the native first-frame GMT view and build
+  state features from the current mutable OFF state through the same v2 state
+  schema used by runtime inference. They no longer copy the legacy trace's
+  state feature vector as training input.
 - The runtime pilot recomputes controller features from the mutated state and
   passes one proposal through feature extraction, resolution, and commit.
 
@@ -78,6 +82,27 @@ JEV technically beats both learned controls, but its validation utility is
 exactly the majority-action reference and its margin over MLP is only about
 `0.0091`. This is not strong evidence for a closed-loop tracking claim.
 The full report is `reports/JEV_RNG_V4/SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json`.
+
+## Train/runtime mismatch diagnosis and correction
+
+The first small-gate records were not safe training data: they copied the
+legacy trace feature vector and replayed the first frame from an empty state.
+On a video6 runtime replay through frame 20, this produced 163 compared
+features with maximum absolute error `31.580963` and mean absolute error
+`0.098956`. The largest errors were `raw_score_variance`,
+`score_over_threshold`, `raw_traj_score`, and `score_minus_threshold`.
+
+Commit `0c31b72` adds production seed initialization, native first-frame view
+ordering, and `canonical_state_feature_for_event`; the runtime pilot can now
+use the same formal GPU device for parity. A bounded formal probe on 120
+corrected video6 records reduced the maximum feature error to `1.53e-5`, mean
+error to `9.74e-9`, with zero OFF action mismatches. The diagnostic is recorded
+in `reports/JEV_RNG_V4/TRAIN_RUNTIME_FEATURE_MISMATCH_DIAGNOSTIC.json`.
+
+The corrected full video6/video7 rebuild is isolated under
+`/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v3_canonical_features`
+and runs in parallel on GPU2/GPU3. The original video1 small-gate worker on
+GPU6 is unchanged.
 
 ## Early closed-loop pilot
 

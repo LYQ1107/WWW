@@ -1,0 +1,43 @@
+{
+  "schema_version": "jev_rng_v4_train_runtime_feature_mismatch_v1",
+  "status": "FIX_IMPLEMENTED_REBUILD_IN_PROGRESS",
+  "classification": "DIAGNOSTIC_ONLY_NOT_FINAL_TRACKING_RESULT",
+  "created_utc": "2026-10-06T15:31:00Z",
+  "root_cause": [
+    "The first small-gate builder copied state_feature_vector from the preserved legacy trace instead of rebuilding it from the current mutable OFF state.",
+    "The first small-gate builder replayed the sorted view order from an empty state instead of seeding the production first-frame view before policy decisions."
+  ],
+  "old_builder_evidence": {
+    "video_id": 6,
+    "scope": "runtime replay through frame 20",
+    "feature_records_compared": 163,
+    "max_abs_feature_error": 31.580963134765625,
+    "mean_abs_feature_error": 0.09895563166802092,
+    "largest_error_features": [
+      "raw_score_variance",
+      "score_over_threshold",
+      "raw_traj_score",
+      "score_minus_threshold"
+    ],
+    "source": "old v4 small-gate records_h8.jsonl versus current formal runtime replay"
+  },
+  "fix": {
+    "source_commit": "0c31b72",
+    "production_seed_state": true,
+    "production_first_frame_view_order": true,
+    "canonical_mutable_state_feature_builder": "canonical_state_feature_for_event",
+    "runtime_device_option": "run_early_pilot_tracking.py now supports exact GPU replay"
+  },
+  "corrected_formal_probe": {
+    "video_id": 6,
+    "records": 120,
+    "feature_records_compared": 120,
+    "max_abs_feature_error": 1.52587890625e-05,
+    "mean_abs_feature_error": 9.74238266356527e-09,
+    "off_action_mismatches": 0,
+    "runtime_device": "CUDA_VISIBLE_DEVICES=3",
+    "builder_backend": "formal_gmt_transformer",
+    "status": "PASS_BOUNDED_PROBE"
+  },
+  "next_gate": "complete corrected video6/video7 rebuild, run full GPU feature parity, then retrain the three controllers from corrected records before any new closed-loop decision"
+}
