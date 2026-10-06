@@ -1,4 +1,4 @@
-"""Generate a provenance-carrying OFF trace from the frozen video08 cache.
+"""Generate a provenance-carrying OFF trace from a frozen cache video.
 
 This is a bounded v3 pilot artifact.  It does not touch the live Full H=8
 builders or their output directory.  The replay uses the formal GMT
@@ -19,7 +19,7 @@ import sys
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PILOT_ROOT = Path("/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot_v3")
+PILOT_ROOT = Path("/home/liuyeqiang/WWW_jev_full_h8_runtime/formal_current_head_off_trace")
 POLICY_SEED = 20261003
 
 
@@ -55,10 +55,8 @@ def main() -> None:
     )
     parser.add_argument("--max-frame", type=int, default=None)
     args = parser.parse_args()
-    if int(args.video_id) != 8:
-        raise ValueError("the v3 pilot currently supports only held-out video08")
     output_root = args.output_root.resolve()
-    trace_path = output_root / "trace_video_08.jsonl"
+    trace_path = output_root / f"trace_video_{int(args.video_id):02d}.jsonl"
     if trace_path.exists():
         raise RuntimeError(f"refusing to overwrite existing v3 trace: {trace_path}")
 
@@ -67,6 +65,12 @@ def main() -> None:
     sys.path.insert(0, str(ROOT / "reproduction_tools"))
     import run_early_pilot_tracking as pilot
     from gtr.modeling.jev_runtime import DecisionTraceWriter
+
+    # ``run_method`` resolves the cache/video coordinates through these
+    # module-level values. Set them explicitly so this generator cannot
+    # silently emit a video08 trace when asked to audit another partition.
+    pilot.VIDEO_ID = int(args.video_id)
+    pilot.TRACE = trace_path
 
     modules = pilot.load_runtime_modules()
     (
@@ -131,7 +135,12 @@ def main() -> None:
         pilot.PILOT = previous_pilot_root
 
     event_count = sum(1 for line in trace_path.open(encoding="utf-8") if line.strip())
-    if event_count != int(result["counts"]["MATCH_DECISION"] + result["counts"]["MEMORY_DECISION"]):
+    expected_event_count = sum(
+        int(value)
+        for key, value in result["counts"].items()
+        if key.endswith("_DECISION")
+    )
+    if event_count != expected_event_count:
         raise RuntimeError("trace event count does not match runtime decision count")
     manifest = {
         "status": "COMPLETE",
