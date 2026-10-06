@@ -182,6 +182,12 @@ def main() -> None:
                 "p99_abs_error": float(np.percentile(all_errors, 99)) if all_errors.size else None,
                 "error_count": int(all_errors.size),
                 "per_feature": per_feature,
+                "feature_mismatch_examples": finalized.get(
+                    "feature_mismatch_examples", []
+                ),
+                "off_action_mismatch_examples": finalized.get(
+                    "off_action_mismatch_examples", []
+                ),
                 "runtime_method_counts": item["counts"],
             }
         )

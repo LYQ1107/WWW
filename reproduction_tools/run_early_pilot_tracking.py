@@ -545,6 +545,63 @@ def run_method(
                                 )
                                 parity_report["per_feature_sum_abs_error"][index] += float(value)
                                 parity_report["per_feature_count"][index] += 1
+                            if error > float(parity_report.get("tolerance", 0.0)):
+                                examples = parity_report.setdefault(
+                                    "feature_mismatch_examples", []
+                                )
+                                if len(examples) < 20:
+                                    row = int(
+                                        record["state"]["online_context"]
+                                        .get("detection_index", -1)
+                                    )
+                                    row_scores = []
+                                    if 0 <= row < int(proposal.scores.shape[0]):
+                                        row_scores = [
+                                            float(value)
+                                            for value in proposal.scores[row].detach().cpu().tolist()
+                                        ]
+                                    examples.append(
+                                        {
+                                            "record_key": [
+                                                int(VIDEO_ID),
+                                                int(frame),
+                                                int(view),
+                                                str(record["question_type"]),
+                                                row,
+                                            ],
+                                            "max_abs_error": error,
+                                            "error_indices": [
+                                                int(index)
+                                                for index, value in enumerate(error_vector.tolist())
+                                                if float(value) > float(parity_report.get("tolerance", 0.0))
+                                            ],
+                                            "expected_feature": [float(value) for value in trace_feature.tolist()],
+                                            "runtime_feature": [float(value) for value in runtime_feature.cpu().tolist()],
+                                            "runtime_context": runtime_tracker_context(state),
+                                            "history_keys": [
+                                                [
+                                                    int(item["perception"]["frame"]),
+                                                    int(item["perception"]["view"]),
+                                                ]
+                                                for item in state.association_history
+                                            ],
+                                            "proposal": {
+                                                "track_ids": [int(value) for value in proposal.track_ids],
+                                                "pairs": {
+                                                    str(key): int(value)
+                                                    for key, value in proposal.pairs.items()
+                                                },
+                                                "row_scores": row_scores,
+                                                "trajectory_rng_seed": state.trajectory_rng_seed,
+                                                "trajectory_rng_calls_before": int(state.trajectory_rng_calls),
+                                                "trajectory_slot_mapping_digest": proposal.trajectory_slot_mapping_digest,
+                                                "transformer_calls": int(proposal.transformer_calls),
+                                            },
+                                            "record_online_context": dict(
+                                                record["state"].get("online_context", {})
+                                            ),
+                                        }
+                                    )
                         if feature_source_mode == "trace_debug":
                             counts["trace_debug_feature_records"] += 1
                             return trace_feature
@@ -669,6 +726,35 @@ def run_method(
                 counts["trace_action_records"] += 1
                 if action != trace_action:
                     counts["off_action_mismatches"] += 1
+                    examples = parity_report.setdefault(
+                        "off_action_mismatch_examples", []
+                    )
+                    if len(examples) < 20:
+                        examples.append(
+                            {
+                                "key": [int(VIDEO_ID), int(frame), int(view), int(row)],
+                                "question": "MATCH_DECISION",
+                                "runtime_action": str(action),
+                                "trace_action": str(trace_action),
+                                "proposal_track_ids": [int(value) for value in proposal.track_ids],
+                                "proposal_pairs": {
+                                    str(key): int(value)
+                                    for key, value in proposal.pairs.items()
+                                },
+                                "row_scores": [
+                                    float(value)
+                                    for value in proposal.scores[row].detach().cpu().tolist()
+                                ],
+                                "runtime_context": runtime_tracker_context(state),
+                                "history_keys": [
+                                    [
+                                        int(item["perception"]["frame"]),
+                                        int(item["perception"]["view"]),
+                                    ]
+                                    for item in state.association_history
+                                ],
+                            }
+                        )
             actions[row] = action
             counts["MATCH_DECISION"] += 1
             counts[action] += 1
@@ -774,6 +860,35 @@ def run_method(
                 counts["trace_action_records"] += 1
                 if action != trace_action:
                     counts["off_action_mismatches"] += 1
+                    examples = parity_report.setdefault(
+                        "off_action_mismatch_examples", []
+                    )
+                    if len(examples) < 20:
+                        examples.append(
+                            {
+                                "key": [int(VIDEO_ID), int(frame), int(view), int(row)],
+                                "question": "MEMORY_DECISION",
+                                "runtime_action": str(action),
+                                "trace_action": str(trace_action),
+                                "proposal_track_ids": [int(value) for value in proposal.track_ids],
+                                "proposal_pairs": {
+                                    str(key): int(value)
+                                    for key, value in proposal.pairs.items()
+                                },
+                                "row_scores": [
+                                    float(value)
+                                    for value in proposal.scores[row].detach().cpu().tolist()
+                                ],
+                                "runtime_context": runtime_tracker_context(state),
+                                "history_keys": [
+                                    [
+                                        int(item["perception"]["frame"]),
+                                        int(item["perception"]["view"]),
+                                    ]
+                                    for item in state.association_history
+                                ],
+                            }
+                        )
             memories[row] = action
             counts["MEMORY_DECISION"] += 1
             counts[action] += 1
