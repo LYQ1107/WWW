@@ -893,6 +893,14 @@ def main() -> None:
     parser.add_argument("--device", default="cpu", choices=("cpu",))
     parser.add_argument("--feature-source", choices=("runtime", "trace_debug"), default="runtime")
     parser.add_argument(
+        "--allow-runtime-with-legacy-trace",
+        action="store_true",
+        help=(
+            "run the mutated-state screening pilot even when the preserved legacy "
+            "trace cannot pass strict feature parity; never treats that parity as PASS"
+        ),
+    )
+    parser.add_argument(
         "--methods",
         default="all",
         help="comma-separated subset for CPU smoke/debug runs; default is all methods",
@@ -950,6 +958,7 @@ def main() -> None:
         "second_transformer_call_for_reassociate": False,
         "device": args.device,
         "controller_feature_source": args.feature_source,
+        "allow_runtime_with_legacy_trace": bool(args.allow_runtime_with_legacy_trace),
         "methods": {},
     }
     selected_names = list(METHODS)
@@ -1007,7 +1016,7 @@ def main() -> None:
             raw["methods"]["gmt_off"]["counts"],
         )
         json_write(ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json", parity_report)
-        if not parity_report["pass"]:
+        if not parity_report["pass"] and not args.allow_runtime_with_legacy_trace:
             raw["status"] = "BLOCKED_RUNTIME_STATE_PARITY"
             raw["runtime_feature_parity_gate"] = parity_report
             json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)
@@ -1019,6 +1028,11 @@ def main() -> None:
             json_write(PILOT / "PILOT_TRACKING_THREE_WAY.json", report)
             print(json.dumps(report, indent=2))
             raise SystemExit("runtime pilot blocked by failed OFF state-feature parity gate")
+        if not parity_report["pass"]:
+            raw["runtime_feature_parity_override"] = (
+                "SCREENING_ONLY: preserved legacy trace lacks strict RNG/state provenance; "
+                "controllers still receive current mutated-state features"
+            )
         for name in selected_names:
             if name != "gmt_off":
                 execute_method(name)
@@ -1115,6 +1129,9 @@ def main() -> None:
             "TRACE_DEBUG_ONLY"
             if args.feature_source == "trace_debug"
             else (
+                "PILOT_SCREENING_RUNTIME_STATE_WITH_LEGACY_TRACE_PARITY_BLOCK"
+                if not parity_report["pass"]
+                else (
                 "PILOT_GO_FOR_FULL_H8_CONTINUATION"
                 if (
                     parity_report["pass"]
@@ -1122,6 +1139,7 @@ def main() -> None:
                     and methods["jev"]["metrics"]["IDSW"] <= baseline["IDSW"]
                 )
                 else "PILOT_FAIL_RUNTIME_STATE_PARITY_OR_TRACKING"
+                )
             )
         ),
         "previous_manual_feature_result": "SUPERSEDED_INVALID_FEATURE_SCHEMA",
