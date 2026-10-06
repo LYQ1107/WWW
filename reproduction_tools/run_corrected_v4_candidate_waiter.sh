@@ -7,7 +7,7 @@ set -u
 
 REPO=/data1/liuyeqiang/WWW_rng_fix_v4
 RUNTIME=/home/liuyeqiang/WWW_jev_rng_v4_runtime
-NATIVE=$RUNTIME/native_video1_corrected_v1
+NATIVE=${NATIVE_ROOT:-$RUNTIME/native_video1_corrected_v1}
 NATIVE_TRACE=$NATIVE/native_off_trace_video01.jsonl
 NATIVE_PID=${NATIVE_PID:-24960}
 V1=$RUNTIME/small_h8_rng_controlled_v4_current/video_01
