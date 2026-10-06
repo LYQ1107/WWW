@@ -158,7 +158,10 @@ def compare(native, replay, *, tolerance: float):
         else:
             reasons.append("chosen_proposal_id_missing")
 
-        native_off = n.get("off_action")
+        # The trace writer stores the legacy OFF action at the event's
+        # top-level field; replay decisions use the same field.  It is not
+        # part of ``context`` (which contains the native proposal details).
+        native_off = native[key].get("off_action") or native[key].get("proposed_action")
         replay_off = r.get("off_action")
         if native_off != replay_off:
             reasons.append("legacy_off_action_mismatch")
