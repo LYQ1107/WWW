@@ -1,0 +1,29 @@
+{
+  "schema_version": "jev_current_head_regression_test_v1",
+  "status": "PASS",
+  "created_utc": "2026-10-06T22:43:30Z",
+  "classification": "SOURCE_LEVEL_REGRESSION_NOT_TRACKING_RESULT",
+  "environment": {
+    "python": "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+    "python_version": "3.10",
+    "pytest": "9.1.1",
+    "torch": "2.0.0+cu118",
+    "detectron2": "/data1/liuyeqiang/WWW/third_party/detectron2/detectron2",
+    "pytest_installed_in_gmt_environment": true
+  },
+  "command": "PYTHONPATH=/data1/liuyeqiang/WWW_rng_fix_v4:/data1/liuyeqiang/WWW_rng_fix_v4/reproduction_tools:/data1/liuyeqiang/WWW_rng_fix_v4/third_party/CenterNet2 /home/liuyeqiang/anaconda3/envs/GMT/bin/python -m pytest -q reproduction_tools/test_jev_intra_video_chunking.py reproduction_tools/test_jev_counterfactual_rng_isolation.py reproduction_tools/test_jev_reactivation_semantics.py reproduction_tools/test_jev_training.py reproduction_tools/test_jev_runtime.py",
+  "tests": [
+    "reproduction_tools/test_jev_intra_video_chunking.py",
+    "reproduction_tools/test_jev_counterfactual_rng_isolation.py",
+    "reproduction_tools/test_jev_reactivation_semantics.py",
+    "reproduction_tools/test_jev_training.py",
+    "reproduction_tools/test_jev_runtime.py"
+  ],
+  "passed": 3,
+  "failed": 0,
+  "warnings": [
+    "Pillow Image.LINEAR deprecation warning from third_party/detectron2"
+  ],
+  "gpu_tasks_untouched": true,
+  "interpretation": "All collected source-level tests passed; this is not evidence that formal chunk equivalence or tracking evaluation has passed."
+}
