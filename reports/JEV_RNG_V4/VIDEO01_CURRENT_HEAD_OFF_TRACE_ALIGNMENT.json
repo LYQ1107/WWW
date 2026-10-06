@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-06T22:18:00Z",
+  "classification": "DIAGNOSTIC_NOT_FINAL_RESULT",
+  "status": "REBUILD_REQUIRED",
+  "video_id": 1,
+  "source_branch": "jev/counterfactual-rng-isolation-v4-20261006",
+  "source_commit": "d2ddfb1574e032d90d6afceb4beedc8af8b72530",
+  "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+  "checkpoint_sha256": "sha256:cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+  "policy_seed": 20261003,
+  "trajectory_rng": {
+    "mode": "branch_local_explicit_python_random_v1",
+    "master_seed": 20261006,
+    "video_seed": 20261007
+  },
+  "legacy_reference": {
+    "trace": "/home/liuyeqiang/WWW_jev_full_h8_runtime/partition/trace_by_video/video_01.jsonl",
+    "trace_sha256": "sha256:514102a54f1e2c332d78a4e37bca82603ed7be169267ea091d109298fc599941",
+    "events": 8996,
+    "question_counts": {
+      "MATCH_DECISION": 4524,
+      "MEMORY_DECISION": 4305,
+      "REACTIVATION_DECISION": 167
+    },
+    "role": "reference_only_not_current_head"
+  },
+  "current_head_trace": {
+    "trace": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_off_trace/video01/trace_video_01.jsonl",
+    "trace_sha256": "sha256:091d6ee90f7e4d3507af29222c973c90ff717d5a90b58b51dd82b3e7820632ea",
+    "manifest": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_off_trace/video01/TRACE_MANIFEST.json",
+    "events": 8995,
+    "question_counts": {
+      "MATCH_DECISION": 4524,
+      "MEMORY_DECISION": 4297,
+      "REACTIVATION_DECISION": 174
+    },
+    "runtime_action_counts": {
+      "ACCEPT_CURRENT": 4297,
+      "START_NEW": 401,
+      "WRITE_MEMORY": 4297,
+      "REACTIVATE_OLD": 0
+    },
+    "comparison_trace_events": 8996,
+    "comparison_trace_action_records": 8884,
+    "comparison_off_action_mismatches": 24,
+    "status": "COMPLETE"
+  },
+  "diagnosis": [
+    "The current-head replay changes the decision/event layout at video1 boundaries, including reactivation events.",
+    "The 24 action mismatches are a semantic provenance signal, not a floating-point tolerance issue.",
+    "The current-head trace is suitable as the input for a new corrected video1 record build; the legacy trace and legacy records remain comparison artifacts only."
+  ],
+  "gates": {
+    "legacy_video1_records_for_final_training": "BLOCKED",
+    "legacy_video1_records_for_final_tracking": "BLOCKED",
+    "current_head_video1_record_rebuild": "STARTED_IN_SEPARATE_OUTPUT_ROOT",
+    "next_required": [
+      "complete current-head video1 records",
+      "validate provenance and exact three-question semantic keys",
+      "run full runtime feature parity and reactivation candidate parity",
+      "only then build the final corrected compact policy dataset"
+    ]
+  }
+}
