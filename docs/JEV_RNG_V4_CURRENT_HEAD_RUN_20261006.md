@@ -1,0 +1,62 @@
+# Corrected-v4 current-HEAD run log — 2026-10-06 UTC
+
+This run log records the fail-closed transition from the earlier artifacts to
+the current-HEAD artifacts. It is a progress/provenance document, not a
+tracking result.
+
+## Why a second rebuild was started
+
+The existing files under
+`/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v3_canonical_features`
+have `source_commit=ec40eff`. That revision predates the production-seed and
+mutable-state corrections introduced by `0c31b72`. A three-repeat replay of
+the existing v7 artifact was deterministic but failed runtime parity:
+
+- compared records: `1699/1705`;
+- OFF-action mismatches: `10`;
+- maximum feature error: `1685.5164794921875`;
+- p99 feature error: `25.96832275390625`.
+
+Therefore those artifacts are retained for audit/screening, but their
+checkpoints are not eligible for corrected-v4 final tracking.
+
+## Current-head artifacts
+
+The new workers were launched from the pushed branch
+`jev/counterfactual-rng-isolation-v4-20261006` at commit `5cd989d` (the
+subsequent documentation-only commit is `a8a96e4`) and use the frozen GMT
+checkpoint, perception cache, trace partition, H=8, and `seed=20261003` policy
+plan:
+
+| Artifact | Runtime path | Status at launch | GPU |
+|---|---|---:|---:|
+| video6 current-head rebuild | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current/video_06` | running | 5 |
+| video7 current-head rebuild | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current/video_07` | running | 3 |
+| formal video7 single reference | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_same_code_video7_v6_current/single/video_07` | running | 8 |
+| formal video7 chunk warm-up | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_same_code_video7_v6_current/warmup` | PASS, 3 snapshots | 7 |
+| formal video7 chunk0/chunk1 | `/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_same_code_video7_v6_current/chunked/video_07` | running | 0/7 |
+
+The in-flight corrected video1 worker and the older video6/formal workers were
+not stopped or migrated. Their outputs remain separate and will be checked by
+source/provenance gates before use.
+
+## Required order after builders finish
+
+1. Validate current-head manifests, SHA, exact question counts, finite state,
+   checkpoint/cache/trace provenance, and `H=8`.
+2. Compact current-head v6/v7 and create the sequence-disjoint split with
+   `seed=20261003`.
+3. Train exactly one Threshold, MLP, and JEV controller (20 epochs, matched
+   optimizer/LR/batch settings), then calibrate and aggregate into
+   `CORRECTED_V4_SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json`.
+4. Finish the current-head formal single/chunk build and require the exact
+   3337-key equivalence verifier to PASS before authorizing chunking.
+5. Run the required three-repeat corrected video6 parity stability probe at
+   candidate tolerance `2e-5`; structural fields remain exact regardless of
+   numeric tolerance.
+6. Finish video1 provenance, separately report MATCH/MEMORY/REACTIVATION/TOTAL
+   parity, rerun candidate parity on the matching perception source, then run
+   wrapper parity and only afterward the corrected closed-loop comparison.
+
+Until all gates pass, the verdict remains `BLOCKED` for corrected-v4 final
+tracking and for the 24-video canonical H=8 rebuild.
