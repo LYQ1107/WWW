@@ -336,6 +336,11 @@ def build_v2_records(
         for key_index, key in enumerate(keys):
             payload = payload_for(key)
             current_events = by_key.get(key, ())
+            # One immutable association proposal is the evidence for every
+            # typed question emitted at this frame/view.  Candidate branches
+            # clone the same pre-decision state and reuse this proposal; they
+            # must never independently invoke the transformer.
+            current_proposal = None
             for event in current_events:
                 question = str(event.get("question"))
                 if question not in {"MATCH_DECISION", "MEMORY_DECISION", "REACTIVATION_DECISION"}:
@@ -346,6 +351,8 @@ def build_v2_records(
                     skipped += 1
                     continue
                 row = int(row)
+                if current_proposal is None:
+                    current_proposal = engine.propose(payload, state)
                 outcome_map = {}
                 for candidate in legal:
                     branch = state.clone()
@@ -361,6 +368,7 @@ def build_v2_records(
                         branch,
                         actions=current_actions,
                         memory_actions=current_memories,
+                        proposal=current_proposal,
                     )
                     branch_steps.append(
                         {
@@ -451,7 +459,13 @@ def build_v2_records(
 
             state_actions = actions.get(key)
             state_memories = memories.get(key)
-            engine.step(payload, state, actions=state_actions, memory_actions=state_memories)
+            engine.step(
+                payload,
+                state,
+                actions=state_actions,
+                memory_actions=state_memories,
+                proposal=current_proposal,
+            )
     return (records if records is not None else []), stats, skipped
 
 

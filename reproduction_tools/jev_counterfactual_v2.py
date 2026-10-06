@@ -622,15 +622,27 @@ def run_counterfactual_branches(
     """Run named action branches from one unchanged pre-action state."""
     source = initial_state.clone()
     source_signature = _state_signature(source)
-    results = {}
-    for name, plan in action_plans.items():
-        branch = source.clone()
-        steps = []
-        for index, perception in enumerate(perceptions):
-            steps.append(engine.step(perception, branch, actions=plan.get(index)))
-        results[name] = (branch, steps)
-        if _state_signature(initial_state) != source_signature:
-            raise AssertionError(f"counterfactual branch mutated source state: {name}")
+    branches = {name: source.clone() for name in action_plans}
+    steps_by_name = {name: [] for name in action_plans}
+    for index, perception in enumerate(perceptions):
+        # At the shared starting decision, all named branches consume the
+        # exact same immutable proposal.  Once a branch has committed an
+        # action, later proposals legitimately depend on that branch's
+        # mutated history and are therefore computed independently.
+        shared_proposal = None
+        if index == 0 and branches:
+            shared_proposal = engine.propose(perception, source)
+        for name, plan in action_plans.items():
+            branch = branches[name]
+            proposal = shared_proposal if shared_proposal is not None else engine.propose(perception, branch)
+            steps_by_name[name].append(
+                engine.step(perception, branch, actions=plan.get(index), proposal=proposal)
+            )
+            if _state_signature(initial_state) != source_signature:
+                raise AssertionError(f"counterfactual branch mutated source state: {name}")
+    results = {
+        name: (branches[name], steps_by_name[name]) for name in action_plans
+    }
     return results
 
 
