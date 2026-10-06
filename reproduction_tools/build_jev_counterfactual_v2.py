@@ -499,6 +499,7 @@ def build_formal_gmt_engine(
     )
     return CachedPerceptionMutableAssociationV2(
         association_fn=adapter,
+        acceptance_threshold=float(cfg.VIDEO_TEST.OVERLAP_THRESH),
         history_limit=max(1, int(history_limit)),
     )
 
