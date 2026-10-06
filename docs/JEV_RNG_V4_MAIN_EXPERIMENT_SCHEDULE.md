@@ -12,17 +12,25 @@ small-gate checkpoints and report remain available, but are
 tracking.
 
 - Corrected video1 rebuild: still running; do not stop or migrate it.
-- Corrected video6/video7 compact, split, and one-seed retraining: pending
-  corrected video6 finalization.
-- Same-code formal video7 single-vs-three-chunk equivalence: running; chunking
-  remains unauthorized until the all-record verifier passes.
-- Three-repeat corrected feature-parity tolerance probe: pending corrected
-  video6 finalization; the candidate protocol is `2e-5`, not a silent
-  `1e-4` relaxation.
-- Bounded video1 reactivation candidate parity: preliminary FAIL (14 native
-  events vs 5 replay events, with candidate/state-score divergence); this is a
-  runtime-semantic gate, not a tracking result. It must be rerun after the
-  corrected video1 artifact is complete.
+- The first `small_h8_rng_controlled_v3_canonical_features` v6/v7 artifacts
+  are retained but their manifests report source commit `ec40eff`, before the
+  production-seed/state corrections. They are not current-HEAD final data.
+- A current-HEAD v6/v7 rebuild is running under
+  `/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current`;
+  only these new manifests can authorize corrected-v4 controller training.
+- Same-code formal video7 single-vs-three-chunk equivalence: the earlier
+  source-mixed run is not authoritative; a current-HEAD single, warm-up, and
+  three-chunk run is now running. Chunking remains unauthorized until its
+  all-record verifier passes.
+- The three-repeat video7 preliminary parity probe is reproducible but FAILS:
+  `1699/1705` compared records, 10 OFF-action mismatches, and maximum feature
+  error `1685.5164794921875`. This is a state/semantics failure, not a reason
+  to relax `2e-5` to `1e-4`; the required corrected video6 probe is still
+  pending.
+- Same-native-cache bounded reactivation candidate parity is FAIL (`14` native
+  events vs `1` replay event). IDs/order on the overlapping event agree, but
+  event coverage and one score disagree. This is a runtime-semantic gate, not
+  a tracking result, and must be rerun on the final corrected video1 source.
 
 ## What has already run
 
@@ -49,12 +57,13 @@ corrected-v4 final tracking comparison.
 2. Validate the corrected artifact: 8996 records, atomic finalization, SHA,
    schema, provenance, and RNG metadata; then run the video1 old-vs-new audit.
    Expected wall time: 10–20 minutes.
-3. Run corrected v6/v7 compact, sequence-disjoint split, and one-seed
-   retraining in parallel as soon as video6 finalizes. This produces the only
-   checkpoints eligible for corrected-v4 tracking.
-4. Complete the three-repeat feature-parity stability probe and freeze the
-   numerical tolerance. Structural fields remain exact; the current candidate
-   is `2e-5` if all repetitions pass.
+3. Finish the current-HEAD v6/v7 rebuild, then compact, make the
+   sequence-disjoint split, and retrain Threshold/MLP/JEV once with
+   `seed=20261003`. This produces the only checkpoints eligible for
+   corrected-v4 tracking.
+4. Complete the three-repeat corrected video6 feature-parity stability probe
+   and freeze the numerical tolerance. Structural fields remain exact; the
+   candidate is `2e-5` only if all repetitions pass.
 5. Run GMT-OFF runtime state-feature parity and the reactivation candidate
    gate on corrected video1. Required conditions are exact per-question
    coverage, finite features, the frozen numeric tolerance, zero OFF action
@@ -71,9 +80,9 @@ schedule to runtime-semantics repair.
 ## Full H=8 experiment
 
 The formal three-method experiment over the complete H=8 dataset has not been
-authorized. The formal 3-chunk video7 equivalence test currently has exact
-semantic-key/range coverage but fails against the legacy v2 reference, so
-intra-video chunking cannot be used for the canonical rebuild. The full
-experiment starts only after a same-code equivalence reference passes (or a
-validated single-worker fallback is explicitly accepted), followed by the
-full canonical data build and audit.
+authorized. The first formal 3-chunk video7 equivalence test had exact
+semantic-key/range coverage but compared different source revisions. The
+current-HEAD same-code replacement is running; only a PASS from that artifact
+can authorize intra-video chunking for the canonical rebuild. The full
+experiment starts only after that gate and the runtime semantic gates pass,
+followed by the full canonical data build and audit.

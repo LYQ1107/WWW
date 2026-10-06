@@ -11,11 +11,10 @@ The old small-gate Threshold/MLP/JEV checkpoints remain preserved as
 tracking. Corrected video6/video7 data must be compacted and retrained before
 any final tracking claim.
 
-The original video1 small-gate worker was allowed to finish naturally on GPU6
-and was not stopped or migrated. It produced 8,996 atomic records at about 35
-records/min. A separate corrected v4 video1 worker now uses the same free GPU6
-only after that small gate completed; its output is the parity artifact, not a
-replacement for the historical small-gate record set.
+The active corrected video1 worker was not stopped or migrated. Its output is
+being preserved as the in-flight parity artifact. The source revision and
+feature/runtime parity are checked before any final claim; a current-HEAD
+replacement is allowed only after the in-flight artifact is safely finalized.
 
 ## Scope and frozen inputs
 
@@ -55,12 +54,13 @@ paused with SIGTERM and preserved. Its records are
   mutable state only. GT and future records are not used to trigger it.
 
 A bounded native-vs-mutable reactivation candidate comparison has also been
-added. The first legacy-input probe is recorded in
-`reports/JEV_RNG_V4/REACTIVATION_CANDIDATE_PARITY.json`: native and replay
-candidate IDs/order and legacy OFF actions agree on overlapping events, but
-event coverage is `14` native versus `5` replay and candidate scores diverge.
-This is a runtime-semantic FAIL, not a tracking result or a corrected-v4 final
-verdict; it must be repeated after corrected video1 finalization.
+added. The latest same-native-perception-cache diagnostic is recorded in
+`reports/JEV_RNG_V4/REACTIVATION_CANDIDATE_PARITY.json`: candidate IDs/order,
+proposal IDs, OFF actions, and bank thresholds agree on the overlapping event,
+but event coverage is `14` native versus `1` replay and one candidate score
+exceeds the `2e-5` diagnostic tolerance. This is a runtime-semantic FAIL, not
+a tracking result or a corrected-v4 final verdict; it must be repeated after
+corrected video1 finalization and state semantics repair.
 
 ## Completed deterministic gates
 
@@ -126,10 +126,21 @@ corrected video6 records reduced the maximum feature error to `1.53e-5`, mean
 error to `9.74e-9`, with zero OFF action mismatches. The diagnostic is recorded
 in `reports/JEV_RNG_V4/TRAIN_RUNTIME_FEATURE_MISMATCH_DIAGNOSTIC.json`.
 
-An earlier corrected full video6/video7 rebuild is isolated under
-`/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v3_canonical_features`
-and remains separate from the completed small-gate artifacts. No new video6,
-video7, or repeat7 generation is required for the current gate.
+The first three-repeat stability run on the older v7 artifact is deliberately
+recorded as a fail-closed preliminary diagnostic in
+`reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_STABILITY_VIDEO07_PRELIM.json`:
+all three repetitions are repeatable, but only `1699/1705` records align,
+there are 10 OFF-action mismatches, and the maximum feature error is
+`1685.5164794921875`. This is not float32 noise and must not be repaired by
+silently adopting `1e-4`; the required corrected video6 run is still pending.
+
+The earlier v6/v7 rebuild is isolated under
+`/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v3_canonical_features`,
+but its manifests report source commit `ec40eff`, before the production-seed
+and mutable-state corrections. It remains useful for audit/screening and is
+not deleted. A current-HEAD v6/v7 rebuild is therefore running under
+`/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_rng_controlled_v4_current`;
+only that rebuild can feed final corrected-v4 checkpoints.
 
 ## Early closed-loop pilot
 
@@ -214,8 +225,9 @@ legacy source commit and feature schema differ. This is a
 data-generation/chunk-reference failure, not evidence that Threshold, MLP, or
 JEV failed. The result is recorded in
 `reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07.json`,
-and intra-video chunking remains unauthorized. A same-code corrected
-single-worker reference is required before reconsidering chunk authorization.
+and intra-video chunking remains unauthorized. A new current-HEAD
+single-worker, warm-up, and three-chunk artifact is running before
+reconsidering chunk authorization.
 
 This design targets the future video15/video23/video24 tail bottlenecks and is
 not applied to the active video1 small gate.
