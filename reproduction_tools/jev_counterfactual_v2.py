@@ -88,6 +88,56 @@ def subset_perception_payload(
     return result
 
 
+def promote_stale_bank_candidates(
+    state: "MutableGMTState",
+    *,
+    bank_size: Optional[int] = None,
+    recent_ids: Optional[Iterable[int]] = None,
+) -> List[int]:
+    """Mirror native ``poss_ids`` to ``old_reids`` at every committed step.
+
+    Native GMT performs this promotion while advancing the memory-bank path,
+    before a later unmatched detection asks for a reactivation proposal. A
+    replay that promotes only when a trace already contains a reactivation
+    event can miss the first stale identity entirely. ``recent_ids`` is the
+    current association window, not the full lifetime of the track.
+    """
+
+    if bank_size is not None:
+        state.memory_bank_size = max(1, int(bank_size))
+    else:
+        state.memory_bank_size = max(1, int(state.memory_bank_size))
+    recent = {
+        int(value)
+        for value in (state.active_ids if recent_ids is None else recent_ids)
+    }
+    for track_id, values in state.memory.items():
+        track_id = int(track_id)
+        if (
+            len(values) >= state.memory_bank_size
+            and track_id not in state.reactivation_bank
+        ):
+            state.possible_memory_ids.add(track_id)
+
+    promoted: List[int] = []
+    for track_id in sorted(tuple(state.possible_memory_ids)):
+        track_id = int(track_id)
+        if track_id in recent:
+            continue
+        values = state.memory.get(track_id, ())
+        if len(values) < state.memory_bank_size:
+            continue
+        recent_values = values[-state.memory_bank_size :]
+        state.reactivation_bank[track_id] = torch.stack(
+            [torch.as_tensor(value, dtype=torch.float32) for value in recent_values],
+            dim=0,
+        ).mean(dim=0).detach().cpu().clone()
+        state.possible_memory_ids.discard(track_id)
+        state.stale_ids.add(track_id)
+        promoted.append(track_id)
+    return promoted
+
+
 def reactivation_candidates(
     state: "MutableGMTState", *, bank_size: int = 10
 ) -> Tuple[List[int], Set[int]]:
@@ -100,32 +150,10 @@ def reactivation_candidates(
     detector, GT, and future-frame access.
     """
 
-    recent_ids: Set[int] = set()
-    for item in state.association_history:
-        for value in dict(item.get("assignments", {})).values():
-            recent_ids.add(int(value))
-    state.memory_bank_size = max(1, int(bank_size))
-    for track_id, values in state.memory.items():
-        track_id = int(track_id)
-        if (
-            len(values) >= state.memory_bank_size
-            and track_id not in state.reactivation_bank
-        ):
-            state.possible_memory_ids.add(track_id)
-
-    for track_id in sorted(tuple(state.possible_memory_ids)):
-        track_id = int(track_id)
-        if track_id in recent_ids:
-            continue
-        values = state.memory.get(track_id, ())
-        if len(values) < state.memory_bank_size:
-            continue
-        recent_values = values[-state.memory_bank_size :]
-        state.reactivation_bank[track_id] = torch.stack(
-            [torch.as_tensor(value, dtype=torch.float32) for value in recent_values],
-            dim=0,
-        ).mean(dim=0).detach().cpu().clone()
-        state.possible_memory_ids.discard(track_id)
+    recent_ids = {int(value) for value in state.active_ids}
+    promote_stale_bank_candidates(
+        state, bank_size=bank_size, recent_ids=recent_ids
+    )
 
     return sorted(int(track_id) for track_id in state.reactivation_bank), recent_ids
 
@@ -757,6 +785,14 @@ class CachedPerceptionMutableAssociationV2:
             for item in state.association_history
             for track_id in dict(item.get("assignments", {})).values()
         }
+        model_bank_size = getattr(
+            getattr(self.association_fn, "model", None), "bank_size", None
+        )
+        promote_stale_bank_candidates(
+            state,
+            bank_size=None if model_bank_size is None else int(model_bank_size),
+            recent_ids=state.active_ids,
+        )
 
         return {
             "engine_version": ENGINE_VERSION,

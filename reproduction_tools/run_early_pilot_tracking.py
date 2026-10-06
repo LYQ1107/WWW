@@ -303,32 +303,12 @@ def reactivation_candidates(state, *, bank_size: int = 10):
     does not reproduce the native score matrix.
     """
 
-    recent_ids = set()
-    for item in state.association_history:
-        for value in dict(item.get("assignments", {})).values():
-            recent_ids.add(int(value))
-    state.memory_bank_size = max(1, int(bank_size))
-    for track_id, values in state.memory.items():
-        track_id = int(track_id)
-        if (
-            len(values) >= state.memory_bank_size
-            and track_id not in state.reactivation_bank
-        ):
-            state.possible_memory_ids.add(track_id)
+    from jev_counterfactual_v2 import promote_stale_bank_candidates
 
-    for track_id in sorted(tuple(state.possible_memory_ids)):
-        track_id = int(track_id)
-        if track_id in recent_ids:
-            continue
-        values = state.memory.get(track_id, ())
-        if len(values) < state.memory_bank_size:
-            continue
-        recent_values = values[-state.memory_bank_size :]
-        state.reactivation_bank[track_id] = torch.stack(
-            [torch.as_tensor(value, dtype=torch.float32) for value in recent_values],
-            dim=0,
-        ).mean(dim=0).detach().cpu().clone()
-        state.possible_memory_ids.discard(track_id)
+    recent_ids = {int(value) for value in state.active_ids}
+    promote_stale_bank_candidates(
+        state, bank_size=bank_size, recent_ids=recent_ids
+    )
 
     if os.environ.get("JEV_DEBUG_REACTIVATION") and state.association_history:
         latest = state.association_history[-1]["perception"]
