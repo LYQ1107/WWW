@@ -117,6 +117,22 @@ def _load_official_video(
             f"video {video_id} record count mismatch: "
             f"{manifest.get('records')} != {expected_decisions}"
         )
+    required_rng_fields = {
+        "trajectory_rng_policy": "branch_local_explicit_python_random_v1",
+        "trajectory_rng_master_seed": 20261006,
+        "trajectory_rng_state_cloned_per_counterfactual_branch": True,
+        "proposal_reused_across_legal_actions": True,
+        "reassociate_reuses_score_matrix": True,
+        "second_transformer_call_for_reassociate": False,
+    }
+    for field, expected in required_rng_fields.items():
+        if manifest.get(field) != expected:
+            raise ValueError(
+                f"video {video_id} is missing required RNG/proposal provenance "
+                f"{field}={expected!r}: {manifest.get(field)!r}"
+            )
+    if int(manifest.get("trajectory_rng_video_seed", -1)) != 20261006 + int(video_id):
+        raise ValueError(f"video {video_id} has an invalid stable trajectory RNG seed")
     return records, manifest
 
 
@@ -159,6 +175,15 @@ def finalize(
         "utility_definition",
         "sampling",
         "truncation",
+        "trajectory_rng_policy",
+        "trajectory_rng_master_seed",
+        "trajectory_rng_state_cloned_per_counterfactual_branch",
+        "proposal_reused_across_legal_actions",
+        "reassociate_reuses_score_matrix",
+        "second_transformer_call_for_reassociate",
+        "trajectory_rng_transformer_sha256",
+        "trajectory_rng_counterfactual_engine_sha256",
+        "trajectory_rng_adapter_sha256",
     )
     for video_key in sorted(expected_videos, key=lambda value: int(value)):
         video_id = int(video_key)
