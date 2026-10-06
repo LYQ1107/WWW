@@ -11,10 +11,12 @@ RUNTIME=/home/liuyeqiang/WWW_jev_rng_v4_runtime
 PYTHON=/home/liuyeqiang/anaconda3/envs/GMT/bin/python
 ROOT=$RUNTIME/formal_current_head_corrected_full
 TRACE=$RUNTIME/formal_current_head_off_trace/video01/trace_video_01.jsonl
+NATIVE_TRACE=$RUNTIME/native_video1_corrected_v3/native_off_trace_video01.jsonl
 RECORDS=$ROOT/video01_records.jsonl
 MANIFEST=$RECORDS.manifest.json
 REPORT_ROOT=$REPO/reports/JEV_RNG_V4
 PROVENANCE=$REPORT_ROOT/CURRENT_HEAD_VIDEO01_PROVENANCE.json
+CANDIDATE=$REPORT_ROOT/REACTIVATION_CANDIDATE_PARITY_CURRENT_HEAD_VIDEO01.json
 PARITY=$REPORT_ROOT/RUNTIME_FEATURE_PARITY_VIDEO01_CURRENT_HEAD.json
 LOG=$RUNTIME/formal_current_head_video01_aftercare.log
 
@@ -47,6 +49,25 @@ if [ "$VALIDATION_RC" -ne 0 ]; then
     exit 2
 fi
 
+# The v3 native trace was produced by the actual current-head GMT runtime,
+# contains exactly video01, and carries native_candidate_* fields. Compare it
+# before the mutable replay feature gate; the legacy candidate report is not
+# reused.
+if [ ! -f "$NATIVE_TRACE" ]; then
+    echo "missing_current_head_native_trace=$NATIVE_TRACE"
+    exit 3
+fi
+set +e
+CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+    JEV_CACHE_PATH=/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train \
+    "$PYTHON" -u "$REPO/reproduction_tools/compare_reactivation_candidates.py" \
+    --video-id 1 --native-trace "$NATIVE_TRACE" --records "$RECORDS" \
+    --output "$CANDIDATE" \
+    --replay-root "$RUNTIME/reactivation_candidate_replay_current_head_video01" \
+    --device cuda:0 --max-frame 1000000 --tolerance 2e-5
+CANDIDATE_RC=$?
+set -e
+
 set +e
 CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
     JEV_CACHE_PATH=/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train \
@@ -60,10 +81,14 @@ set -e
 cd "$REPO"
 while [ -e .git/index.lock ]; do sleep 5; done
 git add "$PROVENANCE" "$PARITY"
+git add "$CANDIDATE"
 git commit -m "Record current-head video01 runtime parity" || true
 git push origin HEAD || {
     git pull --rebase origin jev/counterfactual-rng-isolation-v4-20261006
     git push origin HEAD
 }
-echo "video01_aftercare_complete=$(date -Is) validation_rc=$VALIDATION_RC parity_rc=$PARITY_RC"
-exit "$PARITY_RC"
+echo "video01_aftercare_complete=$(date -Is) validation_rc=$VALIDATION_RC candidate_rc=$CANDIDATE_RC parity_rc=$PARITY_RC"
+if [ "$CANDIDATE_RC" -ne 0 ] || [ "$PARITY_RC" -ne 0 ]; then
+    exit 4
+fi
+exit 0
