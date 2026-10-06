@@ -77,6 +77,7 @@ class GTRRCNN(CustomRCNN):
         self.jev_policy = None
         self.jev_trace_writer = None
         self._jev_context = {}
+        self._jev_trajectory_rng = None
         cache_path = os.environ.get('JEV_PERCEPTION_CACHE_PATH', '').strip()
         self.jev_perception_cache = (
             FrozenPerceptionCacheWriter(cache_path) if cache_path else None
@@ -669,6 +670,14 @@ class GTRRCNN(CustomRCNN):
         poss_ids.poss_ids = set()
         old_ids.old_ids = set()
         old_reids.old_reids = []
+        if self.jev_enabled:
+            from ..roi_heads.transformer import TrajectoryRandom
+
+            master_seed = int(os.environ.get('JEV_TRAJECTORY_RNG_MASTER_SEED', '20261006'))
+            video_id = int(batched_inputs[0].get('video_id', -1))
+            self._jev_trajectory_rng = TrajectoryRandom(master_seed + video_id)
+        else:
+            self._jev_trajectory_rng = None
         self._jev_context = {
             'video_id': int(batched_inputs[0].get('video_id', -1)),
             'view_num': int(view_num),
@@ -944,8 +953,12 @@ class GTRRCNN(CustomRCNN):
             traj_ids=torch.cat([traj_ids,instances[i].track_ids])
         reid_features = torch.cat(
                 [x.reid_features for x in instances], dim=0)[None]
+        transformer_kwargs = {}
+        if self._jev_trajectory_rng is not None:
+            transformer_kwargs['trajectory_rng'] = self._jev_trajectory_rng
         asso_output, pred_boxes, _, query_inds,_,_ = self.roi_heads._forward_transformer(
-            instances, reid_features,None, k,None,None,traj_ids) # [n_k x N], N x 4
+            instances, reid_features,None, k,None,None,traj_ids,
+            **transformer_kwargs) # [n_k x N], N x 4
         return asso_output,pred_boxes,n_t,Np,query_inds
 
     def get_attention(self,instances,view_num,query_inds,id=None):
