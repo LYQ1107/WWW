@@ -19,6 +19,8 @@ QUEUE=$RUNTIME/queue_state.json
 OUTPUT_ROOT=$RUNTIME/formal_h8_full
 LOG_ROOT=$RUNTIME/scheduler_logs
 LOG=$RUNTIME/full_h8_supervisor.log
+PUBLISHED_REPORT=$REPO/reports/JEV_RNG_V4/FULL_H8_CURRENT_HEAD_AFTERCARE.json
+PUBLISHED_MARKDOWN=$REPO/docs/JEV_RNG_V4_FULL_H8_CURRENT_HEAD_AFTERCARE.md
 
 mkdir -p "$RUNTIME"
 exec > >(tee -a "$LOG") 2>&1
@@ -119,4 +121,34 @@ PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2" \
 aftercare_rc=$?
 set -e
 echo "full_h8_aftercare_exit=$(date -Is) rc=$aftercare_rc"
-exit "$aftercare_rc"
+if [ "$aftercare_rc" -ne 0 ]; then
+    exit "$aftercare_rc"
+fi
+
+set +e
+PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2" \
+    "$PYTHON" -u "$REPO/reproduction_tools/publish_full_h8_aftercare.py" \
+    --runtime-root "$RUNTIME" \
+    --repo-root "$REPO" \
+    --formal-gate-report "$FORMAL" \
+    --output "$PUBLISHED_REPORT" \
+    --markdown "$PUBLISHED_MARKDOWN"
+publication_rc=$?
+set -e
+if [ "$publication_rc" -ne 0 ]; then
+    echo "full_h8_publication_failed=$publication_rc"
+    exit 10
+fi
+
+cd "$REPO"
+while [ -e .git/index.lock ]; do
+    sleep 5
+done
+git add "$PUBLISHED_REPORT" "$PUBLISHED_MARKDOWN" reproduction_tools/publish_full_h8_aftercare.py
+git commit -m "Publish full H8 aftercare summary" || true
+git push origin HEAD || {
+    git pull --rebase origin jev/counterfactual-rng-isolation-v4-20261006
+    git push origin HEAD
+}
+echo "full_h8_publication_complete=$(date -Is)"
+exit 0
