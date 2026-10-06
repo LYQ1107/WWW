@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PILOT = Path(
     os.environ.get("JEV_PILOT_ROOT", "/home/liuyeqiang/WWW_jev_full_h8_runtime/pilot")
 )
-VIDEO_ID = 8
+VIDEO_ID = int(os.environ.get("JEV_VIDEO_ID", "8"))
 CHECKPOINT = Path("/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth")
 CONFIG = ROOT / "configs/VISION_test.yaml"
 CACHE = Path("/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train")
