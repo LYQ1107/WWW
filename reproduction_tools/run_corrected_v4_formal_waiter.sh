@@ -153,7 +153,8 @@ else
     RC=1
 fi
 
-if [ ! -f "$REPORT" ]; then
+if [ ! -f "$REPORT" ] || ! jq -e --arg c "$SOURCE_COMMIT" \
+    '.formal_source_commit == $c' "$REPORT" >/dev/null 2>&1; then
     /home/liuyeqiang/anaconda3/envs/GMT/bin/python - "$REPORT" "$SOURCE_COMMIT" "$INPUT_SOURCE" <<'PY'
 import json
 import sys
