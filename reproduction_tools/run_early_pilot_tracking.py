@@ -1204,6 +1204,14 @@ def main() -> None:
         ),
     )
     parser.add_argument(
+        "--method-checkpoint-root",
+        type=Path,
+        help=(
+            "corrected three-way method root; each method must contain "
+            "seed_20261003/calibration/model_calibrated.pth"
+        ),
+    )
+    parser.add_argument(
         "--methods",
         default="all",
         help="comma-separated subset for CPU smoke/debug runs; default is all methods",
@@ -1263,6 +1271,11 @@ def main() -> None:
         "controller_feature_source": args.feature_source,
         "allow_runtime_with_legacy_trace": bool(args.allow_runtime_with_legacy_trace),
         "runtime_feature_tolerance": float(args.runtime_feature_tolerance),
+        "method_checkpoint_root": (
+            str(args.method_checkpoint_root.resolve())
+            if args.method_checkpoint_root is not None
+            else None
+        ),
         "methods": {},
     }
     selected_names = list(METHODS)
@@ -1277,11 +1290,18 @@ def main() -> None:
     reactivation_gate = None
     def execute_method(name: str) -> None:
         relative = selected_methods[name]
-        checkpoint_path = (
-            None
-            if relative is None
-            else OFFLINE_ROOT / name / "model.pth"
-        )
+        if relative is None:
+            checkpoint_path = None
+        elif args.method_checkpoint_root is not None:
+            checkpoint_path = (
+                args.method_checkpoint_root.resolve()
+                / name
+                / "seed_20261003"
+                / "calibration"
+                / "model_calibrated.pth"
+            )
+        else:
+            checkpoint_path = OFFLINE_ROOT / name / "model.pth"
         if checkpoint_path is not None and not checkpoint_path.is_file():
             raise FileNotFoundError(checkpoint_path)
         print(json.dumps({"starting": name}), flush=True)
