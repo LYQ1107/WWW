@@ -47,10 +47,24 @@ def main() -> None:
         for video_id in video_ids
     }
     manifest = dict(source_manifest)
+    subset_stats = dict(source_manifest.get("stats", {}))
+    subset_stats["video_count"] = len(selected_videos)
+    subset_stats["main_decisions"] = sum(
+        int(item["main_decisions"]) for item in selected_videos.values()
+    )
+    subset_stats["nonempty_lines"] = sum(
+        int(item["lines"]) for item in selected_videos.values()
+    )
+    question_counts = {}
+    for item in selected_videos.values():
+        for question, count in item.get("question_counts", {}).items():
+            question_counts[question] = question_counts.get(question, 0) + int(count)
+    subset_stats["question_counts"] = question_counts
     manifest.update(
         {
             "created_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
             "videos": selected_videos,
+            "stats": subset_stats,
             "total_main_decisions": sum(
                 int(item["main_decisions"]) for item in selected_videos.values()
             ),
