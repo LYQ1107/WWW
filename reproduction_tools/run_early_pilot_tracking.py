@@ -412,6 +412,10 @@ def run_method(
         "reactivation_wrong_commit": 0,
         "reactivation_candidate_evaluations": 0,
         "reactivation_no_candidate": 0,
+        "reactivation_action_counts": {
+            "REACTIVATE_OLD": 0,
+            "START_NEW": 0,
+        },
         "off_action_mismatches": 0,
         "trace_action_records": 0,
     }
@@ -811,6 +815,9 @@ def run_method(
                     counts["off_action_mismatches"] += 1
             counts["REACTIVATION_DECISION"] += 1
             counts["reactivation_candidate_evaluations"] += 1
+            counts["reactivation_action_counts"][action] = (
+                counts["reactivation_action_counts"].get(action, 0) + 1
+            )
             counts[action] += 1
             if action == "REACTIVATE_OLD":
                 reactivation_assignments[row] = stale_id
@@ -1002,11 +1009,46 @@ def finalize_feature_parity(
     return parity_report
 
 
-def blocked_runtime_report(raw: Mapping[str, Any], parity_report: Mapping[str, Any]) -> Dict[str, Any]:
+def reactivation_coverage_report(
+    records: Mapping[Any, Any],
+    counts: Mapping[str, Any],
+) -> Dict[str, Any]:
+    expected = sum(
+        str(record.get("question_type")) == "REACTIVATION_DECISION"
+        for record in records.values()
+    )
+    action_counts = counts.get("reactivation_action_counts", {})
+    result = {
+        "expected_record_count": int(expected),
+        "runtime_decision_count": int(counts.get("REACTIVATION_DECISION", 0)),
+        "REACTIVATE_OLD": int(action_counts.get("REACTIVATE_OLD", 0)),
+        "START_NEW": int(action_counts.get("START_NEW", 0)),
+        "reactivation_candidate_evaluations": int(
+            counts.get("reactivation_candidate_evaluations", 0)
+        ),
+        "reactivation_no_candidate": int(counts.get("reactivation_no_candidate", 0)),
+        "reactivation_wrong_commit": int(counts.get("reactivation_wrong_commit", 0)),
+        "false_reactivation": float(counts.get("false_reactivation", 0.0)),
+        "unsupported_reactivation": int(counts.get("unsupported_reactivation", 0)),
+    }
+    result["pass"] = bool(
+        result["expected_record_count"] > 0
+        and result["runtime_decision_count"] > 0
+        and result["unsupported_reactivation"] == 0
+    )
+    result["status"] = "PASS" if result["pass"] else "FAIL_RUNTIME_REACTIVATION_COVERAGE"
+    return result
+
+
+def blocked_runtime_report(
+    raw: Mapping[str, Any],
+    parity_report: Mapping[str, Any],
+    reactivation_gate: Mapping[str, Any] | None = None,
+) -> Dict[str, Any]:
     """Describe a fail-closed runtime pilot without inventing metrics."""
 
     off = raw["methods"].get("gmt_off", {})
-    return {
+    report = {
         "status": "BLOCKED",
         "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
         "created_utc": raw["created_utc"],
@@ -1036,6 +1078,15 @@ def blocked_runtime_report(raw: Mapping[str, Any], parity_report: Mapping[str, A
             "frozen OFF trace could not be reproduced from the mutated runtime state."
         ),
     }
+    if reactivation_gate is not None:
+        report["reactivation_coverage_gate"] = dict(reactivation_gate)
+        if not bool(reactivation_gate.get("pass")):
+            report["pilot_verdict"] = "PILOT_FAIL_RUNTIME_REACTIVATION_COVERAGE"
+            report["interpretation"] = (
+                "The v4 dataset contains reactivation decisions but the online "
+                "runtime did not cover them with valid mutable-state semantics."
+            )
+    return report
 
 
 def main() -> None:
@@ -1124,6 +1175,7 @@ def main() -> None:
         if args.max_frame is None:
             raise ValueError("--methods subsets require --max-frame smoke mode")
     selected_methods = {name: METHODS[name] for name in selected_names}
+    reactivation_gate = None
     def execute_method(name: str) -> None:
         relative = selected_methods[name]
         checkpoint_path = (
@@ -1170,12 +1222,19 @@ def main() -> None:
             records,
             raw["methods"]["gmt_off"]["counts"],
         )
+        reactivation_gate = reactivation_coverage_report(
+            records, raw["methods"]["gmt_off"]["counts"]
+        )
+        raw["reactivation_coverage_gate"] = reactivation_gate
         json_write(ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json", parity_report)
-        if not parity_report["pass"] and not args.allow_runtime_with_legacy_trace:
+        if (
+            (not parity_report["pass"] or not reactivation_gate["pass"])
+            and not args.allow_runtime_with_legacy_trace
+        ):
             raw["status"] = "BLOCKED_RUNTIME_STATE_PARITY"
             raw["runtime_feature_parity_gate"] = parity_report
             json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)
-            report = blocked_runtime_report(raw, parity_report)
+            report = blocked_runtime_report(raw, parity_report, reactivation_gate)
             json_write(
                 ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "RUNTIME_STATE_TRACKING.json",
                 report,
@@ -1203,6 +1262,10 @@ def main() -> None:
             )
             parity_report["scope"] = "bounded_smoke_probe"
             parity_report["max_frame"] = int(args.max_frame)
+            reactivation_gate = reactivation_coverage_report(
+                records, raw["methods"]["gmt_off"]["counts"]
+            )
+            raw["reactivation_coverage_gate"] = reactivation_gate
             json_write(
                 ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json",
                 parity_report,
@@ -1253,6 +1316,10 @@ def main() -> None:
             raw["methods"]["gmt_off"]["counts"],
         )
         json_write(ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json", parity_report)
+    if reactivation_gate is None and "gmt_off" in raw["methods"]:
+        reactivation_gate = reactivation_coverage_report(
+            records, raw["methods"]["gmt_off"]["counts"]
+        )
     json_write(ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json", parity_report)
     report = {
         "status": "PASS",
@@ -1280,6 +1347,7 @@ def main() -> None:
             "off_action_mismatches": methods["gmt_off"]["action_counts"]["off_action_mismatches"],
             "pass": parity_report["pass"],
         },
+        "reactivation_coverage_gate": reactivation_gate,
         "pilot_verdict": (
             "TRACE_DEBUG_ONLY"
             if args.feature_source == "trace_debug"
@@ -1287,13 +1355,16 @@ def main() -> None:
                 "PILOT_SCREENING_RUNTIME_STATE_WITH_LEGACY_TRACE_PARITY_BLOCK"
                 if not parity_report["pass"]
                 else (
-                "PILOT_GO_FOR_FULL_H8_CONTINUATION"
-                if (
-                    parity_report["pass"]
-                    and methods["jev"]["metrics"]["AssA"] >= baseline["AssA"]
-                    and methods["jev"]["metrics"]["IDSW"] <= baseline["IDSW"]
+                "PILOT_FAIL_RUNTIME_REACTIVATION_COVERAGE"
+                if not (reactivation_gate and reactivation_gate["pass"])
+                else (
+                    "PILOT_GO_FOR_FULL_H8_CONTINUATION"
+                    if (
+                        methods["jev"]["metrics"]["AssA"] >= baseline["AssA"]
+                        and methods["jev"]["metrics"]["IDSW"] <= baseline["IDSW"]
+                    )
+                    else "PILOT_FAIL_RUNTIME_STATE_PARITY_OR_TRACKING"
                 )
-                else "PILOT_FAIL_RUNTIME_STATE_PARITY_OR_TRACKING"
                 )
             )
         ),
