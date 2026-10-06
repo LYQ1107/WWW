@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-06T22:12:00Z",
+  "classification": "DIAGNOSTIC_NOT_FINAL_RESULT",
+  "status": "REBUILD_REQUIRED",
+  "conclusion": "Legacy video06/video07 traces are not valid action maps for current-head corrected records. Current-head traces have been generated and bounded replay is semantically aligned; full corrected records must be rebuilt from those traces before training or tracking claims.",
+  "current_head": {
+    "branch": "jev/counterfactual-rng-isolation-v4-20261006",
+    "commit": "98ca6caa3f7072820ab8ba1e54fd7ed3e8ff80d8",
+    "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+    "checkpoint_sha256": "sha256:cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "policy_seed": 20261003,
+    "trajectory_rng": "branch_local_explicit_python_random_v1",
+    "trajectory_rng_master_seed": 20261006
+  },
+  "legacy_trace_evidence": [
+    {
+      "video_id": 6,
+      "path": "/home/liuyeqiang/WWW_jev_full_h8_runtime/partition/trace_by_video/video_06.jsonl",
+      "sha256": "sha256:d8832a5881b4e27794b640726893f78b1919369960ffa4fab25ab0c9dc16194d",
+      "events": 5164,
+      "actions": {
+        "MATCH_DECISION": 2600,
+        "MEMORY_DECISION": 2564,
+        "ACCEPT_CURRENT": 2564,
+        "START_NEW": 36
+      },
+      "provenance": "legacy partition trace generated 2026-10-05; not pinned to current-head explicit trajectory RNG"
+    },
+    {
+      "video_id": 7,
+      "path": "/home/liuyeqiang/WWW_jev_full_h8_runtime/partition/trace_by_video/video_07.jsonl",
+      "sha256": "sha256:91e7e59fcd204f0a6403b196e7b81e3c084ece3603b5855f198169433691c8f1",
+      "events": 3337,
+      "actions": {
+        "MATCH_DECISION": 1703,
+        "MEMORY_DECISION": 1634,
+        "ACCEPT_CURRENT": 1634,
+        "START_NEW": 69
+      },
+      "provenance": "legacy partition trace generated 2026-10-05; not pinned to current-head explicit trajectory RNG"
+    }
+  ],
+  "current_head_trace_evidence": [
+    {
+      "video_id": 6,
+      "path": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_off_trace/video06/trace_video_06.jsonl",
+      "manifest": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_off_trace/video06/TRACE_MANIFEST.json",
+      "sha256": "sha256:8fd1811514c5952cd7d21842d5f10f798439e0435357ab0c69bd05bb2720b14c",
+      "events": 5162,
+      "actions": {
+        "MATCH_DECISION": 2600,
+        "MEMORY_DECISION": 2562,
+        "ACCEPT_CURRENT": 2562,
+        "START_NEW": 38
+      },
+      "source_commit": "98ca6caa3f7072820ab8ba1e54fd7ed3e8ff80d8",
+      "status": "COMPLETE"
+    },
+    {
+      "video_id": 7,
+      "path": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_off_trace/video07/trace_video_07.jsonl",
+      "manifest": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_off_trace/video07/TRACE_MANIFEST.json",
+      "sha256": "sha256:6a5e6af1798168dff96465301f22028dd389461ad120480acb243bfcc0a35816",
+      "events": 3334,
+      "actions": {
+        "MATCH_DECISION": 1703,
+        "MEMORY_DECISION": 1631,
+        "ACCEPT_CURRENT": 1631,
+        "START_NEW": 72
+      },
+      "source_commit": "98ca6caa3f7072820ab8ba1e54fd7ed3e8ff80d8",
+      "status": "COMPLETE"
+    }
+  ],
+  "bounded_replay": [
+    {
+      "video_id": 6,
+      "records": 100,
+      "repetitions": 3,
+      "tolerance": 0.00002,
+      "missing_records": 0,
+      "off_action_mismatches": 0,
+      "max_abs_error": 0.0000152587890625,
+      "large_semantic_mismatch_examples": 0,
+      "status": "PASS"
+    },
+    {
+      "video_id": 7,
+      "records": 100,
+      "repetitions": 3,
+      "tolerance": 0.00002,
+      "missing_records": 0,
+      "off_action_mismatches": 0,
+      "max_abs_error": 0.000030517578125,
+      "large_semantic_mismatch_examples": 0,
+      "status": "NUMERICAL_TOLERANCE_UNRESOLVED"
+    }
+  ],
+  "diagnosis": [
+    "The legacy trace and current formal replay produce different proposal/action maps at the same frame/view boundary.",
+    "The old records therefore contain current-formal feature fields advanced under a legacy action map; the resulting large feature errors are causal state divergence, not ordinary floating-point noise.",
+    "The current-head bounded probes remove the large semantic divergence. Video07 still requires an explicit frozen numerical tolerance decision; 2e-5 must not be silently relaxed."
+  ],
+  "gates": {
+    "use_legacy_records_for_final_training": "BLOCKED",
+    "use_legacy_records_for_final_tracking": "BLOCKED",
+    "full_h8_24_video_rebuild": "BLOCKED_UNTIL_FORMAL_SAME_CODE_GATE_PASS",
+    "next_required": [
+      "complete full current-head corrected video06/video07 records",
+      "run full three-question parity and candidate parity",
+      "freeze an explicit v7 numerical tolerance only after evidence",
+      "rebuild compact/split dataset and retrain the three methods",
+      "run mutated-state tracking pilot before any final claim"
+    ]
+  }
+}
