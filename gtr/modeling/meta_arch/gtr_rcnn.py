@@ -727,6 +727,24 @@ class GTRRCNN(CustomRCNN):
                         dtype=torch.float32,
                         device=self.device,
                     )
+                    # The immutable cache stores proposal class labels in
+                    # ``proposal_metadata`` rather than in the tensor payload.
+                    # Native GMT returns ``pred_classes`` and the evaluator
+                    # requires that field even when the tracker itself only
+                    # uses boxes/scores/ReID.  Restore it here so a
+                    # cache-backed native replay has the same output schema
+                    # as the detector-backed path; fail closed if an older or
+                    # incomplete cache cannot provide the labels.
+                    proposal_metadata = cached.get('proposal_metadata', {})
+                    if 'pred_classes' not in proposal_metadata:
+                        raise KeyError(
+                            'perception cache record is missing proposal_metadata.pred_classes'
+                        )
+                    cached_instances.pred_classes = torch.as_tensor(
+                        proposal_metadata['pred_classes'],
+                        dtype=torch.long,
+                        device=self.device,
+                    )
                     cached_instances.reid_features = torch.as_tensor(
                         cached['reid_features'],
                         dtype=torch.float32,
