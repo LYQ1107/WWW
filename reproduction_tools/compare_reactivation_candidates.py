@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import json
 import math
 import os
@@ -22,6 +23,14 @@ from typing import Any, Mapping
 
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    return "sha256:" + digest.hexdigest()
 
 
 def read_jsonl(path: Path):
@@ -302,7 +311,9 @@ def main() -> None:
         "video_id": int(args.video_id),
         "max_frame": int(args.max_frame),
         "native_trace": str(args.native_trace.resolve()),
+        "native_trace_sha256": sha256_file(args.native_trace),
         "replay_records": str(args.records.resolve()),
+        "replay_records_sha256": sha256_file(args.records),
         "replay_decisions": str(replay_path.resolve()),
         "tolerance": float(args.tolerance),
         "native_candidate_source": "native_trace.context.native_candidate_*",
