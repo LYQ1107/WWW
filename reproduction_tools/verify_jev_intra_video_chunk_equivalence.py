@@ -70,7 +70,9 @@ def compare_chunk_ranges(plan, manifests, chunked_count):
 def compare_provenance(single_manifest, chunk_manifests, warmup_manifest):
     def normalized(manifest):
         return {
+            "source_commit": manifest.get("source_commit"),
             "association_backend": manifest.get("association_backend"),
+            "counterfactual_engine": manifest.get("counterfactual_engine"),
             "checkpoint_sha256": manifest.get("gmt_checkpoint_sha256", manifest.get("checkpoint_sha256")),
             # Single-worker manifests retain both the full-trace hash and the
             # per-video partition hash.  Chunk manifests necessarily carry
@@ -81,6 +83,14 @@ def compare_provenance(single_manifest, chunk_manifests, warmup_manifest):
             ),
             "order_index_sha256": manifest.get("source_order_index_sha256", manifest.get("order_index_sha256")),
             "cache_index_sha256": manifest.get("cache_index_sha256"),
+            "horizon": manifest.get("horizon"),
+            "state_schema_version": manifest.get("state_schema_version"),
+            "record_schema_version": manifest.get("record_schema_version"),
+            "feature_schema_version": manifest.get("feature_schema_version"),
+            "utility_definition": manifest.get("utility_definition"),
+            "trajectory_rng_policy": manifest.get("trajectory_rng_policy"),
+            "trajectory_rng_master_seed": manifest.get("trajectory_rng_master_seed"),
+            "trajectory_rng_video_seed": manifest.get("trajectory_rng_video_seed"),
         }
 
     normalized_single = normalized(single_manifest)
@@ -118,6 +128,15 @@ def compare_provenance(single_manifest, chunk_manifests, warmup_manifest):
             item.get("source_commit") == single_manifest.get("source_commit")
             for item in chunk_manifests
         ),
+        "warmup_source_commit": (warmup_manifest or {}).get("source_commit"),
+        "warmup_source_commit_equal": bool(
+            (warmup_manifest or {}).get("source_commit")
+            and (warmup_manifest or {}).get("source_commit") == single_manifest.get("source_commit")
+            and all(
+                (warmup_manifest or {}).get("source_commit") == item.get("source_commit")
+                for item in chunk_manifests
+            )
+        ),
         "trajectory_rng_policy": single_manifest.get("trajectory_rng_policy"),
         "trajectory_rng_master_seed": single_manifest.get("trajectory_rng_master_seed"),
         "trajectory_rng_video_seed": expected_seed,
@@ -126,8 +145,15 @@ def compare_provenance(single_manifest, chunk_manifests, warmup_manifest):
         "rng_calls_monotonic": rng_calls_monotonic,
         "pass": bool(
             all(item["equal"] for item in shared_fields.values())
+            and bool(single_manifest.get("source_commit"))
             and rng_seed_exact
             and rng_calls_monotonic
+            and bool((warmup_manifest or {}).get("source_commit"))
+            and (warmup_manifest or {}).get("source_commit") == single_manifest.get("source_commit")
+            and all(
+                (warmup_manifest or {}).get("source_commit") == item.get("source_commit")
+                for item in chunk_manifests
+            )
         ),
     }
 

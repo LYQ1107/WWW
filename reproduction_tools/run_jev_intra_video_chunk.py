@@ -58,6 +58,10 @@ def main() -> None:
     sys.path.insert(0, str(ROOT / "third_party/CenterNet2"))
     from build_jev_counterfactual_dataset import load_gt
     from build_jev_counterfactual_v2 import (
+        STATE_SCHEMA_VERSION,
+        UTILITY_DEFINITION,
+        TRAJECTORY_RNG_MASTER_SEED,
+        TRAJECTORY_RNG_POLICY,
         build_formal_gmt_engine,
         ordered_production_keys,
         source_commit,
@@ -165,6 +169,14 @@ def main() -> None:
         "checkpoint_sha256": "sha256:" + sha256(args.checkpoint.resolve()),
         "horizon": int(args.horizon),
         "association_backend": "formal_gmt_transformer",
+        "counterfactual_engine": "cached_perception_mutable_association_v2",
+        "state_schema_version": STATE_SCHEMA_VERSION,
+        "record_schema_version": 1,
+        "feature_schema_version": "jev_runtime_state_v2",
+        "utility_definition": UTILITY_DEFINITION,
+        "trajectory_rng_policy": TRAJECTORY_RNG_POLICY,
+        "trajectory_rng_master_seed": TRAJECTORY_RNG_MASTER_SEED,
+        "trajectory_rng_video_seed": TRAJECTORY_RNG_MASTER_SEED + video_id,
         "source_commit": provenance_source_commit,
         "source_commit_capture": (
             "explicit_env_override"

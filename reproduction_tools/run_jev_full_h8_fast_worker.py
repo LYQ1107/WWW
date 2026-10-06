@@ -246,6 +246,8 @@ def build_one(
         "formal_gmt_association_adapter": True,
         "counterfactual_engine": "cached_perception_mutable_association_v2",
         "state_schema_version": 2,
+        "record_schema_version": 1,
+        "feature_schema_version": "jev_runtime_state_v2",
         "utility_definition": "future_correct_identity_duration - 0.5*future_identity_switches - 0.25*future_fragmentation - 0.5*future_collisions - memory_contamination; sample_weight=0 for uninformative futures",
         "trajectory_rng_policy": TRAJECTORY_RNG_POLICY,
         "trajectory_rng_master_seed": TRAJECTORY_RNG_MASTER_SEED,
