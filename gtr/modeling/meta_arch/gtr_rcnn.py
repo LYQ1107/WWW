@@ -16,7 +16,11 @@ from ..jev_runtime import (
     JEVRuntimePolicy,
     build_controller_from_checkpoint,
 )
-from ..jev_state import build_state_values, encode_state
+from ..jev_state import (
+    build_state_values,
+    encode_state,
+    legacy_acceptance_threshold,
+)
 from ..jev_assignment import constrained_hungarian
 from ..jev_perception_cache import FrozenPerceptionCacheWriter
 from tqdm import tqdm
@@ -197,6 +201,9 @@ class GTRRCNN(CustomRCNN):
         id_reid_dict=None,
         active_ids=None,
         memory_ids=None,
+        possible_memory_ids=None,
+        stale_ids=None,
+        old_reid_count=0,
     ):
         """Serialize the mutable GMT containers at a decision boundary.
 
@@ -209,6 +216,10 @@ class GTRRCNN(CustomRCNN):
         id_count_dict = id_count_dict or {}
         id_reid_dict = id_reid_dict or {}
         active = sorted({int(value) for value in (active_ids or [])})
+        if possible_memory_ids is None:
+            possible_memory_ids = poss_ids.poss_ids
+        if stale_ids is None:
+            stale_ids = old_ids.old_ids
         memories = {
             str(int(key)): int(len(value))
             for key, value in id_reid_dict.items()
@@ -222,12 +233,9 @@ class GTRRCNN(CustomRCNN):
             'memory_track_ids': sorted(
                 {int(value) for value in (memory_ids or [])}
             ),
-            'possible_memory_ids': sorted(int(value) for value in poss_ids.poss_ids),
-            'stale_ids': sorted(int(value) for value in old_ids.old_ids),
-            'old_reid_count': int(
-                sum(len(value) for value in old_reids.old_reids)
-                if old_reids.old_reids else 0
-            ),
+            'possible_memory_ids': sorted(int(value) for value in (possible_memory_ids or [])),
+            'stale_ids': sorted(int(value) for value in (stale_ids or [])),
+            'old_reid_count': int(old_reid_count),
         }
 
     def _apply_jev_match_decisions(
@@ -417,8 +425,17 @@ class GTRRCNN(CustomRCNN):
                 continue
             candidate_id = int(unique_ids[second_j].item())
             candidate_score = float(traj_score[row, second_j].item())
+            candidate_length = (
+                float(track_lengths[second_j].item())
+                if track_lengths is not None and second_j < track_lengths.numel()
+                else 1.0
+            )
             second_off = (
-                'ACCEPT_CURRENT' if candidate_score > float(threshold) else 'START_NEW'
+                'ACCEPT_CURRENT'
+                if candidate_score > legacy_acceptance_threshold(
+                    threshold, candidate_length, self.not_mult_thresh
+                )
+                else 'START_NEW'
             )
             second_action = self._jev_decide(
                 self._match_state_values(
@@ -809,8 +826,11 @@ class GTRRCNN(CustomRCNN):
         match_i, match_j = linear_sum_assignment((- traj_score).cpu()) #
         track_ids = ids.new_full((n_k,), -1)
         for i, j in zip(match_i, match_j):
-            thresh = self.overlap_thresh * id_inds[:, j].sum() \
-                if not (self.not_mult_thresh) else self.overlap_thresh
+            thresh = legacy_acceptance_threshold(
+                self.overlap_thresh,
+                float(id_inds[:, j].sum().item()),
+                self.not_mult_thresh,
+            )
             if traj_score[i, j] > thresh:
                 track_ids[i] = unique_ids[j]
 
@@ -1004,8 +1024,11 @@ class GTRRCNN(CustomRCNN):
         match_i, match_j = linear_sum_assignment((- traj_score).cpu()) #
         track_ids = ids.new_full((n_k,), -1)
         for i, j in zip(match_i, match_j):
-            thresh = self.overlap_thresh * id_inds[:, j].sum() \
-                if not (self.not_mult_thresh) else self.overlap_thresh
+            thresh = legacy_acceptance_threshold(
+                self.overlap_thresh,
+                float(id_inds[:, j].sum().item()),
+                self.not_mult_thresh,
+            )
             if traj_score[i, j] > thresh:
                 track_ids[i] = unique_ids[j]
         if self.jev_policy is not None:
@@ -1158,8 +1181,11 @@ class GTRRCNN(CustomRCNN):
         match_i, match_j = linear_sum_assignment((- traj_score).cpu()) #
         track_ids = ids.new_full((n_k,), -1)
         for i, j in zip(match_i, match_j):
-            thresh = self.thred_bank * id_inds[:, j].sum() \
-                if not (self.not_mult_thresh) else self.thred_bank
+            thresh = legacy_acceptance_threshold(
+                self.thred_bank,
+                float(id_inds[:, j].sum().item()),
+                self.not_mult_thresh,
+            )
             # A traced/active JEV controller must see the typed reactivation
             # question even when the legacy gate would reject the stale ID;
             # OFF mode's helper still returns the original threshold action.

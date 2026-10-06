@@ -8,6 +8,7 @@ from jev_counterfactual_v2 import (
     ENGINE_VERSION,
     CachedPerceptionMutableAssociationV2,
     MutableGMTState,
+    _state_signature,
     run_counterfactual_branches,
 )
 
@@ -68,16 +69,13 @@ def main():
     # Non-mutating resolution must predict existing-track outcomes without
     # consuming IDs, updating counters, or changing history.
     resolution_state = initial.clone()
-    resolution_before = copy.deepcopy(resolution_state)
+    resolution_before = _state_signature(resolution_state)
     resolution = engine.resolve_actions(
         perception([[0.70, 0.70], [0.99, 0.01]]),
         resolution_state,
         actions={0: "REASSOCIATE", 1: "ACCEPT_CURRENT"},
     )
-    assert resolution_state.next_id == resolution_before.next_id
-    assert resolution_state.active_ids == resolution_before.active_ids
-    assert resolution_state.counters == resolution_before.counters
-    assert len(resolution_state.association_history) == len(resolution_before.association_history)
+    assert _state_signature(resolution_state) == resolution_before
     assert resolution["existing_track_ids"][1] in {1, 2}
     reassoc_state = initial.clone()
     reassoc = engine.step(

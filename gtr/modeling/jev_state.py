@@ -8,7 +8,7 @@ the threshold baselines.  It intentionally accepts no GT/evaluator object.
 from __future__ import annotations
 
 import math
-from typing import Mapping, Sequence, Tuple
+from typing import Iterable, Mapping, Sequence, Tuple
 
 import torch
 from torch import Tensor
@@ -107,6 +107,91 @@ def safe_unit(value: float) -> float:
     return max(0.0, min(1.0, value))
 
 
+def candidate_entropy(scores: Sequence[float] | Tensor) -> float:
+    """Return the bounded GMT candidate entropy used by the state schema."""
+
+    values = torch.as_tensor(scores, dtype=torch.float32).reshape(-1)
+    if values.numel() == 0:
+        return 0.0
+    probabilities = torch.softmax(values, dim=0)
+    entropy = -(probabilities * probabilities.clamp_min(1e-8).log()).sum()
+    return float(entropy.item())
+
+
+def legacy_acceptance_threshold(
+    base_threshold: float,
+    track_length: float,
+    not_mult_thresh: bool,
+) -> float:
+    """Match GMT's legacy OFF threshold without changing JEV features.
+
+    ``NOT_MULT_THRESH=False`` is the historical scaled-threshold mode:
+    GMT compares accumulated trajectory evidence with
+    ``base_threshold * track_length``.  The feature named
+    ``accept_threshold`` deliberately remains the unscaled base threshold.
+    """
+
+    threshold = float(base_threshold)
+    if bool(not_mult_thresh):
+        return threshold
+    return threshold * max(1.0, float(track_length))
+
+
+def count_track_history(
+    history: Iterable[Mapping[str, object]], track_id: int | None
+) -> int:
+    """Count a track's occurrences in the bounded association history."""
+
+    if track_id is None:
+        return 1
+    count = 0
+    target = int(track_id)
+    for item in history:
+        assignments = item.get("assignments", {})
+        if isinstance(assignments, Mapping):
+            count += sum(int(value) == target for value in assignments.values())
+    return max(1, int(count))
+
+
+def count_memory_observations(
+    memory: Mapping[int, Sequence[object]], track_id: int | None
+) -> int:
+    """Return GMT's memory-count feature at a decision boundary.
+
+    ``id_reid_dict`` contains only observations written after the initial
+    track seed.  The native runtime nevertheless reports the initial
+    observation as memory count one, so the canonical feature contract uses
+    ``1 + len(memory[track_id])`` for an existing track.
+    """
+
+    if track_id is None:
+        return 1
+    values = memory.get(int(track_id), ())
+    return max(1, 1 + len(values))
+
+
+def association_window_length(
+    *,
+    history_instances: int,
+    view_num: int,
+    view_index: int,
+    first_frame_secondary_view: bool = False,
+) -> int:
+    """Reproduce GTRRCNN's association-window length at a decision.
+
+    The production first-frame path passes ``T`` directly to the state
+    builder, while later multi-view paths pass ``T // view_num``.  The
+    caller supplies the number of historical instance slices already in the
+    mutable state; this helper keeps that batching convention out of every
+    replay implementation.
+    """
+
+    total = max(0, int(history_instances)) + 1
+    if first_frame_secondary_view:
+        return max(1, total)
+    return max(1, total // max(1, int(view_num)))
+
+
 def build_state_values(
     *,
     accept_score: float,
@@ -129,6 +214,7 @@ def build_state_values(
     track_score: float = 0.0,
     track_length: float = 1.0,
     score_variance: float = 0.0,
+    track_hits: float | None = None,
 ) -> Mapping[str, float]:
     """Build the canonical online JEV state-value mapping.
 
@@ -146,6 +232,7 @@ def build_state_values(
     top1, top2 = sorted((accept, reassociate), reverse=True)
     safe_length = max(1.0, float(track_length))
     safe_threshold = raw_threshold if abs(raw_threshold) > 1e-8 else 1e-8
+    hits = float(track_age if track_hits is None else track_hits)
     return {
         "accept_score": accept,
         "reassociate_score": reassociate,
@@ -158,7 +245,7 @@ def build_state_values(
         "candidate_entropy": safe_unit(candidate_entropy),
         "track_count_norm": safe_unit(float(track_count) / 128.0),
         "track_age_norm": safe_unit(float(track_age) / 128.0),
-        "track_hits_norm": safe_unit(float(track_age) / 128.0),
+        "track_hits_norm": safe_unit(hits / 128.0),
         "memory_count_norm": safe_unit(float(memory_count) / 64.0),
         "track_score_mean": safe_unit(track_score),
         "track_score_std": 0.0,

@@ -17,6 +17,7 @@ import torch
 
 from gtr.modeling.jev_assignment import constrained_hungarian
 from gtr.modeling.jev_perception_cache import CACHE_VERSION
+from gtr.modeling.jev_state import count_track_history, legacy_acceptance_threshold
 
 
 ENGINE_VERSION = "cached_perception_mutable_association_v2"
@@ -99,10 +100,12 @@ class CachedPerceptionMutableAssociationV2:
             Callable[[Mapping[str, object], Sequence[int], MutableGMTState], torch.Tensor]
         ] = None,
         acceptance_threshold: float = 0.2,
+        not_mult_thresh: bool = False,
         history_limit: int = 16,
     ):
         self.association_fn = association_fn
         self.acceptance_threshold = float(acceptance_threshold)
+        self.not_mult_thresh = bool(not_mult_thresh)
         self.history_limit = max(1, int(history_limit))
 
     @staticmethod
@@ -197,6 +200,7 @@ class CachedPerceptionMutableAssociationV2:
     def _actions_for_proposal(
         self,
         proposal: AssociationProposal,
+        state: MutableGMTState,
         *,
         threshold: Optional[float] = None,
     ) -> Dict[int, str]:
@@ -204,7 +208,15 @@ class CachedPerceptionMutableAssociationV2:
         actions = {}
         for row in range(proposal.scores.shape[0]):
             col = proposal.pairs.get(row)
-            if col is None or float(proposal.scores[row, col]) <= threshold:
+            track_length = (
+                count_track_history(state.association_history, proposal.track_ids[col])
+                if col is not None
+                else 1
+            )
+            legacy_threshold = legacy_acceptance_threshold(
+                threshold, track_length, self.not_mult_thresh
+            )
+            if col is None or float(proposal.scores[row, col]) <= legacy_threshold:
                 actions[row] = "START_NEW"
             else:
                 actions[row] = "ACCEPT_CURRENT"
@@ -228,7 +240,10 @@ class CachedPerceptionMutableAssociationV2:
 
         proposal = self.propose(perception, state)
         action_map = dict(
-            actions or self._actions_for_proposal(proposal, threshold=threshold)
+            actions
+            or self._actions_for_proposal(
+                proposal, state, threshold=threshold
+            )
         )
         for row in range(proposal.scores.shape[0]):
             action_map.setdefault(row, "START_NEW")
@@ -255,6 +270,24 @@ class CachedPerceptionMutableAssociationV2:
             if action == "START_NEW" or col is None:
                 existing_track_ids[row] = None
             else:
+                # GTRRCNN validates the second constrained-Hungarian proposal
+                # against the legacy scaled threshold before committing it.
+                # The first proposal keeps the historical explicit-action
+                # semantics; this check is only needed when reassociation
+                # caused the second solve.
+                if reassociate_rows:
+                    track_id = int(second.track_ids[col])
+                    track_length = count_track_history(
+                        state.association_history, track_id
+                    )
+                    candidate_score = float(second.scores[row, col].item())
+                    if candidate_score <= legacy_acceptance_threshold(
+                        self.acceptance_threshold,
+                        track_length,
+                        self.not_mult_thresh,
+                    ):
+                        existing_track_ids[row] = None
+                        continue
                 existing_track_ids[row] = int(second.track_ids[col])
 
         return {
@@ -408,4 +441,25 @@ def _state_signature(state: MutableGMTState):
         tuple(sorted((int(key), int(value)) for key, value in state.track_hits.items())),
         memory,
         tuple(sorted((str(key), int(value)) for key, value in state.counters.items())),
+        tuple(
+            (
+                (
+                    int(item["perception"]["video_id"]),
+                    int(item["perception"]["frame"]),
+                    int(item["perception"]["view"]),
+                )
+                if isinstance(item.get("perception"), Mapping)
+                and all(
+                    key in item["perception"] for key in ("video_id", "frame", "view")
+                )
+                else id(item.get("perception")),
+                tuple(
+                    sorted(
+                        (int(key), int(value))
+                        for key, value in dict(item.get("assignments", {})).items()
+                    )
+                ),
+            )
+            for item in state.association_history
+        ),
     )

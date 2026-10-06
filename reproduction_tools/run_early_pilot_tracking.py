@@ -123,7 +123,15 @@ def load_runtime_modules():
     from jev_counterfactual_v2 import MutableGMTState
     from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
     from gtr.modeling.jev_runtime import JEVRuntimePolicy, build_controller_from_checkpoint
-    from gtr.modeling.jev_state import build_state_features
+    from gtr.modeling.jev_state import (
+        association_window_length,
+        build_state_features,
+        candidate_entropy,
+        count_memory_observations,
+        count_track_history,
+        feature_names,
+        legacy_acceptance_threshold,
+    )
 
     return (
         build_formal_gmt_engine,
@@ -132,46 +140,125 @@ def load_runtime_modules():
         JEVRuntimePolicy,
         build_controller_from_checkpoint,
         build_state_features,
+        association_window_length,
+        candidate_entropy,
+        count_memory_observations,
+        count_track_history,
+        feature_names,
+        legacy_acceptance_threshold,
     )
 
-
-def history_track_length(state, track_id: int | None) -> int:
-    """Count one track's occurrences in the bounded mutable association history."""
-    if track_id is None:
-        return 1
-    count = 0
-    for item in state.association_history:
-        assignments = item.get("assignments", {})
-        count += sum(int(value) == int(track_id) for value in assignments.values())
-    return max(1, int(count))
-
-
-def formal_memory_count(state, track_id: int) -> int:
-    """Mirror GTRRCNN id_reid_dict length: initial observation plus writes."""
-    return max(1, 1 + len(state.memory.get(int(track_id), ())))
 
 def choose(policy, feature, question, legal, off_action):
     return policy.decide(feature, question, legal, off_action=off_action).committed_action
 
 
-def canonical_feature_or_fallback(record, fallback: torch.Tensor):
-    """Use the exact formal trace feature vector when this event is present.
+def ordered_replay_keys(cache, video_id: int, view_num: int):
+    """Return the exact production order and the production seed view.
 
-    The H=8 policy dataset is trained on the state vector emitted by the
-    formal GMT trace.  Reconstructing that vector from a replay proposal is
-    unsafe: the native model's window length, candidate entropy, track length,
-    and memory counters depend on the batching/commit boundary.  The pilot
-    record already carries that online-only vector, so use it for parity and
-    expose a fallback counter for any event not represented in the snapshot.
+    GMT initializes the first frame from the view with the most detections;
+    ``argsort(...).reverse()`` makes the highest view index win ties.  The
+    remaining first-frame views are then processed in ascending view order,
+    followed by every later frame in ascending view order.
     """
 
-    if record is not None:
-        values = record.get("state", {}).get("feature_vector")
-        if isinstance(values, list) and len(values) == int(fallback.numel()):
-            tensor = torch.tensor(values, dtype=torch.float32)
-            if torch.isfinite(tensor).all():
-                return tensor, "CANONICAL_TRACE_RECORD"
-    return fallback, "RECONSTRUCTED_FALLBACK"
+    keys = [key for key in cache.keys() if int(key[0]) == int(video_id)]
+    if not keys:
+        raise RuntimeError(f"no cached perception keys for video {video_id}")
+    frames = sorted({int(key[1]) for key in keys})
+    first_keys = sorted(
+        [key for key in keys if int(key[1]) == frames[0]],
+        key=lambda key: int(key[2]),
+    )
+    if len(first_keys) != int(view_num):
+        raise RuntimeError(
+            f"expected {view_num} first-frame views, found {len(first_keys)}"
+        )
+    first_counts = {
+        key: int(torch.as_tensor(cache.load(*key)["pred_boxes"]).shape[0])
+        for key in first_keys
+    }
+    seed_key = max(first_keys, key=lambda key: (first_counts[key], int(key[2])))
+    ordered = [seed_key]
+    ordered.extend(key for key in first_keys if key != seed_key)
+    ordered.extend(
+        sorted(
+            [key for key in keys if int(key[1]) != frames[0]],
+            key=lambda key: (int(key[1]), int(key[2])),
+        )
+    )
+    return ordered, seed_key, first_counts
+
+
+def image_for(image_lookup, video_id: int, frame: int, view: int):
+    """Resolve cache coordinates to the VisionTrack annotation image."""
+
+    candidates = (
+        (int(video_id), int(view) + 1, int(frame) + 1),
+        (int(video_id), int(view), int(frame)),
+        (int(video_id), int(view) + 1, int(frame)),
+        (int(video_id), int(view), int(frame) + 1),
+    )
+    for key in candidates:
+        if key in image_lookup:
+            return image_lookup[key]
+    raise KeyError(f"no annotation image for video={video_id}, frame={frame}, view={view}")
+
+
+def append_predictions(predictions, payload, image, committed):
+    boxes = payload["pred_boxes"]
+    scores_tensor = payload["detection_scores"]
+    for row in range(len(boxes)):
+        predictions.append(
+            {
+                "image_id": int(image["id"]),
+                "category_id": 1,
+                "bbox": scale_box(boxes[row].tolist(), payload["image_size"], image),
+                "score": float(scores_tensor[row].item()),
+                "track_id": int(committed[row]),
+            }
+        )
+
+
+def seed_production_state(cache, MutableGMTState, seed_key):
+    """Seed the mutable replay exactly as ``sliding_inference_GMT`` does."""
+
+    payload = cache.load(*seed_key)
+    detection_count = int(torch.as_tensor(payload["pred_boxes"]).shape[0])
+    if detection_count < 1:
+        raise RuntimeError(f"production seed view is empty: {seed_key}")
+    state = MutableGMTState(
+        next_id=detection_count,
+        active_ids=set(range(1, detection_count + 1)),
+        track_hits={track_id: 1 for track_id in range(1, detection_count + 1)},
+        track_embeddings={
+            track_id: torch.as_tensor(payload["reid_features"][track_id - 1]).detach().cpu().clone()
+            for track_id in range(1, detection_count + 1)
+        },
+    )
+    state.association_history.append(
+        {
+            "perception": payload,
+            "assignments": {
+                row: row + 1 for row in range(detection_count)
+            },
+        }
+    )
+    return state, payload
+
+
+def trace_action_for(events, question: str, row: int):
+    for event in events:
+        context = event.get("context", {})
+        if str(event.get("question", "")).upper() != question:
+            continue
+        if context.get("detection_index") is None:
+            continue
+        if int(context["detection_index"]) != int(row):
+            continue
+        value = event.get("off_action") or event.get("proposed_action")
+        return str(value) if value is not None else None
+    return None
 
 
 def run_method(
@@ -187,7 +274,13 @@ def run_method(
     JEVRuntimePolicy,
     build_controller_from_checkpoint,
     build_state_features,
+    association_window_length,
+    candidate_entropy,
+    count_memory_observations,
+    count_track_history,
+    legacy_acceptance_threshold,
     feature_source_mode,
+    parity_report,
 ):
     controller = (
         build_controller_from_checkpoint(checkpoint_path, device="cpu")
@@ -209,11 +302,17 @@ def run_method(
     engine.association_fn.model.cpu()
     engine.association_fn.model.eval()
     cache = FrozenPerceptionCache(CACHE)
-    keys = [key for key in cache.keys() if int(key[0]) == VIDEO_ID]
-    keys.sort(key=lambda key: (int(key[1]), int(key[2])))
-    state = MutableGMTState()
+    keys, seed_key, first_counts = ordered_replay_keys(cache, VIDEO_ID, view_num=2)
+    state, seed_payload = seed_production_state(cache, MutableGMTState, seed_key)
     predictions = []
     decisions = []
+    seed_video, seed_frame, seed_view = [int(value) for value in seed_key]
+    append_predictions(
+        predictions,
+        seed_payload,
+        image_for(image_lookup, seed_video, seed_frame, seed_view),
+        {row: row + 1 for row in range(len(seed_payload["pred_boxes"]))},
+    )
     counts = {
         "MATCH_DECISION": 0,
         "MEMORY_DECISION": 0,
@@ -231,6 +330,8 @@ def run_method(
         "missing_action_outcomes": 0,
         "memory_contamination": 0.0,
         "unsupported_reactivation": 0,
+        "off_action_mismatches": 0,
+        "trace_action_records": 0,
     }
     runtime_model = engine.association_fn.model
     threshold = float(runtime_model.overlap_thresh)
@@ -243,22 +344,31 @@ def run_method(
     counts["feature_parity_records"] = 0
     counts["feature_parity_max_abs_error"] = 0.0
 
-    for key_index, key in enumerate(keys):
+    for key_index, key in enumerate(keys[1:], start=1):
         payload = cache.load(*key)
         video_id, frame, view = [int(value) for value in key]
+        required_history = min(frame, 39) * 2 + view
+        if required_history < 1:
+            required_history = 1
+        if len(state.association_history) < required_history:
+            raise RuntimeError(
+                f"replay history underflow at frame={frame} view={view}: "
+                f"{len(state.association_history)} < {required_history}"
+            )
+        if len(state.association_history) > required_history:
+            state.association_history = state.association_history[-required_history:]
         proposal = engine.propose(payload, state)
         track_ids, scores = proposal.track_ids, proposal.scores
         actions: Dict[int, str] = {}
         memories: Dict[int, str] = {}
         events_here = by_key.get((video_id, frame, view), ())
-        trace_off = {
-            (str(event.get("question")), int(event.get("context", {}).get("detection_index", -1))): str(
-                event.get("off_action") or event.get("proposed_action")
-            )
-            for event in events_here
-            if event.get("context", {}).get("detection_index") is not None
-        }
-        window_length = max(1, len(state.association_history) + 1)
+        first_frame_secondary_view = frame == seed_frame and view != seed_view
+        window_length = association_window_length(
+            history_instances=len(state.association_history),
+            view_num=2,
+            view_index=view,
+            first_frame_secondary_view=first_frame_secondary_view,
+        )
 
         def select_feature(record, runtime_feature):
             if record is not None:
@@ -266,11 +376,29 @@ def run_method(
                 if isinstance(values, list) and len(values) == int(runtime_feature.numel()):
                     trace_feature = torch.tensor(values, dtype=torch.float32)
                     if torch.isfinite(trace_feature).all():
-                        error = float((trace_feature - runtime_feature.cpu()).abs().max().item())
+                        error_vector = (trace_feature - runtime_feature.cpu()).abs()
+                        error = float(error_vector.max().item())
                         counts["feature_parity_records"] += 1
                         counts["feature_parity_max_abs_error"] = max(
                             float(counts["feature_parity_max_abs_error"]), error
                         )
+                        if name == "gmt_off":
+                            parity_report["compared_records"] += 1
+                            parity_report["max_abs_error"] = max(
+                                float(parity_report["max_abs_error"]), error
+                            )
+                            parity_report["sum_abs_error"] += float(error_vector.sum().item())
+                            parity_report["finite_runtime_records"] += int(torch.isfinite(runtime_feature).all())
+                            parity_report["seen_record_keys"].add(
+                                (VIDEO_ID, frame, view, record["question_type"], int(record["state"]["online_context"]["detection_index"]))
+                            )
+                            for index, value in enumerate(error_vector.tolist()):
+                                parity_report["per_feature_max_abs_error"][index] = max(
+                                    float(parity_report["per_feature_max_abs_error"][index]),
+                                    float(value),
+                                )
+                                parity_report["per_feature_sum_abs_error"][index] += float(value)
+                                parity_report["per_feature_count"][index] += 1
                         if feature_source_mode == "trace_debug":
                             counts["trace_debug_feature_records"] += 1
                             return trace_feature
@@ -286,7 +414,7 @@ def run_method(
                 off_action = "START_NEW"
                 accept_score = reassociate_score = 0.0
                 track_id = None
-                candidate_entropy = 0.0
+                candidate_entropy_value = 0.0
                 track_length = 1
                 score_variance = 0.0
                 candidate_count = 0
@@ -297,12 +425,11 @@ def run_method(
                 first_id = int(track_ids[first_col])
                 accept_score = float(scores[row, first_col].item())
                 reassociate_score = float(scores[row, second_col].item()) if second_col is not None else 0.0
-                probabilities = torch.softmax(scores[row], dim=0)
-                candidate_entropy = float(
-                    (-(probabilities * probabilities.clamp_min(1e-8).log()).sum()).item()
+                candidate_entropy_value = candidate_entropy(scores[row])
+                track_length = count_track_history(state.association_history, first_id)
+                legacy_threshold = legacy_acceptance_threshold(
+                    threshold, track_length, not_mult_thresh
                 )
-                track_length = history_track_length(state, first_id)
-                legacy_threshold = threshold if not_mult_thresh else threshold * float(track_length)
                 off_action = "ACCEPT_CURRENT" if accept_score > legacy_threshold else "START_NEW"
                 legal = ["ACCEPT_CURRENT", "START_NEW"]
                 if can_reassociate and second_col is not None:
@@ -317,7 +444,7 @@ def run_method(
                 reassociate_score=reassociate_score,
                 threshold=threshold,
                 candidate_count=candidate_count,
-                candidate_entropy=candidate_entropy,
+                candidate_entropy=candidate_entropy_value,
                 track_count=len(track_ids),
                 track_age=0,
                 frame_index=frame,
@@ -335,11 +462,14 @@ def run_method(
             )
             record = records.get((VIDEO_ID, frame, view, "MATCH_DECISION", row))
             feature = select_feature(record, runtime_feature)
-            action = trace_off.get(("MATCH_DECISION", row), off_action) if name == "gmt_off" else choose(
-                policy, feature, "MATCH_DECISION", legal, off_action
-            )
+            action = choose(policy, feature, "MATCH_DECISION", legal, off_action)
             if action not in legal:
                 action = off_action
+            trace_action = trace_action_for(events_here, "MATCH_DECISION", row)
+            if name == "gmt_off" and trace_action is not None:
+                counts["trace_action_records"] += 1
+                if action != trace_action:
+                    counts["off_action_mismatches"] += 1
             actions[row] = action
             counts["MATCH_DECISION"] += 1
             counts[action] += 1
@@ -366,7 +496,7 @@ def run_method(
             if track_id is None:
                 continue
             score = float(scores[row].max().item()) if scores.shape[1] else 0.0
-            memory_count = formal_memory_count(state, int(track_id))
+            memory_count = count_memory_observations(state.memory, int(track_id))
             legal = ["WRITE_MEMORY", "SKIP_MEMORY"]
             runtime_feature = build_state_features(
                 state_dim=64,
@@ -392,11 +522,14 @@ def run_method(
             record = records.get((VIDEO_ID, frame, view, "MEMORY_DECISION", row))
             feature = select_feature(record, runtime_feature)
             off_action = "WRITE_MEMORY"
-            action = trace_off.get(("MEMORY_DECISION", row), off_action) if name == "gmt_off" else choose(
-                policy, feature, "MEMORY_DECISION", legal, off_action
-            )
+            action = choose(policy, feature, "MEMORY_DECISION", legal, off_action)
             if action not in legal:
                 action = off_action
+            trace_action = trace_action_for(events_here, "MEMORY_DECISION", row)
+            if name == "gmt_off" and trace_action is not None:
+                counts["trace_action_records"] += 1
+                if action != trace_action:
+                    counts["off_action_mismatches"] += 1
             memories[row] = action
             counts["MEMORY_DECISION"] += 1
             counts[action] += 1
@@ -411,20 +544,12 @@ def run_method(
                     counts["memory_contamination"] += float(outcome.get("memory_contamination", 0.0))
             decisions.append({"frame": frame, "view": view, "row": row, "question": "MEMORY_DECISION", "action": action})
         result = engine.step(payload, state, actions=actions, memory_actions=memories)
-        image = image_lookup[(VIDEO_ID, view + 1, frame + 1)]
-        committed = result["committed_track_ids"]
-        boxes = payload["pred_boxes"]
-        scores_tensor = payload["detection_scores"]
-        for row in range(len(boxes)):
-            predictions.append(
-                {
-                    "image_id": int(image["id"]),
-                    "category_id": 1,
-                    "bbox": scale_box(boxes[row].tolist(), payload["image_size"], image),
-                    "score": float(scores_tensor[row].item()),
-                    "track_id": int(committed[row]),
-                }
-            )
+        append_predictions(
+            predictions,
+            payload,
+            image_for(image_lookup, video_id, frame, view),
+            result["committed_track_ids"],
+        )
         if key_index and key_index % 100 == 0:
             print(json.dumps({"method": name, "payloads": key_index, "predictions": len(predictions)}), flush=True)
     action_total = sum(counts[name] for name in ("MATCH_DECISION", "MEMORY_DECISION", "REACTIVATION_DECISION"))
@@ -532,7 +657,35 @@ def main() -> None:
             raise FileNotFoundError(path)
     annotations, subset_annotation, image_lookup, by_key, records = load_inputs()
     modules = load_runtime_modules()
-    build_formal_gmt_engine, MutableGMTState, FrozenPerceptionCache, JEVRuntimePolicy, build_controller_from_checkpoint, build_state_features = modules
+    (
+        build_formal_gmt_engine,
+        MutableGMTState,
+        FrozenPerceptionCache,
+        JEVRuntimePolicy,
+        build_controller_from_checkpoint,
+        build_state_features,
+        association_window_length,
+        candidate_entropy,
+        count_memory_observations,
+        count_track_history,
+        feature_names,
+        legacy_acceptance_threshold,
+    ) = modules
+    parity_report = {
+        "schema_version": "jev_runtime_state_contract_v3",
+        "source_trace": str(TRACE),
+        "tolerance": 1e-6,
+        "feature_names": list(feature_names(64)),
+        "expected_record_count": len(records),
+        "compared_records": 0,
+        "finite_runtime_records": 0,
+        "max_abs_error": 0.0,
+        "sum_abs_error": 0.0,
+        "per_feature_max_abs_error": [0.0] * 64,
+        "per_feature_sum_abs_error": [0.0] * 64,
+        "per_feature_count": [0] * 64,
+        "seen_record_keys": set(),
+    }
     raw = {
         "status": "RUNNING",
         "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
@@ -544,6 +697,7 @@ def main() -> None:
         "perception_cache": str(CACHE),
         "association_backend": "formal_gmt_transformer",
         "device": args.device,
+        "controller_feature_source": args.feature_source,
         "methods": {},
     }
     for name, relative in METHODS.items():
@@ -563,7 +717,13 @@ def main() -> None:
             JEVRuntimePolicy=JEVRuntimePolicy,
             build_controller_from_checkpoint=build_controller_from_checkpoint,
             build_state_features=build_state_features,
+            association_window_length=association_window_length,
+            candidate_entropy=candidate_entropy,
+            count_memory_observations=count_memory_observations,
+            count_track_history=count_track_history,
+            legacy_acceptance_threshold=legacy_acceptance_threshold,
             feature_source_mode=args.feature_source,
+            parity_report=parity_report,
         )
         json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)
     dataset_root = prepare_eval_dataset(subset_annotation)
@@ -596,6 +756,39 @@ def main() -> None:
             "action_counts": item["counts"],
             "evaluation": evaluations[name],
         }
+    expected_keys = set(records)
+    missing_keys = sorted(expected_keys - parity_report["seen_record_keys"])
+    per_feature = []
+    for index, feature_name in enumerate(parity_report["feature_names"]):
+        count = int(parity_report["per_feature_count"][index])
+        per_feature.append(
+            {
+                "index": index,
+                "name": feature_name,
+                "count": count,
+                "max_abs_error": float(parity_report["per_feature_max_abs_error"][index]),
+                "mean_abs_error": (
+                    float(parity_report["per_feature_sum_abs_error"][index]) / count
+                    if count else None
+                ),
+            }
+        )
+    parity_report["missing_record_count"] = len(missing_keys)
+    parity_report["missing_record_keys_sample"] = [list(key) for key in missing_keys[:20]]
+    parity_report["mean_abs_error"] = (
+        float(parity_report["sum_abs_error"])
+        / max(1, int(parity_report["compared_records"]) * len(parity_report["feature_names"]))
+    )
+    parity_report["per_feature"] = per_feature
+    parity_report["pass"] = bool(
+        parity_report["expected_record_count"] == parity_report["compared_records"]
+        and parity_report["missing_record_count"] == 0
+        and parity_report["finite_runtime_records"] == parity_report["compared_records"]
+        and parity_report["max_abs_error"] <= parity_report["tolerance"]
+        and methods["gmt_off"]["action_counts"]["off_action_mismatches"] == 0
+    )
+    parity_report.pop("seen_record_keys", None)
+    json_write(ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json", parity_report)
     report = {
         "status": "PASS",
         "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
@@ -614,12 +807,13 @@ def main() -> None:
         "gmt_off_baseline": baseline,
         "runtime_feature_parity_gate": {
             "required_for_runtime_claim": args.feature_source == "runtime",
-            "gmt_off_compared_records": methods["gmt_off"]["action_counts"]["feature_parity_records"],
-            "gmt_off_max_abs_error": methods["gmt_off"]["action_counts"]["feature_parity_max_abs_error"],
-            "pass": (
-                methods["gmt_off"]["action_counts"]["feature_parity_records"] > 0
-                and methods["gmt_off"]["action_counts"]["feature_parity_max_abs_error"] <= 1e-6
-            ),
+            "report": str(ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / "STATE_FEATURE_PARITY.json"),
+            "compared_records": parity_report["compared_records"],
+            "expected_records": parity_report["expected_record_count"],
+            "missing_records": parity_report["missing_record_count"],
+            "max_abs_error": parity_report["max_abs_error"],
+            "off_action_mismatches": methods["gmt_off"]["action_counts"]["off_action_mismatches"],
+            "pass": parity_report["pass"],
         },
         "pilot_verdict": (
             "TRACE_DEBUG_ONLY"
@@ -627,8 +821,7 @@ def main() -> None:
             else (
                 "PILOT_GO_FOR_FULL_H8_CONTINUATION"
                 if (
-                    methods["gmt_off"]["action_counts"]["feature_parity_records"] > 0
-                    and methods["gmt_off"]["action_counts"]["feature_parity_max_abs_error"] <= 1e-6
+                    parity_report["pass"]
                     and methods["jev"]["metrics"]["AssA"] >= baseline["AssA"]
                     and methods["jev"]["metrics"]["IDSW"] <= baseline["IDSW"]
                 )
@@ -638,6 +831,12 @@ def main() -> None:
         "previous_manual_feature_result": "SUPERSEDED_INVALID_FEATURE_SCHEMA",
         "interpretation": "Pilot-only matched-sequence evidence; not a final paper result and not a substitute for full VISION_test evaluation.",
     }
+    json_write(
+        ROOT / "reports" / "JEV_RUNTIME_STATE_V3" / (
+            "TRACE_DEBUG_TRACKING.json" if args.feature_source == "trace_debug" else "RUNTIME_STATE_TRACKING.json"
+        ),
+        report,
+    )
     json_write(PILOT / "PILOT_TRACKING_THREE_WAY.json", report)
     print(json.dumps(report, indent=2))
 

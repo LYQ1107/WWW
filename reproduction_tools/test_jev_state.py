@@ -3,10 +3,15 @@
 import torch
 
 from gtr.modeling.jev_state import (
+    association_window_length,
     build_state_features,
     build_state_values,
+    candidate_entropy,
+    count_memory_observations,
+    count_track_history,
     encode_state,
     feature_names,
+    legacy_acceptance_threshold,
 )
 
 
@@ -58,6 +63,28 @@ def main():
     assert abs(values["score_over_threshold"] - 37.0) < 1e-8
     assert values["can_reassociate"] == 1.0
     assert values["memory_enabled"] == 1.0
+
+    assert abs(legacy_acceptance_threshold(0.1, 4, False) - 0.4) < 1e-8
+    assert abs(legacy_acceptance_threshold(0.1, 4, True) - 0.1) < 1e-8
+    assert candidate_entropy([10.0, 0.0]) < candidate_entropy([1.0, 1.0])
+    history = [
+        {"assignments": {0: 3, 1: 4}},
+        {"assignments": {0: 3, 1: 3}},
+    ]
+    assert count_track_history(history, 3) == 3
+    assert count_track_history(history, None) == 1
+    assert count_memory_observations({3: [object(), object()]}, 3) == 3
+    assert count_memory_observations({}, 3) == 1
+    assert association_window_length(
+        history_instances=1, view_num=2, view_index=1,
+        first_frame_secondary_view=True,
+    ) == 2
+    assert association_window_length(
+        history_instances=2, view_num=2, view_index=0,
+    ) == 1
+    assert association_window_length(
+        history_instances=3, view_num=2, view_index=1,
+    ) == 2
 
     shared = build_state_features(
         state_dim=64,

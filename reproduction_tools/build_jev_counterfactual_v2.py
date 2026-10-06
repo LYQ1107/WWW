@@ -497,11 +497,18 @@ def build_formal_gmt_engine(
         view_num=max(1, int(view_num)),
         history_limit=max(1, int(history_limit)),
     )
-    return CachedPerceptionMutableAssociationV2(
+    configured_threshold = float(cfg.VIDEO_TEST.OVERLAP_THRESH)
+    engine = CachedPerceptionMutableAssociationV2(
         association_fn=adapter,
-        acceptance_threshold=float(cfg.VIDEO_TEST.OVERLAP_THRESH),
+        acceptance_threshold=configured_threshold,
+        not_mult_thresh=bool(cfg.VIDEO_TEST.NOT_MULT_THRESH),
         history_limit=max(1, int(history_limit)),
     )
+    if abs(float(engine.acceptance_threshold) - configured_threshold) > 1e-12:
+        raise AssertionError(
+            "formal replay threshold diverged from cfg.VIDEO_TEST.OVERLAP_THRESH"
+        )
+    return engine
 
 
 def main() -> None:
