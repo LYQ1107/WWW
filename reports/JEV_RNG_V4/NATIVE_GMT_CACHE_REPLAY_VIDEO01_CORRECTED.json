@@ -1,0 +1,32 @@
+{
+  "schema_version": "jev_native_gmt_cache_replay_v1",
+  "status": "PASS",
+  "classification": "NATIVE_CACHE_REPLAY_PROVENANCE_NOT_CANDIDATE_PARITY",
+  "created_utc": "2026-10-06T18:20:32Z",
+  "video_id": 1,
+  "frame_count": 932,
+  "trace_lines": 8995,
+  "question_counts": {
+    "MATCH_DECISION": 4524,
+    "MEMORY_DECISION": 4297,
+    "REACTIVATION_DECISION": 174
+  },
+  "reactivation_event_count": 174,
+  "first_reactivation_frame": 214,
+  "last_reactivation_frame": 930,
+  "code_commit": "7f641d5",
+  "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+  "checkpoint_sha256": "sha256:cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+  "perception_cache": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train",
+  "perception_cache_index_sha256": "sha256:48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+  "native_trace": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/reactivation_native_video1_canonical_v3/native_off_trace.jsonl",
+  "native_trace_sha256": "sha256:cb340485ecf348d2a63cacf69bcf9d3c3fd78a949a7d1cb8f5a9738d5c5a5e1b",
+  "working_directory": "/data1/liuyeqiang/WWW",
+  "evaluator_exit_code": 0,
+  "cache_replay_mode": "read_only",
+  "notes": [
+    "The replay restores pred_classes from frozen cache proposal_metadata and therefore preserves the native evaluator output schema.",
+    "This report proves native trace generation completed against the canonical cache; it does not claim native-vs-mutable reactivation candidate parity.",
+    "The separate REACTIVATION_CANDIDATE_PARITY gate remains pending until corrected current-head video1 records complete."
+  ]
+}
