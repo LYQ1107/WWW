@@ -1,0 +1,36 @@
+{
+  "MATCH_dim": 64,
+  "MATCH_residual_adapter": "zero initialized, preserves copied B2 core before fitting",
+  "MEMORY_fields": [
+    "detector_confidence",
+    "reid_consistency",
+    "prototype_distance",
+    "log_track_maturity",
+    "views_fraction",
+    "recent_feature_variance",
+    "log_track_age",
+    "quality_rank"
+  ],
+  "REACTIVATION_fields": [
+    "log_time_since_last_seen",
+    "log_stale_age",
+    "log_memory_count",
+    "memory_quality",
+    "log_candidate_count",
+    "top1_score",
+    "top2_score",
+    "top1_top2_margin",
+    "candidate_entropy",
+    "cross_camera_consistency",
+    "log_track_lifetime",
+    "last_reliable_quality",
+    "assigned_candidate_score"
+  ],
+  "absolute_frame_or_native_virtual_frame_inputs": false,
+  "core": "existing128-hidden shared JEV state encoder, question/action embeddings and legal-masked semantic action scorer",
+  "reason": "Structured MATCH claim failed; no unified checkpoint trained",
+  "status": "IMPLEMENTED_INPUT_CONTRACT_CHECKED_NOT_TRAINED",
+  "trainable_parameters": 39712,
+  "unified_training_eligible": false,
+  "what_did_we_learn": "Typed state semantics fit below50K parameters without replacing the frozen positive anchor or enlarging the reasoning core."
+}

@@ -1,0 +1,27 @@
+{
+  "status": "PREREGISTERED_BEFORE_LIFECYCLE_RUNS",
+  "videos": {
+    "train": 24,
+    "validation": 23
+  },
+  "scope": "bounded supervision proof after structured MATCH claim FAIL; no unified fitting",
+  "candidate_selection": "per video first8 identities by actual first stale-bank READ, choose last online WRITE before that READ; plus2 late writes for identities never read. Enriched read-eligible diagnostic, not an unbiased tie prevalence estimate. No GT in sampling.",
+  "read_definition": "identity outside active association window, present in stale bank, included in actual GMT reactivation score computation",
+  "future_policy": "frozen B2 MATCH, instantaneous GMT MEMORY and REACT except current WRITE/SKIP intervention; every future state and proposal rebuilt",
+  "event_horizon": "each branch until first actual identity-bank READ +16 frames, or sequence end; compare common window from earliest branch READ to +8/+16; branch missing READ is explicitly censored",
+  "unread_both_branches_sample_weight": 0,
+  "GT_unmatched_candidate_weight": 0,
+  "utility": "correct_duration - wrong_duration -0.5*switches -0.25*new_IDs -0.5*duplicate_collisions - identity_contamination; record rank shifts and recovery latency separately",
+  "memory_baselines": {
+    "M0": "GMT latest10 raw-vector mean, always-write",
+    "M1": "detector confidence>=0.6 write",
+    "M2": "latest10 bounded gallery with native reverse-order mean; should exactly equal M0 bank representation",
+    "M3": "fixed EMA, old weight0.9",
+    "M4": "confidence adaptive EMA, trust=clip((confidence-0.4)/0.6,0,1), old weight0.9+0.1*(1-trust)",
+    "M5": "QDTrack-style momentum memo, new weight0.8",
+    "M6": "learned JEV only eligible after informative labels; no value claim without beating M0-M5"
+  },
+  "what_did_we_learn": "pending observed READ-triggered counterfactual outcomes",
+  "official_test_read": false,
+  "full24_authorized": false
+}

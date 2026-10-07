@@ -21,7 +21,7 @@ def archive(relative):
         rel = path.relative_to(source)
         # TRAIN GT copies and formatter intermediates are reproducible from
         # the declared dataset; retain evaluator outputs and actual raw runs.
-        if rel.parts[0] in {'eval_dataset', 'prepared'} or path.suffix == '.npy':
+        if any(part in {'eval_dataset', 'prepared', 'snapshots'} for part in rel.parts) or path.suffix == '.npy':
             continue
         dest = target / rel
         if path.suffix in {'.jsonl', '.json'} and path.stat().st_size > 512 * 1024:

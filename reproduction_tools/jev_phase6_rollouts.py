@@ -5,6 +5,7 @@ entire mutable state, including Python trajectory RNG, before the event key.
 Every future decision is recomputed; no frozen OFF action map is replayed.
 """
 from collections import Counter
+import copy
 import json
 import os
 from pathlib import Path
@@ -14,6 +15,21 @@ from jev_phase6_common import ROOT, OUT, B2, load_controller, protect_anchor, ne
 
 class EndEventHorizon(Exception):
     pass
+
+
+class EventHorizonKeys(list):
+    def __init__(self, keys, lab):
+        super().__init__(keys); self.lab=lab
+
+    def __getitem__(self, item):
+        value=super().__getitem__(item)
+        if isinstance(item,slice) and item.start==1:
+            def continuation():
+                for key in value:
+                    if self.lab.stop_requested: break
+                    yield key
+            return continuation()
+        return value
 
 
 class NativeReplayLab:
@@ -36,6 +52,9 @@ class NativeReplayLab:
         self.cache = self.kwargs['FrozenPerceptionCache'](pilot.CACHE)
         self.keys, self.seed_key, self.first_counts = pilot.ordered_replay_keys(self.cache, video, 2)
         self.seed_state, self.seed_payload = pilot.seed_production_state(self.cache,self.kwargs['MutableGMTState'],self.seed_key)
+        self.metadata={}
+        self.update_metadata(self.seed_payload,self.seed_state,{r:r+1 for r in range(len(self.seed_payload['pred_boxes']))},{})
+        self.seed_metadata=copy.deepcopy(self.metadata)
         _, self.subset, self.lookup, _, _ = pilot.load_inputs()
         self.controller = load_controller(B2, 'cpu')
         self.kwargs.update(build_formal_gmt_engine=lambda **kw:self.engine,
@@ -46,6 +65,7 @@ class NativeReplayLab:
         self.original_append = pilot.append_predictions
         self.current = {}; self.prefix = None; self.decision_rows = []
         self.before_step = None; self.after_step = None; self.intervention = None
+        self.stop_requested=False; self.steps_completed=0
         self.engine.propose = self.propose
         self.engine.step = self.step
         pilot.choose = self.choose
@@ -54,6 +74,9 @@ class NativeReplayLab:
         if not state.reactivation_mode:
             self.current = payload; self.prefix = state
             self.decision_rows = []
+            for track,m in self.metadata.items():
+                if track not in state.active_ids:m.setdefault('stale_since',int(payload['frame']))
+                else:m.pop('stale_since',None)
         return self.original_propose(payload, state, **kwargs)
 
     def choose(self, policy, feature, question, legal, off_action, context=None):
@@ -73,15 +96,30 @@ class NativeReplayLab:
         if self.before_step is not None:
             self.before_step(key,payload,state,kwargs,self.decision_rows)
         result = self.original_step(payload,state,**kwargs)
+        self.steps_completed+=1
+        self.update_metadata(payload,state,result['committed_track_ids'],kwargs.get('memory_actions',{}))
         if self.after_step is not None:
-            self.after_step(key,payload,state,result,kwargs,self.decision_rows)
+            try:self.after_step(key,payload,state,result,kwargs,self.decision_rows)
+            except EndEventHorizon:self.stop_requested=True
         return result
 
+    def update_metadata(self,payload,state,committed,memory_actions):
+        for row,track in committed.items():
+            score=float(payload['detection_scores'][row]);frame=int(payload['frame']);view=int(payload['view'])
+            m=self.metadata.setdefault(int(track),{'first_seen':frame,'last_seen':frame,'views':[],
+                'last_confidence':score,'recent_confidences':[],'memory_quality':[]})
+            m.update(last_seen=frame,last_confidence=score)
+            m['views']=sorted(set(m['views'])|{view})
+            m['recent_confidences']=(m['recent_confidences']+[score])[-10:]
+            if memory_actions.get(row)=='WRITE_MEMORY':m['memory_quality']=(m['memory_quality']+[score])[-10:]
+
     def run(self, output, *, prefix=None, start_key=None, end_frame=None,
-            intervention=None, before_step=None, after_step=None):
+            intervention=None, before_step=None, after_step=None, metadata=None):
         pilot = self.pilot
         output = new_output(output); pilot.PILOT = output
         self.intervention = intervention; self.before_step = before_step; self.after_step = after_step
+        self.stop_requested=False; self.steps_completed=0
+        self.metadata=copy.deepcopy(self.seed_metadata if prefix is None else metadata or {})
         if prefix is None:
             keys = self.keys
             pilot.seed_production_state = lambda cache,cls,key:(self.seed_state.clone(),self.seed_payload)
@@ -100,10 +138,12 @@ class NativeReplayLab:
                 if not skipped: skipped=True; return
                 self.original_append(predictions,payload,image,committed)
             pilot.append_predictions = append
+        keys=EventHorizonKeys(keys,self)
         pilot.ordered_replay_keys = lambda cache,video_id,view_num:(keys,self.seed_key,self.first_counts)
         try:
             result = pilot.run_method('jev',B2,image_lookup=self.lookup,by_key={},records={},
                 feature_source_mode='runtime',parity_report={},device=self.device,**self.kwargs)
+            result.update(payloads=self.steps_completed+(1 if prefix is None else 0),event_horizon_stop=self.stop_requested)
             save(output/'result.json',result)
             return result
         finally:

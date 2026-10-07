@@ -1,0 +1,20 @@
+{
+  "status": "PREREGISTERED_BEFORE_RUN",
+  "videos": {
+    "train": 24,
+    "validation": 23
+  },
+  "sample_caps": {
+    "24": 32,
+    "23": 16
+  },
+  "selection": "uniform reservoir across all native B2 unmatched+assigned stale candidate events, seed20261008+video; no GT filtering or outcome selection",
+  "coordinate_contract": "cache0_annotation1; exact annotation image IDs; one-to-one IoU>=0.5 only offline",
+  "future_policy": "B2 MATCH, GMT MEMORY/REACT except current REACTIVATE_OLD vs START_NEW intervention",
+  "horizon": "identity confirmed for8 distinct future frames without losing its committed ID, or ID leaves active window again, or32 frames; retain corrected/wrong duration, switches, false recovery, newID fragmentation and latency",
+  "features": "13 relative online fields; assigned candidate score added because constrained Hungarian proposal need not equal row top1; absolute and virtual frame IDs excluded",
+  "stale_action_expansion": "diagnose assigned/top1 wrong and alternate correct using offline prefix IDs, require>=10% of assessable events and at least5 events before introducing optional third-action experiment",
+  "what_did_we_learn": "pending canonical coverage and isolated live-policy labels",
+  "official_test_read": false,
+  "full24_authorized": false
+}
