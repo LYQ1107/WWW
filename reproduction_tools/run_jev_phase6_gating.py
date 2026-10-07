@@ -234,10 +234,11 @@ def aggregate():
     equivalent=all(abs(results[a]['metrics'][m]-results[b]['metrics'][m])<=threshold for a,b in (('G5','G3'),('G3','G2'),('G5','G2')) for m in primary)
     comparisons={f'{a}_vs_{b}':{m:results[a]['metrics'][m]-results[b]['metrics'][m] for m in results[a]['metrics']} for a,b in (('G5','G0'),('G5','G2'),('G5','G3'),('G3','G2'),('G5','G4a'),('G5','G4b'))}
     passed=exceeds('G5','G3') and exceeds('G3','G2') and exceeds('G5','G4a') and exceeds('G5','G4b')
+    contradicted = not exceeds('G5','G3') and not exceeds('G5','G4a') and not exceeds('G5','G4b')
     report={'status':'COMPLETE','conditions':results,'deltas':comparisons,'material_effect_pp':threshold,
-            'STRUCTURED_MATCH_CLAIM':'PASS' if passed else 'NOT_ESTABLISHED','first_stop_condition_triggered':equivalent,
+            'STRUCTURED_MATCH_CLAIM':'PASS' if passed else 'FAIL' if contradicted else 'NOT_ESTABLISHED','first_stop_condition_triggered':equivalent,
             'unified_training_eligible_from_match':passed,'binary_dynamic_three_action_descriptively_equivalent':equivalent,
-            'what_did_we_learn':'inspect explicit metrics, frozen replacements and event evidence; action count alone does not establish structured novelty',
+            'what_did_we_learn':('Structured MATCH necessity is contradicted on the development diagnostic: binary JEV and the one-score scalar gate exceed B2, and neither frozen REASSOCIATE replacement materially hurts. The dynamic gate is worse; its failure does not rescue the three-action claim.' if contradicted else 'Use the preregistered primary metric contrasts and event evidence; action count alone does not establish structured novelty.'),
             'claim_scope':'single seed, reused TRAIN development video01; no heldout/generalization claim','official_test_read':False,'full24_authorized':False}
     save(REPORTS/'FANCY_GATING_AUDIT.json',report)
     print(json.dumps({c:r['metrics'] for c,r in results.items()}))
