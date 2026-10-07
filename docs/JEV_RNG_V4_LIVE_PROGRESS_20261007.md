@@ -1,267 +1,135 @@
-# JEV/GMT research live progress report
+# JEV RNG v4 live progress — corrected video01 gate first
 
-**Snapshot time:** `2026-10-07T01:51:56Z`  
-**Repository:** `LYQ1107/WWW`  
-**Branch:** `jev/counterfactual-rng-isolation-v4-20261006`  
-**Snapshot commit before this report:** `378394b`  
-**Classification:** live progress snapshot; **not a final research result**
+**Latest authoritative refresh:** `2026-10-07T02:05:01Z`
+**Current decision:** `IN_PROGRESS / NO_FINAL_RESEARCH_CLAIM_YET`
 
-This report records the state that was actually observed on the host. It
-deliberately separates completed screening evidence from the still-pending
-formal tracking claim.
+## Live status
 
-## Latest live refresh
-
-The following refresh was observed at `2026-10-07T01:57:43Z` and supersedes
-the older queue table below for live process state:
-
-- Corrected `video01` builder PID `8251` is still running. Its final
-  `video01_records.jsonl` and manifest do not yet exist.
-- Full H8 remains `RUNNING`: all 12 authorized workers have fresh heartbeats;
-  there are `12` running videos, `12` pending videos, and `0` complete shard
-  manifests.
-- The currently visible temporary Full H8 JSONL prefix is `20,006` lines out
-  of `1,112,173` source decision units. These are append-only temporary files,
-  not finalized records and not usable for formal training or evaluation.
-- No OOM or worker failure was observed. The corrected `video01` builder and
-  Full H8 workers were not stopped or migrated.
-
-This refresh changes no scientific conclusion: the authoritative status is
-still `IN_PROGRESS / NO_FINAL_RESEARCH_CLAIM_YET`.
-
-## Executive summary
-
-### Completed
-
-1. GMT Stage1 and Stage2 checkpoints exist and were verified as resumable
-   checkpoint files.
-2. The canonical GMT OFF baseline is frozen and will be reused; the full OFF
-   baseline is not being rerun.
-3. The corrected-v4 RNG-isolation, reactivation-semantics, runtime-feature,
-   stress-test, and current-head regression artifacts have been produced.
-4. A current-head formal video07 single-worker versus three-chunk equivalence
-   gate passed exactly for all `3337` semantic records. This authorizes the
-   *method* of deterministic chunking for the future canonical H8 build.
-5. Learnable Threshold, Generic MLP, and Full JEV each completed one offline
-   screening training run on the corrected video06/video07 compact dataset.
-
-### Still incomplete
-
-- The corrected video01 artifact and its provenance/parity/stability gates are
-  still running or pending.
-- No corrected-v4 closed-loop GMT OFF / Threshold / MLP / JEV tracking result
-  has been produced yet.
-- Full H8 is still generating; no one of the 24 official shard manifests has
-  been published at this snapshot.
-- Full-H8 audited finalization, compact dataset, final sequence-disjoint
-  training, Oracle comparison, official tracking evaluation, delta table, and
-  final Go/No-Go report are not complete.
-
-## Frozen inputs and checkpoints
-
-| Item | Status | Evidence |
+| Work item | Current state | Authority |
 |---|---|---|
-| GMT Stage1 | Complete and verified | `outputs/stage1_single_gpu/model_16000.pth` |
-| GMT Stage1 SHA256 | `143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e` | checkpoint audit |
-| GMT Stage2 | Complete and verified | `outputs/stage2_single_gpu/model_20000.pth` |
-| GMT Stage2 SHA256 | `cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8` | checkpoint audit |
-| Training seed for first round | `20261003` | fixed seed policy |
-| Formal H8 trajectory RNG master seed | `20261006` | partition and manifest provenance |
-| H8 horizon | `8` | scheduler lock and record contract |
+| corrected video01 builder | **RUNNING**, PID `8251`; do not stop/migrate/restart | runtime process check |
+| video01 aftercare | waiting/running, PIDs `26358`, `26359`, `26361` | runtime process check |
+| Full H8 original scheduler | **GRACEFULLY PAUSED** | queue state |
+| Full H8 slot2/slot3 supervisors and workers | **GRACEFULLY PAUSED** | queue state/process check |
+| Full H8 canonical authority | **FALSE** | source-commit audit |
+| corrected video06/video07 three-way training | complete; preserve report; no retraining | existing report |
 
-The checkpoint files are not being overwritten by the current H8 data build.
+The Full H8 run is not “running in the background” anymore. It is a preserved
+speculative build and must not be resumed from the current queue.
 
-## Frozen GMT OFF baseline
+## What was stopped and what was not
 
-These values are frozen from the canonical `model_20000.pth` and are reused as
-the baseline row. A complete VISION_test OFF baseline is not being rerun.
+The following Full H8 process groups received graceful `SIGTERM`; no `kill -9`
+was used:
 
-| Metric | Frozen GMT OFF |
-|---|---:|
-| HOTA | 67.442 |
-| DetA | 66.278 |
-| AssA | 68.992 |
-| IDF1 | 82.239 |
-| MOTA | 80.942 |
-| IDSW | 3092 |
-| Frag | 8004 |
-| CVIDF1 | 79.0248 |
-| CVMA | 80.9276 |
+- original scheduler PID `19950`;
+- original workers `19972`, `19992`, `20007`, `13063`;
+- slot2 workers `40330`, `40345`, `40354`, `40364`;
+- slot3 workers `7418`, `7425`, `7439`, `7453`;
+- Full H8 official/authorized waiters `35636`, `35638`, `35640`, `36327`,
+  `36329`, `36332`.
 
-These are frozen reference values, not a new measurement from the current
-partial build.
+All selected Full H8 PIDs exited after the graceful pause. Corrected video01
+PID `8251` and its aftercare processes were checked separately and remained
+alive.
 
-## Correctness and implementation gates already passed
+## Preserved Full H8 runtime evidence
 
-| Gate | Result | Scope |
-|---|---|---|
-| Corrected video06 provenance | PASS | 5162 records |
-| Corrected video07 provenance | PASS | 3334 records |
-| video06 runtime feature parity | PASS | 3 repetitions, no missing records, no OFF-action mismatch |
-| video07 runtime feature parity | PASS | 3 repetitions, no missing records, no OFF-action mismatch |
-| Numerical envelope | PASS for the locked gate | absolute `2e-5`; relative `4 * eps32` for explicitly scale-sensitive features |
-| Formal video07 chunk equivalence | PASS | 3337/3337 semantic keys, zero missing/extra/mismatched records, identical canonical SHA and RNG provenance |
-| JEV contract stress suite | PASS | legal masks, action permutation, threshold boundary, no future-GT runtime import, state sensitivity |
-| CPU regression suite | PASS | `6 passed`, one existing Pillow deprecation warning |
+Queue:
+`/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head/queue_state.json`
 
-The formal chunk gate is a correctness gate for the chunking implementation;
-it is not evidence that the entire 24-video dataset is already correct.
-
-Primary evidence files:
-
-- `reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json`
-- `reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_VIDEO06_CURRENT_HEAD.json`
-- `reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_VIDEO07_CURRENT_HEAD_TOL2E5.json`
-- `reports/JEV_RNG_V4/JEV_STRESS_CONTRACT_20261007.json`
-- `reports/JEV_RNG_V4/CURRENT_HEAD_REGRESSION_TESTS_20261006.json`
-
-## First three-model screening experiment
-
-This experiment is complete only as an **offline screening run**. It used:
-
-- corrected video06/video07 data;
-- `8501` records;
-- sequence-disjoint policy split;
-- one seed, `20261003`;
-- 20 epochs, batch size 128, AdamW, learning rate `0.001`;
-- identical state, legal-action masks, targets, sample weights, optimizer and
-  learning-rate settings for all three methods.
-
-| Method | Val NLL | Best-action accuracy | Brier | ECE | Validation utility |
-|---|---:|---:|---:|---:|---:|
-| Learnable Threshold | 0.895639 | 0.916925 | 0.009966 | 0.479910 | 36.624177 |
-| Generic MLP | 0.896707 | 0.704880 | 0.010381 | 0.284270 | 36.467661 |
-| Full JEV | 0.894535 | 0.999806 | 0.008881 | 0.572758 | 36.644655 |
-
-The majority-action reference has accuracy `0.999806` and validation utility
-`36.644655`, exactly matching Full JEV's utility. Full JEV is therefore not
-allowed to be described as a meaningful learned improvement at this stage.
-Its apparent perfect accuracy is dominated by the same action distribution
-as the majority reference. Multi-seed robustness was intentionally deferred
-under the current first-round seed policy.
-
-Evidence:
-`reports/JEV_RNG_V4/CORRECTED_V4_SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json`.
-
-## Live Full H8 data build
-
-### Why it was started before video01 finished
-
-The current Full H8 scheduler was authorized after the current-head formal
-video07 single-worker/three-chunk equivalence gate passed. That gate had:
-
-- `3337/3337` exact semantic records;
-- zero `only_single`, `only_chunked`, or record mismatches;
-- identical canonical SHA;
-- exact checkpoint, trace, cache, source-commit, state-schema, utility, and
-  trajectory-RNG provenance.
-
-This was a wall-clock overlap decision: the long 24-video data build was
-started while the independent corrected video01 gate continued. It does **not**
-mean video01 passed, and it does **not** promote the partial H8 output to a
-final dataset. The launch record explicitly classifies the run as
-`AUTHORIZED_CANONICAL_FULL_H8_BUILD_NOT_FINAL_RESULT`.
-
-The stricter risk boundary remains in force: no partial H8 records may be used
-for final model selection or official tracking claims until all shard manifests,
-provenance audits, compact conversion, and the required runtime gates pass.
-
-### Queue snapshot
-
-At snapshot time, the scheduler reported `RUNNING` with `1,112,173` source
-decision units. The visible line counts below are temporary JSONL prefixes,
-not official manifest record counts; workers are still appending to them.
-
-| Video | Status | Visible lines / source units | Worker |
-|---:|---|---:|---|
-| 3 | RUNNING | 657 / 70,422 | gpu4-slot2 |
-| 11 | RUNNING | 413 / 30,239 | gpu6-slot3 |
-| 12 | RUNNING | 445 / 29,104 | gpu9-slot3 |
-| 13 | RUNNING | 449 / 33,845 | gpu4-slot3 |
-| 14 | RUNNING | 695 / 64,571 | gpu6-slot2 |
-| 15 | RUNNING | 4,039 / 150,103 | gpu8 |
-| 16 | RUNNING | 2,379 / 116,801 | gpu6 |
-| 19 | RUNNING | 479 / 31,580 | gpu8-slot3 |
-| 20 | RUNNING | 671 / 48,083 | gpu8-slot2 |
-| 22 | RUNNING | 624 / 41,633 | gpu9-slot2 |
-| 23 | RUNNING | 4,022 / 180,321 | gpu4 |
-| 24 | RUNNING | 3,892 / 139,851 | gpu9 |
-| **Total visible prefix** |  | **18,765 / 1,112,173** |  |
-
-Pending videos at this snapshot are `1, 2, 4, 5, 6, 7, 8, 9, 10, 17, 18,
-21`. No video has a formal `COMPLETE` manifest yet.
-
-Resource policy:
-
-- active Full H8 workers use only the authorized safe GPUs 4, 6, 8 and 9;
-- reserved/foreign GPUs 2, 3, 5 and 7 are not used;
-- the corrected video01 builder is separate and has not been stopped or
-  migrated;
-- no frozen baseline or full VISION_test OFF inference is being rerun.
-
-### Partial-prefix validation already performed
-
-A read-only strict audit of the currently visible temporary records completed
-successfully for `18,377` complete JSONL lines (the queue grew while the audit
-was running). Every audited line passed:
-
-- JSON parsing and `validate_record(..., allow_future_gt=True)`;
-- H8 horizon check;
-- canonical Stage2 checkpoint SHA check;
-- state digest check;
-- legal-action and action-outcome consistency;
-- target-probability normalization;
-- finite state features;
-- video-context consistency.
-
-This is useful evidence against an immediate structural failure, but it is not
-a proof of whole-dataset semantic correctness. The final authority remains
-the complete per-shard manifest/provenance/trace audit and the independent
-video01 runtime gates.
-
-## Currently running and waiting work
-
-- Corrected video01 builder: PID `8251`; output is not yet complete.
-- Original Full H8 scheduler: PID `19950`.
-- Additional supervised Full H8 slot workers: PIDs `40330`, `40345`,
-  `40354`, `40364`, `7418`, `7425`, `7439`, `7453`.
-- Corrected video01 tracking waiter: PID `19317`, fail-closed.
-- Full H8 aftercare/official-evaluation waiters are alive and consume no GPU
-  while prerequisites are missing.
-
-The waiters are deliberately fail-closed: they do not turn a missing or
-failed manifest into a usable result.
-
-## Pending gates and final order
-
-1. Finish and atomically validate corrected video01 (`8995` expected records).
-2. Run video01 provenance, MATCH/MEMORY/REACTIVATION feature parity,
-   native-vs-replay candidate parity, and repeated numerical stability.
-3. Run the corrected-v4 closed-loop GMT OFF / Threshold / Generic MLP / Full
-   JEV comparison on the held-out video01 sequence, if those gates pass.
-4. Let all 24 Full H8 shards finish; require every manifest to pass schema,
-   provenance, record-count, hash, state, RNG and duplicate checks.
-5. Run audited full-H8 finalization, compact conversion, and the fixed
-   sequence-disjoint TRAIN/VAL split.
-6. Train the three methods once with seed `20261003`, then run the authorized
-   Oracle and formal tracking evaluation using the same frozen GMT checkpoint,
-   detector/perception cache, mapping fix and evaluation protocol.
-7. Publish absolute metrics, deltas against frozen GMT OFF, failure/gate
-   status, environment details, and reproducibility hashes.
-
-## Current Go/No-Go conclusion
-
-The authoritative status remains:
+The queue now records:
 
 ```text
-status   = IN_PROGRESS
-decision = NO_FINAL_RESEARCH_CLAIM_YET
+status                    = PAUSED
+canonical_authority       = NOT_CANONICAL
+build_classification       = PRE_VIDEO01_GATE_SPECULATIVE_BUILD
+source_commit_authority    = MIXED_SOURCE_COMMIT_RISK
 ```
 
-The project has completed substantial implementation and screening evidence,
-but it has **not** completed the formal corrected-v4 tracking comparison or
-the full-H8 official evaluation. No positive JEV tracking claim is justified
-yet.
+It has `12 PAUSED` entries and `12 PENDING` entries, with zero official
+`COMPLETE` shards. The temporary JSONL files contain approximately `21,217`
+complete visible lines. They remain untouched for debugging and throughput
+analysis. Logs, queue lock, scheduler logs, resource manifest, and PID
+snapshot are also retained.
 
-Authoritative status file:
-`reports/JEV_RNG_V4/CURRENT_GO_NO_GO_20261007.json`.
+The resource manifest was last written before the pause and therefore remains
+a historical scheduling snapshot (`status=RUNNING` at its own timestamp). The
+queue pause record and the GitHub pause report supersede that stale live-status
+field; the manifest itself was not deleted or treated as canonical evidence.
+
+## Why the previous Full H8 was invalid as canonical data
+
+The build started around `2026-10-06T22:52Z` from mutable worktree
+`/data1/liuyeqiang/WWW_rng_fix_v4`. After the original launch, the following
+reactivation-semantic changes landed:
+
+- `03f1dfd98f23ae4baab53e9b994bbdcbb73122a6` — branch-local reactivation
+  semantics (`23:23Z`);
+- `68bba4b33deeaf33b9dfc6f8e99556e4bc8725e7` — video1 reactivation branch fix
+  documentation/state (`23:33Z`).
+
+The original, slot2 and slot3 worker groups were not proven to have one common
+source commit. The available prelaunch HEAD observations differ (`7594b1d`,
+`a942dd8`, `e922603`), and the workers did not record their exact startup SHA.
+Therefore the build is permanently classified as mixed-source speculative
+output, not as a canonical dataset.
+
+## Completed evidence that remains valid
+
+- Frozen GMT OFF baseline is reused; no full VISION_test OFF rerun is needed.
+- Stage1/Stage2 checkpoints and CPU regression audit remain valid.
+- Corrected video06/video07 provenance and runtime parity gates remain valid.
+- Formal video07 single-worker versus chunked equivalence remains a chunking
+  implementation result, not permission to skip video01.
+- `CORRECTED_V4_SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json` remains the existing
+  single-seed screening report. Its corrected ECE/Oracle aggregation result is
+  preserved; do not retrain those three models merely because Full H8 was
+  paused.
+
+## Current gate order
+
+```text
+video01 builder COMPLETE
+  ↓
+video01 provenance
+  ↓
+MATCH / MEMORY / REACTIVATION runtime feature parity
+  ↓
+reactivation candidate parity
+  ↓
+numerical stability
+  ↓
+GMT OFF / corrected Threshold / corrected MLP / corrected JEV closed-loop
+  ↓
+GO / NO-GO
+  ↓ only GO
+freeze exact commit and rebuild Full H8
+```
+
+The consolidated file
+`reports/JEV_RNG_V4/VIDEO01_CORRECTED_HARD_GATES.json` is currently
+`PENDING` with `FULL_H8_AUTHORIZED=false`. It must not be manually changed to
+PASS: the updater will derive it from the actual manifest, parity,
+candidate, stability, and closed-loop reports.
+
+## Future Full H8 safety contract
+
+On a GO decision, set one exact SHA and create:
+
+```text
+/data1/liuyeqiang/WWW_h8_frozen_<SHA>
+```
+
+The updated scheduler and worker enforce:
+
+- exact frozen worktree path and `git rev-parse HEAD` equality;
+- queue binding to `canonical_h8_commit` and `source_worktree`;
+- scheduler recheck before every new worker launch;
+- worker manifests containing `source_commit`, `transformer_sha256`,
+  `counterfactual_engine_sha256`, and `adapter_sha256`;
+- authorization requiring every named corrected-video01 gate in addition to
+  formal chunk equivalence.
+
+Until then, the preserved Full H8 `.tmp` records are not training data and the
+project has no final JEV tracking claim.

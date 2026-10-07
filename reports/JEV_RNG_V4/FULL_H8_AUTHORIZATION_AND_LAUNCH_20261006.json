@@ -1,8 +1,14 @@
 {
   "schema_version": "jev_full_h8_authorization_launch_v1",
-  "status": "RUNNING",
+  "status": "PAUSED",
   "created_utc": "2026-10-06T22:52:40Z",
-  "classification": "AUTHORIZED_CANONICAL_FULL_H8_BUILD_NOT_FINAL_RESULT",
+  "classification": "PRE_VIDEO01_GATE_SPECULATIVE_BUILD_NOT_CANONICAL",
+  "canonical_authority": "NOT_CANONICAL",
+  "FULL_H8_SPECULATIVE_BUILD_PAUSED": true,
+  "CURRENT_FULL_H8_CANONICAL": false,
+  "pause_reason": "premature authorization before corrected video01 runtime gate + source-commit mixing risk",
+  "source_commit_authority": "MIXED_SOURCE_COMMIT_RISK",
+  "pause_report": "reports/JEV_RNG_V4/PRE_VIDEO01_GATE_SPECULATIVE_H8_PAUSE_20261007.json",
   "formal_gate": {
     "report": "reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json",
     "status": "PASS",
@@ -38,7 +44,7 @@
     "runtime_root": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head",
     "queue": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head/queue_state.json",
     "output_root": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head/formal_h8_full",
-    "status_at_capture": "RUNNING",
+    "status_at_capture": "PAUSED_NOT_CANONICAL",
     "active_workers": [
       {"video_id": 15, "worker": "gpu8", "pid": 19992, "main_decisions": 150103},
       {"video_id": 23, "worker": "gpu4", "pid": 19972, "main_decisions": 180321},

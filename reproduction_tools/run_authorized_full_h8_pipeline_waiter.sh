@@ -7,7 +7,20 @@
 
 set -u
 
-REPO=/data1/liuyeqiang/WWW_rng_fix_v4
+# A future canonical build must be launched from an immutable worktree, never
+# from the continuously changing development checkout.  The exact SHA is
+# supplied by the GO decision after the corrected video01 gate.
+CANONICAL_H8_COMMIT=${CANONICAL_H8_COMMIT:?set CANONICAL_H8_COMMIT to the exact frozen source SHA}
+REPO=${H8_REPO_ROOT:-/data1/liuyeqiang/WWW_h8_frozen_${CANONICAL_H8_COMMIT}}
+EXPECTED_REPO=/data1/liuyeqiang/WWW_h8_frozen_${CANONICAL_H8_COMMIT}
+if [ "$(readlink -f "$REPO")" != "$(readlink -f "$EXPECTED_REPO")" ]; then
+    echo "frozen_worktree_mismatch repo=$REPO expected=$EXPECTED_REPO"
+    exit 2
+fi
+if [ "$(git -C "$REPO" rev-parse HEAD 2>/dev/null || true)" != "$CANONICAL_H8_COMMIT" ]; then
+    echo "frozen_worktree_commit_mismatch repo=$REPO expected=$CANONICAL_H8_COMMIT"
+    exit 2
+fi
 RUNTIME=${FULL_H8_RUNTIME_ROOT:-/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head}
 PYTHON=/home/liuyeqiang/anaconda3/envs/GMT/bin/python
 # The 3-video small_h8_partition_fixed is only the formal gate fixture. The
@@ -15,6 +28,7 @@ PYTHON=/home/liuyeqiang/anaconda3/envs/GMT/bin/python
 PARTITION_SOURCE=/home/liuyeqiang/WWW_jev_full_h8_runtime/partition
 PARTITION=$RUNTIME/partition
 FORMAL=$REPO/reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json
+VIDEO01_GATES=$REPO/reports/JEV_RNG_V4/VIDEO01_CORRECTED_HARD_GATES.json
 QUEUE=$RUNTIME/queue_state.json
 OUTPUT_ROOT=$RUNTIME/formal_h8_full
 LOG_ROOT=$RUNTIME/scheduler_logs
@@ -59,8 +73,8 @@ while true; do
             set +e
             PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2" \
                 "$PYTHON" -c \
-                'from pathlib import Path; from jev_full_h8_authorization import read_formal_authorization; read_formal_authorization(Path(__import__("sys").argv[1]))' \
-                "$FORMAL"
+                'from pathlib import Path; import sys; from jev_full_h8_authorization import read_formal_authorization; read_formal_authorization(Path(sys.argv[1]), Path(sys.argv[2]))' \
+                "$FORMAL" "$VIDEO01_GATES"
             authorization_rc=$?
             set -e
             if [ "$authorization_rc" -ne 0 ]; then
@@ -103,7 +117,9 @@ PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2" \
     --queue "$QUEUE" \
     --log-root "$LOG_ROOT" \
     --horizon 8 --view-num 2 --history-limit 80 --poll-seconds 20 \
-    --formal-gate-report "$FORMAL"
+    --formal-gate-report "$FORMAL" \
+    --video01-hard-gate-report "$VIDEO01_GATES" \
+    --canonical-commit "$CANONICAL_H8_COMMIT"
 scheduler_rc=$?
 set -e
 if [ "$scheduler_rc" -ne 0 ]; then
@@ -117,6 +133,8 @@ PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2" \
     "$PYTHON" -u "$REPO/reproduction_tools/aftercare_jev_full_h8.py" \
     --runtime-root "$RUNTIME" \
     --formal-gate-report "$FORMAL" \
+    --video01-hard-gate-report "$VIDEO01_GATES" \
+    --canonical-commit "$CANONICAL_H8_COMMIT" \
     --poll-seconds 60
 aftercare_rc=$?
 set -e
@@ -131,6 +149,8 @@ PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2" \
     --runtime-root "$RUNTIME" \
     --repo-root "$REPO" \
     --formal-gate-report "$FORMAL" \
+    --video01-hard-gate-report "$VIDEO01_GATES" \
+    --canonical-commit "$CANONICAL_H8_COMMIT" \
     --output "$PUBLISHED_REPORT" \
     --markdown "$PUBLISHED_MARKDOWN"
 publication_rc=$?

@@ -13,7 +13,14 @@ import subprocess
 import time
 from typing import Any, Mapping, Optional
 
-from run_jev_full_h8_fast_worker import atomic_json, complete_artifact, modify_queue, utc_now
+from run_jev_full_h8_fast_worker import (
+    assert_frozen_source,
+    atomic_json,
+    complete_artifact,
+    modify_queue,
+    sha256,
+    utc_now,
+)
 from jev_full_h8_authorization import read_formal_authorization
 
 
@@ -111,7 +118,7 @@ def gpu_memory_used_bytes(gpu: int) -> int:
 
 
 def worker_command(args: argparse.Namespace, gpu: int, slot: int = 1) -> list[str]:
-    root = Path(__file__).resolve().parents[1]
+    root = Path(args.source_worktree).resolve()
     worker_id = f"gpu{gpu}" if int(slot) == 1 else f"gpu{gpu}-slot{int(slot)}"
     return [
         "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
@@ -141,13 +148,16 @@ def worker_command(args: argparse.Namespace, gpu: int, slot: int = 1) -> list[st
         str(args.history_limit),
         "--horizon",
         str(args.horizon),
+        "--canonical-commit",
+        str(args.canonical_commit),
     ]
 
 
-def worker_environment(gpu: int) -> dict[str, str]:
+def worker_environment(gpu: int, canonical_commit: str) -> dict[str, str]:
     root = Path(__file__).resolve().parents[1]
     env = os.environ.copy()
     env["CUDA_VISIBLE_DEVICES"] = str(gpu)
+    env["JEV_CANONICAL_H8_COMMIT"] = str(canonical_commit)
     env["PYTHONUNBUFFERED"] = "1"
     env["OMP_NUM_THREADS"] = "1"
     env["MKL_NUM_THREADS"] = "1"
@@ -172,6 +182,10 @@ def init_queue(args: argparse.Namespace, manifest: Mapping[str, Any]) -> None:
             (args.partition_root.resolve() / "partition_manifest.json").read_bytes()
         ).hexdigest():
             raise RuntimeError("existing queue belongs to a different partition manifest")
+        if state.get("canonical_h8_commit") != args.canonical_commit:
+            raise RuntimeError("existing queue is not bound to --canonical-commit")
+        if state.get("source_worktree") != str(args.source_worktree):
+            raise RuntimeError("existing queue is not bound to the frozen source worktree")
         return
     videos = {}
     for video_id, item in sorted(manifest["videos"].items(), key=lambda pair: int(pair[0])):
@@ -207,6 +221,8 @@ def init_queue(args: argparse.Namespace, manifest: Mapping[str, Any]) -> None:
         "updated_utc": utc_now(),
         "partition_root": str(args.partition_root.resolve()),
         "partition_manifest_sha256": "sha256:" + partition_hash,
+        "canonical_h8_commit": args.canonical_commit,
+        "source_worktree": str(args.source_worktree),
         "output_root": str(args.output_root.resolve()),
         "checkpoint": str(args.checkpoint.resolve()),
         "horizon": int(args.horizon),
@@ -319,6 +335,12 @@ def write_resource_manifest(
         "partition_root": str(args.partition_root.resolve()),
         "queue": str(args.queue.resolve()),
         "output_root": str(args.output_root.resolve()),
+        "canonical_h8_commit": args.canonical_commit,
+        "source_worktree": str(args.source_worktree),
+        "source_commit": args.canonical_commit,
+        "transformer_sha256": args.provenance_hashes["transformer_sha256"],
+        "counterfactual_engine_sha256": args.provenance_hashes["counterfactual_engine_sha256"],
+        "adapter_sha256": args.provenance_hashes["adapter_sha256"],
         "safe_gpus": list(SAFE_GPUS),
         "deferred_gpu": DEFERRED_GPU,
         "foreign_gpus_never_used": list(FOREIGN_GPUS),
@@ -370,6 +392,17 @@ def main() -> None:
         default=1,
         help="maximum supervised formal replay workers per permitted GPU",
     )
+    parser.add_argument(
+        "--canonical-commit",
+        required=True,
+        help="full SHA pinned to /data1/liuyeqiang/WWW_h8_frozen_<SHA>",
+    )
+    parser.add_argument(
+        "--video01-hard-gate-report",
+        type=Path,
+        default=root / "reports/JEV_RNG_V4/VIDEO01_CORRECTED_HARD_GATES.json",
+        help="consolidated corrected-video01 hard gates required before H8 launch",
+    )
     args = parser.parse_args()
     if any(gpu in FOREIGN_GPUS for gpu in SAFE_GPUS):
         raise AssertionError("safe GPU list overlaps explicitly reserved GPU")
@@ -377,8 +410,21 @@ def main() -> None:
         raise ValueError("full H=8 scheduler is locked to horizon 8")
     if args.slots_per_gpu < 1:
         raise ValueError("slots-per-gpu must be positive")
+    assert_frozen_source(root, args.canonical_commit)
+    args.source_worktree = root.resolve()
+    args.provenance_hashes = {
+        "transformer_sha256": "sha256:" + sha256(
+            root / "gtr/modeling/roi_heads/transformer.py"
+        ),
+        "counterfactual_engine_sha256": "sha256:" + sha256(
+            root / "reproduction_tools/jev_counterfactual_v2.py"
+        ),
+        "adapter_sha256": "sha256:" + sha256(
+            root / "reproduction_tools/jev_gmt_association_adapter.py"
+        ),
+    }
     formal_gate_report = args.formal_gate_report.resolve()
-    read_formal_authorization(formal_gate_report)
+    read_formal_authorization(formal_gate_report, args.video01_hard_gate_report.resolve())
     args.output_root.resolve().mkdir(parents=True, exist_ok=True)
     args.log_root.resolve().mkdir(parents=True, exist_ok=True)
     manifest = json.loads(
@@ -436,6 +482,9 @@ def main() -> None:
         return worker_ids
 
     def launch(gpu: int, slot: int, known_pids: set[int]) -> bool:
+        # A mutable development checkout must never be allowed to seed a new
+        # worker after the scheduler has started.
+        assert_frozen_source(root, args.canonical_commit)
         worker_id = f"gpu{gpu}" if int(slot) == 1 else f"gpu{gpu}-slot{int(slot)}"
         if worker_id in children:
             return False
@@ -484,7 +533,7 @@ def main() -> None:
         process = subprocess.Popen(
             command,
             cwd=str(root),
-            env=worker_environment(gpu),
+            env=worker_environment(gpu, args.canonical_commit),
             stdin=subprocess.DEVNULL,
             stdout=handle,
             stderr=subprocess.STDOUT,

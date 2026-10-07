@@ -10,6 +10,7 @@ import json
 import os
 from collections import OrderedDict
 from pathlib import Path
+import subprocess
 import threading
 import time
 import traceback
@@ -26,6 +27,35 @@ def sha256(path: Path) -> str:
         for block in iter(lambda: handle.read(8 * 1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def assert_frozen_source(root: Path, canonical_commit: str) -> str:
+    """Refuse to run unless this worker is from the exact frozen worktree."""
+
+    canonical = str(canonical_commit or "").strip()
+    if len(canonical) != 40 or any(char not in "0123456789abcdef" for char in canonical.lower()):
+        raise RuntimeError(f"invalid --canonical-commit: {canonical_commit!r}")
+    expected_root = Path("/data1/liuyeqiang") / f"WWW_h8_frozen_{canonical}"
+    resolved_root = root.resolve()
+    if resolved_root != expected_root.resolve():
+        raise RuntimeError(
+            "full H=8 worker must run from the fixed frozen worktree; "
+            f"expected={expected_root} actual={resolved_root}"
+        )
+    try:
+        observed = subprocess.check_output(
+            ["git", "-C", str(resolved_root), "rev-parse", "HEAD"],
+            text=True,
+            stderr=subprocess.STDOUT,
+        ).strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise RuntimeError(f"cannot read frozen worktree HEAD: {resolved_root}") from exc
+    if observed != canonical:
+        raise RuntimeError(
+            "full H=8 worker source commit mismatch; "
+            f"expected={canonical} observed={observed} worktree={resolved_root}"
+        )
+    return observed
 
 
 class PayloadLRU:
@@ -81,8 +111,22 @@ def complete_artifact(video_root: Path) -> bool:
     return manifest.get("status") == "COMPLETE" and int(manifest.get("records", -1)) >= 0
 
 
-def claim_next(queue_path: Path, worker_id: str) -> Optional[dict[str, Any]]:
+def claim_next(
+    queue_path: Path,
+    worker_id: str,
+    canonical_commit: str,
+    source_worktree: Path,
+) -> Optional[dict[str, Any]]:
     def update(state: dict[str, Any]):
+        if state.get("status") != "RUNNING":
+            raise RuntimeError(
+                "full H=8 worker refuses to claim from a non-running queue: "
+                f"status={state.get('status')!r}"
+            )
+        if state.get("canonical_h8_commit") != canonical_commit:
+            raise RuntimeError("queue canonical_h8_commit does not match worker pin")
+        if state.get("source_worktree") != str(source_worktree.resolve()):
+            raise RuntimeError("queue source_worktree does not match worker worktree")
         pending = [
             item
             for item in state["videos"].values()
@@ -223,6 +267,18 @@ def build_one(
         raise
     artifact_hash = sha256(records_path)
     record_count = sum(int(value) for value in stats.values())
+    transformer_sha256 = "sha256:" + sha256(
+        Path(__file__).resolve().parents[1]
+        / "gtr" / "modeling" / "roi_heads" / "transformer.py"
+    )
+    counterfactual_engine_sha256 = "sha256:" + sha256(
+        Path(__file__).resolve().parents[1]
+        / "reproduction_tools" / "jev_counterfactual_v2.py"
+    )
+    adapter_sha256 = "sha256:" + sha256(
+        Path(__file__).resolve().parents[1]
+        / "reproduction_tools" / "jev_gmt_association_adapter.py"
+    )
     report = {
         "status": "COMPLETE",
         "created_utc": utc_now(),
@@ -256,29 +312,21 @@ def build_one(
         "proposal_reused_across_legal_actions": True,
         "reassociate_reuses_score_matrix": True,
         "second_transformer_call_for_reassociate": False,
-        "trajectory_rng_transformer_sha256": "sha256:" + sha256(
-            Path(__file__).resolve().parents[1]
-            / "gtr" / "modeling" / "roi_heads" / "transformer.py"
-        ),
-        "trajectory_rng_counterfactual_engine_sha256": "sha256:" + sha256(
-            Path(__file__).resolve().parents[1]
-            / "reproduction_tools" / "jev_counterfactual_v2.py"
-        ),
-        "trajectory_rng_adapter_sha256": "sha256:" + sha256(
-            Path(__file__).resolve().parents[1]
-            / "reproduction_tools" / "jev_gmt_association_adapter.py"
-        ),
+        "trajectory_rng_transformer_sha256": transformer_sha256,
+        "trajectory_rng_counterfactual_engine_sha256": counterfactual_engine_sha256,
+        "trajectory_rng_adapter_sha256": adapter_sha256,
+        # Short canonical names are retained alongside the historical names
+        # so every scheduler/resource manifest has one unambiguous contract.
+        "transformer_sha256": transformer_sha256,
+        "counterfactual_engine_sha256": counterfactual_engine_sha256,
+        "adapter_sha256": adapter_sha256,
         "records": record_count,
         "records_by_question": stats,
         "skipped_events": int(skipped),
         "records_artifact": str(records_path),
         "records_artifact_sha256": "sha256:" + artifact_hash,
         "source_commit": source_commit_value,
-        "source_commit_capture": (
-            "explicit_env_override"
-            if os.environ.get("JEV_PROVENANCE_SOURCE_COMMIT", "").strip()
-            else "process_start"
-        ),
+        "source_commit_capture": "canonical_commit_argument_and_startup_git_rev_parse",
         "official_test_read": False,
         "sampling": False,
         "truncation": False,
@@ -304,13 +352,27 @@ def main() -> None:
     parser.add_argument("--history-limit", type=int, default=80)
     parser.add_argument("--horizon", type=int, default=8)
     parser.add_argument("--payload-cache-limit", type=int, default=512)
+    parser.add_argument(
+        "--canonical-commit",
+        required=True,
+        help="full SHA pinned to the fixed /data1/liuyeqiang/WWW_h8_frozen_<SHA> worktree",
+    )
     args = parser.parse_args()
+
+    root = Path(__file__).resolve().parents[1]
+    assert_frozen_source(root, args.canonical_commit)
+    environment_commit = os.environ.get("JEV_CANONICAL_H8_COMMIT", "").strip()
+    if environment_commit and environment_commit != args.canonical_commit:
+        raise RuntimeError(
+            "JEV_CANONICAL_H8_COMMIT disagrees with --canonical-commit: "
+            f"{environment_commit} != {args.canonical_commit}"
+        )
 
     import sys
 
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     from build_jev_counterfactual_dataset import load_gt
-    from build_jev_counterfactual_v2 import build_formal_gmt_engine, source_commit
+    from build_jev_counterfactual_v2 import build_formal_gmt_engine
     from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
 
     partition_root = args.partition_root.resolve()
@@ -333,9 +395,7 @@ def main() -> None:
     # scheduler may push documentation/results while a long build is running;
     # an explicit pin prevents the manifest from silently recording whatever
     # Git HEAD happens to exist at a later completion time.
-    source_commit_value = os.environ.get("JEV_PROVENANCE_SOURCE_COMMIT", "").strip()
-    if not source_commit_value:
-        source_commit_value = source_commit(Path(__file__).resolve().parents[1])
+    source_commit_value = args.canonical_commit
     engine = build_formal_gmt_engine(
         config_file=args.config_file.resolve(),
         checkpoint=args.checkpoint.resolve(),
@@ -345,7 +405,13 @@ def main() -> None:
     )
 
     while True:
-        task = claim_next(args.queue.resolve(), args.worker_id)
+        assert_frozen_source(root, args.canonical_commit)
+        task = claim_next(
+            args.queue.resolve(),
+            args.worker_id,
+            args.canonical_commit,
+            root,
+        )
         if task is None:
             return
         video_id = int(task["video_id"])
@@ -356,6 +422,7 @@ def main() -> None:
             status="RUNNING",
         )
         try:
+            assert_frozen_source(root, args.canonical_commit)
             with Heartbeat(args.queue.resolve(), video_id, args.worker_id):
                 report = build_one(
                     task=task,

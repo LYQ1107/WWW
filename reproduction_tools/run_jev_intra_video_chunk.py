@@ -48,7 +48,16 @@ def main() -> None:
     parser.add_argument("--view-num", type=int, default=2)
     parser.add_argument("--history-limit", type=int, default=80)
     parser.add_argument("--horizon", type=int, default=8)
+    parser.add_argument(
+        "--canonical-commit",
+        required=True,
+        help="full SHA pinned to /data1/liuyeqiang/WWW_h8_frozen_<SHA>",
+    )
     args = parser.parse_args()
+
+    from run_jev_full_h8_fast_worker import assert_frozen_source
+
+    assert_frozen_source(ROOT, args.canonical_commit)
 
     os.environ.setdefault("PYTHONPATH", ":".join((str(ROOT), str(ROOT / "reproduction_tools"), str(ROOT / "third_party/CenterNet2"))))
     import sys
@@ -64,7 +73,6 @@ def main() -> None:
         TRAJECTORY_RNG_POLICY,
         build_formal_gmt_engine,
         ordered_production_keys,
-        source_commit,
     )
     from jev_intra_video_chunking import load_state_snapshot, file_sha256
     from run_jev_full_h8_fast_worker import PayloadLRU
@@ -151,9 +159,16 @@ def main() -> None:
         raise
 
     record_count = sum(int(value) for value in stats.values())
-    provenance_source_commit = os.environ.get("JEV_PROVENANCE_SOURCE_COMMIT", "").strip()
-    if not provenance_source_commit:
-        provenance_source_commit = source_commit(ROOT)
+    provenance_source_commit = args.canonical_commit
+    transformer_sha256 = "sha256:" + sha256(
+        ROOT / "gtr/modeling/roi_heads/transformer.py"
+    )
+    counterfactual_engine_sha256 = "sha256:" + sha256(
+        ROOT / "reproduction_tools/jev_counterfactual_v2.py"
+    )
+    adapter_sha256 = "sha256:" + sha256(
+        ROOT / "reproduction_tools/jev_gmt_association_adapter.py"
+    )
     manifest = {
         "status": "COMPLETE",
         "schema_version": "jev_deterministic_intra_video_chunk_v1",
@@ -178,11 +193,10 @@ def main() -> None:
         "trajectory_rng_master_seed": TRAJECTORY_RNG_MASTER_SEED,
         "trajectory_rng_video_seed": TRAJECTORY_RNG_MASTER_SEED + video_id,
         "source_commit": provenance_source_commit,
-        "source_commit_capture": (
-            "explicit_env_override"
-            if os.environ.get("JEV_PROVENANCE_SOURCE_COMMIT", "").strip()
-            else "process_completion_fallback"
-        ),
+        "source_commit_capture": "canonical_commit_argument_and_startup_git_rev_parse",
+        "transformer_sha256": transformer_sha256,
+        "counterfactual_engine_sha256": counterfactual_engine_sha256,
+        "adapter_sha256": adapter_sha256,
         "initial_state_snapshot": str(snapshot),
         "initial_state_snapshot_sha256": file_sha256(snapshot),
         "initial_state_metadata": snapshot_metadata,

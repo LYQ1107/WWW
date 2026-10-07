@@ -20,6 +20,7 @@ PROV="$REPO/reports/JEV_RNG_V4/CURRENT_HEAD_VIDEO01_PROVENANCE.json"
 CAND="$REPO/reports/JEV_RNG_V4/REACTIVATION_CANDIDATE_PARITY_CURRENT_HEAD_VIDEO01.json"
 PARITY="$REPO/reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_VIDEO01_CURRENT_HEAD.json"
 STABILITY="$REPO/reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_STABILITY_VIDEO01_CURRENT_HEAD.json"
+HARD_GATES="$REPO/reports/JEV_RNG_V4/VIDEO01_CORRECTED_HARD_GATES.json"
 FORMAL="$REPO/reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json"
 TRAIN="${TRAINING_REPORT:-$REPO/reports/JEV_RNG_V4/CORRECTED_V4_SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json}"
 OUTROOT="${TRACKING_OUTPUT_ROOT:-$RUNTIME/current_head_video01_tracking}"
@@ -74,15 +75,25 @@ PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2" \
 RC=$?
 set -e
 
+set +e
+PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2" \
+    /home/liuyeqiang/anaconda3/envs/GMT/bin/python -u \
+    "$REPO/reproduction_tools/update_video01_hard_gates.py" \
+    --manifest "$MANIFEST" --provenance "$PROV" --parity "$PARITY" \
+    --candidate "$CAND" --stability "$STABILITY" \
+    --closed-loop "$OUTREPORT" --output "$HARD_GATES"
+HARD_GATES_RC=$?
+set -e
+
 cd "$REPO"
 while [ -e .git/index.lock ]; do
     sleep 5
 done
-git add "$OUTREPORT"
+git add "$OUTREPORT" "$HARD_GATES"
 git commit -m "Record gated corrected v4 tracking result" || true
 git push origin HEAD || {
     git pull --rebase origin jev/counterfactual-rng-isolation-v4-20261006
     git push origin HEAD
 }
-echo "tracking_exit=$RC"
+echo "tracking_exit=$RC hard_gates_exit=$HARD_GATES_RC"
 exit "$RC"

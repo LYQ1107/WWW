@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from jev_full_h8_authorization import read_formal_authorization
+from run_jev_full_h8_fast_worker import assert_frozen_source
 
 
 SEED = 20261003
@@ -52,13 +53,18 @@ def main() -> None:
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--repo-root", type=Path, required=True)
     parser.add_argument("--formal-gate-report", type=Path, required=True)
+    parser.add_argument("--video01-hard-gate-report", type=Path, required=True)
+    parser.add_argument("--canonical-commit", required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--markdown", type=Path, required=True)
     args = parser.parse_args()
 
     runtime = args.runtime_root.resolve()
     repo = args.repo_root.resolve()
-    formal = read_formal_authorization(args.formal_gate_report.resolve())
+    assert_frozen_source(repo, args.canonical_commit)
+    formal = read_formal_authorization(
+        args.formal_gate_report.resolve(), args.video01_hard_gate_report.resolve()
+    )
     partition_path = runtime / "partition" / "partition_manifest.json"
     records_path = runtime / "FULL_H8_FORMAL.records.jsonl"
     records_manifest_path = runtime / "FULL_H8_FORMAL.records.jsonl.manifest.json"

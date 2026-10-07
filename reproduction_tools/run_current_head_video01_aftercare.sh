@@ -19,6 +19,7 @@ PROVENANCE=$REPORT_ROOT/CURRENT_HEAD_VIDEO01_PROVENANCE.json
 CANDIDATE=$REPORT_ROOT/REACTIVATION_CANDIDATE_PARITY_CURRENT_HEAD_VIDEO01.json
 PARITY=$REPORT_ROOT/RUNTIME_FEATURE_PARITY_VIDEO01_CURRENT_HEAD.json
 STABILITY=$REPORT_ROOT/RUNTIME_FEATURE_PARITY_STABILITY_VIDEO01_CURRENT_HEAD.json
+HARD_GATES=$REPORT_ROOT/VIDEO01_CORRECTED_HARD_GATES.json
 LOG=$RUNTIME/formal_current_head_video01_aftercare.log
 
 export PYTHONPATH="$REPO:$REPO/reproduction_tools:$REPO/third_party/CenterNet2"
@@ -95,16 +96,25 @@ CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
 STABILITY_RC=$?
 set -e
 
+set +e
+"$PYTHON" -u "$REPO/reproduction_tools/update_video01_hard_gates.py" \
+    --manifest "$MANIFEST" --provenance "$PROVENANCE" --parity "$PARITY" \
+    --candidate "$CANDIDATE" --stability "$STABILITY" \
+    --output "$HARD_GATES"
+HARD_GATES_RC=$?
+set -e
+
 cd "$REPO"
 while [ -e .git/index.lock ]; do sleep 5; done
 git add "$PROVENANCE" "$PARITY" "$STABILITY"
 git add "$CANDIDATE"
+git add "$HARD_GATES"
 git commit -m "Record current-head video01 runtime parity" || true
 git push origin HEAD || {
     git pull --rebase origin jev/counterfactual-rng-isolation-v4-20261006
     git push origin HEAD
 }
-echo "video01_aftercare_complete=$(date -Is) validation_rc=$VALIDATION_RC parity_rc=$PARITY_RC candidate_rc=$CANDIDATE_RC stability_rc=$STABILITY_RC"
+echo "video01_aftercare_complete=$(date -Is) validation_rc=$VALIDATION_RC parity_rc=$PARITY_RC candidate_rc=$CANDIDATE_RC stability_rc=$STABILITY_RC hard_gates_rc=$HARD_GATES_RC"
 if [ "$CANDIDATE_RC" -ne 0 ] || [ "$PARITY_RC" -ne 0 ] || [ "$STABILITY_RC" -ne 0 ]; then
     exit 4
 fi

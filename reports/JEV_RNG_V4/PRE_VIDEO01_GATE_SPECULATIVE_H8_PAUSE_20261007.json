@@ -1,0 +1,119 @@
+{
+  "schema_version": "jev_pre_video01_gate_speculative_h8_pause_v1",
+  "created_utc": "2026-10-07T02:05:01.496853Z",
+  "status": "PAUSED",
+  "classification": "PRE_VIDEO01_GATE_SPECULATIVE_BUILD",
+  "canonical_authority": "NOT_CANONICAL",
+  "source_commit_authority": "MIXED_SOURCE_COMMIT_RISK",
+  "FULL_H8_SPECULATIVE_BUILD_PAUSED": true,
+  "CURRENT_FULL_H8_CANONICAL": false,
+  "reason": "premature authorization before corrected video01 runtime gate + source-commit mixing risk",
+  "launch_context": {
+    "nominal_launch_utc": "2026-10-06T22:52:40Z",
+    "mutable_worktree": "/data1/liuyeqiang/WWW_rng_fix_v4",
+    "formal_authorization_report": "reports/JEV_RNG_V4/FULL_H8_AUTHORIZATION_AND_LAUNCH_20261006.json",
+    "formal_chunk_gate_was_pass": true,
+    "video01_hard_gate_was_pass": false
+  },
+  "source_commit_audit": {
+    "source_commit_recorded_for_live_workers": false,
+    "current_worktree_head_at_pause": "06efbdd0c8f7b5a7983f11f4ff66ca53deafb430",
+    "original_scheduler_nominal_prelaunch_head": "7594b1d2ce8e44be3f7f2ef80b65ceae87d79c0e",
+    "slot2_nominal_prelaunch_head": "a942dd8d6a0ff2be1e779f86924ef09a16e2cb54",
+    "slot3_nominal_prelaunch_head": "e9226035e8c55bc1c98c364048557c5ea4e89f9b",
+    "original_workers_source_commit": "UNRECORDED",
+    "slot2_workers_source_commit": "UNRECORDED",
+    "slot3_workers_source_commit": "UNRECORDED",
+    "semantic_commits_after_original_launch": [
+      {
+        "sha": "03f1dfd98f23ae4baab53e9b994bbdcbb73122a6",
+        "subject": "Handle branch-local reactivation semantics",
+        "utc": "2026-10-06T23:23:01Z"
+      },
+      {
+        "sha": "68bba4b33deeaf33b9dfc6f8e99556e4bc8725e7",
+        "subject": "Document video1 reactivation branch fix",
+        "utc": "2026-10-06T23:33:26Z"
+      }
+    ],
+    "canonical_decision": "FALSE_UNTIL_REBUILT_FROM_ONE_FROZEN_WORKTREE"
+  },
+  "graceful_pause": {
+    "signal": "SIGTERM",
+    "kill_9_used": false,
+    "pause_utc": "2026-10-07T02:05:01.496853Z",
+    "terminated_full_h8_pids": [
+      35636,
+      35638,
+      35640,
+      36327,
+      36329,
+      36332,
+      19950,
+      19972,
+      19992,
+      20007,
+      13063,
+      40330,
+      40345,
+      40354,
+      40364,
+      7418,
+      7425,
+      7439,
+      7453
+    ],
+    "all_selected_pids_exited": true,
+    "supervisors_and_waiters_included": true
+  },
+  "corrected_video01_protection": {
+    "builder_pid": 8251,
+    "aftercare_pids": [26358, 26359, 26361],
+    "all_alive_after_pause": true,
+    "do_not_stop": true,
+    "do_not_migrate": true,
+    "do_not_restart": true
+  },
+  "runtime_preservation": {
+    "queue": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head/queue_state.json",
+    "queue_status": "PAUSED",
+    "queue_state_counts": {
+      "PAUSED": 12,
+      "PENDING": 12,
+      "COMPLETE": 0,
+      "FAILED": 0
+    },
+    "queue_classification": "PRE_VIDEO01_GATE_SPECULATIVE_BUILD",
+    "queue_canonical_authority": "NOT_CANONICAL",
+    "queue_resume_policy": "FORBIDDEN_UNTIL_VIDEO01_HARD_GATES_PASS_AND_NEW_FROZEN_WORKTREE_IS_CREATED",
+    "temporary_record_files_preserved": true,
+    "temporary_record_visible_lines": 21217,
+    "resource_manifest": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head/formal_h8_full/RESOURCE_SCHEDULING_MANIFEST.json",
+    "scheduler_logs_preserved": true,
+    "pid_snapshot_preserved": true
+  },
+  "data_policy": {
+    "temporary_h8_data_may_be_used_for": [
+      "speed profiling",
+      "debugging",
+      "source-commit-mixing investigation"
+    ],
+    "temporary_h8_data_may_not_be_used_for": [
+      "final merge",
+      "policy training",
+      "paper metrics",
+      "canonical tracking evaluation"
+    ]
+  },
+  "next_authorized_order": [
+    "corrected video01 COMPLETE",
+    "video01 provenance PASS",
+    "MATCH/MEMORY/REACTIVATION runtime parity PASS",
+    "reactivation candidate parity PASS",
+    "numerical stability PASS",
+    "GMT OFF/Threshold/MLP/JEV closed-loop",
+    "GO/NO-GO",
+    "create /data1/liuyeqiang/WWW_h8_frozen_<SHA>",
+    "restart Full H8 only from that frozen worktree"
+  ]
+}

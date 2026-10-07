@@ -21,6 +21,7 @@ import time
 from typing import Any, Mapping
 
 from jev_full_h8_authorization import read_formal_authorization
+from run_jev_full_h8_fast_worker import assert_frozen_source
 
 
 PYTHON = "/home/liuyeqiang/anaconda3/envs/GMT/bin/python"
@@ -416,13 +417,28 @@ def main() -> int:
         / "reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json",
         help="PASS report required before full-H8 postprocessing is allowed",
     )
+    parser.add_argument(
+        "--video01-hard-gate-report",
+        type=Path,
+        default=Path(__file__).resolve().parents[1]
+        / "reports/JEV_RNG_V4/VIDEO01_CORRECTED_HARD_GATES.json",
+        help="all corrected video01 gates required before full-H8 postprocessing",
+    )
+    parser.add_argument(
+        "--canonical-commit",
+        required=True,
+        help="full SHA pinned to /data1/liuyeqiang/WWW_h8_frozen_<SHA>",
+    )
     parser.add_argument("--poll-seconds", type=float, default=60.0)
     args = parser.parse_args()
+    root = Path(__file__).resolve().parents[1]
+    assert_frozen_source(root, args.canonical_commit)
     formal_gate_report = args.formal_gate_report.resolve()
-    read_formal_authorization(formal_gate_report)
+    read_formal_authorization(
+        formal_gate_report, args.video01_hard_gate_report.resolve()
+    )
     runtime = args.runtime_root.resolve()
     paths = derived_paths(runtime)
-    root = Path(__file__).resolve().parents[1]
     queue = runtime / "queue_state.json"
     partition_manifest_path = paths["partition"] / "partition_manifest.json"
     if not partition_manifest_path.is_file():

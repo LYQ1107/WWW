@@ -24,7 +24,16 @@ def main() -> None:
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--view-num", type=int, default=2)
     parser.add_argument("--history-limit", type=int, default=80)
+    parser.add_argument(
+        "--canonical-commit",
+        required=True,
+        help="full SHA pinned to /data1/liuyeqiang/WWW_h8_frozen_<SHA>",
+    )
     args = parser.parse_args()
+
+    from run_jev_full_h8_fast_worker import assert_frozen_source
+
+    assert_frozen_source(ROOT, args.canonical_commit)
 
     import sys
 
@@ -37,7 +46,6 @@ def main() -> None:
         build_formal_gmt_engine,
         event_maps,
         ordered_production_keys,
-        source_commit,
     )
     from jev_counterfactual_v2 import seed_production_state_from_payload
     from jev_intra_video_chunking import file_sha256, save_state_snapshot
@@ -47,9 +55,7 @@ def main() -> None:
     partition = json.loads(args.partition_manifest.read_text(encoding="utf-8"))
     plan = json.loads(args.chunk_plan.read_text(encoding="utf-8"))
     video_id = int(plan["video_id"])
-    provenance_source_commit = os.environ.get("JEV_PROVENANCE_SOURCE_COMMIT", "").strip()
-    if not provenance_source_commit:
-        provenance_source_commit = source_commit(ROOT)
+    provenance_source_commit = args.canonical_commit
     trace = Path(partition["trace_by_video"]) / f"video_{video_id:02d}.jsonl"
     order_index = Path(partition["trace_by_video"]) / f"video_{video_id:02d}.orders.jsonl"
     events = normalize_events(trace, order_index=order_index, minimal=True)[video_id]
@@ -122,11 +128,7 @@ def main() -> None:
         "purpose": "FUTURE_CANONICAL_H8_ONLY_NOT_ACTIVE_SMALL_GATE",
         "video_id": video_id,
         "source_commit": provenance_source_commit,
-        "source_commit_capture": (
-            "explicit_env_override"
-            if os.environ.get("JEV_PROVENANCE_SOURCE_COMMIT", "").strip()
-            else "process_completion_fallback"
-        ),
+        "source_commit_capture": "canonical_commit_argument_and_startup_git_rev_parse",
         "chunk_plan": str(args.chunk_plan.resolve()),
         "trace_sha256": file_sha256(trace),
         "order_index_sha256": file_sha256(order_index),

@@ -1,4 +1,11 @@
-"""Fail-closed authorization for the future 24-video canonical H=8 build."""
+"""Fail-closed authorization for the future 24-video canonical H=8 build.
+
+The formal chunk-equivalence report is necessary but not sufficient.  A full
+H=8 build is allowed only after the corrected held-out video01 pipeline has
+passed every runtime gate and the corrected three-way closed-loop comparison
+has completed.  This module deliberately treats a missing or stale hard-gate
+report as a refusal to authorize.
+"""
 
 from __future__ import annotations
 
@@ -8,6 +15,17 @@ from typing import Any, Mapping
 
 
 EXPECTED_VIDEO7_RECORDS = 3337
+VIDEO01_HARD_GATE_FIELDS = (
+    "VIDEO01_COMPLETE",
+    "VIDEO01_PROVENANCE",
+    "VIDEO01_RUNTIME_FEATURE_PARITY",
+    "MATCH_COVERAGE",
+    "MEMORY_COVERAGE",
+    "REACTIVATION_COVERAGE",
+    "REACTIVATION_CANDIDATE_PARITY",
+    "VIDEO01_NUMERICAL_STABILITY",
+    "CORRECTED_THREE_WAY_CLOSED_LOOP_COMPLETE",
+)
 REQUIRED_FINAL_GATE_FIELDS = (
     "raw_canonical_records_exact",
     "best_actions_exact",
@@ -20,7 +38,44 @@ REQUIRED_FINAL_GATE_FIELDS = (
 )
 
 
-def read_formal_authorization(report_path: Path) -> Mapping[str, Any]:
+def _read_json_object(path: Path, description: str) -> Mapping[str, Any]:
+    if not path.is_file():
+        raise RuntimeError(f"{description} is missing: {path}")
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise RuntimeError(f"{description} is invalid: {path}") from exc
+    if not isinstance(value, Mapping):
+        raise RuntimeError(f"{description} is not an object: {path}")
+    return value
+
+
+def read_video01_hard_gates(report_path: Path | None = None) -> Mapping[str, Any]:
+    """Require every corrected-video01 hard gate to be explicitly ``PASS``."""
+
+    if report_path is None:
+        report_path = (
+            Path(__file__).resolve().parents[1]
+            / "reports/JEV_RNG_V4/VIDEO01_CORRECTED_HARD_GATES.json"
+        )
+    report = _read_json_object(report_path.resolve(), "corrected video01 hard-gate report")
+    failures: list[str] = []
+    for field in VIDEO01_HARD_GATE_FIELDS:
+        if report.get(field) != "PASS":
+            failures.append(f"{field}={report.get(field)!r}")
+    if report.get("FULL_H8_AUTHORIZED") is not True:
+        failures.append(f"FULL_H8_AUTHORIZED={report.get('FULL_H8_AUTHORIZED')!r}")
+    if failures:
+        raise RuntimeError(
+            "corrected video01 hard gates are NOT PASS; " + "; ".join(failures)
+        )
+    return report
+
+
+def read_formal_authorization(
+    report_path: Path,
+    video01_gate_report: Path | None = None,
+) -> Mapping[str, Any]:
     """Return a formal report only when every canonicalization gate passes.
 
     This is intentionally stricter than checking ``status == PASS``.  The
@@ -29,14 +84,7 @@ def read_formal_authorization(report_path: Path) -> Mapping[str, Any]:
     """
 
     path = report_path.resolve()
-    if not path.is_file():
-        raise RuntimeError(f"formal H=8 chunk authorization report is missing: {path}")
-    try:
-        report = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, ValueError) as exc:
-        raise RuntimeError(f"formal H=8 chunk authorization report is invalid: {path}") from exc
-    if not isinstance(report, Mapping):
-        raise RuntimeError(f"formal H=8 chunk authorization report is not an object: {path}")
+    report = _read_json_object(path, "formal H=8 chunk authorization report")
 
     failures: list[str] = []
     if report.get("status") != "PASS":
@@ -70,4 +118,7 @@ def read_formal_authorization(report_path: Path) -> Mapping[str, Any]:
             "formal H=8 chunk authorization is NOT PASS; "
             + "; ".join(failures)
         )
+    # Keep this check after the formal chunk checks so callers get a precise
+    # reason for a malformed chunk report before the independent video01 gate.
+    read_video01_hard_gates(video01_gate_report)
     return report

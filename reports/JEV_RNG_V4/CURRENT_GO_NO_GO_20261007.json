@@ -1,10 +1,13 @@
 {
-  "schema_version": "jev_rng_v4_current_go_no_go_v1",
+  "schema_version": "jev_rng_v4_current_go_no_go_v2",
   "created_utc": "2026-10-07T01:02:51Z",
-  "updated_utc": "2026-10-07T01:16:35Z",
+  "updated_utc": "2026-10-07T02:05:01Z",
   "status": "IN_PROGRESS",
   "classification": "CURRENT_STATUS_NOT_FINAL_RESULT",
   "decision": "NO_FINAL_RESEARCH_CLAIM_YET",
+  "FULL_H8_SPECULATIVE_BUILD_PAUSED": true,
+  "CURRENT_FULL_H8_CANONICAL": false,
+  "pause_reason": "premature authorization before corrected video01 runtime gate + source-commit mixing risk",
   "frozen_gmt_baseline_reused": true,
   "frozen_baseline": {
     "HOTA": 67.442,
@@ -32,19 +35,15 @@
       "status": "PASS",
       "report": "reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_VIDEO06_CURRENT_HEAD.json",
       "repetitions": 3,
-      "missing_records": 0,
-      "off_action_mismatches": 0,
-      "absolute_tolerance": 2e-5,
-      "scale_sensitive_relative_tolerance": 4.76837158203125e-7
+      "absolute_tolerance": 2e-05,
+      "scale_sensitive_relative_tolerance": 4.76837158203125e-07
     },
     "video07_runtime_feature_parity": {
       "status": "PASS",
       "report": "reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_VIDEO07_CURRENT_HEAD_TOL2E5.json",
       "repetitions": 3,
-      "missing_records": 0,
-      "off_action_mismatches": 0,
-      "absolute_tolerance": 2e-5,
-      "scale_sensitive_relative_tolerance": 4.76837158203125e-7
+      "absolute_tolerance": 2e-05,
+      "scale_sensitive_relative_tolerance": 4.76837158203125e-07
     },
     "same_code_formal_chunk_equivalence": {
       "status": "PASS",
@@ -54,12 +53,13 @@
       "only_chunked": 0,
       "canonical_sha_identical": true
     },
-    "corrected_canonical_single_seed_training": {
+    "corrected_v4_small_three_way_training": {
       "status": "PASS",
       "report": "reports/JEV_RNG_V4/CORRECTED_V4_SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json",
       "records": 8501,
       "seed": 20261003,
-      "final_claim_allowed": false
+      "final_claim_allowed": false,
+      "retraining_required": false
     },
     "checkpoint_and_cpu_regression_audit": {
       "status": "PASS",
@@ -76,28 +76,53 @@
       "expected_records": 8995,
       "must_not_stop_or_migrate": true
     },
-    "full_h8_canonical_build": {
-      "status": "RUNNING",
+    "full_h8_speculative_build": {
+      "status": "PAUSED_NOT_CANONICAL",
+      "classification": "PRE_VIDEO01_GATE_SPECULATIVE_BUILD",
+      "source_commit_authority": "MIXED_SOURCE_COMMIT_RISK",
       "authorization_report": "reports/JEV_RNG_V4/FULL_H8_AUTHORIZATION_AND_LAUNCH_20261006.json",
+      "pause_report": "reports/JEV_RNG_V4/PRE_VIDEO01_GATE_SPECULATIVE_H8_PAUSE_20261007.json",
       "queue": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head/queue_state.json",
-      "active_videos": [15, 16, 23, 24],
-      "active_gpus": [4, 6, 8, 9],
-      "foreign_gpus_never_used": [2, 3, 5, 7],
-      "baseline_rerun": false
+      "status_at_pause": "PAUSED",
+      "pending_videos": [1, 2, 4, 5, 6, 7, 8, 9, 10, 17, 18, 21],
+      "paused_videos": [3, 11, 12, 13, 14, 15, 16, 19, 20, 22, 23, 24],
+      "temporary_visible_lines": 21217,
+      "baseline_rerun": false,
+      "final_merge_allowed": false,
+      "policy_training_allowed": false,
+      "paper_metrics_allowed": false
     }
   },
-  "pending_hard_gates": [
-    "video01 provenance and complete corrected artifact",
-    "video01 MATCH/MEMORY/REACTIVATION runtime feature parity",
-    "video01 native-vs-replay reactivation candidate parity",
-    "video01 repeated numerical stability",
-    "corrected-v4 GMT OFF/Threshold/MLP/JEV closed-loop tracking",
-    "all 24 Full-H8 manifests, audited finalization, and official evaluation"
+  "pending_hard_gates_in_required_order": [
+    "corrected video01 COMPLETE",
+    "video01 provenance PASS",
+    "video01 MATCH/MEMORY/REACTIVATION runtime feature parity PASS",
+    "video01 reactivation candidate parity PASS",
+    "video01 numerical stability PASS",
+    "corrected GMT OFF/Threshold/MLP/JEV closed-loop COMPLETE",
+    "GO decision",
+    "only then create frozen worktree and authorize Full H8"
   ],
+  "future_authorization_requirements": {
+    "video01_hard_gate_report": "reports/JEV_RNG_V4/VIDEO01_CORRECTED_HARD_GATES.json",
+    "required_fields": [
+      "VIDEO01_COMPLETE",
+      "VIDEO01_PROVENANCE",
+      "VIDEO01_RUNTIME_FEATURE_PARITY",
+      "MATCH_COVERAGE",
+      "MEMORY_COVERAGE",
+      "REACTIVATION_COVERAGE",
+      "REACTIVATION_CANDIDATE_PARITY",
+      "VIDEO01_NUMERICAL_STABILITY",
+      "CORRECTED_THREE_WAY_CLOSED_LOOP_COMPLETE"
+    ],
+    "fixed_worktree_pattern": "/data1/liuyeqiang/WWW_h8_frozen_<CANONICAL_H8_COMMIT>",
+    "worker_commit_hard_gate": true,
+    "scheduler_commit_hard_gate_before_each_launch": true
+  },
   "historical_reports_not_current_authority": [
     "reports/JEV_RNG_V4/FINAL_GO_NO_GO.json",
-    "reports/JEV_RNG_V4/CURRENT_HEAD_OFF_TRACE_ALIGNMENT_VIDEO06_VIDEO07.json",
     "reports/JEV_RNG_V4/REACTIVATION_CANDIDATE_PARITY.json",
-    "reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07.json"
+    "reports/JEV_RNG_V4/FULL_H8_AUTHORIZATION_AND_LAUNCH_20261006.json"
   ]
 }
