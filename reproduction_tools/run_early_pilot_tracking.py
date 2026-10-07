@@ -204,7 +204,31 @@ def load_runtime_modules():
     )
 
 
-def choose(policy, feature, question, legal, off_action, context=None):
+def choose(
+    policy,
+    feature,
+    question,
+    legal,
+    off_action,
+    context=None,
+    safety_mode="none",
+):
+    """Choose a policy action, optionally applying an explicit safety gate.
+
+    The safety modes are diagnostic ablations, not final methods.  They make
+    it possible to test whether a learned action type is causing a mutable
+    state shift without changing the frozen data or checkpoint.  The default
+    path is byte-for-byte equivalent to the ordinary learned-policy path.
+    """
+
+    if safety_mode == "baseline_all":
+        return off_action
+    if safety_mode == "baseline_memory" and question == "MEMORY_DECISION":
+        return off_action
+    if safety_mode == "baseline_match" and question == "MATCH_DECISION":
+        return off_action
+    if safety_mode == "baseline_reactivation" and question == "REACTIVATION_DECISION":
+        return off_action
     return policy.decide(
         feature,
         question,
@@ -418,6 +442,7 @@ def run_method(
     device="cpu",
     max_frame=None,
     trace_writer=None,
+    policy_safety_mode="none",
 ):
     from jev_counterfactual_v2 import (
         subset_perception_payload,
@@ -769,6 +794,7 @@ def run_method(
                 legal,
                 off_action,
                 context=match_context,
+                safety_mode=policy_safety_mode,
             )
             if action not in legal:
                 action = off_action
@@ -903,6 +929,7 @@ def run_method(
                 legal,
                 off_action,
                 context=memory_context,
+                safety_mode=policy_safety_mode,
             )
             if action not in legal:
                 action = off_action
@@ -1047,6 +1074,7 @@ def run_method(
                 legal,
                 off_action,
                 context=reactivation_context,
+                safety_mode=policy_safety_mode,
             )
             if action not in legal:
                 action = off_action
@@ -1380,6 +1408,21 @@ def main() -> None:
         ),
     )
     parser.add_argument(
+        "--policy-safety-mode",
+        choices=(
+            "none",
+            "baseline_memory",
+            "baseline_match",
+            "baseline_reactivation",
+            "baseline_all",
+        ),
+        default="none",
+        help=(
+            "diagnostic ablation: force one action family to the GMT OFF action; "
+            "does not modify data or checkpoints and is not a final method"
+        ),
+    )
+    parser.add_argument(
         "--methods",
         default="all",
         help="comma-separated subset for CPU smoke/debug runs; default is all methods",
@@ -1439,6 +1482,7 @@ def main() -> None:
         "second_transformer_call_for_reassociate": False,
         "device": args.device,
         "controller_feature_source": args.feature_source,
+        "policy_safety_mode": args.policy_safety_mode,
         "allow_runtime_with_legacy_trace": bool(args.allow_runtime_with_legacy_trace),
         "runtime_feature_tolerance": float(args.runtime_feature_tolerance),
         "runtime_feature_relative_tolerance": DEFAULT_SCALE_SENSITIVE_RELATIVE_TOLERANCE,
@@ -1497,6 +1541,7 @@ def main() -> None:
             parity_report=parity_report,
             device=args.device,
             max_frame=args.max_frame,
+            policy_safety_mode=args.policy_safety_mode,
         )
         json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)
 
@@ -1623,6 +1668,7 @@ def main() -> None:
         "association_backend": raw["association_backend"],
         "closed_loop_definition": "frozen detector/ReID payloads + formal GMT association transformer + mutable branch-local association/memory state + online typed controller commits; runtime mode recomputes controller features from the mutated state through the canonical shared builder",
         "controller_feature_source": args.feature_source,
+        "policy_safety_mode": args.policy_safety_mode,
         "trace_feature_policy": "trace_debug is parity-only and must not be interpreted as a closed-loop scientific result",
         "official_test_read": False,
         "methods": methods,
