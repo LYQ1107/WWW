@@ -1,7 +1,8 @@
 {
-  "schema_version": "jev_research_completion_audit_v1",
+  "schema_version": "jev_research_completion_audit_v2",
   "created_utc": "2026-10-07T10:44:43Z",
-  "status": "INCOMPLETE_WITH_ACTIVE_PROGRESS",
+  "updated_utc": "2026-10-07T12:58:03Z",
+  "status": "INCOMPLETE_NO_GO_CURRENT_HEAD_CONTROLLER",
   "claim_policy": "No final paper claim is authorized until corrected video01 v2 hard gates and closed-loop pass.",
   "source_authority": {
     "worktree": "/data1/liuyeqiang/WWW_rng_fix_v4",
@@ -73,31 +74,42 @@
       "offline_report": "reports/H8_EARLY_CLOSED_LOOP_PILOT/PILOT_OFFLINE_THREE_WAY.json",
       "tracking_report": "reports/H8_EARLY_CLOSED_LOOP_PILOT/PILOT_TRACKING_THREE_WAY.json",
       "interpretation": "Useful pipeline smoke and legacy signal only; it is not the corrected v2 final comparison."
+    },
+    "current_head_segmented_small_gate": {
+      "status": "COMPLETE_SCREENING_NO_GO",
+      "report": "reports/JEV_RNG_V4/SEGMENTED_SMALL_GATE_CURRENT_HEAD_CLOSED_LOOP_VIDEO01_20261007.json",
+      "records": 17491,
+      "policy_dataset_records": 8496,
+      "seed": 20261003,
+      "closed_loop_repeatability": "PASS",
+      "final_claim_allowed": false
     }
   },
-  "active_corrected_v2_gate": {
-    "status": "RUNNING",
+  "corrected_video01_v2_gate": {
+    "status": "COMPLETED_ARTIFACT_GATE_FAILED_AFTERCARE",
     "pid": 12163,
     "start_utc": "2026-10-07T04:15:18Z",
-    "observed_utc": "2026-10-07T10:57:46Z",
-    "elapsed": "06:42:28",
-    "cpu_time": "06:42:33",
-    "state": "Rsl",
-    "cpu_percent": 100.0,
-    "rss_kib": 3165152,
+    "completed_utc": "2026-10-07T11:10:35Z",
+    "elapsed": "06:55:17.54",
     "expected_records": 8995,
-    "records_artifact_exists": false,
-    "manifest_artifact_exists": false,
+    "records": 8995,
+    "records_artifact_exists": true,
+    "manifest_artifact_exists": true,
+    "records_sha256": "1da2ed9e7eec43c7cf139754d873f78a299c344ff74d65c6866b92f18f3da79",
     "manifest_path": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_corrected_full_v2/video01_records.jsonl.manifest.json",
-    "must_not_stop_or_migrate": true
+    "aftercare_completed_utc": "2026-10-07T11:18:13Z",
+    "provenance": "PASS",
+    "runtime_feature_parity": "FAIL",
+    "reactivation_candidate_parity": "FAIL",
+    "runtime_feature_stability": "FAIL",
+    "closed_loop": "BLOCKED_PRE_GATE",
+    "must_not_restart_without_source_fix": true
   },
   "parallel_diagnostics": {
     "max2400_cost_diagnostic": {
-      "pid": 5457,
-      "status": "RUNNING",
+      "status": "COMPLETE_DIAGNOSTIC_ONLY",
       "start_utc": "2026-10-07T10:19:38Z",
-      "elapsed_at_snapshot": "00:38:08",
-      "result_available": false
+      "result_available": true
     },
     "reactivation_window_210_220": {
       "status": "COMPLETE_DIAGNOSTIC_ONLY",
@@ -108,13 +120,11 @@
     }
   },
   "required_remaining_gates": [
-    "corrected video01 v2 records and manifest",
-    "video01 provenance validation",
-    "MATCH/MEMORY/REACTIVATION runtime feature parity",
-    "fresh v2-bound reactivation candidate parity",
-    "video01 numerical stability",
-    "corrected GMT OFF/Threshold/MLP/JEV closed-loop",
-    "GO/NO-GO decision",
+    "diagnose current-head policy data/training degeneration and learned-policy runtime state shift",
+    "define and implement the smallest justified interface/data correction",
+    "fresh held-out small gate with a new source/data/checkpoint binding",
+    "runtime feature parity, candidate parity, and numerical stability PASS",
+    "corrected GMT OFF/Threshold/MLP/JEV closed-loop GO",
     "only after GO: frozen canonical Full H8 worktree and 24-video rebuild",
     "full-data policy training and formal paper evaluation",
     "final reproducibility report and numerical audit"
@@ -128,5 +138,5 @@
     "policy_training_allowed": false,
     "paper_metrics_allowed": false
   },
-  "current_decision": "NO_FINAL_RESEARCH_CLAIM_YET"
+  "current_decision": "NO_FINAL_RESEARCH_CLAIM_YET_CURRENT_HEAD_SMALL_GATE_NO_GO"
 }

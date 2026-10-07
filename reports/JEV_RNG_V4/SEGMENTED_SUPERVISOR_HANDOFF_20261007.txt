@@ -1,0 +1,91 @@
+给 www 对话的补充研究方向与执行要求
+日期：2026-10-07
+来源：研究指挥对话，经用户确认转交。
+说明：本文件用于转交；保存文件本身不代表 www 已收到或执行。
+
+1. 继续当前主线。
+不停止、不迁移、不重启 video1 v2，不修改本轮架构、H、utility 或权重。完成后依次验收 provenance、三类 runtime parity（MATCH、MEMORY、REACTIVATION）、reactivation candidate parity、数值稳定性和 checkpoint wrapper，再运行 GMT OFF／Threshold／MLP／JEV 四组真实闭环比较。Parity 失败应记为 BLOCKED，不能作为模型失效证据。
+
+2. 所有验收必须绑定 v2 产物。
+报告明确记录 records SHA、source commit、checkpoint、schema 和配置。上一版的 COMPLETE／PASS 不能替代 v2 验收。阈值修复也不能自动代表候选分数、事件键和候选选择已经对齐。
+
+3. 修正 JEV 的设计约束。
+“禁止把绝对 track ID 当固定分类类别或可学习特征”继续保留。
+“JEV 永远不能比较或选择身份候选”不再作为研究限制。允许用共享评分器评价运行时合法候选，具体身份提交仍须满足 GMT 的视角与匹配约束。
+
+4. 当前运行期间，先只读审计候选关联版的可行性。
+查清已有数据是否保存逐候选证据和长期收益；统计候选召回率、正确候选排名，以及可行候选集内的 oracle 提升空间。GT 只用于离线审计。不能把现有 ACCEPT／REASSOCIATE／START_NEW 标签直接复制成逐候选监督。
+
+5. 输出一个最小修改方案，再做小规模实验。
+明确需要新增哪些输入、标签和运行时接口。后续比较：现有门控 JEV、普通候选 MLP、候选条件化 JEV；使用相同感知输入、候选、数据划分和计算预算。新结构在 policy train／val 上选择，正式测试保持独立。
+
+6. 继续禁止提前全量构建。
+若改变关联动作空间或状态接口，必须重新通过对应验收与小规模闭环 gate，不能沿用旧版 GO 自动授权新数据生产。
+
+执行优先级：当前 video1 v2 作业保持原状；先落实第 2 条的版本绑定，同时开展第 4 条的只读审计。第 3 条允许研究候选方案，并不要求立即重写当前运行架构。具体采用哪种新架构，等有效闭环结果和候选审计后决定。文献支持尝试，尚未证明新方案一定更强。
+
+收到后请简要确认这六条及执行顺序，再按上述要求继续工作。
+
+运行诊断后的补充执行要求（2026-10-07）
+
+当前 video1 v2 作业继续保留，不启动第二个完整 video1 builder。若它已完成，立即按上面的 v2 验收要求推进，不要继续机械轮询进程。
+
+请立即开展以下工作，并提交具体诊断结论与最小修改方案：
+
+1. 审计这次重算范围。
+核对 4108f18 的改动及与第一版产物相关的全部输入、引擎和配置差异。该提交的代码差异仅涉及 reactivation 状态特征使用 bank_threshold；不要未经验证就假定全部反事实收益都必须重算。通过独立小样本验证动作轨迹、收益和 RNG 语义是否保持一致，再判断能否保留已有收益标签、重新提取特征。任何派生产物须另存并记录原始 records SHA、变换脚本及 source commit，不能伪装成重新完整 rollout 的产物。
+
+2. 优先定位 candidate parity 失败原因。
+上一版 reactivation candidate parity 有 225 项 mismatch，其中包含事件匹配缺失。逐项核对 native/replay 的事件键、trace 来源版本、候选 ID、候选分数、proposal 选择和 RNG/config。bank_threshold 特征修复不能自动证明这项 gate 已修复。先用能覆盖失配的少量事件验证，不要等整段长任务结束才第一次检查。
+
+3. 给出实际耗时证据。
+在独立诊断脚本或极小样本中统计 proposal、state.clone、reactivation、step 和 utility 的耗时及调用次数。源码显示整个 video1 约有 22,514 个动作分支、39 万次状态推进，并且 state.clone 会逐条拷贝累计记忆；这些是需要测量的瓶颈候选，不应直接当作已经取得的活跃进程采样结论。不得仅凭 CPU 100% 或 GPU 有利用率宣称有效进度、排除所有卡死情况，或给出未经测量的剩余时间。
+
+4. 补齐后续作业的进度与恢复能力。
+设计并实现最小的进度记录，至少包含 frame/view、已完成事件数/总数、分支数、耗时和最后更新时间；输出中间记录及恢复检查点时，完整保留可变状态、RNG 和产物来源。完成必要的等价性验收后用于后续构建。当前已运行作业无法通过修改磁盘源码自动获得这些能力，不要因此直接重启当前 v2。
+
+请停止只反复查看 ps 和最终文件是否存在的监控方式。在保留当前作业的同时推进上述审计，先报告已核实的事实、未能核实的实际进度，以及是否确实需要完整重算。
+
+最新用户授权与独立执行（2026-10-07）
+
+用户明确要求指挥对话自行编写分段处理，在其他 GPU 快速验收，并继续 Threshold／MLP／JEV 三组实验。
+独立工作目录：/data1/liuyeqiang/WWW_segmented_gate_20261007
+分支：jev/segmented-small-gate-20261007
+最新冻结提交：1d2711e80ac5fa00806fd9eed30e90cd51df6b30
+执行入口：reproduction_tools/run_segmented_small_gate.py
+当前运行目录：/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4
+启动 PID：15541
+GPU：2、3、5、6、7、8、9。原 GPU0 PID12163 和 GPU4 PID5457 未修改、未停止。
+
+v2 分段／串行 70 条完全一致，但随后确认 native 内存特征存在算法失配，因此已停止仅自己启动的 v2 运行，旧输出保留，不继续混用。
+已修复：formal replay 写入原始 ReID 特征（native 未归一化）；stale bank 所有 ID 合为一个 Instances 共同 softmax；native bank 使用第一个 decoder 输出；全部未匹配 query 保留。
+第一处 native score 原为 0.004132806323468685，旧 replay 为 0.07426155358552933；独立原始特征回放匹配原生分数。
+原生 REACTIVATION trace 行号为 bank 子集局部编号。新脚本仅用唯一 bbox 映射到缓存全局 detection 行，174 条重新激活全部映射，其中 105 条行号改变，候选值和动作均保留。映射证据：segmented_native_trace_20261007/video01/trace_video_01.row_mapping.json（实际文件名查看目录）。
+当前 source 使用该映射后的 native video1 trace；video6、7 无 reactivation，保留原 trace。
+
+当前执行顺序：帧 210–216 串行／分段等价（完整 trace）；先检查 native candidate 到帧216；通过后将 video1、6、7 分段并行构建；逐视频 provenance／runtime parity、全视频1 candidate parity、稳定性验收；相同划分／训练预算继续三模型与独立 video1 闭环比较。任何失败定位后才能继续，不自动授权24视频 Full H8。
+
+已验证基础测试：mutable branch、adapter slice／joint-bank softmax、raw memory magnitude、branch RNG isolation；另5项 pytest 通过。
+监控：supervisor.log、progress.json、probe/progress.json、chunks/*/progress.json；真实完成记录与分支回调实时记录，完整段独立发布并支持恢复。
+
+重要审计修正：max_events 在 event_maps 前截断 events，会改变未来动作和 MEMORY 计划，不能用它证明全量标签不可复现。保留完整 trace 只限制 selected_key_range 时，旧全量与修改 native 内存之前的70条收益／target_probs／best_actions 完全一致。native 内存修复则构成实际收益变化，必须使用新 source 产物。
+
+当前没有可调用的跨对话消息发送工具。本文件是供 www 读取的交接记录，未声称已向 www 发送消息。
+
+最新 native 修复：全 video1 候选诊断174/174，0失配。剩余10处源于 eager bank promotion 与对 bank ID 排序改变轨迹槽映射；formal bank 现在仅在未匹配 query 调用时 promotion，并保留 bank 输入顺序。v4 另加入881–890晚期 bank 冲突窗口分段等价验收。v3 已暂停，只保留诊断证据。
+
+旧收益审计的正式证据（不是复用授权）：/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/full_trace_reward_audit.json。完整 trace 的70条选定窗口与旧全量 action_outcomes／horizon_outcomes／target_probs／best_actions／sample_weight 全部70/70一致；max_events20审计改了未来动作计划，不能据此判旧标签不可复现。当前 native 原始特征和顺序修复后仍使用新构建数据。
+
+v4 两处串行／分段精确一致均 PASS：210–216（70条，含2 React）；881–890（102条，含3 React）。当前最新状态请读取 v4/progress.json、v4/probe/equivalence.json、v4/late_probe/equivalence.json；即将继续17,491条小 gate并行构建。
+
+并发加速：首批7段/1406条发布后，在同一冻结提交、相同v4目录恢复运行；每GPU3个worker，共21。旧部分段从精确起点重算，完成段复用。最新 driver PID 13608；完整启动配置见v4/launch.json。GPU0/4作业已自行结束，本指挥没有终止它们。
+
+调度加速正在收尾切换：21个普通CUDA进程实测速率仅约4.3记录/秒，正在让接近完成的分段自然发布；driver已主动退出，不是卡死。独立MPS运行70条与原产物原始canonical SHA完全一致（mps_equivalence.json）。收尾后将以独立MPS调度恢复剩余段；仅使用物理GPU2/3/5/6/7/8/9 UUID，其他GPU未纳入服务。当前切换由指挥对话负责，不要再启动同目录driver或覆盖冻结source。
+
+MPS已恢复：25段、4969条正式记录全部复用；剩余63段由28 worker（每GPU4）处理。最新driver PID 1819；CPU40核/可用RAM92GB，服务私有pipe目录见mps_settings.json；物理GPU由UUID固定为2/3/5/6/7/8/9。仍使用冻结source1d2711e，MPS70条 canonical SHA与切换前完全一致。另在GPU9并行核验末尾102条MPS一致性。
+
+MPS两处验收70+102=172条均raw canonical SHA完全相同，0失配；当前7309/17491，25+1段正式发布，实测最近两分钟12.964条/秒（此前普通CUDA多进程约4.3条/秒；异质分段，非受控性能基准）。继续验收与三模型实验，不是Full24授权。
+
+后续训练/闭环由本指挥负责接管：数据driver1819已退出（现有日志未给出退出原因，非已确认某方停止），不重复你已完成的provenance/parity/candidate/stability。指挥将校验所有现有报告的输入SHA和PASS，使用continue_experiments.py 接上相同预算3模型。训练目录仍是v4/small_h8_training_current_head_video06_video07；不要启动同目录第二个训练/闭环driver。本次用户已在指挥对话明确授权三个对比实验，Full24与官方TEST仍未授权。
+
+最终结果：本次已完成全部17,491条/88段、3模型训练校准及4组闭环（包含GMT OFF）。所有数据/runtime hard gates PASS，质量NO GO：JEV AssA82.4599 < OFF85.1492，HOTA85.0723 < 86.5230；IDSW18 < 282，MOTA95.5859 > 89.5791。不能因IDSW降低就放行Full24。详细结果见v4/final_summary.json、实验结果与交接.txt、reports/tracking.json。训练由指挥完成，不要再启动同目录重复实验。Native全控制器feature接口另需对齐，参见实验结果交接限制段。
