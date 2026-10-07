@@ -1,20 +1,18 @@
 # Video01 corrected v2 live progress and six-hour evidence
 
-Snapshot: **2026-10-07 10:57:46 UTC**  
-Classification: **live operational evidence; not a final experiment result**
+Snapshot: **2026-10-07 12:05:14 UTC**  
+Classification: **completed-run evidence plus live small-gate status; not a final experiment result**
 
 ## Direct conclusion
 
-The formal corrected video01 v2 builder is still running. The same OS process
-(`PID 12163`) started at **2026-10-07 04:15:18 UTC** and, at the snapshot,
-had been alive for **06:42:28** with **06:42:33** CPU time, `Rsl` state, 100%
-CPU, and 3,165,152 KiB RSS. This is concrete evidence that the job has run for
-more than six hours under one PID. It is not evidence that the final dataset is
-complete.
+The formal corrected video01 v2 builder ran under one OS process (`PID 12163`)
+from **2026-10-07 04:15:18 UTC** to **2026-10-07 11:10:35 UTC**, for
+**06:55:17.54**, and durably wrote **8995/8995** records. This is the requested
+six-hour evidence. It is not, by itself, a semantic acceptance result.
 
-The formal output directory still has no `video01_records.jsonl` and no
-`video01_records.jsonl.manifest.json`. Therefore no final v2 acceptance, controller selection, or
-three-way tracking metrics are claimed in this report.
+The subsequent aftercare completed at **2026-10-07 11:18:13 UTC** and returned
+`NO_GO_RUNTIME_SEMANTICS_GATE`; no final v2 controller selection or three-way
+tracking metrics are claimed.
 
 ## Frozen provenance
 
@@ -37,13 +35,12 @@ backend. The complete argv and input hashes are recorded in
 |---|---|
 | PID | `12163` |
 | Start | `2026-10-07 04:15:18 UTC` |
-| Snapshot | `2026-10-07 10:57:46 UTC` |
-| OS elapsed time | `06:42:28` |
-| CPU time | `06:42:33` |
-| State | `Rsl` |
-| CPU | `100%` |
-| RSS | `3,165,152 KiB` |
-| GPU observation | GPU 0, process memory 1,231 MiB in the 10:57 UTC `nvidia-smi` snapshot |
+| Completion | `2026-10-07 11:10:35 UTC` |
+| Total elapsed time | `06:55:17.54` |
+| Records | `8995/8995` |
+| JSONL SHA-256 | `1da2ed9e7eec43c7cf139754d873f78a299c344ff74d65c6866b92f18f3da79` |
+| Manifest | `PASS` |
+| Aftercare decision | `NO_GO_RUNTIME_SEMANTICS_GATE` |
 
 The exact evidence is machine-readable in
 [`VIDEO01_V2_LIVE_EVIDENCE_20261007.json`](../reports/JEV_RNG_V4/VIDEO01_V2_LIVE_EVIDENCE_20261007.json).
@@ -56,9 +53,9 @@ The exact evidence is machine-readable in
 - PID `9824`: targeted frames 210–220 reactivation diagnostic completed. It
   emitted 113 diagnostic records, including 5 reactivation records, with zero
   skipped events in 222.136 seconds. This is a diagnostic artifact only.
-- PIDs `2843/2849`: aftercare waiter is still waiting for the formal v2
-  manifest; provenance, parity, stability, and closed-loop stages have not
-  started.
+- Aftercare has now completed. Provenance passed, but runtime feature parity,
+  reactivation candidate parity, and three-repeat stability failed; the exact
+  counts are in `VIDEO01_SIX_HOUR_RUNTIME_EVIDENCE_20261007.json`.
 
 No active job was stopped, migrated, or restarted for this snapshot.
 

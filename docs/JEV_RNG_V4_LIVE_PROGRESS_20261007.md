@@ -1,6 +1,6 @@
 # JEV RNG v4 live progress — corrected video01 gate first
 
-**Latest authoritative refresh:** `2026-10-07T11:18:20Z`
+**Latest authoritative refresh:** `2026-10-07T12:05:14Z`
 **Current decision:** `NO_GO_RUNTIME_SEMANTICS_GATE`
 
 ## Live status
@@ -13,9 +13,16 @@
 | Full H8 slot2/slot3 supervisors and workers | **GRACEFULLY PAUSED** | queue state/process check |
 | Full H8 canonical authority | **FALSE** | source-commit audit |
 | corrected video06/video07 three-way training | complete; preserve report; no retraining | existing report |
+| segmented small gate | **LIVE**, PID `1819`, `8281/17491` records including running partials | MPS switch/equivalence report |
 
 The Full H8 run is not “running in the background” anymore. It is a preserved
 speculative build and must not be resumed from the current queue.
+
+The separate segmented small gate is still allowed to run. Its current queue is
+`26 COMPLETE / 28 RUNNING / 34 PENDING` across video01/video06/video07. The
+MPS transition was checked on two bounded probes: `70/70` early records and
+`102/102` late records were exact, with zero late candidate mismatches. This
+does not authorize Full H8 or create a final paper result.
 
 ## What was stopped and what was not
 

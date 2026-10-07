@@ -1,0 +1,102 @@
+{
+  "schema_version": "jev_segmented_mps_switch_and_late_equivalence_v1",
+  "created_utc": "2026-10-07T12:05:14Z",
+  "classification": "LIVE_BUILD_AUDIT_NOT_FINAL_RESULT",
+  "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+  "source_branch": "jev/segmented-small-gate-20261007",
+  "output_root": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4",
+  "mps_switch": {
+    "old_driver_pid": 13608,
+    "drain_started_utc": "2026-10-07T11:57:21.080793Z",
+    "old_driver_graceful_stop_observed": true,
+    "resumed_driver_pid": 1819,
+    "resumed_launch_utc": "2026-10-07T12:00:07.972500+00:00",
+    "drain_state": "COMPLETE",
+    "execution_backend": "task_isolated_nvidia_mps",
+    "workers_per_gpu": 4,
+    "worker_count": 28,
+    "mps_launcher_sha256": "f0c1fa4386a427d170c37745405e7a9554dce8f82045b63c327a194fa346ff45",
+    "queue_was_manually_edited": false,
+    "preserved_partial_artifacts": [
+      "chunks/video01_chunk0022/records.jsonl.partial.before_mps_drain.13781",
+      "chunks/video01_chunk0028/records.jsonl.partial.before_mps.13799",
+      "chunks/video06_chunk0022/records.jsonl.partial.before_mps.13785",
+      "chunks/video06_chunk0023/records.jsonl.partial.before_mps.13792"
+    ]
+  },
+  "early_equivalence": {
+    "status": "PASS",
+    "scope": "Pre-MPS versus MPS on the early bounded video01 probe",
+    "records_compared": 70,
+    "exact_record_matches": 70,
+    "record_mismatches": 0,
+    "canonical_sha_identical": true,
+    "canonical_sha256": "sha256:459fe49cb06818208a2437856a1280a11edf997f902e57ae38a22a2d1c5d4ef9",
+    "semantic_keys_exact": true,
+    "duplicate_free": true
+  },
+  "late_equivalence": {
+    "status": "PASS",
+    "scope": "Pre-MPS versus MPS on video01 frames 881-890",
+    "records_compared": 102,
+    "exact_record_matches": 102,
+    "record_mismatches": 0,
+    "candidate_events_compared": 167,
+    "canonical_sha_identical": true,
+    "canonical_sha256": "sha256:167168a1c57fa6b16d00de4b946ee17e209372f95ebfa953ad30a8210b54dc4d",
+    "pre_mps_records_sha256": "548f5f547118f24c84060166ee8fda62ad1dda73255aa1b181a93f7207bde873",
+    "mps_records_sha256": "548f5f547118f24c84060166ee8fda62ad1dda73255aa1b181a93f7207bde873",
+    "semantic_keys_exact": true,
+    "duplicate_free": true,
+    "field_mismatches": {
+      "best_actions": 0,
+      "target_probs": 0,
+      "utilities": 0,
+      "state_features": 0
+    }
+  },
+  "live_snapshot": {
+    "sample_start_utc": "2026-10-07T12:04:59Z",
+    "sample_end_utc": "2026-10-07T12:05:14Z",
+    "progress": {
+      "phase": "building",
+      "completed_records_including_running_partials": 8281,
+      "total_records": 17491,
+      "chunks": {
+        "COMPLETE": 26,
+        "RUNNING": 28,
+        "PENDING": 34
+      }
+    },
+    "queue_by_video": {
+      "video01": {"COMPLETE": 21, "RUNNING": 11, "PENDING": 13},
+      "video06": {"COMPLETE": 5, "RUNNING": 11, "PENDING": 10},
+      "video07": {"COMPLETE": 0, "RUNNING": 6, "PENDING": 11}
+    },
+    "observed_progress_delta": {
+      "seconds": 15.068,
+      "records": 250,
+      "records_per_second": 16.5919
+    },
+    "process": {
+      "pid": 1819,
+      "alive_at_snapshot_end": true,
+      "command_backend": "mps_launcher.py run",
+      "workers": 28,
+      "gpus": [2, 3, 5, 6, 7, 8, 9]
+    },
+    "gpu_observation": {
+      "utilization_percent": {"2": 35, "3": 28, "5": 26, "6": 32, "7": 31, "8": 32, "9": 31},
+      "memory_used_mib": {"2": 4929, "3": 4929, "5": 4937, "6": 4929, "7": 4929, "8": 4937, "9": 4937}
+    },
+    "error_files": [],
+    "drain_state_file": {"status": "COMPLETE", "resumed_pid": 1819}
+  },
+  "interpretation": {
+    "mps_transition_equivalence": "PASS on both bounded probes",
+    "current_build": "LIVE; this is a small-gate build, not Full H8",
+    "full_h8_authorized": false,
+    "official_paper_result": false,
+    "eta_claim": "NOT CLAIMED from this snapshot because completed_records includes running partials and throughput is non-stationary"
+  }
+}

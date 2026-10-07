@@ -1,47 +1,47 @@
 {
   "schema_version": "jev_segmented_small_gate_progress_v1",
-  "created_utc": "2026-10-07T11:51:21Z",
+  "created_utc": "2026-10-07T12:05:14Z",
   "classification": "LIVE_PROGRESS_SNAPSHOT_NOT_FINAL_RESULT",
   "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
   "source_branch": "jev/segmented-small-gate-20261007",
-  "pid": 13608,
-  "command": "run_segmented_small_gate.py run --output /home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4 --gpus 2 3 5 6 7 8 9 2 3 5 6 7 8 9 2 3 5 6 7 8 9",
+  "pid": 1819,
+  "command": "mps_launcher.py run --output /home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4 --gpus 2 3 5 6 7 8 9 repeated 4x",
   "gpus": [2, 3, 5, 6, 7, 8, 9],
   "output_root": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4",
   "process_observation": {
-    "state": "Rl",
-    "elapsed_at_snapshot": "00:10:11",
-    "cpu_percent": 0.7,
-    "worker_count": 21,
-    "workers_per_gpu": 3,
+    "state": "Ss",
+    "elapsed_at_snapshot": "00:05:07",
+    "cpu_percent": null,
+    "worker_count": 28,
+    "workers_per_gpu": 4,
     "records_builder_restarted": true,
     "restart_was_graceful": true,
-    "complete_chunks_reused": 7,
-    "finalized_records_reused": 1406,
-    "partial_records_recomputed_from_snapshot": 850,
+    "complete_chunks_reused": 25,
+    "finalized_records_reused": 4969,
+    "partial_records_recomputed_from_snapshot": null,
     "duplicate_active_chunk_names": 0,
     "failure_files": 0,
     "full_h8_started": false
   },
   "current_progress": {
     "phase": "building",
-    "completed_records_including_running_partials": 3878,
+    "completed_records_including_running_partials": 8281,
     "total_records": 17491,
     "chunks_total": 88,
-    "chunks_pending": 59,
-    "chunks_running": 21,
-    "chunks_complete": 7,
-    "last_update_utc": "2026-10-07T11:51:21.243054+00:00",
+    "chunks_pending": 34,
+    "chunks_running": 28,
+    "chunks_complete": 26,
+    "last_update_utc": "2026-10-07T12:05:12.975656+00:00",
     "plan_created": true,
     "queue_created": true,
     "plan_sha256": "sha256:fda27cf81170e84f0f65d5c4a3efdd02ecc2c9b9d16596b5672b08f58c57d86e",
-    "queue_sha256": "sha256:c62c723271e40af376d680acaa982af646a347ec1e541a4ca09b96bb4b057470",
+    "queue_sha256": "sha256:ab9db4df10b46cfcfb1eb924dfca894e071222cadd91b967e180954e76ae80aa",
     "progress_is_durable": true
   },
   "video_plan": {
-    "video01": {"chunks": 45, "records": 8995, "queue_status": "22_PENDING_15_RUNNING_8_COMPLETE"},
-    "video06": {"chunks": 26, "records": 5162, "queue_status": "20_PENDING_6_RUNNING"},
-    "video07": {"chunks": 17, "records": 3334, "queue_status": "17_PENDING"}
+    "video01": {"chunks": 45, "records": 8995, "queue_status": "13_PENDING_11_RUNNING_21_COMPLETE"},
+    "video06": {"chunks": 26, "records": 5162, "queue_status": "10_PENDING_11_RUNNING_5_COMPLETE"},
+    "video07": {"chunks": 17, "records": 3334, "queue_status": "11_PENDING_6_RUNNING_0_COMPLETE"}
   },
   "bounded_gates": {
     "early_210_216": {
@@ -83,10 +83,10 @@
     "source_and_input_binding": true
   },
   "live_performance": {
-    "sample_utc": "2026-10-07T11:49:16.395808+00:00",
-    "recent_records_per_second": 4.301,
+    "sample_utc": "2026-10-07T12:05:14Z",
+    "recent_records_per_second": 16.5919,
     "performance_samples": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/performance_samples.jsonl",
-    "interpretation": "live throughput indicator only; no final ETA or speedup claim"
+    "interpretation": "15.068-second live throughput indicator only; no final ETA or speedup claim"
   },
   "concurrency_change": {
     "change_utc": "2026-10-07T11:41:15.970977+00:00",
@@ -100,6 +100,22 @@
     "interrupted_partial_files_preserved": 7,
     "integrity_audit": "PASS_AT_SNAPSHOT_NO_DUPLICATE_ACTIVE_CHUNKS_NO_FAILURE_FILES",
     "speed_claim": "NOT_CLAIMED"
+  },
+  "mps_resume": {
+    "drain_start_utc": "2026-10-07T11:57:21.080793Z",
+    "old_driver_pid": 13608,
+    "resumed_driver_pid": 1819,
+    "resumed_launch_utc": "2026-10-07T12:00:07.972500+00:00",
+    "drain_state": "COMPLETE",
+    "execution_backend": "task_isolated_nvidia_mps",
+    "mps_launcher_sha256": "f0c1fa4386a427d170c37745405e7a9554dce8f82045b63c327a194fa346ff45",
+    "bounded_equivalence": {
+      "early_records": "70/70 exact",
+      "late_records": "102/102 exact",
+      "canonical_sha_identical": true,
+      "candidate_events_late": 167,
+      "candidate_mismatches_late": 0
+    }
   },
   "next_authorized_step": "Finish the preserved segmented video01/video06/video07 small gate, then run its per-video provenance/parity/candidate/stability and three-way closed-loop reports. Do not authorize Full H8 from this snapshot."
 }

@@ -7,7 +7,8 @@
 - corrected formal video01 H=8 v2 已真实运行约 **6 小时 55 分 17 秒**，完成并落盘 **8995/8995** 条记录。
 - 文件和 provenance 完整性通过，但 runtime semantics gate 没通过：runtime feature parity、reactivation candidate parity、stability 均 FAIL。因此这批记录**不能作为最终训练数据或论文结果**。
 - 当前 segmented small gate 仍在运行，Full H8 保持暂停、非 canonical、未授权。
-- 当前 3 workers/GPU 重启后的 queue 审计没有发现重复分片、重复 active chunk 或 failure file；短时 supervisor 计数约 4.27 records/s，但暂不宣称 3 倍加速。
+- MPS 切换后的实时快照为 `8281/17491` 条（含 running partials），`26 COMPLETE / 28 RUNNING / 34 PENDING`；PID 1819 存活，7 张卡各 4 workers，没有 error/failure 文件。
+- MPS 前后 bounded equivalence 已通过：早期 `70/70`、晚期 `102/102` 逐条 exact，canonical SHA 和字段比较均一致。实时 15.07 秒抽样增加 250 条，但不据此宣称稳定 ETA。
 
 ## 1. video1 六小时证据
 
@@ -43,15 +44,17 @@
 当前 runtime：`/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4`
 
 - source commit 固定为 `1d2711e80ac5fa00806fd9eed30e90cd51df6b30`；
-- 旧 driver PID 15541 已 graceful stop，新 driver PID 13608；
-- 7 张卡 `[2,3,5,6,7,8,9]`，当前 21 个 worker，即 3 workers/GPU；
-- 7 个已完成 chunk（1406 条 finalized records）复用；旧的 850 条 partial 从 snapshot 重算；7 份 interrupted partial 文件保留作证据；
-- 观察时 queue：`60 PENDING / 21 RUNNING / 7 COMPLETE`，总计划 17491 条；root supervisor counter 为 2250（包含 running partials）；
-- video01：`23 pending / 15 running / 7 complete`；video06：`20 / 6 / 0`；video07：`17 / 0 / 0`；
+- 旧 driver PID 13608 在 MPS 切换前 graceful drain；当前恢复 driver PID 1819，drain state 为 `COMPLETE`；
+- 7 张卡 `[2,3,5,6,7,8,9]`，当前 28 个 worker，即 4 workers/GPU，后端为 task-isolated NVIDIA MPS；
+- 切换前已经完成的 chunk 被复用，partial 文件保留并作为审计/恢复证据，没有手工修改原始 queue；
+- 当前 queue：`34 PENDING / 28 RUNNING / 26 COMPLETE`，总计划 17491 条；`completed_records` 为 8281，定义为包含 running partials；
+- video01：`13 pending / 11 running / 21 complete`；video06：`10 / 11 / 5`；video07：`11 / 6 / 0`；
 - active chunk 名称无重复、每个 video 的 record ranges 唯一、没有 failure files；
-- 11:42:10–11:45:10 supervisor counter 从 1481 到 2250，观测约 4.27 records/s。这是运行性证据，不是稳定 ETA，也没有拿它宣称 3 倍加速。
+- 12:04:59–12:05:14 UTC 抽样增加 250 条，观测约 16.59 records/s。这是短时运行性证据，不是稳定 ETA，也没有拿它宣称固定加速。
 
-当前 21 个 worker 的 GPU 2/3/5/6/7/8/9 利用率约 94–100%，每卡约 3683 MiB / 32508 MiB。作业继续保留，不做 kill -9、不迁移 video1。
+MPS 切换与等价性报告：[`SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261007.json`](../reports/JEV_RNG_V4/SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261007.json)
+
+当前 28 个 worker 的 GPU 2/3/5/6/7/8/9 利用率约 26–35%，每卡约 4929–4937 MiB / 32508 MiB。作业继续保留，不做 kill -9、不迁移 video1。
 
 ## 3. 已通过的有限验证
 

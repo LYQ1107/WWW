@@ -1,6 +1,6 @@
 # JEV RNG v4 current progress — 2026-10-07
 
-**Snapshot:** `2026-10-07T11:18:20Z`
+**Snapshot:** `2026-10-07T12:05:14Z`
 **Classification:** live research status, not a final paper result
 
 ## 结论先行
@@ -30,6 +30,14 @@ corrected video01 完成
 `reports/JEV_RNG_V4/PRE_VIDEO01_GATE_SPECULATIVE_H8_PAUSE_20261007.json`
 
 ## 当前运行状态
+
+### segmented small gate（当前仍在运行）
+
+- MPS 恢复后的 driver PID `1819` 存活，7 张卡 `[2,3,5,6,7,8,9]`，28 workers（4/GPU）。
+- 最新快照：`8281/17491` 条（该计数包含 running partials），`26 COMPLETE / 28 RUNNING / 34 PENDING`。
+- video01：`21 complete / 11 running / 13 pending`；video06：`5 / 11 / 10`；video07：`0 / 6 / 11`。
+- MPS 前后 bounded equivalence：早期 `70/70`、晚期 `102/102` exact，candidate events（晚期）`167`，mismatch `0`。
+- 这是 small-gate live evidence，不是 Full H8 授权，也不是最终论文结果。机器可读报告：`reports/JEV_RNG_V4/SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261007.json`。
 
 ### corrected video01 v2 已完成，但 aftercare 为 NO-GO
 
