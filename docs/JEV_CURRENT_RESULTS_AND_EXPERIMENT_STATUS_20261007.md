@@ -10,6 +10,28 @@
 - 原 MPS driver 已 graceful 停止；当前没有 small-gate builder/closed-loop 进程。
 - MPS 前后 bounded equivalence 已通过：早期 `70/70`、晚期 `102/102` 逐条 exact，canonical SHA 和字段比较均一致。实时 15.07 秒抽样增加 250 条，但不据此宣称稳定 ETA。
 
+## 本次只读 evaluator 审计结果（不改变暂停边界）
+
+在不重建 video01、不重训三模型、不启动 Full H8 的前提下，使用已有
+`canonical_test_predictions_order_fixed.json` 做了 evaluator-only 复核。结果报告为
+[`FIXED_EVALUATOR_OFF_CANDIDATE_20261007.json`](../reports/JEV_RNG_V4/FIXED_EVALUATOR_OFF_CANDIDATE_20261007.json)。
+
+- 单视角 TrackEval：`PASS`；HOTA `67.442`、DetA `66.278`、AssA `68.992`、IDF1
+  `82.239`、MOTA `80.942`、IDSW `3092`、Frag `8004`。
+- 跨视角顺序时间轴：CVIDF1 `79.0248`、CVMA `80.9276`；交错时间轴 CVMA
+  `74.2925`。
+- 该结果与既有 output-order 修正诊断值一致；它不是新的 model inference，也不是
+  新的 counterfactual/training 结果。
+- VisionTrack 原始 GT 的重复 track-ID 行被保留，因此本次明确使用
+  `--allow-duplicate-gt` audit mode，不能直接写成最终论文 strict 指标。
+- video01 六小时证据仍然有效：`04:15:18Z` 至 `11:10:35Z`，耗时 `06:55:17.54`，
+  `8995/8995` 条已落盘；但其 runtime feature parity、reactivation candidate parity
+  和 stability 失败，科学结论仍是 `NO_GO_RUNTIME_SEMANTICS_GATE`。
+
+因此当前真正的剩余工作仍是 branch-consistent state/feature audit、reactivation
+candidate-level supervision 和新的 video01 runtime/closed-loop gate；本次 evaluator
+结果没有授权重建 video01、重训或启动 Full H8。
+
 ## 最新补充指令再审计（14:43 UTC）
 
 已重新读取并绑定当前补充指令文件，SHA-256 为

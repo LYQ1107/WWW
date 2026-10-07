@@ -1,0 +1,114 @@
+{
+  "schema_version": "jev_fixed_evaluator_off_candidate_v1",
+  "created_utc": "2026-10-07T15:40:13Z",
+  "classification": "AUDIT_ONLY_NOT_OFFICIAL_PAPER_RESULT",
+  "scope": {
+    "purpose": "Re-evaluate the already existing output-order-fixed GMT OFF predictions after the 1d evaluator audit.",
+    "inference_rerun": false,
+    "counterfactual_rebuild": false,
+    "video01_rebuild": false,
+    "retraining": false,
+    "full_h8_started": false,
+    "old_v2_b20d7_duplicate_compute": "PAUSED",
+    "evaluator_only": true
+  },
+  "source_binding": {
+    "evaluation_worktree": "/data1/liuyeqiang/WWW_segmented_anchor_integration_20261007",
+    "evaluation_commit": "d4107b7a8425bf11134221a99a5909af3f55bf02",
+    "canonical_1d_source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+    "canonical_evaluator_fix_commit": "830c5cc",
+    "canonical_evaluator_regression_commit": "623d16d",
+    "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+    "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+    "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8"
+  },
+  "input_binding": {
+    "predictions": "/data1/liuyeqiang/WWW/outputs/research_final_v2/baseline_debug/canonical_test_predictions_order_fixed.json",
+    "predictions_sha256": "263f6aaedbac159e6c3c4a2703dd31b0ca0d24bfe7f351bd0807872c5af57903",
+    "annotation_sha256": "7a1e735bf25026a56148deaeb432e0520c6ad5dad97d5362aa58739255389593",
+    "prepared_manifest": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/fixed_evaluator_candidate_20261007/prepared/manifest.json",
+    "prepared_manifest_sha256": "b0559b9992f6d0a9ddae46f4707d1d2d95b4e2cd90a3ef3a4c1aaded09aac8f2"
+  },
+  "single_view_evaluation": {
+    "status": "PASS",
+    "output": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/fixed_evaluator_candidate_20261007/evaluation",
+    "metrics_json_sha256": "5621629edec491503bcf888b3833f5cb5c00d15ed344f3bee7f56854a2aa7957",
+    "detailed_csv_sha256": "17423004f887dba1377ac18035ad367af53e9523e9031d036ce7d9bc842679a245",
+    "strict_online": true,
+    "test_gt_tuning": false,
+    "allow_duplicate_gt": true,
+    "gt_policy": "Raw downloaded GT retained; duplicate-ID validation bypassed only by explicit audit flag.",
+    "sequence_count": 44,
+    "image_count": 58038,
+    "prediction_rows": 527474,
+    "metrics_percent": {
+      "HOTA": 67.442,
+      "DetA": 66.278,
+      "AssA": 68.992,
+      "IDF1": 82.239,
+      "MOTA": 80.942,
+      "IDSW": 3092,
+      "Frag": 8004
+    },
+    "duplicate_gt_rows_present": true,
+    "duplicate_gt_sequences": {
+      "00018court1_View1": 1,
+      "00043football_View2": 1,
+      "00051football_View2": 199,
+      "00067football_View1": 77,
+      "00067football_View2": 2,
+      "00121park_View2": 1,
+      "00156basketball_View2": 1,
+      "00161basketball_View1": 2,
+      "00161basketball_View2": 3,
+      "00183canteen_View1": 29
+    }
+  },
+  "cross_view_evaluation": {
+    "status": "PASS",
+    "output": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/fixed_evaluator_candidate_20261007/crossview",
+    "metrics_json_sha256": "188fd3381bfc722f27c81635ad367af53e9523e9031d036ce7d9bc842679a245",
+    "allow_duplicate_gt": true,
+    "gt_policy": "Raw per-view GT retained; no GT labels changed.",
+    "metric_policy": "CVIDF1 = Identity IDF1 * 100; CVMA = CLEAR MOTA * 100.",
+    "sequential_time_axis": {
+      "CVIDF1": 79.0247946422766,
+      "CVMA": 80.92757739866042,
+      "IDSW": 3176,
+      "Frag": 8115
+    },
+    "interleaved_time_axis": {
+      "CVIDF1": 79.0247946422766,
+      "CVMA": 74.29254470179842,
+      "IDSW": 42197,
+      "Frag": 166690
+    }
+  },
+  "video01_six_hour_evidence": {
+    "report": "reports/JEV_RNG_V4/VIDEO01_SIX_HOUR_RUNTIME_EVIDENCE_20261007.json",
+    "builder_start_utc": "2026-10-07T04:15:18Z",
+    "builder_completion_utc": "2026-10-07T11:10:35Z",
+    "elapsed_human": "06:55:17.54",
+    "records": 8995,
+    "records_sha256": "1da2ed9e7eec43c7cf139754d873f78a299c344ff74d65c6866b92f18f3da79",
+    "scientific_decision": "NO_GO_RUNTIME_SEMANTICS_GATE",
+    "reason": "Provenance passed, but runtime feature parity, reactivation candidate parity, and three-repeat stability failed; closed-loop was not authorized."
+  },
+  "interpretation": {
+    "result_matches_existing_fixed_diagnostic": true,
+    "canonical_off_paper_result": false,
+    "why_not_official": [
+      "This was evaluator-only; no new model inference was run.",
+      "The raw test GT contains duplicate track-ID rows and was evaluated only in explicit audit mode.",
+      "The formal output-order-fixed inference/evaluation gate and the separate corrected video01 controller gate remain distinct.",
+      "Full H8 remains PAUSED_NONCANONICAL and unauthorized."
+    ]
+  },
+  "remaining_work": [
+    "Keep old v2/b20d7 duplicate computation paused.",
+    "Do not rebuild video01 or retrain from this evaluator result.",
+    "Complete branch-consistent learned-controller state/feature audit.",
+    "Resolve reactivation candidate-level supervision and long-horizon return coverage.",
+    "Only after a new video01 runtime/closed-loop GO may a frozen source commit be considered for Full H8 authorization."
+  ]
+}
