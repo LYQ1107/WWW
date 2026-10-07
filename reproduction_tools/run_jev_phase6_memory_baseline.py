@@ -5,7 +5,7 @@ from pathlib import Path
 
 import torch
 
-from jev_phase6_common import OUT,save,sha,protect_anchor
+from jev_phase6_common import OUT,save,sha,protect_anchor,new_output
 from jev_phase6_rollouts import NativeReplayLab
 
 
@@ -37,7 +37,10 @@ def main(video,condition,device):
             old_weight=.9 if condition=='M3' else .2 if condition=='M5' else .9+.1*(1-max(0,min(1,(confidence-.4)/.6)))
             prototypes[track]=feature.clone() if track not in prototypes else old_weight*prototypes[track]+(1-old_weight)*feature
     output=OUT/f'memory_baselines/video{video:02d}/{condition}'
-    result=lab.run(output,intervention=choose,after_step=after)
+    if condition=='M0':
+        new_output(output);lab.pilot.PILOT=output
+        result=json.loads((OUT/f'lifecycle/video{video:02d}/baseline/result.json').read_text())
+    else:result=lab.run(output,intervention=choose,after_step=after)
     dataset=lab.pilot.prepare_eval_dataset(lab.subset)
     prepared,evaluated=lab.pilot.run_eval('jev',Path(result['predictions']),dataset)
     metrics=lab.pilot.extract_metrics(evaluated)
@@ -45,6 +48,7 @@ def main(video,condition,device):
            'prediction_sha256':sha(result['predictions']),'baseline_B2_MATCH_frozen':True,
            'representation':'raw GMT ReID scale; EMA weights borrowed from sources, not their full normalized pipelines',
            'bank_eligibility':'native minimum10 actual writes, stale candidate computation and persistent bank order',
+           'M0_reuses_identical_collected_native_run':condition=='M0',
            'official_test_read':False,'full24_authorized':False}
     if condition=='M2':
         reference=json.loads((OUT/f'lifecycle/video{video:02d}/baseline/result.json').read_text())

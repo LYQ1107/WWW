@@ -147,7 +147,7 @@ def train(condition, device):
     print(json.dumps({'condition':condition, 'status':'COMPLETE','trainable_params':parameters}))
 
 
-def replay(condition, video, output, device, max_frame=None):
+def replay(condition, video, output, device, max_frame=None, compact_context=False):
     protect_anchor()
     output = new_output(output)
     empty = OUT / 'empty_debug_inputs.jsonl'
@@ -167,6 +167,16 @@ def replay(condition, video, output, device, max_frame=None):
             binary = condition in {'G1','G2','G3'} and question == 'MATCH_DECISION'
             actual_legal = [a for a in legal if a != 'REASSOCIATE'] if binary else list(legal)
             threshold = None
+            logged_context = dict(context or {})
+            if compact_context and 'tracker_state_before' in logged_context:
+                tracker = logged_context['tracker_state_before']
+                relevant = {logged_context.get('track_id'),logged_context.get('proposal_track_id'),logged_context.get('alternate_track_id')}
+                relevant.discard(None)
+                logged_context['tracker_state_before'] = {
+                    k:tracker[k] for k in ('active_track_ids','id_count','old_reid_ids','stale_ids','memory_bank_size','trajectory_rng_seed','trajectory_rng_calls') if k in tracker}
+                for k in ('track_hits','memory_lengths'):
+                    logged_context['tracker_state_before'][k]={str(t):tracker.get(k,{}).get(str(t),0) for t in relevant}
+                logged_context['tracker_state_before']['global_lifetime_maps_omitted_from_diagnostic_dump']=True
             if condition == 'G0' or question != 'MATCH_DECISION':
                 original_action = action = off_action
             elif condition in {'G1','G2'}:
@@ -177,7 +187,7 @@ def replay(condition, video, output, device, max_frame=None):
                 action = original_action = controller.decide_strict(controller_feature, actual_legal)
                 threshold = float(controller.threshold_for(controller_feature).detach()[0])
             else:
-                original_action = original_choose(policy, feature, question, actual_legal, off_action, context=context)
+                original_action = original_choose(policy, feature, question, actual_legal, off_action, context=logged_context)
                 action = original_action
                 if original_action == 'REASSOCIATE' and condition in {'G4a','G4b'}:
                     action = 'START_NEW' if condition == 'G4a' else 'ACCEPT_CURRENT'
@@ -185,7 +195,7 @@ def replay(condition, video, output, device, max_frame=None):
                 raise RuntimeError('illegal Phase VI action')
             counts[(question,action)] += 1; original_counts[(question,original_action)] += 1
             item = {'question':question,'action':action,'original_policy_action':original_action,'off_action':off_action,
-                    'legal_actions':actual_legal,'feature_vector':feature.detach().cpu().tolist(),'context':context or {}}
+                    'legal_actions':actual_legal,'feature_vector':feature.detach().cpu().tolist(),'context':logged_context}
             if threshold is not None: item['learned_threshold'] = threshold
             writer.write(json.dumps(item,sort_keys=True,allow_nan=False)+'\n')
             stamp = time.monotonic()
@@ -214,6 +224,7 @@ def replay(condition, video, output, device, max_frame=None):
              'actions':{q:dict((a,n) for (qq,a),n in counts.items() if qq==q) for q in ('MATCH_DECISION','MEMORY_DECISION','REACTIVATION_DECISION')},
              'original_policy_actions':{q:dict((a,n) for (qq,a),n in original_counts.items() if qq==q) for q in ('MATCH_DECISION','MEMORY_DECISION','REACTIVATION_DECISION')},
              'official_test_read':False,'full24_authorized':False,'completed_utc':now(),'max_frame':max_frame,'prepared':str(prepared),'evaluation':str(evaluated)}
+    value['diagnostic_context_compact']=compact_context
     if video == 1 and max_frame is None and condition in {'G0','G5'}:
         reference = json.loads((PHASE5/('ablations/A0/result.json' if condition=='G0' else 'minimal_tracking/B2/result.json')).read_text())
         value['frozen_reproduction'] = {'prediction_sha_identical':value['predictions_sha256']==reference['predictions_sha256'],
@@ -253,10 +264,11 @@ def main():
     parser.add_argument('--output',type=Path)
     parser.add_argument('--device',default='cuda:0')
     parser.add_argument('--max-frame',type=int)
+    parser.add_argument('--compact-context',action='store_true')
     args=parser.parse_args()
     if args.mode=='prepare':prepare()
     elif args.mode=='train':train(args.condition,args.device)
-    elif args.mode=='replay':replay(args.condition,args.video,args.output,args.device,args.max_frame)
+    elif args.mode=='replay':replay(args.condition,args.video,args.output,args.device,args.max_frame,args.compact_context)
     else:aggregate()
 
 

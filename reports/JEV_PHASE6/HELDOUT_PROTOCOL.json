@@ -27,5 +27,20 @@
   "no_tuning_using_heldouts": true,
   "all_failures_and_results_must_be_reported": true,
   "official_test_read": false,
-  "full24_authorized": false
+  "full24_authorized": false,
+  "conditions": [
+    "G0",
+    "G1",
+    "G2",
+    "G3",
+    "G5"
+  ],
+  "comparison_budget": "all frozen fixed20epoch checkpoints, no sequence-wise tuning; complete heldouts for GMT, scalar gate, dynamic gate, binary JEV and B2",
+  "compact_diagnostic_context": "full64D features, legal actions, candidate scores/IDs and RNG preserved; global lifetime dictionaries omitted from dump, only local proposed identity stats retained. Controller forward never consumes this diagnostic context.",
+  "checkpoint_sha256": {
+    "G1": "dc8a3b68e66126b3824e2b3eb85f6b9b1b0337700c56ba7d96cdef6a1099ac07",
+    "G2": "8f0c56e41cbc3100ccc9626ba33e65b80b278b7e94c882a9a0ebb8708ac0927b",
+    "G3": "d1589b7b51fe1b46e99ac8d5398d06330a4246c40350e35d2668369be05bed1d",
+    "G5": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7"
+  }
 }
