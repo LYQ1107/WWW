@@ -277,10 +277,17 @@ def ordered_production_keys(
 
 def _controller_semantics(engine: CachedPerceptionMutableAssociationV2):
     model = getattr(getattr(engine, "association_fn", None), "model", None)
+    threshold = float(
+        getattr(model, "overlap_thresh", engine.acceptance_threshold)
+    )
     return {
-        "threshold": float(
-            getattr(model, "overlap_thresh", engine.acceptance_threshold)
-        ),
+        "threshold": threshold,
+        # GMT has a separate threshold for stale memory-bank reactivation.
+        # It is not interchangeable with the ordinary MATCH threshold.
+        # Keeping both values in the semantic bundle prevents the dataset
+        # builder from emitting a feature vector that disagrees with the
+        # production reactivation runtime by (bank_threshold - threshold).
+        "bank_threshold": float(getattr(model, "thred_bank", threshold)),
         "can_reassociate": bool(getattr(model, "jev_max_reassociate", 1)),
         "memory_enabled": bool(getattr(model, "with_bank", True)),
         "with_iou": bool(getattr(model, "with_iou", True)),
@@ -473,7 +480,7 @@ def canonical_state_feature_for_event(
             state_dim=64,
             accept_score=0.0,
             reassociate_score=score,
-            threshold=semantics["threshold"],
+            threshold=semantics["bank_threshold"],
             candidate_count=1,
             candidate_entropy=0.0,
             track_count=len(track_ids),
