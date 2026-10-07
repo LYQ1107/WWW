@@ -242,6 +242,7 @@ def worker(args):
                     trace=trace_path(chunk["video_id"]), cache_root=CACHE, annotations=ANNOTATIONS,
                     checkpoint_hash=plan["binding"]["gmt_checkpoint_sha256"], horizon=8,
                     association_backend="formal_gmt_transformer", engine=model, cache_obj=lru, gt_bundle=gt,
+                    cache_keys_by_video={chunk["video_id"]: [k for k in cache.keys() if k[0] == chunk["video_id"]]},
                     record_sink=sink, video_ids=[chunk["video_id"]], initial_state=state,
                     key_start_index=chunk["key_start"], key_end_index=chunk["key_end"],
                     selected_key_range=(chunk["key_start"], chunk["key_end"]), progress_callback=publish)
