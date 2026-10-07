@@ -19,6 +19,27 @@ def projection(row):
     return row
 
 
+def shard_json_bytes(path, dest):
+    """Losslessly shard oversized JSON without parsing or changing whitespace."""
+    entries=[];source_digest=sha(path);offset=0;part=0
+    with path.open('rb') as reader:
+        while True:
+            data=reader.read(32*1024*1024)
+            if not data:break
+            chunk=dest.with_name(dest.name+f'.part{part:05d}.gz')
+            chunk.parent.mkdir(parents=True,exist_ok=True)
+            with chunk.open('wb') as raw:
+                with gzip.GzipFile(filename='',mode='wb',fileobj=raw,mtime=0,compresslevel=3) as writer:
+                    writer.write(data)
+            entries.append({'source':str(path),'archive':str(chunk.relative_to(REPORTS)),
+                'source_sha256':source_digest,'archive_sha256':sha(chunk),
+                'source_bytes':path.stat().st_size,'archive_bytes':chunk.stat().st_size,
+                'source_byte_bounds':[offset,offset+len(data)],
+                'reconstruction':'concatenate decompressed numbered byte parts in ascending order; exact original JSON bytes'})
+            offset+=len(data);part+=1
+    return entries
+
+
 def archive(relative):
     protect_anchor()
     source = (OUT / relative).resolve()
@@ -55,6 +76,11 @@ def archive(relative):
                 'archive_format':'diagnostic projection; not a lossless copy of full candidate arrays',
                 'preserved':'every original 64D controller input, legal action, selected action, proposal metadata; exact predictions and evaluator outputs separately retained',
                 'omitted':'diagnostic candidate IDs/scores after first8; original count retained; full source remains at declared runtime path with SHA'})
+            continue
+        if path.suffix=='.json' and path.stat().st_size>128*1024*1024:
+            entries.extend(shard_json_bytes(path,dest))
+            previous=dest.with_name(dest.name+'.gz')
+            if previous.exists():previous.unlink()
             continue
         if path.suffix=='.jsonl' and path.stat().st_size>128*1024*1024:
             source_digest=sha(path);line_start=1;part=0

@@ -1,13 +1,15 @@
 {
-  "status": "PREREGISTERED_BEFORE_COMPLETE_STANDALONE_CLOSED_LOOP_METRICS",
-  "component": "canonical REACTIVATION",
-  "decision_sequence": "complete clean canonical20epoch fixed model on train24 and val23; compare val23 HOTA and AssA against frozen native B2 M0. If either primary metric decreases, disable learned REACTIVATION under the third stop condition.",
-  "augmentation_eligible_if": "clean canonical REACT has no decrease in both val23 primary metrics; shared unified corruption training remains ineligible because structured MATCH gate fails and MEMORY has zero informative examples",
-  "conditional_bounded_augmentation": "12 train24 prefixes selected from existing32 reservoir using seed20261008 without GT/outcome filtering; actual missing-memory-write, contaminated-memory-anchor, stale-bank-dropout state perturbations; regenerate current features and paired live future targets, not feature noise with old targets. Compare fixed same20epoch39,712-param clean vs clean+aug heads on same complete train24/val23.",
   "MATCH_corruption_scope": "wrong previous MATCH, missed association and false birth are deferred with ineligible unified MATCH training; frozen B2 is never fitted on corruptions in this phase",
+  "augmentation_design_role": "unexecuted conditional design recorded after runs; no preregistered augmentation outcome claim",
+  "augmentation_eligible_if": "clean canonical REACT has no decrease in both val23 primary metrics; shared unified corruption training remains ineligible because structured MATCH gate fails and MEMORY has zero informative examples",
   "checkpoint_selection": "same fixed last20epoch for each condition, val-only temperature, no01/heldout tuning or sweep",
-  "original_match_or_heldout_gates_revised": false,
-  "official_test_read": false,
+  "component": "canonical REACTIVATION",
+  "conditional_bounded_augmentation": "12 train24 prefixes selected from existing32 reservoir using seed20261008 without GT/outcome filtering; actual missing-memory-write, contaminated-memory-anchor, stale-bank-dropout state perturbations; regenerate current features and paired live future targets, not feature noise with old targets. Compare fixed same20epoch39,712-param clean vs clean+aug heads on same complete train24/val23.",
+  "decision_sequence": "complete clean canonical20epoch fixed model on train24 and val23; compare val23 HOTA and AssA against frozen native B2 M0. If either primary metric decreases, disable learned REACTIVATION under the third stop condition.",
   "full24_authorized": false,
-  "what_did_we_learn": "pending complete clean-component metrics; obey the requested stopping condition before expanding a failing component"
+  "official_test_read": false,
+  "original_match_or_heldout_gates_revised": false,
+  "registration_correction": "This file was written after metrics had finished computing, before they were inspected in the next tool result. It is not an empirical preregistration. The third stop itself was explicitly required in the original user goal before any experiment.",
+  "status": "POST_RUN_DOCUMENTATION_OF_PREEXISTING_USER_THIRD_STOP",
+  "what_did_we_learn": "Canonical clean REACT improves train24 but loses both val23 primary metrics; the original user third stop applies. Do not expand or deploy the failing learned component."
 }

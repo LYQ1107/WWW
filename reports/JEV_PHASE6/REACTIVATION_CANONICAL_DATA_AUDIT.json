@@ -24,10 +24,302 @@
     "last_reliable_quality",
     "assigned_candidate_score"
   ],
+  "THIRD_STOP_CONDITION": true,
   "absolute_frame_or_virtual_frame_inputs": false,
+  "complete_closed_loop": {
+    "23": {
+      "actions": {
+        "REACTIVATE_OLD": 52,
+        "START_NEW": 404
+      },
+      "delta_vs_native_B2": {
+        "AssA": -0.6886958021618383,
+        "HOTA": -0.3754067721241441,
+        "IDF1": -0.20880459370106053,
+        "IDSW": 10.0
+      },
+      "metrics": {
+        "AssA": 56.106717180154405,
+        "DetA": 65.72958604375391,
+        "Frag": 1348.0,
+        "HOTA": 60.624760548807856,
+        "IDF1": 77.42748522285672,
+        "IDSW": 1638.0,
+        "MOTA": 82.95787260159575
+      },
+      "prediction_sha256": "1bd62109729888b171422a28ddd2b93018fa8db156074683d1309c7ede67bfa8"
+    },
+    "24": {
+      "actions": {
+        "REACTIVATE_OLD": 89,
+        "START_NEW": 906
+      },
+      "delta_vs_native_B2": {
+        "AssA": 1.187258502480141,
+        "HOTA": 0.6580456880159389,
+        "IDF1": 1.0501773948302144,
+        "IDSW": -123.0
+      },
+      "metrics": {
+        "AssA": 57.28133776367136,
+        "DetA": 66.38318365008334,
+        "Frag": 1023.0,
+        "HOTA": 61.436946293530916,
+        "IDF1": 74.81398884946782,
+        "IDSW": 1518.0,
+        "MOTA": 79.75126410950509
+      },
+      "prediction_sha256": "119878729de007b4da13bb649d1a2089bde7cd3b0467928a51cd2ef0cef24755"
+    }
+  },
   "coordinate_contract": "cache0 to annotation1, exact image IDs, one-to-one offline IoU>=0.5",
+  "fit": {
+    "best_action_counts": {
+      "23": {
+        "REACTIVATE_OLD": 3,
+        "START_NEW": 6
+      },
+      "24": {
+        "REACTIVATE_OLD": 5,
+        "START_NEW": 11
+      }
+    },
+    "checkpoint_selection": "fixed last20epoch, train24/val23 only; no video01 or heldout tuning",
+    "checkpoint_sha256": "c62ba683bd53e085dae5fb6059c5b7f0c59eb5b2b96b14853a63e322652682ad",
+    "eligibility": {
+      "informative": {
+        "23": 9,
+        "24": 16
+      },
+      "kind": "REACT",
+      "minimum_train": 4,
+      "minimum_validation": 2,
+      "role": "bounded standalone diagnostic, not unified JEV training or generalization evidence",
+      "source_sha256": {
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_000.json": "8f9f3be60cb5416591c2fb967482879a90230c8115eccf441829983d83c6f6d4",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_001.json": "7b694f7a66e4bd231bdf2571313a4ac0a2ff2ff4034e5e6e8a6e0581ce337ad5",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_002.json": "0b6803df75af6adfd7be9ecd083d5d0fde0836b552f2fc3a7ccf42bc57a33438",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_003.json": "eafcc32a527caf10eaa7097a3bde9f95e190f63ea28fbb9689c2d04dda7287cc",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_004.json": "6fa3e9e0a9ae7cd14414b1562e66690362871923655a2e6cb48c931f339f100f",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_005.json": "6d023f14ecd004e701564b9b5793f8eb34cbf681a8fe29114d36d36db81e142f",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_006.json": "2cf01a64c7e35b85b381a8577604bdf78fd40115661ebe867676bbee258f1723",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_007.json": "ad50ad89dccd31954d4a2ecc3c94cb0f19baaa6a9087fc7e4048cba5a4e5117e",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_008.json": "ca745045b5f02a9d82b22a953c0741faecf6bcd9659d2f9d87b524a5e911345f",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_009.json": "8835985a5314ce5d111f60943fc8082d7b5fbbf104b13a652f124138fb5f4f8b",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_010.json": "961514bbb0750e07125aebc4e14517b6b0600c28cd901bfaa947b558551b6723",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_011.json": "72d37d262585bd58d7b5ba5e26e62f05a9291159e4e713288335fba38e585239",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_012.json": "b53cac36b888538111beb64cd3540026f6c03f2c3e6ecd544f61d16d6cd20211",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_013.json": "e46c656070308d8576d4fa99fe189a1ad071cf13957ccc7e3b42c298abd7f9e0",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_014.json": "484d368d72912d7468b4749acee227ad434c9bc53d0e0a4e674fb465d04e26f8",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/labels/REACT_015.json": "967accfde87b08f6a0f4ba93361d85fdba2a2020657fe2cdba11ef974940cd6d",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_000.json": "954fa7a40d7e18c7ed8ec4e74c52576e12758bdcd9aed8c12de907455ddb8f88",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_001.json": "20a1f122405276518422eca936cb44c9f2e790eef0f5feff8e0bfc21e5c8db65",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_002.json": "667de9ee4351353cf5c6a2790a21cbbeddb2eee496dce810fa6e71ae89cf95ac",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_003.json": "c6a89a229ad19d64503e0501d4a2f8bdfd2bf9dd0452687ac7a5a73d609cd4a1",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_004.json": "d0266d8b14cb014ddf8fabdf031c571494e343c73c035b557efdb820cbad4800",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_005.json": "ec48a1cc778299827af28420d3e0158f2976c279a8d4ff93d9bfca64a7f4a20f",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_006.json": "e137f9484009229a9ae7f9cd22e9fdf97272ba94a8ca98cca57aacff84d8663b",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_007.json": "1a6a1ff44e6a0ecc5d48394ab15cf9827a9d3530722d05e87461d6a85c2e4aeb",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_008.json": "663010a2f15055f124cd5a5ed65e018781f4b02a90764756cf4f9cf39f33b9eb",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_009.json": "87d6517cdd9f2035c6b47b77016fc7fc5daaad439e246c29c908bbfdb54eb223",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_010.json": "7deb1715f00aca94c03d06a926a5b616bb4c0d9aebec64e3386a5bb30a20abd4",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_011.json": "1816e622e6685ddc7a4f5577a42fd78625c24ec4b9974e351d1b4f4f706691a6",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_012.json": "b8e40482d169bf0ae3d03c85f8b83290fb3f047d2647e70679bf9bb4c44761e8",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_013.json": "fb4ec9232e538ac4409c41d122fb85dcf3cf54f2fc1a681d6be0a2fe0507f1cf",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_014.json": "a01fc23e77866e2e1ab6838c8a9219b25d30e4b7e9994a2bf973c37851378f71",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_015.json": "76fc51104b36d58cabe7770ec39273140142337fe79ac382a5634ae5a031034f",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_016.json": "fb7f721e1ac302cf5b4348b00e2dd997e7c49963bf4a3baa08d696d62eaf2191",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_017.json": "c9cf46593c77ecc3fc92c07eb932bfa63670c66790743b431e07c4661eff3177",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_018.json": "24068427e9c92f2395ecdeacabf50ecf087d528d2c1713ed15bb763e206ec271",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_019.json": "8861a9c33c6c84cd93dafbd63813027c66ed869f3405b1b4dee39df2f12ad92e",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_020.json": "0467e8df4dd9abc0baf567417d8a63f6cbca189c5912c53b215087d1232d11af",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_021.json": "2106e254dcbaa34581057bc871e83c06df6f1e918c98a17f64feb2316597a232",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_022.json": "9bcb0e2270ed183c159d5944ea89382de0e4c1e094ae03e0390a14fd5f59a00d",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_023.json": "0067c450fba28dd6b27d2bf32406088f23911e431c78463401e36505bc4db50c",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_024.json": "a6e6277a8dd74e8929afba3d8482733c31d5ac3a908b09e390f94376759a3397",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_025.json": "41e264d9129879427841c0cdec1e4fdcf51eeec8084d3493aeec3a105b524f71",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_026.json": "31fa19a0dbbc4917d8814659fd8d6d7bee5a2c6808a3fc71444bdd11af7751fa",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_027.json": "113caf6faee25a4c26d366767d8255e4b05f9413bc4edc7e4604d76f563b4112",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_028.json": "4762c28e9d27de8716f9d8a5a21c6d7dc217014e08289cbbcaf0e9b994b21542",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_029.json": "57326bb8f411942e20a7d13e6e5a89000becb05c8397ce2129cc244c0fa32754",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_030.json": "6210336209c9a41cbd2a7d05bd28ca5160bcf8c0dcc23d91d1793ba3020022a8",
+        "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/labels/REACT_031.json": "e68864c607305f7da937d2bb15fc1fad7434b62bddfab82d7eefdd799c6d2c28"
+      },
+      "status": "ELIGIBLE"
+    },
+    "history": [
+      {
+        "epoch": 1,
+        "loss": 0.7058406472206116,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.668397068977356
+        }
+      },
+      {
+        "epoch": 2,
+        "loss": 0.6575242280960083,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6631385087966919
+        }
+      },
+      {
+        "epoch": 3,
+        "loss": 0.6389636397361755,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6688210964202881
+        }
+      },
+      {
+        "epoch": 4,
+        "loss": 0.6343041658401489,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6758450865745544
+        }
+      },
+      {
+        "epoch": 5,
+        "loss": 0.6345039010047913,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6780083179473877
+        }
+      },
+      {
+        "epoch": 6,
+        "loss": 0.6337295174598694,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6752480268478394
+        }
+      },
+      {
+        "epoch": 7,
+        "loss": 0.6310469508171082,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6705241799354553
+        }
+      },
+      {
+        "epoch": 8,
+        "loss": 0.6282462477684021,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6668415069580078
+        }
+      },
+      {
+        "epoch": 9,
+        "loss": 0.6270169019699097,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6654226779937744
+        }
+      },
+      {
+        "epoch": 10,
+        "loss": 0.6269134283065796,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6655203104019165
+        }
+      },
+      {
+        "epoch": 11,
+        "loss": 0.6259023547172546,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6665971875190735
+        }
+      },
+      {
+        "epoch": 12,
+        "loss": 0.6232761144638062,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6691303253173828
+        }
+      },
+      {
+        "epoch": 13,
+        "loss": 0.620003342628479,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6733089685440063
+        }
+      },
+      {
+        "epoch": 14,
+        "loss": 0.6171331405639648,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6776504516601562
+        }
+      },
+      {
+        "epoch": 15,
+        "loss": 0.6141940355300903,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6797829866409302
+        }
+      },
+      {
+        "epoch": 16,
+        "loss": 0.6094692349433899,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6794425249099731
+        }
+      },
+      {
+        "epoch": 17,
+        "loss": 0.6026574373245239,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.680135190486908
+        }
+      },
+      {
+        "epoch": 18,
+        "loss": 0.5960239768028259,
+        "validation": {
+          "positive_weight_accuracy": 0.6666666865348816,
+          "weighted_nll": 0.6858466863632202
+        }
+      },
+      {
+        "epoch": 19,
+        "loss": 0.5885922312736511,
+        "validation": {
+          "positive_weight_accuracy": 0.5555555820465088,
+          "weighted_nll": 0.6968319416046143
+        }
+      },
+      {
+        "epoch": 20,
+        "loss": 0.5776668787002563,
+        "validation": {
+          "positive_weight_accuracy": 0.4444444477558136,
+          "weighted_nll": 0.7119765877723694
+        }
+      }
+    ],
+    "kind": "REACT",
+    "official_test_read": false,
+    "runtime_MATCH": "permanent frozen B2, separate unchanged controller; this typed core handles the selected diagnostic question only",
+    "status": "COMPLETE",
+    "temperature_validation_only": 2.507640054913729,
+    "trainable_parameters": 39712,
+    "unified_training": false
+  },
   "full24_authorized": false,
   "future_policy": "frozen native B2 MATCH, live GMT MEMORY/REACT except isolated current intervention",
+  "learned_REACTIVATION_enabled": false,
   "legacy_commit_prefixes_used_in_training": false,
   "official_test_read": false,
   "old_legacy_metadata_events_are_supervision": false,
@@ -208,5 +500,5 @@
       "source_manifest_sha256": "a67a120bb9f076901695853cdd95f870942c39fafb18dd7d3879223f712c5593"
     }
   },
-  "what_did_we_learn": "Real canonical coverage differs from legacy metadata counts. Relative features and exact reconstructed native prefixes now provide actual train24/val23 events; coverage alone does not establish a useful learned recovery policy."
+  "what_did_we_learn": "Canonical coverage and relative-state supervision repair the old zero-example protocol, but the fixed head improves train24 while harming complete val23. Training accuracy/coverage do not establish rescue; disable learned REACTIVATION under the requested third stop."
 }
