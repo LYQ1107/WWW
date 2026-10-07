@@ -49,6 +49,12 @@ Evidence:
   showed no OOM or worker exit. This is a wall-clock scheduling change only,
   not a research result. Full provenance and finalization gates remain
   unchanged. Evidence: `reports/JEV_RNG_V4/FULL_H8_SLOT2_ACCELERATION_20261007.json`.
+- At `2026-10-07T01:40Z`, a third supervised slot was added on the same safe
+  GPUs. It claimed video11, video12, video13, and video19; all 12 Full-H8
+  workers were alive at the first resource check, with no OOM or failure.
+  GPU0/video01 and the reserved GPUs 2/3/5/7 were untouched. This remains a
+  scheduling-only acceleration, not a research result. Evidence:
+  `reports/JEV_RNG_V4/FULL_H8_SLOT3_ACCELERATION_20261007.json`.
 
 ## Required next order
 

@@ -1,0 +1,35 @@
+{
+  "schema_version": "jev_full_h8_slot3_acceleration_v1",
+  "created_utc": "2026-10-07T01:40:13Z",
+  "classification": "RUNTIME_SCHEDULING_CHANGE_NOT_RESEARCH_RESULT",
+  "status": "RUNNING",
+  "supervisor": {
+    "pid": 7380,
+    "slots_per_gpu": 3,
+    "safe_gpus": [1, 4, 6, 8, 9],
+    "include_gpu0": false,
+    "queue": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head/queue_state.json",
+    "foreign_gpus_never_used": [2, 3, 5, 7]
+  },
+  "new_workers_at_observation": [
+    {"video_id": 13, "worker": "gpu4-slot3", "pid": 7418},
+    {"video_id": 11, "worker": "gpu6-slot3", "pid": 7425},
+    {"video_id": 19, "worker": "gpu8-slot3", "pid": 7439},
+    {"video_id": 12, "worker": "gpu9-slot3", "pid": 7453}
+  ],
+  "invariants_preserved": {
+    "video01_builder_stopped": false,
+    "original_full_h8_workers_stopped": false,
+    "slot2_workers_stopped": false,
+    "foreign_gpus_started": false,
+    "baseline_rerun": false
+  },
+  "gpu_observation_at_2026_10_07T01_40_13Z": [
+    {"gpu": 4, "memory_used_mib": 12989, "memory_total_mib": 32508, "utilization_percent": 82},
+    {"gpu": 6, "memory_used_mib": 6655, "memory_total_mib": 32508, "utilization_percent": 79},
+    {"gpu": 8, "memory_used_mib": 13643, "memory_total_mib": 32508, "utilization_percent": 73},
+    {"gpu": 9, "memory_used_mib": 10447, "memory_total_mib": 32508, "utilization_percent": 86}
+  ],
+  "active_full_h8_worker_count": 12,
+  "interpretation": "This is only supervised queue concurrency. It does not establish a tracking result or alter the frozen GMT baseline; all manifest, provenance, parity, finalization, and evaluation gates remain mandatory."
+}
