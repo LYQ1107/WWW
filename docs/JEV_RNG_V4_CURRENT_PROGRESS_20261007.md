@@ -34,8 +34,8 @@ corrected video01 完成
 ### segmented small gate（当前仍在运行）
 
 - MPS 恢复后的 driver PID `1819` 存活，7 张卡 `[2,3,5,6,7,8,9]`，28 workers（4/GPU）。
-- 最新快照：`8281/17491` 条（该计数包含 running partials），`26 COMPLETE / 28 RUNNING / 34 PENDING`。
-- video01：`21 complete / 11 running / 13 pending`；video06：`5 / 11 / 10`；video07：`0 / 6 / 11`。
+- 最新快照：`13734/17491` 条（该计数包含 running partials），`55 COMPLETE / 28 RUNNING / 5 PENDING`。
+- video01：`32 complete / 11 running / 2 pending`；video06：`16 / 9 / 1`；video07：`7 / 8 / 2`。
 - MPS 前后 bounded equivalence：早期 `70/70`、晚期 `102/102` exact，candidate events（晚期）`167`，mismatch `0`。
 - 这是 small-gate live evidence，不是 Full H8 授权，也不是最终论文结果。机器可读报告：`reports/JEV_RNG_V4/SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261007.json`。
 

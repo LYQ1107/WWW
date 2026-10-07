@@ -18,8 +18,9 @@
 The Full H8 run is not “running in the background” anymore. It is a preserved
 speculative build and must not be resumed from the current queue.
 
-The separate segmented small gate is still allowed to run. Its current queue is
-`26 COMPLETE / 28 RUNNING / 34 PENDING` across video01/video06/video07. The
+The separate segmented small gate is still allowed to run. Its latest queue is
+`55 COMPLETE / 28 RUNNING / 5 PENDING` across video01/video06/video07, with
+`13734/17491` records counted including running partials. The
 MPS transition was checked on two bounded probes: `70/70` early records and
 `102/102` late records were exact, with zero late candidate mismatches. This
 does not authorize Full H8 or create a final paper result.

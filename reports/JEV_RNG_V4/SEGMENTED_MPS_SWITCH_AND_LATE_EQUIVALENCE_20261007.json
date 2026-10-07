@@ -1,6 +1,6 @@
 {
   "schema_version": "jev_segmented_mps_switch_and_late_equivalence_v1",
-  "created_utc": "2026-10-07T12:05:14Z",
+  "created_utc": "2026-10-07T12:12:31Z",
   "classification": "LIVE_BUILD_AUDIT_NOT_FINAL_RESULT",
   "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
   "source_branch": "jev/segmented-small-gate-20261007",
@@ -91,6 +91,26 @@
     },
     "error_files": [],
     "drain_state_file": {"status": "COMPLETE", "resumed_pid": 1819}
+  },
+  "latest_live_snapshot": {
+    "observed_utc": "2026-10-07T12:12:31Z",
+    "progress": {
+      "phase": "building",
+      "completed_records_including_running_partials": 13734,
+      "total_records": 17491,
+      "chunks": {"COMPLETE": 55, "RUNNING": 28, "PENDING": 5}
+    },
+    "queue_by_video": {
+      "video01": {"COMPLETE": 32, "RUNNING": 11, "PENDING": 2},
+      "video06": {"COMPLETE": 16, "RUNNING": 9, "PENDING": 1},
+      "video07": {"COMPLETE": 7, "RUNNING": 8, "PENDING": 2}
+    },
+    "process": {"pid": 1819, "alive": true, "workers": 28, "workers_per_gpu": 4},
+    "error_files": [],
+    "gpu_observation": {
+      "utilization_percent": {"2": 35, "3": 32, "5": 30, "6": 31, "7": 31, "8": 40, "9": 35},
+      "memory_used_mib": {"2": 4939, "3": 4937, "5": 4941, "6": 4939, "7": 4937, "8": 4939, "9": 4939}
+    }
   },
   "interpretation": {
     "mps_transition_equivalence": "PASS on both bounded probes",
