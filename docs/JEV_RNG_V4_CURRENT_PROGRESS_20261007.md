@@ -1,6 +1,6 @@
 # JEV RNG v4 current progress — 2026-10-07
 
-**Snapshot:** `2026-10-07T12:05:14Z`
+**Snapshot:** `2026-10-07T12:43:25Z`
 **Classification:** live research status, not a final paper result
 
 ## 结论先行
@@ -31,11 +31,10 @@ corrected video01 完成
 
 ## 当前运行状态
 
-### segmented small gate（当前仍在运行）
+### segmented small gate（已完成）
 
-- MPS 恢复后的 driver PID `1819` 存活，7 张卡 `[2,3,5,6,7,8,9]`，28 workers（4/GPU）。
-- 最新快照：`13734/17491` 条（该计数包含 running partials），`55 COMPLETE / 28 RUNNING / 5 PENDING`。
-- video01：`32 complete / 11 running / 2 pending`；video06：`16 / 9 / 1`；video07：`7 / 8 / 2`。
+- MPS 恢复后的 driver 已在 acceptance boundary graceful 停止；7 张卡 `[2,3,5,6,7,8,9]` 的 88 个 chunk 全部完成。
+- 最终数据：`17491/17491`，`88 COMPLETE / 0 RUNNING / 0 PENDING`。
 - MPS 前后 bounded equivalence：早期 `70/70`、晚期 `102/102` exact，candidate events（晚期）`167`，mismatch `0`。
 - 这是 small-gate live evidence，不是 Full H8 授权，也不是最终论文结果。机器可读报告：`reports/JEV_RNG_V4/SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261007.json`。
 
@@ -158,4 +157,15 @@ CANONICAL_H8_COMMIT=<exact 40-character SHA>
 - `reports/JEV_RNG_V4/VIDEO01_V2_AFTERCARE_GATE_RESULT_20261007.json`
 - `docs/JEV_RNG_V4_LIVE_PROGRESS_20261007.md`
 
-当前没有正向 JEV tracking claim，也没有授权 canonical Full H8 的结论。
+当前没有授权 canonical Full H8 的结论。此前正向 JEV 只属于另一套旧 controller bundle，不能覆盖下面的 current-head NO-GO。
+
+## Latest current-head controller continuation
+
+The segmented 17,491-record small gate reached the acceptance boundary and the continuation supervisor completed a four-way video01 closed-loop using the latest segmented video06/video07 controller bundle. This is a separate binding from the earlier positive screening bundle.
+
+- Current-head policy dataset: 8,496 records, manifest SHA `3a0c5b05956d62ea09837678261559ac94d65ba77ba8eb16710c183f724f5df5`.
+- GMT OFF: HOTA `86.523`, AssA `85.149`, IDF1 `94.642`, MOTA `89.579`, IDSW `282`.
+- Full JEV: HOTA `85.072`, AssA `82.460`, IDF1 `91.975`, MOTA `95.586`, IDSW `18`; ΔAssA `-2.689`, ΔIDSW `-264`.
+- Threshold and Generic MLP remain below GMT OFF. The current-head decision is `PILOT_NO_GO_CURRENT_HEAD_CONTROLLER_BUNDLE`; same-bundle repeatability is `PASS` (四方法指标、action counts、decision/prediction SHA 全部一致).
+
+Report: `reports/JEV_RNG_V4/SEGMENTED_SMALL_GATE_CURRENT_HEAD_CLOSED_LOOP_VIDEO01_20261007.json`.

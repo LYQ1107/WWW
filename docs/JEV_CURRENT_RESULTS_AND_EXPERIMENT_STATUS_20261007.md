@@ -6,8 +6,8 @@
 
 - corrected formal video01 H=8 v2 已真实运行约 **6 小时 55 分 17 秒**，完成并落盘 **8995/8995** 条记录。
 - 文件和 provenance 完整性通过，但 runtime semantics gate 没通过：runtime feature parity、reactivation candidate parity、stability 均 FAIL。因此这批记录**不能作为最终训练数据或论文结果**。
-- 当前 segmented small gate 仍在运行，Full H8 保持暂停、非 canonical、未授权。
-- MPS 切换后的最新实时快照为 `13734/17491` 条（含 running partials），`55 COMPLETE / 28 RUNNING / 5 PENDING`；PID 1819 存活，7 张卡各 4 workers，没有 error/failure 文件。
+- 当前 segmented small gate 已在 acceptance boundary 完成 `17491/17491` 条，随后完成了 current-head controller 的四路 video01 closed-loop；Full H8 保持暂停、非 canonical、未授权。
+- 原 MPS driver 已 graceful 停止；当前没有 small-gate builder/closed-loop 进程。
 - MPS 前后 bounded equivalence 已通过：早期 `70/70`、晚期 `102/102` 逐条 exact，canonical SHA 和字段比较均一致。实时 15.07 秒抽样增加 250 条，但不据此宣称稳定 ETA。
 
 ## 1. video1 六小时证据
@@ -39,15 +39,15 @@
 
 ## 2. 当前 segmented small gate
 
-并发审计：[`SEGMENTED_CONCURRENCY_CHANGE_AUDIT_20261007.json`](../reports/JEV_RNG_V4/SEGMENTED_CONCURRENCY_CHANGE_AUDIT_20261007.json)
+并发审计：[`SEGMENTED_CONCURRENCY_CHANGE_AUDIT_20261007.json`](../reports/JEV_RNG_V4/SEGMENTED_CONCURRENCY_CHANGE_AUDIT_20261007.json)。以下 MPS 数字是运行中的历史快照；最终 acceptance 状态以 `88/88 COMPLETE` 为准。
 
 当前 runtime：`/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4`
 
 - source commit 固定为 `1d2711e80ac5fa00806fd9eed30e90cd51df6b30`；
-- 旧 driver PID 13608 在 MPS 切换前 graceful drain；当前恢复 driver PID 1819，drain state 为 `COMPLETE`；
+- 旧 driver PID 13608 在 MPS 切换前 graceful drain；恢复 driver PID 1819 后完成 acceptance，随后 graceful 停止；
 - 7 张卡 `[2,3,5,6,7,8,9]`，当前 28 个 worker，即 4 workers/GPU，后端为 task-isolated NVIDIA MPS；
 - 切换前已经完成的 chunk 被复用，partial 文件保留并作为审计/恢复证据，没有手工修改原始 queue；
-- 当前 queue：`34 PENDING / 28 RUNNING / 26 COMPLETE`，总计划 17491 条；`completed_records` 为 8281，定义为包含 running partials；
+- 最终 queue：`0 PENDING / 0 RUNNING / 88 COMPLETE`，总计 17491 条；
 - video01：`2 pending / 11 running / 32 complete`；video06：`1 / 9 / 16`；video07：`2 / 8 / 7`；
 - active chunk 名称无重复、每个 video 的 record ranges 唯一、没有 failure files；
 - 12:04:59–12:05:14 UTC 抽样增加 250 条，观测约 16.59 records/s；12:12:31 UTC 最新快照为 13734 条。这些是运行性证据，不是稳定 ETA，也没有拿它宣称固定加速。
@@ -65,12 +65,23 @@ MPS 切换与等价性报告：[`SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261
 
 ## 4. 尚未完成与下一步
 
-### segmented small gate closed-loop（已完成，screening only）
+### segmented small gate closed-loop（两套 controller bundle，均为 screening only）
 
 - video01/06/07 provenance、runtime parity、video01 candidate parity、video01 stability 均通过。
 - Full JEV 在 video01 上为 HOTA `88.925`、AssA `90.022`、IDF1 `97.893`、MOTA `95.768`、IDSW `10`；相对同一 GMT OFF 的 ΔHOTA `+2.402`、ΔAssA `+4.873`、ΔIDF1 `+3.250`、ΔIDSW `-272`。
 - Learnable Threshold 和 Generic MLP 分别严重退化到 HOTA `43.176` 和 `19.044`，因此结论是 JEV GO、Threshold/MLP WARNING；不能把三方法都写成成功。
 - 详细报告：[`JEV_SEGMENTED_SMALL_GATE_CLOSED_LOOP_RESULT_20261007.md`](JEV_SEGMENTED_SMALL_GATE_CLOSED_LOOP_RESULT_20261007.md)。该结果不授权 canonical Full H8。
+
+#### current-head bundle（最新 continuation，当前主判定）
+
+- 使用最新 segmented video06/video07 数据：8496 records，dataset manifest SHA `3a0c5b05...f5df5`。
+- GMT OFF：HOTA `86.523`、AssA `85.149`、IDF1 `94.642`、MOTA `89.579`、IDSW `282`。
+- Full JEV：HOTA `85.072`、AssA `82.460`、IDF1 `91.975`、MOTA `95.586`、IDSW `18`，相对 OFF 的 ΔAssA `-2.689`、ΔIDSW `-264`。
+- Threshold：HOTA `80.034`；Generic MLP：HOTA `68.217`；两者均低于 GMT OFF。
+- 当前判定：`PILOT_NO_GO_CURRENT_HEAD_CONTROLLER_BUNDLE`；同一 bundle 的 repeatability 已通过（指标、动作计数及决策/预测 SHA 全部一致）。
+- 机器可读报告：[`SEGMENTED_SMALL_GATE_CURRENT_HEAD_CLOSED_LOOP_VIDEO01_20261007.json`](../reports/JEV_RNG_V4/SEGMENTED_SMALL_GATE_CURRENT_HEAD_CLOSED_LOOP_VIDEO01_20261007.json)。
+
+此前 JEV 正向结果使用另一 dataset/checkpoint bundle，只能作为独立 screening experiment，不能与本次 current-head 结果合并为重复实验。
 
 1. 保留 small-gate 结果，调查 Threshold/MLP 的 runtime action/feature mismatch，并决定是否把 video01 纳入新的 train/val 设计；不重复训练 video06/video07 旧三模型。
 2. 完成 Full H8 authorization 要求的完整 chunk-equivalence、唯一冻结 source worktree 和 worker commit hard gate。

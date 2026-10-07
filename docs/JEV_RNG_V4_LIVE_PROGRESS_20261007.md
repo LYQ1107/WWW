@@ -1,7 +1,7 @@
 # JEV RNG v4 live progress — corrected video01 gate first
 
-**Latest authoritative refresh:** `2026-10-07T12:05:14Z`
-**Current decision:** `NO_GO_RUNTIME_SEMANTICS_GATE`
+**Latest authoritative refresh:** `2026-10-07T12:43:25Z`
+**Current decision:** `NO_GO_CURRENT_HEAD_CONTROLLER_BUNDLE_STABLE`
 
 ## Live status
 
@@ -13,23 +13,22 @@
 | Full H8 slot2/slot3 supervisors and workers | **GRACEFULLY PAUSED** | queue state/process check |
 | Full H8 canonical authority | **FALSE** | source-commit audit |
 | corrected video06/video07 three-way training | complete; preserve report; no retraining | existing report |
-| segmented small gate | **LIVE**, PID `1819`, `8281/17491` records including running partials | MPS switch/equivalence report |
+| segmented small gate | **COMPLETE**, `17491/17491`, driver gracefully stopped at acceptance boundary | progress/acceptance report |
 
 The Full H8 run is not “running in the background” anymore. It is a preserved
 speculative build and must not be resumed from the current queue.
 
-The separate segmented small gate is still allowed to run. Its latest queue is
-`55 COMPLETE / 28 RUNNING / 5 PENDING` across video01/video06/video07, with
-`13734/17491` records counted including running partials. The
-MPS transition was checked on two bounded probes: `70/70` early records and
-`102/102` late records were exact, with zero late candidate mismatches. This
-does not authorize Full H8 or create a final paper result.
+The separate segmented small gate reached `88/88 COMPLETE` and was stopped
+gracefully at the acceptance boundary. Its MPS transition was checked on two
+bounded probes: `70/70` early records and `102/102` late records were exact,
+with zero late candidate mismatches. This does not authorize Full H8 or create
+a final paper result.
 
-The build has since reached `88/88 COMPLETE` and the driver was gracefully
-stopped at the acceptance boundary before the queued three-way retraining. The
-manual gates and video01 closed-loop then completed: JEV has positive screening
-signal, while Threshold/MLP collapse and remain an explicit warning. See
-`reports/JEV_RNG_V4/SEGMENTED_SMALL_GATE_CLOSED_LOOP_VIDEO01_20261007.json`.
+The manual gates and video01 closed-loop then completed with the latest
+current-head controller bundle. Its repeatability replay is exact, but JEV
+AssA is below the same-run GMT OFF baseline; the stable current decision is
+NO-GO. See
+`reports/JEV_RNG_V4/SEGMENTED_SMALL_GATE_CURRENT_HEAD_CLOSED_LOOP_VIDEO01_20261007.json`.
 
 ## What was stopped and what was not
 
@@ -147,3 +146,11 @@ The updated scheduler and worker enforce:
 
 Until then, the preserved Full H8 `.tmp` records are not training data and the
 project has no final JEV tracking claim.
+
+The segmented small gate later reached `88/88` complete at the acceptance
+boundary. The continuation supervisor then completed a current-head four-way
+video01 closed-loop. Its Full JEV result was HOTA `85.072`, AssA `82.460`,
+IDF1 `91.975`, MOTA `95.586`, IDSW `18`, which is below the same-run GMT OFF
+AssA `85.149`; therefore the current-head pilot is NO-GO and Full H8 remains
+unauthorized. The controller bundle is bound separately in
+`SEGMENTED_SMALL_GATE_CURRENT_HEAD_CLOSED_LOOP_VIDEO01_20261007.json`.
