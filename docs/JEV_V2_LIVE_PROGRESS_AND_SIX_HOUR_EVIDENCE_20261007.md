@@ -1,14 +1,14 @@
 # Video01 corrected v2 live progress and six-hour evidence
 
-Snapshot: **2026-10-07 10:27:14 UTC**  
+Snapshot: **2026-10-07 10:57:46 UTC**  
 Classification: **live operational evidence; not a final experiment result**
 
 ## Direct conclusion
 
 The formal corrected video01 v2 builder is still running. The same OS process
 (`PID 12163`) started at **2026-10-07 04:15:18 UTC** and, at the snapshot,
-had been alive for **06:11:56** with **06:12:02** CPU time, `Rsl` state, 100%
-CPU, and 3,150,452 KiB RSS. This is concrete evidence that the job has run for
+had been alive for **06:42:28** with **06:42:33** CPU time, `Rsl` state, 100%
+CPU, and 3,165,152 KiB RSS. This is concrete evidence that the job has run for
 more than six hours under one PID. It is not evidence that the final dataset is
 complete.
 
@@ -37,13 +37,13 @@ backend. The complete argv and input hashes are recorded in
 |---|---|
 | PID | `12163` |
 | Start | `2026-10-07 04:15:18 UTC` |
-| Snapshot | `2026-10-07 10:27:14 UTC` |
-| OS elapsed time | `06:11:56` |
-| CPU time | `06:12:02` |
+| Snapshot | `2026-10-07 10:57:46 UTC` |
+| OS elapsed time | `06:42:28` |
+| CPU time | `06:42:33` |
 | State | `Rsl` |
 | CPU | `100%` |
-| RSS | `3,150,452 KiB` |
-| GPU observation | GPU 0, process memory 1,231 MiB in the ~10:25 UTC `nvidia-smi` snapshot |
+| RSS | `3,165,152 KiB` |
+| GPU observation | GPU 0, process memory 1,231 MiB in the 10:57 UTC `nvidia-smi` snapshot |
 
 The exact evidence is machine-readable in
 [`VIDEO01_V2_LIVE_EVIDENCE_20261007.json`](../reports/JEV_RNG_V4/VIDEO01_V2_LIVE_EVIDENCE_20261007.json).
@@ -51,7 +51,8 @@ The exact evidence is machine-readable in
 ## Other jobs at the snapshot
 
 - PID `5457`: bounded cost diagnostic (`max-events=2400`), still running on GPU 4;
-  it has not written its final report yet.
+  at the same snapshot it had run for `00:38:08` and had not written its final
+  report yet.
 - PID `9824`: targeted frames 210–220 reactivation diagnostic completed. It
   emitted 113 diagnostic records, including 5 reactivation records, with zero
   skipped events in 222.136 seconds. This is a diagnostic artifact only.

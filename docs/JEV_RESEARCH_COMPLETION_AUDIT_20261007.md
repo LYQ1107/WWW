@@ -29,9 +29,9 @@ The corrected formal video01 v2 builder remains the critical path:
 ```text
 PID:       12163
 started:   2026-10-07 04:15:18 UTC
-snapshot:  2026-10-07 10:44:43 UTC
-elapsed:   06:29:24
-CPU time:  06:29:30
+snapshot:  2026-10-07 10:57:46 UTC
+elapsed:   06:42:28
+CPU time:  06:42:33
 state:     Rsl
 CPU:       100%
 expected:  8995 records
@@ -39,8 +39,8 @@ expected:  8995 records
 
 Its records and `video01_records.jsonl.manifest.json` are not present yet.
 The aftercare waiter is still correctly waiting for that manifest. A separate
-GPU4 max2400 cost diagnostic is also still running; its output is not used as
-formal data.
+GPU4 max2400 cost diagnostic is also still running (elapsed `00:38:08` at the
+same snapshot); its output is not used as formal data.
 
 ## Remaining hard-gate order
 

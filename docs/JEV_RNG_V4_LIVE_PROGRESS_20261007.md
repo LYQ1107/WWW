@@ -1,14 +1,14 @@
 # JEV RNG v4 live progress — corrected video01 gate first
 
-**Latest authoritative refresh:** `2026-10-07T02:05:01Z`
+**Latest authoritative refresh:** `2026-10-07T10:57:46Z`
 **Current decision:** `IN_PROGRESS / NO_FINAL_RESEARCH_CLAIM_YET`
 
 ## Live status
 
 | Work item | Current state | Authority |
 |---|---|---|
-| corrected video01 builder | **RUNNING**, PID `8251`; do not stop/migrate/restart | runtime process check |
-| video01 aftercare | waiting/running, PIDs `26358`, `26359`, `26361` | runtime process check |
+| corrected video01 builder | **RUNNING**, PID `12163`, elapsed `06:42:28`; do not stop/migrate/restart | runtime process check |
+| video01 aftercare | waiting/running, PIDs `2843`, `2849`, tee `2851` | runtime process check |
 | Full H8 original scheduler | **GRACEFULLY PAUSED** | queue state |
 | Full H8 slot2/slot3 supervisors and workers | **GRACEFULLY PAUSED** | queue state/process check |
 | Full H8 canonical authority | **FALSE** | source-commit audit |

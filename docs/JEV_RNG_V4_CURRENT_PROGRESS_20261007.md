@@ -1,6 +1,6 @@
 # JEV RNG v4 current progress — 2026-10-07
 
-**Snapshot:** `2026-10-07T02:05:01Z`
+**Snapshot:** `2026-10-07T10:57:46Z`
 **Classification:** live research status, not a final paper result
 
 ## 结论先行
@@ -33,8 +33,8 @@ corrected video01 完成
 
 ### 保持运行的 corrected video01
 
-- builder PID `8251`：继续在 GPU0 生成 corrected video01，**不停止、不迁移、不重启**。
-- aftercare PIDs `26358`, `26359`, `26361`：继续等待并执行 video01 完成后的验证。
+- builder PID `12163`：已经连续运行 `06:42:28`，继续在 GPU0 生成 corrected video01，**不停止、不迁移、不重启**。
+- aftercare PIDs `2843`, `2849`（tee `2851`）：继续等待并执行 video01 完成后的验证。
 - 目标：`8995` 条记录。
 
 ### 已优雅暂停的 Full H8
