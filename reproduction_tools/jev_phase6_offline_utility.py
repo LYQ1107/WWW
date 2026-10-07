@@ -54,17 +54,19 @@ def whole_run_correct(rows):
     return {k:r['gt'] is not None and mapping.get(k[1],{}).get(r['id'])==r['gt'] for k,r in rows.items()}
 
 
-def consequence(rows, prefix_rows, start_key, target, horizon, next_id):
+def consequence(rows, prefix_rows, start_key, target, horizon, next_id, identity_key=None):
     """Paired fixed-prefix identity utility, allowing correct new identities.
 
     New IDs inherit their first offline matched target; old IDs retain their
     pre-intervention majority identity. Fragmentation/switches charge births.
     Unknown observations are censored rather than declared correct/wrong.
     """
-    mapping,_=prefix_identity(prefix_rows,start_key)
+    identity_key=identity_key or start_key
+    mapping,_=prefix_identity(prefix_rows,identity_key)
+    complete=sorted((k,r) for k,r in rows.items() if k[:2]>=identity_key[:2])
     ordered=sorted((k,r) for k,r in rows.items() if k[:2]>=start_key[:2] and k[0]<=start_key[0]+horizon)
     born={}
-    for _,r in ordered:
+    for _,r in complete:
         if r['id']>next_id and r['id'] not in born and r['gt'] is not None:born[r['id']]=r['gt']
     mapping.update(born)
     target_rows=[(k,r) for k,r in ordered if target is not None and r['gt']==target]
@@ -73,6 +75,8 @@ def consequence(rows, prefix_rows, start_key, target, horizon, next_id):
     unknown=len(target_rows)-correct-wrong
     timelines=defaultdict(list); prefix_last={}
     for k,r in sorted(prefix_rows.items()):
+        if k[:2]<identity_key[:2] and r['gt']==target:prefix_last[k[1]]=r['id']
+    for k,r in complete:
         if k[:2]<start_key[:2] and r['gt']==target:prefix_last[k[1]]=r['id']
     for k,r in target_rows:timelines[k[1]].append((k[0],r['id']))
     switches=0

@@ -119,16 +119,18 @@ def fork(video,device,shard,shards):
             def intervene(feature,question,legal,original,context):
                 k=(video,context['frame'],context['view'],question,context['detection_index'])
                 return action if k==key and action!='CONTROL' else original
-            def after(k,payload,state,result,kwargs,decisions):
-                nonlocal first_read,event_id,last_frame
-                last_frame=k[1]
-                if k==key[:3]:event_id=int(result['committed_track_ids'][key[4]])
+            def before(k,payload,state,kwargs,decisions):
+                nonlocal first_read
                 pp=kwargs.get('reactivation_proposal')
                 track=r['assigned_track_id']
                 if pp is not None and track in pp.track_ids and track in state.stale_ids and track not in state.active_ids:
                     if first_read is None:first_read=k[1]
                     col=list(pp.track_ids).index(track)
                     rank_history.append({'key':list(k),'best_rank':min(int((scores>scores[col]).sum())+1 for scores in pp.scores),'max_score':float(pp.scores[:,col].max())})
+            def after(k,payload,state,result,kwargs,decisions):
+                nonlocal event_id,last_frame
+                last_frame=k[1]
+                if k==key[:3]:event_id=int(result['committed_track_ids'][key[4]])
                 if memory:
                     if first_read is not None and k[1]>=first_read+16:
                         termination[action]='READ_PLUS16';raise EndEventHorizon()
@@ -142,7 +144,7 @@ def fork(video,device,shard,shards):
                         termination[action]='MAX32';raise EndEventHorizon()
             output=root/f'forks/{path.stem}/{action}'
             result=lab.run(output,prefix=c['state'],start_key=key[:3],metadata=c['metadata'],
-                           intervention=intervene,after_step=after)
+                           intervention=intervene,before_step=before,after_step=after)
             aligned=gt.align(json.loads(Path(result['predictions']).read_text()));rows_by_branch[action]=aligned
             if action=='CONTROL':
                 expected={k:v for k,v in actual.items() if k[:2]>=local[:2] and (k[0],k[1])<=max(k[:2] for k in aligned)}
@@ -156,13 +158,13 @@ def fork(video,device,shard,shards):
             onset=min(consumed) if consumed else None
             end=min(v['last_frame'] for v in cases.values())
             horizons=[min(8,max(0,end-onset)),min(16,max(0,end-onset))] if onset is not None else [0,0]
-            start=(onset,key[2]) if onset is not None else local[:2]
+            start=(onset,0) if onset is not None else local[:2]
             weight=float(target is not None and bool(consumed))
         else:
             start=local[:2];end=min(v['last_frame'] for v in cases.values());horizons=[max(0,end-key[1])]
             weight=float(target is not None)
         for a in cases:
-            cases[a]['outcomes']={str(h):consequence(rows_by_branch[a],actual,start,target,h,c['state'].next_id) for h in horizons}
+            cases[a]['outcomes']={str(h):consequence(rows_by_branch[a],actual,start,target,h,c['state'].next_id,identity_key=local[:2]) for h in horizons}
             cases[a]['candidate_rank_history']=branch_ranks[a]
             if not memory:
                 mapping,_=prefix_identity(actual,start)
