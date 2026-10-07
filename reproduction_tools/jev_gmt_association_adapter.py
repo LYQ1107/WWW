@@ -128,7 +128,9 @@ class GMTAssociationTransformerAdapter:
                 )
                 instances.append(historical)
                 previous_ids.append(int(track_id))
-            instances.append(current)
+            # Native old_reids is one Instances object containing every stale
+            # identity. Separate objects would apply independent softmaxes.
+            instances = [Instances.cat(instances), current]
         else:
             instances = []
             previous_ids = []
@@ -193,7 +195,7 @@ class GMTAssociationTransformerAdapter:
             # slice. Including the query column in the denominator changes
             # every score and causes an immediate OFF trajectory fork.
             historical_count = len(previous_ids)
-            historical_logits = outputs[-1][:, :historical_count]
+            historical_logits = outputs[0 if reactivation_bank else -1][:, :historical_count]
             final_output = historical_logits.split(
                 [len(instance) for instance in instances[:-1]], dim=1
             )

@@ -335,6 +335,16 @@ def _prepare_reactivation_context(
             for event in reactivation_events
         }
     )
+    # Native bank association includes every unmatched detection, even rows
+    # without a Hungarian stale-bank assignment and therefore without a
+    # REACTIVATION event. Retain those query rows in the transformer proposal.
+    rows = sorted(set(rows) | {
+        int(event["context"]["detection_index"])
+        for event in events
+        if str(event.get("question")) == "MATCH_DECISION"
+        and event.get("context", {}).get("detection_index") is not None
+        and str(event.get("committed_action", event.get("off_action"))) == "START_NEW"
+    })
     candidate_ids, _recent_ids = reactivation_candidates(
         state, bank_size=_reactivation_bank_size(engine, state)
     )

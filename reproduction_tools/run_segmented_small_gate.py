@@ -28,6 +28,7 @@ CACHE = Path("/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cac
 ANNOTATIONS = Path("/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json")
 CHECKPOINT = Path("/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth")
 BASE_COMMIT = "4108f18f5040432f68d55872e81e9f76e9acd08f"
+CANONICAL_NATIVE_TRACE = BASE / "segmented_native_trace_20261007/video01/trace_video_01.jsonl"
 for p in (ROOT, ROOT / "reproduction_tools", ROOT / "third_party/CenterNet2"):
     sys.path.insert(0, str(p))
 
@@ -92,6 +93,8 @@ def source_binding():
 
 
 def trace_path(video):
+    if video == 1:
+        return CANONICAL_NATIVE_TRACE
     return BASE / "formal_current_head_off_trace" / f"video{video:02d}" / f"trace_video_{video:02d}.jsonl"
 
 
@@ -398,6 +401,10 @@ def verify(args):
     atomic(args.output / "equivalence.json", report)
     if report["status"] != "PASS" or not report["question_counts"].get("REACTIVATION_DECISION"):
         raise RuntimeError("formal segmentation equivalence/coverage failed")
+    command(args, "native_candidate_probe", [PYTHON, ROOT / "reproduction_tools/compare_reactivation_candidates.py",
+            "--video-id", 1, "--native-trace", trace_path(1), "--records", args.output / "video01_records.jsonl",
+            "--output", args.output / "native_candidate_probe.json", "--replay-root", args.output / "native_candidate_replay",
+            "--device", "cuda:0", "--max-frame", 216, "--tolerance", "2e-5"], args.gpus[1])
 
 
 def command(args, name, command, gpu):
@@ -422,7 +429,7 @@ def aftercare(args):
                 "--output", reports / f"parity{video}.json", "--device", "cuda:0", "--tolerance", "2e-5"], args.gpus[0])
     records = args.output / "video01_records.jsonl"
     command(args, "candidate_parity", [PYTHON, ROOT / "reproduction_tools/compare_reactivation_candidates.py",
-            "--video-id", 1, "--native-trace", BASE / "native_video1_corrected_v4b/native_off_trace_video01.jsonl",
+            "--video-id", 1, "--native-trace", trace_path(1),
             "--records", records, "--output", reports / "candidate_parity.json",
             "--replay-root", args.output / "candidate_replay", "--device", "cuda:0",
             "--max-frame", 1000000, "--tolerance", "2e-5"], args.gpus[0])
@@ -471,6 +478,9 @@ def run(args):
         verify(probe)
     if read(probe.output / "equivalence.json")["status"] != "PASS":
         raise RuntimeError("segmentation equivalence not passed")
+    candidate_gate = probe.output / "native_candidate_probe.json"
+    if not candidate_gate.exists() or read(candidate_gate)["status"] != "PASS":
+        raise RuntimeError("native candidate probe not passed")
     prepare(args)
     workers(args, args.gpus)
     merge(args)

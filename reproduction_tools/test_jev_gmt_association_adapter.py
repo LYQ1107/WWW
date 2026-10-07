@@ -3,7 +3,10 @@
 import torch
 from torch import nn
 
-from jev_counterfactual_v2 import MutableGMTState
+from jev_counterfactual_v2 import (
+    CachedPerceptionMutableAssociationV2, MutableGMTState,
+    promote_stale_bank_candidates,
+)
 from jev_gmt_association_adapter import GMTAssociationTransformerAdapter
 
 
@@ -42,6 +45,38 @@ def payload(frame, view):
     }
 
 
+def test_native_bank_uses_one_joint_softmax():
+    state = MutableGMTState(
+        reactivation_bank={1: torch.tensor([3.0, 4.0]), 2: torch.tensor([6.0, 8.0])},
+        reactivation_mode=True,
+    )
+    state.initialize_trajectory_rng(8)
+    adapter = GMTAssociationTransformerAdapter(FakeModel(), view_num=2)
+    result = adapter(payload(1, 0), (1, 2), state)
+    # Native old_reids is one bank, with one unmatched dummy column.
+    assert torch.allclose(result.scores, torch.full((1, 2), 1.0 / 3.0), atol=1e-7)
+
+
+def test_native_memory_preserves_raw_feature_magnitude():
+    state = MutableGMTState(
+        next_id=2, active_ids={1, 2},
+        association_history=[
+            {"perception": payload(0, 0), "assignments": {0: 1}},
+            {"perception": payload(0, 1), "assignments": {0: 2}},
+        ],
+    )
+    state.initialize_trajectory_rng(8)
+    current = payload(1, 0)
+    current["reid_features"] = torch.tensor([[3.0, 4.0]])
+    adapter = GMTAssociationTransformerAdapter(FakeModel(), view_num=2)
+    engine = CachedPerceptionMutableAssociationV2(association_fn=adapter)
+    engine.step(current, state, actions={0: "START_NEW"}, memory_actions={0: "WRITE_MEMORY"})
+    assert torch.equal(state.memory[3][0], torch.tensor([3.0, 4.0]))
+    state.memory[3].append(torch.tensor([6.0, 8.0]))
+    promote_stale_bank_candidates(state, bank_size=2, recent_ids=())
+    assert torch.equal(state.reactivation_bank[3], torch.tensor([4.5, 6.0]))
+
+
 def main():
     first = payload(0, 0)
     second = payload(0, 1)
@@ -65,6 +100,8 @@ def main():
     assert torch.allclose(scores, torch.full((1, 2), 1.0 / 2.0), atol=1e-7)
     assert result.transformer_calls == 1
     assert result.rng_state_before == result.rng_state_after
+    test_native_bank_uses_one_joint_softmax()
+    test_native_memory_preserves_raw_feature_magnitude()
     print("GMT association adapter slice-normalization invariant: PASS")
 
 

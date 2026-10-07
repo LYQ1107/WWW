@@ -128,10 +128,14 @@ def promote_stale_bank_candidates(
         if len(values) < state.memory_bank_size:
             continue
         recent_values = values[-state.memory_bank_size :]
-        state.reactivation_bank[track_id] = torch.stack(
-            [torch.as_tensor(value, dtype=torch.float32) for value in recent_values],
-            dim=0,
-        ).mean(dim=0).detach().cpu().clone()
+        # Native memory_bank sums the latest raw ReID observations in reverse
+        # chronological order. Preserve both its magnitudes and float order.
+        average = torch.as_tensor(recent_values[-1], dtype=torch.float32).clone()
+        for value in reversed(recent_values[:-1]):
+            average = average + torch.as_tensor(value, dtype=torch.float32)
+        state.reactivation_bank[track_id] = (
+            average / len(recent_values)
+        ).detach().cpu().clone()
         state.possible_memory_ids.discard(track_id)
         state.stale_ids.add(track_id)
         promoted.append(track_id)
@@ -800,6 +804,11 @@ class CachedPerceptionMutableAssociationV2:
                     continue
                 track_id = committed[row]
                 feature = features[row] if features.shape[1] else torch.empty(0)
+                if getattr(self.association_fn, "formal_gmt_association_adapter", False):
+                    # The frozen cache contains native, unnormalised ReID
+                    # vectors. Native GMT stores these verbatim; normalising
+                    # each sample changes the stale-bank transformer logits.
+                    feature = torch.as_tensor(perception["reid_features"][row], dtype=torch.float32)
                 state.memory.setdefault(track_id, []).append(feature.detach().cpu().clone())
                 state.counters["memory_writes"] = state.counters.get("memory_writes", 0) + 1
 
