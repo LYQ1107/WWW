@@ -19,6 +19,18 @@ jev/video01-parity-fix-native-order-20261007
 
 这个分支没有被合并到 `1d2711e`，也没有获得 Full H8 授权。
 
+在此基础上又建立了一个以 `1d2711e` 为基线的源码集成候选：
+
+```text
+jev/segmented-anchor-geometry-integration-20261007
+d4107b7a8425bf11134221a99a5909af3f55bf02
+```
+
+它只移植 stale-bank anchor geometry，并保留 1d 的 native order/timing/row-union；
+GMT 环境下 adapter geometry、reactivation row semantics、counterfactual invariants
+和 Python compile 均 PASS。它尚未做 full video01 candidate/runtime parity，因此仍是
+候选修复，不是 canonical 结果。
+
 ## 1. 结论先行
 
 | 项目 | 结论 | 说明 |
@@ -152,6 +164,7 @@ stale bank 作为一个 `Instances` 对象送入 transformer。这会影响 posi
 | 修复 | 当前状态 | 是否已证明完整 |
 |---|---|---|
 | stale-bank 原始 anchor box/image size 保留 | 已在 `b20d7e2`，候选分支继承 | 仅 bounded frame-220 5/5；尚未在 1d full 174 events 上完成最终整合验收 |
+| 1d 基线上的 anchor geometry 集成 | 候选 commit `d4107b7a8425bf11134221a99a5909af3f55bf02` | 轻量回归 PASS；full candidate/runtime parity 未运行 |
 | native stale-bank insertion order、raw accumulation、formal timing 恢复 | 候选 commit `5baa0dd` | unit tests PASS；bounded frame-220 5/5 PASS；按硬停止要求未重跑 full parity |
 | 1d unmatched `START_NEW` row union 恢复 | 同在 `5baa0dd` | 代码已恢复，尚未做 full 1d integration gate |
 | b20 geometry 修复整合进 `1d2711e` | **未合并** | 需要新的固定 source commit、full candidate parity、runtime feature parity 和 stability |

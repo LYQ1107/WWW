@@ -13,6 +13,16 @@
     "relevant_processes_found_after_pause": [],
     "heavy_compute_started_after_pause_request": false
   },
+  "integration_candidate": {
+    "branch": "jev/segmented-anchor-geometry-integration-20261007",
+    "commit": "d4107b7a8425bf11134221a99a5909af3f55bf02",
+    "base_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+    "scope": "stale_bank_anchor_box_and_image_size_geometry_only",
+    "preserves_1d_native_order_timing_and_unmatched_row_union": true,
+    "lightweight_regression": "PASS",
+    "full_candidate_runtime_parity": "NOT_RUN_BY_SCOPE",
+    "canonical": false
+  },
   "segmented_v4": {
     "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
     "status": "EXPERIMENTS_COMPLETE",
@@ -213,6 +223,11 @@
       "name": "stale_bank_anchor_geometry",
       "status": "present_on_b20_candidate_not_merged_into_1d",
       "validation": "bounded frame-220 5/5 pass; full 1d integration not run"
+    },
+    {
+      "name": "one_d_anchor_geometry_integration",
+      "status": "candidate_commit_d4107b7_not_merged",
+      "validation": "GMT lightweight adapter/row/counterfactual tests and compile pass; full parity intentionally not run"
     },
     {
       "name": "native_order_timing_and_row_union_restore",
