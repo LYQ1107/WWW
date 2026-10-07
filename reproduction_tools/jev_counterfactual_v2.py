@@ -132,6 +132,20 @@ def promote_stale_bank_candidates(
             [torch.as_tensor(value, dtype=torch.float32) for value in recent_values],
             dim=0,
         ).mean(dim=0).detach().cpu().clone()
+        anchor_box = state.track_anchor_boxes.get(track_id)
+        if anchor_box is not None:
+            state.reactivation_bank_boxes[track_id] = (
+                torch.as_tensor(anchor_box, dtype=torch.float32)
+                .detach()
+                .cpu()
+                .clone()
+            )
+        anchor_size = state.track_anchor_image_sizes.get(track_id)
+        if anchor_size is not None:
+            state.reactivation_bank_image_sizes[track_id] = (
+                int(anchor_size[0]),
+                int(anchor_size[1]),
+            )
         state.possible_memory_ids.discard(track_id)
         state.stale_ids.add(track_id)
         promoted.append(track_id)
@@ -205,6 +219,13 @@ class MutableGMTState:
     # in the old-reid bank until a successful reactivation removes it.
     possible_memory_ids: Set[int] = field(default_factory=set)
     reactivation_bank: Dict[int, torch.Tensor] = field(default_factory=dict)
+    # Native GMT retains the original Instances box for an identity promoted
+    # into old_reids while replacing only its ReID feature by the averaged
+    # bank feature.  Preserve that geometry for exact transformer inputs.
+    track_anchor_boxes: Dict[int, torch.Tensor] = field(default_factory=dict)
+    track_anchor_image_sizes: Dict[int, Tuple[int, int]] = field(default_factory=dict)
+    reactivation_bank_boxes: Dict[int, torch.Tensor] = field(default_factory=dict)
+    reactivation_bank_image_sizes: Dict[int, Tuple[int, int]] = field(default_factory=dict)
     memory_bank_size: int = 10
     reactivation_mode: bool = False
     track_embeddings: Dict[int, torch.Tensor] = field(default_factory=dict)
@@ -259,6 +280,22 @@ class MutableGMTState:
                 int(key): value.detach().clone()
                 for key, value in self.reactivation_bank.items()
             },
+            track_anchor_boxes={
+                int(key): value.detach().clone()
+                for key, value in self.track_anchor_boxes.items()
+            },
+            track_anchor_image_sizes={
+                int(key): (int(value[0]), int(value[1]))
+                for key, value in self.track_anchor_image_sizes.items()
+            },
+            reactivation_bank_boxes={
+                int(key): value.detach().clone()
+                for key, value in self.reactivation_bank_boxes.items()
+            },
+            reactivation_bank_image_sizes={
+                int(key): (int(value[0]), int(value[1]))
+                for key, value in self.reactivation_bank_image_sizes.items()
+            },
             memory_bank_size=int(self.memory_bank_size),
             reactivation_mode=bool(self.reactivation_mode),
             track_embeddings={
@@ -301,6 +338,17 @@ def seed_production_state_from_payload(
     state = MutableGMTState(
         next_id=detection_count,
         active_ids=set(range(1, detection_count + 1)),
+        track_anchor_boxes={
+            track_id: torch.as_tensor(payload["pred_boxes"][track_id - 1])
+            .detach()
+            .cpu()
+            .clone()
+            for track_id in range(1, detection_count + 1)
+        },
+        track_anchor_image_sizes={
+            track_id: tuple(int(value) for value in payload["image_size"])
+            for track_id in range(1, detection_count + 1)
+        },
         track_hits={track_id: 1 for track_id in range(1, detection_count + 1)},
         track_embeddings={
             track_id: torch.as_tensor(payload["reid_features"][track_id - 1])
@@ -758,9 +806,12 @@ class CachedPerceptionMutableAssociationV2:
                 reactivation_proposal.transformer_calls
             )
 
-        features = _normalise_features(
-            torch.as_tensor(perception["reid_features"], dtype=torch.float32)
+        raw_features = torch.as_tensor(
+            perception["reid_features"], dtype=torch.float32
         )
+        if raw_features.ndim == 1:
+            raw_features = raw_features.unsqueeze(0)
+        features = _normalise_features(raw_features)
         committed: Dict[int, int] = {}
         for row in range(features.shape[0]):
             action = action_map[row]
@@ -773,6 +824,8 @@ class CachedPerceptionMutableAssociationV2:
                 # reactivated ID from ``old_reids`` and returns it to
                 # ``poss_ids`` for future bank updates.
                 state.reactivation_bank.pop(track_id, None)
+                state.reactivation_bank_boxes.pop(track_id, None)
+                state.reactivation_bank_image_sizes.pop(track_id, None)
                 if len(state.memory.get(track_id, ())) >= max(
                     1, int(state.memory_bank_size)
                 ):
@@ -787,6 +840,15 @@ class CachedPerceptionMutableAssociationV2:
                 if action == "REASSOCIATE":
                     state.counters["reassociated_rows"] = state.counters.get("reassociated_rows", 0) + 1
             committed[row] = track_id
+            # Native ``id_reid_dict[id][0]`` is the first observed Instances
+            # entry for an identity and supplies the box retained in
+            # ``old_reids``. Record it once and never overwrite it later.
+            if track_id not in state.track_anchor_boxes:
+                boxes = torch.as_tensor(perception["pred_boxes"], dtype=torch.float32)
+                state.track_anchor_boxes[track_id] = boxes[row].detach().cpu().clone()
+                state.track_anchor_image_sizes[track_id] = tuple(
+                    int(value) for value in perception["image_size"]
+                )
             self._update_track(
                 state,
                 track_id,
@@ -799,8 +861,13 @@ class CachedPerceptionMutableAssociationV2:
                 if action != "WRITE_MEMORY" or row not in committed:
                     continue
                 track_id = committed[row]
-                feature = features[row] if features.shape[1] else torch.empty(0)
-                state.memory.setdefault(track_id, []).append(feature.detach().cpu().clone())
+                # Native ``id_reid_dict`` stores the raw cached ReID tensor;
+                # only the stale-bank construction averages the recent raw
+                # entries. Do not feed normalized vectors into old_reids.
+                feature = raw_features[row] if raw_features.shape[1] else torch.empty(0)
+                state.memory.setdefault(track_id, []).append(
+                    feature.detach().cpu().clone()
+                )
                 state.counters["memory_writes"] = state.counters.get("memory_writes", 0) + 1
 
         self._update_memory_eligibility(state)

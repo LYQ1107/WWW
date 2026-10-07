@@ -106,29 +106,53 @@ class GMTAssociationTransformerAdapter:
             getattr(state, "reactivation_bank", {}) if reactivation_mode else {}
         )
         if reactivation_bank:
-            instances = []
-            previous_ids = []
-            for track_id in track_ids:
-                if int(track_id) not in reactivation_bank:
+            # Native ``memory_bank`` stores all stale IDs in one historical
+            # Instances object (``old_reids.old_reids``), not one temporal
+            # slice per ID. It also preserves each ID's original proposal box
+            # while replacing only its ReID feature by the averaged bank
+            # feature. Both details affect the transformer positional input.
+            previous_ids = [int(track_id) for track_id in track_ids]
+            historical_boxes = []
+            historical_features = []
+            bank_image_sizes = []
+            for track_id in previous_ids:
+                if track_id not in reactivation_bank:
                     raise RuntimeError(
                         "reactivation proposal is missing old-reid feature for "
-                        f"track {int(track_id)}"
+                        f"track {track_id}"
                     )
-                historical = Instances(current.image_size)
-                historical.pred_boxes = Boxes(
-                    torch.zeros((1, 4), dtype=torch.float32, device=device)
+                box = getattr(state, "reactivation_bank_boxes", {}).get(track_id)
+                image_size = getattr(state, "reactivation_bank_image_sizes", {}).get(
+                    track_id
                 )
-                historical.reid_features = torch.as_tensor(
-                    reactivation_bank[int(track_id)],
-                    dtype=torch.float32,
-                    device=device,
-                ).reshape(1, -1)
-                historical.track_ids = torch.tensor(
-                    [int(track_id)], dtype=torch.long, device=device
+                if box is None or image_size is None:
+                    raise RuntimeError(
+                        "reactivation proposal is missing native anchor geometry for "
+                        f"track {track_id}"
+                    )
+                historical_boxes.append(
+                    torch.as_tensor(box, dtype=torch.float32, device=device).reshape(1, 4)
                 )
-                instances.append(historical)
-                previous_ids.append(int(track_id))
-            instances.append(current)
+                historical_features.append(
+                    torch.as_tensor(
+                        reactivation_bank[track_id],
+                        dtype=torch.float32,
+                        device=device,
+                    ).reshape(1, -1)
+                )
+                bank_image_sizes.append(tuple(int(value) for value in image_size))
+            if len(set(bank_image_sizes)) != 1:
+                raise RuntimeError(
+                    "native old-reid bank contains incompatible image sizes: "
+                    f"{bank_image_sizes}"
+                )
+            historical = Instances(bank_image_sizes[0])
+            historical.pred_boxes = Boxes(torch.cat(historical_boxes, dim=0))
+            historical.reid_features = torch.cat(historical_features, dim=0)
+            historical.track_ids = torch.tensor(
+                previous_ids, dtype=torch.long, device=device
+            )
+            instances = [historical, current]
         else:
             instances = []
             previous_ids = []
