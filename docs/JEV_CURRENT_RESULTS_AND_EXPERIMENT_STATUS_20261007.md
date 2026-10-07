@@ -113,7 +113,7 @@ MPS 切换与等价性报告：[`SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261
 
 此前 JEV 正向结果使用另一 dataset/checkpoint bundle，只能作为独立 screening experiment，不能与本次 current-head 结果合并为重复实验。
 
-1. 保留 small-gate 结果，调查 Threshold/MLP 的 runtime action/feature mismatch，并决定是否把 video01 纳入新的 train/val 设计；不重复训练 video06/video07 旧三模型。
+1. 保留 small-gate 结果，完成 branch-consistent 的 learned-controller state/feature audit；当前 learned-vs-OFF 差值不能直接解释为 encoder mismatch。随后再决定是否把 video01 纳入新的 train/val 设计；不重复训练 video06/video07 旧三模型。
 2. 完成 Full H8 authorization 要求的完整 chunk-equivalence、唯一冻结 source worktree 和 worker commit hard gate。
 3. 只有上述审计完成且明确授权后，才重启 canonical Full H8；当前 Full H8 仍是 `PAUSED_NONCANONICAL`。
 
@@ -122,3 +122,4 @@ MPS 切换与等价性报告：[`SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261
 - [audit-diagnostics-20261007](https://github.com/LYQ1107/WWW/tree/jev/audit-diagnostics-20261007)
 - [video01-reactivation-box-parity-fix-20261007](https://github.com/LYQ1107/WWW/tree/jev/video01-reactivation-box-parity-fix-20261007)
 - [video01-parity-fix-native-order-20261007](https://github.com/LYQ1107/WWW/tree/jev/video01-parity-fix-native-order-20261007)（候选修复，未合并）
+- [segmented-anchor-geometry-integration-20261007](https://github.com/LYQ1107/WWW/tree/jev/segmented-anchor-geometry-integration-20261007)（`1d2711e` 集成候选，轻量回归通过，未做 full parity）
