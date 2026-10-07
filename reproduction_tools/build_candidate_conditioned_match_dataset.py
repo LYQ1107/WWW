@@ -319,6 +319,17 @@ def build(
                 "horizon": int(horizon),
                 "uses_future_gt": True,
                 "native_off_action": str(event.get("off_action") or event.get("proposed_action")),
+                "native_candidate_key": (
+                    "START_NEW"
+                    if str(event.get("off_action") or event.get("proposed_action")) == "START_NEW"
+                    else f"track:{int(event['context']['proposal_track_id'])}"
+                    if str(event.get("off_action") or event.get("proposed_action")) == "ACCEPT_CURRENT"
+                    else f"track:{int(event['context']['alternate_track_id'])}"
+                    if str(event.get("off_action") or event.get("proposed_action")) == "REASSOCIATE"
+                    else None
+                ),
+                "native_proposal_track_id": event["context"].get("proposal_track_id"),
+                "native_alternate_track_id": event["context"].get("alternate_track_id"),
                 "provenance": {
                     "trace": str(trace.resolve()),
                     "trace_sha256": trace_hash,
