@@ -5,11 +5,20 @@ from pathlib import Path
 
 import torch
 
-from jev_phase6_common import OUT,save,sha,protect_anchor,new_output
+from jev_phase6_common import OUT,B2,save,sha,protect_anchor,new_output
 from jev_phase6_rollouts import NativeReplayLab
 
 
 def main(video,condition,device,native_contract=False):
+    output=OUT/f"{'memory_baselines_native' if native_contract else 'memory_baselines'}/video{video:02d}/{condition}"
+    if (output/'result.json').exists():
+        complete=json.loads((output/'result.json').read_text())
+        if (complete['status']=='PASS' and complete['video']==video and complete['condition']==condition
+                and complete.get('native_MATCH_transition_contract')==native_contract
+                and complete.get('checkpoint_sha256')==sha(B2)
+                and complete['prediction_sha256']==sha(complete['result']['predictions'])):
+            protect_anchor();print(json.dumps({'status':'REUSED_COMPLETE_BOUND_RUN','video':video,'condition':condition}));return
+        raise RuntimeError('existing result binding does not match this baseline')
     lab=NativeReplayLab(video,device,native_match_validation=native_contract,fast_match=native_contract,compact_context=native_contract)
     collection='lifecycle_native' if native_contract else 'lifecycle'
     if native_contract:
@@ -40,7 +49,6 @@ def main(video,condition,device,native_contract=False):
             confidence=float(payload['detection_scores'][row])
             old_weight=.9 if condition=='M3' else .2 if condition=='M5' else .9+.1*(1-max(0,min(1,(confidence-.4)/.6)))
             prototypes[track]=feature.clone() if track not in prototypes else old_weight*prototypes[track]+(1-old_weight)*feature
-    output=OUT/f"{'memory_baselines_native' if native_contract else 'memory_baselines'}/video{video:02d}/{condition}"
     if condition=='M0':
         new_output(output);lab.pilot.PILOT=output
         result=json.loads((OUT/f'{collection}/video{video:02d}/baseline/result.json').read_text())
@@ -55,6 +63,7 @@ def main(video,condition,device,native_contract=False):
            'M0_reuses_identical_collected_native_run':condition=='M0',
            'official_test_read':False,'full24_authorized':False}
     value['native_MATCH_transition_contract']=native_contract
+    value['checkpoint_sha256']=sha(B2)
     if condition=='M2':
         reference=json.loads((OUT/f'{collection}/video{video:02d}/baseline/result.json').read_text())
         value['latest10_bank_equivalence_prediction_identical']=sha(result['predictions'])==sha(reference['predictions'])
