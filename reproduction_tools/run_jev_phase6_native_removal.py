@@ -8,9 +8,10 @@ from jev_phase6_rollouts import NativeReplayLab
 
 def main(video,condition,device):
     lab=NativeReplayLab(video,device,native_match_validation=True,fast_match=True,compact_context=True)
+    if condition=='VALIDATION_ONLY':lab.native_resolver.global_reassociation=False
     counts=Counter()
     def intervene(feature,question,legal,action,context):
-        if question=='MATCH_DECISION' and action=='REASSOCIATE':
+        if condition!='VALIDATION_ONLY' and question=='MATCH_DECISION' and action=='REASSOCIATE':
             counts['removed_REASSOCIATE']+=1
             return 'START_NEW' if condition=='G4a' else 'ACCEPT_CURRENT'
         return action
@@ -21,10 +22,11 @@ def main(video,condition,device):
     value={'status':'COMPLETE','video':video,'condition':condition,'metrics':lab.pilot.extract_metrics(evaluated),
         'result':result,'checkpoint_sha256':sha(B2),'prediction_sha256':sha(result['predictions']),
         'removed_REASSOCIATE':counts['removed_REASSOCIATE'],'future':'live frozen native B2 with forced current action removal',
+        'global_reassociation':condition!='VALIDATION_ONLY','native_second_validation_retained':condition=='VALIDATION_ONLY',
         'official_test_read':False,'full24_authorized':False,'original_development_gate_revised':False}
     save(output/'result.json',value);protect_anchor();print(json.dumps({k:v for k,v in value.items() if k!='result'}))
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--video',type=int,choices=[2,3,5],required=True)
-    p.add_argument('--condition',choices=['G4a','G4b'],required=True);p.add_argument('--device',default='cuda:0')
+    p.add_argument('--condition',choices=['G4a','G4b','VALIDATION_ONLY'],required=True);p.add_argument('--device',default='cuda:0')
     a=p.parse_args();main(a.video,a.condition,a.device)

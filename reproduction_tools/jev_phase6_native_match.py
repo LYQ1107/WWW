@@ -11,9 +11,10 @@ from gtr.modeling.jev_state import count_track_history,legacy_acceptance_thresho
 
 
 class NativeMatchResolver:
-    def __init__(self,engine,controller):
+    def __init__(self,engine,controller,global_reassociation=True):
         self.engine=engine;self.original=engine.resolve_actions;self.controller=controller
         self.cache={};self.validations=[]
+        self.global_reassociation=global_reassociation
 
     def reset(self):
         self.cache.clear();self.validations=[]
@@ -52,13 +53,26 @@ class NativeMatchResolver:
         tracker.jev_policy=FirstActionsThenNativeValidation();tracker.jev_state_dim=64;tracker.jev_max_reassociate=1
         tracker.with_bank=bool(model.with_bank);tracker.with_iou=bool(model.with_iou);tracker.not_mult_thresh=bool(model.not_mult_thresh);tracker._jev_context={}
         rows=list(proposal.pairs);cols=[proposal.pairs[r] for r in rows]
-        native=tracker._apply_jev_match_decisions(original,proposal.scores,torch.tensor(proposal.track_ids),rows,cols,base,
-            view=int(perception['view']),frame_index=int(perception['frame']),
-            window_length=association_window_length(history_instances=len(state.association_history),view_num=2,view_index=int(perception['view']),
-                first_frame_secondary_view=int(perception['frame'])==0 and len(state.association_history)==1),
-            track_lengths=lengths,detection_boxes=perception['pred_boxes'],detection_scores=perception['detection_scores'],detection_image_size=perception['image_size'])
+        import importlib
+        native_module=importlib.import_module('gtr.modeling.meta_arch.gtr_rcnn')
+        real_solve=native_module.constrained_hungarian
+        if not self.global_reassociation:
+            # Mechanism control: preserve the original unique assignment and
+            # every native second-round feature/operator; no edge re-solve.
+            native_module.constrained_hungarian=lambda scores,banned: [(r,c) for r,c in proposal.pairs.items() if actions[r]!='START_NEW']
+        try:
+            native=self.native_call(tracker,original,proposal,rows,cols,base,perception,state,lengths)
+        finally:native_module.constrained_hungarian=real_solve
         native_ids=native.tolist();columns={t:c for c,t in enumerate(proposal.track_ids)}
         final=replace(resolution['final_proposal'],pairs={r:columns[t] for r,t in enumerate(native_ids) if t>=0})
         result=dict(resolution,final_proposal=final,existing_track_ids={r:t if t>=0 else None for r,t in enumerate(native_ids)})
         self.cache[cache_key]=result
         return result
+
+    @staticmethod
+    def native_call(tracker,original,proposal,rows,cols,base,perception,state,lengths):
+        return tracker._apply_jev_match_decisions(original,proposal.scores,torch.tensor(proposal.track_ids),rows,cols,base,
+            view=int(perception['view']),frame_index=int(perception['frame']),
+            window_length=association_window_length(history_instances=len(state.association_history),view_num=2,view_index=int(perception['view']),
+                first_frame_secondary_view=int(perception['frame'])==0 and len(state.association_history)==1),
+            track_lengths=lengths,detection_boxes=perception['pred_boxes'],detection_scores=perception['detection_scores'],detection_image_size=perception['image_size'])
