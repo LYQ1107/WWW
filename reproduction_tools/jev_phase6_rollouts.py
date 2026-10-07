@@ -34,7 +34,7 @@ class EventHorizonKeys(list):
 
 
 class NativeReplayLab:
-    def __init__(self, video, device='cuda:0'):
+    def __init__(self, video, device='cuda:0',native_match_validation=False,record_transitions=False):
         protect_anchor()
         empty = OUT / 'empty_debug_inputs.jsonl'
         if not empty.exists(): empty.write_text('')
@@ -58,6 +58,11 @@ class NativeReplayLab:
         self.seed_metadata=copy.deepcopy(self.metadata)
         _, self.subset, self.lookup, _, _ = pilot.load_inputs()
         self.controller = load_controller(B2, 'cpu')
+        self.native_match_validation=native_match_validation;self.native_resolver=None
+        if native_match_validation:
+            from jev_phase6_native_match import NativeMatchResolver
+            self.native_resolver=NativeMatchResolver(self.engine,self.controller)
+            self.engine.resolve_actions=self.native_resolver.resolve
         self.kwargs.update(build_formal_gmt_engine=lambda **kw:self.engine,
                            FrozenPerceptionCache=lambda path:self.cache,
                            build_controller_from_checkpoint=lambda path,device='cpu':self.controller)
@@ -68,6 +73,7 @@ class NativeReplayLab:
         self.before_step = None; self.after_step = None; self.intervention = None
         self.stop_requested=False; self.steps_completed=0
         self.status_stamp=0;self.output=None
+        self.record_transitions=record_transitions;self.transition_buffer=[];self.journal_files=[]
         self.engine.propose = self.propose
         self.engine.step = self.step
         pilot.choose = self.choose
@@ -76,6 +82,7 @@ class NativeReplayLab:
         if not state.reactivation_mode:
             self.current = payload; self.prefix = state
             self.decision_rows = []
+            if self.native_resolver is not None:self.native_resolver.reset()
             for track,m in self.metadata.items():
                 if track not in state.active_ids:m.setdefault('stale_since',int(payload['frame']))
                 else:m.pop('stale_since',None)
@@ -98,6 +105,9 @@ class NativeReplayLab:
         if self.before_step is not None:
             self.before_step(key,payload,state,kwargs,self.decision_rows)
         result = self.original_step(payload,state,**kwargs)
+        if self.record_transitions:
+            self.transition_buffer.append({'key':key,'kwargs':kwargs})
+            if len(self.transition_buffer)>=64:self.flush_journal()
         self.steps_completed+=1
         if self.output is not None and time.monotonic()-self.status_stamp>=30:
             save(self.output/'runtime_status.json',{'phase':'LIVE_POLICY_ROLLOUT','last_key':list(key),
@@ -108,6 +118,13 @@ class NativeReplayLab:
             try:self.after_step(key,payload,state,result,kwargs,self.decision_rows)
             except EndEventHorizon:self.stop_requested=True
         return result
+
+    def flush_journal(self):
+        if not self.transition_buffer:return
+        import torch
+        path=self.output/'committed_transitions'/f'{len(self.journal_files):04d}.pth'
+        path.parent.mkdir(parents=True,exist_ok=True)
+        torch.save(self.transition_buffer,path);self.journal_files.append(path);self.transition_buffer=[]
 
     def update_metadata(self,payload,state,committed,memory_actions):
         for row,track in committed.items():
@@ -126,6 +143,7 @@ class NativeReplayLab:
         self.output=output;self.status_stamp=0
         self.intervention = intervention; self.before_step = before_step; self.after_step = after_step
         self.stop_requested=False; self.steps_completed=0
+        self.transition_buffer=[];self.journal_files=[]
         self.metadata=copy.deepcopy(self.seed_metadata if prefix is None else metadata or {})
         if prefix is None:
             keys = self.keys
@@ -151,6 +169,8 @@ class NativeReplayLab:
             result = pilot.run_method('jev',B2,image_lookup=self.lookup,by_key={},records={},
                 feature_source_mode='runtime',parity_report={},device=self.device,**self.kwargs)
             result.update(payloads=self.steps_completed+(1 if prefix is None else 0),event_horizon_stop=self.stop_requested)
+            self.flush_journal()
+            result['native_match_validation']=self.native_match_validation
             save(output/'result.json',result)
             save(output/'runtime_status.json',{'phase':'COMPLETE','completed_payloads':result['payloads'],'pid':os.getpid()})
             return result

@@ -51,13 +51,24 @@ def main(device):
         research=[t if t<=state.next_id else -1 for row,t in sorted(result['committed_track_ids'].items())]
         native_ids=native.tolist();memory_research={r:t for r,t in resolution['existing_track_ids'].items() if t is not None}
         memory_native={r:t for r,t in enumerate(native_ids) if t>=0}
+        from jev_phase6_native_match import NativeMatchResolver
+        resolver=NativeMatchResolver(lab.engine,lab.controller)
+        corrected=resolver.resolve(payload,state,actions=actions,proposal=proposal)
+        lab.engine.resolve_actions=resolver.resolve
+        try:corrected_step=lab.original_step(payload,state.clone(),actions=actions,proposal=proposal)
+        finally:lab.engine.resolve_actions=resolver.original
+        corrected_ids=[t if t<=state.next_id else -1 for row,t in sorted(corrected_step['committed_track_ids'].items())]
+        corrected_memory={r:t for r,t in corrected['existing_track_ids'].items() if t is not None}
         records.append({'snapshot':path.name,'key':list(key),'snapshot_sha256':sha(path),
             'first_round_actions_match_frozen_B2':True,'first_round_max_feature_error':max(features,default=0),
             'native_second_round_decisions':[{'row':int(d.context['detection_index']),'action':d.committed_action,'off_action':d.off_action,'track':d.context['proposal_track_id']} for d in second],
             'research_existing_commits':research,'native_existing_commits':native_ids,
             'commit_mismatch_rows':[r for r,(a,b) in enumerate(zip(research,native_ids)) if a!=b],
             'research_MEMORY_eligible':memory_research,'native_MEMORY_eligible':memory_native,
-            'MEMORY_eligibility_identical':memory_research==memory_native})
+            'MEMORY_eligibility_identical':memory_research==memory_native,
+            'corrected_native_replay_commits':corrected_ids,
+            'corrected_native_replay_commits_identical':corrected_ids==native_ids,
+            'corrected_native_replay_MEMORY_identical':corrected_memory==memory_native})
     matched=all(not r['commit_mismatch_rows'] and r['MEMORY_eligibility_identical'] for r in records)
     report={'status':'PASS_ON_11_SNAPSHOTS' if matched else 'FAIL','events':records,
         'commit_mismatch_events':sum(bool(r['commit_mismatch_rows']) for r in records),
@@ -66,6 +77,7 @@ def main(device):
         'source_research':'resolve_actions applies legacy threshold only to MEMORY eligibility; step commits constrained assignment without native second-round controller call',
         'canonical_relative_reactivation_native_hook':'NOT_IMPLEMENTED','full_native_lifecycle_contract':'NOT_ESTABLISHED',
         'B2_original_checkpoint_and_research_results_unchanged':True,'official_test_read':False,
+        'opt_in_corrected_native_MATCH_contract':'PASS_ON_11_EVENTS' if all(r['corrected_native_replay_commits_identical'] and r['corrected_native_replay_MEMORY_identical'] for r in records) else 'FAIL',
         'what_did_we_learn':'Frozen research SHA reproduction is not sufficient to establish native lifecycle transition equivalence; inspect commit and MEMORY eligibility separately.'}
     save(REPORTS/'NATIVE_TRANSITION_CONTRACT_AUDIT.json',report);protect_anchor();print(json.dumps({k:v for k,v in report.items() if k!='events'}))
 
