@@ -1,0 +1,62 @@
+{
+  "schema_version": "jev_checkpoint_inventory_v1",
+  "created_utc": "2026-10-07T11:54:30Z",
+  "classification": "CHECKPOINT_PROVENANCE_AUDIT",
+  "policy": "preserve_existing_checkpoints; do_not_repeat_completed_video06_video07_training",
+  "gmt": {
+    "stage1_model_4000": {
+      "path": "/data1/liuyeqiang/WWW/outputs/stage1/model_4000.pth",
+      "bytes": 468671078,
+      "sha256": "548eebdcf90869d37c28e33695473f18a201c6d236997f5cf4adacdeb6d3a04a",
+      "exists": true
+    },
+    "stage1_single_gpu_model_16000": {
+      "path": "/data1/liuyeqiang/WWW/outputs/stage1_single_gpu/model_16000.pth",
+      "bytes": 468671078,
+      "sha256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+      "exists": true
+    },
+    "stage2_single_gpu_model_20000": {
+      "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+      "bytes": 638238241,
+      "sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+      "exists": true
+    }
+  },
+  "corrected_video06_video07_three_way": {
+    "root": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v6_v7",
+    "seed": 20261003,
+    "epochs": 20,
+    "batch_size": 128,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "dataset_sha256": "ae3f7dbfca79d45fe55134127edcd03603b2f36f2b9dae208eb0fa603fd050f4",
+    "policy_split_sha256": "f353252fc68ca3f038686b06d20579b7bc9c732b4051506562664b1b8ae0f436",
+    "methods": {
+      "question_threshold": {
+        "status": "PASS",
+        "checkpoint_bytes": 139131,
+        "checkpoint_sha256": "38770dee081acd382ea90adf8e27d2de0a76d016a03344d4e0c2fb627ab63513",
+        "calibrated_checkpoint_sha256": "25f7982a65a108201d2cd204a0ce9e87574e7ff242782adc130f54d0d4d5f785"
+      },
+      "question_conditioned_mlp": {
+        "status": "PASS",
+        "checkpoint_bytes": 139649,
+        "checkpoint_sha256": "b63b1c1c0b9306addad994f24d239806f4f1d9f7b6101a00a7a147baea11c153",
+        "calibrated_checkpoint_sha256": "c291906c732933164ece3d53f69fc4976bd5bb1a9b52b643b1862fb62d29fe0d"
+      },
+      "jev": {
+        "status": "PASS",
+        "checkpoint_bytes": 142643,
+        "checkpoint_sha256": "b950b71c83d14ecbe2c191d4432f0484b983c51bec3a5119fde85542b6d80617",
+        "calibrated_checkpoint_sha256": "c0642b7cc623cf77cb6d7e94629237bf81b8a7fa6f78e3d50b19412c8589188c"
+      }
+    }
+  },
+  "active_build_binding": {
+    "segmented_gate_source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+    "driver_pid": 13608,
+    "checkpoint_sha256_used_by_builder": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "current_build_must_not_overwrite_existing_controller_checkpoints": true
+  }
+}
