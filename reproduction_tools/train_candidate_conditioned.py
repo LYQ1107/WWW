@@ -42,6 +42,9 @@ def read_records(path: Path) -> List[Dict[str, Any]]:
                 raise ValueError(f"{path}:{line_number}: invalid candidate keys")
             if set(record.get("best_candidates", ())) - set(keys):
                 raise ValueError(f"{path}:{line_number}: best candidate outside legal set")
+            native_key = record.get("native_candidate_key")
+            if native_key is None or str(native_key) not in set(keys):
+                raise ValueError(f"{path}:{line_number}: native candidate binding is missing or illegal")
             target = record.get("target_probs", {})
             if set(target) != set(keys):
                 raise ValueError(f"{path}:{line_number}: target keys mismatch")
