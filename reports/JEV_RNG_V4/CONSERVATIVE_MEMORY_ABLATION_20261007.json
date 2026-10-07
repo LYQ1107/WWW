@@ -1,0 +1,155 @@
+{
+  "schema_version": "jev_conservative_memory_ablation_v1",
+  "created_utc": "2026-10-07T13:07:04.608655Z",
+  "classification": "SCREENING_DIAGNOSTIC_NOT_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
+  "status": "COMPLETE",
+  "source_commit": "1db16ec",
+  "semantic_base_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+  "experiment": {
+    "name": "current_head_jev_with_baseline_memory_safety_gate",
+    "safety_mode": "baseline_memory",
+    "description": "For MEMORY_DECISION only, force the GMT OFF action WRITE_MEMORY; leave MATCH and REACTIVATION decisions to each loaded controller.",
+    "data_modified": false,
+    "checkpoint_modified": false,
+    "full_h8_authorized": false,
+    "official_test_read": false,
+    "seed": 20261003,
+    "video_id": 1,
+    "records": 8995,
+    "records_sha256": "a174399cb979d5d1f9dc41366a4f07f6299c159c68e10e19222fedc656db7611",
+    "native_trace_sha256": "02773f217184600ce2eba7954e4a8fcd28c9070d8260e2a52ee07d670b0545b3",
+    "perception_cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+    "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+  },
+  "controller_bundle": {
+    "dataset_manifest_sha256": "3a0c5b05956d62ea09837678261559ac94d65ba77ba8eb16710c183f724f5df5",
+    "policy_split_sha256": "bbdac3cff7c46b20c707dd278c526704a99ede973cc1ffde31b11172df9efd91",
+    "records": 8496,
+    "question_threshold_checkpoint_sha256": "93b4925f082e6a460403e5124f393f360e5e9a25790ab1444501133a310c97cd",
+    "question_conditioned_mlp_checkpoint_sha256": "99a87a400e1b3c29f855d19e0950d31f788af7520238933a79c00e66531777d6",
+    "jev_checkpoint_sha256": "2509541a6669d8fc31013111b7bb9a38c4551be79ff5a466b259184029dd871b"
+  },
+  "runtime_gates": {
+    "off_feature_parity": {
+      "status": "PASS",
+      "compared_records": 8995,
+      "expected_records": 8995,
+      "missing_records": 0,
+      "max_abs_error": 0.00006103515625,
+      "off_action_mismatches": 0
+    },
+    "reactivation_coverage": {
+      "status": "PASS",
+      "expected_record_count": 174,
+      "runtime_decision_count": 174,
+      "candidate_evaluations": 174,
+      "reactivation_no_candidate": 53,
+      "unsupported_reactivation": 0,
+      "wrong_commit": 0,
+      "false_reactivation": 0.0
+    }
+  },
+  "methods": {
+    "gmt_off": {
+      "HOTA": 86.52304287961718,
+      "AssA": 85.14919745804252,
+      "DetA": 87.94461028006626,
+      "IDF1": 94.64245684824031,
+      "MOTA": 89.57906712172924,
+      "IDSW": 282.0,
+      "Frag": 6.0
+    },
+    "question_threshold": {
+      "HOTA": 80.03350457912201,
+      "AssA": 72.91680050127776,
+      "DetA": 87.87699896771727,
+      "IDF1": 83.9946200403497,
+      "MOTA": 78.45278725824801,
+      "IDSW": 771.0,
+      "Frag": 6.0,
+      "delta_HOTA": -6.48953830049517,
+      "delta_AssA": -12.23239695676476,
+      "delta_IDF1": -10.647836807890613,
+      "delta_MOTA": -11.12627986348123,
+      "delta_IDSW": 489.0
+    },
+    "question_conditioned_mlp": {
+      "HOTA": 57.900146230253256,
+      "AssA": 38.48140709011456,
+      "DetA": 87.18130668975142,
+      "IDF1": 59.179556153328846,
+      "MOTA": 62.70762229806598,
+      "IDSW": 1463.0,
+      "Frag": 6.0,
+      "delta_HOTA": -28.622896649363923,
+      "delta_AssA": -46.667790367927964,
+      "delta_IDF1": -35.46290069491147,
+      "delta_MOTA": -26.87144482366326,
+      "delta_IDSW": 1181.0
+    },
+    "jev": {
+      "HOTA": 85.87308811989666,
+      "AssA": 83.97763795650161,
+      "DetA": 87.83548996945673,
+      "IDF1": 92.82672046626317,
+      "MOTA": 95.58589306029579,
+      "IDSW": 18.0,
+      "Frag": 6.0,
+      "delta_HOTA": -0.6499547597205151,
+      "delta_AssA": -1.1715595015409122,
+      "delta_IDF1": -1.8157363819771462,
+      "delta_MOTA": 6.00682593856655,
+      "delta_IDSW": -264.0,
+      "action_counts": {
+        "ACCEPT_CURRENT": 4492,
+        "REASSOCIATE": 26,
+        "START_NEW": 6,
+        "WRITE_MEMORY": 4498,
+        "SKIP_MEMORY": 0,
+        "REACTIVATE_OLD": 7,
+        "wrong_commit": 15,
+        "wrong_commit_rate": 0.0017028039505051652,
+        "memory_contamination": 0.0
+      }
+    }
+  },
+  "comparison_to_unmodified_current_head_jev": {
+    "unmodified_HOTA": 85.07233456850815,
+    "unmodified_AssA": 82.45992978168289,
+    "unmodified_IDF1": 91.97489352163191,
+    "unmodified_MOTA": 95.58589306029579,
+    "unmodified_IDSW": 18.0,
+    "delta_HOTA": 0.8007535513885086,
+    "delta_AssA": 1.5177081748187232,
+    "delta_IDF1": 0.8518273306312565,
+    "delta_MOTA": 0.0,
+    "delta_IDSW": 0.0
+  },
+  "decision": {
+    "verdict": "PARTIAL_DIAGNOSIS_NO_GO",
+    "interpretation": "Forcing GMT OFF memory writes recovers part of the JEV association loss, confirming that memory tie labels and learned memory actions contribute to runtime state shift. MATCH/REASSOCIATE deviations remain sufficient to keep AssA and HOTA below GMT OFF.",
+    "full_h8_authorized": false,
+    "next_required": [
+      "do not merge this safety ablation with the unmodified controller result",
+      "test a validation-selected tie-aware target or explicit conservative action gate for MATCH/REASSOCIATE",
+      "rerun a fresh held-out small gate before any Full H8 authorization"
+    ]
+  },
+  "artifacts": {
+    "runtime_root": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/conservative_memory_gate_20261007_v2",
+    "pilot_report_sha256": "4ccd04c06489690dd6e1bf66888847637bb35d906b5e178297a02b1088dff667",
+    "decision_sha256": {
+      "gmt_off": "805f920e8a4d576d2ebbf11f35d782ad902cd85332ecc254d57711cc971f063b",
+      "question_threshold": "f4f234613a8163631a1327217cb7780f318bbfa71b1d9a3c6a2661092f8988df",
+      "question_conditioned_mlp": "b73b4abd246289c512ae8d07a5e03cc352bddcb7e673ba4af231f89bfb9c0fd5",
+      "jev": "f884b8ab097f1beff95ef0c9186f773d600352a0e1d521e2a2a4d3c6bf36b88d"
+    },
+    "prediction_sha256": {
+      "gmt_off": "44f37c954b1b4081ed08d90af2bc8355f0a761fe25ab7058a5f930f2e178af09",
+      "question_threshold": "8b1ee6bacd7be10a73a17965393128582d0b7879ebc49b63ebae8d126a6af13a",
+      "question_conditioned_mlp": "5557db4b2ae21450ae2cd2e06e21a11c79706c74efcef98698074be89d2f2298",
+      "jev": "40a22708cb5bb2cb90f3ead43154ede1c0300018cac1eeec288d6bfd2fdfc46f"
+    }
+  }
+}
