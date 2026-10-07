@@ -1,0 +1,84 @@
+{
+  "schema_version": "jev_current_head_dataset_binding_audit_v1",
+  "created_utc": "2026-10-07T12:58:03.462037Z",
+  "classification": "DIAGNOSTIC_NOT_A_PAPER_RESULT",
+  "status": "PASS_DIFFERENT_BINDINGS_CONFIRMED",
+  "question": "why the current-head controller result cannot be merged with the prior positive screening result",
+  "current_binding": {
+    "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+    "semantic_base_commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+    "video06_records": 5162,
+    "video06_records_sha256": "4ffcb359673d020410b249f9a05dcb88fce06122b4a02ddd2e6260e6e9f99dd0",
+    "video07_records": 3334,
+    "video07_records_sha256": "6abd8770b23427aaee3982695c93f27f4fceabaf0cf91328f2f0465dc4e79ae2",
+    "policy_dataset_records": 8496,
+    "policy_dataset_manifest_sha256": "3a0c5b05956d62ea09837678261559ac94d65ba77ba8eb16710c183f724f5df5",
+    "policy_split_sha256": "bbdac3cff7c46b20c707dd278c526704a99ede973cc1ffde31b11172df9efd91"
+  },
+  "prior_binding": {
+    "source_commit": "ec40effda4eff3ca9e32579c207866009e6dbd91",
+    "video06_records": 5164,
+    "video06_records_sha256": "80a14e5d9971b0b7de9a8a6c4fe1995a347ff5542e1f5fd56e8d004ed04cbb84",
+    "video07_records": 3337,
+    "video07_records_sha256": "56c79c647af2bc3db3eba0d6e637e2bf5ea3e831ed558fbc9d0df064a3d27ada",
+    "policy_dataset_records": 8501,
+    "policy_dataset_manifest_sha256": "cabedc4fa2df26a605c9b0523b35ea75b7c1763d907aa16442101e3bec07565c"
+  },
+  "context_key_comparison": {
+    "key": "(video_id, frame, view, question_type, detection_index)",
+    "video06": {
+      "common": 5161,
+      "current_only": 1,
+      "prior_only": 3,
+      "current_question_counts": {"MATCH_DECISION": 2600, "MEMORY_DECISION": 2562},
+      "prior_question_counts": {"MATCH_DECISION": 2600, "MEMORY_DECISION": 2564},
+      "legal_action_differences_on_common": 0,
+      "feature_rows_different_abs_gt_1e-7": 4899,
+      "maximum_feature_abs_difference": 2843.3880615234375,
+      "action_outcome_comparisons_with_difference": 1021,
+      "target_probability_rows_different": 270
+    },
+    "video07": {
+      "common": 3329,
+      "current_only": 5,
+      "prior_only": 8,
+      "current_question_counts": {"MATCH_DECISION": 1703, "MEMORY_DECISION": 1631},
+      "prior_question_counts": {"MATCH_DECISION": 1703, "MEMORY_DECISION": 1634},
+      "legal_action_differences_on_common": 0,
+      "feature_rows_different_abs_gt_1e-7": 3026,
+      "maximum_feature_abs_difference": 1685.5164794921875,
+      "action_outcome_comparisons_with_difference": 1764,
+      "target_probability_rows_different": 200
+    }
+  },
+  "current_head_training_diagnostics": {
+    "validation_records": 5162,
+    "majority_best_action_accuracy": 0.9998062766369624,
+    "jev_best_action_accuracy": 0.9996125532739248,
+    "threshold_best_action_accuracy": 0.936458736923673,
+    "mlp_best_action_accuracy": 0.9843084075939559,
+    "majority_val_utility": 36.62950406819063,
+    "jev_val_utility": 36.62897132894227,
+    "threshold_val_utility": 36.613425029058504,
+    "mlp_val_utility": 36.62562960092987,
+    "oracle_best_utility": 36.62979465323518,
+    "meaningful_learned_policy_advantage": false,
+    "overall_best_action_tie_rate": 0.5185974428516079,
+    "memory_best_action_tie_rate": 1.0,
+    "positive_margin_record_count": 2490
+  },
+  "interpretation": {
+    "old_and_current_are_repeatable_same_binding": false,
+    "current_head_data_is_byte_identical_to_prior": false,
+    "legal_action_interface_is_same_on_common_rows": true,
+    "features_and_returns_are_same": false,
+    "conclusion": "The prior positive JEV result cannot be used as evidence for the current-head controller bundle. The current-head bundle has a stable closed-loop NO-GO, and its policy data also shows majority/tie degeneration; this is a data/training diagnosis, not evidence that the corrected GMT runtime gates failed.",
+    "full_h8_authorized": false
+  },
+  "next_required_work": [
+    "keep the current-head NO-GO and both controller bundles separately versioned",
+    "audit why the current source changes alter state/features/returns before selecting a retraining protocol",
+    "do not merge old positive metrics into current-head results",
+    "do not authorize Full H8 until a fresh held-out controller gate passes"
+  ]
+}

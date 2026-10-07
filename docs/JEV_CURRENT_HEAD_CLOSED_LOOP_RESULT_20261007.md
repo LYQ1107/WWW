@@ -31,4 +31,4 @@ FULL_H8_AUTHORIZED = FALSE
 
 上一份 JEV 正向结果使用 dataset SHA `cabedc4f...7565c` 及另一组 calibrated checkpoints；本次使用 dataset SHA `3a0c5b05...f5df5` 和新的 calibrated checkpoints。两者不是同一 bundle 的 repeatability，不能把指标差异归因于随机波动。本次 current-head bundle 已做第二次完整 replay：四个方法的指标、action counts、决策 JSON SHA 和 prediction JSON SHA 均逐项一致，repeatability 为 `PASS`。因此当前 NO-GO 是稳定结果；Full H8 继续保持暂停。
 
-机器可读报告：[`SEGMENTED_SMALL_GATE_CURRENT_HEAD_CLOSED_LOOP_VIDEO01_20261007.json`](../reports/JEV_RNG_V4/SEGMENTED_SMALL_GATE_CURRENT_HEAD_CLOSED_LOOP_VIDEO01_20261007.json)。
+机器可读报告：[`SEGMENTED_SMALL_GATE_CURRENT_HEAD_CLOSED_LOOP_VIDEO01_20261007.json`](../reports/JEV_RNG_V4/SEGMENTED_SMALL_GATE_CURRENT_HEAD_CLOSED_LOOP_VIDEO01_20261007.json)。数据绑定差异审计：[`CURRENT_HEAD_DATASET_BINDING_AUDIT_20261007.json`](../reports/JEV_RNG_V4/CURRENT_HEAD_DATASET_BINDING_AUDIT_20261007.json)。
