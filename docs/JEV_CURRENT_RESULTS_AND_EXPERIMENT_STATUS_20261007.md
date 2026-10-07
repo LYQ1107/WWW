@@ -70,7 +70,8 @@
 另外，VisionTrack evaluator 顺序修复已保存为独立候选分支
 [`evaluator-order-fix-20261007`](https://github.com/LYQ1107/WWW/tree/jev/evaluator-order-fix-20261007)：
 源码 commit `8dfc9e4`，回归测试 commit `c7ac234`。固定 GMT 环境下 3/3 个源码回归
-通过；尚未合入 canonical，也尚未据此重跑正式 inference/evaluation。
+通过；已有 prediction stream 的 video01/02 共 26,471 行与 diagnostic remap 行级完全一致。
+尚未合入 canonical，也尚未据此重跑正式 inference/evaluation。
 
 ## 2. 当前 segmented small gate
 
