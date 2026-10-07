@@ -1,0 +1,132 @@
+{
+  "schema_version": "jev_research_completion_audit_v1",
+  "created_utc": "2026-10-07T10:44:43Z",
+  "status": "INCOMPLETE_WITH_ACTIVE_PROGRESS",
+  "claim_policy": "No final paper claim is authorized until corrected video01 v2 hard gates and closed-loop pass.",
+  "source_authority": {
+    "worktree": "/data1/liuyeqiang/WWW_rng_fix_v4",
+    "branch": "jev/counterfactual-rng-isolation-v4-20261006",
+    "commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+    "current_full_h8_canonical": false
+  },
+  "training_checkpoints": {
+    "stage1": {
+      "status": "PASS",
+      "validation_report": "/data1/liuyeqiang/WWW/outputs/stage1_single_gpu/checkpoint_validation.json",
+      "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage1_single_gpu/model_16000.pth",
+      "checkpoint_sha256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+      "iteration": 16000,
+      "scheduler_last_epoch": 20000,
+      "global_iteration": 20000,
+      "model_keys": 411,
+      "model_finiteness": "PASS",
+      "optimizer_state": "PRESENT",
+      "checkpoint_reload": "PASS"
+    },
+    "stage2": {
+      "status": "PASS",
+      "validation_report": "reports/JEV_RNG_V4/STAGE2_CHECKPOINT_VALIDATION_20261007.json",
+      "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+      "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+      "bytes": 638238241,
+      "iteration": 20000,
+      "scheduler_last_epoch": 20000,
+      "global_iteration": 20000,
+      "model_keys": 411,
+      "model_finiteness": "PASS",
+      "optimizer_state": "PRESENT",
+      "checkpoint_reload": "PASS",
+      "validation_created_utc": "2026-10-07T10:44:17.489048+00:00"
+    }
+  },
+  "frozen_gmt_baseline": {
+    "status": "FROZEN_AND_REUSED",
+    "rerun_for_current_gate": false,
+    "metrics": {
+      "HOTA": 67.442,
+      "DetA": 66.278,
+      "AssA": 68.992,
+      "IDF1": 82.239,
+      "MOTA": 80.942,
+      "IDSW": 3092,
+      "Frag": 8004,
+      "CVIDF1": 79.0248,
+      "CVMA": 80.9276
+    },
+    "authority_report": "reports/JEV_RNG_V4/CURRENT_GO_NO_GO_20261007.json"
+  },
+  "completed_research_components": {
+    "video06_video07_provenance": "PASS",
+    "video06_video07_runtime_feature_parity": "PASS",
+    "video07_exact_repeatability": "PASS",
+    "rng_branch_isolation_contract": "PASS",
+    "reassociate_proposal_reuse_contract": "PASS",
+    "corrected_v4_small_h8_three_way_training": {
+      "status": "PASS_SCREENING_ONLY",
+      "report": "reports/JEV_RNG_V4/CORRECTED_V4_SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json",
+      "records": 8501,
+      "seed": 20261003,
+      "final_claim_allowed": false
+    },
+    "legacy_early_closed_loop_pilot": {
+      "status": "PASS_SCREENING_ONLY",
+      "offline_report": "reports/H8_EARLY_CLOSED_LOOP_PILOT/PILOT_OFFLINE_THREE_WAY.json",
+      "tracking_report": "reports/H8_EARLY_CLOSED_LOOP_PILOT/PILOT_TRACKING_THREE_WAY.json",
+      "interpretation": "Useful pipeline smoke and legacy signal only; it is not the corrected v2 final comparison."
+    }
+  },
+  "active_corrected_v2_gate": {
+    "status": "RUNNING",
+    "pid": 12163,
+    "start_utc": "2026-10-07T04:15:18Z",
+    "observed_utc": "2026-10-07T10:44:43Z",
+    "elapsed": "06:29:24",
+    "cpu_time": "06:29:30",
+    "state": "Rsl",
+    "cpu_percent": 100.0,
+    "rss_kib": 3158884,
+    "expected_records": 8995,
+    "records_artifact_exists": false,
+    "manifest_artifact_exists": false,
+    "manifest_path": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_corrected_full_v2/video01_records.jsonl.manifest.json",
+    "must_not_stop_or_migrate": true
+  },
+  "parallel_diagnostics": {
+    "max2400_cost_diagnostic": {
+      "pid": 5457,
+      "status": "RUNNING",
+      "start_utc": "2026-10-07T10:19:38Z",
+      "elapsed_at_snapshot": "00:25:04",
+      "result_available": false
+    },
+    "reactivation_window_210_220": {
+      "status": "COMPLETE_DIAGNOSTIC_ONLY",
+      "records": 113,
+      "reactivation_records": 5,
+      "skipped_events": 0,
+      "wall_seconds": 222.135756
+    }
+  },
+  "required_remaining_gates": [
+    "corrected video01 v2 records and manifest",
+    "video01 provenance validation",
+    "MATCH/MEMORY/REACTIVATION runtime feature parity",
+    "fresh v2-bound reactivation candidate parity",
+    "video01 numerical stability",
+    "corrected GMT OFF/Threshold/MLP/JEV closed-loop",
+    "GO/NO-GO decision",
+    "only after GO: frozen canonical Full H8 worktree and 24-video rebuild",
+    "full-data policy training and formal paper evaluation",
+    "final reproducibility report and numerical audit"
+  ],
+  "full_h8": {
+    "status": "PAUSED",
+    "canonical_authority": "NOT_CANONICAL",
+    "classification": "PRE_VIDEO01_GATE_SPECULATIVE_BUILD",
+    "reason": "Premature authorization plus mixed source-commit risk",
+    "final_merge_allowed": false,
+    "policy_training_allowed": false,
+    "paper_metrics_allowed": false
+  },
+  "current_decision": "NO_FINAL_RESEARCH_CLAIM_YET"
+}
