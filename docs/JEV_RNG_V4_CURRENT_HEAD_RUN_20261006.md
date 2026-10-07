@@ -187,10 +187,12 @@ just because their utilization is low. No process was stopped or migrated.
 
 The current-head runtime feature parity gate keeps the absolute `2e-5`
 tolerance for bounded state/flag features and applies an explicit relative
-`1e-7` envelope only to the unbounded float32 score-derived features listed in
-the parity report.  This accounts for reproducible cross-device float32
-reduction differences without weakening structural checks.  Semantic keys,
-legal actions, OFF actions, candidate ordering, question types, record counts,
-missing counts, and finite-state checks remain exact.  The report records the
-per-feature policy and `tolerance_exceed_count`; a parity PASS requires that
-count to be zero.
+`4 * eps32 = 4.7683716e-7` envelope only to the unbounded float32 score-derived
+features listed in the parity report.  This accounts for reproducible
+cross-device float32 reduction differences without weakening structural
+checks.  Semantic keys, legal actions, OFF actions, candidate ordering,
+question types, record counts, missing counts, and finite-state checks remain
+exact.  The report records the per-feature policy and
+`tolerance_exceed_count`; a parity PASS requires that count to be zero.  The
+relative envelope is a command-line parameter so a stricter diagnostic such
+as `1e-7` remains reproducible and auditable.

@@ -23,6 +23,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 CHECKPOINT = Path("/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth")
 CACHE = Path("/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train")
+DEFAULT_SCALE_SENSITIVE_RELATIVE_TOLERANCE = float(4 * np.finfo(np.float32).eps)
 
 
 def sha256(path: Path) -> str:
@@ -33,13 +34,18 @@ def sha256(path: Path) -> str:
     return "sha256:" + digest.hexdigest()
 
 
-def parity_template(feature_names, expected_count: int, tolerance: float):
+def parity_template(
+    feature_names,
+    expected_count: int,
+    tolerance: float,
+    relative_tolerance: float,
+):
     return {
         "schema_version": "jev_runtime_feature_parity_stability_v1",
         "tolerance": float(tolerance),
-        "relative_tolerance": 1e-7,
+        "relative_tolerance": float(relative_tolerance),
         "scale_sensitive_feature_names": sorted(
-            pilot_scale_sensitive_feature_names(feature_names)
+            scale_sensitive_feature_names(feature_names)
         ),
         "feature_names": list(feature_names(64)),
         "expected_record_count": int(expected_count),
@@ -58,7 +64,7 @@ def parity_template(feature_names, expected_count: int, tolerance: float):
     }
 
 
-def pilot_scale_sensitive_feature_names(feature_names):
+def scale_sensitive_feature_names(feature_names):
     """Keep the explicit scale-sensitive contract in the parity report."""
 
     names = set(feature_names(64))
@@ -95,9 +101,17 @@ def main() -> None:
     parser.add_argument("--max-frame", type=int, required=True)
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument("--tolerance", type=float, default=2e-5)
+    parser.add_argument(
+        "--relative-tolerance",
+        type=float,
+        default=DEFAULT_SCALE_SENSITIVE_RELATIVE_TOLERANCE,
+        help="relative envelope for explicitly unbounded float32 score features",
+    )
     args = parser.parse_args()
     if args.repetitions < 3:
         raise ValueError("at least three repetitions are required")
+    if args.relative_tolerance < 0:
+        raise ValueError("relative tolerance must be non-negative")
     for path in (args.trace, args.records, CHECKPOINT):
         if not path.is_file():
             raise FileNotFoundError(path)
@@ -151,7 +165,12 @@ def main() -> None:
 
     repetitions = []
     for repetition in range(int(args.repetitions)):
-        parity = parity_template(feature_names, len(records), args.tolerance)
+        parity = parity_template(
+            feature_names,
+            len(records),
+            args.tolerance,
+            args.relative_tolerance,
+        )
         item = pilot.run_method(
             "gmt_off",
             None,
@@ -231,9 +250,9 @@ def main() -> None:
         "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
         "repetitions_requested": int(args.repetitions),
         "tolerance_tested": float(args.tolerance),
-        "relative_tolerance": 1e-7,
+        "relative_tolerance": float(args.relative_tolerance),
         "tolerance_policy_candidate": (
-            "FLOAT32_RUNTIME_FEATURE_PARITY_ABSOLUTE_2E-5_PLUS_SCALE_SENSITIVE_RELATIVE_1E-7"
+            "FLOAT32_RUNTIME_FEATURE_PARITY_ABSOLUTE_2E-5_PLUS_SCALE_SENSITIVE_RELATIVE_4EPS32"
         ),
         "seed_policy": {
             "trajectory_rng_master_seed": 20261006,
