@@ -20,8 +20,10 @@ proposal IDs, and legacy OFF actions pass. It still has `8` native-only and `8`
 replay-only event keys, so score parity alone is insufficient. The independent
 segmented early window (frames 210–216) is stronger evidence: all `70/70`
 records are exactly equivalent and both reactivation candidate events pass.
-The late 881–890 window was still completing its single-reference comparison
-at the report snapshot and is not called PASS.
+The late 881–890 window has now also passed: all `102/102` records are exact,
+and its candidate probe reports zero mismatches across 167 reactivation events
+through frame 890. These are bounded chunking/runtime gates, not a full-video
+v2 acceptance.
 
 The raw-ReID/anchor-geometry repair is now committed separately as
 `b20d7e2bc26af53095f56bc92179f2e414468da6` on
@@ -49,10 +51,10 @@ steps, 370,764 future proposal calls, and 372,637 reactivation-context calls.
 
 PID `15541` is the independent `segmented_gate_20261007_v4` job on GPUs
 2,3,5,6,7,8,9, source `1d2711e80ac5fa00806fd9eed30e90cd51df6b30`. At the
-snapshot it was finishing the late 881–890 probe: 98/102 records were
-complete and its single-reference baseline was still running. The early
-210–216 probe already passed exact chunk equivalence and candidate parity.
-This job remains untouched.
+snapshot it had completed both bounded probes: 70/70 exact records at
+210–216 and 102/102 exact records at 881–890; both candidate probes passed
+with zero mismatches. It then moved to the segmented small-gate preparation
+for the authorized video01/video06/video07 run. The job remains untouched.
 
 The formal 8,995-record artifact from `4108f18` is retained for audit only.
 Its provenance and checkpoint wrapper passed, but runtime feature parity,

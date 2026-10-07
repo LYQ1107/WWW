@@ -1,6 +1,6 @@
 {
   "schema_version": "video01_post_diagnostic_audit_v1",
-  "created_utc": "2026-10-07T11:25:43Z",
+  "created_utc": "2026-10-07T11:28:41Z",
   "classification": "DIAGNOSTIC_AUDIT_NOT_PAPER_RESULT",
   "instruction_file": "/data1/liuyeqiang/www_补充执行指令_20261007.txt",
   "instruction_file_sha256": "sha256:ca8bc3f5fd13a9a035c5559244626741233e7b2b81ca533b43cfe6ab2be945eb",
@@ -101,13 +101,19 @@
       "legacy_off_actions_exact": true
     },
     "segmented_late_window_881_890": {
-      "status_at_report_time": "IN_PROGRESS",
+      "status_at_report_time": "PASS",
       "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
       "records_total": 102,
-      "records_completed_at_report_time": 98,
-      "single_reference_baseline": "RUNNING",
-      "candidate_parity": "PENDING",
-      "do_not_treat_as_pass": true
+      "records_completed_at_report_time": 102,
+      "equivalence_sha256": "sha256:167168a1c57fa6b16d00de4b946ee17e209372f95ebfa953ad30a8210b54dc4d",
+      "exact_record_matches": 102,
+      "single_reference_baseline": "PASS",
+      "candidate_parity": "PASS",
+      "candidate_events_compared": 167,
+      "candidate_mismatch_count": 0,
+      "candidate_scores_within_tolerance": true,
+      "chosen_proposal_ids_exact": true,
+      "do_not_treat_as_full_video01_pass": true
     },
     "gate_decision": "BLOCKED_UNTIL_EXACT_EVENT_KEY_COVERAGE_AND_FULL_V2_BOUND_PARITY_PASS"
   },
@@ -163,7 +169,7 @@
     "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
     "gpus": [2, 3, 5, 6, 7, 8, 9],
     "output": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4",
-    "status_at_report_time": "RUNNING_LATE_PROBE_BASELINE",
+    "status_at_report_time": "RUNNING_SEGMENTED_SMALL_GATE_PREPARE",
     "preserved": true,
     "formal_video01_v2_restarted": false,
     "full_h8_workers_started": false
