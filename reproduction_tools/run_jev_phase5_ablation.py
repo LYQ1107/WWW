@@ -119,7 +119,7 @@ def main():
         counts = Counter(d['action'] for d in decisions if d['question'] == question)
         total = sum(counts.values())
         by_question[question] = {'count': total, 'actions': dict(counts), 'rates': {k: v / max(1,total) for k,v in counts.items()}}
-    summary = {'status': 'PASS', 'classification': 'TRAIN_HELD_OUT_FROZEN_CHECKPOINT_COMPONENT_DIAGNOSTIC',
+    summary = {'status': 'PASS', 'classification': ('TRAIN_HELD_OUT_MINIMAL_RETRAIN_MATCH_ONLY_DIAGNOSTIC' if args.checkpoint else 'TRAIN_HELD_OUT_FROZEN_CHECKPOINT_COMPONENT_DIAGNOSTIC'),
                'variant': args.variant, 'controlled_questions': sorted(controlled), 'metrics': metrics,
                'result': result, 'action_counts_by_question': by_question,
                'checkpoint': None if args.variant == 'A0' else str(checkpoint),

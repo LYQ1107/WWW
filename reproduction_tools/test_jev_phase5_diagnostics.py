@@ -33,4 +33,7 @@ def main():
         assert rows[0]==next(r for r in all_rows if r['frame']==1 and r['question_type']=='MEMORY_DECISION')
         assert observed and all(x[0]=='START_NEW' for x in observed),observed
     print('Phase V GT coordinates and full-future emission filter: PASS')
+def test_phase5_diagnostics():
+    main()
+
 if __name__=='__main__':main()

@@ -42,10 +42,12 @@ def main():
                     if len(memory[int(t)])!=n and len(errors)<12:errors.append({'key':k,'track_id':t,'reconstructed':len(memory[int(t)]),'logged':n})
                 if target is not None:
                     old=last_gt.get(track);question[q]['GT_matched']+=1;question[q]['prefix_existing_identity_conflicts']+=old is not None and old!=target
-                if q!='REACTIVATION_DECISION':continue
                 for t in state['old_reid_ids']:
                     if t not in bank:
                         n=state['memory_bank_size'];labels=memory[t][-n:];bank[t]=list(labels);stats['bank_promotions']+=1;stats['mixed_GT_bank_promotions']+=len({g for g in labels if g is not None})>1
+                        stats['fully_GT_unmatched_bank_promotions']+=all(g is None for g in labels)
+                        stats['promoted_bank_samples']+=len(labels);stats['GT_unmatched_promoted_bank_samples']+=sum(g is None for g in labels)
+                if q!='REACTIVATION_DECISION':continue
                 candidate=context['track_id'];labels=bank.get(candidate,[]);known=[g for g in labels if g is not None];old=last_gt.get(candidate)
                 status='NOT_REACTIVATED'
                 if d['action']=='REACTIVATE_OLD':
@@ -62,6 +64,6 @@ def main():
                 if target is not None:last_gt[track]=target
         assert not errors,errors
         results[v]={'memory_write_history_lengths_match_logged_state':True,'question_counts':dict(question),'bank_and_reactivation_counts':dict(stats),'reactivation_events':react,'final_memory_recent10_purity':[{'track_id':t,'known_GT_counts':dict(Counter(str(x) for x in labels[-10:] if x is not None)),'unknown_samples':sum(x is None for x in labels[-10:])} for t,labels in memory.items()]}
-    save('PREFIX_IDENTITY_AND_NATIVE_BANK_AUDIT.json',{'status':'COMPLETE','GT_only_offline':True,'memory_history_reconstructed_from_actual_online_writes':True,'native_bank_semantics':'last bank_size raw-ReID write samples at first appearance in logged old_reid_ids; persistent until reactivated; only GT labels attached offline','false_reactivation_definition':'At an actual REACTIVATE_OLD, current one-to-one IoU-matched GT differs from last GT-matched observation for that candidate ID before this frame/view commit. Unknown GT/prefix is unassessed, not counted false.','wrong_commit_definition':'Final committed existing ID changes its last observed GT identity across key boundary; observational prefix conflict, not counterfactual action utility.','results':results})
+    save('PREFIX_IDENTITY_AND_NATIVE_BANK_AUDIT.json',{'status':'COMPLETE','GT_only_offline':True,'memory_history_reconstructed_from_actual_online_writes':True,'native_bank_semantics':'last bank_size raw-ReID write samples at first appearance in any logged old_reid_ids; persistent until reactivated; only GT labels attached offline','false_reactivation_definition':'At an actual REACTIVATE_OLD, current one-to-one IoU-matched GT differs from last GT-matched observation for that candidate ID before this frame/view commit. Unknown GT/prefix is unassessed, not counted false.','wrong_commit_definition':'Final committed existing ID changes its last observed GT identity across key boundary; observational prefix conflict, not counterfactual action utility.','results':results})
     print(json.dumps({'status':'COMPLETE','counts':{v:r['bank_and_reactivation_counts'] for v,r in results.items()}}))
 if __name__=='__main__':main()
