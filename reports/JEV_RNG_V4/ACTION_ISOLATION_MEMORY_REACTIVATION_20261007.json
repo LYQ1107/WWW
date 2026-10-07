@@ -1,0 +1,63 @@
+{
+  "schema_version": "jev_action_isolation_diagnostic_v1",
+  "classification": "SCREENING_DIAGNOSTIC_NOT_FINAL_SELECTION_NOT_PAPER_RESULT",
+  "created_utc": "2026-10-07T13:23:41.736043Z",
+  "diagnostic": {
+    "name": "baseline_memory_reactivation",
+    "forced_to_gmt_off": ["MEMORY_DECISION", "REACTIVATION_DECISION"],
+    "learned_question_type": "MATCH_DECISION",
+    "purpose": "Isolate learned matching while holding memory and reactivation semantics to GMT OFF."
+  },
+  "binding": {
+    "source_commit": "84b6886ba38e2a816714c921004c83698f94693b",
+    "semantic_data_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+    "video_id": 1,
+    "sequence": "00002garden",
+    "horizon": 8,
+    "records": 8995,
+    "records_sha256": "a174399cb979d5d1f9dc41366a4f07f6299c159c68e10e19222fedc656db7611",
+    "native_trace_sha256": "02773f217184600ce2eba7954e4a8fcd28c9070d8260e2a52ee07d670b0545b3",
+    "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+    "runtime_report_sha256": "4b1c60c8ff5e88853bc2626e28a15499a9cdeaf5bdef9d75c06447187305004c",
+    "runtime_root": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/action_isolation_memory_reactivation_20261007"
+  },
+  "gates": {
+    "runtime_feature_parity": {"pass": true, "compared_records": 8995, "expected_records": 8995, "max_abs_error": 0.00006103515625, "off_action_mismatches": 0},
+    "reactivation_candidate_coverage": {"pass": true, "runtime_decision_count": 174, "candidate_evaluations": 174, "no_candidate": 53, "wrong_commit": 0, "false_reactivation": 0.0}
+  },
+  "gmt_off": {
+    "metrics": {"HOTA": 86.52304287961718, "DetA": 87.94461028006626, "AssA": 85.14919745804252, "IDF1": 94.64245684824031, "MOTA": 89.57906712172924, "IDSW": 282.0, "Frag": 6.0},
+    "actions": {"ACCEPT_CURRENT": 4297, "REASSOCIATE": 0, "START_NEW": 401, "WRITE_MEMORY": 4297, "SKIP_MEMORY": 0, "REACTIVATE_OLD": 0}
+  },
+  "methods": {
+    "question_threshold": {
+      "metrics": {"HOTA": 80.99845302625563, "DetA": 87.87699896771727, "AssA": 74.68320521493006, "IDF1": 86.9311813494732, "MOTA": 80.31854379977247, "IDSW": 689.0, "Frag": 6.0},
+      "delta_vs_gmt_off": {"HOTA": -5.524589853361547, "AssA": -10.465992243112467, "IDF1": -7.711275498767108, "MOTA": -9.260523321956768, "IDSW": 407.0, "Frag": 0.0},
+      "actions": {"ACCEPT_CURRENT": 3970, "REASSOCIATE": 64, "START_NEW": 725, "WRITE_MEMORY": 3976, "SKIP_MEMORY": 0, "REACTIVATE_OLD": 0},
+      "wrong_commit": 450,
+      "memory_contamination": 0
+    },
+    "question_conditioned_mlp": {
+      "metrics": {"HOTA": 58.83113526289525, "DetA": 87.82496486813307, "AssA": 39.423358560437975, "IDF1": 58.081147724725405, "MOTA": 72.55972696245733, "IDSW": 1030.0, "Frag": 6.0},
+      "delta_vs_gmt_off": {"HOTA": -27.691907616721927, "AssA": -45.72583889760455, "IDF1": -36.56130912351491, "MOTA": -17.019340159271906, "IDSW": 748.0, "Frag": 0.0},
+      "actions": {"ACCEPT_CURRENT": 3418, "REASSOCIATE": 697, "START_NEW": 696, "WRITE_MEMORY": 4041, "SKIP_MEMORY": 0, "REACTIVATE_OLD": 26},
+      "wrong_commit": 1072,
+      "memory_contamination": 246
+    },
+    "jev": {
+      "metrics": {"HOTA": 86.67309525873847, "DetA": 87.79626763501899, "AssA": 85.58662671641001, "IDF1": 94.57520735261153, "MOTA": 95.58589306029579, "IDSW": 18.0, "Frag": 6.0},
+      "delta_vs_gmt_off": {"HOTA": 0.15005237912129132, "AssA": 0.43742925836748725, "IDF1": -0.06724949562878635, "MOTA": 6.00682593856655, "IDSW": -264.0, "Frag": 0.0},
+      "actions": {"ACCEPT_CURRENT": 4496, "REASSOCIATE": 22, "START_NEW": 22, "WRITE_MEMORY": 4502, "SKIP_MEMORY": 0, "REACTIVATE_OLD": 0},
+      "wrong_commit": 15,
+      "memory_contamination": 0
+    }
+  },
+  "interpretation": {
+    "finding": "With MEMORY and REACTIVATION forced to GMT OFF, the learned MATCH path can produce a positive pilot signal for JEV (+0.4374 AssA, +0.1501 HOTA, -264 IDSW), while Threshold and MLP remain below GMT OFF.",
+    "meaning": "The controller's useful signal is concentrated in matching, but the unrestricted three-way policy is unsafe because its memory/reactivation decisions can erase that gain.",
+    "authorization": "FULL_H8_AUTHORIZED_FALSE",
+    "runner_verdict_is_not_authorization": true,
+    "official_test": false
+  }
+}
