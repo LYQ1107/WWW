@@ -1,0 +1,69 @@
+{
+  "schema_version": "jev_candidate_runtime_smoke_v1",
+  "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
+  "created_utc": "2026-10-07T14:29:18Z",
+  "video_id": 1,
+  "sequence": "00002garden",
+  "scope": {
+    "max_frame": 3,
+    "methods": ["gmt_off", "candidate_mlp", "candidate_jev"],
+    "full_video1_tracking_metrics": false,
+    "formal_video01_v2_builder_reused": true
+  },
+  "runtime_binding": {
+    "candidate_assignments_are_native_track_ids": true,
+    "candidate_ids_are_model_features": false,
+    "candidate_columns_are_reserved_before_commit": true,
+    "transformer_recomputed_for_candidate_binding": false,
+    "illegal_candidate_assignment_policy": "fail_closed"
+  },
+  "source_guard": {
+    "runtime_commit": "c9b7d61cd6b883e0649e2506475e3b756750edc4",
+    "checkpoint_training_commit": "a390682724f79d1482e7caf1008300b6e5634fec",
+    "override_used": true,
+    "status": "SCREENING_SOURCE_MISMATCH_OVERRIDE"
+  },
+  "checkpoint_provenance": {
+    "gmt_checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "candidate_mlp_checkpoint_sha256": "a8961d852e5223cfb3ab888e17cea66a6f0aee5d7cb797327d1e5794d378552a",
+    "candidate_jev_checkpoint_sha256": "e1dc87d5ce22458e3e6cb0cb3831ab962b470e4b876379edcac8782db0ac8f90"
+  },
+  "methods": {
+    "candidate_mlp": {
+      "status": "PASS_RUNTIME_BINDING_SMOKE",
+      "match_rows": 17,
+      "assigned_rows": 17,
+      "start_new_rows": 0,
+      "invalid_rows": 0,
+      "selected_track_ids": {"1": 7, "2": 7, "3": 3},
+      "raw_artifact_sha256": "f033b63e8a9ae2143388f94db4c8d88f0f2c0f4f845e116c509b390a7e228a6b",
+      "decision_artifact_sha256": "afaaba0ee54d049d0a88414d341431ab1efb364f2aa17c4482b86f0c83561338"
+    },
+    "candidate_jev": {
+      "status": "PASS_RUNTIME_BINDING_SMOKE",
+      "match_rows": 17,
+      "assigned_rows": 17,
+      "start_new_rows": 0,
+      "invalid_rows": 0,
+      "selected_track_ids": {"1": 7, "2": 7, "3": 3},
+      "raw_artifact_sha256": "b6e770ad6e06c0dfa643a2384febb8f445429bf80bd2e01f85cbe830aada2a51",
+      "decision_artifact_sha256": "1c098918dd0c7a77213e035a347c69f0f3029e337bef268ccd1ac9f3050b620c"
+    },
+    "gmt_off": {
+      "status": "PASS_BOUNDED_OFF_REPLAY",
+      "sampled_feature_records": 33,
+      "sampled_max_abs_feature_error": 5.960464477539063e-08,
+      "sampled_off_action_mismatches": 0,
+      "full_parity_gate": "NOT_APPLICABLE_TO_BOUNDED_SMOKE"
+    }
+  },
+  "formal_video01_six_hour_evidence": {
+    "report": "reports/JEV_RNG_V4/VIDEO01_SIX_HOUR_RUNTIME_EVIDENCE_20261007.json",
+    "elapsed_human": "06:55:17.54",
+    "records": 8995,
+    "jsonl_sha256": "1da2ed9e7eec43c7cf139754d873f78a299c344ff74d65c6866b92f18f3da79",
+    "scientific_gate": "NO_GO_RUNTIME_SEMANTICS_GATE",
+    "full_h8_authorized": false
+  },
+  "verdict": "RUNTIME_BINDING_PIPELINE_PASS_SMOKE_ONLY_FULL_VIDEO1_AND_FULL_H8_REMAIN_UNAUTHORIZED"
+}
