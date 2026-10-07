@@ -13,7 +13,7 @@ more than six hours under one PID. It is not evidence that the final dataset is
 complete.
 
 The formal output directory still has no `video01_records.jsonl` and no
-`manifest.json`. Therefore no final v2 acceptance, controller selection, or
+`video01_records.jsonl.manifest.json`. Therefore no final v2 acceptance, controller selection, or
 three-way tracking metrics are claimed in this report.
 
 ## Frozen provenance
