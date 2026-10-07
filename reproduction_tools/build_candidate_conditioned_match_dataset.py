@@ -291,6 +291,9 @@ def build(
         events,
         lambda item: observed_gt(item, images, gt_by_image, image_meta),
     )
+    trace_hash = sha256(trace)
+    annotations_hash = sha256(annotations)
+    checkpoint_hash = sha256(checkpoint)
     sequence = str(videos.get(int(video_id), {}).get("file_name", video_id))
     records: List[Dict[str, Any]] = []
     count_by_question: Dict[str, int] = {}
@@ -318,11 +321,11 @@ def build(
                 "native_off_action": str(event.get("off_action") or event.get("proposed_action")),
                 "provenance": {
                     "trace": str(trace.resolve()),
-                    "trace_sha256": sha256(trace),
+                    "trace_sha256": trace_hash,
                     "annotations": str(annotations.resolve()),
-                    "annotations_sha256": sha256(annotations),
+                    "annotations_sha256": annotations_hash,
                     "gmt_checkpoint": str(checkpoint.resolve()),
-                    "gmt_checkpoint_sha256": sha256(checkpoint),
+                    "gmt_checkpoint_sha256": checkpoint_hash,
                     "source_commit": source_commit,
                     "candidate_utility": "frozen_evidence_mutable_gmt_state_v1",
                     "candidate_ids_are_metadata_only": True,
@@ -356,11 +359,11 @@ def build(
         "video_id": int(video_id),
         "sequence": sequence,
         "trace": str(trace.resolve()),
-        "trace_sha256": sha256(trace),
+        "trace_sha256": trace_hash,
         "annotations": str(annotations.resolve()),
-        "annotations_sha256": sha256(annotations),
+        "annotations_sha256": annotations_hash,
         "gmt_checkpoint": str(checkpoint.resolve()),
-        "gmt_checkpoint_sha256": sha256(checkpoint),
+        "gmt_checkpoint_sha256": checkpoint_hash,
         "source_commit": source_commit,
         "expected_source_commit": expected_source_commit,
         "horizon": int(horizon),
