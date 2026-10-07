@@ -120,7 +120,10 @@ def promote_stale_bank_candidates(
             state.possible_memory_ids.add(track_id)
 
     promoted: List[int] = []
-    for track_id in sorted(tuple(state.possible_memory_ids)):
+    # Native memory_bank traverses poss_ids.copy() and retains that insertion
+    # order in old_reids. Python set construction in trajectory-slot mapping
+    # is sensitive to colliding ID hashes, so sorting here changes its draws.
+    for track_id in tuple(state.possible_memory_ids.copy()):
         track_id = int(track_id)
         if track_id in recent:
             continue
@@ -128,10 +131,14 @@ def promote_stale_bank_candidates(
         if len(values) < state.memory_bank_size:
             continue
         recent_values = values[-state.memory_bank_size :]
-        state.reactivation_bank[track_id] = torch.stack(
-            [torch.as_tensor(value, dtype=torch.float32) for value in recent_values],
-            dim=0,
-        ).mean(dim=0).detach().cpu().clone()
+        # Native memory_bank sums the latest raw ReID observations in reverse
+        # chronological order. Preserve both its magnitudes and float order.
+        average = torch.as_tensor(recent_values[-1], dtype=torch.float32).clone()
+        for value in reversed(recent_values[:-1]):
+            average = average + torch.as_tensor(value, dtype=torch.float32)
+        state.reactivation_bank[track_id] = (
+            average / len(recent_values)
+        ).detach().cpu().clone()
         anchor_box = state.track_anchor_boxes.get(track_id)
         if anchor_box is not None:
             state.reactivation_bank_boxes[track_id] = (
@@ -896,11 +903,15 @@ class CachedPerceptionMutableAssociationV2:
         model_bank_size = getattr(
             getattr(self.association_fn, "model", None), "bank_size", None
         )
-        promote_stale_bank_candidates(
-            state,
-            bank_size=None if model_bank_size is None else int(model_bank_size),
-            recent_ids=state.active_ids,
-        )
+        # Native bank promotion happens only when memory_bank is called for
+        # an unmatched query, before this step's memory writes. Eagerly
+        # promoting every committed key changes the persistent bank order.
+        if not getattr(self.association_fn, "formal_gmt_association_adapter", False):
+            promote_stale_bank_candidates(
+                state,
+                bank_size=None if model_bank_size is None else int(model_bank_size),
+                recent_ids=state.active_ids,
+            )
 
         return {
             "engine_version": ENGINE_VERSION,

@@ -965,7 +965,10 @@ def run_method(
         ]
         bank_size = int(getattr(runtime_model, "bank_size", 10))
         bank_threshold = float(getattr(runtime_model, "thred_bank", 0.4))
-        stale_ids, recent_ids = reactivation_candidates(state, bank_size=bank_size)
+        if reactivation_rows:
+            stale_ids, recent_ids = reactivation_candidates(state, bank_size=bank_size)
+        else:
+            stale_ids, recent_ids = [], set(state.active_ids)
         if stale_ids and reactivation_rows:
             state.stale_ids.update(stale_ids)
             reactivation_payload = subset_perception_payload(
