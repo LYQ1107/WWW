@@ -683,6 +683,7 @@ def build_v2_records(
     key_start_index: int = 0,
     key_end_index: Optional[int] = None,
     selected_key_range: Optional[Tuple[int, int]] = None,
+    progress_callback: Optional[Callable[[Mapping[str, Any], MutableGMTState], None]] = None,
 ):
     if association_backend not in {"cosine_contract", "formal_gmt_transformer"}:
         raise ValueError(f"unsupported association backend: {association_backend}")
@@ -740,6 +741,8 @@ def build_v2_records(
     records = [] if record_sink is None else None
     stats: Dict[str, int] = {}
     skipped = 0
+    emitted_events = 0
+    branch_count = 0
     for video_id, events in grouped.items():
         sequence = str(videos.get(video_id, {}).get("file_name", video_id))
         actions, memories, by_key = event_maps(events)
@@ -793,6 +796,15 @@ def build_v2_records(
                 or selected_end < selected_start
             ):
                 raise ValueError("selected_key_range must be contained in replay range")
+        total_events = sum(
+            1
+            for candidate_key in keys[selected_start:selected_end]
+            for candidate_event in by_key.get(candidate_key, ())
+            if str(candidate_event.get("question"))
+            in {"MATCH_DECISION", "MEMORY_DECISION", "REACTIVATION_DECISION"}
+            and candidate_event.get("context", {}).get("detection_index") is not None
+            and candidate_event.get("legal_actions")
+        )
         for key_index in range(replay_start, replay_end):
             key = keys[key_index]
             payload = payload_for(key)
@@ -861,6 +873,7 @@ def build_v2_records(
                         )
                     outcome_map = {}
                     for candidate in legal:
+                        branch_count += 1
                         branch = state.clone()
                         branch_steps = []
                         current_actions = dict(actions.get(key, {}))
@@ -1034,6 +1047,7 @@ def build_v2_records(
                     else:
                         record_sink(record)
                     stats[question] = stats.get(question, 0) + 1
+                    emitted_events += 1
 
             advance_off_state_for_key(
                 payload=payload,
@@ -1045,6 +1059,22 @@ def build_v2_records(
                 state=state,
                 proposal=current_proposal,
             )
+            if progress_callback is not None:
+                progress_callback(
+                    {
+                        "video_id": int(video_id),
+                        "key": [int(value) for value in key],
+                        "key_index": int(key_index),
+                        "next_key_index": int(key_index + 1),
+                        "key_start_index": int(selected_start),
+                        "key_end_index": int(selected_end),
+                        "completed_events": int(emitted_events),
+                        "total_events": int(total_events),
+                        "branch_count": int(branch_count),
+                        "stats": dict(stats),
+                    },
+                    state,
+                )
     return (records if records is not None else []), stats, skipped
 
 
