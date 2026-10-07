@@ -159,7 +159,7 @@ def evaluate(model: CandidateConditionedScorer, records: Sequence[Mapping[str, A
     model.eval()
     if not records:
         return {"records": 0}
-    nll = brier = correct = expected_utility = native_utility = random_utility = oracle_utility = 0.0
+    nll = brier = correct = expected_utility = greedy_utility = native_utility = random_utility = oracle_utility = 0.0
     total_weight = 0.0
     confidence: List[Tuple[float, float, float]] = []
     predicted_counts: Dict[str, int] = {}
@@ -186,6 +186,7 @@ def evaluate(model: CandidateConditionedScorer, records: Sequence[Mapping[str, A
             brier += weight * float(((probs[valid] - target[valid]) ** 2).sum())
             correct += weight * hit
             expected_utility += weight * float((probs[valid] * utilities[valid]).sum())
+            greedy_utility += weight * float(utilities[chosen])
             oracle_utility += weight * float(utilities[valid].max())
             random_utility += weight * float(utilities[valid].mean())
             native_key = batch["native"][row]
@@ -202,6 +203,7 @@ def evaluate(model: CandidateConditionedScorer, records: Sequence[Mapping[str, A
         "ece": _ece(confidence, total_weight),
         "best_candidate_accuracy": correct / max(total_weight, 1e-8),
         "validation_utility": expected_utility / max(total_weight, 1e-8),
+        "greedy_utility": greedy_utility / max(total_weight, 1e-8),
         "native_score_utility": native_utility / max(total_weight, 1e-8),
         "native_action_missing": native_missing,
         "oracle_utility": oracle_utility / max(total_weight, 1e-8),
