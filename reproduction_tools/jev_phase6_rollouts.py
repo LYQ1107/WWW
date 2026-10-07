@@ -34,13 +34,19 @@ class EventHorizonKeys(list):
 
 
 class NativeReplayLab:
-    def __init__(self, video, device='cuda:0',native_match_validation=False,record_transitions=False,fast_match=False):
+    def __init__(self, video, device='cuda:0',native_match_validation=False,record_transitions=False,fast_match=False,compact_context=False):
         protect_anchor()
         empty = OUT / 'empty_debug_inputs.jsonl'
         if not empty.exists(): empty.write_text('')
         os.environ.update(JEV_VIDEO_ID=str(video), JEV_TRACE_PATH=str(empty), JEV_RECORDS_PATH=str(empty))
         import run_early_pilot_tracking as pilot
         self.pilot = pilot
+        if compact_context:
+            # This diagnostic map is neither a model input nor tracker state.
+            # Exact event snapshots and metadata remain owned by the lab.
+            pilot.runtime_tracker_context=lambda state:{'diagnostic_format':'compact_phase6_v1',
+                'trajectory_rng_seed':state.trajectory_rng_seed,'trajectory_rng_calls':state.trajectory_rng_calls,
+                'memory_bank_size':state.memory_bank_size,'id_count':state.next_id}
         pilot.VIDEO_ID = video; pilot.TRACE = pilot.RECORDS = empty
         self.video = video; self.device = device
         names = ['build_formal_gmt_engine','MutableGMTState','FrozenPerceptionCache','JEVRuntimePolicy',

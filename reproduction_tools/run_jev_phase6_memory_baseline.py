@@ -10,7 +10,7 @@ from jev_phase6_rollouts import NativeReplayLab
 
 
 def main(video,condition,device,native_contract=False):
-    lab=NativeReplayLab(video,device,native_match_validation=native_contract,fast_match=native_contract)
+    lab=NativeReplayLab(video,device,native_match_validation=native_contract,fast_match=native_contract,compact_context=native_contract)
     collection='lifecycle_native' if native_contract else 'lifecycle'
     if native_contract:
         manifest=json.loads((OUT/f'{collection}/video{video:02d}/CANONICAL_MANIFEST.json').read_text())

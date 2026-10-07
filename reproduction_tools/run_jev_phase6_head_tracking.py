@@ -13,7 +13,7 @@ def main(video,kind,device):
     checkpoint=OUT/'standalone_heads_native'/kind/'model_calibrated.pth'
     binding=json.loads((checkpoint.parent/'result.json').read_text())
     if binding['status']!='COMPLETE':raise RuntimeError('head has no eligible canonical fit')
-    model=load_controller(checkpoint,'cpu');lab=NativeReplayLab(video,device,native_match_validation=True,fast_match=True)
+    model=load_controller(checkpoint,'cpu');lab=NativeReplayLab(video,device,native_match_validation=True,fast_match=True,compact_context=True)
     question='MEMORY_DECISION' if kind=='MEMORY' else 'REACTIVATION_DECISION'
     decisions=[];counts=Counter()
     def intervene(feature,q,legal,action,context):

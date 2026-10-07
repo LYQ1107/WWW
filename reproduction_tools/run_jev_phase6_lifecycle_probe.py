@@ -124,7 +124,7 @@ def collect(video,device):
 
 
 def fork(video,device,shard,shards):
-    root=probe_root(video);lab=NativeReplayLab(video,device,native_match_validation=NATIVE_CONTRACT,fast_match=NATIVE_CONTRACT);gt=OfflineIdentityAudit(video)
+    root=probe_root(video);lab=NativeReplayLab(video,device,native_match_validation=NATIVE_CONTRACT,fast_match=NATIVE_CONTRACT,compact_context=NATIVE_CONTRACT);gt=OfflineIdentityAudit(video)
     baseline=json.loads((root/'baseline/result.json').read_text())
     actual=gt.align(json.loads(Path(baseline['predictions']).read_text()))
     outputs=[]
