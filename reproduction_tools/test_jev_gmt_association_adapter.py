@@ -14,6 +14,7 @@ class FakeROIHeads:
     def _forward_transformer(self, instances, reid_features, view_num, query_frame,
                              target_box, target_time, target_inst_id,
                              trajectory_rng=None):
+        self.last_instances = instances
         self.last_history_ids = target_inst_id.tolist()
         # One current row and two historical columns.  Native inference has
         # already removed the current query columns before this return.
@@ -49,6 +50,11 @@ def payload(frame, view):
 def test_native_bank_uses_one_joint_softmax():
     state = MutableGMTState(
         reactivation_bank={2: torch.tensor([6.0, 8.0]), 1: torch.tensor([3.0, 4.0])},
+        reactivation_bank_boxes={
+            2: torch.tensor([2.0, 2.0, 4.0, 4.0]),
+            1: torch.tensor([1.0, 1.0, 3.0, 3.0]),
+        },
+        reactivation_bank_image_sizes={2: (32, 32), 1: (32, 32)},
         reactivation_mode=True,
     )
     state.initialize_trajectory_rng(8)
@@ -79,6 +85,34 @@ def test_native_memory_preserves_raw_feature_magnitude():
     assert torch.equal(state.reactivation_bank[3], torch.tensor([4.5, 6.0]))
 
 
+def test_native_bank_preserves_anchor_geometry():
+    state = MutableGMTState(
+        reactivation_bank={
+            3: torch.tensor([1.0, 0.0]),
+            5: torch.tensor([0.0, 1.0]),
+        },
+        reactivation_bank_boxes={
+            3: torch.tensor([1.0, 2.0, 5.0, 6.0]),
+            5: torch.tensor([7.0, 8.0, 9.0, 10.0]),
+        },
+        reactivation_bank_image_sizes={3: (32, 32), 5: (32, 32)},
+        reactivation_mode=True,
+    )
+    state.initialize_trajectory_rng(8)
+    model = FakeModel()
+    adapter = GMTAssociationTransformerAdapter(model, view_num=2)
+    adapter(payload(1, 0), (3, 5), state)
+    seen = model.roi_heads.last_instances
+    assert len(seen) == 2
+    assert len(seen[0]) == 2
+    assert seen[0].track_ids.tolist() == [3, 5]
+    assert torch.equal(
+        seen[0].pred_boxes.tensor,
+        torch.tensor([[1.0, 2.0, 5.0, 6.0], [7.0, 8.0, 9.0, 10.0]]),
+    )
+    assert tuple(seen[0].image_size) == (32, 32)
+
+
 def main():
     first = payload(0, 0)
     second = payload(0, 1)
@@ -104,6 +138,7 @@ def main():
     assert result.rng_state_before == result.rng_state_after
     test_native_bank_uses_one_joint_softmax()
     test_native_memory_preserves_raw_feature_magnitude()
+    test_native_bank_preserves_anchor_geometry()
     print("GMT association adapter slice-normalization invariant: PASS")
 
 
