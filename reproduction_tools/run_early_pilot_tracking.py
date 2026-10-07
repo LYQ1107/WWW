@@ -388,7 +388,8 @@ def build_reactivation_proposal(engine, payload, state, candidate_ids, proposal)
     probe.active_ids = set(int(value) for value in candidate_ids)
     probe.reactivation_bank = {
         int(track_id): state.reactivation_bank[int(track_id)].detach().cpu().clone()
-        for track_id in candidate_ids
+        for track_id in state.reactivation_bank
+        if track_id in candidate_ids
     }
     probe.reactivation_mode = True
     return engine.propose(payload, probe)
@@ -965,7 +966,10 @@ def run_method(
         ]
         bank_size = int(getattr(runtime_model, "bank_size", 10))
         bank_threshold = float(getattr(runtime_model, "thred_bank", 0.4))
-        stale_ids, recent_ids = reactivation_candidates(state, bank_size=bank_size)
+        if reactivation_rows:
+            stale_ids, recent_ids = reactivation_candidates(state, bank_size=bank_size)
+        else:
+            stale_ids, recent_ids = [], set(state.active_ids)
         if stale_ids and reactivation_rows:
             state.stale_ids.update(stale_ids)
             reactivation_payload = subset_perception_payload(

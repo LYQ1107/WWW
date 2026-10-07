@@ -21,6 +21,7 @@ class RecordingEngine:
 
     def propose(self, payload, state):
         self.payload_rows = list(payload["source_detection_indices"])
+        self.bank_order = list(state.reactivation_bank)
         return "proposal"
 
 
@@ -51,6 +52,9 @@ def main():
     proposal = build_reactivation_proposal(engine, subset, state, candidate_ids, None)
     assert proposal == "proposal"
     assert engine.payload_rows == [2, 0]
+    state.reactivation_bank = {207: torch.ones(2), 143: torch.ones(2)}
+    build_reactivation_proposal(engine, subset, state, [143, 207], None)
+    assert engine.bank_order == [207, 143]
 
     # At (frame=214, view=1), native VISION_test TEST_LEN=40 retains the
     # preceding 79 slices, not the generic 80-slice cap.  Track 3 exists only

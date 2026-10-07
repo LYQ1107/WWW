@@ -108,7 +108,7 @@ class GMTAssociationTransformerAdapter:
         if reactivation_bank:
             instances = []
             previous_ids = []
-            for track_id in track_ids:
+            for track_id in reactivation_bank:
                 if int(track_id) not in reactivation_bank:
                     raise RuntimeError(
                         "reactivation proposal is missing old-reid feature for "

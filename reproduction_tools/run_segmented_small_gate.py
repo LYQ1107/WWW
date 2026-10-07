@@ -392,7 +392,7 @@ def verify(args):
     left = [json.loads(l) for l in (args.output / "single_records.jsonl").open()]
     right = [json.loads(l) for l in (args.output / "video01_records.jsonl").open()]
     report = compare_records_exact(left, right)
-    report.update(scope="frames 210-216; full trace and cross-boundary H8 futures",
+    report.update(scope=f"frames {args.frames}; full trace and cross-boundary H8 futures",
                   source_commit=commit(), question_counts=dict(Counter(r["question_type"] for r in right)))
     report["final_gate"] = {name: report["status"] == "PASS" for name in (
         "raw_canonical_records_exact", "best_actions_exact", "target_probs_within_1e-6",
@@ -404,7 +404,7 @@ def verify(args):
     command(args, "native_candidate_probe", [PYTHON, ROOT / "reproduction_tools/compare_reactivation_candidates.py",
             "--video-id", 1, "--native-trace", trace_path(1), "--records", args.output / "video01_records.jsonl",
             "--output", args.output / "native_candidate_probe.json", "--replay-root", args.output / "native_candidate_replay",
-            "--device", "cuda:0", "--max-frame", 216, "--tolerance", "2e-5"], args.gpus[1])
+            "--device", "cuda:0", "--max-frame", args.frames[-1], "--tolerance", "2e-5"], args.gpus[1])
 
 
 def command(args, name, command, gpu):
@@ -481,6 +481,13 @@ def run(args):
     candidate_gate = probe.output / "native_candidate_probe.json"
     if not candidate_gate.exists() or read(candidate_gate)["status"] != "PASS":
         raise RuntimeError("native candidate probe not passed")
+    late = argparse.Namespace(**vars(args))
+    late.output, late.videos, late.frames, late.chunk_records = args.output / "late_probe", [1], [881, 890], 25
+    if not (late.output / "equivalence.json").exists():
+        verify(late)
+    if (read(late.output / "equivalence.json")["status"] != "PASS"
+            or read(late.output / "native_candidate_probe.json")["status"] != "PASS"):
+        raise RuntimeError("late native bank order/chunk equivalence probe failed")
     prepare(args)
     workers(args, args.gpus)
     merge(args)

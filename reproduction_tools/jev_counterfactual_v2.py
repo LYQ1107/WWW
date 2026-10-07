@@ -120,7 +120,10 @@ def promote_stale_bank_candidates(
             state.possible_memory_ids.add(track_id)
 
     promoted: List[int] = []
-    for track_id in sorted(tuple(state.possible_memory_ids)):
+    # Native memory_bank traverses poss_ids.copy() and retains that insertion
+    # order in old_reids. Python set construction in trajectory-slot mapping
+    # is sensitive to colliding ID hashes, so sorting here changes its draws.
+    for track_id in tuple(state.possible_memory_ids.copy()):
         track_id = int(track_id)
         if track_id in recent:
             continue
@@ -179,7 +182,8 @@ def build_reactivation_proposal(
     probe.active_ids = set(int(value) for value in candidate_ids)
     probe.reactivation_bank = {
         int(track_id): state.reactivation_bank[int(track_id)].detach().cpu().clone()
-        for track_id in candidate_ids
+        for track_id in state.reactivation_bank
+        if track_id in candidate_ids
     }
     probe.reactivation_mode = True
     return engine.propose(payload, probe)
@@ -838,11 +842,15 @@ class CachedPerceptionMutableAssociationV2:
         model_bank_size = getattr(
             getattr(self.association_fn, "model", None), "bank_size", None
         )
-        promote_stale_bank_candidates(
-            state,
-            bank_size=None if model_bank_size is None else int(model_bank_size),
-            recent_ids=state.active_ids,
-        )
+        # Native bank promotion happens only when memory_bank is called for
+        # an unmatched query, before this step's memory writes. Eagerly
+        # promoting every committed key changes the persistent bank order.
+        if not getattr(self.association_fn, "formal_gmt_association_adapter", False):
+            promote_stale_bank_candidates(
+                state,
+                bank_size=None if model_bank_size is None else int(model_bank_size),
+                recent_ids=state.active_ids,
+            )
 
         return {
             "engine_version": ENGINE_VERSION,

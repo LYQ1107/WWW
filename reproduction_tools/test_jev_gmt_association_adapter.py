@@ -14,6 +14,7 @@ class FakeROIHeads:
     def _forward_transformer(self, instances, reid_features, view_num, query_frame,
                              target_box, target_time, target_inst_id,
                              trajectory_rng=None):
+        self.last_history_ids = target_inst_id.tolist()
         # One current row and two historical columns.  Native inference has
         # already removed the current query columns before this return.
         return [torch.zeros((1, 2))], None, None, None, None, None
@@ -47,7 +48,7 @@ def payload(frame, view):
 
 def test_native_bank_uses_one_joint_softmax():
     state = MutableGMTState(
-        reactivation_bank={1: torch.tensor([3.0, 4.0]), 2: torch.tensor([6.0, 8.0])},
+        reactivation_bank={2: torch.tensor([6.0, 8.0]), 1: torch.tensor([3.0, 4.0])},
         reactivation_mode=True,
     )
     state.initialize_trajectory_rng(8)
@@ -55,6 +56,7 @@ def test_native_bank_uses_one_joint_softmax():
     result = adapter(payload(1, 0), (1, 2), state)
     # Native old_reids is one bank, with one unmatched dummy column.
     assert torch.allclose(result.scores, torch.full((1, 2), 1.0 / 3.0), atol=1e-7)
+    assert adapter.model.roi_heads.last_history_ids == [2, 1]
 
 
 def test_native_memory_preserves_raw_feature_magnitude():
