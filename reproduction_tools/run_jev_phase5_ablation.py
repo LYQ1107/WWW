@@ -10,6 +10,7 @@ import os
 from pathlib import Path
 import sys
 import time
+import traceback
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = Path('/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4')
@@ -88,11 +89,20 @@ def main():
              'candidate_entropy', 'count_memory_observations', 'count_track_history', 'feature_names',
              'legacy_acceptance_threshold']
     kwargs = dict(zip(names, modules))
-    kwargs.pop('feature_names')
+    feature_names = kwargs.pop('feature_names')
+    parity_report = {
+        'tolerance': 2e-5, 'relative_tolerance': pilot.DEFAULT_SCALE_SENSITIVE_RELATIVE_TOLERANCE,
+        'scale_sensitive_feature_names': sorted(pilot.SCALE_SENSITIVE_FEATURE_NAMES),
+        'feature_names': list(feature_names(64)), 'expected_record_count': len(records),
+        'compared_records': 0, 'finite_runtime_records': 0, 'max_abs_error': 0.0,
+        'sum_abs_error': 0.0, 'per_feature_max_abs_error': [0.0] * 64,
+        'per_feature_sum_abs_error': [0.0] * 64, 'per_feature_count': [0] * 64,
+        'seen_record_keys': set(),
+    }
     name = 'gmt_off' if args.variant == 'A0' else 'jev'
     result = pilot.run_method(name, None if args.variant == 'A0' else CHECKPOINT,
                             image_lookup=image_lookup, by_key=by_key, records=records,
-                            feature_source_mode='runtime', parity_report=None, device='cuda:0',
+                            feature_source_mode='runtime', parity_report=parity_report, device='cuda:0',
                             max_frame=args.max_frame, **kwargs)
     decision_log.close()
     save(output / 'runtime_status.json', {'phase': 'evaluation', 'variant': args.variant, 'updated_utc': now(), 'pid': os.getpid()})
@@ -128,4 +138,11 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except BaseException:
+        if '--output' in sys.argv:
+            dest = Path(sys.argv[sys.argv.index('--output') + 1])
+            save(dest / 'failure.json', {'status': 'FAILED', 'updated_utc': now(), 'error': traceback.format_exc()})
+            save(dest / 'runtime_status.json', {'phase': 'FAILED', 'updated_utc': now()})
+        raise
