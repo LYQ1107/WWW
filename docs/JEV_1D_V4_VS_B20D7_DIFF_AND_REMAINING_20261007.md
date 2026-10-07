@@ -39,7 +39,7 @@ GMT 环境下 adapter geometry、reactivation row semantics、counterfactual inv
 | provenance / feature / candidate / stability | **PASS** | video01/06/07 provenance PASS；video01 feature parity、174/174 candidate parity、3 次 stability PASS |
 | offline 三模型 | **pipeline PASS，研究优势 NO-GO** | JEV 只略高于另外两个 learned controller，仍低于 majority reference；数据存在明显 tie/label degeneracy |
 | current-head closed loop | **NO-GO** | JEV 的 HOTA/AssA/IDF1 仍低于 GMT OFF；Threshold/MLP 明显退化 |
-| learned-controller runtime feature parity | **FAIL / 未解决** | learned controller 没有 canonical feature records，最大绝对误差约 1,783–2,273 |
+| learned branch feature comparison | **需重新解释** | 这些数是 learned branch 改变 tracker state 后相对冻结 OFF record 的差值，不是独立的 encoder schema FAIL |
 | candidate-conditioned reactivation supervision | **未解决** | reactivation 的 GT candidate recall 为 0；没有 per-candidate long-horizon return |
 | Full H8 / 24-video canonical build | **NOT AUTHORIZED** | official TEST 未读，Full H8 保持暂停、非 canonical |
 
@@ -113,7 +113,7 @@ JEV 的 IDSW/MOTA 有改善，但核心 association 指标 HOTA、AssA、IDF1 �
 旧目录 `closed_loop_video01_corrected_v4/PILOT_TRACKING_THREE_WAY.json` 属于另一套
 screening-only dataset/checkpoint bundle，曾报告 JEV HOTA `88.925`、AssA `90.022`、
 IDF1 `97.893`。它不是当前 `1d2711e` current-head bundle 的重复实验，不能与本节结果
-拼接，也不能用来绕过当前 runtime feature mismatch。
+拼接，也不能用来绕过当前闭环 state-shift / runtime audit 问题。
 
 ## 5. `1d2711e` 与 `b20d7e2` 的源码差异
 
@@ -174,20 +174,33 @@ stale bank 作为一个 `Instances` 对象送入 transformer。这会影响 posi
 
 ## 7. 真正剩余的问题（按阻塞程度）
 
-### P0：learned controller 的 runtime feature interface mismatch
+### P1：learned branch 的 state shift 尚未做 branch-consistent audit
 
-当前-head tracking 报告中 learned controller 的 `canonical_feature_records` 全部为 0；
-mutable runtime feature 与训练/canonical feature 不是同一接口：
+这里需要纠正一个容易误读的诊断量。`run_early_pilot_tracking.py` 的
+`select_feature()` 对所有方法记录 learned branch 的 runtime feature，但严格的
+`runtime_feature_parity_gate` 只在 `gmt_off` 方法完成后执行；随后 Threshold/MLP/JEV
+会根据自己的 action 改变 tracker state，再拿这个新 state 与冻结 OFF 记录比较。
+因此下面的数值是 **learned branch state shift 相对 OFF trace 的差值**，不是已经证明的
+“训练侧和 runtime 侧使用了不同 feature encoder”。代码审计显示 counterfactual builder
+和 runtime 都调用 `gtr.modeling.jev_state.build_state_features`，而 GMT OFF 的
+8,995/8,995 feature parity 已通过。
+
+当前仍需解决的是更严格的问题：训练数据主要来自 OFF-state，闭环 controller 会改变
+后续 state；需要 branch-consistent、action-conditioned 的 feature/data audit，才能判断
+这些 state shift 是合理的闭环分布变化，还是另有 commit/semantics bug。本轮按暂停要求
+没有重跑该审计。
+
+作为诊断参考，当前报告记录的 learned-branch 相对 OFF 差值为：
 
 | Method | max feature error | feature parity records | runtime records | wrong commit | no candidate | 其它 |
 |---|---:|---:|---:|---:|---:|---|
-| Threshold | 1,783.024 | 8,200 | 8,404 | 594 | 644 | — |
-| MLP | 1,967.994 | 8,378 | 8,574 | 1,047 | 474 | memory contamination 245 |
-| JEV | 2,272.641 | 8,809 | 9,030 | 16 | 18 | false reactivation 2 |
+| Threshold | 1,783.024 | 8,200 | 8,404 | 594 | 644 | state-shift diagnostic |
+| MLP | 1,967.994 | 8,378 | 8,574 | 1,047 | 474 | state-shift diagnostic；memory contamination 245 |
+| JEV | 2,272.641 | 8,809 | 9,030 | 16 | 18 | state-shift diagnostic；false reactivation 2 |
 
-所以当前三路闭环只能证明“某个 mutable runtime 接口下的诊断行为”，不能证明论文中
-要比较的 controller 在与训练数据同语义的 GMT runtime 上有效。必须先统一 feature
-construction、memory/commit semantics 和 reactivation branch semantics。
+所以当前三路闭环仍不能直接证明最终 controller 有效；阻塞原因是 association quality
+NO-GO、candidate supervision 不完整和闭环 state distribution 尚未被 branch-consistent
+审计，而不是仅凭这组差值断言 feature encoder 已错位。
 
 ### P0：reactivation candidate supervision 不可用
 
@@ -218,8 +231,8 @@ reference。需要明确 tie policy、informative weighting 和 candidate-level 
    canonicalizer，并移植 b20 的 anchor geometry。
 2. 先做 bounded early/late candidate parity；再做完整 video01 174-event parity、
    feature parity、stability 和 provenance。任一失败都不进入重训。
-3. 只有 learned controller 的 train/runtime feature construction 完全一致后，才重新
-   评估三模型闭环；如果仍低于 OFF，结论就是 NO-GO，不启动 Full H8。
+3. 只有完成 branch-consistent 的 train/runtime feature/state audit 后，才重新评估三模型
+   闭环；如果 association 仍低于 OFF，结论就是 NO-GO，不启动 Full H8。
 4. 通过新的 video01 gate 后，创建唯一 `CANONICAL_H8_COMMIT` frozen worktree，才有资格
    重新讨论 24-video Full H8。
 

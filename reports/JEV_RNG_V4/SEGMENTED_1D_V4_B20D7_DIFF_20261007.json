@@ -157,6 +157,15 @@
     "quality_gate": "NO_GO_ASSA_BELOW_GMT_OFF"
   },
   "runtime_feature_mismatch": {
+    "interpretation": "learned_branch_state_shift_against_frozen_off_record_not_direct_encoder_schema_failure",
+    "off_runtime_feature_gate": {
+      "status": "PASS",
+      "records": 8995,
+      "max_abs_error": 0.00006103515625,
+      "tolerance_exceed_count": 0,
+      "shared_encoder": "gtr.modeling.jev_state.build_state_features"
+    },
+    "learned_branch_comparison_is_not_a_strict_gate": true,
     "question_threshold": {
       "max_abs_error": 1783.02392578125,
       "feature_parity_records": 8200,
@@ -246,7 +255,7 @@
     "note": "diagnostic evidence only; not a final acceptance report"
   },
   "remaining_blockers": [
-    "learned-controller runtime feature construction is not canonical",
+    "branch-consistent learned-controller feature/state audit is incomplete; learned-vs-OFF feature deltas are not a direct encoder-failure proof",
     "reactivation candidate identity/long-horizon supervision is unavailable",
     "current-head association quality is below GMT OFF",
     "utility ties and majority baseline prevent a meaningful learned-policy claim",
