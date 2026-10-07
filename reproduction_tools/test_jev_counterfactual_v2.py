@@ -85,6 +85,43 @@ def main():
     )
     assert reassoc["banned_edges"]
     assert reassoc_state.counters["reassociation_calls"] == 1
+
+    # Candidate-conditioned MATCH selection binds a concrete legal native
+    # track without falling back to the legacy threshold or re-running GMT.
+    candidate_state = initial.clone()
+    candidate_perception = perception([[0.99, 0.01], [0.01, 0.99]])
+    candidate_proposal = engine.propose(candidate_perception, candidate_state)
+    candidate_resolution = engine.resolve_actions(
+        candidate_perception,
+        candidate_state,
+        actions={0: "ACCEPT_CURRENT", 1: "ACCEPT_CURRENT"},
+        candidate_assignments={0: 2},
+        proposal=candidate_proposal,
+    )
+    assert candidate_resolution["candidate_assignments"] == {0: 2}
+    assert candidate_resolution["existing_track_ids"][0] == 2
+    assert candidate_resolution["final_proposal"].proposal_reused is True
+    candidate_step = engine.step(
+        candidate_perception,
+        candidate_state,
+        actions={0: "ACCEPT_CURRENT", 1: "ACCEPT_CURRENT"},
+        candidate_assignments={0: 2},
+        proposal=candidate_proposal,
+    )
+    assert candidate_step["committed_track_ids"][0] == 2
+    assert candidate_step["candidate_assignments"] == {0: 2}
+    try:
+        engine.resolve_actions(
+            candidate_perception,
+            initial.clone(),
+            actions={0: "START_NEW", 1: "ACCEPT_CURRENT"},
+            candidate_assignments={0: 2},
+            proposal=candidate_proposal,
+        )
+    except ValueError as exc:
+        assert "ACCEPT_CURRENT" in str(exc)
+    else:
+        raise AssertionError("candidate assignment bypassed its action binding")
     print("JEV cached-perception v2 invariants: PASS")
 
 
