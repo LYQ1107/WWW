@@ -1,16 +1,13 @@
 {
-  "status": "PREREGISTERED_BEFORE_LIFECYCLE_RUNS",
-  "videos": {
-    "train": 24,
-    "validation": 23
-  },
-  "scope": "bounded supervision proof after structured MATCH claim FAIL; no unified fitting",
+  "M6_training_eligible": false,
+  "SECOND_STOP_CONDITION": true,
+  "amendment_before_any_counterfactual_label": "Shared event-triggered horizon avoids comparing unequal future lengths and avoids replaying SKIP until sequence end merely because its bank entry is intentionally absent. Trigger remains actual live WRITE-branch READ, not baseline categories or fixed H8. Identity target and rank/latency terms are declared before labels: editing a bank must assess that bank identity, and rank changes must refer to its GT target queries rather than background detections.",
   "candidate_selection": "per video first8 identities by actual first stale-bank READ, choose last online WRITE before that READ; plus2 late writes for identities never read. Enriched read-eligible diagnostic, not an unbiased tie prevalence estimate. No GT in sampling.",
-  "read_definition": "identity outside active association window, present in stale bank, included in actual GMT reactivation score computation",
-  "future_policy": "frozen B2 MATCH, instantaneous GMT MEMORY and REACT except current WRITE/SKIP intervention; every future state and proposal rebuilt",
   "event_horizon": "candidate WRITE branch until its first actual stale-bank READ +16 frames, or sequence end; SKIP branch follows the same paired end. Compare common window at first WRITE READ +8/+16. If candidate WRITE is never read, sample_weight=0. Missing SKIP READ within the paired horizon is reported as censoring, not as sequence-wide absence.",
-  "unread_both_branches_sample_weight": 0,
-  "utility": "correct_duration - wrong_duration -0.5*switches -0.25*new_IDs -0.5*duplicate_collisions - identity_contamination - false_recovery_count +0.05*mean_reciprocal_rank_of_GT_target_queries -0.05*target_recovery_latency; latency censored atK+1 only when target queries exist; unrelated bank queries do not contribute rank reward.",
+  "full24_authorized": false,
+  "future_policy": "frozen B2 MATCH, instantaneous GMT MEMORY and REACT except current WRITE/SKIP intervention; every future state and proposal rebuilt",
+  "identity_target": "fixed pre-intervention majority GT for the identity bank being edited; fallback current observation GT if no known bank identity. A current unmatched detection is not labeled false solely from missing GT; targets still require assessed future effects.",
+  "learned_MEMORY_in_Full_JEV": false,
   "memory_baselines": {
     "M0": "GMT latest10 raw-vector mean, always-write",
     "M1": "detector confidence>=0.6 write",
@@ -20,10 +17,703 @@
     "M5": "QDTrack-style momentum memo, new weight0.8",
     "M6": "learned JEV only eligible after informative labels; no value claim without beating M0-M5"
   },
-  "what_did_we_learn": "pending observed READ-triggered counterfactual outcomes",
+  "observed_outcomes": {
+    "23": {
+      "events": [
+        {
+          "actual_SKIP_READ": 79,
+          "actual_WRITE_READ": 79,
+          "key": [
+            23,
+            39,
+            0,
+            "MEMORY_DECISION",
+            30
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 20,
+          "utilities": {
+            "CONTROL": {
+              "16": -24.0,
+              "8": -8.0
+            },
+            "SKIP_MEMORY": {
+              "16": -24.0,
+              "8": -8.0
+            },
+            "WRITE_MEMORY": {
+              "16": -24.0,
+              "8": -8.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 88,
+          "actual_WRITE_READ": 88,
+          "key": [
+            23,
+            48,
+            1,
+            "MEMORY_DECISION",
+            15
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 48,
+          "utilities": {
+            "CONTROL": {
+              "16": -77.55833333333332,
+              "8": -41.650000000000006
+            },
+            "SKIP_MEMORY": {
+              "16": -77.55833333333332,
+              "8": -41.650000000000006
+            },
+            "WRITE_MEMORY": {
+              "16": -77.55833333333332,
+              "8": -41.650000000000006
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 92,
+          "actual_WRITE_READ": 92,
+          "key": [
+            23,
+            52,
+            1,
+            "MEMORY_DECISION",
+            28
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 49,
+          "utilities": {
+            "CONTROL": {
+              "16": -78.0,
+              "8": -41.0
+            },
+            "SKIP_MEMORY": {
+              "16": -78.0,
+              "8": -41.0
+            },
+            "WRITE_MEMORY": {
+              "16": -78.0,
+              "8": -41.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 109,
+          "actual_WRITE_READ": 109,
+          "key": [
+            23,
+            69,
+            0,
+            "MEMORY_DECISION",
+            36
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 36,
+          "utilities": {
+            "CONTROL": {
+              "16": -88.55,
+              "8": -61.0
+            },
+            "SKIP_MEMORY": {
+              "16": -88.55,
+              "8": -61.0
+            },
+            "WRITE_MEMORY": {
+              "16": -88.55,
+              "8": -61.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 215,
+          "actual_WRITE_READ": 215,
+          "key": [
+            23,
+            163,
+            0,
+            "MEMORY_DECISION",
+            42
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 1,
+          "utilities": {
+            "CONTROL": {
+              "16": -60.0,
+              "8": -31.0
+            },
+            "SKIP_MEMORY": {
+              "16": -60.0,
+              "8": -31.0
+            },
+            "WRITE_MEMORY": {
+              "16": -60.0,
+              "8": -31.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 215,
+          "actual_WRITE_READ": 215,
+          "key": [
+            23,
+            163,
+            1,
+            "MEMORY_DECISION",
+            28
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "GT_UNMATCHED",
+          "sample_weight": 0.0,
+          "target_GT": null,
+          "utilities": {
+            "CONTROL": {
+              "16": -60.0,
+              "8": -31.0
+            },
+            "SKIP_MEMORY": {
+              "16": -60.0,
+              "8": -31.0
+            },
+            "WRITE_MEMORY": {
+              "16": -60.0,
+              "8": -31.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 225,
+          "actual_WRITE_READ": 225,
+          "key": [
+            23,
+            179,
+            0,
+            "MEMORY_DECISION",
+            43
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 17,
+          "utilities": {
+            "CONTROL": {
+              "16": -95.75,
+              "8": -51.5
+            },
+            "SKIP_MEMORY": {
+              "16": -95.75,
+              "8": -51.5
+            },
+            "WRITE_MEMORY": {
+              "16": -95.75,
+              "8": -51.5
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 311,
+          "actual_WRITE_READ": 311,
+          "key": [
+            23,
+            271,
+            0,
+            "MEMORY_DECISION",
+            46
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "GT_UNMATCHED",
+          "sample_weight": 0.0,
+          "target_GT": null,
+          "utilities": {
+            "CONTROL": {
+              "16": -93.0,
+              "8": -54.0
+            },
+            "SKIP_MEMORY": {
+              "16": -93.0,
+              "8": -54.0
+            },
+            "WRITE_MEMORY": {
+              "16": -93.0,
+              "8": -54.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": null,
+          "actual_WRITE_READ": null,
+          "key": [
+            23,
+            1051,
+            1,
+            "MEMORY_DECISION",
+            38
+          ],
+          "paired_horizons": [
+            0,
+            0
+          ],
+          "prototype_changed_at_first_READ": false,
+          "reason": "UNREAD",
+          "sample_weight": 0.0,
+          "target_GT": 38,
+          "utilities": {
+            "CONTROL": {
+              "0": -10.75
+            },
+            "SKIP_MEMORY": {
+              "0": -10.75
+            },
+            "WRITE_MEMORY": {
+              "0": -10.75
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": null,
+          "actual_WRITE_READ": null,
+          "key": [
+            23,
+            1051,
+            1,
+            "MEMORY_DECISION",
+            39
+          ],
+          "paired_horizons": [
+            0,
+            0
+          ],
+          "prototype_changed_at_first_READ": false,
+          "reason": "UNREAD",
+          "sample_weight": 0.0,
+          "target_GT": 24,
+          "utilities": {
+            "CONTROL": {
+              "0": -10.0
+            },
+            "SKIP_MEMORY": {
+              "0": -10.0
+            },
+            "WRITE_MEMORY": {
+              "0": -10.0
+            }
+          }
+        }
+      ],
+      "informative": 0,
+      "labels_sha256": {
+        "MEMORY_000.json": "9ecc3368ef552707ffcaef7a927348f7bf6c523e5c9f5c7dc630e4938c9c21f7",
+        "MEMORY_001.json": "8752a8a999d73dc2f78c7ceb53cd5fd50305a9a4ad8c202751315b0c35085e91",
+        "MEMORY_002.json": "c0759fc2fb92f57f5614c40152da60a871b501d81ed53186dcb029f43ed887bf",
+        "MEMORY_003.json": "68b4468c72fc14d38ec583f35224dedc6b07ea2dbcc025a131d93d7eed04005a",
+        "MEMORY_004.json": "a840cf7970f989be1db1b5ebf10b744c8b3c6123b6fda5df19d187fa4a475893",
+        "MEMORY_005.json": "c29ca96acbe9d69f5177f84facece3927cee57dec22e4087488d76bcbb680e7a",
+        "MEMORY_006.json": "b7bef0b612c4e6ab4af588b2f60ee6853e1b7da7c178bc6a8f7ecd8ee39b953b",
+        "MEMORY_007.json": "607831b0d03cf3d1e7c89a605442a59870c42d5efa42174aa4bdbf0f0259c491",
+        "MEMORY_008.json": "49fa4e95ab60611502f914ecf0e7f12bfb4b8c348e5f44a364f409b8fb4043ff",
+        "MEMORY_009.json": "b95102300004a121ce3af65eef2e28b0a34a2ccd94de2d2cc23b73a6e8cf340f"
+      },
+      "sampled": 10
+    },
+    "24": {
+      "events": [
+        {
+          "actual_SKIP_READ": 78,
+          "actual_WRITE_READ": 78,
+          "key": [
+            24,
+            38,
+            1,
+            "MEMORY_DECISION",
+            23
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 21,
+          "utilities": {
+            "CONTROL": {
+              "16": -78.0,
+              "8": -44.0
+            },
+            "SKIP_MEMORY": {
+              "16": -78.0,
+              "8": -44.0
+            },
+            "WRITE_MEMORY": {
+              "16": -78.0,
+              "8": -44.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 148,
+          "actual_WRITE_READ": 148,
+          "key": [
+            24,
+            108,
+            0,
+            "MEMORY_DECISION",
+            23
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 25,
+          "utilities": {
+            "CONTROL": {
+              "16": -124.0,
+              "8": -61.0
+            },
+            "SKIP_MEMORY": {
+              "16": -124.0,
+              "8": -61.0
+            },
+            "WRITE_MEMORY": {
+              "16": -124.0,
+              "8": -61.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 175,
+          "actual_WRITE_READ": 175,
+          "key": [
+            24,
+            128,
+            0,
+            "MEMORY_DECISION",
+            31
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 31,
+          "utilities": {
+            "CONTROL": {
+              "16": -127.0,
+              "8": -75.0
+            },
+            "SKIP_MEMORY": {
+              "16": -127.0,
+              "8": -75.0
+            },
+            "WRITE_MEMORY": {
+              "16": -127.0,
+              "8": -75.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 175,
+          "actual_WRITE_READ": 175,
+          "key": [
+            24,
+            131,
+            0,
+            "MEMORY_DECISION",
+            30
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 38,
+          "utilities": {
+            "CONTROL": {
+              "16": -112.0,
+              "8": -66.0
+            },
+            "SKIP_MEMORY": {
+              "16": -112.0,
+              "8": -66.0
+            },
+            "WRITE_MEMORY": {
+              "16": -112.0,
+              "8": -66.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 175,
+          "actual_WRITE_READ": 175,
+          "key": [
+            24,
+            133,
+            1,
+            "MEMORY_DECISION",
+            17
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 5,
+          "utilities": {
+            "CONTROL": {
+              "16": -79.0,
+              "8": -48.0
+            },
+            "SKIP_MEMORY": {
+              "16": -79.0,
+              "8": -48.0
+            },
+            "WRITE_MEMORY": {
+              "16": -79.0,
+              "8": -48.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 175,
+          "actual_WRITE_READ": 175,
+          "key": [
+            24,
+            133,
+            1,
+            "MEMORY_DECISION",
+            23
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 66,
+          "utilities": {
+            "CONTROL": {
+              "16": -112.0,
+              "8": -66.0
+            },
+            "SKIP_MEMORY": {
+              "16": -112.0,
+              "8": -66.0
+            },
+            "WRITE_MEMORY": {
+              "16": -112.0,
+              "8": -66.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 179,
+          "actual_WRITE_READ": 179,
+          "key": [
+            24,
+            139,
+            1,
+            "MEMORY_DECISION",
+            21
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 65,
+          "utilities": {
+            "CONTROL": {
+              "16": -96.0,
+              "8": -58.0
+            },
+            "SKIP_MEMORY": {
+              "16": -96.0,
+              "8": -58.0
+            },
+            "WRITE_MEMORY": {
+              "16": -96.0,
+              "8": -58.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": 195,
+          "actual_WRITE_READ": 195,
+          "key": [
+            24,
+            151,
+            0,
+            "MEMORY_DECISION",
+            30
+          ],
+          "paired_horizons": [
+            8,
+            16
+          ],
+          "prototype_changed_at_first_READ": true,
+          "reason": "UTILITY_TIE",
+          "sample_weight": 0.0,
+          "target_GT": 40,
+          "utilities": {
+            "CONTROL": {
+              "16": -94.75,
+              "8": -39.0
+            },
+            "SKIP_MEMORY": {
+              "16": -94.75,
+              "8": -39.0
+            },
+            "WRITE_MEMORY": {
+              "16": -94.75,
+              "8": -39.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": null,
+          "actual_WRITE_READ": null,
+          "key": [
+            24,
+            1200,
+            1,
+            "MEMORY_DECISION",
+            22
+          ],
+          "paired_horizons": [
+            0,
+            0
+          ],
+          "prototype_changed_at_first_READ": false,
+          "reason": "UNREAD",
+          "sample_weight": 0.0,
+          "target_GT": 2,
+          "utilities": {
+            "CONTROL": {
+              "0": -17.0
+            },
+            "SKIP_MEMORY": {
+              "0": -17.0
+            },
+            "WRITE_MEMORY": {
+              "0": -17.0
+            }
+          }
+        },
+        {
+          "actual_SKIP_READ": null,
+          "actual_WRITE_READ": null,
+          "key": [
+            24,
+            1200,
+            1,
+            "MEMORY_DECISION",
+            23
+          ],
+          "paired_horizons": [
+            0,
+            0
+          ],
+          "prototype_changed_at_first_READ": false,
+          "reason": "UNREAD",
+          "sample_weight": 0.0,
+          "target_GT": 56,
+          "utilities": {
+            "CONTROL": {
+              "0": -17.0
+            },
+            "SKIP_MEMORY": {
+              "0": -17.0
+            },
+            "WRITE_MEMORY": {
+              "0": -17.0
+            }
+          }
+        }
+      ],
+      "informative": 0,
+      "labels_sha256": {
+        "MEMORY_000.json": "405903a0ccdeb9d07fbb253b9b88a5bd5480e59bc3bba0272d792196dfad786d",
+        "MEMORY_001.json": "33f14bcd17ffd8f9f9e07b070e47c6ea970fa7f83635a36d8fb4b2740b04e91f",
+        "MEMORY_002.json": "f0016264d538f1af9760f4d6ea3099ca440d58e1b617a6eb1605ae86cd7c7c58",
+        "MEMORY_003.json": "f8df3e9cf87c2781b7e107e14fca278dcd65bd2972c7a878af628b330431ba09",
+        "MEMORY_004.json": "d6020efb097cd1f500309d5fccbda1006a8fabe12d92a944f7c00b053d07f879",
+        "MEMORY_005.json": "9d26d23c912c31810c74b80c35764afc410743add1fa755d2671ad7e8a43cb12",
+        "MEMORY_006.json": "aef1d98a2259d54f908dde6e114f4457a7e890b8472f8ead20527fcc6303cd99",
+        "MEMORY_007.json": "122a59f95971a63bd20ec0dedf323066a1b77c47883e9fcf72ca0f9791eb609a",
+        "MEMORY_008.json": "02ba16003cac2c0a6c8d2bf63fd36107b02ffe3394273de909c37c915dd282b7",
+        "MEMORY_009.json": "e013e96b53abd181b7435b9c54c1fb01babe53a5fa0972106aa92e4e7dcd6d2e"
+      },
+      "sampled": 10
+    }
+  },
   "official_test_read": false,
-  "full24_authorized": false,
-  "amendment_before_any_counterfactual_label": "Shared event-triggered horizon avoids comparing unequal future lengths and avoids replaying SKIP until sequence end merely because its bank entry is intentionally absent. Trigger remains actual live WRITE-branch READ, not baseline categories or fixed H8. Identity target and rank/latency terms are declared before labels: editing a bank must assess that bank identity, and rank changes must refer to its GT target queries rather than background detections.",
+  "outcome_status": "COMPLETE",
+  "read_definition": "identity outside active association window, present in stale bank, included in actual GMT reactivation score computation",
+  "scope": "bounded supervision proof after structured MATCH claim FAIL; no unified fitting",
+  "status": "PREREGISTERED_BEFORE_LIFECYCLE_RUNS",
   "unknown_identity_weight": 0,
-  "identity_target": "fixed pre-intervention majority GT for the identity bank being edited; fallback current observation GT if no known bank identity. A current unmatched detection is not labeled false solely from missing GT; targets still require assessed future effects."
+  "unread_both_branches_sample_weight": 0,
+  "utility": "correct_duration - wrong_duration -0.5*switches -0.25*new_IDs -0.5*duplicate_collisions - identity_contamination - false_recovery_count +0.05*mean_reciprocal_rank_of_GT_target_queries -0.05*target_recovery_latency; latency censored atK+1 only when target queries exist; unrelated bank queries do not contribute rank reward.",
+  "videos": {
+    "train": 24,
+    "validation": 23
+  },
+  "what_did_we_learn": "All20 preregistered examples have zero training weight:14 known-target READ-triggered pairs tie,2 READ pairs have unknown target,4 are unread. Actual bank prototypes change, yet downstream utility does not. This bounded enriched set does not prove memory useless: complete video24 confidence-gated writes improve HOTA/AssA. Remove uninformative learned M6; retain fixed representation baselines and report target-relevant exposure limitations."
 }

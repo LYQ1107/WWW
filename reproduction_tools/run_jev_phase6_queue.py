@@ -23,9 +23,10 @@ def main(path,max_workers):
             index,uuid,used,free,util=[x.strip() for x in line.split(',')]
             cards.append((int(index),uuid,int(used),int(free),int(util)))
         allocations=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader,nounits'],text=True)
-        own_actual={}
+        own_actual={};actual_by_pid={}
         for line in allocations.splitlines():
             uuid,pid,memory=[x.strip() for x in line.split(',')]
+            if memory.isdigit():actual_by_pid[(uuid,int(pid))]=int(memory)
             if memory.isdigit() and any(int(pid)==e['process'].pid for e in running):
                 own_actual[uuid]=own_actual.get(uuid,0)+int(memory)
         # Reserve requested capacity immediately, before a new process has
@@ -43,13 +44,18 @@ def main(path,max_workers):
                 reserved=sum(e['task']['reserve_mib'] for e in own)
                 external_used=max(0,used-own_actual.get(uuid,0))
                 if external_path.exists():
-                    planned=0
+                    planned={};own_pids={e['process'].pid for e in running}
                     for reservation in json.loads(external_path.read_text()):
-                        if reservation['gpu']!=gpu:continue
+                        if reservation['gpu']!=gpu or reservation['pid'] in own_pids:continue
                         try:os.kill(reservation['pid'],0)
                         except ProcessLookupError:continue
-                        planned+=reservation['reserve_mib']
-                    external_used=max(external_used,planned)
+                        cmdline=Path(f"/proc/{reservation['pid']}/cmdline")
+                        if not cmdline.exists() or not cmdline.read_bytes():continue
+                        planned[reservation['pid']]=max(planned.get(reservation['pid'],0),reservation['reserve_mib'])
+                    # Unreserved processes already count in observed usage.
+                    # Add each known external process's unallocated budget,
+                    # never replace the total observed usage with its budget.
+                    external_used+=sum(max(0,budget-actual_by_pid.get((uuid,pid),0)) for pid,budget in planned.items())
                 available=min(free,used+free-external_used-reserved)
                 if available>=task['reserve_mib']+1024:
                     eligible.append((bool(used or own),util,len(own),-available,gpu))

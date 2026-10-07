@@ -21,7 +21,7 @@ def main(video,condition,device):
     _,evaluated=lab.pilot.run_eval('jev',Path(result['predictions']),dataset)
     value={'status':'COMPLETE','video':video,'condition':condition,'metrics':lab.pilot.extract_metrics(evaluated),
         'result':result,'checkpoint_sha256':sha(B2),'prediction_sha256':sha(result['predictions']),
-        'removed_REASSOCIATE':counts['removed_REASSOCIATE'],'future':'live frozen native B2 with forced current action removal',
+        'removed_REASSOCIATE':counts['removed_REASSOCIATE'],'future':'live frozen B2; original assignment retained for native second validation' if condition=='VALIDATION_ONLY' else 'live frozen native B2 with forced current action removal',
         'global_reassociation':condition!='VALIDATION_ONLY','native_second_validation_retained':condition=='VALIDATION_ONLY',
         'official_test_read':False,'full24_authorized':False,'original_development_gate_revised':False}
     save(output/'result.json',value);protect_anchor();print(json.dumps({k:v for k,v in value.items() if k!='result'}))
