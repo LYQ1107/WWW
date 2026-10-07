@@ -1,0 +1,662 @@
+{
+  "answers": {
+    "MATCH_REACTIVATION_beats_GMT_on_AssA_and_HOTA": false,
+    "MATCH_only_beats_GMT_on_AssA_and_HOTA": true,
+    "MEMORY_effect_with_GMT_reactivation": {
+      "AssA": -0.013853791184160968,
+      "DetA": -0.014224373600001172,
+      "Frag": 0.0,
+      "HOTA": -0.014041308960955234,
+      "IDF1": 0.0,
+      "IDSW": 0.0,
+      "MOTA": 0.0
+    },
+    "MEMORY_effect_with_JEV_reactivation": {
+      "AssA": -1.517708174818722,
+      "DetA": -0.04714763665931798,
+      "Frag": 0.0,
+      "HOTA": -0.8007535513885102,
+      "IDF1": -0.8518269446312559,
+      "IDSW": 0.0,
+      "MOTA": 0.0
+    },
+    "REACTIVATION_effect_with_GMT_memory": {
+      "AssA": -1.6089887599083994,
+      "DetA": 0.03922233443773848,
+      "Frag": 0.0,
+      "HOTA": -0.8000071388418064,
+      "IDF1": -1.7484868863483598,
+      "IDSW": 0.0,
+      "MOTA": 0.0
+    },
+    "REACTIVATION_effect_with_JEV_memory": {
+      "AssA": -3.1128431435429604,
+      "DetA": 0.006299071378421672,
+      "Frag": 0.0,
+      "HOTA": -1.5867193812693614,
+      "IDF1": -2.6003138309796157,
+      "IDSW": 0.0,
+      "MOTA": 0.0
+    }
+  },
+  "attribution_scope": "whole-component intervention, with all subsequent decisions recomputed online; pairwise component effects may interact",
+  "checkpoint_unchanged": true,
+  "full24_authorized": false,
+  "official_test_read": false,
+  "retrained": false,
+  "status": "COMPLETE",
+  "variants": {
+    "A0": {
+      "action_counts_by_question": {
+        "MATCH_DECISION": {
+          "actions": {
+            "ACCEPT_CURRENT": 4297,
+            "START_NEW": 227
+          },
+          "count": 4524,
+          "rates": {
+            "ACCEPT_CURRENT": 0.9498231653404067,
+            "START_NEW": 0.05017683465959328
+          }
+        },
+        "MEMORY_DECISION": {
+          "actions": {
+            "WRITE_MEMORY": 4297
+          },
+          "count": 4297,
+          "rates": {
+            "WRITE_MEMORY": 1.0
+          }
+        },
+        "REACTIVATION_DECISION": {
+          "actions": {
+            "START_NEW": 174
+          },
+          "count": 174,
+          "rates": {
+            "START_NEW": 1.0
+          }
+        }
+      },
+      "baseline_reproduction": {
+        "max_metric_error": 0.0,
+        "predictions_sha_identical": true
+      },
+      "checkpoint": null,
+      "checkpoint_sha256": null,
+      "classification": "TRAIN_HELD_OUT_FROZEN_CHECKPOINT_COMPONENT_DIAGNOSTIC",
+      "completed_utc": "2026-10-07T15:57:39.526362+00:00",
+      "controlled_questions": [],
+      "decisions_sha256": "805f920e8a4d576d2ebbf11f35d782ad902cd85332ecc254d57711cc971f063b",
+      "delta_vs_A0": {
+        "AssA": 0.0,
+        "DetA": 0.0,
+        "Frag": 0.0,
+        "HOTA": 0.0,
+        "IDF1": 0.0,
+        "IDSW": 0.0,
+        "MOTA": 0.0
+      },
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A0/tracking_eval_runtime_state/gmt_off/evaluation",
+      "full24_authorized": false,
+      "legacy_label_based_counts_are_off_state_proxies_not_causal_truth": true,
+      "metrics": {
+        "AssA": 85.14919745804252,
+        "DetA": 87.94461028006626,
+        "Frag": 6.0,
+        "HOTA": 86.52304287961718,
+        "IDF1": 94.64245684824031,
+        "IDSW": 282.0,
+        "MOTA": 89.57906712172924
+      },
+      "official_test_read": false,
+      "online_decisions_sha256": "716cc3bb22911795c32aa386730ff402056ea63d18e65a12cf3f6d56252d5dbc",
+      "predictions_sha256": "44f37c954b1b4081ed08d90af2bc8355f0a761fe25ab7058a5f930f2e178af09",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A0/tracking_eval_runtime_state/gmt_off/prepared",
+      "result": {
+        "counts": {
+          "ACCEPT_CURRENT": 4297,
+          "MATCH_DECISION": 4524,
+          "MEMORY_DECISION": 4297,
+          "REACTIVATE_OLD": 0,
+          "REACTIVATION_DECISION": 174,
+          "REASSOCIATE": 0,
+          "SKIP_MEMORY": 0,
+          "START_NEW": 401,
+          "WRITE_MEMORY": 4297,
+          "action_rates": {
+            "ACCEPT_CURRENT": 0.477709838799333,
+            "REACTIVATE_OLD": 0.0,
+            "REASSOCIATE": 0.0,
+            "SKIP_MEMORY": 0.0,
+            "START_NEW": 0.044580322401334076,
+            "WRITE_MEMORY": 0.477709838799333
+          },
+          "canonical_feature_records": 0,
+          "fallback_feature_records": 0,
+          "false_reactivation": 0.0,
+          "feature_parity_max_abs_error": 6.103515625e-05,
+          "feature_parity_records": 8995,
+          "known_commit_evaluations": 8995,
+          "memory_contamination": 0.0,
+          "missing_action_outcomes": 0,
+          "off_action_mismatches": 0,
+          "reactivation_action_counts": {
+            "REACTIVATE_OLD": 0,
+            "START_NEW": 174
+          },
+          "reactivation_candidate_evaluations": 174,
+          "reactivation_no_candidate": 53,
+          "reactivation_wrong_commit": 0,
+          "runtime_feature_records": 8995,
+          "trace_action_records": 8995,
+          "trace_debug_feature_records": 0,
+          "unsupported_reactivation": 0,
+          "wrong_commit": 147,
+          "wrong_commit_rate": 0.01634241245136187
+        },
+        "decisions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A0/tracking_decisions/gmt_off.json",
+        "method": "gmt_off",
+        "payloads": 1864,
+        "prediction_rows": 4527,
+        "predictions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A0/tracking_predictions/gmt_off.json",
+        "status": "PASS"
+      },
+      "status": "PASS",
+      "trained": false,
+      "variant": "A0"
+    },
+    "A1": {
+      "action_counts_by_question": {
+        "MATCH_DECISION": {
+          "actions": {
+            "ACCEPT_CURRENT": 4496,
+            "REASSOCIATE": 22,
+            "START_NEW": 6
+          },
+          "count": 4524,
+          "rates": {
+            "ACCEPT_CURRENT": 0.9938107869142352,
+            "REASSOCIATE": 0.004862953138815208,
+            "START_NEW": 0.001326259946949602
+          }
+        },
+        "MEMORY_DECISION": {
+          "actions": {
+            "WRITE_MEMORY": 4502
+          },
+          "count": 4502,
+          "rates": {
+            "WRITE_MEMORY": 1.0
+          }
+        },
+        "REACTIVATION_DECISION": {
+          "actions": {
+            "START_NEW": 16
+          },
+          "count": 16,
+          "rates": {
+            "START_NEW": 1.0
+          }
+        }
+      },
+      "checkpoint": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/jev/seed_20261003/calibration/model_calibrated.pth",
+      "checkpoint_sha256": "2509541a6669d8fc31013111b7bb9a38c4551be79ff5a466b259184029dd871b",
+      "classification": "TRAIN_HELD_OUT_FROZEN_CHECKPOINT_COMPONENT_DIAGNOSTIC",
+      "completed_utc": "2026-10-07T16:02:31.770271+00:00",
+      "controlled_questions": [
+        "MATCH_DECISION"
+      ],
+      "decisions_sha256": "e87558d1b586ba6fdd8cda9862613e2c1d19cae289ed9b389660cec8a647a75c",
+      "delta_vs_A0": {
+        "AssA": 0.43742925836748725,
+        "DetA": -0.1483426450472649,
+        "Frag": 0.0,
+        "HOTA": 0.15005237912129132,
+        "IDF1": -0.06724949562878635,
+        "IDSW": -264.0,
+        "MOTA": 6.00682593856655
+      },
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A1/tracking_eval_runtime_state/jev/evaluation",
+      "full24_authorized": false,
+      "legacy_label_based_counts_are_off_state_proxies_not_causal_truth": true,
+      "metrics": {
+        "AssA": 85.58662671641001,
+        "DetA": 87.79626763501899,
+        "Frag": 6.0,
+        "HOTA": 86.67309525873847,
+        "IDF1": 94.57520735261153,
+        "IDSW": 18.0,
+        "MOTA": 95.58589306029579
+      },
+      "official_test_read": false,
+      "online_decisions_sha256": "9a1182aff86177f7fa17690712a3d894f48ba7fc0ebfe016f5f0b2bf39b33b91",
+      "predictions_sha256": "9804ab304f31d0a83025a64f16a365d56751f3f9bf563eba730eea3eeb6ba8be",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A1/tracking_eval_runtime_state/jev/prepared",
+      "result": {
+        "counts": {
+          "ACCEPT_CURRENT": 4496,
+          "MATCH_DECISION": 4524,
+          "MEMORY_DECISION": 4502,
+          "REACTIVATE_OLD": 0,
+          "REACTIVATION_DECISION": 16,
+          "REASSOCIATE": 22,
+          "SKIP_MEMORY": 0,
+          "START_NEW": 22,
+          "WRITE_MEMORY": 4502,
+          "action_rates": {
+            "ACCEPT_CURRENT": 0.49723512497235123,
+            "REACTIVATE_OLD": 0.0,
+            "REASSOCIATE": 0.0024330900243309003,
+            "SKIP_MEMORY": 0.0,
+            "START_NEW": 0.0024330900243309003,
+            "WRITE_MEMORY": 0.4978986949789869
+          },
+          "canonical_feature_records": 0,
+          "fallback_feature_records": 0,
+          "false_reactivation": 0.0,
+          "feature_parity_max_abs_error": 2255.70654296875,
+          "feature_parity_records": 8814,
+          "known_commit_evaluations": 8814,
+          "memory_contamination": 0.0,
+          "missing_action_outcomes": 0,
+          "off_action_mismatches": 0,
+          "reactivation_action_counts": {
+            "REACTIVATE_OLD": 0,
+            "START_NEW": 16
+          },
+          "reactivation_candidate_evaluations": 16,
+          "reactivation_no_candidate": 6,
+          "reactivation_wrong_commit": 0,
+          "runtime_feature_records": 9042,
+          "trace_action_records": 0,
+          "trace_debug_feature_records": 0,
+          "unsupported_reactivation": 0,
+          "wrong_commit": 15,
+          "wrong_commit_rate": 0.0017018379850238256
+        },
+        "decisions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A1/tracking_decisions/jev.json",
+        "method": "jev",
+        "payloads": 1864,
+        "prediction_rows": 4527,
+        "predictions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A1/tracking_predictions/jev.json",
+        "status": "PASS"
+      },
+      "status": "PASS",
+      "trained": false,
+      "variant": "A1"
+    },
+    "A2": {
+      "action_counts_by_question": {
+        "MATCH_DECISION": {
+          "actions": {
+            "ACCEPT_CURRENT": 4492,
+            "REASSOCIATE": 26,
+            "START_NEW": 6
+          },
+          "count": 4524,
+          "rates": {
+            "ACCEPT_CURRENT": 0.9929266136162688,
+            "REASSOCIATE": 0.005747126436781609,
+            "START_NEW": 0.001326259946949602
+          }
+        },
+        "MEMORY_DECISION": {
+          "actions": {
+            "WRITE_MEMORY": 4498
+          },
+          "count": 4498,
+          "rates": {
+            "WRITE_MEMORY": 1.0
+          }
+        },
+        "REACTIVATION_DECISION": {
+          "actions": {
+            "REACTIVATE_OLD": 7
+          },
+          "count": 7,
+          "rates": {
+            "REACTIVATE_OLD": 1.0
+          }
+        }
+      },
+      "checkpoint": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/jev/seed_20261003/calibration/model_calibrated.pth",
+      "checkpoint_sha256": "2509541a6669d8fc31013111b7bb9a38c4551be79ff5a466b259184029dd871b",
+      "classification": "TRAIN_HELD_OUT_FROZEN_CHECKPOINT_COMPONENT_DIAGNOSTIC",
+      "completed_utc": "2026-10-07T16:02:28.539143+00:00",
+      "controlled_questions": [
+        "MATCH_DECISION",
+        "REACTIVATION_DECISION"
+      ],
+      "decisions_sha256": "f884b8ab097f1beff95ef0c9186f773d600352a0e1d521e2a2a4d3c6bf36b88d",
+      "delta_vs_A0": {
+        "AssA": -1.1715595015409122,
+        "DetA": -0.10912031060952643,
+        "Frag": 0.0,
+        "HOTA": -0.6499547597205151,
+        "IDF1": -1.8157363819771462,
+        "IDSW": -264.0,
+        "MOTA": 6.00682593856655
+      },
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A2/tracking_eval_runtime_state/jev/evaluation",
+      "full24_authorized": false,
+      "legacy_label_based_counts_are_off_state_proxies_not_causal_truth": true,
+      "metrics": {
+        "AssA": 83.97763795650161,
+        "DetA": 87.83548996945673,
+        "Frag": 6.0,
+        "HOTA": 85.87308811989666,
+        "IDF1": 92.82672046626317,
+        "IDSW": 18.0,
+        "MOTA": 95.58589306029579
+      },
+      "official_test_read": false,
+      "online_decisions_sha256": "4c7df4c22fc49f64c2739bf2497ada2d47451d3381fb5fbf6fc6d04a0bd1d8b7",
+      "predictions_sha256": "40a22708cb5bb2cb90f3ead43154ede1c0300018cac1eeec288d6bfd2fdfc46f",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A2/tracking_eval_runtime_state/jev/prepared",
+      "result": {
+        "counts": {
+          "ACCEPT_CURRENT": 4492,
+          "MATCH_DECISION": 4524,
+          "MEMORY_DECISION": 4498,
+          "REACTIVATE_OLD": 7,
+          "REACTIVATION_DECISION": 7,
+          "REASSOCIATE": 26,
+          "SKIP_MEMORY": 0,
+          "START_NEW": 6,
+          "WRITE_MEMORY": 4498,
+          "action_rates": {
+            "ACCEPT_CURRENT": 0.49750802968213537,
+            "REACTIVATE_OLD": 0.0007752796544467826,
+            "REASSOCIATE": 0.0028796101450880495,
+            "SKIP_MEMORY": 0.0,
+            "START_NEW": 0.0006645254180972422,
+            "WRITE_MEMORY": 0.49817255510023256
+          },
+          "canonical_feature_records": 0,
+          "fallback_feature_records": 0,
+          "false_reactivation": 2.0,
+          "feature_parity_max_abs_error": 2272.641357421875,
+          "feature_parity_records": 8809,
+          "known_commit_evaluations": 8809,
+          "memory_contamination": 0.0,
+          "missing_action_outcomes": 0,
+          "off_action_mismatches": 0,
+          "reactivation_action_counts": {
+            "REACTIVATE_OLD": 7,
+            "START_NEW": 0
+          },
+          "reactivation_candidate_evaluations": 7,
+          "reactivation_no_candidate": 19,
+          "reactivation_wrong_commit": 0,
+          "runtime_feature_records": 9029,
+          "trace_action_records": 0,
+          "trace_debug_feature_records": 0,
+          "unsupported_reactivation": 0,
+          "wrong_commit": 15,
+          "wrong_commit_rate": 0.0017028039505051652
+        },
+        "decisions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A2/tracking_decisions/jev.json",
+        "method": "jev",
+        "payloads": 1864,
+        "prediction_rows": 4527,
+        "predictions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A2/tracking_predictions/jev.json",
+        "status": "PASS"
+      },
+      "status": "PASS",
+      "trained": false,
+      "variant": "A2"
+    },
+    "A3": {
+      "action_counts_by_question": {
+        "MATCH_DECISION": {
+          "actions": {
+            "ACCEPT_CURRENT": 4495,
+            "REASSOCIATE": 23,
+            "START_NEW": 6
+          },
+          "count": 4524,
+          "rates": {
+            "ACCEPT_CURRENT": 0.9935897435897436,
+            "REASSOCIATE": 0.005083996463306808,
+            "START_NEW": 0.001326259946949602
+          }
+        },
+        "MEMORY_DECISION": {
+          "actions": {
+            "SKIP_MEMORY": 4271,
+            "WRITE_MEMORY": 230
+          },
+          "count": 4501,
+          "rates": {
+            "SKIP_MEMORY": 0.9489002443901355,
+            "WRITE_MEMORY": 0.051099755609864475
+          }
+        },
+        "REACTIVATION_DECISION": {
+          "actions": {
+            "START_NEW": 17
+          },
+          "count": 17,
+          "rates": {
+            "START_NEW": 1.0
+          }
+        }
+      },
+      "checkpoint": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/jev/seed_20261003/calibration/model_calibrated.pth",
+      "checkpoint_sha256": "2509541a6669d8fc31013111b7bb9a38c4551be79ff5a466b259184029dd871b",
+      "classification": "TRAIN_HELD_OUT_FROZEN_CHECKPOINT_COMPONENT_DIAGNOSTIC",
+      "completed_utc": "2026-10-07T16:02:32.792141+00:00",
+      "controlled_questions": [
+        "MATCH_DECISION",
+        "MEMORY_DECISION"
+      ],
+      "decisions_sha256": "4a14c4da8df65e8615107c236aa0add11ec27cb5c478c3c275a46525755b4c7c",
+      "delta_vs_A0": {
+        "AssA": 0.4235754671833263,
+        "DetA": -0.16256701864726608,
+        "Frag": 0.0,
+        "HOTA": 0.1360110701603361,
+        "IDF1": -0.06724949562878635,
+        "IDSW": -264.0,
+        "MOTA": 6.00682593856655
+      },
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A3/tracking_eval_runtime_state/jev/evaluation",
+      "full24_authorized": false,
+      "legacy_label_based_counts_are_off_state_proxies_not_causal_truth": true,
+      "metrics": {
+        "AssA": 85.57277292522585,
+        "DetA": 87.78204326141899,
+        "Frag": 6.0,
+        "HOTA": 86.65905394977752,
+        "IDF1": 94.57520735261153,
+        "IDSW": 18.0,
+        "MOTA": 95.58589306029579
+      },
+      "official_test_read": false,
+      "online_decisions_sha256": "a7610513377382b615eda805b06a57339b0cf367d8ccf976517f0e2bd6413278",
+      "predictions_sha256": "12c45dd6b7a4a32d424a10a4c0657dc232a26381958f07e3ee13be4cfdc93c8b",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A3/tracking_eval_runtime_state/jev/prepared",
+      "result": {
+        "counts": {
+          "ACCEPT_CURRENT": 4495,
+          "MATCH_DECISION": 4524,
+          "MEMORY_DECISION": 4501,
+          "REACTIVATE_OLD": 0,
+          "REACTIVATION_DECISION": 17,
+          "REASSOCIATE": 23,
+          "SKIP_MEMORY": 4271,
+          "START_NEW": 23,
+          "WRITE_MEMORY": 230,
+          "action_rates": {
+            "ACCEPT_CURRENT": 0.4971245299712453,
+            "REACTIVATE_OLD": 0.0,
+            "REASSOCIATE": 0.00254368502543685,
+            "SKIP_MEMORY": 0.4723512497235125,
+            "START_NEW": 0.00254368502543685,
+            "WRITE_MEMORY": 0.025436850254368502
+          },
+          "canonical_feature_records": 0,
+          "fallback_feature_records": 0,
+          "false_reactivation": 0.0,
+          "feature_parity_max_abs_error": 2310.757080078125,
+          "feature_parity_records": 8813,
+          "known_commit_evaluations": 8813,
+          "memory_contamination": 0.0,
+          "missing_action_outcomes": 0,
+          "off_action_mismatches": 0,
+          "reactivation_action_counts": {
+            "REACTIVATE_OLD": 0,
+            "START_NEW": 17
+          },
+          "reactivation_candidate_evaluations": 17,
+          "reactivation_no_candidate": 6,
+          "reactivation_wrong_commit": 0,
+          "runtime_feature_records": 9042,
+          "trace_action_records": 0,
+          "trace_debug_feature_records": 0,
+          "unsupported_reactivation": 0,
+          "wrong_commit": 14,
+          "wrong_commit_rate": 0.0015885623510722795
+        },
+        "decisions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A3/tracking_decisions/jev.json",
+        "method": "jev",
+        "payloads": 1864,
+        "prediction_rows": 4527,
+        "predictions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A3/tracking_predictions/jev.json",
+        "status": "PASS"
+      },
+      "status": "PASS",
+      "trained": false,
+      "variant": "A3"
+    },
+    "A4": {
+      "action_counts_by_question": {
+        "MATCH_DECISION": {
+          "actions": {
+            "ACCEPT_CURRENT": 4493,
+            "REASSOCIATE": 25,
+            "START_NEW": 6
+          },
+          "count": 4524,
+          "rates": {
+            "ACCEPT_CURRENT": 0.9931476569407603,
+            "REASSOCIATE": 0.005526083112290009,
+            "START_NEW": 0.001326259946949602
+          }
+        },
+        "MEMORY_DECISION": {
+          "actions": {
+            "SKIP_MEMORY": 4271,
+            "WRITE_MEMORY": 228
+          },
+          "count": 4499,
+          "rates": {
+            "SKIP_MEMORY": 0.9493220715714603,
+            "WRITE_MEMORY": 0.05067792842853967
+          }
+        },
+        "REACTIVATION_DECISION": {
+          "actions": {
+            "REACTIVATE_OLD": 7
+          },
+          "count": 7,
+          "rates": {
+            "REACTIVATE_OLD": 1.0
+          }
+        }
+      },
+      "baseline_reproduction": {
+        "max_metric_error": 0.0,
+        "predictions_sha_identical": true
+      },
+      "checkpoint": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/jev/seed_20261003/calibration/model_calibrated.pth",
+      "checkpoint_sha256": "2509541a6669d8fc31013111b7bb9a38c4551be79ff5a466b259184029dd871b",
+      "classification": "TRAIN_HELD_OUT_FROZEN_CHECKPOINT_COMPONENT_DIAGNOSTIC",
+      "completed_utc": "2026-10-07T15:57:42.106021+00:00",
+      "controlled_questions": [
+        "MATCH_DECISION",
+        "MEMORY_DECISION",
+        "REACTIVATION_DECISION"
+      ],
+      "decisions_sha256": "a65efd29d1780bada9753b2104474911bac147eec3f021e680d5d856b9470198",
+      "delta_vs_A0": {
+        "AssA": -2.689267676359634,
+        "DetA": -0.1562679472688444,
+        "Frag": 0.0,
+        "HOTA": -1.4507083111090253,
+        "IDF1": -2.667563326608402,
+        "IDSW": -264.0,
+        "MOTA": 6.00682593856655
+      },
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A4/tracking_eval_runtime_state/jev/evaluation",
+      "full24_authorized": false,
+      "legacy_label_based_counts_are_off_state_proxies_not_causal_truth": true,
+      "metrics": {
+        "AssA": 82.45992978168289,
+        "DetA": 87.78834233279741,
+        "Frag": 6.0,
+        "HOTA": 85.07233456850815,
+        "IDF1": 91.97489352163191,
+        "IDSW": 18.0,
+        "MOTA": 95.58589306029579
+      },
+      "official_test_read": false,
+      "online_decisions_sha256": "ca3b62fb86d0b5d245cb2a2346b6a1b1dfada993748f1cd3659fca878dd35e37",
+      "predictions_sha256": "c7a1f9e8aa026a35251cad4dd9854665147f02990c2789302f2602cc9e2f45bf",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A4/tracking_eval_runtime_state/jev/prepared",
+      "result": {
+        "counts": {
+          "ACCEPT_CURRENT": 4493,
+          "MATCH_DECISION": 4524,
+          "MEMORY_DECISION": 4499,
+          "REACTIVATE_OLD": 7,
+          "REACTIVATION_DECISION": 7,
+          "REASSOCIATE": 25,
+          "SKIP_MEMORY": 4271,
+          "START_NEW": 6,
+          "WRITE_MEMORY": 228,
+          "action_rates": {
+            "ACCEPT_CURRENT": 0.4975636766334441,
+            "REACTIVATE_OLD": 0.0007751937984496124,
+            "REASSOCIATE": 0.0027685492801771874,
+            "SKIP_MEMORY": 0.47297895902547066,
+            "START_NEW": 0.000664451827242525,
+            "WRITE_MEMORY": 0.02524916943521595
+          },
+          "canonical_feature_records": 0,
+          "fallback_feature_records": 0,
+          "false_reactivation": 2.0,
+          "feature_parity_max_abs_error": 2272.641357421875,
+          "feature_parity_records": 8809,
+          "known_commit_evaluations": 8809,
+          "memory_contamination": 0.0,
+          "missing_action_outcomes": 0,
+          "off_action_mismatches": 0,
+          "reactivation_action_counts": {
+            "REACTIVATE_OLD": 7,
+            "START_NEW": 0
+          },
+          "reactivation_candidate_evaluations": 7,
+          "reactivation_no_candidate": 18,
+          "reactivation_wrong_commit": 0,
+          "runtime_feature_records": 9030,
+          "trace_action_records": 0,
+          "trace_debug_feature_records": 0,
+          "unsupported_reactivation": 0,
+          "wrong_commit": 16,
+          "wrong_commit_rate": 0.0018163242138721763
+        },
+        "decisions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A4/tracking_decisions/jev.json",
+        "method": "jev",
+        "payloads": 1864,
+        "prediction_rows": 4527,
+        "predictions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/ablations/A4/tracking_predictions/jev.json",
+        "status": "PASS"
+      },
+      "status": "PASS",
+      "trained": false,
+      "variant": "A4"
+    }
+  }
+}

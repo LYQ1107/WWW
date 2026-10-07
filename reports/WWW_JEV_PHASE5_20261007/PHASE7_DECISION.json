@@ -1,0 +1,32 @@
+{
+  "status": "PHASE7_DIAGNOSTIC_DECISION_COMPLETE",
+  "utc": "2026-10-07T16:15:16.313782+00:00",
+  "source_commit": "5cdd36f545dea9d02fcf308fc4d3b80ef7d877f1",
+  "frozen_successful_controller": "original calibrated JEV checkpoint, MATCH only, A1",
+  "checkpoint_sha256": "2509541a6669d8fc31013111b7bb9a38c4551be79ff5a466b259184029dd871b",
+  "choice": "CASE_A",
+  "A1_beats_OFF_AssA_and_HOTA": true,
+  "MEMORY": "GMT; M2 at H8/H16/H32 on predeclared64 video06 events, no informative-only memory training justified",
+  "REACTIVATION": "GMT; frozen learned Reactivation worsens AssA/HOTA and train/val have zero examples. Coverage-only videos24/23 selected for future data design, no new full-video build",
+  "Phase8_MATCH_horizon_audit": "NOT_TRIGGERED: MATCH-only above OFF on both prespecified metrics",
+  "minimal_training": {
+    "primary": "B2 MATCH-only GT-coordinate-aligned complete video07 train/video06 val",
+    "control": "B1 MATCH-only legacy-coordinate labels; diagnostic isolation of loss change, not eligible for deployment claim",
+    "fixed_seed": 20261003,
+    "epochs": 20,
+    "batch_size": 128,
+    "lr": 0.001,
+    "hidden_dim": 128,
+    "checkpoint_selection": "last epoch20 fixed, no held-out selection",
+    "calibration": "video06 only",
+    "online_routing": "MATCH JEV, MEMORY/REACTIVATION GMT",
+    "evaluation": "TRAIN diagnostic held-out video01; original A1 retained regardless of B1/B2 result"
+  },
+  "full24_authorized": false,
+  "official_test_read": false,
+  "known_utility_limits": [
+    "branch-start anchors reset",
+    "fixed OFF continuation action categories",
+    "window proxy is not TrackEval AssA"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "batch_size": 128,
+  "checkpoint_selection": "fixed last epoch20; no held-out tuning",
+  "conditions": {
+    "B1": "MATCH-only legacy-coordinate diagnostic control; not promotion eligible",
+    "B2": "MATCH-only corrected-frame labels, complete video07 train / video06 val"
+  },
+  "epochs": 20,
+  "frozen_A1_retained": true,
+  "heldout_control_routing": "JEV MATCH; GMT MEMORY and REACTIVATION",
+  "hidden_dim": 128,
+  "lr": 0.001,
+  "model": "jev",
+  "official_test_read": false,
+  "optimizer": "AdamW",
+  "predeclared_input_hashes": {
+    "B1_compact": "dd19e4eedccbaabd3be0fc4900369c8a2d7b2363b894b9cece68b5e5853eb26f",
+    "B1_split": "0b074eda842a77f6a3ff9027f7dc77508e705acc8f2269eed31ac582067a2553",
+    "B2_compact": "552fd6682e2f1ea2c2172c4393798b4caba7b4a9d1f510ae37758db8f4022392",
+    "B2_split": "d92f83c9306f2933cb5e515ca47cffca0950601b3c609bbfaa1067158361b8da"
+  },
+  "seed": 20261003,
+  "selection_video01_is_reused_diagnostic_not_independent_test": true,
+  "status": "PREDECLARED",
+  "temperature_fit": "video06 MATCH validation only"
+}

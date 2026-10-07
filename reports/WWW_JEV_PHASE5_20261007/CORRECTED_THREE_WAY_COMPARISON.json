@@ -1,0 +1,497 @@
+{
+  "JEV_above_OFF_and_both_corrected_baselines_on_AssA_HOTA": true,
+  "MLP_collapse_independently_checked": {
+    "action_mismatches": 0,
+    "all_online_decisions_recomputed_on_CPU": 4524,
+    "calibration_did_not_change_weights": true,
+    "checkpoint_model_name": "question_conditioned_mlp",
+    "first_legal_actions": [
+      "ACCEPT_CURRENT",
+      "REASSOCIATE",
+      "START_NEW"
+    ],
+    "first_probabilities": [
+      [
+        0.35654371976852417,
+        0.28365957736968994,
+        0.3597967028617859
+      ]
+    ],
+    "first_state_exactly_equals_OFF_state": true,
+    "first_training_tensor_and_runtime_list_action_identical": true,
+    "full24_authorized": false,
+    "hidden_dim": 139,
+    "interpretation": "Recorded all-START_NEW collapse is produced by this trained model, not an action-index/loading mismatch. Its predictions on stable OFF trajectories can differ substantially from its self-induced states. This is one small-sequence/seed failure, not a universal MLP claim.",
+    "official_test_read": false,
+    "online_CPU_recomputed_actions": {
+      "START_NEW": 4524
+    },
+    "same_model_on_OFF_state_features": {
+      "ACCEPT_CURRENT": 4066,
+      "REASSOCIATE": 296,
+      "START_NEW": 162
+    },
+    "status": "PASS",
+    "temperature": 1.542640673546135
+  },
+  "batch_size": 128,
+  "epochs": 20,
+  "full24_authorized": false,
+  "lr": 0.001,
+  "models": {
+    "B2": {
+      "binding": {
+        "compact_manifest_sha256": "552fd6682e2f1ea2c2172c4393798b4caba7b4a9d1f510ae37758db8f4022392",
+        "condition": "B2",
+        "official_test_read": false,
+        "source_commit": "d26488fa5a913b231037e4f53c0c29e834c5b645",
+        "split_sha256": "d92f83c9306f2933cb5e515ca47cffca0950601b3c609bbfaa1067158361b8da"
+      },
+      "calibration": {
+        "after": {
+          "best_action_accuracy": 0.9973076923076923,
+          "brier": 0.014879326930306325,
+          "ece": 0.5765760889993264,
+          "nll": 1.0589150874114057,
+          "records": 2600,
+          "weighted_records": 2600.0
+        },
+        "before": {
+          "best_action_accuracy": 0.9973076923076923,
+          "brier": 0.01556902413613883,
+          "ece": 0.5960973471517745,
+          "nll": 1.060505108484334,
+          "records": 2600,
+          "weighted_records": 2600.0
+        },
+        "calibration_fit": "policy_val_only",
+        "checkpoint": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_training/B2/model.pth",
+        "checkpoint_sha256": "cdc02b4d0fd211dad4067900e5feb56af8114be2b71f5cfdb7bb88d958252c95",
+        "dataset": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/match_training/compact",
+        "dataset_manifest_sha256": "552fd6682e2f1ea2c2172c4393798b4caba7b4a9d1f510ae37758db8f4022392",
+        "official_test_read": false,
+        "policy_split": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/match_training/policy_split.json",
+        "status": "PASS",
+        "temperature": 0.7594815002713704,
+        "validation_records": 2600,
+        "weighted_validation_records": 2600.0
+      },
+      "model": "jev",
+      "params": 34080,
+      "tracking": {
+        "action_counts_by_question": {
+          "MATCH_DECISION": {
+            "actions": {
+              "ACCEPT_CURRENT": 4408,
+              "REASSOCIATE": 11,
+              "START_NEW": 105
+            },
+            "count": 4524,
+            "rates": {
+              "ACCEPT_CURRENT": 0.9743589743589743,
+              "REASSOCIATE": 0.002431476569407604,
+              "START_NEW": 0.023209549071618037
+            }
+          },
+          "MEMORY_DECISION": {
+            "actions": {
+              "WRITE_MEMORY": 4405
+            },
+            "count": 4405,
+            "rates": {
+              "WRITE_MEMORY": 1.0
+            }
+          },
+          "REACTIVATION_DECISION": {
+            "actions": {
+              "START_NEW": 70
+            },
+            "count": 70,
+            "rates": {
+              "START_NEW": 1.0
+            }
+          }
+        },
+        "checkpoint": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_training/B2/calibration/model_calibrated.pth",
+        "checkpoint_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+        "classification": "TRAIN_HELD_OUT_MINIMAL_RETRAIN_MATCH_ONLY_DIAGNOSTIC",
+        "completed_utc": "2026-10-07T16:30:34.837118+00:00",
+        "controlled_questions": [
+          "MATCH_DECISION"
+        ],
+        "decisions_sha256": "9a18748d1d0a69837ad7562cbd86eee8fd54bf4f44701544d9d6c9602c21cbc0",
+        "evaluation": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/B2/tracking_eval_runtime_state/jev/evaluation",
+        "full24_authorized": false,
+        "legacy_label_based_counts_are_off_state_proxies_not_causal_truth": true,
+        "metrics": {
+          "AssA": 89.08549270589177,
+          "DetA": 87.88088590570281,
+          "Frag": 6.0,
+          "HOTA": 88.47159895237941,
+          "IDF1": 96.99618919524771,
+          "IDSW": 87.0,
+          "MOTA": 94.01592718998863
+        },
+        "official_test_read": false,
+        "online_decisions_sha256": "153d2959debbfe2e25cc47afce5b332624cebef0f0f49f4da44be0652dc78e3f",
+        "predictions_sha256": "cac367c0c2c8b44660bda8643e5c5003fcdc4e06069fe147c5da10e369f3ebde",
+        "prepared": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/B2/tracking_eval_runtime_state/jev/prepared",
+        "result": {
+          "counts": {
+            "ACCEPT_CURRENT": 4408,
+            "MATCH_DECISION": 4524,
+            "MEMORY_DECISION": 4405,
+            "REACTIVATE_OLD": 0,
+            "REACTIVATION_DECISION": 70,
+            "REASSOCIATE": 11,
+            "SKIP_MEMORY": 0,
+            "START_NEW": 175,
+            "WRITE_MEMORY": 4405,
+            "action_rates": {
+              "ACCEPT_CURRENT": 0.48983220357817536,
+              "REACTIVATE_OLD": 0.0,
+              "REASSOCIATE": 0.001222358039782198,
+              "SKIP_MEMORY": 0.0,
+              "START_NEW": 0.01944660517835315,
+              "WRITE_MEMORY": 0.4894988332036893
+            },
+            "canonical_feature_records": 0,
+            "fallback_feature_records": 0,
+            "false_reactivation": 0.0,
+            "feature_parity_max_abs_error": 1822.475341796875,
+            "feature_parity_records": 8862,
+            "known_commit_evaluations": 8862,
+            "memory_contamination": 0.0,
+            "missing_action_outcomes": 0,
+            "off_action_mismatches": 0,
+            "reactivation_action_counts": {
+              "REACTIVATE_OLD": 0,
+              "START_NEW": 70
+            },
+            "reactivation_candidate_evaluations": 70,
+            "reactivation_no_candidate": 49,
+            "reactivation_wrong_commit": 0,
+            "runtime_feature_records": 8999,
+            "trace_action_records": 0,
+            "trace_debug_feature_records": 0,
+            "unsupported_reactivation": 0,
+            "wrong_commit": 41,
+            "wrong_commit_rate": 0.004626495147822162
+          },
+          "decisions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/B2/tracking_decisions/jev.json",
+          "method": "jev",
+          "payloads": 1864,
+          "prediction_rows": 4527,
+          "predictions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/B2/tracking_predictions/jev.json",
+          "status": "PASS"
+        },
+        "status": "PASS",
+        "trained": true,
+        "variant": "A1"
+      }
+    },
+    "C1": {
+      "binding": {
+        "compact_manifest_sha256": "552fd6682e2f1ea2c2172c4393798b4caba7b4a9d1f510ae37758db8f4022392",
+        "condition": "C1",
+        "hidden_dim": 140,
+        "model": "question_threshold",
+        "official_test_read": false,
+        "source_commit": "984e2b19ac6e2ec39f5e84022723c011d9b5057c",
+        "split_sha256": "d92f83c9306f2933cb5e515ca47cffca0950601b3c609bbfaa1067158361b8da"
+      },
+      "calibration": {
+        "after": {
+          "best_action_accuracy": 0.948076923076923,
+          "brier": 0.020707988320276753,
+          "ece": 0.5420019593720252,
+          "nll": 1.0727927779334292,
+          "records": 2600,
+          "weighted_records": 2600.0
+        },
+        "before": {
+          "best_action_accuracy": 0.948076923076923,
+          "brier": 0.021358721489462246,
+          "ece": 0.5262110130488872,
+          "nll": 1.073970766932348,
+          "records": 2600,
+          "weighted_records": 2600.0
+        },
+        "calibration_fit": "policy_val_only",
+        "checkpoint": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_training/C1/model.pth",
+        "checkpoint_sha256": "9089f1189722ee009735954f22bc24fde8fb9c225d3da6ea2903d3c02bb76b5f",
+        "dataset": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/match_training/compact",
+        "dataset_manifest_sha256": "552fd6682e2f1ea2c2172c4393798b4caba7b4a9d1f510ae37758db8f4022392",
+        "official_test_read": false,
+        "policy_split": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/match_training/policy_split.json",
+        "status": "PASS",
+        "temperature": 1.2270951211234533,
+        "validation_records": 2600,
+        "weighted_validation_records": 2600.0
+      },
+      "model": "question_threshold",
+      "params": 33987,
+      "tracking": {
+        "action_counts_by_question": {
+          "MATCH_DECISION": {
+            "actions": {
+              "ACCEPT_CURRENT": 4342,
+              "REASSOCIATE": 37,
+              "START_NEW": 145
+            },
+            "count": 4524,
+            "rates": {
+              "ACCEPT_CURRENT": 0.9597701149425287,
+              "REASSOCIATE": 0.008178603006189214,
+              "START_NEW": 0.03205128205128205
+            }
+          },
+          "MEMORY_DECISION": {
+            "actions": {
+              "WRITE_MEMORY": 4345
+            },
+            "count": 4345,
+            "rates": {
+              "WRITE_MEMORY": 1.0
+            }
+          },
+          "REACTIVATION_DECISION": {
+            "actions": {
+              "START_NEW": 108
+            },
+            "count": 108,
+            "rates": {
+              "START_NEW": 1.0
+            }
+          }
+        },
+        "checkpoint": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_training/C1/calibration/model_calibrated.pth",
+        "checkpoint_sha256": "806f6586dad287bc844ae26f634308efb1a20dae8a0b7a6522c94f97f9b4dceb",
+        "classification": "TRAIN_HELD_OUT_MINIMAL_RETRAIN_MATCH_ONLY_DIAGNOSTIC",
+        "completed_utc": "2026-10-07T16:41:33.197467+00:00",
+        "controlled_questions": [
+          "MATCH_DECISION"
+        ],
+        "controller_label": "QuestionThreshold",
+        "decisions_sha256": "311bb984adaf16caa2d05f27a89a6782549c0fb45d9505f5db395daf987c66fd",
+        "evaluation": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C1/tracking_eval_runtime_state/jev/evaluation",
+        "full24_authorized": false,
+        "legacy_label_based_counts_are_off_state_proxies_not_causal_truth": true,
+        "metrics": {
+          "AssA": 85.54002275274244,
+          "DetA": 87.94461028006626,
+          "Frag": 6.0,
+          "HOTA": 86.72185827730013,
+          "IDF1": 94.37345886572517,
+          "IDSW": 149.0,
+          "MOTA": 92.6052332195677
+        },
+        "official_test_read": false,
+        "online_decisions_sha256": "7b0087de42bdcb42b9220acfdf97e181cf1fdd571a462466af7b1e90c9233967",
+        "predictions_sha256": "1dbab237226e21ad9740033801fa704568040fb17e89bc60ec9280e73f9b6277",
+        "prepared": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C1/tracking_eval_runtime_state/jev/prepared",
+        "result": {
+          "counts": {
+            "ACCEPT_CURRENT": 4342,
+            "MATCH_DECISION": 4524,
+            "MEMORY_DECISION": 4345,
+            "REACTIVATE_OLD": 0,
+            "REACTIVATION_DECISION": 108,
+            "REASSOCIATE": 37,
+            "SKIP_MEMORY": 0,
+            "START_NEW": 253,
+            "WRITE_MEMORY": 4345,
+            "action_rates": {
+              "ACCEPT_CURRENT": 0.4836805168764621,
+              "REACTIVATE_OLD": 0.0,
+              "REASSOCIATE": 0.00412164420184917,
+              "SKIP_MEMORY": 0.0,
+              "START_NEW": 0.02818313467750919,
+              "WRITE_MEMORY": 0.4840147042441796
+            },
+            "canonical_feature_records": 0,
+            "fallback_feature_records": 0,
+            "false_reactivation": 0.0,
+            "feature_parity_max_abs_error": 1873.202392578125,
+            "feature_parity_records": 8820,
+            "known_commit_evaluations": 8820,
+            "memory_contamination": 0.0,
+            "missing_action_outcomes": 0,
+            "off_action_mismatches": 0,
+            "reactivation_action_counts": {
+              "REACTIVATE_OLD": 0,
+              "START_NEW": 108
+            },
+            "reactivation_candidate_evaluations": 108,
+            "reactivation_no_candidate": 71,
+            "reactivation_wrong_commit": 0,
+            "runtime_feature_records": 8977,
+            "trace_action_records": 0,
+            "trace_debug_feature_records": 0,
+            "unsupported_reactivation": 0,
+            "wrong_commit": 73,
+            "wrong_commit_rate": 0.008276643990929705
+          },
+          "decisions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C1/tracking_decisions/jev.json",
+          "method": "jev",
+          "payloads": 1864,
+          "prediction_rows": 4527,
+          "predictions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C1/tracking_predictions/jev.json",
+          "status": "PASS"
+        },
+        "status": "PASS",
+        "trained": true,
+        "variant": "A1"
+      }
+    },
+    "C2": {
+      "binding": {
+        "compact_manifest_sha256": "552fd6682e2f1ea2c2172c4393798b4caba7b4a9d1f510ae37758db8f4022392",
+        "condition": "C2",
+        "hidden_dim": 139,
+        "model": "question_conditioned_mlp",
+        "official_test_read": false,
+        "source_commit": "984e2b19ac6e2ec39f5e84022723c011d9b5057c",
+        "split_sha256": "d92f83c9306f2933cb5e515ca47cffca0950601b3c609bbfaa1067158361b8da"
+      },
+      "calibration": {
+        "after": {
+          "best_action_accuracy": 0.9969230769230769,
+          "brier": 0.014977028258326678,
+          "ece": 0.566852436203223,
+          "nll": 1.0589220747405916,
+          "records": 2600,
+          "weighted_records": 2600.0
+        },
+        "before": {
+          "best_action_accuracy": 0.9969230769230769,
+          "brier": 0.021360277599825703,
+          "ece": 0.5180746781252897,
+          "nll": 1.0669464101224149,
+          "records": 2600,
+          "weighted_records": 2600.0
+        },
+        "calibration_fit": "policy_val_only",
+        "checkpoint": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_training/C2/model.pth",
+        "checkpoint_sha256": "bb7cf0605e4ca545870432d25d6d1a2e2a5bfe56bec77c2c1037edbd1116e058",
+        "dataset": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/match_training/compact",
+        "dataset_manifest_sha256": "552fd6682e2f1ea2c2172c4393798b4caba7b4a9d1f510ae37758db8f4022392",
+        "official_test_read": false,
+        "policy_split": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/match_training/policy_split.json",
+        "status": "PASS",
+        "temperature": 1.542640673546135,
+        "validation_records": 2600,
+        "weighted_validation_records": 2600.0
+      },
+      "model": "question_conditioned_mlp",
+      "params": 34163,
+      "tracking": {
+        "action_counts_by_question": {
+          "MATCH_DECISION": {
+            "actions": {
+              "START_NEW": 4524
+            },
+            "count": 4524,
+            "rates": {
+              "START_NEW": 1.0
+            }
+          },
+          "MEMORY_DECISION": {
+            "actions": {},
+            "count": 0,
+            "rates": {}
+          },
+          "REACTIVATION_DECISION": {
+            "actions": {},
+            "count": 0,
+            "rates": {}
+          }
+        },
+        "checkpoint": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_training/C2/calibration/model_calibrated.pth",
+        "checkpoint_sha256": "68f9aaa9a4486f71acad75e8c30306f43d3340a702e63ff2feb522fd771e8124",
+        "classification": "TRAIN_HELD_OUT_MINIMAL_RETRAIN_MATCH_ONLY_DIAGNOSTIC",
+        "completed_utc": "2026-10-07T16:41:47.873432+00:00",
+        "controlled_questions": [
+          "MATCH_DECISION"
+        ],
+        "controller_label": "QuestionConditionedMLP",
+        "decisions_sha256": "29972fa4ce30fc2416715271ac677dfe29f2da19366f99f8e9a164f42150f31a",
+        "evaluation": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/evaluation",
+        "full24_authorized": false,
+        "legacy_label_based_counts_are_off_state_proxies_not_causal_truth": true,
+        "metrics": {
+          "AssA": 0.20246226553100316,
+          "DetA": 87.94461028006626,
+          "Frag": 6.0,
+          "HOTA": 4.170709597736024,
+          "IDF1": 0.20174848688634836,
+          "IDSW": 4364.0,
+          "MOTA": -3.299203640500569
+        },
+        "official_test_read": false,
+        "online_decisions_sha256": "90166d8b994c87b89524adff673511d4fa26fcee09093337db98f825aa457abd",
+        "predictions_sha256": "9a3b355a783d69ea927b6b3a8a394f820abda8d67994e6c50fdab84431bc8860",
+        "prepared": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/prepared",
+        "result": {
+          "counts": {
+            "ACCEPT_CURRENT": 0,
+            "MATCH_DECISION": 4524,
+            "MEMORY_DECISION": 0,
+            "REACTIVATE_OLD": 0,
+            "REACTIVATION_DECISION": 0,
+            "REASSOCIATE": 0,
+            "SKIP_MEMORY": 0,
+            "START_NEW": 4524,
+            "WRITE_MEMORY": 0,
+            "action_rates": {
+              "ACCEPT_CURRENT": 0.0,
+              "REACTIVATE_OLD": 0.0,
+              "REASSOCIATE": 0.0,
+              "SKIP_MEMORY": 0.0,
+              "START_NEW": 1.0,
+              "WRITE_MEMORY": 0.0
+            },
+            "canonical_feature_records": 0,
+            "fallback_feature_records": 0,
+            "false_reactivation": 0.0,
+            "feature_parity_max_abs_error": 2027.927978515625,
+            "feature_parity_records": 4524,
+            "known_commit_evaluations": 4524,
+            "memory_contamination": 0.0,
+            "missing_action_outcomes": 0,
+            "off_action_mismatches": 0,
+            "reactivation_action_counts": {
+              "REACTIVATE_OLD": 0,
+              "START_NEW": 0
+            },
+            "reactivation_candidate_evaluations": 0,
+            "reactivation_no_candidate": 4524,
+            "reactivation_wrong_commit": 0,
+            "runtime_feature_records": 4524,
+            "trace_action_records": 0,
+            "trace_debug_feature_records": 0,
+            "unsupported_reactivation": 0,
+            "wrong_commit": 4197,
+            "wrong_commit_rate": 0.9277188328912467
+          },
+          "decisions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_decisions/jev.json",
+          "method": "jev",
+          "payloads": 1864,
+          "prediction_rows": 4527,
+          "predictions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_predictions/jev.json",
+          "status": "PASS"
+        },
+        "status": "PASS",
+        "trained": true,
+        "variant": "A1"
+      }
+    }
+  },
+  "official_test_read": false,
+  "parameter_difference_limit": 0.003,
+  "same_complete_video_split": "train07/val06; diagnostic01",
+  "same_features_labels_weights_and_masks": true,
+  "scope": "single-seed TRAIN diagnostic; no universal architecture claim",
+  "seed": 20261003,
+  "status": "COMPLETE"
+}
