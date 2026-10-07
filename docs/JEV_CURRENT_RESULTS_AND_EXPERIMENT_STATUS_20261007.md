@@ -65,10 +65,16 @@ MPS 切换与等价性报告：[`SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261
 
 ## 4. 尚未完成与下一步
 
-1. 保留当前 small gate，完成 video01/video06/video07 的 records。
-2. 对完整 small gate 做 per-video provenance、runtime parity、candidate parity、stability。
-3. 只有 gate 通过后，才运行 video1 held-out closed-loop；当前不重新训练已经完成的 video6/video7 三模型。
-4. 只有 corrected video1 closed-loop 得到 GO，才重新冻结唯一 source commit 并授权 Full H8；当前 Full H8 仍是 `PAUSED_NONCANONICAL`。
+### segmented small gate closed-loop（已完成，screening only）
+
+- video01/06/07 provenance、runtime parity、video01 candidate parity、video01 stability 均通过。
+- Full JEV 在 video01 上为 HOTA `88.925`、AssA `90.022`、IDF1 `97.893`、MOTA `95.768`、IDSW `10`；相对同一 GMT OFF 的 ΔHOTA `+2.402`、ΔAssA `+4.873`、ΔIDF1 `+3.250`、ΔIDSW `-272`。
+- Learnable Threshold 和 Generic MLP 分别严重退化到 HOTA `43.176` 和 `19.044`，因此结论是 JEV GO、Threshold/MLP WARNING；不能把三方法都写成成功。
+- 详细报告：[`JEV_SEGMENTED_SMALL_GATE_CLOSED_LOOP_RESULT_20261007.md`](JEV_SEGMENTED_SMALL_GATE_CLOSED_LOOP_RESULT_20261007.md)。该结果不授权 canonical Full H8。
+
+1. 保留 small-gate 结果，调查 Threshold/MLP 的 runtime action/feature mismatch，并决定是否把 video01 纳入新的 train/val 设计；不重复训练 video06/video07 旧三模型。
+2. 完成 Full H8 authorization 要求的完整 chunk-equivalence、唯一冻结 source worktree 和 worker commit hard gate。
+3. 只有上述审计完成且明确授权后，才重启 canonical Full H8；当前 Full H8 仍是 `PAUSED_NONCANONICAL`。
 
 相关已推送分支：
 

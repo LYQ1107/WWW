@@ -1,0 +1,131 @@
+{
+  "schema_version": "jev_segmented_small_gate_closed_loop_video01_v1",
+  "created_utc": "2026-10-07T12:38:19Z",
+  "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
+  "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+  "semantic_base_commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+  "video_id": 1,
+  "records": 8995,
+  "records_sha256": "a174399cb979d5d1f9dc41366a4f07f6299c159c68e10e19222fedc656db7611",
+  "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+  "controller_bundle": {
+    "root": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/small_h8_training_v4_canonical_features/methods_v1",
+    "dataset_sha256": "cabedc4fa2df26a605c9b0523b35ea75b7c1763d907aa16442101e3bec07565c",
+    "policy_split_sha256": "869a975d024441ce1135f5b90f095c9ea5e98d5b34d10be535a31024c4bdafe7",
+    "seed": 20261003,
+    "checkpoint_sha256": {
+      "question_threshold": "eed842b3e2c0315212ceed1f4ddad56abe7f03bc0e101f7c3dd80ba734e7d297",
+      "question_conditioned_mlp": "ccebe5f5d121561a489d0f8f784563d99dfd2283f21918a67e578202eb0aefc8",
+      "jev": "385c4099a2bc3ae9751c14b85957c40b1693c78cf5a2efc9aabd1403d794ecb0"
+    },
+    "calibrated_checkpoint_sha256": {
+      "question_threshold": "bc13e7ee642a139b5be6b763b5a59953ab05b3673274c6113f0a17ff89f83519",
+      "question_conditioned_mlp": "9280ac2af521b93a71301d26e149ccf2ee92ab8701b5bbf2a076256d9a7fa783",
+      "jev": "578276e80e1e90b3d25676325e19a671b79a423256492780f0dbaad6d882a2da"
+    }
+  },
+  "hard_gates": {
+    "provenance_video01": {"status": "PASS", "records": 8995},
+    "runtime_feature_parity": {
+      "status": "PASS",
+      "video01_records": 8995,
+      "video06_records": 5162,
+      "video07_records": 3334,
+      "tolerance_exceed_count_each": 0,
+      "off_action_mismatches_each": 0
+    },
+    "reactivation_candidate_parity": {
+      "status": "PASS",
+      "native_events": 174,
+      "replay_events": 174,
+      "mismatch_count": 0,
+      "chosen_proposal_ids_exact": true,
+      "candidate_scores_within_tolerance": true
+    },
+    "runtime_feature_stability": {
+      "status": "PASS",
+      "repetitions": 3,
+      "records_each": 8995,
+      "numeric_tolerance_pass_each": true,
+      "off_action_mismatches_each": 0
+    },
+    "bounded_chunk_equivalence": {
+      "early": "70/70 exact, candidate mismatch 0",
+      "late": "102/102 exact, 167 candidate events, mismatch 0",
+      "status": "PASS_BOUNDED_ONLY"
+    }
+  },
+  "closed_loop": {
+    "status": "PASS",
+    "raw_report": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/reports/tracking.json",
+    "raw_report_sha256": "943754233d997d1fc081ad4c73fcd21ce7c1bef75f14789e1f5812db66ee79cc",
+    "pilot_verdict_from_runner": "PILOT_GO_FOR_FULL_H8_CONTINUATION",
+    "methods": {
+      "gmt_off": {
+        "HOTA": 86.52304287961718,
+        "AssA": 85.14919745804252,
+        "IDF1": 94.64245684824031,
+        "MOTA": 89.57906712172924,
+        "IDSW": 282.0,
+        "Frag": 6.0
+      },
+      "question_threshold": {
+        "HOTA": 43.17609992077563,
+        "AssA": 21.281000318289074,
+        "IDF1": 37.21138758125981,
+        "MOTA": 26.53014789533561,
+        "IDSW": 3053.0,
+        "Frag": 6.0,
+        "delta_HOTA": -43.34694295884155,
+        "delta_AssA": -63.86819713975345,
+        "delta_IDF1": -57.43106926698051,
+        "delta_MOTA": -63.04891922639363,
+        "delta_IDSW": 2771.0,
+        "wrong_commit_rate": 0.42695173307418205,
+        "memory_contamination": 0.0
+      },
+      "question_conditioned_mlp": {
+        "HOTA": 19.044366262385207,
+        "AssA": 4.179376108241247,
+        "IDF1": 12.598072181125309,
+        "MOTA": 4.869169510807736,
+        "IDSW": 4005.0,
+        "Frag": 6.0,
+        "delta_HOTA": -67.47867661723197,
+        "delta_AssA": -80.96982134980128,
+        "delta_IDF1": -82.04438466711501,
+        "delta_MOTA": -84.7098976109215,
+        "delta_IDSW": 3723.0,
+        "wrong_commit_rate": 0.664752731987405,
+        "memory_contamination": 78.0
+      },
+      "jev": {
+        "HOTA": 88.92473545563249,
+        "AssA": 90.02173607127553,
+        "IDF1": 97.89284913696481,
+        "MOTA": 95.7679180887372,
+        "IDSW": 10.0,
+        "Frag": 6.0,
+        "delta_HOTA": 2.401692576015307,
+        "delta_AssA": 4.872538613233004,
+        "delta_IDF1": 3.2503922887244983,
+        "delta_MOTA": 6.188850967007966,
+        "delta_IDSW": -272.0,
+        "wrong_commit_rate": 0.0006805807622504537,
+        "memory_contamination": 0.0
+      }
+    }
+  },
+  "decision": {
+    "small_gate": "PILOT_GO_FOR_JEV_CONTINUATION_WITH_CONTROLLER_WARNING",
+    "jev_positive_association_signal": true,
+    "threshold_and_mlp_tracking_collapsed": true,
+    "full_h8_authorized_by_this_report": false,
+    "required_before_canonical_full_h8": [
+      "publish this result and warning",
+      "freeze one exact canonical source worktree",
+      "complete required full chunk-equivalence authorization checks",
+      "decide whether Threshold/MLP need video01-inclusive retraining"
+    ]
+  }
+}

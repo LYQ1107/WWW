@@ -39,6 +39,12 @@ corrected video01 完成
 - MPS 前后 bounded equivalence：早期 `70/70`、晚期 `102/102` exact，candidate events（晚期）`167`，mismatch `0`。
 - 这是 small-gate live evidence，不是 Full H8 授权，也不是最终论文结果。机器可读报告：`reports/JEV_RNG_V4/SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261007.json`。
 
+### segmented small gate closed-loop 已完成
+
+- video01 的四方案 closed-loop 已完成；JEV 相对 GMT OFF 为 `ΔHOTA +2.402`、`ΔAssA +4.873`、`ΔIDF1 +3.250`、`ΔIDSW -272`。
+- Threshold/MLP 出现严重 tracking collapse，已经记录为 WARNING；完整汇总见 `reports/JEV_RNG_V4/SEGMENTED_SMALL_GATE_CLOSED_LOOP_VIDEO01_20261007.json`。
+- 该结果只支持 JEV pilot continuation，不直接授权 Full H8；当前仍需完成 canonical source freeze、完整 chunk-equivalence authorization 和 controller warning 处置。
+
 ### corrected video01 v2 已完成，但 aftercare 为 NO-GO
 
 - builder PID `12163` 已于 `2026-10-07T11:10:35Z` 完成，生成 `8995` 条记录和 PASS manifest；正式 artifact provenance PASS。

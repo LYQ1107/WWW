@@ -25,6 +25,12 @@ MPS transition was checked on two bounded probes: `70/70` early records and
 `102/102` late records were exact, with zero late candidate mismatches. This
 does not authorize Full H8 or create a final paper result.
 
+The build has since reached `88/88 COMPLETE` and the driver was gracefully
+stopped at the acceptance boundary before the queued three-way retraining. The
+manual gates and video01 closed-loop then completed: JEV has positive screening
+signal, while Threshold/MLP collapse and remain an explicit warning. See
+`reports/JEV_RNG_V4/SEGMENTED_SMALL_GATE_CLOSED_LOOP_VIDEO01_20261007.json`.
+
 ## What was stopped and what was not
 
 The following Full H8 process groups received graceful `SIGTERM`; no `kill -9`
