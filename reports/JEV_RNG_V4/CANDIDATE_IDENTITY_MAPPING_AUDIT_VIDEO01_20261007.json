@@ -1,0 +1,67 @@
+{
+  "status": "PASS_WITH_LIMITATIONS",
+  "schema_version": "jev_candidate_identity_mapping_audit_v2",
+  "classification": "READ_ONLY_OFFLINE_AUDIT_NOT_TRAINING_LABELS_NOT_PAPER_RESULT",
+  "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+  "video_id": 1,
+  "trace": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_native_trace_20261007/video01/trace_video_01.jsonl",
+  "trace_sha256": "02773f217184600ce2eba7954e4a8fcd28c9070d8260e2a52ee07d670b0545b3",
+  "annotations": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json",
+  "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+  "cache_index": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train/index.jsonl",
+  "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+  "iou_threshold": 0.5,
+  "identity_consistency_threshold": 0.8,
+  "seed_initialization": {
+    "video_id": 1,
+    "frame": 0,
+    "view": 1,
+    "detection_count": 3,
+    "record": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train/records/video_00000001_frame_00000000_view_0001.pt"
+  },
+  "by_question": {
+    "MATCH_DECISION": {
+      "events": 4524,
+      "mapped_current_detections": 4377,
+      "unmapped_current_detections": 147,
+      "candidate_rows": 56048,
+      "candidate_rows_with_prior_identity": 13748,
+      "unresolved_new_candidate_rows": 42300,
+      "ambiguous_candidate_rows": 0,
+      "candidate_set_recall_over_mapped_current": 0.997943797121316,
+      "events_with_current_gt_candidate": 4368,
+      "top1_rate_over_mapped_current": 0.9968014621887137,
+      "mean_rank_when_present": 1.0018315018315018,
+      "rank_distribution": {"1": 4363, "2": 2, "3": 3}
+    },
+    "REACTIVATION_DECISION": {
+      "events": 174,
+      "mapped_current_detections": 131,
+      "unmapped_current_detections": 43,
+      "candidate_rows": 559,
+      "candidate_rows_with_prior_identity": 476,
+      "unresolved_new_candidate_rows": 83,
+      "ambiguous_candidate_rows": 0,
+      "candidate_set_recall_over_mapped_current": 0.0,
+      "events_with_current_gt_candidate": 0,
+      "top1_rate_over_mapped_current": 0.0,
+      "mean_rank_when_present": null,
+      "rank_distribution": {}
+    }
+  },
+  "candidate_level_return": {
+    "available": false,
+    "reason": "The native trace stores candidate IDs and scores but no per-candidate long-horizon return. This audit is not candidate supervision."
+  },
+  "policy": {
+    "action_labels_copied_to_candidate_supervision": false,
+    "gt_used_only_for_offline_audit": true,
+    "authorizes_candidate_training": false,
+    "authorizes_full_h8": false
+  },
+  "decision": {
+    "match_candidate_path": "FEASIBLE_BUT_REQUIRES_INDEPENDENT_CANDIDATE_ROLLOUT_UTILITY",
+    "reactivation_candidate_path": "REJECT_CURRENTLY_ZERO_CURRENT_GT_CANDIDATE_RECALL",
+    "next_gate": "BUILD_CANDIDATE_LEVEL_RETURN_FROM_FROZEN_EVIDENCE_BRANCHES"
+  }
+}
