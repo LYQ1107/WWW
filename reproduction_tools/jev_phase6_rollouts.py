@@ -89,7 +89,8 @@ class NativeReplayLab:
         return self.original_propose(payload, state, **kwargs)
 
     def choose(self, policy, feature, question, legal, off_action, context=None):
-        action = policy.decide(feature,question,legal,off_action=off_action,context=context).committed_action if question=='MATCH_DECISION' else off_action
+        policy_context={k:v for k,v in (context or {}).items() if k!='tracker_state_before'}
+        action = policy.decide(feature,question,legal,off_action=off_action,context=policy_context).committed_action if question=='MATCH_DECISION' else off_action
         original = action
         context = context or {}
         if self.intervention is not None:

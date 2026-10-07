@@ -54,7 +54,8 @@ class NativeMatchResolver:
         rows=list(proposal.pairs);cols=[proposal.pairs[r] for r in rows]
         native=tracker._apply_jev_match_decisions(original,proposal.scores,torch.tensor(proposal.track_ids),rows,cols,base,
             view=int(perception['view']),frame_index=int(perception['frame']),
-            window_length=association_window_length(history_instances=len(state.association_history),view_num=2,view_index=int(perception['view'])),
+            window_length=association_window_length(history_instances=len(state.association_history),view_num=2,view_index=int(perception['view']),
+                first_frame_secondary_view=int(perception['frame'])==0 and len(state.association_history)==1),
             track_lengths=lengths,detection_boxes=perception['pred_boxes'],detection_scores=perception['detection_scores'],detection_image_size=perception['image_size'])
         native_ids=native.tolist();columns={t:c for c,t in enumerate(proposal.track_ids)}
         final=replace(resolution['final_proposal'],pairs={r:columns[t] for r,t in enumerate(native_ids) if t>=0})
