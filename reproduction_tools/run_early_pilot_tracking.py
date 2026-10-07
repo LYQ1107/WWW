@@ -28,6 +28,7 @@ PILOT = Path(
 )
 VIDEO_ID = int(os.environ.get("JEV_VIDEO_ID", "8"))
 CHECKPOINT = Path("/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth")
+DEFAULT_SCALE_SENSITIVE_RELATIVE_TOLERANCE = 4.76837158203125e-7
 CONFIG = ROOT / "configs/VISION_test.yaml"
 CACHE = Path(
     os.environ.get(
@@ -1404,6 +1405,8 @@ def main() -> None:
         "schema_version": "jev_runtime_state_contract_v3",
         "source_trace": str(TRACE),
         "tolerance": float(args.runtime_feature_tolerance),
+        "relative_tolerance": DEFAULT_SCALE_SENSITIVE_RELATIVE_TOLERANCE,
+        "scale_sensitive_feature_names": sorted(SCALE_SENSITIVE_FEATURE_NAMES),
         "feature_names": list(feature_names(64)),
         "expected_record_count": len(records),
         "compared_records": 0,
@@ -1434,6 +1437,7 @@ def main() -> None:
         "controller_feature_source": args.feature_source,
         "allow_runtime_with_legacy_trace": bool(args.allow_runtime_with_legacy_trace),
         "runtime_feature_tolerance": float(args.runtime_feature_tolerance),
+        "runtime_feature_relative_tolerance": DEFAULT_SCALE_SENSITIVE_RELATIVE_TOLERANCE,
         "method_checkpoint_root": (
             str(args.method_checkpoint_root.resolve())
             if args.method_checkpoint_root is not None
