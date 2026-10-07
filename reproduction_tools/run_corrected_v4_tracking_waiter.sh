@@ -12,17 +12,16 @@ V1="$RUNTIME/formal_current_head_corrected_full"
 RECORDS="$V1/video01_records.jsonl"
 MANIFEST="$RECORDS.manifest.json"
 # The old small-gate checkpoints and records are screening-only. The
-# corrected-v4 tracking run consumes the current-head controllers trained
-# from the current corrected v6/v7 records unless an explicit compatible
-# methods root is supplied.
-METHODS="${METHODS_ROOT:-$RUNTIME/small_h8_training_current_head_video06_video07/methods_v1}"
+# corrected-v4 tracking run consumes the completed canonical corrected-feature
+# controllers unless an explicit compatible methods root is supplied.
+METHODS="${METHODS_ROOT:-$RUNTIME/small_h8_training_v4_canonical_features/methods_v1}"
 TRACE="$RUNTIME/formal_current_head_off_trace/video01/trace_video_01.jsonl"
 PROV="$REPO/reports/JEV_RNG_V4/CURRENT_HEAD_VIDEO01_PROVENANCE.json"
 CAND="$REPO/reports/JEV_RNG_V4/REACTIVATION_CANDIDATE_PARITY_CURRENT_HEAD_VIDEO01.json"
 PARITY="$REPO/reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_VIDEO01_CURRENT_HEAD.json"
 STABILITY="$REPO/reports/JEV_RNG_V4/RUNTIME_FEATURE_PARITY_STABILITY_VIDEO01_CURRENT_HEAD.json"
 FORMAL="$REPO/reports/JEV_RNG_V4/FORMAL_GMT_INTRA_VIDEO_CHUNK_EQUIVALENCE_VIDEO07_CURRENT_HEAD_V10.json"
-TRAIN="$REPO/reports/JEV_RNG_V4/CURRENT_HEAD_VIDEO06_VIDEO07_THREE_WAY.json"
+TRAIN="${TRAINING_REPORT:-$REPO/reports/JEV_RNG_V4/CORRECTED_V4_SMALL_H8_THREE_WAY_VIDEO06_VIDEO07.json}"
 OUTROOT="${TRACKING_OUTPUT_ROOT:-$RUNTIME/current_head_video01_tracking}"
 OUTREPORT="$REPO/reports/JEV_RNG_V4/CURRENT_HEAD_VIDEO01_THREE_WAY_TRACKING.json"
 
