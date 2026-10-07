@@ -694,6 +694,8 @@ def build_v2_records(
     key_end_index: Optional[int] = None,
     selected_key_range: Optional[Tuple[int, int]] = None,
     progress_callback: Optional[Callable[[Mapping[str, Any]], None]] = None,
+    emit_event_filter: Optional[Callable[[Mapping[str, Any]], bool]] = None,
+    rollout_observer: Optional[Callable[..., None]] = None,
 ):
     if association_backend not in {"cosine_contract", "formal_gmt_transformer"}:
         raise ValueError(f"unsupported association backend: {association_backend}")
@@ -849,6 +851,10 @@ def build_v2_records(
                         engine=engine,
                     )
                 for event in current_events:
+                    # Filter emitted diagnostics only. Future actions, full trace
+                    # maps and the production OFF state remain unfiltered.
+                    if emit_event_filter is not None and not emit_event_filter(event):
+                        continue
                     question = str(event.get("question"))
                     if question not in {"MATCH_DECISION", "MEMORY_DECISION", "REACTIVATION_DECISION"}:
                         continue
@@ -990,6 +996,8 @@ def build_v2_records(
                             )
                             for branch_horizon in horizons
                         }
+                        if rollout_observer is not None:
+                            rollout_observer(event, candidate, branch_steps, horizons)
 
                     canonical_feature = canonical_state_feature_for_event(
                         event=event,
