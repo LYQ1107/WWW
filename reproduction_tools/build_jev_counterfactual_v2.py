@@ -683,6 +683,7 @@ def build_v2_records(
     key_start_index: int = 0,
     key_end_index: Optional[int] = None,
     selected_key_range: Optional[Tuple[int, int]] = None,
+    progress_callback: Optional[Callable[[Mapping[str, Any]], None]] = None,
 ):
     if association_backend not in {"cosine_contract", "formal_gmt_transformer"}:
         raise ValueError(f"unsupported association backend: {association_backend}")
@@ -795,6 +796,8 @@ def build_v2_records(
                 raise ValueError("selected_key_range must be contained in replay range")
         for key_index in range(replay_start, replay_end):
             key = keys[key_index]
+            if progress_callback is not None:
+                progress_callback({"phase": "key", "key_index": key_index, "key": list(key)})
             payload = payload_for(key)
             sync_production_history_for_key(
                 state,
@@ -861,6 +864,8 @@ def build_v2_records(
                         )
                     outcome_map = {}
                     for candidate in legal:
+                        if progress_callback is not None:
+                            progress_callback({"phase": "branch", "key_index": key_index, "key": list(key), "question": question, "detection_index": row, "action": candidate})
                         branch = state.clone()
                         branch_steps = []
                         current_actions = dict(actions.get(key, {}))
@@ -894,6 +899,8 @@ def build_v2_records(
                         for future_key in keys[key_index + 1 :]:
                             if int(future_key[1]) > int(key[1]) + horizon:
                                 break
+                            if progress_callback is not None:
+                                progress_callback({"phase": "rollout", "future_key": list(future_key)})
                             future_payload = payload_for(future_key)
                             sync_production_history_for_key(
                                 branch,
