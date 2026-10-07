@@ -223,11 +223,11 @@ def choose(
 
     if safety_mode == "baseline_all":
         return off_action
-    if safety_mode == "baseline_memory" and question == "MEMORY_DECISION":
+    if safety_mode in {"baseline_memory", "baseline_memory_match", "baseline_memory_reactivation"} and question == "MEMORY_DECISION":
         return off_action
-    if safety_mode == "baseline_match" and question == "MATCH_DECISION":
+    if safety_mode in {"baseline_match", "baseline_memory_match"} and question == "MATCH_DECISION":
         return off_action
-    if safety_mode == "baseline_reactivation" and question == "REACTIVATION_DECISION":
+    if safety_mode in {"baseline_reactivation", "baseline_memory_reactivation"} and question == "REACTIVATION_DECISION":
         return off_action
     return policy.decide(
         feature,
@@ -1414,6 +1414,8 @@ def main() -> None:
             "baseline_memory",
             "baseline_match",
             "baseline_reactivation",
+            "baseline_memory_match",
+            "baseline_memory_reactivation",
             "baseline_all",
         ),
         default="none",
