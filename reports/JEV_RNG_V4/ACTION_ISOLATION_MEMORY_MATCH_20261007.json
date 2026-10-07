@@ -1,0 +1,76 @@
+{
+  "schema_version": "jev_action_isolation_diagnostic_v1",
+  "classification": "SCREENING_DIAGNOSTIC_NOT_FINAL_SELECTION_NOT_PAPER_RESULT",
+  "created_utc": "2026-10-07T13:17:07.932713Z",
+  "diagnostic": {
+    "name": "baseline_memory_match",
+    "forced_to_gmt_off": ["MATCH_DECISION", "MEMORY_DECISION"],
+    "learned_question_type": "REACTIVATION_DECISION",
+    "purpose": "Isolate the residual effect of learned reactivation while holding match and memory semantics to GMT OFF."
+  },
+  "binding": {
+    "source_commit": "84b6886ba38e2a816714c921004c83698f94693b",
+    "semantic_data_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+    "video_id": 1,
+    "sequence": "00002garden",
+    "horizon": 8,
+    "records": 8995,
+    "records_sha256": "a174399cb979d5d1f9dc41366a4f07f6299c159c68e10e19222fedc656db7611",
+    "native_trace_sha256": "02773f217184600ce2eba7954e4a8fcd28c9070d8260e2a52ee07d670b0545b3",
+    "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+    "runtime_report_sha256": "be0dfe2af853c0b6694bdbdd70a5bacb8a8df1a8a67f2f06315d8d9e797e77d8",
+    "runtime_root": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/action_isolation_memory_match_20261007"
+  },
+  "gates": {
+    "runtime_feature_parity": {
+      "pass": true,
+      "compared_records": 8995,
+      "expected_records": 8995,
+      "max_abs_error": 0.00006103515625,
+      "off_action_mismatches": 0
+    },
+    "reactivation_candidate_coverage": {
+      "pass": true,
+      "runtime_decision_count": 174,
+      "candidate_evaluations": 174,
+      "no_candidate": 53,
+      "wrong_commit": 0,
+      "false_reactivation": 0.0
+    }
+  },
+  "gmt_off": {
+    "metrics": {"HOTA": 86.52304287961718, "DetA": 87.94461028006626, "AssA": 85.14919745804252, "IDF1": 94.64245684824031, "MOTA": 89.57906712172924, "IDSW": 282.0, "Frag": 6.0},
+    "actions": {"ACCEPT_CURRENT": 4297, "REASSOCIATE": 0, "START_NEW": 401, "WRITE_MEMORY": 4297, "SKIP_MEMORY": 0, "REACTIVATE_OLD": 0}
+  },
+  "methods": {
+    "question_threshold": {
+      "metrics": {"HOTA": 86.21593216842128, "DetA": 87.94461028006626, "AssA": 84.54373546289953, "IDF1": 94.64245684824031, "MOTA": 89.57906712172924, "IDSW": 282.0, "Frag": 6.0},
+      "delta_vs_gmt_off": {"HOTA": -0.3071107111959037, "AssA": -0.6054619951429885, "IDF1": 0.0, "MOTA": 0.0, "IDSW": 0.0, "Frag": 0.0},
+      "actions": {"ACCEPT_CURRENT": 4301, "REASSOCIATE": 0, "START_NEW": 223, "WRITE_MEMORY": 4301, "SKIP_MEMORY": 0, "REACTIVATE_OLD": 48},
+      "wrong_commit": 149,
+      "memory_contamination": 0
+    },
+    "question_conditioned_mlp": {
+      "metrics": {"HOTA": 86.21593216842128, "DetA": 87.94461028006626, "AssA": 84.54373546289953, "IDF1": 94.64245684824031, "MOTA": 89.57906712172924, "IDSW": 282.0, "Frag": 6.0},
+      "delta_vs_gmt_off": {"HOTA": -0.3071107111959037, "AssA": -0.6054619951429885, "IDF1": 0.0, "MOTA": 0.0, "IDSW": 0.0, "Frag": 0.0},
+      "actions": {"ACCEPT_CURRENT": 4301, "REASSOCIATE": 0, "START_NEW": 223, "WRITE_MEMORY": 4301, "SKIP_MEMORY": 0, "REACTIVATE_OLD": 48},
+      "wrong_commit": 149,
+      "memory_contamination": 0
+    },
+    "jev": {
+      "metrics": {"HOTA": 86.21593216842128, "DetA": 87.94461028006626, "AssA": 84.54373546289953, "IDF1": 94.64245684824031, "MOTA": 89.57906712172924, "IDSW": 282.0, "Frag": 6.0},
+      "delta_vs_gmt_off": {"HOTA": -0.3071107111959037, "AssA": -0.6054619951429885, "IDF1": 0.0, "MOTA": 0.0, "IDSW": 0.0, "Frag": 0.0},
+      "actions": {"ACCEPT_CURRENT": 4301, "REASSOCIATE": 0, "START_NEW": 223, "WRITE_MEMORY": 4301, "SKIP_MEMORY": 0, "REACTIVATE_OLD": 48},
+      "wrong_commit": 149,
+      "memory_contamination": 0
+    }
+  },
+  "interpretation": {
+    "finding": "With MATCH and MEMORY forced to GMT OFF, learned reactivation alone causes a small but measurable association loss: AssA -0.6055 and HOTA -0.3071, with no IDSW change.",
+    "meaning": "The residual reactivation path is not the only quality issue, but it is independently harmful in this held-out pilot when isolated.",
+    "authorization": "FULL_H8_AUTHORIZED_FALSE",
+    "runner_verdict_is_not_authorization": true,
+    "official_test": false
+  }
+}
