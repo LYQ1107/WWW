@@ -9,6 +9,7 @@ import copy
 import json
 import os
 from pathlib import Path
+import time
 
 from jev_phase6_common import ROOT, OUT, B2, load_controller, protect_anchor, new_output, save
 
@@ -66,6 +67,7 @@ class NativeReplayLab:
         self.current = {}; self.prefix = None; self.decision_rows = []
         self.before_step = None; self.after_step = None; self.intervention = None
         self.stop_requested=False; self.steps_completed=0
+        self.status_stamp=0;self.output=None
         self.engine.propose = self.propose
         self.engine.step = self.step
         pilot.choose = self.choose
@@ -97,6 +99,10 @@ class NativeReplayLab:
             self.before_step(key,payload,state,kwargs,self.decision_rows)
         result = self.original_step(payload,state,**kwargs)
         self.steps_completed+=1
+        if self.output is not None and time.monotonic()-self.status_stamp>=30:
+            save(self.output/'runtime_status.json',{'phase':'LIVE_POLICY_ROLLOUT','last_key':list(key),
+                'completed_payloads':self.steps_completed,'pid':os.getpid(),'memory_writes':state.counters.get('memory_writes',0)})
+            self.status_stamp=time.monotonic()
         self.update_metadata(payload,state,result['committed_track_ids'],kwargs.get('memory_actions',{}))
         if self.after_step is not None:
             try:self.after_step(key,payload,state,result,kwargs,self.decision_rows)
@@ -117,6 +123,7 @@ class NativeReplayLab:
             intervention=None, before_step=None, after_step=None, metadata=None):
         pilot = self.pilot
         output = new_output(output); pilot.PILOT = output
+        self.output=output;self.status_stamp=0
         self.intervention = intervention; self.before_step = before_step; self.after_step = after_step
         self.stop_requested=False; self.steps_completed=0
         self.metadata=copy.deepcopy(self.seed_metadata if prefix is None else metadata or {})
@@ -145,6 +152,7 @@ class NativeReplayLab:
                 feature_source_mode='runtime',parity_report={},device=self.device,**self.kwargs)
             result.update(payloads=self.steps_completed+(1 if prefix is None else 0),event_horizon_stop=self.stop_requested)
             save(output/'result.json',result)
+            save(output/'runtime_status.json',{'phase':'COMPLETE','completed_payloads':result['payloads'],'pid':os.getpid()})
             return result
         finally:
             self.intervention = self.before_step = self.after_step = None

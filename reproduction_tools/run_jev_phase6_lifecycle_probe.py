@@ -114,6 +114,7 @@ def fork(video,device,shard,shards):
         c=torch.load(path,map_location='cpu');r=c['record'];key=tuple(r['key']);local=(key[1],key[2],key[4]);target=actual[local]['gt']
         memory=r['question']=='MEMORY_DECISION';forced_actions=['WRITE_MEMORY','SKIP_MEMORY'] if memory else ['REACTIVATE_OLD','START_NEW']
         cases={}; rows_by_branch={};first_reads={};branch_ranks={};committed_ids={};termination={}
+        paired_read_end=None
         for action in ['CONTROL']+forced_actions:
             first_read=None;rank_history=[];event_id=None;confirmed=set();last_frame=None
             def intervene(feature,question,legal,original,context):
@@ -132,6 +133,8 @@ def fork(video,device,shard,shards):
                 last_frame=k[1]
                 if k==key[:3]:event_id=int(result['committed_track_ids'][key[4]])
                 if memory:
+                    if paired_read_end is not None and k[1]>=paired_read_end:
+                        termination[action]='PAIRED_WRITE_READ_PLUS16';raise EndEventHorizon()
                     if first_read is not None and k[1]>=first_read+16:
                         termination[action]='READ_PLUS16';raise EndEventHorizon()
                 else:
@@ -150,6 +153,8 @@ def fork(video,device,shard,shards):
                 expected={k:v for k,v in actual.items() if k[:2]>=local[:2] and (k[0],k[1])<=max(k[:2] for k in aligned)}
                 if aligned!=expected:raise AssertionError(f'native canonical fork control mismatch {key}')
             first_reads[action]=first_read;branch_ranks[action]=rank_history;committed_ids[action]=event_id
+            if memory and action in {'CONTROL','WRITE_MEMORY'} and first_read is not None:
+                paired_read_end=first_read+16
             cases[action]={'first_actual_bank_READ':first_read,'termination':termination.get(action,'SEQUENCE_END'),
                            'last_frame':last_frame,'prediction_sha256':sha(result['predictions']),
                            'committed_identity_at_intervention':event_id}

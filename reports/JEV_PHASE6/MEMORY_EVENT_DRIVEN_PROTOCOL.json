@@ -8,7 +8,7 @@
   "candidate_selection": "per video first8 identities by actual first stale-bank READ, choose last online WRITE before that READ; plus2 late writes for identities never read. Enriched read-eligible diagnostic, not an unbiased tie prevalence estimate. No GT in sampling.",
   "read_definition": "identity outside active association window, present in stale bank, included in actual GMT reactivation score computation",
   "future_policy": "frozen B2 MATCH, instantaneous GMT MEMORY and REACT except current WRITE/SKIP intervention; every future state and proposal rebuilt",
-  "event_horizon": "each branch until first actual identity-bank READ +16 frames, or sequence end; compare common window from earliest branch READ to +8/+16; branch missing READ is explicitly censored",
+  "event_horizon": "candidate WRITE branch until its first actual stale-bank READ +16 frames, or sequence end; SKIP branch follows the same paired end. Compare common window at first WRITE READ +8/+16. If candidate WRITE is never read, sample_weight=0. Missing SKIP READ within the paired horizon is reported as censoring, not as sequence-wide absence.",
   "unread_both_branches_sample_weight": 0,
   "GT_unmatched_candidate_weight": 0,
   "utility": "correct_duration - wrong_duration -0.5*switches -0.25*new_IDs -0.5*duplicate_collisions - identity_contamination; record rank shifts and recovery latency separately",
@@ -23,5 +23,6 @@
   },
   "what_did_we_learn": "pending observed READ-triggered counterfactual outcomes",
   "official_test_read": false,
-  "full24_authorized": false
+  "full24_authorized": false,
+  "amendment_before_any_counterfactual_label": "Shared event-triggered horizon avoids comparing unequal future lengths and avoids replaying SKIP until sequence end merely because its bank entry is intentionally absent. Trigger remains actual live WRITE-branch READ, not baseline categories or fixed H8."
 }
