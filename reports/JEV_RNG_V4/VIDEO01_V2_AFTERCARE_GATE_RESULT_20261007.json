@@ -1,0 +1,94 @@
+{
+  "schema_version": "video01_v2_aftercare_gate_result_v1",
+  "created_utc": "2026-10-07T11:18:20Z",
+  "classification": "FORMAL_GATE_RESULT_NOT_TRACKING_RESULT",
+  "decision": "NO_GO_RUNTIME_SEMANTICS_GATE",
+  "full_h8_authorized": false,
+  "closed_loop_run": false,
+  "formal_artifact": {
+    "status": "PASS",
+    "records": 8995,
+    "records_sha256": "1da2ed9e7eec43c7cf139754d873f78a299c344ff74d65c6866b92f18f3da79",
+    "manifest": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_corrected_full_v2/video01_records.jsonl.manifest.json",
+    "source_commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+    "question_counts": {
+      "MATCH_DECISION": 4524,
+      "MEMORY_DECISION": 4297,
+      "REACTIVATION_DECISION": 174
+    },
+    "invalid_lines": 0,
+    "duplicate_semantic_keys": 0
+  },
+  "passed_pre_gates": {
+    "provenance": {
+      "status": "PASS",
+      "report": "reports/JEV_RNG_V4/VIDEO01_V2_PROVENANCE_20261007.json"
+    },
+    "controller_checkpoint_wrapper": {
+      "status": "PASS",
+      "report": "reports/JEV_RNG_V4/VIDEO01_V2_CHECKPOINT_WRAPPER_20261007.json",
+      "methods": ["question_threshold", "question_conditioned_mlp", "jev"],
+      "seed": 20261003
+    }
+  },
+  "failed_runtime_gates": {
+    "runtime_feature_parity": {
+      "status": "FAIL",
+      "report": "reports/JEV_RNG_V4/VIDEO01_V2_RUNTIME_FEATURE_PARITY_20261007.json",
+      "compared_records": 8995,
+      "max_abs_error": 0.006004035472869873,
+      "tolerance": 2e-5,
+      "tolerance_exceed_count": 12,
+      "off_action_mismatches": 0,
+      "mismatch_features": [
+        "reassociate_score",
+        "write_memory_score",
+        "reactivate_score",
+        "unmatched_mass",
+        "top1_top2_margin",
+        "track_score_mean"
+      ]
+    },
+    "reactivation_candidate_parity": {
+      "status": "FAIL",
+      "report": "reports/JEV_RNG_V4/VIDEO01_V2_REACTIVATION_CANDIDATE_PARITY_20261007.json",
+      "native_reactivation_events": 174,
+      "replay_reactivation_events": 174,
+      "mismatch_count_capped": 225,
+      "missing_native_count": 100,
+      "missing_replay_count": 100,
+      "candidate_ids_exact": true,
+      "candidate_scores_within_tolerance": false,
+      "chosen_proposal_ids_exact": false,
+      "legacy_off_actions_exact": true
+    },
+    "runtime_feature_stability": {
+      "status": "FAIL",
+      "report": "reports/JEV_RNG_V4/VIDEO01_V2_RUNTIME_FEATURE_STABILITY_20261007.json",
+      "repetitions": 3,
+      "all_repetitions_identical_failure": true,
+      "max_abs_error": 0.006004035472869873,
+      "tolerance_exceed_count": 12,
+      "error_count_per_repetition": 575680
+    }
+  },
+  "diagnosis": {
+    "observed_pattern": "The formal record and mutable replay are deterministic, but the replay does not reproduce native GMT stale-bank candidate scores or runtime score-derived features at reactivation boundaries.",
+    "leading_code_level_hypothesis": "The current adapter reconstructs old-reid entries with zero proposal boxes and one historical Instances object per stale ID, while native GMT retains the original box and concatenates the stale bank into one historical Instances object.",
+    "hypothesis_status": "FIX_PREPARED_IN_SEPARATE_WORKTREE_PENDING_TARGETED_AND_FORMAL_VALIDATION",
+    "not_allowed": [
+      "Do not relax the 2e-5 tolerance.",
+      "Do not run or report corrected three-way tracking while these gates fail.",
+      "Do not authorize or resume Full H8."
+    ]
+  },
+  "aftercare_terminal": {
+    "completed_utc": "2026-10-07T11:18:13+00:00",
+    "provenance_rc": 0,
+    "checkpoint_rc": 0,
+    "parity_rc": 2,
+    "candidate_rc": 2,
+    "stability_rc": 2,
+    "closed_loop_rc": 3
+  }
+}

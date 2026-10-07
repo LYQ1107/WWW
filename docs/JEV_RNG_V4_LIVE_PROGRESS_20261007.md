@@ -1,14 +1,14 @@
 # JEV RNG v4 live progress — corrected video01 gate first
 
-**Latest authoritative refresh:** `2026-10-07T10:57:46Z`
-**Current decision:** `IN_PROGRESS / NO_FINAL_RESEARCH_CLAIM_YET`
+**Latest authoritative refresh:** `2026-10-07T11:18:20Z`
+**Current decision:** `NO_GO_RUNTIME_SEMANTICS_GATE`
 
 ## Live status
 
 | Work item | Current state | Authority |
 |---|---|---|
-| corrected video01 builder | **RUNNING**, PID `12163`, elapsed `06:42:28`; do not stop/migrate/restart | runtime process check |
-| video01 aftercare | waiting/running, PIDs `2843`, `2849`, tee `2851` | runtime process check |
+| corrected video01 v2 builder | **COMPLETED**, PID `12163`, 8995 records and manifest PASS | runtime artifact + manifest |
+| video01 v2 aftercare | **COMPLETED NO-GO**; parity/candidate/stability failed | `VIDEO01_V2_AFTERCARE_GATE_RESULT_20261007.json` |
 | Full H8 original scheduler | **GRACEFULLY PAUSED** | queue state |
 | Full H8 slot2/slot3 supervisors and workers | **GRACEFULLY PAUSED** | queue state/process check |
 | Full H8 canonical authority | **FALSE** | source-commit audit |
@@ -90,9 +90,9 @@ output, not as a canonical dataset.
 ## Current gate order
 
 ```text
-video01 builder COMPLETE
+fix stale-bank geometry/runtime semantics and regenerate video01 v2
   ↓
-video01 provenance
+video01 builder COMPLETE + provenance
   ↓
 MATCH / MEMORY / REACTIVATION runtime feature parity
   ↓
@@ -107,11 +107,11 @@ GO / NO-GO
 freeze exact commit and rebuild Full H8
 ```
 
-The consolidated file
-`reports/JEV_RNG_V4/VIDEO01_CORRECTED_HARD_GATES.json` is currently
-`PENDING` with `FULL_H8_AUTHORIZED=false`. It must not be manually changed to
-PASS: the updater will derive it from the actual manifest, parity,
-candidate, stability, and closed-loop reports.
+The consolidated v2 aftercare file
+`reports/JEV_RNG_V4/VIDEO01_V2_HARD_GATES_20261007.json` is `PENDING` with
+`FULL_H8_AUTHORIZED=false`. The aftercare result is an explicit NO-GO because
+runtime feature parity, candidate parity, and stability failed. It must not be
+manually changed to PASS.
 
 ## Future Full H8 safety contract
 

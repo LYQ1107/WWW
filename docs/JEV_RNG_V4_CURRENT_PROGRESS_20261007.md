@@ -1,6 +1,6 @@
 # JEV RNG v4 current progress — 2026-10-07
 
-**Snapshot:** `2026-10-07T10:57:46Z`
+**Snapshot:** `2026-10-07T11:18:20Z`
 **Classification:** live research status, not a final paper result
 
 ## 结论先行
@@ -31,11 +31,11 @@ corrected video01 完成
 
 ## 当前运行状态
 
-### 保持运行的 corrected video01
+### corrected video01 v2 已完成，但 aftercare 为 NO-GO
 
-- builder PID `12163`：已经连续运行 `06:42:28`，继续在 GPU0 生成 corrected video01，**不停止、不迁移、不重启**。
-- aftercare PIDs `2843`, `2849`（tee `2851`）：继续等待并执行 video01 完成后的验证。
-- 目标：`8995` 条记录。
+- builder PID `12163` 已于 `2026-10-07T11:10:35Z` 完成，生成 `8995` 条记录和 PASS manifest；正式 artifact provenance PASS。
+- aftercare 于 `2026-10-07T11:18:13Z` 完成，但 runtime feature parity、reactivation candidate parity 和三次 stability 均 FAIL。
+- corrected Threshold、Generic MLP、Full JEV 闭环没有运行；当前不得据此报告 tracking 指标。
 
 ### 已优雅暂停的 Full H8
 
@@ -100,15 +100,16 @@ Full H8 名义上于 `2026-10-06T22:52:40Z` 启动。启动后代码发生了以
 
 ## 当前明确未完成
 
-`VIDEO01_CORRECTED_HARD_GATES.json` 当前为 `PENDING`，并且 `FULL_H8_AUTHORIZED=false`。仍需按顺序完成：
+`VIDEO01_V2_HARD_GATES_20261007.json` 当前为 `PENDING`，并且 `FULL_H8_AUTHORIZED=false`。当前需要先修复并重新生成 v2 artifact，再按顺序完成：
 
-1. corrected video01 `8995` 条记录原子完成；
-2. provenance 和三种 question type 的 coverage；
-3. runtime feature parity；
-4. reactivation candidate parity；
-5. numerical stability；
-6. 用现有 corrected Threshold / MLP / JEV checkpoint 做 video01 held-out closed-loop，对同一序列比较 GMT OFF、Threshold、MLP、JEV；
-7. 根据 tracking 结果做 GO / NO-GO。
+1. 修复 stale-bank native geometry/runtime mismatch；
+2. 重新生成 corrected video01 v2 `8995` 条记录；
+3. provenance 和三种 question type 的 coverage；
+4. runtime feature parity；
+5. reactivation candidate parity；
+6. numerical stability；
+7. 用现有 corrected Threshold / MLP / JEV checkpoint 做 video01 held-out closed-loop；
+8. 根据 tracking 结果做 GO / NO-GO。
 
 只有 GO 后才做 Full H8 重启。此之前，不能用一百万条临时记录掩盖 small-gate 问题。
 
@@ -140,6 +141,7 @@ CANONICAL_H8_COMMIT=<exact 40-character SHA>
 - `reports/JEV_RNG_V4/CURRENT_GO_NO_GO_20261007.json`
 - `reports/JEV_RNG_V4/PRE_VIDEO01_GATE_SPECULATIVE_H8_PAUSE_20261007.json`
 - `reports/JEV_RNG_V4/VIDEO01_CORRECTED_HARD_GATES.json`
+- `reports/JEV_RNG_V4/VIDEO01_V2_AFTERCARE_GATE_RESULT_20261007.json`
 - `docs/JEV_RNG_V4_LIVE_PROGRESS_20261007.md`
 
 当前没有正向 JEV tracking claim，也没有授权 canonical Full H8 的结论。
