@@ -1,0 +1,905 @@
+{
+  "status": "COMPLETE",
+  "repositories": [
+    {
+      "reference": 1,
+      "repo": "FoundationVision/ByteTrack",
+      "commit_sha": "d1bf0191adff59bc8fcfeaa0b33d3d1642552a99",
+      "commit_date": "2022-12-11T07:05:00Z",
+      "audited_files": {
+        "yolox/tracker/byte_tracker.py": [
+          "STrack.re_activate",
+          "BYTETracker.update"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "yolox/tracker/byte_tracker.py",
+          "sha256": "7cecdcdd7998103969a4ba1772f4c9fb5560fd5eef05ca03e0d2df28346ca50b",
+          "lines": 330,
+          "url": "https://github.com/FoundationVision/ByteTrack/blob/d1bf0191adff59bc8fcfeaa0b33d3d1642552a99/yolox/tracker/byte_tracker.py"
+        },
+        {
+          "file": "yolox/tracker/matching.py",
+          "sha256": "2f54bf0c183f577087391901562ae2bcd3c01633a3e077bd5d4168fafbd899a6",
+          "lines": 181,
+          "url": "https://github.com/FoundationVision/ByteTrack/blob/d1bf0191adff59bc8fcfeaa0b33d3d1642552a99/yolox/tracker/matching.py"
+        }
+      ],
+      "source_fact": "高置信检测与 tracked+lost pool 先关联，低置信检测只与剩余 tracked 关联；未确认、新建、超时移除分开处理。",
+      "jev_inference": "MATCH/REACT 的 state transition 必须独立；REASSOCIATE 不等于拒绝后直接新建。",
+      "cannot_copy": "不能复制 MOT17 阈值或把低置信第二轮称为完整 stale-bank 恢复；当前主要是 IoU/Kalman。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 2,
+      "repo": "NirAharon/BoT-SORT",
+      "commit_sha": "251985436d6712aaf682aaaf5f71edb4987224bd",
+      "commit_date": "2022-10-30T15:12:42Z",
+      "audited_files": {
+        "tracker/bot_sort.py": [
+          "STrack.update_features",
+          "STrack.re_activate",
+          "BoTSORT.update"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "tracker/bot_sort.py",
+          "sha256": "ba6dd32ad4b96ee49d6f70654159269bd45ce15fd0fe5007f3a1b81bc257edf0",
+          "lines": 474,
+          "url": "https://github.com/NirAharon/BoT-SORT/blob/251985436d6712aaf682aaaf5f71edb4987224bd/tracker/bot_sort.py"
+        },
+        {
+          "file": "tracker/matching.py",
+          "sha256": "020b2215c20467b31f7d8a977a2f557b8d1838f8baa5a5be54c0b8d14bbee4e1",
+          "lines": 197,
+          "url": "https://github.com/NirAharon/BoT-SORT/blob/251985436d6712aaf682aaaf5f71edb4987224bd/tracker/matching.py"
+        }
+      ],
+      "source_fact": "固定 EMA 后归一化；appearance 由 proximity/appearance 阈值筛选，lost/refind 与两轮关联显式区分。",
+      "jev_inference": "M3 应严格使用 old-weight alpha；motion/appearance 约束与 memory 表示一起审计。",
+      "cannot_copy": "源码的固定 EMA 本身不是 detector-confidence 自适应，也不证明 learned memory gate 有价值；不能直接复用其 CMC/ReID 模型。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 3,
+      "repo": "dyhBUPT/StrongSORT",
+      "commit_sha": "ee995076da5083e28d0da1f885297df62705ebd7",
+      "commit_date": "2024-05-28T09:44:10Z",
+      "audited_files": {
+        "deep_sort/tracker.py": [
+          "Tracker.update",
+          "Tracker._match"
+        ],
+        "deep_sort/track.py": [
+          "Track.update"
+        ],
+        "deep_sort/nn_matching.py": [
+          "NearestNeighborDistanceMetric.partial_fit"
+        ],
+        "strong_sort.py": [
+          "module main"
+        ],
+        "AFLink/AppFreeLink.py": [
+          "AFLink.link",
+          "AFLink.predict",
+          "AFLink.compression"
+        ],
+        "AFLink/model.py": [
+          "PostLinker.forward"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "AFLink/AppFreeLink.py",
+          "sha256": "7646054a3cf3539c3ae6b6e2c0e336dcdec1e4235414937fbbb6d98e29fad058",
+          "lines": 136,
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/AFLink/AppFreeLink.py"
+        },
+        {
+          "file": "AFLink/__init__.py",
+          "sha256": "1d8b47dcff1e9a8357170ae953939583ea62c53dd24e3ae8a34a61820190598e",
+          "lines": 7,
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/AFLink/__init__.py"
+        },
+        {
+          "file": "AFLink/config.py",
+          "sha256": "d50b2f6abb4c6eae18555b914d6f11baf6e96ba79dc4d2fd61c31c71adadf305",
+          "lines": 18,
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/AFLink/config.py"
+        },
+        {
+          "file": "AFLink/dataset.py",
+          "sha256": "c940776f198a766990abb12eb4aeaa1a9324a3f7075936aae98dfc5753a20773",
+          "lines": 164,
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/AFLink/dataset.py"
+        },
+        {
+          "file": "AFLink/model.py",
+          "sha256": "cdcab678caf1ff3cdb13c54bbda3979df5e241c1f1be00eb8edbce6b3234afe7",
+          "lines": 102,
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/AFLink/model.py"
+        },
+        {
+          "file": "AFLink/train.py",
+          "sha256": "89cc6d5e235a4636c3d07c9fc91414cb6181662c38d340ed0f8dc911ea676c9e",
+          "lines": 91,
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/AFLink/train.py"
+        },
+        {
+          "file": "deep_sort/nn_matching.py",
+          "sha256": "1d724c41f064214fcba939a6abdf8428108a502036b4df1d3f8e48df3ffc77c9",
+          "lines": 179,
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/deep_sort/nn_matching.py"
+        },
+        {
+          "file": "deep_sort/track.py",
+          "sha256": "8ac0284ffdf02dcf82fd367758355e9daba7288a39a52c64f9e9888753b647eb",
+          "lines": 196,
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/deep_sort/track.py"
+        },
+        {
+          "file": "deep_sort/tracker.py",
+          "sha256": "9fb02cefa5098c7d4351ae727c514718694fb55b7c8a0d8822982925b056c0ec",
+          "lines": 138,
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/deep_sort/tracker.py"
+        },
+        {
+          "file": "strong_sort.py",
+          "sha256": "b38c635f9026ee6696e42d5e081b0aa293fdb18ebda6257bba5a23ba4222b0c1",
+          "lines": 56,
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/strong_sort.py"
+        }
+      ],
+      "source_fact": "confirmed appearance cascade + IOU fallback；可选 EMA；AFLink 在整段输出后按时间/空间门控与 learned link cost 做轨迹 Hungarian 合并。",
+      "jev_inference": "短期 MATCH 与长期恢复可采用不同输入和时间尺度；controlled augmentation 应来自实际状态。",
+      "cannot_copy": "AFLink 使用完整已结束轨迹，是离线后处理，不能照搬为因果在线 REACT；其神经网络和结果重写不能当作 JEV 的原生等价实现。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 4,
+      "repo": "nwojke/deep_sort",
+      "commit_sha": "f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab",
+      "commit_date": "2025-03-02T09:54:41Z",
+      "audited_files": {
+        "deep_sort/tracker.py": [
+          "Tracker.update",
+          "Tracker._match"
+        ],
+        "deep_sort/nn_matching.py": [
+          "NearestNeighborDistanceMetric.partial_fit",
+          "NearestNeighborDistanceMetric.distance"
+        ],
+        "deep_sort/track.py": [
+          "Track.update",
+          "Track.mark_missed"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "deep_sort/linear_assignment.py",
+          "sha256": "ea042c8bad0687f1d04c10c592c5c43d11c4082339de9b4fe982629807fe1cab",
+          "lines": 190,
+          "url": "https://github.com/nwojke/deep_sort/blob/f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab/deep_sort/linear_assignment.py"
+        },
+        {
+          "file": "deep_sort/nn_matching.py",
+          "sha256": "717e5c135e9bdbe5819c0d41c7da79b2e5ca2f61918399dcd4cc21f94048746d",
+          "lines": 177,
+          "url": "https://github.com/nwojke/deep_sort/blob/f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab/deep_sort/nn_matching.py"
+        },
+        {
+          "file": "deep_sort/track.py",
+          "sha256": "78dbc1961841713cf24d6397fd32b24f7b1624ce9f4b3def3e2df491fcfcc04e",
+          "lines": 166,
+          "url": "https://github.com/nwojke/deep_sort/blob/f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab/deep_sort/track.py"
+        },
+        {
+          "file": "deep_sort/tracker.py",
+          "sha256": "b214c584e8b0151533c74297e377d3f700869c9b2ed3d30573ac6bbf6adfe65f",
+          "lines": 138,
+          "url": "https://github.com/nwojke/deep_sort/blob/f08cf1dc470eeb1cd2add1cbf077d95ac6c48aab/deep_sort/tracker.py"
+        }
+      ],
+      "source_fact": "只有 confirmed tracks 的暂存 features 进入 metric partial_fit；按 budget 留最近 gallery，并删除非 active targets；appearance cascade 后对未确认/最近失配做 IOU fallback。",
+      "jev_inference": "maturity、bounded gallery 与匹配确认条件应进入 MEMORY 诊断；M2 的距离聚合须明确。",
+      "cannot_copy": "DeepSORT 最近邻 gallery 与 Tracktor mean gallery 不相同；删除 gallery 的语义也不能直接当长期 stale-bank 保留。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 5,
+      "repo": "noahcao/OC_SORT",
+      "commit_sha": "8462e7e729a93ccd3bd995c0a79a890336cb3a0b",
+      "commit_date": "2026-04-21T23:31:31Z",
+      "audited_files": {
+        "trackers/ocsort_tracker/ocsort.py": [
+          "KalmanBoxTracker.update",
+          "OCSort.update"
+        ],
+        "trackers/ocsort_tracker/association.py": [
+          "associate",
+          "linear_assignment"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "trackers/ocsort_tracker/association.py",
+          "sha256": "c009a78eaa1c35c1d61217506255051ba882a7b99f9505cdec64da474ff0fbd7",
+          "lines": 334,
+          "url": "https://github.com/noahcao/OC_SORT/blob/8462e7e729a93ccd3bd995c0a79a890336cb3a0b/trackers/ocsort_tracker/association.py"
+        },
+        {
+          "file": "trackers/ocsort_tracker/ocsort.py",
+          "sha256": "122cc1c27d3321eac0debdf3ba782b76d189e1ac878256b8291ffeb4314fa979",
+          "lines": 427,
+          "url": "https://github.com/noahcao/OC_SORT/blob/8462e7e729a93ccd3bd995c0a79a890336cb3a0b/trackers/ocsort_tracker/ocsort.py"
+        }
+      ],
+      "source_fact": "第一轮 IoU+观测方向代价；可选低分 BYTE；随后剩余检测与 last_observation 框重新 assignment，再处理 missing/new/dead。",
+      "jev_inference": "REASSOCIATE 是独立操作，必须记录候选变化与真正 assigned ID。",
+      "cannot_copy": "这里 OCR 改用了 observation bbox；JEV 的重新指派禁止当前 edge 并复用同一矩阵，二者不是同一个算子。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 6,
+      "repo": "GerardMaggiolino/Deep-OC-SORT",
+      "commit_sha": "6bb51d027b137233f5c520b6fcc4f2ae387a6ba9",
+      "commit_date": "2023-05-06T23:08:54Z",
+      "audited_files": {
+        "trackers/integrated_ocsort_embedding/ocsort.py": [
+          "KalmanBoxTracker.update_emb",
+          "OCSort.update"
+        ],
+        "trackers/integrated_ocsort_embedding/association.py": [
+          "compute_aw_new_metric",
+          "associate"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "trackers/integrated_ocsort_embedding/association.py",
+          "sha256": "f3fe722f4dab0268f509d59ef18ec8207ca6ad101e9d78b94e4bd3edbe8dd932",
+          "lines": 478,
+          "url": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/trackers/integrated_ocsort_embedding/association.py"
+        },
+        {
+          "file": "trackers/integrated_ocsort_embedding/ocsort.py",
+          "sha256": "2f4d4ccf8ce7f703367607bcb45d7a6b92ea496500881bf3599fe0a65563388c",
+          "lines": 530,
+          "url": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/trackers/integrated_ocsort_embedding/ocsort.py"
+        }
+      ],
+      "source_fact": "trust=(confidence-det_thresh)/(1-det_thresh)；alpha 随低置信趋近1，EMA 更新趋近0；appearance 权重同时利用行/列 top1-top2 差异；OCR 第二轮仍可基于 IoU。",
+      "jev_inference": "M4 使用 confidence-adaptive EMA；MATCH 需要证明 ambiguity/candidate interaction 提供额外闭环收益。",
+      "cannot_copy": "confidence 不是 GT 正确率；上游 det_thresh 和 embedding normalisation 不能脱离当前冻结感知契约照搬。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 7,
+      "repo": "ymzis69/HybridSORT",
+      "commit_sha": "396f8d30db13304c0cbaf1dcf2e16ded93ce1701",
+      "commit_date": "2024-04-02T01:43:53Z",
+      "audited_files": {
+        "trackers/byte_tracker/byte_tracker.py": [
+          "BYTETracker.update"
+        ],
+        "trackers/ocsort_tracker/ocsort.py": [
+          "OCSort.update"
+        ],
+        "utils/args.py": [
+          "make_parser"
+        ],
+        "trackers/hybrid_sort_tracker/hybrid_sort.py": [
+          "Hybrid_Sort.update"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "trackers/byte_tracker/byte_tracker.py",
+          "sha256": "82800b48b2640cb084ae62995e1f17aa3895784da8ccb7d3d2cafdde28280313",
+          "lines": 349,
+          "url": "https://github.com/ymzis69/HybridSORT/blob/396f8d30db13304c0cbaf1dcf2e16ded93ce1701/trackers/byte_tracker/byte_tracker.py"
+        },
+        {
+          "file": "trackers/hybrid_sort_tracker/association.py",
+          "sha256": "696c195f805dc1dee2bafa670820cb297ffbea9135a9dca1b6428c4f1ea24bd8",
+          "lines": 800,
+          "url": "https://github.com/ymzis69/HybridSORT/blob/396f8d30db13304c0cbaf1dcf2e16ded93ce1701/trackers/hybrid_sort_tracker/association.py"
+        },
+        {
+          "file": "trackers/hybrid_sort_tracker/hybrid_sort.py",
+          "sha256": "b6fdd1b1a2f5fe9fa234e82ef09f45d3d3d66367bec27b97153335295ca32a35",
+          "lines": 561,
+          "url": "https://github.com/ymzis69/HybridSORT/blob/396f8d30db13304c0cbaf1dcf2e16ded93ce1701/trackers/hybrid_sort_tracker/hybrid_sort.py"
+        },
+        {
+          "file": "trackers/hybrid_sort_tracker/hybrid_sort_reid.py",
+          "sha256": "b9a1817920636aeb11e1ff951e8fc1a2226370559e6af8b9ab1acb3251654a51",
+          "lines": 630,
+          "url": "https://github.com/ymzis69/HybridSORT/blob/396f8d30db13304c0cbaf1dcf2e16ded93ce1701/trackers/hybrid_sort_tracker/hybrid_sort_reid.py"
+        },
+        {
+          "file": "trackers/hybrid_sort_tracker/kalmanfilter.py",
+          "sha256": "54b81e53ffbd7958bc3810c5ecd5939e1bb6ee209956f56a3ba02147495cbbc0",
+          "lines": 1591,
+          "url": "https://github.com/ymzis69/HybridSORT/blob/396f8d30db13304c0cbaf1dcf2e16ded93ce1701/trackers/hybrid_sort_tracker/kalmanfilter.py"
+        },
+        {
+          "file": "trackers/hybrid_sort_tracker/kalmanfilter_score.py",
+          "sha256": "9e0a2a8e79bbb25bd2307a2c4f9d7e049c835340fc35a1f596a6fb40febd49a7",
+          "lines": 1586,
+          "url": "https://github.com/ymzis69/HybridSORT/blob/396f8d30db13304c0cbaf1dcf2e16ded93ce1701/trackers/hybrid_sort_tracker/kalmanfilter_score.py"
+        },
+        {
+          "file": "trackers/hybrid_sort_tracker/kalmanfilter_score_new.py",
+          "sha256": "df528a0ed2b2abdc08300fdafb42c5c99656c9c089f3331d933d5dd2d23d31c1",
+          "lines": 1593,
+          "url": "https://github.com/ymzis69/HybridSORT/blob/396f8d30db13304c0cbaf1dcf2e16ded93ce1701/trackers/hybrid_sort_tracker/kalmanfilter_score_new.py"
+        },
+        {
+          "file": "trackers/hybrid_sort_tracker/new_kalmanfilter.py",
+          "sha256": "4a72c2e51dfc952c53e4234381b232bfea9265a8f82fa95e0c7e43efc9d0602a",
+          "lines": 1583,
+          "url": "https://github.com/ymzis69/HybridSORT/blob/396f8d30db13304c0cbaf1dcf2e16ded93ce1701/trackers/hybrid_sort_tracker/new_kalmanfilter.py"
+        },
+        {
+          "file": "trackers/ocsort_tracker/ocsort.py",
+          "sha256": "abc6fbfcf052acad21074225259ae34d4535bb6b085e40cd8d6bca357d653ff7",
+          "lines": 431,
+          "url": "https://github.com/ymzis69/HybridSORT/blob/396f8d30db13304c0cbaf1dcf2e16ded93ce1701/trackers/ocsort_tracker/ocsort.py"
+        },
+        {
+          "file": "utils/args.py",
+          "sha256": "80bd7eea198d5c8abb9cd17425926f8f2a630c6ed3e25345c6ac66464b769e55",
+          "lines": 122,
+          "url": "https://github.com/ymzis69/HybridSORT/blob/396f8d30db13304c0cbaf1dcf2e16ded93ce1701/utils/args.py"
+        }
+      ],
+      "source_fact": "指定 ByteTrack/OCSort 文件是基础实现；真正 TCM 开关调用在 hybrid_sort.py，第一轮融合四角速度/score，BYTE 阶段显式减去 score-difference cost；args 区分高/低分匹配阈值与 longterm bank。",
+      "jev_inference": "weak cues 与各阶段门控需单独验证；G1/G2 不应偷用三动作约束或二次 assignment。",
+      "cannot_copy": "不能把基础 ByteTrack 文件误报为全部 HybridSORT 算法；不同 confidence score 和几何 cues 的尺度需重新绑定。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 8,
+      "repo": "ifzhang/FairMOT",
+      "commit_sha": "4aa62976bde6266cbafd0509e24c3d98a7d0899f",
+      "commit_date": "2021-12-19T03:56:50Z",
+      "audited_files": {
+        "src/lib/tracker/multitracker.py": [
+          "STrack.update_features",
+          "STrack.re_activate",
+          "JDETracker.update"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "src/lib/tracker/matching.py",
+          "sha256": "2811b9bc3035cfcb2d204a5a6e1d2704f279a1ffa8b197443c7dd49b864cd285",
+          "lines": 136,
+          "url": "https://github.com/ifzhang/FairMOT/blob/4aa62976bde6266cbafd0509e24c3d98a7d0899f/src/lib/tracker/matching.py"
+        },
+        {
+          "file": "src/lib/tracker/multitracker.py",
+          "sha256": "e972af19d624216b7699e1ae87e770afb67a9cbacbff168729e43df5a71debca",
+          "lines": 418,
+          "url": "https://github.com/ifzhang/FairMOT/blob/4aa62976bde6266cbafd0509e24c3d98a7d0899f/src/lib/tracker/multitracker.py"
+        }
+      ],
+      "source_fact": "appearance+Kalman motion 的第一轮含 lost pool，剩余 tracked 用 IOU；EMA appearance 与 lost buffer 明确。",
+      "jev_inference": "显式 active/lost/refind/new 生命周期支持 typed state；memory update 不等于普通 association history。",
+      "cannot_copy": "FairMOT 联合训练 detector/ReID，不能把改变感知 backbone 的收益算在 JEV controller 上。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 9,
+      "repo": "xingyizhou/CenterTrack",
+      "commit_sha": "e4e7534cc2ebfbd31e0cde680988f286c65fe34f",
+      "commit_date": "2022-11-16T06:12:04Z",
+      "audited_files": {
+        "src/lib/utils/tracker.py": [
+          "Tracker.step",
+          "Tracker.init_track",
+          "greedy_assignment"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "src/lib/utils/tracker.py",
+          "sha256": "c00872881d0fbe2a25c8011e2d7b5530744e6a19be11999ee00a166895f96af0",
+          "lines": 138,
+          "url": "https://github.com/xingyizhou/CenterTrack/blob/e4e7534cc2ebfbd31e0cde680988f286c65fe34f/src/lib/utils/tracker.py"
+        }
+      ],
+      "source_fact": "检测中心+tracking offset 指向过去，按面积/类别门控 Hungarian 或 greedy；new_thresh 与 max_age 仍独立管理出生和暂失。",
+      "jev_inference": "learned matching 表示与 birth decision 仍可分开；保持冻结 perception 的公平对比。",
+      "cannot_copy": "offset 来自另外训练的 detector；当前代码未匹配旧 track 的平移为零，不应声称通用 learned recovery。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 10,
+      "repo": "SysCV/qdtrack",
+      "commit_sha": "c5b10472d7bdd3b9ab75255dd10e48e21f48c54f",
+      "commit_date": "2022-11-02T13:07:23Z",
+      "audited_files": {
+        "qdtrack/models/trackers/quasi_dense_embed_tracker.py": [
+          "QuasiDenseEmbedTracker.update_memo",
+          "QuasiDenseEmbedTracker.match",
+          "QuasiDenseEmbedTracker.memo"
+        ],
+        "configs/mot17/qdtrack-frcnn_r50_fpn_4e_mot17.py": [
+          "tracker config"
+        ],
+        "configs/_base_/qdtrack_faster_rcnn_r50_fpn.py": [
+          "model config"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "qdtrack/models/trackers/quasi_dense_embed_tracker.py",
+          "sha256": "a2fe5c209ee0d0c448d82207b41fcda4b78dba4a6ca865f9d50705b3061fcf6e",
+          "lines": 206,
+          "url": "https://github.com/SysCV/qdtrack/blob/c5b10472d7bdd3b9ab75255dd10e48e21f48c54f/qdtrack/models/trackers/quasi_dense_embed_tracker.py"
+        },
+        {
+          "file": "configs/_base_/qdtrack_faster_rcnn_r50_fpn.py",
+          "sha256": "db8f5283b7ce3a9d81ab0fea3f006e54260bc7c845bec101b115c23d2bb8d55c",
+          "lines": 45,
+          "url": "https://github.com/SysCV/qdtrack/blob/c5b10472d7bdd3b9ab75255dd10e48e21f48c54f/configs/_base_/qdtrack_faster_rcnn_r50_fpn.py"
+        },
+        {
+          "file": "configs/mot17/qdtrack-frcnn_r50_fpn_4e_mot17.py",
+          "sha256": "3734d3806ae8b6024de0b63232f86b04b974099ca24de2e02755371d04ebb66d",
+          "lines": 119,
+          "url": "https://github.com/SysCV/qdtrack/blob/c5b10472d7bdd3b9ab75255dd10e48e21f48c54f/configs/mot17/qdtrack-frcnn_r50_fpn_4e_mot17.py"
+        }
+      ],
+      "source_fact": "tracklet 与 backdrop 使用不同留存期限；embed=(1-momentum)*old+momentum*new；bisoftmax 竞争和 confidence/类别筛选后更新 memo。",
+      "jev_inference": "M5 的 momentum 是 new-weight，和 BoT EMA old-weight 相反；retention 与 WRITE gate 必须分开比较。",
+      "cannot_copy": "新特征权重不能直接写成旧权重；backdrop/类别过滤不能无说明加入当前单类 GMT。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 11,
+      "repo": "phil-bergmann/tracking_wo_bnw",
+      "commit_sha": "446abc7fe65e21068a97fa8234ca1176f0a34303",
+      "commit_date": "2023-02-10T13:34:06Z",
+      "audited_files": {
+        "src/tracktor/tracker.py": [
+          "Tracker.reid",
+          "Tracker.tracks_to_inactive",
+          "Tracker.step",
+          "Track.add_features",
+          "Track.test_features"
+        ],
+        "experiments/cfgs/tracktor.yaml": [
+          "tracker config"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "experiments/cfgs/tracktor.yaml",
+          "sha256": "bb42f90a4702f97bcf44b49ecf4f2f85334c68997d3eed12ef0437f75f6604f5",
+          "lines": 70,
+          "url": "https://github.com/phil-bergmann/tracking_wo_bnw/blob/446abc7fe65e21068a97fa8234ca1176f0a34303/experiments/cfgs/tracktor.yaml"
+        },
+        {
+          "file": "src/tracktor/tracker.py",
+          "sha256": "ab8e20d103ae54d28cb9fcbdb318770cecac66b2967068db54f25b18484e2e1f",
+          "lines": 438,
+          "url": "https://github.com/phil-bergmann/tracking_wo_bnw/blob/446abc7fe65e21068a97fa8234ca1176f0a34303/src/tracktor/tracker.py"
+        }
+      ],
+      "source_fact": "inactive pool 保存有限 appearance history；test_features 用均值，ReID distance 经可选 IoU 门控 Hungarian 后恢复旧 ID；配置 max_features_num10/inactive_patience50。",
+      "jev_inference": "bounded gallery 的恢复表示、空间约束、耐心期限应写入 MEMORY/REACT 审计。",
+      "cannot_copy": "这是检测框回归 tracker；mean gallery 与 DeepSORT 最邻近 gallery 不能混称为同一基线，阈值200属于它的距离尺度。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 12,
+      "repo": "timmeinhardt/trackformer",
+      "commit_sha": "e468bf156b029869f6de1be358bc11cd1f517f3c",
+      "commit_date": "2023-09-12T14:52:40Z",
+      "audited_files": {
+        "src/trackformer/models/detr_tracking.py": [
+          "DETRTrackingBase.add_track_queries_to_targets",
+          "DETRTrackingBase.__init__"
+        ],
+        "cfgs/train.yaml": [
+          "track query corruption config"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "cfgs/train.yaml",
+          "sha256": "f54aa6169ea74bac8c3b52b3d7a549d2ed6b3fd9a9d3054c6e58b408d1631e88",
+          "lines": 138,
+          "url": "https://github.com/timmeinhardt/trackformer/blob/e468bf156b029869f6de1be358bc11cd1f517f3c/cfgs/train.yaml"
+        },
+        {
+          "file": "src/trackformer/models/detr_tracking.py",
+          "sha256": "dff3e867a4b15f8d85c3c418a71c8d2f4d8dd7a8baec72d5b6a41e11fe6a829a",
+          "lines": 290,
+          "url": "https://github.com/timmeinhardt/trackformer/blob/e468bf156b029869f6de1be358bc11cd1f517f3c/src/trackformer/models/detr_tracking.py"
+        }
+      ],
+      "source_fact": "训练随机减少上帧匹配 query、从未匹配检测插入 false positives，并生成对应 masks；配置 FP0.1/FN0.4。",
+      "jev_inference": "clean teacher states 不能代表 self-induced states；Phase VI corruption 需修改实际 tracker 状态并重算标签。",
+      "cannot_copy": "源码具体采样包含 uniform subset 和特殊路径，不可机械当固定 Bernoulli0.4；GT 构造仅可在训练监督，runtime 特征不能复制 GT matching。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 13,
+      "repo": "megvii-research/MOTR",
+      "commit_sha": "8690da3392159635ca37c31975126acf40220724",
+      "commit_date": "2022-07-04T09:28:52Z",
+      "audited_files": {
+        "models/qim.py": [
+          "QueryInteractionModule._select_active_tracks",
+          "QueryInteractionModule._add_fp_tracks",
+          "QueryInteractionModule._update_track_embedding"
+        ],
+        "models/memory_bank.py": [
+          "MemoryBank.update",
+          "MemoryBank._forward_temporal_attn",
+          "MemoryBank.forward"
+        ],
+        "models/motr.py": [
+          "RuntimeTrackerBase.update",
+          "MOTR._post_process_single_image"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "models/memory_bank.py",
+          "sha256": "9090537f1f23ca5e1a9720004d6676a4e461762bd33eac9722b8de0689c52719",
+          "lines": 142,
+          "url": "https://github.com/megvii-research/MOTR/blob/8690da3392159635ca37c31975126acf40220724/models/memory_bank.py"
+        },
+        {
+          "file": "models/motr.py",
+          "sha256": "d32959c74ec6f0f3f8cc49d6c033533650aee3e9fcd5f9d439773e3cffbbb7ed",
+          "lines": 718,
+          "url": "https://github.com/megvii-research/MOTR/blob/8690da3392159635ca37c31975126acf40220724/models/motr.py"
+        },
+        {
+          "file": "models/qim.py",
+          "sha256": "349835258bf1c2403b548d50d0a37333659be729f70b926074aa3cab00d49be5",
+          "lines": 192,
+          "url": "https://github.com/megvii-research/MOTR/blob/8690da3392159635ca37c31975126acf40220724/models/qim.py"
+        }
+      ],
+      "source_fact": "训练 QIM 丢 track/加 false query，时间 memory 在查询前先读；inference 按 score 与 save_period 保存有限 bank；低 score 持续达到 miss_tolerance 才注销 ID。",
+      "jev_inference": "READ/WRITE 时序、query update 与 lifecycle 需要分别记录；memory horizon 必须延伸至第一次真正读取。",
+      "cannot_copy": "其 temporal memory 在 active 路径也参与 attention，与 GMT stale-only bank 不等价；大 attention 模型及训练 GT-active 条件不能直接复制。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 14,
+      "repo": "megvii-research/MOTRv2",
+      "commit_sha": "1aac7c3beb093d4b523419a197e9531597e01798",
+      "commit_date": "2023-02-28T02:18:21Z",
+      "audited_files": {
+        "models/motr.py": [
+          "RuntimeTrackerBase.update",
+          "RuntimeTrackerBase.__init__"
+        ],
+        "models/qim.py": [
+          "QueryInteractionModulev2._select_active_tracks",
+          "QueryInteractionModulev2._update_track_embedding"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "models/motr.py",
+          "sha256": "078425f4eb2a124404c8c7285282b5fb3f0051e789a91b2234334d64af2183af",
+          "lines": 776,
+          "url": "https://github.com/megvii-research/MOTRv2/blob/1aac7c3beb093d4b523419a197e9531597e01798/models/motr.py"
+        },
+        {
+          "file": "models/qim.py",
+          "sha256": "d3bf46ea0100ec66d4a890a7cde3169dd1f220a27e2b8921f54110cb32ae034c",
+          "lines": 200,
+          "url": "https://github.com/megvii-research/MOTRv2/blob/1aac7c3beb093d4b523419a197e9531597e01798/models/qim.py"
+        }
+      ],
+      "source_fact": "新对象 score>=score_thresh 分配全局 ID，旧对象 score<filter_score_thresh 累积 disappear_time；超过容忍才删除；query 高置信更新。",
+      "jev_inference": "birth、暂时 disappearance、deletion 必须用不同状态，canonical age 应是相对时间。",
+      "cannot_copy": "RuntimeTrackerBase 删除后的旧 ID 不由这段代码恢复；不能把 miss_tolerance 叫完整 ReID/stale-bank rescue。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 15,
+      "repo": "MCG-NJU/MeMOTR",
+      "commit_sha": "eb7a177b9cbcb89742ec69b2545ab3af2ea31a80",
+      "commit_date": "2025-10-15T06:56:34Z",
+      "audited_files": {
+        "models/query_updater.py": [
+          "QueryUpdater.update_tracks_embedding",
+          "QueryUpdater.select_active_tracks",
+          "QueryUpdater.__init__"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "models/query_updater.py",
+          "sha256": "112864688ef785a40d8837e678ada82d25d974ac8610c93f823ec91392c570b4",
+          "lines": 271,
+          "url": "https://github.com/MCG-NJU/MeMOTR/blob/eb7a177b9cbcb89742ec69b2545ab3af2ea31a80/models/query_updater.py"
+        }
+      ],
+      "source_fact": "短期 confidence-weighted output 与 last_output 融合，long_memory attention/norm/FFN 更新 query；只有 update_threshold 以上写 long_memory EMA，训练可做 TP drop/FP insert。",
+      "jev_inference": "quality-controlled anchor 与 memory representation 都值得比较；typed adapters 可以轻量分开语义。",
+      "cannot_copy": "不能把 learned confidence vector attention 直接视为 JEV binary write-gate 对照；这里跨 track 的大表示模型超出当前预算。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 16,
+      "repo": "dvl-tum/GHOST",
+      "commit_sha": "755a5dacfcf4dd122a4cac73061b24e9c84f3c19",
+      "commit_date": "2024-02-14T16:27:43Z",
+      "audited_files": {
+        "src/tracking_utils.py": [
+          "get_proxy",
+          "Track.add_detection"
+        ],
+        "src/tracker.py": [
+          "Tracker.proxy_dist",
+          "Tracker.get_hungarian_each_sample",
+          "Tracker.assign",
+          "Tracker.assign_separatly",
+          "Tracker.assign_act_inact_same_time"
+        ],
+        "config/config_tracker.yaml": [
+          "active/inactive appearance config"
+        ],
+        "config/config_tracker_dance.yaml": [
+          "active/inactive appearance config"
+        ],
+        "config/config_tracker_bdd.yaml": [
+          "active/inactive appearance config"
+        ],
+        "config/config_tracker_20.yaml": [
+          "active/inactive appearance config"
+        ],
+        "src/base_tracker.py": [
+          "inactive threshold setup"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "config/config_tracker.yaml",
+          "sha256": "77c90b7ae8d7052c86b17faefb48633f44bca0065d974db5765d3f76e9560b89",
+          "lines": 71,
+          "url": "https://github.com/dvl-tum/GHOST/blob/755a5dacfcf4dd122a4cac73061b24e9c84f3c19/config/config_tracker.yaml"
+        },
+        {
+          "file": "config/config_tracker_20.yaml",
+          "sha256": "7764cbef8e08dc58fd391aadc31b4bf5bf1fc942ddf2262f72d446bcb719b7e7",
+          "lines": 70,
+          "url": "https://github.com/dvl-tum/GHOST/blob/755a5dacfcf4dd122a4cac73061b24e9c84f3c19/config/config_tracker_20.yaml"
+        },
+        {
+          "file": "config/config_tracker_bdd.yaml",
+          "sha256": "2ce81390f0197e0e5692660cb539146cd9273a0bdb30484db997c6aaa6b4b6cd",
+          "lines": 70,
+          "url": "https://github.com/dvl-tum/GHOST/blob/755a5dacfcf4dd122a4cac73061b24e9c84f3c19/config/config_tracker_bdd.yaml"
+        },
+        {
+          "file": "config/config_tracker_dance.yaml",
+          "sha256": "1d03febe862f30ac8c7202e592f493a75f870f0239f75958b7e6f79457b8cbbc",
+          "lines": 71,
+          "url": "https://github.com/dvl-tum/GHOST/blob/755a5dacfcf4dd122a4cac73061b24e9c84f3c19/config/config_tracker_dance.yaml"
+        },
+        {
+          "file": "src/tracker.py",
+          "sha256": "59dfd52835db4ab7114877cafcc1c38f0b75828f35e4b1cb2e1d7b56557c84d2",
+          "lines": 546,
+          "url": "https://github.com/dvl-tum/GHOST/blob/755a5dacfcf4dd122a4cac73061b24e9c84f3c19/src/tracker.py"
+        },
+        {
+          "file": "src/tracking_utils.py",
+          "sha256": "854a0f1cc1ce3fd0923cdd09d8b24a479a945b74abfc7b71b90f704ee0dcfdc9",
+          "lines": 422,
+          "url": "https://github.com/dvl-tum/GHOST/blob/755a5dacfcf4dd122a4cac73061b24e9c84f3c19/src/tracking_utils.py"
+        },
+        {
+          "file": "src/base_tracker.py",
+          "sha256": "202918513a1d4d9da9a32dd350466697d5d16c13b2d7bf9b49c4e71c8fe9a4ce",
+          "lines": 737,
+          "url": "https://github.com/dvl-tum/GHOST/blob/755a5dacfcf4dd122a4cac73061b24e9c84f3c19/src/base_tracker.py"
+        }
+      ],
+      "source_fact": "past_feats 可用 last/mean/median/moving average，each_sample 距离再聚合；active/inactive 可同轮或分轮指派，阈值与耐心分开。",
+      "jev_inference": "先确定 anchor 表示与聚合，再比较 learnable retention；相机/年龄状态不能混入绝对 frame。",
+      "cannot_copy": "源码同时保留诊断 gt_id 日志，这些字段不能进入我们的 runtime controller；各数据集配置阈值不可视为通用值。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 17,
+      "repo": "dvl-tum/SUSHI",
+      "commit_sha": "ff1952b408835007f07d1fc78760872625fa6ae4",
+      "commit_date": "2024-12-22T10:25:14Z",
+      "audited_files": {
+        "src/models/hiclnet.py": [
+          "HICLNet.__init__",
+          "HICLNet.forward"
+        ],
+        "src/models/mpntrack.py": [
+          "MOTMPNet.forward",
+          "TimeAwareNodeModel.forward",
+          "EdgeModel.forward"
+        ],
+        "src/tracker/hicl_tracker.py": [
+          "HICLTracker.hicl_forward",
+          "HICLTracker._project_graph"
+        ],
+        "src/data/graph.py": [
+          "HierarchicalGraph._get_curr_graph_specs",
+          "HierarchicalGraph.construct_curr_graph_nodes",
+          "HierarchicalGraph.add_edges_to_curr_graph",
+          "HierarchicalGraph.update_maps_and_depth"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "src/data/graph.py",
+          "sha256": "71016dd221ba0e580cbf01e97302b6bbca2d92e651124858d795ca9eaf7698d6",
+          "lines": 409,
+          "url": "https://github.com/dvl-tum/SUSHI/blob/ff1952b408835007f07d1fc78760872625fa6ae4/src/data/graph.py"
+        },
+        {
+          "file": "src/models/hiclnet.py",
+          "sha256": "1c7047e6aa70937dec7e7a7e9146fabe6ce91d7d1d3540eb39fdeaed19382652",
+          "lines": 59,
+          "url": "https://github.com/dvl-tum/SUSHI/blob/ff1952b408835007f07d1fc78760872625fa6ae4/src/models/hiclnet.py"
+        },
+        {
+          "file": "src/models/mpntrack.py",
+          "sha256": "dba2c133bd9a970a5fe4b3789d7a928edf8145d1f736173555c435b669a8c93f",
+          "lines": 425,
+          "url": "https://github.com/dvl-tum/SUSHI/blob/ff1952b408835007f07d1fc78760872625fa6ae4/src/models/mpntrack.py"
+        },
+        {
+          "file": "src/tracker/hicl_tracker.py",
+          "sha256": "f13b2018b3fbdc14700619e97d3e1e37fdaa04d23e3c9f3689b931d9df613993",
+          "lines": 823,
+          "url": "https://github.com/dvl-tum/SUSHI/blob/ff1952b408835007f07d1fc78760872625fa6ae4/src/tracker/hicl_tracker.py"
+        }
+      ],
+      "source_fact": "多层时间图由检测聚成 tracklet，逐层重建 edge/context；配置可共享全部、除首层或不共享权重，层级 embedding 与 solver projection 独立。",
+      "jev_inference": "统一 reasoning 不等于统一 horizon；typed lifecycle 的共享 core 与问题 adapter 有代码层面的可行参照。",
+      "cannot_copy": "SUSHI 的图使用整段/子段过去和未来，是 offline tracker；不得直接把跨未来图特征用于在线 JEV 或把 binary edge classifier 称为无结构。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 18,
+      "repo": "dvl-tum/mot_neural_solver",
+      "commit_sha": "4541eb605a922876c376ec95d4e55509175d145e",
+      "commit_date": "2022-04-13T09:59:24Z",
+      "audited_files": {
+        "src/mot_neural_solver/models/mpn.py": [
+          "MOTMPNet.forward",
+          "MOTMPNet._build_core_MPNet",
+          "EdgeModel.forward",
+          "TimeAwareNodeModel.forward"
+        ],
+        "src/mot_neural_solver/tracker/projectors.py": [
+          "GreedyProjector.project",
+          "ExactProjector.project",
+          "PuLPMinCostFlowSolver._add_constraints",
+          "PuLPMinCostFlowSolver.solve"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "src/mot_neural_solver/models/mpn.py",
+          "sha256": "e294adf300095eaf2c9438e3df6915b2d12eedc2890880e3a6700670bfa8e9a9",
+          "lines": 295,
+          "url": "https://github.com/dvl-tum/mot_neural_solver/blob/4541eb605a922876c376ec95d4e55509175d145e/src/mot_neural_solver/models/mpn.py"
+        },
+        {
+          "file": "src/mot_neural_solver/tracker/projectors.py",
+          "sha256": "7ac0dcd27fb7864d45507b8a73088f50fc4b10d4d2a1aa168ac39b7ca093baf3",
+          "lines": 212,
+          "url": "https://github.com/dvl-tum/mot_neural_solver/blob/4541eb605a922876c376ec95d4e55509175d145e/src/mot_neural_solver/tracker/projectors.py"
+        }
+      ],
+      "source_fact": "node/edge encoder 后多轮 message passing；binary edge logits 之后由 greedy/LP projection 限制每节点入/出flow<=1。",
+      "jev_inference": "是否结构化要看 candidate interaction、state transitions 与约束的有效贡献，不能只数动作类别；G2/G3/G4 闭环消融为必要证据。",
+      "cannot_copy": "该 solver 是跨时间 offline图，且仅 scalar edge classifier 的部分并不包含完整结构；不能移植未来节点或规模较大的图训练。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 19,
+      "repo": "ShuCvlab/DiffMOT",
+      "commit_sha": "eada72e74e54c153b30674d277b97882edc568b8",
+      "commit_date": "2024-06-13T11:17:05Z",
+      "audited_files": {
+        "tracker/DiffMOTtracker.py": [
+          "STrack.multi_predict_diff",
+          "STrack.re_activate",
+          "STrack.update",
+          "diffmottracker.update",
+          "STrack.__init__"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "tracker/DiffMOTtracker.py",
+          "sha256": "1de9fff49514634147190a98b348d7dfb8c0f15f0b59af315b7cace080a5f764",
+          "lines": 486,
+          "url": "https://github.com/ShuCvlab/DiffMOT/blob/eada72e74e54c153b30674d277b97882edc568b8/tracker/DiffMOTtracker.py"
+        }
+      ],
+      "source_fact": "运动条件维护观测/预测混合历史；diffusion 预测后恢复时用实际观测替换 condition；appearance 使用 confidence adaptive alpha，lost/new 生命周期仍单独管理。",
+      "jev_inference": "不同 lifecycle state 需要不同相对历史；counterfactual branches 必须使用同一 RNG/未来 policy。",
+      "cannot_copy": "diffusion sampling 和运动网络的收益不能算 controller 收益；branch 分别抽样会破坏干预归因，不能照搬未冻结随机预测。",
+      "source_blob_integrity": "PASS"
+    },
+    {
+      "reference": 20,
+      "repo": "MCG-NJU/MOTIP",
+      "commit_sha": "ffc0e905ac196a603027eca8d18fb0dff48c8bcc",
+      "commit_date": "2026-07-30T12:04:18Z",
+      "audited_files": {
+        "models/runtime_tracker.py": [
+          "RuntimeTracker.update",
+          "RuntimeTracker._get_id_pred_labels",
+          "RuntimeTracker._assign_newborn_id_labels",
+          "RuntimeTracker._update_trajectory_infos",
+          "RuntimeTracker._filter_out_inactive_tracks",
+          "RuntimeTracker._hungarian_assignment"
+        ],
+        "models/motip/trajectory_modeling.py": [
+          "TrajectoryModeling.forward"
+        ],
+        "models/motip/id_decoder.py": [
+          "IDDecoder.forward",
+          "IDDecoder._forward_a_layer",
+          "IDDecoder.generate_empty_id_embed"
+        ],
+        "train.py": [
+          "prepare_for_motip",
+          "train_one_epoch identity criterion path"
+        ]
+      },
+      "all_downloaded_files": [
+        {
+          "file": "models/motip/id_decoder.py",
+          "sha256": "a16cf34bb16fa14a17d715231af1439cb3f1c1fa15d18341e2a84c61cdf59d81",
+          "lines": 252,
+          "url": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/models/motip/id_decoder.py"
+        },
+        {
+          "file": "models/motip/trajectory_modeling.py",
+          "sha256": "0bdf92640347ec2b719ac56082aec307eeb6c3fd39c1cc87ea26e197eca58166",
+          "lines": 46,
+          "url": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/models/motip/trajectory_modeling.py"
+        },
+        {
+          "file": "models/runtime_tracker.py",
+          "sha256": "f0ac5da7c7331f8d11336924ad2c1996a15bf69fd99fe1b6de8bc573c96e8497",
+          "lines": 405,
+          "url": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/models/runtime_tracker.py"
+        },
+        {
+          "file": "train.py",
+          "sha256": "1a5f21957d591c23f665ee794b4e6d846a1112a5123c111eeb5208315745e2bd",
+          "lines": 735,
+          "url": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/train.py"
+        }
+      ],
+      "source_fact": "trajectory_features/boxes/IDs/times/masks 参与 ID decoder，causal attention 禁止当前及未来历史；newborn token 可重复为多个出生列，Hungarian 维护旧 ID 唯一指派；miss_tolerance 限制历史。",
+      "jev_inference": "old-vs-new prediction 必须放入 trajectory/candidate context；出生占位与禁止当前 edge 的 REASSOCIATE 都应检查约束语义。",
+      "cannot_copy": "这是可训练的大 detection/attention 系统，不能在小 controller 中照搬；训练 annotation ID只用于 target，绝不能转成 runtime GT feature。",
+      "source_blob_integrity": "PASS"
+    }
+  ],
+  "repositories_count": 20,
+  "downloaded_files_count": 66,
+  "audited_file_count": 52,
+  "scope": "line-by-line named tracking functions and configuration; additional downloaded variants not claimed reviewed",
+  "external_code_executed": false
+}

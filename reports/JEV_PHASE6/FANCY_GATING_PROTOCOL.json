@@ -1,0 +1,45 @@
+{
+  "status": "PREREGISTERED",
+  "created_utc": "2026-10-07T18:41:29.825272+00:00",
+  "priority": "P1 before MEMORY/REACTIVATION learned experiments",
+  "diagnostic_video": 1,
+  "train_videos": [
+    7
+  ],
+  "val_videos": [
+    6
+  ],
+  "state_features": "exact frozen B2 64D; G1 accesses raw_traj_score only (index56), not normalized/clipped accept_score",
+  "score": "raw score of assigned current proposal, float32 feature index56",
+  "conditions": {
+    "G0": "frozen GMT OFF; exact prediction/metric SHA control",
+    "G1": "one trainable global scalar threshold on current raw proposal score only; binary ACCEPT_CURRENT/START_NEW",
+    "G2": "64D state-conditioned scalar tau; two-layer GELU conditioner hidden154, approximately34K parameters; strict binary gate; no REASSOCIATE and no alternate-score maximum in START_NEW logit",
+    "G3": "same34,080-parameter JEV architecture and initialization seed as B2; trained only on legal ACCEPT_CURRENT/START_NEW actions",
+    "G4a": "frozen B2 weights, every chosen REASSOCIATE replaced by START_NEW; future state and actions recomputed",
+    "G4b": "frozen B2 weights, every chosen REASSOCIATE replaced by ACCEPT_CURRENT; future state and actions recomputed",
+    "G5": "frozen unmodified 3-action B2; exact prediction/metric SHA control"
+  },
+  "binary_target_contract": "condition original utility softmax on retained legal actions; recompute best_actions on retained utility; preserve all feature/question/sequence/order/weight rows. If original probabilities underflow, compute double-precision retained utility softmax at original labeling.temperature. No forced old REASSOCIATE target folded into arbitrary replacement action.",
+  "seed": 20261003,
+  "epochs": 20,
+  "batch_size": 128,
+  "optimizer": "AdamW",
+  "lr": 0.001,
+  "checkpoint_selection": "fixed last epoch; no video01 tuning",
+  "temperature_calibration": "full video06 only, preserves argmax",
+  "MEMORY_REACTIVATION_control": "instantaneous GMT in every condition",
+  "primary_metrics": [
+    "HOTA",
+    "AssA"
+  ],
+  "material_effect_pp": 0.1,
+  "equivalence_definition": "both absolute HOTA and AssA differences <=0.10 points; descriptive equivalence on this diagnostic, not statistical equivalence proof",
+  "structured_match_claim_PASS": "G5 exceeds G3 by >=0.10 HOTA/AssA, G3 exceeds G2 by >=0.10 HOTA/AssA, and G5 exceeds both G4 replacements by >=0.10 HOTA/AssA; otherwise claim not established. Further event evidence and heldouts required for WWW GO.",
+  "first_stop_condition": "if G5,G3,G2 mutually equivalent, do not expand dataset/model/unified training; reevaluate novelty and finish bounded diagnostics/heldouts",
+  "same_corrected_labels_origin": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/match_training/compact",
+  "source_compact_manifest_sha256": "552fd6682e2f1ea2c2172c4393798b4caba7b4a9d1f510ae37758db8f4022392",
+  "B2_unmodified": true,
+  "official_test_read": false,
+  "full24_authorized": false
+}

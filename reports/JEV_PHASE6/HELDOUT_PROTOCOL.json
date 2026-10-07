@@ -1,0 +1,31 @@
+{
+  "status": "PREREGISTERED_BEFORE_RUN",
+  "created_utc": "2026-10-07T18:41:29.825272+00:00",
+  "video_ids": [
+    2,
+    3,
+    5
+  ],
+  "complete_sequences": true,
+  "selection_rule": "lowest TRAIN IDs excluding Phase V train07/val06/development01, candidate lifecycle train24/val23, and video04 known prior counterfactual debug work; no performance-based selection",
+  "exclusions": {
+    "1": "reused diagnostic",
+    "6": "Phase V validation",
+    "7": "Phase V training",
+    "4": "known earlier H8/debug worktree",
+    "23": "Phase VI proposed validation",
+    "24": "Phase VI proposed lifecycle training"
+  },
+  "claim_scope": "controller heldouts within TRAIN; not official benchmark TEST, not untouched by GMT backbone training",
+  "frozen_before_run": "all controller weights selected without these sequence outcomes",
+  "primary_metrics": [
+    "HOTA",
+    "AssA"
+  ],
+  "gate": "positive HOTA and AssA vs paired GMT on all three complete sequences, plus aggregate; no selecting favorable sequences after execution",
+  "no_model_selection_using_video01": true,
+  "no_tuning_using_heldouts": true,
+  "all_failures_and_results_must_be_reported": true,
+  "official_test_read": false,
+  "full24_authorized": false
+}
