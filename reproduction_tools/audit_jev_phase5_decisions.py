@@ -22,12 +22,15 @@ def overlaps(a,b):
 
 
 def main():
+    import argparse
+    parser=argparse.ArgumentParser();parser.add_argument('--variants',nargs='+',choices=['A1','A2','A3','A4','B1','B2'],default=['A1','A2','A3','A4']);parser.add_argument('--prefix',default='');args=parser.parse_args()
+    variants=['A0']+args.variants
     ann=json.loads(TRAIN.read_text());images={x['id']:x for x in ann['images'] if x['video_id']==1};gt=defaultdict(list)
     for a in ann['annotations']:
         if a['image_id'] in images and a.get('conf',1)>0 and a.get('category_id',1)==1:gt[a['image_id']].append(a)
     rows={};decisions={};counts={};maps={};timelines={};writes={}
-    for variant in ('A0','A1','A2','A3','A4'):
-        method='gmt_off' if variant=='A0' else 'jev';root=OUT/'ablations'/variant
+    for variant in variants:
+        method='gmt_off' if variant=='A0' else 'jev';root=OUT/('minimal_tracking' if variant.startswith('B') else 'ablations')/variant
         pred=json.loads((root/'tracking_predictions'/f'{method}.json').read_text());byimage=defaultdict(list)
         for p in pred:byimage[p['image_id']].append(p)
         aligned={};matrix=defaultdict(Counter);duplicates=0
@@ -65,8 +68,8 @@ def main():
         rows[variant]=aligned;maps[variant]=mapping;timelines[variant]=timeline;decisions[variant]=online;writes[variant]=write_events
     assert all(set(r)==set(rows['A0']) for r in rows.values())
     assert all(r[k]['box']==rows['A0'][k]['box'] and r[k]['score']==rows['A0'][k]['score'] for v,r in rows.items() for k in r)
-    summaries={};temporal={};raw=(OUT/'paired_decisions.jsonl').open('w')
-    for variant in ('A1','A2','A3','A4'):
+    summaries={};temporal={};rawpath=OUT/(args.prefix+'paired_decisions.jsonl');raw=rawpath.open('w')
+    for variant in args.variants:
         old=decisions['A0'];new=decisions[variant];transitions={};unmatched=Counter();damage=defaultdict(lambda:defaultdict(float));first=None;examples=[]
         for k in sorted(set(old)|set(new)):
             if k not in old or k not in new:
@@ -99,7 +102,7 @@ def main():
         summaries[variant]={'by_transition':transitions,'unpaired_dynamic_events':dict(unmatched),'first_action_divergence':first,'harmful_examples':examples}
         temporal[variant]={'aggregate_divergence_windows':damage,'aggregation_warning':'Overlapping future windows are counted per divergence; totals are not unique frames or whole-run causal effects.'}
     raw.close()
-    save('PAIRED_DECISION_AUDIT.json',{'status':'COMPLETE','definition':'Per-image IoU>=0.5 one-to-one GT matching; per-camera whole-run maximum-count one-to-one predicted-ID/GT-ID mapping. N01/N10 classify paired assignment observations, not isolated causal action outcomes.','GT_only_offline':True,'all_prediction_geometry_identical':True,'comparisons':summaries,'full_run_identity_statistics':counts,'mapping':maps,'raw_paired_decisions_sha256':sha(OUT/'paired_decisions.jsonl'),'memory_immediate_N01_N10_not_action_attribution':True})
-    save('TEMPORAL_DAMAGE.json',{'status':'COMPLETE','horizons':list(HORIZONS),'comparisons':temporal,'identity_fragmentation_proxy_is_not_TrackEval_Frag':True,'write_target_conflict_is_not_native_bank_contamination':True,'stale_recovery_scope':'First future GT-mapped correct observation of the target; raw Reactivation decisions separately counted.','causal_local_attribution_proven':False})
+    save(args.prefix+'PAIRED_DECISION_AUDIT.json',{'status':'COMPLETE','definition':'Per-image IoU>=0.5 one-to-one GT matching; per-camera whole-run maximum-count one-to-one predicted-ID/GT-ID mapping. N01/N10 classify paired assignment observations, not isolated causal action outcomes.','GT_only_offline':True,'all_prediction_geometry_identical':True,'comparisons':summaries,'full_run_identity_statistics':counts,'mapping':maps,'raw_paired_decisions_sha256':sha(rawpath),'memory_immediate_N01_N10_not_action_attribution':True})
+    save(args.prefix+'TEMPORAL_DAMAGE.json',{'status':'COMPLETE','horizons':list(HORIZONS),'comparisons':temporal,'identity_fragmentation_proxy_is_not_TrackEval_Frag':True,'write_target_conflict_is_not_native_bank_contamination':True,'stale_recovery_scope':'First future GT-mapped correct observation of the target; raw Reactivation decisions separately counted.','causal_local_attribution_proven':False})
     print(json.dumps({'status':'COMPLETE','identity_stats':{v:{k:n for k,n in c.items() if k!='track_purity'} for v,c in counts.items()}}))
 if __name__=='__main__':main()

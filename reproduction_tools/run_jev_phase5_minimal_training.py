@@ -25,11 +25,13 @@ def prepare_control():
 
 
 def train(condition):
+    configurations={'B1':('jev',128),'B2':('jev',128),'C1':('question_threshold',140),'C2':('question_conditioned_mlp',139)}
+    model,hidden=configurations[condition]
     root=OUT/('match_training_legacy' if condition=='B1' else 'match_training');out=OUT/'minimal_training'/condition;out.mkdir(parents=True,exist_ok=True)
     if (out/'model.pth').exists():raise RuntimeError('refusing to overwrite trained checkpoint')
-    atomic(out/'binding.json',{'condition':condition,'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'compact_manifest_sha256':sha(root/'compact/manifest.json'),'split_sha256':sha(root/'policy_split.json'),'official_test_read':False})
+    atomic(out/'binding.json',{'condition':condition,'model':model,'hidden_dim':hidden,'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'compact_manifest_sha256':sha(root/'compact/manifest.json'),'split_sha256':sha(root/'policy_split.json'),'official_test_read':False})
     commands=[
-        [PYTHON,'-u',str(ROOT/'reproduction_tools/train_jev_compact.py'),'--dataset',str(root/'compact'),'--output',str(out),'--model','jev','--epochs','20','--batch-size','128','--hidden-dim','128','--lr','0.001','--seed','20261003','--device','cuda:0','--split-manifest',str(root/'policy_split.json')],
+        [PYTHON,'-u',str(ROOT/'reproduction_tools/train_jev_compact.py'),'--dataset',str(root/'compact'),'--output',str(out),'--model',model,'--epochs','20','--batch-size','128','--hidden-dim',str(hidden),'--lr','0.001','--seed','20261003','--device','cuda:0','--split-manifest',str(root/'policy_split.json')],
         [PYTHON,'-u',str(ROOT/'reproduction_tools/calibrate_jev_compact.py'),'--dataset',str(root/'compact'),'--checkpoint',str(out/'model.pth'),'--policy-split',str(root/'policy_split.json'),'--output',str(out/'calibration')]]
     for phase,command in zip(('TRAINING','CALIBRATION'),commands):
         atomic(out/'runtime_status.json',{'phase':phase,'condition':condition,'command':command,'pid':os.getpid()})

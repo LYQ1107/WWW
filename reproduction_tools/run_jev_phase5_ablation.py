@@ -50,6 +50,7 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--checkpoint', type=Path, help='Isolated minimal-retraining diagnostic, A1 only')
     p.add_argument('--max-frame', type=int)
+    p.add_argument('--controller-label', default='JEV')
     args = p.parse_args()
     if args.checkpoint is not None and args.variant != 'A1':
         raise ValueError('checkpoint overrides are restricted to the MATCH-only diagnostic')
@@ -74,7 +75,7 @@ def main():
         if action not in legal:
             raise RuntimeError('routed policy selected an illegal action')
         item = {'question': question, 'action': action, 'off_action': off_action,
-                'legal_actions': list(legal), 'controller': 'JEV' if question in controlled else 'GMT',
+                'legal_actions': list(legal), 'controller': args.controller_label if question in controlled else 'GMT',
                 'feature_vector': feature.detach().cpu().tolist(), 'context': context or {}}
         decision_log.write(json.dumps(item, sort_keys=True, allow_nan=False) + '\n')
         stamp = time.monotonic()
@@ -120,7 +121,7 @@ def main():
         total = sum(counts.values())
         by_question[question] = {'count': total, 'actions': dict(counts), 'rates': {k: v / max(1,total) for k,v in counts.items()}}
     summary = {'status': 'PASS', 'classification': ('TRAIN_HELD_OUT_MINIMAL_RETRAIN_MATCH_ONLY_DIAGNOSTIC' if args.checkpoint else 'TRAIN_HELD_OUT_FROZEN_CHECKPOINT_COMPONENT_DIAGNOSTIC'),
-               'variant': args.variant, 'controlled_questions': sorted(controlled), 'metrics': metrics,
+               'variant': args.variant, 'controlled_questions': sorted(controlled), 'controller_label':args.controller_label, 'metrics': metrics,
                'result': result, 'action_counts_by_question': by_question,
                'checkpoint': None if args.variant == 'A0' else str(checkpoint),
                'checkpoint_sha256': None if args.variant == 'A0' else sha(checkpoint),
