@@ -79,7 +79,10 @@ The post-builder provenance gate is implemented by
 source-mixed artifacts and checks the manifest-bound record/trace/order/
 checkpoint/annotation hashes, JSONL semantic-key uniqueness, finite 64-D
 canonical state features, and exact typed-question counts before runtime
-parity is allowed to run.
+parity is allowed to run. It supports both the full-H8 worker manifest and
+the paired standalone current-head builder manifest: the latter explicitly
+binds the records sibling and source trace, while partition/order-index fields
+are marked not applicable because that producer has no separate files.
 
 The runtime parity wrappers now take an explicit numeric tolerance instead of
 silently mixing the historical `1e-6` and `1e-4` values. The current candidate

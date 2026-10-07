@@ -4,6 +4,15 @@ This is a read-only gate.  It verifies the manifest-bound files, JSONL
 integrity, semantic-key uniqueness, exact typed-question counts, finite
 canonical state features, and the checkpoint/trace/order/record hashes.  It
 does not read official TEST annotations or produce tracking metrics.
+
+Two producer schemas are intentionally supported.  Full-H8 worker manifests
+bind an explicit trace partition, source order index, source trace, and
+records artifact.  The small current-head builders predate that worker
+wrapper and emit a paired ``*.jsonl.manifest.json`` with ``trace`` and
+``trace_sha256`` instead.  For the latter, the validator requires the records
+argument to be the manifest's sibling artifact and binds that file by its
+computed hash; partition/order-index fields are explicitly marked
+not-applicable rather than silently treated as missing provenance.
 """
 
 from __future__ import annotations
@@ -40,6 +49,19 @@ def same_hash(actual: str, expected: Any) -> bool:
     return left == right
 
 
+def is_standalone_builder_manifest(manifest: dict[str, Any]) -> bool:
+    """Identify the paired manifest emitted by build_jev_counterfactual_v2."""
+
+    return (
+        manifest.get("status") == "PASS"
+        and manifest.get("counterfactual_engine")
+        == "cached_perception_mutable_association_v2"
+        and bool(manifest.get("trace"))
+        and "records_artifact" not in manifest
+        and "source_trace" not in manifest
+    )
+
+
 def finite(value: Any) -> bool:
     if isinstance(value, dict):
         return all(finite(item) for item in value.values())
@@ -72,10 +94,15 @@ def main() -> None:
     parser.add_argument("--horizon", type=int, default=8)
     args = parser.parse_args()
 
-    manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
+    manifest_path = args.manifest.resolve()
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     records_path = args.records.resolve()
+    standalone_manifest = is_standalone_builder_manifest(manifest)
     issues: list[str] = []
-    if manifest.get("status") != "COMPLETE":
+    allowed_statuses = {"COMPLETE"}
+    if standalone_manifest:
+        allowed_statuses.add("PASS")
+    if manifest.get("status") not in allowed_statuses:
         issues.append(f"manifest status is {manifest.get('status')!r}")
     if int(manifest.get("records", -1)) != int(args.expected_records):
         issues.append("manifest record count mismatch")
@@ -88,32 +115,66 @@ def main() -> None:
         issues.append("manifest association backend mismatch")
     if manifest.get("counterfactual_engine") != "cached_perception_mutable_association_v2":
         issues.append("manifest counterfactual engine mismatch")
-    if manifest.get("feature_schema_version") != "jev_runtime_state_v2":
+    if not standalone_manifest and manifest.get("feature_schema_version") != "jev_runtime_state_v2":
         issues.append("manifest feature schema mismatch")
     if manifest.get("trajectory_rng_policy") != "branch_local_explicit_python_random_v1":
         issues.append("manifest RNG policy mismatch")
     if not records_path.is_file():
         issues.append(f"records file missing: {records_path}")
+    if standalone_manifest:
+        expected_sibling = Path(
+            str(manifest_path).removesuffix(".manifest.json")
+        ).resolve()
+        if records_path != expected_sibling:
+            issues.append("standalone records path is not manifest sibling")
 
     hash_checks: dict[str, dict[str, Any]] = {}
-    path_hash_fields = (
-        ("records_artifact", "records_artifact_sha256"),
-        ("trace_partition", "trace_partition_sha256"),
-        ("source_order_index", "source_order_index_sha256"),
-        ("source_trace", "source_trace_sha256"),
-        ("gmt_checkpoint", "gmt_checkpoint_sha256"),
-        ("annotations", "annotations_sha256"),
-    )
-    for path_field, hash_field in path_hash_fields:
-        value = manifest.get(path_field)
-        path = Path(str(value)).resolve() if value else Path("/") / "__missing__"
-        item = {"path": str(path), "expected": manifest.get(hash_field)}
+    if standalone_manifest:
+        # The standalone builder has no separate partition/order-index files.
+        # It writes the trace path/hash directly and the records path is the
+        # sibling implied by the manifest filename.
+        path_hash_fields = (
+            ("records_artifact", records_path, manifest.get("records_artifact_sha256")),
+            ("source_trace", Path(str(manifest["trace"])), manifest.get("trace_sha256")),
+            ("gmt_checkpoint", Path(str(manifest.get("gmt_checkpoint", ""))), manifest.get("gmt_checkpoint_sha256")),
+            ("annotations", Path(str(manifest.get("annotations", ""))), manifest.get("annotations_sha256")),
+        )
+        hash_checks["trace_partition"] = {
+            "applicable": False,
+            "reason": "standalone builder has no separate trace partition",
+        }
+        hash_checks["source_order_index"] = {
+            "applicable": False,
+            "reason": "standalone builder has no separate source order index",
+        }
+    else:
+        path_hash_fields = tuple(
+            (path_field, Path(str(manifest.get(path_field, ""))), manifest.get(hash_field))
+            for path_field, hash_field in (
+                ("records_artifact", "records_artifact_sha256"),
+                ("trace_partition", "trace_partition_sha256"),
+                ("source_order_index", "source_order_index_sha256"),
+                ("source_trace", "source_trace_sha256"),
+                ("gmt_checkpoint", "gmt_checkpoint_sha256"),
+                ("annotations", "annotations_sha256"),
+            )
+        )
+    for path_field, raw_path, expected_hash in path_hash_fields:
+        path = raw_path.resolve() if str(raw_path) else Path("/") / "__missing__"
+        item = {"path": str(path), "expected": expected_hash}
         if not path.is_file():
             item.update({"exists": False, "match": False})
             issues.append(f"missing manifest-bound file: {path_field}")
         else:
             actual = sha256(path)
-            item.update({"exists": True, "actual": actual, "match": same_hash(actual, manifest.get(hash_field))})
+            if standalone_manifest and path_field == "records_artifact":
+                # The standalone schema has no record-hash field; the
+                # manifest-sibling invariant is the binding authority.
+                match = records_path == path
+                item["binding"] = "manifest_sibling_path"
+            else:
+                match = same_hash(actual, expected_hash)
+            item.update({"exists": True, "actual": actual, "match": match})
             if not item["match"]:
                 issues.append(f"hash mismatch: {path_field}")
         hash_checks[path_field] = item
@@ -124,6 +185,7 @@ def main() -> None:
     invalid_lines: list[dict[str, Any]] = []
     nonfinite_records = 0
     canonical_feature_records = 0
+    record_feature_schema_versions: set[str] = set()
     semantic_keys: set[tuple[Any, ...]] = set()
     if records_path.is_file():
         with records_path.open(encoding="utf-8") as handle:
@@ -146,6 +208,11 @@ def main() -> None:
                         nonfinite_records += 1
                     if state.get("feature_source") != "canonical_mutable_off_state_v2":
                         raise ValueError("record is not canonical mutable OFF state")
+                    record_feature_schema_versions.add(
+                        str(state.get("feature_schema_version"))
+                    )
+                    if state.get("feature_schema_version") != "jev_runtime_state_v2":
+                        raise ValueError("record feature schema mismatch")
                     if int(record.get("horizon", -1)) != int(args.horizon):
                         raise ValueError("record horizon mismatch")
                     question_counts[question] += 1
@@ -172,7 +239,11 @@ def main() -> None:
                 seen.add(key)
 
     manifest_questions = {
-        question: int(manifest.get("records_by_question", {}).get(question, -1))
+        question: int(
+            manifest.get("records_by_question", {}).get(
+                question, 0 if standalone_manifest else -1
+            )
+        )
         for question in QUESTION_TYPES
     }
     question_parity = {
@@ -204,7 +275,12 @@ def main() -> None:
         "schema_version": "jev_video_artifact_validation_v1",
         "status": "PASS" if not issues else "FAIL",
         "classification": "PROVENANCE_AND_SCHEMA_GATE_NOT_TRACKING_RESULT",
-        "manifest": str(args.manifest.resolve()),
+        "manifest": str(manifest_path),
+        "manifest_format": (
+            "standalone_builder_v2"
+            if standalone_manifest
+            else "full_h8_worker_v1"
+        ),
         "records": str(records_path),
         "expected_records": int(args.expected_records),
         "record_count": record_count,
@@ -213,6 +289,7 @@ def main() -> None:
         "duplicate_semantic_key_count": duplicate_keys,
         "nonfinite_record_count": nonfinite_records,
         "canonical_feature_records": canonical_feature_records,
+        "record_feature_schema_versions": sorted(record_feature_schema_versions),
         "question_parity": question_parity,
         "hash_checks": hash_checks,
         "manifest_source_commit": manifest.get("source_commit"),
