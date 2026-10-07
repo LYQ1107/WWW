@@ -1,0 +1,437 @@
+Config '/data1/liuyeqiang/WWW_jev_phase5/configs/VISION_test.yaml' has no VERSION. Assuming it to be compatible with latest v2.
+Loading pretrained DLA!
+heads 8
+{"method": "jev", "payloads": 100, "predictions": 252}
+{"method": "jev", "payloads": 200, "predictions": 502}
+{"method": "jev", "payloads": 300, "predictions": 762}
+{"method": "jev", "payloads": 400, "predictions": 1018}
+{"method": "jev", "payloads": 500, "predictions": 1300}
+{"method": "jev", "payloads": 600, "predictions": 1603}
+{"method": "jev", "payloads": 700, "predictions": 1862}
+{"method": "jev", "payloads": 800, "predictions": 2068}
+{"method": "jev", "payloads": 900, "predictions": 2270}
+{"method": "jev", "payloads": 1000, "predictions": 2475}
+{"method": "jev", "payloads": 1100, "predictions": 2685}
+{"method": "jev", "payloads": 1200, "predictions": 2916}
+{"method": "jev", "payloads": 1300, "predictions": 3169}
+{"method": "jev", "payloads": 1400, "predictions": 3419}
+{"method": "jev", "payloads": 1500, "predictions": 3671}
+{"method": "jev", "payloads": 1600, "predictions": 3909}
+{"method": "jev", "payloads": 1700, "predictions": 4118}
+{"method": "jev", "payloads": 1800, "predictions": 4370}
+{
+  "status": "PASS",
+  "split": "train",
+  "dataset": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/eval_dataset",
+  "annotation": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/eval_dataset/annotations/train.json",
+  "annotation_sha256": "30aeff9d982973a97f3f07a69337151e8b5fc8dbee4080c3c405fb5660568adb",
+  "predictions": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_predictions/jev.json",
+  "predictions_sha256": "9a3b355a783d69ea927b6b3a8a394f820abda8d67994e6c50fdab84431bc8860",
+  "trackeval_gt": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/prepared/trackeval/gt",
+  "trackeval_trackers": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/prepared/trackeval/trackers",
+  "tracker_name": "GMT",
+  "seq_lengths": {
+    "00002garden_View1": 932,
+    "00002garden_View2": 932
+  },
+  "sequences": [
+    "00002garden_View1",
+    "00002garden_View2"
+  ],
+  "scenes": [
+    "00002garden"
+  ],
+  "prediction_rows": {
+    "00002garden_View1": 2480,
+    "00002garden_View2": 2047
+  },
+  "gt_duplicate_rows": {
+    "00002garden_View1": 0,
+    "00002garden_View2": 0
+  },
+  "gt_duplicate_policy": "raw GT retained; strict TrackEval rejects these IDs unless explicitly overridden",
+  "crossview_input": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/prepared/crossview_input",
+  "gt_policy": "symlink downloaded split GT; no GT rows or labels changed",
+  "box_policy": "TrackEval=XYWH; cross-view input=XYXY as required by original converter"
+}
+
+Eval Config:
+USE_PARALLEL         : False                         
+NUM_PARALLEL_CORES   : 8                             
+BREAK_ON_ERROR       : True                          
+RETURN_ON_ERROR      : False                         
+LOG_ON_ERROR         : /data1/liuyeqiang/WWW_jev_phase5/TrackEval/error_log.txt
+PRINT_RESULTS        : True                          
+PRINT_ONLY_COMBINED  : True                          
+PRINT_CONFIG         : True                          
+TIME_PROGRESS        : True                          
+DISPLAY_LESS_PROGRESS : True                          
+OUTPUT_SUMMARY       : True                          
+OUTPUT_EMPTY_CLASSES : True                          
+OUTPUT_DETAILED      : True                          
+PLOT_CURVES          : False                         
+OUTPUT_FOLDER        : /home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/evaluation
+
+PermissiveVisionTrackDataset Config:
+GT_FOLDER            : /home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/prepared/trackeval/gt
+TRACKERS_FOLDER      : /home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/prepared/trackeval/trackers
+OUTPUT_FOLDER        : /home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/evaluation
+TRACKERS_TO_EVAL     : ['GMT']                       
+CLASSES_TO_EVAL      : ['pedestrian']                
+BENCHMARK            : VisionTrack                   
+SPLIT_TO_EVAL        : test                          
+INPUT_AS_ZIP         : False                         
+PRINT_CONFIG         : True                          
+DO_PREPROC           : True                          
+TRACKER_SUB_FOLDER   : data                          
+OUTPUT_SUB_FOLDER    :                               
+TRACKER_DISPLAY_NAMES : None                          
+SEQMAP_FOLDER        : None                          
+SEQMAP_FILE          : None                          
+SEQ_INFO             : {'00002garden_View1': 932, '00002garden_View2': 932}
+GT_LOC_FORMAT        : {gt_folder}/{seq}/gt/gt.txt   
+SKIP_SPLIT_FOL       : True                          
+
+CLEAR Config:
+THRESHOLD            : 0.5                           
+PRINT_CONFIG         : True                          
+
+Identity Config:
+THRESHOLD            : 0.5                           
+PRINT_CONFIG         : True                          
+
+Evaluating 1 tracker(s) on 2 sequence(s) for 1 class(es) on PermissiveVisionTrackDataset dataset using the following metrics: HOTA, CLEAR, Identity, Count
+
+
+Evaluating GMT
+
+1 eval_sequence(00002garden_View1, GMT)                                  0.9470 sec
+2 eval_sequence(00002garden_View2, GMT)                                  0.7863 sec
+
+All sequences for GMT finished in 1.73 seconds
+
+HOTA: GMT-pedestrian               HOTA      DetA      AssA      DetRe     DetPr     AssRe     AssPr     LocA      RHOTA     HOTA(0)   LocA(0)   HOTALocA(0)
+COMBINED                           4.1707    87.945    0.20246   93.156    90.44     0.20246   100       91.857    4.312     4.4384    91.144    4.0454    
+
+CLEAR: GMT-pedestrian              MOTA      MOTP      MODA      CLR_Re    CLR_Pr    MTR       PTR       MLR       sMOTA     CLR_TP    CLR_FN    CLR_FP    IDSW      MT        PT        ML        Frag      
+COMBINED                           -3.2992   91.292    95.995    99.499    96.598    75        0         25        -11.963   4373      22        154       4364      9         0         3         6         
+
+Identity: GMT-pedestrian           IDF1      IDR       IDP       IDTP      IDFN      IDFP      
+COMBINED                           0.20175   0.20478   0.19881   9         4386      4518      
+
+Count: GMT-pedestrian              Dets      GT_Dets   IDs       GT_IDs    
+COMBINED                           4527      4395      4527      12        
+{
+  "status": "PASS",
+  "prepared_manifest": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/prepared/manifest.json",
+  "output": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/evaluation",
+  "combined_metrics": {
+    "HOTA": {
+      "HOTA_TP": [
+        4384.0,
+        4384.0,
+        4382.0,
+        4381.0,
+        4381.0,
+        4380.0,
+        4379.0,
+        4377.0,
+        4374.0,
+        4373.0,
+        4369.0,
+        4360.0,
+        4337.0,
+        4305.0,
+        4256.0,
+        4178.0,
+        3950.0,
+        3170.0,
+        1070.0
+      ],
+      "HOTA_FN": [
+        11.0,
+        11.0,
+        13.0,
+        14.0,
+        14.0,
+        15.0,
+        16.0,
+        18.0,
+        21.0,
+        22.0,
+        26.0,
+        35.0,
+        58.0,
+        90.0,
+        139.0,
+        217.0,
+        445.0,
+        1225.0,
+        3325.0
+      ],
+      "HOTA_FP": [
+        143.0,
+        143.0,
+        145.0,
+        146.0,
+        146.0,
+        147.0,
+        148.0,
+        150.0,
+        153.0,
+        154.0,
+        158.0,
+        167.0,
+        190.0,
+        222.0,
+        271.0,
+        349.0,
+        577.0,
+        1357.0,
+        3457.0
+      ],
+      "AssRe": [
+        0.0020391755517022003,
+        0.0020391755517022003,
+        0.0020368692883385043,
+        0.002035715367020718,
+        0.002035715367020718,
+        0.0020345609187982206,
+        0.002033523150711985,
+        0.0020303486664767726,
+        0.002026994231512869,
+        0.00202719339109836,
+        0.002026749723921314,
+        0.0020223523594592847,
+        0.0020241528615103986,
+        0.002023975795340635,
+        0.0020206691322438713,
+        0.0020103397989839236,
+        0.001980910928134737,
+        0.001971384585695735,
+        0.002048023781218162
+      ],
+      "AssPr": [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "AssA": [
+        0.0020391755517022003,
+        0.0020391755517022003,
+        0.0020368692883385043,
+        0.002035715367020718,
+        0.002035715367020718,
+        0.0020345609187982206,
+        0.002033523150711985,
+        0.0020303486664767726,
+        0.002026994231512869,
+        0.00202719339109836,
+        0.002026749723921314,
+        0.0020223523594592847,
+        0.0020241528615103986,
+        0.002023975795340635,
+        0.0020206691322438713,
+        0.0020103397989839236,
+        0.001980910928134737,
+        0.001971384585695735,
+        0.002048023781218162
+      ],
+      "LocA": [
+        0.9114357697621123,
+        0.9114357697621123,
+        0.9117937641443635,
+        0.911967022916214,
+        0.911967022916214,
+        0.9121073755009096,
+        0.9122366583528492,
+        0.9124871741770627,
+        0.9128280548733009,
+        0.9129230683072355,
+        0.9132837726115908,
+        0.913962941496189,
+        0.9154876099245826,
+        0.9172675511995225,
+        0.9195007995479082,
+        0.922091555712911,
+        0.9274440245727458,
+        0.9391439305009069,
+        0.9634368673479993
+      ],
+      "DetRe": [
+        0.9974971558589306,
+        0.9974971558589306,
+        0.9970420932878271,
+        0.9968145620022754,
+        0.9968145620022754,
+        0.9965870307167235,
+        0.9963594994311717,
+        0.9959044368600682,
+        0.995221843003413,
+        0.9949943117178612,
+        0.9940841865756541,
+        0.9920364050056882,
+        0.9868031854379977,
+        0.9795221843003413,
+        0.9683731513083049,
+        0.9506257110352674,
+        0.8987485779294653,
+        0.7212741751990899,
+        0.2434584755403868
+      ],
+      "DetPr": [
+        0.9684117517119505,
+        0.9684117517119505,
+        0.9679699580296002,
+        0.967749061188425,
+        0.967749061188425,
+        0.9675281643472499,
+        0.9673072675060747,
+        0.9668654738237243,
+        0.9662027833001988,
+        0.9659818864590236,
+        0.965098299094323,
+        0.9631102275237464,
+        0.9580296001767175,
+        0.950960901259112,
+        0.9401369560415286,
+        0.9229070024298652,
+        0.8725425226419262,
+        0.7002429865252927,
+        0.2363596200574332
+      ],
+      "DetA": [
+        0.9660643455266638,
+        0.9660643455266638,
+        0.9651982378854626,
+        0.9647654701607575,
+        0.9647654701607575,
+        0.964332892998679,
+        0.9639005062733876,
+        0.9630363036303631,
+        0.9617414248021108,
+        0.9613101780611123,
+        0.9595870854381726,
+        0.9557211749232792,
+        0.9459105779716467,
+        0.9324236517218973,
+        0.9121303043291898,
+        0.8806913996627319,
+        0.7944489139179405,
+        0.5511126564673157,
+        0.13627101375445747
+      ],
+      "HOTA": [
+        0.04438439810078717,
+        0.04438439810078717,
+        0.04433940288171843,
+        0.04431690301879433,
+        0.04431690301879433,
+        0.04429440164181856,
+        0.0442731746601702,
+        0.04421876835512979,
+        0.04415251204949551,
+        0.0441447804362087,
+        0.044100372566343186,
+        0.0439636778840362,
+        0.04375691491792198,
+        0.04344194864515456,
+        0.04293149834960576,
+        0.04207717874768752,
+        0.03967029789937077,
+        0.03296141677691502,
+        0.016705875519105132
+      ],
+      "RHOTA": [
+        0.04510068528437246,
+        0.04510068528437246,
+        0.04506489120145203,
+        0.04504698349432577,
+        0.04504698349432577,
+        0.045029068665445524,
+        0.045012443929707845,
+        0.044967023976655834,
+        0.04491446242407365,
+        0.04491153407416529,
+        0.044886076356669344,
+        0.044791150513608824,
+        0.04469273421432056,
+        0.04452560153465733,
+        0.04423529965245421,
+        0.04371590901298506,
+        0.042194085837544006,
+        0.03770820588476586,
+        0.022329548755983235
+      ],
+      "HOTA(0)": 0.04438439810078717,
+      "LocA(0)": 0.9114357697621123,
+      "HOTALocA(0)": 0.04045352804841899
+    },
+    "CLEAR": {
+      "CLR_TP": 4373,
+      "CLR_FN": 22,
+      "CLR_FP": 154,
+      "IDSW": 4364,
+      "MT": 9,
+      "PT": 0,
+      "ML": 3,
+      "Frag": 6.0,
+      "CLR_Frames": 1864,
+      "MOTP_sum": 3992.2125777075407,
+      "MTR": 0.75,
+      "MLR": 0.25,
+      "PTR": 0.0,
+      "CLR_Re": 0.9949943117178612,
+      "CLR_Pr": 0.9659818864590236,
+      "MODA": 0.9599544937428897,
+      "MOTA": -0.03299203640500569,
+      "MOTP": 0.9129230683072355,
+      "sMOTA": -0.11963308812115114,
+      "CLR_F1": 0.9802734812822237,
+      "FP_per_frame": 0.08261802575107297,
+      "MOTAL": 0.9591263060883013
+    },
+    "Identity": {
+      "IDTP": 9,
+      "IDFN": 4386,
+      "IDFP": 4518,
+      "IDR": 0.0020477815699658703,
+      "IDP": 0.0019880715705765406,
+      "IDF1": 0.0020174848688634837
+    },
+    "Count": {
+      "Dets": 4527,
+      "GT_Dets": 4395,
+      "IDs": 4527,
+      "GT_IDs": 12
+    }
+  },
+  "detail_files": [
+    "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007/minimal_tracking/C2/tracking_eval_runtime_state/jev/evaluation/GMT/pedestrian_detailed.csv"
+  ],
+  "strict_online": true,
+  "test_gt_tuning": false,
+  "allow_duplicate_gt": true,
+  "gt_duplicate_rows": {
+    "00002garden_View1": 0,
+    "00002garden_View2": 0
+  },
+  "gt_policy": "raw downloaded GT retained; duplicate-ID check is only bypassed when explicitly requested"
+}
+{"variant": "A1", "metrics": {"HOTA": 4.170709597736024, "DetA": 87.94461028006626, "AssA": 0.20246226553100316, "IDF1": 0.20174848688634836, "MOTA": -3.299203640500569, "IDSW": 4364.0, "Frag": 6.0}, "status": "PASS"}

@@ -1,0 +1,42 @@
+{
+  "N01_N10_scope": "paired full-run GT-aligned outcomes under per-camera global one-to-one assignment; observational, not a single-action causal intervention",
+  "attachment_truncated_after_PHASE10_REACT": true,
+  "component_success_rule": "both AssA and HOTA exceed same GMT OFF, no unsupported or GT-dependent online decision",
+  "evaluation_video": 1,
+  "full24_authorized": false,
+  "horizons": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "match_horizon_selection": "if MATCH-only below GMT, video01 full-future-32 MATCH events where frozen OFF-label best action differs from OFF committed action; evenly spaced 32 ranks by sorted(frame,view,row), fallback evenly spaced all MATCH if none; selection fixed before H16/H32 outcomes",
+  "memory_horizon_selection": "video06 full-future-32 MEMORY events, evenly spaced 64 ranks by sorted(frame,view,row); use all selected frames/full source event maps; no outcome-dependent selection",
+  "no_initial_retraining": true,
+  "official_test_read": false,
+  "predeclared_utc": "2026-10-07T15:51:29.222842+00:00",
+  "scope": "frozen policy diagnosis before any retraining",
+  "single_checkpoint": "2509541a6669d8fc31013111b7bb9a38c4551be79ff5a466b259184029dd871b",
+  "train_reactivation_selection": "exclude held-out video01; metadata-only choose smallest complete-video set by descending event count then video ID, target >=200 train and >=50 val events, at most 5 TRAIN-source videos total; unresolved legacy traces are coverage-only, never canonical labels",
+  "variants": {
+    "A0": [],
+    "A1": [
+      "MATCH"
+    ],
+    "A2": [
+      "MATCH",
+      "REACTIVATION"
+    ],
+    "A3": [
+      "MATCH",
+      "MEMORY"
+    ],
+    "A4": [
+      "MATCH",
+      "MEMORY",
+      "REACTIVATION"
+    ]
+  }
+}
