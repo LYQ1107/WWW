@@ -48,8 +48,12 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument('--variant', required=True, choices=VARIANTS)
     p.add_argument('--output', type=Path, required=True)
+    p.add_argument('--checkpoint', type=Path, help='Isolated minimal-retraining diagnostic, A1 only')
     p.add_argument('--max-frame', type=int)
     args = p.parse_args()
+    if args.checkpoint is not None and args.variant != 'A1':
+        raise ValueError('checkpoint overrides are restricted to the MATCH-only diagnostic')
+    checkpoint = args.checkpoint.resolve() if args.checkpoint is not None else CHECKPOINT
     output = args.output.resolve()
     output.mkdir(parents=True, exist_ok=True)
     os.environ.update(JEV_PILOT_ROOT=str(output), JEV_VIDEO_ID='1',
@@ -100,7 +104,7 @@ def main():
         'seen_record_keys': set(),
     }
     name = 'gmt_off' if args.variant == 'A0' else 'jev'
-    result = pilot.run_method(name, None if args.variant == 'A0' else CHECKPOINT,
+    result = pilot.run_method(name, None if args.variant == 'A0' else checkpoint,
                             image_lookup=image_lookup, by_key=by_key, records=records,
                             feature_source_mode='runtime', parity_report=parity_report, device='cuda:0',
                             max_frame=args.max_frame, **kwargs)
@@ -118,12 +122,12 @@ def main():
     summary = {'status': 'PASS', 'classification': 'TRAIN_HELD_OUT_FROZEN_CHECKPOINT_COMPONENT_DIAGNOSTIC',
                'variant': args.variant, 'controlled_questions': sorted(controlled), 'metrics': metrics,
                'result': result, 'action_counts_by_question': by_question,
-               'checkpoint': None if args.variant == 'A0' else str(CHECKPOINT),
-               'checkpoint_sha256': None if args.variant == 'A0' else sha(CHECKPOINT),
+               'checkpoint': None if args.variant == 'A0' else str(checkpoint),
+               'checkpoint_sha256': None if args.variant == 'A0' else sha(checkpoint),
                'predictions_sha256': sha(result['predictions']), 'decisions_sha256': sha(result['decisions']),
                'online_decisions_sha256': sha(output / 'online_decisions.jsonl'),
                'legacy_label_based_counts_are_off_state_proxies_not_causal_truth': True,
-               'trained': False, 'official_test_read': False, 'full24_authorized': False,
+               'trained': args.checkpoint is not None, 'official_test_read': False, 'full24_authorized': False,
                'prepared': str(prepared), 'evaluation': str(evaluated), 'completed_utc': now()}
     if args.max_frame is None and args.variant in {'A0','A4'}:
         original = BASELINE / 'closed_loop/tracking_predictions' / (name + '.json')
