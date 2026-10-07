@@ -179,6 +179,8 @@ Native B2 在02/05的两项主指标均正，03略负；pooled ΔHOTA **+0.0942*
 
 所有必需JSON位于 [reports/JEV_PHASE6](../reports/JEV_PHASE6)，最终gate见 [FINAL_PHASE6_GO_NO_GO.json](../reports/JEV_PHASE6/FINAL_PHASE6_GO_NO_GO.json)。各实验 `evidence/.../ARCHIVE_MANIFEST.json` 声明源文件路径、source SHA256、归档路径、archive SHA256和字节数；`.gz` 解压恢复原字节，`.partNNNNN.gz` 按编号解压后拼接恢复整个JSON或JSONL。原大JSON按字节分片保留空格与换行，降低单次Git传输量。
 
+归档完整性审计 PASS：1,636 个归档文件、1,498 个源文件，共 1.988 GB（按清单累加，Git可去重）。SHA、lossless分片重建、所有projection输入/动作、68个事件204个分支及训练标签绑定均已核验。见 [PUBLICATION_INTEGRITY_AUDIT.json](../reports/JEV_PHASE6/PUBLICATION_INTEGRITY_AUDIT.json)。
+
 | 证据目录 | 内容 |
 | --- | --- |
 | `evidence/gating_training`, `evidence/gating_tracking` | G1–G3 checkpoint/训练及G0–G5development原始预测、决策、输入、评测。 |

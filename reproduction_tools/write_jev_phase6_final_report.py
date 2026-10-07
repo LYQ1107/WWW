@@ -22,6 +22,16 @@ def main():
     react = read('REACTIVATION_CANONICAL_DATA_AUDIT')
     held = read('HELDOUT_RESULTS')
     mechanism = read('NATIVE_HELDOUT_MECHANISM_AUDIT')
+    audit_path = REPORTS / 'PUBLICATION_INTEGRITY_AUDIT.json'
+    audit_text = ''
+    if audit_path.exists():
+        audit = read('PUBLICATION_INTEGRITY_AUDIT')
+        assert audit['status'] == 'PASS'
+        audit_text = (f"归档完整性审计 PASS：{audit['archive_files_verified']:,} 个归档文件、"
+                      f"{audit['source_files_verified']:,} 个源文件，共 "
+                      f"{audit['archive_bytes_verified'] / 1e9:.3f} GB（按清单累加，Git可去重）。"
+                      "SHA、lossless分片重建、所有projection输入/动作、68个事件204个分支及训练标签绑定均已核验。"
+                      "见 [PUBLICATION_INTEGRITY_AUDIT.json](../reports/JEV_PHASE6/PUBLICATION_INTEGRITY_AUDIT.json)。")
     descriptions = {'G0': 'GMT OFF', 'G1': 'score-only scalar threshold',
                     'G2': '64D dynamic threshold', 'G3': 'binary JEV retrained',
                     'G4a': 'frozen B2 REASSOCIATE→NEW',
@@ -200,6 +210,8 @@ Native B2 在02/05的两项主指标均正，03略负；pooled ΔHOTA **+0.0942*
 ## 复核入口与原始证据边界
 
 所有必需JSON位于 [reports/JEV_PHASE6](../reports/JEV_PHASE6)，最终gate见 [FINAL_PHASE6_GO_NO_GO.json](../reports/JEV_PHASE6/FINAL_PHASE6_GO_NO_GO.json)。各实验 `evidence/.../ARCHIVE_MANIFEST.json` 声明源文件路径、source SHA256、归档路径、archive SHA256和字节数；`.gz` 解压恢复原字节，`.partNNNNN.gz` 按编号解压后拼接恢复整个JSON或JSONL。原大JSON按字节分片保留空格与换行，降低单次Git传输量。
+
+{audit_text}
 
 | 证据目录 | 内容 |
 | --- | --- |
