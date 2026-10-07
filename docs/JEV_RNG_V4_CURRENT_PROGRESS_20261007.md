@@ -63,7 +63,7 @@ is pushed to this branch.
 - CPU regression suite: `6 passed`, one existing Pillow deprecation warning.
 - Stage1 checkpoint exists, loads as a dictionary containing model/optimizer/
   scheduler state, and has SHA256
-  `143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64`.
+  `143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e`.
 - Stage2 checkpoint exists, loads with the same resumable state structure, and
   has SHA256
   `cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8`.
