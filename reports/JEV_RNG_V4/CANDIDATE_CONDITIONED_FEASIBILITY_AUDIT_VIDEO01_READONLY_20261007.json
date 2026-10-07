@@ -1,0 +1,53 @@
+{
+  "schema_version": "candidate_conditioned_feasibility_audit_v1",
+  "created_utc": "2026-10-07T09:00:27Z",
+  "classification": "READ_ONLY_SCREENING_NOT_V2_ACCEPTANCE",
+  "source_commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+  "video_id": 1,
+  "native_candidate_evidence": {
+    "path": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/native_video1_corrected_v4b/native_off_trace_video01.jsonl",
+    "sha256": "cb340485ecf348d2a63cacf69bcf9d3c3fd78a949a7d1cb8f5a9738d5c5a5e1b",
+    "reactivation_events": 174,
+    "candidate_fields_complete_events": 174,
+    "finite_candidate_score_events": 174,
+    "total_candidate_scores": 559,
+    "candidate_count_distribution": {
+      "1": 28,
+      "3": 73,
+      "4": 63,
+      "6": 10
+    },
+    "candidate_order": ["torch_unique_sorted"]
+  },
+  "action_level_return_evidence": {
+    "path": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_corrected_full/video01_records.jsonl",
+    "sha256": "22662cb1b5441de3d69582b49d862ccde3228b678e74c5028004e557e3f11daa",
+    "classification": "LEGACY_ACTION_LEVEL_ONLY_NOT_V2_ACCEPTANCE",
+    "reactivation_records": 174,
+    "informative_records": 174,
+    "utility_tie_records": 174,
+    "best_action_distribution": {
+      "REACTIVATE_OLD": 174,
+      "START_NEW": 174
+    },
+    "candidate_level_return_records": 0
+  },
+  "formal_candidate_metrics": {
+    "candidate_recall": null,
+    "correct_candidate_rank": null,
+    "candidate_level_oracle_headroom": null,
+    "reason": "The native trace stores candidate IDs and scores, while the available action-level records store returns only for REACTIVATE_OLD versus START_NEW. There is no verified candidate-to-ground-truth identity mapping and no per-candidate long-term return. These metrics must not be inferred or fabricated."
+  },
+  "next_required_evidence": [
+    "v2 records bound to the current source commit",
+    "runtime candidate identity/event-key parity against fresh native replay",
+    "candidate-to-ground-truth mapping validated offline",
+    "per-candidate feasible-set return or an explicitly specified equivalent audit target"
+  ],
+  "policy": {
+    "gt_used_only_for_offline_audit": true,
+    "action_labels_copied_to_candidate_supervision": false,
+    "authorizes_full_h8": false,
+    "authorizes_model_selection": false
+  }
+}
