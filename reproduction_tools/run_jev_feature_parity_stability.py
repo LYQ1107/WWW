@@ -37,6 +37,10 @@ def parity_template(feature_names, expected_count: int, tolerance: float):
     return {
         "schema_version": "jev_runtime_feature_parity_stability_v1",
         "tolerance": float(tolerance),
+        "relative_tolerance": 1e-7,
+        "scale_sensitive_feature_names": sorted(
+            pilot_scale_sensitive_feature_names(feature_names)
+        ),
         "feature_names": list(feature_names(64)),
         "expected_record_count": int(expected_count),
         "compared_records": 0,
@@ -46,11 +50,28 @@ def parity_template(feature_names, expected_count: int, tolerance: float):
         "per_feature_max_abs_error": [0.0] * 64,
         "per_feature_sum_abs_error": [0.0] * 64,
         "per_feature_count": [0] * 64,
+        "tolerance_exceed_count": 0,
         "seen_record_keys": set(),
         "collect_error_values": True,
         "error_values": [],
         "per_feature_error_values": [[] for _ in range(64)],
     }
+
+
+def pilot_scale_sensitive_feature_names(feature_names):
+    """Keep the explicit scale-sensitive contract in the parity report."""
+
+    names = set(feature_names(64))
+    return names.intersection(
+        {
+            "raw_traj_score",
+            "mean_traj_score",
+            "log1p_traj_score",
+            "score_minus_threshold",
+            "score_over_threshold",
+            "raw_score_variance",
+        }
+    )
 
 
 def finite_tree(value: Any) -> bool:
@@ -177,6 +198,12 @@ def main() -> None:
                 "missing_records": finalized["missing_record_count"],
                 "finite_runtime_records": finalized["finite_runtime_records"],
                 "off_action_mismatches": finalized["off_action_mismatches"],
+                "tolerance_exceed_count": int(
+                    finalized.get("tolerance_exceed_count", 0)
+                ),
+                "numeric_tolerance_pass": bool(
+                    finalized.get("numeric_tolerance_pass", False)
+                ),
                 "max_abs_error": finalized["max_abs_error"],
                 "mean_abs_error": finalized["mean_abs_error"],
                 "p99_abs_error": float(np.percentile(all_errors, 99)) if all_errors.size else None,
@@ -204,7 +231,10 @@ def main() -> None:
         "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
         "repetitions_requested": int(args.repetitions),
         "tolerance_tested": float(args.tolerance),
-        "tolerance_policy_candidate": "FLOAT32_RUNTIME_FEATURE_PARITY_TOLERANCE",
+        "relative_tolerance": 1e-7,
+        "tolerance_policy_candidate": (
+            "FLOAT32_RUNTIME_FEATURE_PARITY_ABSOLUTE_2E-5_PLUS_SCALE_SENSITIVE_RELATIVE_1E-7"
+        ),
         "seed_policy": {
             "trajectory_rng_master_seed": 20261006,
             "video_rng_seed": 20261006 + int(args.video_id),

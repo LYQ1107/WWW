@@ -56,6 +56,40 @@ METHODS = {
     "jev": "offline/jev/model.pth",
 }
 
+# These features intentionally preserve unbounded accumulated GMT evidence.
+# A cross-device float32 replay can differ by a few ULPs at large magnitudes;
+# unit-bounded/state-flag features remain governed by the strict absolute
+# tolerance.  The parity driver supplies the relative envelope explicitly.
+SCALE_SENSITIVE_FEATURE_NAMES = frozenset(
+    {
+        "raw_traj_score",
+        "mean_traj_score",
+        "log1p_traj_score",
+        "score_minus_threshold",
+        "score_over_threshold",
+        "raw_score_variance",
+    }
+)
+
+
+def feature_parity_tolerance(
+    parity_report: Mapping[str, Any], index: int, expected: float
+) -> float:
+    """Return the explicit per-feature float32 comparison envelope."""
+
+    absolute = float(parity_report.get("tolerance", 0.0))
+    relative = float(parity_report.get("relative_tolerance", 0.0))
+    names = parity_report.get("feature_names", ())
+    feature_name = str(names[index]) if index < len(names) else ""
+    scale_sensitive = set(
+        parity_report.get(
+            "scale_sensitive_feature_names", SCALE_SENSITIVE_FEATURE_NAMES
+        )
+    )
+    if feature_name in scale_sensitive:
+        return absolute + relative * max(1.0, abs(float(expected)))
+    return absolute
+
 
 def utc_now() -> str:
     return dt.datetime.now(dt.timezone.utc).isoformat()
@@ -529,6 +563,7 @@ def run_method(
                             float(counts["feature_parity_max_abs_error"]), error
                         )
                         if name == "gmt_off":
+                            parity_report.setdefault("tolerance_exceed_count", 0)
                             parity_report["compared_records"] += 1
                             parity_report["max_abs_error"] = max(
                                 float(parity_report["max_abs_error"]), error
@@ -545,7 +580,21 @@ def run_method(
                                 )
                                 parity_report["per_feature_sum_abs_error"][index] += float(value)
                                 parity_report["per_feature_count"][index] += 1
-                            if error > float(parity_report.get("tolerance", 0.0)):
+                            tolerance_by_index = [
+                                feature_parity_tolerance(
+                                    parity_report, index, float(value)
+                                )
+                                for index, value in enumerate(trace_feature.tolist())
+                            ]
+                            exceed_indices = [
+                                int(index)
+                                for index, value in enumerate(error_vector.tolist())
+                                if float(value) > tolerance_by_index[index]
+                            ]
+                            parity_report["tolerance_exceed_count"] += len(
+                                exceed_indices
+                            )
+                            if exceed_indices:
                                 example_key = "feature_mismatch_examples"
                                 if error > max(
                                     1e-2,
@@ -574,11 +623,7 @@ def run_method(
                                                 row,
                                             ],
                                             "max_abs_error": error,
-                                            "error_indices": [
-                                                int(index)
-                                                for index, value in enumerate(error_vector.tolist())
-                                                if float(value) > float(parity_report.get("tolerance", 0.0))
-                                            ],
+                                            "error_indices": exceed_indices,
                                             "expected_feature": [float(value) for value in trace_feature.tolist()],
                                             "runtime_feature": [float(value) for value in runtime_feature.cpu().tolist()],
                                             "runtime_context": runtime_tracker_context(state),
@@ -1200,12 +1245,15 @@ def finalize_feature_parity(
     )
     parity_report["per_feature"] = per_feature
     parity_report["off_action_mismatches"] = int(off_action_counts["off_action_mismatches"])
+    parity_report["numeric_tolerance_pass"] = (
+        int(parity_report.get("tolerance_exceed_count", 0)) == 0
+    )
     parity_report["pass"] = bool(
         parity_report["expected_record_count"] > 0
         and parity_report["expected_record_count"] == parity_report["compared_records"]
         and parity_report["missing_record_count"] == 0
         and parity_report["finite_runtime_records"] == parity_report["compared_records"]
-        and parity_report["max_abs_error"] <= parity_report["tolerance"]
+        and parity_report["numeric_tolerance_pass"]
         and parity_report["off_action_mismatches"] == 0
     )
     parity_report["status"] = "PASS" if parity_report["pass"] else "FAIL"

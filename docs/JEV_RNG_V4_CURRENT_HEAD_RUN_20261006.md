@@ -182,3 +182,15 @@ The scheduler is polling GPU6 and deferring it only while the live corrected
 video6 builder owns PID `33861`; GPU1 is deferred because of the unrelated
 external PID `16536`. GPUs 2/3/5/7 remain protocol-reserved and are not used
 just because their utilization is low. No process was stopped or migrated.
+
+# Current-head runtime parity tolerance contract
+
+The current-head runtime feature parity gate keeps the absolute `2e-5`
+tolerance for bounded state/flag features and applies an explicit relative
+`1e-7` envelope only to the unbounded float32 score-derived features listed in
+the parity report.  This accounts for reproducible cross-device float32
+reduction differences without weakening structural checks.  Semantic keys,
+legal actions, OFF actions, candidate ordering, question types, record counts,
+missing counts, and finite-state checks remain exact.  The report records the
+per-feature policy and `tolerance_exceed_count`; a parity PASS requires that
+count to be zero.
