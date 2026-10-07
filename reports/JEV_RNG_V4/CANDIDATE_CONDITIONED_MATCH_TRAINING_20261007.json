@@ -1,0 +1,66 @@
+{
+  "status": "COMPLETE_SCREENING_ONLY",
+  "classification": "NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT_NO_RUNTIME_CLOSED_LOOP",
+  "source_commit": "a390682724f79d1482e7caf1008300b6e5634fec",
+  "seed": 20261003,
+  "epochs": 20,
+  "batch_size": 128,
+  "learning_rate": 0.001,
+  "horizon": 8,
+  "train": {
+    "video_id": 7,
+    "sequence": "00020court3",
+    "records": 1703,
+    "dataset_sha256": "396e67e8cd5e4e8c9745e6e96b5580cd5c1afe7dc9b8a339f739da04ee8999f9",
+    "trace_sha256": "7b525b801e8121541829c11f010a70837d6a11aecf7d6db18450cf6b66cb5db3"
+  },
+  "validation": {
+    "video_id": 6,
+    "sequence": "00017court1",
+    "records": 2600,
+    "dataset_sha256": "f320cee87f584f92e0f2990e6d6812e25cc4379c13429456dc071ab65dd0f83b",
+    "trace_sha256": "9f0964ff4a0afa637db888126728df99593ad9b1df20c639e66c1aeb593c5b8d"
+  },
+  "shared_provenance": {
+    "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+    "gmt_checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "native_action_binding_missing": 0,
+    "candidate_ids_used_as_features": false,
+    "native_action_label_copied_to_candidate_supervision": false,
+    "future_gt_used_by_model": false
+  },
+  "baseline": {
+    "native_action_greedy_utility": 1.2517890293960674,
+    "oracle_utility": 1.2771736447763844,
+    "random_utility": -0.7598664343177985
+  },
+  "methods": {
+    "candidate_mlp": {
+      "checkpoint_sha256": "a8961d852e5223cfb3ab888e17cea66a6f0aee5d7cb797327d1e5794d378552a",
+      "nll": 1.27265692831232,
+      "best_candidate_accuracy": 0.9973076923076923,
+      "brier": 0.06259711488358265,
+      "ece": 0.3457733602076769,
+      "expected_utility": 0.4749300260113803,
+      "greedy_utility": 1.2723659524500657,
+      "delta_greedy_vs_native": 0.0205769230539983
+    },
+    "candidate_jev": {
+      "checkpoint_sha256": "e1dc87d5ce22458e3e6cb0cb3831ab962b470e4b876379edcac8782db0ac8f90",
+      "nll": 1.270739231980764,
+      "best_candidate_accuracy": 0.9934615384615385,
+      "brier": 0.06061656869685346,
+      "ece": 0.3431083539930673,
+      "expected_utility": 0.46505025333904015,
+      "greedy_utility": 1.271404413991751,
+      "delta_greedy_vs_native": 0.0196153845956836
+    }
+  },
+  "interpretation": {
+    "offline_signal": "BOTH_MODELS_HAVE_MEANINGFUL_GREEDY_VALIDATION_SIGNAL_AND_BEAT_NATIVE_ACTION_UTILITY_BY_ABOUT_0.02",
+    "selection": "NO_FINAL_SELECTION_FROM_ONE_SEED",
+    "runtime": "NOT_RUN",
+    "reactivation": "EXCLUDED;_PRIOR_AUDIT_FOUND_ZERO_CURRENT_GT_CANDIDATE_RECALL",
+    "full_h8_authorized": false
+  }
+}

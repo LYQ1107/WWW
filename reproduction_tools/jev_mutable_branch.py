@@ -448,3 +448,92 @@ class FrozenEvidenceGMTBranchRunner:
                 outcome["sample_weight"] = common_weight
                 outcome["informative"] = bool(common_weight > 0.0)
         return results
+
+    @staticmethod
+    def _candidate_event(
+        event: Mapping[str, Any], candidate_track_id: int
+    ) -> Dict[str, Any]:
+        """Make a typed MATCH event whose proposal is one legal candidate.
+
+        Candidate-conditioned supervision must score the candidate itself, not
+        copy the native ``ACCEPT_CURRENT``/``REASSOCIATE`` action label.  The
+        branch engine represents a legal candidate assignment as an
+        ``ACCEPT_CURRENT`` proposal, so this helper changes only the proposal
+        identity in an isolated event copy.  The original trace event is never
+        mutated.
+        """
+
+        branch_event = copy.deepcopy(dict(event))
+        context = dict(branch_event.get("context", {}))
+        context["proposal_track_id"] = int(candidate_track_id)
+        branch_event["context"] = context
+        return branch_event
+
+    def run_candidate_rollouts(
+        self,
+        base_state: TraceTrackerState,
+        position: int,
+        event: Mapping[str, Any],
+        candidate_track_ids: Sequence[int],
+        horizon: int,
+        *,
+        include_start_new: bool = True,
+    ) -> Dict[str, Dict[str, Any]]:
+        """Score each legal MATCH candidate with an isolated future rollout.
+
+        The returned keys are stable row labels (``track:<id>`` and, when
+        requested, ``START_NEW``).  Absolute IDs remain metadata only; the
+        caller must build model features from candidate-local evidence and use
+        a legal-set mask at runtime.  The method deliberately refuses a
+        reactivation event and refuses IDs absent from the native candidate
+        set, preventing accidental candidate-label fabrication.
+        """
+
+        if horizon < 1:
+            raise ValueError("horizon must be positive")
+        if str(event.get("question")) != "MATCH_DECISION":
+            raise ValueError("candidate rollouts are defined only for MATCH_DECISION")
+        native_ids = event.get("context", {}).get("candidate_track_ids")
+        if not isinstance(native_ids, Sequence) or isinstance(native_ids, (str, bytes)):
+            raise ValueError("MATCH event is missing native candidate_track_ids")
+        native_set = {int(value) for value in native_ids}
+        candidates = [int(value) for value in candidate_track_ids]
+        if len(set(candidates)) != len(candidates):
+            raise ValueError("candidate_track_ids contains duplicates")
+        if not set(candidates).issubset(native_set):
+            raise ValueError("candidate rollouts contain an ID outside the native legal set")
+        if not candidates and not include_start_new:
+            raise ValueError("candidate rollout set cannot be empty")
+
+        source_digest = digest_state(base_state.snapshot())
+        results: Dict[str, Dict[str, Any]] = {}
+        rollout_specs = [(f"track:{candidate}", candidate, False) for candidate in candidates]
+        if include_start_new:
+            rollout_specs.append(("START_NEW", None, True))
+
+        for label, candidate, is_start_new in rollout_specs:
+            branch = copy.deepcopy(base_state)
+            branch_before = digest_state(branch.snapshot())
+            if is_start_new:
+                branch_event = event
+                metrics = self._identity_utility(
+                    branch, position, branch_event, "START_NEW", horizon
+                )
+            else:
+                branch_event = self._candidate_event(event, int(candidate))
+                metrics = self._identity_utility(
+                    branch, position, branch_event, "ACCEPT_CURRENT", horizon
+                )
+            results[label] = {
+                **metrics,
+                "candidate_track_id": None if candidate is None else int(candidate),
+                "candidate_label": label,
+                "action": "START_NEW" if is_start_new else "CANDIDATE_ASSIGNMENT",
+                "branch_before_digest": branch_before,
+                "rollout_digest": digest_state(branch.snapshot()),
+            }
+            if digest_state(base_state.snapshot()) != source_digest:
+                raise AssertionError(
+                    f"candidate rollout mutated source state: {label}"
+                )
+        return results

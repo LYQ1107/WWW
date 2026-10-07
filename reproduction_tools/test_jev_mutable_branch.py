@@ -114,6 +114,63 @@ def main():
     )
     assert memory["WRITE_MEMORY"]["sample_weight"] == 0.0
     assert memory["SKIP_MEMORY"]["sample_weight"] == 0.0
+
+    # Candidate-conditioned MATCH supervision must evaluate legal candidate
+    # identities by isolated rollouts, without reusing the native action label
+    # or mutating the source state.
+    candidate_events = [
+        {
+            "question": "MATCH_DECISION",
+            "off_action": "ACCEPT_CURRENT",
+            "context": {
+                "video_id": 4,
+                "event_order": 0,
+                "frame": 1,
+                "view": 0,
+                "decision_scope": "match",
+                "proposal_track_id": 10,
+                "alternate_track_id": 20,
+                "candidate_track_ids": [10, 20],
+            },
+        },
+        {
+            "question": "MATCH_DECISION",
+            "off_action": "ACCEPT_CURRENT",
+            "context": {
+                "video_id": 4,
+                "event_order": 1,
+                "frame": 2,
+                "view": 0,
+                "decision_scope": "match",
+                "proposal_track_id": 10,
+                "candidate_track_ids": [10],
+            },
+        },
+    ]
+    candidate_runner = FrozenEvidenceGMTBranchRunner(candidate_events, lambda _: 7)
+    candidate_state = TraceTrackerState(
+        track_targets={10: 7, 20: 8}, target_tracks={7: 10, 8: 20}
+    )
+    candidate_before = candidate_state.snapshot()
+    candidate_outcomes = candidate_runner.run_candidate_rollouts(
+        candidate_state,
+        0,
+        candidate_events[0],
+        [10, 20],
+        horizon=1,
+    )
+    assert set(candidate_outcomes) == {"track:10", "track:20", "START_NEW"}
+    assert candidate_outcomes["track:10"]["immediate_identity"] > 0.0
+    assert candidate_outcomes["track:20"]["immediate_identity"] < 0.0
+    assert candidate_state.snapshot() == candidate_before
+    try:
+        candidate_runner.run_candidate_rollouts(
+            candidate_state, 0, candidate_events[0], [99], horizon=1
+        )
+    except ValueError as exc:
+        assert "outside the native legal set" in str(exc)
+    else:
+        raise AssertionError("illegal candidate ID was accepted")
     print("JEV mutable branch invariants: PASS")
 
 
