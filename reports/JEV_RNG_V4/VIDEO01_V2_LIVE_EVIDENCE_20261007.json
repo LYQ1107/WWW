@@ -1,0 +1,198 @@
+{
+  "schema_version": "video01_v2_live_evidence_v1",
+  "snapshot_utc": "2026-10-07T10:27:14Z",
+  "classification": "LIVE_OPERATIONAL_EVIDENCE_NOT_FINAL_RESULT",
+  "purpose": "Record the live video01 corrected v2 builder, current diagnostic results, and proof that the same formal builder process had been alive for more than six hours.",
+  "canonical_source": {
+    "worktree": "/data1/liuyeqiang/WWW_rng_fix_v4",
+    "branch": "jev/counterfactual-rng-isolation-v4-20261006",
+    "commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+    "commit_is_frozen_for_current_builder": true
+  },
+  "video01_v2_formal_builder": {
+    "pid": 12163,
+    "start_utc": "2026-10-07T04:15:18Z",
+    "observed_utc": "2026-10-07T10:27:14Z",
+    "ps_state": "Rsl",
+    "ps_elapsed": "06:11:56",
+    "ps_cpu_time": "06:12:02",
+    "ps_cpu_percent": 100.0,
+    "ps_rss_kib": 3150452,
+    "same_pid_alive_for_at_least_seconds": 22316,
+    "six_hour_threshold_seconds": 21600,
+    "six_hour_threshold_pass": true,
+    "interpretation": "At the observation time the original formal video01 v2 process was still alive under the same PID, with an OS start time more than six hours earlier and active CPU execution. This is process-lifetime evidence, not evidence that final records already exist.",
+    "gpu_observation": {
+      "observed_around_utc": "2026-10-07T10:25:46Z",
+      "gpu_index": 0,
+      "process_memory_mib": 1231,
+      "gpu_utilization_percent": 10,
+      "query_scope": "nvidia-smi compute-process and GPU utilization snapshot"
+    },
+    "output_records": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_corrected_full_v2/video01_records.jsonl",
+    "output_records_exists_at_snapshot": false,
+    "manifest": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_corrected_full_v2/manifest.json",
+    "manifest_exists_at_snapshot": false,
+    "command": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "-u",
+      "reproduction_tools/build_jev_counterfactual_v2.py",
+      "--trace",
+      "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_off_trace/video01/trace_video_01.jsonl",
+      "--cache",
+      "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train",
+      "--annotations",
+      "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json",
+      "--output",
+      "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_corrected_full_v2/video01_records.jsonl",
+      "--gmt-checkpoint",
+      "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+      "--config-file",
+      "/data1/liuyeqiang/WWW_rng_fix_v4/configs/VISION_test.yaml",
+      "--association-backend",
+      "formal_gmt_transformer",
+      "--device",
+      "cuda:0",
+      "--view-num",
+      "2",
+      "--history-limit",
+      "80",
+      "--horizon",
+      "8",
+      "--video-ids",
+      "1"
+    ]
+  },
+  "other_live_jobs": [
+    {
+      "pid": 5457,
+      "role": "bounded_cost_diagnostic_max2400",
+      "start_utc": "2026-10-07T10:19:38Z",
+      "observed_utc": "2026-10-07T10:27:14Z",
+      "ps_state": "Rsl",
+      "ps_elapsed": "00:07:36",
+      "ps_cpu_time": "00:07:35",
+      "ps_cpu_percent": 99.9,
+      "ps_rss_kib": 2958816,
+      "gpu_index": 4,
+      "gpu_process_memory_mib_observed": 1227,
+      "output": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/diagnostics/JEV_V2_DIAGNOSTIC_MAX2400_20261007.json",
+      "result_available_at_snapshot": false
+    },
+    {
+      "pid": 9824,
+      "role": "targeted_reactivation_window_diagnostic",
+      "start_utc": "2026-10-07T10:22:00Z",
+      "completed_before_snapshot": true,
+      "output": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/diagnostics/JEV_V2_REACTIVATION_WINDOW_210_220_20261007.json",
+      "output_status": "JSON_VALID_DIAGNOSTIC_ONLY",
+      "output_created_utc": "2026-10-07T10:25:47.153481Z",
+      "records": 113,
+      "reactivation_records": 5,
+      "skipped_events": 0,
+      "wall_seconds": 222.135756,
+      "frame_window": [210, 220]
+    },
+    {
+      "pids": [2843, 2849],
+      "role": "video01_v2_aftercare_waiter",
+      "start_utc": "2026-10-07T10:18:07Z",
+      "status": "WAITING_FOR_FORMAL_V2_MANIFEST",
+      "log": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_video01_v2_aftercare.log",
+      "last_log_lines": [
+        "video01_v2_aftercare_started=2026-10-07T10:18:08+00:00",
+        "canonical_commit=4108f18f5040432f68d55872e81e9f76e9acd08f"
+      ]
+    }
+  ],
+  "completed_diagnostic_results": {
+    "recomputation_scope": {
+      "report": "reports/JEV_RNG_V4/RECOMPUTATION_SCOPE_AUDIT_VIDEO01_20261007.json",
+      "status": "DIAGNOSTIC_ONLY",
+      "state_projection_exact_count": 20,
+      "state_projection_exact": true,
+      "label_projection_exact_count": 0,
+      "label_mismatch_count": 20,
+      "repeat_current_sample_exact": true,
+      "repeat_new_sample_sha256": "25092f9afa8d53e160e8a456b95bb75d5f466ddc7644564450978ca733bc803c",
+      "historical_60675_replay_equals_current_sample": true,
+      "historical_60675_replay_equals_old_artifact": false,
+      "decision": "OLD_REWARD_AND_LABEL_REUSE_BLOCKED; RECOMPUTE_ALL_V2_OUTCOMES_AND_LABELS"
+    },
+    "candidate_parity": {
+      "report": "reports/JEV_RNG_V4/CANDIDATE_PARITY_DIAGNOSTIC_VIDEO01_20261007.json",
+      "status": "BLOCKED",
+      "native_v3_v4b_trace_byte_identical": true,
+      "trace_line_count": 8995,
+      "candidate_id_set_exact": true,
+      "candidate_order_exact_or_canonicalized": true,
+      "legacy_off_action_exact": true,
+      "candidate_scores_within_tolerance": false,
+      "chosen_proposal_ids_exact": false,
+      "mismatch_count_capped": 225,
+      "missing_native_count": 100,
+      "missing_replay_count": 100,
+      "candidate_score_error_count": 25,
+      "chosen_proposal_mismatch_count": 8,
+      "interpretation": "The stale replay is not a valid parity witness. Fresh parity must be run against the completed v2-bound records."
+    },
+    "cost_diagnostic_max20": {
+      "report": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/diagnostics/JEV_V2_COST_VIDEO01_MAX20_20261007_v2.json",
+      "status": "DIAGNOSTIC_ONLY",
+      "records_emitted": 20,
+      "wall_seconds": 21.962085925,
+      "proposal_calls": 857,
+      "proposal_seconds": 7.893358238,
+      "step_calls": 908,
+      "step_seconds": 7.386140615,
+      "state_clone_calls": 51,
+      "state_clone_seconds": 0.017159127,
+      "reactivation_context_calls": 862,
+      "utility_rollout_calls": 51,
+      "proposal_plus_step_wall_share_approx": 0.696,
+      "measured_expansion": "51 branch clones, 908 steps, 857 proposals for 20 records"
+    },
+    "reactivation_window": {
+      "report": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/diagnostics/JEV_V2_REACTIVATION_WINDOW_210_220_20261007.json",
+      "status": "DIAGNOSTIC_ONLY",
+      "records": 113,
+      "question_distribution": {
+        "MATCH_DECISION": 57,
+        "MEMORY_DECISION": 51,
+        "REACTIVATION_DECISION": 5
+      },
+      "reactivation_records": 5,
+      "skipped_events": 0,
+      "wall_seconds": 222.135756,
+      "interpretation": "The native first-mismatch window was successfully recomputed and is available for fresh v2-bound parity investigation; it is not an official dataset artifact."
+    },
+    "controller_checkpoint_loader": {
+      "status": "SMOKE_PASS_NOT_V2_ACCEPTANCE",
+      "methods": ["question_threshold", "question_conditioned_mlp", "jev"],
+      "seed": 20261003,
+      "wrapper_forward_pass": true,
+      "scope": "Existing corrected small-H8 controller checkpoints loaded successfully; this does not prove runtime parity or video01 v2 tracking quality."
+    }
+  },
+  "formal_v2_acceptance": {
+    "status": "PENDING_CURRENT_VIDEO01_BUILDER",
+    "final_records_available": false,
+    "final_three_way_tracking_available": false,
+    "hota_idf1_mota_idsw_frag_final_metrics_available": false,
+    "do_not_treat_diagnostics_as_final_results": true
+  },
+  "full_h8": {
+    "status": "PAUSED",
+    "canonical_authority": "NOT_CANONICAL",
+    "build_classification": "PRE_VIDEO01_GATE_SPECULATIVE_BUILD",
+    "source_commit_authority": "MIXED_SOURCE_COMMIT_RISK",
+    "resume_policy": "FORBIDDEN_UNTIL_VIDEO01_HARD_GATES_PASS_AND_NEW_FROZEN_WORKTREE_IS_CREATED"
+  },
+  "input_provenance": {
+    "trace_sha256": "091d6ee90f7e4d3507af29222c973c90ff717d5a90b58b51dd82b3e7820632ea",
+    "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+    "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+    "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+  }
+}
