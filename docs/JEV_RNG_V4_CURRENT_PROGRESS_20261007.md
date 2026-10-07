@@ -1,6 +1,6 @@
 # JEV RNG-isolation v4 current progress
 
-Snapshot: `2026-10-07T00:59Z`  
+Snapshot: `2026-10-07T01:12Z`
 Branch: `jev/counterfactual-rng-isolation-v4-20261006`
 
 This is a timestamped progress snapshot, not a final research result.
@@ -67,3 +67,13 @@ is pushed to this branch.
 - Stage2 checkpoint exists, loads with the same resumable state structure, and
   has SHA256
   `cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8`.
+
+## Additional contract stress check at `2026-10-07T01:09Z`
+
+- Contract-only JEV stress suite: `PASS` on CPU. It verified legal-action
+  masking, action-permutation equivariance, fixed-threshold boundary behavior,
+  no future-GT import in the runtime path, and distinct-state sensitivity at a
+  fixed score. The synthetic ECE check was `0.08894442021846771`.
+- This is a controller/runtime contract check only; it is not a tracking result
+  and does not replace the pending video01 closed-loop gates.
+- Evidence: `reports/JEV_RNG_V4/JEV_STRESS_CONTRACT_20261007.json`.
