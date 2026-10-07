@@ -16,6 +16,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_SCALE_SENSITIVE_RELATIVE_TOLERANCE = 4.76837158203125e-7
 
 
 def main() -> None:
@@ -35,7 +36,18 @@ def main() -> None:
             "frozen value after the repeated stability gate passes"
         ),
     )
+    parser.add_argument(
+        "--relative-tolerance",
+        type=float,
+        default=DEFAULT_SCALE_SENSITIVE_RELATIVE_TOLERANCE,
+        help=(
+            "relative envelope for explicitly unbounded float32 score-derived "
+            "features; bounded/state features keep --tolerance"
+        ),
+    )
     args = parser.parse_args()
+    if args.relative_tolerance < 0:
+        raise ValueError("relative tolerance must be non-negative")
 
     pilot_root = args.output.resolve().parent / (args.output.stem + "_runtime")
     os.environ["JEV_VIDEO_ID"] = str(int(args.video_id))
@@ -83,6 +95,10 @@ def main() -> None:
         "schema_version": "jev_runtime_feature_parity_v4",
         "source_trace": str(args.trace.resolve()),
         "tolerance": float(args.tolerance),
+        "relative_tolerance": float(args.relative_tolerance),
+        "scale_sensitive_feature_names": sorted(
+            pilot.SCALE_SENSITIVE_FEATURE_NAMES
+        ),
         "feature_names": list(feature_names(64)),
         "expected_record_count": len(records),
         "compared_records": 0,
@@ -123,8 +139,15 @@ def main() -> None:
             item["counts"],
         )
     else:
-        parity["status"] = "BOUNDED_PASS" if parity["max_abs_error"] <= parity["tolerance"] else "BOUNDED_FAIL"
-        parity["pass"] = parity["max_abs_error"] <= parity["tolerance"]
+        parity["numeric_tolerance_pass"] = (
+            int(parity.get("tolerance_exceed_count", 0)) == 0
+        )
+        parity["status"] = (
+            "BOUNDED_PASS"
+            if parity["numeric_tolerance_pass"]
+            else "BOUNDED_FAIL"
+        )
+        parity["pass"] = bool(parity["numeric_tolerance_pass"])
         parity.pop("seen_record_keys", None)
     runtime_counts = item["counts"]
     question_types = (
@@ -161,6 +184,10 @@ def main() -> None:
         "device": str(args.device),
         "max_frame": args.max_frame,
         "tolerance": float(args.tolerance),
+        "relative_tolerance": float(args.relative_tolerance),
+        "tolerance_policy_candidate": (
+            "FLOAT32_RUNTIME_FEATURE_PARITY_ABSOLUTE_2E-5_PLUS_SCALE_SENSITIVE_RELATIVE_4EPS32"
+        ),
         "classification": "CANONICAL_FEATURE_PARITY_DIAGNOSTIC_NOT_TRACKING_RESULT",
         "parity": parity,
         "runtime_counts": runtime_counts,
