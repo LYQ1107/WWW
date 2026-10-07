@@ -207,8 +207,8 @@ def fork(video,device,shard,shards):
                     if not(start[0]<=frame<=start[0]+h):continue
                     relevant.extend(rank for row,rank in zip(read['query_rows'],read['ranks']) if actual[(frame,view,row)]['gt']==target and target is not None)
                 recovered=[k for k in cases[a]['actual_identity_recoveries'] if start[0]<=k[0]<=start[0]+h]
-                false=sum(actual[k]['gt'] is not None and actual[k]['gt']!=target for k in recovered)
-                correct_recovery=next((k[0]-start[0] for k in recovered if actual[k]['gt']==target),None)
+                false=sum(target is not None and actual[k]['gt'] is not None and actual[k]['gt']!=target for k in recovered)
+                correct_recovery=next((k[0]-start[0] for k in recovered if target is not None and actual[k]['gt']==target),None)
                 o['false_identity_recoveries']=false
                 o['mean_reciprocal_target_candidate_rank']=sum(1/rank for rank in relevant)/len(relevant) if relevant else 0.0
                 o['target_identity_recovery_latency']=correct_recovery

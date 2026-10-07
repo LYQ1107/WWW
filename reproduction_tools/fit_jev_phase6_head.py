@@ -9,16 +9,26 @@ import torch
 
 from jev_phase6_common import OUT,REPORTS,B2,sha,save,new_output,protect_anchor
 from gtr.modeling.jev_lifecycle import TypedJEVController,pack_typed_state
+from jev_phase6_label_contract import censor_unknown_target
 
 
 def main(kind,device,native_contract=False):
+    protect_anchor()
     if not native_contract:raise RuntimeError('legacy prefixes cannot train a canonical head; --native-contract required')
     question='MEMORY_DECISION' if kind=='MEMORY' else 'REACTIVATION_DECISION'
     source={v:sorted((OUT/f'lifecycle_native/video{v:02d}/labels').glob(f'{kind}_*.json')) for v in (24,23)}
     for v in (24,23):
         manifest=json.loads((OUT/f'lifecycle_native/video{v:02d}/CANONICAL_MANIFEST.json').read_text())
         if not manifest['native_MATCH_transition_contract']:raise AssertionError('canonical native prefix required')
-    rows={v:[json.loads(p.read_text()) for p in paths] for v,paths in source.items()}
+    rows={}
+    for v,paths in source.items():
+        rows[v]=[]
+        for path in paths:
+            row=json.loads(path.read_text())
+            if censor_unknown_target(row):save(path,row)
+            rows[v].append(row)
+    if len(rows[24])!=(10 if kind=='MEMORY' else 32) or len(rows[23])!=(10 if kind=='MEMORY' else 16):
+        raise RuntimeError('canonical bounded dataset incomplete; no fit on partial outcomes')
     counts={v:sum(float(r['sample_weight'])>0 for r in records) for v,records in rows.items()}
     output=new_output(OUT/'standalone_heads_native'/kind)
     eligibility={'status':'ELIGIBLE' if counts[24]>=4 and counts[23]>=2 else 'INSUFFICIENT_INFORMATIVE_DATA',

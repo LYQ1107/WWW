@@ -32,6 +32,10 @@ def main(path,max_workers):
         # initialized CUDA and before nvidia-smi can reflect its allocation.
         for index,task in list(enumerate(pending)):
             if len(running)>=max_workers:break
+            skip=task.get('skip_if')
+            if skip and Path(skip['path']).exists() and json.loads(Path(skip['path']).read_text()).get('status') in skip['statuses']:
+                pending.remove(task);completed.append({'id':task['id'],'gpu':None,'exit_code':0,'status':'INELIGIBLE','reason':skip})
+                continue
             if any(not Path(p).exists() for p in task.get('requires',[])):continue
             eligible=[]
             for gpu,uuid,used,free,util in cards:
@@ -49,9 +53,9 @@ def main(path,max_workers):
                 available=min(free,used+free-external_used-reserved)
                 if available>=task['reserve_mib']+1024:
                     eligible.append((bool(used or own),util,len(own),-available,gpu))
-            if not eligible:continue
-            gpu=min(eligible)[-1]
-            env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
+            if not eligible and not task.get('cpu_only'):continue
+            gpu=None if task.get('cpu_only') else min(eligible)[-1]
+            env=dict(os.environ,CUDA_VISIBLE_DEVICES='' if gpu is None else str(gpu),OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
             log=OUT/'queue_logs'/f"{task['id']}.log";log.parent.mkdir(parents=True,exist_ok=True)
             handle=log.open('w');proc=subprocess.Popen(task['argv'],cwd=ROOT,env=env,stdout=handle,stderr=subprocess.STDOUT)
             running.append({'task':task,'process':proc,'handle':handle,'gpu':gpu,'log':str(log)})
