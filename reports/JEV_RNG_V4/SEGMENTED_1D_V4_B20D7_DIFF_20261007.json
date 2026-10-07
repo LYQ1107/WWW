@@ -1,0 +1,249 @@
+{
+  "schema_version": "jev_segmented_1d_v4_b20d7_diff_v1",
+  "created_utc": "2026-10-07",
+  "scope": {
+    "requested_action": "pause_old_v2_b20d7_duplicate_compute_and_audit_1d_segmented_v4",
+    "rebuild_video01": false,
+    "retrain_three_models": false,
+    "start_full_h8": false,
+    "report_only": true
+  },
+  "process_audit": {
+    "old_v2_b20d7_duplicate_compute": "PAUSED",
+    "relevant_processes_found_after_pause": [],
+    "heavy_compute_started_after_pause_request": false
+  },
+  "segmented_v4": {
+    "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+    "status": "EXPERIMENTS_COMPLETE",
+    "records": 17491,
+    "segments": 88,
+    "early_equivalence_records": 70,
+    "late_equivalence_records": 102,
+    "mps_equivalence_records": 172,
+    "candidate_events": 174,
+    "hard_data_runtime_gates": "PASS",
+    "quality_gate": "NO_GO_ASSA_BELOW_GMT_OFF",
+    "full24_authorized": false,
+    "official_test_read": false,
+    "code_changes_after_source_freeze": false,
+    "stability_repetitions": 3,
+    "video_records": {
+      "video01": {
+        "records": 8995,
+        "match": 4524,
+        "memory": 4297,
+        "reactivation": 174,
+        "records_sha256": "a174399cb979d5d1f9dc41366a4f07f6299c159c68e10e19222fedc656db7611"
+      },
+      "video06": {
+        "records": 5162,
+        "match": 2600,
+        "memory": 2562,
+        "reactivation": 0,
+        "records_sha256": "4ffcb359673d020410b249f9a05dcb88fce06122b4a02ddd2e6260e6e9f99dd0"
+      },
+      "video07": {
+        "records": 3334,
+        "match": 1703,
+        "memory": 1631,
+        "reactivation": 0,
+        "records_sha256": "6abd8770b23427aaee3982695c93f27f4fceabaf0cf91328f2f0465dc4e79ae2"
+      }
+    }
+  },
+  "offline_training": {
+    "seed": 20261003,
+    "epochs": 20,
+    "batch_size": 128,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "dataset_sha256": "3a0c5b05956d62ea09837678261559ac94d65ba77ba8eb16710c183f724f5df5",
+    "policy_split_sha256": "bbdac3cff7c46b20c707dd278c526704a99ede973cc1ffde31b11172df9efd91",
+    "results": {
+      "question_threshold": {
+        "val_nll": 0.894494257506607,
+        "accuracy": 0.936458736923673,
+        "brier": 0.016869295238091064,
+        "ece": 0.48873892092787913,
+        "val_utility": 36.613425029058504
+      },
+      "question_conditioned_mlp": {
+        "val_nll": 0.8808785735141575,
+        "accuracy": 0.9843084075939559,
+        "brier": 0.009480304614294435,
+        "ece": 0.5101355368293842,
+        "val_utility": 36.62562960092987
+      },
+      "jev": {
+        "val_nll": 0.8787968804515015,
+        "accuracy": 0.9996125532739248,
+        "brier": 0.007631950432768402,
+        "ece": 0.540901797004145,
+        "val_utility": 36.62897132894227
+      }
+    },
+    "majority_val_utility": 36.62950406819063,
+    "uniform_val_utility": 36.416634379439955,
+    "overall_best_action_tie_rate": 0.5185974428516079,
+    "memory_decision_tie_records": 2562,
+    "memory_decision_records": 2562,
+    "unique_best_records": 2485,
+    "weighted_records": 5162,
+    "meaningful_learned_policy_advantage": false
+  },
+  "current_head_closed_loop": {
+    "classification": "CORRECTED_V4_SMALL_H8_CLOSED_LOOP_DIAGNOSTIC_NOT_OFFICIAL_TEST",
+    "gmt_off": {
+      "hota": 86.52304287961718,
+      "assa": 85.14919745804252,
+      "idf1": 94.64245684824031,
+      "mota": 89.57906712172924,
+      "idsw": 282,
+      "frag": 6
+    },
+    "question_threshold": {
+      "hota": 80.03350457912201,
+      "assa": 72.91680050127776,
+      "idf1": 83.9946200403497,
+      "mota": 78.45278725824801,
+      "idsw": 771,
+      "frag": 6,
+      "delta_hota": -6.489538300495164,
+      "delta_assa": -12.23239695776476,
+      "delta_idf1": -10.647836807890606,
+      "delta_mota": -11.12627986398123,
+      "delta_idsw": 489,
+      "delta_frag": 0
+    },
+    "question_conditioned_mlp": {
+      "hota": 68.21661200115642,
+      "assa": 53.51443301307711,
+      "idf1": 72.87603676305761,
+      "mota": 72.83276450511946,
+      "idsw": 1018,
+      "frag": 6,
+      "delta_hota": -18.30643087846076,
+      "delta_assa": -31.634764444965413,
+      "delta_idf1": -21.766420085182702,
+      "delta_mota": -16.746302616609782,
+      "delta_idsw": 736,
+      "delta_frag": 0
+    },
+    "jev": {
+      "hota": 85.07233456850815,
+      "assa": 82.45992978168289,
+      "idf1": 91.97489352163191,
+      "mota": 95.58589306029579,
+      "idsw": 18,
+      "frag": 6,
+      "delta_hota": -1.4507083111090253,
+      "delta_assa": -2.689267676359634,
+      "delta_idf1": -2.667563326608402,
+      "delta_mota": 6.00682593856655,
+      "delta_idsw": -264,
+      "delta_frag": 0
+    },
+    "quality_gate": "NO_GO_ASSA_BELOW_GMT_OFF"
+  },
+  "runtime_feature_mismatch": {
+    "question_threshold": {
+      "max_abs_error": 1783.02392578125,
+      "feature_parity_records": 8200,
+      "runtime_feature_records": 8404,
+      "canonical_feature_records": 0,
+      "wrong_commit": 594,
+      "no_candidate": 644
+    },
+    "question_conditioned_mlp": {
+      "max_abs_error": 1967.994384765625,
+      "feature_parity_records": 8378,
+      "runtime_feature_records": 8574,
+      "canonical_feature_records": 0,
+      "wrong_commit": 1047,
+      "no_candidate": 474,
+      "memory_contamination": 245
+    },
+    "jev": {
+      "max_abs_error": 2272.641357421875,
+      "feature_parity_records": 8809,
+      "runtime_feature_records": 9030,
+      "canonical_feature_records": 0,
+      "wrong_commit": 16,
+      "no_candidate": 18,
+      "false_reactivation": 2
+    }
+  },
+  "candidate_supervision_audit": {
+    "match_candidate_set_recall": 0.9979437971,
+    "reactivation_candidate_set_recall": 0.0,
+    "reactivation_events_with_current_gt_candidate": 0,
+    "reactivation_mapped_current_detections": 131,
+    "reactivation_unmapped_current_detections": 43,
+    "candidate_level_return_available": false
+  },
+  "source_diff": {
+    "merge_base": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+    "one_d_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+    "b20_commit": "b20d7e2bc26af53095f56bc92179f2e414468da6",
+    "candidate_commit": "5baa0dd",
+    "one_d_adds": [
+      "native raw-memory and joint stale-bank semantics",
+      "native trajectory input order and reverse raw accumulation",
+      "unmatched START_NEW row union in reactivation proposal",
+      "segmented small-gate scheduler",
+      "native row canonicalizer",
+      "equivalence/provenance/candidate/stability audit pipeline"
+    ],
+    "b20_adds": [
+      "preserve stale-bank original anchor boxes and image sizes",
+      "construct one joint old-reid Instances object with preserved geometry",
+      "adapter regression tests for old-reid geometry"
+    ],
+    "b20_integration_risks": [
+      "sorted possible_memory_ids instead of native insertion order",
+      "torch.stack mean instead of native reverse-order float32 raw sum",
+      "eager stale-bank promotion in step timing",
+      "removed unmatched START_NEW row union",
+      "missing 1d segmented scheduler and canonicalizer"
+    ]
+  },
+  "unmerged_fixes": [
+    {
+      "name": "stale_bank_anchor_geometry",
+      "status": "present_on_b20_candidate_not_merged_into_1d",
+      "validation": "bounded frame-220 5/5 pass; full 1d integration not run"
+    },
+    {
+      "name": "native_order_timing_and_row_union_restore",
+      "status": "candidate_commit_5baa0dd_not_merged",
+      "validation": "unit tests pass; bounded frame-220 5/5 pass; full candidate parity intentionally not rerun"
+    }
+  ],
+  "b20_pre_patch_diagnostic": {
+    "status": "FAIL",
+    "native_reactivation_events": 174,
+    "replay_reactivation_events": 174,
+    "missing_native": 0,
+    "missing_replay": 0,
+    "mismatch_count": 10,
+    "mismatch_frames": [881, 885, 890, 894, 897, 903, 905, 913, 924, 930],
+    "note": "diagnostic evidence only; not a final acceptance report"
+  },
+  "remaining_blockers": [
+    "learned-controller runtime feature construction is not canonical",
+    "reactivation candidate identity/long-horizon supervision is unavailable",
+    "current-head association quality is below GMT OFF",
+    "utility ties and majority baseline prevent a meaningful learned-policy claim",
+    "only seed 20261003 was run",
+    "official TEST and 24-video canonical Full H8 are not authorized"
+  ],
+  "artifact_sha256": {
+    "final_summary": "14257792121931cb3f9a62ef3b9a4b3532f1def0036501cc986d3c7fe9f5d863",
+    "training": "1157acfd166d0beae2c38bde6273386f8284a5778eb7ffff1ff1067d23f68cbe",
+    "tracking": "d3232d01ab4d93d39cd3555b037bda9d3ed596b09f9dd17d3f5f96abc66acee7",
+    "candidate_parity": "dc51514b3569e416de377a91ab39391a79e780687a9a4cbd9abb9de98034d6f7",
+    "parity1": "cac020f41d6c53ebe6d0f62e0d106f761c11fd0ed9ec1d818e2634f486bed703",
+    "stability": "a8bb8da864fe1e6395665607c9507a3c1ef565f9745c18628a3bc9e23da8cc29"
+  }
+}

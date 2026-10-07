@@ -62,6 +62,11 @@
 
 因此不能因为“超过六小时并且 8995 条都写出来”就把它升级成 canonical 或论文结果。
 
+本轮对 `1d2711e` segmented v4、`b20d7e2` 以及尚未合并修复的完整差异审计见
+[`JEV_1D_V4_VS_B20D7_DIFF_AND_REMAINING_20261007.md`](JEV_1D_V4_VS_B20D7_DIFF_AND_REMAINING_20261007.md)。
+该报告明确区分数据/语义 gate PASS、current-head controller quality NO-GO 和 Full H8
+未授权状态。
+
 ## 2. 当前 segmented small gate
 
 并发审计：[`SEGMENTED_CONCURRENCY_CHANGE_AUDIT_20261007.json`](../reports/JEV_RNG_V4/SEGMENTED_CONCURRENCY_CHANGE_AUDIT_20261007.json)。以下 MPS 数字是运行中的历史快照；最终 acceptance 状态以 `88/88 COMPLETE` 为准。
@@ -116,3 +121,4 @@ MPS 切换与等价性报告：[`SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261
 
 - [audit-diagnostics-20261007](https://github.com/LYQ1107/WWW/tree/jev/audit-diagnostics-20261007)
 - [video01-reactivation-box-parity-fix-20261007](https://github.com/LYQ1107/WWW/tree/jev/video01-reactivation-box-parity-fix-20261007)
+- [video01-parity-fix-native-order-20261007](https://github.com/LYQ1107/WWW/tree/jev/video01-parity-fix-native-order-20261007)（候选修复，未合并）
