@@ -120,7 +120,10 @@ def promote_stale_bank_candidates(
             state.possible_memory_ids.add(track_id)
 
     promoted: List[int] = []
-    for track_id in sorted(tuple(state.possible_memory_ids)):
+    # Native memory_bank traverses poss_ids.copy() and retains that insertion
+    # order in old_reids. Python set construction in trajectory-slot mapping
+    # is sensitive to colliding ID hashes, so sorting here changes its draws.
+    for track_id in tuple(state.possible_memory_ids.copy()):
         track_id = int(track_id)
         if track_id in recent:
             continue
@@ -128,10 +131,14 @@ def promote_stale_bank_candidates(
         if len(values) < state.memory_bank_size:
             continue
         recent_values = values[-state.memory_bank_size :]
-        state.reactivation_bank[track_id] = torch.stack(
-            [torch.as_tensor(value, dtype=torch.float32) for value in recent_values],
-            dim=0,
-        ).mean(dim=0).detach().cpu().clone()
+        # Native memory_bank sums the latest raw ReID observations in reverse
+        # chronological order. Preserve both its magnitudes and float order.
+        average = torch.as_tensor(recent_values[-1], dtype=torch.float32).clone()
+        for value in reversed(recent_values[:-1]):
+            average = average + torch.as_tensor(value, dtype=torch.float32)
+        state.reactivation_bank[track_id] = (
+            average / len(recent_values)
+        ).detach().cpu().clone()
         state.possible_memory_ids.discard(track_id)
         state.stale_ids.add(track_id)
         promoted.append(track_id)
@@ -175,7 +182,8 @@ def build_reactivation_proposal(
     probe.active_ids = set(int(value) for value in candidate_ids)
     probe.reactivation_bank = {
         int(track_id): state.reactivation_bank[int(track_id)].detach().cpu().clone()
-        for track_id in candidate_ids
+        for track_id in state.reactivation_bank
+        if track_id in candidate_ids
     }
     probe.reactivation_mode = True
     return engine.propose(payload, probe)
@@ -610,6 +618,7 @@ class CachedPerceptionMutableAssociationV2:
         state: MutableGMTState,
         *,
         actions: Optional[Mapping[int, str]] = None,
+        candidate_assignments: Optional[Mapping[int, int]] = None,
         threshold: Optional[float] = None,
         proposal: Optional[AssociationProposal] = None,
     ) -> Mapping[str, object]:
@@ -622,6 +631,33 @@ class CachedPerceptionMutableAssociationV2:
         """
 
         proposal = proposal or self.propose(perception, state)
+        candidate_assignments = {
+            int(row): int(track_id)
+            for row, track_id in (candidate_assignments or {}).items()
+        }
+        track_to_column: Dict[int, int] = {}
+        for column, track_id in enumerate(proposal.track_ids):
+            track_id = int(track_id)
+            if track_id in track_to_column:
+                raise ValueError(
+                    f"association proposal contains duplicate track ID {track_id}"
+                )
+            track_to_column[track_id] = int(column)
+        candidate_columns: Dict[int, int] = {}
+        for row, track_id in candidate_assignments.items():
+            if row < 0 or row >= int(proposal.scores.shape[0]):
+                raise ValueError(
+                    f"candidate assignment row {row} is outside proposal rows"
+                )
+            if track_id not in track_to_column:
+                raise ValueError(
+                    f"candidate assignment track {track_id} is outside the native legal set"
+                )
+            candidate_columns[row] = track_to_column[track_id]
+        if len(set(candidate_columns.values())) != len(candidate_columns):
+            raise ValueError(
+                "candidate assignments select one native track for multiple rows"
+            )
         action_map = dict(
             self._actions_for_proposal(proposal, state, threshold=threshold)
             if actions is None
@@ -629,12 +665,24 @@ class CachedPerceptionMutableAssociationV2:
         )
         for row in range(proposal.scores.shape[0]):
             action_map.setdefault(row, "START_NEW")
+        for row in candidate_assignments:
+            if action_map[row] != "ACCEPT_CURRENT":
+                raise ValueError(
+                    "candidate assignment requires ACCEPT_CURRENT for the same row"
+                )
 
         reassociate_rows = [
             row for row, action in action_map.items() if action == "REASSOCIATE"
         ]
+        selected_column_owners = {
+            int(column): int(row) for row, column in proposal.pairs.items()
+        }
+        candidate_pair_conflict = any(
+            selected_column_owners.get(column, row) != row
+            for row, column in candidate_columns.items()
+        )
         second = proposal
-        if reassociate_rows:
+        if reassociate_rows or candidate_pair_conflict:
             banned = set(proposal.banned_edges)
             for row, action in action_map.items():
                 if action == "START_NEW":
@@ -643,15 +691,38 @@ class CachedPerceptionMutableAssociationV2:
                 current = proposal.pairs.get(row)
                 if current is not None:
                     banned.add((row, current))
+            # Reserve candidate-conditioned columns for their selected rows;
+            # another REASSOCIATE row must not steal a selected identity.
+            for row, selected_column in candidate_columns.items():
+                for other_row in range(proposal.scores.shape[0]):
+                    if other_row != row:
+                        banned.add((other_row, selected_column))
             # REASSOCIATE is a constrained solve over the exact proposal that
             # produced the legal actions.  Re-running the transformer here
             # would consume a different trajectory-slot RNG stream and would
             # make action semantics depend on evaluation order.
+            solved_pairs = dict(constrained_hungarian(proposal.scores, banned))
+            solved_pairs.update(candidate_columns)
             second = AssociationProposal(
                 track_ids=proposal.track_ids,
                 scores=proposal.scores,
-                pairs=dict(constrained_hungarian(proposal.scores, banned)),
+                pairs=solved_pairs,
                 banned_edges=tuple(sorted(banned)),
+                rng_state_before=copy.deepcopy(proposal.rng_state_before),
+                rng_state_after=copy.deepcopy(proposal.rng_state_after),
+                trajectory_slot_mapping_digest=proposal.trajectory_slot_mapping_digest,
+                transformer_calls=0,
+                proposal_reused=True,
+            )
+        elif candidate_columns:
+            # No selected candidate collides with the native assignment.  Keep
+            # every other native pair byte-for-byte and only replace the
+            # explicitly selected rows.
+            second = AssociationProposal(
+                track_ids=proposal.track_ids,
+                scores=proposal.scores,
+                pairs={**dict(proposal.pairs), **candidate_columns},
+                banned_edges=tuple(proposal.banned_edges),
                 rng_state_before=copy.deepcopy(proposal.rng_state_before),
                 rng_state_after=copy.deepcopy(proposal.rng_state_after),
                 trajectory_slot_mapping_digest=proposal.trajectory_slot_mapping_digest,
@@ -665,6 +736,12 @@ class CachedPerceptionMutableAssociationV2:
             col = second.pairs.get(row)
             if action == "START_NEW" or col is None:
                 existing_track_ids[row] = None
+            elif row in candidate_columns:
+                # Candidate-conditioned selection is an explicit native-track
+                # binding; do not reapply the legacy proposal threshold.
+                existing_track_ids[row] = int(
+                    proposal.track_ids[candidate_columns[row]]
+                )
             else:
                 # GTRRCNN validates the second constrained-Hungarian proposal
                 # against the legacy scaled threshold before committing it.
@@ -691,8 +768,10 @@ class CachedPerceptionMutableAssociationV2:
             "final_proposal": second,
             "actions": action_map,
             "reassociate_rows": tuple(reassociate_rows),
+            "candidate_assignments": dict(candidate_assignments),
             "existing_track_ids": existing_track_ids,
         }
+
     def step(
         self,
         perception: Mapping[str, object],
@@ -701,6 +780,7 @@ class CachedPerceptionMutableAssociationV2:
         actions: Optional[Mapping[int, str]] = None,
         memory_actions: Optional[Mapping[int, str]] = None,
         reactivation_assignments: Optional[Mapping[int, int]] = None,
+        candidate_assignments: Optional[Mapping[int, int]] = None,
         threshold: Optional[float] = None,
         proposal: Optional[AssociationProposal] = None,
         reactivation_proposal: Optional[AssociationProposal] = None,
@@ -716,6 +796,7 @@ class CachedPerceptionMutableAssociationV2:
             perception,
             state,
             actions=actions,
+            candidate_assignments=candidate_assignments,
             threshold=threshold,
             proposal=proposal,
         )
@@ -800,6 +881,11 @@ class CachedPerceptionMutableAssociationV2:
                     continue
                 track_id = committed[row]
                 feature = features[row] if features.shape[1] else torch.empty(0)
+                if getattr(self.association_fn, "formal_gmt_association_adapter", False):
+                    # The frozen cache contains native, unnormalised ReID
+                    # vectors. Native GMT stores these verbatim; normalising
+                    # each sample changes the stale-bank transformer logits.
+                    feature = torch.as_tensor(perception["reid_features"][row], dtype=torch.float32)
                 state.memory.setdefault(track_id, []).append(feature.detach().cpu().clone())
                 state.counters["memory_writes"] = state.counters.get("memory_writes", 0) + 1
 
@@ -829,11 +915,15 @@ class CachedPerceptionMutableAssociationV2:
         model_bank_size = getattr(
             getattr(self.association_fn, "model", None), "bank_size", None
         )
-        promote_stale_bank_candidates(
-            state,
-            bank_size=None if model_bank_size is None else int(model_bank_size),
-            recent_ids=state.active_ids,
-        )
+        # Native bank promotion happens only when memory_bank is called for
+        # an unmatched query, before this step's memory writes. Eagerly
+        # promoting every committed key changes the persistent bank order.
+        if not getattr(self.association_fn, "formal_gmt_association_adapter", False):
+            promote_stale_bank_candidates(
+                state,
+                bank_size=None if model_bank_size is None else int(model_bank_size),
+                recent_ids=state.active_ids,
+            )
 
         return {
             "engine_version": ENGINE_VERSION,
@@ -863,6 +953,7 @@ class CachedPerceptionMutableAssociationV2:
                     second.proposal_reused
                 ),
             },
+            "candidate_assignments": dict(resolution["candidate_assignments"]),
         }
 
     def rollout(

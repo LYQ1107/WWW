@@ -204,7 +204,31 @@ def load_runtime_modules():
     )
 
 
-def choose(policy, feature, question, legal, off_action, context=None):
+def choose(
+    policy,
+    feature,
+    question,
+    legal,
+    off_action,
+    context=None,
+    safety_mode="none",
+):
+    """Choose a policy action, optionally applying an explicit safety gate.
+
+    The safety modes are diagnostic ablations, not final methods.  They make
+    it possible to test whether a learned action type is causing a mutable
+    state shift without changing the frozen data or checkpoint.  The default
+    path is byte-for-byte equivalent to the ordinary learned-policy path.
+    """
+
+    if safety_mode == "baseline_all":
+        return off_action
+    if safety_mode in {"baseline_memory", "baseline_memory_match", "baseline_memory_reactivation"} and question == "MEMORY_DECISION":
+        return off_action
+    if safety_mode in {"baseline_match", "baseline_memory_match"} and question == "MATCH_DECISION":
+        return off_action
+    if safety_mode in {"baseline_reactivation", "baseline_memory_reactivation"} and question == "REACTIVATION_DECISION":
+        return off_action
     return policy.decide(
         feature,
         question,
@@ -388,7 +412,8 @@ def build_reactivation_proposal(engine, payload, state, candidate_ids, proposal)
     probe.active_ids = set(int(value) for value in candidate_ids)
     probe.reactivation_bank = {
         int(track_id): state.reactivation_bank[int(track_id)].detach().cpu().clone()
-        for track_id in candidate_ids
+        for track_id in state.reactivation_bank
+        if track_id in candidate_ids
     }
     probe.reactivation_mode = True
     return engine.propose(payload, probe)
@@ -417,6 +442,9 @@ def run_method(
     device="cpu",
     max_frame=None,
     trace_writer=None,
+    policy_safety_mode="none",
+    candidate_model=None,
+    candidate_model_name=None,
 ):
     from jev_counterfactual_v2 import (
         subset_perception_payload,
@@ -428,11 +456,19 @@ def run_method(
         if checkpoint_path is not None
         else None
     )
-    policy = (
-        JEVRuntimePolicy("jev", controller, trace_writer)
-        if controller is not None
-        else JEVRuntimePolicy("off", trace_writer=trace_writer)
-    )
+    if candidate_model is not None:
+        if checkpoint_path is not None:
+            raise ValueError("candidate runtime cannot also load an action checkpoint")
+        # Candidate MATCH selection is handled by CandidateRuntimeScorer;
+        # MEMORY and REACTIVATION intentionally stay on the GMT OFF path for
+        # the first runtime screening.
+        policy = JEVRuntimePolicy("off", trace_writer=trace_writer)
+    else:
+        policy = (
+            JEVRuntimePolicy("jev", controller, trace_writer)
+            if controller is not None
+            else JEVRuntimePolicy("off", trace_writer=trace_writer)
+        )
     engine = build_formal_gmt_engine(
         config_file=CONFIG,
         checkpoint=CHECKPOINT,
@@ -487,6 +523,13 @@ def run_method(
             "REACTIVATE_OLD": 0,
             "START_NEW": 0,
         },
+        "candidate_model_name": candidate_model_name,
+        "candidate_match_rows": 0,
+        "candidate_assigned_rows": 0,
+        "candidate_start_new_rows": 0,
+        "candidate_selected_track_ids": {},
+        "candidate_invalid_rows": 0,
+        "candidate_probabilities": [],
         "off_action_mismatches": 0,
         "trace_action_records": 0,
     }
@@ -541,6 +584,7 @@ def run_method(
                 flush=True,
             )
         actions: Dict[int, str] = {}
+        candidate_assignments: Dict[int, int] = {}
         memories: Dict[int, str] = {}
         events_here = by_key.get((video_id, frame, view), ())
         first_frame_secondary_view = frame == seed_frame and view != seed_view
@@ -671,8 +715,18 @@ def run_method(
         # production GTRRCNN, but are computed from the current mutable state.
         for row in range(int(scores.shape[0])):
             col = proposal.pairs.get(row)
+            order = (
+                torch.argsort(scores[row], descending=True).tolist()
+                if scores.shape[1]
+                else []
+            )
             if col is None:
                 legal = ["START_NEW"]
+                if candidate_model is not None and order:
+                    # Candidate-conditioned selection is a direct legal-track
+                    # binding and remains available even when native GMT's
+                    # thresholded proposal would have started a new ID.
+                    legal = ["ACCEPT_CURRENT", "START_NEW"]
                 off_action = "START_NEW"
                 accept_score = reassociate_score = 0.0
                 track_id = None
@@ -681,7 +735,6 @@ def run_method(
                 score_variance = 0.0
                 candidate_count = 0
             else:
-                order = torch.argsort(scores[row], descending=True).tolist()
                 first_col = int(col)
                 second_col = next((int(item) for item in order if int(item) != first_col), None)
                 first_id = int(track_ids[first_col])
@@ -741,15 +794,17 @@ def run_method(
                 "association_rng_mapping_digest": proposal.trajectory_slot_mapping_digest,
                 "association_transformer_calls": proposal.transformer_calls,
             }
-            if col is not None:
+            if col is not None or candidate_model is not None:
                 match_context.update(
                     {
                         "candidate_track_ids": [int(track_ids[index]) for index in order],
                         "candidate_scores": [float(scores[row, index].item()) for index in order],
-                        "proposal_track_id": int(first_id),
+                        "proposal_track_id": (
+                            int(first_id) if col is not None else None
+                        ),
                         "alternate_track_id": (
                             int(track_ids[second_col]) if second_col is not None else None
-                        ),
+                        ) if col is not None else None,
                     }
                 )
             else:
@@ -761,14 +816,53 @@ def run_method(
                         "alternate_track_id": None,
                     }
                 )
-            action = choose(
-                policy,
-                feature,
-                "MATCH_DECISION",
-                legal,
-                off_action,
-                context=match_context,
-            )
+            candidate_result = None
+            if candidate_model is not None:
+                candidate_result = candidate_model.predict(
+                    feature,
+                    match_context["candidate_track_ids"],
+                    match_context["candidate_scores"],
+                    detection_score=float(match_context["detection_score"]),
+                    proposal_track_id=match_context.get("proposal_track_id"),
+                    alternate_track_id=match_context.get("alternate_track_id"),
+                )
+                action = str(candidate_result["selected_action"])
+                if action not in legal:
+                    raise RuntimeError(
+                        f"candidate model selected illegal action {action!r} for {legal!r}"
+                    )
+                counts["candidate_match_rows"] += 1
+                counts["candidate_probabilities"].append(
+                    {
+                        "frame": int(frame),
+                        "view": int(view),
+                        "row": int(row),
+                        "selected_key": candidate_result["selected_key"],
+                        "selected_probability": float(
+                            candidate_result["selected_probability"]
+                        ),
+                    }
+                )
+                selected_track_id = candidate_result.get("selected_track_id")
+                if selected_track_id is None:
+                    counts["candidate_start_new_rows"] += 1
+                else:
+                    candidate_assignments[row] = int(selected_track_id)
+                    counts["candidate_assigned_rows"] += 1
+                    key = str(int(selected_track_id))
+                    counts["candidate_selected_track_ids"][key] = (
+                        counts["candidate_selected_track_ids"].get(key, 0) + 1
+                    )
+            else:
+                action = choose(
+                    policy,
+                    feature,
+                    "MATCH_DECISION",
+                    legal,
+                    off_action,
+                    context=match_context,
+                    safety_mode=policy_safety_mode,
+                )
             if action not in legal:
                 action = off_action
             trace_action = trace_action_for(events_here, "MATCH_DECISION", row)
@@ -808,7 +902,7 @@ def run_method(
             actions[row] = action
             counts["MATCH_DECISION"] += 1
             counts[action] += 1
-            if record is not None:
+            if record is not None and candidate_model is None:
                 counts["known_commit_evaluations"] += 1
                 if action not in record["best_actions"]:
                     counts["wrong_commit"] += 1
@@ -831,7 +925,8 @@ def run_method(
                     ] if col is not None else [],
                     "candidate_scores": [
                         float(scores[row, index].item()) for index in order
-                    ] if col is not None else [],
+                    ] if (col is not None or candidate_model is not None) else [],
+                    "candidate_selection": candidate_result,
                 }
             )
 
@@ -841,6 +936,7 @@ def run_method(
             payload,
             state,
             actions=actions,
+            candidate_assignments=candidate_assignments,
             proposal=proposal,
         )
         final_existing = resolution["existing_track_ids"]
@@ -902,6 +998,7 @@ def run_method(
                 legal,
                 off_action,
                 context=memory_context,
+                safety_mode=policy_safety_mode,
             )
             if action not in legal:
                 action = off_action
@@ -965,7 +1062,10 @@ def run_method(
         ]
         bank_size = int(getattr(runtime_model, "bank_size", 10))
         bank_threshold = float(getattr(runtime_model, "thred_bank", 0.4))
-        stale_ids, recent_ids = reactivation_candidates(state, bank_size=bank_size)
+        if reactivation_rows:
+            stale_ids, recent_ids = reactivation_candidates(state, bank_size=bank_size)
+        else:
+            stale_ids, recent_ids = [], set(state.active_ids)
         if stale_ids and reactivation_rows:
             state.stale_ids.update(stale_ids)
             reactivation_payload = subset_perception_payload(
@@ -1043,6 +1143,7 @@ def run_method(
                 legal,
                 off_action,
                 context=reactivation_context,
+                safety_mode=policy_safety_mode,
             )
             if action not in legal:
                 action = off_action
@@ -1098,6 +1199,7 @@ def run_method(
             state,
             actions=actions,
             memory_actions=memories,
+            candidate_assignments=candidate_assignments,
             proposal=proposal,
             reactivation_assignments=reactivation_assignments,
             reactivation_proposal=reactivation_proposal,
@@ -1376,6 +1478,48 @@ def main() -> None:
         ),
     )
     parser.add_argument(
+        "--candidate-model-checkpoint",
+        type=Path,
+        help=(
+            "ID-free candidate-conditioned MATCH checkpoint; when supplied, "
+            "the selected candidate method is run beside gmt_off"
+        ),
+    )
+    parser.add_argument(
+        "--candidate-method-name",
+        help="runtime method label for the candidate checkpoint (defaults to its model_name)",
+    )
+    parser.add_argument(
+        "--candidate-device",
+        default="cpu",
+        help="device for candidate scorer inference; defaults to CPU",
+    )
+    parser.add_argument(
+        "--allow-candidate-source-mismatch",
+        action="store_true",
+        help=(
+            "screening-only override when the candidate checkpoint provenance "
+            "source commit differs from the current runtime source"
+        ),
+    )
+    parser.add_argument(
+        "--policy-safety-mode",
+        choices=(
+            "none",
+            "baseline_memory",
+            "baseline_match",
+            "baseline_reactivation",
+            "baseline_memory_match",
+            "baseline_memory_reactivation",
+            "baseline_all",
+        ),
+        default="none",
+        help=(
+            "diagnostic ablation: force one action family to the GMT OFF action; "
+            "does not modify data or checkpoints and is not a final method"
+        ),
+    )
+    parser.add_argument(
         "--methods",
         default="all",
         help="comma-separated subset for CPU smoke/debug runs; default is all methods",
@@ -1435,6 +1579,7 @@ def main() -> None:
         "second_transformer_call_for_reassociate": False,
         "device": args.device,
         "controller_feature_source": args.feature_source,
+        "policy_safety_mode": args.policy_safety_mode,
         "allow_runtime_with_legacy_trace": bool(args.allow_runtime_with_legacy_trace),
         "runtime_feature_tolerance": float(args.runtime_feature_tolerance),
         "runtime_feature_relative_tolerance": DEFAULT_SCALE_SENSITIVE_RELATIVE_TOLERANCE,
@@ -1443,23 +1588,83 @@ def main() -> None:
             if args.method_checkpoint_root is not None
             else None
         ),
+        "candidate_model_checkpoint": (
+            str(args.candidate_model_checkpoint.resolve())
+            if args.candidate_model_checkpoint is not None
+            else None
+        ),
+        "candidate_source_guard_override": bool(args.allow_candidate_source_mismatch),
         "methods": {},
     }
-    selected_names = list(METHODS)
+    candidate_model = None
+    candidate_method_name = None
+    candidate_source_guard = None
+    if args.candidate_model_checkpoint is not None:
+        from jev_candidate_runtime import CandidateRuntimeScorer
+
+        candidate_model = CandidateRuntimeScorer(
+            args.candidate_model_checkpoint.resolve(), device=args.candidate_device
+        )
+        candidate_method_name = str(
+            args.candidate_method_name or candidate_model.model_name
+        )
+        if candidate_method_name in METHODS:
+            raise ValueError(
+                f"candidate method name collides with action method: {candidate_method_name}"
+            )
+        runtime_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+        checkpoint_commit = str(
+            candidate_model.metadata.get("train_provenance", {}).get("source_commit", "")
+        )
+        candidate_source_guard = {
+            "runtime_source_commit": runtime_commit,
+            "checkpoint_training_source_commit": checkpoint_commit,
+            "pass": bool(checkpoint_commit and checkpoint_commit == runtime_commit),
+            "override": bool(args.allow_candidate_source_mismatch),
+        }
+        raw["candidate_source_guard"] = candidate_source_guard
+        if not candidate_source_guard["pass"] and not args.allow_candidate_source_mismatch:
+            raise RuntimeError(
+                "candidate checkpoint source commit differs from runtime; "
+                "rerun only with --allow-candidate-source-mismatch for screening"
+            )
+
+    selected_names = (
+        ["gmt_off", candidate_method_name]
+        if candidate_method_name is not None
+        else list(METHODS)
+    )
     if args.methods != "all":
         selected_names = [name.strip() for name in args.methods.split(",") if name.strip()]
-        unknown = sorted(set(selected_names) - set(METHODS))
+        allowed_names = set(METHODS)
+        if candidate_method_name is not None:
+            allowed_names.add(candidate_method_name)
+        unknown = sorted(set(selected_names) - allowed_names)
         if unknown:
             raise ValueError(f"unknown pilot methods: {unknown}")
         if args.max_frame is None:
             raise ValueError("--methods subsets require --max-frame smoke mode")
-    selected_methods = {name: METHODS[name] for name in selected_names}
+    selected_methods = {
+        name: METHODS[name] for name in selected_names if name in METHODS
+    }
     reactivation_gate = None
     def execute_method(name: str) -> None:
-        relative = selected_methods[name]
-        if relative is None:
+        if name == "gmt_off":
             checkpoint_path = None
+            method_candidate_model = None
+            method_candidate_name = None
+        elif candidate_method_name is not None and name == candidate_method_name:
+            checkpoint_path = None
+            method_candidate_model = candidate_model
+            method_candidate_name = candidate_model.model_name
         elif args.method_checkpoint_root is not None:
+            relative = selected_methods[name]
             checkpoint_path = (
                 args.method_checkpoint_root.resolve()
                 / name
@@ -1467,8 +1672,13 @@ def main() -> None:
                 / "calibration"
                 / "model_calibrated.pth"
             )
+            method_candidate_model = None
+            method_candidate_name = None
         else:
+            relative = selected_methods[name]
             checkpoint_path = OFFLINE_ROOT / name / "model.pth"
+            method_candidate_model = None
+            method_candidate_name = None
         if checkpoint_path is not None and not checkpoint_path.is_file():
             raise FileNotFoundError(checkpoint_path)
         print(json.dumps({"starting": name}), flush=True)
@@ -1493,6 +1703,13 @@ def main() -> None:
             parity_report=parity_report,
             device=args.device,
             max_frame=args.max_frame,
+            policy_safety_mode=(
+                "baseline_memory_reactivation"
+                if method_candidate_model is not None
+                else args.policy_safety_mode
+            ),
+            candidate_model=method_candidate_model,
+            candidate_model_name=method_candidate_name,
         )
         json_write(PILOT / "PILOT_TRACKING_RAW.json", raw)
 
@@ -1500,8 +1717,15 @@ def main() -> None:
     # before the parity gate.  Learned controllers must never get a chance to
     # mutate state when the frozen formal trace itself is not reproducible.
     if args.max_frame is None and args.feature_source == "runtime":
-        if selected_names != list(METHODS) or "gmt_off" not in selected_methods:
-            raise ValueError("full runtime mode requires the complete method set including gmt_off")
+        expected_runtime_methods = (
+            ["gmt_off", candidate_method_name]
+            if candidate_method_name is not None
+            else list(METHODS)
+        )
+        if selected_names != expected_runtime_methods or "gmt_off" not in selected_names:
+            raise ValueError(
+                "full runtime mode requires gmt_off plus the complete selected method set"
+            )
         execute_method("gmt_off")
         parity_report = finalize_feature_parity(
             parity_report,
@@ -1565,7 +1789,7 @@ def main() -> None:
 
     dataset_root = prepare_eval_dataset(subset_annotation)
     evaluations = {}
-    for name in METHODS:
+    for name in selected_names:
         prepared, evaluated = run_eval(name, Path(raw["methods"][name]["predictions"]), dataset_root)
         evaluations[name] = {
             "prepared": str(prepared),
@@ -1619,6 +1843,7 @@ def main() -> None:
         "association_backend": raw["association_backend"],
         "closed_loop_definition": "frozen detector/ReID payloads + formal GMT association transformer + mutable branch-local association/memory state + online typed controller commits; runtime mode recomputes controller features from the mutated state through the canonical shared builder",
         "controller_feature_source": args.feature_source,
+        "policy_safety_mode": args.policy_safety_mode,
         "trace_feature_policy": "trace_debug is parity-only and must not be interpreted as a closed-loop scientific result",
         "official_test_read": False,
         "methods": methods,
