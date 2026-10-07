@@ -15,7 +15,10 @@ from jev_phase6_offline_utility import OfflineIdentityAudit,prefix_identity,cons
 from gtr.modeling.jev_lifecycle import memory_features,reactivation_features,MEMORY_FIELDS,REACT_FIELDS
 
 
-def probe_root(video):return OUT/f'lifecycle/video{video:02d}'
+NATIVE_CONTRACT=False
+
+
+def probe_root(video):return OUT/f"{'lifecycle_native' if NATIVE_CONTRACT else 'lifecycle'}/video{video:02d}"
 
 
 def canonical_row(lab,row):
@@ -31,7 +34,7 @@ def canonical_row(lab,row):
 
 
 def collect(video,device):
-    lab=NativeReplayLab(video,device); root=probe_root(video);root.mkdir(parents=True,exist_ok=True)
+    lab=NativeReplayLab(video,device,native_match_validation=NATIVE_CONTRACT,record_transitions=NATIVE_CONTRACT); root=probe_root(video);root.mkdir(parents=True,exist_ok=True)
     snapshots=root/'snapshots';snapshots.mkdir(exist_ok=True)
     cap=32 if video==24 else 16; rng=random.Random(20261008+video)
     react_seen=0; reservoir=[]; writes=[]; first_read={}; reads=[]; canonical=[]
@@ -54,6 +57,7 @@ def collect(video,device):
                 if slot<len(reservoir):reservoir[slot]=captured
                 else:reservoir.append(captured)
     baseline=lab.run(root/'baseline',before_step=before)
+    final_state_sha=lab.state_fingerprint(lab.prefix,lab.metadata) if NATIVE_CONTRACT else None
     save(root/'bank_reads.json',reads)
     with (root/'canonical_reactivation.jsonl').open('w') as f:
         for r in canonical:f.write(json.dumps(r,sort_keys=True)+'\n')
@@ -77,8 +81,20 @@ def collect(video,device):
             mem.append({'state':lab.prefix.clone(),'metadata':copy.deepcopy(lab.metadata),
                         'record':{**canonical_row(lab,row),**selected_keys[key]}})
         return action
-    repeated=lab.run(root/'memory_capture',intervention=capture)
-    if sha(repeated['predictions'])!=sha(baseline['predictions']):raise AssertionError('metadata/capture changes the native B2 policy')
+    if NATIVE_CONTRACT:
+        reconstructed,state=lab.rebuild_memory_prefixes(selected)
+        replay_sha=lab.state_fingerprint(state,lab.metadata)
+        if replay_sha!=final_state_sha:raise AssertionError('journal replay changed final native mutable state or metadata')
+        for c in reconstructed:
+            lab.prefix=c['state'];lab.metadata=c['metadata'];lab.current=lab.cache.load(*c['selection']['key'][:3])
+            mem.append({'state':c['state'],'metadata':c['metadata'],
+                'record':{**canonical_row(lab,{'question':'MEMORY_DECISION','context':c['context']}),**c['selection']}})
+        save(root/'JOURNAL_RECONSTRUCTION.json',{'status':'PASS','final_native_state_and_metadata_sha256':final_state_sha,
+            'reconstructed_sha256':replay_sha,'all_factual_commits_identical':True,'future_counterfactual_policy_cached':False,
+            'journal_files':{str(p.relative_to(root)):sha(p) for p in lab.journal_files}})
+    else:
+        repeated=lab.run(root/'memory_capture',intervention=capture)
+        if sha(repeated['predictions'])!=sha(baseline['predictions']):raise AssertionError('metadata/capture changes the native B2 policy')
     for kind,captures in [('MEMORY',mem),('REACT',reservoir)]:
         for index,c in enumerate(sorted(captures,key=lambda c:tuple(c['record']['key']))):
             torch.save(c,snapshots/f'{kind}_{index:03d}.pth')
@@ -101,11 +117,14 @@ def collect(video,device):
               'reactivation_source_sha256':sha(root/'canonical_reactivation.jsonl'),
               'MEMORY_fields':MEMORY_FIELDS,'REACT_fields':REACT_FIELDS,
               'snapshot_files':{p.name:sha(p) for p in snapshots.glob('*.pth')},'official_test_read':False}
+    manifest.update(native_MATCH_transition_contract=NATIVE_CONTRACT,
+                    legacy_prefixes_eligible_for_canonical_supervision=False,
+                    factual_prefix_reconstruction_without_GMT_forward=NATIVE_CONTRACT)
     save(root/'CANONICAL_MANIFEST.json',manifest);print(json.dumps(manifest))
 
 
 def fork(video,device,shard,shards):
-    root=probe_root(video);lab=NativeReplayLab(video,device);gt=OfflineIdentityAudit(video)
+    root=probe_root(video);lab=NativeReplayLab(video,device,native_match_validation=NATIVE_CONTRACT);gt=OfflineIdentityAudit(video)
     baseline=json.loads((root/'baseline/result.json').read_text())
     actual=gt.align(json.loads(Path(baseline['predictions']).read_text()))
     outputs=[]
@@ -220,6 +239,8 @@ def fork(video,device,shard,shards):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('mode',choices=['collect','fork']);p.add_argument('--video',type=int,choices=[23,24],required=True)
     p.add_argument('--device',default='cuda:0');p.add_argument('--shard',type=int,default=0);p.add_argument('--shards',type=int,default=1)
+    p.add_argument('--native-contract',action='store_true')
     args=p.parse_args()
+    NATIVE_CONTRACT=args.native_contract
     if args.mode=='collect':collect(args.video,args.device)
     else:fork(args.video,args.device,args.shard,args.shards)

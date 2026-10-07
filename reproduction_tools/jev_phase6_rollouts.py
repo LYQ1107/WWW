@@ -107,7 +107,7 @@ class NativeReplayLab:
             self.before_step(key,payload,state,kwargs,self.decision_rows)
         result = self.original_step(payload,state,**kwargs)
         if self.record_transitions:
-            self.transition_buffer.append({'key':key,'kwargs':kwargs})
+            self.transition_buffer.append({'key':key,'kwargs':kwargs,'committed_ids':dict(result['committed_track_ids'])})
             if len(self.transition_buffer)>=64:self.flush_journal()
         self.steps_completed+=1
         if self.output is not None and time.monotonic()-self.status_stamp>=30:
@@ -126,6 +126,64 @@ class NativeReplayLab:
         path=self.output/'committed_transitions'/f'{len(self.journal_files):04d}.pth'
         path.parent.mkdir(parents=True,exist_ok=True)
         torch.save(self.transition_buffer,path);self.journal_files.append(path);self.transition_buffer=[]
+
+    def rebuild_memory_prefixes(self,selected):
+        """Reconstruct clean prefixes from actual commits, without GMT calls.
+
+        Cached actions apply only to the factual prefix. Every intervened
+        current/future key still runs the live native policy in run().
+        """
+        from jev_counterfactual_v2 import sync_production_history_for_key
+        state=self.seed_state.clone();self.metadata=copy.deepcopy(self.seed_metadata)
+        wanted={tuple(r['key']):r for r in selected};captures=[]
+        for path in self.journal_files:
+            import torch
+            for entry in torch.load(path,map_location='cpu'):
+                key=tuple(entry['key']);payload=self.cache.load(*key);kwargs=entry['kwargs']
+                sync_production_history_for_key(state,frame=key[1],view=key[2],view_num=2,history_limit=80)
+                self.current=payload;self.prefix=state
+                for track,m in self.metadata.items():
+                    if track not in state.active_ids:m.setdefault('stale_since',key[1])
+                    else:m.pop('stale_since',None)
+                if self.native_resolver is not None:self.native_resolver.reset()
+                resolution=self.engine.resolve_actions(payload,state,actions=kwargs['actions'],proposal=kwargs['proposal'])
+                for record_key,record in wanted.items():
+                    if record_key[:3]==key:
+                        row=record_key[4]
+                        if resolution['existing_track_ids'].get(row)!=record['track_id']:
+                            raise AssertionError('journal replay changed selected MEMORY identity')
+                        captures.append({'state':state.clone(),'metadata':copy.deepcopy(self.metadata),
+                            'context':{'video_id':key[0],'frame':key[1],'view':key[2],'detection_index':row,'track_id':record['track_id'],
+                                'model_image_size':list(payload['image_size']),'bbox_xyxy':payload['pred_boxes'][row].tolist()},
+                            'selection':record})
+                if any(t is None for t in resolution['existing_track_ids'].values()):
+                    ids,recent=self.pilot.reactivation_candidates(state,bank_size=state.memory_bank_size)
+                    if ids:state.stale_ids.update(ids)
+                result=self.original_step(payload,state,**kwargs)
+                if result['committed_track_ids']!=entry['committed_ids']:
+                    raise AssertionError(f'journal native commit/RNG replay mismatch at {key}')
+                if key[1]==self.seed_key[1] and key[2]!=self.seed_key[2]:
+                    state.association_history.sort(key=lambda item:int(item['perception']['view']))
+                self.update_metadata(payload,state,result['committed_track_ids'],kwargs.get('memory_actions',{}))
+        return captures,state
+
+    @staticmethod
+    def state_fingerprint(state,metadata):
+        import hashlib
+        digest=hashlib.sha256()
+        containers={'next_id':state.next_id,'active_ids':sorted(state.active_ids),'stale_ids':sorted(state.stale_ids),
+            'possible_memory_ids':sorted(state.possible_memory_ids),'bank_order':list(state.reactivation_bank),
+            'track_hits':state.track_hits,'memory_bank_size':state.memory_bank_size,
+            'rng_state':state.trajectory_rng_state,'rng_calls':state.trajectory_rng_calls,
+            'history':[[[item['perception']['video_id'],item['perception']['frame'],item['perception']['view']],item['assignments']] for item in state.association_history],
+            'metadata':metadata}
+        digest.update(json.dumps(containers,sort_keys=True).encode())
+        for mapping in (state.track_embeddings,state.reactivation_bank):
+            for track,vector in sorted(mapping.items()):digest.update(str(track).encode());digest.update(vector.detach().cpu().numpy().tobytes())
+        for track,vectors in sorted(state.memory.items()):
+            digest.update(str(track).encode())
+            for vector in vectors:digest.update(vector.detach().cpu().numpy().tobytes())
+        return digest.hexdigest()
 
     def update_metadata(self,payload,state,committed,memory_actions):
         for row,track in committed.items():
