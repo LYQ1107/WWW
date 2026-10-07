@@ -1,0 +1,331 @@
+[
+  {
+    "id": "native_fit_MEMORY",
+    "cpu_only": true,
+    "reserve_mib": 0,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_1.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/fit_jev_phase6_head.py",
+      "--kind",
+      "MEMORY",
+      "--device",
+      "cpu",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_fit_REACT",
+    "cpu_only": true,
+    "reserve_mib": 0,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_1.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/fit_jev_phase6_head.py",
+      "--kind",
+      "REACT",
+      "--device",
+      "cpu",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_head_MEMORY_23",
+    "reserve_mib": 31000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/standalone_heads_native/MEMORY/model_calibrated.pth"
+    ],
+    "skip_if": {
+      "path": "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/standalone_heads_native/MEMORY/result.json",
+      "statuses": [
+        "INSUFFICIENT_INFORMATIVE_DATA"
+      ]
+    },
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_head_tracking.py",
+      "--video",
+      "23",
+      "--kind",
+      "MEMORY"
+    ]
+  },
+  {
+    "id": "native_head_MEMORY_24",
+    "reserve_mib": 19000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/standalone_heads_native/MEMORY/model_calibrated.pth"
+    ],
+    "skip_if": {
+      "path": "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/standalone_heads_native/MEMORY/result.json",
+      "statuses": [
+        "INSUFFICIENT_INFORMATIVE_DATA"
+      ]
+    },
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_head_tracking.py",
+      "--video",
+      "24",
+      "--kind",
+      "MEMORY"
+    ]
+  },
+  {
+    "id": "native_head_REACT_23",
+    "reserve_mib": 31000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/standalone_heads_native/REACT/model_calibrated.pth"
+    ],
+    "skip_if": {
+      "path": "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/standalone_heads_native/REACT/result.json",
+      "statuses": [
+        "INSUFFICIENT_INFORMATIVE_DATA"
+      ]
+    },
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_head_tracking.py",
+      "--video",
+      "23",
+      "--kind",
+      "REACT"
+    ]
+  },
+  {
+    "id": "native_head_REACT_24",
+    "reserve_mib": 19000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/standalone_heads_native/REACT/model_calibrated.pth"
+    ],
+    "skip_if": {
+      "path": "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/standalone_heads_native/REACT/result.json",
+      "statuses": [
+        "INSUFFICIENT_INFORMATIVE_DATA"
+      ]
+    },
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_head_tracking.py",
+      "--video",
+      "24",
+      "--kind",
+      "REACT"
+    ]
+  },
+  {
+    "id": "native_memory_24_M0",
+    "reserve_mib": 4000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "24",
+      "--condition",
+      "M0",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_24_M1",
+    "reserve_mib": 19000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_1.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/memory_baselines_native/video24/M1/result.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "24",
+      "--condition",
+      "M1",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_24_M2",
+    "reserve_mib": 19000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "24",
+      "--condition",
+      "M2",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_24_M3",
+    "reserve_mib": 19000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "24",
+      "--condition",
+      "M3",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_24_M4",
+    "reserve_mib": 19000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "24",
+      "--condition",
+      "M4",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_24_M5",
+    "reserve_mib": 19000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video24/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "24",
+      "--condition",
+      "M5",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_23_M0",
+    "reserve_mib": 4000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "23",
+      "--condition",
+      "M0",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_23_M1",
+    "reserve_mib": 31000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "23",
+      "--condition",
+      "M1",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_23_M2",
+    "reserve_mib": 31000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "23",
+      "--condition",
+      "M2",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_23_M3",
+    "reserve_mib": 31000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "23",
+      "--condition",
+      "M3",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_23_M4",
+    "reserve_mib": 31000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "23",
+      "--condition",
+      "M4",
+      "--native-contract"
+    ]
+  },
+  {
+    "id": "native_memory_23_M5",
+    "reserve_mib": 31000,
+    "requires": [
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_0.json",
+      "/home/liuyeqiang/WWW_jev_phase6_runtime/20261008/lifecycle_native/video23/SHARD_1.json"
+    ],
+    "argv": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "reproduction_tools/run_jev_phase6_memory_baseline.py",
+      "--video",
+      "23",
+      "--condition",
+      "M5",
+      "--native-contract"
+    ]
+  }
+]
