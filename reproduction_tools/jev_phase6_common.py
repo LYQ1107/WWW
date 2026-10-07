@@ -47,6 +47,11 @@ def load_controller(path, device='cpu'):
     from gtr.modeling.jev_runtime import build_controller_from_checkpoint, TemperatureScaledController
     payload = torch.load(str(path), map_location='cpu')
     name = payload.get('model_name', 'jev')
+    if name=='phase6_typed_head':
+        from gtr.modeling.jev_lifecycle import TypedJEVController
+        model=TypedJEVController().to(device)
+        model.load_state_dict(payload['model'],strict=True)
+        return TemperatureScaledController(model,float(payload.get('calibration_temperature',1))).to(device).eval()
     if name not in {'phase6_scalar_gate', 'phase6_dynamic_gate'}:
         return build_controller_from_checkpoint(path, device=device)
     model = MatchThresholdGate(payload['state_dim'], payload['hidden_dim']).to(device)
