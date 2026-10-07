@@ -1,0 +1,14 @@
+{
+  "all_actions_identical": true,
+  "all_logits_bitwise_equal": true,
+  "cached_seconds_1000": 0.34308571368455887,
+  "eager_seconds_1000": 0.7194388657808304,
+  "fixed_batch_size": 1,
+  "implementation": "cache fixed question and action keys; original eager state/query arithmetic and softmax, no JIT graph",
+  "max_logit_error": 0.0,
+  "native_second_round_controller": "unchanged eager B2",
+  "real_B2_records": 4522,
+  "status": "PASS",
+  "weights_changed": false,
+  "what_did_we_learn": "Frozen semantic tokens can be cached without changing any actual first-round B2 logit or action; retain eager arithmetic after rejecting tiny JIT numerical differences."
+}

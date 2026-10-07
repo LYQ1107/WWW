@@ -11,12 +11,16 @@ from jev_phase6_common import OUT,REPORTS,B2,sha,save,new_output,protect_anchor
 from gtr.modeling.jev_lifecycle import TypedJEVController,pack_typed_state
 
 
-def main(kind,device):
+def main(kind,device,native_contract=False):
+    if not native_contract:raise RuntimeError('legacy prefixes cannot train a canonical head; --native-contract required')
     question='MEMORY_DECISION' if kind=='MEMORY' else 'REACTIVATION_DECISION'
-    source={v:sorted((OUT/f'lifecycle/video{v:02d}/labels').glob(f'{kind}_*.json')) for v in (24,23)}
+    source={v:sorted((OUT/f'lifecycle_native/video{v:02d}/labels').glob(f'{kind}_*.json')) for v in (24,23)}
+    for v in (24,23):
+        manifest=json.loads((OUT/f'lifecycle_native/video{v:02d}/CANONICAL_MANIFEST.json').read_text())
+        if not manifest['native_MATCH_transition_contract']:raise AssertionError('canonical native prefix required')
     rows={v:[json.loads(p.read_text()) for p in paths] for v,paths in source.items()}
     counts={v:sum(float(r['sample_weight'])>0 for r in records) for v,records in rows.items()}
-    output=new_output(OUT/'standalone_heads'/kind)
+    output=new_output(OUT/'standalone_heads_native'/kind)
     eligibility={'status':'ELIGIBLE' if counts[24]>=4 and counts[23]>=2 else 'INSUFFICIENT_INFORMATIVE_DATA',
                  'kind':kind,'informative':counts,'minimum_train':4,'minimum_validation':2,
                  'role':'bounded standalone diagnostic, not unified JEV training or generalization evidence',
@@ -76,4 +80,5 @@ def main(kind,device):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--kind',choices=['MEMORY','REACT'],required=True);p.add_argument('--device',default='cuda:0')
-    a=p.parse_args();main(a.kind,a.device)
+    p.add_argument('--native-contract',action='store_true')
+    a=p.parse_args();main(a.kind,a.device,a.native_contract)

@@ -48,7 +48,7 @@ def main(path,max_workers):
                     external_used=max(external_used,planned)
                 available=min(free,used+free-external_used-reserved)
                 if available>=task['reserve_mib']+1024:
-                    eligible.append((bool(used or own),len(own),util,-available,gpu))
+                    eligible.append((bool(used or own),util,len(own),-available,gpu))
             if not eligible:continue
             gpu=min(eligible)[-1]
             env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')

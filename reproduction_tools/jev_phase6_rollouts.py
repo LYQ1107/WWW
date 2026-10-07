@@ -34,7 +34,7 @@ class EventHorizonKeys(list):
 
 
 class NativeReplayLab:
-    def __init__(self, video, device='cuda:0',native_match_validation=False,record_transitions=False):
+    def __init__(self, video, device='cuda:0',native_match_validation=False,record_transitions=False,fast_match=False):
         protect_anchor()
         empty = OUT / 'empty_debug_inputs.jsonl'
         if not empty.exists(): empty.write_text('')
@@ -58,6 +58,10 @@ class NativeReplayLab:
         self.seed_metadata=copy.deepcopy(self.metadata)
         _, self.subset, self.lookup, _, _ = pilot.load_inputs()
         self.controller = load_controller(B2, 'cpu')
+        self.fast_match=None
+        if fast_match:
+            from jev_phase6_fast_match import FastMatchPolicy
+            self.fast_match=FastMatchPolicy(self.controller)
         self.native_match_validation=native_match_validation;self.native_resolver=None
         if native_match_validation:
             from jev_phase6_native_match import NativeMatchResolver
@@ -90,7 +94,9 @@ class NativeReplayLab:
 
     def choose(self, policy, feature, question, legal, off_action, context=None):
         policy_context={k:v for k,v in (context or {}).items() if k!='tracker_state_before'}
-        action = policy.decide(feature,question,legal,off_action=off_action,context=policy_context).committed_action if question=='MATCH_DECISION' else off_action
+        if question=='MATCH_DECISION':
+            action = self.fast_match.action(feature,legal) if self.fast_match is not None else policy.decide(feature,question,legal,off_action=off_action,context=policy_context).committed_action
+        else:action=off_action
         original = action
         context = context or {}
         if self.intervention is not None:

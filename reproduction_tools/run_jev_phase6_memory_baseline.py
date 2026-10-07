@@ -9,8 +9,12 @@ from jev_phase6_common import OUT,save,sha,protect_anchor,new_output
 from jev_phase6_rollouts import NativeReplayLab
 
 
-def main(video,condition,device):
-    lab=NativeReplayLab(video,device)
+def main(video,condition,device,native_contract=False):
+    lab=NativeReplayLab(video,device,native_match_validation=native_contract,fast_match=native_contract)
+    collection='lifecycle_native' if native_contract else 'lifecycle'
+    if native_contract:
+        manifest=json.loads((OUT/f'{collection}/video{video:02d}/CANONICAL_MANIFEST.json').read_text())
+        if not manifest['native_MATCH_transition_contract']:raise AssertionError('canonical native prefix required')
     prototypes={}
     original_candidates=lab.pilot.reactivation_candidates
     def candidates(state,bank_size=10):
@@ -36,10 +40,10 @@ def main(video,condition,device):
             confidence=float(payload['detection_scores'][row])
             old_weight=.9 if condition=='M3' else .2 if condition=='M5' else .9+.1*(1-max(0,min(1,(confidence-.4)/.6)))
             prototypes[track]=feature.clone() if track not in prototypes else old_weight*prototypes[track]+(1-old_weight)*feature
-    output=OUT/f'memory_baselines/video{video:02d}/{condition}'
+    output=OUT/f"{'memory_baselines_native' if native_contract else 'memory_baselines'}/video{video:02d}/{condition}"
     if condition=='M0':
         new_output(output);lab.pilot.PILOT=output
-        result=json.loads((OUT/f'lifecycle/video{video:02d}/baseline/result.json').read_text())
+        result=json.loads((OUT/f'{collection}/video{video:02d}/baseline/result.json').read_text())
     else:result=lab.run(output,intervention=choose,after_step=after)
     dataset=lab.pilot.prepare_eval_dataset(lab.subset)
     prepared,evaluated=lab.pilot.run_eval('jev',Path(result['predictions']),dataset)
@@ -50,8 +54,9 @@ def main(video,condition,device):
            'bank_eligibility':'native minimum10 actual writes, stale candidate computation and persistent bank order',
            'M0_reuses_identical_collected_native_run':condition=='M0',
            'official_test_read':False,'full24_authorized':False}
+    value['native_MATCH_transition_contract']=native_contract
     if condition=='M2':
-        reference=json.loads((OUT/f'lifecycle/video{video:02d}/baseline/result.json').read_text())
+        reference=json.loads((OUT/f'{collection}/video{video:02d}/baseline/result.json').read_text())
         value['latest10_bank_equivalence_prediction_identical']=sha(result['predictions'])==sha(reference['predictions'])
         if not value['latest10_bank_equivalence_prediction_identical']:raise AssertionError('bounded latest10 gallery changed the native last10 mean')
     save(output/'result.json',value);protect_anchor()
@@ -61,4 +66,5 @@ def main(video,condition,device):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--video',type=int,choices=[23,24],required=True)
     p.add_argument('--condition',choices=['M0','M1','M2','M3','M4','M5'],required=True);p.add_argument('--device',default='cuda:0')
-    a=p.parse_args();main(a.video,a.condition,a.device)
+    p.add_argument('--native-contract',action='store_true')
+    a=p.parse_args();main(a.video,a.condition,a.device,a.native_contract)

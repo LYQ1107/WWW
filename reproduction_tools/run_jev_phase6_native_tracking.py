@@ -9,7 +9,7 @@ from jev_phase6_rollouts import NativeReplayLab
 
 
 def main(video,device):
-    lab=NativeReplayLab(video,device,native_match_validation=True)
+    lab=NativeReplayLab(video,device,native_match_validation=True,fast_match=True)
     output=OUT/f'native_b2/video{video:02d}'
     counts=Counter();validation=[]
     def after(key,payload,state,result,kwargs,rows):

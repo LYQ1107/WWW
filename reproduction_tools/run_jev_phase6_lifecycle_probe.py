@@ -34,7 +34,7 @@ def canonical_row(lab,row):
 
 
 def collect(video,device):
-    lab=NativeReplayLab(video,device,native_match_validation=NATIVE_CONTRACT,record_transitions=NATIVE_CONTRACT); root=probe_root(video);root.mkdir(parents=True,exist_ok=True)
+    lab=NativeReplayLab(video,device,native_match_validation=NATIVE_CONTRACT,record_transitions=NATIVE_CONTRACT,fast_match=NATIVE_CONTRACT); root=probe_root(video);root.mkdir(parents=True,exist_ok=True)
     snapshots=root/'snapshots';snapshots.mkdir(exist_ok=True)
     cap=32 if video==24 else 16; rng=random.Random(20261008+video)
     react_seen=0; reservoir=[]; writes=[]; first_read={}; reads=[]; canonical=[]
@@ -124,7 +124,7 @@ def collect(video,device):
 
 
 def fork(video,device,shard,shards):
-    root=probe_root(video);lab=NativeReplayLab(video,device,native_match_validation=NATIVE_CONTRACT);gt=OfflineIdentityAudit(video)
+    root=probe_root(video);lab=NativeReplayLab(video,device,native_match_validation=NATIVE_CONTRACT,fast_match=NATIVE_CONTRACT);gt=OfflineIdentityAudit(video)
     baseline=json.loads((root/'baseline/result.json').read_text())
     actual=gt.align(json.loads(Path(baseline['predictions']).read_text()))
     outputs=[]
@@ -187,8 +187,8 @@ def fork(video,device,shard,shards):
                            'last_frame':last_frame,'prediction_sha256':sha(result['predictions']),
                            'committed_identity_at_intervention':event_id,'actual_identity_recoveries':recoveries}
         if memory:
-            consumed=[first_reads[a] for a in forced_actions if first_reads[a] is not None]
-            onset=min(consumed) if consumed else None
+            consumed=[first_reads['WRITE_MEMORY']] if first_reads['WRITE_MEMORY'] is not None else []
+            onset=first_reads['WRITE_MEMORY']
             end=min(v['last_frame'] for v in cases.values())
             horizons=[min(8,max(0,end-onset)),min(16,max(0,end-onset))] if onset is not None else [0,0]
             start=(onset,0) if onset is not None else local[:2]
