@@ -27,10 +27,11 @@ def main():
         else:shutil.copyfile(p,target)
         entries.append({'archived':str(target.relative_to(DEST)),'archive_sha256':sha(target),'source':str(p),'source_sha256':sha(p),'source_bytes':p.stat().st_size,'archived_bytes':target.stat().st_size,'compression':'gzip,mtime=0' if compress else None})
     for p in sorted(OUT.glob('*.json')):copy(p)
-    for name in ['regression_tests.log','rng_tests.log','B1_training.log','B2_training.log','B1_tracking.log','B2_tracking.log']:
+    for name in ['regression_tests.log','rng_tests.log','B1_training.log','B2_training.log','C1_training.log','C2_training.log','B1_tracking.log','B2_tracking.log','C1_tracking.log','C2_tracking.log','B2_repeat_tracking.log','B2_decision_audit.log']:
         copy(OUT/name)
     copy(OUT/'paired_decisions.jsonl',compress=True)
-    for kind,variants in [('ablations',['A0','A1','A2','A3','A4']),('minimal_tracking',['B1','B2'])]:
+    copy(OUT/'B2_paired_decisions.jsonl',compress=True)
+    for kind,variants in [('ablations',['A0','A1','A2','A3','A4']),('minimal_tracking',['B1','B2','B2_repeat','C1','C2'])]:
         for variant in variants:
             root=OUT/kind/variant;method='gmt_off' if variant=='A0' else 'jev'
             for name in ['result.json','runtime_status.json']:copy(root/name)
@@ -50,10 +51,13 @@ def main():
         root=OUT/name
         for video in [6,7]:copy(root/f'video{video:02d}_{contract}_match.jsonl',compress=True)
         copy(root/'compact/manifest.json');copy(root/'policy_split.json')
-    for condition in ['B1','B2']:
+    for condition in ['B1','B2','C1','C2']:
         root=OUT/'minimal_training'/condition
         for name in ['model.pth','metrics.json','binding.json','runtime_status.json','calibration/model_calibrated.pth','calibration/calibration_val_only.json']:copy(root/name)
     frozen=json.loads((OUT/'PHASE5_BASELINE_LOCK.json').read_text())['input_and_policy_hashes']['jev']['calibrated_checkpoint'];copy(frozen,'frozen_MATCH_checkpoint/model_calibrated.pth')
+    baseline=Path('/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4')
+    for video in [1,6,7]:copy(baseline/f'video{video:02d}_records.jsonl',f'frozen_records/video{video:02d}_records.jsonl',compress=True)
+    copy(OUT/'native_feature_audit_view.jsonl',compress=True)
     manifest={'status':'COMPLETE','source_commit_at_archival':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'runtime':str(OUT),'official_test_read':False,'full24_authorized':False,'entries':entries,'excluded':'Large GMT checkpoint, full perception cache, raw dataset/GT images, generated eval_dataset symlinks and duplicate NumPy arrays; their immutable hashes/manifests remain available.'}
     (DEST/'ARCHIVE_MANIFEST.json').write_text(json.dumps(manifest,indent=2,sort_keys=True)+'\n')
     files=sorted(p for p in DEST.rglob('*') if p.is_file())
