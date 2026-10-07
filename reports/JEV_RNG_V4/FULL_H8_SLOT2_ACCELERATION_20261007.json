@@ -1,0 +1,45 @@
+{
+  "schema_version": "jev_full_h8_slot2_acceleration_v1",
+  "created_utc": "2026-10-07T01:35:43Z",
+  "classification": "RUNTIME_SCHEDULING_CHANGE_NOT_RESEARCH_RESULT",
+  "status": "RUNNING",
+  "reason": "Reduce wall-clock time without stopping or migrating any existing canonical worker.",
+  "original_scheduler": {
+    "pid": 19950,
+    "slots_per_gpu": 1,
+    "safe_gpus": [1, 4, 6, 8, 9],
+    "deferred_gpu": 0,
+    "foreign_gpus_never_used": [2, 3, 5, 7]
+  },
+  "slot2_supervisor": {
+    "pid": 40300,
+    "slots_per_gpu": 2,
+    "safe_gpus": [1, 4, 6, 8, 9],
+    "include_gpu0": false,
+    "queue": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head/queue_state.json",
+    "log": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/full_h8_current_head/slot2_supervisor.log"
+  },
+  "invariants_preserved": {
+    "video01_builder_stopped": false,
+    "video01_builder_migrated": false,
+    "existing_full_h8_workers_stopped": false,
+    "existing_full_h8_workers_migrated": false,
+    "foreign_gpus_started": false,
+    "baseline_rerun": false,
+    "partition_manifest_sha256": "sha256:bcc825b8da01360f977f3d9fc551d428bb88fcf485aa0afe61d0eb566b9df2ef",
+    "stage2_checkpoint_sha256": "sha256:cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8"
+  },
+  "new_workers_at_observation": [
+    {"video_id": 3, "worker": "gpu4-slot2", "pid": 40330},
+    {"video_id": 14, "worker": "gpu6-slot2", "pid": 40345},
+    {"video_id": 20, "worker": "gpu8-slot2", "pid": 40354},
+    {"video_id": 22, "worker": "gpu9-slot2", "pid": 40364}
+  ],
+  "gpu_observation_at_2026_10_07T01_35_43Z": [
+    {"gpu": 4, "memory_used_mib": 11764, "memory_total_mib": 32508, "utilization_percent": 47},
+    {"gpu": 6, "memory_used_mib": 5080, "memory_total_mib": 32508, "utilization_percent": 40},
+    {"gpu": 8, "memory_used_mib": 12396, "memory_total_mib": 32508, "utilization_percent": 47},
+    {"gpu": 9, "memory_used_mib": 9200, "memory_total_mib": 32508, "utilization_percent": 44}
+  ],
+  "interpretation": "This changes only scheduling concurrency. It does not authorize a final research claim; all provenance, manifest, parity, and evaluation gates remain required."
+}

@@ -1,6 +1,6 @@
 # JEV RNG-isolation v4 current progress
 
-Snapshot: `2026-10-07T01:12Z`
+Snapshot: `2026-10-07T01:35Z`
 Branch: `jev/counterfactual-rng-isolation-v4-20261006`
 
 This is a timestamped progress snapshot, not a final research result.
@@ -41,6 +41,14 @@ Evidence:
   No frozen GMT baseline or full VISION_test OFF baseline is being rerun.
 - The video01 aftercare and corrected tracking waiters are running in a
   fail-closed state and consume no GPU while waiting for the video01 manifest.
+- At `2026-10-07T01:35Z`, a second supervised scheduler was added with
+  `slots_per_gpu=2` on the same authorized safe GPUs. It claimed video03,
+  video14, video20, and video22 as `gpu4/6/8/9-slot2`. The original scheduler,
+  all original Full-H8 workers, and the GPU0 video01 builder were left intact;
+  reserved GPUs 2/3/5/7 were not used. The initial post-launch GPU observation
+  showed no OOM or worker exit. This is a wall-clock scheduling change only,
+  not a research result. Full provenance and finalization gates remain
+  unchanged. Evidence: `reports/JEV_RNG_V4/FULL_H8_SLOT2_ACCELERATION_20261007.json`.
 
 ## Required next order
 
