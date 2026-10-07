@@ -111,12 +111,14 @@ def fork(video,device,shard,shards):
     outputs=[]
     for index,path in enumerate(sorted((root/'snapshots').glob('*.pth'))):
         if index%shards!=shard:continue
-        c=torch.load(path,map_location='cpu');r=c['record'];key=tuple(r['key']);local=(key[1],key[2],key[4]);target=actual[local]['gt']
+        c=torch.load(path,map_location='cpu');r=c['record'];key=tuple(r['key']);local=(key[1],key[2],key[4]);current_gt=actual[local]['gt']
         memory=r['question']=='MEMORY_DECISION';forced_actions=['WRITE_MEMORY','SKIP_MEMORY'] if memory else ['REACTIVATE_OLD','START_NEW']
+        identity_map,prefix_counts=prefix_identity(actual,local[:2])
+        target=identity_map.get(r['assigned_track_id'],current_gt) if memory else current_gt
         cases={}; rows_by_branch={};first_reads={};branch_ranks={};committed_ids={};termination={}
         paired_read_end=None
         for action in ['CONTROL']+forced_actions:
-            first_read=None;rank_history=[];event_id=None;confirmed=set();last_frame=None
+            first_read=None;rank_history=[];event_id=None;confirmed=set();last_frame=None;recoveries=[]
             def intervene(feature,question,legal,original,context):
                 k=(video,context['frame'],context['view'],question,context['detection_index'])
                 return action if k==key and action!='CONTROL' else original
@@ -127,7 +129,14 @@ def fork(video,device,shard,shards):
                 if pp is not None and track in pp.track_ids and track in state.stale_ids and track not in state.active_ids:
                     if first_read is None:first_read=k[1]
                     col=list(pp.track_ids).index(track)
-                    rank_history.append({'key':list(k),'best_rank':min(int((scores>scores[col]).sum())+1 for scores in pp.scores),'max_score':float(pp.scores[:,col].max())})
+                    resolution=lab.engine.resolve_actions(payload,state,actions=kwargs['actions'],proposal=kwargs['proposal'])
+                    queries=[row for row in range(len(payload['pred_boxes'])) if resolution['existing_track_ids'].get(row) is None]
+                    if len(queries)!=len(pp.scores):raise AssertionError('native stale query row contract changed')
+                    rank_history.append({'key':list(k),'best_rank':min(int((scores>scores[col]).sum())+1 for scores in pp.scores),'max_score':float(pp.scores[:,col].max()),
+                        'query_rows':queries,'ranks':[int((scores>scores[col]).sum())+1 for scores in pp.scores],
+                        'bank_prototype_sha256':__import__('hashlib').sha256(state.reactivation_bank[track].numpy().tobytes()).hexdigest()})
+                for row,old_id in kwargs.get('reactivation_assignments',{}).items():
+                    if old_id==track:recoveries.append((k[1],k[2],int(row)))
             def after(k,payload,state,result,kwargs,decisions):
                 nonlocal event_id,last_frame
                 last_frame=k[1]
@@ -157,7 +166,7 @@ def fork(video,device,shard,shards):
                 paired_read_end=first_read+16
             cases[action]={'first_actual_bank_READ':first_read,'termination':termination.get(action,'SEQUENCE_END'),
                            'last_frame':last_frame,'prediction_sha256':sha(result['predictions']),
-                           'committed_identity_at_intervention':event_id}
+                           'committed_identity_at_intervention':event_id,'actual_identity_recoveries':recoveries}
         if memory:
             consumed=[first_reads[a] for a in forced_actions if first_reads[a] is not None]
             onset=min(consumed) if consumed else None
@@ -171,6 +180,23 @@ def fork(video,device,shard,shards):
         for a in cases:
             cases[a]['outcomes']={str(h):consequence(rows_by_branch[a],actual,start,target,h,c['state'].next_id,identity_key=local[:2]) for h in horizons}
             cases[a]['candidate_rank_history']=branch_ranks[a]
+            for h,o in cases[a]['outcomes'].items():
+                h=int(h)
+                relevant=[]
+                for read in branch_ranks[a]:
+                    frame,view=read['key'][1:]
+                    if not(start[0]<=frame<=start[0]+h):continue
+                    relevant.extend(rank for row,rank in zip(read['query_rows'],read['ranks']) if actual[(frame,view,row)]['gt']==target and target is not None)
+                recovered=[k for k in cases[a]['actual_identity_recoveries'] if start[0]<=k[0]<=start[0]+h]
+                false=sum(actual[k]['gt'] is not None and actual[k]['gt']!=target for k in recovered)
+                correct_recovery=next((k[0]-start[0] for k in recovered if actual[k]['gt']==target),None)
+                o['false_identity_recoveries']=false
+                o['mean_reciprocal_target_candidate_rank']=sum(1/rank for rank in relevant)/len(relevant) if relevant else 0.0
+                o['target_identity_recovery_latency']=correct_recovery
+                if memory:
+                    o['utility']-=false
+                    o['utility']+=.05*o['mean_reciprocal_target_candidate_rank']
+                    if relevant:o['utility']-=.05*(correct_recovery if correct_recovery is not None else h+1)
             if not memory:
                 mapping,_=prefix_identity(actual,start)
                 false=target is not None and a=='REACTIVATE_OLD' and r['assigned_track_id'] in mapping and mapping[r['assigned_track_id']]!=target
@@ -180,7 +206,8 @@ def fork(video,device,shard,shards):
         informative=weight>0 and abs(utilities[0]-utilities[1])>1e-8
         final_weight=weight if informative else 0.0
         masses=[math.exp(u-max(utilities)) for u in utilities]
-        record={**r,'offline_GT':target,'branches':cases,'sample_weight':final_weight,
+        record={**r,'offline_GT':target,'offline_current_observation_GT':current_gt,'offline_prefix_GT_counts':prefix_counts,
+                'branches':cases,'sample_weight':final_weight,
                 'informative':informative,'uninformative_reason':'GT_UNMATCHED' if target is None else 'UNREAD' if memory and not consumed else 'UTILITY_TIE' if not informative else None,
                 'target_probs':[m/sum(masses) for m in masses],'best_actions':[a for a,u in zip(forced_actions,utilities) if abs(u-max(utilities))<=1e-8],
                 'control_prefix_rng_and_native_bank_exact':True,'snapshot_sha256':sha(path),

@@ -10,8 +10,7 @@
   "future_policy": "frozen B2 MATCH, instantaneous GMT MEMORY and REACT except current WRITE/SKIP intervention; every future state and proposal rebuilt",
   "event_horizon": "candidate WRITE branch until its first actual stale-bank READ +16 frames, or sequence end; SKIP branch follows the same paired end. Compare common window at first WRITE READ +8/+16. If candidate WRITE is never read, sample_weight=0. Missing SKIP READ within the paired horizon is reported as censoring, not as sequence-wide absence.",
   "unread_both_branches_sample_weight": 0,
-  "GT_unmatched_candidate_weight": 0,
-  "utility": "correct_duration - wrong_duration -0.5*switches -0.25*new_IDs -0.5*duplicate_collisions - identity_contamination; record rank shifts and recovery latency separately",
+  "utility": "correct_duration - wrong_duration -0.5*switches -0.25*new_IDs -0.5*duplicate_collisions - identity_contamination - false_recovery_count +0.05*mean_reciprocal_rank_of_GT_target_queries -0.05*target_recovery_latency; latency censored atK+1 only when target queries exist; unrelated bank queries do not contribute rank reward.",
   "memory_baselines": {
     "M0": "GMT latest10 raw-vector mean, always-write",
     "M1": "detector confidence>=0.6 write",
@@ -24,5 +23,7 @@
   "what_did_we_learn": "pending observed READ-triggered counterfactual outcomes",
   "official_test_read": false,
   "full24_authorized": false,
-  "amendment_before_any_counterfactual_label": "Shared event-triggered horizon avoids comparing unequal future lengths and avoids replaying SKIP until sequence end merely because its bank entry is intentionally absent. Trigger remains actual live WRITE-branch READ, not baseline categories or fixed H8."
+  "amendment_before_any_counterfactual_label": "Shared event-triggered horizon avoids comparing unequal future lengths and avoids replaying SKIP until sequence end merely because its bank entry is intentionally absent. Trigger remains actual live WRITE-branch READ, not baseline categories or fixed H8. Identity target and rank/latency terms are declared before labels: editing a bank must assess that bank identity, and rank changes must refer to its GT target queries rather than background detections.",
+  "unknown_identity_weight": 0,
+  "identity_target": "fixed pre-intervention majority GT for the identity bank being edited; fallback current observation GT if no known bank identity. A current unmatched detection is not labeled false solely from missing GT; targets still require assessed future effects."
 }
