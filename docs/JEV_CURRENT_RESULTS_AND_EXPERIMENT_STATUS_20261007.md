@@ -10,6 +10,31 @@
 - 原 MPS driver 已 graceful 停止；当前没有 small-gate builder/closed-loop 进程。
 - MPS 前后 bounded equivalence 已通过：早期 `70/70`、晚期 `102/102` 逐条 exact，canonical SHA 和字段比较均一致。实时 15.07 秒抽样增加 250 条，但不据此宣称稳定 ETA。
 
+## 最新补充指令再审计（14:43 UTC）
+
+已重新读取并绑定当前补充指令文件，SHA-256 为
+`84801e5312b0f8884937da16379487d03a5286421f8e58b648181120f69d6529`。
+本次只做只读/有界诊断，没有启动第二个完整 video01 builder，也没有修改
+已经完成的 v2 产物。完整再审计见
+[`VIDEO01_DIAGNOSTIC_REAUDIT_20261007.json`](../reports/JEV_RNG_V4/VIDEO01_DIAGNOSTIC_REAUDIT_20261007.json)
+和 [`JEV_V2_DIAGNOSTIC_REAUDIT_20261007.md`](JEV_V2_DIAGNOSTIC_REAUDIT_20261007.md)。
+
+- **重算范围：** 4108f18 相对 60675dae 只改动 builder 的 11/4 行，但同输入
+  20 条样本的 state 是 `20/20` 相同、outcome/label 是 `0/20` 相同；旧
+  60675 回放也复现不了旧 8995 条 artifact。因此旧 outcomes、targets、
+  best-actions、sample weights 全部禁止复用，必须完整重算。
+- **candidate parity：** fresh v2-bound replay（至 frame 220）为 FAIL；5/5
+  事件互相找到，但有 `2` 个 native-only、`2` 个 replay-only key；重叠事件
+  的 ID、proposal、OFF action、bank threshold 均一致，frame 214/216/217
+  的 candidate score 仍超容差。bank threshold 修复不是完整修复。
+- **耗时瓶颈：** 当前 commit 的 20-record probe 为 `22.659 s`，857 次
+  proposal、908 次 step；较大的 2400-record probe 为 `3771.883 s`，其中
+  proposal/model evaluation 为实测主耗时。完整 v2 从 `04:15:18` 到退出
+  `11:10:35 UTC`，即约 `6 h 55 min`。
+- **决策：** video01 runtime gate `NO_GO`，candidate follow-up 等待语义
+  修复；Full H8 继续 `PAUSED_NONCANONICAL`。不能把 v2 的 provenance PASS
+  或小窗口 PASS 当作完整 runtime GO。
+
 ## 1. video1 六小时证据
 
 证据报告：[`VIDEO01_SIX_HOUR_RUNTIME_EVIDENCE_20261007.json`](../reports/JEV_RNG_V4/VIDEO01_SIX_HOUR_RUNTIME_EVIDENCE_20261007.json)

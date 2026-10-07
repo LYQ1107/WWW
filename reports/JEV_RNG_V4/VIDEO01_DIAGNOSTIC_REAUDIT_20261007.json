@@ -1,0 +1,200 @@
+{
+  "schema_version": "jev_video01_diagnostic_reaudit_v1",
+  "created_utc": "2026-10-07T14:43:11+00:00",
+  "classification": "DIAGNOSTIC_AUDIT_NOT_PAPER_RESULT",
+  "instruction_file": {
+    "path": "/data1/liuyeqiang/www_补充执行指令_20261007.txt",
+    "sha256": "84801e5312b0f8884937da16379487d03a5286421f8e58b648181120f69d6529",
+    "read_to_end": true
+  },
+  "preservation": {
+    "video01_v2": "preserved; no second complete video01 builder was started",
+    "formal_v2_process_at_reaudit": "completed and exited before this audit; no active WWW/JEV/H8 process was found",
+    "full_h8": "PAUSED_NONCANONICAL",
+    "gpu_policy": "the diagnostic probes used only idle GPU0 and did not touch the unrelated GPU1 workload"
+  },
+  "formal_v2_artifact": {
+    "records": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_corrected_full_v2/video01_records.jsonl",
+    "records_sha256": "1da2ed9e7eec43c7cf139754d873f78a299c344ff74d65c6866b92f18f3da79",
+    "manifest_sha256": "6b69087594dd25ea80878353fa3c1b43d8a39af5fc0f3b184af8b2635fee68e8",
+    "record_count": 8995,
+    "question_counts": {
+      "MATCH_DECISION": 4524,
+      "MEMORY_DECISION": 4297,
+      "REACTIVATION_DECISION": 174
+    },
+    "horizon": 8,
+    "source_commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+    "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "trace_sha256": "091d6ee90f7e4d3507af29222c973c90ff717d5a90b58b51dd82b3e7820632ea",
+    "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+    "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+    "provenance_and_schema": "PASS",
+    "runtime_feature_parity": "FAIL; max absolute feature error 0.006004035472869873, 12 tolerance exceedances",
+    "closed_loop": "NOT_RUN because the pre-runtime gates failed"
+  },
+  "recomputation_scope": {
+    "fresh_audit_report": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/diagnostics/RECOMPUTATION_SCOPE_AUDIT_RERUN_20261007.json",
+    "fresh_audit_report_sha256": "6f136211c36b64ab45336f9010ac0ce033bad02b4e1ef94e1b5337a6176d40b1",
+    "old_source_commit": "60675dae619bd3baf9d156b4616e26f752477fef",
+    "new_source_commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+    "source_diff": {
+      "files_changed": [
+        "reproduction_tools/build_jev_counterfactual_v2.py"
+      ],
+      "insertions": 11,
+      "deletions": 4,
+      "semantic_change": "record model.thred_bank as bank_threshold and use bank_threshold for reactivation state features"
+    },
+    "input_hashes_equal": {
+      "trace": true,
+      "config": true,
+      "checkpoint": true,
+      "annotations": true,
+      "cache_index": true
+    },
+    "bounded_same_input_result": {
+      "sample_records": 20,
+      "event_key_order_exact": true,
+      "state_projection_exact": "20/20",
+      "outcome_and_label_projection_exact": "0/20",
+      "current_sample_repeat_byte_identical": true,
+      "current_sample_sha256": "25092f9afa8d53e160e8a456b95bb75d5f466ddc7644564450978ca733bc803c",
+      "old_artifact_sha256": "22662cb1b5441de3d69582b49d862ccde3228b678e74c5028004e557e3f11daa",
+      "60675_historical_replay_matches_current_sample": true,
+      "60675_historical_replay_matches_old_artifact": false
+    },
+    "decision": "FULL_V2_LABEL_RECOMPUTE_REQUIRED",
+    "reuse_blocked": [
+      "action_outcomes",
+      "horizon_outcomes",
+      "target_probs",
+      "best_actions",
+      "sample_weights"
+    ],
+    "reason": "State equality is only an observation. The measured outcome/label projection changed, and the old artifact's hidden generation provenance cannot be recovered from the manifest."
+  },
+  "candidate_parity": {
+    "fresh_bounded_report": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/diagnostics/CANDIDATE_PARITY_V2_BOUND_220_20261007.json",
+    "fresh_bounded_report_sha256": "7cd2e0cc414403fced3988600f4e03bb6507b57b2af5befd74e74a17f2872f5e",
+    "classification": "BOUNDED_RUNTIME_SEMANTIC_DIAGNOSTIC_NOT_FORMAL_ACCEPTANCE",
+    "source_records_sha256": "1da2ed9e7eec43c7cf139754d873f78a299c344ff74d65c6866b92f18f3da79",
+    "native_trace_sha256": "cb340485ecf348d2a63cacf69bcf9d3c3fd78a949a7d1cb8f5a9738d5c5a5e1b",
+    "frame_limit": 220,
+    "native_reactivation_events": 5,
+    "replay_reactivation_events": 5,
+    "event_coverage": {
+      "native_only": 2,
+      "replay_only": 2,
+      "overlap_count": 3
+    },
+    "overlap_checks": {
+      "candidate_ids_exact": true,
+      "chosen_proposal_ids_exact": true,
+      "legacy_off_actions_exact": true,
+      "bank_thresholds_exact": true,
+      "candidate_scores_within_tolerance": false
+    },
+    "score_mismatches": [
+      {
+        "event": [214, 1, 0],
+        "native": 0.004132806323468685,
+        "replay": 0.07426155358552933,
+        "absolute_error": 0.07012874726206064
+      },
+      {
+        "event": [216, 1, 0],
+        "native": 0.0010863436618819833,
+        "replay": 0.04485626891255379,
+        "absolute_error": 0.043769925250671804
+      },
+      {
+        "event": [217, 1, 0],
+        "native": 0.00016063539078459144,
+        "replay": 0.01951722428202629,
+        "absolute_error": 0.0193565888912417
+      }
+    ],
+    "event_key_mismatches": [
+      [218, 1, 0, "missing_replay_event"],
+      [218, 1, 2, "missing_native_event"],
+      [219, 1, 1, "missing_replay_event"],
+      [219, 1, 2, "missing_native_event"]
+    ],
+    "conclusion": "The bank threshold is equal at every compared mismatch, so that fix is not sufficient. The current v2-bound replay still has raw-ReID/anchor-bank semantic divergence at frames 214-217 and event-key coverage divergence at 218-219. Candidate parity remains BLOCKED."
+  },
+  "cost_bottleneck": {
+    "fresh_cost_report": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/diagnostics/JEV_V2_COST_VIDEO01_MAX20_REAUDIT_20261007.json",
+    "fresh_cost_report_sha256": "8c29a1d9880d880277ab7103dabdcc2c8ff71647cdf7eba0f9ac71605129e46f",
+    "fresh_20_record_probe": {
+      "wall_seconds": 22.65915112197399,
+      "records": 20,
+      "proposal_calls": 857,
+      "proposal_seconds": 8.518580220639706,
+      "step_calls": 908,
+      "step_seconds": 8.043529383838177,
+      "state_clone_calls": 51,
+      "state_clone_seconds": 0.018295161426067352,
+      "reactivation_context_calls": 862,
+      "utility_rollout_calls": 51
+    },
+    "larger_measured_probe": {
+      "records": 2400,
+      "wall_seconds": 3771.882963038981,
+      "proposal_calls": 102068,
+      "proposal_seconds": 3562.0680025070906,
+      "step_calls": 105762,
+      "step_seconds": 201.81694404035807,
+      "state_clone_calls": 8360,
+      "state_clone_seconds": 48.11039508134127,
+      "reactivation_context_calls": 100212,
+      "utility_rollout_calls": 6027,
+      "proposal_wall_fraction": 0.944
+    },
+    "formal_run_evidence": {
+      "start_utc": "2026-10-07T04:15:18Z",
+      "records_complete_utc": "2026-10-07T11:10:33Z",
+      "process_exit_observed_utc": "2026-10-07T11:10:35Z",
+      "elapsed_to_records_seconds": 24915,
+      "elapsed_to_exit_seconds": 24917,
+      "records_per_second": 0.361,
+      "records_per_minute": 21.67,
+      "record_count": 8995,
+      "six_hour_evidence_report": "reports/JEV_RNG_V4/VIDEO01_SIX_HOUR_RUNTIME_EVIDENCE_20261007.json",
+      "six_hour_evidence_report_sha256": "97f9db43d246f3c4482d07f30acaec3cf2470189930d71aebcbeb9ac4522bb5e"
+    },
+    "derived_full_trace_workload": {
+      "typed_event_keys": 1863,
+      "candidate_branch_count": 22514,
+      "total_step_calls_including_current": 393288,
+      "future_proposal_calls": 370764,
+      "reactivation_context_calls_approx": 372637
+    },
+    "conclusion": "The measured dominant cost is repeated proposal/model evaluation, amplified by one full future replay per legal candidate. state.clone and utility scoring are measurable but not the primary bottleneck. The completed run shows active long CPU-bound computation, not an I/O hang; no ETA is inferred from CPU/GPU utilization alone."
+  },
+  "recovery": {
+    "existing_protocol": "reproduction_tools/jev_v2_progress_recovery.py",
+    "minimum_progress_fields": [
+      "frame_or_key_range",
+      "completed_events",
+      "total_events",
+      "branch_count",
+      "elapsed_seconds",
+      "last_update_utc"
+    ],
+    "checkpoint_must_include": [
+      "mutable GMT state",
+      "trajectory RNG state and seed",
+      "source/input provenance",
+      "state signature"
+    ],
+    "current_builder_retrofit": "not possible without modifying/restarting it; no such modification was made"
+  },
+  "final_decision": {
+    "video01_v2_runtime_gate": "NO_GO",
+    "candidate_conditioned_followup": "BLOCKED_PENDING_SEMANTIC_REPAIR",
+    "full_h8": "PAUSED_NONCANONICAL",
+    "paper_metrics": "NONE_FROM_THIS_AUDIT",
+    "next_minimum_step": "Freeze the raw-ReID/anchor/joint-bank/event-key repair, pass bounded early and late equivalence plus candidate parity, then run one new complete video01 v2 build with all labels regenerated."
+  }
+}
