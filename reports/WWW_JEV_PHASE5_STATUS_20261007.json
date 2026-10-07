@@ -1,6 +1,6 @@
 {
   "updated_utc": "2026-10-07T16:43:52.757691+00:00",
-  "classification": "incremental experimental results; final evidence bundle follows",
+  "classification": "COMPLETED diagnostic experiments; full report and SHA-bound evidence bundle accompany this branch",
   "runtime": "/home/liuyeqiang/WWW_jev_phase5_runtime/20261007",
   "variants": {
     "A0": {
@@ -170,5 +170,54 @@
   },
   "GPU_preference": "Prefer no-process GPUs; allow overlap whenever memory permits; do not stop unrelated jobs",
   "official_test_run": false,
-  "full24_run": false
+  "full24_run": false,
+  "final_decision": {
+    "Full24_GO": false,
+    "candidate_positive_gate": true,
+    "full24_authorized": false,
+    "native_deployment_validated": false,
+    "new_single_seed_training_runs": 4,
+    "next": "native MATCH-only integration and independent complete TRAIN holdouts; supervision protocol redesign before Reactivation/Memory training",
+    "official_test_read": false,
+    "original_A1_retained": true,
+    "primary": "B2 corrected-label JEV MATCH-only",
+    "primary_checkpoint_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+    "report": "docs/WWW_JEV_PHASE5_DIAGNOSTICS_20261007.md",
+    "status": "COMPLETED_DIAGNOSTIC_BATCH",
+    "tracking_runs_completed": 10
+  },
+  "MLP_independent_sanity": {
+    "action_mismatches": 0,
+    "all_online_decisions_recomputed_on_CPU": 4524,
+    "calibration_did_not_change_weights": true,
+    "checkpoint_model_name": "question_conditioned_mlp",
+    "first_legal_actions": [
+      "ACCEPT_CURRENT",
+      "REASSOCIATE",
+      "START_NEW"
+    ],
+    "first_probabilities": [
+      [
+        0.35654371976852417,
+        0.28365957736968994,
+        0.3597967028617859
+      ]
+    ],
+    "first_state_exactly_equals_OFF_state": true,
+    "first_training_tensor_and_runtime_list_action_identical": true,
+    "full24_authorized": false,
+    "hidden_dim": 139,
+    "interpretation": "Recorded all-START_NEW collapse is produced by this trained model, not an action-index/loading mismatch. Its predictions on stable OFF trajectories can differ substantially from its self-induced states. This is one small-sequence/seed failure, not a universal MLP claim.",
+    "official_test_read": false,
+    "online_CPU_recomputed_actions": {
+      "START_NEW": 4524
+    },
+    "same_model_on_OFF_state_features": {
+      "ACCEPT_CURRENT": 4066,
+      "REASSOCIATE": 296,
+      "START_NEW": 162
+    },
+    "status": "PASS",
+    "temperature": 1.542640673546135
+  }
 }

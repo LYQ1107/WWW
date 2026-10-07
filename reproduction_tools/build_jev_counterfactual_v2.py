@@ -58,6 +58,7 @@ FINAL_SELECTION_LOCK = Path(
     "/data1/liuyeqiang/WWW/outputs/research_final_v2/manifests/FINAL_SELECTION_LOCK.json"
 )
 STATE_SCHEMA_VERSION = 2
+GT_COORDINATE_CONTRACTS = ("legacy_frozen_v2", "cache0_annotation1")
 UTILITY_DEFINITION = (
     "future_correct_identity_duration - 0.5*future_identity_switches - "
     "0.25*future_fragmentation - 0.5*future_collisions - memory_contamination; "
@@ -95,10 +96,19 @@ def detection_target(
     images: Mapping[Tuple[int, int, int], int],
     gt_by_image: Mapping[int, Sequence[Tuple[int, Sequence[float]]]],
     image_meta: Mapping[int, Mapping[str, Any]],
+    gt_coordinate_contract: str = "legacy_frozen_v2",
 ) -> Optional[int]:
-    image_id = images.get((video_id, view + 1, frame))
-    if image_id is None:
-        image_id = images.get((video_id, view, frame))
+    if gt_coordinate_contract == "cache0_annotation1":
+        # Cache frame/view are zero-based; VisionTrack annotations are
+        # one-based. Do not fall back to a different frame or camera.
+        image_id = images.get((video_id, view + 1, frame + 1))
+    elif gt_coordinate_contract == "legacy_frozen_v2":
+        # Preserve frozen diagnostics through an explicit legacy contract.
+        image_id = images.get((video_id, view + 1, frame))
+        if image_id is None:
+            image_id = images.get((video_id, view, frame))
+    else:
+        raise ValueError(f"unknown GT coordinate contract: {gt_coordinate_contract}")
     if image_id is None or image_id not in image_meta:
         return None
     image = image_meta[image_id]
@@ -129,6 +139,7 @@ def score_rollout(
     image_meta,
     start_frame: Optional[int] = None,
     max_horizon: Optional[int] = None,
+    gt_coordinate_contract: str = "legacy_frozen_v2",
 ) -> Dict[str, float]:
     track_targets: Dict[int, int] = {}
     target_tracks: Dict[int, int] = {}
@@ -167,6 +178,7 @@ def score_rollout(
                 images=images,
                 gt_by_image=gt_by_image,
                 image_meta=image_meta,
+                gt_coordinate_contract=gt_coordinate_contract,
             )
             if target is None:
                 continue
@@ -696,7 +708,10 @@ def build_v2_records(
     progress_callback: Optional[Callable[[Mapping[str, Any]], None]] = None,
     emit_event_filter: Optional[Callable[[Mapping[str, Any]], bool]] = None,
     rollout_observer: Optional[Callable[..., None]] = None,
+    gt_coordinate_contract: str = "legacy_frozen_v2",
 ):
+    if gt_coordinate_contract not in GT_COORDINATE_CONTRACTS:
+        raise ValueError(f"unknown GT coordinate contract: {gt_coordinate_contract}")
     if association_backend not in {"cosine_contract", "formal_gmt_transformer"}:
         raise ValueError(f"unsupported association backend: {association_backend}")
     horizons = sorted({int(value) for value in (derive_horizons or (horizon,))})
@@ -993,6 +1008,7 @@ def build_v2_records(
                                 image_meta=image_meta,
                                 start_frame=int(key[1]),
                                 max_horizon=branch_horizon,
+                                gt_coordinate_contract=gt_coordinate_contract,
                             )
                             for branch_horizon in horizons
                         }
@@ -1054,6 +1070,8 @@ def build_v2_records(
                         }
                         for branch_horizon in horizons
                     }
+                    if gt_coordinate_contract != "legacy_frozen_v2":
+                        record["gt_coordinate_contract"] = gt_coordinate_contract
                     if record_sink is None:
                         records.append(record)
                     else:
@@ -1139,6 +1157,9 @@ def main() -> None:
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--gmt-checkpoint", type=Path, required=True)
     parser.add_argument("--horizon", type=int, default=32)
+    parser.add_argument("--gt-coordinate-contract", choices=GT_COORDINATE_CONTRACTS,
+                        default="cache0_annotation1",
+                        help="new labels default to exact cache0/annotation1 coordinates; legacy is for frozen reproduction")
     parser.add_argument(
         "--association-backend",
         choices=("cosine_contract", "formal_gmt_transformer"),
@@ -1261,6 +1282,7 @@ def main() -> None:
         video_ids=args.video_ids,
         max_events_per_video=args.max_events_per_video,
         derive_horizons=args.derive_horizons,
+        gt_coordinate_contract=args.gt_coordinate_contract,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8") as handle:
@@ -1278,6 +1300,7 @@ def main() -> None:
         "gmt_checkpoint": str(checkpoint),
         "gmt_checkpoint_sha256": sha256(checkpoint),
         "horizon": int(args.horizon),
+        "gt_coordinate_contract": args.gt_coordinate_contract,
         "derived_horizons": sorted(
             {int(value) for value in (args.derive_horizons or (args.horizon,))}
             | {int(args.horizon)}

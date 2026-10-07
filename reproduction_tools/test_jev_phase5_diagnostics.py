@@ -15,6 +15,10 @@ def main():
     assert detection_target(frame=0,box=[0,0,10,10],images=images,**kwargs) is None
     assert detection_target(frame=0,box=[0,0,10,10],images=aligned,**kwargs)==7
     assert detection_target(frame=1,box=[20,20,30,30],images=aligned,**kwargs)==8
+    assert detection_target(frame=0,box=[0,0,10,10],images=images,gt_coordinate_contract='cache0_annotation1',**kwargs)==7
+    assert detection_target(frame=1,box=[20,20,30,30],images=images,gt_coordinate_contract='cache0_annotation1',**kwargs)==8
+    # A missing camera must not silently use another camera's annotation.
+    assert detection_target(frame=0,box=[0,0,10,10],images={(1,0,1):10},gt_coordinate_contract='cache0_annotation1',**kwargs) is None
     class Cache:
         def keys(self):return [(1,f,0) for f in range(3)]
         def load(self,v,f,w):return {'video_id':v,'frame':f,'view':w,'cache_version':'fixture','pred_boxes':torch.tensor([[0.,0.,10.,10.]]),'image_size':(32,32),'detection_scores':torch.ones(1),'reid_features':torch.tensor([[1.,0.]])}

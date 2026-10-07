@@ -153,6 +153,7 @@ def coordinates():
             for row,b in enumerate(payload['pred_boxes']):
                 kw={'video_id':vid,'frame':frame,'view':view,'box':b.tolist(),'image_size':payload['image_size'],'gt_by_image':gt,'image_meta':meta}
                 old=detection_target(images=images,**kw);new=detection_target(images=corrected,**kw)
+                assert new == detection_target(images=images,gt_coordinate_contract='cache0_annotation1',**kw)
                 changed+=old!=new;old_unmatched+=old is None;new_unmatched+=new is None
                 if old!=new and len(examples)<8:examples.append({'key':list(k),'row':row,'legacy_gt':old,'aligned_gt':new,'expected_image_id':expected,'legacy_image_id':legacy})
         report[str(v)]={'cache_keys':count,'incorrect_legacy_image_keys':wrong_key,'missing_legacy_images':old_missing,
@@ -163,7 +164,9 @@ def coordinates():
         'required_lookup':'(video_id, view+1, frame+1), exact dataset convention',
         'scope':'complete cached keys/detections for videos1/6/7; raw annotations and perception unchanged',
         'closed_loop_tracking_metrics_invalidated':False,'supervision_requires_relabeling_before_architecture_claim':True,
-        'baseline_source_patched':False})
+        'new_explicit_contract_matches_normalized_lookup_on_all_detections':True,
+        'new_builder_CLI_default_contract':'cache0_annotation1',
+        'legacy_programmatic_default_retained_for_frozen_reproduction':True})
 
 
 def aggregate():
