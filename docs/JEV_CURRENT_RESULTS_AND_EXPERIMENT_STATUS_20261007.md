@@ -67,12 +67,13 @@
 该报告明确区分数据/语义 gate PASS、current-head controller quality NO-GO 和 Full H8
 未授权状态。
 
-另外，VisionTrack evaluator 顺序修复已保存为独立候选分支
+另外，VisionTrack evaluator 顺序修复已经包含在 `1d2711e` 的 canonical source history
+中（修复 commit `830c5cc`，回归证明 commit `623d16d`）；与之内容相同的独立候选分支
 [`evaluator-order-fix-20261007`](https://github.com/LYQ1107/WWW/tree/jev/evaluator-order-fix-20261007)：
-源码 commit `8dfc9e4`，回归测试 commit `c7ac234`。固定 GMT 环境下 3/3 个源码回归
-通过；全部 22 个 test video、58,038 个 image 和 527,474 个 prediction rows 与
-diagnostic remap 行级完全一致。
-尚未合入 canonical，也尚未据此重跑正式 inference/evaluation。
+源码 commit `8dfc9e4`，回归测试 commit `c7ac234` 只是重复发布。`1d2711e` 集成分支
+上的 3/3 回归也已通过；全部 22 个 test video、58,038 个 image 和 527,474 个
+prediction rows 与 diagnostic remap 行级完全一致。修复尚未用于新的正式 inference，
+但它不是当前 `1d` 的未合并问题。
 
 ## 2. 当前 segmented small gate
 
@@ -130,4 +131,4 @@ MPS 切换与等价性报告：[`SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261
 - [video01-reactivation-box-parity-fix-20261007](https://github.com/LYQ1107/WWW/tree/jev/video01-reactivation-box-parity-fix-20261007)
 - [video01-parity-fix-native-order-20261007](https://github.com/LYQ1107/WWW/tree/jev/video01-parity-fix-native-order-20261007)（候选修复，未合并）
 - [segmented-anchor-geometry-integration-20261007](https://github.com/LYQ1107/WWW/tree/jev/segmented-anchor-geometry-integration-20261007)（`1d2711e` 集成候选，轻量回归通过，未做 full parity）
-- [evaluator-order-fix-20261007](https://github.com/LYQ1107/WWW/tree/jev/evaluator-order-fix-20261007)（源码修复与 3/3 回归通过，未合入 canonical）
+- [evaluator-order-fix-20261007](https://github.com/LYQ1107/WWW/tree/jev/evaluator-order-fix-20261007)（重复发布；修复已在 `1d2711e` 中）
