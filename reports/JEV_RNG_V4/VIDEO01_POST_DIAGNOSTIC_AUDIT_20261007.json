@@ -1,0 +1,192 @@
+{
+  "schema_version": "video01_post_diagnostic_audit_v1",
+  "created_utc": "2026-10-07T11:25:43Z",
+  "classification": "DIAGNOSTIC_AUDIT_NOT_PAPER_RESULT",
+  "instruction_file": "/data1/liuyeqiang/www_补充执行指令_20261007.txt",
+  "instruction_file_sha256": "sha256:ca8bc3f5fd13a9a035c5559244626741233e7b2b81ca533b43cfe6ab2be945eb",
+  "preservation_policy": {
+    "formal_video01_v2_builder_restarted": false,
+    "current_segmented_small_gate_stopped": false,
+    "full_h8_resumed": false,
+    "full_h8_authorized": false
+  },
+  "formal_v2_artifact": {
+    "records": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_corrected_full_v2/video01_records.jsonl",
+    "records_sha256": "sha256:1da2ed9e7eec43c7cf139754d873f78a299c344ff74d65c6866b92f18f3da79",
+    "manifest_sha256": "sha256:6b69087594dd25ea80878353fa3c1b43d8a39af5fc0f3b184af8b2635fee68e8",
+    "source_commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+    "record_count": 8995,
+    "question_counts": {
+      "MATCH_DECISION": 4524,
+      "MEMORY_DECISION": 4297,
+      "REACTIVATION_DECISION": 174
+    },
+    "manifest_provenance": "PASS",
+    "checkpoint_sha256": "sha256:cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "trace_sha256": "sha256:091d6ee90f7e4d3507af29222c973c90ff717d5a90b58b51dd82b3e7820632ea",
+    "cache_index_sha256": "sha256:48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+    "config_sha256": "sha256:bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+    "aftercare_decision": "NO_GO_RUNTIME_SEMANTICS_GATE",
+    "closed_loop_run": false
+  },
+  "recomputation_scope_audit": {
+    "source_diff_commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+    "source_parent": "d5e49d6cdedeefc35dc18831a2c9758efe4988df8",
+    "diff_files": ["reproduction_tools/build_jev_counterfactual_v2.py"],
+    "diff_summary": "11 insertions, 4 deletions: preserve model.thred_bank as bank_threshold and use it for reactivation state features",
+    "same_input_sample_records": 20,
+    "state_projection_exact": {
+      "matched": 20,
+      "total": 20
+    },
+    "label_projection_exact": {
+      "matched": 0,
+      "total": 20
+    },
+    "repeat_current_sample_byte_identical": true,
+    "old_artifact_sha256": "sha256:22662cb1b5441de3d69582b49d862ccde3228b678e74c5028004e557e3f11daa",
+    "independent_current_sample_sha256": "sha256:25092f9afa8d53e160e8a456b95bb75d5f466ddc7644564450978ca733bc803c",
+    "historical_replay_matches_current_sample": true,
+    "historical_replay_matches_old_artifact": false,
+    "decision": "FULL_V2_LABEL_RECOMPUTE_REQUIRED",
+    "reuse_blocked": [
+      "action_outcomes",
+      "horizon_outcomes",
+      "target_probs",
+      "best_actions",
+      "sample_weights"
+    ],
+    "reason": "State features alone are reusable only as an observation; the observed outcome/label projection changed and the old artifact provenance is not recoverable from the manifest."
+  },
+  "candidate_parity_audit": {
+    "legacy_formal_v2_gate": {
+      "status": "FAIL",
+      "mismatch_count_capped": 225,
+      "missing_native_count": 100,
+      "missing_replay_count": 100,
+      "candidate_score_errors": 25,
+      "chosen_proposal_id_mismatches": 8,
+      "candidate_ids_exact": true,
+      "candidate_order_exact": true,
+      "legacy_off_actions_exact": true,
+      "candidate_scores_within_tolerance": false,
+      "chosen_proposal_ids_exact": false
+    },
+    "raw_reid_fix_window_260": {
+      "status": "BLOCKED_EVENT_KEY_COVERAGE",
+      "artifact": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/diagnostics/VIDEO01_V2_PARITY_FIX_RAW_REID_WINDOW260_20261007.json",
+      "repair_commit_after_diagnostic_validation": "b20d7e2bc26af53095f56bc92179f2e414468da6",
+      "repair_branch": "jev/video01-reactivation-box-parity-fix-20261007",
+      "diagnostic_artifact_binding": "The diagnostic JSON was produced before the working-tree commit; the committed repair contains the tested code and the JSON remains diagnostic-only.",
+      "candidate_scores_within_tolerance": true,
+      "candidate_ids_exact": true,
+      "chosen_proposal_ids_exact": true,
+      "legacy_off_actions_exact": true,
+      "missing_native_count": 8,
+      "missing_replay_count": 8,
+      "mismatch_count_capped": 16,
+      "interpretation": "Raw ReID storage fixes the score mismatch in the covered window, but exact native/replay event-row coverage is still not proven."
+    },
+    "segmented_early_window_210_216": {
+      "status": "PASS",
+      "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+      "records": 70,
+      "equivalence_sha256": "sha256:459fe49cb06818208a2437856a1280a11edf997f902e57ae38a22a2d1c5d4ef9",
+      "exact_record_matches": 70,
+      "candidate_reactivation_events": 2,
+      "candidate_mismatch_count": 0,
+      "candidate_scores_within_tolerance": true,
+      "candidate_ids_exact": true,
+      "chosen_proposal_ids_exact": true,
+      "legacy_off_actions_exact": true
+    },
+    "segmented_late_window_881_890": {
+      "status_at_report_time": "IN_PROGRESS",
+      "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+      "records_total": 102,
+      "records_completed_at_report_time": 98,
+      "single_reference_baseline": "RUNNING",
+      "candidate_parity": "PENDING",
+      "do_not_treat_as_pass": true
+    },
+    "gate_decision": "BLOCKED_UNTIL_EXACT_EVENT_KEY_COVERAGE_AND_FULL_V2_BOUND_PARITY_PASS"
+  },
+  "measured_cost": {
+    "diagnostic_20_records": {
+      "records": 20,
+      "wall_seconds": 22.090557128190994,
+      "proposal_calls": 857,
+      "step_calls": 908,
+      "state_clone_calls": 51,
+      "reactivation_context_calls": 862,
+      "utility_rollout_calls": 51
+    },
+    "diagnostic_2400_records": {
+      "records": 2400,
+      "wall_seconds": 3771.882963038981,
+      "proposal_calls": 102068,
+      "proposal_seconds": 3562.0680025070906,
+      "proposal_mean_seconds": 0.03489896933913754,
+      "step_calls": 105762,
+      "step_seconds": 201.81694404035807,
+      "state_clone_calls": 8360,
+      "state_clone_seconds": 48.11039508134127,
+      "reactivation_context_calls": 100212,
+      "reactivation_context_seconds": 34.77940859645605,
+      "utility_rollout_calls": 6027,
+      "utility_rollout_seconds": 4.611865319311619,
+      "proposal_wall_fraction": 0.944,
+      "interpretation": "Proposal/model evaluation is the measured dominant cost. Timed operation totals are nested instrumentation and must not be summed as independent wall time."
+    },
+    "formal_video01_run": {
+      "start_utc": "2026-10-07T04:15:18Z",
+      "records_created_utc": "2026-10-07T11:10:33Z",
+      "process_exit_observed_utc": "2026-10-07T11:10:35Z",
+      "elapsed_to_records_seconds": 24915,
+      "elapsed_to_exit_seconds": 24917,
+      "records_per_second_to_records": 0.361,
+      "records_per_minute_to_records": 21.67,
+      "six_hour_evidence": true,
+      "evidence_report": "reports/JEV_RNG_V4/VIDEO01_V2_LIVE_EVIDENCE_20261007.json"
+    },
+    "derived_full_trace_workload": {
+      "typed_event_keys": 1863,
+      "candidate_branch_count": 22514,
+      "total_step_calls_including_current": 393288,
+      "future_proposal_calls": 370764,
+      "reactivation_context_calls_approx": 372637
+    }
+  },
+  "current_preserved_job": {
+    "pid": 15541,
+    "command_role": "segmented_small_gate_v4",
+    "source_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+    "gpus": [2, 3, 5, 6, 7, 8, 9],
+    "output": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4",
+    "status_at_report_time": "RUNNING_LATE_PROBE_BASELINE",
+    "preserved": true,
+    "formal_video01_v2_restarted": false,
+    "full_h8_workers_started": false
+  },
+  "minimal_modification_plan": [
+    "Keep raw ReID vectors in mutable memory exactly as native id_reid_dict does; normalize only the model input path.",
+    "Retain original anchor boxes and image sizes for stale IDs and pass one joint historical Instances bank in native insertion order.",
+    "Preserve native unmatched-query bank-promotion timing and native row/event-key mapping; do not accept score-only parity.",
+    "Finish the early and late bounded gates, freeze the committed repair b20d7e2 together with the native event-key fix, then rerun the complete 8995-record video01 v2 artifact.",
+    "Only after provenance, MATCH/MEMORY/REACTIVATION parity, candidate parity, stability, checkpoint wrapper, and held-out closed-loop gates pass may Full H8 be reconsidered."
+  ],
+  "recovery_status": {
+    "segmented_progress_supported": true,
+    "progress_fields": ["frame_or_key_range", "completed_records", "total_records", "branch_count", "elapsed_seconds", "updated_utc"],
+    "early_chunk_equivalence_pass": true,
+    "formal_old_builder_retrofit": false,
+    "next_canonical_build_must_use": "frozen worktree, exact source/input hashes, deterministic OFF/RNG snapshots, atomic progress and resumable complete-chunk outputs"
+  },
+  "final_decision": {
+    "video01_v2_runtime_gate": "NO_GO",
+    "candidate_conditioned_followup": "PLANNING_ONLY",
+    "full_h8": "PAUSED_NONCANONICAL",
+    "three_way_tracking_metrics": "NOT_AVAILABLE_AND_NOT_RUN",
+    "paper_metrics": "NONE_FROM_THIS_AUDIT"
+  }
+}
