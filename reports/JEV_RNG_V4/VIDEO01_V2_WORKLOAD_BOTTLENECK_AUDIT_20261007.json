@@ -1,0 +1,72 @@
+{
+  "schema_version": "video01_v2_workload_bottleneck_audit_v1",
+  "created_utc": "2026-10-07T11:06:42Z",
+  "classification": "DIAGNOSTIC_ONLY_NOT_COMPLETION_EVIDENCE",
+  "purpose": "Quantify the formal corrected video01 v2 workload and distinguish active CPU computation from an OS-level hang without modifying the live builder.",
+  "source": {
+    "worktree": "/data1/liuyeqiang/WWW_rng_fix_v4",
+    "commit": "4108f18f5040432f68d55872e81e9f76e9acd08f",
+    "trace": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/formal_current_head_off_trace/video01/trace_video_01.jsonl",
+    "cache_index": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train/index.jsonl",
+    "horizon": 8
+  },
+  "live_process_observation": {
+    "pid": 12163,
+    "start_utc": "2026-10-07T04:15:18Z",
+    "observed_utc": "2026-10-07T11:06:42Z",
+    "ps_elapsed": "06:51:24",
+    "ps_cpu_time": "06:51:29",
+    "state": "Rsl",
+    "cpu_percent": 100.0,
+    "rss_kib": 3169444,
+    "threads": 100,
+    "hot_cpu_threads": 1,
+    "voluntary_context_switches": 9902,
+    "nonvoluntary_context_switches": 2093438,
+    "records_path_exists": false,
+    "manifest_path_exists": false,
+    "interpretation": "The same process remains in active running state and its CPU time advances across repeated polls. One Python thread is consuming the CPU while worker threads sleep. This is consistent with long CPU-bound branch evaluation and inconsistent with a process blocked on I/O; it is not, by itself, proof that a particular record has completed."
+  },
+  "input_workload": {
+    "trace_lines": 8995,
+    "question_counts": {
+      "MATCH_DECISION": 4524,
+      "MEMORY_DECISION": 4297,
+      "REACTIVATION_DECISION": 174
+    },
+    "legal_action_histogram": {
+      "MATCH_DECISION_3_actions": 4524,
+      "MEMORY_DECISION_2_actions": 4297,
+      "REACTIVATION_DECISION_2_actions": 174
+    },
+    "cache_keys_video1": 1864,
+    "typed_event_keys": 1863,
+    "frame_range": [0, 931],
+    "future_keys_per_event_key": {
+      "min": 0,
+      "max": 17,
+      "mean": 16.422973698336016
+    }
+  },
+  "derived_workload": {
+    "current_proposal_calls": 1863,
+    "candidate_branch_count": 22514,
+    "future_step_calls": 370774,
+    "total_step_calls_including_current": 393288,
+    "future_proposal_calls": 370764,
+    "reactivation_context_calls_approx": 372637,
+    "derivation": "For every typed event and legal candidate, the builder clones the pre-decision state, executes the candidate at the current key, and replays every cached key through frame plus horizon. Future proposal and reactivation-context work is repeated per candidate branch."
+  },
+  "implementation_observation": {
+    "record_buffering": "The current builder accumulates records in memory when no record_sink is supplied and writes JSONL plus manifest only after the full build returns.",
+    "live_progress_counter": "Not available in the already-running process; a durable progress callback exists only in the separate recovery-development worktree and was not injected into this frozen run.",
+    "safe_action_taken": "Read-only source, trace, cache-index, process-thread, and repeated CPU-state audit; no signal, migration, restart, or source change was applied to PID 12163."
+  },
+  "diagnostic_conclusion": {
+    "process_hang_evidence": "NOT_FOUND",
+    "formal_v2_completion": "PENDING",
+    "final_metrics_available": false,
+    "full_h8_authorized": false,
+    "next_authorized_step": "Keep the frozen video01 builder running; after its manifest appears, execute v2 provenance, parity, candidate parity, stability, and closed-loop aftercare."
+  }
+}
