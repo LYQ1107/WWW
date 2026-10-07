@@ -11,6 +11,7 @@ from jev_phase6_common import OUT,ROOT,save
 
 def main(path,max_workers):
     tasks=json.loads(path.read_text()); pending=list(tasks);running=[];completed=[]
+    external_path=path.parent/'EXTERNAL_RESERVATIONS.json'
     while pending or running:
         for entry in list(running):
             if entry['process'].poll() is None:continue
@@ -37,6 +38,14 @@ def main(path,max_workers):
                 own=[e for e in running if e['gpu']==gpu]
                 reserved=sum(e['task']['reserve_mib'] for e in own)
                 external_used=max(0,used-own_actual.get(uuid,0))
+                if external_path.exists():
+                    planned=0
+                    for reservation in json.loads(external_path.read_text()):
+                        if reservation['gpu']!=gpu:continue
+                        try:os.kill(reservation['pid'],0)
+                        except ProcessLookupError:continue
+                        planned+=reservation['reserve_mib']
+                    external_used=max(external_used,planned)
                 available=min(free,used+free-external_used-reserved)
                 if available>=task['reserve_mib']+1024:
                     eligible.append((bool(used or own),len(own),util,-available,gpu))

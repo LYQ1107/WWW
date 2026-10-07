@@ -45,6 +45,24 @@ class Phase6GateContract(unittest.TestCase):
         self.assertAlmostEqual(derived['target_probs'][0], 0.2689414214)
         self.assertNotIn('REASSOCIATE', derived['action_outcomes'])
 
+    def test_diagnostic_context_cannot_change_controller_choice(self):
+        from gtr.modeling.jev_decision import JEVDecisionController
+        from gtr.modeling.jev_runtime import JEVRuntimePolicy
+        policy=JEVRuntimePolicy('jev',JEVDecisionController(64))
+        features=torch.randn(64);legal=['ACCEPT_CURRENT','REASSOCIATE','START_NEW']
+        a=policy.decide(features,'MATCH_DECISION',legal,context={'large_lifetime_map':{'1':100000}})
+        b=policy.decide(features,'MATCH_DECISION',legal,context={})
+        self.assertEqual(a.committed_action,b.committed_action)
+        self.assertEqual(a.probabilities,b.probabilities)
+
+    def test_read_window_retains_pre_intervention_identity_and_births(self):
+        from jev_phase6_offline_utility import consequence
+        prefix={(0,0,0):{'id':1,'gt':10},(3,0,0):{'id':1,'gt':20},(4,0,0):{'id':1,'gt':20}}
+        branch={(1,0,0):{'id':2,'gt':10},(4,0,0):{'id':2,'gt':20},(4,0,1):{'id':1,'gt':20}}
+        result=consequence(branch,prefix,(4,0),20,0,1,identity_key=(1,0))
+        self.assertEqual(result['correct_identity_duration'],0)
+        self.assertEqual(result['wrong_identity_duration'],2)
+
 
 if __name__ == '__main__':
     unittest.main()
