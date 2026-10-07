@@ -10,6 +10,25 @@ This report records the state that was actually observed on the host. It
 deliberately separates completed screening evidence from the still-pending
 formal tracking claim.
 
+## Latest live refresh
+
+The following refresh was observed at `2026-10-07T01:57:43Z` and supersedes
+the older queue table below for live process state:
+
+- Corrected `video01` builder PID `8251` is still running. Its final
+  `video01_records.jsonl` and manifest do not yet exist.
+- Full H8 remains `RUNNING`: all 12 authorized workers have fresh heartbeats;
+  there are `12` running videos, `12` pending videos, and `0` complete shard
+  manifests.
+- The currently visible temporary Full H8 JSONL prefix is `20,006` lines out
+  of `1,112,173` source decision units. These are append-only temporary files,
+  not finalized records and not usable for formal training or evaluation.
+- No OOM or worker failure was observed. The corrected `video01` builder and
+  Full H8 workers were not stopped or migrated.
+
+This refresh changes no scientific conclusion: the authoritative status is
+still `IN_PROGRESS / NO_FINAL_RESEARCH_CLAIM_YET`.
+
 ## Executive summary
 
 ### Completed
