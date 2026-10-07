@@ -67,6 +67,11 @@
 该报告明确区分数据/语义 gate PASS、current-head controller quality NO-GO 和 Full H8
 未授权状态。
 
+另外，VisionTrack evaluator 顺序修复已保存为独立候选分支
+[`evaluator-order-fix-20261007`](https://github.com/LYQ1107/WWW/tree/jev/evaluator-order-fix-20261007)：
+源码 commit `8dfc9e4`，回归测试 commit `c7ac234`。固定 GMT 环境下 3/3 个源码回归
+通过；尚未合入 canonical，也尚未据此重跑正式 inference/evaluation。
+
 ## 2. 当前 segmented small gate
 
 并发审计：[`SEGMENTED_CONCURRENCY_CHANGE_AUDIT_20261007.json`](../reports/JEV_RNG_V4/SEGMENTED_CONCURRENCY_CHANGE_AUDIT_20261007.json)。以下 MPS 数字是运行中的历史快照；最终 acceptance 状态以 `88/88 COMPLETE` 为准。
@@ -123,3 +128,4 @@ MPS 切换与等价性报告：[`SEGMENTED_MPS_SWITCH_AND_LATE_EQUIVALENCE_20261
 - [video01-reactivation-box-parity-fix-20261007](https://github.com/LYQ1107/WWW/tree/jev/video01-reactivation-box-parity-fix-20261007)
 - [video01-parity-fix-native-order-20261007](https://github.com/LYQ1107/WWW/tree/jev/video01-parity-fix-native-order-20261007)（候选修复，未合并）
 - [segmented-anchor-geometry-integration-20261007](https://github.com/LYQ1107/WWW/tree/jev/segmented-anchor-geometry-integration-20261007)（`1d2711e` 集成候选，轻量回归通过，未做 full parity）
+- [evaluator-order-fix-20261007](https://github.com/LYQ1107/WWW/tree/jev/evaluator-order-fix-20261007)（源码修复与 3/3 回归通过，未合入 canonical）
