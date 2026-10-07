@@ -55,6 +55,11 @@ def main() -> None:
     )
     parser.add_argument("--max-frame", type=int, default=None)
     parser.add_argument(
+        "--device",
+        default="cpu",
+        help="formal replay device, e.g. cuda:2; the device is recorded in the manifest",
+    )
+    parser.add_argument(
         "--compare-trace",
         type=Path,
         help=(
@@ -160,6 +165,7 @@ def main() -> None:
                 legacy_acceptance_threshold=legacy_acceptance_threshold,
                 feature_source_mode="runtime",
                 parity_report=parity_report,
+                device=str(args.device),
                 max_frame=args.max_frame,
                 trace_writer=trace_writer,
             )
@@ -190,6 +196,7 @@ def main() -> None:
         ).strip(),
         "checkpoint": str(pilot.CHECKPOINT),
         "checkpoint_sha256": "sha256:" + sha256(pilot.CHECKPOINT),
+        "device": str(args.device),
         "perception_cache": str(pilot.CACHE),
         "perception_cache_index_sha256": "sha256:" + sha256(pilot.CACHE / "index.jsonl"),
         "association_backend": "formal_gmt_transformer",
