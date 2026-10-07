@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "frozen_code_commit": "1d2711e80ac5fa00806fd9eed30e90cd51df6b30",
+  "review_worktree": "/data1/liuyeqiang/WWW_segmented_review_20261007",
+  "checks": [
+    {
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "reproduction_tools/test_jev_counterfactual_v2.py"
+      ],
+      "exit_code": 0,
+      "stdout": "JEV cached-perception v2 invariants: PASS\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "reproduction_tools/test_jev_gmt_association_adapter.py"
+      ],
+      "exit_code": 0,
+      "stdout": "GMT association adapter slice-normalization invariant: PASS\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "reproduction_tools/test_jev_counterfactual_rng_isolation.py"
+      ],
+      "exit_code": 0,
+      "stdout": "JEV explicit branch-local RNG isolation: PASS\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "reproduction_tools/test_jev_reactivation_semantics.py"
+      ],
+      "exit_code": 0,
+      "stdout": "JEV reactivation row-filter semantics: PASS\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "reproduction_tools/test_jev_intra_video_chunking.py",
+        "reproduction_tools/test_jev_gmt_association_adapter.py"
+      ],
+      "exit_code": 0,
+      "stdout": ".....                                                                    [100%]\n=============================== warnings summary ===============================\n../WWW/third_party/detectron2/detectron2/data/transforms/transform.py:46\n  /data1/liuyeqiang/WWW/third_party/detectron2/detectron2/data/transforms/transform.py:46: DeprecationWarning: LINEAR is deprecated and will be removed in Pillow 10 (2023-07-01). Use BILINEAR or Resampling.BILINEAR instead.\n    def __init__(self, src_rect, output_size, interp=Image.LINEAR, fill=0):\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n5 passed, 1 warning in 2.14s\n",
+      "stderr": ""
+    }
+  ]
+}

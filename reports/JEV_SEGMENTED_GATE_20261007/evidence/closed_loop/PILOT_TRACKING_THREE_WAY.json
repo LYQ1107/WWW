@@ -1,0 +1,344 @@
+{
+  "association_backend": "formal_gmt_transformer",
+  "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+  "classification": "SCREENING_ONLY_NOT_FOR_FINAL_SELECTION_NOT_FOR_PAPER_RESULT",
+  "closed_loop_definition": "frozen detector/ReID payloads + formal GMT association transformer + mutable branch-local association/memory state + online typed controller commits; runtime mode recomputes controller features from the mutated state through the canonical shared builder",
+  "config": "/data1/liuyeqiang/WWW_segmented_gate_20261007/configs/VISION_test.yaml",
+  "controller_feature_source": "runtime",
+  "created_utc": "2026-10-07T12:36:46.365132+00:00",
+  "gmt_off_baseline": {
+    "AssA": 85.14919745804252,
+    "DetA": 87.94461028006626,
+    "Frag": 6.0,
+    "HOTA": 86.52304287961718,
+    "IDF1": 94.64245684824031,
+    "IDSW": 282.0,
+    "MOTA": 89.57906712172924
+  },
+  "interpretation": "Pilot-only matched-sequence evidence; not a final paper result and not a substitute for full VISION_test evaluation.",
+  "methods": {
+    "gmt_off": {
+      "action_counts": {
+        "ACCEPT_CURRENT": 4297,
+        "MATCH_DECISION": 4524,
+        "MEMORY_DECISION": 4297,
+        "REACTIVATE_OLD": 0,
+        "REACTIVATION_DECISION": 174,
+        "REASSOCIATE": 0,
+        "SKIP_MEMORY": 0,
+        "START_NEW": 401,
+        "WRITE_MEMORY": 4297,
+        "action_rates": {
+          "ACCEPT_CURRENT": 0.477709838799333,
+          "REACTIVATE_OLD": 0.0,
+          "REASSOCIATE": 0.0,
+          "SKIP_MEMORY": 0.0,
+          "START_NEW": 0.044580322401334076,
+          "WRITE_MEMORY": 0.477709838799333
+        },
+        "canonical_feature_records": 0,
+        "fallback_feature_records": 0,
+        "false_reactivation": 0.0,
+        "feature_parity_max_abs_error": 6.103515625e-05,
+        "feature_parity_records": 8995,
+        "known_commit_evaluations": 8995,
+        "memory_contamination": 0.0,
+        "missing_action_outcomes": 0,
+        "off_action_mismatches": 0,
+        "reactivation_action_counts": {
+          "REACTIVATE_OLD": 0,
+          "START_NEW": 174
+        },
+        "reactivation_candidate_evaluations": 174,
+        "reactivation_no_candidate": 53,
+        "reactivation_wrong_commit": 0,
+        "runtime_feature_records": 8995,
+        "trace_action_records": 8995,
+        "trace_debug_feature_records": 0,
+        "unsupported_reactivation": 0,
+        "wrong_commit": 147,
+        "wrong_commit_rate": 0.01634241245136187
+      },
+      "delta_vs_gmt_off": {
+        "\u0394AssA": 0.0,
+        "\u0394Frag": 0.0,
+        "\u0394HOTA": 0.0,
+        "\u0394IDF1": 0.0,
+        "\u0394IDSW": 0.0,
+        "\u0394MOTA": 0.0
+      },
+      "evaluation": {
+        "evaluation": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/closed_loop/tracking_eval_runtime_state/gmt_off/evaluation",
+        "metrics": {
+          "AssA": 85.14919745804252,
+          "DetA": 87.94461028006626,
+          "Frag": 6.0,
+          "HOTA": 86.52304287961718,
+          "IDF1": 94.64245684824031,
+          "IDSW": 282.0,
+          "MOTA": 89.57906712172924
+        },
+        "prepared": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/closed_loop/tracking_eval_runtime_state/gmt_off/prepared"
+      },
+      "metrics": {
+        "AssA": 85.14919745804252,
+        "DetA": 87.94461028006626,
+        "Frag": 6.0,
+        "HOTA": 86.52304287961718,
+        "IDF1": 94.64245684824031,
+        "IDSW": 282.0,
+        "MOTA": 89.57906712172924
+      }
+    },
+    "jev": {
+      "action_counts": {
+        "ACCEPT_CURRENT": 4493,
+        "MATCH_DECISION": 4524,
+        "MEMORY_DECISION": 4499,
+        "REACTIVATE_OLD": 7,
+        "REACTIVATION_DECISION": 7,
+        "REASSOCIATE": 25,
+        "SKIP_MEMORY": 4271,
+        "START_NEW": 6,
+        "WRITE_MEMORY": 228,
+        "action_rates": {
+          "ACCEPT_CURRENT": 0.4975636766334441,
+          "REACTIVATE_OLD": 0.0007751937984496124,
+          "REASSOCIATE": 0.0027685492801771874,
+          "SKIP_MEMORY": 0.47297895902547066,
+          "START_NEW": 0.000664451827242525,
+          "WRITE_MEMORY": 0.02524916943521595
+        },
+        "canonical_feature_records": 0,
+        "fallback_feature_records": 0,
+        "false_reactivation": 2.0,
+        "feature_parity_max_abs_error": 2272.641357421875,
+        "feature_parity_records": 8809,
+        "known_commit_evaluations": 8809,
+        "memory_contamination": 0.0,
+        "missing_action_outcomes": 0,
+        "off_action_mismatches": 0,
+        "reactivation_action_counts": {
+          "REACTIVATE_OLD": 7,
+          "START_NEW": 0
+        },
+        "reactivation_candidate_evaluations": 7,
+        "reactivation_no_candidate": 18,
+        "reactivation_wrong_commit": 0,
+        "runtime_feature_records": 9030,
+        "trace_action_records": 0,
+        "trace_debug_feature_records": 0,
+        "unsupported_reactivation": 0,
+        "wrong_commit": 16,
+        "wrong_commit_rate": 0.0018163242138721763
+      },
+      "delta_vs_gmt_off": {
+        "\u0394AssA": -2.689267676359634,
+        "\u0394Frag": 0.0,
+        "\u0394HOTA": -1.4507083111090253,
+        "\u0394IDF1": -2.667563326608402,
+        "\u0394IDSW": -264.0,
+        "\u0394MOTA": 6.00682593856655
+      },
+      "evaluation": {
+        "evaluation": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/closed_loop/tracking_eval_runtime_state/jev/evaluation",
+        "metrics": {
+          "AssA": 82.45992978168289,
+          "DetA": 87.78834233279741,
+          "Frag": 6.0,
+          "HOTA": 85.07233456850815,
+          "IDF1": 91.97489352163191,
+          "IDSW": 18.0,
+          "MOTA": 95.58589306029579
+        },
+        "prepared": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/closed_loop/tracking_eval_runtime_state/jev/prepared"
+      },
+      "metrics": {
+        "AssA": 82.45992978168289,
+        "DetA": 87.78834233279741,
+        "Frag": 6.0,
+        "HOTA": 85.07233456850815,
+        "IDF1": 91.97489352163191,
+        "IDSW": 18.0,
+        "MOTA": 95.58589306029579
+      }
+    },
+    "question_conditioned_mlp": {
+      "action_counts": {
+        "ACCEPT_CURRENT": 3435,
+        "MATCH_DECISION": 4524,
+        "MEMORY_DECISION": 4050,
+        "REACTIVATE_OLD": 0,
+        "REACTIVATION_DECISION": 0,
+        "REASSOCIATE": 682,
+        "SKIP_MEMORY": 4050,
+        "START_NEW": 407,
+        "WRITE_MEMORY": 0,
+        "action_rates": {
+          "ACCEPT_CURRENT": 0.400629811056683,
+          "REACTIVATE_OLD": 0.0,
+          "REASSOCIATE": 0.07954280382551901,
+          "SKIP_MEMORY": 0.4723582925122463,
+          "START_NEW": 0.04746909260555167,
+          "WRITE_MEMORY": 0.0
+        },
+        "canonical_feature_records": 0,
+        "fallback_feature_records": 0,
+        "false_reactivation": 0.0,
+        "feature_parity_max_abs_error": 1967.994384765625,
+        "feature_parity_records": 8378,
+        "known_commit_evaluations": 8378,
+        "memory_contamination": 245.0,
+        "missing_action_outcomes": 0,
+        "off_action_mismatches": 0,
+        "reactivation_action_counts": {
+          "REACTIVATE_OLD": 0,
+          "START_NEW": 0
+        },
+        "reactivation_candidate_evaluations": 0,
+        "reactivation_no_candidate": 474,
+        "reactivation_wrong_commit": 0,
+        "runtime_feature_records": 8574,
+        "trace_action_records": 0,
+        "trace_debug_feature_records": 0,
+        "unsupported_reactivation": 0,
+        "wrong_commit": 1047,
+        "wrong_commit_rate": 0.12497015994270709
+      },
+      "delta_vs_gmt_off": {
+        "\u0394AssA": -31.634764444965413,
+        "\u0394Frag": 0.0,
+        "\u0394HOTA": -18.30643087846076,
+        "\u0394IDF1": -21.766420085182702,
+        "\u0394IDSW": 736.0,
+        "\u0394MOTA": -16.746302616609782
+      },
+      "evaluation": {
+        "evaluation": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/closed_loop/tracking_eval_runtime_state/question_conditioned_mlp/evaluation",
+        "metrics": {
+          "AssA": 53.51443301307711,
+          "DetA": 86.97883022961175,
+          "Frag": 6.0,
+          "HOTA": 68.21661200115642,
+          "IDF1": 72.87603676305761,
+          "IDSW": 1018.0,
+          "MOTA": 72.83276450511946
+        },
+        "prepared": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/closed_loop/tracking_eval_runtime_state/question_conditioned_mlp/prepared"
+      },
+      "metrics": {
+        "AssA": 53.51443301307711,
+        "DetA": 86.97883022961175,
+        "Frag": 6.0,
+        "HOTA": 68.21661200115642,
+        "IDF1": 72.87603676305761,
+        "IDSW": 1018.0,
+        "MOTA": 72.83276450511946
+      }
+    },
+    "question_threshold": {
+      "action_counts": {
+        "ACCEPT_CURRENT": 3843,
+        "MATCH_DECISION": 4524,
+        "MEMORY_DECISION": 3852,
+        "REACTIVATE_OLD": 28,
+        "REACTIVATION_DECISION": 28,
+        "REASSOCIATE": 65,
+        "SKIP_MEMORY": 0,
+        "START_NEW": 616,
+        "WRITE_MEMORY": 3852,
+        "action_rates": {
+          "ACCEPT_CURRENT": 0.45728224654926225,
+          "REACTIVATE_OLD": 0.0033317467872441696,
+          "REASSOCIATE": 0.007734412184673965,
+          "SKIP_MEMORY": 0.0,
+          "START_NEW": 0.07329842931937172,
+          "WRITE_MEMORY": 0.4583531651594479
+        },
+        "canonical_feature_records": 0,
+        "fallback_feature_records": 0,
+        "false_reactivation": 0.0,
+        "feature_parity_max_abs_error": 1783.02392578125,
+        "feature_parity_records": 8200,
+        "known_commit_evaluations": 8200,
+        "memory_contamination": 0.0,
+        "missing_action_outcomes": 0,
+        "off_action_mismatches": 0,
+        "reactivation_action_counts": {
+          "REACTIVATE_OLD": 28,
+          "START_NEW": 0
+        },
+        "reactivation_candidate_evaluations": 28,
+        "reactivation_no_candidate": 644,
+        "reactivation_wrong_commit": 0,
+        "runtime_feature_records": 8404,
+        "trace_action_records": 0,
+        "trace_debug_feature_records": 0,
+        "unsupported_reactivation": 0,
+        "wrong_commit": 594,
+        "wrong_commit_rate": 0.0724390243902439
+      },
+      "delta_vs_gmt_off": {
+        "\u0394AssA": -12.23239695676476,
+        "\u0394Frag": 0.0,
+        "\u0394HOTA": -6.48953830049517,
+        "\u0394IDF1": -10.647836807890613,
+        "\u0394IDSW": 489.0,
+        "\u0394MOTA": -11.12627986348123
+      },
+      "evaluation": {
+        "evaluation": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/closed_loop/tracking_eval_runtime_state/question_threshold/evaluation",
+        "metrics": {
+          "AssA": 72.91680050127776,
+          "DetA": 87.87699896771727,
+          "Frag": 6.0,
+          "HOTA": 80.03350457912201,
+          "IDF1": 83.9946200403497,
+          "IDSW": 771.0,
+          "MOTA": 78.45278725824801
+        },
+        "prepared": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/closed_loop/tracking_eval_runtime_state/question_threshold/prepared"
+      },
+      "metrics": {
+        "AssA": 72.91680050127776,
+        "DetA": 87.87699896771727,
+        "Frag": 6.0,
+        "HOTA": 80.03350457912201,
+        "IDF1": 83.9946200403497,
+        "IDSW": 771.0,
+        "MOTA": 78.45278725824801
+      }
+    }
+  },
+  "official_test_read": false,
+  "perception_cache": "/data1/liuyeqiang/WWW/outputs/research_final_v2/off/perception_cache_train",
+  "pilot_verdict": "PILOT_FAIL_RUNTIME_STATE_PARITY_OR_TRACKING",
+  "previous_manual_feature_result": "SUPERSEDED_INVALID_FEATURE_SCHEMA",
+  "reactivation_coverage_gate": {
+    "REACTIVATE_OLD": 0,
+    "START_NEW": 174,
+    "expected_record_count": 174,
+    "false_reactivation": 0.0,
+    "pass": true,
+    "reactivation_candidate_evaluations": 174,
+    "reactivation_no_candidate": 53,
+    "reactivation_wrong_commit": 0,
+    "runtime_decision_count": 174,
+    "status": "PASS",
+    "unsupported_reactivation": 0
+  },
+  "runtime_feature_parity_gate": {
+    "compared_records": 8995,
+    "expected_records": 8995,
+    "max_abs_error": 6.103515625e-05,
+    "missing_records": 0,
+    "off_action_mismatches": 0,
+    "pass": true,
+    "report": "/data1/liuyeqiang/WWW_segmented_gate_20261007/reports/JEV_RUNTIME_STATE_V3/STATE_FEATURE_PARITY.json",
+    "required_for_runtime_claim": true
+  },
+  "sequence": "00002garden",
+  "status": "PASS",
+  "trace_feature_policy": "trace_debug is parity-only and must not be interpreted as a closed-loop scientific result",
+  "video_id": 1
+}

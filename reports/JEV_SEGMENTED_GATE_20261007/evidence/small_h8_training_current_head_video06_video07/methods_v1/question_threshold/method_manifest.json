@@ -1,0 +1,69 @@
+{
+  "calibration": {
+    "applied_to": "all_three_methods",
+    "method": "temperature_scaling_policy_val_only"
+  },
+  "created_utc": "2026-10-07T12:35:07.630117+00:00",
+  "dataset": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/compact_v1",
+  "dataset_sha256": "3a0c5b05956d62ea09837678261559ac94d65ba77ba8eb16710c183f724f5df5",
+  "horizon": 8,
+  "members": [
+    {
+      "calibrated_checkpoint": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/question_threshold/seed_20261003/calibration/model_calibrated.pth",
+      "calibrated_checkpoint_sha256": "93b4925f082e6a460403e5124f393f360e5e9a25790ab1444501133a310c97cd",
+      "calibration_report": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/question_threshold/seed_20261003/calibration/calibration_val_only.json",
+      "checkpoint": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/question_threshold/seed_20261003/model.pth",
+      "checkpoint_sha256": "b663d58aafdc571adf942755adcf10949b5b1a9af8c184bf1df21c9c70a07bb3",
+      "seed": 20261003,
+      "temperature": 6.051448275069765,
+      "train_metrics": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/question_threshold/seed_20261003/metrics.json",
+      "trainable_params": 33987,
+      "validation": {
+        "best_action_accuracy": 0.936458736923673,
+        "brier": 0.06969260815289527,
+        "by_question": {
+          "MATCH_DECISION": {
+            "accuracy": 0.8738461538461538,
+            "records": 2600
+          },
+          "MEMORY_DECISION": {
+            "accuracy": 1.0,
+            "records": 2562
+          }
+        },
+        "ece": 0.3368444170417457,
+        "ignored_uninformative_records": 0,
+        "nll": 0.9551282551273825,
+        "records": 5162,
+        "weighted_records": 5162.0
+      },
+      "validation_calibrated": {
+        "best_action_accuracy": 0.936458736923673,
+        "brier": 0.016869295209906446,
+        "ece": 0.4887389209221057,
+        "nll": 0.8944942504538282,
+        "records": 5162,
+        "weighted_records": 5162.0
+      }
+    }
+  ],
+  "method": "question_threshold",
+  "method_label": "Learnable Threshold",
+  "multi_seed_robustness": "deferred_until_after_first_round_gate",
+  "policy_split": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/policy_split.json",
+  "policy_split_sha256": "bbdac3cff7c46b20c707dd278c526704a99ede973cc1ffde31b11172df9efd91",
+  "seed_policy": "TEMPORARILY_DISABLED_MULTI_SEED",
+  "seeds": [
+    20261003
+  ],
+  "status": "PASS",
+  "training": {
+    "batch_size": 128,
+    "device": "cuda:0",
+    "epochs": 20,
+    "hidden_dim": 140,
+    "learning_rate": 0.001,
+    "lr_search": "locked single value shared by all methods",
+    "optimizer": "AdamW"
+  }
+}

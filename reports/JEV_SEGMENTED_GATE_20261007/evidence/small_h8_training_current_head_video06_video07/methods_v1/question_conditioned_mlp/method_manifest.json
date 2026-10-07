@@ -1,0 +1,69 @@
+{
+  "calibration": {
+    "applied_to": "all_three_methods",
+    "method": "temperature_scaling_policy_val_only"
+  },
+  "created_utc": "2026-10-07T12:34:50.976286+00:00",
+  "dataset": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/compact_v1",
+  "dataset_sha256": "3a0c5b05956d62ea09837678261559ac94d65ba77ba8eb16710c183f724f5df5",
+  "horizon": 8,
+  "members": [
+    {
+      "calibrated_checkpoint": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/question_conditioned_mlp/seed_20261003/calibration/model_calibrated.pth",
+      "calibrated_checkpoint_sha256": "99a87a400e1b3c29f855d19e0950d31f788af7520238933a79c00e66531777d6",
+      "calibration_report": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/question_conditioned_mlp/seed_20261003/calibration/calibration_val_only.json",
+      "checkpoint": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/question_conditioned_mlp/seed_20261003/model.pth",
+      "checkpoint_sha256": "97b302a26142d7f2d54b2664c86626af44871ffcb1b769181b37902296ede4c2",
+      "seed": 20261003,
+      "temperature": 2.837101324209661,
+      "train_metrics": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/methods_v1/question_conditioned_mlp/seed_20261003/metrics.json",
+      "trainable_params": 34163,
+      "validation": {
+        "best_action_accuracy": 0.9843084075939559,
+        "brier": 0.036441088478348066,
+        "by_question": {
+          "MATCH_DECISION": {
+            "accuracy": 0.9688461538461538,
+            "records": 2600
+          },
+          "MEMORY_DECISION": {
+            "accuracy": 1.0,
+            "records": 2562
+          }
+        },
+        "ece": 0.41169447698065675,
+        "ignored_uninformative_records": 0,
+        "nll": 0.9167438952533,
+        "records": 5162,
+        "weighted_records": 5162.0
+      },
+      "validation_calibrated": {
+        "best_action_accuracy": 0.9843084075939559,
+        "brier": 0.009480304566332537,
+        "ece": 0.5101355390521456,
+        "nll": 0.8808785710959867,
+        "records": 5162,
+        "weighted_records": 5162.0
+      }
+    }
+  ],
+  "method": "question_conditioned_mlp",
+  "method_label": "Generic MLP",
+  "multi_seed_robustness": "deferred_until_after_first_round_gate",
+  "policy_split": "/home/liuyeqiang/WWW_jev_rng_v4_runtime/segmented_gate_20261007_v4/small_h8_training_current_head_video06_video07/policy_split.json",
+  "policy_split_sha256": "bbdac3cff7c46b20c707dd278c526704a99ede973cc1ffde31b11172df9efd91",
+  "seed_policy": "TEMPORARILY_DISABLED_MULTI_SEED",
+  "seeds": [
+    20261003
+  ],
+  "status": "PASS",
+  "training": {
+    "batch_size": 128,
+    "device": "cuda:0",
+    "epochs": 20,
+    "hidden_dim": 139,
+    "learning_rate": 0.001,
+    "lr_search": "locked single value shared by all methods",
+    "optimizer": "AdamW"
+  }
+}
