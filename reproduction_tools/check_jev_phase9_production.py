@@ -17,7 +17,7 @@ class CurrentEvidenceValues(torch.nn.Module):
   return evidence[...,0],state.new_full((len(state),),1e6)
 
 def run(video=12,frames=None):
- protect();source=binding();assert not source['dirty'];out=OUT/'production_parity_v1';assert not out.exists();out.mkdir()
+ protect();source=binding();assert not source['dirty'];out=OUT/'production_parity_v2';assert not out.exists();out.mkdir()
  save(out/'START_MANIFEST.json',{'binding':source,'video':video,'frames':frames,'uses_GT':False})
  lab=native_lab(video);model=lab.engine.association_fn.model;model.jev_enabled=True
  model.jev_perception_cache_reader=FrozenPerceptionCache(lab.pilot.CACHE)
@@ -63,7 +63,7 @@ def run(video=12,frames=None):
   random.seed(20261008);np.random.seed(20261008);torch.manual_seed(20261008)
   torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True
   begin=time.monotonic()
-  with torch.no_grad():preds,views=model.sliding_inference_GMT(inputs,2,[None,None,list(range(length))])
+  with torch.no_grad():preds,views=model.sliding_inference_GMT(inputs,2,[None,None,list(range(2*length))])
   timing[tag]=time.monotonic()-begin;records[tag]=trace
   output=[pack(x)for x in preds];outdigest=CompleteStateDigest()(types.SimpleNamespace(predictions=output),{})
   outputs[tag]={'full_output_SHA':outdigest,'frames':length,'commits':len(trace),'actual_unique_per_view':all(len(r['committed_ids'])==len(set(r['committed_ids']))for r in trace)}
