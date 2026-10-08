@@ -6,7 +6,7 @@ from jev_phase8_utility import effects
 
 def main():
     protect();start=binding();assert not start['worktree_dirty']
-    audit=json.loads((REPORTS/'NATIVE_CORRECTIVE_ORACLE_AUDIT.json').read_text());out=OUT/'temporal_censor_v2';assert not out.exists();out.mkdir()
+    audit=json.loads((REPORTS/'NATIVE_CORRECTIVE_ORACLE_AUDIT.json').read_text());out=OUT/'temporal_censor_v3';assert not out.exists();out.mkdir()
     changed=0;branches=0;gt={};prefixes={};origin={};records=[]
     for video in(12,13,14,16,17,18,19):
         directory=OUT/'opportunity_scan_v1'/f'video{video:02d}'
@@ -19,8 +19,8 @@ def main():
         if key not in prefixes:
             snapshot=torch.load(s['path'],map_location='cpu');prefixes[key]=snapshot['offline_prefix_identity']
         for tag,b in e['branches'].items():
-            candidates=[a for a in audit['raw_manifest']if a['sha256']==b['complete_state_trace_sha256']and a['path'].endswith('/COMPLETE_STATE_TRACE.json')]
-            assert candidates;path=Path(candidates[0]['path']);trace=json.loads(path.read_text())
+            candidates=[a for a in audit['raw_manifest']if a['sha256']==b['complete_state_trace_sha256']and a['path'].endswith(f'_row{e["row"]:03d}/{tag}/COMPLETE_STATE_TRACE.json') and f'/video{video:02d}/'in a['path']]
+            assert len(candidates)==1,('ambiguous artifact context',key,e['row'],tag,len(candidates));path=Path(candidates[0]['path']);trace=json.loads(path.read_text())
             rows={(r['key'][1],r['key'][2],int(i)):{'id':int(t),'gt':gt[video][(r['key'][1],r['key'][2],int(i))]}for r in trace for i,t in r['ids'].items()}
             original=json.loads((path.parent/'EFFECTS.json').read_text())['horizons'];new={}
             for h in(8,16,32):
