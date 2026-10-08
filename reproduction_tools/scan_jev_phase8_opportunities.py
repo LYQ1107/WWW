@@ -46,6 +46,10 @@ def scan(video,diagnostic=False):
         key=(video,int(payload['frame']),int(payload['view']));gt=targets(payload)
         actions=lab.engine._actions_for_proposal(proposal,state)
         descriptors={r:classify_row(proposal.track_ids,proposal.scores.detach().cpu().numpy(),proposal.pairs,r,gt.get(r),actions[r],anchors,proposal.banned_edges)for r in actions}
+        strict={r:classify_row(proposal.track_ids,proposal.scores.detach().cpu().numpy(),proposal.pairs,r,gt.get(r),actions[r],anchors,proposal.banned_edges,mapping_override=anchors.strict_pure())for r in actions}
+        for row,d in descriptors.items():
+            d['strict_history_purity_bucket']=strict[row]['bucket']
+            d['strict_history_purity_wrong_with_candidate']=strict[row]['strict_wrong_with_feasible_correct_candidate']
         selected=[]
         for row,d in descriptors.items():
             if not d['strict_wrong_with_feasible_correct_candidate']:continue
@@ -98,6 +102,8 @@ def scan(video,diagnostic=False):
             stats['known_GT']+=d['offline_GT']is not None;stats['duplicate_GT_alias_events']+=d['duplicate_GT_alias_ambiguity']
             stats['strict_wrong_with_feasible_correct_candidate']+=d['strict_wrong_with_feasible_correct_candidate']
             stats['loose_majority_wrong_with_candidate']+=d['loose_majority_wrong_with_candidate']
+            stats['strict_history_purity_wrong_with_candidate']+=d['strict_history_purity_wrong_with_candidate']
+            stats['confirmed_historical_IDs_now_mixed_events']+=bool(d['confirmed_historical_IDs_with_mixed_history'])
             stats['candidate_available_known_rows']+=bool(d['correct_candidate_ids']);stats['global_feasible_known_rows']+=bool(d['feasible_pairs'])
             compact={k:v for k,v in d.items()if k not in ['feasible_pairs','row_candidate_order','unanchored_or_mixed_candidate_ids']}
             compact.update(key=list(key),row=row,unknown_candidate_count=len(d['unanchored_or_mixed_candidate_ids']))

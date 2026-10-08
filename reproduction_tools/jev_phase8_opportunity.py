@@ -36,8 +36,8 @@ def forced_feasible_pairs(scores,banned,row,column):
     assert all((r,c)not in banned and np.isfinite(s[r,c])for r,c in pairs.items())
     return pairs
 
-def classify_row(track_ids,scores,pairs,row,gt,action,anchors,banned=()):
-    mapping=anchors.reliable();loose=anchors.majority();col=pairs.get(row);track=int(track_ids[col])if col is not None else None
+def classify_row(track_ids,scores,pairs,row,gt,action,anchors,banned=(),mapping_override=None):
+    mapping=anchors.reliable()if mapping_override is None else mapping_override;loose=anchors.majority();col=pairs.get(row);track=int(track_ids[col])if col is not None else None
     correct=[int(t)for t in track_ids if gt is not None and mapping.get(int(t))==gt]
     unanchored=[int(t)for t in track_ids if int(t)not in mapping]
     known_proposal=track in mapping if track is not None else False
