@@ -38,7 +38,7 @@ def scan(video,diagnostic=False):
         return {r:aligned[(key[1],key[2],r)]['gt']for r in range(len(predictions))}
     seed_targets=targets(lab.seed_payload);anchors.update(lab.seed_state.association_history[-1]['assignments'],seed_targets,lab.seed_key[1])
     stats=Counter();snapshots=[];group_last={};group_index=Counter();hard_groups=[];pending=None;pending_rows=[];max_frame=max(k[1]for k in lab.keys)
-    original_propose=lab.original_propose
+    original_propose=lab.original_propose;native_checks=[]
     def propose(payload,state,**kw):
         nonlocal pending
         proposal=original_propose(payload,state,**kw)
@@ -68,6 +68,31 @@ def scan(video,diagnostic=False):
         assert pending['key']==key;pending_rows=[]
         decisions_by_row={int(d['context']['detection_index']):d for d in decisions if d['question']=='MATCH_DECISION'}
         proposal=pending['proposal'];matrix=proposal.scores.detach().cpu().numpy()
+        if len(native_checks)<32:
+            from gtr.modeling.meta_arch.gtr_rcnn import GTRRCNN
+            from jev_phase6_native_match import NativeMatchResolver
+            from torch import nn
+            model=lab.engine.association_fn.model
+            tracker=object.__new__(GTRRCNN);nn.Module.__init__(tracker)
+            tracker.register_parameter('_contract_device',nn.Parameter(torch.zeros(1),requires_grad=False))
+            errors=[]
+            class ProductionOFF:
+                mode='off'
+                def decide(self,feature,question,legal,*,off_action=None,context=None):
+                    row=int(context['detection_index']);expected=torch.tensor(decisions_by_row[row]['feature_vector'])
+                    error=float((feature.detach().cpu()-expected).abs().max());errors.append(error)
+                    assert error==0.,('actual production first-state input differs',key,row,error)
+                    return SimpleNamespace(committed_action=off_action)
+            tracker.jev_policy=ProductionOFF();tracker.jev_state_dim=64;tracker.jev_max_reassociate=1
+            tracker.with_bank=bool(model.with_bank);tracker.with_iou=bool(model.with_iou);tracker.not_mult_thresh=bool(model.not_mult_thresh);tracker._jev_context={}
+            original=torch.full((len(matrix),),-1,dtype=torch.long)
+            for row,col in proposal.pairs.items():
+                if decisions_by_row[row]['off_action']=='ACCEPT_CURRENT':original[row]=int(proposal.track_ids[col])
+            before_digest=digest(state,lab.metadata);lengths=torch.tensor([count_track_history(state.association_history,t)for t in proposal.track_ids])
+            native=NativeMatchResolver.native_call(tracker,original,proposal,list(proposal.pairs),list(proposal.pairs.values()),float(model.overlap_thresh),payload,state,lengths)
+            assert torch.equal(native,original),'real GTR OFF match-ID mismatch'
+            assert digest(state,lab.metadata)==before_digest,'production observational call changed mutable state'
+            native_checks.append({'key':list(key),'rows':len(matrix),'max_feature_error':max(errors,default=0.),'actual_GTR_OFF_existing_ID_parity':True,'full_state_observational':True})
         for row,d in pending['descriptors'].items():
             stats['MATCH_events']+=1;stats[d['bucket']]+=1
             stats['known_GT']+=d['offline_GT']is not None;stats['duplicate_GT_alias_events']+=d['duplicate_GT_alias_ambiguity']
@@ -107,7 +132,7 @@ def scan(video,diagnostic=False):
         'natural_event_index_sha256':sha(run/'natural_event_index.jsonl.gz'),'hard_event_index_sha256':sha(run/'hard_event_index.jsonl.gz'),
         'bounded_snapshots':snapshots,'independent_error_groups':hard_groups,'final_anchors':anchors.diagnostics(),
         'global_feasibility_scope':'Oracle2 fixed-edge residual assignment; actual native current/future correction still NOT_RUN',
-        'native_direct_candidate_interface':'NOT_YET_VERIFIED','H32_forks_started':False,'no_GT_future_in_actor':True,'max_frame':max_frame})
+        'actual_production_OFF_checks':native_checks,'native_direct_candidate_interface':'NOT_YET_VERIFIED','H32_forks_started':False,'no_GT_future_in_actor':True,'max_frame':max_frame})
     save(run/'SCAN_PROGRESS.json',{'status':'COMPLETE','counts':dict(stats),'snapshots':len(snapshots)});protect()
     print(json.dumps({'status':'COMPLETE','video':video,'counts':dict(stats),'snapshots':len(snapshots)}),flush=True)
 
