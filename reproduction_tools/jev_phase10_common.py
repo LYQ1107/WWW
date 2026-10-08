@@ -29,6 +29,12 @@ def protect():
  assert not subprocess.check_output(['git','diff','--name-only','--','reports/JEV_PHASE9'],cwd=ROOT,text=True).strip()
 def binding():
  return {'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'dirty':bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip()),'source_root':str(ROOT),'config_SHA256':sha(CONFIG),'foundation_SHA256':sha(FOUNDATION),'cache_index_SHA256':sha(CACHE/'index.jsonl'),'B2_SHA256':sha(B2),'sources':{str(p.relative_to(ROOT)):sha(p)for p in sorted(list((ROOT/'reproduction_tools').glob('*phase10*.py'))+list((ROOT/'gtr/modeling').glob('jev_candidate*.py'))+list((ROOT/'gtr/modeling').glob('jev_native*.py'))+[ROOT/'gtr/modeling/meta_arch/gtr_rcnn.py'])},'CUDA_VISIBLE_DEVICES':os.environ.get('CUDA_VISIBLE_DEVICES'),'seed':20261008,'trajectory_master_seed':20261006,'Full24':False,'official_TEST':False}
+def configure_candidate_torchscript():
+ import torch
+ # Local PyTorch2.0/CUDA11.8 fusion stalled twice on resumed actual candidate
+ # batches; eager CUDA operators pass all four actual segmented actors.
+ torch._C._jit_set_nvfuser_enabled(False);torch._C._jit_override_can_fuse_on_gpu(False)
+ return {'torch_version':torch.__version__,'nvfuser_enabled':False,'JIT_GPU_fusion':False,'all_architectures_and_controls_same':True,'reason':'bounded native resumed-candidate engineering kernel stall, not a model outcome'}
 def heldout_guard(video):
  assert video in HELDOUT
  p=REPORTS/'PHASE10_CHECKPOINT_AND_HELDOUT_FREEZE.json';f=json.loads(p.read_text())

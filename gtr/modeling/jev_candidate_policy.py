@@ -18,6 +18,8 @@ class CandidateValuePolicy:
         if self.name in ('model', 'model_fixed_new'):
             # IDs are intentionally excluded from the neural call signature.
             values, new_values = self.model(*batch.model_inputs())
+            if self.name == 'model_fixed_new' and not bool(torch.isfinite(values).all() & torch.isfinite(new_values).all()):
+                raise ValueError('nonfinite neural candidate preference; fail closed')
         elif self.name in ('bidirectional', 'bidirectional_fixed_new'):
             legal = batch.legal_mask & torch.isfinite(batch.scores)
             logits = batch.scores.masked_fill(~legal, -torch.inf)

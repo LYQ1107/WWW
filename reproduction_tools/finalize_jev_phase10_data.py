@@ -10,10 +10,12 @@ def main():
  cfg=json.loads((REPORTS/'PHASE10_PREREGISTRATION.json').read_text());plan=json.loads((REPORTS/'PHASE10_NATIVE_FORK_PLAN.json').read_text());old=json.loads((ROOT/'reports/JEV_PHASE9/CAUSAL_DATASET_AUDIT.json').read_text());events=[];raw=[];changes=[];verified=collections.Counter();groups=collections.defaultdict(set);videos=collections.Counter()
  for e in plan['events']:
   p=OUT/'native_forks_v3'/f'event{e["index"]:03d}'/'EVENT_RESULT.json';d=json.loads(p.read_text());assert d['status']=='PASS'and not d['diagnostic_only']and d['CONTROL_KEEP_complete_state_PASS']and d['CONTROL_full_factual_state_events_RNG_PASS'];assert sorted(d['branches'])==e['branches'];assert d['key']==e['key']and d['row']==e['row']and d['group']==e['group'];events.append(d);raw.append({'index':e['index'],'path':str(p),'SHA256':sha(p),'source_commit':d['binding']['source_commit']})
+  assert not d['binding']['dirty']and d['binding']['source_commit']=='92654e452f4c202c6009b39941705d987bfe1a07','canonical native forks must use the one pinned production source'
+  assert all(b['binding']==d['binding']for b in d['branches'].values()),'branch source/GPU bindings differ inside an event'
   v=e['key'][0];part='train'if v in TRAIN else'validation'
   if d['verified_candidate_corrective_branches']:
    verified[part]+=1;groups[part].add(e['group']);videos[v]+=1
-   if 'SUPPLEMENTAL_CORRECTIVE'in e['distribution']:verified['supplemental']+=1
+   if 'SUPPLEMENTAL_CORRECTIVE'in e['distribution']:verified['supplemental']+=1;verified[f'supplemental_{part}']+=1
   for tag,b in d['branches'].items():
    source=e['branch_specs'][tag];assert sha(source['old_effect_path'])==source['old_effect_SHA256'];previous=json.loads(Path(source['old_effect_path']).read_text());deltas={}
    for h in [8,16,32]:
@@ -50,6 +52,7 @@ def main():
      if max(values)-min(values)<=1e-6:utility[col]=values[0];utility_available[col]=True
      else:ambiguous.append({'candidate_reference':refs[col],'conditional_complete_assignment_utilities':values})
    q=torch.tensor([x if x is not None else float('nan')for x in utility],dtype=torch.float32);qm=torch.tensor(utility_available,dtype=torch.bool)&mask
+   assert torch.isfinite(batch.state64[row]).all()and torch.isfinite(batch.evidence12[row]).all()and torch.isfinite(q[qm]).all();assert not(torch.isfinite(q[~qm]).any()),'unexecuted Q must remain unknown'
    scores=batch.scores[row].cpu();order=sorted(range(len(refs)),key=lambda j:(-float(scores[j])if math.isfinite(float(scores[j]))else math.inf,refs[j]));ranks={col:rank+1 for rank,col in enumerate(order)}
    if part=='train'and positive.any():
     recall['rows_with_available_correct']+=1

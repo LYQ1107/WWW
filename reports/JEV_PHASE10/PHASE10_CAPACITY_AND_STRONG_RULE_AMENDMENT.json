@@ -1,5 +1,6 @@
 {
   "changes": {
+    "JIT_runtime": "Uniformly disable nvFuser and JIT GPU fusion for all candidate training/calibration and native closed-loop controls/architectures on local PyTorch2.0.0/CUDA11.8. Two resumed untrained MLP native tests stalled in GPU-to-CPU result copy under default fusion; disabling fusion passed all4 actual segmented actors with exact raw state/events/RNG. Checkpoints, heads, input values and architecture budgets unchanged; done before any real model fitting.",
     "capacity_matched_structural_ablations": "Remove QA/context parameters rather than zeroing large scorer columns; widen remaining scorer to approximately 34K active parameters. Main model inputs/budgets/dual heads unchanged. WHO remains a constant, so no question-transfer claim.",
     "closed_loop_causal_diagnostic": "Exactly frame128/view0, full current legal payload assignment; actual frozen policy versus same-prefix Fixed for the current payload, followed by the same actual frozen controller freshly computing every H8/H16/H32 future transition. Predetermined before all NN fitting or model validation; no GT selection. Report executed-alternative regret only; no exhaustive oracle claim.",
     "closed_loop_uncertainty": "Actual pooled TrackEval per optimization seed; report seed spread separately from exact3-video resampling of per-video differences, with no broad significance claim.",
@@ -17,6 +18,7 @@
     ],
     "dynamic_rule": "Normalize raw GMT score by actual candidate native threshold, then subtract 1 + alpha * gallery_available * (1-gallery_cosine). Shared private NEW/confidence anchor is unchanged for every method.",
     "dynamic_selection": "Validation pooled HOTA; ties choose smallest alpha; no heldout selection.",
+    "segmented_native_resume": "256-frame actual production chunks. Resume uses full native pre-association Gallery/history/bank/RNG in alternating unfrozen recovery slots and atomic cursor; completed and failed chunk logs retained. Scientific causal prefix128/view0 is immutable separately.",
     "stable_evaluation": "Conditional known-candidate NLL uses logsumexp differences, without arbitrary probability clipping. Numeric post-forward summaries run on CPU; neural training/runtime features remain identical.",
     "task_loss_normalization": "Each head uses its own eligible group-weight mass; joint uses equal1:1 normalized task means. Same batch order and optimizer updates for every architecture; no unknown-target gradient.",
     "unknown_utility": "Keep NaN/unknown in loss tensors, including padding; utility mask blocks all unexecuted/censored gradients. Never substitute zero Q."

@@ -4,6 +4,7 @@ import torch
 import torch.nn.functional as F
 from jev_phase10_common import *
 from gtr.modeling.jev_candidate_models import build_candidate_model,CandidateScorer
+JIT_RUNTIME=configure_candidate_torchscript()
 
 
 def load_data():

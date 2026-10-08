@@ -70,13 +70,13 @@ def paired_h32(model,actual,allinputs,images,evaluator,aligned,commits,prefixpat
 
 
 def run(video,name,phase):
- protect();source=binding();assert not source['dirty'];assert phase in ['validation','heldout']
+ protect();jit_runtime=configure_candidate_torchscript();source=binding();assert not source['dirty'];assert phase in ['validation','heldout']
  if phase=='heldout':protocol=heldout_guard(video);assert video in HELDOUT
  else:protocol=json.loads((REPORTS/'PHASE10_VALIDATION_CONTROLLER_PROTOCOL.json').read_text());assert video in VAL and protocol['status']=='FROZEN_BEFORE_VALIDATION_CLOSED_LOOP'
  case=next(c for c in protocol['cases']if c['name']==name);out=OUT/f'{phase}_closed_loop_v1'/name/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True);done=out/'RESULT.json'
  if done.exists():assert json.loads(done.read_text())['binding']==source;print('CLOSED_LOOP_ALREADY_COMPLETE',phase,name,video);return
- torch.manual_seed(20261008);torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True;model=build_model(video,allow_heldout=phase=='heldout');actual=policy(case);reference=policy(protocol.get('latency_reference',{'kind':'rule','policy':'gmt_values'}));model.jev_candidate_policy=actual;rows,images,frames=metadata(video);save(out/'START.json',{'binding':source,'case':case,'frames':frames,'phase':phase,'trajectory_policy':'native mutable production on every future frame','no_GT_actor_inputs':True})
- latencies=[];events=[];counts=collections.Counter();state=[None];lastref=[0.];journal=gzip.open(out/'CANDIDATE_JOURNAL.jsonl.gz','wt');commitstream=gzip.open(out/'NATIVE_COMMITS.jsonl.gz','wt');stamp=[0.]
+ torch.manual_seed(20261008);torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True;model=build_model(video,allow_heldout=phase=='heldout');actual=policy(case);reference=policy(protocol.get('latency_reference',{'kind':'rule','policy':'gmt_values'}));model.jev_candidate_policy=actual;rows,images,frames=metadata(video);save(out/'START.json',{'binding':source,'case':case,'frames':frames,'phase':phase,'trajectory_policy':'native mutable production on every future frame','no_GT_actor_inputs':True,'JIT_runtime':jit_runtime})
+ latencies=[];events=[];counts=collections.Counter();state=[None];lastref=[0.];journal=None;commitstream=None;stamp=[0.]
  if actual is not None and actual.model is not None:
   with torch.no_grad():
    for _ in range(3):actual.model(torch.zeros(2,64,device='cuda:0'),torch.zeros(2,16,12,device='cuda:0'),torch.ones(2,16,dtype=torch.bool,device='cuda:0'))
@@ -109,8 +109,41 @@ def run(video,name,phase):
  model.jev_native_prefix_observer=before;model.jev_candidate_commit_observer=after
  if actual is not None:model.jev_candidate_latency_observer=profile
  begin=time.monotonic()
- with torch.no_grad():instances,_=model.sliding_inference_GMT(rows,2,[None,None,list(range(len(rows)))],native_raw=True)
- journal.close();commitstream.close();rawpred=raw_predictions(instances,images);save(out/'RAW_PREDICTIONS.json',rawpred)
+ resume=out/'RUN_RESUME.json';parts=[];start=0;prefix=None
+ if resume.exists():
+  saved=json.loads(resume.read_text());assert saved['binding']==source and saved['case']==case;assert sha(saved['prefix']['path'])==saved['prefix']['SHA256'];prefix=saved['prefix']['path'];start=saved['next_frame'];parts=saved['parts'];counts.update(saved['counts']);latencies.extend(saved['latencies']);events.extend(saved['events'])
+ class SegmentBoundary(Exception):pass
+ chunkroot=out/'chunks';chunkroot.mkdir(exist_ok=True)
+ while start<frames:
+  stop=min(frames,start+256);attempt=0
+  while(chunkroot/f'frame{start:06d}_attempt{attempt:03d}').exists():attempt+=1
+  part=chunkroot/f'frame{start:06d}_attempt{attempt:03d}';part.mkdir();journal=gzip.open(part/'CANDIDATE_JOURNAL.jsonl.gz','wt');commitstream=gzip.open(part/'NATIVE_COMMITS.jsonl.gz','wt');nextprefix=[None]
+  def segmented_before(**d):
+   if d['frame']==stop and d['view']==0:
+    # Alternating mutable recovery slots preserve the preceding valid slot
+    # until the new atomic manifest commits. They are not frozen evidence.
+    path=out/f'UNFROZEN_RECOVERY_SLOT_{(stop//256)%2}.pth';tmp=path.with_suffix('.pth.tmp');torch.save(prefix_state(model,**d),tmp);tmp.replace(path);nextprefix[0]={'path':str(path),'SHA256':sha(path)};raise SegmentBoundary()
+   before(**d)
+  model.jev_native_prefix_observer=segmented_before
+  try:
+   with torch.no_grad():
+    if prefix is None:instances,_=model.sliding_inference_GMT(rows,2,[None,None,list(range(len(rows)))],native_raw=True)
+    else:instances,_=NativeStateForkAdapter(model).run(prefix,rows,stop_frame=frames-1)
+   finished=True
+  except SegmentBoundary:finished=False
+  finally:journal.close();commitstream.close()
+  parts.append({'start_frame':start,'stop_exclusive':stop,'journal':str(part/'CANDIDATE_JOURNAL.jsonl.gz'),'journal_SHA256':sha(part/'CANDIDATE_JOURNAL.jsonl.gz'),'commits':str(part/'NATIVE_COMMITS.jsonl.gz'),'commits_SHA256':sha(part/'NATIVE_COMMITS.jsonl.gz')});save(part/'COMPLETE.json',{'status':'COMPLETE','binding':source,'part':parts[-1],'total_committed_payloads':counts['payloads']})
+  if finished:assert stop==frames;break
+  assert nextprefix[0]is not None;save(resume,{'status':'RESUMABLE','binding':source,'case':case,'next_frame':stop,'prefix':nextprefix[0],'parts':parts,'counts':dict(counts),'latencies':latencies,'events':events});prefix=nextprefix[0]['path'];start=stop;print('NATIVE_SEGMENT_COMMITTED',phase,name,video,start,frames,flush=True)
+ # Gzip supports concatenated members; retain each immutable completed part
+ # and every failed attempt. No compressed stream is truncated on resume.
+ for key,filename in [('journal','CANDIDATE_JOURNAL.jsonl.gz'),('commits','NATIVE_COMMITS.jsonl.gz')]:
+  target=out/filename;tmp=target.with_suffix('.gz.tmp')
+  with tmp.open('wb')as handle:
+   for part in parts:
+    assert sha(part[key])==part[key+'_SHA256'];handle.write(Path(part[key]).read_bytes())
+  tmp.replace(target)
+ rawpred=raw_predictions(instances,images);save(out/'RAW_PREDICTIONS.json',rawpred);save(out/'NATIVE_SEGMENTS.json',{'status':'COMPLETE','binding':source,'frames':frames,'parts':parts,'recovery':'lossless native prefix with ordered gallery/history/bank/RNG; 256-frame segments, alternating mutable recovery slots, atomic cursor; failed attempt logs retained','native_payloads':counts['payloads']});assert counts['payloads']==frames*2
  # Exactly the existing production final filtering and postprocess semantics.
  from gtr.modeling.meta_arch.custom_rcnn import CustomRCNN
  filtered=model._remove_short_track(instances)if model.min_track_len>0 else instances

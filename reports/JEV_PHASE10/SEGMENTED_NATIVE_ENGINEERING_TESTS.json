@@ -1,0 +1,102 @@
+{
+  "JIT_runtime": {
+    "JIT_GPU_fusion": false,
+    "all_architectures_and_controls_same": true,
+    "nvfuser_enabled": false,
+    "reason": "bounded native resumed-candidate engineering kernel stall, not a model outcome",
+    "torch_version": "2.0.0+cu118"
+  },
+  "actors": [
+    {
+      "actor": "Fixed",
+      "all_native_commits_events_gallery_bank_RNG_exact": true,
+      "full_raw_instances_exact": true,
+      "instrumented_payloads": 30,
+      "per_camera_IDs_unique": true,
+      "untrained_engineering_only": false
+    },
+    {
+      "actor": "CandidateMLP",
+      "all_native_commits_events_gallery_bank_RNG_exact": true,
+      "full_raw_instances_exact": true,
+      "instrumented_payloads": 30,
+      "per_camera_IDs_unique": true,
+      "untrained_engineering_only": true
+    },
+    {
+      "actor": "CandidateDeepSets",
+      "all_native_commits_events_gallery_bank_RNG_exact": true,
+      "full_raw_instances_exact": true,
+      "instrumented_payloads": 30,
+      "per_camera_IDs_unique": true,
+      "untrained_engineering_only": true
+    },
+    {
+      "actor": "CandidateJEV",
+      "all_native_commits_events_gallery_bank_RNG_exact": true,
+      "full_raw_instances_exact": true,
+      "instrumented_payloads": 30,
+      "per_camera_IDs_unique": true,
+      "untrained_engineering_only": true
+    }
+  ],
+  "binding": {
+    "B2_SHA256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+    "CUDA_VISIBLE_DEVICES": "7",
+    "Full24": false,
+    "cache_index_SHA256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+    "config_SHA256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+    "dirty": true,
+    "foundation_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "official_TEST": false,
+    "seed": 20261008,
+    "source_commit": "4deebc19670509660a0c317736c86bf1636b349e",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase10",
+    "sources": {
+      "gtr/modeling/jev_candidate_assignment.py": "269ef4f3ed11daf3311af2022b3fb32e4ee18ddf2d87bef38261098cf9c850fb",
+      "gtr/modeling/jev_candidate_features.py": "cac465cce369bb876af3107a699dc07342ec6fe78eb98ac8f924016d618ed27d",
+      "gtr/modeling/jev_candidate_models.py": "fc5f40c92c249cf772bc66e8198cd0f3ad06cf0d3ff183c15e7422e4af8fd6f7",
+      "gtr/modeling/jev_candidate_policy.py": "d10b7ad0ec22b152885b72dc0106a076ad45536c0343096b1e72f858304ef584",
+      "gtr/modeling/jev_native_intervention.py": "37a49a0721bdac5bc080c146d5848b1d3869054659358fa5d657a39a0fdc321b",
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "7cb076a7554360731551c253b0fbf4510406d1cc9e0e23c8bb9b61f6ba06f98d",
+      "reproduction_tools/capture_jev_phase10_production.py": "39258d55fcf8c3ed4881bb66703e0676507e15714ed1437e9e12f26af2d89f12",
+      "reproduction_tools/check_jev_phase10_native_smoke.py": "67271ad2020f864fd7b7e0d5e44836de74a882f6e30d3b853afb6354da6847a1",
+      "reproduction_tools/check_jev_phase10_prefix_parity.py": "79e303dccd12efdc7917e02ef1ac4f558ff67ddbfbee147ccd146eec732d302e",
+      "reproduction_tools/finalize_jev_phase10_data.py": "4a4eb64ab3e9e429a2393c5215a4b9b39b7af17b0e55fd2cd5e19775396be7b7",
+      "reproduction_tools/finalize_jev_phase10_native_parity.py": "ca84abdb51e1b0c7d3f7afabd34b9c4bbee657434e98cb932d4f01680e4401cd",
+      "reproduction_tools/finalize_jev_phase10_research.py": "fefc5ddeadc11f79d622a17a6283d9d8f541a65ff6dff830297c53606775d067",
+      "reproduction_tools/finalize_jev_phase10_training.py": "80519f3314f16fde8a1e000683bbb6ef75890c2d8e1b7f7b2efa527ebdffcfff",
+      "reproduction_tools/finalize_jev_phase10_validation.py": "19a8fdffd5f6f911a4d03f2fc7896f8c273ec8dd975cbb0f9ea7b7c0d0da6ecc",
+      "reproduction_tools/jev_phase10_common.py": "ae403ec5afd76b03142d90da147f68bb9f8ff23822cb3e2a36debff8d8ff5948",
+      "reproduction_tools/jev_phase10_learning.py": "3c59004a6da116b3111d0fa556cb02dc6a39f25f616ed45597f6aaaa5fc1faec",
+      "reproduction_tools/jev_phase10_online_audit.py": "7e4412dcef12cc07af758f9b782975edfd6e18f8fea244b67ebdc3e09124b874",
+      "reproduction_tools/plan_jev_phase10_forks.py": "6ec4cc3e52a9e109f0c3c54a4342e48e2cf21b236f9c911a46717be7375c8967",
+      "reproduction_tools/run_jev_phase10_closed_loop.py": "c3acbce0d2e2eaeccfbc6c1e674a513936a7a796cdded225c7fb939632a93388",
+      "reproduction_tools/run_jev_phase10_closed_loop_queue.py": "131699a7035bcb0417f4609fc3041499ac81a9b40ba2fe9a5e499d75a67de173",
+      "reproduction_tools/run_jev_phase10_native_forks.py": "2bb8b35bad2a256cb30fbffc86de06e44b55258a560d53f6f84fd68247e56ed9",
+      "reproduction_tools/run_jev_phase10_training_queue.py": "3a26fa02bf0b3b18b69b399d6f2837022c8586c3a8527cf3f6ee556002ebb392",
+      "reproduction_tools/test_jev_phase10_closed_loop_audit.py": "d72a770536e7bd7502c4b13fcbb5e179dc8422b378f3dc32c4ce3d9391dfd236",
+      "reproduction_tools/test_jev_phase10_evidence_equivalence.py": "f32fe934776fdc9f281cc3a1467ccdcb793b4e32387e48ab59c1f77483a3745b",
+      "reproduction_tools/test_jev_phase10_fingerprint_cache.py": "9cbbd0ecfc2aee9a7107038f1ae74cfe877162771b994a7533aee0272c7b165f",
+      "reproduction_tools/test_jev_phase10_fixed_new_policy.py": "3f8aff592a8c52d921589d40675ff46dc7b46deeb90db8e9a2f4a1ceaa0c183c",
+      "reproduction_tools/test_jev_phase10_model_contract.py": "ff27eec96809f4d59d22bdda10c52033fc37f3340ae543cacf8e8b35d7b46ae1",
+      "reproduction_tools/test_jev_phase10_segmented_native.py": "77819ebe30cb509284f5ab585de38ae994e052a7d1352a84e09487a33017a08a",
+      "reproduction_tools/test_jev_phase10_supervision_contract.py": "93cfaa13284169e8a13da6720c77bbeaab8ddfbf8679857af1c77183915306d0",
+      "reproduction_tools/tiny_jev_phase10_candidates.py": "ba1f28dc0b06c907dd0d2d02754eca88dcf29e1ec2b37aea1d513571c0e18c79",
+      "reproduction_tools/train_jev_phase10_candidates.py": "34e207adfc4e631758c3f54c335af9752772eeb1290392f6877ec1383f428248"
+    },
+    "trajectory_master_seed": 20261006
+  },
+  "boundary": [
+    4,
+    0
+  ],
+  "frames": 8,
+  "heldout_read": false,
+  "no_GT_actor_or_labels": true,
+  "not_an_architecture_performance_result": true,
+  "research_fit_performed": false,
+  "status": "PASS_BOUNDED_ENGINEERING",
+  "video": 12
+}
