@@ -67,6 +67,8 @@ Four native/controller/solver/clone/temporal tests and four actual MiniSet/adver
 
 Research branch: `jev/www-jev-phase7-causal-structured-20261008`. Base Phase VI: `40cbc0ecc22bc16c4e3602eefe5eb06e2d6e319e`. Protected B2 SHA: `f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7`. No Full24, million-record build, official TEST, old checkpoint overwrite or forced push.
 
+The user subsequently narrowed publication to necessary review artifacts. The complete evidence revision had already been uploaded and was remote-verified; future full raw archives stay local, while code, reports, metrics, configurations and hashes are published under the [compact publication policy](PHASE7_PUBLICATION_POLICY.md).
+
 ## Final decision
 
 Stop expanding current MATCH from its earlier positive results. Candidate conditioning remains a justified next hypothesis, conditional on a preregistered validation distribution with actual corrective opportunities and a verified native candidate-choice interface. Diagnose bank/threshold and genuine observable memory effects before learned MEMORY; establish relative REACT commit parity before any sharing. All failed/blocked gates are explicit. More compute alone does not establish the WWW/CVPR architecture claim.
