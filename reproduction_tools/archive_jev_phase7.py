@@ -32,7 +32,7 @@ def archive(source,dest):
 
 if __name__=='__main__':
     count=0
-    for kind in ('closed_loop','bytetrack'):
+    for kind in ('closed_loop','bytetrack','bytetrack_paper06'):
         for result in sorted((OUT/kind).glob('video*/**/result.json')):
             source=result.parent;dest=REPORTS/'evidence'/kind/source.relative_to(OUT/kind)
             count+=archive(source,dest)
