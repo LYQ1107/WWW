@@ -57,6 +57,9 @@ def add_gtr_config(cfg):
     _C.MODEL.JEV.TRACE_PATH = ''
     _C.MODEL.JEV.CONTROLLER_WEIGHTS = ''
     _C.MODEL.JEV.BASELINE_THRESHOLD = 0.0
+    _C.MODEL.JEV.CANDIDATE_ENABLED = False
+    _C.MODEL.JEV.CANDIDATE_POLICY = 'gmt_compat'
+    _C.MODEL.JEV.CANDIDATE_SCRIPTED_MODEL = ''
     
     
     _C.MODEL.SWIN = CN()

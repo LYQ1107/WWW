@@ -73,7 +73,21 @@ class GTRRCNN(CustomRCNN):
         self.jev_max_reassociate = int(kwargs.pop('jev_max_reassociate'))
         self.jev_trace_path = str(kwargs.pop('jev_trace_path'))
         self.jev_controller_weights = str(kwargs.pop('jev_controller_weights'))
+        candidate_enabled = bool(kwargs.pop('jev_candidate_enabled', False))
+        candidate_name = str(kwargs.pop('jev_candidate_policy', 'gmt_compat'))
+        candidate_weights = str(kwargs.pop('jev_candidate_scripted_model', ''))
         super().__init__(**kwargs)
+        self.jev_candidate_policy = None
+        self.jev_candidate_commit_observer = None
+        self._jev_candidate_new_rows = ()
+        if candidate_enabled:
+            from ..jev_candidate_policy import CandidateValuePolicy
+            candidate_model = None
+            if candidate_name == 'model':
+                if not candidate_weights:
+                    raise ValueError('candidate model mode needs an explicit scripted model')
+                candidate_model = torch.jit.load(candidate_weights, map_location=self.device).eval()
+            self.jev_candidate_policy = CandidateValuePolicy(candidate_name, candidate_model)
         self.jev_policy = None
         self.jev_trace_writer = None
         self._jev_context = {}
@@ -132,6 +146,9 @@ class GTRRCNN(CustomRCNN):
         ret['jev_max_reassociate'] = cfg.MODEL.JEV.MAX_REASSOCIATE
         ret['jev_trace_path'] = cfg.MODEL.JEV.TRACE_PATH
         ret['jev_controller_weights'] = cfg.MODEL.JEV.CONTROLLER_WEIGHTS
+        ret['jev_candidate_enabled'] = cfg.MODEL.JEV.CANDIDATE_ENABLED
+        ret['jev_candidate_policy'] = cfg.MODEL.JEV.CANDIDATE_POLICY
+        ret['jev_candidate_scripted_model'] = cfg.MODEL.JEV.CANDIDATE_SCRIPTED_MODEL
         return ret
 
     def _jev_state(self, values):
@@ -247,6 +264,64 @@ class GTRRCNN(CustomRCNN):
             'old_reid_count': int(old_reid_count),
         }
 
+    def _candidate_match_values(self, original, scores, ids, match_i, match_j,
+                               threshold, *, view, frame_index, window_length,
+                               track_lengths, tracker_state, galleries=None,
+                               observations=None, view_fractions=None):
+        """Production scoring -> shared global assignment; no state commit here."""
+        from ..jev_candidate_features import CandidateBatch, evidence12
+        from ..jev_candidate_assignment import assign_candidate_values
+        references = tuple(int(t) for t in ids.tolist())
+        m, n = scores.shape
+        lengths = torch.ones(n, device=scores.device) if track_lengths is None else torch.as_tensor(track_lengths, device=scores.device)
+        pairs = {int(r): int(c) for r, c in zip(match_i, match_j)}
+        state = tracker_state or {}
+        thresholds = scores.new_tensor([legacy_acceptance_threshold(threshold, float(v), self.not_mult_thresh) for v in lengths])
+        legal = torch.isfinite(scores)
+        states = []
+        for r in range(m):
+            clean = torch.where(legal[r], scores[r], scores.new_zeros(n))
+            c = pairs.get(r)
+            a = float(clean[c]) if c is not None else 0.
+            order = torch.argsort(clean, descending=True).tolist()
+            other = next((j for j in order if j != c), None)
+            b = float(clean[other]) if other is not None else 0.
+            probabilities = torch.softmax(clean, dim=0)
+            entropy = float(-(probabilities * probabilities.clamp_min(1e-8).log()).sum())
+            states.append(self._jev_state(self._match_state_values(
+                accept_score=a, reassociate_score=b, threshold=threshold,
+                candidate_count=n, candidate_entropy=entropy, track_count=n,
+                track_age=0, frame_index=frame_index, window_length=window_length,
+                view_index=view, current_is_unmatched=original[r].item() < 0,
+                track_score=a, track_length=float(lengths[c]) if c is not None else 1.,
+                score_variance=float(clean.var()) if n > 1 else 0.)).to(scores.device))
+        state64 = torch.stack(states) if states else scores.new_zeros((0, 64))
+        gallery_means = {int(t): value.reid_features.mean(dim=0) for t, value in (galleries or {}).items() if int(t) in references and len(value)}
+        features = evidence12(scores, references, pairs, lengths,
+            hits={int(t): v for t, v in state.get('track_hits', {}).items()},
+            memory_lengths={int(t): v for t, v in state.get('memory_lengths', {}).items()},
+            galleries=gallery_means, observations=observations,
+            view_fractions=view_fractions, bank_eligible=state.get('possible_memory_ids', ()))
+        batch = CandidateBatch(references, scores, state64, features, legal, thresholds, int(view))
+        values, newborn = self.jev_candidate_policy.score(batch)
+        assignment = assign_candidate_values(values, newborn, references, legal,
+            mode=self.jev_candidate_policy.assignment_mode, legacy_thresholds=thresholds)
+        self._jev_candidate_new_rows = assignment.new_rows if assignment.semantic_new else ()
+        self._jev_candidate_last = {'candidate_ids': references, 'batch': batch,
+            'assignment': assignment, 'candidate_values': values.detach(), 'new_values': newborn.detach(),
+            'view': int(view), 'frame': int(frame_index)}
+        return original.new_tensor(assignment.existing_ids)
+
+    def _candidate_observe_commit(self, instances, id_count, hits, galleries,
+                                  *, view, frame_index, first=False):
+        observer = getattr(self, 'jev_candidate_commit_observer', None)
+        if observer is not None:
+            observer(instances=instances, id_count=id_count, hits=hits, galleries=galleries,
+                possible_ids=poss_ids.poss_ids, old_ids=old_ids.old_ids,
+                old_reids=old_reids.old_reids, trajectory_rng=self._jev_trajectory_rng,
+                view=int(view), frame=int(frame_index), first=bool(first),
+                candidate=getattr(self, '_jev_candidate_last', None))
+
     def _apply_jev_match_decisions(
         self,
         track_ids,
@@ -264,6 +339,9 @@ class GTRRCNN(CustomRCNN):
         detection_image_size=None,
         tracker_state=None,
         track_lengths=None,
+        candidate_galleries=None,
+        candidate_observations=None,
+        candidate_view_fractions=None,
     ):
         """Apply typed actions around one global GMT assignment proposal.
 
@@ -271,6 +349,12 @@ class GTRRCNN(CustomRCNN):
         edges, and triggers exactly one full constrained Hungarian solve.  It
         never selects an identity by scanning the second-ranked candidates.
         """
+        if getattr(self, 'jev_candidate_policy', None) is not None:
+            return self._candidate_match_values(track_ids, traj_score, unique_ids,
+                match_i, match_j, threshold, view=view, frame_index=frame_index,
+                window_length=window_length, track_lengths=track_lengths,
+                tracker_state=tracker_state, galleries=candidate_galleries,
+                observations=candidate_observations, view_fractions=candidate_view_fractions)
         if self.jev_policy is None:
             return track_ids
         n_k = int(traj_score.shape[0])
@@ -929,7 +1013,7 @@ class GTRRCNN(CustomRCNN):
             if traj_score[i, j] > thresh:
                 track_ids[i] = unique_ids[j]
 
-        if self.jev_policy is not None:
+        if self.jev_policy is not None or getattr(self, 'jev_candidate_policy', None) is not None:
             self._jev_context['view'] = int(view)
             track_ids = self._apply_jev_match_decisions(
                 track_ids,
@@ -952,6 +1036,8 @@ class GTRRCNN(CustomRCNN):
                     memory_ids=poss_ids.poss_ids,
                 ),
                 track_lengths=id_inds.sum(dim=0),
+                candidate_galleries=id_reid_dict,
+                candidate_observations=instances[k].reid_features,
             )
 
         # Keep every current-frame slice field-compatible with the historical
@@ -995,6 +1081,8 @@ class GTRRCNN(CustomRCNN):
         instances[k].track_ids = track_ids
 
         assert len(track_ids) == len(torch.unique(track_ids)), track_ids
+        self._candidate_observe_commit(instances, id_count, id_count_dict, id_reid_dict,
+            view=view, frame_index=frame_index, first=True)
         return instances, id_count ,id_count_dict,id_reid_dict
 
     def get_asso(self,  instances, k,):
@@ -1130,7 +1218,7 @@ class GTRRCNN(CustomRCNN):
             )
             if traj_score[i, j] > thresh:
                 track_ids[i] = unique_ids[j]
-        if self.jev_policy is not None:
+        if self.jev_policy is not None or getattr(self, 'jev_candidate_policy', None) is not None:
             track_ids = self._apply_jev_match_decisions(
                 track_ids,
                 traj_score,
@@ -1152,21 +1240,24 @@ class GTRRCNN(CustomRCNN):
                     memory_ids=poss_ids.poss_ids,
                 ),
                 track_lengths=id_inds.sum(dim=0),
+                candidate_galleries=id_reid_dict,
+                candidate_observations=instances[k].reid_features,
             )
         if self.with_bank:
             flag = False
             #a = Instances(instances[0].image_size)
             isinstances_no_match = [instances[-1]]#   取最后一个待匹配帧
             index = []
+            semantic_new = set(getattr(self, '_jev_candidate_new_rows', ())) if getattr(self, 'jev_candidate_policy', None) is not None else set()
             for i in range(n_k):
-                if track_ids[i] < 0:
+                if track_ids[i] < 0 and i not in semantic_new:
                     index.append(i)
             isinstances_no_match[0] = isinstances_no_match[0][index]#   取所有没有匹配上的instance
             track_id_memory ,instances_matching,run_time= self.memory_bank(id_count_dict,id_reid_dict,unique_ids,instances_old,isinstances_no_match)
             count = 0
             if track_id_memory!=None:
                 for i in range(n_k):
-                    if track_ids[i] < 0 :
+                    if i in index:
                         if track_id_memory[count]>=0:
                             track_ids[i] = track_id_memory[count]
                            # print("************ohhhhhhhhhhhh********")
@@ -1216,6 +1307,8 @@ class GTRRCNN(CustomRCNN):
         instances[k].track_ids = track_ids
 
         assert len(track_ids) == len(torch.unique(track_ids)), track_ids
+        self._candidate_observe_commit(instances, id_count, id_count_dict, id_reid_dict,
+            view=view, frame_index=frame_index)
         return instances, id_count,id_count_dict
  
     def memory_bank(self,id_count_dict,id_reid_dict,unique_ids,instances_old,instances_no_match):
