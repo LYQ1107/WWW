@@ -25,9 +25,9 @@ def run(video,limit=None,diagnostic=False,start_index=0,stop_index=None):
     completed={tuple(e['key'])+(e['row'],)for e in old}
     assert len(completed)==len(old)
     for e in old:assert e['CONTROL_KEEP_full_field_parity']and e['CONTROL_factual_all_committed_ids_parity']
-    out=OUT/'causal_forks_v1'/f'video{video:02d}'/f'shard{start_index:03d}_{stop_index or len(all_chosen):03d}'
+    out=OUT/'causal_forks_v2'/f'video{video:02d}'/f'shard{start_index:03d}_{stop_index or len(all_chosen):03d}'
     assert not out.exists(),'fork outputs are immutable';out.mkdir(parents=True)
-    source=binding();assert not source['worktree_dirty'];save(out/'START_MANIFEST.json',{'binding':source,'argv':sys.argv,'snapshot_selection':'all preregistered chronological representative snapshots; no future filtering','snapshots':[r for i,r in chosen],'readonly_instrumentation_change':'CONTROL/KEEP full fields every payload; all other branches current and H8/16/32 full fields; committed IDs recorded every payload','prior_completed_keys':[list(k)for k in sorted(completed)]})
+    source=binding();assert not source['dirty'];save(out/'START_MANIFEST.json',{'binding':source,'argv':sys.argv,'snapshot_selection':'all preregistered chronological representative snapshots; no future filtering','snapshots':[r for i,r in chosen],'readonly_instrumentation_change':'CONTROL/KEEP full fields every payload; all other branches current and H8/16/32 full fields; committed IDs recorded every payload','prior_completed_keys':[list(k)for k in sorted(completed)]})
     from jev_phase7_offline import IdentityEvaluator
     from jev_phase7_native import AttributionResolver
     from jev_phase7_state import CompleteStateDigest
@@ -95,7 +95,7 @@ def run(video,limit=None,diagnostic=False,start_index=0,stop_index=None):
                 result=lab.run(output,prefix=s['state'],start_key=key,end_frame=min(key[1]+31,manifest['max_frame']),metadata=s['metadata'],after_step=after)
                 aligned=evaluator.align(json.loads(Path(result['predictions']).read_text()));post[tag]=trace
                 immediate=aligned[(key[1],key[2],row)];mapping={int(t):int(g)for t,g in s['offline_prefix_identity']['reliable'].items()}
-                value={'actual_committed_id':immediate['id'],'immediate_anchored_correct':mapping.get(immediate['id'])==d['offline_GT'],
+                value={'actual_committed_id':immediate['id'],'immediate_anchored_correct':None if d['offline_GT']is None or immediate['id']not in mapping else mapping[immediate['id']]==d['offline_GT'],
                     'desired_candidate_committed':immediate['id']in correct,'H32_complete':manifest['max_frame']>=key[1]+31,
                     'new_birth_semantics_vetoed_same_key_bank_reactivation':tag=='START_NEW','native':native[0],
                     'horizons':{str(h):effects(aligned,s['offline_prefix_identity'],key[1],h,{d['offline_GT']}if d['offline_GT']is not None else set())for h in(8,16,32)},
@@ -115,7 +115,7 @@ def run(video,limit=None,diagnostic=False,start_index=0,stop_index=None):
                     e['delta_utility']=e['utility']-c['utility'];e['delta_utility_birth_zero']=e['utility_birth_zero']-c['utility_birth_zero']
                     e['delta_target_wrong']=e['target_counts'].get('wrong',0)-c['target_counts'].get('wrong',0)
                     e['delta_wrong_duration_camera_frames']=e['wrong_identity_duration_camera_frames']-c['wrong_identity_duration_camera_frames']
-                if d['proposal_correct']is False and b['desired_candidate_committed']and b['native']is not None and b['actual_committed_id']in (b['native'].get('native_existing_ids')or b['native'].get('existing_track_ids',{}).values())and b['immediate_anchored_correct']and b['H32_complete']and b['horizons']['32']['delta_utility']>0 and b['horizons']['32']['delta_utility_birth_zero']>0:event['verified_corrective_branches'].append(tag)
+                if d['proposal_correct']is False and b['desired_candidate_committed']and b['native']is not None and b['native']['native_existing_ids'][row]==b['actual_committed_id']and b['immediate_anchored_correct']and b['H32_complete']and b['horizons']['32']['delta_utility']>0 and b['horizons']['32']['delta_utility_birth_zero']>0:event['verified_corrective_branches'].append(tag)
             results.append(event);save(out/'FORK_PROGRESS.json',{'status':'RUNNING','completed_events':len(results),'snapshots':len(chosen),'last_key':list(key),'verified_events':sum(bool(e['verified_corrective_branches'])for e in results)})
             save(out/'FORK_RESULT.partial.json',{'events':results});print(json.dumps({'video':video,'events':len(results),'key':key,'row':row,'verified':event['verified_corrective_branches']}),flush=True)
     save(out/'FORK_RESULT.json',{'status':'COMPLETE','video':video,'diagnostic_only':diagnostic,'binding':source,'events':results,'raw_effects':raw,
