@@ -15,10 +15,11 @@ def summarize(tags):
         runs=[];predictions=[];diagnostics={}
         for video in (9,10,11):
             root=OUT/'closed_loop'/f'video{video:02d}'/tag
-            if tag=='BYTETRACK':root=OUT/'bytetrack'/f'video{video:02d}'
+            byte=tag in ('BYTETRACK','BYTETRACK_PAPER06')
+            if byte:root=OUT/('bytetrack'if tag=='BYTETRACK'else 'bytetrack_paper06')/f'video{video:02d}'
             result=json.loads((root/'result.json').read_text())
-            assert result.get('complete_video',tag=='BYTETRACK')
-            path=result['result']['predictions']if tag!='BYTETRACK'else result['predictions']
+            assert result.get('complete_video',byte)
+            path=result['predictions']if byte else result['result']['predictions']
             p=json.loads(Path(path).read_text());predictions.extend(p);runs.append(result)
             evaluator=IdentityEvaluator(video);rows=evaluator.align(p)
             audit=evaluator.summarize(rows)

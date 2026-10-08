@@ -1,0 +1,7 @@
+# Source-derived ByteTrack supplementary threshold
+
+The original preregistered available-input comparison uses track_thresh=0.5 and remains unchanged. The ECCV 2022 paper states a default high-score threshold of 0.6. A cache-only audit, without using the supplementary tracking outcomes, found 16/41/43 genuine detections in (0.1,0.6) on TRAIN controller-heldouts 09/10/11. Their minima are 0.5350717306/0.5254481435/0.5256970525. The detector cache was filtered around 0.525, so this is a truncated genuine low-score stream: lower discarded boxes cannot be reconstructed.
+
+Before launching this supplementary run, freeze track_thresh=0.6, match_thresh=0.8, buffer=30, frame_rate=30, mot20=False on all three complete videos. Do not select sequences or thresholds using outcomes. Preserve the 0.5 result. Instrument official low-stage assignment inputs and accepted matches without changing the assignment output. Source-derived supplementary choice occurred after some primary GMT/JEV outcomes were available; it is not an independently preregistered primary architecture test.
+
+Official ByteTrack runs high detections against tracked+lost tracks, then genuine low detections against remaining tracked tracks. It never feeds a rejected high-stage edge into the project's constrained global Hungarian re-solve. Independent camera trackers, Kalman boxes and no GMT cross-camera fusion mean this is a traditional-method scope comparison, not a same-solver causal architectural comparison.

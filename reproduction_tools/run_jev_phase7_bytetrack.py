@@ -3,8 +3,10 @@ import argparse,json,os,sys,time
 from types import SimpleNamespace
 from jev_phase7_common import *
 
-def run(video):
-    protect();dest=OUT/'bytetrack'/f'video{video:02d}'
+def run(video,threshold=.5):
+    assert threshold in (.5,.6), 'only preregistered thresholds'
+    protect();folder='bytetrack'if threshold==.5 else 'bytetrack_paper06'
+    dest=OUT/folder/f'video{video:02d}'
     if dest.exists():raise RuntimeError('refusing reused ByteTrack output')
     dest.mkdir(parents=True)
     root=OUT/'external_sources/FoundationVision__ByteTrack'
@@ -15,24 +17,40 @@ def run(video):
     if 'float'not in np.__dict__:np.float=float # compatibility alias only; official tracker unmodified
     from yolox.tracker.byte_tracker import BYTETracker
     from yolox.tracker.basetrack import BaseTrack
+    from yolox.tracker import matching
     from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
     empty=OUT/'empty_debug_inputs.jsonl';empty.write_text('')if not empty.exists()else None
     os.environ.update(JEV_VIDEO_ID=str(video),JEV_TRACE_PATH=str(empty),JEV_RECORDS_PATH=str(empty),JEV_PILOT_ROOT=str(dest))
     import run_early_pilot_tracking as pilot
     pilot.VIDEO_ID=video;pilot.TRACE=pilot.RECORDS=empty;pilot.PILOT=dest
     _,subset,lookup,_,_=pilot.load_inputs();cache=FrozenPerceptionCache(CACHE)
-    args=SimpleNamespace(track_thresh=.5,match_thresh=.8,track_buffer=30,mot20=False)
+    args=SimpleNamespace(track_thresh=threshold,match_thresh=.8,track_buffer=30,mot20=False)
     BaseTrack._count=0;trackers={view:BYTETracker(args,frame_rate=30)for view in (0,1)}
-    predictions=[];lows=highs=0;stamp=time.perf_counter()
+    predictions=[];lows=highs=0;stamp=time.perf_counter();low_audit=[]
+    original_assignment=matching.linear_assignment
+    current_key=None
+    def audited_assignment(cost,thresh):
+        answer=original_assignment(cost,thresh)
+        # Official source uses .8 for high, .5 for low, .7 for unconfirmed.
+        # This wrapper returns the exact official result without changing costs.
+        if thresh==.5:
+            low_audit.append({'key':list(current_key),'remaining_tracked':int(cost.shape[0]),
+                              'real_low_detections':int(cost.shape[1]),'accepted_low_matches':len(answer[0])})
+        return answer
+    matching.linear_assignment=audited_assignment
     for key in [k for k in cache.keys()if k[0]==video]:
+        current_key=key
         payload=cache.load(*key);boxes=payload['pred_boxes'].numpy();scores=payload['detection_scores'].numpy()
-        lows+=int(((scores>.1)&(scores<.5)).sum());highs+=int((scores>.5).sum())
+        lows+=int(((scores>.1)&(scores<threshold)).sum());highs+=int((scores>threshold).sum())
         data=np.concatenate((boxes,scores[:,None]),axis=1)
         size=payload['image_size'];tracks=trackers[key[2]].update(data,size,size)
         image=pilot.image_for(lookup,*key)
         for track in tracks:
             predictions.append({'image_id':int(image['id']),'category_id':1,'track_id':int(track.track_id),
                                 'bbox':pilot.scale_box(track.tlbr,size,image),'score':float(track.score)})
+    matching.linear_assignment=original_assignment
+    assert sum(x['real_low_detections']for x in low_audit)==lows
+    save(dest/'low_stage_audit.json',low_audit)
     wall=time.perf_counter()-stamp;path=dest/'predictions.json';save(path,predictions)
     dataset=pilot.prepare_eval_dataset(subset);prepared,evaluated=pilot.run_eval('bytetrack',path,dataset)
     value={'status':'HIGH_ONLY_AVAILABLE_INPUT'if lows==0 else 'COMPLETE','binding':binding(),'video':video,
@@ -40,6 +58,9 @@ def run(video):
            'official_source_sha256':{str(p.relative_to(root)):sha(p)for p in (root/'yolox/tracker').glob('*.py')if p.name!='__init__.py'},
            'parameters':vars(args),'frame_rate':30,'high_detections':highs,'low_detections':lows,
            'low_stage_status':'NOT_EXERCISED'if lows==0 else 'EXERCISED',
+           'low_stage_accepted_matches':sum(x['accepted_low_matches']for x in low_audit),
+           'low_stage_nonempty_track_and_detection_payloads':sum(x['remaining_tracked']>0 and x['real_low_detections']>0 for x in low_audit),
+           'low_stage_audit_sha256':sha(dest/'low_stage_audit.json'),
            'metrics':pilot.extract_metrics(evaluated),'predictions':str(path),'predictions_sha256':sha(path),
            'evaluation':str(evaluated),'prepared':str(prepared),'wall_seconds_excluding_eval':wall,
            'camera_trackers':'independent; globally distinct track IDs; no cross-camera fusion',
@@ -48,4 +69,5 @@ def run(video):
     save(dest/'result.json',value);protect();print(json.dumps({'video':video,'status':value['status'],'metrics':value['metrics']}))
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);run(p.parse_args().video)
+    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);p.add_argument('--threshold',type=float,default=.5)
+    a=p.parse_args();run(a.video,a.threshold)
