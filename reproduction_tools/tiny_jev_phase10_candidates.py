@@ -7,15 +7,16 @@ from gtr.modeling.jev_native_state import fingerprint
 
 def main(device):
  rows,manifest=load_data();source=binding();assert not source['dirty'];stats=normalization(rows);chosen=[];selectedgroups=[]
- if(OUT/'tiny_v1/RESULT.json').exists():
-  prior=json.loads((OUT/'tiny_v1/RESULT.json').read_text());assert prior['binding']==source and prior['status']=='PASS';print('ALL_THREE_TINY_ALREADY_PASS');return
+ out=OUT/'tiny_v2'
+ if(out/'RESULT.json').exists():
+  prior=json.loads((out/'RESULT.json').read_text());assert prior['binding']==source and prior['status']=='PASS';print('ALL_THREE_TINY_ALREADY_PASS');return
  for video in TRAIN:
   pool=sorted([r for r in rows if r['key'][0]==video and r['CE_eligible']],key=lambda r:(r['key'][1],r['key'][2],r['row']));groups=[]
   for r in pool:
    if r['group']not in groups:groups.append(r['group'])
   for g in groups[:2]:chosen.extend([r for r in pool if r['group']==g][:3]);selectedgroups.append(g)
  assert len(chosen)>=6 and len(set(selectedgroups))>=4
- out=OUT/'tiny_v1';out.mkdir(exist_ok=True);selection={'dataset_SHA256':manifest['dataset_SHA256'],'groups':selectedgroups,'rows':[{'key':r['key'],'row':r['row'],'group':r['group'],'prefix_SHA256':r['native_prefix_SHA256']}for r in chosen],'selection':'first two chronological known-positive TRAIN groups per video; max3 rows/group','heldout_sealed':True};p=out/'SELECTION.json'
+ out.mkdir(exist_ok=True);selection={'dataset_SHA256':manifest['dataset_SHA256'],'groups':selectedgroups,'rows':[{'key':r['key'],'row':r['row'],'group':r['group'],'prefix_SHA256':r['native_prefix_SHA256']}for r in chosen],'selection':'first two chronological known-positive TRAIN groups per video; max3 rows/group','heldout_sealed':True};p=out/'SELECTION.json'
  if p.exists():assert json.loads(p.read_text())==selection
  else:save(p,selection)
  # Contradictory exactly identical observations must be surfaced, not trained
@@ -40,8 +41,8 @@ def main(device):
     steps[name]=step+1
     if steps[name]%100==0:
      p=out/(name+'_RESUME.pth');tmp=p.with_suffix('.pth.tmp');torch.save({'model':m.state_dict(),'optimizer':optimizer.state_dict(),'steps':steps[name],'initial':initial[name],'history':history[name],'binding':source,'dataset_SHA256':manifest['dataset_SHA256']},tmp);tmp.replace(p);save(out/'PROGRESS.json',{'model':name,'steps':steps[name],'budget':budget,'status':'RUNNING','source_commit':source['source_commit']})
-  result=evaluate(m,chosen,'correctness',device=device);history[name].append({'steps':budget,'rank1':result['group_weighted_rank1'],'loss':result['correctness_loss'],'unknown_choice_rate':result['unknown_choice_rate']});print('TINY_FIT',name,history[name][-1],flush=True)
-  p=out/(name+'_RESUME.pth');tmp=p.with_suffix('.pth.tmp');torch.save({'model':m.state_dict(),'optimizer':optimizer.state_dict(),'steps':steps[name],'initial':initial[name],'history':history[name],'binding':source,'dataset_SHA256':manifest['dataset_SHA256']},tmp);tmp.replace(p)
+   result=evaluate(m,chosen,'correctness',device=device);history[name].append({'steps':budget,'rank1':result['group_weighted_rank1'],'loss':result['correctness_loss'],'unknown_choice_rate':result['unknown_choice_rate']});print('TINY_FIT',name,history[name][-1],flush=True)
+   p=out/(name+'_RESUME.pth');tmp=p.with_suffix('.pth.tmp');torch.save({'model':m.state_dict(),'optimizer':optimizer.state_dict(),'steps':steps[name],'initial':initial[name],'history':history[name],'binding':source,'dataset_SHA256':manifest['dataset_SHA256']},tmp);tmp.replace(p)
   done=budget;passed=all(history[name][-1]['rank1']>=.95 and history[name][-1]['loss']<max(initial[name]['correctness_loss'],1e-8)for name in models)
   if passed:break
   # Every method extends together only after finite/collision/masking checks.
