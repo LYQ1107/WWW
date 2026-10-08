@@ -1,0 +1,540 @@
+{
+  "actual_tiny_results": {
+    "conditional_correctness_CE": {
+      "GPU": "4",
+      "JIT_runtime": {
+        "JIT_GPU_fusion": false,
+        "all_architectures_and_controls_same": true,
+        "nvfuser_enabled": false,
+        "reason": "bounded native resumed-candidate engineering kernel stall, not a model outcome",
+        "torch_version": "2.0.0+cu118"
+      },
+      "models": {
+        "CandidateDeepSets": {
+          "actual_steps": 2000,
+          "checkpoint": {
+            "SHA256": "1f634e8177c56323a658a517b3e82dee78397367e26b3c417123af86da80a9ec",
+            "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_v2/CandidateDeepSets.pth"
+          },
+          "final": {
+            "Brier": 1.812039474070888e-09,
+            "ECE10": 7.8150859247339e-06,
+            "corrective_recall": 1.0,
+            "correctness_loss": 7.84183159852639e-06,
+            "eligible_rows": 12,
+            "executed_pair_count": 18,
+            "executed_pair_order_accuracy": 0.9444444444444444,
+            "group_weighted_MRR": 0.9102564102564104,
+            "group_weighted_rank1": 0.8653846153846155,
+            "ranking_loss": 0.9870694390474222,
+            "rows": 12,
+            "selection_NLL": 7.84183159852639e-06,
+            "strata": {
+              "NATURAL": {
+                "MRR": 0.8333333333333333,
+                "NLL": 4.172325134277344e-07,
+                "rank1": 0.75
+              },
+              "ORIGINAL_PHASE8_CORRECTIVE": {
+                "MRR": 1.0,
+                "NLL": 1.6503863864474825e-05,
+                "rank1": 1.0
+              }
+            },
+            "unknown_choice_rate": 0.1346153846153846,
+            "wrong_correction_rate": 0.0
+          },
+          "history": [
+            {
+              "loss": 0.00023973905123197113,
+              "rank1": 0.8653846153846155,
+              "steps": 500,
+              "unknown_choice_rate": 0.1346153846153846
+            },
+            {
+              "loss": 7.84183159852639e-06,
+              "rank1": 0.8653846153846155,
+              "steps": 2000,
+              "unknown_choice_rate": 0.1346153846153846
+            }
+          ],
+          "permutation_choices_exact": true,
+          "scripted_training_normalization_exact": true
+        },
+        "CandidateJEV": {
+          "actual_steps": 2000,
+          "checkpoint": {
+            "SHA256": "ce700884408ad60615149a0b6cb4c91b52cf05af7dbf2c2b5ff96d7fc0c1048b",
+            "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_v2/CandidateJEV.pth"
+          },
+          "final": {
+            "Brier": 2.5498789410031882e-08,
+            "ECE10": 2.7394065490238262e-05,
+            "corrective_recall": 1.0,
+            "correctness_loss": 2.7358531951904297e-05,
+            "eligible_rows": 12,
+            "executed_pair_count": 18,
+            "executed_pair_order_accuracy": 0.9444444444444444,
+            "group_weighted_MRR": 0.9102564102564104,
+            "group_weighted_rank1": 0.8653846153846155,
+            "ranking_loss": 1.3240529818412585,
+            "rows": 12,
+            "selection_NLL": 2.7358531951904297e-05,
+            "strata": {
+              "NATURAL": {
+                "MRR": 0.8333333333333333,
+                "NLL": 2.0265579223632812e-06,
+                "rank1": 0.75
+              },
+              "ORIGINAL_PHASE8_CORRECTIVE": {
+                "MRR": 1.0,
+                "NLL": 5.691250165303548e-05,
+                "rank1": 1.0
+              }
+            },
+            "unknown_choice_rate": 0.1346153846153846,
+            "wrong_correction_rate": 0.0
+          },
+          "history": [
+            {
+              "loss": 0.0006667849345084948,
+              "rank1": 0.8653846153846155,
+              "steps": 500,
+              "unknown_choice_rate": 0.1346153846153846
+            },
+            {
+              "loss": 2.7358531951904297e-05,
+              "rank1": 0.8653846153846155,
+              "steps": 2000,
+              "unknown_choice_rate": 0.1346153846153846
+            }
+          ],
+          "permutation_choices_exact": true,
+          "scripted_training_normalization_exact": true
+        },
+        "CandidateMLP": {
+          "actual_steps": 2000,
+          "checkpoint": {
+            "SHA256": "c2d33b1dbecc772758f8d7b6cd1f998dd32d205f4238005c974a7faf5529a3c0",
+            "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_v2/CandidateMLP.pth"
+          },
+          "final": {
+            "Brier": 5.035188646065071e-10,
+            "ECE10": 4.450480143414204e-06,
+            "corrective_recall": 0.22222222222222218,
+            "correctness_loss": 4.436725225204076e-06,
+            "eligible_rows": 12,
+            "executed_pair_count": 18,
+            "executed_pair_order_accuracy": 0.9444444444444444,
+            "group_weighted_MRR": 0.7064636752136753,
+            "group_weighted_rank1": 0.5064102564102563,
+            "ranking_loss": 0.8537109614564821,
+            "rows": 12,
+            "selection_NLL": 4.436725225204076e-06,
+            "strata": {
+              "NATURAL": {
+                "MRR": 0.8333333333333333,
+                "NLL": 0.0,
+                "rank1": 0.75
+              },
+              "ORIGINAL_PHASE8_CORRECTIVE": {
+                "MRR": 0.558449074074074,
+                "NLL": 9.612904654608832e-06,
+                "rank1": 0.22222222222222218
+              }
+            },
+            "unknown_choice_rate": 0.4935897435897436,
+            "wrong_correction_rate": 0.0
+          },
+          "history": [
+            {
+              "loss": 0.00017393246675148988,
+              "rank1": 0.5064102564102563,
+              "steps": 500,
+              "unknown_choice_rate": 0.4935897435897436
+            },
+            {
+              "loss": 4.436725225204076e-06,
+              "rank1": 0.5064102564102563,
+              "steps": 2000,
+              "unknown_choice_rate": 0.4935897435897436
+            }
+          ],
+          "permutation_choices_exact": true,
+          "scripted_training_normalization_exact": true
+        }
+      },
+      "raw_result": {
+        "SHA256": "956d2b787460498e398bbdffc37ebf02ff0c3d363dfe27fc8f85924d94221251",
+        "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_v2/RESULT.json"
+      },
+      "source_commit": "8cbd0e27e1e6d00e3ea4fb7bd30cf88609f143ff",
+      "source_root": "/home/liuyeqiang/WWW_jev_phase10_source_v4b",
+      "status": "FAIL_TINY_FIT"
+    },
+    "known_edge_binary_CE_diagnostic": {
+      "GPU": "5",
+      "JIT_runtime": {
+        "JIT_GPU_fusion": false,
+        "all_architectures_and_controls_same": true,
+        "nvfuser_enabled": false,
+        "reason": "bounded native resumed-candidate engineering kernel stall, not a model outcome",
+        "torch_version": "2.0.0+cu118"
+      },
+      "models": {
+        "CandidateDeepSets": {
+          "actual_steps": 2000,
+          "checkpoint": {
+            "SHA256": "bd7c78e61bc70d62cbb3b42e5ba6df8be6ba50e7c791c7143e3e1d3c9f071bae",
+            "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_binary_ce_diagnostic_v1/CandidateDeepSets.pth"
+          },
+          "final": {
+            "Brier": 4.941868628526822e-11,
+            "ECE10": 7.397089248906141e-07,
+            "corrective_recall": 1.0,
+            "correctness_loss": 7.397089249048476e-07,
+            "eligible_rows": 12,
+            "executed_pair_count": 18,
+            "executed_pair_order_accuracy": 0.9444444444444444,
+            "group_weighted_MRR": 0.9102564102564104,
+            "group_weighted_rank1": 0.8653846153846155,
+            "ranking_loss": 0.8674974705164249,
+            "rows": 12,
+            "selection_NLL": 7.397089249048476e-07,
+            "strata": {
+              "NATURAL": {
+                "MRR": 0.8333333333333333,
+                "NLL": 0.0,
+                "rank1": 0.75
+              },
+              "ORIGINAL_PHASE8_CORRECTIVE": {
+                "MRR": 1.0,
+                "NLL": 1.6027026706271697e-06,
+                "rank1": 1.0
+              }
+            },
+            "unknown_choice_rate": 0.1346153846153846,
+            "wrong_correction_rate": 0.0
+          },
+          "history": [
+            {
+              "full_legal_confirmed_rank1": 0.8653846153846155,
+              "known_conditional_NLL": 0.0004471479318080804,
+              "known_edge_BCE": 0.0005194700206629932,
+              "steps": 500,
+              "unknown_choice_rate": 0.1346153846153846
+            },
+            {
+              "full_legal_confirmed_rank1": 0.8653846153846155,
+              "known_conditional_NLL": 7.397089249048476e-07,
+              "known_edge_BCE": 1.1283174899290316e-05,
+              "steps": 2000,
+              "unknown_choice_rate": 0.1346153846153846
+            }
+          ],
+          "permutation_choices_exact": true,
+          "scripted_training_normalization_exact": true
+        },
+        "CandidateJEV": {
+          "actual_steps": 2000,
+          "checkpoint": {
+            "SHA256": "a76b263ff4d1a5f83ff4cbe4bb3532c1e0579dfaff8d056a5e903e084168c550",
+            "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_binary_ce_diagnostic_v1/CandidateJEV.pth"
+          },
+          "final": {
+            "Brier": 1.1511465401030015e-12,
+            "ECE10": 1.421341531138154e-07,
+            "corrective_recall": 1.0,
+            "correctness_loss": 1.2226593800080127e-07,
+            "eligible_rows": 12,
+            "executed_pair_count": 18,
+            "executed_pair_order_accuracy": 0.9444444444444444,
+            "group_weighted_MRR": 0.9102564102564104,
+            "group_weighted_rank1": 0.8653846153846155,
+            "ranking_loss": 2.1746854208982906,
+            "rows": 12,
+            "selection_NLL": 1.2226593800080127e-07,
+            "strata": {
+              "NATURAL": {
+                "MRR": 0.8333333333333333,
+                "NLL": 0.0,
+                "rank1": 0.75
+              },
+              "ORIGINAL_PHASE8_CORRECTIVE": {
+                "MRR": 1.0,
+                "NLL": 2.649095323350694e-07,
+                "rank1": 1.0
+              }
+            },
+            "unknown_choice_rate": 0.1346153846153846,
+            "wrong_correction_rate": 0.0
+          },
+          "history": [
+            {
+              "full_legal_confirmed_rank1": 0.8653846153846155,
+              "known_conditional_NLL": 0.0002190898626278608,
+              "known_edge_BCE": 0.00044187557068653405,
+              "steps": 500,
+              "unknown_choice_rate": 0.1346153846153846
+            },
+            {
+              "full_legal_confirmed_rank1": 0.8653846153846155,
+              "known_conditional_NLL": 1.2226593800080127e-07,
+              "known_edge_BCE": 8.749853805056773e-06,
+              "steps": 2000,
+              "unknown_choice_rate": 0.1346153846153846
+            }
+          ],
+          "permutation_choices_exact": true,
+          "scripted_training_normalization_exact": true
+        },
+        "CandidateMLP": {
+          "actual_steps": 2000,
+          "checkpoint": {
+            "SHA256": "905b1623560989f9dba19950aad043e2fdc967b9b622369a86bd67ad14633a81",
+            "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_binary_ce_diagnostic_v1/CandidateMLP.pth"
+          },
+          "final": {
+            "Brier": 1.274319631437325e-17,
+            "ECE10": 0.0,
+            "corrective_recall": 0.22222222222222218,
+            "correctness_loss": 0.0,
+            "eligible_rows": 12,
+            "executed_pair_count": 18,
+            "executed_pair_order_accuracy": 0.9444444444444444,
+            "group_weighted_MRR": 0.7064636752136753,
+            "group_weighted_rank1": 0.5064102564102563,
+            "ranking_loss": 0.7709656708802167,
+            "rows": 12,
+            "selection_NLL": 0.0,
+            "strata": {
+              "NATURAL": {
+                "MRR": 0.8333333333333333,
+                "NLL": 0.0,
+                "rank1": 0.75
+              },
+              "ORIGINAL_PHASE8_CORRECTIVE": {
+                "MRR": 0.558449074074074,
+                "NLL": 0.0,
+                "rank1": 0.22222222222222218
+              }
+            },
+            "unknown_choice_rate": 0.4935897435897436,
+            "wrong_correction_rate": 0.0
+          },
+          "history": [
+            {
+              "full_legal_confirmed_rank1": 0.641025641025641,
+              "known_conditional_NLL": 9.325223091321113e-05,
+              "known_edge_BCE": 0.00014973283396102488,
+              "steps": 500,
+              "unknown_choice_rate": 0.358974358974359
+            },
+            {
+              "full_legal_confirmed_rank1": 0.5064102564102563,
+              "known_conditional_NLL": 0.0,
+              "known_edge_BCE": 2.4513761331945716e-07,
+              "steps": 2000,
+              "unknown_choice_rate": 0.4935897435897436
+            }
+          ],
+          "permutation_choices_exact": true,
+          "scripted_training_normalization_exact": true
+        }
+      },
+      "raw_result": {
+        "SHA256": "aca7295814482a56932e33202fdb1cfdf107fb6aad63caf0efa771f67652f0e2",
+        "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_binary_ce_diagnostic_v1/RESULT.json"
+      },
+      "source_commit": "f391eecbe60db680206ee48ba9923693881d6463",
+      "source_root": "/home/liuyeqiang/WWW_jev_phase10_source_v4c",
+      "status": "FAIL_TINY_KNOWN_EDGE_BCE_DIAGNOSTIC"
+    },
+    "preregistered_joint_diagnostic": {
+      "GPU": "5",
+      "JIT_runtime": {
+        "JIT_GPU_fusion": false,
+        "all_architectures_and_controls_same": true,
+        "nvfuser_enabled": false,
+        "reason": "bounded native resumed-candidate engineering kernel stall, not a model outcome",
+        "torch_version": "2.0.0+cu118"
+      },
+      "models": {
+        "CandidateDeepSets": {
+          "actual_steps": 2000,
+          "checkpoint": {
+            "SHA256": "1febf27951697b64689cf9a7fc8027a3119bb3982f83911692fd95cb6fb651d3",
+            "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_joint_diagnostic_v1/CandidateDeepSets.pth"
+          },
+          "final": {
+            "Brier": 1.6631406673073814e-15,
+            "ECE10": 7.641621113663177e-09,
+            "corrective_recall": 1.0,
+            "correctness_loss": 6.81021274664463e-06,
+            "eligible_rows": 12,
+            "executed_pair_count": 18,
+            "executed_pair_order_accuracy": 1.0,
+            "group_weighted_MRR": 1.0,
+            "group_weighted_rank1": 1.0,
+            "ranking_loss": 4.0044472530903885e-07,
+            "rows": 12,
+            "selection_NLL": 0.0,
+            "strata": {
+              "NATURAL": {
+                "MRR": 1.0,
+                "NLL": 0.0,
+                "rank1": 1.0
+              },
+              "ORIGINAL_PHASE8_CORRECTIVE": {
+                "MRR": 1.0,
+                "NLL": 0.0,
+                "rank1": 1.0
+              }
+            },
+            "unknown_choice_rate": 0.0,
+            "wrong_correction_rate": 0.0
+          },
+          "history": [
+            {
+              "actual_training_loss": 0.00044359936146065593,
+              "full_legal_confirmed_rank1": 1.0,
+              "known_conditional_NLL": 1.1737530048076924e-05,
+              "steps": 500,
+              "unknown_choice_rate": 0.0
+            },
+            {
+              "actual_training_loss": 7.211152023955947e-06,
+              "full_legal_confirmed_rank1": 1.0,
+              "known_conditional_NLL": 0.0,
+              "steps": 2000,
+              "unknown_choice_rate": 0.0
+            }
+          ],
+          "permutation_choices_exact": true,
+          "scripted_training_normalization_exact": true
+        },
+        "CandidateJEV": {
+          "actual_steps": 2000,
+          "checkpoint": {
+            "SHA256": "db3e8718c5c7a8ce5bd06fcfaa30277f53b4ffbac1a27be37710f91611c052fc",
+            "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_joint_diagnostic_v1/CandidateJEV.pth"
+          },
+          "final": {
+            "Brier": 8.988987490205869e-14,
+            "ECE10": 5.272718583970715e-08,
+            "corrective_recall": 1.0,
+            "correctness_loss": 2.7850652352357523e-05,
+            "eligible_rows": 12,
+            "executed_pair_count": 18,
+            "executed_pair_order_accuracy": 1.0,
+            "group_weighted_MRR": 1.0,
+            "group_weighted_rank1": 1.0,
+            "ranking_loss": 9.025733234589752e-06,
+            "rows": 12,
+            "selection_NLL": 3.9736429850260414e-08,
+            "strata": {
+              "NATURAL": {
+                "MRR": 1.0,
+                "NLL": 0.0,
+                "rank1": 1.0
+              },
+              "ORIGINAL_PHASE8_CORRECTIVE": {
+                "MRR": 1.0,
+                "NLL": 8.609559800889757e-08,
+                "rank1": 1.0
+              }
+            },
+            "unknown_choice_rate": 0.0,
+            "wrong_correction_rate": 0.0
+          },
+          "history": [
+            {
+              "actual_training_loss": 0.001199360005557537,
+              "full_legal_confirmed_rank1": 1.0,
+              "known_conditional_NLL": 3.0453388507549575e-05,
+              "steps": 500,
+              "unknown_choice_rate": 0.0
+            },
+            {
+              "actual_training_loss": 3.6792840546695516e-05,
+              "full_legal_confirmed_rank1": 1.0,
+              "known_conditional_NLL": 3.9736429850260414e-08,
+              "steps": 2000,
+              "unknown_choice_rate": 0.0
+            }
+          ],
+          "permutation_choices_exact": true,
+          "scripted_training_normalization_exact": true
+        },
+        "CandidateMLP": {
+          "actual_steps": 2000,
+          "checkpoint": {
+            "SHA256": "1f71a2021bfe50c9b114eeb7e43aba7153c543245e1a73166fb0b64470c77760",
+            "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_joint_diagnostic_v1/CandidateMLP.pth"
+          },
+          "final": {
+            "Brier": 1.087861411427999e-14,
+            "ECE10": 1.4519080160368958e-08,
+            "corrective_recall": 0.31944444444444436,
+            "correctness_loss": 8.068023583827873e-06,
+            "eligible_rows": 12,
+            "executed_pair_count": 18,
+            "executed_pair_order_accuracy": 1.0,
+            "group_weighted_MRR": 0.8354700854700856,
+            "group_weighted_rank1": 0.6858974358974359,
+            "ranking_loss": 9.439566348181065e-07,
+            "rows": 12,
+            "selection_NLL": 0.0,
+            "strata": {
+              "NATURAL": {
+                "MRR": 1.0,
+                "NLL": 0.0,
+                "rank1": 1.0
+              },
+              "ORIGINAL_PHASE8_CORRECTIVE": {
+                "MRR": 0.6435185185185184,
+                "NLL": 0.0,
+                "rank1": 0.31944444444444436
+              }
+            },
+            "unknown_choice_rate": 0.3141025641025641,
+            "wrong_correction_rate": 0.0
+          },
+          "history": [
+            {
+              "actual_training_loss": 0.00024020001001190394,
+              "full_legal_confirmed_rank1": 0.6858974358974359,
+              "known_conditional_NLL": 3.438729506272536e-06,
+              "steps": 500,
+              "unknown_choice_rate": 0.3141025641025641
+            },
+            {
+              "actual_training_loss": 9.028921340359375e-06,
+              "full_legal_confirmed_rank1": 0.6858974358974359,
+              "known_conditional_NLL": 0.0,
+              "steps": 2000,
+              "unknown_choice_rate": 0.3141025641025641
+            }
+          ],
+          "permutation_choices_exact": true,
+          "scripted_training_normalization_exact": true
+        }
+      },
+      "raw_result": {
+        "SHA256": "6ffd64d5529fe13e980f90a2c76a616dc19711a9fc145f8d1a044fb79583c797",
+        "path": "/home/liuyeqiang/WWW_jev_phase10_runtime/20261008_v1/tiny_joint_diagnostic_v1/RESULT.json"
+      },
+      "source_commit": "8b04094456764baf4635eba1c010d1d26909fbfb",
+      "source_root": "/home/liuyeqiang/WWW_jev_phase10_source_v4d",
+      "status": "FAIL_TINY_OBJECTIVE_DIAGNOSTIC"
+    }
+  },
+  "best_supervision_on_validation_or_heldout": "NOT_IDENTIFIED",
+  "binary_CE_is_diagnostic_only_not_adopted_as_a_formal_change": true,
+  "formal_equal_three_seed_comparison": "NOT_RUN",
+  "joint_supervision_is_originally_preregistered": true,
+  "original_conditional_correctness_protocol_preserved": true,
+  "reason": "STOP_TINY_FULL_LEGAL_CONFIRMED_CHOICE_GATE",
+  "status": "BOUNDED_TINY_DIAGNOSTICS_COMPLETED_FORMAL_ABLATION_NOT_RUN",
+  "unknown_or_unexecuted_not_filled": true
+}

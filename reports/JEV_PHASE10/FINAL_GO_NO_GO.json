@@ -1,0 +1,66 @@
+{
+  "Full24": false,
+  "H32_gate_PASS": true,
+  "actual_tiny_checkpoints_retained_and_SHA_bound": true,
+  "all_three_tiny_gate_PASS": false,
+  "dataset_gate_PASS": true,
+  "formal_training_or_closed_loop_architecture_hypothesis": "NOT_TESTED",
+  "heldout_sealed": true,
+  "official_TEST": false,
+  "ordinary_engineering_failures_repaired_before_stop": [
+    "per-model history indentation",
+    "CUDA JIT fusion resumed-kernel stall",
+    "native production gallery/state recovery"
+  ],
+  "original_gate_not_lowered": true,
+  "phase_V_to_IX_results_and_B2_unchanged": true,
+  "reason": "STOP_TINY_FULL_LEGAL_CONFIRMED_CHOICE_GATE",
+  "required_outputs_completed_for_conditional_scientific_stop": true,
+  "scientific_stop_is_distinct_from_engineering_errors": true,
+  "seven_answers": {
+    "1_gallery_parity": {
+      "answer": "\u5168\u90e8221\u4e2a\u539f\u56fa\u5b9a\u524d\u7f00\u901a\u8fc7\uff0c\u5305\u542b\u539f94\u4e2a\u5931\u8d25\u8bb0\u5f55\uff1b\u5168\u90e8162\u4e8b\u4ef6/840\u5206\u652f\u7684CONTROL\u548c\u663e\u5f0fKEEP\u5b8c\u6574\u72b6\u6001\u3001\u4e8b\u4ef6\u3001RNG\u7b49\u4ef7\u3002",
+      "classification": "ENGINEERING_AND_NATIVE_CAUSAL_PARITY_PASS"
+    },
+    "2_H32_changes": {
+      "answer": "53\u4e2a\u5206\u652f\u6807\u7b7e\u53d8\u5316\uff1a52\u4e2aSTART_NEW\u30011\u4e2aREASSOCIATE\u3002\u7ea0\u9519\u6570\u91cf\u91cd\u65b0\u6838\u9a8c\u540e\u4ecd\u4e3a\u8bad\u7ec374\u3001\u9a8c\u8bc159\uff1b\u76f8\u540c\u6570\u91cf\u4e0d\u4ee3\u8868\u6548\u7528\u6807\u7b7e\u672a\u53d8\u5316\u3002\u53d8\u5316\u6765\u81ea\u5b8c\u6574\u539f\u751f\u72b6\u6001/\u8f6c\u6362\u5951\u7ea6\u66ff\u6362\u65e7Replay\uff0c\u4e0d\u80fd\u5168\u5f52\u56e0\u4e3a\u67d0\u4e00\u6761Gallery\u5411\u91cf\u3002",
+      "changed_actions": {
+        "REASSOCIATE": 1,
+        "START_NEW": 52
+      },
+      "changed_branches": 53,
+      "changed_event_rows": 53,
+      "classification": "REQUALIFIED_V3_NATIVE_LABELS",
+      "verified_corrections": {
+        "supplemental": 46,
+        "supplemental_validation": 46,
+        "train": 74,
+        "validation": 59
+      }
+    },
+    "3_MLP": {
+      "answer": "MLP\u786e\u5b9e\u5b8c\u6210\u4e86\u771f\u5b9etiny\u8bad\u7ec3\uff0c\u5df2\u77e5\u5019\u9009\u4e0e\u5df2\u6267\u884c\u6548\u7528\u5bf9\u6bd4\u53ef\u4ee5\u62df\u5408\uff1b\u8054\u5408\u76ee\u6807\u4e0b\u5b8c\u6574\u5408\u6cd5\u5019\u9009\u7684\u5df2\u786e\u8ba4\u547d\u4e2d\u738768.59%\uff0c\u672a\u8fbe95%\u3002\u4e0d\u80fd\u628a\u672a\u77e5\u5019\u9009\u5224\u4f5c\u9519\u8befGT\uff0c\u4e5f\u4e0d\u80fd\u628a\u5b83\u7b97\u4f5c\u6b63\u786e\u6062\u590d\uff1b\u771f\u5b9e\u95ed\u73af\u7ea0\u9519\u80fd\u529b\u5c1a\u672a\u9a8c\u8bc1\u3002",
+      "classification": "KNOWN_SUPPORT_TINY_FIT_PASS_FULL_LEGAL_QUALIFICATION_FAIL",
+      "joint_full_legal_confirmed_rank1": 0.6858974358974359,
+      "joint_unknown_choice_rate": 0.3141025641025641
+    },
+    "4_DeepSets_vs_MLP": {
+      "answer": "\u8054\u5408tiny\u4e0bDeepSets\u8fbe\u5230100%\uff0cMLP\u4e3a68.59%\uff1b\u8fd9\u4ec5\u662f\u540c\u4e00\u5c0f\u6837\u672c\u7684\u62df\u5408\u5dee\u5f02\uff0c\u6ca1\u6709\u5b8c\u6574\u4e09seed/validation/heldout\u6bd4\u8f83\uff0c\u4e0d\u80fd\u5ba3\u79f0\u663e\u8457\u4f18\u4e8eMLP\u3002",
+      "classification": "TINY_DIFFERENCE_ONLY_FORMAL_COMPARISON_NOT_RUN"
+    },
+    "5_JEV_vs_ordinary": {
+      "answer": "\u8054\u5408tiny\u4e2dJEV\u4e0eDeepSets\u5747\u4e3a100%\uff0c\u6ca1\u6709\u5df2\u89c2\u5bdf\u5230\u7684\u989d\u5916tiny\u4f18\u52bf\u3002\u6b63\u5f0f\u76f8\u540c\u9884\u7b97\u7684\u95ed\u73af\u6bd4\u8f83\u5c1a\u672a\u6267\u884c\uff0cJEV\u72ec\u7279\u7ed3\u6784\u4f18\u52bf\u672a\u5f97\u5230\u8bc1\u660e\u3002",
+      "classification": "ARCHITECTURE_SUPERIORITY_NOT_ESTABLISHED"
+    },
+    "6_supervision": {
+      "answer": "\u6b63\u786e\u6027CE\u548c\u5df2\u77e5\u8fb9\u4e8c\u5143CE\u90fd\u4e0d\u80fd\u4f7f\u4e09\u6a21\u578b\u8fbe\u5230\u5b8c\u6574\u5408\u6cd5\u5019\u9009\u95e8\u69db\uff1b\u539f\u8ba1\u5212\u7684\u8054\u5408\u76d1\u7763\u4f7fDeepSets/JEV\u901a\u8fc7\u8be5tiny\u6307\u6807\uff0c\u4f46MLP\u4ecd\u5931\u8d25\u3002\u53ef\u4ee5\u8bb0\u5f55\u5176\u5c0f\u6837\u672c\u4f5c\u7528\uff0c\u4e0d\u80fd\u636e\u6b64\u9009\u62e9\u6700\u4f18\u6cdb\u5316\u76d1\u7763\u3002",
+      "classification": "BOUNDED_TINY_DIAGNOSTIC_ONLY"
+    },
+    "7_Unified_JEV": {
+      "answer": "\u76ee\u524d\u6ca1\u6709\u8db3\u591f\u8bc1\u636e\u6269\u5c55MATCH\u2013MEMORY\u2013REACTIVATION Unified JEV\u3002\u4e0b\u4e00\u6b65\u5e94\u5148\u5ba1\u8ba1\u672a\u951a\u5b9a\u5019\u9009\u7684\u8eab\u4efd\u8bed\u4e49\u4e0e\u53ef\u9a8c\u8bc1\u76d1\u7763\u652f\u6301\uff1b\u4e0d\u5f97\u7528GT\u6cc4\u6f0f\u3001\u628a\u672a\u77e5\u6539\u8d1f\u3001\u91cd\u65b0\u6311\u9009\u6709\u5229tiny\u7ec4\u6216\u964d\u4f4e\u95e8\u69db\u6765\u7ee7\u7eed\u3002",
+      "classification": "NO_GO_FOR_UNIFIED_EXTENSION"
+    }
+  },
+  "state_gate_PASS": true,
+  "status": "COMPLETE_SCIENTIFIC_STOP_AT_TINY_GATE"
+}
