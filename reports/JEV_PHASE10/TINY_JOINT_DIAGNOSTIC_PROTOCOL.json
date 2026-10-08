@@ -1,0 +1,21 @@
+{
+  "budgets": [
+    500,
+    2000
+  ],
+  "fixed_selection_SHA256": "af2b850138391578a98770ce3792b7c568200548d5ba4cf6f805a80da9f8c3a5",
+  "heldout_unopened": true,
+  "no_dataset_or_selection_changes": true,
+  "no_formal_training_or_validation_model_selection_yet": true,
+  "objective": "Original conditional correctness CE + original executed-only H32 pairwise ranking, normalized task means1:1; deployment sum of the two heads",
+  "rank1_gate_unchanged": 0.95,
+  "reason": "Both conditional CE and known-edge BCE fit known labels but retain unanchored full-legal winners. Check the already preregistered joint task, using only truly executed H32 contrasts, with identical rows, capacities and gates. No new labels or extra information for JEV alone.",
+  "status": "FROZEN_BEFORE_BOUNDED_JOINT_PROBE",
+  "three_models": [
+    "CandidateMLP",
+    "CandidateDeepSets",
+    "CandidateJEV"
+  ],
+  "unknown_Q_stays_NaN": true,
+  "unknown_correctness_not_negative": true
+}
