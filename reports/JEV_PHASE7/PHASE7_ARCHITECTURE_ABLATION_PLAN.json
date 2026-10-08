@@ -1,0 +1,62 @@
+{
+  "status": "CONDITIONAL_PENDING_NATIVE_LEARNABILITY_GATE",
+  "P05_current_MATCH_expansion": "NO_GO",
+  "planned_parameter_count": 32093,
+  "MATCH_linear_MACs": "13184*N+17088",
+  "experiments": {
+    "D1_architecture": {
+      "same_data": [
+        "ordinary_MLP",
+        "state_only_JEV",
+        "candidate_DeepSets",
+        "candidate_JEV"
+      ],
+      "status": "GATED"
+    },
+    "D2_supervision": {
+      "same_network": [
+        "one_step_correctness",
+        "native_H8",
+        "native_H16",
+        "native_H32"
+      ],
+      "status": "GATED"
+    },
+    "D3_actions": {
+      "comparisons": [
+        "binary",
+        "native_three_action",
+        "candidate_choice_verified_interface"
+      ],
+      "P05": "COMPLETE",
+      "direct_candidate_interface": "NOT_VERIFIED"
+    },
+    "D4_lifecycle_transfer": {
+      "comparisons": [
+        "MATCH_only",
+        "independent_typed_heads",
+        "shared_core"
+      ],
+      "status": "BLOCKED_UNTIL_ALL_QUESTION_GATES"
+    },
+    "D5_state_perturbation": {
+      "online_fields": [
+        "candidate_score_margin",
+        "history_count",
+        "memory_count",
+        "last_seen_gap",
+        "views_fraction"
+      ],
+      "status": "GATED"
+    },
+    "D6_counterfactual_advantage": {
+      "P05_identical_prefix": "COMPLETE",
+      "candidate_model": "GATED"
+    }
+  },
+  "prototype_implemented": false,
+  "candidate_training_started": false,
+  "Unified_trained": false,
+  "official_test_read": false,
+  "full24_authorized": false
+}
