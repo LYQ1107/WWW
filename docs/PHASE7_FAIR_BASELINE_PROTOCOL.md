@@ -78,6 +78,16 @@ latency, total wall time. Offline identity error duration uses a stable identity
 mapping for paired forks; sequence-level identity matching for full videos), never frame-wise remapping.
 Unknown/missed observations are separate; report frame units and censoring, not invented seconds.
 
+Offline metric clarification frozen before reading outcomes: full-run one-to-one identity matching
+is global across both cameras for identity-index retrieval. Report identity errors under that fixed
+mapping, plus temporal contamination under each predicted ID's first known observation anchor.
+The latter measures actual subsequent misuse of an established identity without relabelling it
+from future majority. Consecutive wrong observations form frame episodes per GT/camera;
+gaps and video ends are censored rather than filled with assumed errors. Birth fragmentation,
+unknown GT, unmatched identity labels and contamination remain separate. Paired native branches
+use their common prefix identity map and common offline born-ID convention; no branch-wise
+whole-run remapping can erase an intervention error.
+
 Architecture-support GO requires all contracts, nontrivial causal outcomes, full three-sequence
 positive HOTA and AssA vs both dynamic and MLP, pooled ≥.1 HOTA and ≥.2 AssA vs both, and
 consistent direction under an actually equal trigger budget. Three sequences support descriptive
