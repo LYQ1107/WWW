@@ -76,6 +76,8 @@ class GTRRCNN(CustomRCNN):
         candidate_enabled = bool(kwargs.pop('jev_candidate_enabled', False))
         candidate_name = str(kwargs.pop('jev_candidate_policy', 'gmt_compat'))
         candidate_weights = str(kwargs.pop('jev_candidate_scripted_model', ''))
+        if candidate_enabled and (not self.jev_enabled or self.jev_mode != 'off'):
+            raise ValueError('candidate values require MODEL.JEV.ENABLED=true and MODE=off for frozen lifecycle control')
         super().__init__(**kwargs)
         self.jev_candidate_policy = None
         self.jev_candidate_commit_observer = None
@@ -321,6 +323,14 @@ class GTRRCNN(CustomRCNN):
                 old_reids=old_reids.old_reids, trajectory_rng=self._jev_trajectory_rng,
                 view=int(view), frame=int(frame_index), first=bool(first),
                 candidate=getattr(self, '_jev_candidate_last', None))
+
+    def _candidate_initial_pairs(self, scores):
+        if getattr(self, 'jev_candidate_policy', None) is None:
+            return linear_sum_assignment((-scores).cpu())
+        # Invalid current edges must not reach the legacy scipy call before
+        # the opt-in value policy gets its finite legal mask.
+        pairs = constrained_hungarian(scores)
+        return ([r for r, c in pairs], [c for r, c in pairs])
 
     def _apply_jev_match_decisions(
         self,
@@ -721,6 +731,8 @@ class GTRRCNN(CustomRCNN):
                
 
     def sliding_inference(self, batched_inputs):
+        if getattr(self, 'jev_candidate_policy', None) is not None:
+            raise NotImplementedError('candidate values require the native sliding_inference_GMT entry')
         video_len = len(batched_inputs)
         instances = []
         id_count = 0
@@ -1002,7 +1014,7 @@ class GTRRCNN(CustomRCNN):
 
         traj_score = torch.mm(asso_nonk, id_inds) # n_k x M
 
-        match_i, match_j = linear_sum_assignment((- traj_score).cpu()) #
+        match_i, match_j = self._candidate_initial_pairs(traj_score) #
         track_ids = ids.new_full((n_k,), -1)
         for i, j in zip(match_i, match_j):
             thresh = legacy_acceptance_threshold(
@@ -1208,7 +1220,7 @@ class GTRRCNN(CustomRCNN):
 
         traj_score = torch.mm(asso_nonk, id_inds) # n_k x M
 
-        match_i, match_j = linear_sum_assignment((- traj_score).cpu()) #
+        match_i, match_j = self._candidate_initial_pairs(traj_score) #
         track_ids = ids.new_full((n_k,), -1)
         for i, j in zip(match_i, match_j):
             thresh = legacy_acceptance_threshold(

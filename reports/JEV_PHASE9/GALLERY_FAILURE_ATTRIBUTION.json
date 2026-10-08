@@ -1,0 +1,104 @@
+{
+  "all_existing_labels_and_negative_results_preserved": true,
+  "all_prefix_audit_sha256": "fd7967c97c0231a26e310671f84a1db65dec06993025961c20725c057c61e7fe",
+  "binding": {
+    "B2_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+    "CUDA_VISIBLE_DEVICES": null,
+    "Full24": false,
+    "candidate_production_sources": {
+      "gtr/modeling/jev_candidate_assignment.py": "269ef4f3ed11daf3311af2022b3fb32e4ee18ddf2d87bef38261098cf9c850fb",
+      "gtr/modeling/jev_candidate_features.py": "d3c1ad3ee38a34c8fad97415956686de8dd61b18afa227860d03f67aaf58de2f",
+      "gtr/modeling/jev_candidate_policy.py": "63cd704f54ebab05e09fae8629760c3e348c9d9a37a7463e601b839d6dd439dc"
+    },
+    "commit": "d8e717fb964d9c9e2147493c842480f47aec74bb",
+    "dirty": true,
+    "gtr_rcnn_sha256": "af1c53047590b908aca26f0738e5335923371ea45c905ab47b67214aeb4c8f14",
+    "heldout_sealed": true,
+    "official_TEST": false,
+    "sources": {
+      "reproduction_tools/audit_jev_phase9_gallery_failure.py": "ae66d8942c66fed200e2daa32b08febbff9eb33fa7815552d36698df1a80bdc1",
+      "reproduction_tools/capture_jev_phase9_native.py": "12ffd779257af0dbc11a9fa44b66953d1e721d0ba827541d9a33e15d52f33f15",
+      "reproduction_tools/check_jev_phase9_existing_choice.py": "d8d3f64273b6ef9ad111cb40337602f00fec159c1bd06fefaf389f4236242a48",
+      "reproduction_tools/check_jev_phase9_feature_bridge.py": "73078137976b83c9b9f51d4c1cdc0817eeda44c9274e7d8bacf7576436bc0a5d",
+      "reproduction_tools/check_jev_phase9_gallery_restoration.py": "6dddefebd7b8db1b4e71c529b5663c2e248afd2e637c757260829e01a1c580fe",
+      "reproduction_tools/check_jev_phase9_memory_representation.py": "faf30fdbf262a166049384a67dce3eb5b4c13bcd9764293347cca24521872de1",
+      "reproduction_tools/check_jev_phase9_production.py": "901d74fcf4c359cce12b3bb3987623bce002f75a30ee7543742bb43e279c78ff",
+      "reproduction_tools/finalize_jev_phase9_data.py": "b64100451a83c0b4bef1fcaeeda28fb5a76c2dd9458f87831a6169d8e390b70a",
+      "reproduction_tools/initialize_jev_phase9.py": "f7101906ecdebce643f13275220cbde1887600e764c0f6c1bf764c62b3e497df",
+      "reproduction_tools/jev_phase9_common.py": "577520ec2209af21acdcf92945228fe669555dfbcb7b0fce5a170a5800ffff54",
+      "reproduction_tools/jev_phase9_gallery_bridge.py": "d4e0b17d0ae4cb5f8c32dc89ef0c0756e7c54712a1dde2f75e026392dfdceb84",
+      "reproduction_tools/run_jev_phase9_causal_forks.py": "7c5f58ce7631b095f41093e7e1a4ca8e6d26e9b553473b283c77fb984eab6885",
+      "reproduction_tools/test_jev_phase9_candidate_native.py": "41320390c55f2cd5438a78aa138323d97117d835d7ee3c87b68b99b2fe2a96a6"
+    }
+  },
+  "example": {
+    "key": [
+      12,
+      851,
+      1
+    ],
+    "native_previous_commit_key": [
+      851,
+      0
+    ],
+    "snapshot_sha256": "16897057616f62f18d7401c6d326320a1bee1dea88c7d1299972ea817b354cca",
+    "track_comparison": {
+      "5": {
+        "missing_observation_count": 2,
+        "native_pre_MATCH_gallery_length": 1367,
+        "prior_bank_recoveries": [
+          {
+            "MATCH_first_action": "START_NEW",
+            "committed_ID": 5,
+            "key": [
+              12,
+              839,
+              1
+            ],
+            "row": 3,
+            "scope": "known identity recovered after unmatched MATCH, not a new monotonic birth"
+          }
+        ],
+        "replay_hits": 1367,
+        "replay_writes": 1365
+      }
+    }
+  },
+  "failed_birth_only_translation_prefixes": 94,
+  "formal_learning": "BLOCKED_DEPLOYMENT_CONTRACT",
+  "interpretation": "The first birth-vector fix passes one early train16 prefix, but is not a lossless bridge for all causal data. This is an observed input/state-contract gap, not evidence that every existing H32 label is numerically wrong. Full replay/deployed counterfactual equivalence after bank events remains unverified.",
+  "next_minimal_hypothesis": "Build native production prefix snapshots and H32 forks, or a fully proved state adapter including birth and reactivation writes; repeat identical predetermined intervention selections, preserve current results, then re-check native/label parity before fitting. Do not increase model size or open heldout.",
+  "offset_histogram": {
+    "1": 39296,
+    "2": 234,
+    "3": 6
+  },
+  "snapshots": 221,
+  "source_findings": [
+    {
+      "finding": "replay initial observation is not in memory writes; eligibility uses len>=bank_size, compensating first-observation offset for ordinary all-WRITE prefixes",
+      "functions": [
+        "seed_production_state_from_payload",
+        "CachedPerceptionMutableAssociationV2.step",
+        "_update_memory_eligibility"
+      ],
+      "path": "reproduction_tools/jev_counterfactual_v2.py"
+    },
+    {
+      "finding": "memory actions computed only for final_existing IDs before stale-bank recovery; successfully bank-reactivated rows may gain a hit without a corresponding memory write",
+      "function": "run_method Phase2 MEMORY",
+      "path": "reproduction_tools/run_early_pilot_tracking.py"
+    },
+    {
+      "finding": "birth initializes id_reid_dict; recovered existing ID proceeds through the native existing-ID memory-write branch after bank recovery",
+      "functions": [
+        "run_global_tracker_plus",
+        "memory_bank",
+        "_jev_memory_action"
+      ],
+      "path": "gtr/modeling/meta_arch/gtr_rcnn.py"
+    }
+  ],
+  "status": "CONFIRMED_BIRTH_PLUS_REACTIVATION_WRITE_REPRESENTATION_GAP",
+  "total_track_prefix_instances": 39536
+}

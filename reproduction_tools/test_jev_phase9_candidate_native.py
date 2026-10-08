@@ -49,6 +49,17 @@ class CandidateContracts(unittest.TestCase):
   v,n=CandidateValuePolicy('bidirectional').score(b);self.assertTrue(torch.isfinite(v).all());self.assertTrue(torch.equal(v,torch.zeros_like(v)))
  def test_shape_mismatch(self):
   with self.assertRaises(ValueError):solve([[1]],[0],[1],[[True,False]])
+ def test_production_proposal_handles_nonfinite_before_legacy_scipy(self):
+  from gtr.modeling.meta_arch.gtr_rcnn import GTRRCNN
+  tracker=object.__new__(GTRRCNN);torch.nn.Module.__init__(tracker)
+  tracker.jev_candidate_policy=CandidateValuePolicy('gmt_compat')
+  r,c=tracker._candidate_initial_pairs(torch.tensor([[float('nan'),1.],[float('inf'),2.]]))
+  self.assertTrue(all(torch.isfinite(torch.tensor([[float('nan'),1.],[float('inf'),2.]])[a,b])for a,b in zip(r,c)))
+ def test_single_camera_opt_in_fails_explicitly(self):
+  from gtr.modeling.meta_arch.gtr_rcnn import GTRRCNN
+  tracker=object.__new__(GTRRCNN);torch.nn.Module.__init__(tracker)
+  tracker.jev_candidate_policy=CandidateValuePolicy('gmt_values')
+  with self.assertRaises(NotImplementedError):tracker.sliding_inference([])
 if __name__=='__main__':
  suite=unittest.defaultTestLoader.loadTestsFromTestCase(CandidateContracts);r=unittest.TextTestRunner(verbosity=2).run(suite)
- save(REPORTS/'CANDIDATE_INTERFACE_TESTS.json',{'status':'PASS'if r.wasSuccessful()else'FAIL','tests':r.testsRun,'failures':len(r.failures),'errors':len(r.errors),'production_full_commit_parity':'PENDING','binding':binding()});sys.exit(0 if r.wasSuccessful()else 1)
+ save(REPORTS/'CANDIDATE_INTERFACE_TESTS.json',{'status':'PASS'if r.wasSuccessful()else'FAIL','tests':r.testsRun,'failures':len(r.failures),'errors':len(r.errors),'production_full_commit_parity':'NOT_MEASURED_BY_UNIT_SUITE_SEE_NATIVE_COMMIT_PARITY','binding':binding()});sys.exit(0 if r.wasSuccessful()else 1)
