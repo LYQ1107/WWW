@@ -1,0 +1,27 @@
+{
+  "budgets": [
+    500,
+    2000
+  ],
+  "fixed_selection_SHA256": "af2b850138391578a98770ce3792b7c568200548d5ba4cf6f805a80da9f8c3a5",
+  "heldout_not_read": true,
+  "if_objective_repair_is_adopted": "Predeclare before formal fitting for all architectures; retain original conditional CE as an equally budgeted additional supervision control, no architecture-only stronger objective.",
+  "no_formal_training_or_validation_architecture_selection_yet": true,
+  "original_conditional_CE_run_and_protocol_preserved": true,
+  "rank1_gate_unchanged": 0.95,
+  "reason": "Conditional known-only CE is mathematically invariant to unknown logits. Actual500-step known NLL is near zero while full legal argmax remains UNKNOWN; normalized inputs have no conflicting labels. Inspect known-edge BCE, a binary correctness objective with masked UNKNOWN and multiple valid aliases, before deciding whether an objective repair is justified.",
+  "same_optimizer": {
+    "AdamW_lr": 0.001,
+    "clip": 5,
+    "weight_decay": 0.0001
+  },
+  "same_real_selected_rows_and_group_weights": true,
+  "same_source_model_capacity_features_normalization_masks": true,
+  "status": "FROZEN_BEFORE_BOUNDED_BCE_OBJECTIVE_PROBE",
+  "three_models": [
+    "CandidateMLP",
+    "CandidateDeepSets",
+    "CandidateJEV"
+  ],
+  "unexecuted_unknown_GT_Q_not_negative": true
+}
