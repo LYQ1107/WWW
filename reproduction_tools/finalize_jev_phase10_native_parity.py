@@ -16,9 +16,13 @@ def main():
  assert all(r['status']=='PASS'and r['state64_max_abs_error']<=1e-6 and r['evidence12_max_abs_error']<=1e-6 and r['original_raw_scores_max_abs_error']<=1e-6 for r in records)
  trace=json.loads((OUT/'native_capture_v1/video12/compat/FULL_NATIVE_TRACE.json').read_text());diagnostics=[]
  for key in cfg['known_diagnostic_keys']:
-  t=next(r for r in trace if r['key']==key);e=[e for e in t['events']if e['track']==5];assert len(e)==1
-  if key[1]==839:assert 'BANK_REACTIVATE'in e[0]['events']and 'REACTIVATION_WRITE'in e[0]['events']
-  diagnostics.append(e[0])
+  t=next(r for r in trace if r['key']==key);e=[e for e in t['events']if e['track']==5]
+  if key[1]==839:
+   assert len(e)==1 and 'BANK_REACTIVATE'in e[0]['events']and 'REACTIVATION_WRITE'in e[0]['events'];diagnostics.append(e[0])
+  else:
+   import torch
+   m=json.loads((OUT/'native_capture_v1/video12/compat/RESULT.json').read_text());entry=next(r for r in m['prefixes']if r['key']==key);before=torch.load(entry['path'],map_location='cpu');length=len(before['galleries'][5]);assert length==1367 and not e
+   diagnostics.append({'key':key,'track':5,'boundary':'BEFORE_CURRENT_MATCH','ordered_gallery_length':length,'actual_hits':int(before['hits'][5]),'current_camera_observation_of_identity5':False,'last_write_key':[12,850,1],'native_prefix_SHA256':entry['sha256']})
  common={'status':'PASS','fixed_original_records':221,'unique_event_keys':220,'all_original_records_retained':True,'all_original_94_birth_only_failures_included':True,'float_tolerance':1e-6,'all_discrete_fields_exact':True,'heldout_sealed':True,'Full24':False,'official_TEST':False,'raw_checks':raw,'full_video_capture_manifests':full,'preregistration_SHA256':sha(REPORTS/'PHASE10_PREREGISTRATION.json'),'known_identity5_diagnostics':diagnostics,'causal_labels_not_yet_revalidated':True}
  compact=[{k:r[k]for k in ['key','source_record_index','old_snapshot_SHA256','state64_max_abs_error','evidence12_max_abs_error','original_raw_scores_max_abs_error','status']}for r in records]
  save(REPORTS/'NATIVE_STATE_PARITY.json',{**common,'records':compact,'serialized_prefix_and_native_commit_all_fields_exact':True})

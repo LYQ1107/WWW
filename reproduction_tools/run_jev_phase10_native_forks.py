@@ -18,13 +18,13 @@ def predictions(raw,evaluator,start_key,end_frame):
  return output
 
 def run(video,start,stop,diagnostic):
- protect();source=binding()
+ protect();torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True;source=binding()
  if not diagnostic:
   assert not source['dirty'];gate=json.loads((REPORTS/'NATIVE_STATE_PARITY.json').read_text());assert gate['status']=='PASS'and gate['fixed_original_records']==221
  plan=json.loads((REPORTS/'PHASE10_NATIVE_FORK_PLAN.json').read_text());chosen=[e for e in plan['events']if e['key'][0]==video][start:stop]
  if diagnostic:chosen=chosen[:1]
  cap=OUT/'native_capture_v1'/f'video{video:02d}'/'compat';capture=json.loads((cap/'RESULT.json').read_text());registry={tuple(r['key']):r for r in capture['prefixes']};factual={tuple(r['key']):r for r in json.loads((cap/'FULL_NATIVE_TRACE.json').read_text())}
- output=OUT/('native_fork_smoke_v1'if diagnostic else'native_forks_v3');output.mkdir(exist_ok=True)
+ output=OUT/('native_fork_smoke_'+os.environ.get('JEV_PHASE10_SMOKE_VERSION','v1')if diagnostic else'native_forks_v3');output.mkdir(exist_ok=True)
  from jev_phase7_offline import IdentityEvaluator
  from jev_phase8_utility import effects
  evaluator=IdentityEvaluator(video);model=build_model(video);allinputs=inputs(video,capture['frames']);results=[]
@@ -73,7 +73,7 @@ def run(video,start,stop,diagnostic):
     comparable=['counts','utility','utility_birth_zero','wrong_identity_duration_camera_frames']
     differs=any(b['horizons'][str(h)].get(f)!=old['horizons'][str(h)].get(f)for h in [8,16,32]for f in comparable)
     if differs:changed.append(tag)
-    if event['proposal_correct']is False and b['current_candidate_origin_qualified']and b['desired_candidate_committed']and b['immediate_anchored_correct']is True and b['H32_complete']and b['horizons']['32']['delta_utility']>0 and b['horizons']['32']['delta_utility_birth_zero']>0:verified.append(tag)
+    if event['proposal_correct']is False and control['immediate_anchored_correct']is False and b['current_candidate_origin_qualified']and b['desired_candidate_committed']and b['immediate_anchored_correct']is True and b['H32_complete']and b['horizons']['32']['delta_utility']>0 and b['horizons']['32']['delta_utility_birth_zero']>0:verified.append(tag)
   result={'status':'PASS','binding':source,'key':list(key),'row':row,'group':event['group'],'sampling_records':event['sampling_records'],'distribution':event['distribution'],'index':event['index'],'branches':branches,'CONTROL_KEEP_complete_state_PASS':True,'CONTROL_full_factual_state_events_RNG_PASS':True,'verified_candidate_corrective_branches':verified,'changed_old_horizon_branches':changed,'diagnostic_only':diagnostic};save(output/f'event{event["index"]:03d}'/'EVENT_RESULT.json',result);results.append(result)
   save(output/f'PROGRESS_video{video:02d}_{start:03d}_{stop or 999:03d}.json',{'status':'RUNNING','completed_events':len(results),'total_events':len(chosen),'last_index':event['index'],'diagnostic_only':diagnostic})
  save(output/f'PROGRESS_video{video:02d}_{start:03d}_{stop or 999:03d}.json',{'status':'COMPLETE','completed_events':len(results),'total_events':len(chosen),'diagnostic_only':diagnostic})

@@ -1,4 +1,4 @@
-# Phase X native state contract — qualification pending
+# Phase X native state contract — 221/221 current-prefix parity PASS
 
 The new branch preserves Phase IX STOP_BLOCKED_DEPLOYMENT_CONTRACT. Frozen PHASE10_PREREGISTRATION.json retains all 221 original snapshot records (220 unique keys), original 162 audited events, group labels, probabilities and branches. The known video12/839/1 and 851/1 diagnostic pair is added solely to inspect the observed failure, never to replace a gate event.
 
@@ -6,7 +6,7 @@ The recorder saves actual production state **before current get_asso and MATCH**
 
 The repaired replay is NativeStateForkAdapter invoking the **actual resumed sliding_inference_GMT** and original run_first_tracker_plus/run_global_tracker_plus/memory_bank commit kernels. The old research memory mirror is preserved for comparison and is no longer treated as the production training gallery. Recovery resumes within a camera/frame boundary, restores bank and RNG, skips already committed cameras without duplicating perception or birth, and recomputes all later get_asso calls in mutated state. GMT OFF default calls use native_prefix=None and retain their original loop, scoring, bank and postprocessing behavior.
 
-Short production smoke at video12/3/1: 9 subsequent commits and full raw Instances match continuous execution, including actual gallery/bank/hits/counter/event ledger/RNG. This is a diagnostic only. Canonical acceptance requires every frozen source record, exact IDs/masks/events, float inputs <=1e-6, current native state64/evidence12 and complete resumed future state proof. The 94 prior failing prefixes cannot be called repaired until that acceptance is complete.
+Short production smoke at video12/3/1: 9 subsequent commits and full raw Instances match continuous execution, including actual gallery/bank/hits/counter/event ledger/RNG. This is a diagnostic only. Canonical acceptance requires every frozen source record, exact IDs/masks/events, float inputs <=1e-6, current native state64/evidence12 and complete resumed future state proof. All 221 frozen source records now pass canonical current-prefix checks, including all 94 birth-only failures. NATIVE_STATE_PARITY.json and GALLERY_PARITY.json bind all seven independently captured full source videos and all per-record checks. H32 future causal validity remains a separate pending gate.
 
 Main learning will use the same fixed NEW/birth policy for all three networks; no learnable NEW-positive labels are invented. Scientific source runs are clean pinned execution worktrees; development edits never alter a live canonical source tree. Large native states stay in WWW_jev_phase10_runtime/20261008_v1; Git contains only code, protocol, compact reports and hashes. Partial manifests/progress and immutable snapshots support resume.
 

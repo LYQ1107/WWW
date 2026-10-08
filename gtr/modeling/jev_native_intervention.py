@@ -24,7 +24,7 @@ def apply_native_intervention(model, spec, original, scores, ids, match_i,
     if tuple(batch.candidate_ids) != expected:
         raise ValueError('frozen runtime candidate support changed')
     first_pairs = {int(r): int(c) for r, c in zip(match_i, match_j)}
-    if tag in ('CONTROL', 'KEEP_FACTUAL', 'KEEP_ACCEPT'):
+    if tag == 'CONTROL':
         model._jev_native_intervention_last = {
             'tag': tag, 'native_existing_ids': list(packet['assignment'].existing_ids),
             'legal_current_support_exact': True, 'second_validation': []}
@@ -52,7 +52,7 @@ def apply_native_intervention(model, spec, original, scores, ids, match_i,
         if target not in first_pairs or len(expected) < 2:
             raise ValueError('REASSOCIATE is not legal at this boundary')
         actions[target] = 'REASSOCIATE'
-    elif submitted is None:
+    elif submitted is None and tag not in ('KEEP_FACTUAL', 'KEEP_ACCEPT'):
         raise ValueError('candidate branch requires an explicit legal assignment')
 
     validations = []

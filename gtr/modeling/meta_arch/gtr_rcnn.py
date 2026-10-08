@@ -366,8 +366,8 @@ class GTRRCNN(CustomRCNN):
                 tracker_state=tracker_state, galleries=candidate_galleries,
                 observations=candidate_observations, view_fractions=candidate_view_fractions)
             intervention = getattr(self, 'jev_native_match_override', None)
-            key = (int(self._jev_context['video_id']), int(frame_index), int(view))
-            if intervention is not None and tuple(intervention['key']) == key:
+            if intervention is not None and tuple(intervention['key']) == (
+                    int(self._jev_context['video_id']), int(frame_index), int(view)):
                 from ..jev_native_intervention import apply_native_intervention
                 return apply_native_intervention(self, intervention, track_ids,
                     traj_score, unique_ids, match_i, match_j, threshold,

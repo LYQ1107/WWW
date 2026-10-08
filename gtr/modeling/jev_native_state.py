@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 import random
+import weakref
 from pathlib import Path
 import numpy as np
 import torch
@@ -31,13 +32,22 @@ def pack(value):
     return value
 
 
-def fingerprint(value):
+def fingerprint(value, *, tensor_cache=None):
     """Content hash includes every Instances field and ordered container."""
     h = hashlib.sha256()
     def visit(x):
         if torch.is_tensor(x):
-            t = x.detach().cpu().contiguous()
-            h.update(str((str(t.dtype), list(t.shape))).encode()); h.update(t.numpy().tobytes())
+            signature = (x._version, str(x.dtype), tuple(x.shape), tuple(x.stride()))
+            cached = None if tensor_cache is None else tensor_cache.get(id(x))
+            if cached is not None and cached[0]() is x and cached[1] == signature:
+                header, payload = cached[2:]
+            else:
+                t = x.detach().cpu().contiguous()
+                header = str((str(t.dtype), list(t.shape))).encode()
+                payload = t.numpy().tobytes()
+                if tensor_cache is not None:
+                    tensor_cache[id(x)] = (weakref.ref(x), signature, header, payload)
+            h.update(header); h.update(payload)
         elif isinstance(x, np.ndarray):
             h.update(str((str(x.dtype), list(x.shape))).encode()); h.update(x.tobytes())
         elif isinstance(x, dict):
@@ -110,15 +120,15 @@ class NativeProductionPrefixRecorder:
         self.resume = resume
         self.callback = callback; self.current = None; self.saved = {}; self.trace = []
         self.event_ledger = []
+        self.tensor_cache = {}
 
     def before(self, **values):
         key = (int(self.model._jev_context['video_id']), int(values['frame']), int(values['view']))
         start = 0 if values['first'] else max(0, values['frame'] + 1 - self.model.test_len) * values.get('view_num', 2)
         end = len(values['instances']) if values['first'] else values['frame'] * 2 + values['view']
-        active = set()
-        for instance in values['instances'][start:end]:
-            if instance.has('track_ids'):
-                active.update(map(int, instance.track_ids.detach().cpu().tolist()))
+        ids = [instance.track_ids for instance in values['instances'][start:end]
+               if instance.has('track_ids')]
+        active = set(map(int, torch.cat(ids).detach().cpu().tolist())) if ids else set()
         self.current = {'key': key, 'id_count': values['id_count'], 'active_ids': active,
                         'lengths': {int(t): len(g) for t, g in values['galleries'].items()}}
         if key in self.wanted:
@@ -139,8 +149,10 @@ class NativeProductionPrefixRecorder:
         before = self.current
         assert before is not None and before['key'] == key
         actual = values['instances'][-1]
+        actual_ids = actual.track_ids.detach().cpu().tolist()
+        actual_vectors = actual.reid_features.detach().cpu()
         events = []
-        for row, track in enumerate(actual.track_ids.detach().cpu().tolist()):
+        for row, track in enumerate(actual_ids):
             track = int(track); before_len = before['lengths'].get(track, 0)
             after_len = len(values['galleries'][track])
             if track > before['id_count']:
@@ -153,14 +165,18 @@ class NativeProductionPrefixRecorder:
                            'events': actions, 'gallery_before': before_len,
                            'gallery_after': after_len,
                            'vector_source': {'cache_key': list(key), 'row': row},
-                           'actual_vector_SHA256': fingerprint(actual.reid_features[row]),
+                           'actual_vector_SHA256': fingerprint(actual_vectors[row]),
                            'actual_hits': int(values['hits'][track])})
         ledger_sha = fingerprint(events)
-        row = {'key': list(key), 'ids': actual.track_ids.detach().cpu().tolist(),
+        row = {'key': list(key), 'ids': actual_ids,
                'id_count': int(values['id_count']), 'event_SHA256': ledger_sha,
-               'full_native_commit_SHA256': fingerprint(dict(values, trajectory_rng_state=rng.getstate(), trajectory_rng_draws=rng._trajectory_draws)),
+               'full_native_commit_SHA256': fingerprint(dict(values, trajectory_rng_state=rng.getstate(), trajectory_rng_draws=rng._trajectory_draws), tensor_cache=self.tensor_cache),
                'events': events}
         self.trace.append(row)
+        # Replaced Gallery tensors need no retained payload. Weak references
+        # also prevent Python object-ID reuse from yielding a false cache hit.
+        if len(self.trace) % 16 == 0:
+            self.tensor_cache = {k: v for k, v in self.tensor_cache.items() if v[0]() is not None}
         if key in self.wanted:
             packet = None if candidate is None else {
                 'candidate_ids': candidate['candidate_ids'],
