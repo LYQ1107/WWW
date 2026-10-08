@@ -11,8 +11,20 @@ def main():
        'full_deployed_candidate_parity':'NOT_VERIFIED','no_GT_in_actor':True,'heldout_videos_read':False,'official_TEST_read':False,'Full24_started':False}
     packets=[];all_native_uniqueness=True
     for v in pr['train_videos']+pr['validation_videos']:
-        directory=OUT/'corrective_forks_v1'/f'video{v:02d}';path=directory/'FORK_RESULT.json'
-        x=json.loads(path.read_text());assert x['status']=='COMPLETE'
+        directory=OUT/'corrective_forks_v1'/f'video{v:02d}'
+        original=directory/('FORK_RESULT.json'if (directory/'FORK_RESULT.json').exists()else'FORK_RESULT.partial.json')
+        origins=[original]if original.exists()else[]
+        shards=sorted((OUT/'corrective_forks_v2'/f'video{v:02d}').glob('shard*'))
+        assert all((p/'FORK_RESULT.json').exists()for p in shards),'unfinished shard'
+        origins += [p/'FORK_RESULT.json'for p in shards]
+        events=[];bindings=[]
+        for origin in origins:
+            item=json.loads(origin.read_text());events.extend(item['events']);bindings.extend([item['binding']]if 'binding'in item else [e['binding']for e in item['events']])
+        expected_manifest=json.loads((OUT/'opportunity_scan_v1'/f'video{v:02d}'/'SCAN_RESULT.json').read_text())
+        wanted={tuple(r['key'])+(row,)for r in expected_manifest['bounded_snapshots']for row in r['selected_rows']}
+        assert len(events)==len(wanted)and {tuple(e['key'])+(e['row'],)for e in events}==wanted,'missing or duplicate preregistered cases'
+        x={'status':'COMPLETE_ALL_PREREGISTERED_CASES','events':events,'binding':bindings,'source_results':[{'path':str(p),'sha256':sha(p)}for p in origins]}
+        path=OUT/'corrective_forks_merged'/f'video{v:02d}'/'MERGED_FORK_RESULT.json';save(path,x)
         scan_dir=OUT/'opportunity_scan_v1'/f'video{v:02d}';m=json.loads((scan_dir/'SCAN_RESULT.json').read_text())
         groups={tuple(e['key'])+(e['row'],):e['group']for e in json.loads((scan_dir/'CONFLICT_GROUP_INDEX.json').read_text())}
         c=Counter();cg=set();verified=[];deltas=defaultdict(list);lat=[]
@@ -21,10 +33,10 @@ def main():
             c['CONTROL_KEEP_full_field_parity_PASS']+=e['CONTROL_KEEP_full_field_parity'];c['CONTROL_factual_ID_parity_PASS']+=e['CONTROL_factual_all_committed_ids_parity']
             c['verified_corrective_events']+=bool(e['verified_corrective_branches']);cg.add(group)
             if e['verified_corrective_branches']:verified.append(group)
-            compact={'key':e['key'],'row':row,'role':'train'if v in pr['train_videos']else'validation','conflict_group':group,'snapshot_sha256':e['snapshot_sha256'],
+            compact={'key':e['key'],'row':row,'role':'train'if v in pr['train_videos']else'validation','conflict_group':group,'snapshot_sha256':e['snapshot_sha256'],'run_binding':e['binding'],
                 'offline_GT_metadata':e['offline_GT'],'correct_candidate_ID_metadata':e['correct_candidate_ids'],'verified_branches':e['verified_corrective_branches'],'branches':{}}
             for tag,b in e['branches'].items():
-                root=directory/f'snapshot{m["bounded_snapshots"].index(next(s for s in m["bounded_snapshots"]if tuple(s["key"])==key)):03d}_row{row:03d}'/tag
+                root=(Path(e['artifact_root'])if 'artifact_root'in e else directory/f'snapshot{m["bounded_snapshots"].index(next(s for s in m["bounded_snapshots"]if tuple(s["key"])==key)):03d}_row{row:03d}')/tag
                 trace=json.loads((root/'COMPLETE_STATE_TRACE.json').read_text())
                 unique=all(len(t['ids'])==len(set(t['ids'].values()))for t in trace);all_native_uniqueness &= unique
                 lat.append(b['elapsed_seconds']);c['branches']+=1;c[f'{tag}_immediate_correct']+=b['immediate_anchored_correct']
@@ -37,7 +49,7 @@ def main():
                     if 'delta_utility'in u:deltas[f'{tag}_H{h}'].append(u['delta_utility'])
                 compact['branches'][tag]={'committed_ID_metadata':b['actual_committed_id'],'immediate_anchored_correct':b['immediate_anchored_correct'],
                     'desired_candidate_committed':b['desired_candidate_committed'],'H32_complete':b['H32_complete'],'all_camera_payload_IDs_unique':unique,
-                    'horizons':horizons,'prediction_sha256':b['prediction_sha256'],'complete_state_trace_sha256':b['post_state_trace_sha256'],
+                    'horizons':horizons,'prediction_sha256':b['prediction_sha256'],'complete_state_trace_sha256':b['post_state_trace_sha256'],'complete_field_digest_scope':b.get('complete_field_digest_scope','EVERY_PAYLOAD'),
                     'native_MATCH_operator_scope':b['native'].get('scope','actual production triage MATCH + replay commit')if b['native']else'original OFF transport',
                     'raw_score_tensor_reused':b['native'].get('raw_score_tensor_reused',True)if b['native']else True}
                 for name in('EFFECTS.json','COMPLETE_STATE_TRACE.json','tracking_predictions/jev.json','tracking_decisions/jev.json'):
@@ -60,8 +72,8 @@ def main():
             'selected_weight_Kish_ESS':sum(weights)**2/sum(w*w for w in weights),'delta_summaries':{tag:{'events':len(a),'sum':sum(a),'median':statistics.median(a),'positive':sum(z>0 for z in a),'negative':sum(z<0 for z in a),'tie':sum(z==0 for z in a)}for tag,a in deltas.items()},
             'rollout_elapsed_seconds_sum':sum(lat),'elapsed_scope':'complete H32 replay + complete-field fingerprint/evaluation; not online policy latency',
             'run_binding':x['binding'],'source_result_sha256':sha(path)}
-        for name in('FORK_RESULT.json','START_MANIFEST.json'):
-            p=directory/name;report['raw_manifest'].append({'path':str(p),'bytes':p.stat().st_size,'sha256':sha(p),'uploaded_payload':False})
+        for p in origins+[path]+[p.parent/'START_MANIFEST.json'for p in origins if (p.parent/'START_MANIFEST.json').exists()]:
+            report['raw_manifest'].append({'path':str(p),'bytes':p.stat().st_size,'sha256':sha(p),'uploaded_payload':False})
     for role in('train','validation'):
         vs=[x for x in report['videos'].values()if x['role']==role]
         report[role]={'videos':len(vs),'scene_family_units':2,'audited_events':sum(x['counts']['audited_events']for x in vs),
@@ -187,6 +199,8 @@ The frozen formal gate requires50train/20validation verified corrections, video 
 P-1 inventoried656 checkpoint/state files totalling37.8GiB. No file met the safe orphan proof; zero deletion was executed. All historical negative experiments and B2 were retained. A separate small worktree avoids copying the older giant evidence directories; raw Phase VIII evidence is in the separate/home runtime. Exact dependency/hash/process guards, manifests and storage reports are published.
 
 The first-two-consistent historical identity anchor was amended before reading new availability outcomes. It never renames confirmed IDs after a wrong write. Original strict audits remain intact; all four new train videos and diagnostic07 have byte-identical v0/v1 factual predictions. Unknown anchors and multiple predicted-ID aliases remain explicit. Twenty-eight events on old diagnostic07 versus one strict-purity event exposed the original audit's contamination censorship, without serving as new independent evaluation.
+
+Completed v1 cases (including negative cases) were retained. Remaining cases used disjoint chronological snapshot shards; CONTROL/KEEP complete fields are checked every payload, while other interventions retain per-payload IDs/RNG and complete-field fingerprints at the current key and H8/H16/H32. This read-only instrumentation/scheduling optimization does not change selection, native actions, scores or utility. Incomplete v1 artifacts and the explicit stop manifest remain local. Independent old-video replay checks observer equivalence.
 
 Each bounded event uses identical full initial state, RNG, raw GMT scores and real candidate set. CONTROL and explicit factual ACCEPT match every complete-state field and all committed identities throughout the window; CONTROL matches the full factual native stream. R invokes the unchanged production constrained Hungarian and second validation. Direct candidate branches call the real production GTR MATCH helper and then actually mutate the native replay state. NEW vetoes only the current selected row's stale-bank recovery; future MATCH/MEMORY/REACT continue live GMT OFF. Up to two real correct aliases and available joint-compatible cases are retained. No H32 expansion of the whole population occurred.
 
