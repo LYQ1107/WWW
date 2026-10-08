@@ -49,11 +49,24 @@ def collect_and_fork(video):
         bin_id=min(3,int(4*key[1]/(final_frame+1)))
         if eligible and per_bin[bin_id]<4:
             margin,row,decision=min(eligible,key=lambda x:(x[0],x[1]));index=len(captures)
+            from gtr.modeling.jev_state import count_track_history
+            candidate_evidence=[]
+            proposed_col=mechanism['initial_pairs'].get(row)
+            for col,track in enumerate(mechanism['track_ids']):
+                metadata=lab.metadata.get(track,{})
+                prototype=state.track_embeddings.get(track);observation=payload['reid_features'][row]
+                cosine=float(torch.nn.functional.cosine_similarity(observation.reshape(1,-1),prototype.reshape(1,-1)))if prototype is not None else 0.
+                candidate_evidence.append([mechanism['scores'][row][col],
+                    mechanism['scores'][row][col]-(mechanism['scores'][row][proposed_col]if proposed_col is not None else 0.),
+                    float(col==proposed_col),float(sum(c==col for rr,c in mechanism['initial_pairs'].items()if rr!=row)),
+                    float(count_track_history(state.association_history,track)),float(len(state.memory.get(track,[]))),
+                    float(max(0,key[1]-metadata.get('last_seen',key[1]))),len(metadata.get('views',[]))/2.,
+                    float(track in state.active_ids),float(track in state.stale_ids),cosine,float(prototype is not None)])
             snapshot={'key':key,'row':row,'state':state.clone(),'metadata':copy.deepcopy(lab.metadata),
                 'fingerprint':lab.state_fingerprint(state,lab.metadata),'complete_state_fingerprint':complete_digest(state,lab.metadata),'mechanism':copy.deepcopy(mechanism),
                 'decision':copy.deepcopy(decision),'bin':bin_id,'population_rows':rows,
                 'detection_feature':payload['reid_features'][row].tolist(),'detection_score':float(payload['detection_scores'][row]),
-                'detection_box':payload['pred_boxes'][row].tolist()}
+                'detection_box':payload['pred_boxes'][row].tolist(),'candidate_evidence':candidate_evidence}
             path=root/'snapshots'/f'MATCH_{index:03d}.pth';path.parent.mkdir(exist_ok=True);torch.save(snapshot,path)
             captures.append(path);per_bin[bin_id]+=1
             # Two genuine overlapping row competitions, deterministic and GT-free.
@@ -136,7 +149,7 @@ def collect_and_fork(video):
             'frame':key[1],'camera':key[2],'detection_index':row,'question':'MATCH_DECISION','state_fingerprint':snapshot['fingerprint'],'complete_state_fingerprint':snapshot['complete_state_fingerprint'],
             'snapshot_sha256':sha(path),'online':{'state_features':snapshot['decision']['feature_vector'],
             'detection_feature':snapshot['detection_feature'],'detection_score':snapshot['detection_score'],'detection_box':snapshot['detection_box'],
-            'candidate_ids':candidates,'candidate_scores':snapshot['mechanism']['scores'][row],
+            'candidate_ids':candidates,'candidate_scores':snapshot['mechanism']['scores'][row],'candidate_evidence':snapshot['candidate_evidence'],
             'proposed_column':proposed,'full_score_matrix':snapshot['mechanism']['scores'],
             'proposal_pairs':snapshot['mechanism']['initial_pairs'],'legal_actions':[A,R,N],'factual_action':factual_action},
             'offline_only':{'GT':target,'correct_candidate_ids':correct,'candidate_miss':target is not None and not correct and all(t in mapping for t in candidates),
