@@ -29,12 +29,15 @@ def main():
         groups={tuple(e['key'])+(e['row'],):e['group']for e in json.loads((scan_dir/'CONFLICT_GROUP_INDEX.json').read_text())}
         c=Counter();cg=set();verified=[];deltas=defaultdict(list);lat=[]
         for e in x['events']:
+            e=copy.deepcopy(e)
+            original_qualifiers=list(e['verified_corrective_branches'])
+            e['verified_corrective_branches']=[tag for tag in original_qualifiers if e['branches'][tag]['desired_candidate_committed'] and e['branches'][tag]['native'] is not None and e['branches'][tag]['native']['native_existing_ids'][e['row']]==e['branches'][tag]['actual_committed_id']]
             key=tuple(e['key']);row=e['row'];group=groups[key+(row,)];c['audited_events']+=1
             c['CONTROL_KEEP_full_field_parity_PASS']+=e['CONTROL_KEEP_full_field_parity'];c['CONTROL_factual_ID_parity_PASS']+=e['CONTROL_factual_all_committed_ids_parity']
             c['verified_corrective_events']+=bool(e['verified_corrective_branches']);cg.add(group)
             if e['verified_corrective_branches']:verified.append(group)
             compact={'key':e['key'],'row':row,'role':'train'if v in pr['train_videos']else'validation','conflict_group':group,'snapshot_sha256':e['snapshot_sha256'],'run_binding':e['binding'],
-                'offline_GT_metadata':e['offline_GT'],'correct_candidate_ID_metadata':e['correct_candidate_ids'],'verified_branches':e['verified_corrective_branches'],'branches':{}}
+                'offline_GT_metadata':e['offline_GT'],'correct_candidate_ID_metadata':e['correct_candidate_ids'],'verified_branches':e['verified_corrective_branches'],'original_native_lifecycle_positive_branches':original_qualifiers,'branches':{}}
             for tag,b in e['branches'].items():
                 root=(Path(e['artifact_root'])if 'artifact_root'in e else directory/f'snapshot{m["bounded_snapshots"].index(next(s for s in m["bounded_snapshots"]if tuple(s["key"])==key)):03d}_row{row:03d}')/tag
                 trace=json.loads((root/'COMPLETE_STATE_TRACE.json').read_text())
@@ -48,7 +51,7 @@ def main():
                         if k in u:horizons[h][k]=u[k]
                     if 'delta_utility'in u:deltas[f'{tag}_H{h}'].append(u['delta_utility'])
                 compact['branches'][tag]={'committed_ID_metadata':b['actual_committed_id'],'immediate_anchored_correct':b['immediate_anchored_correct'],
-                    'desired_candidate_committed':b['desired_candidate_committed'],'H32_complete':b['H32_complete'],'all_camera_payload_IDs_unique':unique,
+                    'desired_candidate_committed':b['desired_candidate_committed'],'native_MATCH_existing_ID_before_bank_recovery':b['native']['native_existing_ids'][row]if b['native']is not None else None,'current_MATCH_candidate_origin_qualified':tag in e['verified_corrective_branches'],'H32_complete':b['H32_complete'],'all_camera_payload_IDs_unique':unique,
                     'horizons':horizons,'prediction_sha256':b['prediction_sha256'],'complete_state_trace_sha256':b['post_state_trace_sha256'],'complete_field_digest_scope':b.get('complete_field_digest_scope','EVERY_PAYLOAD'),
                     'native_MATCH_operator_scope':b['native'].get('scope','actual production triage MATCH + replay commit')if b['native']else'original OFF transport',
                     'raw_score_tensor_reused':b['native'].get('raw_score_tensor_reused',True)if b['native']else True}
@@ -94,7 +97,7 @@ def main():
         if p['verified_corrective']:
             scores=[f[0]for f in p['inputs']['candidate12']]
             for tag,b in p['offline_labels']['executed_global_action_effects'].items():
-                if b['immediate_anchored_correct'] and b['horizons']['32'].get('delta_utility',0)>0 and b['horizons']['32'].get('delta_utility_birth_zero',0)>0:
+                if b['desired_candidate_committed'] and b['immediate_anchored_correct'] and b['horizons']['32'].get('delta_utility',0)>0 and b['horizons']['32'].get('delta_utility_birth_zero',0)>0:
                     i=p['metadata_only']['candidate_IDs'].index(b['committed_ID_metadata']);rank_support.add(1+sum(z>scores[i]for z in scores))
     gate['multiple_distinct_candidate_rank_choices']=len(rank_support)>=2
     report['formal_data_gate']={'checks':gate,'pass':all(gate.values()),'candidate_rank_support':sorted(rank_support),
@@ -195,6 +198,8 @@ Before fitting, independently implement and test the shared model-values submit 
 |---|---:|---:|---:|---:|---:|---:|
 | TRAIN12/13/14/16 | 122211 | 2278 | {t['audited_events']} | {t['verified_events']} | {t['verified_conflict_groups']} | {t['contributing_videos']} |
 | Validation17/18/19 | 38887 | 118 | {v['audited_events']} | {v['verified_events']} | {v['verified_conflict_groups']} | {v['contributing_videos']} |
+
+Native triage can sometimes reject a MATCH assignment and subsequently recover a correct identity from the separate stale bank. Such lifecycle-positive effects are preserved, but an identity absent from the current MATCH candidates is not a current-candidate submission or candidate-index label. Final eligibility additionally checks desired-candidate membership and equality between the production MATCH existing ID and the actually committed ID, preventing automatic bank recovery from being attributed to direct MATCH selection.
 
 The frozen formal gate requires50train/20validation verified corrections, video and independent-group support, full-state control parity, real legal commits and positive H32 benefit even with zero birth penalty. The validation audit selected13 representative events before future benefit inspection. Its failure is a **bound of this sampling protocol**, not proof that the complete118-event availability pool lacks20 useful cases. Consecutive events are grouped, not independent replications. Four train videos and three validation videos span only two scene families each. No statistical architecture-superiority claim is possible.
 
