@@ -1,0 +1,497 @@
+{
+  "WWW_base": "4190b803ed83bde1a44a015d15d03ceff68e03d0",
+  "no_architecture_performance_inference": true,
+  "reference_commits_exact_for_first_three": true,
+  "repositories": [
+    {
+      "WWW_applicability_and_boundary": "Baseline engineering may improve association without JEV. Changing perception, Kalman state or memory EMA here would confound frozen-MATCH comparisons; only separately identified score controls fit this experiment.",
+      "commit": "251985436d6712aaf682aaaf5f71edb4987224bd",
+      "commit_time": "2022-10-30T15:12:42Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 16778,
+          "path": "tracker/bot_sort.py",
+          "sha256": "ba6dd32ad4b96ee49d6f70654159269bd45ce15fd0fe5007f3a1b81bc257edf0",
+          "url": "https://github.com/NirAharon/BoT-SORT/blob/251985436d6712aaf682aaaf5f71edb4987224bd/tracker/bot_sort.py"
+        },
+        {
+          "bytes": 6435,
+          "path": "tracker/matching.py",
+          "sha256": "020b2215c20467b31f7d8a977a2f557b8d1838f8baa5a5be54c0b8d14bbee4e1",
+          "url": "https://github.com/NirAharon/BoT-SORT/blob/251985436d6712aaf682aaaf5f71edb4987224bd/tracker/matching.py"
+        },
+        {
+          "bytes": 1067,
+          "path": "LICENSE",
+          "sha256": "12a15474ca15cec568da311e6cd89e593e3cd2bb5b790e75b90e1608306a3a5f",
+          "url": "https://github.com/NirAharon/BoT-SORT/blob/251985436d6712aaf682aaaf5f71edb4987224bd/LICENSE"
+        },
+        {
+          "bytes": 11347,
+          "path": "fast_reid/LICENSE",
+          "sha256": "14a8a9a670fa989f040bc7a5d964fa7a478ffd7cb44407a9061303240d9e21df",
+          "url": "https://github.com/NirAharon/BoT-SORT/blob/251985436d6712aaf682aaaf5f71edb4987224bd/fast_reid/LICENSE"
+        },
+        {
+          "bytes": 1073,
+          "path": "fast_reid/projects/FastRT/third_party/cnpy/LICENSE",
+          "sha256": "1ff6fa94ad29d941ceb3bdd5ebfb260ddba4c3e962c50fb7a66c899e769de1ff",
+          "url": "https://github.com/NirAharon/BoT-SORT/blob/251985436d6712aaf682aaaf5f71edb4987224bd/fast_reid/projects/FastRT/third_party/cnpy/LICENSE"
+        },
+        {
+          "bytes": 35149,
+          "path": "yolov7/LICENSE.md",
+          "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+          "url": "https://github.com/NirAharon/BoT-SORT/blob/251985436d6712aaf682aaaf5f71edb4987224bd/yolov7/LICENSE.md"
+        }
+      ],
+      "function_level_findings": "STrack.update_features normalizes current feature and EMA smoothed feature (alpha=.9). BoTSORT.update first combines tracked/lost pools with high-confidence detections, motion compensation and gated appearance/IoU minimum; second associates unmatched tracked tracks with actual low-confidence detections using IoU. matching.embedding_distance uses cosine, fuse_motion gates Mahalanobis then blends, fuse_score multiplies IoU similarity by confidence.",
+      "license_identification": "MIT (root); bundled dependencies have separate licenses",
+      "license_paths": [
+        "LICENSE",
+        "fast_reid/LICENSE",
+        "fast_reid/projects/FastRT/third_party/cnpy/LICENSE",
+        "yolov7/LICENSE.md"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/BoT-SORT",
+      "missing_requested_paths": [],
+      "repository": "NirAharon/BoT-SORT",
+      "requested_ref": "HEAD",
+      "retrieved_utc": "2026-10-08T12:39:23Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    },
+    {
+      "WWW_applicability_and_boundary": "Context is learned over all current detections/tracklets and past temporal evidence. Borrow difficult-stratum design and empty-set safety, not its GT/gallery samplers verbatim. Our proposed difference is controlled actual-state intervention supervision of delayed externalities; no measured architectural advantage yet.",
+      "commit": "46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2",
+      "commit_time": "2025-07-12T13:29:13Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 2209,
+          "path": "cameltrack/architecture/gaffe.py",
+          "sha256": "fad8bef556ad55eb47515026074297508ed495cbeedcdea48d5bed757b12cc26",
+          "url": "https://github.com/TrackingLaboratory/CAMELTrack/blob/46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2/cameltrack/architecture/gaffe.py"
+        },
+        {
+          "bytes": 5022,
+          "path": "cameltrack/architecture/temporal_encoder.py",
+          "sha256": "c28a9c9abcead128e2c45003dcc836bf0aa001d215c4bb8bcb54c8555c996293",
+          "url": "https://github.com/TrackingLaboratory/CAMELTrack/blob/46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2/cameltrack/architecture/temporal_encoder.py"
+        },
+        {
+          "bytes": 16822,
+          "path": "cameltrack/camel.py",
+          "sha256": "d2a6139ac93f057fe8b6909d103f2d363ff7e3c67c853846a5d9d2c15dd7fed2",
+          "url": "https://github.com/TrackingLaboratory/CAMELTrack/blob/46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2/cameltrack/camel.py"
+        },
+        {
+          "bytes": 31013,
+          "path": "cameltrack/train/dataset.py",
+          "sha256": "ea5cae7fe66fe6739fa5e4e8a8e1c05dbc72a126741514e9849f6a42f7fcc034",
+          "url": "https://github.com/TrackingLaboratory/CAMELTrack/blob/46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2/cameltrack/train/dataset.py"
+        },
+        {
+          "bytes": 14258,
+          "path": "cameltrack/train/sampler.py",
+          "sha256": "ad0fcdd89228a148f01a2956a8c267c9e56ac432e796ba5bbd48a41719cb9d36",
+          "url": "https://github.com/TrackingLaboratory/CAMELTrack/blob/46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2/cameltrack/train/sampler.py"
+        },
+        {
+          "bytes": 9823,
+          "path": "cameltrack/utils/assignment_strats.py",
+          "sha256": "7772c3db7c05273cfffd75711a1d916c0733d87f72d70031c0e01f0ff72dfcf0",
+          "url": "https://github.com/TrackingLaboratory/CAMELTrack/blob/46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2/cameltrack/utils/assignment_strats.py"
+        },
+        {
+          "bytes": 11357,
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "url": "https://github.com/TrackingLaboratory/CAMELTrack/blob/46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2/LICENSE"
+        }
+      ],
+      "function_level_findings": "GAFFE.forward concatenates detection, tracklet and always-valid cls tokens; inverts valid masks for Transformer padding. TemporalEncoder.forward aggregates past feature sequences with age embeddings and cls token, separately from group interactions. CAMEL.forward tokenizes, merges temporally, applies GAFFE, then similarity; compute_loss uses identity-supervised embedding loss, not future causal value. CAMELDataset.__getitem__ selects features with image_id<=current image, creates per-video global training IDs and age; pad_dict/collate_fn preserve missing targets. OcclusionSampler.sample_generator weights frames by overlap counts; GapSampler by no-observation counts. hungarian_algorithm masks both sets, solves whole scores then checks threshold.",
+      "license_identification": "Apache-2.0",
+      "license_paths": [
+        "LICENSE"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/CAMELTrack",
+      "missing_requested_paths": [],
+      "repository": "TrackingLaboratory/CAMELTrack",
+      "requested_ref": "46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2",
+      "retrieved_utc": "2026-10-08T12:39:22Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    },
+    {
+      "WWW_applicability_and_boundary": "Past observation recovery and detection-confidence update are meaningful ordinary controls. This is not future-rollout supervision and cannot change GMT memory in the controlled MATCH architecture comparison.",
+      "commit": "6bb51d027b137233f5c520b6fcc4f2ae387a6ba9",
+      "commit_time": "2023-05-06T23:08:54Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 19003,
+          "path": "trackers/integrated_ocsort_embedding/ocsort.py",
+          "sha256": "2f4d4ccf8ce7f703367607bcb45d7a6b92ea496500881bf3599fe0a65563388c",
+          "url": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/trackers/integrated_ocsort_embedding/ocsort.py"
+        },
+        {
+          "bytes": 1074,
+          "path": "LICENSE.md",
+          "sha256": "ca7c882eb15711022daa1b6e719f1e3801335a3e6cf7c3d6a8bf81967b278717",
+          "url": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/LICENSE.md"
+        },
+        {
+          "bytes": 1072,
+          "path": "external/TrackEval/LICENSE",
+          "sha256": "f7e548c5729e464d878dd4abf691e323bbea028a756d08395d88b83e43dd2d86",
+          "url": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/external/TrackEval/LICENSE"
+        },
+        {
+          "bytes": 11371,
+          "path": "external/YOLOX/LICENSE",
+          "sha256": "0ec3668d3274bcf29e8a29e9576d5a2cd96fc78d3c5bec4387355a796e5d9088",
+          "url": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/external/YOLOX/LICENSE"
+        },
+        {
+          "bytes": 1069,
+          "path": "external/deep-person-reid/LICENSE",
+          "sha256": "3ac8ce2a83d170cb1c7c84152e0c1faca1f187794303514383960d2441716247",
+          "url": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/external/deep-person-reid/LICENSE"
+        },
+        {
+          "bytes": 11347,
+          "path": "external/fast_reid/LICENSE",
+          "sha256": "14a8a9a670fa989f040bc7a5d964fa7a478ffd7cb44407a9061303240d9e21df",
+          "url": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/external/fast_reid/LICENSE"
+        },
+        {
+          "bytes": 1073,
+          "path": "external/fast_reid/projects/FastRT/third_party/cnpy/LICENSE",
+          "sha256": "1ff6fa94ad29d941ceb3bdd5ebfb260ddba4c3e962c50fb7a66c899e769de1ff",
+          "url": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/external/fast_reid/projects/FastRT/third_party/cnpy/LICENSE"
+        }
+      ],
+      "function_level_findings": "OCSort.update computes confidence-dependent embedding alpha, predicts tracks, calls appearance/motion association, then rematches residual detections to last observed boxes (OCR). Successful matches update track embeddings with detection-dependent EMA; unmatched tracks receive update(None), unmatched detections create tracks.",
+      "license_identification": "MIT (root); bundled dependencies have separate licenses",
+      "license_paths": [
+        "LICENSE.md",
+        "external/TrackEval/LICENSE",
+        "external/YOLOX/LICENSE",
+        "external/deep-person-reid/LICENSE",
+        "external/fast_reid/LICENSE",
+        "external/fast_reid/projects/FastRT/third_party/cnpy/LICENSE"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/Deep-OC-SORT",
+      "missing_requested_paths": [],
+      "repository": "GerardMaggiolino/Deep-OC-SORT",
+      "requested_ref": "HEAD",
+      "retrieved_utc": "2026-10-08T12:39:40Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    },
+    {
+      "WWW_applicability_and_boundary": "Dynamic candidate scoring is related to in-context ID decoding. Runtime IDs must remain references, not learned integer labels. MOTIP uses a contextual ID vocabulary; proposed JEV scores actual available references with correctness/causal utility heads. Neither this distinction nor candidate attention proves superiority. runtime_tracker.py uses Python3.10 match/case, so Python3.9 AST/import failure is interpreter compatibility, not upstream source corruption.",
+      "commit": "ffc0e905ac196a603027eca8d18fb0dff48c8bcc",
+      "commit_time": "2026-07-30T12:04:18Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 11908,
+          "path": "models/motip/id_decoder.py",
+          "sha256": "a16cf34bb16fa14a17d715231af1439cb3f1c1fa15d18341e2a84c61cdf59d81",
+          "url": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/models/motip/id_decoder.py"
+        },
+        {
+          "bytes": 1403,
+          "path": "models/motip/trajectory_modeling.py",
+          "sha256": "0bdf92640347ec2b719ac56082aec307eeb6c3fd39c1cc87ea26e197eca58166",
+          "url": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/models/motip/trajectory_modeling.py"
+        },
+        {
+          "bytes": 20200,
+          "path": "models/runtime_tracker.py",
+          "sha256": "f0ac5da7c7331f8d11336924ad2c1996a15bf69fd99fe1b6de8bc573c96e8497",
+          "url": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/models/runtime_tracker.py"
+        },
+        {
+          "bytes": 11357,
+          "path": "LICENSE",
+          "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "url": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/LICENSE"
+        },
+        {
+          "bytes": 1072,
+          "path": "TrackEval/LICENSE",
+          "sha256": "f7e548c5729e464d878dd4abf691e323bbea028a756d08395d88b83e43dd2d86",
+          "url": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/TrackEval/LICENSE"
+        }
+      ],
+      "function_level_findings": "IDDecoder.forward appends ID-word embeddings to trajectory features and an empty word to unknown detections. Its cross-attention mask blocks history time>=query time; _forward_a_layer includes same-time unknown self-attention after first layer and temporal-relative cross-attention. TrajectoryModeling.forward adapts features with FFN/residual/norm. RuntimeTracker._get_id_pred_labels constructs ID context; _hungarian_assignment repeats NEW columns, resolves globally, applies threshold and tracked-ID availability; _assign_newborn_id_labels recycles an ID vocabulary while mapping to runtime IDs. IDDecoder.shuffle permutes vocabulary weights.",
+      "license_identification": "Apache-2.0",
+      "license_paths": [
+        "LICENSE",
+        "TrackEval/LICENSE"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/MOTIP",
+      "missing_requested_paths": [],
+      "repository": "MCG-NJU/MOTIP",
+      "requested_ref": "ffc0e905ac196a603027eca8d18fb0dff48c8bcc",
+      "retrieved_utc": "2026-10-08T12:39:20Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    },
+    {
+      "WWW_applicability_and_boundary": "Reference for later WRITE supervision; memory-vector or score changes alone do not establish downstream identity utility. MATCH experiments preserve original GMT writes and stale-bank rules except explicit semantic NEW veto.",
+      "commit": "eb7a177b9cbcb89742ec69b2545ab3af2ea31a80",
+      "commit_time": "2025-10-15T06:56:34Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 14882,
+          "path": "models/query_updater.py",
+          "sha256": "112864688ef785a40d8837e678ada82d25d974ac8610c93f823ec91392c570b4",
+          "url": "https://github.com/MCG-NJU/MeMOTR/blob/eb7a177b9cbcb89742ec69b2545ab3af2ea31a80/models/query_updater.py"
+        },
+        {
+          "bytes": 15095,
+          "path": "models/memotr.py",
+          "sha256": "e87609757872ce1e04c26ea53f178f8e34cea999e4b3102312bc2b739f6f395d",
+          "url": "https://github.com/MCG-NJU/MeMOTR/blob/eb7a177b9cbcb89742ec69b2545ab3af2ea31a80/models/memotr.py"
+        },
+        {
+          "bytes": 1103,
+          "path": "LICENSE",
+          "sha256": "74ea0a2469c5ffd7395eb39868b1e8c01edb8c9c5f4a488879b1e51807eec584",
+          "url": "https://github.com/MCG-NJU/MeMOTR/blob/eb7a177b9cbcb89742ec69b2545ab3af2ea31a80/LICENSE"
+        },
+        {
+          "bytes": 1072,
+          "path": "TrackEval/LICENSE",
+          "sha256": "f7e548c5729e464d878dd4abf691e323bbea028a756d08395d88b83e43dd2d86",
+          "url": "https://github.com/MCG-NJU/MeMOTR/blob/eb7a177b9cbcb89742ec69b2545ab3af2ea31a80/TrackEval/LICENSE"
+        }
+      ],
+      "function_level_findings": "QueryUpdater.update_tracks_embedding confidence-gates reference points/query writes, combines confidence-weighted current and last outputs as short memory, attends with long memory, then updates long memory by lambda only for positive confidence. MeMOTR.forward builds masked detection/track queries and reference points, applies transformer, emits class/box/query outputs consumed by update.",
+      "license_identification": "MIT",
+      "license_paths": [
+        "LICENSE",
+        "TrackEval/LICENSE"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/MeMOTR",
+      "missing_requested_paths": [],
+      "repository": "MCG-NJU/MeMOTR",
+      "requested_ref": "HEAD",
+      "retrieved_utc": "2026-10-08T12:39:34Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    },
+    {
+      "WWW_applicability_and_boundary": "Explicit kinematic evidence helps recovery; these inputs require real available observation history. Do not assume interchangeable multi-camera geometry or import a new motion tracker into GMT without a separate confound control.",
+      "commit": "8462e7e729a93ccd3bd995c0a79a890336cb3a0b",
+      "commit_time": "2026-04-21T23:31:31Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 13384,
+          "path": "trackers/ocsort_tracker/association.py",
+          "sha256": "c009a78eaa1c35c1d61217506255051ba882a7b99f9505cdec64da474ff0fbd7",
+          "url": "https://github.com/noahcao/OC_SORT/blob/8462e7e729a93ccd3bd995c0a79a890336cb3a0b/trackers/ocsort_tracker/association.py"
+        },
+        {
+          "bytes": 1067,
+          "path": "LICENSE",
+          "sha256": "e9d83751678cbaba6dfba902ea39215c423d93425e58f8450d6001f7261696f9",
+          "url": "https://github.com/noahcao/OC_SORT/blob/8462e7e729a93ccd3bd995c0a79a890336cb3a0b/LICENSE"
+        }
+      ],
+      "function_level_findings": "association.associate computes observation-centric velocity/detection angle compatibility, masks unknown previous observations, weights angle cost by detection confidence and adds it to IoU. If threshold adjacency is unambiguous it directly returns edges, else linear_assignment; _filter_matches rejects IoU below threshold.",
+      "license_identification": "MIT",
+      "license_paths": [
+        "LICENSE"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/OC_SORT",
+      "missing_requested_paths": [],
+      "repository": "noahcao/OC_SORT",
+      "requested_ref": "HEAD",
+      "retrieved_utc": "2026-10-08T12:39:32Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    },
+    {
+      "WWW_applicability_and_boundary": "Shared-edge competition motivates online conflict context. Its subsequence graph may see future frames; offline hierarchical inference/post-hoc linking cannot be presented as current online candidate inference. Our runtime must receive only prefix state/current detections.",
+      "commit": "ff1952b408835007f07d1fc78760872625fa6ae4",
+      "commit_time": "2024-12-22T10:25:14Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 18315,
+          "path": "src/models/mpntrack.py",
+          "sha256": "dba2c133bd9a970a5fe4b3789d7a928edf8145d1f736173555c435b669a8c93f",
+          "url": "https://github.com/dvl-tum/SUSHI/blob/ff1952b408835007f07d1fc78760872625fa6ae4/src/models/mpntrack.py"
+        },
+        {
+          "bytes": 37825,
+          "path": "src/tracker/hicl_tracker.py",
+          "sha256": "f13b2018b3fbdc14700619e97d3e1e37fdaa04d23e3c9f3689b931d9df613993",
+          "url": "https://github.com/dvl-tum/SUSHI/blob/ff1952b408835007f07d1fc78760872625fa6ae4/src/tracker/hicl_tracker.py"
+        },
+        {
+          "bytes": 1090,
+          "path": "LICENSE",
+          "sha256": "677bf73b7d2fab06fe0595de3d5ee686e4b2608f8c86a3da42a67bb8fafa4c4e",
+          "url": "https://github.com/dvl-tum/SUSHI/blob/ff1952b408835007f07d1fc78760872625fa6ae4/LICENSE"
+        }
+      ],
+      "function_level_findings": "MetaLayer.forward updates edges from endpoint nodes, then nodes from adjacent edges. TimeAwareNodeModel.forward pools separate incoming/outgoing flows. MOTMPNet.forward repeatedly attaches initial representations, message-passes and classifies edges. HICLTracker.hicl_forward predicts/projects edges, takes connected components, updates hierarchy and pooled features. track constructs graphs over start/end subsequences and merges overlapping subsequence identities.",
+      "license_identification": "MIT",
+      "license_paths": [
+        "LICENSE"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/SUSHI",
+      "missing_requested_paths": [],
+      "repository": "dvl-tum/SUSHI",
+      "requested_ref": "HEAD",
+      "retrieved_utc": "2026-10-08T12:39:34Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    },
+    {
+      "WWW_applicability_and_boundary": "Matching cascade is an online age-prioritized rule. Do not import AFLink/post-hoc future linking as online association. Source is read for design; no GPL code is copied into WWW.",
+      "commit": "ee995076da5083e28d0da1f885297df62705ebd7",
+      "commit_time": "2024-05-28T09:44:10Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 5232,
+          "path": "deep_sort/tracker.py",
+          "sha256": "9fb02cefa5098c7d4351ae727c514718694fb55b7c8a0d8822982925b056c0ec",
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/deep_sort/tracker.py"
+        },
+        {
+          "bytes": 35823,
+          "path": "LICENSE",
+          "sha256": "230184f60bae2feaf244f10a8bac053c8ff33a183bcc365b4d8b876d2b7f4809",
+          "url": "https://github.com/dyhBUPT/StrongSORT/blob/ee995076da5083e28d0da1f885297df62705ebd7/LICENSE"
+        }
+      ],
+      "function_level_findings": "Tracker._match splits confirmed/unconfirmed tracks, calls appearance gated matching_cascade for confirmed, then min_cost_matching IoU for unconfirmed and recently unmatched. update marks misses/initiates tracks and fits appearance metric, with opt.EMA changing feature-buffer treatment.",
+      "license_identification": "GPL-3.0",
+      "license_paths": [
+        "LICENSE"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/StrongSORT",
+      "missing_requested_paths": [],
+      "repository": "dyhBUPT/StrongSORT",
+      "requested_ref": "HEAD",
+      "retrieved_utc": "2026-10-08T12:39:47Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    },
+    {
+      "WWW_applicability_and_boundary": "Useful rule controls for candidate competition and false births. Deleted detections are only available when a detector actually supplied them; frozen GMT cache cannot synthesize them. This iterative mutual-minimum algorithm is not Hungarian or JEV causal learning.",
+      "commit": "ee7f1c5fcbdcac48ed8bfab38d52c0006bf304da",
+      "commit_time": "2025-09-24T14:37:19Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 5594,
+          "path": "3. Tracker/trackers/tracker.py",
+          "sha256": "b3289f19060502d31dccebf88a2c98986afb61e1be8c3f13258726c34a725f62",
+          "url": "https://github.com/kamkyu94/TrackTrack/blob/ee7f1c5fcbdcac48ed8bfab38d52c0006bf304da/3.%20Tracker/trackers/tracker.py"
+        },
+        {
+          "bytes": 8985,
+          "path": "3. Tracker/trackers/utils.py",
+          "sha256": "84d5daa45b4f0fb82bec3e89b8935bffc7f93f28b621270cccc9721163f87c79",
+          "url": "https://github.com/kamkyu94/TrackTrack/blob/ee7f1c5fcbdcac48ed8bfab38d52c0006bf304da/3.%20Tracker/trackers/utils.py"
+        },
+        {
+          "bytes": 1068,
+          "path": "LICENSE",
+          "sha256": "f45308e8b2709a77ef9391f5ddff5a0cc5b5dc871e0a7ddb68011ff333566350",
+          "url": "https://github.com/kamkyu94/TrackTrack/blob/ee7f1c5fcbdcac48ed8bfab38d52c0006bf304da/LICENSE"
+        }
+      ],
+      "function_level_findings": "Tracker.update builds high/low/deleted-high pools, applies motion correction/prediction, matches tracked/lost then new tracks, removes old tracks and initializes residual detections. iterative_assignment fuses IoU/cosine/confidence/angle with low/deleted penalties, repeatedly selects mutual minima with decreasing threshold and removes assigned rows/columns. track_aware_nms suppresses births overlapping active tracks or stronger detections; init_tracks applies it.",
+      "license_identification": "MIT",
+      "license_paths": [
+        "LICENSE"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/TrackTrack",
+      "missing_requested_paths": [],
+      "repository": "kamkyu94/TrackTrack",
+      "requested_ref": "ee7f1c5fcbdcac48ed8bfab38d52c0006bf304da",
+      "retrieved_utc": "2026-10-08T12:39:18Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    },
+    {
+      "WWW_applicability_and_boundary": "A frozen bidirectional-normalized score with shared Hungarian is an ordinary candidate-competition control, not a faithful whole-QDTrack reproduction. Its original sequential matching and perception differ. Test normalization alone before crediting JEV structure.",
+      "commit": "c5b10472d7bdd3b9ab75255dd10e48e21f48c54f",
+      "commit_time": "2022-11-02T13:07:23Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 8168,
+          "path": "qdtrack/models/trackers/quasi_dense_embed_tracker.py",
+          "sha256": "a2fe5c209ee0d0c448d82207b41fcda4b78dba4a6ca865f9d50705b3061fcf6e",
+          "url": "https://github.com/SysCV/qdtrack/blob/c5b10472d7bdd3b9ab75255dd10e48e21f48c54f/qdtrack/models/trackers/quasi_dense_embed_tracker.py"
+        },
+        {
+          "bytes": 11356,
+          "path": "LICENSE",
+          "sha256": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1",
+          "url": "https://github.com/SysCV/qdtrack/blob/c5b10472d7bdd3b9ab75255dd10e48e21f48c54f/LICENSE"
+        }
+      ],
+      "function_level_findings": "QuasiDenseEmbedTracker.match sorts detections by confidence, suppresses overlaps, computes (row-softmax+column-softmax)/2 over embedding affinity, optionally class-masks, greedily claims memo identities and starts sufficiently confident NEW tracks. update_memo maintains embedding momentum, velocity and frame-expiry, plus backdrop memory.",
+      "license_identification": "Apache-2.0",
+      "license_paths": [
+        "LICENSE"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/qdtrack",
+      "missing_requested_paths": [],
+      "repository": "SysCV/qdtrack",
+      "requested_ref": "HEAD",
+      "retrieved_utc": "2026-10-08T12:39:47Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    },
+    {
+      "WWW_applicability_and_boundary": "Permutation-compatible architecture is useful but must add legal masks, empty-set protection, per-row NEW and identity-reference preserving equivariance. The unmodified public implementation is not sufficient for variable legal candidate sets.",
+      "commit": "73432c640ac78140496d6738416c54d32c686d65",
+      "commit_time": "2020-02-11T03:12:08Z",
+      "external_environment_installed": false,
+      "files": [
+        {
+          "bytes": 2270,
+          "path": "modules.py",
+          "sha256": "26c11c9f18209cd2ddcf52073a28b0052b356673ab356a1a5bf8ec41e9c95787",
+          "url": "https://github.com/juho-lee/set_transformer/blob/73432c640ac78140496d6738416c54d32c686d65/modules.py"
+        },
+        {
+          "bytes": 1065,
+          "path": "LICENSE",
+          "sha256": "4b288f2e6078720cef1d81b5e8eb83a36697a6365526b52902516cf056bc6dab",
+          "url": "https://github.com/juho-lee/set_transformer/blob/73432c640ac78140496d6738416c54d32c686d65/LICENSE"
+        }
+      ],
+      "function_level_findings": "MAB.forward projects Q/K/V and multihead scaled dot-product attention, residual and optional norms. SAB composes self-attention, ISAB uses inducing tokens, PMA pools with learned seeds. These signatures do not accept dynamic padding masks or provide legal NEW.",
+      "license_identification": "MIT",
+      "license_paths": [
+        "LICENSE"
+      ],
+      "local_root": "/home/liuyeqiang/WWW_jev_phase9_external_audit/20261008/set_transformer",
+      "missing_requested_paths": [],
+      "repository": "juho-lee/set_transformer",
+      "requested_ref": "HEAD",
+      "retrieved_utc": "2026-10-08T12:39:46Z",
+      "status": "FETCHED",
+      "upstream_source_copied": false
+    }
+  ],
+  "retrieved_utc": "2026-10-08T12:42:52.757437Z",
+  "status": "COMPLETE_FUNCTION_LEVEL_REVIEW"
+}
