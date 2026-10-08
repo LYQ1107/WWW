@@ -360,11 +360,24 @@ class GTRRCNN(CustomRCNN):
         never selects an identity by scanning the second-ranked candidates.
         """
         if getattr(self, 'jev_candidate_policy', None) is not None:
-            return self._candidate_match_values(track_ids, traj_score, unique_ids,
+            result = self._candidate_match_values(track_ids, traj_score, unique_ids,
                 match_i, match_j, threshold, view=view, frame_index=frame_index,
                 window_length=window_length, track_lengths=track_lengths,
                 tracker_state=tracker_state, galleries=candidate_galleries,
                 observations=candidate_observations, view_fractions=candidate_view_fractions)
+            intervention = getattr(self, 'jev_native_match_override', None)
+            key = (int(self._jev_context['video_id']), int(frame_index), int(view))
+            if intervention is not None and tuple(intervention['key']) == key:
+                from ..jev_native_intervention import apply_native_intervention
+                return apply_native_intervention(self, intervention, track_ids,
+                    traj_score, unique_ids, match_i, match_j, threshold,
+                    view=view, frame_index=frame_index, window_length=window_length,
+                    detection_boxes=detection_boxes, detection_scores=detection_scores,
+                    detection_image_size=detection_image_size, tracker_state=tracker_state,
+                    track_lengths=track_lengths, candidate_galleries=candidate_galleries,
+                    candidate_observations=candidate_observations,
+                    candidate_view_fractions=candidate_view_fractions)
+            return result
         if self.jev_policy is None:
             return track_ids
         n_k = int(traj_score.shape[0])
