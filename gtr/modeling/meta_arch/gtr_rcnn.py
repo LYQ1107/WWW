@@ -770,7 +770,7 @@ class GTRRCNN(CustomRCNN):
                 not_clamp_box=self.not_clamp_box)
         return instances
     
-    def sliding_inference_GMT(self, batched_inputs,view_num,time):
+    def sliding_inference_GMT(self, batched_inputs,view_num,time, *, native_prefix=None, native_stop_frame=None, native_raw=False):
         poss_ids.poss_ids = set()
         old_ids.old_ids = set()
         old_reids.old_reids = []
@@ -793,13 +793,26 @@ class GTRRCNN(CustomRCNN):
         id_count_dict = dict()
         id_reid_dict = dict()
         memory_bank = []
-        for frame_id in tqdm(range(view_frames)):
+        start_frame = 0
+        resume_view = None
+        if native_prefix is not None:
+            from ..jev_native_state import restore_state
+            restore_state(self, native_prefix)
+            assert native_prefix['key'][0] == int(batched_inputs[0]['video_id'])
+            instances = native_prefix['instances']
+            id_count = native_prefix['id_count']
+            id_count_dict = native_prefix['hits']
+            id_reid_dict = native_prefix['galleries']
+            start_frame, resume_view = native_prefix['key'][1:]
+        end_frame = view_frames if native_stop_frame is None else min(view_frames, native_stop_frame + 1)
+        prefix_observer = getattr(self, 'jev_native_prefix_observer', None)
+        for frame_id in tqdm(range(start_frame, end_frame)):
             self._jev_context['frame'] = int(frame_id)
             batched_inputs_divo = []
             st = frame_id
             instances_wo_id = []
             time_per = time.copy()
-            for view in range(view_num):
+            for view in range(0 if frame_id != start_frame or native_prefix is None else view_num, view_num):
                 self._jev_context['view'] = int(view)
                 time_per[2] = time[2][st]
                 if self.jev_perception_cache_reader is not None:
@@ -880,13 +893,14 @@ class GTRRCNN(CustomRCNN):
                 sort_index.reverse()
                 max_index = sort_index[0]
 
-                instances[max_index].track_ids = torch.arange(
-                    1, len(instances[max_index]) + 1,
-                    device=instances[max_index].reid_features.device)
-                id_count = len(instances[max_index]) 
-                for i in range(1, len(instances[max_index]) + 1):
-                    id_count_dict[i] = 1
-                    id_reid_dict[i] = instances[max_index][i-1]
+                if native_prefix is None:
+                    instances[max_index].track_ids = torch.arange(
+                        1, len(instances[max_index]) + 1,
+                        device=instances[max_index].reid_features.device)
+                    id_count = len(instances[max_index]) 
+                    for i in range(1, len(instances[max_index]) + 1):
+                        id_count_dict[i] = 1
+                        id_reid_dict[i] = instances[max_index][i-1]
                 #id = ([i for i in range(view_num)])
                 sort_index.remove(max_index)
                 id = np.sort(sort_index)
@@ -899,6 +913,11 @@ class GTRRCNN(CustomRCNN):
                         a = Instances(instances[0].image_size)
                         a = a.cat(x)
                         instances_kv += [a]
+                        if native_prefix is not None and frame_id == start_frame and int(id[i]) < resume_view:
+                            continue
+                        if prefix_observer is not None:
+                            prefix_observer(instances=instances, id_count=id_count, hits=id_count_dict,
+                                galleries=id_reid_dict, frame=frame_id, view=int(id[i]), first=True)
                         asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
                             instances_kv,
                             k=len(instances_kv) - 1)  # n_k x N
@@ -937,9 +956,15 @@ class GTRRCNN(CustomRCNN):
                # activate  = True
                 instances_kv = instances[win_st:win_ed]
                 if  activate:
-                    instacnes_old = instances[:win_st]
+                    instacnes_old = native_prefix['frame_old_instances'] if native_prefix is not None and frame_id == start_frame else instances[:win_st]
                     for i in range(view_num):
                         instances_kv = instances_kv + [instances[win_ed+i]]
+                        if native_prefix is not None and frame_id == start_frame and i < resume_view:
+                            continue
+                        if prefix_observer is not None:
+                            prefix_observer(instances=instances, id_count=id_count, hits=id_count_dict,
+                                galleries=id_reid_dict, frame=frame_id, view=i, first=False,
+                                frame_old_instances=instacnes_old)
                         asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
                             instances_kv,
                             k=len(instances_kv) - 1)
@@ -968,6 +993,8 @@ class GTRRCNN(CustomRCNN):
                         instances[win_ed+i] = instances_kv[len(instances_kv)-1]
 
 
+        if native_raw:
+            return instances, view_num
         batch = []
         #调整batch的顺序，和instances一致，view1_frame1,view_2_frame1,view_3_frame1 
         for i in range(view_frames):
