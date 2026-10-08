@@ -32,6 +32,11 @@ class ForkContracts(unittest.TestCase):
         self.assertEqual(e['utility_birth_zero'],1)
     def test_horizon_no_future(self):
         e=effects({(9,0,0):{'id':1,'gt':9}},self.prefix(),1,8,{9});self.assertEqual(e['utility'],0)
+    def test_unknown_identity_censors_instead_of_claiming_recovery(self):
+        p=self.prefix();p['counts']['3']={'8':1,'9':1}
+        e=effects({(1,0,0):{'id':1,'gt':9},(2,0,0):{'id':3,'gt':9},(3,0,0):{'id':7,'gt':9}},p,1,8,{9})
+        self.assertEqual(e['wrong_identity_duration_camera_frames'],1)
+        self.assertTrue(e['wrong_identity_episodes'][0]['right_censored'])
 
 if __name__=='__main__':
     r=unittest.TextTestRunner(verbosity=2).run(unittest.defaultTestLoader.loadTestsFromTestCase(ForkContracts))

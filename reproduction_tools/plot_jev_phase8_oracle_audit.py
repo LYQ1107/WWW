@@ -17,7 +17,7 @@ def main():
     axes[0].bar(pos,direct,w,color='#356db5',label='GT-chosen candidate intervention')
     axes[0].bar(pos+w,re,w,color='#e69a3a',label='Native reject + re-solve')
     axes[0].set_xticks(pos,[f'{v:02d}'for v in videos]);axes[0].axvline(3.5,color='#666666',ls=':',lw=1)
-    axes[0].set_xlabel('TRAIN12–16  |  Validation17–19');axes[0].set_ylabel('Verified corrective events')
+    axes[0].set_xlabel('TRAIN 12/13/14/16  |  Validation 17/18/19');axes[0].set_ylabel('Verified corrective events')
     axes[0].set_title('Observed successes in fixed representative states');axes[0].legend(frameon=False,fontsize=8)
     verified=[x['train']['verified_events'],x['validation']['verified_events']];gate=[50,20]
     axes[1].bar([0,1],verified,color=['#356db5','#356db5'],width=.5)

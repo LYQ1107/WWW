@@ -22,15 +22,20 @@ def effects(rows,prefix,start_frame,horizon,target_gts):
         if g in target_gts:target[kind]+=1
         if identity is not None and identity!=g:merges.add(t)
         if t not in prefix_counts and len(observed[t])>1:merges.add(t)
-        timelines[(g,view)][frame]=timelines[(g,view)].get(frame,False)or kind=='wrong'
+        # An unknown identity is an unobserved error status, not recovery.
+        # If duplicated annotation identities produce multiple rows, any
+        # proven wrong observation dominates; otherwise uncertainty remains.
+        status=None if kind=='anchor_unknown'else kind=='wrong'
+        previous=timelines[(g,view)].get(frame,False)
+        timelines[(g,view)][frame]=True if previous is True or status is True else None if previous is None or status is None else False
     c['false_merge_tracks']=len(merges);c['false_births']=len(births)
     episodes=[]
     for (g,v),timeline in sorted(timelines.items()):
         run=[];previous=None
         for f,bad in sorted(timeline.items()):
-            if run and(not bad or f!=previous+1):
-                episodes.append({'gt':g,'view':v,'start':run[0],'end':run[-1],'duration_frames':len(run),'right_censored':f!=previous+1});run=[]
-            if bad:run.append(f)
+            if run and(bad is not True or f!=previous+1):
+                episodes.append({'gt':g,'view':v,'start':run[0],'end':run[-1],'duration_frames':len(run),'right_censored':bad is None or f!=previous+1});run=[]
+            if bad is True:run.append(f)
             previous=f
         if run:episodes.append({'gt':g,'view':v,'start':run[0],'end':run[-1],'duration_frames':len(run),'right_censored':True})
     def utility(wb,wm,ww):return c['correct']-ww*c['wrong']-wm*c['false_merge_tracks']-wb*c['false_births']
