@@ -1,0 +1,11 @@
+# Phase VIII code audit
+
+Phase V/VI/VII heads and permanent B2 match the required anchors locally and on GitHub. The exact source inventory and frozen protocol hashes are in CODE_CONTRACT_AUDIT.json; original production files are unchanged at this audit.
+
+The formal backend executes the actual GMT association transformer on immutable cached perception, preserving branch-local trajectory RNG. `constrained_hungarian` maximizes raw scores and masks rejected edges. The production `GTRRCNN._apply_jev_match_decisions` currently supplies A/R/NEW plus binary second validation; it does not establish an arbitrary candidate-value submit interface. `jev_counterfactual_v2` proposes/resolves and commits real mutable history, births, memory and bank transitions, but copying its research resolution alone is insufficient production parity evidence.
+
+Phase VIII must measure candidate availability, global feasibility and actual native correction separately. Candidate IDs are indexing metadata, not GT identities or neural scalar features. One-to-one uniqueness applies per frame/view, while consistent cross-camera identity reuse is legal. No absent detection or stale candidate may be fabricated. Every intervention must reuse current raw GMT tensor/candidate order and prefix RNG; subsequent scores naturally depend on its mutated state.
+
+Offline GT alignment follows the original image size, cache frame/view zero versus annotation one and per-image IoU>=0.5. Historical semantic anchors use only preceding committed known observations, require at least two with complete purity and agreement of first/majority identity, retain alias ambiguity, and mark mixed/unanchored histories UNKNOWN. These annotation labels are diagnostic/supervision fields separated from the live actor. New factual/state, direct-submit, masking/NEW/collision/RNG/no-leakage checks are NOT_RUN until executed; no new production-parity claim is made here.
+
+Phase VII's rule-superior, ACCEPT-only and unidentifiable memory/react findings remain negative. Candidate JEV and Unified have never been trained. The original H8 shortcut labels do not become native v2 truth. Full24 and official TEST are not authorized.
