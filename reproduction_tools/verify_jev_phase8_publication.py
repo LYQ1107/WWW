@@ -19,6 +19,12 @@ def main():
             assert b['committed_ID_metadata']in e['correct_candidate_ID_metadata']
             assert b['horizons']['32']['delta_utility']>0 and b['horizons']['32']['delta_utility_birth_zero']>0
             assert b['all_camera_payload_IDs_unique']
+    temporal=json.loads((REPORTS/'TEMPORAL_CENSORING_AUDIT.json').read_text())
+    assert temporal['status']=='COMPLETE_METRIC_CENSOR_CORRECTION'and temporal['events']==95 and temporal['branches']==486
+    assert temporal['all_primary_and_sensitivity_utilities_unchanged']and temporal['native_candidate_gate_counts_unchanged']
+    for a in temporal['raw_sidecar_manifest']:assert sha(a['corrected_temporal_effects_path'])==a['corrected_sha256']
+    figure=json.loads((REPORTS/'figures/FIGURE_MANIFEST.json').read_text())
+    assert all(sha(ROOT/a['path'])==a['sha256']for a in figure['files'])
     protected=json.loads((REPORTS/'CODE_CONTRACT_AUDIT.json').read_text())['frozen_source_sha256']
     assert all(sha(ROOT/p)==h for p,h in protected.items())
     inputs={'foundation':('/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth',json.loads(PREREG.read_text())['foundation_sha256']),
@@ -37,6 +43,6 @@ def main():
     assert not any(p.startswith(('gtr/','configs/','reports/JEV_PHASE5/','reports/JEV_PHASE6/','reports/JEV_PHASE7/'))for p in files)
     result={'status':'PASS','binding':start,'verified_events':len(audit['events']),'verified_raw_artifacts':len(seen),'protected_source_checks':len(protected),'frozen_input_sha_checks':inputs,
         'required_files_complete':True,'Gate_fail_and_NOT_RUN_honest':True,'no_new_large_binary_publication':True,'phase5_6_7_and_B2_protected':True,
-        'matched_submission_origin_and_positive_H32_birth_zero':True,'source_and_result_paths_hashes_verified':True,'changed_review_files':len(files),'changed_review_bytes':sum((ROOT/p).stat().st_size for p in files if(ROOT/p).is_file())}
+        'matched_submission_origin_and_positive_H32_birth_zero':True,'temporal_censor_sidecars_checked':len(temporal['raw_sidecar_manifest']),'all_utilities_and_gate_unchanged_after_censor_fix':True,'figure_SHA_checks':True,'source_and_result_paths_hashes_verified':True,'changed_review_files':len(files),'changed_review_bytes':sum((ROOT/p).stat().st_size for p in files if(ROOT/p).is_file())}
     save(REPORTS/'PUBLICATION_VERIFICATION.json',result);protect();print(json.dumps({k:result[k]for k in('status','verified_events','verified_raw_artifacts','changed_review_bytes')}))
 if __name__=='__main__':main()
