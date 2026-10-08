@@ -12,7 +12,7 @@ def scan(video,diagnostic=False):
     torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True
     config=json.loads(PREREG.read_text());allowed=config['train_videos']+config['validation_videos']
     assert video in allowed or(diagnostic and video==7),'heldout/official TEST not released'
-    run=OUT/('diagnostic_opportunities'if diagnostic else'opportunity_scan')/f'video{video:02d}'
+    run=OUT/('diagnostic_opportunities_v1'if diagnostic else'opportunity_scan_v1')/f'video{video:02d}'
     if run.exists():raise RuntimeError('refusing reused scan output')
     run.mkdir(parents=True);start=binding();assert not start['worktree_dirty'],'commit executing source before new scientific run'
     save(run/'START_MANIFEST.json',{'binding':start,'argv':sys.argv,'role':'diagnostic_only'if diagnostic else'train'if video in config['train_videos']else'validation'})
@@ -132,7 +132,8 @@ def scan(video,diagnostic=False):
         'natural_event_index_sha256':sha(run/'natural_event_index.jsonl.gz'),'hard_event_index_sha256':sha(run/'hard_event_index.jsonl.gz'),
         'bounded_snapshots':snapshots,'independent_error_groups':hard_groups,'final_anchors':anchors.diagnostics(),
         'global_feasibility_scope':'Oracle2 fixed-edge residual assignment; actual native current/future correction still NOT_RUN',
-        'actual_production_OFF_checks':native_checks,'native_direct_candidate_interface':'NOT_YET_VERIFIED','H32_forks_started':False,'no_GT_future_in_actor':True,'max_frame':max_frame})
+        'actual_production_OFF_checks':native_checks,'historical_anchor_contract':'PERMANENT_FIRST_TWO_CONSISTENT_KNOWN_OBSERVATIONS',
+        'anchor_amendment_sha256':sha(REPORTS/'ANCHOR_CONTRACT_AMENDMENT.json'),'native_direct_candidate_interface':'NOT_YET_VERIFIED','H32_forks_started':False,'no_GT_future_in_actor':True,'max_frame':max_frame})
     save(run/'SCAN_PROGRESS.json',{'status':'COMPLETE','counts':dict(stats),'snapshots':len(snapshots)});protect()
     print(json.dumps({'status':'COMPLETE','video':video,'counts':dict(stats),'snapshots':len(snapshots)}),flush=True)
 

@@ -16,9 +16,13 @@ class Contracts(unittest.TestCase):
         a=self.anchors();a.update({0:18},{0:17},0);a.update({0:18},{0:17},1)
         d=classify_row([17,2,18],[[.9,.8,.7]],{0:0},0,17,'ACCEPT_CURRENT',a)
         self.assertEqual(d['correct_candidate_ids'],[2,18]);self.assertTrue(d['duplicate_GT_alias_ambiguity'])
-    def test_mixed_history_is_unknown(self):
+    def test_later_wrong_write_cannot_rename_confirmed_identity(self):
         a=self.anchors();a.update({0:17},{0:17},2)
-        self.assertNotIn(17,a.reliable());self.assertIn(17,a.majority())
+        self.assertNotIn(17,a.strict_pure());self.assertEqual(a.reliable()[17],2)
+    def test_mixed_first_two_observations_cannot_confirm_identity(self):
+        a=PrefixIdentityAnchors();a.update({0:9},{0:1},0);a.update({0:9},{0:2},1)
+        for f in range(2,10):a.update({0:9},{0:2},f)
+        self.assertNotIn(9,a.reliable())
     def test_first_observation_is_not_stable_anchor(self):
         a=PrefixIdentityAnchors();a.update({0:9},{0:1},0);self.assertEqual(a.reliable(),{})
     def test_forced_global_choice_resolves_conflicting_row(self):

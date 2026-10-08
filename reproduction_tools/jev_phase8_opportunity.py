@@ -5,16 +5,20 @@ from jev_phase8_common import ROOT
 from gtr.modeling.jev_assignment import constrained_hungarian
 
 class PrefixIdentityAnchors:
-    def __init__(self):self.counts=defaultdict(Counter);self.first={};self.last_GT_frame={}
+    def __init__(self):self.counts=defaultdict(Counter);self.first={};self.last_GT_frame={};self.confirmed={};self.confirmed_at={}
     def update(self,committed,gt_by_row,frame):
         for row,track in committed.items():
             gt=gt_by_row.get(int(row))
             if gt is None:continue
             track=int(track);gt=int(gt);self.first.setdefault(track,gt);self.counts[track][gt]+=1;self.last_GT_frame[gt]=int(frame)
+            if sum(self.counts[track].values())==2 and len(self.counts[track])==1:
+                self.confirmed[track]=self.first[track];self.confirmed_at[track]=int(frame)
     def reliable(self):
+        return dict(self.confirmed)
+    def strict_pure(self):
         return {t:self.first[t]for t,c in self.counts.items()if sum(c.values())>=2 and len(c)==1}
     def majority(self):return {t:c.most_common(1)[0][0]for t,c in self.counts.items()}
-    def diagnostics(self):return {'counts':{str(t):dict(c)for t,c in self.counts.items()},'first':dict(self.first),'reliable':self.reliable(),'last_GT_frame':dict(self.last_GT_frame)}
+    def diagnostics(self):return {'counts':{str(t):dict(c)for t,c in self.counts.items()},'first':dict(self.first),'reliable':self.reliable(),'strict_pure':self.strict_pure(),'confirmed_at':dict(self.confirmed_at),'last_GT_frame':dict(self.last_GT_frame),'contract':'PERMANENT_FIRST_TWO_CONSISTENT_KNOWN_OBSERVATIONS'}
 
 def forced_feasible_pairs(scores,banned,row,column):
     """Oracle-2 existence: fix one allowed edge, solve its residual exactly.
@@ -59,4 +63,5 @@ def classify_row(track_ids,scores,pairs,row,gt,action,anchors,banned=()):
        'duplicate_GT_alias_ambiguity':len(correct)>1,'strict_wrong_with_feasible_correct_candidate':strict_wrong and bool(feasible),
        'loose_majority_wrong_with_candidate':loose_wrong and bool(loose_candidates),'bucket':bucket,'feasible_pairs':feasible,
        'row_candidate_order':order,'proposal_column':col,'candidate_count':len(track_ids),
-       'top1_top2_margin':float(scores[row][order[0]]-scores[row][order[1]])if len(order)>1 else None}
+       'top1_top2_margin':float(scores[row][order[0]]-scores[row][order[1]])if len(order)>1 else None,
+       'confirmed_historical_IDs_with_mixed_history':[int(t)for t in track_ids if int(t)in mapping and len(anchors.counts[int(t)])>1]}
