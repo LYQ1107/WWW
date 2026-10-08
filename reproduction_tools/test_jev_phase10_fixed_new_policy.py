@@ -25,5 +25,5 @@ def main():
  # Run existing tests without their main's write to frozen Phase IX reports.
  import test_jev_phase9_candidate_native as legacy
  suite=unittest.defaultTestLoader.loadTestsFromTestCase(legacy.CandidateContracts);r=unittest.TextTestRunner(verbosity=0).run(suite);assert r.wasSuccessful()
- save(REPORTS/'FIXED_NEW_POLICY_CONTRACT_TESTS.json',{'status':'PASS','new_policy_cases':checked,'legacy_interface_cases':r.testsRun,'max_birth_confidence_abs_error':maxerror,'shared_private_NEW_value':0.,'permutation_and_capacity_exact':True,'research_training':'NOT_RUN','heldout_sealed':True});print('COMMON_FIXED_NEW_PASS',checked,r.testsRun,maxerror)
+ save(REPORTS/'FIXED_NEW_POLICY_V2_CONTRACT_TESTS.json',{'status':'PASS','new_policy_cases':checked,'legacy_interface_cases':r.testsRun,'max_birth_confidence_abs_error':maxerror,'shared_private_NEW_value':0.,'permutation_and_capacity_exact':True,'research_training':'NOT_RUN','heldout_sealed':True});print('COMMON_FIXED_NEW_PASS',checked,r.testsRun,maxerror)
 if __name__=='__main__':main()

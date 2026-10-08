@@ -3,6 +3,7 @@ import json,collections,math
 from pathlib import Path
 import torch
 from jev_phase10_common import *
+from gtr.modeling.jev_native_state import fingerprint
 
 def main():
  protect();state=json.loads((REPORTS/'NATIVE_STATE_PARITY.json').read_text());assert state['status']=='PASS'and state['fixed_original_records']==221
@@ -74,9 +75,10 @@ def main():
   bundlecounts[part]=count
  counts={str(k):v for k,v in labels.items()};stratacounts={str(k):v for k,v in strata.items()}
  checks={'all221_native_state':True,'all162_original_events_all840_original_branches':True,'CONTROL_KEEP_all_complete_native_states':True,'train_verified50':verified['train']>=50,'supplementalone_verified20':verified['supplemental']>=20,'validation_verified20':verified['validation']>=20,'train_two_videos':sum(videos[v]>0 for v in TRAIN)>=2,'validation_two_videos':sum(videos[v]>0 for v in VAL)>=2,'train_five_frozen_groups':len(groups['train'])>=5,'validation_three_frozen_groups':len(groups['validation'])>=3,'natural_both_partitions':all(strata[(p,'NATURAL')]>0 for p in ['train','validation']),'hard_negative_both_partitions':all(strata[(p,'HARD_NEGATIVE')]>0 for p in ['train','validation']),'no_GT_runtime_or_frozen_future_actions':True,'some_train_current_and_causal_supervision':labels[('train','CE_eligible')]>0 and labels[('train','ranking_eligible')]>0};passed=all(checks.values())
- data={'version':'Native Candidate Association Dataset v3','rows':rows,'all_original_selected_events_preserved':True,'protocol_SHA256':sha(REPORTS/'PHASE10_PREREGISTRATION.json'),'model_protocol_SHA256':sha(REPORTS/'PHASE10_MODEL_AND_CONTROL_PROTOCOL.json')};p=OUT/'dataset_v3/DATASET.pth';p.parent.mkdir(exist_ok=True)
- if p.exists():raise FileExistsError('dataset freeze is immutable')
- t=p.with_suffix('.pth.tmp');torch.save(data,t);t.replace(p)
+ data={'version':'Native Candidate Association Dataset v3','rows':rows,'all_original_selected_events_preserved':True,'protocol_SHA256':sha(REPORTS/'PHASE10_PREREGISTRATION.json'),'model_protocol_SHA256':sha(REPORTS/'PHASE10_MODEL_AND_CONTROL_PROTOCOL.json'),'model_amendment_SHA256':sha(REPORTS/'PHASE10_CAPACITY_AND_STRONG_RULE_AMENDMENT.json')};p=OUT/'dataset_v3/DATASET.pth';p.parent.mkdir(exist_ok=True)
+ if p.exists():assert fingerprint(torch.load(p,map_location='cpu'))==fingerprint(data),'existing immutable dataset differs; preserve it and version any scientific amendment'
+ else:
+  t=p.with_suffix('.pth.tmp');torch.save(data,t);t.replace(p)
  h32={'status':'PASS','events':162,'branches':840,'all_CONTROL_KEEP_full_native_state_events_RNG_exact':True,'all_actual_per_camera_committed_IDs_unique':True,'same_native_production_function_is_the_replay_adapter':True,'future_policy':'fresh native GMT OFF on mutated state','old_results_unchanged':True,'changed_branches':len(changes),'changed_event_rows':len({(tuple(c['key']),c['row'])for c in changes}),'old_vs_new':changes,'raw_event_manifests':raw,'heldout_sealed':True,'official_TEST':False,'Full24':False}
  save(REPORTS/'H32_CAUSAL_PARITY.json',h32);save(REPORTS/'PHASE10_H32_REPLAY_PARITY.json',{'status':'PASS','canonical_report':'H32_CAUSAL_PARITY.json','SHA256':sha(REPORTS/'H32_CAUSAL_PARITY.json'),'events':162,'branches':840})
  gate={'status':'PASS'if passed else'FAIL_SCIENTIFIC_DATA_ELIGIBILITY','gate_pass':passed,'checks':checks,'verified_corrections':dict(verified),'verified_frozen_groups':{k:len(v)for k,v in groups.items()},'verified_per_video':dict(videos),'old_unrevalidated_counts':{'train':74,'validation':59},'label_counts':counts,'strata_counts':stratacounts,'temporal_overlap_bundles':bundlecounts,'overlap_bundles_not_additional_training_samples':True,'new_rows':len(rows),'fixed_NEW':True,'learnable_NEW':'NOT_ELIGIBLE_NO_POSITIVES','heldout_sealed':True,'phase8_original_FAIL_unchanged':True};save(REPORTS/'DATA_ELIGIBILITY.json',gate);save(REPORTS/'PHASE10_DATA_ELIGIBILITY.json',{'status':gate['status'],'canonical_report':'DATA_ELIGIBILITY.json','SHA256':sha(REPORTS/'DATA_ELIGIBILITY.json')})

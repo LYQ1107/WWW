@@ -27,8 +27,8 @@ class CandidateValuePolicy:
             new_values = values.new_full((len(values),), .5)
         elif self.name == 'dynamic_fixed_new':
             e = batch.evidence12
-            penalty = self.dynamic_alpha * e[..., 11] * (1 - e[..., 10]) / (1 + e[..., 4].clamp_min(0).sqrt())
-            values = batch.scores - batch.thresholds.unsqueeze(0) - penalty
+            penalty = self.dynamic_alpha * e[..., 11] * (1 - e[..., 10])
+            values = batch.scores / batch.thresholds.clamp_min(1e-6).unsqueeze(0) - 1 - penalty
             new_values = values.new_zeros(len(values))
         else:
             values = batch.scores

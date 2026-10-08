@@ -1,0 +1,40 @@
+{
+  "changes": {
+    "capacity_matched_structural_ablations": "Remove QA/context parameters rather than zeroing large scorer columns; widen remaining scorer to approximately 34K active parameters. Main model inputs/budgets/dual heads unchanged. WHO remains a constant, so no question-transfer claim.",
+    "closed_loop_causal_diagnostic": "Exactly frame128/view0, full current legal payload assignment; actual frozen policy versus same-prefix Fixed for the current payload, followed by the same actual frozen controller freshly computing every H8/H16/H32 future transition. Predetermined before all NN fitting or model validation; no GT selection. Report executed-alternative regret only; no exhaustive oracle claim.",
+    "closed_loop_uncertainty": "Actual pooled TrackEval per optimization seed; report seed spread separately from exact3-video resampling of per-video differences, with no broad significance claim.",
+    "dynamic_alpha_grid": [
+      0.0,
+      0.05,
+      0.1,
+      0.2,
+      0.5,
+      1.0,
+      2.0,
+      5.0,
+      10.0,
+      20.0
+    ],
+    "dynamic_rule": "Normalize raw GMT score by actual candidate native threshold, then subtract 1 + alpha * gallery_available * (1-gallery_cosine). Shared private NEW/confidence anchor is unchanged for every method.",
+    "dynamic_selection": "Validation pooled HOTA; ties choose smallest alpha; no heldout selection.",
+    "stable_evaluation": "Conditional known-candidate NLL uses logsumexp differences, without arbitrary probability clipping. Numeric post-forward summaries run on CPU; neural training/runtime features remain identical.",
+    "task_loss_normalization": "Each head uses its own eligible group-weight mass; joint uses equal1:1 normalized task means. Same batch order and optimizer updates for every architecture; no unknown-target gradient.",
+    "unknown_utility": "Keep NaN/unknown in loss tensors, including padding; utility mask blocks all unexecuted/censored gradients. Never substitute zero Q."
+  },
+  "heldout_sealed": true,
+  "no_model_training_yet": true,
+  "not_changed": [
+    "221-prefix gate",
+    "162 events and840 branch selection",
+    "correctness and utility labels",
+    "three seeds",
+    "20/50/100 equal optimizer budget",
+    "loss task weights",
+    "same enhanced solver",
+    "fixed NEW",
+    "sealed heldout20/21/22"
+  ],
+  "original_protocol_SHA256": "00b19177807cf5f5d22ee729ee21af17d56287b80cc3fb71cd734d851eb8e55d",
+  "reason": "Input-unit and functional-capacity audit, before fitting; raw GMT accumulated scores are not unit probabilities, and zeroing context discarded functional capacity. No architecture outcome or heldout information was used.",
+  "status": "FROZEN_BEFORE_ANY_MODEL_FIT_OR_MODEL_VALIDATION"
+}

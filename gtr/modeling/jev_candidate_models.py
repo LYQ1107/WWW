@@ -72,29 +72,37 @@ class CandidateJEV(NormalizedCandidateModel):
         self.without_qa, self.without_context = without_qa, without_context
         self.state_encoder = nn.Sequential(nn.Linear(64, 128), nn.ReLU())
         self.candidate_encoder = nn.Sequential(nn.Linear(12, 64), nn.ReLU(), nn.Linear(64, 40), nn.ReLU())
-        self.context_encoder = nn.Sequential(nn.Linear(24, 40), nn.ReLU())
-        self.question = nn.Parameter(torch.zeros(8), requires_grad=not without_qa)
-        self.action = nn.Parameter(torch.zeros(8), requires_grad=not without_qa)
-        self.scorer = nn.Sequential(nn.Linear(304, 68), nn.ReLU(), nn.Linear(68, 2))
-        nn.init.normal_(self.question, std=.02)
-        nn.init.normal_(self.action, std=.02)
+        self.context_encoder = nn.Identity() if without_context else nn.Sequential(nn.Linear(24, 40), nn.ReLU())
+        if without_qa:
+            self.register_buffer('question', torch.zeros(8))
+            self.register_buffer('action', torch.zeros(8))
+        else:
+            self.question = nn.Parameter(torch.zeros(8))
+            self.action = nn.Parameter(torch.zeros(8))
+            nn.init.normal_(self.question, std=.02)
+            nn.init.normal_(self.action, std=.02)
+        # Removing components also removes their inactive parameters. Widths
+        # keep the functional capacity close to the three main models.
+        dimension = 168 if without_context else 288
+        dimension += 0 if without_qa else 16
+        hidden = (132 if without_qa else 120) if without_context else (72 if without_qa else 68)
+        self.scorer = nn.Sequential(nn.Linear(dimension, hidden), nn.ReLU(), nn.Linear(hidden, 2))
 
     def forward(self, state: torch.Tensor, evidence: torch.Tensor, mask: torch.Tensor):
         s, e, context = self.normalize(state, evidence, mask)
         h = self.candidate_encoder(e).masked_fill(~mask.unsqueeze(-1), 0.)
-        pool = masked_context(h, mask)
-        context = self.context_encoder(context)
-        if self.without_context:
-            context = torch.zeros_like(context)
-            pool = torch.zeros_like(pool)
         row = self.state_encoder(s)
         qa = torch.cat((self.question, self.action), -1)
-        if self.without_qa:
-            qa = torch.zeros_like(qa)
         n, c = mask.shape
-        x = torch.cat((row.unsqueeze(1).expand(-1, c, -1), h,
-            context.unsqueeze(1).expand(-1, c, -1), pool.unsqueeze(1).expand(-1, c, -1),
-            qa.reshape(1, 1, 16).expand(n, c, -1)), -1)
+        if self.without_context:
+            x = torch.cat((row.unsqueeze(1).expand(-1, c, -1), h), -1)
+        else:
+            pool = masked_context(h, mask)
+            context = self.context_encoder(context)
+            x = torch.cat((row.unsqueeze(1).expand(-1, c, -1), h,
+                context.unsqueeze(1).expand(-1, c, -1), pool.unsqueeze(1).expand(-1, c, -1)), -1)
+        if not self.without_qa:
+            x = torch.cat((x, qa.reshape(1, 1, 16).expand(n, c, -1)), -1)
         return self.scorer(x).masked_fill(~mask.unsqueeze(-1), 0.)
 
 

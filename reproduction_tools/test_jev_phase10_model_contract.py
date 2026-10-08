@@ -20,5 +20,5 @@ def main():
    assert err<=1e-6 and torch.equal(altered,y),'permutation/masked evidence affected legal scores'
   params=sum(p.numel()for p in model.parameters());results.append({'model':name,'parameters':params,'trainable_parameters':sum(p.numel()for p in model.parameters()if p.requires_grad),'max_permutation_abs_error':maxerror,'scripted_finite_empty_all_masked_and_shared_interface':'PASS'})
  pcounts=[r['parameters']for r in results[:3]];assert max(pcounts)/min(pcounts)<1.05
- save(REPORTS/'CANDIDATE_MODEL_CONTRACT_TESTS.json',{'status':'PASS','models':results,'research_training_performed':False,'tiny_overfit_not_yet_run':True,'heldout_sealed':True});print(results)
+ save(REPORTS/'CANDIDATE_MODEL_CAPACITY_ABLATION_TESTS.json',{'status':'PASS','models':results,'research_training_performed':False,'tiny_overfit_not_yet_run':True,'heldout_sealed':True});print(results)
 if __name__=='__main__':main()

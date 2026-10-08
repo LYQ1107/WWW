@@ -273,6 +273,10 @@ class GTRRCNN(CustomRCNN):
         """Production scoring -> shared global assignment; no state commit here."""
         from ..jev_candidate_features import CandidateBatch, evidence12
         from ..jev_candidate_assignment import assign_candidate_values
+        profiler = getattr(self, 'jev_candidate_latency_observer', None)
+        if profiler is not None:
+            torch.cuda.synchronize(scores.device)
+            feature_begin = time.perf_counter()
         references = tuple(int(t) for t in ids.tolist())
         m, n = scores.shape
         lengths = torch.ones(n, device=scores.device) if track_lengths is None else torch.as_tensor(track_lengths, device=scores.device)
@@ -305,9 +309,20 @@ class GTRRCNN(CustomRCNN):
             galleries=gallery_means, observations=observations,
             view_fractions=view_fractions, bank_eligible=state.get('possible_memory_ids', ()))
         batch = CandidateBatch(references, scores, state64, features, legal, thresholds, int(view))
+        if profiler is not None:
+            torch.cuda.synchronize(scores.device)
+            policy_begin = time.perf_counter()
+            allocated = torch.cuda.memory_allocated(scores.device)
+            torch.cuda.reset_peak_memory_stats(scores.device)
         values, newborn = self.jev_candidate_policy.score(batch)
         assignment = assign_candidate_values(values, newborn, references, legal,
             mode=self.jev_candidate_policy.assignment_mode, legacy_thresholds=thresholds)
+        if profiler is not None:
+            torch.cuda.synchronize(scores.device)
+            policy_end = time.perf_counter()
+            profiler(batch=batch, feature_ms=(policy_begin-feature_begin)*1000,
+                policy_assignment_ms=(policy_end-policy_begin)*1000,
+                peak_temporary_bytes=torch.cuda.max_memory_allocated(scores.device)-allocated)
         self._jev_candidate_new_rows = assignment.new_rows if assignment.semantic_new else ()
         self._jev_candidate_last = {'candidate_ids': references, 'batch': batch,
             'assignment': assignment, 'candidate_values': values.detach(), 'new_values': newborn.detach(),

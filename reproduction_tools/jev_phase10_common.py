@@ -29,8 +29,19 @@ def protect():
  assert not subprocess.check_output(['git','diff','--name-only','--','reports/JEV_PHASE9'],cwd=ROOT,text=True).strip()
 def binding():
  return {'source_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'dirty':bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip()),'source_root':str(ROOT),'config_SHA256':sha(CONFIG),'foundation_SHA256':sha(FOUNDATION),'cache_index_SHA256':sha(CACHE/'index.jsonl'),'B2_SHA256':sha(B2),'sources':{str(p.relative_to(ROOT)):sha(p)for p in sorted(list((ROOT/'reproduction_tools').glob('*phase10*.py'))+list((ROOT/'gtr/modeling').glob('jev_candidate*.py'))+list((ROOT/'gtr/modeling').glob('jev_native*.py'))+[ROOT/'gtr/modeling/meta_arch/gtr_rcnn.py'])},'CUDA_VISIBLE_DEVICES':os.environ.get('CUDA_VISIBLE_DEVICES'),'seed':20261008,'trajectory_master_seed':20261006,'Full24':False,'official_TEST':False}
-def build_model(video):
- assert video in TRAIN+VAL,'heldout stays sealed before model freeze'
+def heldout_guard(video):
+ assert video in HELDOUT
+ p=REPORTS/'PHASE10_CHECKPOINT_AND_HELDOUT_FREEZE.json';f=json.loads(p.read_text())
+ assert f['status']=='FROZEN'and f['heldout_videos']==HELDOUT
+ for name in ['NATIVE_STATE_PARITY.json','H32_CAUSAL_PARITY.json','DATA_ELIGIBILITY.json','TINY_OVERFIT.json','THREE_MODEL_TRAINING_COMPLETE.json']:
+  d=json.loads((REPORTS/name).read_text());assert d['status']in ['PASS','COMPLETE']
+  assert sha(REPORTS/name)==f['gate_SHA256'][name]
+ for r in f['checkpoints']:assert sha(r['path'])==r['SHA256']
+ return f
+def build_model(video, *, allow_heldout=False):
+ if video in HELDOUT:
+  assert allow_heldout,'heldout stays sealed before explicit frozen release';heldout_guard(video)
+ else:assert video in TRAIN+VAL
  from build_jev_counterfactual_v2 import build_formal_gmt_engine
  from gtr.modeling.jev_runtime import JEVRuntimePolicy
  from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
@@ -39,6 +50,8 @@ def build_model(video):
  m=e.association_fn.model;m.to('cuda:0').eval();m.jev_enabled=True;m.jev_mode='off';m.jev_policy=JEVRuntimePolicy('off',None);m.jev_perception_cache_reader=FrozenPerceptionCache(CACHE);m.jev_perception_cache=None;m.jev_candidate_policy=CandidateValuePolicy('gmt_compat')
  return m
 def inputs(video,frames):
+ if video in HELDOUT:heldout_guard(video)
+ else:assert video in TRAIN+VAL
  from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
  cache=FrozenPerceptionCache(CACHE);values=[]
  for view in range(2):
