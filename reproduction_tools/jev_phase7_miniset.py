@@ -39,6 +39,10 @@ def validate(record):
     assert not offline['unknown_target']or offline['weight']==0.
     for action in ACTIONS:
         assert set(record['branches'][action]['fingerprints'])==set(record['branches']['CONTROL']['fingerprints'])
+    if 'data_gate'in record:
+        assert record['offline_only']['effective_training_weight']==float(record['data_gate']['record_eligible'])
+        assert len(record['data_gate']['original_source_label_sha256'])==64
+        if record['data_gate']['quarantine_reason']is not None:assert record['offline_only']['effective_training_weight']==0.
     return record
 
 class NativeCausalMiniSet:

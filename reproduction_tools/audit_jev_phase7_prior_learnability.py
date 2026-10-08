@@ -18,10 +18,14 @@ def summarize_labels(paths):
         if r['informative']:
             weights.append(r['sample_weight']);winners.update(r['best_actions'])
         hashes={r['branches'][a]['prediction_sha256']for a in actions};diverged+=len(hashes)>1
+    known_margins=[m for m,r in zip(margins,rows)if r['offline_GT']is not None]
     ess=sum(weights)**2/sum(w*w for w in weights)if weights else 0
     return {'events':len(rows),'known_target':known,'informative':sum(r['informative']for r in rows),
         'unique_best':sum(r['offline_GT']is not None and len(r['best_actions'])==1 and r['informative']for r in rows),
-        'tie_count':ties,'tie_rate':ties/max(1,len(rows)),'positive_margin_rate':sum(m>1e-8 for m in margins)/max(1,len(rows)),
+        'tie_count':ties,'tie_rate':ties/max(1,len(rows)),'positive_margin_rate_raw_including_unknown':sum(m>1e-8 for m in margins)/max(1,len(rows)),
+        'positive_margin_rate_known_target':sum(m>1e-8 for m in known_margins)/max(1,len(known_margins)),
+        'known_target_utility_margin_quantiles':quantiles(known_margins),
+        'unknown_positive_margin_is_supervision':False,
         'utility_margin_quantiles':quantiles(margins),'best_action_counts_informative':dict(winners),'effective_sample_size':ess,
         'prediction_branch_divergence':diverged,'native_state_divergence':'not preserved as complete-field hashes in these labels; do not infer from prediction hashes',
         'GT_or_future_inputs':any(r.get('GT_or_future_inputs',False)for r in rows),

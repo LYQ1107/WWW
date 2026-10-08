@@ -50,6 +50,8 @@ def isolate_phase6_imports():
 
 def binding():
     return {'run_id':RUN_ID,'git_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+            'git_worktree_dirty':bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip()),
+            'code_revision_scope':'HEAD plus exact recorded source hashes; dirty HEAD is not claimed to contain every executing file',
             'base_commit':BASE,'b2_sha256':sha(B2),'cache_index_sha256':sha(CACHE/'index.jsonl'),
             'annotations_sha256':sha(ANNOTATIONS),'seed':20261003,
             'official_test_read':False,'full24_authorized':False,
