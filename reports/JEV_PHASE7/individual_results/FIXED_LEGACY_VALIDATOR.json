@@ -1,0 +1,815 @@
+{
+  "binding": {
+    "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+    "b2_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+    "base_commit": "40cbc0ecc22bc16c4e3602eefe5eb06e2d6e319e",
+    "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+    "full24_authorized": false,
+    "git_commit": "8016a68082596ea462a35d1ad80b9d17fa032e0c",
+    "official_test_read": false,
+    "run_id": "20261008_p05_v1",
+    "seed": 20261003,
+    "source_sha256": {
+      "reproduction_tools/archive_jev_phase7.py": "b43ba96aadbfe1527debddd18d60536a4e6b346170aefb0b63161e272c456599",
+      "reproduction_tools/audit_jev_phase7_native.py": "467303996e8271042793b5b9370987443f096768bceb530079b286ed6afa48d9",
+      "reproduction_tools/build_jev_phase7_miniset.py": "dac7b4f03eb659a6ca785896aa107dfde456de81d5763012dbc3584be45e0b20",
+      "reproduction_tools/fetch_jev_phase7_sources.py": "3486520c254c38ccf4f57be6339b71d374402690733b4c2b22e9cf3a67f36135",
+      "reproduction_tools/fit_jev_phase7_controls.py": "d3ca0385c982102f962367972d91125b3a00619d96f478ff69fba45b7ccf3c19",
+      "reproduction_tools/jev_phase7_common.py": "7cf33eb65170d95b2430c6d04d31ca03a9943fcb3f8af4b7cc2869306e955d99",
+      "reproduction_tools/jev_phase7_mlp_norm.py": "c239e4574e28fca5fc880d108951a0ffe5b39d8dc19d5eff7ad5a88fc19b2629",
+      "reproduction_tools/jev_phase7_native.py": "1d36f9cbf8da36557ae9632c242bc1bd53de1913467345ae57f000591f0c247c",
+      "reproduction_tools/jev_phase7_offline.py": "4622b9b0eb01ad10af25ba5f246ad87848a54e89a6229343a6df6a5d95764b1d",
+      "reproduction_tools/jev_phase7_policies.py": "e1aad23946820ec9afeee6927bb9122ce20195d1b7d3621769f7ba6ba4ece283",
+      "reproduction_tools/run_jev_phase7_attribution.py": "a3a618ab47cc7b78bcdcf01f34f4f3bf8246a4f1a9d452130ef0290e9fa496a4",
+      "reproduction_tools/run_jev_phase7_bytetrack.py": "c52108d7da2b28693e7257afafd59aa5eb8f825da13d0d52ce7740334e797a3a",
+      "reproduction_tools/run_jev_phase7_normalized.py": "3ab2a4617d21482db342cd479908a3d7c3b07536920972fc5730d538a32ef7eb",
+      "reproduction_tools/run_jev_phase7_paired.py": "9fd8e73baf6eb9ebb4810dfa8e969479a262fa669d64638592c8115a01c53217",
+      "reproduction_tools/run_jev_phase7_queue.py": "715b6b7c70cba5a8419aa62170482cae7edc278b2e677e3f01bb6f0413fe2848",
+      "reproduction_tools/run_jev_phase7_supplements.py": "64edfff1aca0888be539990a76666ed8b4daaaa3354ecc4494666d5e6fb7240b",
+      "reproduction_tools/summarize_jev_phase7.py": "a380a9c188c2afedc94ec6b023784a3e0eef235dd8a195bf32ca81bbb2786d51"
+    }
+  },
+  "evaluation": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/pooled/FIXED_LEGACY_VALIDATOR/tracking_eval_runtime_state/jev/evaluation",
+  "official_test_read": false,
+  "offline_identity_diagnostics": {
+    "10": {
+      "birth_anchor_wrong_observations": 1,
+      "definition": "IoU>=.5 one-to-one per image; fixed global two-camera identity map; separate first-observation anchor temporal errors",
+      "extra_birth_fragments": 1,
+      "false_merge_tracks": 1,
+      "global_identity_wrong_observations": 1,
+      "global_unmapped_fragment_observations": 0,
+      "identity_index_query": {
+        "contaminated_retrieved_trajectory_rate": 1.0,
+        "cross_camera_identity_continuity_rate": 1.0,
+        "false_identity_joins": 55,
+        "latency_scope": "prebuilt index lookup only; annotation alignment/evaluation excluded",
+        "precision_micro": 0.9960505529225908,
+        "queries": [
+          {
+            "cross_camera_continuity": true,
+            "expected_cross_camera": true,
+            "false_joins": 13,
+            "gt": 1,
+            "gt_observations": 3488,
+            "precision": 0.9961719670200235,
+            "predicted_id": 1,
+            "recall": 0.9698967889908257,
+            "retrieved": 3396,
+            "tp": 3383
+          },
+          {
+            "cross_camera_continuity": true,
+            "expected_cross_camera": true,
+            "false_joins": 10,
+            "gt": 2,
+            "gt_observations": 3581,
+            "precision": 0.9971719457013575,
+            "predicted_id": 2,
+            "recall": 0.9846411616866797,
+            "retrieved": 3536,
+            "tp": 3526
+          },
+          {
+            "cross_camera_continuity": true,
+            "expected_cross_camera": true,
+            "false_joins": 23,
+            "gt": 3,
+            "gt_observations": 3420,
+            "precision": 0.9932630345635618,
+            "predicted_id": 3,
+            "recall": 0.9915204678362574,
+            "retrieved": 3414,
+            "tp": 3391
+          },
+          {
+            "cross_camera_continuity": true,
+            "expected_cross_camera": true,
+            "false_joins": 9,
+            "gt": 4,
+            "gt_observations": 3603,
+            "precision": 0.9974860335195531,
+            "predicted_id": 4,
+            "recall": 0.9911185123508187,
+            "retrieved": 3580,
+            "tp": 3571
+          }
+        ],
+        "query_lookup_latency_us_p50_p95": [
+          1.39,
+          1.6088
+        ],
+        "recall_micro": 0.9843173431734318
+      },
+      "known_observations": 13872,
+      "mechanism_correctness": {
+        "counts": {},
+        "events": [],
+        "scope": "descriptive initial proposal to post-validation existing identity; birth/recovery excluded; global fixed mapping, not paired causal attribution"
+      },
+      "unknown_GT_observations": 54,
+      "wrong_ID_duration_quantiles_frames": {
+        "max": 1.0,
+        "p50": 1.0,
+        "p90": 1.0
+      },
+      "wrong_ID_duration_total_camera_frames": 1,
+      "wrong_ID_episodes": [
+        {
+          "duration_frames": 1,
+          "end": 1569,
+          "gt": 3,
+          "right_censored": true,
+          "start": 1569,
+          "view": 1
+        }
+      ]
+    },
+    "11": {
+      "birth_anchor_wrong_observations": 6,
+      "definition": "IoU>=.5 one-to-one per image; fixed global two-camera identity map; separate first-observation anchor temporal errors",
+      "extra_birth_fragments": 5,
+      "false_merge_tracks": 3,
+      "global_identity_wrong_observations": 1130,
+      "global_unmapped_fragment_observations": 1126,
+      "identity_index_query": {
+        "contaminated_retrieved_trajectory_rate": 0.8,
+        "cross_camera_identity_continuity_rate": 1.0,
+        "false_identity_joins": 58,
+        "latency_scope": "prebuilt index lookup only; annotation alignment/evaluation excluded",
+        "precision_micro": 0.9958562549117668,
+        "queries": [
+          {
+            "cross_camera_continuity": true,
+            "expected_cross_camera": true,
+            "false_joins": 1,
+            "gt": 1,
+            "gt_observations": 4011,
+            "precision": 0.9997506234413965,
+            "predicted_id": 1,
+            "recall": 0.99950137122912,
+            "retrieved": 4010,
+            "tp": 4009
+          },
+          {
+            "cross_camera_continuity": true,
+            "expected_cross_camera": true,
+            "false_joins": 10,
+            "gt": 2,
+            "gt_observations": 3541,
+            "precision": 0.9971703452178834,
+            "predicted_id": 2,
+            "recall": 0.9951990963004801,
+            "retrieved": 3534,
+            "tp": 3524
+          },
+          {
+            "cross_camera_continuity": true,
+            "expected_cross_camera": true,
+            "false_joins": 13,
+            "gt": 3,
+            "gt_observations": 3390,
+            "precision": 0.9941782355575459,
+            "predicted_id": 8,
+            "recall": 0.6548672566371682,
+            "retrieved": 2233,
+            "tp": 2220
+          },
+          {
+            "cross_camera_continuity": true,
+            "expected_cross_camera": true,
+            "false_joins": 34,
+            "gt": 4,
+            "gt_observations": 3867,
+            "precision": 0.9912820512820513,
+            "predicted_id": 4,
+            "recall": 0.99974140160331,
+            "retrieved": 3900,
+            "tp": 3866
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": false,
+            "false_joins": 0,
+            "gt": 5,
+            "gt_observations": 332,
+            "precision": 1.0,
+            "predicted_id": 9,
+            "recall": 0.963855421686747,
+            "retrieved": 320,
+            "tp": 320
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": false,
+            "false_joins": 0,
+            "gt": 31,
+            "gt_observations": 1,
+            "precision": null,
+            "predicted_id": null,
+            "recall": 0.0,
+            "retrieved": 0,
+            "tp": 0
+          }
+        ],
+        "query_lookup_latency_us_p50_p95": [
+          0.871,
+          1.289
+        ],
+        "recall_micro": 0.920552106723022
+      },
+      "known_observations": 15069,
+      "mechanism_correctness": {
+        "counts": {},
+        "events": [],
+        "scope": "descriptive initial proposal to post-validation existing identity; birth/recovery excluded; global fixed mapping, not paired causal attribution"
+      },
+      "unknown_GT_observations": 59,
+      "wrong_ID_duration_quantiles_frames": {
+        "max": 2.0,
+        "p50": 1.0,
+        "p90": 1.6
+      },
+      "wrong_ID_duration_total_camera_frames": 6,
+      "wrong_ID_episodes": [
+        {
+          "duration_frames": 1,
+          "end": 1566,
+          "gt": 2,
+          "right_censored": false,
+          "start": 1566,
+          "view": 0
+        },
+        {
+          "duration_frames": 2,
+          "end": 276,
+          "gt": 2,
+          "right_censored": false,
+          "start": 275,
+          "view": 1
+        },
+        {
+          "duration_frames": 1,
+          "end": 1792,
+          "gt": 2,
+          "right_censored": false,
+          "start": 1792,
+          "view": 1
+        },
+        {
+          "duration_frames": 1,
+          "end": 1792,
+          "gt": 3,
+          "right_censored": false,
+          "start": 1792,
+          "view": 1
+        },
+        {
+          "duration_frames": 1,
+          "end": 1555,
+          "gt": 31,
+          "right_censored": true,
+          "start": 1555,
+          "view": 0
+        }
+      ]
+    },
+    "9": {
+      "birth_anchor_wrong_observations": 9,
+      "definition": "IoU>=.5 one-to-one per image; fixed global two-camera identity map; separate first-observation anchor temporal errors",
+      "extra_birth_fragments": 8,
+      "false_merge_tracks": 2,
+      "global_identity_wrong_observations": 112,
+      "global_unmapped_fragment_observations": 103,
+      "identity_index_query": {
+        "contaminated_retrieved_trajectory_rate": 1.0,
+        "cross_camera_identity_continuity_rate": 1.0,
+        "false_identity_joins": 10,
+        "latency_scope": "prebuilt index lookup only; annotation alignment/evaluation excluded",
+        "precision_micro": 0.9988342270925624,
+        "queries": [
+          {
+            "cross_camera_continuity": true,
+            "expected_cross_camera": true,
+            "false_joins": 1,
+            "gt": 1,
+            "gt_observations": 3884,
+            "precision": 0.9997406639004149,
+            "predicted_id": 1,
+            "recall": 0.9925334706488157,
+            "retrieved": 3856,
+            "tp": 3855
+          },
+          {
+            "cross_camera_continuity": true,
+            "expected_cross_camera": true,
+            "false_joins": 8,
+            "gt": 2,
+            "gt_observations": 3884,
+            "precision": 0.9979328165374677,
+            "predicted_id": 2,
+            "recall": 0.994335736354274,
+            "retrieved": 3870,
+            "tp": 3862
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": false,
+            "false_joins": 1,
+            "gt": 3,
+            "gt_observations": 952,
+            "precision": 0.9988262910798122,
+            "predicted_id": 12,
+            "recall": 0.8939075630252101,
+            "retrieved": 852,
+            "tp": 851
+          }
+        ],
+        "query_lookup_latency_us_p50_p95": [
+          0.852,
+          1.0896
+        ],
+        "recall_micro": 0.9825688073394495
+      },
+      "known_observations": 8680,
+      "mechanism_correctness": {
+        "counts": {
+          "proposal_pair_corrections": 1,
+          "proposal_pair_regressions": 0
+        },
+        "events": [
+          {
+            "after_correct": false,
+            "after_existing_id": -1,
+            "before_correct": false,
+            "before_id": 1,
+            "frame": 1829,
+            "offline_GT": 2,
+            "row": 1,
+            "view": 1
+          },
+          {
+            "after_correct": true,
+            "after_existing_id": 1,
+            "before_correct": false,
+            "before_id": 2,
+            "frame": 1829,
+            "offline_GT": 1,
+            "row": 2,
+            "view": 1
+          }
+        ],
+        "scope": "descriptive initial proposal to post-validation existing identity; birth/recovery excluded; global fixed mapping, not paired causal attribution"
+      },
+      "unknown_GT_observations": 34,
+      "wrong_ID_duration_quantiles_frames": {
+        "max": 3.0,
+        "p50": 1.0,
+        "p90": 2.5
+      },
+      "wrong_ID_duration_total_camera_frames": 9,
+      "wrong_ID_episodes": [
+        {
+          "duration_frames": 1,
+          "end": 1129,
+          "gt": 1,
+          "right_censored": false,
+          "start": 1129,
+          "view": 0
+        },
+        {
+          "duration_frames": 1,
+          "end": 1117,
+          "gt": 1,
+          "right_censored": false,
+          "start": 1117,
+          "view": 1
+        },
+        {
+          "duration_frames": 3,
+          "end": 1121,
+          "gt": 1,
+          "right_censored": true,
+          "start": 1119,
+          "view": 1
+        },
+        {
+          "duration_frames": 2,
+          "end": 1124,
+          "gt": 1,
+          "right_censored": true,
+          "start": 1123,
+          "view": 1
+        },
+        {
+          "duration_frames": 1,
+          "end": 1234,
+          "gt": 1,
+          "right_censored": false,
+          "start": 1234,
+          "view": 1
+        },
+        {
+          "duration_frames": 1,
+          "end": 1234,
+          "gt": 2,
+          "right_censored": false,
+          "start": 1234,
+          "view": 1
+        }
+      ]
+    }
+  },
+  "pooled_definition": "one evaluator over all six camera sequences; not a mean of video metrics",
+  "pooled_prediction_sha256": "8aa51ff42f9da9f6c17981276ebcf471b81f4e5ae3c05f8b274481a10ac25fb8",
+  "pooled_predictions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/pooled/FIXED_LEGACY_VALIDATOR/predictions.json",
+  "prepared": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/pooled/FIXED_LEGACY_VALIDATOR/tracking_eval_runtime_state/jev/prepared",
+  "runs": [
+    {
+      "binding": {
+        "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+        "b2_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+        "base_commit": "40cbc0ecc22bc16c4e3602eefe5eb06e2d6e319e",
+        "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+        "full24_authorized": false,
+        "git_commit": "e930c2e5768024fba6ba46362a8be2d528130aff",
+        "official_test_read": false,
+        "run_id": "20261008_p05_v1",
+        "seed": 20261003,
+        "source_sha256": {
+          "reproduction_tools/archive_jev_phase7.py": "2d4ea13472add0262e194abfabf4c925587c145fc88a845e5973ad472acd9d84",
+          "reproduction_tools/audit_jev_phase7_native.py": "467303996e8271042793b5b9370987443f096768bceb530079b286ed6afa48d9",
+          "reproduction_tools/fetch_jev_phase7_sources.py": "3486520c254c38ccf4f57be6339b71d374402690733b4c2b22e9cf3a67f36135",
+          "reproduction_tools/fit_jev_phase7_controls.py": "d3ca0385c982102f962367972d91125b3a00619d96f478ff69fba45b7ccf3c19",
+          "reproduction_tools/jev_phase7_common.py": "7cf33eb65170d95b2430c6d04d31ca03a9943fcb3f8af4b7cc2869306e955d99",
+          "reproduction_tools/jev_phase7_mlp_norm.py": "c239e4574e28fca5fc880d108951a0ffe5b39d8dc19d5eff7ad5a88fc19b2629",
+          "reproduction_tools/jev_phase7_native.py": "1d36f9cbf8da36557ae9632c242bc1bd53de1913467345ae57f000591f0c247c",
+          "reproduction_tools/jev_phase7_offline.py": "4622b9b0eb01ad10af25ba5f246ad87848a54e89a6229343a6df6a5d95764b1d",
+          "reproduction_tools/jev_phase7_policies.py": "e1aad23946820ec9afeee6927bb9122ce20195d1b7d3621769f7ba6ba4ece283",
+          "reproduction_tools/run_jev_phase7_attribution.py": "a3a618ab47cc7b78bcdcf01f34f4f3bf8246a4f1a9d452130ef0290e9fa496a4",
+          "reproduction_tools/run_jev_phase7_bytetrack.py": "9bb434b2a47f356442a47347d889e559683add8025d08fdeebb4809616f56d63",
+          "reproduction_tools/run_jev_phase7_normalized.py": "3ab2a4617d21482db342cd479908a3d7c3b07536920972fc5730d538a32ef7eb",
+          "reproduction_tools/run_jev_phase7_paired.py": "9fd8e73baf6eb9ebb4810dfa8e969479a262fa669d64638592c8115a01c53217",
+          "reproduction_tools/run_jev_phase7_queue.py": "715b6b7c70cba5a8419aa62170482cae7edc278b2e677e3f01bb6f0413fe2848",
+          "reproduction_tools/summarize_jev_phase7.py": "3c6ef97bf6c8c33cd84f55fa41c9a82d63e73ea8f73c40dac1ba098e70af720b"
+        }
+      },
+      "budget_achieved": 1,
+      "budget_exact": true,
+      "budget_target": null,
+      "captures": [],
+      "complete_video": true,
+      "condition": "FIXED",
+      "controller_seconds": 2.566145211458206,
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video09/FIXED_LEGACY_VALIDATOR/tracking_eval_runtime_state/jev/evaluation",
+      "global_reassociation": true,
+      "initial_state_fingerprint": "39afcdfbae59bc4b43ec92115e6134de149f8d1f5ff243c7a8749f85b18c815a",
+      "mechanism_counts": {
+        "accept_rows_moved": 1,
+        "accepted_moved_committed": 1,
+        "banned_edges": 1,
+        "changed_pairs": 2,
+        "match_rows": 8712,
+        "native_seconds": 0.003200031816959381,
+        "payloads": 3883,
+        "reassociate_payloads": 1,
+        "reassociate_rows": 1,
+        "second_validation_accepted": 2,
+        "second_validations": 3,
+        "solver_seconds": 0.00016002357006072998,
+        "validation_seconds": 1.0699033737182617e-05
+      },
+      "mechanisms": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video09/FIXED_LEGACY_VALIDATOR_mechanisms.jsonl.gz",
+      "mechanisms_sha256": "415bf48226e03cddde29e9014d51022bd70f1812ce819e9702d4c1aed2598b35",
+      "metrics": {
+        "AssA": 91.83141788157381,
+        "DetA": 92.85774254800397,
+        "Frag": 13.0,
+        "HOTA": 92.33932417027172,
+        "IDF1": 98.38247103361249,
+        "IDSW": 17.0,
+        "MOTA": 98.93348623853211
+      },
+      "official_test_read": false,
+      "predictions_sha256": "aa3de448bc93a7e34cecb2f64a2fd2b3d043b975515bd134152e2b6acc931cfc",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video09/FIXED_LEGACY_VALIDATOR/tracking_eval_runtime_state/jev/prepared",
+      "result": {
+        "counts": {
+          "ACCEPT_CURRENT": 8688,
+          "MATCH_DECISION": 8712,
+          "MEMORY_DECISION": 8688,
+          "REACTIVATE_OLD": 0,
+          "REACTIVATION_DECISION": 15,
+          "REASSOCIATE": 1,
+          "SKIP_MEMORY": 0,
+          "START_NEW": 38,
+          "WRITE_MEMORY": 8688,
+          "action_rates": {
+            "ACCEPT_CURRENT": 0.4988802756244617,
+            "REACTIVATE_OLD": 0.0,
+            "REASSOCIATE": 5.7421762848119435e-05,
+            "SKIP_MEMORY": 0.0,
+            "START_NEW": 0.0021820269882285386,
+            "WRITE_MEMORY": 0.4988802756244617
+          },
+          "canonical_feature_records": 0,
+          "fallback_feature_records": 0,
+          "false_reactivation": 0.0,
+          "feature_parity_max_abs_error": 0.0,
+          "feature_parity_records": 0,
+          "known_commit_evaluations": 0,
+          "memory_contamination": 0.0,
+          "missing_action_outcomes": 0,
+          "off_action_mismatches": 0,
+          "reactivation_action_counts": {
+            "REACTIVATE_OLD": 0,
+            "START_NEW": 15
+          },
+          "reactivation_candidate_evaluations": 15,
+          "reactivation_no_candidate": 9,
+          "reactivation_wrong_commit": 0,
+          "runtime_feature_records": 17415,
+          "trace_action_records": 0,
+          "trace_debug_feature_records": 0,
+          "unsupported_reactivation": 0,
+          "wrong_commit": 0,
+          "wrong_commit_rate": 0.0
+        },
+        "decisions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video09/FIXED_LEGACY_VALIDATOR/tracking_decisions/jev.json",
+        "event_horizon_stop": false,
+        "method": "jev",
+        "native_match_validation": false,
+        "payloads": 3884,
+        "prediction_rows": 8714,
+        "predictions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video09/FIXED_LEGACY_VALIDATOR/tracking_predictions/jev.json",
+        "status": "PASS"
+      },
+      "status": "COMPLETE",
+      "tag": "FIXED_LEGACY_VALIDATOR",
+      "validator": "LEGACY",
+      "video": 9,
+      "wall_seconds_excluding_eval": 391.91325974464417
+    },
+    {
+      "binding": {
+        "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+        "b2_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+        "base_commit": "40cbc0ecc22bc16c4e3602eefe5eb06e2d6e319e",
+        "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+        "full24_authorized": false,
+        "git_commit": "e930c2e5768024fba6ba46362a8be2d528130aff",
+        "official_test_read": false,
+        "run_id": "20261008_p05_v1",
+        "seed": 20261003,
+        "source_sha256": {
+          "reproduction_tools/archive_jev_phase7.py": "2d4ea13472add0262e194abfabf4c925587c145fc88a845e5973ad472acd9d84",
+          "reproduction_tools/audit_jev_phase7_native.py": "467303996e8271042793b5b9370987443f096768bceb530079b286ed6afa48d9",
+          "reproduction_tools/fetch_jev_phase7_sources.py": "3486520c254c38ccf4f57be6339b71d374402690733b4c2b22e9cf3a67f36135",
+          "reproduction_tools/fit_jev_phase7_controls.py": "d3ca0385c982102f962367972d91125b3a00619d96f478ff69fba45b7ccf3c19",
+          "reproduction_tools/jev_phase7_common.py": "7cf33eb65170d95b2430c6d04d31ca03a9943fcb3f8af4b7cc2869306e955d99",
+          "reproduction_tools/jev_phase7_mlp_norm.py": "c239e4574e28fca5fc880d108951a0ffe5b39d8dc19d5eff7ad5a88fc19b2629",
+          "reproduction_tools/jev_phase7_native.py": "1d36f9cbf8da36557ae9632c242bc1bd53de1913467345ae57f000591f0c247c",
+          "reproduction_tools/jev_phase7_offline.py": "4622b9b0eb01ad10af25ba5f246ad87848a54e89a6229343a6df6a5d95764b1d",
+          "reproduction_tools/jev_phase7_policies.py": "e1aad23946820ec9afeee6927bb9122ce20195d1b7d3621769f7ba6ba4ece283",
+          "reproduction_tools/run_jev_phase7_attribution.py": "a3a618ab47cc7b78bcdcf01f34f4f3bf8246a4f1a9d452130ef0290e9fa496a4",
+          "reproduction_tools/run_jev_phase7_bytetrack.py": "9bb434b2a47f356442a47347d889e559683add8025d08fdeebb4809616f56d63",
+          "reproduction_tools/run_jev_phase7_normalized.py": "3ab2a4617d21482db342cd479908a3d7c3b07536920972fc5730d538a32ef7eb",
+          "reproduction_tools/run_jev_phase7_paired.py": "9fd8e73baf6eb9ebb4810dfa8e969479a262fa669d64638592c8115a01c53217",
+          "reproduction_tools/run_jev_phase7_queue.py": "715b6b7c70cba5a8419aa62170482cae7edc278b2e677e3f01bb6f0413fe2848",
+          "reproduction_tools/summarize_jev_phase7.py": "3c6ef97bf6c8c33cd84f55fa41c9a82d63e73ea8f73c40dac1ba098e70af720b"
+        }
+      },
+      "budget_achieved": 0,
+      "budget_exact": true,
+      "budget_target": null,
+      "captures": [],
+      "complete_video": true,
+      "condition": "FIXED",
+      "controller_seconds": 4.037609301507473,
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video10/FIXED_LEGACY_VALIDATOR/tracking_eval_runtime_state/jev/evaluation",
+      "global_reassociation": true,
+      "initial_state_fingerprint": "764bd14ab8a5621ba173cc70c9b260b408183a8ad7184d949f97e4faf407b899",
+      "mechanism_counts": {
+        "accept_rows_moved": 0,
+        "accepted_moved_committed": 0,
+        "banned_edges": 0,
+        "changed_pairs": 0,
+        "match_rows": 13925,
+        "native_seconds": 0.0,
+        "payloads": 4183,
+        "reassociate_payloads": 0,
+        "reassociate_rows": 0,
+        "second_validation_accepted": 0,
+        "second_validations": 0,
+        "solver_seconds": 0.0,
+        "validation_seconds": 0.0
+      },
+      "mechanisms": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video10/FIXED_LEGACY_VALIDATOR_mechanisms.jsonl.gz",
+      "mechanisms_sha256": "cfbadfba22ec97415024018b21195ac8a08c889ca3468bc255e5f5657f85ba41",
+      "metrics": {
+        "AssA": 81.11229162393103,
+        "DetA": 80.96159607508253,
+        "Frag": 40.0,
+        "HOTA": 81.03631971078653,
+        "IDF1": 99.02205724891141,
+        "IDSW": 0.0,
+        "MOTA": 98.05563440249787
+      },
+      "official_test_read": false,
+      "predictions_sha256": "82ec3e6de4230e3da14b567bb4ecc8c07026ea7825d7352db40d20754363d6ec",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video10/FIXED_LEGACY_VALIDATOR/tracking_eval_runtime_state/jev/prepared",
+      "result": {
+        "counts": {
+          "ACCEPT_CURRENT": 13922,
+          "MATCH_DECISION": 13925,
+          "MEMORY_DECISION": 13922,
+          "REACTIVATE_OLD": 0,
+          "REACTIVATION_DECISION": 0,
+          "REASSOCIATE": 0,
+          "SKIP_MEMORY": 0,
+          "START_NEW": 3,
+          "WRITE_MEMORY": 13922,
+          "action_rates": {
+            "ACCEPT_CURRENT": 0.49994613423349016,
+            "REACTIVATE_OLD": 0.0,
+            "REASSOCIATE": 0.0,
+            "SKIP_MEMORY": 0.0,
+            "START_NEW": 0.00010773153301971488,
+            "WRITE_MEMORY": 0.49994613423349016
+          },
+          "canonical_feature_records": 0,
+          "fallback_feature_records": 0,
+          "false_reactivation": 0.0,
+          "feature_parity_max_abs_error": 0.0,
+          "feature_parity_records": 0,
+          "known_commit_evaluations": 0,
+          "memory_contamination": 0.0,
+          "missing_action_outcomes": 0,
+          "off_action_mismatches": 0,
+          "reactivation_action_counts": {
+            "REACTIVATE_OLD": 0,
+            "START_NEW": 0
+          },
+          "reactivation_candidate_evaluations": 0,
+          "reactivation_no_candidate": 3,
+          "reactivation_wrong_commit": 0,
+          "runtime_feature_records": 27847,
+          "trace_action_records": 0,
+          "trace_debug_feature_records": 0,
+          "unsupported_reactivation": 0,
+          "wrong_commit": 0,
+          "wrong_commit_rate": 0.0
+        },
+        "decisions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video10/FIXED_LEGACY_VALIDATOR/tracking_decisions/jev.json",
+        "event_horizon_stop": false,
+        "method": "jev",
+        "native_match_validation": false,
+        "payloads": 4184,
+        "prediction_rows": 13926,
+        "predictions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video10/FIXED_LEGACY_VALIDATOR/tracking_predictions/jev.json",
+        "status": "PASS"
+      },
+      "status": "COMPLETE",
+      "tag": "FIXED_LEGACY_VALIDATOR",
+      "validator": "LEGACY",
+      "video": 10,
+      "wall_seconds_excluding_eval": 432.49339009076357
+    },
+    {
+      "binding": {
+        "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+        "b2_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+        "base_commit": "40cbc0ecc22bc16c4e3602eefe5eb06e2d6e319e",
+        "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+        "full24_authorized": false,
+        "git_commit": "e930c2e5768024fba6ba46362a8be2d528130aff",
+        "official_test_read": false,
+        "run_id": "20261008_p05_v1",
+        "seed": 20261003,
+        "source_sha256": {
+          "reproduction_tools/archive_jev_phase7.py": "2d4ea13472add0262e194abfabf4c925587c145fc88a845e5973ad472acd9d84",
+          "reproduction_tools/audit_jev_phase7_native.py": "467303996e8271042793b5b9370987443f096768bceb530079b286ed6afa48d9",
+          "reproduction_tools/fetch_jev_phase7_sources.py": "3486520c254c38ccf4f57be6339b71d374402690733b4c2b22e9cf3a67f36135",
+          "reproduction_tools/fit_jev_phase7_controls.py": "d3ca0385c982102f962367972d91125b3a00619d96f478ff69fba45b7ccf3c19",
+          "reproduction_tools/jev_phase7_common.py": "7cf33eb65170d95b2430c6d04d31ca03a9943fcb3f8af4b7cc2869306e955d99",
+          "reproduction_tools/jev_phase7_mlp_norm.py": "c239e4574e28fca5fc880d108951a0ffe5b39d8dc19d5eff7ad5a88fc19b2629",
+          "reproduction_tools/jev_phase7_native.py": "1d36f9cbf8da36557ae9632c242bc1bd53de1913467345ae57f000591f0c247c",
+          "reproduction_tools/jev_phase7_offline.py": "4622b9b0eb01ad10af25ba5f246ad87848a54e89a6229343a6df6a5d95764b1d",
+          "reproduction_tools/jev_phase7_policies.py": "e1aad23946820ec9afeee6927bb9122ce20195d1b7d3621769f7ba6ba4ece283",
+          "reproduction_tools/run_jev_phase7_attribution.py": "a3a618ab47cc7b78bcdcf01f34f4f3bf8246a4f1a9d452130ef0290e9fa496a4",
+          "reproduction_tools/run_jev_phase7_bytetrack.py": "9bb434b2a47f356442a47347d889e559683add8025d08fdeebb4809616f56d63",
+          "reproduction_tools/run_jev_phase7_normalized.py": "3ab2a4617d21482db342cd479908a3d7c3b07536920972fc5730d538a32ef7eb",
+          "reproduction_tools/run_jev_phase7_paired.py": "9fd8e73baf6eb9ebb4810dfa8e969479a262fa669d64638592c8115a01c53217",
+          "reproduction_tools/run_jev_phase7_queue.py": "715b6b7c70cba5a8419aa62170482cae7edc278b2e677e3f01bb6f0413fe2848",
+          "reproduction_tools/summarize_jev_phase7.py": "3c6ef97bf6c8c33cd84f55fa41c9a82d63e73ea8f73c40dac1ba098e70af720b"
+        }
+      },
+      "budget_achieved": 0,
+      "budget_exact": true,
+      "budget_target": null,
+      "captures": [],
+      "complete_video": true,
+      "condition": "FIXED",
+      "controller_seconds": 4.333419062197208,
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video11/FIXED_LEGACY_VALIDATOR/tracking_eval_runtime_state/jev/evaluation",
+      "global_reassociation": true,
+      "initial_state_fingerprint": "5193b40b4e8150e03ad99e3578ff1570495b035bbb04ace653294507e91526ce",
+      "mechanism_counts": {
+        "accept_rows_moved": 0,
+        "accepted_moved_committed": 0,
+        "banned_edges": 0,
+        "changed_pairs": 0,
+        "match_rows": 15124,
+        "native_seconds": 0.0,
+        "payloads": 4113,
+        "reassociate_payloads": 0,
+        "reassociate_rows": 0,
+        "second_validation_accepted": 0,
+        "second_validations": 0,
+        "solver_seconds": 0.0,
+        "validation_seconds": 0.0
+      },
+      "mechanisms": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video11/FIXED_LEGACY_VALIDATOR_mechanisms.jsonl.gz",
+      "mechanisms_sha256": "7fd69e7e19a622c7a73baed58652a70edfa47103bdb0b227d68168036061cc63",
+      "metrics": {
+        "AssA": 79.27526337011956,
+        "DetA": 87.57778817743619,
+        "Frag": 24.0,
+        "HOTA": 83.32186064879095,
+        "IDF1": 92.09778658738024,
+        "IDSW": 10.0,
+        "MOTA": 99.06221106855105
+      },
+      "official_test_read": false,
+      "predictions_sha256": "bc65f63370b10a36fddf9d7453a98056ae0f07dc912388f33948ede9fa0a793d",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video11/FIXED_LEGACY_VALIDATOR/tracking_eval_runtime_state/jev/prepared",
+      "result": {
+        "counts": {
+          "ACCEPT_CURRENT": 15116,
+          "MATCH_DECISION": 15124,
+          "MEMORY_DECISION": 15116,
+          "REACTIVATE_OLD": 0,
+          "REACTIVATION_DECISION": 5,
+          "REASSOCIATE": 0,
+          "SKIP_MEMORY": 0,
+          "START_NEW": 13,
+          "WRITE_MEMORY": 15116,
+          "action_rates": {
+            "ACCEPT_CURRENT": 0.499785088444371,
+            "REACTIVATE_OLD": 0.0,
+            "REASSOCIATE": 0.0,
+            "SKIP_MEMORY": 0.0,
+            "START_NEW": 0.00042982311125805916,
+            "WRITE_MEMORY": 0.499785088444371
+          },
+          "canonical_feature_records": 0,
+          "fallback_feature_records": 0,
+          "false_reactivation": 0.0,
+          "feature_parity_max_abs_error": 0.0,
+          "feature_parity_records": 0,
+          "known_commit_evaluations": 0,
+          "memory_contamination": 0.0,
+          "missing_action_outcomes": 0,
+          "off_action_mismatches": 0,
+          "reactivation_action_counts": {
+            "REACTIVATE_OLD": 0,
+            "START_NEW": 5
+          },
+          "reactivation_candidate_evaluations": 5,
+          "reactivation_no_candidate": 3,
+          "reactivation_wrong_commit": 0,
+          "runtime_feature_records": 30245,
+          "trace_action_records": 0,
+          "trace_debug_feature_records": 0,
+          "unsupported_reactivation": 0,
+          "wrong_commit": 0,
+          "wrong_commit_rate": 0.0
+        },
+        "decisions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video11/FIXED_LEGACY_VALIDATOR/tracking_decisions/jev.json",
+        "event_horizon_stop": false,
+        "method": "jev",
+        "native_match_validation": false,
+        "payloads": 4114,
+        "prediction_rows": 15128,
+        "predictions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/closed_loop/video11/FIXED_LEGACY_VALIDATOR/tracking_predictions/jev.json",
+        "status": "PASS"
+      },
+      "status": "COMPLETE",
+      "tag": "FIXED_LEGACY_VALIDATOR",
+      "validator": "LEGACY",
+      "video": 11,
+      "wall_seconds_excluding_eval": 336.09477952867746
+    }
+  ],
+  "status": "COMPLETE",
+  "tag": "FIXED_LEGACY_VALIDATOR",
+  "true_pooled_TrackEval": {
+    "AssA": 84.55317251386741,
+    "DetA": 85.83433803136259,
+    "Frag": 77.0,
+    "HOTA": 85.02766512632108,
+    "IDF1": 96.10681175880194,
+    "IDSW": 27.0,
+    "MOTA": 98.65890288243664
+  }
+}

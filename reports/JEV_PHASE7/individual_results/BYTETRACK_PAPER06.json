@@ -1,0 +1,613 @@
+{
+  "binding": {
+    "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+    "b2_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+    "base_commit": "40cbc0ecc22bc16c4e3602eefe5eb06e2d6e319e",
+    "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+    "full24_authorized": false,
+    "git_commit": "8016a68082596ea462a35d1ad80b9d17fa032e0c",
+    "official_test_read": false,
+    "run_id": "20261008_p05_v1",
+    "seed": 20261003,
+    "source_sha256": {
+      "reproduction_tools/archive_jev_phase7.py": "b43ba96aadbfe1527debddd18d60536a4e6b346170aefb0b63161e272c456599",
+      "reproduction_tools/audit_jev_phase7_native.py": "467303996e8271042793b5b9370987443f096768bceb530079b286ed6afa48d9",
+      "reproduction_tools/fetch_jev_phase7_sources.py": "3486520c254c38ccf4f57be6339b71d374402690733b4c2b22e9cf3a67f36135",
+      "reproduction_tools/fit_jev_phase7_controls.py": "d3ca0385c982102f962367972d91125b3a00619d96f478ff69fba45b7ccf3c19",
+      "reproduction_tools/jev_phase7_common.py": "7cf33eb65170d95b2430c6d04d31ca03a9943fcb3f8af4b7cc2869306e955d99",
+      "reproduction_tools/jev_phase7_mlp_norm.py": "c239e4574e28fca5fc880d108951a0ffe5b39d8dc19d5eff7ad5a88fc19b2629",
+      "reproduction_tools/jev_phase7_native.py": "1d36f9cbf8da36557ae9632c242bc1bd53de1913467345ae57f000591f0c247c",
+      "reproduction_tools/jev_phase7_offline.py": "4622b9b0eb01ad10af25ba5f246ad87848a54e89a6229343a6df6a5d95764b1d",
+      "reproduction_tools/jev_phase7_policies.py": "e1aad23946820ec9afeee6927bb9122ce20195d1b7d3621769f7ba6ba4ece283",
+      "reproduction_tools/run_jev_phase7_attribution.py": "a3a618ab47cc7b78bcdcf01f34f4f3bf8246a4f1a9d452130ef0290e9fa496a4",
+      "reproduction_tools/run_jev_phase7_bytetrack.py": "c52108d7da2b28693e7257afafd59aa5eb8f825da13d0d52ce7740334e797a3a",
+      "reproduction_tools/run_jev_phase7_normalized.py": "3ab2a4617d21482db342cd479908a3d7c3b07536920972fc5730d538a32ef7eb",
+      "reproduction_tools/run_jev_phase7_paired.py": "9fd8e73baf6eb9ebb4810dfa8e969479a262fa669d64638592c8115a01c53217",
+      "reproduction_tools/run_jev_phase7_queue.py": "715b6b7c70cba5a8419aa62170482cae7edc278b2e677e3f01bb6f0413fe2848",
+      "reproduction_tools/run_jev_phase7_supplements.py": "64edfff1aca0888be539990a76666ed8b4daaaa3354ecc4494666d5e6fb7240b",
+      "reproduction_tools/summarize_jev_phase7.py": "a380a9c188c2afedc94ec6b023784a3e0eef235dd8a195bf32ca81bbb2786d51"
+    }
+  },
+  "evaluation": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/pooled/BYTETRACK_PAPER06/tracking_eval_runtime_state/jev/evaluation",
+  "official_test_read": false,
+  "offline_identity_diagnostics": {
+    "10": {
+      "birth_anchor_wrong_observations": 1,
+      "definition": "IoU>=.5 one-to-one per image; fixed global two-camera identity map; separate first-observation anchor temporal errors",
+      "extra_birth_fragments": 20,
+      "false_merge_tracks": 1,
+      "global_identity_wrong_observations": 9119,
+      "global_unmapped_fragment_observations": 9119,
+      "identity_index_query": {
+        "contaminated_retrieved_trajectory_rate": 0.75,
+        "cross_camera_identity_continuity_rate": 0.0,
+        "false_identity_joins": 8,
+        "latency_scope": "prebuilt index lookup only; annotation alignment/evaluation excluded",
+        "precision_micro": 0.9982946066936688,
+        "queries": [
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": true,
+            "false_joins": 6,
+            "gt": 1,
+            "gt_observations": 3488,
+            "precision": 0.9948936170212765,
+            "predicted_id": 1,
+            "recall": 0.3351490825688073,
+            "retrieved": 1175,
+            "tp": 1169
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": true,
+            "false_joins": 1,
+            "gt": 2,
+            "gt_observations": 3581,
+            "precision": 0.9989177489177489,
+            "predicted_id": 14,
+            "recall": 0.2577492320580843,
+            "retrieved": 924,
+            "tp": 923
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": true,
+            "false_joins": 1,
+            "gt": 3,
+            "gt_observations": 3420,
+            "precision": 0.9990128331688055,
+            "predicted_id": 12,
+            "recall": 0.295906432748538,
+            "retrieved": 1013,
+            "tp": 1012
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": true,
+            "false_joins": 0,
+            "gt": 4,
+            "gt_observations": 3603,
+            "precision": 1.0,
+            "predicted_id": 6,
+            "recall": 0.4382459061892867,
+            "retrieved": 1579,
+            "tp": 1579
+          }
+        ],
+        "query_lookup_latency_us_p50_p95": [
+          0.6335,
+          1.2339499999999999
+        ],
+        "recall_micro": 0.3323162077774624
+      },
+      "known_observations": 13802,
+      "unknown_GT_observations": 27,
+      "wrong_ID_duration_quantiles_frames": {
+        "max": 1.0,
+        "p50": 1.0,
+        "p90": 1.0
+      },
+      "wrong_ID_duration_total_camera_frames": 1,
+      "wrong_ID_episodes": [
+        {
+          "duration_frames": 1,
+          "end": 1569,
+          "gt": 3,
+          "right_censored": true,
+          "start": 1569,
+          "view": 1
+        }
+      ]
+    },
+    "11": {
+      "birth_anchor_wrong_observations": 3,
+      "definition": "IoU>=.5 one-to-one per image; fixed global two-camera identity map; separate first-observation anchor temporal errors",
+      "extra_birth_fragments": 18,
+      "false_merge_tracks": 3,
+      "global_identity_wrong_observations": 9339,
+      "global_unmapped_fragment_observations": 9338,
+      "identity_index_query": {
+        "contaminated_retrieved_trajectory_rate": 0.4,
+        "cross_camera_identity_continuity_rate": 0.0,
+        "false_identity_joins": 6,
+        "latency_scope": "prebuilt index lookup only; annotation alignment/evaluation excluded",
+        "precision_micro": 0.9989471837164415,
+        "queries": [
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": true,
+            "false_joins": 0,
+            "gt": 1,
+            "gt_observations": 4011,
+            "precision": 1.0,
+            "predicted_id": 1,
+            "recall": 0.512839690850162,
+            "retrieved": 2057,
+            "tp": 2057
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": true,
+            "false_joins": 0,
+            "gt": 2,
+            "gt_observations": 3541,
+            "precision": 1.0,
+            "predicted_id": 10,
+            "recall": 0.2273369104772663,
+            "retrieved": 805,
+            "tp": 805
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": true,
+            "false_joins": 4,
+            "gt": 3,
+            "gt_observations": 3390,
+            "precision": 0.9950062421972534,
+            "predicted_id": 12,
+            "recall": 0.2351032448377581,
+            "retrieved": 801,
+            "tp": 797
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": true,
+            "false_joins": 2,
+            "gt": 4,
+            "gt_observations": 3867,
+            "precision": 0.9988385598141696,
+            "predicted_id": 8,
+            "recall": 0.4447892423066977,
+            "retrieved": 1722,
+            "tp": 1720
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": false,
+            "false_joins": 0,
+            "gt": 5,
+            "gt_observations": 332,
+            "precision": 1.0,
+            "predicted_id": 13,
+            "recall": 0.9457831325301205,
+            "retrieved": 314,
+            "tp": 314
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": false,
+            "false_joins": 0,
+            "gt": 31,
+            "gt_observations": 1,
+            "precision": null,
+            "predicted_id": null,
+            "recall": 0.0,
+            "retrieved": 0,
+            "tp": 0
+          }
+        ],
+        "query_lookup_latency_us_p50_p95": [
+          1.334,
+          2.184
+        ],
+        "recall_micro": 0.3759741117421741
+      },
+      "known_observations": 15032,
+      "unknown_GT_observations": 33,
+      "wrong_ID_duration_quantiles_frames": {
+        "max": 1.0,
+        "p50": 1.0,
+        "p90": 1.0
+      },
+      "wrong_ID_duration_total_camera_frames": 3,
+      "wrong_ID_episodes": [
+        {
+          "duration_frames": 1,
+          "end": 1792,
+          "gt": 2,
+          "right_censored": false,
+          "start": 1792,
+          "view": 1
+        },
+        {
+          "duration_frames": 1,
+          "end": 1792,
+          "gt": 3,
+          "right_censored": false,
+          "start": 1792,
+          "view": 1
+        },
+        {
+          "duration_frames": 1,
+          "end": 1555,
+          "gt": 31,
+          "right_censored": true,
+          "start": 1555,
+          "view": 0
+        }
+      ]
+    },
+    "9": {
+      "birth_anchor_wrong_observations": 1036,
+      "definition": "IoU>=.5 one-to-one per image; fixed global two-camera identity map; separate first-observation anchor temporal errors",
+      "extra_birth_fragments": 23,
+      "false_merge_tracks": 8,
+      "global_identity_wrong_observations": 5286,
+      "global_unmapped_fragment_observations": 5286,
+      "identity_index_query": {
+        "contaminated_retrieved_trajectory_rate": 0.0,
+        "cross_camera_identity_continuity_rate": 0.0,
+        "false_identity_joins": 0,
+        "latency_scope": "prebuilt index lookup only; annotation alignment/evaluation excluded",
+        "precision_micro": 1.0,
+        "queries": [
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": true,
+            "false_joins": 0,
+            "gt": 1,
+            "gt_observations": 3884,
+            "precision": 1.0,
+            "predicted_id": 6,
+            "recall": 0.23094747682801237,
+            "retrieved": 897,
+            "tp": 897
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": true,
+            "false_joins": 0,
+            "gt": 2,
+            "gt_observations": 3884,
+            "precision": 1.0,
+            "predicted_id": 9,
+            "recall": 0.41838311019567453,
+            "retrieved": 1625,
+            "tp": 1625
+          },
+          {
+            "cross_camera_continuity": false,
+            "expected_cross_camera": false,
+            "false_joins": 0,
+            "gt": 3,
+            "gt_observations": 952,
+            "precision": 1.0,
+            "predicted_id": 23,
+            "recall": 0.8939075630252101,
+            "retrieved": 851,
+            "tp": 851
+          }
+        ],
+        "query_lookup_latency_us_p50_p95": [
+          0.504,
+          1.5075
+        ],
+        "recall_micro": 0.38681192660550456
+      },
+      "known_observations": 8659,
+      "unknown_GT_observations": 17,
+      "wrong_ID_duration_quantiles_frames": {
+        "max": 458.0,
+        "p50": 95.0,
+        "p90": 279.49999999999994
+      },
+      "wrong_ID_duration_total_camera_frames": 1036,
+      "wrong_ID_episodes": [
+        {
+          "duration_frames": 2,
+          "end": 127,
+          "gt": 1,
+          "right_censored": false,
+          "start": 126,
+          "view": 0
+        },
+        {
+          "duration_frames": 172,
+          "end": 308,
+          "gt": 1,
+          "right_censored": true,
+          "start": 137,
+          "view": 1
+        },
+        {
+          "duration_frames": 458,
+          "end": 767,
+          "gt": 1,
+          "right_censored": true,
+          "start": 310,
+          "view": 1
+        },
+        {
+          "duration_frames": 18,
+          "end": 788,
+          "gt": 1,
+          "right_censored": true,
+          "start": 771,
+          "view": 1
+        },
+        {
+          "duration_frames": 4,
+          "end": 794,
+          "gt": 1,
+          "right_censored": true,
+          "start": 791,
+          "view": 1
+        },
+        {
+          "duration_frames": 177,
+          "end": 1941,
+          "gt": 2,
+          "right_censored": true,
+          "start": 1765,
+          "view": 0
+        },
+        {
+          "duration_frames": 203,
+          "end": 1087,
+          "gt": 2,
+          "right_censored": false,
+          "start": 885,
+          "view": 1
+        },
+        {
+          "duration_frames": 2,
+          "end": 1125,
+          "gt": 2,
+          "right_censored": false,
+          "start": 1124,
+          "view": 1
+        }
+      ]
+    }
+  },
+  "pooled_definition": "one evaluator over all six camera sequences; not a mean of video metrics",
+  "pooled_prediction_sha256": "28a718f544d76c2c4694bf4a3d582bf49755594d366c56cf713237f17ebefae1",
+  "pooled_predictions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/pooled/BYTETRACK_PAPER06/predictions.json",
+  "prepared": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/pooled/BYTETRACK_PAPER06/tracking_eval_runtime_state/jev/prepared",
+  "runs": [
+    {
+      "binding": {
+        "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+        "b2_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+        "base_commit": "40cbc0ecc22bc16c4e3602eefe5eb06e2d6e319e",
+        "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+        "full24_authorized": false,
+        "git_commit": "61b611de9c1e292ce07c9a0088445fe50ba0c583",
+        "official_test_read": false,
+        "run_id": "20261008_p05_v1",
+        "seed": 20261003,
+        "source_sha256": {
+          "reproduction_tools/archive_jev_phase7.py": "2d4ea13472add0262e194abfabf4c925587c145fc88a845e5973ad472acd9d84",
+          "reproduction_tools/audit_jev_phase7_native.py": "467303996e8271042793b5b9370987443f096768bceb530079b286ed6afa48d9",
+          "reproduction_tools/fetch_jev_phase7_sources.py": "3486520c254c38ccf4f57be6339b71d374402690733b4c2b22e9cf3a67f36135",
+          "reproduction_tools/fit_jev_phase7_controls.py": "d3ca0385c982102f962367972d91125b3a00619d96f478ff69fba45b7ccf3c19",
+          "reproduction_tools/jev_phase7_common.py": "7cf33eb65170d95b2430c6d04d31ca03a9943fcb3f8af4b7cc2869306e955d99",
+          "reproduction_tools/jev_phase7_mlp_norm.py": "c239e4574e28fca5fc880d108951a0ffe5b39d8dc19d5eff7ad5a88fc19b2629",
+          "reproduction_tools/jev_phase7_native.py": "1d36f9cbf8da36557ae9632c242bc1bd53de1913467345ae57f000591f0c247c",
+          "reproduction_tools/jev_phase7_offline.py": "4622b9b0eb01ad10af25ba5f246ad87848a54e89a6229343a6df6a5d95764b1d",
+          "reproduction_tools/jev_phase7_policies.py": "e1aad23946820ec9afeee6927bb9122ce20195d1b7d3621769f7ba6ba4ece283",
+          "reproduction_tools/run_jev_phase7_attribution.py": "a3a618ab47cc7b78bcdcf01f34f4f3bf8246a4f1a9d452130ef0290e9fa496a4",
+          "reproduction_tools/run_jev_phase7_bytetrack.py": "c52108d7da2b28693e7257afafd59aa5eb8f825da13d0d52ce7740334e797a3a",
+          "reproduction_tools/run_jev_phase7_normalized.py": "3ab2a4617d21482db342cd479908a3d7c3b07536920972fc5730d538a32ef7eb",
+          "reproduction_tools/run_jev_phase7_paired.py": "9fd8e73baf6eb9ebb4810dfa8e969479a262fa669d64638592c8115a01c53217",
+          "reproduction_tools/run_jev_phase7_queue.py": "715b6b7c70cba5a8419aa62170482cae7edc278b2e677e3f01bb6f0413fe2848",
+          "reproduction_tools/run_jev_phase7_supplements.py": "64edfff1aca0888be539990a76666ed8b4daaaa3354ecc4494666d5e6fb7240b",
+          "reproduction_tools/summarize_jev_phase7.py": "9778ac91ca6bfeaafdce23b4660ef882a8033272582a2e6c72106b957503b791"
+        }
+      },
+      "camera_trackers": "independent; globally distinct track IDs; no cross-camera fusion",
+      "comparison_scope": "traditional tracker on available perception; different Kalman/state/output boxes, not same-solver attribution",
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/bytetrack_paper06/video09/tracking_eval_runtime_state/bytetrack/evaluation",
+      "fabricated_detections": false,
+      "frame_rate": 30,
+      "high_detections": 8698,
+      "low_detections": 16,
+      "low_stage_accepted_matches": 4,
+      "low_stage_audit_sha256": "223f81da2f8e1c95f449b9cac8640ea17737b8090e18288d66ea32aa10560d6e",
+      "low_stage_nonempty_track_and_detection_payloads": 4,
+      "low_stage_status": "EXERCISED",
+      "metrics": {
+        "AssA": 43.22321073358376,
+        "DetA": 87.4672935800864,
+        "Frag": 19.0,
+        "HOTA": 61.464435712527276,
+        "IDF1": 58.162796045067836,
+        "IDSW": 21.0,
+        "MOTA": 98.86467889908258
+      },
+      "official_source_sha256": {
+        "yolox/tracker/basetrack.py": "c938afcf7c516bba4a77155c2499fcae6f926df7a2faa6f73a4be1b073f9bb2d",
+        "yolox/tracker/byte_tracker.py": "7cecdcdd7998103969a4ba1772f4c9fb5560fd5eef05ca03e0d2df28346ca50b",
+        "yolox/tracker/kalman_filter.py": "9842d0dd9957c97e312d42e5789441add55082066d87cc051ac768143a46eb39",
+        "yolox/tracker/matching.py": "2f54bf0c183f577087391901562ae2bcd3c01633a3e077bd5d4168fafbd899a6"
+      },
+      "official_test_read": false,
+      "official_tracker_commit": "d1bf0191adff59bc8fcfeaa0b33d3d1642552a99",
+      "parameters": {
+        "match_thresh": 0.8,
+        "mot20": false,
+        "track_buffer": 30,
+        "track_thresh": 0.6
+      },
+      "predictions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/bytetrack_paper06/video09/predictions.json",
+      "predictions_sha256": "31f934fa19a42e40e08007a2636c60dc18de8edff1e1082eeef92eeb39d9b63f",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/bytetrack_paper06/video09/tracking_eval_runtime_state/bytetrack/prepared",
+      "status": "COMPLETE",
+      "video": 9,
+      "wall_seconds_excluding_eval": 6.817531555891037
+    },
+    {
+      "binding": {
+        "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+        "b2_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+        "base_commit": "40cbc0ecc22bc16c4e3602eefe5eb06e2d6e319e",
+        "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+        "full24_authorized": false,
+        "git_commit": "61b611de9c1e292ce07c9a0088445fe50ba0c583",
+        "official_test_read": false,
+        "run_id": "20261008_p05_v1",
+        "seed": 20261003,
+        "source_sha256": {
+          "reproduction_tools/archive_jev_phase7.py": "2d4ea13472add0262e194abfabf4c925587c145fc88a845e5973ad472acd9d84",
+          "reproduction_tools/audit_jev_phase7_native.py": "467303996e8271042793b5b9370987443f096768bceb530079b286ed6afa48d9",
+          "reproduction_tools/fetch_jev_phase7_sources.py": "3486520c254c38ccf4f57be6339b71d374402690733b4c2b22e9cf3a67f36135",
+          "reproduction_tools/fit_jev_phase7_controls.py": "d3ca0385c982102f962367972d91125b3a00619d96f478ff69fba45b7ccf3c19",
+          "reproduction_tools/jev_phase7_common.py": "7cf33eb65170d95b2430c6d04d31ca03a9943fcb3f8af4b7cc2869306e955d99",
+          "reproduction_tools/jev_phase7_mlp_norm.py": "c239e4574e28fca5fc880d108951a0ffe5b39d8dc19d5eff7ad5a88fc19b2629",
+          "reproduction_tools/jev_phase7_native.py": "1d36f9cbf8da36557ae9632c242bc1bd53de1913467345ae57f000591f0c247c",
+          "reproduction_tools/jev_phase7_offline.py": "4622b9b0eb01ad10af25ba5f246ad87848a54e89a6229343a6df6a5d95764b1d",
+          "reproduction_tools/jev_phase7_policies.py": "e1aad23946820ec9afeee6927bb9122ce20195d1b7d3621769f7ba6ba4ece283",
+          "reproduction_tools/run_jev_phase7_attribution.py": "a3a618ab47cc7b78bcdcf01f34f4f3bf8246a4f1a9d452130ef0290e9fa496a4",
+          "reproduction_tools/run_jev_phase7_bytetrack.py": "c52108d7da2b28693e7257afafd59aa5eb8f825da13d0d52ce7740334e797a3a",
+          "reproduction_tools/run_jev_phase7_normalized.py": "3ab2a4617d21482db342cd479908a3d7c3b07536920972fc5730d538a32ef7eb",
+          "reproduction_tools/run_jev_phase7_paired.py": "9fd8e73baf6eb9ebb4810dfa8e969479a262fa669d64638592c8115a01c53217",
+          "reproduction_tools/run_jev_phase7_queue.py": "715b6b7c70cba5a8419aa62170482cae7edc278b2e677e3f01bb6f0413fe2848",
+          "reproduction_tools/run_jev_phase7_supplements.py": "64edfff1aca0888be539990a76666ed8b4daaaa3354ecc4494666d5e6fb7240b",
+          "reproduction_tools/summarize_jev_phase7.py": "9778ac91ca6bfeaafdce23b4660ef882a8033272582a2e6c72106b957503b791"
+        }
+      },
+      "camera_trackers": "independent; globally distinct track IDs; no cross-camera fusion",
+      "comparison_scope": "traditional tracker on available perception; different Kalman/state/output boxes, not same-solver attribution",
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/bytetrack_paper06/video10/tracking_eval_runtime_state/bytetrack/evaluation",
+      "fabricated_detections": false,
+      "frame_rate": 30,
+      "high_detections": 13885,
+      "low_detections": 41,
+      "low_stage_accepted_matches": 10,
+      "low_stage_audit_sha256": "9d697e7fea9fab5bba42921ac382fcaa3bb0f24cc45ef83ebab6c27e5f02618f",
+      "low_stage_nonempty_track_and_detection_payloads": 10,
+      "low_stage_status": "EXERCISED",
+      "metrics": {
+        "AssA": 39.91700928206674,
+        "DetA": 80.8502666079576,
+        "Frag": 33.0,
+        "HOTA": 56.78580155670103,
+        "IDF1": 57.9563769205974,
+        "IDSW": 15.0,
+        "MOTA": 97.64405336361057
+      },
+      "official_source_sha256": {
+        "yolox/tracker/basetrack.py": "c938afcf7c516bba4a77155c2499fcae6f926df7a2faa6f73a4be1b073f9bb2d",
+        "yolox/tracker/byte_tracker.py": "7cecdcdd7998103969a4ba1772f4c9fb5560fd5eef05ca03e0d2df28346ca50b",
+        "yolox/tracker/kalman_filter.py": "9842d0dd9957c97e312d42e5789441add55082066d87cc051ac768143a46eb39",
+        "yolox/tracker/matching.py": "2f54bf0c183f577087391901562ae2bcd3c01633a3e077bd5d4168fafbd899a6"
+      },
+      "official_test_read": false,
+      "official_tracker_commit": "d1bf0191adff59bc8fcfeaa0b33d3d1642552a99",
+      "parameters": {
+        "match_thresh": 0.8,
+        "mot20": false,
+        "track_buffer": 30,
+        "track_thresh": 0.6
+      },
+      "predictions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/bytetrack_paper06/video10/predictions.json",
+      "predictions_sha256": "ac80af750eb8c86813f64c151130343c67a829160f4d82455f7b044ae88aa512",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/bytetrack_paper06/video10/tracking_eval_runtime_state/bytetrack/prepared",
+      "status": "COMPLETE",
+      "video": 10,
+      "wall_seconds_excluding_eval": 8.031843908131123
+    },
+    {
+      "binding": {
+        "annotations_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+        "b2_sha256": "f2aa3dd2b564d90bfbfb62dc0518b0b2107a931ed7134f8c0d19f5d152b94ed7",
+        "base_commit": "40cbc0ecc22bc16c4e3602eefe5eb06e2d6e319e",
+        "cache_index_sha256": "48a51e1bfa89e9b360dc6b562801fc58092d83a4f60d9d04e4f6d92e4275ea1c",
+        "full24_authorized": false,
+        "git_commit": "61b611de9c1e292ce07c9a0088445fe50ba0c583",
+        "official_test_read": false,
+        "run_id": "20261008_p05_v1",
+        "seed": 20261003,
+        "source_sha256": {
+          "reproduction_tools/archive_jev_phase7.py": "2d4ea13472add0262e194abfabf4c925587c145fc88a845e5973ad472acd9d84",
+          "reproduction_tools/audit_jev_phase7_native.py": "467303996e8271042793b5b9370987443f096768bceb530079b286ed6afa48d9",
+          "reproduction_tools/fetch_jev_phase7_sources.py": "3486520c254c38ccf4f57be6339b71d374402690733b4c2b22e9cf3a67f36135",
+          "reproduction_tools/fit_jev_phase7_controls.py": "d3ca0385c982102f962367972d91125b3a00619d96f478ff69fba45b7ccf3c19",
+          "reproduction_tools/jev_phase7_common.py": "7cf33eb65170d95b2430c6d04d31ca03a9943fcb3f8af4b7cc2869306e955d99",
+          "reproduction_tools/jev_phase7_mlp_norm.py": "c239e4574e28fca5fc880d108951a0ffe5b39d8dc19d5eff7ad5a88fc19b2629",
+          "reproduction_tools/jev_phase7_native.py": "1d36f9cbf8da36557ae9632c242bc1bd53de1913467345ae57f000591f0c247c",
+          "reproduction_tools/jev_phase7_offline.py": "4622b9b0eb01ad10af25ba5f246ad87848a54e89a6229343a6df6a5d95764b1d",
+          "reproduction_tools/jev_phase7_policies.py": "e1aad23946820ec9afeee6927bb9122ce20195d1b7d3621769f7ba6ba4ece283",
+          "reproduction_tools/run_jev_phase7_attribution.py": "a3a618ab47cc7b78bcdcf01f34f4f3bf8246a4f1a9d452130ef0290e9fa496a4",
+          "reproduction_tools/run_jev_phase7_bytetrack.py": "c52108d7da2b28693e7257afafd59aa5eb8f825da13d0d52ce7740334e797a3a",
+          "reproduction_tools/run_jev_phase7_normalized.py": "3ab2a4617d21482db342cd479908a3d7c3b07536920972fc5730d538a32ef7eb",
+          "reproduction_tools/run_jev_phase7_paired.py": "9fd8e73baf6eb9ebb4810dfa8e969479a262fa669d64638592c8115a01c53217",
+          "reproduction_tools/run_jev_phase7_queue.py": "715b6b7c70cba5a8419aa62170482cae7edc278b2e677e3f01bb6f0413fe2848",
+          "reproduction_tools/run_jev_phase7_supplements.py": "64edfff1aca0888be539990a76666ed8b4daaaa3354ecc4494666d5e6fb7240b",
+          "reproduction_tools/summarize_jev_phase7.py": "9778ac91ca6bfeaafdce23b4660ef882a8033272582a2e6c72106b957503b791"
+        }
+      },
+      "camera_trackers": "independent; globally distinct track IDs; no cross-camera fusion",
+      "comparison_scope": "traditional tracker on available perception; different Kalman/state/output boxes, not same-solver attribution",
+      "evaluation": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/bytetrack_paper06/video11/tracking_eval_runtime_state/bytetrack/evaluation",
+      "fabricated_detections": false,
+      "frame_rate": 30,
+      "high_detections": 15085,
+      "low_detections": 43,
+      "low_stage_accepted_matches": 22,
+      "low_stage_audit_sha256": "d70c0780d63c341478cb20a314318cd341573bebd889ca18af23cf4bc847f54a",
+      "low_stage_nonempty_track_and_detection_payloads": 22,
+      "low_stage_status": "EXERCISED",
+      "metrics": {
+        "AssA": 55.17778103093593,
+        "DetA": 85.44555609634493,
+        "Frag": 23.0,
+        "HOTA": 68.66243455959558,
+        "IDF1": 68.38150097659484,
+        "IDSW": 16.0,
+        "MOTA": 98.94994056267336
+      },
+      "official_source_sha256": {
+        "yolox/tracker/basetrack.py": "c938afcf7c516bba4a77155c2499fcae6f926df7a2faa6f73a4be1b073f9bb2d",
+        "yolox/tracker/byte_tracker.py": "7cecdcdd7998103969a4ba1772f4c9fb5560fd5eef05ca03e0d2df28346ca50b",
+        "yolox/tracker/kalman_filter.py": "9842d0dd9957c97e312d42e5789441add55082066d87cc051ac768143a46eb39",
+        "yolox/tracker/matching.py": "2f54bf0c183f577087391901562ae2bcd3c01633a3e077bd5d4168fafbd899a6"
+      },
+      "official_test_read": false,
+      "official_tracker_commit": "d1bf0191adff59bc8fcfeaa0b33d3d1642552a99",
+      "parameters": {
+        "match_thresh": 0.8,
+        "mot20": false,
+        "track_buffer": 30,
+        "track_thresh": 0.6
+      },
+      "predictions": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/bytetrack_paper06/video11/predictions.json",
+      "predictions_sha256": "9db5e16a9a742700441cdeae9cd34be9a9fa26e6f593e69a07fe56e3730ce285",
+      "prepared": "/home/liuyeqiang/WWW_jev_phase7_runtime/20261008_p05_v1/bytetrack_paper06/video11/tracking_eval_runtime_state/bytetrack/prepared",
+      "status": "COMPLETE",
+      "video": 11,
+      "wall_seconds_excluding_eval": 8.09038507193327
+    }
+  ],
+  "status": "COMPLETE",
+  "tag": "BYTETRACK_PAPER06",
+  "true_pooled_TrackEval": {
+    "AssA": 47.24763821098851,
+    "DetA": 84.00739237509595,
+    "Frag": 75.0,
+    "HOTA": 62.942626575339666,
+    "IDF1": 62.1736136857158,
+    "IDSW": 52.0,
+    "MOTA": 98.44548664172419
+  }
+}

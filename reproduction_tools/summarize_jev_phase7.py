@@ -2,7 +2,7 @@
 import argparse,json,os
 from jev_phase7_common import *
 
-def summarize(tags):
+def summarize(tags,individual_only=False):
     from jev_phase7_offline import IdentityEvaluator,mechanism_correctness
     ann=json.loads(ANNOTATIONS.read_text());selected={9,10,11}
     images=[i for i in ann['images']if int(i['video_id'])in selected];image_ids={i['id']for i in images}
@@ -39,9 +39,11 @@ def summarize(tags):
                'binding':binding(),'pooled_definition':'one evaluator over all six camera sequences; not a mean of video metrics',
                'official_test_read':False}
         save(prior,value);save(dest/'result.json',value);output[tag]=value
-    save(REPORTS/'HELDOUT_RESULTS.json',{'status':'PARTIAL'if len(tags)<7 else 'PRIMARY_WITH_REQUESTED_DIAGNOSTICS',
-                                     'results':output,'controller_heldouts':[9,10,11],'official_test_read':False})
+    if not individual_only:
+        save(REPORTS/'HELDOUT_RESULTS.json',{'status':'PARTIAL'if len(tags)<7 else 'PRIMARY_WITH_REQUESTED_DIAGNOSTICS',
+                                         'results':output,'controller_heldouts':[9,10,11],'official_test_read':False})
     print(json.dumps({tag:v['true_pooled_TrackEval']for tag,v in output.items()}))
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('tags',nargs='+');summarize(p.parse_args().tags)
+    p=argparse.ArgumentParser();p.add_argument('tags',nargs='+');p.add_argument('--individual-only',action='store_true')
+    a=p.parse_args();summarize(a.tags,a.individual_only)

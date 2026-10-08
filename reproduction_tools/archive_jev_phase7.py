@@ -10,7 +10,11 @@ def archive(source,dest):
         return False
     result=json.loads((source/'result.json').read_text())
     if not (result.get('complete_video')or result.get('status')in ('HIGH_ONLY_AVAILABLE_INPUT','COMPLETE')):return False
-    dest.mkdir(parents=True);records=[]
+    final_dest=dest
+    # Only completed directories appear under evidence. Staging is ignored by git.
+    staging=REPORTS/'.archive_staging'/hashlib.sha256(str(final_dest).encode()).hexdigest()
+    if staging.exists():raise RuntimeError('unfinished archive staging; inspect before retry')
+    staging.mkdir(parents=True);dest=staging;records=[]
     selected=[p for p in source.rglob('*')if p.is_file()and not p.is_symlink()
               and 'eval_dataset'not in p.parts and 'prepared'not in p.parts and p.name!='.DS_Store']
     external=Path(result['mechanisms'])if 'mechanisms'in result else None
@@ -28,6 +32,7 @@ def archive(source,dest):
                         'archive_sha256':sha(target),'bytes':target.stat().st_size})
     save(dest/'ARCHIVE_MANIFEST.json',{'source':str(source),'source_result_sha256':sha(source/'result.json'),
                                     'files':records,'status':'VERIFIED','official_test_read':False})
+    final_dest.parent.mkdir(parents=True,exist_ok=True);staging.replace(final_dest)
     return True
 
 if __name__=='__main__':
