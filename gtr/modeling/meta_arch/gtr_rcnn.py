@@ -897,7 +897,7 @@ class GTRRCNN(CustomRCNN):
                     instances[max_index].track_ids = torch.arange(
                         1, len(instances[max_index]) + 1,
                         device=instances[max_index].reid_features.device)
-                    id_count = len(instances[max_index]) 
+                    id_count = len(instances[max_index])
                     for i in range(1, len(instances[max_index]) + 1):
                         id_count_dict[i] = 1
                         id_reid_dict[i] = instances[max_index][i-1]
