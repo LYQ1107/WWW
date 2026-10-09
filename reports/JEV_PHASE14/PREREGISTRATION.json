@@ -1,0 +1,177 @@
+{
+  "Full24": false,
+  "TRAIN": [
+    12,
+    13,
+    14,
+    16
+  ],
+  "costs": {
+    "UNKNOWN": null,
+    "correct_continuation": 0.0,
+    "false_birth": 2.0,
+    "false_merge": 2.0,
+    "false_split": 2.0,
+    "freeze_basis": "symmetric merge/split prior, risk severity before new outcomes; no dev-HOTA tuning",
+    "wrong_existing": 1.0,
+    "wrong_stale_recovery": 2.0
+  },
+  "development": [
+    17,
+    18,
+    19
+  ],
+  "diagnostics": {
+    "all_three_seeds_when_available": true,
+    "factorial_main_effects": [
+      "recent",
+      "global_mean",
+      "own_mean",
+      "other_mean",
+      "camera_meta",
+      "time",
+      "geometry",
+      "counts",
+      "shared_state"
+    ],
+    "factorial_pairs": [
+      [
+        "own_mean",
+        "other_mean"
+      ],
+      [
+        "global_mean",
+        "counts"
+      ],
+      [
+        "other_mean",
+        "camera_meta"
+      ]
+    ],
+    "feature_deletion_claim": "inference dependency only, not retrained causal architecture advantage",
+    "methods": [
+      "full20k",
+      "fixed_question20k",
+      "set_transformer20k",
+      "cosine",
+      "full24k"
+    ],
+    "no_new_full_video_replay_before_saved_artifact_audit": true,
+    "paired_prefix_frames": [
+      40,
+      128,
+      224
+    ],
+    "prefix_videos": [
+      12,
+      13,
+      14,
+      16
+    ]
+  },
+  "formal": {
+    "checkpoint_selection": "LAST only, never best-development-HOTA",
+    "common_evidence_labels_solver_budget": true,
+    "max_architectures": 4,
+    "parameter_ratio_tolerance": [
+      0.9,
+      1.1
+    ],
+    "qualification": "P1 complete, label qualifications, pilot finite and action semantics passing; architectures chosen from preregistered fixed/multi/set/shared_mlp order",
+    "seeds": [
+      20261008,
+      20261009,
+      20261010
+    ],
+    "updates": 20000
+  },
+  "frozen_evidence_SHA256": "8aad518ca211a16a6776b6eb7213d6abfce65ba050a2a88ca972b17e1681840d",
+  "heldout": "SEALED",
+  "incomplete_status": "NOT_RUN with exact dependency/reason; never invented metrics",
+  "independent_validation": {
+    "scheme_A": "inventory server external TRAIN data first; freeze official protocol before outcomes",
+    "scheme_B": "clean Stage1 only after generic initializer/data/config/budget eligibility; no historic checkpoint reuse as clean"
+  },
+  "labels": {
+    "Q1": "multi-positive certified natural lawful identity choices",
+    "Q2_negative": "all lawful histories certifiable and none matches; or explicitly versioned TRAIN-only paired withholding",
+    "Q2_positive": "at least one past-only certified pure matching lawful identity",
+    "Q3": "candidate past observed GT support: >=3 known observations, >=0.8 GT coverage; pure=one GT; contaminated=>=2 GT with >=2 observations each",
+    "Q3_qualification": {
+      "contaminated_candidate_examples_min": 50,
+      "pure_candidate_examples_min": 100,
+      "videos_min": 2
+    },
+    "Q3_scope": "observed-history purity, never proof of complete biometric purity",
+    "UNKNOWN": "never a negative or an absent-identity certificate",
+    "intervened_Q2_qualification": {
+      "paired_rows_min": 500,
+      "videos_min": 3
+    },
+    "natural_Q2_qualification": {
+      "negative_rows_min": 20,
+      "positive_rows_min": 100,
+      "videos_min": 2
+    },
+    "withholding": "remove ALL certified target options for a certified row; if any UNKNOWN options remain, absence remains UNKNOWN; no fake NEW/REACT"
+  },
+  "loss_weights": {
+    "assignment": 0.25,
+    "availability": 0.5,
+    "brier": 0.1,
+    "trust": 0.25
+  },
+  "official_TEST": false,
+  "onpolicy": {
+    "TRAIN_frames_per_video": 256,
+    "extra_updates": 4000,
+    "identity_time_block_balanced": true,
+    "rounds_max": 1,
+    "same_extra_budget_offpolicy_control": true
+  },
+  "pilot": {
+    "UNKNOWN_softmax_exclusion_control_required": true,
+    "absence_balanced_accuracy_min": 0.6,
+    "batch_payloads": 4,
+    "finite_gradient_required": true,
+    "loss_controls": [
+      "standard_choice",
+      "legacy_structured",
+      "cost_sensitive",
+      "availability_joint"
+    ],
+    "lr": 0.0001,
+    "models": [
+      "full",
+      "fixed_question",
+      "multi_question",
+      "set_transformer",
+      "motip",
+      "shared_mlp"
+    ],
+    "normal_retention_min": 0.9,
+    "sampling": "TRAIN identity/time blocks; source-paired presence/withholding balanced with natural data",
+    "seed": 20261009,
+    "train_audit_split": "deterministic video-local 64-frame blocks; frame//64 %5==4 reserved, never gradient training",
+    "updates": 1000,
+    "weight_decay": 0.01
+  },
+  "scientific_gates": {
+    "G0": "actual GTA-throw native/resume/recycling parity",
+    "G1": "artifact-backed event taxonomy and exact CLEAR IDSW reconstruction",
+    "G2": "independent Q2/Q3 labeled support and held TRAIN-block learnability, not gradient alone",
+    "G3": "withholding only DEFER, never NEW or recovery labels; lifecycle learned heads remain disabled unless genuinely qualified",
+    "G4": "HOTA/AssA/IDF1 versus frozen controls; IDSW<=102.5; no increase in certified merges/splits/births relative fixed20k",
+    "G5": "same-supervision multi-question beats both fixed and set by>=0.5 HOTA/AssA mean with nonnegative HOTA per seed and stable action risk; exploratory, not statistical significance",
+    "G6": "actual native MATLAB CVIDF1/CVMA and cross-camera attribution",
+    "G7": "Stage2 p95<=10ms AND full image-to-tracks>=25 sceneFPS, repeat3 same-hardware trials; old G8 remains FAIL",
+    "G8": "unseen frontend scene exposure verified; else independent-full-system claim NO_GO"
+  },
+  "seed_list": [
+    20261008,
+    20261009,
+    20261010
+  ],
+  "starting_commit": "2881fbdbca6501591470f9814d491a7aa8c1fb17",
+  "status": "FROZEN_BEFORE_PHASE14_DIAGNOSTICS"
+}
