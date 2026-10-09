@@ -1,0 +1,85 @@
+{
+  "MEMORY": "NOT_RUN_NO_WRITE_KEEP_LABELS",
+  "REACT": "NOT_RUN_INSUFFICIENT_DENSE_SUPPORT; no automatic task enablement",
+  "batch_payloads": 4,
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": null,
+    "Full24": false,
+    "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+    "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "VAL": [
+      17,
+      18,
+      19
+    ],
+    "dirty": true,
+    "heldout": "SEALED",
+    "official_TEST": false,
+    "source_SHA256": {
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+      "gtr/modeling/jev_stage2/model.py": "acaaecae92361270cec74f0f030cc621db0076a162e0c5ee0edf6c8d57807889",
+      "gtr/modeling/jev_stage2/native.py": "38c26207fe52a3e528d1c0face8c242f8b7d78c60bd51e2fbb3e117920d15350",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/audit_jev_phase13_dense.py": "17d36a7c8141d8724ba571c497d7fbb0bfe52954ef6bbd03e21f828b8ba86cb5",
+      "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+      "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+      "reproduction_tools/audit_jev_stage2_gta_free.py": "b2bedc2f2fffef62c1299e46b711fb2c13607c36496238d4182e3057e48f0932",
+      "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+      "reproduction_tools/build_dense_jev_stage2_dataset.py": "84890c84bceecb3f1a86da3e586f47b34691a8860db06ef4dfd638dfe9f95d6c",
+      "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+      "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+      "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+      "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+      "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+      "reproduction_tools/freeze_jev_phase13_training.py": "724f5daed771e64adc72004fb3e8f10dc9e881d88c9837704d3d869224324d94",
+      "reproduction_tools/jev_phase13_common.py": "6496142aa23a8151251c74a7f5f1148cd6d9a856672944f3648b72beb6c98af8",
+      "reproduction_tools/jev_phase13_learning.py": "10bc7febd61af1478fb038b85baf09e8935123c143f772625adbbda97d782955",
+      "reproduction_tools/jev_phase13_online_audit.py": "a51f88c99f9aa5e959a5f99eadf100b93bd31e4a67e6f1f05ad47dd6fb9f4390",
+      "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+      "reproduction_tools/test_jev_phase13_structure.py": "a9c9da9c5fca3ae1a9a0117744a6be2b6b47094f59a752e95db64e268b278780",
+      "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+      "reproduction_tools/train_jev_stage2_onpolicy.py": "1a22fd2e93c31372b158b894a0b4f95ce93fb3ddeda2631d91d34904e0bb240b"
+    },
+    "source_commit": "27d5c60111d5932367690ad8f2bde8bdb6a49c5d",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase13"
+  },
+  "blend": "two original natural MATCH payloads and two own-state MATCH payloads per update",
+  "bound_scope": "first256 actual scene frames of all four TRAIN videos, no selected corrective windows; finite round, not a full-TRAIN outcome claim",
+  "eligibility": "formal Full TRAIN fixed audit certified accuracy>=0.90; each actual own-state rollout needs>=5000 certified positive MATCH rows across all4 videos and remains UNKNOWN on contaminated histories",
+  "fine_tune_primary_checkpoint": "LAST exactly4000 extra updates; same budget for all main models/seeds, separate total24k comparison",
+  "frames_per_video": 256,
+  "gradient_clip": 1.0,
+  "heldout": "SEALED",
+  "learning_rate": 5e-05,
+  "models": [
+    "full",
+    "motip",
+    "camel",
+    "set_transformer"
+  ],
+  "rounds": 1,
+  "seeds": [
+    20261008,
+    20261009,
+    20261010
+  ],
+  "source_SHA256": "1a22fd2e93c31372b158b894a0b4f95ce93fb3ddeda2631d91d34904e0bb240b",
+  "status": "FROZEN_BEFORE_ONPOLICY",
+  "total_updates": 24000,
+  "updates": 4000,
+  "videos": [
+    12,
+    13,
+    14,
+    16
+  ],
+  "weight_decay": 0.01
+}
