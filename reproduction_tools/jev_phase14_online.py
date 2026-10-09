@@ -37,6 +37,7 @@ def main(video,variant,seed=20261009,phase='formal',chunk_size=256,no_calibratio
     save(out/'START.json',{'binding':source,'trained':trained,'frames':frames,'variant':variant,'seed':seed,'temperature':temp,'strict_online':True,'actor_GT_labels':False,'REACT':'UNTRAINED_COSINE_FALLBACK','MEMORY':'UNTRAINED_NATIVE_WRITE','exact_history_cache':cached})
     counts=collections.Counter();parts=[];prefix=None;cursor=0;journal=[None];commits=[None];last_write=[0.];final_state=[None];executor=model.jev_stage2_executor
     def question(**d):
+        if not len(d['logits']):return
         c=d['context'];batch=d['batch'];rows=c.get('rows',list(range(len(d['logits']))));journal[0].write(json.dumps({'key':[video,c['frame'],c['view']],'task':d['task'],'refs':d['refs'],'rows':rows,'logits':d['logits'].cpu().tolist(),'legal':batch['legal'][0].cpu().tolist()})+'\n')
     def after(**d):
         from gtr.modeling.meta_arch.gtr_rcnn import poss_ids,old_reids

@@ -227,7 +227,9 @@ def audit_case(out, ann, video, artifact_root=None):
         if active: spans.append(dict(gt=gt, view=view, start=active[0]['key'][1], end=active[-1]['key'][1], observed_error_payloads=len(active), right_censored=True))
     path = (OUT/'forensics_v1' if artifact_root is None else Path(artifact_root))/out.parent.name/f'video{video:02d}'
     # Phase prefix distinguishes 20k and 24k even if case/seed names match.
-    path = path / ('24k' if 'onpolicy' in str(out) else '20k')
+    budget='24k' if 'onpolicy' in str(out) else '20k'
+    if artifact_root is not None:budget='20k' if r['phase']=='formal' else '24k'
+    path = path / budget
     path.mkdir(parents=True, exist_ok=True)
     with gzip.open(path/'EVENTS.jsonl.gz', 'wt') as f:
         for item in trace: f.write(json.dumps(item)+'\n')

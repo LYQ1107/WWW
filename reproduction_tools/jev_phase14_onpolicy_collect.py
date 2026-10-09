@@ -7,7 +7,7 @@ from build_dense_jev_stage2_dataset import OfflineLabels
 from jev_phase13_runtime import build_tracker,cache_inputs,run
 from jev_phase14_common import *
 from jev_phase14_online import load_policy
-from jev_phase13_learning import atomic_torch
+from jev_phase14_artifacts import save_dense
 from jev_phase14_forensics import native_choice
 from gtr.modeling.jev_phase14.memory import CachedIdentityMemory
 
@@ -51,7 +51,7 @@ class OwnStateLabels(OfflineLabels):
         uncertain=(availability<0)&r['positive'][:,-1]
         r['supervised']=r['supervised'].clone();r['supervised'][uncertain]=False
         r.update(availability=availability,trust=trust,withholdable_rows=eligible,
-            audit_block=(r['key'][1]//64)%5==4,strata_OFFLINE_ONLY=groups,
+            audit_block=(r['key'][1]//64)%4==3,strata_OFFLINE_ONLY=groups,
             identity_time_groups_OFFLINE_ONLY=[(self.video,gt,r['key'][1]//64) for gt in anchors],
             native_actual_choice_OFFLINE_ONLY=choice)
     def after(self,**d):
@@ -72,7 +72,7 @@ def main(video,variant,seed):
     ex=model.jev_stage2_executor;ex.memory_factory=CachedIdentityMemory;ex.observer=labels.before;ex.commit_observer=labels.after
     save(out/'START.json',dict(binding=source,trained=trained,frames=256,GT_actor_inputs=False));begin=time.monotonic()
     with torch.no_grad():raw,_=run(model,values,frames,stop=255)
-    ck=out/'DATASET.pth';atomic_torch(ck,dict(records=labels.records,video=video,trained=trained,
+    ck=out/'DATASET.pth.xz';save_dense(ck,dict(records=labels.records,video=video,trained=trained,
         scope='actual policy-mutated TRAIN first256 scene frames; offline labels independent of actor; no teacher-forced histories'))
     result=dict(status='COMPLETE',binding=source,video=video,variant=variant,seed=seed,trained=trained,
         frames=256,records=len(labels.records),DATASET=dict(path=str(ck),SHA256=sha(ck),bytes=ck.stat().st_size),
