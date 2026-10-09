@@ -5,11 +5,19 @@ from jev_phase12_common import *
 from gtr.modeling.jev_native_state import NativeProductionPrefixRecorder,NativeStateForkAdapter,fingerprint
 from run_jev_phase10_closed_loop import raw_predictions
 
-def run(video):
+def run(video,future='GMT_OFF'):
     protect();source=binding();assert not source['dirty'];assert video in TRAIN
     protocol=json.loads((REPORTS/'LIFECYCLE_AUDIT_PROTOCOL.json').read_text());selections=[e for e in protocol['events'] if e['key'][0]==video]
     manifest=json.loads((PREVIOUS/'native_capture_v1'/f'video{video:02d}/compat/RESULT.json').read_text());registered={tuple(e['key']):e for e in manifest['prefixes']}
-    model=build_model(video);model.visual_jev_enabled=False;rows=inputs(video,manifest['frames']);out=OUT/'lifecycle_native_v1'/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True)
+    model=build_model(video);model.visual_jev_enabled=False;future_case=None
+    if future=='VisualFull':
+        from run_jev_phase12_closed_loop import configure
+        future_case=next(c for c in json.loads((REPORTS/'ONLINE_PROTOCOL.json').read_text())['cases'] if c['name']=='full_s20261008');configure(model,future_case)
+        followup=json.loads((REPORTS/'LIFECYCLE_VISUAL_FUTURE_PROTOCOL.json').read_text())
+        assert followup['events']==protocol['events'] and followup['case']==future_case
+        assert followup['script_SHA256']==sha(__file__)
+    rows=inputs(video,manifest['frames']);out=OUT/('lifecycle_visual_future_v1' if future_case else 'lifecycle_native_v1')/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True)
+    assert not (out/'RESULT.json').exists(),'preserve completed lifecycle results'
     from jev_phase7_offline import IdentityEvaluator
     from jev_phase8_opportunity import PrefixIdentityAnchors
     from jev_phase8_utility import effects
@@ -22,7 +30,20 @@ def run(video):
         for (f,v),group in sorted(groups.items()):anchors.update({r:a['id'] for r,a in group.items()},{r:a['gt'] for r,a in group.items()},f)
         branches={};target_gt=anchors.reliable().get(target);stop=min(manifest['frames']-1,key[1]+63)
         for tag in ['WRITE','KEEP']:
-            eventout=out/f'F{key[1]}V{key[2]}R{row}'/tag;recorder=NativeProductionPrefixRecorder(model,[],eventout);armed=[True];bank=[False];reads=[];stale=[];scores=[];gallery_sha=[]
+            eventout=out/f'F{key[1]}V{key[2]}R{row}'/tag;recorder=NativeProductionPrefixRecorder(model,[],eventout);armed=[True];bank=[False];reads=[];nn_reads=[];stale=[];scores=[];gallery_sha=[]
+            def before(**kw):
+                model.visual_jev_enabled=bool(future_case) and (kw['frame'],kw['view'])!=key[1:]
+                recorder.before(**kw)
+            if future_case:
+                controller=model.visual_jev_controller;active=[None];match=controller.match
+                # Reset to the bound class method, not a previous branch wrapper.
+                match=type(controller).match.__get__(controller,type(controller))
+                def matched(batch,*a,**kw):active[0]=batch;return match(batch,*a,**kw)
+                def observed(**kw):
+                    b=active[0];inp=kw['inputs']
+                    if target in b.candidate_ids and len(b.scores) and inp is not None:
+                        col=b.candidate_ids.index(target);nn_reads.append({'key':[controller.current['frame'],controller.current['view']],'target_history_tokens_SHA256':fingerprint(inp[2].visual[0,0,col]),'actual_visual_MATCH_READ':True})
+                controller.match=matched;controller.observer=observed
             def memory(**kw):
                 current=(model._jev_context['frame'],model._jev_context['view'])
                 if armed[0] and current==key[1:] and kw['detection_index']==row and kw['track_id']==target:
@@ -42,24 +63,25 @@ def run(video):
             def after(**kw):
                 packet=kw['candidate']
                 if packet is not None:
-                    b=packet['batch'];scores.append({'key':[kw['frame'],kw['view']],'candidate_ids':b.candidate_ids,'GMT_scores':b.scores.cpu().clone(),'evidence12':b.evidence12.cpu().clone()})
+                    b=packet['batch'];scores.append({'key':[kw['frame'],kw['view']],'candidate_ids':b.candidate_ids,'GMT_scores':b.scores.cpu().clone(),'evidence12':b.evidence12.cpu().clone(),'policy_values':packet['candidate_values'].cpu().clone()})
                 if (kw['frame'],kw['view'])==key[1:]:gallery_sha.append(fingerprint(kw['galleries'][target]))
                 recorder.after(**kw)
-            model._jev_memory_action=memory;model._jev_reactivation_action=react;model.memory_bank=bank_call;model.get_asso=asso;model.jev_native_prefix_observer=recorder.before;model.jev_candidate_commit_observer=after
+            model._jev_memory_action=memory;model._jev_reactivation_action=react;model.memory_bank=bank_call;model.get_asso=asso;model.jev_native_prefix_observer=before;model.jev_candidate_commit_observer=after
             with torch.no_grad():instances,_=NativeStateForkAdapter(model).run(entry['path'],rows,stop_frame=stop)
             assert not armed[0],'selected genuine WRITE event was not reached'
             prediction=raw_predictions(instances,{(int(i['frame_id'])-1,int(i['view_id'])-1):i for i in evaluator.images.values()});observed=evaluator.align(prediction)
-            branches[tag]={'native_trace':recorder.trace,'bank_reads':reads,'stale_questions':stale,'target_gallery_SHA256':gallery_sha[0],'effects':{str(h):effects(observed,anchors.diagnostics(),key[1],h,{target_gt} if target_gt is not None else set()) for h in [32,64]},'score_packets':scores}
+            branches[tag]={'native_trace':recorder.trace,'bank_reads':reads,'visual_MATCH_reads':nn_reads,'stale_questions':stale,'target_gallery_SHA256':gallery_sha[0],'effects':{str(h):effects(observed,anchors.diagnostics(),key[1],h,{target_gt} if target_gt is not None else set()) for h in [32,64]},'score_packets':scores}
         a,b=branches['WRITE'],branches['KEEP'];firsta,firstb=a['native_trace'][0],b['native_trace'][0]
         assert firsta['ids']==firstb['ids'] and firsta['events'][row]['gallery_after']==firstb['events'][row]['gallery_after']+1
-        changed_ids=[x['key'] for x,y in zip(a['native_trace'],b['native_trace']) if x['ids']!=y['ids']];readchanged=a['bank_reads']!=b['bank_reads'];scorechanged=0;evidencechanged=0
+        changed_ids=[x['key'] for x,y in zip(a['native_trace'],b['native_trace']) if x['ids']!=y['ids']];readchanged=a['bank_reads']!=b['bank_reads'];scorechanged=0;evidencechanged=0;policychanged=0
         for x,y in zip(a['score_packets'],b['score_packets']):
             same=x['candidate_ids']==y['candidate_ids'] and x['GMT_scores'].shape==y['GMT_scores'].shape
             scorechanged+=not same or not torch.equal(x['GMT_scores'],y['GMT_scores']);evidencechanged+=not same or not torch.equal(x['evidence12'],y['evidence12'])
+            policychanged+=not same or not torch.equal(x['policy_values'],y['policy_values'])
         delta={h:a['effects'][h]['utility']-b['effects'][h]['utility'] for h in ['32','64']}
         for branch in branches.values():branch.pop('score_packets')
-        result={'key':key,'row':row,'identity':target,'prefix_SHA256':entry['sha256'],'reliable_prefix_anchor':target_gt,'Gallery_changed':a['target_gallery_SHA256']!=b['target_gallery_SHA256'],'actual_bank_READ_count':len(a['bank_reads']),'bank_READ_changed':readchanged,'next_native_score_packets_changed':scorechanged,'numerical_evidence_packets_changed':evidencechanged,'committed_ID_changed_keys':changed_ids,'utility_WRITE_minus_KEEP':delta,'non_tie_H64':delta['64']!=0,'branches':branches}
+        result={'key':key,'row':row,'identity':target,'prefix_SHA256':entry['sha256'],'reliable_prefix_anchor':target_gt,'Gallery_changed':a['target_gallery_SHA256']!=b['target_gallery_SHA256'],'actual_bank_READ_count':len(a['bank_reads']),'bank_READ_changed':readchanged,'actual_visual_MATCH_READ_count':len(a['visual_MATCH_reads']),'visual_MATCH_READ_changed':a['visual_MATCH_reads']!=b['visual_MATCH_reads'],'next_native_score_packets_changed':scorechanged,'policy_value_packets_changed':policychanged,'numerical_evidence_packets_changed':evidencechanged,'committed_ID_changed_keys':changed_ids,'utility_WRITE_minus_KEEP':delta,'non_tie_H64':delta['64']!=0,'branches':branches}
         save(out/f'EVENT_{key[1]}_{key[2]}_{row}.json',result);results.append(result);save(out/'PROGRESS.json',{'status':'RUNNING','completed':len(results),'total':len(selections)});print('NATIVE_WRITE_KEEP_H64',video,key,delta,flush=True)
-    save(out/'RESULT.json',{'status':'COMPLETE','binding':source,'events':results,'scope':'8 preregistered genuine TRAIN-native WRITE/KEEP interventions, GMT_OFF frozen future; bounded identifiability audit, not exhaustive absence proof','heldout':'SEALED'})
+    save(out/'RESULT.json',{'status':'COMPLETE','binding':source,'events':results,'future_case':future_case,'scope':'8 preregistered genuine TRAIN-native WRITE/KEEP interventions; current MATCH fixed GMT_OFF to preserve actual WRITE event, subsequent payloads use the stated frozen future policy; bounded audit, not exhaustive absence proof','heldout':'SEALED'})
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);run(p.parse_args().video)
+    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);p.add_argument('--future',choices=['GMT_OFF','VisualFull'],default='GMT_OFF');a=p.parse_args();run(a.video,a.future)
