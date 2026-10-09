@@ -66,7 +66,17 @@ def main():
         '工程修复：修正最初query-only availability对Fixed的不公平输入；所有head接收相同Option证据后重做24个Pilot，旧结果永久保留。补零检测guard（参数及非空运算保持一致）；缓存加入tensor身份与版本以防指针复用；前缀在边界立即序列化，修复测试harness共享引用；处理ZIP32bit偏移并核验成员名/CRC，直接按HTTP Range读取必要外部成员；MATLAB和空数组适配只处理输入格式，不修改官方指标函数。所有失败/修正证据见ENGINEERING_REPAIRS与服务器队列日志。','',
         '科学大文件留在服务器：模型、原生日志、前缀、外部图像与自身状态数据。GitHub只包含代码、协议、紧凑结果与图表。完成后按提交HEAD复核，[SOURCE_INTERFACE_MANIFEST](../reports/JEV_PHASE14/SOURCE_INTERFACE_MANIFEST.json)记录实际运行源码/config/数据/checkpoint SHA，多个不可变运行checkout不会被最终汇总HEAD冒充。','',
         '主要交付：[ONLINE_VALIDATION](../reports/JEV_PHASE14/ONLINE_VALIDATION.json)、[OFFICIAL_MATLAB_RESULTS](../reports/JEV_PHASE14/OFFICIAL_MATLAB_RESULTS.json)、[FAIR_BASELINE_RESULTS](../reports/JEV_PHASE14/FAIR_BASELINE_RESULTS.json)、[ON_POLICY_STABILITY](../reports/JEV_PHASE14/ON_POLICY_STABILITY.json)、[LATENCY_ATTRIBUTION](../reports/JEV_PHASE14/LATENCY_ATTRIBUTION.json)、[EXTERNAL_GENERALIZATION_RESULTS](../reports/JEV_PHASE14/EXTERNAL_GENERALIZATION_RESULTS.json)、[FULL_VIDEO_CACHE_PARITY](../reports/JEV_PHASE14/FULL_VIDEO_CACHE_PARITY.json)、[FINAL_GO_NO_GO](../reports/JEV_PHASE14/FINAL_GO_NO_GO.json)。','']
-    (ROOT/'docs/JEV_PHASE14_FINAL_RESEARCH_REPORT.md').write_text('\n'.join(lines))
+    text='\n'.join(lines)
+    text=text.replace('同监督比较中，Multi-question相对Fixed的HOTA差值仅 ',
+        'Multi-question的官方CVIDF1三个种子均高于Fixed，平均88.546对86.405，原始IDF1和AssA也提高；这些正向结果完整保留。但同监督比较中，Multi-question相对Fixed的HOTA差值仅 ')
+    text=text.replace('GPU9 V100同图像、同前端、同线程，',
+        'GPU9测试期间无其他GPU进程竞争，但同主机其他GPU仍运行实验，CPU/I/O耗时包含该共享主机条件；不是整机独占测速。GPU9 V100同图像、同前端、同线程，')
+    text=text.replace('Clean Stage1没有合格初始化来源、独立配置与预算，按条件Gate不启动。',
+        '已审计的完整CH前端初始化文件未证实通用训练来源，clean Stage1/GMT及共同控制器的完整配置与独立预算门槛未满足，按条件Gate不启动；这不意味着不存在其他可进一步核验的通用backbone初始化。')
+    runtime=read(REPORTS/'EXTERNAL_RUNTIME_DIAGNOSTICS.json');slow=next(x for x in runtime['cases'] if x['variant']=='set_transformer' and x['seed']==20261009 and not x['historical'])
+    text=text.replace('最终15个研究问题的回答：',
+        f'外部Set Transformer seed20261009实际产生{slow["actions"]["START_NEW"]}次START_NEW，累计原生ID计数{slow["maximum_native_id_count"]}，最近40场景帧提交ID并集峰值{slow["peak_IDs_committed_over_recent40scene_frames"]}。其缓存推理、日志、TrackEval和官方MATLAB合计{slow["cached_run_seconds_including_GT_TrackEval_MATLAB"]:.1f}秒，不能当完整图像FPS。官方身份矩阵为13665×13665，大量碎片也明显增加评价计算。该失败种子完整保留，无临时重置或候选裁剪；历史格式转换器写入的seqinfo.frameRate=30不用于benchmark=VisionTrack的本轮指标函数，实际外部采样率仍为2FPS。详细原生行动与规模见[EXTERNAL_RUNTIME_DIAGNOSTICS](../reports/JEV_PHASE14/EXTERNAL_RUNTIME_DIAGNOSTICS.json)。\n\n最终15个研究问题的回答：')
+    (ROOT/'docs/JEV_PHASE14_FINAL_RESEARCH_REPORT.md').write_text(text)
     import matplotlib;matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     figdir=REPORTS/'figures';figdir.mkdir(exist_ok=True)
