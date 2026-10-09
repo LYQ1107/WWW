@@ -22,7 +22,7 @@ class DeferEngineering:
 def main():
     protect();source=binding();assert not source['dirty'];torch.set_num_threads(1);video=13;key=(13,664,1)
     manifest=json.loads((PREVIOUS/'native_capture_v1/video13/compat/RESULT.json').read_text());entry=next(e for e in manifest['prefixes'] if tuple(e['key'])==key)
-    model=build_model(video);rows=inputs(video,manifest['frames']);out=OUT/'native_special_actions_v1';original_bank=model.memory_bank;original_react=model._jev_reactivation_action;traces={};stages={}
+    model=build_model(video);rows=inputs(video,manifest['frames']);out=OUT/os.environ.get('JEV_PHASE12_SPECIAL_OUTPUT','native_special_actions_v1');original_bank=model.memory_bank;original_react=model._jev_reactivation_action;traces={};stages={}
     for mode in ['OFF','ABSTAIN_GROUP_FALLBACK','DEFER_NATIVE_BANK','DEFER_THEN_START_NEW']:
         model.visual_jev_enabled=mode!='OFF';bank=[];react=[]
         if mode=='ABSTAIN_GROUP_FALLBACK':model.visual_jev_controller=VisualLifecycleController(EqualLogits().cuda(),'MATCH_ONLY',supervision='CE',risk=True,qualified_tasks=('MATCH',))

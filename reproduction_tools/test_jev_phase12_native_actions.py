@@ -27,7 +27,7 @@ def main():
     packet=torch.load(entry['packet_path'],map_location='cpu');batch=packet['packet']['batch'];factual=packet['commit']['ids'][row]
     columns=[j for j,ref in enumerate(batch.candidate_ids) if batch.legal_mask[row,j] and ref!=factual]
     assert columns;col=columns[0];reference=batch.candidate_ids[col]
-    model=build_model(12);rows=inputs(12,manifest['frames']);out=OUT/'native_actions_v1';out.mkdir(exist_ok=True)
+    model=build_model(12);rows=inputs(12,manifest['frames']);out=OUT/os.environ.get('JEV_PHASE12_ACTION_OUTPUT','native_actions_v1');out.mkdir(exist_ok=True)
     traces={};scores={};events={}
     for mode in ['OFF','FORCED_GENUINE_OPTION']:
         model.visual_jev_enabled=mode!='OFF'

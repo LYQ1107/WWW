@@ -16,7 +16,11 @@ def main(source,gpus):
         for gpu in gpus:
             if gpu in running or not pending:continue
             job=pending.pop(0);case=job['case'];video=job['video'];path=OUT/'validation_closed_loop_v1'/case/f'video{video:02d}/RESULT.json'
-            if path.exists():finished.append({**job,'exit_code':0,'already_complete':True});continue
+            if path.exists():
+                complete=json.loads(path.read_text());assert complete['status']=='COMPLETE';assert complete['case']==next(c for c in protocol['cases'] if c['name']==case)
+                if complete['binding']['source_commit']!=commit:
+                    assert (complete['binding']['source_commit'] in protocol.get('accepted_previous_control_sources',[]) and (complete['case']['kind']!='model' or complete['case']['model'].startswith('Candidate'))),'old visual input-skew result cannot be reused'
+                finished.append({**job,'exit_code':0,'already_complete':True,'source_commit':complete['binding']['source_commit']});continue
             env=os.environ.copy();env.update(CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
             log=OUT/f'online_{case}_video{video:02d}.log';handle=log.open('a')
             process=subprocess.Popen([PYTHON,'reproduction_tools/run_jev_phase12_closed_loop.py','--video',str(video),'--case',case],cwd=source,env=env,stdout=handle,stderr=subprocess.STDOUT,start_new_session=True);handle.close();job.update(gpu=gpu,pid=process.pid,log=str(log));running[gpu]=(job,process)

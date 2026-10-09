@@ -33,7 +33,10 @@ class VisualLifecycleController:
             out={'choice_logits':numeric['choice_logits'][None],'consequences':numeric['consequences'][None]}
         else:
             metadata=native_time_metadata(ctx['instances'],ctx['frame'],ctx['view'],first=ctx['first'])
-            inp=build_match_inputs(batch,observations,galleries,frame=ctx['frame'],view=ctx['view'],metadata=metadata)
+            # Real MATCH supervision covers existing candidates only. DEFER
+            # retains its frozen private solver dummy; an untrained terminal
+            # token must not enter competition pooling and shift trained scores.
+            inp=build_match_inputs(batch,observations,galleries,frame=ctx['frame'],view=ctx['view'],metadata=metadata,include_terminal=self.mode=='SHADOW')
             built=time.perf_counter();out=self.model(*inp)
         k=len(batch.candidate_ids)
         pref=out['choice_logits'][0,:,:k]
