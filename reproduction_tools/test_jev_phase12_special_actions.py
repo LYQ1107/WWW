@@ -23,7 +23,7 @@ def main():
     protect();source=binding();assert not source['dirty'];torch.set_num_threads(1);video=13;key=(13,664,1)
     manifest=json.loads((PREVIOUS/'native_capture_v1/video13/compat/RESULT.json').read_text());entry=next(e for e in manifest['prefixes'] if tuple(e['key'])==key)
     model=build_model(video);rows=inputs(video,manifest['frames']);out=OUT/os.environ.get('JEV_PHASE12_SPECIAL_OUTPUT','native_special_actions_v1');original_bank=model.memory_bank;original_react=model._jev_reactivation_action;traces={};stages={}
-    for mode in ['OFF','ABSTAIN_GROUP_FALLBACK','DEFER_NATIVE_BANK','DEFER_THEN_START_NEW']:
+    for mode in ['OFF','ABSTAIN_GROUP_FALLBACK','DEFER_NATIVE_BANK','DEFER_THEN_START_NEW','DEFER_THEN_FORCE_GENUINE_STALE']:
         model.visual_jev_enabled=mode!='OFF';bank=[];react=[]
         if mode=='ABSTAIN_GROUP_FALLBACK':model.visual_jev_controller=VisualLifecycleController(EqualLogits().cuda(),'MATCH_ONLY',supervision='CE',risk=True,qualified_tasks=('MATCH',))
         elif mode!='OFF':model.visual_jev_controller=DeferEngineering()
@@ -34,6 +34,7 @@ def main():
         def react_call(**kw):
             action=original_react(**kw)
             if mode=='DEFER_THEN_START_NEW':action='START_NEW'
+            if mode=='DEFER_THEN_FORCE_GENUINE_STALE':action='REACTIVATE_OLD'
             react.append({'native_stale_candidates':kw.get('candidate_track_ids',[]),'assigned_stale_reference':kw['track_id'],'native_action':action});return action
         model.memory_bank=bank_call;model._jev_reactivation_action=react_call;recorder=NativeProductionPrefixRecorder(model,[],out/mode);model.jev_native_prefix_observer=recorder.before;model.jev_candidate_commit_observer=recorder.after
         with torch.no_grad():NativeStateForkAdapter(model).run(entry['path'],rows,stop_frame=key[1])
@@ -46,5 +47,8 @@ def main():
     assert any(q['native_stale_candidates'] for q in stages['DEFER_THEN_START_NEW']['reactivation_actions']),'no actual stale pool for START_NEW test'
     current=traces['DEFER_THEN_START_NEW'][0];births=[e for e in current['events'] if 'NEW_ID_COMMIT' in e['events']]
     assert births and all(e['gallery_before']==0 and e['gallery_after']==1 for e in births)
-    save(out/'RESULT.json',{'status':'PASS','binding':source,'prefix_SHA256':entry['sha256'],'key':key,'ABSTAIN_full_state_and_RNG_and_birth_counter_equal_OFF':True,'DEFER_queries_real_bank_before_any_birth':True,'START_NEW_commits_new_ID_and_initializes_native_Gallery':True,'per_camera_capacity_valid':True,'stages':stages,'traces':traces,'scope':'forced untrained engineering output interventions, not learned lifecycle correctness or qualified supervision','research_performance_evidence':False});print('ACTUAL_NATIVE_ABSTAIN_DEFER_NEW_PASS',flush=True)
+    recovered=traces['DEFER_THEN_FORCE_GENUINE_STALE'][0];restored=[e for e in recovered['events'] if 'BANK_REACTIVATE' in e['events']]
+    assert restored and recovered['id_count']<current['id_count'],'genuine stale restoration did not avoid final birth'
+    assert all(e['gallery_after']==e['gallery_before']+1 for e in restored)
+    save(out/'RESULT.json',{'status':'PASS','binding':source,'prefix_SHA256':entry['sha256'],'key':key,'ABSTAIN_full_state_and_RNG_and_birth_counter_equal_OFF':True,'DEFER_queries_real_bank_before_any_birth':True,'START_NEW_commits_new_ID_and_initializes_native_Gallery':True,'DEFER_can_restore_real_stale_ID_and_avoid_START_NEW_birth':True,'real_stale_restoration_events':restored,'per_camera_capacity_valid':True,'stages':stages,'traces':traces,'scope':'forced untrained engineering output interventions, not learned lifecycle correctness or qualified supervision','research_performance_evidence':False});print('ACTUAL_NATIVE_ABSTAIN_DEFER_NEW_PASS',flush=True)
 if __name__=='__main__':main()
