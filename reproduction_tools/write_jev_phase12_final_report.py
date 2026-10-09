@@ -9,12 +9,16 @@ def main():
     offline=json.loads((REPORTS/'MATCH_OFFLINE_VALIDATION.json').read_text());global_data=json.loads((REPORTS/'GLOBAL_MCMOT_VALIDATION.json').read_text());assert global_data['status']=='COMPLETE' and len(global_data['cases'])==56
     latency=json.loads((REPORTS/'ONLINE_LATENCY.json').read_text());assert latency['status']=='COMPLETE'
     lifecycle=json.loads((REPORTS/'LIFECYCLE_DATA_ELIGIBILITY.json').read_text());byname={r['case']['name']:r for r in online['cases']};joint={r['case']['name']:r for r in global_data['cases']}
+    visual_memory=lifecycle['MEMORY']['visual_future_followup'];assert visual_memory['status']=='COMPLETE'
+    assert json.loads((REPORTS/'DELIVERY_INTEGRITY.json').read_text())['status']=='PASS'
+    assert json.loads((REPORTS/'STALE_TYPED_INPUT_CONTRACT.json').read_text())['status']=='PASS'
     seeds=[20261008,20261009,20261010];main_models=['CandidateMLP','CandidateDeepSets','CandidateJEV','set_transformer','visual_deepsets','question_plain','full','numerical_only','full_no_risk']
     def records(name):return [byname[name]] if name in ['GMT_OFF','Fixed'] else [byname[f'{name}_s{s}'] for s in seeds]
     def avg(name,field,scope='strict_online'):return statistics.mean(r['pooled_metrics'][scope][field] for r in records(name))
     def global_avg(name,field):
         names=[name] if name in ['GMT_OFF','Fixed'] else [f'{name}_s{s}' for s in seeds]
         return statistics.mean(joint[n]['metrics']['strict_online']['metrics'][field] for n in names)
+    def diagnostic_avg(name,field):return statistics.mean(r['diagnostics']['counts'].get(field,0) for r in records(name))
     full_hota=avg('full','HOTA');off_hota=avg('GMT_OFF','HOTA');set_hota=avg('set_transformer','HOTA');full_assa=avg('full','AssA');off_assa=avg('GMT_OFF','AssA')
     positive=full_hota>max(off_hota,avg('Fixed','HOTA'),set_hota) and full_assa>max(off_assa,avg('Fixed','AssA'),avg('set_transformer','AssA'))
     original_latency=latency['isolated_native_prefix_benchmark']['summaries'];fast=json.loads((REPORTS/'EXACT_TOKEN_OPTIMIZATION.json').read_text());fast_p95=[v['total_policy_and_feature_ms']['p95'] for n,v in fast['summaries'].items() if n.startswith('full')]
@@ -43,14 +47,27 @@ def main():
         '![全部种子训练曲线](figures/JEV_PHASE12/MATCH_LEARNING_CURVES.png)','',
         '## 真实在线闭环','',
         '56 个冻结 controller 条件 × video17/18/19 = 168 个完整 native mutated-state 视频运行。每256帧原子记录 lossless 原生恢复点和进度；失败/中断尝试保留。原始输出含当时已提交 ID，作为严格在线主结果。GMT min_track_len=50 在完整视频结束后过滤，属于可使用未来长度信息的传统 benchmark 后处理，仅单独列作 secondary canonical 结果。','',
-        '标准 TrackEval 合并6个 camera sequences，而非平均3个视频分数。新增 joint-camera scene 审计保持原始 GT 身份、坐标、检测与 native IDs，以 `(frame,camera)` 虚拟时序关联同场景两相机；它的 HOTA/AssA/IDF1 用于跨相机关联诊断，不是官方 camera-sequence benchmark 的替代。虚拟时序的 CLEAR IDSW/Frag 可受相机可见性和交替顺序影响，不能解释为物理时间错误传播。错误传播另按真实 camera-frame 的 prefix-confirmed 连续错误段计算，不假设 FPS。','',
+        '标准 TrackEval 合并6个 camera sequences，而非平均3个视频分数。新增 joint-camera scene 审计保持原始 GT 身份、坐标、检测与 native IDs，以 `(frame,camera)` 虚拟时序关联同场景两相机；它的 HOTA/AssA/IDF1 用于跨相机关联诊断，不是官方 camera-sequence benchmark 的替代。虚拟时序的 CLEAR IDSW/Frag 可受相机可见性和交替顺序影响，不能解释为物理时间错误传播。错误传播另按真实 camera-frame 的 prefix-confirmed 连续错误段计算，不假设 FPS。相同几何也不保证 DetA 完全相同：TrackEval HOTA 先以全局身份 alignment×IoU 做 Hungarian，跨相机合并会改变该匹配权重；两种 scope 的差值逐条件保留在 DELIVERY_INTEGRITY。','',
         '| 方法 | strict HOTA | strict AssA | IDF1 | IDSW | MOTA | Frag | joint-camera HOTA | joint AssA |','|---|---:|---:|---:|---:|---:|---:|---:|---:|'])
     for name in ['GMT_OFF','Fixed']+main_models:
         lines.append(f'| {name} | {avg(name,"HOTA"):.3f} | {avg(name,"AssA"):.3f} | {avg(name,"IDF1"):.3f} | {avg(name,"IDSW"):.1f} | {avg(name,"MOTA"):.3f} | {avg(name,"Frag"):.1f} | {global_avg(name,"HOTA"):.3f} | {global_avg(name,"AssA"):.3f} |')
     lines.extend(['','学习方法为三种子真实 pooled 指标的均值；每个 pooled 值来自重新运行 TrackEval COMBINED_SEQ，seed range、canonical、完整结构消融、纠错/反改错、false births/merges、跨相机 continuity、Gallery contamination、候选准确率上下界与真实错误段详见 `MATCH_VALIDATION_RESULTS.json`、`ARCHITECTURE_ABLATION.json`、`GLOBAL_MCMOT_VALIDATION.json`。','',
+        '![全部冻结种子完整在线比较](figures/JEV_PHASE12/MATCH_ONLINE_COMPARISON.png)','',
+        'Prefix-anchor 诊断只在前两个一致、已知的实际 association commits 后固定身份锚点；主相机初始化单独计数，不属于该 journal 的首次两次关联。标准与 joint TrackEval 都使用包含初始化的完整预测。UNKNOWN 不算正确或错误，candidate certificate 不能当成全视频 IDF1。原始 actor 文件中的初始化计数字段有 camera 选择错误；BOOTSTRAP_METADATA_CORRECTION 从真实首个 payload 和完整 raw 预测派生正确值，汇总记录修正，actor、预测、模型与指标均原样保留。','',
+        '| 风险比较：三种子均值 | HOTA | prefix-confirmed wrong | anchor UNKNOWN | same-prefix Fixed 错→对 | same-prefix Fixed 对→错 |','|---|---:|---:|---:|---:|---:|'])
+    for name in ['full','full_no_risk']:
+        lines.append(f'| {name} | {avg(name,"HOTA"):.3f} | {diagnostic_avg(name,"confirmed_wrong_observations"):.1f} | {diagnostic_avg(name,"anchor_unknown"):.1f} | {diagnostic_avg(name,"N01_same_prefix_fixed_to_policy"):.1f} | {diagnostic_avg(name,"N10_same_prefix_fixed_to_policy"):.1f} |')
+    lines.extend(['','Risk on/off 的完整状态轨迹不同，锚点资格范围也不同，不能仅凭已确认 wrong 更低/更高就把 UNKNOWN 当作错误或宣称所有错误概率下降。主 HOTA 差值和上述实际纠错/反改错一起报告。','',
+        '| 全部结构条件 | HOTA mean | min–max seeds | AssA mean |','|---|---:|---:|---:|'])
+    for name in list(offline['models'])+['full_no_risk']:
+        vals=[r['pooled_metrics']['strict_online']['HOTA'] for r in records(name)]
+        lines.append(f'| {name} | {statistics.mean(vals):.3f} | {min(vals):.3f}–{max(vals):.3f} | {avg(name,"AssA"):.3f} |')
+    lines.extend(['','![真实闭环结构消融](figures/JEV_PHASE12/MATCH_ONLINE_ABLATIONS.png)','',
         '每个视频/controller 在事前固定 [128,0] 完整原生前缀做 current-payload Fixed 替代，之后采用同一个冻结 controller 在各自 mutated state 上重新计算未来候选。实际分支与完整在线轨迹提交 ID/hits/Gallery 长度相符。H32 regret 仅相对于这一实际执行过的替代，非所有候选的 oracle。训练效用标签来自 GMT_OFF 后续策略；部署未来策略变成 learned controller，有 background-policy 分布变化，不能称作 Bellman critic 或把单边 Q 相加当作真实 joint assignment value。','',
         '## 生命周期监督与延迟','',
-        '4 个 TRAIN 视频事前冻结最早两个真实 WRITE 事件，共8个 WRITE/KEEP H32/H64 原生分叉。8/8 Gallery 改变，0 个目标后续 bank READ、0 个后续原生 score/committed-ID 变化、H32/H64 全部 utility tie。该有限审计不能证明 memory 永远无用；只能说明这些例子没有可识别的正负决策监督。实际 stale pools 已记录，包括真实多候选/可靠 prefix anchors，但没有独立 TRAIN/VAL 的相反恢复动作及长期收益监督。MEMORY、REACTIVATION、共享三问题训练与 FULL_LIFECYCLE 均 NOT_RUN，继续 native fallback，指标 null。','',
+        '原始4个 TRAIN 视频事前冻结最早两个真实 WRITE 事件，共8个 WRITE/KEEP H32/H64 原生分叉。GMT_OFF future 下8/8 Gallery 改变，0个目标后续 bank READ、0个后续原生 score/committed-ID 变化，H32/H64 全部 utility tie；原协议、报告V1和分支保持原样。','',
+        f'新模型主动读取 Gallery，因此另行冻结 same8 事件、最小事前种子20261008，当前 MATCH 仍为 GMT_OFF 以保持真实 WRITE 事件，之后每个 payload 才启用冻结 Full MATCH_ONLY。{visual_memory["actual_visual_MATCH_READ_events"]}/8 事件真实读取目标视觉历史，{visual_memory["changed_visual_MATCH_READ_events"]}/8 读取改变，{visual_memory["changed_policy_value_events"]}/8 预测分数改变，{visual_memory["native_committed_identity_changes"]}/8 改变后续身份，{visual_memory["non_tie_H64"]}/8 H64非平局。WRITE−KEEP 在 video13/F2/V1 为 H32−18/H64−13，在 video16/F17/V1 为 H32−73.25/H64−94.5，另外6次为平局。这证明记忆后果依赖实际后续策略；不是学会 MEMORY 的证据，也不能由原始OFF平局推断视觉模型中的记忆无效。','',
+        '仅2个可靠锚定非平局 TRAIN 组、0个 VAL 组，低于事前12TRAIN/4VAL、各跨≥2视频的资格阈值。没有因该负/非平局结果调参、增加有利序列或训练伪标签。实际 stale pools 已记录，包括真实多候选/可靠 prefix anchors，但没有独立 TRAIN/VAL 的相反恢复动作及长期收益监督。MEMORY、REACTIVATION、共享三问题训练与 FULL_LIFECYCLE 均 NOT_RUN，继续 native fallback，指标 null。实际 stale typed input 修复使用真实 Gallery 长度、bank eligibility、消失时间与分数 entropy；专门的只读原生全状态核查 PASS。','',
         '硬件 Tesla V100-DGXS-32GB、PyTorch 2.0 / CUDA11.8、FP32、每个 actor CPU线程1。主矩阵为多 GPU 并行真实延迟；另在 GPU1 对事前 first/middle/last 各9个原生前缀进行基准。原始 Full 3种子 total token+policy+assignment p95：'+str([round(original_latency[f'full_s{s}']['total_policy_and_feature_ms']['p95'],3) for s in seeds])+' ms。字节一致的 metadata/历史 ID/视觉 token 批量化优化后：'+str([round(x,3) for x in fast_p95])+' ms，仍高于10ms；主视频矩阵没有切换优化实现。原始与优化的 max、p50、p95、显存、分阶段数据全部保留，优化中出现的长尾没有排除。','',
         '共享状态按当前 camera payload 一次 encode，服务该批所有 MATCH questions；跨 commit 的 state cache 不复用，命中0，MEM/REACT 保持原生规则，不冒称已训练网络时延。GMT Backbone 不重复执行，冻结感知直接复用。','',
         '## 十二个研究问题的明确回答','',
@@ -61,7 +78,7 @@ def main():
         '5. **三种问题均有真实监督吗？** 否。MATCH132/94与已执行 H8/16/32 有监督；MEM/REACT 不合格，维持 SHADOW/native fallback，共享训练未运行。','',
         f'6. **视觉 token 提供有效新增收益吗？** 尚不支持。Full 离线已确认正确 {offline["models"]["full"]["VALIDATION_mean"]["CertifiedCorrect"]*100:.2f}%，同架构 numerical_only {offline["models"]["numerical_only"]["VALIDATION_mean"]["CertifiedCorrect"]*100:.2f}%；完整视频结果已并列。不能由此断言视觉信息本身无用，结论限定于当前数据、架构与训练协议。','',
         f'7. **Full 优于容量/证据匹配 Set Transformer 吗？** 离线下界落后约{-known_delta["full_minus_baseline_certified_correct"]*100:.2f}点；严格在线 Full−Set HOTA {full_hota-set_hota:+.3f}。缺乏独立 heldout 结构优势证据，不能宣称 JEV 优于普通 Attention。','',
-        f'8. **风险 fallback 降低实际错误关联风险吗？** 同权重、同温度的 risk on−off HOTA 为 {risk_delta:+.3f}；错误提交/反改错/污染的 paired seed结果在JSON。即便某指标改善，也不代表 UNKNOWN或独立 abstain 概率已校准，更没有恢复到 GMT OFF 水平。','',
+        f'8. **风险 fallback 降低实际错误关联风险吗？** 同权重、同温度的 risk on−off HOTA 为 {risk_delta:+.3f}，有有限改善。已确认错误观测均值 on {diagnostic_avg("full","confirmed_wrong_observations"):.1f} / off {diagnostic_avg("full_no_risk","confirmed_wrong_observations"):.1f}，两者的 UNKNOWN 范围不同；不能断言全面降险，也不代表独立 abstain 概率已校准，更没有恢复到 GMT OFF 水平。','',
         '9. **长期效用比普通相似度更有价值吗？** full/no_H32/no_consequence/similarity 三种子与真实视频比较全部提供；当前不具备长期效用导致在线性能优于传统 GMT 的证据。Q 标签来自执行过的有限分支与 GMT_OFF future，joint externalities 与未执行候选保持未知。','',
         f'10. **是否真实改善在线 HOTA/AssA？** 当前 Full−GMT OFF 为 HOTA {full_hota-off_hota:+.3f} / AssA {full_assa-off_assa:+.3f}，明显退化。所有当前/下一帧来自真实 native state 更新，不能用离线 Tiny100% 或部分标签 NLL 抵消这个负结果。','',
         '11. **符合在线部署要求吗？** 目前未达到新增决策 p95≤10ms。已实现真实共享与 batch读取、尝试字节一致 token优化并保留原始结果；没有用未来帧、改轻基线或去掉不利时延样本获得通过。','',
@@ -70,7 +87,9 @@ def main():
         '判据是 `encode_state → encode_questions → score_questions` 实际运算，以及共享状态被真实动态 Question、真实历史候选读取并由 question-conditioned gate 产生 typed action probabilities/Q，再提交到原生可变状态。模块 hook、梯度、相同状态不同问题功能任务、permutation、真实 commit/下一步候选和对应消融分别检查这些路径。旧 CandidateJEV 的两个静态8D向量/MLP仍列作旧对照。当前结构有充分可核验功能证据，当前研究没有支持其优越性的闭环证据。','',
         '## 工程修复与复核入口','',
         '所有早期失败与旧结果保留。训练前修正 legacy adapter 的 dynamic B×Q batching；正式视觉 MOT 前发现额外未训练 DEFER token 进入竞争池，停止新增任务并修正，使真实生产 tensor 与冻结训练 tensor 一致。DEFER 保留冻结私有 solver dummy，不伪造 terminal 监督；旧数值控制 fast path、GMT/Fixed结果经相同 checkpoint/case/source 检查复用。没有查看视觉 MOT 后修改网络或重训选有利种子。','',
-        '脚本：`train_jev_phase12_match.py`、`queue_jev_phase12_online.py`、`run_jev_phase12_closed_loop.py`、`finalize_jev_phase12_online.py`、`finalize_jev_phase12_global_mcmot.py`、`audit_jev_phase12_lifecycle.py`、`benchmark_jev_phase12_latency.py`。冻结 source/parameter/config/dataset/checkpoint SHA 在各报告及 manifest；运行大文件本地保留，不提交 Git。审查先读 `FINAL_GO_NO_GO.json`、`MATCH_VALIDATION_RESULTS.json` 和 `LIFECYCLE_DATA_ELIGIBILITY.json`。',''])
+        '脚本：`train_jev_phase12_match.py`、`queue_jev_phase12_online.py`、`run_jev_phase12_closed_loop.py`、`finalize_jev_phase12_online.py`、`finalize_jev_phase12_global_mcmot.py`、`audit_jev_phase12_lifecycle.py`、`benchmark_jev_phase12_latency.py`。冻结 source/parameter/config/dataset/checkpoint SHA 在各报告及 manifest；运行大文件本地保留，不提交 Git。审查先读 `FINAL_GO_NO_GO.json`、`MATCH_VALIDATION_RESULTS.json` 和 `LIFECYCLE_DATA_ELIGIBILITY.json`。','',
+        '复现主矩阵需 checkout 精确 actor commit `40774754fcad13fef0ff240a6f305cbd33e026c9`，而不是直接用更新后的报告提交运行旧 ONLINE_PROTOCOL（其脚本 SHA 会正确拒绝不匹配）。25个早期已完成的 GMT/Fixed/旧数值控制来自 `d85fb508efaff8f34bc908d15afb76c826299cc1`，经等价策略与配置检查允许复用，其余143个来自4077475。正式51 fits源码为 `2e00194`。后续提交仅包含未训练 stale 输入语义修复、FULL显式拒绝、统计元数据修正、可选精确token优化及归因/交付工具，没有更新主矩阵的架构、参数、阈值或预测。','',
+        'DELIVERY_INTEGRITY 复核168 actor/336预测文件 SHA、全部51 fits/102权重 SHA、两套56条件×2scope指标 SHA、主协议源码、GMT foundation、perception cache index、B2和历史报告。Heldout20/21/22保持封存。失败或中断证据在 EARLY_ENGINEERING_FAILURES 与本地日志保留；Git仅上传必要源码、紧凑结果/图表，不上传视觉数据、权重或原生快照。',''])
     (ROOT/'docs/JEV_PHASE12_FINAL_RESEARCH_REPORT.md').write_text('\n'.join(lines))
     save(REPORTS/'FINAL_ARTIFACTS_MANIFEST.json',{'status':'COMPLETE','source_commit_before_final_document_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),'files_SHA256':{str(p.relative_to(ROOT)):sha(p) for p in sorted(list(REPORTS.glob('*.json'))+list((ROOT/'docs').glob('JEV_PHASE12*.md'))) if p.name!='FINAL_ARTIFACTS_MANIFEST.json'},'required_json_reports':required+['ARCHITECTURE_FREEZE','FINAL_GO_NO_GO'],'no_large_binaries_uploaded':True,'weights_visual_dataset_native_prefixes_kept_local':True,'heldout':'SEALED','Full24':False,'official_TEST':False})
     print('ALL_REQUIRED_PHASE12_REPORTS_COMPLETE',flush=True)
