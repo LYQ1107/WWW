@@ -969,7 +969,7 @@ class GTRRCNN(CustomRCNN):
                             prefix_observer(instances=instances, id_count=id_count, hits=id_count_dict,
                                 galleries=id_reid_dict, frame=frame_id, view=int(id[i]), first=True)
                         if getattr(self, 'visual_jev_enabled', False):
-                            self.visual_jev_controller.native_context(instances,id_reid_dict,frame_id,int(id[i]),True)
+                            self.visual_jev_controller.native_context(instances,id_reid_dict,frame_id,int(id[i]),True,video_id=self._jev_context['video_id'])
                         asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
                             instances_kv,
                             k=len(instances_kv) - 1)  # n_k x N
@@ -1018,7 +1018,7 @@ class GTRRCNN(CustomRCNN):
                                 galleries=id_reid_dict, frame=frame_id, view=i, first=False,
                                 frame_old_instances=instacnes_old)
                         if getattr(self, 'visual_jev_enabled', False):
-                            self.visual_jev_controller.native_context(instances,id_reid_dict,frame_id,i)
+                            self.visual_jev_controller.native_context(instances,id_reid_dict,frame_id,i,video_id=self._jev_context['video_id'])
                         asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
                             instances_kv,
                             k=len(instances_kv) - 1)

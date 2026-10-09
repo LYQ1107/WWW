@@ -26,6 +26,9 @@ class ActionOption:
     identity_reference: Optional[int] = None
     legal: bool = True
     native_execution_payload: Optional[dict] = None
+    evidence_features: Optional[torch.Tensor] = None
+    visual_identity_tokens: Optional[torch.Tensor] = None
+    temporal_context: Optional[dict] = None
 
 @dataclass(frozen=True)
 class OnlineVisualState:

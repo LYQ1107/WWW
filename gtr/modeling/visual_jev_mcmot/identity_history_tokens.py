@@ -17,14 +17,14 @@ def history_tokens(galleries, ids, reference):
             mask[j]=True
     return visual,mask,lengths
 
-def native_time_metadata(instances,frame,view,view_num=2,first=False):
+def native_time_metadata(instances,frame,view,view_num=2,first=False,history_limit=80):
     """Use actual ordered native history; missing old metadata stays unknown."""
     last={}
     if first:
         return last
     # At prefix instances includes both current cameras; rows without committed
     # IDs are excluded. History index is actual native frame*view_num+camera.
-    start=max(0,len(instances)-80)
+    start=0 if history_limit is None else max(0,len(instances)-history_limit)
     for index,inst in enumerate(instances[start:],start):
         time,camera=divmod(index,view_num)
         if time>frame or (time==frame and camera>=view) or not inst.has('track_ids'):
