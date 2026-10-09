@@ -1,0 +1,20 @@
+{
+  "Full24": false,
+  "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+  "detector_and_backbone": "same actual Stage1 weights",
+  "feature_dim": 1024,
+  "forbidden": [
+    "GTA _forward_transformer",
+    "asso_predictor",
+    "s_t_head"
+  ],
+  "frames": "ALL actual frames in TRAIN12/13/14/16 and development17/18/19",
+  "official_TEST": false,
+  "pretrain_exposure": "all24 TRAIN, cannot treat inherited20/21/22 as independent end-to-end heldout",
+  "resize": "EfficientDetResizeCrop size1560 scale1, RGB",
+  "roi": "unjittered ROI VFCE as Stage1 training, no RPCE",
+  "scope": "perception only; no validation identity metrics observed",
+  "score_filter": 0.55,
+  "script_SHA256": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+  "status": "FROZEN_BEFORE_FULL_CACHE"
+}

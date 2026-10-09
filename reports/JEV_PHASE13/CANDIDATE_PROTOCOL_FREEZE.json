@@ -1,0 +1,25 @@
+{
+  "Full24": false,
+  "GT": "only offline observation labels/alignment, excluded from runtime inputs; B1-generated real native histories primary supervision",
+  "TRAIN": [
+    12,
+    13,
+    14,
+    16
+  ],
+  "VAL": [
+    17,
+    18,
+    19
+  ],
+  "active": "all actual identities resident in prior40-frame native window; first-view initialization identities available immediately cross-camera",
+  "ambiguous": "history with >1 observed known GT remains UNKNOWN, never assign majority as definitive label",
+  "capacity": "one ID per current camera payload; different cameras may share",
+  "geometry": "normalized bbox, real camera/time deltas, same-view motion only; cross-view bbox differences masked without homography",
+  "heldout": "SEALED",
+  "new": "private per-detection dummy in each lawful assignment; MATCH dummy DEFER, REACT dummy START_NEW",
+  "official_TEST": false,
+  "retrieval": "ALL legal identities in actual pool, no GTA or score topK pruning",
+  "stale": "actual native bank references after promotion, with original bank_size10 eligibility; no synthetic stale identity",
+  "status": "FROZEN_BEFORE_ANY_NEW_ASSOCIATION_METRICS"
+}
