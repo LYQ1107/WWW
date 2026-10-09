@@ -281,6 +281,9 @@ def write_report(report, summaries, cosine, own):
     lines.append('| B1 cosine | ' + ' | '.join(f'{cosine["tracking"][k]:.3f}' for k in METRICS) + ' |')
     original = read(REPORTS / 'GMT_BASELINE_FREEZE.json')['GMT_OFF_metrics']['strict_online']
     lines.append('| Original GMT separate full system | ' + ' | '.join(f'{original[k]:.3f}' for k in METRICS) + ' |')
+    lines.extend(['',
+        f'Full improves raw HOTA by{summaries["full"]["HOTA"]["mean"]-cosine["tracking"]["HOTA"]:.3f} over cosine, but its mean IDSW violates the frozen1.25×cosine limit. Its HOTA advantage over the strongest ordinary control is only{summaries["full"]["HOTA"]["mean"]-max(summaries[v]["HOTA"]["mean"] for v in ["motip","camel","set_transformer"]):.3f}.',
+        f'Fixed Question reaches HOTA{summaries["fixed_question"]["HOTA"]["mean"]:.3f} and No Question Reader reaches{summaries["no_question_reader"]["HOTA"]["mean"]:.3f}, versus Full{summaries["full"]["HOTA"]["mean"]:.3f}. The current dynamic Question Reader benefit is unsupported. Removing cross-camera or long-term evidence harms tracking, but that evidence is also available to the ordinary controls; these ablations do not establish a unique structured-decision advantage.'])
     official = read(REPORTS/'OFFICIAL_MATLAB_CROSSVIEW.json')
     lines.extend(['', '## Native official cross-camera metric engine', '',
                   'Unchanged official evaluateTracking/CLEAR_MOT_HUN/IDmeasures and repository MEX ran in MATLAB R2020a on every frozen primary case. The VisionTrack benchmark parameter skips MOT16-only class/visibility cleaning: the original converter uses unknown auxiliary values of -1, which MOT16 defaults would incorrectly treat as low visibility. The failed-format diagnostic is retained in MATLAB_FORMAT_COMPATIBILITY_AUDIT.json. Sequential camera blocks use max(GT,pred)+1; CVMA uses interleaved frame*n_views+view_index, two-decimal geometry and the native end-frame clipping. Counts are pooled across scenes. Canonical outputs are secondary and separately recorded.', '',
@@ -311,7 +314,7 @@ def write_report(report, summaries, cosine, own):
         lines.append('| '+variant+' | '+str(len(cc))+' | '+' | '.join(f'{v:.3f}' for v in values)+' |')
     tradeoffs = [c for c in own['cases'] if c['status']=='COMPLETE' and c['fewer_wrong_anchors_with_more_fragments']]
     if tradeoffs:
-        lines.extend(['', 'Observed prefix fragmentation tradeoffs:'])
+        lines.extend(['', 'Observed prefix fragmentation tradeoffs:', ''])
         for c in tradeoffs:
             before,after=c['paired_TRAIN_totals']['before'],c['paired_TRAIN_totals']['after']
             lines.append(f'- {c["variant"]} seed{c["seed"]}: wrong-anchor observations {before["birth_anchor_wrong_observations"]} → {after["birth_anchor_wrong_observations"]}, extra birth fragments {before["extra_birth_fragments"]} → {after["extra_birth_fragments"]}.')
@@ -322,6 +325,7 @@ def write_report(report, summaries, cosine, own):
     for entry in read(REPORTS/'EFFICIENCY.json')['cases']:
         r=entry['values']
         lines.append(f'| {r["variant"]} | {r["full_scene_FPS"]:.3f} | {r["full_camera_payload_FPS"]:.3f} | {r["stage2_ms"]["p50"]:.3f} | {r["stage2_ms"]["p95"]:.3f} | {r["peak_full_VRAM_allocated_MiB"]:.1f} | {"PASS" if r["budget_PASS"] else "FAIL"} |')
+    lines.extend(['', 'The parameter-free cosine controller also misses the full-scene FPS budget with this common Stage1 frontend/native pipeline. Full separately exceeds the Stage2 latency limit. These single256-frame trials do not establish a statistical speed ranking between methods.'])
     lines.extend(['', 'Original GMT uses Stage2-trained perception/RPCE and is a separate strong full-system comparator. MOTIP-style/CAMEL-style are controlled adapters, not complete official framework reproductions.', '',
                   'Native state parity exposed a restored-ID recycling bug before primary training. Old data/models/results remain archived. The correction adds a recovered ID back to the real possible-ID set; the real GTA-throw lifecycle test now recovers the same ID twice and verifies full/resumed state through106 frames. All primary models use the regenerated v3 corpus. A dormant-state issue in the Set control was also repaired before training; every shared-state/ordinary decoder block has nonzero supervised gradients.', '',
                   'Tiny/Pilot use frozen examples and budgets; formal primary checkpoint is LAST at20k. All GT labels are offline and uncertain/contaminated candidate histories remain UNKNOWN. REACT has only9 natural clean TRAIN positives and MEMORY has0 WRITE/KEEP labels, so learned MATCH+REACT and three-lifecycle experiments are NOT_RUN. Common cosine recovery/native WRITE remain explicit fallbacks. The NoTyped result cannot identify typed lifecycle benefit under MATCH-only supervision.', '',

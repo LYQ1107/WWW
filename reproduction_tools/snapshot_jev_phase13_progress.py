@@ -26,7 +26,7 @@ def main():
             if final.exists():
                 f = json.loads(final.read_text())
                 case.update(result={'path': str(final), 'SHA256': sha(final)}, checkpoint=f['checkpoint'],
-                            source_commit=f['binding']['source_commit'], source_root=f['binding']['source_root'])
+                            status=f['status'], source_commit=f['binding']['source_commit'], source_root=f['binding']['source_root'])
                 if phase == 'onpolicy':
                     case['paired_first256_TRAIN'] = {
                         when: {k: sum(v['summary'][k] for v in f[when + '_online_TRAIN'])
@@ -43,16 +43,21 @@ def main():
         actual = []
         for path in sorted(complete):
             r = json.loads(path.read_text())
-            actual.append({'variant': r['variant'], 'seed': r['seed'], 'video': path.parent.name,
+            actual.append({'variant': r['variant'], 'seed': r['seed'], 'case_name':path.parent.parent.name,
+                           'no_calibration':path.parent.parent.name.endswith('_no_calibration'), 'video': path.parent.name,
                            'result': {'path': str(path), 'SHA256': sha(path)}, 'strict_metrics': r['strict_online_metrics'],
                            'trained': r['trained'], 'source_commit': r['binding']['source_commit'],
                            'raw_predictions': r['raw_predictions'], 'identity': r['identity_summary'],
                            'scope': 'completed individual frozen video; not pooled or seed-average evidence'})
         online[phase] = {'completed_video_runs': len(complete), 'running_progress_paths': progressing,
                          'completed_results': actual}
-    save(REPORTS / 'RUN_PROGRESS.json', {'status': 'IN_PROGRESS', 'UTC': datetime.now(timezone.utc).isoformat(),
+    pipeline=OUT/'completion_pipeline_v1/RESULT.json'
+    completion={'status':json.loads(pipeline.read_text())['status'],'result':{'path':str(pipeline),'SHA256':sha(pipeline)}} if pipeline.exists() else {'status':'IN_PROGRESS'}
+    live=list((OUT/'live_efficiency_v1').glob('*/seed*/RESULT.json'))
+    save(REPORTS / 'RUN_PROGRESS.json', {'status': 'COMPLETE' if completion['status']=='PASS' else 'IN_PROGRESS', 'UTC': datetime.now(timezone.utc).isoformat(),
                                         'binding': binding(), 'queues': queues, 'training_cases': cases, 'online': online,
-                                        'tracking_scope': 'partial optimizer/audit progress only; final pooled HOTA/AssA conclusions require completed frozen full-video runs',
+                                        'completion':completion, 'completed_real_live_trials':len(live),
+                                        'tracking_scope': 'final pooled comparisons and scientific gate outcomes are in FINAL_GO_NO_GO.json; completion does not imply scientific GO',
                                         'large_checkpoints_and_state_logs_uploaded': False, 'heldout': 'SEALED'})
     print('PHASE13_PROGRESS_CAPTURED', [(k, v['done'], len(v['active']), v['pending']) for k, v in queues.items()], flush=True)
 
