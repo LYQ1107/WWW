@@ -49,8 +49,8 @@ def main(kind,max_jobs):
                     # First persisted optimization progress proves the full
                     # TRAIN+development corpus has already been loaded. Its
                     # measured resident size is ~7.75GiB; retain another
-                    # .75GiB per loaded worker plus the14GiB host margin.
-                    if rss>=7.5 and (OUT/f'{phase}_training_v1'/v/f'seed{s}'/'PROGRESS.json').exists():estimate=rss+.75
+                    # .5GiB per loaded worker plus the14GiB host margin.
+                    if rss>=7.5 and (OUT/f'{phase}_training_v1'/v/f'seed{s}'/'PROGRESS.json').exists():estimate=rss+.5
                 deficit+=max(0.,estimate-rss)
             except (OSError,StopIteration,ValueError):continue
         required=5. if kind=='validation' else 11.
