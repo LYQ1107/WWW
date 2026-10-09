@@ -33,7 +33,16 @@ def main():
         root = OUT / f'{phase}_online_v1'
         complete = list(root.glob('*/video*/RESULT.json'))
         progressing = [str(p) for p in root.glob('*/video*/PROGRESS.json') if not (p.parent / 'RESULT.json').exists()]
-        online[phase] = {'completed_video_runs': len(complete), 'running_progress_paths': progressing}
+        actual = []
+        for path in sorted(complete):
+            r = json.loads(path.read_text())
+            actual.append({'variant': r['variant'], 'seed': r['seed'], 'video': path.parent.name,
+                           'result': {'path': str(path), 'SHA256': sha(path)}, 'strict_metrics': r['strict_online_metrics'],
+                           'trained': r['trained'], 'source_commit': r['binding']['source_commit'],
+                           'raw_predictions': r['raw_predictions'], 'identity': r['identity_summary'],
+                           'scope': 'completed individual frozen video; not pooled or seed-average evidence'})
+        online[phase] = {'completed_video_runs': len(complete), 'running_progress_paths': progressing,
+                         'completed_results': actual}
     save(REPORTS / 'RUN_PROGRESS.json', {'status': 'IN_PROGRESS', 'UTC': datetime.now(timezone.utc).isoformat(),
                                         'binding': binding(), 'queues': queues, 'training_cases': cases, 'online': online,
                                         'tracking_scope': 'partial optimizer/audit progress only; final pooled HOTA/AssA conclusions require completed frozen full-video runs',
