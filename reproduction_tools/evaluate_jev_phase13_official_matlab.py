@@ -3,7 +3,9 @@
 Input formatting follows prepare_cross_view_eval.py: camera maximum over GT
 and predictions plus one for sequential blocks, frame*n_views+view_index for
 interleaved CVMA, XYWH rounded to two decimals and auxiliary columns=-1.
-The original evaluator, its preprocessing and repository MEX are untouched.
+The original evaluator and repository MEX are untouched. VisionTrack does not
+provide MOT16 class/visibility fields: benchmark='VisionTrack' skips MOT16-only
+cleaning, which would otherwise discard true positives with sentinel vis=-1.
 """
 from concurrent.futures import ThreadPoolExecutor
 from jev_phase13_learning import *
@@ -69,7 +71,7 @@ def prepare(manifest_path, output):
 
 def evaluate_case(phase,name):
     source=OUT/f'{phase}_pooled_v1'/name
-    output=OUT/f'{phase}_official_matlab_v1'/name
+    output=OUT/f'{phase}_official_matlab_v2'/name
     result=output/'RESULT.json'
     if result.exists():
         r=json.loads(result.read_text());assert r['status']=='COMPLETE';return r
@@ -81,7 +83,7 @@ def evaluate_case(phase,name):
         folder=output/prediction_kind
         jobs,inputs=prepare(manifest,folder)
         config=folder/'CONFIG.json';native=folder/'NATIVE.json';log=folder/'matlab.log'
-        save(config,{'kit':str(KIT),'jobs':jobs,'output':str(native)})
+        save(config,{'kit':str(KIT),'jobs':jobs,'output':str(native),'benchmark':'VisionTrack'})
         env=os.environ.copy();env.update(JEV_MATLAB_CONFIG=str(config),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1')
         script=ROOT/'reproduction_tools/jev_phase13_official_matlab_eval.m'
         with log.open('w') as handle:
@@ -100,6 +102,8 @@ def evaluate_case(phase,name):
        'binding':binding(),'native_MATLAB':str(MATLAB),'native_version':values['version'],
        'official_toolkit_SHA256':{str(p.relative_to(KIT)):sha(p) for p in sorted(KIT.rglob('*')) if p.is_file() and p.suffix in ['.m','.cpp','.mexa64']},
        'adapter_script':reference(ROOT/'reproduction_tools/jev_phase13_official_matlab_eval.m'),
+       'benchmark_option':'VisionTrack; skip MOT16 class/visibility preprocessing because converter auxiliary fields are unknown -1, not measured MOT16 visibility',
+       'unchanged_official_metric_functions':True,
        'input_policy':'official converter sequential max(GT,pred)+1; interleaved frame*n_views+index; two-decimal XYWH; auxiliary -1; actual raw/canonical frozen predictions',
        'aggregation':'sum official per-scene counts; no mean-of-video scores',
        'wall_seconds':time.monotonic()-start,'heldout':'SEALED','official_TEST':False}
