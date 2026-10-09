@@ -13,9 +13,9 @@ def save_dense(path,value,reserve=3000000000):
     assert shutil.disk_usage(path.parent).free>=reserve,'disk reserve below frozen3GB after dense serialization'
     temporary.replace(path)
 
-def load_dense(path):
+def load_dense(path,map_location='cpu'):
     path=Path(path)
     if path.suffix=='.xz':
         with lzma.open(path,'rb') as stream:data=stream.read()
-        return torch.load(io.BytesIO(data),map_location='cpu')
-    return torch.load(path,map_location='cpu')
+        return torch.load(io.BytesIO(data),map_location=map_location)
+    return torch.load(path,map_location=map_location)
