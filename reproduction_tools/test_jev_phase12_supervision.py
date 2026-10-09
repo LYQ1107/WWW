@@ -23,7 +23,20 @@ def main():
     for x in output.values():
         if torch.is_tensor(x):assert torch.isfinite(x).all()
     assert torch.equal(model.normalized(args[1].context,'state')[...,stats['state_constant']],torch.zeros_like(model.normalized(args[1].context,'state')[...,stats['state_constant']]))
-    result={'status':'PASS','binding':binding(),'visual_dataset_SHA256':manifest['SHA256'],'unknown_CE_gradients_zero':True,'unknown_Q_target_and_gradients_masked':True,'unexecuted_targets_NaN':True,'real_v3_batch_finite':True,'TRAIN_only_constant_normalization_correct':True,'all_models95_Tiny_gate_required':False,'real_training_started':False}
-    save(OUT/'supervision_contract_v1/RESULT.json',result);save(REPORTS/'SUPERVISION_CONTRACT_TESTS.json',result);print('PARTIAL_SUPERVISION_CONTRACT_PASS',flush=True)
+    # Dynamic Q native deployment must equal independent questions, including
+    # the historical numerical baselines. IDs are absent in both interfaces.
+    s,question,options=args
+    from gtr.modeling.visual_jev_mcmot.schemas import QuestionDescriptor,OptionTensors
+    manyq=QuestionDescriptor(question.visual.expand(1,2,-1).clone(),question.context.expand(1,2,-1).clone(),question.types.expand(1,2).clone(),question.mask.expand(1,2).clone())
+    manyo=OptionTensors(options.visual.expand(1,2,-1,-1,-1).clone(),options.visual_mask.expand(1,2,-1,-1).clone(),options.evidence.expand(1,2,-1,-1).clone(),options.kinds.expand(1,2,-1).clone(),options.mask.expand(1,2,-1).clone())
+    deployment_errors={}
+    for name in ['CandidateMLP','CandidateDeepSets','CandidateJEV','full','set_transformer','visual_deepsets','question_plain','numerical_only']:
+        network=build_network(name,stats).eval()
+        with torch.no_grad():single=network(*args);many=network(s,manyq,manyo)
+        assert many['choice_logits'].shape==(1,2,k)
+        error=float((many['choice_logits']-single['choice_logits'].expand(1,2,k)).abs().max());assert error<2e-5,(name,error)
+        deployment_errors[name]=error
+    result={'status':'PASS','binding':binding(),'visual_dataset_SHA256':manifest['SHA256'],'unknown_CE_gradients_zero':True,'unknown_Q_target_and_gradients_masked':True,'unexecuted_targets_NaN':True,'real_v3_batch_finite':True,'TRAIN_only_constant_normalization_correct':True,'dynamic_Q_deployment_equivalence':deployment_errors,'all_models95_Tiny_gate_required':False,'real_training_started':False}
+    save(OUT/'supervision_contract_v2/RESULT.json',result);save(REPORTS/'SUPERVISION_CONTRACT_TESTS.json',result);print('PARTIAL_SUPERVISION_CONTRACT_PASS',flush=True)
 
 if __name__=='__main__':main()

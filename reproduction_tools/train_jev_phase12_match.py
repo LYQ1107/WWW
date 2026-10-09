@@ -10,6 +10,11 @@ def atomic_torch(path,value):
 
 def train(name,supervision,seed,phase,steps=1000,epochs=100):
     gate_hashes=gates();rows,manifest=load_data();source=binding();assert not source['dirty']
+    protocol=json.loads((REPORTS/'MATCH_TRAINING_PROTOCOL.json').read_text())
+    assert name in protocol['models'] and seed in protocol['seeds']
+    for path,digest in protocol['script_SHA256'].items():assert sha(ROOT/path)==digest
+    if phase=='tiny':assert name==protocol['tiny_model'] and steps in [protocol['tiny_updates_initial'],2000]
+    else:assert epochs==protocol['formal_epochs']
     stats=normalization(rows);trainrows=[r for r in rows if r['partition']=='train'];valrows=[r for r in rows if r['partition']=='validation']
     if phase=='tiny':
         selection=json.loads((PREVIOUS/'tiny_v1/SELECTION.json').read_text())

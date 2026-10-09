@@ -13,9 +13,10 @@ def load_data():
     data=torch.load(manifest['path'],map_location='cpu');return data['rows'],manifest
 
 def gates():
-    for name in ['STRUCTURAL_TESTS','QUESTION_CONDITIONING_TESTS','NATIVE_PARITY','SHADOW_MODE_TESTS']:
+    names=['STRUCTURAL_TESTS','QUESTION_CONDITIONING_TESTS','NATIVE_PARITY','SHADOW_MODE_TESTS','SUPERVISION_CONTRACT_TESTS']
+    for name in names:
         assert json.loads((REPORTS/(name+'.json')).read_text())['status']=='PASS',name
-    return {name:sha(REPORTS/(name+'.json')) for name in ['STRUCTURAL_TESTS','QUESTION_CONDITIONING_TESTS','NATIVE_PARITY','SHADOW_MODE_TESTS']}
+    return {name:sha(REPORTS/(name+'.json')) for name in names}
 
 def normalization(rows):
     from jev_phase10_learning import normalization as numeric_stats
@@ -42,9 +43,10 @@ class LegacyNumericAdapter(torch.nn.Module):
         self.consequence=torch.nn.Linear(2,3)
         self.variant=name
     def forward(self,state,questions,options):
-        s=questions.context[:,0];e=options.evidence[:,0];mask=options.mask[:,0]
-        logits=self.network(s,e,mask)
-        return {'choice_logits':logits[:,:,0][:,None],'consequences':self.consequence(logits)[:,None]}
+        b,q,k=options.mask.shape
+        s=questions.context.reshape(b*q,64);e=options.evidence.reshape(b*q,k,12);mask=options.mask.reshape(b*q,k)
+        logits=self.network(s,e,mask).reshape(b,q,k,2)
+        return {'choice_logits':logits[...,0],'consequences':self.consequence(logits)}
 
 class NumericalOnlyVisualAdapter(VisualJev):
     """Same full reader architecture/capacity with visual tensors removed."""
