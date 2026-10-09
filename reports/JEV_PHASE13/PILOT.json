@@ -1,0 +1,2927 @@
+{
+  "GTA_free_dense_pilot_complete": true,
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "Full24": false,
+    "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+    "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "VAL": [
+      17,
+      18,
+      19
+    ],
+    "dirty": true,
+    "heldout": "SEALED",
+    "official_TEST": false,
+    "source_SHA256": {
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+      "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+      "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+      "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+      "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+      "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+      "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+      "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+      "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+      "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+      "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+      "reproduction_tools/finalize_jev_phase13_results.py": "6061a3291ab05a67f6874514b2936b7210b8f5d7856300c329535dfacede0743",
+      "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+      "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+      "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+      "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+      "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+      "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+      "reproduction_tools/queue_jev_phase13.py": "1c9bac9ab546ff6978e70b0a11a4461c9a55a73b49be5ad4d39c8a550de554a1",
+      "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+      "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+      "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+      "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+    },
+    "source_commit": "de06daa199a6e4437409d3b412dfc0f5d9aaf958",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase13"
+  },
+  "formal_architecture_hyperparameter_changes": false,
+  "formal_budget": "20000 fixed optimizer updates, fresh initialization, all variants/seeds",
+  "results": [
+    {
+      "SHA256": "0fad2e163153f2957b6f170cd78135f8517d07e11de187e45cfe4a1b2e38811e",
+      "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/pilot_training_v1/full/seed20261009/RESULT.json",
+      "result": {
+        "DEVELOPMENT_DENSE": {
+          "certified_accuracy": 0.9282051282051282,
+          "conditional_ECE": 0.019731652134103193,
+          "conditional_risk_coverage": [
+            {
+              "coverage": 0.1,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.25,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.5,
+              "risk": 5.6044387154674524e-05
+            },
+            {
+              "coverage": 0.75,
+              "risk": 0.0007846360783141382
+            },
+            {
+              "coverage": 1.0,
+              "risk": 0.007089813647190746
+            }
+          ],
+          "counts": {
+            "UNKNOWN_selected": 2490,
+            "certified_correct": 33123,
+            "certified_rows": 35685,
+            "certified_wrong": 72,
+            "rows": 38442,
+            "unlabelled_rows": 2757
+          },
+          "known_Brier": 0.15028609720667993,
+          "known_NLL": 0.031753585333009954,
+          "reliability_bins": [
+            {
+              "accuracy": 0.0,
+              "confidence": 0.2535526177712849,
+              "count": 7,
+              "lo": 0.2
+            },
+            {
+              "accuracy": 0.7222222222222222,
+              "confidence": 0.37299024562040967,
+              "count": 18,
+              "lo": 0.30000000000000004
+            },
+            {
+              "accuracy": 0.7368421052631579,
+              "confidence": 0.4540093109795922,
+              "count": 38,
+              "lo": 0.4
+            },
+            {
+              "accuracy": 0.9585062240663901,
+              "confidence": 0.5519145238696292,
+              "count": 482,
+              "lo": 0.5
+            },
+            {
+              "accuracy": 0.9590909090909091,
+              "confidence": 0.6516164847395637,
+              "count": 660,
+              "lo": 0.6000000000000001
+            },
+            {
+              "accuracy": 0.9607046070460704,
+              "confidence": 0.7523101055363652,
+              "count": 738,
+              "lo": 0.7000000000000001
+            },
+            {
+              "accuracy": 0.9577464788732394,
+              "confidence": 0.8539835739583477,
+              "count": 1065,
+              "lo": 0.8
+            },
+            {
+              "accuracy": 0.9966337179055604,
+              "confidence": 0.9959573289804995,
+              "count": 32677,
+              "lo": 0.9
+            }
+          ],
+          "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+        },
+        "MEMORY": "UNTRAINED_FROZEN_NATIVE_WRITE",
+        "REACT": "UNTRAINED_FROZEN_COSINE_FALLBACK",
+        "TRAIN_FIXED_AUDIT_SUBSET": {
+          "certified_accuracy": 0.9911699779249448,
+          "conditional_ECE": 0.01919857450405226,
+          "conditional_risk_coverage": [
+            {
+              "coverage": 0.1,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.25,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.5,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.75,
+              "risk": 0.002941176470588225
+            },
+            {
+              "coverage": 1.0,
+              "risk": 0.0066225165562914245
+            }
+          ],
+          "counts": {
+            "certified_correct": 449,
+            "certified_rows": 453,
+            "certified_wrong": 4,
+            "rows": 487,
+            "unlabelled_rows": 34
+          },
+          "known_Brier": 0.11559381786217476,
+          "known_NLL": 0.08493197753005517,
+          "reliability_bins": [
+            {
+              "accuracy": 0.8571428571428571,
+              "confidence": 0.5535272104399545,
+              "count": 7,
+              "lo": 0.5
+            },
+            {
+              "accuracy": 1.0,
+              "confidence": 0.6537463963031769,
+              "count": 8,
+              "lo": 0.6000000000000001
+            },
+            {
+              "accuracy": 1.0,
+              "confidence": 0.7657649980651008,
+              "count": 9,
+              "lo": 0.7000000000000001
+            },
+            {
+              "accuracy": 0.9375,
+              "confidence": 0.8398914262652397,
+              "count": 16,
+              "lo": 0.8
+            },
+            {
+              "accuracy": 0.9975786924939467,
+              "confidence": 0.9972596520661731,
+              "count": 413,
+              "lo": 0.9
+            }
+          ],
+          "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+        },
+        "actual_updates": 1000,
+        "binding": {
+          "CUDA_VISIBLE_DEVICES": "0",
+          "Full24": false,
+          "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+          "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+          "TRAIN": [
+            12,
+            13,
+            14,
+            16
+          ],
+          "VAL": [
+            17,
+            18,
+            19
+          ],
+          "dirty": false,
+          "heldout": "SEALED",
+          "official_TEST": false,
+          "source_SHA256": {
+            "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+            "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+            "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+            "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+            "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+            "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+            "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+            "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+            "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+            "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+            "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+            "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+            "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+            "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+            "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+            "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+            "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+            "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+            "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+            "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+            "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+            "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+            "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+            "reproduction_tools/queue_jev_phase13.py": "1c9bac9ab546ff6978e70b0a11a4461c9a55a73b49be5ad4d39c8a550de554a1",
+            "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+            "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+            "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+            "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+          },
+          "source_commit": "de06daa199a6e4437409d3b412dfc0f5d9aaf958",
+          "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/source_pilot_v2"
+        },
+        "calibration_diagnostics": [
+          {
+            "metrics": {
+              "certified_accuracy": 0.9265232974910395,
+              "conditional_ECE": 0.0064049379693136305,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 79,
+                "certified_correct": 1034,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.17953491944295055,
+              "known_NLL": 0.08725436088120869,
+              "reliability_bins": [
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.5417614579200745,
+                  "count": 2,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 0.8333333333333334,
+                  "confidence": 0.6409837504227957,
+                  "count": 6,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.726038932800293,
+                  "count": 4,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8710092902183533,
+                  "count": 3,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9954586739327884,
+                  "confidence": 0.9987234512206968,
+                  "count": 1101,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 0.25
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9265232974910395,
+              "conditional_ECE": 0.011546552555108131,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 79,
+                "certified_correct": 1034,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.17021348744925222,
+              "known_NLL": 0.044807389597201194,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.0,
+                  "confidence": 0.40571093559265137,
+                  "count": 1,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.5524601680891854,
+                  "count": 7,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.6347230434417724,
+                  "count": 5,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.7714460662433079,
+                  "count": 14,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8643846980163029,
+                  "count": 14,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9953488372093023,
+                  "confidence": 0.9976025198226751,
+                  "count": 1075,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 0.5
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9265232974910395,
+              "conditional_ECE": 0.020900188007235015,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 79,
+                "certified_correct": 1034,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.15135791275802962,
+              "known_NLL": 0.025363383656169605,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.0,
+                  "confidence": 0.2691304087638855,
+                  "count": 1,
+                  "lo": 0.2
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.4605410397052765,
+                  "count": 2,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.5403634369373321,
+                  "count": 10,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.6495517387109644,
+                  "count": 17,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.967741935483871,
+                  "confidence": 0.756549269922318,
+                  "count": 31,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 0.9393939393939394,
+                  "confidence": 0.8609046990221197,
+                  "count": 33,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9980430528375733,
+                  "confidence": 0.9958067927108586,
+                  "count": 1022,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 1.0
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9265232974910395,
+              "conditional_ECE": 0.051203589285573683,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 79,
+                "certified_correct": 1034,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.12015371339362375,
+              "known_NLL": 0.025837090630596984,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.5,
+                  "confidence": 0.21264508366584778,
+                  "count": 2,
+                  "lo": 0.2
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.3916054666042328,
+                  "count": 2,
+                  "lo": 0.30000000000000004
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.49615925550460815,
+                  "count": 2,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.5490558211292539,
+                  "count": 28,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 0.9069767441860465,
+                  "confidence": 0.6445033508677815,
+                  "count": 43,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.9807692307692307,
+                  "confidence": 0.756261700621018,
+                  "count": 52,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8504275272289912,
+                  "count": 60,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.9894471495154091,
+                  "count": 927,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 2.0
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9265232974910395,
+              "conditional_ECE": 0.21386070277101252,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 79,
+                "certified_correct": 1034,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.08999974500220169,
+              "known_NLL": 0.18169027570247864,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.6666666666666666,
+                  "confidence": 0.16487329204877219,
+                  "count": 3,
+                  "lo": 0.1
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.25841160118579865,
+                  "count": 2,
+                  "lo": 0.2
+                },
+                {
+                  "accuracy": 0.8461538461538461,
+                  "confidence": 0.35930705758241505,
+                  "count": 13,
+                  "lo": 0.30000000000000004
+                },
+                {
+                  "accuracy": 0.9827586206896551,
+                  "confidence": 0.4614465344568779,
+                  "count": 58,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 0.978021978021978,
+                  "confidence": 0.5481461024546361,
+                  "count": 91,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.654527761822655,
+                  "count": 105,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.7586104894047461,
+                  "count": 197,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8526007342213408,
+                  "count": 381,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.9247791932937794,
+                  "count": 266,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 4.0
+          }
+        ],
+        "capacity": {
+          "breakdown": {
+            "attention_MAC": 287301632,
+            "linear_MAC": 373354496
+          },
+          "executed_MAC": 660656128,
+          "input_shapes": {
+            "detection_meta": [
+              4,
+              7,
+              8
+            ],
+            "detection_visual": [
+              4,
+              7,
+              1024
+            ],
+            "history_mask": [
+              4,
+              11,
+              4
+            ],
+            "history_visual": [
+              4,
+              11,
+              4,
+              1024
+            ],
+            "identity_mask": [
+              4,
+              11
+            ],
+            "identity_meta": [
+              4,
+              11,
+              12
+            ],
+            "legal": [
+              4,
+              7,
+              11
+            ],
+            "pair_evidence": [
+              4,
+              7,
+              11,
+              16
+            ],
+            "question_mask": [
+              4,
+              7
+            ],
+            "question_type": [
+              4,
+              7
+            ]
+          },
+          "matmul_FLOPs": 1321312256,
+          "registered_parameters": 4230659,
+          "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+        },
+        "checkpoint": {
+          "SHA256": "0f847360c5e8ce717541606c833e018aafbce04a0ef470dec6e9cf9e775c90b3",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/pilot_training_v1/full/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "dataset_SHA256": {
+          "12": "a986ffeb01c450742504ab1feb5f2e14048d834743882959361cadb0a0e27721",
+          "13": "651a3e36ec84f522bd4fc67ed3589c23ff5515ee1b53408547fb4a24511030df",
+          "14": "e7feb08e4a386d9b72c9111ee26e0642abb10102bc978badca7207a81a7a4643",
+          "16": "5f795b31797c77505a86440a003364448babeaaa812e520c79612f376d02c056"
+        },
+        "elapsed_seconds": 71.47369036823511,
+        "gradient_health": {
+          "finite": true,
+          "max_unclipped_norm": 19.535146713256836,
+          "nonfinite_steps": 0,
+          "zero_steps": 0
+        },
+        "heldout": "SEALED",
+        "peak_training_VRAM_MiB": 306.2197265625,
+        "phase": "pilot",
+        "qualified_tasks": [
+          "MATCH"
+        ],
+        "seed": 20261009,
+        "status": "COMPLETE",
+        "target_updates": 1000,
+        "temperature": 1.0,
+        "tiny_other_tasks": null,
+        "validation_dataset_SHA256": {
+          "17": "8d509752dbd6f24dc6914d29252f8235a6804315479d8df9558c8e5d7f4e565c",
+          "18": "f141b31759bb44dded1ddc348b060986734301666b43d08504488202816b6903",
+          "19": "247aa4d77ff197538193098c9ff5c10201a64cda7a70ec1c2fb85bb38ec231bb"
+        },
+        "variant": "full"
+      },
+      "seed": 20261009,
+      "variant": "full"
+    },
+    {
+      "SHA256": "09e4410467a39bb9370126ef8aae20e8ee385769d9b5e020be747a88fb92227f",
+      "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/pilot_training_v1/motip/seed20261009/RESULT.json",
+      "result": {
+        "DEVELOPMENT_DENSE": {
+          "certified_accuracy": 0.9483536499929942,
+          "conditional_ECE": 0.009626866426724461,
+          "conditional_risk_coverage": [
+            {
+              "coverage": 0.1,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.25,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.5,
+              "risk": 0.0005043994843916266
+            },
+            {
+              "coverage": 0.75,
+              "risk": 0.0011209086833059434
+            },
+            {
+              "coverage": 1.0,
+              "risk": 0.006837606837606813
+            }
+          ],
+          "counts": {
+            "UNKNOWN_selected": 1707,
+            "certified_correct": 33842,
+            "certified_rows": 35685,
+            "certified_wrong": 136,
+            "rows": 38442,
+            "unlabelled_rows": 2757
+          },
+          "known_Brier": 0.16301355005213594,
+          "known_NLL": 0.03118775696010587,
+          "reliability_bins": [
+            {
+              "accuracy": 0.0,
+              "confidence": 0.26050132513046265,
+              "count": 1,
+              "lo": 0.2
+            },
+            {
+              "accuracy": 0.42857142857142855,
+              "confidence": 0.3579351561410086,
+              "count": 7,
+              "lo": 0.30000000000000004
+            },
+            {
+              "accuracy": 0.7567567567567568,
+              "confidence": 0.4588460704764804,
+              "count": 37,
+              "lo": 0.4
+            },
+            {
+              "accuracy": 0.851063829787234,
+              "confidence": 0.555003674106395,
+              "count": 282,
+              "lo": 0.5
+            },
+            {
+              "accuracy": 0.9078947368421053,
+              "confidence": 0.6554482306696867,
+              "count": 304,
+              "lo": 0.6000000000000001
+            },
+            {
+              "accuracy": 0.9388297872340425,
+              "confidence": 0.7547179103848782,
+              "count": 376,
+              "lo": 0.7000000000000001
+            },
+            {
+              "accuracy": 0.9514435695538058,
+              "confidence": 0.8582602996682245,
+              "count": 762,
+              "lo": 0.8
+            },
+            {
+              "accuracy": 0.9970515390965916,
+              "confidence": 0.996128887289579,
+              "count": 33916,
+              "lo": 0.9
+            }
+          ],
+          "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+        },
+        "MEMORY": "UNTRAINED_FROZEN_NATIVE_WRITE",
+        "REACT": "UNTRAINED_FROZEN_COSINE_FALLBACK",
+        "TRAIN_FIXED_AUDIT_SUBSET": {
+          "certified_accuracy": 0.9911699779249448,
+          "conditional_ECE": 0.008884166118588131,
+          "conditional_risk_coverage": [
+            {
+              "coverage": 0.1,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.25,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.5,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.75,
+              "risk": 0.0
+            },
+            {
+              "coverage": 1.0,
+              "risk": 0.0066225165562914245
+            }
+          ],
+          "counts": {
+            "certified_correct": 449,
+            "certified_rows": 453,
+            "certified_wrong": 4,
+            "rows": 487,
+            "unlabelled_rows": 34
+          },
+          "known_Brier": 0.13830730355713405,
+          "known_NLL": 0.07034846269202699,
+          "reliability_bins": [
+            {
+              "accuracy": 1.0,
+              "confidence": 0.5334016978740692,
+              "count": 2,
+              "lo": 0.5
+            },
+            {
+              "accuracy": 1.0,
+              "confidence": 0.6508270055055618,
+              "count": 4,
+              "lo": 0.6000000000000001
+            },
+            {
+              "accuracy": 0.6,
+              "confidence": 0.7508161306381226,
+              "count": 5,
+              "lo": 0.7000000000000001
+            },
+            {
+              "accuracy": 1.0,
+              "confidence": 0.8551820317904154,
+              "count": 3,
+              "lo": 0.8
+            },
+            {
+              "accuracy": 0.9977220956719818,
+              "confidence": 0.998874952418386,
+              "count": 439,
+              "lo": 0.9
+            }
+          ],
+          "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+        },
+        "actual_updates": 1000,
+        "binding": {
+          "CUDA_VISIBLE_DEVICES": "2",
+          "Full24": false,
+          "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+          "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+          "TRAIN": [
+            12,
+            13,
+            14,
+            16
+          ],
+          "VAL": [
+            17,
+            18,
+            19
+          ],
+          "dirty": false,
+          "heldout": "SEALED",
+          "official_TEST": false,
+          "source_SHA256": {
+            "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+            "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+            "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+            "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+            "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+            "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+            "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+            "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+            "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+            "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+            "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+            "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+            "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+            "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+            "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+            "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+            "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+            "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+            "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+            "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+            "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+            "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+            "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+            "reproduction_tools/queue_jev_phase13.py": "1c9bac9ab546ff6978e70b0a11a4461c9a55a73b49be5ad4d39c8a550de554a1",
+            "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+            "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+            "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+            "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+          },
+          "source_commit": "de06daa199a6e4437409d3b412dfc0f5d9aaf958",
+          "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/source_pilot_v2"
+        },
+        "calibration_diagnostics": [
+          {
+            "metrics": {
+              "certified_accuracy": 0.9507168458781362,
+              "conditional_ECE": 0.0050038927131228345,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 51,
+                "certified_correct": 1061,
+                "certified_rows": 1116,
+                "certified_wrong": 4,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.18254898180896045,
+              "known_NLL": 0.07555562532100825,
+              "reliability_bins": [
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.5939280390739441,
+                  "count": 1,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.6727149486541748,
+                  "count": 1,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.5,
+                  "confidence": 0.7597766071557999,
+                  "count": 4,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8658512234687805,
+                  "count": 3,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.996386630532972,
+                  "confidence": 0.9994665171611169,
+                  "count": 1107,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 0.25
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9507168458781362,
+              "conditional_ECE": 0.005770931320805714,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 51,
+                "certified_correct": 1061,
+                "certified_rows": 1116,
+                "certified_wrong": 4,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.1773964713145374,
+              "known_NLL": 0.03927604650806404,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.6666666666666666,
+                  "confidence": 0.5652840932210287,
+                  "count": 3,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 0.75,
+                  "confidence": 0.6542763561010361,
+                  "count": 4,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.7616465926170349,
+                  "count": 5,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8585573939176706,
+                  "count": 13,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9963336388634281,
+                  "confidence": 0.9988293273529801,
+                  "count": 1091,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 0.5
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9507168458781362,
+              "conditional_ECE": 0.012358437222178232,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 51,
+                "certified_correct": 1061,
+                "certified_rows": 1116,
+                "certified_wrong": 4,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.1644370458417533,
+              "known_NLL": 0.023343739527976855,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.5,
+                  "confidence": 0.4605494886636734,
+                  "count": 2,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 0.8571428571428571,
+                  "confidence": 0.5557741863386971,
+                  "count": 7,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.657827091217041,
+                  "count": 10,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.7558040221532186,
+                  "count": 12,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 0.8095238095238095,
+                  "confidence": 0.8489439118476141,
+                  "count": 21,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.9958424518319001,
+                  "count": 1064,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 1.0
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9507168458781362,
+              "conditional_ECE": 0.04311700074476158,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 51,
+                "certified_correct": 1061,
+                "certified_rows": 1116,
+                "certified_wrong": 4,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.13195066832169486,
+              "known_NLL": 0.028354530178184564,
+              "reliability_bins": [
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.2713603228330612,
+                  "count": 2,
+                  "lo": 0.2
+                },
+                {
+                  "accuracy": 0.0,
+                  "confidence": 0.3535069525241852,
+                  "count": 1,
+                  "lo": 0.30000000000000004
+                },
+                {
+                  "accuracy": 0.8333333333333334,
+                  "confidence": 0.4725636839866638,
+                  "count": 6,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 0.7692307692307693,
+                  "confidence": 0.5536509385475745,
+                  "count": 13,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.648442132472992,
+                  "count": 25,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.972972972972973,
+                  "confidence": 0.7602327868745133,
+                  "count": 37,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8473678543017461,
+                  "count": 65,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.9847371170784596,
+                  "count": 967,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 2.0
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9507168458781362,
+              "conditional_ECE": 0.23093054501012664,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 51,
+                "certified_correct": 1061,
+                "certified_rows": 1116,
+                "certified_wrong": 4,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.09619839477599398,
+              "known_NLL": 0.21359221094478203,
+              "reliability_bins": [
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.14455358684062958,
+                  "count": 1,
+                  "lo": 0.1
+                },
+                {
+                  "accuracy": 0.7142857142857143,
+                  "confidence": 0.25399714708328247,
+                  "count": 7,
+                  "lo": 0.2
+                },
+                {
+                  "accuracy": 0.8333333333333334,
+                  "confidence": 0.3519766703248024,
+                  "count": 12,
+                  "lo": 0.30000000000000004
+                },
+                {
+                  "accuracy": 0.9591836734693877,
+                  "confidence": 0.4680600926584127,
+                  "count": 49,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.5592016314947477,
+                  "count": 93,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.6568579269177985,
+                  "count": 165,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.7543352174347845,
+                  "count": 232,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8532479487032237,
+                  "count": 387,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.9270604547332315,
+                  "count": 170,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 4.0
+          }
+        ],
+        "capacity": {
+          "breakdown": {
+            "attention_MAC": 340230144,
+            "linear_MAC": 437579776
+          },
+          "executed_MAC": 777809920,
+          "input_shapes": {
+            "detection_meta": [
+              4,
+              7,
+              8
+            ],
+            "detection_visual": [
+              4,
+              7,
+              1024
+            ],
+            "history_mask": [
+              4,
+              11,
+              4
+            ],
+            "history_visual": [
+              4,
+              11,
+              4,
+              1024
+            ],
+            "identity_mask": [
+              4,
+              11
+            ],
+            "identity_meta": [
+              4,
+              11,
+              12
+            ],
+            "legal": [
+              4,
+              7,
+              11
+            ],
+            "pair_evidence": [
+              4,
+              7,
+              11,
+              16
+            ],
+            "question_mask": [
+              4,
+              7
+            ],
+            "question_type": [
+              4,
+              7
+            ]
+          },
+          "matmul_FLOPs": 1555619840,
+          "registered_parameters": 4099075,
+          "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+        },
+        "checkpoint": {
+          "SHA256": "36d35a7c1c8971e481fa47443f4ff5b6354a9f2834daa70cede401f9449912bf",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/pilot_training_v1/motip/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "dataset_SHA256": {
+          "12": "a986ffeb01c450742504ab1feb5f2e14048d834743882959361cadb0a0e27721",
+          "13": "651a3e36ec84f522bd4fc67ed3589c23ff5515ee1b53408547fb4a24511030df",
+          "14": "e7feb08e4a386d9b72c9111ee26e0642abb10102bc978badca7207a81a7a4643",
+          "16": "5f795b31797c77505a86440a003364448babeaaa812e520c79612f376d02c056"
+        },
+        "elapsed_seconds": 78.83414491266012,
+        "gradient_health": {
+          "finite": true,
+          "max_unclipped_norm": 61.94942092895508,
+          "nonfinite_steps": 0,
+          "zero_steps": 0
+        },
+        "heldout": "SEALED",
+        "peak_training_VRAM_MiB": 430.681640625,
+        "phase": "pilot",
+        "qualified_tasks": [
+          "MATCH"
+        ],
+        "seed": 20261009,
+        "status": "COMPLETE",
+        "target_updates": 1000,
+        "temperature": 1.0,
+        "tiny_other_tasks": null,
+        "validation_dataset_SHA256": {
+          "17": "8d509752dbd6f24dc6914d29252f8235a6804315479d8df9558c8e5d7f4e565c",
+          "18": "f141b31759bb44dded1ddc348b060986734301666b43d08504488202816b6903",
+          "19": "247aa4d77ff197538193098c9ff5c10201a64cda7a70ec1c2fb85bb38ec231bb"
+        },
+        "variant": "motip"
+      },
+      "seed": 20261009,
+      "variant": "motip"
+    },
+    {
+      "SHA256": "371c6de25c6fd7f174acf716055bc20022efc10d26e87692cccfd6f6700c1331",
+      "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/pilot_training_v1/camel/seed20261009/RESULT.json",
+      "result": {
+        "DEVELOPMENT_DENSE": {
+          "certified_accuracy": 0.9425248703937229,
+          "conditional_ECE": 0.04009779691863192,
+          "conditional_risk_coverage": [
+            {
+              "coverage": 0.1,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.25,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.5,
+              "risk": 0.0002802219357731506
+            },
+            {
+              "coverage": 0.75,
+              "risk": 0.0014945449110745912
+            },
+            {
+              "coverage": 1.0,
+              "risk": 0.00675353790107891
+            }
+          ],
+          "counts": {
+            "UNKNOWN_selected": 1941,
+            "certified_correct": 33634,
+            "certified_rows": 35685,
+            "certified_wrong": 110,
+            "rows": 38442,
+            "unlabelled_rows": 2757
+          },
+          "known_Brier": 0.12430751546385106,
+          "known_NLL": 0.026361450754675792,
+          "reliability_bins": [
+            {
+              "accuracy": 0.42857142857142855,
+              "confidence": 0.3710874915122986,
+              "count": 14,
+              "lo": 0.30000000000000004
+            },
+            {
+              "accuracy": 0.7582417582417582,
+              "confidence": 0.4670028876472305,
+              "count": 91,
+              "lo": 0.4
+            },
+            {
+              "accuracy": 0.9773489932885906,
+              "confidence": 0.5498739176948598,
+              "count": 1192,
+              "lo": 0.5
+            },
+            {
+              "accuracy": 0.9655469422911284,
+              "confidence": 0.6484258626679938,
+              "count": 1161,
+              "lo": 0.6000000000000001
+            },
+            {
+              "accuracy": 0.9566446748350612,
+              "confidence": 0.7497750563963081,
+              "count": 1061,
+              "lo": 0.7000000000000001
+            },
+            {
+              "accuracy": 0.9781659388646288,
+              "confidence": 0.8512007719044081,
+              "count": 1603,
+              "lo": 0.8
+            },
+            {
+              "accuracy": 0.9979386840297091,
+              "confidence": 0.9945738088751918,
+              "count": 30563,
+              "lo": 0.9
+            }
+          ],
+          "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+        },
+        "MEMORY": "UNTRAINED_FROZEN_NATIVE_WRITE",
+        "REACT": "UNTRAINED_FROZEN_COSINE_FALLBACK",
+        "TRAIN_FIXED_AUDIT_SUBSET": {
+          "certified_accuracy": 0.9911699779249448,
+          "conditional_ECE": 0.041032056934786135,
+          "conditional_risk_coverage": [
+            {
+              "coverage": 0.1,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.25,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.5,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.75,
+              "risk": 0.002941176470588225
+            },
+            {
+              "coverage": 1.0,
+              "risk": 0.0066225165562914245
+            }
+          ],
+          "counts": {
+            "certified_correct": 449,
+            "certified_rows": 453,
+            "certified_wrong": 4,
+            "rows": 487,
+            "unlabelled_rows": 34
+          },
+          "known_Brier": 0.09455814404078129,
+          "known_NLL": 0.06785258858540061,
+          "reliability_bins": [
+            {
+              "accuracy": 1.0,
+              "confidence": 0.543974926838508,
+              "count": 13,
+              "lo": 0.5
+            },
+            {
+              "accuracy": 0.9565217391304348,
+              "confidence": 0.6470663417940554,
+              "count": 23,
+              "lo": 0.6000000000000001
+            },
+            {
+              "accuracy": 0.9166666666666666,
+              "confidence": 0.7494591027498245,
+              "count": 12,
+              "lo": 0.7000000000000001
+            },
+            {
+              "accuracy": 1.0,
+              "confidence": 0.8282271437346935,
+              "count": 16,
+              "lo": 0.8
+            },
+            {
+              "accuracy": 0.9974293059125964,
+              "confidence": 0.9994520957181876,
+              "count": 389,
+              "lo": 0.9
+            }
+          ],
+          "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+        },
+        "actual_updates": 1000,
+        "binding": {
+          "CUDA_VISIBLE_DEVICES": "3",
+          "Full24": false,
+          "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+          "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+          "TRAIN": [
+            12,
+            13,
+            14,
+            16
+          ],
+          "VAL": [
+            17,
+            18,
+            19
+          ],
+          "dirty": false,
+          "heldout": "SEALED",
+          "official_TEST": false,
+          "source_SHA256": {
+            "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+            "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+            "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+            "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+            "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+            "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+            "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+            "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+            "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+            "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+            "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+            "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+            "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+            "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+            "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+            "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+            "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+            "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+            "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+            "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+            "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+            "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+            "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+            "reproduction_tools/queue_jev_phase13.py": "1c9bac9ab546ff6978e70b0a11a4461c9a55a73b49be5ad4d39c8a550de554a1",
+            "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+            "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+            "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+            "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+          },
+          "source_commit": "de06daa199a6e4437409d3b412dfc0f5d9aaf958",
+          "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/source_pilot_v2"
+        },
+        "calibration_diagnostics": [
+          {
+            "metrics": {
+              "certified_accuracy": 0.9399641577060932,
+              "conditional_ECE": 0.012067497257263422,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 64,
+                "certified_correct": 1049,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.1682341912574109,
+              "known_NLL": 0.05408889047169535,
+              "reliability_bins": [
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.5462675392627716,
+                  "count": 8,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 0.9166666666666666,
+                  "confidence": 0.656991625825564,
+                  "count": 12,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.7543985724449158,
+                  "count": 10,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8626631681735699,
+                  "count": 13,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9953401677539608,
+                  "confidence": 0.9976514200128802,
+                  "count": 1073,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 0.25
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9399641577060932,
+              "conditional_ECE": 0.019459682179608213,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 64,
+                "certified_correct": 1049,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.15186749585639156,
+              "known_NLL": 0.028338319693355412,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.9473684210526315,
+                  "confidence": 0.5550616571777746,
+                  "count": 19,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.646924599011739,
+                  "count": 15,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.9310344827586207,
+                  "confidence": 0.760718242875461,
+                  "count": 29,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 0.9629629629629629,
+                  "confidence": 0.8510270714759827,
+                  "count": 27,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9980506822612085,
+                  "confidence": 0.9970705596908026,
+                  "count": 1026,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 0.5
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9399641577060932,
+              "conditional_ECE": 0.041145704259368296,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 64,
+                "certified_correct": 1049,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.1260660371922309,
+              "known_NLL": 0.01835502833261086,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.0,
+                  "confidence": 0.4770093858242035,
+                  "count": 1,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 0.9444444444444444,
+                  "confidence": 0.5472968518733978,
+                  "count": 36,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.6506896004080772,
+                  "count": 40,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.896551724137931,
+                  "confidence": 0.7535866046773976,
+                  "count": 29,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8516945265806638,
+                  "count": 52,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.994453033226268,
+                  "count": 958,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 1.0
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9399641577060932,
+              "conditional_ECE": 0.09203927875846943,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 64,
+                "certified_correct": 1049,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.0886828712884721,
+              "known_NLL": 0.03985063447871522,
+              "reliability_bins": [
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.28195491433143616,
+                  "count": 1,
+                  "lo": 0.2
+                },
+                {
+                  "accuracy": 0.3333333333333333,
+                  "confidence": 0.3600830137729645,
+                  "count": 3,
+                  "lo": 0.30000000000000004
+                },
+                {
+                  "accuracy": 0.9411764705882353,
+                  "confidence": 0.46780570114360137,
+                  "count": 17,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 0.9841269841269841,
+                  "confidence": 0.5498734286853245,
+                  "count": 63,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 0.9666666666666667,
+                  "confidence": 0.6549559235572815,
+                  "count": 60,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.7494864512662418,
+                  "count": 61,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8546257400512696,
+                  "count": 75,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.9741325079681771,
+                  "count": 836,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 2.0
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9399641577060932,
+              "conditional_ECE": 0.3403817240589409,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 64,
+                "certified_correct": 1049,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.10669458343223485,
+              "known_NLL": 0.3235764722790449,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.5,
+                  "confidence": 0.16049550473690033,
+                  "count": 2,
+                  "lo": 0.1
+                },
+                {
+                  "accuracy": 0.75,
+                  "confidence": 0.27299939468503,
+                  "count": 8,
+                  "lo": 0.2
+                },
+                {
+                  "accuracy": 0.9821428571428571,
+                  "confidence": 0.36335234556879314,
+                  "count": 56,
+                  "lo": 0.30000000000000004
+                },
+                {
+                  "accuracy": 0.9830508474576272,
+                  "confidence": 0.45116183767884466,
+                  "count": 118,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.554175661822964,
+                  "count": 173,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.654348103761673,
+                  "count": 250,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.7462679994377223,
+                  "count": 352,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8397232534793707,
+                  "count": 156,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.9016028046607971,
+                  "count": 1,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 4.0
+          }
+        ],
+        "capacity": {
+          "breakdown": {
+            "attention_MAC": 378650624,
+            "linear_MAC": 437579776
+          },
+          "executed_MAC": 816230400,
+          "input_shapes": {
+            "detection_meta": [
+              4,
+              7,
+              8
+            ],
+            "detection_visual": [
+              4,
+              7,
+              1024
+            ],
+            "history_mask": [
+              4,
+              11,
+              4
+            ],
+            "history_visual": [
+              4,
+              11,
+              4,
+              1024
+            ],
+            "identity_mask": [
+              4,
+              11
+            ],
+            "identity_meta": [
+              4,
+              11,
+              12
+            ],
+            "legal": [
+              4,
+              7,
+              11
+            ],
+            "pair_evidence": [
+              4,
+              7,
+              11,
+              16
+            ],
+            "question_mask": [
+              4,
+              7
+            ],
+            "question_type": [
+              4,
+              7
+            ]
+          },
+          "matmul_FLOPs": 1632460800,
+          "registered_parameters": 4099075,
+          "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+        },
+        "checkpoint": {
+          "SHA256": "40a8fdb1865905d918693ce2321e475a8244c0a9619d2efa688e534291bfbfbb",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/pilot_training_v1/camel/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "dataset_SHA256": {
+          "12": "a986ffeb01c450742504ab1feb5f2e14048d834743882959361cadb0a0e27721",
+          "13": "651a3e36ec84f522bd4fc67ed3589c23ff5515ee1b53408547fb4a24511030df",
+          "14": "e7feb08e4a386d9b72c9111ee26e0642abb10102bc978badca7207a81a7a4643",
+          "16": "5f795b31797c77505a86440a003364448babeaaa812e520c79612f376d02c056"
+        },
+        "elapsed_seconds": 69.0797812268138,
+        "gradient_health": {
+          "finite": true,
+          "max_unclipped_norm": 21.51682472229004,
+          "nonfinite_steps": 0,
+          "zero_steps": 0
+        },
+        "heldout": "SEALED",
+        "peak_training_VRAM_MiB": 491.59326171875,
+        "phase": "pilot",
+        "qualified_tasks": [
+          "MATCH"
+        ],
+        "seed": 20261009,
+        "status": "COMPLETE",
+        "target_updates": 1000,
+        "temperature": 1.0,
+        "tiny_other_tasks": null,
+        "validation_dataset_SHA256": {
+          "17": "8d509752dbd6f24dc6914d29252f8235a6804315479d8df9558c8e5d7f4e565c",
+          "18": "f141b31759bb44dded1ddc348b060986734301666b43d08504488202816b6903",
+          "19": "247aa4d77ff197538193098c9ff5c10201a64cda7a70ec1c2fb85bb38ec231bb"
+        },
+        "variant": "camel"
+      },
+      "seed": 20261009,
+      "variant": "camel"
+    },
+    {
+      "SHA256": "11fda2809bf9c2205d3e45b518bb242e2e5db06e10bf47e4aca0fb0e26ba56bb",
+      "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/pilot_training_v1/set_transformer/seed20261009/RESULT.json",
+      "result": {
+        "DEVELOPMENT_DENSE": {
+          "certified_accuracy": 0.9502592125542946,
+          "conditional_ECE": 0.035956561795900496,
+          "conditional_risk_coverage": [
+            {
+              "coverage": 0.1,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.25,
+              "risk": 0.0001120824927146602
+            },
+            {
+              "coverage": 0.5,
+              "risk": 0.0011208877430924913
+            },
+            {
+              "coverage": 0.75,
+              "risk": 0.0021670901210580906
+            },
+            {
+              "coverage": 1.0,
+              "risk": 0.007201905562561284
+            }
+          ],
+          "counts": {
+            "UNKNOWN_selected": 1656,
+            "certified_correct": 33910,
+            "certified_rows": 35685,
+            "certified_wrong": 119,
+            "rows": 38442,
+            "unlabelled_rows": 2757
+          },
+          "known_Brier": 0.13237916498235958,
+          "known_NLL": 0.034980531289769794,
+          "reliability_bins": [
+            {
+              "accuracy": 0.5,
+              "confidence": 0.389796644449234,
+              "count": 2,
+              "lo": 0.30000000000000004
+            },
+            {
+              "accuracy": 0.7924528301886793,
+              "confidence": 0.4659199995814629,
+              "count": 53,
+              "lo": 0.4
+            },
+            {
+              "accuracy": 0.9359145527369827,
+              "confidence": 0.5489738208747833,
+              "count": 749,
+              "lo": 0.5
+            },
+            {
+              "accuracy": 0.9451871657754011,
+              "confidence": 0.6504157706696719,
+              "count": 748,
+              "lo": 0.6000000000000001
+            },
+            {
+              "accuracy": 0.9800362976406534,
+              "confidence": 0.756085853665364,
+              "count": 1102,
+              "lo": 0.7000000000000001
+            },
+            {
+              "accuracy": 0.9870013446884806,
+              "confidence": 0.8565142597654164,
+              "count": 2231,
+              "lo": 0.8
+            },
+            {
+              "accuracy": 0.9965909090909091,
+              "confidence": 0.9895335852751485,
+              "count": 30800,
+              "lo": 0.9
+            }
+          ],
+          "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+        },
+        "MEMORY": "UNTRAINED_FROZEN_NATIVE_WRITE",
+        "REACT": "UNTRAINED_FROZEN_COSINE_FALLBACK",
+        "TRAIN_FIXED_AUDIT_SUBSET": {
+          "certified_accuracy": 0.9911699779249448,
+          "conditional_ECE": 0.013221478488534784,
+          "conditional_risk_coverage": [
+            {
+              "coverage": 0.1,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.25,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.5,
+              "risk": 0.0
+            },
+            {
+              "coverage": 0.75,
+              "risk": 0.002941176470588225
+            },
+            {
+              "coverage": 1.0,
+              "risk": 0.0066225165562914245
+            }
+          ],
+          "counts": {
+            "certified_correct": 449,
+            "certified_rows": 453,
+            "certified_wrong": 4,
+            "rows": 487,
+            "unlabelled_rows": 34
+          },
+          "known_Brier": 0.12856546048083278,
+          "known_NLL": 0.0584708701237158,
+          "reliability_bins": [
+            {
+              "accuracy": 0.0,
+              "confidence": 0.7376274168491364,
+              "count": 2,
+              "lo": 0.7000000000000001
+            },
+            {
+              "accuracy": 1.0,
+              "confidence": 0.8712916076183319,
+              "count": 12,
+              "lo": 0.8
+            },
+            {
+              "accuracy": 0.9977220956719818,
+              "confidence": 0.9909576897197541,
+              "count": 439,
+              "lo": 0.9
+            }
+          ],
+          "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+        },
+        "actual_updates": 1000,
+        "binding": {
+          "CUDA_VISIBLE_DEVICES": "4",
+          "Full24": false,
+          "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+          "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+          "TRAIN": [
+            12,
+            13,
+            14,
+            16
+          ],
+          "VAL": [
+            17,
+            18,
+            19
+          ],
+          "dirty": false,
+          "heldout": "SEALED",
+          "official_TEST": false,
+          "source_SHA256": {
+            "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+            "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+            "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+            "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+            "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+            "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+            "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+            "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+            "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+            "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+            "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+            "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+            "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+            "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+            "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+            "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+            "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+            "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+            "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+            "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+            "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+            "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+            "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+            "reproduction_tools/queue_jev_phase13.py": "1c9bac9ab546ff6978e70b0a11a4461c9a55a73b49be5ad4d39c8a550de554a1",
+            "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+            "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+            "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+            "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+          },
+          "source_commit": "de06daa199a6e4437409d3b412dfc0f5d9aaf958",
+          "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/source_pilot_v2"
+        },
+        "calibration_diagnostics": [
+          {
+            "metrics": {
+              "certified_accuracy": 0.9543010752688172,
+              "conditional_ECE": 0.004984974807735888,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 48,
+                "certified_correct": 1065,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.1766419443020826,
+              "known_NLL": 0.05791359650783611,
+              "reliability_bins": [
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.6404024561246237,
+                  "count": 6,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.9090909090909091,
+                  "confidence": 0.7683034376664595,
+                  "count": 11,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 0.8571428571428571,
+                  "confidence": 0.8489886479718345,
+                  "count": 14,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9972350230414746,
+                  "confidence": 0.9988413138323665,
+                  "count": 1085,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 0.25
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9543010752688172,
+              "conditional_ECE": 0.011827022264507967,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 48,
+                "certified_correct": 1065,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.16369275851867063,
+              "known_NLL": 0.03210317724779468,
+              "reliability_bins": [
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.5656299491723379,
+                  "count": 6,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 0.8888888888888888,
+                  "confidence": 0.6594720979531606,
+                  "count": 18,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.9230769230769231,
+                  "confidence": 0.7425869886691754,
+                  "count": 13,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 0.9444444444444444,
+                  "confidence": 0.8579559028148651,
+                  "count": 18,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.998114985862394,
+                  "confidence": 0.9957021004630079,
+                  "count": 1061,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 0.5
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9543010752688172,
+              "conditional_ECE": 0.036770281558822955,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 48,
+                "certified_correct": 1065,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.1337775256195679,
+              "known_NLL": 0.02466246476717006,
+              "reliability_bins": [
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.4522598385810852,
+                  "count": 1,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 0.9090909090909091,
+                  "confidence": 0.5640098886056379,
+                  "count": 22,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 0.9090909090909091,
+                  "confidence": 0.6471049677241932,
+                  "count": 22,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.9722222222222222,
+                  "confidence": 0.7586044702264998,
+                  "count": 36,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8552397934696342,
+                  "count": 79,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9989539748953975,
+                  "confidence": 0.9905793666216121,
+                  "count": 956,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 1.0
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9543010752688172,
+              "conditional_ECE": 0.10008814605119835,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 48,
+                "certified_correct": 1065,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.08915359648991755,
+              "known_NLL": 0.05149766826926227,
+              "reliability_bins": [
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.3793480396270752,
+                  "count": 1,
+                  "lo": 0.30000000000000004
+                },
+                {
+                  "accuracy": 0.6666666666666666,
+                  "confidence": 0.45631205042203266,
+                  "count": 6,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 0.9230769230769231,
+                  "confidence": 0.5492393340055759,
+                  "count": 52,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.6561793953600065,
+                  "count": 71,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.7548499101790312,
+                  "count": 107,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8528009691056172,
+                  "count": 157,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.9769758084309068,
+                  "count": 722,
+                  "lo": 0.9
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 2.0
+          },
+          {
+            "metrics": {
+              "certified_accuracy": 0.9543010752688172,
+              "conditional_ECE": 0.34185460997631906,
+              "conditional_risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.005376344086021501
+                }
+              ],
+              "counts": {
+                "UNKNOWN_selected": 48,
+                "certified_correct": 1065,
+                "certified_rows": 1116,
+                "certified_wrong": 3,
+                "rows": 1199,
+                "unlabelled_rows": 83
+              },
+              "known_Brier": 0.11180680513124926,
+              "known_NLL": 0.3251957785151231,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.6666666666666666,
+                  "confidence": 0.2778329816129472,
+                  "count": 9,
+                  "lo": 0.2
+                },
+                {
+                  "accuracy": 0.9375,
+                  "confidence": 0.3636221792548895,
+                  "count": 32,
+                  "lo": 0.30000000000000004
+                },
+                {
+                  "accuracy": 0.9929577464788732,
+                  "confidence": 0.45739851199405296,
+                  "count": 142,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.5493223172450356,
+                  "count": 247,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.649541118928978,
+                  "count": 222,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.7581588246168629,
+                  "count": 248,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 1.0,
+                  "confidence": 0.8402737533604657,
+                  "count": 216,
+                  "lo": 0.8
+                }
+              ],
+              "scope": "NLL/Brier/ECE conditional on certified options only; ambiguous/unanchored options are UNKNOWN, never false negatives; action accuracy includes UNKNOWN selections in denominator"
+            },
+            "temperature": 4.0
+          }
+        ],
+        "capacity": {
+          "breakdown": {
+            "attention_MAC": 394018816,
+            "linear_MAC": 437579776
+          },
+          "executed_MAC": 831598592,
+          "input_shapes": {
+            "detection_meta": [
+              4,
+              7,
+              8
+            ],
+            "detection_visual": [
+              4,
+              7,
+              1024
+            ],
+            "history_mask": [
+              4,
+              11,
+              4
+            ],
+            "history_visual": [
+              4,
+              11,
+              4,
+              1024
+            ],
+            "identity_mask": [
+              4,
+              11
+            ],
+            "identity_meta": [
+              4,
+              11,
+              12
+            ],
+            "legal": [
+              4,
+              7,
+              11
+            ],
+            "pair_evidence": [
+              4,
+              7,
+              11,
+              16
+            ],
+            "question_mask": [
+              4,
+              7
+            ],
+            "question_type": [
+              4,
+              7
+            ]
+          },
+          "matmul_FLOPs": 1663197184,
+          "registered_parameters": 4099075,
+          "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+        },
+        "checkpoint": {
+          "SHA256": "641fdd18e887f3e35c14117fed133d4d0c74012eb91ce6a2d53bd7637682da73",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/pilot_training_v1/set_transformer/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "dataset_SHA256": {
+          "12": "a986ffeb01c450742504ab1feb5f2e14048d834743882959361cadb0a0e27721",
+          "13": "651a3e36ec84f522bd4fc67ed3589c23ff5515ee1b53408547fb4a24511030df",
+          "14": "e7feb08e4a386d9b72c9111ee26e0642abb10102bc978badca7207a81a7a4643",
+          "16": "5f795b31797c77505a86440a003364448babeaaa812e520c79612f376d02c056"
+        },
+        "elapsed_seconds": 69.71099862456322,
+        "gradient_health": {
+          "finite": true,
+          "max_unclipped_norm": 14.373751640319824,
+          "nonfinite_steps": 0,
+          "zero_steps": 0
+        },
+        "heldout": "SEALED",
+        "peak_training_VRAM_MiB": 521.390625,
+        "phase": "pilot",
+        "qualified_tasks": [
+          "MATCH"
+        ],
+        "seed": 20261009,
+        "status": "COMPLETE",
+        "target_updates": 1000,
+        "temperature": 1.0,
+        "tiny_other_tasks": null,
+        "validation_dataset_SHA256": {
+          "17": "8d509752dbd6f24dc6914d29252f8235a6804315479d8df9558c8e5d7f4e565c",
+          "18": "f141b31759bb44dded1ddc348b060986734301666b43d08504488202816b6903",
+          "19": "247aa4d77ff197538193098c9ff5c10201a64cda7a70ec1c2fb85bb38ec231bb"
+        },
+        "variant": "set_transformer"
+      },
+      "seed": 20261009,
+      "variant": "set_transformer"
+    }
+  ],
+  "status": "PASS",
+  "updates_per_second": {
+    "camel": 14.476015734859379,
+    "full": 13.991162270311815,
+    "motip": 12.684858840137025,
+    "set_transformer": 14.344938671523236
+  }
+}
