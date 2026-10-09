@@ -7,7 +7,7 @@ from gtr.modeling.jev_candidate_policy import CandidateValuePolicy
 from gtr.modeling.jev_candidate_assignment import assign_candidate_values
 from gtr.modeling.jev_native_state import NativeStateForkAdapter,prefix_state
 from gtr.modeling.visual_jev_mcmot import VisualJev
-from gtr.modeling.visual_jev_mcmot.baselines import LegacyNumericAdapter,NumericalOnlyVisualAdapter
+from gtr.modeling.visual_jev_mcmot.baselines import LegacyNumericAdapter,NumericalOnlyVisualAdapter,FixedNativeController
 from gtr.modeling.visual_jev_mcmot.lifecycle_controller import VisualLifecycleController
 from run_jev_phase10_closed_loop import metadata,raw_predictions,metrics
 
@@ -18,8 +18,10 @@ def configure(model,case):
         network.cuda().eval();network.load_state_dict(saved['model'])
         model.visual_jev_controller=VisualLifecycleController(network,'MATCH_ONLY',supervision='joint',risk=case['risk'],temperature=case['temperature'],qualified_tasks=('MATCH',))
         model.visual_jev_enabled=True;model.jev_candidate_policy=CandidateValuePolicy('gmt_compat')
+    elif case['kind']=='rule':
+        model.visual_jev_enabled=True;model.visual_jev_controller=FixedNativeController();model.jev_candidate_policy=CandidateValuePolicy('gmt_compat')
     else:
-        model.visual_jev_enabled=False;model.jev_candidate_policy=None if case['kind']=='off' else CandidateValuePolicy('gmt_values')
+        model.visual_jev_enabled=False;model.jev_candidate_policy=None
 
 def run(video,name,smoke_frames=0,chunk_size=256):
     protect();source=binding();assert not source['dirty'];assert video in VAL

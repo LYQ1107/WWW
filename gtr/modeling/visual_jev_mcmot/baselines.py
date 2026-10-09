@@ -1,8 +1,25 @@
 """Deployment-only baseline interfaces: no dataset/annotation/evaluator imports."""
 import dataclasses
+import time
 import torch
 from .model import VisualJev
 from ..jev_candidate_models import build_candidate_model
+
+class FixedNativeController:
+    """Ordinary threshold + identical native solver; unmatched means DEFER."""
+    def __init__(self):
+        self.records=[];self.timings=[]
+    def native_context(self,*args,**kwargs):pass
+    def match(self,batch,original,galleries,observations):
+        from .native_action_adapter import lawful_match
+        begin=time.perf_counter();values=batch.scores-batch.thresholds[None]
+        assignment,fallback=lawful_match(values,batch)
+        end=time.perf_counter()
+        self.records.append({'task':'MATCH','abstain_rows':0,'fallback_rows':fallback,'questions':len(observations),'memory_reused_for_questions':0})
+        self.timings.append({'task':'MATCH','feature_ms':0.,'policy_assignment_ms':(end-begin)*1000,'total_ms':(end-begin)*1000})
+        return assignment,values
+    def memory(self,*args,**kwargs):return None
+    def reactivation(self,*args,**kwargs):return None
 
 class LegacyNumericAdapter(torch.nn.Module):
     def __init__(self,name):

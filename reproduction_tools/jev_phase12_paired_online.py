@@ -3,6 +3,7 @@ import collections,torch
 from jev_phase12_common import *
 from gtr.modeling.jev_candidate_policy import CandidateValuePolicy
 from gtr.modeling.jev_native_state import NativeStateForkAdapter
+from gtr.modeling.visual_jev_mcmot.baselines import FixedNativeController
 from run_jev_phase10_closed_loop import raw_predictions
 
 def policy(case):
@@ -15,11 +16,11 @@ def paired_h32(model,case,allinputs,images,evaluator,aligned,commits,prefixpath,
  for (frame,view,row),r in sorted(aligned.items()):
   if(frame,view)<(128,0):groups[frame,view][row]=r
  for (frame,view),rs in sorted(groups.items()):anchors.update({row:r['id']for row,r in rs.items()},{row:r['gt']for row,r in rs.items()},frame)
- expected={tuple(d['key'][1:]):d for d in commits};branches={};fixed=CandidateValuePolicy('gmt_values');model.jev_candidate_latency_observer=None
+ expected={tuple(d['key'][1:]):d for d in commits};branches={};fixed=FixedNativeController();actual_controller=model.visual_jev_controller;model.jev_candidate_latency_observer=None
  for tag in ['actual','same_prefix_Fixed_current']:
   traces=[]
   def before(**d):
-   intervene=tag!='actual' and (d['frame'],d['view'])==(128,0);model.visual_jev_enabled=case['kind']=='model' and not intervene;model.jev_candidate_policy=fixed if intervene else CandidateValuePolicy('gmt_compat') if case['kind']=='model' else policy(case);model.__dict__.pop('_jev_candidate_last',None)
+   intervene=tag!='actual' and (d['frame'],d['view'])==(128,0);model.visual_jev_enabled=intervene or case['kind']!='off';model.visual_jev_controller=fixed if intervene else actual_controller;model.jev_candidate_policy=CandidateValuePolicy('gmt_compat') if model.visual_jev_enabled else None;model.__dict__.pop('_jev_candidate_last',None)
   def after(**d):
    inst=d['instances'][-1];ids=inst.track_ids.detach().cpu().tolist();assert len(set(ids))==len(ids);record={'key':[int(d['frame']),int(d['view'])],'ids':ids,'id_count':int(d['id_count']),'hits':{str(t):int(d['hits'][t])for t in ids},'gallery_lengths':{str(t):len(d['galleries'][t])for t in ids}};traces.append(record)
    if tag=='actual':
