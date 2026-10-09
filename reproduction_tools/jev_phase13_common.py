@@ -3,7 +3,7 @@ import os,json,hashlib,subprocess,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 for p in [ROOT,ROOT/'reproduction_tools',ROOT/'third_party/CenterNet2']:sys.path.insert(0,str(p))
-OUT=Path('/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1')
+OUT=Path('/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2')
 REPORTS=ROOT/'reports/JEV_PHASE13'
 BASE='fffd0a1b7c04a19513f0b8fa07a326572533f0ae'
 TRAIN=[12,13,14,16];VAL=[17,18,19];SEALED=[20,21,22]

@@ -10,7 +10,7 @@ def main(variant,seed,phase):
         from train_jev_stage2_onpolicy import rollout,train
         manifest=rollout(variant,seed)
         if manifest['status']!='PASS':raise RuntimeError('Own-state positive support gate failed, fine-tune is forbidden')
-        train(variant,seed)
+        if not (OUT/'onpolicy_training_v1'/variant/f'seed{seed}'/'RESULT.json').exists():train(variant,seed)
         from evaluate_jev_stage2_online import main as evaluate
         for video in VAL:evaluate(video,variant,seed,'onpolicy')
 if __name__=='__main__':

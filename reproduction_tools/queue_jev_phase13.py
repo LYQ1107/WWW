@@ -11,7 +11,7 @@ def main(kind,max_jobs):
     pending=[];done=[];failed=[];active={};root=OUT/f'queue_{kind}_v1';root.mkdir(parents=True,exist_ok=True);assert not (root/'RESULT.json').exists()
     for v,s in cases:
         result=OUT/f'{kind if kind != "validation" else "formal"}_training_v1'/v/f'seed{s}'/'RESULT.json'
-        complete=all((OUT/'formal_online_v1'/f'{v}_seed{s}'/f'video{x:02d}'/'RESULT.json').exists() for x in VAL) if kind=='validation' else result.exists()
+        complete=all((OUT/'formal_online_v1'/f'{v}_seed{s}'/f'video{x:02d}'/'RESULT.json').exists() for x in VAL) if kind=='validation' else result.exists() and (kind!='onpolicy' or all((OUT/'onpolicy_online_v1'/f'{v}_seed{s}'/f'video{x:02d}'/'RESULT.json').exists() for x in VAL))
         (done if complete else pending).append((v,s))
     def command(v,s):
         if kind=='formal':return [PYTHON,str(ROOT/'reproduction_tools/train_jev_stage2.py'),'--phase','formal','--variant',v,'--seed',str(s)]
@@ -21,7 +21,7 @@ def main(kind,max_jobs):
         out=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.free,utilization.gpu','--format=csv,noheader,nounits'],text=True);candidates=[]
         for line in out.strip().splitlines():
             i,free,util=map(int,line.split(','));ours=sum(j['gpu']==i for j in active.values())
-            if free>=4096 and ours<2:candidates.append((int(util>90),ours,int(util>5),-free,util,i))
+            if free>=4096 and ours<2:candidates.append((int(util>70),ours,int(util>5),-free,util,i))
         return min(candidates)[-1] if candidates else None
     begin=time.monotonic();last=0.
     while pending or active:

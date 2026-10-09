@@ -50,7 +50,7 @@ class NativeDirectExecutor:
             restore=lawful_choice(react,rx['legal'][0])
             for row,col in zip(unmatched,restore):
                 if col>=0:
-                    ref=stale[col];ids[row]=ref;actions[row]='REACTIVATE';poss_ids.poss_ids.discard(ref)
+                    ref=stale[col];ids[row]=ref;actions[row]='REACTIVATE';poss_ids.poss_ids.add(ref)
                     pooled=old_reids.old_reids[0];old_reids.old_reids=[pooled[pooled.track_ids!=ref]]
                     if len(old_reids.old_reids[0])==0:old_reids.old_reids=[]
         current.track_ids=ids;events=[]

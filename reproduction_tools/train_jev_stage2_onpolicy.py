@@ -8,7 +8,7 @@ from evaluate_jev_stage2_online import load_policy
 from run_jev_phase10_closed_loop import raw_predictions
 from build_dense_jev_stage2_dataset import OfflineLabels
 
-LARGE=Path('/data1/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1')
+LARGE=Path('/data1/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2')
 MAIN_MODELS=['full','motip','camel','set_transformer']
 
 def freeze():

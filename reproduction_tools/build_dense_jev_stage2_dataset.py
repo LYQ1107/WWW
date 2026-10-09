@@ -66,7 +66,7 @@ class OfflineLabels:
         for ref,target in zip(inst.track_ids.tolist(),labels):
             if target is not None:self.past[ref].add(target);self.ever.add(target)
 
-def main(video,version='dense_native_v2'):
+def main(video,version='dense_native_v3'):
     allowed(video);protect();torch.set_num_threads(1);torch.manual_seed(20261009);source=binding();assert not source['dirty']
     values,frames,reader=cache_inputs(video);out=OUT/version/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
     labels=OfflineLabels(video,reader);model=build_tracker(video);model.jev_stage2_executor.observer=labels.before;model.jev_stage2_executor.commit_observer=labels.after;t=time.monotonic()
@@ -75,4 +75,4 @@ def main(video,version='dense_native_v2'):
     path=out/'DATASET.pth';torch.save({'records':labels.records,'scope':'all actual B1-native decisions with fresh true Stage1 features; GT offline labels, histories neither teacher-forced nor GTA generated','video':video},path)
     save(out/'RESULT.json',{'status':'COMPLETE','binding':source,'video':video,'frames':frames,'record_groups':len(labels.records),'counts':dict(labels.counts),'recall':dict(labels.recall),'DATASET':{'path':str(path),'SHA256':sha(path),'bytes':path.stat().st_size},'natural_native_ids':id_count,'known_GT_targets_seen':len(labels.ever),'contaminated_historical_ids':sum(len(s)>1 for s in labels.past.values()),'GTA_throw_mock':True,'elapsed_seconds':time.monotonic()-t,'heldout':'SEALED','Full24':False,'official_TEST':False});print('DENSE_NATIVE_VIDEO_COMPLETE',video,len(labels.records),dict(labels.counts),flush=True)
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);p.add_argument('--version',default='dense_native_v2');a=p.parse_args();main(a.video,a.version)
+    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);p.add_argument('--version',default='dense_native_v3');a=p.parse_args();main(a.video,a.version)

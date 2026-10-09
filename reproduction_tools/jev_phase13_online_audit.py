@@ -34,7 +34,8 @@ def audit(video,raw,journal,commits,reader):
                 elif positive[selected]:count[scope+'_certified_correct']+=1
                 else:count[scope+'_certified_wrong']+=1
                 count['normal_supported_rows']+=int(task==0 and positive[:-1].any());count['normal_supported_correct']+=int(task==0 and positive[:-1].any() and col>=0 and positive[selected])
-                lp=torch.log_softmax(z[rr].masked_fill(~torch.tensor(known),-1e4),-1);prob=lp.exp().numpy();mass=float(prob[positive].sum());loss.append(-math.log(max(mass,1e-30)));target=positive.astype(float)/max(1,positive.sum());brier.append(float(((prob-target)**2*known).sum()));best=int(prob.argmax());conf.append(float(prob[best]));correct.append(bool(positive[best]))
+                if task==0:
+                    lp=torch.log_softmax(z[rr].masked_fill(~torch.tensor(known),-1e4),-1);prob=lp.exp().numpy();mass=float(prob[positive].sum());loss.append(-math.log(max(mass,1e-30)));target=positive.astype(float)/max(1,positive.sum());brier.append(float(((prob-target)**2*known).sum()));best=int(prob.argmax());conf.append(float(prob[best]));correct.append(bool(positive[best]))
                 observed.append({'key':record['key'],'task':scope,'row':row,'action':native['action'],'known':bool(known[selected]),'correct':bool(positive[selected]) if known[selected] else None})
         for row,(ref,gt) in enumerate(zip(ids,gts)):
             if gt is None:continue

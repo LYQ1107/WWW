@@ -10,7 +10,7 @@ from gtr.modeling.jev_stage2.assignment import lawful_choice,structured_assignme
 VARIANTS=['full','motip','camel','set_transformer','no_question_reader','fixed_question','no_option_reader','no_gating','no_cross_camera','no_long_term','no_competition','no_typed_head']
 SEEDS=[20261008,20261009,20261010]
 
-def load_data(videos,version='dense_native_v2',verify=True):
+def load_data(videos,version='dense_native_v3',verify=True):
     records=[];manifests=[]
     for v in videos:
         allowed(v);p=OUT/version/f'video{v:02d}';m=json.loads((p/'RESULT.json').read_text());assert m['status']=='COMPLETE'
