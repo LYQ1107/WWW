@@ -1,0 +1,4350 @@
+{
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": null,
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "frozen_evidence_SHA256": "8aad518ca211a16a6776b6eb7213d6abfce65ba050a2a88ca972b17e1681840d",
+    "heldout": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "1891c752d1430ef415e76830a40ef41dc28f2189b097c9654d06b279d11a5adf",
+    "source_SHA256": {
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+      "reproduction_tools/jev_phase14_checkpoint_audit.py": "dd6a254903d1d249790ff7904019c979fafff959188488cdfce13481ffde81de",
+      "reproduction_tools/jev_phase14_common.py": "e5a526e80ab4e10a852e266df7f74880f3659e3f9cd9ab79f113b3eb93d588c4",
+      "reproduction_tools/jev_phase14_forensics.py": "e3e7a758b61e86979e34aaaaec5ffd6b89c5cf53eab5c676b92f96074e1f7d67",
+      "reproduction_tools/jev_phase14_freeze.py": "00006a4f539595887d49c5f4072202214f5a50f9d5c8239921784ac531f53953"
+    },
+    "source_commit": "d4ba6cf46a0223411e140205da496d01ddd5e273"
+  },
+  "cases": [
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 3742,
+          "Certified Correct": 6379,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 4,
+          "Contaminated Target Support": 3738,
+          "Correct Candidate Missing": 3743,
+          "Correct Candidate Present": 6511,
+          "DEFER": 5,
+          "Label Unavailable": 207,
+          "Selected UNKNOWN": 3866,
+          "UNKNOWN_and_Correct_supported_rows": 6121,
+          "UNKNOWN_rows": 9863,
+          "UNKNOWN_steals_from_Correct": 129,
+          "rows": 10461
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 234,
+          "Certified Correct": 169,
+          "Contaminated Target Support": 234,
+          "Correct Candidate Missing": 234,
+          "Correct Candidate Present": 170,
+          "Label Unavailable": 1,
+          "Selected UNKNOWN": 235,
+          "UNKNOWN_and_Correct_supported_rows": 170,
+          "UNKNOWN_rows": 404,
+          "UNKNOWN_steals_from_Correct": 1,
+          "rows": 405
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 2,
+          "Correct Candidate Missing": 2,
+          "DEFER": 2,
+          "Label Unavailable": 3,
+          "rows": 5
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 3,
+          "Contaminated Target Support": 2,
+          "Correct Candidate Missing": 3,
+          "Label Unavailable": 4,
+          "Selected UNKNOWN": 3,
+          "rows": 7
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 184,
+        "FALSE_BIRTH": 1,
+        "FALSE_MERGE": 7,
+        "GALLERY_CONTAMINATION": 7,
+        "IDENTITY_UNAVAILABLE": 3,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 15,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 19,
+        "IDSW/WRONG_EXISTING_MERGE": 5,
+        "IDSW_exact": 39,
+        "MATCH_Certified Correct": 6548,
+        "MATCH_Certified Wrong": 4,
+        "MATCH_DEFER": 5,
+        "MATCH_Selected UNKNOWN": 4101,
+        "UNKNOWN_SUPERVISION": 215,
+        "UNKNOWN_selected": 4101,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 4098,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 2,
+        "UNKNOWN_selected_with_certified_correct_available": 130,
+        "WRONG_EXISTING_MATCH": 4,
+        "final_mixed_identities": 4,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 4105
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "2295d52b454cf934fdbec9c6319618218f568cc1b9f00195217748b341e3337f",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261008/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "228f7a12714318dc0eb0ddaa5c8b0490b649618399218628ce133f696ae09e58",
+        "questions_SHA256": "d22fa0c91b5e40238ba5c476ff4148978fc20638286780b3c134658087961faa",
+        "raw_SHA256": "590a028021a36d3a4600cd8191c771fd6774b370d2394bcdd6410124d00f5bb8",
+        "result_SHA256": "ec7ad0dec27906a1396628894b0923292902d17086fa7e318e35e6d0cb99521e",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261008/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 19.97954750061035,
+          "min": -26.033313751220703,
+          "p25": -20.28883934020996,
+          "p50": -19.085384368896484,
+          "p75": -17.091389656066895,
+          "p95": -5.4587318897247314
+        },
+        "unknown_max_minus_terminal": {
+          "max": 25.017784118652344,
+          "min": -6.100057601928711,
+          "p25": -1.956221580505371,
+          "p50": 2.6418685913085938,
+          "p75": 19.038066864013672,
+          "p95": 22.63391532897949
+        }
+      },
+      "phase": "formal",
+      "seed": 20261008,
+      "variant": "full",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 966,
+          "Certified Correct": 4759,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 4,
+          "Contaminated Target Support": 962,
+          "Correct Candidate Missing": 967,
+          "Correct Candidate Present": 4773,
+          "DEFER": 2,
+          "False Defer": 2,
+          "Label Unavailable": 187,
+          "Selected UNKNOWN": 975,
+          "UNKNOWN_and_Correct_supported_rows": 3724,
+          "UNKNOWN_rows": 4690,
+          "UNKNOWN_steals_from_Correct": 9,
+          "rows": 5927
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 2061,
+          "Certified Correct": 3123,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 2059,
+          "Correct Candidate Missing": 2061,
+          "Correct Candidate Present": 3588,
+          "DEFER": 1,
+          "Label Unavailable": 325,
+          "Selected UNKNOWN": 2522,
+          "UNKNOWN_and_Correct_supported_rows": 3588,
+          "UNKNOWN_rows": 5649,
+          "UNKNOWN_steals_from_Correct": 464,
+          "rows": 5974
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 5,
+          "rows": 6
+        },
+        "REACT/K=1-9": {
+          "Certified Unavailable": 2,
+          "Correct Candidate Missing": 2,
+          "DEFER": 2,
+          "Label Unavailable": 3,
+          "rows": 5
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 413,
+        "FALSE_BIRTH": 3,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 13,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 13,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/FALSE_SPLIT_NEW": 2,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 9,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 17,
+        "IDSW/WRONG_EXISTING_MERGE": 4,
+        "IDSW_exact": 33,
+        "MATCH_Certified Correct": 7882,
+        "MATCH_Certified Wrong": 7,
+        "MATCH_DEFER": 3,
+        "MATCH_Selected UNKNOWN": 3497,
+        "UNKNOWN_SUPERVISION": 520,
+        "UNKNOWN_selected": 3497,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3490,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 6,
+        "UNKNOWN_selected_with_certified_correct_available": 473,
+        "WRONG_EXISTING_MATCH": 7,
+        "final_mixed_identities": 7,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 3497
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "2295d52b454cf934fdbec9c6319618218f568cc1b9f00195217748b341e3337f",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261008/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "fd0da412584466b84117475a0c6a84bbb351c0926ec732252f9f6e30dc2333fe",
+        "questions_SHA256": "17790a17c1dc0736bb22a3e8a3cabb2ecd3907cff269a9233489e462567ba48d",
+        "raw_SHA256": "7ebb97c9d04c3a1e0d94f3f71b1bda119250c181cd3f2759a27540e679cc7807",
+        "result_SHA256": "b46d8c7ee02af17b6774d1602d799f8a9883d7b36069d96334f26d5716507aae",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261008/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 13.540653228759766,
+          "min": -27.270627975463867,
+          "p25": -21.955451011657715,
+          "p50": -18.8413028717041,
+          "p75": -13.58710527420044,
+          "p95": 3.750398504734037
+        },
+        "unknown_max_minus_terminal": {
+          "max": 24.719459533691406,
+          "min": -6.899900436401367,
+          "p25": -2.785085678100586,
+          "p50": 0.3917827606201172,
+          "p75": 16.61988067626953,
+          "p95": 22.5347131729126
+        }
+      },
+      "phase": "formal",
+      "seed": 20261008,
+      "variant": "full",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 1247,
+          "Certified Correct": 710,
+          "Certified Wrong": 1,
+          "Contaminated Target Support": 1246,
+          "Correct Candidate Missing": 1247,
+          "Correct Candidate Present": 711,
+          "DEFER": 2,
+          "False Defer": 1,
+          "Label Unavailable": 13,
+          "Selected UNKNOWN": 1245,
+          "UNKNOWN_and_Correct_supported_rows": 711,
+          "UNKNOWN_rows": 1958,
+          "rows": 1971
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 5101,
+          "Certified Correct": 7604,
+          "Certified Wrong": 8,
+          "Contaminated Target Support": 5095,
+          "Correct Candidate Missing": 5101,
+          "Correct Candidate Present": 8020,
+          "DEFER": 3,
+          "False Defer": 1,
+          "Label Unavailable": 583,
+          "Selected UNKNOWN": 5506,
+          "UNKNOWN_and_Correct_supported_rows": 8020,
+          "UNKNOWN_rows": 13121,
+          "UNKNOWN_steals_from_Correct": 410,
+          "rows": 13704
+        },
+        "REACT/K=0": {
+          "Label Unavailable": 3,
+          "rows": 3
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 3,
+          "Certified Correct": 1,
+          "Certified Unavailable": 1,
+          "Contaminated Target Support": 1,
+          "Correct Candidate Missing": 4,
+          "Correct Candidate Present": 1,
+          "DEFER": 4,
+          "Label Unavailable": 3,
+          "rows": 8
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 779,
+        "FALSE_BIRTH": 3,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 26,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 26,
+        "IDENTITY_UNAVAILABLE": 1,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 24,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 28,
+        "IDSW/WRONG_EXISTING_MERGE": 16,
+        "IDSW_exact": 69,
+        "MATCH_Certified Correct": 8314,
+        "MATCH_Certified Wrong": 9,
+        "MATCH_DEFER": 5,
+        "MATCH_Selected UNKNOWN": 6751,
+        "UNKNOWN_SUPERVISION": 602,
+        "UNKNOWN_selected": 6751,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 6746,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 17,
+        "UNKNOWN_selected_with_certified_correct_available": 410,
+        "WRONG_EXISTING_MATCH": 9,
+        "final_mixed_identities": 9,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 6755
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "2295d52b454cf934fdbec9c6319618218f568cc1b9f00195217748b341e3337f",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261008/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "bae9e6c9802c5ce4549e7685a48b477dcf4330db84d5cb3bb96c3981a25b1afd",
+        "questions_SHA256": "6779fbb8aab1b9e767f2c4ab06dbb91ba6edd72e0996fb8dacd6bee8372afb97",
+        "raw_SHA256": "e3646b216ece31b1550eb8f5cbc29f43f5d15f8f800d3d028c814e7a4df0b7cd",
+        "result_SHA256": "2d63e20f30b34f46b70ebd7fecc4af3bba025cd89668d7e68312f31ad34dcb7b",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261008/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 19.999156951904297,
+          "min": -26.349105834960938,
+          "p25": -20.70707130432129,
+          "p50": -17.5845947265625,
+          "p75": -12.868169784545898,
+          "p95": -0.4351844787597656
+        },
+        "unknown_max_minus_terminal": {
+          "max": 25.71286392211914,
+          "min": -7.91087532043457,
+          "p25": -1.338881492614746,
+          "p50": 7.075316905975342,
+          "p75": 17.685446739196777,
+          "p95": 21.373973274230956
+        }
+      },
+      "phase": "formal",
+      "seed": 20261008,
+      "variant": "full",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 2825,
+          "Certified Correct": 7113,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 2821,
+          "Correct Candidate Missing": 2826,
+          "Correct Candidate Present": 7152,
+          "DEFER": 5,
+          "False Defer": 1,
+          "Label Unavailable": 198,
+          "Selected UNKNOWN": 2857,
+          "UNKNOWN_and_Correct_supported_rows": 6347,
+          "UNKNOWN_rows": 9172,
+          "UNKNOWN_steals_from_Correct": 37,
+          "rows": 10176
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 321,
+          "Certified Correct": 359,
+          "Certified Wrong": 1,
+          "Contaminated Target Support": 321,
+          "Correct Candidate Missing": 321,
+          "Correct Candidate Present": 359,
+          "Label Unavailable": 10,
+          "Selected UNKNOWN": 320,
+          "UNKNOWN_and_Correct_supported_rows": 359,
+          "UNKNOWN_rows": 680,
+          "rows": 690
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 2,
+          "Correct Candidate Missing": 2,
+          "DEFER": 2,
+          "rows": 2
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 1,
+          "Certified Correct": 1,
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 1,
+          "DEFER": 1,
+          "Label Unavailable": 10,
+          "Selected UNKNOWN": 1,
+          "rows": 13
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 129,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 1,
+        "FALSE_MERGE": 6,
+        "FALSE_SPLIT": 1,
+        "GALLERY_CONTAMINATION": 6,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 14,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 14,
+        "IDSW/WRONG_EXISTING_MERGE": 4,
+        "IDSW_exact": 34,
+        "MATCH_Certified Correct": 7472,
+        "MATCH_Certified Wrong": 4,
+        "MATCH_DEFER": 5,
+        "MATCH_Selected UNKNOWN": 3177,
+        "UNKNOWN_SUPERVISION": 218,
+        "UNKNOWN_selected": 3177,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3174,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 1,
+        "UNKNOWN_selected_with_certified_correct_available": 37,
+        "WRONG_EXISTING_MATCH": 4,
+        "final_mixed_identities": 4,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 3179
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "d48b7f9141383602323f6c96b1669c4f4a904391a26cb7fcf5b56432bbfcb296",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "21339ee10ded59749a296dc470c77a59cad9164a5236e1aaf9197208b7eb2d63",
+        "questions_SHA256": "85e8d0fed2d3e8a6090ffce286eee891f6ce44a90235851f344ea18149f52967",
+        "raw_SHA256": "4a63701f2fe18a30f4f1cd7628bb4fbe9ce4e4d9408960f30e47afa16129ed0a",
+        "result_SHA256": "4883e23a74fe895398e6adff407d86bee74c168ceb0108cc629232f5ab543a86",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261009/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 11.666708946228027,
+          "min": -25.41952896118164,
+          "p25": -18.212061405181885,
+          "p50": -17.18740940093994,
+          "p75": -15.27913784980774,
+          "p95": -9.632452011108398
+        },
+        "unknown_max_minus_terminal": {
+          "max": 23.6978759765625,
+          "min": -11.143622398376465,
+          "p25": -4.386634349822998,
+          "p50": -1.997347354888916,
+          "p75": 13.85139536857605,
+          "p95": 19.3234655380249
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "full",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 17,
+          "Certified Correct": 4151,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 1,
+          "Contaminated Target Support": 12,
+          "Correct Candidate Missing": 18,
+          "Correct Candidate Present": 4154,
+          "DEFER": 3,
+          "False Defer": 2,
+          "Label Unavailable": 70,
+          "Selected UNKNOWN": 17,
+          "UNKNOWN_and_Correct_supported_rows": 1359,
+          "UNKNOWN_rows": 1376,
+          "rows": 4242
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 1313,
+          "Certified Correct": 5745,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 1311,
+          "Correct Candidate Missing": 1313,
+          "Correct Candidate Present": 5904,
+          "DEFER": 1,
+          "Label Unavailable": 442,
+          "Selected UNKNOWN": 1468,
+          "UNKNOWN_and_Correct_supported_rows": 5163,
+          "UNKNOWN_rows": 6476,
+          "UNKNOWN_steals_from_Correct": 156,
+          "rows": 7659
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 6,
+          "rows": 7
+        },
+        "REACT/K=1-9": {
+          "Certified Correct": 1,
+          "Certified Unavailable": 2,
+          "Certified Wrong": 1,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 1,
+          "DEFER": 1,
+          "Label Unavailable": 6,
+          "rows": 9
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 59,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 7,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 7,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/FALSE_SPLIT_NEW": 2,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 15,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 9,
+        "IDSW/WRONG_STALE_MERGE": 1,
+        "IDSW_exact": 27,
+        "MATCH_Certified Correct": 9896,
+        "MATCH_Certified Wrong": 4,
+        "MATCH_DEFER": 4,
+        "MATCH_Selected UNKNOWN": 1485,
+        "UNKNOWN_SUPERVISION": 524,
+        "UNKNOWN_selected": 1485,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 1476,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 2,
+        "UNKNOWN_selected_with_certified_correct_available": 156,
+        "WRONG_EXISTING_MATCH": 4,
+        "WRONG_REACTIVATION": 1,
+        "final_mixed_identities": 5,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 1481
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "d48b7f9141383602323f6c96b1669c4f4a904391a26cb7fcf5b56432bbfcb296",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "f5795595be943e65d2b647b182984d8d476c4a45b3e547019eea51527c940470",
+        "questions_SHA256": "01c7eecfe5c34766d6d0c351139a98de82a2b434615c736187d1cd0fb111062e",
+        "raw_SHA256": "fe28e0c38fa9f0dfff77224c28eea58707c5e49b85ed8f0d564d3a282a5ffbf6",
+        "result_SHA256": "18cc00751544d4a5676beb0a0e651a7820b33b817499f0465fa5f5f5fa1708ff",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261009/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 15.243569374084473,
+          "min": -24.375089645385742,
+          "p25": -18.550636768341064,
+          "p50": -16.816265106201172,
+          "p75": -15.00440239906311,
+          "p95": -7.751185703277618
+        },
+        "unknown_max_minus_terminal": {
+          "max": 20.555496215820312,
+          "min": -8.254098892211914,
+          "p25": -4.452242374420166,
+          "p50": -2.5683059692382812,
+          "p75": 1.365959644317627,
+          "p95": 16.485626316070558
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "full",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 213,
+          "Certified Correct": 213,
+          "Contaminated Target Support": 212,
+          "Correct Candidate Missing": 213,
+          "Correct Candidate Present": 213,
+          "Label Unavailable": 2,
+          "Selected UNKNOWN": 213,
+          "UNKNOWN_and_Correct_supported_rows": 213,
+          "UNKNOWN_rows": 426,
+          "rows": 428
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 4197,
+          "Certified Correct": 9589,
+          "Certified Wrong": 7,
+          "Contaminated Target Support": 4189,
+          "Correct Candidate Missing": 4197,
+          "Correct Candidate Present": 10456,
+          "DEFER": 10,
+          "False Defer": 5,
+          "Label Unavailable": 594,
+          "Selected UNKNOWN": 5047,
+          "UNKNOWN_and_Correct_supported_rows": 10456,
+          "UNKNOWN_rows": 14653,
+          "UNKNOWN_steals_from_Correct": 858,
+          "rows": 15247
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 4,
+          "Correct Candidate Missing": 4,
+          "DEFER": 4,
+          "Label Unavailable": 4,
+          "rows": 8
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 2,
+          "Certified Correct": 2,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 4,
+          "DEFER": 2,
+          "Label Unavailable": 7,
+          "Selected UNKNOWN": 2,
+          "rows": 13
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 1228,
+        "FALSE_BIRTH": 3,
+        "FALSE_DEFER": 5,
+        "FALSE_MERGE": 14,
+        "FALSE_SPLIT": 3,
+        "GALLERY_CONTAMINATION": 14,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 19,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 19,
+        "IDSW/WRONG_EXISTING_MERGE": 9,
+        "IDSW_exact": 47,
+        "MATCH_Certified Correct": 9802,
+        "MATCH_Certified Wrong": 7,
+        "MATCH_DEFER": 10,
+        "MATCH_Selected UNKNOWN": 5260,
+        "UNKNOWN_SUPERVISION": 607,
+        "UNKNOWN_selected": 5260,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 5253,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 5,
+        "UNKNOWN_selected_with_certified_correct_available": 858,
+        "WRONG_EXISTING_MATCH": 7,
+        "final_mixed_identities": 7,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 5262
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "d48b7f9141383602323f6c96b1669c4f4a904391a26cb7fcf5b56432bbfcb296",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "7172f0232e8a1401e3eef763eddc000a586e8d9d24a4a3d79d976d41c732c70f",
+        "questions_SHA256": "ef11829f579103478bac4cbc2b8a544cd2db1592729fc6a2f94ce18a510130ff",
+        "raw_SHA256": "39e755078719b59b8b0a746f214019288a2f68e74e2ce85356fa23f0f2ad5d12",
+        "result_SHA256": "412a6e3c9fd98d1384ce6a2d5bbe02cf147a1116ac44db9a44887fb81643c4ba",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261009/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 20.959901809692383,
+          "min": -23.927654266357422,
+          "p25": -18.070127487182617,
+          "p50": -15.698781967163086,
+          "p75": -9.664230346679688,
+          "p95": 3.1197879791259773
+        },
+        "unknown_max_minus_terminal": {
+          "max": 22.883678436279297,
+          "min": -12.575109481811523,
+          "p25": -2.8977270126342773,
+          "p50": 2.6549158096313477,
+          "p75": 13.356879711151123,
+          "p95": 17.170209503173826
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "full",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 3091,
+          "Certified Correct": 7040,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 4,
+          "Contaminated Target Support": 3088,
+          "Correct Candidate Missing": 3092,
+          "Correct Candidate Present": 7162,
+          "DEFER": 6,
+          "Label Unavailable": 207,
+          "Selected UNKNOWN": 3204,
+          "UNKNOWN_and_Correct_supported_rows": 6778,
+          "UNKNOWN_rows": 9869,
+          "UNKNOWN_steals_from_Correct": 120,
+          "rows": 10461
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 196,
+          "Certified Correct": 208,
+          "Contaminated Target Support": 196,
+          "Correct Candidate Missing": 196,
+          "Correct Candidate Present": 208,
+          "Label Unavailable": 1,
+          "Selected UNKNOWN": 196,
+          "UNKNOWN_and_Correct_supported_rows": 208,
+          "UNKNOWN_rows": 404,
+          "rows": 405
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 2,
+          "Correct Candidate Missing": 2,
+          "DEFER": 2,
+          "Label Unavailable": 1,
+          "rows": 3
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 3,
+          "Certified Correct": 1,
+          "Contaminated Target Support": 1,
+          "Correct Candidate Missing": 3,
+          "Correct Candidate Present": 1,
+          "Label Unavailable": 7,
+          "Selected UNKNOWN": 3,
+          "rows": 11
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 153,
+        "FALSE_BIRTH": 1,
+        "FALSE_MERGE": 7,
+        "GALLERY_CONTAMINATION": 7,
+        "IDENTITY_UNAVAILABLE": 3,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 7,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 20,
+        "IDSW/WRONG_EXISTING_MERGE": 4,
+        "IDSW_exact": 32,
+        "MATCH_Certified Correct": 7248,
+        "MATCH_Certified Wrong": 4,
+        "MATCH_DEFER": 6,
+        "MATCH_Selected UNKNOWN": 3400,
+        "UNKNOWN_SUPERVISION": 216,
+        "UNKNOWN_selected": 3400,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3397,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 1,
+        "UNKNOWN_selected_with_certified_correct_available": 120,
+        "WRONG_EXISTING_MATCH": 4,
+        "final_mixed_identities": 4,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 3404
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "43598df01ad26b3c3b9cd4d8ef3982dc014d4c0bc8e13c6937b14014f25d7a21",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261010/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "d053659b9811e7a0cacbdf50aff5d9e02b31c998b60915057b580a9586447660",
+        "questions_SHA256": "c547581f5d15470bb4fe193df943ffe22c120a7b306c9d3de5a17d7c05568222",
+        "raw_SHA256": "8fec2a03c9fefecfbddd0b20585a135d23b80b284f3860a12d2331c113ced4a3",
+        "result_SHA256": "828a5fa55ce42d45e6ef8df51a69d568358bbdb6ba08bbeb4def93aed800e838",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 19.188430786132812,
+          "min": -22.312450408935547,
+          "p25": -19.143927574157715,
+          "p50": -18.211349487304688,
+          "p75": -17.00791072845459,
+          "p95": -11.895418882369995
+        },
+        "unknown_max_minus_terminal": {
+          "max": 21.114768981933594,
+          "min": -9.630877494812012,
+          "p25": -4.4949493408203125,
+          "p50": -2.2937240600585938,
+          "p75": 13.125763893127441,
+          "p95": 18.715711593627926
+        }
+      },
+      "phase": "formal",
+      "seed": 20261010,
+      "variant": "full",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 378,
+          "Certified Correct": 4279,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 1,
+          "Contaminated Target Support": 374,
+          "Correct Candidate Missing": 379,
+          "Correct Candidate Present": 4281,
+          "DEFER": 2,
+          "False Defer": 2,
+          "Label Unavailable": 115,
+          "Selected UNKNOWN": 378,
+          "UNKNOWN_and_Correct_supported_rows": 2592,
+          "UNKNOWN_rows": 2970,
+          "rows": 4775
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 1714,
+          "Certified Correct": 4538,
+          "Certified Wrong": 5,
+          "Contaminated Target Support": 1712,
+          "Correct Candidate Missing": 1714,
+          "Correct Candidate Present": 5015,
+          "Label Unavailable": 397,
+          "Selected UNKNOWN": 2186,
+          "UNKNOWN_and_Correct_supported_rows": 5015,
+          "UNKNOWN_rows": 6729,
+          "UNKNOWN_steals_from_Correct": 474,
+          "rows": 7126
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 6,
+          "rows": 7
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 7,
+          "rows": 8
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 147,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 7,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 7,
+        "IDENTITY_UNAVAILABLE": 2,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 10,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 12,
+        "IDSW/WRONG_EXISTING_MERGE": 1,
+        "IDSW_exact": 24,
+        "MATCH_Certified Correct": 8817,
+        "MATCH_Certified Wrong": 6,
+        "MATCH_DEFER": 2,
+        "MATCH_Selected UNKNOWN": 2564,
+        "UNKNOWN_SUPERVISION": 525,
+        "UNKNOWN_selected": 2564,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 2555,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 1,
+        "UNKNOWN_selected_with_certified_correct_available": 474,
+        "WRONG_EXISTING_MATCH": 6,
+        "final_mixed_identities": 6,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 2561
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "43598df01ad26b3c3b9cd4d8ef3982dc014d4c0bc8e13c6937b14014f25d7a21",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261010/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "a4b91aa1c60a7d6a67037b7d7fe2249c5d62879d403b4d93d16fdf2483cd963c",
+        "questions_SHA256": "58cbe606c46510fd940a7eb1edc1ce56fadcded48d0a9fac4e94d95ebc45d5e8",
+        "raw_SHA256": "8d217f080510d9403a1472160e28575ff410fefa3b29e08cdcdebbacefc44ca5",
+        "result_SHA256": "21ec444fe8608259cfc912133c9613cffe687035c11d6171b3d2817cda578fe8",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 20.235332489013672,
+          "min": -23.285852432250977,
+          "p25": -20.25798797607422,
+          "p50": -18.569412231445312,
+          "p75": -13.74665880203247,
+          "p95": 5.196328353881835
+        },
+        "unknown_max_minus_terminal": {
+          "max": 18.313276290893555,
+          "min": -8.936993598937988,
+          "p25": -4.838845252990723,
+          "p50": -2.355342388153076,
+          "p75": 7.9092066287994385,
+          "p95": 16.33723678588867
+        }
+      },
+      "phase": "formal",
+      "seed": 20261010,
+      "variant": "full",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 3564,
+          "Certified Correct": 11098,
+          "Certified Wrong": 9,
+          "Contaminated Target Support": 3553,
+          "Correct Candidate Missing": 3564,
+          "Correct Candidate Present": 11515,
+          "DEFER": 12,
+          "False Defer": 5,
+          "Label Unavailable": 596,
+          "Selected UNKNOWN": 3960,
+          "UNKNOWN_and_Correct_supported_rows": 10448,
+          "UNKNOWN_rows": 14012,
+          "UNKNOWN_steals_from_Correct": 405,
+          "rows": 15675
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 2,
+          "Correct Candidate Missing": 2,
+          "DEFER": 2,
+          "Label Unavailable": 3,
+          "rows": 5
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 7,
+          "Certified Correct": 2,
+          "Contaminated Target Support": 1,
+          "Correct Candidate Missing": 7,
+          "Correct Candidate Present": 3,
+          "DEFER": 4,
+          "Label Unavailable": 7,
+          "Selected UNKNOWN": 4,
+          "rows": 17
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 1774,
+        "FALSE_BIRTH": 3,
+        "FALSE_DEFER": 5,
+        "FALSE_MERGE": 14,
+        "FALSE_SPLIT": 3,
+        "GALLERY_CONTAMINATION": 14,
+        "IDENTITY_UNAVAILABLE": 2,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 32,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 10,
+        "IDSW/WRONG_EXISTING_MERGE": 8,
+        "IDSW_exact": 51,
+        "MATCH_Certified Correct": 11098,
+        "MATCH_Certified Wrong": 9,
+        "MATCH_DEFER": 12,
+        "MATCH_Selected UNKNOWN": 3960,
+        "UNKNOWN_SUPERVISION": 606,
+        "UNKNOWN_selected": 3960,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3954,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 3,
+        "UNKNOWN_selected_with_certified_correct_available": 405,
+        "WRONG_EXISTING_MATCH": 9,
+        "final_mixed_identities": 9,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 3967
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "43598df01ad26b3c3b9cd4d8ef3982dc014d4c0bc8e13c6937b14014f25d7a21",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261010/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "c8709d756a6484d4ec2bd88d0df8c30d72f982e5efb5107b94daf2ee510774ba",
+        "questions_SHA256": "883f911356c88b5aad6a51cb1c78ddcc08f6e313c070722b33a218286e380eab",
+        "raw_SHA256": "0ee7ffc793aeab72c19561e83c628ad98502c42bdd28465dcbae9c8979e9be0d",
+        "result_SHA256": "b252cb35346d9193787e53543fc6142ad0ac682cbdff2b5955c21cf19bf28894",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 20.834184646606445,
+          "min": -23.03934669494629,
+          "p25": -20.221639156341553,
+          "p50": -18.42747211456299,
+          "p75": -15.654056549072266,
+          "p95": -2.6398892283439648
+        },
+        "unknown_max_minus_terminal": {
+          "max": 20.19894790649414,
+          "min": -9.317794799804688,
+          "p25": -4.568380117416382,
+          "p50": -2.3626880645751953,
+          "p75": 12.559512615203857,
+          "p95": 17.94746389389038
+        }
+      },
+      "phase": "formal",
+      "seed": 20261010,
+      "variant": "full",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 4011,
+          "Certified Correct": 5727,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 4,
+          "Contaminated Target Support": 4008,
+          "Correct Candidate Missing": 4012,
+          "Correct Candidate Present": 6242,
+          "DEFER": 5,
+          "Label Unavailable": 207,
+          "Selected UNKNOWN": 4518,
+          "UNKNOWN_and_Correct_supported_rows": 5715,
+          "UNKNOWN_rows": 9726,
+          "UNKNOWN_steals_from_Correct": 513,
+          "rows": 10461
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 157,
+          "Certified Correct": 195,
+          "Contaminated Target Support": 157,
+          "Correct Candidate Missing": 157,
+          "Correct Candidate Present": 247,
+          "Label Unavailable": 1,
+          "Selected UNKNOWN": 209,
+          "UNKNOWN_and_Correct_supported_rows": 247,
+          "UNKNOWN_rows": 404,
+          "UNKNOWN_steals_from_Correct": 52,
+          "rows": 405
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 3,
+          "Correct Candidate Missing": 3,
+          "DEFER": 3,
+          "Label Unavailable": 3,
+          "rows": 6
+        },
+        "REACT/K=1-9": {
+          "Certified Correct": 1,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 1,
+          "Correct Candidate Missing": 1,
+          "Correct Candidate Present": 1,
+          "Label Unavailable": 3,
+          "rows": 5
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 116,
+        "FALSE_BIRTH": 2,
+        "FALSE_MERGE": 5,
+        "GALLERY_CONTAMINATION": 5,
+        "IDENTITY_UNAVAILABLE": 5,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 2,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 7,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 13,
+        "IDSW/WRONG_EXISTING_MERGE": 2,
+        "IDSW_exact": 24,
+        "MATCH_Certified Correct": 5922,
+        "MATCH_Certified Wrong": 4,
+        "MATCH_DEFER": 5,
+        "MATCH_Selected UNKNOWN": 4727,
+        "UNKNOWN_SUPERVISION": 214,
+        "UNKNOWN_selected": 4727,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 4724,
+        "UNKNOWN_selected_with_certified_correct_available": 565,
+        "WRONG_EXISTING_MATCH": 4,
+        "WRONG_REACTIVATION": 1,
+        "final_mixed_identities": 5,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 4729
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "7d9baede58de530f2584a50fdac5bd2ea2ab2da97bd948cc9969a7323476a3e7",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/fixed_question/seed20261008/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "d9505f403dee13aa42357089027c40f8f96c90049f8409dcb5b5337b30656b83",
+        "questions_SHA256": "bb382b5bd8bf835a2d722abe9fc1accbc77ce57bb49588daf174c6424be99e12",
+        "raw_SHA256": "05b2ed45f2f90954450f38ee7b0d5425b4e5a3fe69835c69348f7ba849b8f8ef",
+        "result_SHA256": "ec2ffed0b6c06867b75b3f4448e20a9761a8cba603b9b7ca645c2599e743f556",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/fixed_question_seed20261008/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 23.407880783081055,
+          "min": -24.777143478393555,
+          "p25": -22.08864164352417,
+          "p50": -20.49748134613037,
+          "p75": -18.067983627319336,
+          "p95": 14.565617847442619
+        },
+        "unknown_max_minus_terminal": {
+          "max": 24.399227142333984,
+          "min": -4.484901428222656,
+          "p25": -0.9216341972351074,
+          "p50": 5.484394073486328,
+          "p75": 21.57149362564087,
+          "p95": 23.659983348846435
+        }
+      },
+      "phase": "formal",
+      "seed": 20261008,
+      "variant": "fixed_question",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 1069,
+          "Certified Correct": 4652,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 1065,
+          "Correct Candidate Missing": 1070,
+          "Correct Candidate Present": 4670,
+          "Label Unavailable": 187,
+          "Selected UNKNOWN": 1085,
+          "UNKNOWN_and_Correct_supported_rows": 3621,
+          "UNKNOWN_rows": 4690,
+          "UNKNOWN_steals_from_Correct": 17,
+          "rows": 5927
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 2161,
+          "Certified Correct": 3483,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 2159,
+          "Correct Candidate Missing": 2161,
+          "Correct Candidate Present": 3488,
+          "DEFER": 1,
+          "Label Unavailable": 325,
+          "Selected UNKNOWN": 2162,
+          "UNKNOWN_and_Correct_supported_rows": 3488,
+          "UNKNOWN_rows": 5649,
+          "UNKNOWN_steals_from_Correct": 5,
+          "rows": 5974
+        },
+        "REACT/K=0": {
+          "Label Unavailable": 6,
+          "rows": 6
+        },
+        "REACT/K=1-9": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 3,
+          "rows": 4
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 95,
+        "FALSE_BIRTH": 1,
+        "FALSE_MERGE": 8,
+        "GALLERY_CONTAMINATION": 8,
+        "IDENTITY_UNAVAILABLE": 2,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 6,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 16,
+        "IDSW/WRONG_EXISTING_MERGE": 4,
+        "IDSW_exact": 27,
+        "MATCH_Certified Correct": 8135,
+        "MATCH_Certified Wrong": 6,
+        "MATCH_DEFER": 1,
+        "MATCH_Selected UNKNOWN": 3247,
+        "UNKNOWN_SUPERVISION": 521,
+        "UNKNOWN_selected": 3247,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3240,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 2,
+        "UNKNOWN_selected_with_certified_correct_available": 22,
+        "WRONG_EXISTING_MATCH": 6,
+        "final_mixed_identities": 6,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 3246
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "7d9baede58de530f2584a50fdac5bd2ea2ab2da97bd948cc9969a7323476a3e7",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/fixed_question/seed20261008/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "1681083a57ab2736b61f3abbe0fa26bd032cc7fba74dd505401911042bd77db8",
+        "questions_SHA256": "e1ee426b41516d36078336865819e5c6d708bd8f3f0162a89ab22000cfa42a4c",
+        "raw_SHA256": "5f5857167e05e07593c6c8e149a0327c22c41bd3834ee99a4de4d67776072bf5",
+        "result_SHA256": "1eeb988586768e30d9f39c44fb732d97f2349f9eb8c80d058797c4c2e834071d",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/fixed_question_seed20261008/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 15.437856674194336,
+          "min": -27.34380531311035,
+          "p25": -23.238676071166992,
+          "p50": -20.430492401123047,
+          "p75": -15.574800491333008,
+          "p95": -9.102770614624033
+        },
+        "unknown_max_minus_terminal": {
+          "max": 23.365400314331055,
+          "min": -4.3202056884765625,
+          "p25": -1.5664939880371094,
+          "p50": 0.5082311630249023,
+          "p75": 17.279329299926758,
+          "p95": 22.42431583404541
+        }
+      },
+      "phase": "formal",
+      "seed": 20261008,
+      "variant": "fixed_question",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 1900,
+          "Certified Correct": 1402,
+          "Certified Wrong": 1,
+          "Contaminated Target Support": 1897,
+          "Correct Candidate Missing": 1900,
+          "Correct Candidate Present": 1402,
+          "DEFER": 1,
+          "Label Unavailable": 22,
+          "Selected UNKNOWN": 1898,
+          "UNKNOWN_and_Correct_supported_rows": 1402,
+          "UNKNOWN_rows": 3302,
+          "rows": 3324
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 3012,
+          "Certified Correct": 8433,
+          "Certified Wrong": 8,
+          "Contaminated Target Support": 3006,
+          "Correct Candidate Missing": 3012,
+          "Correct Candidate Present": 8765,
+          "DEFER": 1,
+          "Label Unavailable": 574,
+          "Selected UNKNOWN": 3335,
+          "UNKNOWN_and_Correct_supported_rows": 8765,
+          "UNKNOWN_rows": 11777,
+          "UNKNOWN_steals_from_Correct": 327,
+          "rows": 12351
+        },
+        "REACT/K=0": {
+          "Label Unavailable": 3,
+          "rows": 3
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 2,
+          "Contaminated Target Support": 1,
+          "Correct Candidate Missing": 2,
+          "DEFER": 1,
+          "Label Unavailable": 3,
+          "Selected UNKNOWN": 1,
+          "rows": 5
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 814,
+        "FALSE_MERGE": 21,
+        "GALLERY_CONTAMINATION": 21,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 15,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 22,
+        "IDSW/WRONG_EXISTING_MERGE": 13,
+        "IDSW_exact": 50,
+        "MATCH_Certified Correct": 9835,
+        "MATCH_Certified Wrong": 9,
+        "MATCH_DEFER": 2,
+        "MATCH_Selected UNKNOWN": 5233,
+        "UNKNOWN_SUPERVISION": 602,
+        "UNKNOWN_selected": 5233,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 5229,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 12,
+        "UNKNOWN_selected_with_certified_correct_available": 327,
+        "WRONG_EXISTING_MATCH": 9,
+        "final_mixed_identities": 9,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 5239
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "7d9baede58de530f2584a50fdac5bd2ea2ab2da97bd948cc9969a7323476a3e7",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/fixed_question/seed20261008/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "6fbaf9fdf81f730ae8e46dd4649c3bdcaf795138bb50ffe8dc1bcb45bbea97a9",
+        "questions_SHA256": "2bdf1380867bc70d00c1da4ef88c29ce23a38bb9ece212e9071361a33088869b",
+        "raw_SHA256": "185d74760fe0fdd2d61196c0b114d2b1a35b2bd97d691b1e427100b02bd4a92e",
+        "result_SHA256": "7220093027d88e2df7e0eb7ba7df343abe2bc7c9c952210b19b6fd8a381151a6",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/fixed_question_seed20261008/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 20.697399139404297,
+          "min": -26.046510696411133,
+          "p25": -22.294379234313965,
+          "p50": -20.469200134277344,
+          "p75": -16.255505561828613,
+          "p95": -4.304273080825811
+        },
+        "unknown_max_minus_terminal": {
+          "max": 25.139972686767578,
+          "min": -6.2291259765625,
+          "p25": -0.20462679862976074,
+          "p50": 2.907299041748047,
+          "p75": 18.583672523498535,
+          "p95": 23.5037748336792
+        }
+      },
+      "phase": "formal",
+      "seed": 20261008,
+      "variant": "fixed_question",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 3146,
+          "Certified Correct": 7053,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 3142,
+          "Correct Candidate Missing": 3147,
+          "Correct Candidate Present": 7107,
+          "DEFER": 6,
+          "False Defer": 1,
+          "Label Unavailable": 207,
+          "Selected UNKNOWN": 3192,
+          "UNKNOWN_and_Correct_supported_rows": 6580,
+          "UNKNOWN_rows": 9726,
+          "UNKNOWN_steals_from_Correct": 51,
+          "rows": 10461
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 170,
+          "Certified Correct": 195,
+          "Contaminated Target Support": 170,
+          "Correct Candidate Missing": 170,
+          "Correct Candidate Present": 234,
+          "Label Unavailable": 1,
+          "Selected UNKNOWN": 209,
+          "UNKNOWN_and_Correct_supported_rows": 234,
+          "UNKNOWN_rows": 404,
+          "UNKNOWN_steals_from_Correct": 39,
+          "rows": 405
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 3,
+          "Correct Candidate Missing": 3,
+          "DEFER": 3,
+          "Label Unavailable": 5,
+          "rows": 8
+        },
+        "REACT/K=1-9": {
+          "Certified Correct": 1,
+          "Certified Unavailable": 2,
+          "Certified Wrong": 2,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 1,
+          "Label Unavailable": 2,
+          "rows": 5
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 280,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 1,
+        "FALSE_MERGE": 7,
+        "FALSE_SPLIT": 1,
+        "GALLERY_CONTAMINATION": 7,
+        "IDENTITY_UNAVAILABLE": 6,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 4,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 16,
+        "IDSW/WRONG_EXISTING_MERGE": 3,
+        "IDSW/WRONG_STALE_MERGE": 1,
+        "IDSW_exact": 26,
+        "MATCH_Certified Correct": 7248,
+        "MATCH_Certified Wrong": 3,
+        "MATCH_DEFER": 6,
+        "MATCH_Selected UNKNOWN": 3401,
+        "UNKNOWN_SUPERVISION": 215,
+        "UNKNOWN_selected": 3401,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3399,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 2,
+        "UNKNOWN_selected_with_certified_correct_available": 90,
+        "WRONG_EXISTING_MATCH": 3,
+        "WRONG_REACTIVATION": 2,
+        "final_mixed_identities": 5,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 3404
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "40738997d8d805b5ea66a743fe52a2b538b0211ef7e42eb533d2cfbd0c882558",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/fixed_question/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "cfd92bb5fbad5700015e27a8d2892b8d4b856d127c0355778065a3fdcaf02a79",
+        "questions_SHA256": "59387b3e893c00a8f99e899b403beb3e7a9c14a027b9dae23cd6b8eca639ce05",
+        "raw_SHA256": "7e8738a2a66e0a9fe22b979f2a641108b4d680a7b2cdae76056082de197a8679",
+        "result_SHA256": "2dff3812a82036ef9716516495c7a27b0dc7707f5f8a21cc6900f4f1c6e43f6a",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/fixed_question_seed20261009/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 15.949943542480469,
+          "min": -25.54494857788086,
+          "p25": -22.219480514526367,
+          "p50": -20.388031005859375,
+          "p75": -15.506895780563354,
+          "p95": -6.693941187858589
+        },
+        "unknown_max_minus_terminal": {
+          "max": 24.660097122192383,
+          "min": -7.383988380432129,
+          "p25": -2.6598572731018066,
+          "p50": 2.646669387817383,
+          "p75": 17.10431146621704,
+          "p95": 22.363128566741935
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "fixed_question",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 528,
+          "Certified Correct": 5138,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 2,
+          "Contaminated Target Support": 524,
+          "Correct Candidate Missing": 529,
+          "Correct Candidate Present": 5203,
+          "DEFER": 2,
+          "False Defer": 2,
+          "Label Unavailable": 185,
+          "Selected UNKNOWN": 590,
+          "UNKNOWN_and_Correct_supported_rows": 3514,
+          "UNKNOWN_rows": 4042,
+          "UNKNOWN_steals_from_Correct": 62,
+          "rows": 5917
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 1916,
+          "Certified Correct": 3379,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 1914,
+          "Correct Candidate Missing": 1916,
+          "Correct Candidate Present": 3741,
+          "Label Unavailable": 327,
+          "Selected UNKNOWN": 2275,
+          "UNKNOWN_and_Correct_supported_rows": 3741,
+          "UNKNOWN_rows": 5657,
+          "UNKNOWN_steals_from_Correct": 362,
+          "rows": 5984
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 5,
+          "rows": 6
+        },
+        "REACT/K=1-9": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 6,
+          "rows": 7
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 641,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 7,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 7,
+        "IDENTITY_UNAVAILABLE": 3,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 3,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 11,
+        "IDSW/WRONG_EXISTING_MERGE": 2,
+        "IDSW_exact": 17,
+        "MATCH_Certified Correct": 8517,
+        "MATCH_Certified Wrong": 5,
+        "MATCH_DEFER": 2,
+        "MATCH_Selected UNKNOWN": 2865,
+        "UNKNOWN_SUPERVISION": 523,
+        "UNKNOWN_selected": 2865,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 2858,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 2,
+        "UNKNOWN_selected_with_certified_correct_available": 424,
+        "WRONG_EXISTING_MATCH": 5,
+        "final_mixed_identities": 5,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 2863
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "40738997d8d805b5ea66a743fe52a2b538b0211ef7e42eb533d2cfbd0c882558",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/fixed_question/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "12c1d90571c592fdf3ba0505c91bea60d55a0b7b72c529ffa4246e0f6def50fb",
+        "questions_SHA256": "168053ad5a698b02b90cc5981271a21f2b6f32406d543e8788c3788b2d7d5dcb",
+        "raw_SHA256": "07236caf3c76ab73c46a1a65997142950aec33aa542205d199bc4e8129779a3b",
+        "result_SHA256": "f8fe1745acdff789c1b58cfa60a1102153fdee1ef98f4601e84f461d5df57b1b",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/fixed_question_seed20261009/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 24.739349365234375,
+          "min": -28.15105438232422,
+          "p25": -22.979735374450684,
+          "p50": -18.724510192871094,
+          "p75": -13.38060712814331,
+          "p95": 8.702470397949218
+        },
+        "unknown_max_minus_terminal": {
+          "max": 21.963891983032227,
+          "min": -8.558890342712402,
+          "p25": -4.193098545074463,
+          "p50": 0.48563098907470703,
+          "p75": 13.791872024536133,
+          "p95": 20.60464401245117
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "fixed_question",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 1025,
+          "Certified Correct": 898,
+          "Contaminated Target Support": 1024,
+          "Correct Candidate Missing": 1025,
+          "Correct Candidate Present": 898,
+          "DEFER": 1,
+          "Label Unavailable": 9,
+          "Selected UNKNOWN": 1024,
+          "UNKNOWN_and_Correct_supported_rows": 898,
+          "UNKNOWN_rows": 1923,
+          "rows": 1932
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 4860,
+          "Certified Correct": 8042,
+          "Certified Wrong": 7,
+          "Contaminated Target Support": 4855,
+          "Correct Candidate Missing": 4860,
+          "Correct Candidate Present": 8296,
+          "DEFER": 1,
+          "Label Unavailable": 587,
+          "Selected UNKNOWN": 5106,
+          "UNKNOWN_and_Correct_supported_rows": 8296,
+          "UNKNOWN_rows": 13156,
+          "UNKNOWN_steals_from_Correct": 250,
+          "rows": 13743
+        },
+        "REACT/K=0": {
+          "Label Unavailable": 3,
+          "rows": 3
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 2,
+          "Contaminated Target Support": 1,
+          "Correct Candidate Missing": 2,
+          "DEFER": 1,
+          "Label Unavailable": 5,
+          "Selected UNKNOWN": 1,
+          "rows": 7
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 571,
+        "FALSE_MERGE": 20,
+        "GALLERY_CONTAMINATION": 20,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 21,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 29,
+        "IDSW/WRONG_EXISTING_MERGE": 11,
+        "IDSW_exact": 61,
+        "MATCH_Certified Correct": 8940,
+        "MATCH_Certified Wrong": 7,
+        "MATCH_DEFER": 2,
+        "MATCH_Selected UNKNOWN": 6130,
+        "UNKNOWN_SUPERVISION": 604,
+        "UNKNOWN_selected": 6130,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 6126,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 13,
+        "UNKNOWN_selected_with_certified_correct_available": 250,
+        "WRONG_EXISTING_MATCH": 7,
+        "final_mixed_identities": 7,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 6134
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "40738997d8d805b5ea66a743fe52a2b538b0211ef7e42eb533d2cfbd0c882558",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/fixed_question/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "26268c889d7fb68cc3765aac2f532110d3e824693a48f6ee6f07b74c0ee922b5",
+        "questions_SHA256": "dde789e23b47d891ad17b341e50da6a44c81a89f138c0adabb99280a39b6e8c3",
+        "raw_SHA256": "3cb7fe4fb43a8ad7198b99bb22c6ccdee59a37a42dfab525e3bc0a834530c11e",
+        "result_SHA256": "aacf6dfaccf021f508f580cb864f0298006583e5079a943dca442c9cf6eb2b93",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/fixed_question_seed20261009/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 16.304935455322266,
+          "min": -26.174957275390625,
+          "p25": -22.436129570007324,
+          "p50": -19.80871295928955,
+          "p75": -13.742990970611572,
+          "p95": -2.957415890693657
+        },
+        "unknown_max_minus_terminal": {
+          "max": 24.55283546447754,
+          "min": -8.590405464172363,
+          "p25": -2.582409381866455,
+          "p50": 5.651992321014404,
+          "p75": 17.356228828430176,
+          "p95": 21.174812698364256
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "fixed_question",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 2951,
+          "Certified Correct": 7271,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 2,
+          "Contaminated Target Support": 2947,
+          "Correct Candidate Missing": 2952,
+          "Correct Candidate Present": 7302,
+          "DEFER": 5,
+          "False Defer": 1,
+          "Label Unavailable": 207,
+          "Selected UNKNOWN": 2976,
+          "UNKNOWN_and_Correct_supported_rows": 6929,
+          "UNKNOWN_rows": 9880,
+          "UNKNOWN_steals_from_Correct": 29,
+          "rows": 10461
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 195,
+          "Certified Correct": 208,
+          "Contaminated Target Support": 195,
+          "Correct Candidate Missing": 195,
+          "Correct Candidate Present": 209,
+          "Label Unavailable": 1,
+          "Selected UNKNOWN": 196,
+          "UNKNOWN_and_Correct_supported_rows": 209,
+          "UNKNOWN_rows": 404,
+          "UNKNOWN_steals_from_Correct": 1,
+          "rows": 405
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 3,
+          "Correct Candidate Missing": 3,
+          "DEFER": 3,
+          "Label Unavailable": 6,
+          "rows": 9
+        },
+        "REACT/K=1-9": {
+          "Certified Correct": 1,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 1,
+          "Correct Candidate Missing": 1,
+          "Correct Candidate Present": 1,
+          "Label Unavailable": 3,
+          "rows": 5
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 139,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 1,
+        "FALSE_MERGE": 3,
+        "FALSE_SPLIT": 1,
+        "GALLERY_CONTAMINATION": 3,
+        "IDENTITY_UNAVAILABLE": 5,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 11,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 11,
+        "IDSW/WRONG_EXISTING_MERGE": 1,
+        "IDSW_exact": 25,
+        "MATCH_Certified Correct": 7479,
+        "MATCH_Certified Wrong": 2,
+        "MATCH_DEFER": 5,
+        "MATCH_Selected UNKNOWN": 3172,
+        "UNKNOWN_SUPERVISION": 217,
+        "UNKNOWN_selected": 3172,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3169,
+        "UNKNOWN_selected_with_certified_correct_available": 30,
+        "WRONG_EXISTING_MATCH": 2,
+        "WRONG_REACTIVATION": 1,
+        "final_mixed_identities": 3,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 3172
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "7dd78b155febe990b28cf94d21269e7b5d949b2eb8d07edd022e95a071db8fa8",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/fixed_question/seed20261010/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "8b2e2d42049623504b6442a78fa326b3b66f6ba5c583a8809fa6d00abe027a34",
+        "questions_SHA256": "99fec59b283908635ad3117b0154fe420e9a2b6957fc9f2b7ec0fc3425a645f7",
+        "raw_SHA256": "84153c79fed9003d91bf5c32887607b20425d7493ff41a8e33a9eefa3e4b628a",
+        "result_SHA256": "08dbed62b7fe200581fcfe576a9566fc94792afa4ce7f93da44071e17d1dfe03",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/fixed_question_seed20261010/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 18.839353561401367,
+          "min": -25.4500732421875,
+          "p25": -17.931850910186768,
+          "p50": -16.66837215423584,
+          "p75": -15.613583326339722,
+          "p95": -10.574091053009035
+        },
+        "unknown_max_minus_terminal": {
+          "max": 23.312305450439453,
+          "min": -10.175726890563965,
+          "p25": -4.669312953948975,
+          "p50": -2.983886241912842,
+          "p75": 13.989420413970947,
+          "p95": 19.067745018005372
+        }
+      },
+      "phase": "formal",
+      "seed": 20261010,
+      "variant": "fixed_question",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 866,
+          "Certified Correct": 4314,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 862,
+          "Correct Candidate Missing": 867,
+          "Correct Candidate Present": 4317,
+          "DEFER": 1,
+          "False Defer": 1,
+          "Label Unavailable": 150,
+          "Selected UNKNOWN": 866,
+          "UNKNOWN_and_Correct_supported_rows": 3268,
+          "UNKNOWN_rows": 4134,
+          "UNKNOWN_steals_from_Correct": 1,
+          "rows": 5334
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 2279,
+          "Certified Correct": 3720,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 2277,
+          "Correct Candidate Missing": 2279,
+          "Correct Candidate Present": 3926,
+          "DEFER": 1,
+          "False Defer": 1,
+          "Label Unavailable": 362,
+          "Selected UNKNOWN": 2481,
+          "UNKNOWN_and_Correct_supported_rows": 3926,
+          "UNKNOWN_rows": 6205,
+          "UNKNOWN_steals_from_Correct": 203,
+          "rows": 6567
+        },
+        "REACT/K=0": {
+          "Label Unavailable": 7,
+          "rows": 7
+        },
+        "REACT/K=1-9": {
+          "Certified Unavailable": 2,
+          "Correct Candidate Missing": 2,
+          "DEFER": 2,
+          "Label Unavailable": 5,
+          "rows": 7
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 128,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 8,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 8,
+        "IDENTITY_UNAVAILABLE": 3,
+        "IDSW/FALSE_SPLIT_NEW": 2,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 6,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 11,
+        "IDSW/WRONG_EXISTING_MERGE": 1,
+        "IDSW_exact": 20,
+        "MATCH_Certified Correct": 8034,
+        "MATCH_Certified Wrong": 6,
+        "MATCH_DEFER": 2,
+        "MATCH_Selected UNKNOWN": 3347,
+        "UNKNOWN_SUPERVISION": 524,
+        "UNKNOWN_selected": 3347,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3339,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 2,
+        "UNKNOWN_selected_with_certified_correct_available": 204,
+        "WRONG_EXISTING_MATCH": 6,
+        "final_mixed_identities": 6,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 3345
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "7dd78b155febe990b28cf94d21269e7b5d949b2eb8d07edd022e95a071db8fa8",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/fixed_question/seed20261010/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "62d1bddf587f1877bd9fcfc69d910927ae8f75e947a898c5d9ddd2a89abf6f19",
+        "questions_SHA256": "0a98209da6b7e941b1d5ba79fbef2963f0c062633913aa8f88347b283e3b9a41",
+        "raw_SHA256": "5f79c585087c5c729e70619d1fb5f541b5f9f8420ce3e517405fbece2f67ce0d",
+        "result_SHA256": "001cd2acb48aa50bd5e86be28c68d0c802bf5f5c68a5925cfb7ba884e9e7d208",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/fixed_question_seed20261010/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 16.141828536987305,
+          "min": -24.005958557128906,
+          "p25": -20.206271171569824,
+          "p50": -18.537622451782227,
+          "p75": -16.555038452148438,
+          "p95": -5.554614138603215
+        },
+        "unknown_max_minus_terminal": {
+          "max": 18.9934024810791,
+          "min": -8.223664283752441,
+          "p25": -5.190369606018066,
+          "p50": -3.36313533782959,
+          "p75": 11.706299781799316,
+          "p95": 17.384976959228517
+        }
+      },
+      "phase": "formal",
+      "seed": 20261010,
+      "variant": "fixed_question",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 576,
+          "Certified Correct": 559,
+          "Contaminated Target Support": 575,
+          "Correct Candidate Missing": 576,
+          "Correct Candidate Present": 559,
+          "Label Unavailable": 6,
+          "Selected UNKNOWN": 576,
+          "UNKNOWN_and_Correct_supported_rows": 559,
+          "UNKNOWN_rows": 1135,
+          "rows": 1141
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 4376,
+          "Certified Correct": 9178,
+          "Certified Wrong": 7,
+          "Contaminated Target Support": 4369,
+          "Correct Candidate Missing": 4376,
+          "Correct Candidate Present": 9568,
+          "DEFER": 6,
+          "False Defer": 2,
+          "Label Unavailable": 590,
+          "Selected UNKNOWN": 4753,
+          "UNKNOWN_and_Correct_supported_rows": 9221,
+          "UNKNOWN_rows": 13597,
+          "UNKNOWN_steals_from_Correct": 382,
+          "rows": 14534
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 3,
+          "Correct Candidate Missing": 3,
+          "DEFER": 3,
+          "Label Unavailable": 2,
+          "rows": 5
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 1,
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 1,
+          "DEFER": 2,
+          "Label Unavailable": 7,
+          "Selected UNKNOWN": 1,
+          "rows": 10
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 1051,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 18,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 18,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 34,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 20,
+        "IDSW/WRONG_EXISTING_MERGE": 10,
+        "IDSW_exact": 65,
+        "MATCH_Certified Correct": 9737,
+        "MATCH_Certified Wrong": 7,
+        "MATCH_DEFER": 6,
+        "MATCH_Selected UNKNOWN": 5329,
+        "UNKNOWN_SUPERVISION": 605,
+        "UNKNOWN_selected": 5329,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 5326,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 11,
+        "UNKNOWN_selected_with_certified_correct_available": 382,
+        "WRONG_EXISTING_MATCH": 7,
+        "final_mixed_identities": 7,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 5334
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "7dd78b155febe990b28cf94d21269e7b5d949b2eb8d07edd022e95a071db8fa8",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/fixed_question/seed20261010/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "57e1eb384d19779832dc080152a20c60afb1fb86c3b092e021ecbdc076968633",
+        "questions_SHA256": "2591774a2c85d39c9ad40022609f00002db0b3e237ee7fc91e6737deec1f5764",
+        "raw_SHA256": "c26c14f0b2dd00f060726dfa5948e0bae4978a27996cf6749196449679e5ff94",
+        "result_SHA256": "cfb82753f6e35d7ff00086ec66273927d97094bacc57d9700a516de40045f8db",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/fixed_question_seed20261010/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 19.795440673828125,
+          "min": -23.845046997070312,
+          "p25": -19.888943672180176,
+          "p50": -18.083162307739258,
+          "p75": -14.85776162147522,
+          "p95": -2.7423992872238423
+        },
+        "unknown_max_minus_terminal": {
+          "max": 21.032968521118164,
+          "min": -8.728840827941895,
+          "p25": -4.815010070800781,
+          "p50": -1.4179067611694336,
+          "p75": 13.372491598129272,
+          "p95": 17.658910560607907
+        }
+      },
+      "phase": "formal",
+      "seed": 20261010,
+      "variant": "fixed_question",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 3019,
+          "Certified Correct": 6924,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 5,
+          "Contaminated Target Support": 3016,
+          "Correct Candidate Missing": 3020,
+          "Correct Candidate Present": 6958,
+          "DEFER": 6,
+          "False Defer": 2,
+          "Label Unavailable": 198,
+          "Selected UNKNOWN": 3043,
+          "UNKNOWN_and_Correct_supported_rows": 6425,
+          "UNKNOWN_rows": 9444,
+          "UNKNOWN_steals_from_Correct": 30,
+          "rows": 10176
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 357,
+          "Certified Correct": 323,
+          "Contaminated Target Support": 357,
+          "Correct Candidate Missing": 357,
+          "Correct Candidate Present": 323,
+          "Label Unavailable": 10,
+          "Selected UNKNOWN": 357,
+          "UNKNOWN_and_Correct_supported_rows": 323,
+          "UNKNOWN_rows": 680,
+          "rows": 690
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 4,
+          "Correct Candidate Missing": 4,
+          "DEFER": 4,
+          "Label Unavailable": 2,
+          "rows": 6
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 1,
+          "Certified Correct": 1,
+          "Correct Candidate Missing": 1,
+          "Correct Candidate Present": 1,
+          "Label Unavailable": 5,
+          "Selected UNKNOWN": 1,
+          "rows": 7
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 150,
+        "FALSE_BIRTH": 3,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 7,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 7,
+        "IDENTITY_UNAVAILABLE": 5,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/FALSE_SPLIT_NEW": 2,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 5,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 18,
+        "IDSW/WRONG_EXISTING_MERGE": 5,
+        "IDSW_exact": 31,
+        "MATCH_Certified Correct": 7247,
+        "MATCH_Certified Wrong": 5,
+        "MATCH_DEFER": 6,
+        "MATCH_Selected UNKNOWN": 3400,
+        "UNKNOWN_SUPERVISION": 215,
+        "UNKNOWN_selected": 3400,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3399,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 1,
+        "UNKNOWN_selected_with_certified_correct_available": 30,
+        "WRONG_EXISTING_MATCH": 5,
+        "final_mixed_identities": 5,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 3405
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "ae7dc8685962ca446c7fdf8f9a63057431098a49a5d58b6eea355388b40b5de2",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/set_transformer/seed20261008/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "867ba839be308c07fbb1754164085fa326df5fa50c5f3134f0f1aeec79d231e7",
+        "questions_SHA256": "cd3e0809300d434e5a856264d523e9d346c82f060d34ac296d0f6ab51fdfcb9a",
+        "raw_SHA256": "8904cade3920727d535dc4229af2a98d3b37ea35be94920e1e65fd844e3b2b80",
+        "result_SHA256": "c7a49956b93cbfb6ed33eaaba7fec818331f5f77dc311d02fa40a87dba049bd3",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/set_transformer_seed20261008/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 13.836528778076172,
+          "min": -24.224952697753906,
+          "p25": -19.450722217559814,
+          "p50": -15.811963558197021,
+          "p75": -14.502697229385376,
+          "p95": -10.150581026077278
+        },
+        "unknown_max_minus_terminal": {
+          "max": 22.54547882080078,
+          "min": -7.5734686851501465,
+          "p25": -2.054938316345215,
+          "p50": -0.29705238342285156,
+          "p75": 18.18959379196167,
+          "p95": 20.271960544586182
+        }
+      },
+      "phase": "formal",
+      "seed": 20261008,
+      "variant": "set_transformer",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 1106,
+          "Certified Correct": 4637,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 5,
+          "Contaminated Target Support": 1102,
+          "Correct Candidate Missing": 1107,
+          "Correct Candidate Present": 4714,
+          "DEFER": 2,
+          "Label Unavailable": 191,
+          "Selected UNKNOWN": 1177,
+          "UNKNOWN_and_Correct_supported_rows": 3665,
+          "UNKNOWN_rows": 4771,
+          "UNKNOWN_steals_from_Correct": 74,
+          "rows": 6012
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 2722,
+          "Certified Correct": 2569,
+          "Certified Wrong": 2,
+          "Contaminated Target Support": 2720,
+          "Correct Candidate Missing": 2722,
+          "Correct Candidate Present": 2846,
+          "DEFER": 2,
+          "Label Unavailable": 321,
+          "Selected UNKNOWN": 2995,
+          "UNKNOWN_and_Correct_supported_rows": 2846,
+          "UNKNOWN_rows": 5568,
+          "UNKNOWN_steals_from_Correct": 277,
+          "rows": 5889
+        },
+        "REACT/K=0": {
+          "Label Unavailable": 6,
+          "rows": 6
+        },
+        "REACT/K=1-9": {
+          "Certified Unavailable": 4,
+          "Correct Candidate Missing": 4,
+          "DEFER": 4,
+          "Label Unavailable": 3,
+          "rows": 7
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 249,
+        "FALSE_BIRTH": 4,
+        "FALSE_MERGE": 10,
+        "GALLERY_CONTAMINATION": 10,
+        "IDENTITY_UNAVAILABLE": 5,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 3,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 8,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 16,
+        "IDSW/WRONG_EXISTING_MERGE": 3,
+        "IDSW_exact": 30,
+        "MATCH_Certified Correct": 7206,
+        "MATCH_Certified Wrong": 7,
+        "MATCH_DEFER": 4,
+        "MATCH_Selected UNKNOWN": 4172,
+        "UNKNOWN_SUPERVISION": 521,
+        "UNKNOWN_selected": 4172,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 4166,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 3,
+        "UNKNOWN_selected_with_certified_correct_available": 351,
+        "WRONG_EXISTING_MATCH": 7,
+        "final_mixed_identities": 7,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 4173
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "ae7dc8685962ca446c7fdf8f9a63057431098a49a5d58b6eea355388b40b5de2",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/set_transformer/seed20261008/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "70485e2113bdaa731607e2b55e475a11492ca0b41a2e00f0a2ad684587017344",
+        "questions_SHA256": "88d1373e3b1b5bbb242a74868cfae0545585eca21c8d9f49b4590f5727b05b61",
+        "raw_SHA256": "b6ddbcfa489d9abafca682c26733ca09fc9aa87c880fcb91649d76c111591c32",
+        "result_SHA256": "65e92045303c88f917de99feb99431f5d3573f2edc78d23f50eb7d699029e2b7",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/set_transformer_seed20261008/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 13.367624282836914,
+          "min": -23.029970169067383,
+          "p25": -19.91014575958252,
+          "p50": -18.22194480895996,
+          "p75": -13.33992862701416,
+          "p95": 2.945556163787842
+        },
+        "unknown_max_minus_terminal": {
+          "max": 24.11354637145996,
+          "min": -8.861228942871094,
+          "p25": -1.6149063110351562,
+          "p50": 2.8142566680908203,
+          "p75": 18.50272846221924,
+          "p95": 21.1134765625
+        }
+      },
+      "phase": "formal",
+      "seed": 20261008,
+      "variant": "set_transformer",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 1778,
+          "Certified Correct": 1501,
+          "Certified Wrong": 1,
+          "Contaminated Target Support": 1775,
+          "Correct Candidate Missing": 1778,
+          "Correct Candidate Present": 1510,
+          "DEFER": 2,
+          "Label Unavailable": 22,
+          "Selected UNKNOWN": 1784,
+          "UNKNOWN_and_Correct_supported_rows": 1510,
+          "UNKNOWN_rows": 3288,
+          "UNKNOWN_steals_from_Correct": 9,
+          "rows": 3310
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 4542,
+          "Certified Correct": 7018,
+          "Certified Wrong": 7,
+          "Contaminated Target Support": 4537,
+          "Correct Candidate Missing": 4542,
+          "Correct Candidate Present": 7249,
+          "DEFER": 3,
+          "Label Unavailable": 574,
+          "Selected UNKNOWN": 4763,
+          "UNKNOWN_and_Correct_supported_rows": 7249,
+          "UNKNOWN_rows": 11791,
+          "UNKNOWN_steals_from_Correct": 227,
+          "rows": 12365
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 2,
+          "Correct Candidate Missing": 2,
+          "DEFER": 2,
+          "Label Unavailable": 2,
+          "rows": 4
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 3,
+          "Contaminated Target Support": 2,
+          "Correct Candidate Missing": 3,
+          "DEFER": 1,
+          "Label Unavailable": 2,
+          "Selected UNKNOWN": 2,
+          "rows": 5
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 1012,
+        "FALSE_BIRTH": 2,
+        "FALSE_MERGE": 23,
+        "GALLERY_CONTAMINATION": 23,
+        "IDENTITY_UNAVAILABLE": 2,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 2,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 19,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 41,
+        "IDSW/WRONG_EXISTING_MERGE": 15,
+        "IDSW_exact": 77,
+        "MATCH_Certified Correct": 8519,
+        "MATCH_Certified Wrong": 8,
+        "MATCH_DEFER": 5,
+        "MATCH_Selected UNKNOWN": 6547,
+        "UNKNOWN_SUPERVISION": 600,
+        "UNKNOWN_selected": 6547,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 6543,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 14,
+        "UNKNOWN_selected_with_certified_correct_available": 236,
+        "WRONG_EXISTING_MATCH": 8,
+        "final_mixed_identities": 8,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 6553
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "ae7dc8685962ca446c7fdf8f9a63057431098a49a5d58b6eea355388b40b5de2",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/set_transformer/seed20261008/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "e080b4b945c35f892a4c0683af91d2a01331c0eac2933ebf496a47a6232e968f",
+        "questions_SHA256": "07573d7e6521b9a1033ed8abba2f935bf2cd67c1be82018a3337a768c8e01aec",
+        "raw_SHA256": "b83ed05e79b3e30b35e5e8739268be2ed7d6169d6f2d5575e3a1506abc971a7b",
+        "result_SHA256": "d0a7cc09b22210c3e9d3384c51d57aaa3c9efa9a5a0d6abb3798785fbae7c164",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/set_transformer_seed20261008/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 21.418638229370117,
+          "min": -24.59284782409668,
+          "p25": -20.730941772460938,
+          "p50": -18.62570571899414,
+          "p75": -15.5340895652771,
+          "p95": -6.898329305648802
+        },
+        "unknown_max_minus_terminal": {
+          "max": 23.853012084960938,
+          "min": -7.074501991271973,
+          "p25": -1.9199542999267578,
+          "p50": 4.198220252990723,
+          "p75": 18.21029758453369,
+          "p95": 20.288980102539057
+        }
+      },
+      "phase": "formal",
+      "seed": 20261008,
+      "variant": "set_transformer",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 4660,
+          "Certified Correct": 5033,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 5,
+          "Contaminated Target Support": 4658,
+          "Correct Candidate Missing": 4661,
+          "Correct Candidate Present": 5593,
+          "DEFER": 5,
+          "Label Unavailable": 207,
+          "Selected UNKNOWN": 5211,
+          "UNKNOWN_and_Correct_supported_rows": 5320,
+          "UNKNOWN_rows": 9980,
+          "UNKNOWN_steals_from_Correct": 557,
+          "rows": 10461
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 248,
+          "Certified Correct": 156,
+          "Contaminated Target Support": 248,
+          "Correct Candidate Missing": 248,
+          "Correct Candidate Present": 156,
+          "Label Unavailable": 1,
+          "Selected UNKNOWN": 248,
+          "UNKNOWN_and_Correct_supported_rows": 156,
+          "UNKNOWN_rows": 404,
+          "rows": 405
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 2,
+          "Correct Candidate Missing": 2,
+          "DEFER": 2,
+          "rows": 2
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 1,
+          "Certified Correct": 1,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 1,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 1,
+          "Label Unavailable": 8,
+          "Selected UNKNOWN": 1,
+          "rows": 11
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 143,
+        "FALSE_BIRTH": 1,
+        "FALSE_MERGE": 10,
+        "GALLERY_CONTAMINATION": 10,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 9,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 32,
+        "IDSW/WRONG_EXISTING_MERGE": 7,
+        "IDSW/WRONG_STALE_MERGE": 1,
+        "IDSW_exact": 50,
+        "MATCH_Certified Correct": 5189,
+        "MATCH_Certified Wrong": 5,
+        "MATCH_DEFER": 5,
+        "MATCH_Selected UNKNOWN": 5459,
+        "UNKNOWN_SUPERVISION": 216,
+        "UNKNOWN_selected": 5459,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 5456,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 3,
+        "UNKNOWN_selected_with_certified_correct_available": 557,
+        "WRONG_EXISTING_MATCH": 5,
+        "WRONG_REACTIVATION": 1,
+        "final_mixed_identities": 6,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 5463
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "412ec4c8021a46c81a58e2c0e1a989756f3e3380796549d0de8eb0c4d89abec1",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/set_transformer/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "9eb69228eab390e5de549d54d37d0f808dec19e7fda437f896bc321b92897d4f",
+        "questions_SHA256": "eab312ec2d5cb3679b8513ebb4cdcb0bb9da14edd1f2f51077022ba2ab352425",
+        "raw_SHA256": "ac494eb58445df46725f1c543d960569188ea4795abbafd0b7f8779b6c76d57b",
+        "result_SHA256": "a29855e61adffb9b7af247e3b8a986955a0632b7a1719590d604b943960de6fa",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/set_transformer_seed20261009/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 10.215896606445312,
+          "min": -12.039292335510254,
+          "p25": -9.940173864364624,
+          "p50": -9.067547798156738,
+          "p75": -8.461039543151855,
+          "p95": 6.396679639816284
+        },
+        "unknown_max_minus_terminal": {
+          "max": 11.699840545654297,
+          "min": -3.8896780014038086,
+          "p25": -1.4126408100128174,
+          "p50": 7.885925531387329,
+          "p75": 10.54025650024414,
+          "p95": 11.266095924377442
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "set_transformer",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 1006,
+          "Certified Correct": 4714,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 5,
+          "Contaminated Target Support": 1002,
+          "Correct Candidate Missing": 1007,
+          "Correct Candidate Present": 4725,
+          "DEFER": 2,
+          "False Defer": 2,
+          "Label Unavailable": 185,
+          "Selected UNKNOWN": 1011,
+          "UNKNOWN_and_Correct_supported_rows": 3302,
+          "UNKNOWN_rows": 4308,
+          "UNKNOWN_steals_from_Correct": 8,
+          "rows": 5917
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 3137,
+          "Certified Correct": 1934,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 3135,
+          "Correct Candidate Missing": 3137,
+          "Correct Candidate Present": 2520,
+          "Label Unavailable": 327,
+          "Selected UNKNOWN": 3720,
+          "UNKNOWN_and_Correct_supported_rows": 2520,
+          "UNKNOWN_rows": 5657,
+          "UNKNOWN_steals_from_Correct": 585,
+          "rows": 5984
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 5,
+          "rows": 6
+        },
+        "REACT/K=1-9": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 4,
+          "rows": 5
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 700,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 13,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 13,
+        "IDENTITY_UNAVAILABLE": 3,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 10,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 37,
+        "IDSW/WRONG_EXISTING_MERGE": 6,
+        "IDSW_exact": 54,
+        "MATCH_Certified Correct": 6648,
+        "MATCH_Certified Wrong": 8,
+        "MATCH_DEFER": 2,
+        "MATCH_Selected UNKNOWN": 4731,
+        "UNKNOWN_SUPERVISION": 521,
+        "UNKNOWN_selected": 4731,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 4723,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 5,
+        "UNKNOWN_selected_with_certified_correct_available": 593,
+        "WRONG_EXISTING_MATCH": 8,
+        "final_mixed_identities": 8,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 4731
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "412ec4c8021a46c81a58e2c0e1a989756f3e3380796549d0de8eb0c4d89abec1",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/set_transformer/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "e16f2298fa0faaf77608bff0511bbc7728a16e9e0d67f8afe5da33d0bcee65a7",
+        "questions_SHA256": "f77f7ba9387344e3be911b4f50bd7c24249b2f76da4a21fa308c9c1137006400",
+        "raw_SHA256": "3dbc29f6d1ac5190846f540cd2d4bebbc2ba48bcbb5f09c9afeb94ed09e2cdb2",
+        "result_SHA256": "70e3edee178eca377af7afbd31ecf28863750769133e3c9731de00b254159858",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/set_transformer_seed20261009/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 10.440887451171875,
+          "min": -11.769886016845703,
+          "p25": -10.504269123077393,
+          "p50": -7.68611216545105,
+          "p75": -6.519073963165283,
+          "p95": 6.798124885559081
+        },
+        "unknown_max_minus_terminal": {
+          "max": 11.341238021850586,
+          "min": -4.764305114746094,
+          "p25": -0.4442739486694336,
+          "p50": 3.1658854484558105,
+          "p75": 10.225455284118652,
+          "p95": 10.875641632080077
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "set_transformer",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 708,
+          "Certified Correct": 577,
+          "Contaminated Target Support": 707,
+          "Correct Candidate Missing": 708,
+          "Correct Candidate Present": 580,
+          "Label Unavailable": 6,
+          "Selected UNKNOWN": 711,
+          "UNKNOWN_and_Correct_supported_rows": 580,
+          "UNKNOWN_rows": 1288,
+          "UNKNOWN_steals_from_Correct": 3,
+          "rows": 1294
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 4456,
+          "Certified Correct": 9014,
+          "Certified Wrong": 8,
+          "Contaminated Target Support": 4449,
+          "Correct Candidate Missing": 4456,
+          "Correct Candidate Present": 9335,
+          "DEFER": 3,
+          "Label Unavailable": 590,
+          "Selected UNKNOWN": 4766,
+          "UNKNOWN_and_Correct_supported_rows": 8585,
+          "UNKNOWN_rows": 13041,
+          "UNKNOWN_steals_from_Correct": 317,
+          "rows": 14381
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 2,
+          "Correct Candidate Missing": 2,
+          "DEFER": 2,
+          "Label Unavailable": 3,
+          "rows": 5
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 4,
+          "rows": 5
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 1806,
+        "FALSE_MERGE": 22,
+        "GALLERY_CONTAMINATION": 22,
+        "IDENTITY_UNAVAILABLE": 2,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 27,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 28,
+        "IDSW/WRONG_EXISTING_MERGE": 17,
+        "IDSW_exact": 72,
+        "MATCH_Certified Correct": 9591,
+        "MATCH_Certified Wrong": 8,
+        "MATCH_DEFER": 3,
+        "MATCH_Selected UNKNOWN": 5477,
+        "UNKNOWN_SUPERVISION": 603,
+        "UNKNOWN_selected": 5477,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 5472,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 14,
+        "UNKNOWN_selected_with_certified_correct_available": 320,
+        "WRONG_EXISTING_MATCH": 8,
+        "final_mixed_identities": 8,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 5480
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "412ec4c8021a46c81a58e2c0e1a989756f3e3380796549d0de8eb0c4d89abec1",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/set_transformer/seed20261009/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "2d589e2116edc006560bf7a515bcc45266d79b26a289aeb8c0af9cc471864439",
+        "questions_SHA256": "96b010d63e894130e298e08813c66d4fd02c23808e6b27a887d0140ada140bbe",
+        "raw_SHA256": "6ae1a9a2638e686f1784a309a80a86c7feffb9ab043ee50ba2b2833c4c2756dd",
+        "result_SHA256": "2873fd19a438d6d0f86d358b8e1876a5647412477d95974b45ca75a8dc37ab6a",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/set_transformer_seed20261009/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 11.172698020935059,
+          "min": -11.741762161254883,
+          "p25": -10.449495315551758,
+          "p50": -9.232261657714844,
+          "p75": -7.429220199584961,
+          "p95": -3.2927842140198047
+        },
+        "unknown_max_minus_terminal": {
+          "max": 11.357260704040527,
+          "min": -5.037749290466309,
+          "p25": -0.24199581146240234,
+          "p50": 1.4763879776000977,
+          "p75": 10.137723922729492,
+          "p95": 10.790029335021972
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "set_transformer",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 2932,
+          "Certified Correct": 7056,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 4,
+          "Contaminated Target Support": 2928,
+          "Correct Candidate Missing": 2933,
+          "Correct Candidate Present": 7321,
+          "DEFER": 8,
+          "False Defer": 2,
+          "Label Unavailable": 207,
+          "Selected UNKNOWN": 3186,
+          "UNKNOWN_and_Correct_supported_rows": 6731,
+          "UNKNOWN_rows": 9663,
+          "UNKNOWN_steals_from_Correct": 261,
+          "rows": 10461
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 157,
+          "Certified Correct": 208,
+          "Contaminated Target Support": 157,
+          "Correct Candidate Missing": 157,
+          "Correct Candidate Present": 247,
+          "Label Unavailable": 1,
+          "Selected UNKNOWN": 196,
+          "UNKNOWN_and_Correct_supported_rows": 247,
+          "UNKNOWN_rows": 404,
+          "UNKNOWN_steals_from_Correct": 39,
+          "rows": 405
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 4,
+          "Correct Candidate Missing": 4,
+          "DEFER": 4,
+          "Label Unavailable": 4,
+          "rows": 8
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 2,
+          "Certified Correct": 1,
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 3,
+          "Correct Candidate Present": 1,
+          "DEFER": 1,
+          "Label Unavailable": 6,
+          "Selected UNKNOWN": 2,
+          "rows": 10
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 215,
+        "FALSE_BIRTH": 4,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 7,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 7,
+        "IDENTITY_UNAVAILABLE": 6,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 2,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 19,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 29,
+        "IDSW/WRONG_EXISTING_MERGE": 4,
+        "IDSW_exact": 55,
+        "MATCH_Certified Correct": 7264,
+        "MATCH_Certified Wrong": 4,
+        "MATCH_DEFER": 8,
+        "MATCH_Selected UNKNOWN": 3382,
+        "UNKNOWN_SUPERVISION": 218,
+        "UNKNOWN_selected": 3382,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3378,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 2,
+        "UNKNOWN_selected_with_certified_correct_available": 300,
+        "WRONG_EXISTING_MATCH": 4,
+        "final_mixed_identities": 4,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 3383
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "ac64227fc86368c4c40ff65a066f86cad18ffc3cf389f3af9ec09270652063cc",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/set_transformer/seed20261010/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "8cf68710f7464973957498e9befef7432b7b2e53b6b260e8cc5151e4f84d8d46",
+        "questions_SHA256": "472c6b29a3f460fe7d33d67796a2bda0f2d61d890c52cbaefe7441526590830e",
+        "raw_SHA256": "2de837dd231987418363f2e29c2c912125b925d676beee3d5cf27109cfab4be0",
+        "result_SHA256": "ed25b9c0b3a9be41f9d69704a70e01028d4abfc499863fe96c8025e22d3ad436",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/set_transformer_seed20261010/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 8.521196365356445,
+          "min": -9.631710052490234,
+          "p25": -8.563584327697754,
+          "p50": -7.361484050750732,
+          "p75": -7.0171754360198975,
+          "p95": -1.259641695022585
+        },
+        "unknown_max_minus_terminal": {
+          "max": 9.621699333190918,
+          "min": -4.208159923553467,
+          "p25": -2.170138359069824,
+          "p50": -0.7257680892944336,
+          "p75": 7.357302665710449,
+          "p95": 8.638434791564942
+        }
+      },
+      "phase": "formal",
+      "seed": 20261010,
+      "variant": "set_transformer",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 3,
+          "Certified Correct": 3487,
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 4,
+          "Correct Candidate Present": 3489,
+          "DEFER": 3,
+          "False Defer": 2,
+          "Label Unavailable": 53,
+          "Selected UNKNOWN": 3,
+          "UNKNOWN_and_Correct_supported_rows": 926,
+          "UNKNOWN_rows": 929,
+          "rows": 3546
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 801,
+          "Certified Correct": 7079,
+          "Certified Wrong": 4,
+          "Contaminated Target Support": 797,
+          "Correct Candidate Missing": 801,
+          "Correct Candidate Present": 7095,
+          "DEFER": 1,
+          "Label Unavailable": 459,
+          "Selected UNKNOWN": 812,
+          "UNKNOWN_and_Correct_supported_rows": 6930,
+          "UNKNOWN_rows": 7731,
+          "UNKNOWN_steals_from_Correct": 14,
+          "rows": 8355
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 7,
+          "rows": 8
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 2,
+          "Certified Correct": 1,
+          "Contaminated Target Support": 1,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 1,
+          "DEFER": 1,
+          "Label Unavailable": 10,
+          "Selected UNKNOWN": 1,
+          "rows": 13
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 94,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 4,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 4,
+        "IDENTITY_UNAVAILABLE": 2,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 5,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 14,
+        "IDSW/WRONG_EXISTING_MERGE": 1,
+        "IDSW_exact": 21,
+        "MATCH_Certified Correct": 10566,
+        "MATCH_Certified Wrong": 4,
+        "MATCH_DEFER": 4,
+        "MATCH_Selected UNKNOWN": 815,
+        "UNKNOWN_SUPERVISION": 529,
+        "UNKNOWN_selected": 815,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 804,
+        "UNKNOWN_selected_with_certified_correct_available": 14,
+        "WRONG_EXISTING_MATCH": 4,
+        "final_mixed_identities": 4,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 809
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "ac64227fc86368c4c40ff65a066f86cad18ffc3cf389f3af9ec09270652063cc",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/set_transformer/seed20261010/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "8f5560ef10eab5ffdf26ece2a0073c81b841ab7becfc5e155893754e5aead33b",
+        "questions_SHA256": "c9f4b1760668829950a4722904fc3fc7d4b0a554f9ab13fd5b7839190a6944e4",
+        "raw_SHA256": "a9f996d51e47309a1f74e0dcc33f1211b814f368d5e5b7b9d4855b0c2d3ef666",
+        "result_SHA256": "464467c879489a8a1631afb77904746409d02715f5c197acc682d85ebcb53b7e",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/set_transformer_seed20261010/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 7.2122802734375,
+          "min": -10.746292114257812,
+          "p25": -8.902286767959595,
+          "p50": -8.34796142578125,
+          "p75": -7.248602747917175,
+          "p95": -6.795980215072632
+        },
+        "unknown_max_minus_terminal": {
+          "max": 9.015372276306152,
+          "min": -4.488969802856445,
+          "p25": -2.6870551109313965,
+          "p50": -1.63885498046875,
+          "p75": -0.916919469833374,
+          "p95": 8.174744510650635
+        }
+      },
+      "phase": "formal",
+      "seed": 20261010,
+      "variant": "set_transformer",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 613,
+          "Certified Correct": 307,
+          "Contaminated Target Support": 612,
+          "Correct Candidate Missing": 613,
+          "Correct Candidate Present": 307,
+          "DEFER": 1,
+          "Label Unavailable": 5,
+          "Selected UNKNOWN": 612,
+          "UNKNOWN_and_Correct_supported_rows": 307,
+          "UNKNOWN_rows": 920,
+          "rows": 925
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 5434,
+          "Certified Correct": 8454,
+          "Certified Wrong": 8,
+          "Contaminated Target Support": 5426,
+          "Correct Candidate Missing": 5434,
+          "Correct Candidate Present": 8725,
+          "DEFER": 12,
+          "False Defer": 7,
+          "Label Unavailable": 591,
+          "Selected UNKNOWN": 5685,
+          "UNKNOWN_and_Correct_supported_rows": 8725,
+          "UNKNOWN_rows": 14159,
+          "UNKNOWN_steals_from_Correct": 259,
+          "rows": 14750
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 5,
+          "Correct Candidate Missing": 5,
+          "DEFER": 5,
+          "Label Unavailable": 4,
+          "rows": 9
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 4,
+          "Certified Wrong": 1,
+          "Correct Candidate Missing": 4,
+          "Correct Candidate Present": 1,
+          "DEFER": 3,
+          "Label Unavailable": 6,
+          "Selected UNKNOWN": 1,
+          "rows": 11
+        },
+        "REACT/K=10-19": {
+          "Correct Candidate Present": 3,
+          "DEFER": 1,
+          "Label Unavailable": 3,
+          "Selected UNKNOWN": 2,
+          "rows": 6
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 1895,
+        "FALSE_BIRTH": 5,
+        "FALSE_DEFER": 7,
+        "FALSE_MERGE": 14,
+        "FALSE_SPLIT": 5,
+        "GALLERY_CONTAMINATION": 14,
+        "IDENTITY_UNAVAILABLE": 5,
+        "IDSW/FALSE_SPLIT_NEW": 2,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 26,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 49,
+        "IDSW/WRONG_EXISTING_MERGE": 8,
+        "IDSW_exact": 85,
+        "MATCH_Certified Correct": 8761,
+        "MATCH_Certified Wrong": 8,
+        "MATCH_DEFER": 13,
+        "MATCH_Selected UNKNOWN": 6297,
+        "UNKNOWN_SUPERVISION": 609,
+        "UNKNOWN_selected": 6297,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 6292,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 4,
+        "UNKNOWN_selected_with_certified_correct_available": 259,
+        "WRONG_EXISTING_MATCH": 8,
+        "WRONG_REACTIVATION": 1,
+        "final_mixed_identities": 9,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 6304
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "ac64227fc86368c4c40ff65a066f86cad18ffc3cf389f3af9ec09270652063cc",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/set_transformer/seed20261010/LAST_FROZEN.pth",
+          "selection": "LAST at common frozen update budget"
+        },
+        "commits_SHA256": "3d24ef80f444e3eaaeef081767b6cdf603129f209257f950666717fd12a4668b",
+        "questions_SHA256": "af555ad829914a03a78bc057f85e5da6717d6cadd53dec4f9766eb888eaf908e",
+        "raw_SHA256": "0fa01d75a2c1e29a68196ba6323668ba486fd1c2b946a6f54a372d98b548532e",
+        "result_SHA256": "7c847d6410c460cf8b8ccff346a247227bd41c31b9a2d0092123331fc6fa46f9",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/set_transformer_seed20261010/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 8.9501953125,
+          "min": -10.919147491455078,
+          "p25": -8.42154860496521,
+          "p50": -7.755163669586182,
+          "p75": -7.04345703125,
+          "p95": -1.6860264956951156
+        },
+        "unknown_max_minus_terminal": {
+          "max": 9.060029983520508,
+          "min": -6.809196949005127,
+          "p25": -1.822312355041504,
+          "p50": -0.446319580078125,
+          "p75": 6.966909646987915,
+          "p95": 7.80224847793579
+        }
+      },
+      "phase": "formal",
+      "seed": 20261010,
+      "variant": "set_transformer",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 1,
+          "Certified Correct": 2201,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 1,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 2394,
+          "DEFER": 7,
+          "False Defer": 5,
+          "Label Unavailable": 31,
+          "Selected UNKNOWN": 187,
+          "UNKNOWN_and_Correct_supported_rows": 1879,
+          "UNKNOWN_rows": 1880,
+          "UNKNOWN_steals_from_Correct": 187,
+          "rows": 2427
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 221,
+          "Certified Correct": 6846,
+          "Certified Wrong": 2,
+          "Contaminated Target Support": 218,
+          "Correct Candidate Missing": 221,
+          "Correct Candidate Present": 8041,
+          "DEFER": 4,
+          "False Defer": 2,
+          "Label Unavailable": 177,
+          "Selected UNKNOWN": 1410,
+          "UNKNOWN_and_Correct_supported_rows": 8041,
+          "UNKNOWN_rows": 8262,
+          "UNKNOWN_steals_from_Correct": 1192,
+          "rows": 8439
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 2,
+          "Correct Candidate Missing": 2,
+          "DEFER": 2,
+          "Label Unavailable": 2,
+          "rows": 4
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 4,
+          "Certified Correct": 2,
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 5,
+          "Correct Candidate Present": 4,
+          "DEFER": 5,
+          "Label Unavailable": 12,
+          "Selected UNKNOWN": 2,
+          "rows": 21
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 6222,
+        "FALSE_BIRTH": 6,
+        "FALSE_DEFER": 7,
+        "FALSE_MERGE": 3,
+        "FALSE_SPLIT": 5,
+        "GALLERY_CONTAMINATION": 3,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/FALSE_SPLIT_NEW": 4,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 12,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 6,
+        "IDSW_exact": 23,
+        "MATCH_Certified Correct": 9047,
+        "MATCH_Certified Wrong": 3,
+        "MATCH_DEFER": 11,
+        "MATCH_Selected UNKNOWN": 1597,
+        "UNKNOWN_SUPERVISION": 222,
+        "UNKNOWN_selected": 1597,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 1592,
+        "UNKNOWN_selected_with_certified_correct_available": 1379,
+        "WRONG_EXISTING_MATCH": 3,
+        "final_mixed_identities": 3,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 1595
+      },
+      "evidence": {
+        "actor_source_commit": "4ad0127605a15dcc3ba1827dda389290fe50454f",
+        "checkpoint": null,
+        "commits_SHA256": "6e24b9437538b9f19a8c92adc2ff19b63792ba97599cbf628aceb07541614d36",
+        "questions_SHA256": "8c1fccf818f42601d24e493cca7235d028bc8808765dbe823db11cda11c83793",
+        "raw_SHA256": "ea82b0bd8ea2420d8cabb9336d9c10d5b0ebb69615c4e7527a66b65bd4791f0c",
+        "result_SHA256": "41e82a553095daee540d44c4142e219ad2bf32f371679120d678e9c63b1a88d4",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/cosine_seed20261009/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 0.38685983419418335,
+          "min": -0.5755099058151245,
+          "p25": -0.4140481948852539,
+          "p50": -0.3496863543987274,
+          "p75": -0.15440785884857178,
+          "p95": 0.1512014240026473
+        },
+        "unknown_max_minus_terminal": {
+          "max": 0.24913334846496582,
+          "min": -0.3281230926513672,
+          "p25": -0.1780252456665039,
+          "p50": -0.11074402928352356,
+          "p75": 0.09048262238502502,
+          "p95": 0.2447508633136749
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "cosine",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 3,
+          "Certified Correct": 3099,
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 4,
+          "Correct Candidate Present": 3100,
+          "DEFER": 2,
+          "False Defer": 1,
+          "Label Unavailable": 45,
+          "Selected UNKNOWN": 3,
+          "UNKNOWN_and_Correct_supported_rows": 603,
+          "UNKNOWN_rows": 606,
+          "rows": 3149
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 697,
+          "Certified Correct": 7210,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 693,
+          "Correct Candidate Missing": 697,
+          "Correct Candidate Present": 7588,
+          "DEFER": 3,
+          "False Defer": 3,
+          "Label Unavailable": 467,
+          "Selected UNKNOWN": 1069,
+          "UNKNOWN_and_Correct_supported_rows": 7111,
+          "UNKNOWN_rows": 7808,
+          "UNKNOWN_steals_from_Correct": 372,
+          "rows": 8752
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 8,
+          "rows": 9
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 3,
+          "Certified Correct": 1,
+          "Correct Candidate Missing": 3,
+          "Correct Candidate Present": 1,
+          "DEFER": 3,
+          "Label Unavailable": 17,
+          "rows": 21
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 3460,
+        "FALSE_BIRTH": 4,
+        "FALSE_DEFER": 4,
+        "FALSE_MERGE": 3,
+        "FALSE_SPLIT": 4,
+        "GALLERY_CONTAMINATION": 3,
+        "IDENTITY_UNAVAILABLE": 2,
+        "IDSW/FALSE_SPLIT_NEW": 3,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 11,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 6,
+        "IDSW/WRONG_EXISTING_MERGE": 2,
+        "IDSW_exact": 22,
+        "MATCH_Certified Correct": 10309,
+        "MATCH_Certified Wrong": 3,
+        "MATCH_DEFER": 5,
+        "MATCH_Selected UNKNOWN": 1072,
+        "UNKNOWN_SUPERVISION": 537,
+        "UNKNOWN_selected": 1072,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 1060,
+        "UNKNOWN_selected_with_certified_correct_available": 372,
+        "WRONG_EXISTING_MATCH": 3,
+        "final_mixed_identities": 3,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 1063
+      },
+      "evidence": {
+        "actor_source_commit": "4ad0127605a15dcc3ba1827dda389290fe50454f",
+        "checkpoint": null,
+        "commits_SHA256": "b04ac93392d36f6f97d68ced7924c567bb9e53c1199098b83e77da4365bdf5b8",
+        "questions_SHA256": "b3b5ae6f01d81acfa481361c507a876614aaf745822fcfc776955f93df3de138",
+        "raw_SHA256": "bf8998cc99a9e3abc12c5b19b7fd467101e0495a845bc6e2ed906aac7937b4cf",
+        "result_SHA256": "2aab5219a060efaa2ba1472018af8073b929ad6ba8cb535a7c391cbf619c3c2f",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/cosine_seed20261009/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 0.2687585949897766,
+          "min": -0.6997434496879578,
+          "p25": -0.5140656381845474,
+          "p50": -0.42559370398521423,
+          "p75": -0.3369058072566986,
+          "p95": -0.04511421024799497
+        },
+        "unknown_max_minus_terminal": {
+          "max": 0.2497539520263672,
+          "min": -0.45684877038002014,
+          "p25": -0.27645379304885864,
+          "p50": -0.18157437443733215,
+          "p75": -0.09182234108448029,
+          "p95": 0.2467420846223831
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "cosine",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 540,
+          "Certified Correct": 12909,
+          "Certified Wrong": 5,
+          "Contaminated Target Support": 530,
+          "Correct Candidate Missing": 540,
+          "Correct Candidate Present": 14504,
+          "DEFER": 22,
+          "False Defer": 14,
+          "Label Unavailable": 593,
+          "Selected UNKNOWN": 2108,
+          "UNKNOWN_and_Correct_supported_rows": 14282,
+          "UNKNOWN_rows": 14822,
+          "UNKNOWN_steals_from_Correct": 1577,
+          "rows": 15637
+        },
+        "MATCH/K=20-29": {
+          "Certified Correct": 32,
+          "Correct Candidate Present": 35,
+          "Label Unavailable": 3,
+          "Selected UNKNOWN": 3,
+          "UNKNOWN_and_Correct_supported_rows": 35,
+          "UNKNOWN_rows": 35,
+          "UNKNOWN_steals_from_Correct": 3,
+          "rows": 38
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 7,
+          "Correct Candidate Missing": 7,
+          "DEFER": 7,
+          "Label Unavailable": 4,
+          "rows": 11
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 2,
+          "Certified Unavailable": 5,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 1,
+          "Correct Candidate Missing": 7,
+          "Correct Candidate Present": 3,
+          "DEFER": 6,
+          "Label Unavailable": 10,
+          "Selected UNKNOWN": 1,
+          "rows": 20
+        },
+        "REACT/K=10-19": {
+          "Availability UNKNOWN": 2,
+          "Certified Correct": 1,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 3,
+          "DEFER": 1,
+          "Label Unavailable": 4,
+          "Selected UNKNOWN": 3,
+          "rows": 9
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 8683,
+        "FALSE_BIRTH": 11,
+        "FALSE_DEFER": 14,
+        "FALSE_MERGE": 10,
+        "FALSE_SPLIT": 11,
+        "GALLERY_CONTAMINATION": 10,
+        "IDENTITY_UNAVAILABLE": 12,
+        "IDSW/FALSE_SPLIT_NEW": 5,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 19,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 7,
+        "IDSW/WRONG_EXISTING_MERGE": 4,
+        "IDSW/WRONG_STALE_MERGE": 2,
+        "IDSW_exact": 37,
+        "MATCH_Certified Correct": 12941,
+        "MATCH_Certified Wrong": 5,
+        "MATCH_DEFER": 22,
+        "MATCH_Selected UNKNOWN": 2111,
+        "UNKNOWN_SUPERVISION": 614,
+        "UNKNOWN_selected": 2111,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 2106,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 1,
+        "UNKNOWN_selected_with_certified_correct_available": 1580,
+        "WRONG_EXISTING_MATCH": 5,
+        "WRONG_REACTIVATION": 3,
+        "final_mixed_identities": 8,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 2117
+      },
+      "evidence": {
+        "actor_source_commit": "4ad0127605a15dcc3ba1827dda389290fe50454f",
+        "checkpoint": null,
+        "commits_SHA256": "51301173a4e455e7f7cdae2b3eb34c7870516848c4b16c0259f6179615de625c",
+        "questions_SHA256": "74daa8eba6472029b40027abdb5701ce3096327a161e991badb18d5947d354af",
+        "raw_SHA256": "eaf505f50526060e78174e37c7f2a61ca1a13b4e664807e89bbd7d924cd7bbcc",
+        "result_SHA256": "180a1ae8948ad7671313a88ef6ab4493fbc08db739ea34d920b451e303b50f5d",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/cosine_seed20261009/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 0.31389153003692627,
+          "min": -0.6463825702667236,
+          "p25": -0.44403040409088135,
+          "p50": -0.3397812843322754,
+          "p75": -0.19700205326080322,
+          "p95": 0.15037261247634884
+        },
+        "unknown_max_minus_terminal": {
+          "max": 0.24986892938613892,
+          "min": -0.40210652351379395,
+          "p25": -0.2106521725654602,
+          "p50": -0.10283076763153076,
+          "p75": 0.04907417297363281,
+          "p95": 0.2455328583717346
+        }
+      },
+      "phase": "formal",
+      "seed": 20261009,
+      "variant": "cosine",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 2825,
+          "Certified Correct": 7096,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 4,
+          "Contaminated Target Support": 2821,
+          "Correct Candidate Missing": 2826,
+          "Correct Candidate Present": 7152,
+          "DEFER": 4,
+          "Label Unavailable": 198,
+          "Selected UNKNOWN": 2874,
+          "UNKNOWN_and_Correct_supported_rows": 6360,
+          "UNKNOWN_rows": 9185,
+          "UNKNOWN_steals_from_Correct": 53,
+          "rows": 10176
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 321,
+          "Certified Correct": 358,
+          "Contaminated Target Support": 321,
+          "Correct Candidate Missing": 321,
+          "Correct Candidate Present": 359,
+          "Label Unavailable": 10,
+          "Selected UNKNOWN": 322,
+          "UNKNOWN_and_Correct_supported_rows": 359,
+          "UNKNOWN_rows": 680,
+          "UNKNOWN_steals_from_Correct": 1,
+          "rows": 690
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 4,
+          "rows": 5
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 1,
+          "Certified Correct": 1,
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 1,
+          "DEFER": 1,
+          "Label Unavailable": 7,
+          "Selected UNKNOWN": 1,
+          "rows": 10
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 225,
+        "FALSE_BIRTH": 1,
+        "FALSE_MERGE": 7,
+        "GALLERY_CONTAMINATION": 7,
+        "IDENTITY_UNAVAILABLE": 3,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 56,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 16,
+        "IDSW/WRONG_EXISTING_MERGE": 5,
+        "IDSW_exact": 78,
+        "MATCH_Certified Correct": 7454,
+        "MATCH_Certified Wrong": 4,
+        "MATCH_DEFER": 4,
+        "MATCH_Selected UNKNOWN": 3196,
+        "UNKNOWN_SUPERVISION": 219,
+        "UNKNOWN_selected": 3196,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3192,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 2,
+        "UNKNOWN_selected_with_certified_correct_available": 54,
+        "WRONG_EXISTING_MATCH": 4,
+        "final_mixed_identities": 4,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 3197
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "11d473559a41e28f94147646bde1e9ce3520583e8a0737530926098d7e528783",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_training_v1/full/seed20261008/LAST_FROZEN.pth"
+        },
+        "commits_SHA256": "607215907ad2f966cf11b0cea529342e203ab740438bb37a2c043d564092c3d7",
+        "questions_SHA256": "5563ed7e505662de9a21842226906e54e28bbc06569c4849186b57fe08825cd6",
+        "raw_SHA256": "305512057896075bb0a3465918dcc709dc3cdc88c7772c30e183ddf5de1091c9",
+        "result_SHA256": "19778e44dac7c99e68f015a3d0b2a7c2f15ccc17baf8643380449dc28fa35c97",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_online_v1/full_seed20261008/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 23.429651260375977,
+          "min": -25.28961181640625,
+          "p25": -21.353150367736816,
+          "p50": -20.358097076416016,
+          "p75": -18.76035213470459,
+          "p95": -6.897254180908224
+        },
+        "unknown_max_minus_terminal": {
+          "max": 24.759315490722656,
+          "min": -10.010215759277344,
+          "p25": -3.830738067626953,
+          "p50": -2.0984630584716797,
+          "p75": 15.769777297973633,
+          "p95": 21.77719192504883
+        }
+      },
+      "phase": "onpolicy",
+      "seed": 20261008,
+      "variant": "full",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 963,
+          "Certified Correct": 4752,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 4,
+          "Contaminated Target Support": 959,
+          "Correct Candidate Missing": 964,
+          "Correct Candidate Present": 4768,
+          "DEFER": 1,
+          "False Defer": 1,
+          "Label Unavailable": 185,
+          "Selected UNKNOWN": 975,
+          "UNKNOWN_and_Correct_supported_rows": 3719,
+          "UNKNOWN_rows": 4682,
+          "UNKNOWN_steals_from_Correct": 12,
+          "rows": 5917
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 2734,
+          "Certified Correct": 2813,
+          "Certified Wrong": 2,
+          "Contaminated Target Support": 2732,
+          "Correct Candidate Missing": 2734,
+          "Correct Candidate Present": 2923,
+          "DEFER": 3,
+          "False Defer": 1,
+          "Label Unavailable": 327,
+          "Selected UNKNOWN": 2839,
+          "UNKNOWN_and_Correct_supported_rows": 2923,
+          "UNKNOWN_rows": 5657,
+          "UNKNOWN_steals_from_Correct": 109,
+          "rows": 5984
+        },
+        "REACT/K=0": {
+          "Label Unavailable": 6,
+          "rows": 6
+        },
+        "REACT/K=1-9": {
+          "Certified Unavailable": 4,
+          "Correct Candidate Missing": 4,
+          "DEFER": 4,
+          "Label Unavailable": 3,
+          "rows": 7
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 57,
+        "FALSE_BIRTH": 4,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 10,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 10,
+        "IDENTITY_UNAVAILABLE": 5,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 2,
+        "IDSW/FALSE_SPLIT_NEW": 2,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 11,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 9,
+        "IDSW/WRONG_EXISTING_MERGE": 4,
+        "IDSW_exact": 28,
+        "MATCH_Certified Correct": 7565,
+        "MATCH_Certified Wrong": 6,
+        "MATCH_DEFER": 4,
+        "MATCH_Selected UNKNOWN": 3814,
+        "UNKNOWN_SUPERVISION": 521,
+        "UNKNOWN_selected": 3814,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3809,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 4,
+        "UNKNOWN_selected_with_certified_correct_available": 121,
+        "WRONG_EXISTING_MATCH": 6,
+        "final_mixed_identities": 6,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 3815
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "11d473559a41e28f94147646bde1e9ce3520583e8a0737530926098d7e528783",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_training_v1/full/seed20261008/LAST_FROZEN.pth"
+        },
+        "commits_SHA256": "a70dac7b226db2d1ccaf2c51ae989706f586945b39c2b637806535b72f376f67",
+        "questions_SHA256": "af5c58e45f87331b57a515161fd7c35aba4841ef6bea15d85c25d5d450c555c3",
+        "raw_SHA256": "c9cddc70d1e4de4f7a032cff78c95e0b86fcf2ecd785e231f883fd9c58597761",
+        "result_SHA256": "b33004071b0526b3f38e41bb17ac0ebdc9d6b6f00cf9ebcdefb5f68c04177a2c",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_online_v1/full_seed20261008/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 22.08782196044922,
+          "min": -26.494571685791016,
+          "p25": -22.38475275039673,
+          "p50": -20.06899070739746,
+          "p75": -17.29569959640503,
+          "p95": -9.095192050933848
+        },
+        "unknown_max_minus_terminal": {
+          "max": 23.959123611450195,
+          "min": -9.832765579223633,
+          "p25": -5.307720184326172,
+          "p50": -2.6625614166259766,
+          "p75": 14.513293266296387,
+          "p95": 19.439284896850587
+        }
+      },
+      "phase": "onpolicy",
+      "seed": 20261008,
+      "variant": "full",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 455,
+          "Certified Correct": 570,
+          "Contaminated Target Support": 455,
+          "Correct Candidate Missing": 455,
+          "Correct Candidate Present": 572,
+          "DEFER": 2,
+          "False Defer": 2,
+          "Label Unavailable": 2,
+          "Selected UNKNOWN": 455,
+          "UNKNOWN_and_Correct_supported_rows": 572,
+          "UNKNOWN_rows": 1027,
+          "rows": 1029
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 4414,
+          "Certified Correct": 9244,
+          "Certified Wrong": 7,
+          "Contaminated Target Support": 4407,
+          "Correct Candidate Missing": 4414,
+          "Correct Candidate Present": 9638,
+          "DEFER": 7,
+          "False Defer": 3,
+          "Label Unavailable": 594,
+          "Selected UNKNOWN": 4794,
+          "UNKNOWN_and_Correct_supported_rows": 9512,
+          "UNKNOWN_rows": 13926,
+          "UNKNOWN_steals_from_Correct": 385,
+          "rows": 14646
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 4,
+          "Correct Candidate Missing": 4,
+          "DEFER": 4,
+          "Label Unavailable": 2,
+          "rows": 6
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 5,
+          "Contaminated Target Support": 3,
+          "Correct Candidate Missing": 5,
+          "DEFER": 3,
+          "Label Unavailable": 2,
+          "Selected UNKNOWN": 2,
+          "rows": 7
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 904,
+        "FALSE_BIRTH": 4,
+        "FALSE_DEFER": 5,
+        "FALSE_MERGE": 21,
+        "FALSE_SPLIT": 3,
+        "GALLERY_CONTAMINATION": 21,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/FALSE_SPLIT_NEW": 2,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 33,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 37,
+        "IDSW/WRONG_EXISTING_MERGE": 14,
+        "IDSW_exact": 86,
+        "MATCH_Certified Correct": 9814,
+        "MATCH_Certified Wrong": 7,
+        "MATCH_DEFER": 9,
+        "MATCH_Selected UNKNOWN": 5249,
+        "UNKNOWN_SUPERVISION": 600,
+        "UNKNOWN_selected": 5249,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 5246,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 13,
+        "UNKNOWN_selected_with_certified_correct_available": 385,
+        "WRONG_EXISTING_MATCH": 7,
+        "final_mixed_identities": 7,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 5255
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "11d473559a41e28f94147646bde1e9ce3520583e8a0737530926098d7e528783",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_training_v1/full/seed20261008/LAST_FROZEN.pth"
+        },
+        "commits_SHA256": "7d9e368f74070b9661a8033a1178ef97b503a319418eb037db5cc9a20e18a12b",
+        "questions_SHA256": "3b5a8c17a4545095588139b8536e5fea406d7dbb451954d6f072cb6ae63dc4ee",
+        "raw_SHA256": "8e2ad31a3b08500dc75fa0e23e532705c7d77da771f6a50e9c8833a3249859ed",
+        "result_SHA256": "60ad563444322c62826a02c4c6586a271f87ef674b32914eed8516c17599f150",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_online_v1/full_seed20261008/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 23.510862350463867,
+          "min": -27.078731536865234,
+          "p25": -22.215492248535156,
+          "p50": -20.647757530212402,
+          "p75": -17.745641708374023,
+          "p95": -3.0360843896865677
+        },
+        "unknown_max_minus_terminal": {
+          "max": 25.051342010498047,
+          "min": -11.201171875,
+          "p25": -4.656215667724609,
+          "p50": -2.315281867980957,
+          "p75": 15.034486770629883,
+          "p95": 18.853186798095702
+        }
+      },
+      "phase": "onpolicy",
+      "seed": 20261008,
+      "variant": "full",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 4424,
+          "Certified Correct": 5018,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 5,
+          "Contaminated Target Support": 4420,
+          "Correct Candidate Missing": 4425,
+          "Correct Candidate Present": 5553,
+          "DEFER": 6,
+          "False Defer": 1,
+          "Label Unavailable": 198,
+          "Selected UNKNOWN": 4949,
+          "UNKNOWN_and_Correct_supported_rows": 5235,
+          "UNKNOWN_rows": 9659,
+          "UNKNOWN_steals_from_Correct": 532,
+          "rows": 10176
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 485,
+          "Certified Correct": 195,
+          "Contaminated Target Support": 485,
+          "Correct Candidate Missing": 485,
+          "Correct Candidate Present": 195,
+          "Label Unavailable": 10,
+          "Selected UNKNOWN": 485,
+          "UNKNOWN_and_Correct_supported_rows": 195,
+          "UNKNOWN_rows": 680,
+          "rows": 690
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 3,
+          "Correct Candidate Missing": 3,
+          "DEFER": 3,
+          "Label Unavailable": 4,
+          "rows": 7
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 2,
+          "Certified Correct": 1,
+          "Certified Wrong": 1,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 1,
+          "Label Unavailable": 6,
+          "Selected UNKNOWN": 1,
+          "rows": 9
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 301,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 1,
+        "FALSE_MERGE": 7,
+        "FALSE_SPLIT": 1,
+        "GALLERY_CONTAMINATION": 7,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 8,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 29,
+        "IDSW/WRONG_EXISTING_MERGE": 5,
+        "IDSW_exact": 44,
+        "MATCH_Certified Correct": 5213,
+        "MATCH_Certified Wrong": 5,
+        "MATCH_DEFER": 6,
+        "MATCH_Selected UNKNOWN": 5434,
+        "UNKNOWN_SUPERVISION": 218,
+        "UNKNOWN_selected": 5434,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 5433,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 1,
+        "UNKNOWN_selected_with_certified_correct_available": 532,
+        "WRONG_EXISTING_MATCH": 5,
+        "WRONG_REACTIVATION": 1,
+        "final_mixed_identities": 6,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 5439
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "6b8926733b0521c1fa2b7fea6d71f869319e423d1efc6f779e5991f161bdc449",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_training_v1/full/seed20261009/LAST_FROZEN.pth"
+        },
+        "commits_SHA256": "9dc56f9cfcca44647c5236a7c63da61accad5fa19f5e6c627e5b3b255033a817",
+        "questions_SHA256": "530ca71f611bff420e678e90f6beecdc8c526977cc15054d588bb231ddf5bec6",
+        "raw_SHA256": "85c027b25b826702402414de1f0805be0c04ef342ae8ceda5202d8e3a2915146",
+        "result_SHA256": "b48eb4886e81a0a200430e17736a872b7575d15fe55fdf1635eff5aaaf167c43",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_online_v1/full_seed20261009/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 21.103425979614258,
+          "min": -22.58759117126465,
+          "p25": -16.426151275634766,
+          "p50": -15.701452255249023,
+          "p75": -14.663775444030762,
+          "p95": 12.068632030487061
+        },
+        "unknown_max_minus_terminal": {
+          "max": 22.904584884643555,
+          "min": -10.634075164794922,
+          "p25": -3.291431427001953,
+          "p50": 8.421839714050293,
+          "p75": 16.97271728515625,
+          "p95": 20.517162322998047
+        }
+      },
+      "phase": "onpolicy",
+      "seed": 20261009,
+      "variant": "full",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 17,
+          "Certified Correct": 4151,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 1,
+          "Contaminated Target Support": 12,
+          "Correct Candidate Missing": 18,
+          "Correct Candidate Present": 4154,
+          "DEFER": 2,
+          "False Defer": 1,
+          "Label Unavailable": 70,
+          "Selected UNKNOWN": 18,
+          "UNKNOWN_and_Correct_supported_rows": 1756,
+          "UNKNOWN_rows": 1773,
+          "UNKNOWN_steals_from_Correct": 1,
+          "rows": 4242
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 1089,
+          "Certified Correct": 6107,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 1087,
+          "Correct Candidate Missing": 1089,
+          "Correct Candidate Present": 6128,
+          "DEFER": 3,
+          "Label Unavailable": 442,
+          "Selected UNKNOWN": 1104,
+          "UNKNOWN_and_Correct_supported_rows": 6128,
+          "UNKNOWN_rows": 7217,
+          "UNKNOWN_steals_from_Correct": 18,
+          "rows": 7659
+        },
+        "REACT/K=0": {
+          "Label Unavailable": 7,
+          "rows": 7
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 2,
+          "Certified Correct": 1,
+          "Certified Unavailable": 2,
+          "Contaminated Target Support": 2,
+          "Correct Candidate Missing": 4,
+          "Correct Candidate Present": 1,
+          "DEFER": 2,
+          "Label Unavailable": 5,
+          "Selected UNKNOWN": 2,
+          "rows": 10
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 55,
+        "FALSE_BIRTH": 1,
+        "FALSE_DEFER": 1,
+        "FALSE_MERGE": 6,
+        "FALSE_SPLIT": 1,
+        "GALLERY_CONTAMINATION": 6,
+        "IDENTITY_UNAVAILABLE": 3,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 11,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 8,
+        "IDSW/WRONG_EXISTING_MERGE": 2,
+        "IDSW_exact": 22,
+        "MATCH_Certified Correct": 10258,
+        "MATCH_Certified Wrong": 4,
+        "MATCH_DEFER": 5,
+        "MATCH_Selected UNKNOWN": 1122,
+        "UNKNOWN_SUPERVISION": 524,
+        "UNKNOWN_selected": 1122,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 1114,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 2,
+        "UNKNOWN_selected_with_certified_correct_available": 19,
+        "WRONG_EXISTING_MATCH": 4,
+        "final_mixed_identities": 4,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 1120
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "6b8926733b0521c1fa2b7fea6d71f869319e423d1efc6f779e5991f161bdc449",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_training_v1/full/seed20261009/LAST_FROZEN.pth"
+        },
+        "commits_SHA256": "d653b47ee33121aa1eea097ae0af303b5944f2b06ed0e550338439a506d21200",
+        "questions_SHA256": "7e7460df6149e9685f4d2aa6ebf52896634bb9f3705fcc3285def5f9fd008fda",
+        "raw_SHA256": "b3925e943a3322e1faf9631beb579e657a65a04ef259ab9a7134a31d5a7be907",
+        "result_SHA256": "3831d83d0cd09247cc20945d6da0681a36aea9e44f182180b6f4d2ad8045ed2f",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_online_v1/full_seed20261009/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 16.059911727905273,
+          "min": -25.49612045288086,
+          "p25": -19.192713737487793,
+          "p50": -17.213640213012695,
+          "p75": -14.493617296218872,
+          "p95": -8.805077171325689
+        },
+        "unknown_max_minus_terminal": {
+          "max": 18.382797241210938,
+          "min": -10.685317993164062,
+          "p25": -4.277924537658691,
+          "p50": -2.49761962890625,
+          "p75": 0.4007587432861328,
+          "p95": 15.050822257995604
+        }
+      },
+      "phase": "onpolicy",
+      "seed": 20261009,
+      "variant": "full",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 1228,
+          "Certified Correct": 1156,
+          "Contaminated Target Support": 1226,
+          "Correct Candidate Missing": 1228,
+          "Correct Candidate Present": 1164,
+          "DEFER": 2,
+          "False Defer": 1,
+          "Label Unavailable": 16,
+          "Selected UNKNOWN": 1234,
+          "UNKNOWN_and_Correct_supported_rows": 1164,
+          "UNKNOWN_rows": 2392,
+          "UNKNOWN_steals_from_Correct": 7,
+          "rows": 2408
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 3985,
+          "Certified Correct": 8216,
+          "Certified Wrong": 7,
+          "Contaminated Target Support": 3978,
+          "Correct Candidate Missing": 3985,
+          "Correct Candidate Present": 8702,
+          "DEFER": 7,
+          "False Defer": 3,
+          "Label Unavailable": 580,
+          "Selected UNKNOWN": 4457,
+          "UNKNOWN_and_Correct_supported_rows": 8379,
+          "UNKNOWN_rows": 12364,
+          "UNKNOWN_steals_from_Correct": 478,
+          "rows": 13267
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 4,
+          "Correct Candidate Missing": 4,
+          "DEFER": 4,
+          "Label Unavailable": 3,
+          "rows": 7
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 5,
+          "Certified Wrong": 1,
+          "Contaminated Target Support": 2,
+          "Correct Candidate Missing": 5,
+          "DEFER": 1,
+          "Label Unavailable": 4,
+          "Selected UNKNOWN": 3,
+          "rows": 9
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 1197,
+        "FALSE_BIRTH": 3,
+        "FALSE_DEFER": 4,
+        "FALSE_MERGE": 21,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 21,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 29,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 38,
+        "IDSW/WRONG_EXISTING_MERGE": 13,
+        "IDSW/WRONG_STALE_MERGE": 1,
+        "IDSW_exact": 81,
+        "MATCH_Certified Correct": 9372,
+        "MATCH_Certified Wrong": 7,
+        "MATCH_DEFER": 9,
+        "MATCH_Selected UNKNOWN": 5691,
+        "UNKNOWN_SUPERVISION": 603,
+        "UNKNOWN_selected": 5691,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 5686,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 11,
+        "UNKNOWN_selected_with_certified_correct_available": 485,
+        "WRONG_EXISTING_MATCH": 7,
+        "WRONG_REACTIVATION": 1,
+        "final_mixed_identities": 8,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 5697
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "6b8926733b0521c1fa2b7fea6d71f869319e423d1efc6f779e5991f161bdc449",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_training_v1/full/seed20261009/LAST_FROZEN.pth"
+        },
+        "commits_SHA256": "ab81b0c246c0d478457d6764aa903e08793130edf643cac57e06b3714a76a7bc",
+        "questions_SHA256": "8a302e9614a06087e4c3c3bd40a9ad3f590cda84b7be1e8f5788e839e8f4afcd",
+        "raw_SHA256": "b68adc5e1a73e4a90ce0b87f4418a405d232754b946ec596896b85308c29b139",
+        "result_SHA256": "ef114367a059c43078338920178eabab9c9899bc9ab65d4cdb9c70c95fdd71c4",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_online_v1/full_seed20261009/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 19.59640884399414,
+          "min": -24.216129302978516,
+          "p25": -19.04539966583252,
+          "p50": -17.271774291992188,
+          "p75": -15.649091720581055,
+          "p95": 0.46577024459838384
+        },
+        "unknown_max_minus_terminal": {
+          "max": 23.31267547607422,
+          "min": -12.700359344482422,
+          "p25": -3.582979440689087,
+          "p50": 0.9523458480834961,
+          "p75": 11.957056522369385,
+          "p95": 16.568130016326904
+        }
+      },
+      "phase": "onpolicy",
+      "seed": 20261009,
+      "variant": "full",
+      "video": 19
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 3128,
+          "Certified Correct": 7056,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 3,
+          "Contaminated Target Support": 3124,
+          "Correct Candidate Missing": 3129,
+          "Correct Candidate Present": 7125,
+          "DEFER": 6,
+          "False Defer": 1,
+          "Label Unavailable": 207,
+          "Selected UNKNOWN": 3189,
+          "UNKNOWN_and_Correct_supported_rows": 6610,
+          "UNKNOWN_rows": 9738,
+          "UNKNOWN_steals_from_Correct": 67,
+          "rows": 10461
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 196,
+          "Certified Correct": 208,
+          "Contaminated Target Support": 196,
+          "Correct Candidate Missing": 196,
+          "Correct Candidate Present": 208,
+          "Label Unavailable": 1,
+          "Selected UNKNOWN": 196,
+          "UNKNOWN_and_Correct_supported_rows": 208,
+          "UNKNOWN_rows": 404,
+          "rows": 405
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 3,
+          "Correct Candidate Missing": 3,
+          "DEFER": 3,
+          "Label Unavailable": 6,
+          "rows": 9
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 2,
+          "Certified Correct": 1,
+          "Certified Wrong": 1,
+          "Correct Candidate Missing": 2,
+          "Correct Candidate Present": 1,
+          "Label Unavailable": 3,
+          "Selected UNKNOWN": 1,
+          "rows": 6
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 131,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 1,
+        "FALSE_MERGE": 4,
+        "FALSE_SPLIT": 1,
+        "GALLERY_CONTAMINATION": 4,
+        "IDENTITY_UNAVAILABLE": 4,
+        "IDSW/FALSE_BIRTH_CORRECT_ACTIVE_MISSING_OR_UNKNOWN": 1,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 8,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 13,
+        "IDSW/WRONG_EXISTING_MERGE": 1,
+        "IDSW_exact": 24,
+        "MATCH_Certified Correct": 7264,
+        "MATCH_Certified Wrong": 3,
+        "MATCH_DEFER": 6,
+        "MATCH_Selected UNKNOWN": 3385,
+        "UNKNOWN_SUPERVISION": 217,
+        "UNKNOWN_selected": 3385,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 3383,
+        "UNKNOWN_selected_with_certified_correct_available": 67,
+        "WRONG_EXISTING_MATCH": 3,
+        "WRONG_REACTIVATION": 1,
+        "final_mixed_identities": 4,
+        "native_committed_rows": 10866,
+        "writes_into_certified_mixed_history": 3387
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "c013fe7c44fd491a63e958e65af05f4ed8ffa49271f85ff99a982dcbd7942e84",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_training_v1/full/seed20261010/LAST_FROZEN.pth"
+        },
+        "commits_SHA256": "f579e9402b9a826cd87a173d42f2aac0f29b2e020d714f42a5130ccc1998bc10",
+        "questions_SHA256": "c4cdb98c24aef619c103332f488955455e15134cd188a5838c393021e33f2d5f",
+        "raw_SHA256": "c71a65cac94f8e3bdd515cd5c6f800177c782db48f911d57235ab713cfb35231",
+        "result_SHA256": "6a7905681a6e368c501e2bf8d2f2c62bb5fe615e56742a7b7fdbd33c7bb858f9",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_online_v1/full_seed20261010/video17/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 20.562450408935547,
+          "min": -25.132537841796875,
+          "p25": -22.04139232635498,
+          "p50": -20.64512825012207,
+          "p75": -18.443875789642334,
+          "p95": -12.710103416442877
+        },
+        "unknown_max_minus_terminal": {
+          "max": 25.67325782775879,
+          "min": -10.708524703979492,
+          "p25": -3.1879501342773438,
+          "p50": -1.1610336303710938,
+          "p75": 15.257686138153076,
+          "p95": 22.974809455871572
+        }
+      },
+      "phase": "onpolicy",
+      "seed": 20261010,
+      "variant": "full",
+      "video": 17
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 350,
+          "Certified Correct": 4150,
+          "Certified Unavailable": 1,
+          "Certified Wrong": 1,
+          "Contaminated Target Support": 347,
+          "Correct Candidate Missing": 351,
+          "Correct Candidate Present": 4152,
+          "DEFER": 2,
+          "False Defer": 2,
+          "Label Unavailable": 107,
+          "Selected UNKNOWN": 350,
+          "UNKNOWN_and_Correct_supported_rows": 2463,
+          "UNKNOWN_rows": 2813,
+          "rows": 4610
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 1617,
+          "Certified Correct": 4967,
+          "Certified Wrong": 4,
+          "Contaminated Target Support": 1614,
+          "Correct Candidate Missing": 1617,
+          "Correct Candidate Present": 5269,
+          "Label Unavailable": 405,
+          "Selected UNKNOWN": 1915,
+          "UNKNOWN_and_Correct_supported_rows": 5269,
+          "UNKNOWN_rows": 6886,
+          "UNKNOWN_steals_from_Correct": 301,
+          "rows": 7291
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 6,
+          "rows": 7
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 1,
+          "Correct Candidate Missing": 1,
+          "DEFER": 1,
+          "Label Unavailable": 6,
+          "rows": 7
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 105,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 2,
+        "FALSE_MERGE": 5,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 5,
+        "IDENTITY_UNAVAILABLE": 2,
+        "IDSW/FALSE_SPLIT_NEW": 1,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 6,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 14,
+        "IDSW/WRONG_EXISTING_MERGE": 2,
+        "IDSW_exact": 23,
+        "MATCH_Certified Correct": 9117,
+        "MATCH_Certified Wrong": 5,
+        "MATCH_DEFER": 2,
+        "MATCH_Selected UNKNOWN": 2265,
+        "UNKNOWN_SUPERVISION": 524,
+        "UNKNOWN_selected": 2265,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 2255,
+        "UNKNOWN_selected_with_certified_correct_available": 301,
+        "WRONG_EXISTING_MATCH": 5,
+        "final_mixed_identities": 5,
+        "native_committed_rows": 11901,
+        "writes_into_certified_mixed_history": 2260
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "c013fe7c44fd491a63e958e65af05f4ed8ffa49271f85ff99a982dcbd7942e84",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_training_v1/full/seed20261010/LAST_FROZEN.pth"
+        },
+        "commits_SHA256": "2473e888f6b3e25f3021ab489b163ce2c3338a2dc31267ac52ae67a73d1faf0a",
+        "questions_SHA256": "bcb4877405c43a3d75810c6b1eba020cf89c92f6aaaa16573214275b3d663836",
+        "raw_SHA256": "edd23ab15233bac0420fcc616f1bea47a27ac2acdc3b933a38f1a6fa5b69d177",
+        "result_SHA256": "856d4014241f702d3999be743f10545122844cbc62db3a64fe6f5e1fe82713b3",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_online_v1/full_seed20261010/video18/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 23.061370849609375,
+          "min": -24.581493377685547,
+          "p25": -22.238245964050293,
+          "p50": -20.49350929260254,
+          "p75": -16.556922912597656,
+          "p95": -4.401711964607263
+        },
+        "unknown_max_minus_terminal": {
+          "max": 21.97415542602539,
+          "min": -8.77535629272461,
+          "p25": -3.948148727416992,
+          "p50": -2.456218719482422,
+          "p75": 3.3955345153808594,
+          "p95": 20.165262603759768
+        }
+      },
+      "phase": "onpolicy",
+      "seed": 20261010,
+      "variant": "full",
+      "video": 18
+    },
+    {
+      "UNKNOWN_strata": {
+        "MATCH/K=1-9": {
+          "Availability UNKNOWN": 99,
+          "Certified Correct": 98,
+          "Contaminated Target Support": 98,
+          "Correct Candidate Missing": 99,
+          "Correct Candidate Present": 98,
+          "DEFER": 1,
+          "Selected UNKNOWN": 98,
+          "UNKNOWN_and_Correct_supported_rows": 98,
+          "UNKNOWN_rows": 197,
+          "rows": 197
+        },
+        "MATCH/K=10-19": {
+          "Availability UNKNOWN": 3743,
+          "Certified Correct": 10736,
+          "Certified Wrong": 9,
+          "Contaminated Target Support": 3734,
+          "Correct Candidate Missing": 3743,
+          "Correct Candidate Present": 11139,
+          "DEFER": 7,
+          "False Defer": 3,
+          "Label Unavailable": 596,
+          "Selected UNKNOWN": 4130,
+          "UNKNOWN_and_Correct_supported_rows": 10289,
+          "UNKNOWN_rows": 14032,
+          "UNKNOWN_steals_from_Correct": 395,
+          "rows": 15478
+        },
+        "REACT/K=0": {
+          "Certified Unavailable": 3,
+          "Correct Candidate Missing": 3,
+          "DEFER": 3,
+          "Label Unavailable": 2,
+          "rows": 5
+        },
+        "REACT/K=1-9": {
+          "Availability UNKNOWN": 4,
+          "Contaminated Target Support": 1,
+          "Correct Candidate Missing": 4,
+          "Correct Candidate Present": 1,
+          "DEFER": 2,
+          "Label Unavailable": 7,
+          "Selected UNKNOWN": 3,
+          "rows": 12
+        }
+      },
+      "counts": {
+        "CROSS_CAMERA_ID_MISMATCH": 1074,
+        "FALSE_BIRTH": 2,
+        "FALSE_DEFER": 3,
+        "FALSE_MERGE": 19,
+        "FALSE_SPLIT": 2,
+        "GALLERY_CONTAMINATION": 19,
+        "IDENTITY_UNAVAILABLE": 3,
+        "IDSW/PURE_FRAGMENT_SWITCH_OR_RECOVERY": 21,
+        "IDSW/UNKNOWN_OR_CONTAMINATED_EXISTING_CHANGE": 11,
+        "IDSW/WRONG_EXISTING_MERGE": 13,
+        "IDSW_exact": 45,
+        "MATCH_Certified Correct": 10834,
+        "MATCH_Certified Wrong": 9,
+        "MATCH_DEFER": 8,
+        "MATCH_Selected UNKNOWN": 4228,
+        "UNKNOWN_SUPERVISION": 605,
+        "UNKNOWN_selected": 4228,
+        "UNKNOWN_selected_confirmed_polluted_prefix": 4224,
+        "UNKNOWN_selected_new_confirmed_cross_GT_mix": 9,
+        "UNKNOWN_selected_with_certified_correct_available": 395,
+        "WRONG_EXISTING_MATCH": 9,
+        "final_mixed_identities": 9,
+        "native_committed_rows": 15675,
+        "writes_into_certified_mixed_history": 4236
+      },
+      "evidence": {
+        "actor_source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+        "checkpoint": {
+          "SHA256": "c013fe7c44fd491a63e958e65af05f4ed8ffa49271f85ff99a982dcbd7942e84",
+          "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_training_v1/full/seed20261010/LAST_FROZEN.pth"
+        },
+        "commits_SHA256": "c5b12930b8e6108f02d3e71e6f9c3ce6c26bad451beca4f0e07541431691c093",
+        "questions_SHA256": "c5ac97e73be247718329395ff3a099f12930ca339e9bc50aaa735a092ce13b43",
+        "raw_SHA256": "5083226165a5b1d9d6aff8f43fbd88b7619c3770bfac9694c2f50debdf2c2234",
+        "result_SHA256": "d2211ef034df13542352a274434176050a63ff8af3f835681c5659cb837a74b0",
+        "saved_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/onpolicy_online_v1/full_seed20261010/video19/RESULT.json"
+      },
+      "logit_margins": {
+        "unknown_max_minus_correct_max": {
+          "max": 19.519407272338867,
+          "min": -26.540058135986328,
+          "p25": -21.79617214202881,
+          "p50": -19.78060531616211,
+          "p75": -15.41797685623169,
+          "p95": -3.8549859046936996
+        },
+        "unknown_max_minus_terminal": {
+          "max": 24.66968536376953,
+          "min": -10.938419342041016,
+          "p25": -2.7010297775268555,
+          "p50": 0.22905731201171875,
+          "p75": 15.00217056274414,
+          "p95": 21.2582275390625
+        }
+      },
+      "phase": "onpolicy",
+      "seed": 20261010,
+      "variant": "full",
+      "video": 19
+    }
+  ],
+  "error_attribution_SHA256": "8dd05401a92db29552e48cbf904dfd65b0a434dfbf6512d5b1d7684bbbc523fd",
+  "status": "COMPLETE",
+  "training_deployment_semantics": {
+    "CE_Brier": "UNKNOWN masked from certified normalizer",
+    "conclusion": "objective/actor support mismatch; attribution quantified, UNKNOWN never coerced negative",
+    "native_commit": "all lawful existing options remain eligible; no GT-based mask",
+    "structured_loss": "legal & certified-known existing; UNKNOWN unavailable as loss-augmented competitor"
+  }
+}
