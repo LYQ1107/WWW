@@ -1,5 +1,5 @@
 {
-  "status": "FIX_REQUIRED_BEFORE_RESTART",
+  "status": "FIX_VERIFIED_RETRAIN_REQUIRED",
   "original_native_action": "run_memory_tracker adds restored ID to poss_ids",
   "incorrect_direct_action": "discard restored ID from poss_ids",
   "actual_old_trace_evidence": {
@@ -331,5 +331,36 @@
   ],
   "new_runtime": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2",
   "features": "reuse exact immutable true Stage1 cache; new natural histories/dataset version v3; no tuning against old validation HOTA",
-  "heldout": "SEALED"
+  "heldout": "SEALED",
+  "corrected_double_recovery": {
+    "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/gta_free_native_v1/RESULT.json",
+    "SHA256": "92c97954e69ab7c3a0ae0680c2f18f3c297f2a3cdcffe77e5862c23ff1406e7f",
+    "keys": [
+      [
+        55,
+        0
+      ],
+      [
+        95,
+        0
+      ]
+    ],
+    "full_and_resumed_native_states_exact": true
+  },
+  "changed_actor_groups_by_video": {
+    "12": 901,
+    "13": 0,
+    "14": 837,
+    "16": 1631,
+    "17": 1318,
+    "18": 377,
+    "19": 1613
+  },
+  "old_weights_reused": false,
+  "original_frozen_Tiny_record_keys_preserved_exact": true,
+  "OFF_SHADOW_previous_221_regressions_still_valid": {
+    "gtr_rcnn_bytes_identical": true,
+    "shadow_scores_batch_initialize_reset_AST_identical": true,
+    "DIRECT_repeat_recovery_retested": true
+  }
 }
