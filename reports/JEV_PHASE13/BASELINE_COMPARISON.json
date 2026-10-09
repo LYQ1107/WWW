@@ -79,20 +79,13 @@
       "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
       "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
     },
-    "source_commit": "8f7b9180ad7948b23ec5914c2299efffcfc8cf3a",
+    "source_commit": "0a69e911e57df202814aebefb03fd426298938f5",
     "source_root": "/home/liuyeqiang/WWW_jev_phase13"
   },
   "comparison_scope": "all learned methods fresh Stage1/VFCE1024, equal data/legal solver, 20000 updates or separately24000 on-policy total; original GMT has Stage2-trained perception/RPCE and is not same-frontend ablation",
   "development_preexposed": true,
   "heldout": "SEALED",
   "pending": [
-    {
-      "metrics": null,
-      "reason": "all three full-video native outcomes not yet complete",
-      "seed": 20261010,
-      "status": "NOT_RUN",
-      "variant": "full"
-    },
     {
       "metrics": null,
       "reason": "all three full-video native outcomes not yet complete",
@@ -2602,58 +2595,1195 @@
           "variant": "full"
         }
       ]
+    },
+    {
+      "all_six_cameras_pooled": true,
+      "binding": {
+        "CUDA_VISIBLE_DEVICES": null,
+        "Full24": false,
+        "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+        "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+        "TRAIN": [
+          12,
+          13,
+          14,
+          16
+        ],
+        "VAL": [
+          17,
+          18,
+          19
+        ],
+        "dirty": false,
+        "heldout": "SEALED",
+        "official_TEST": false,
+        "source_SHA256": {
+          "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+          "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+          "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+          "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+          "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+          "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+          "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+          "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+          "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+          "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+          "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+          "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+          "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+          "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+          "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+          "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+          "reproduction_tools/finalize_jev_phase13_results.py": "6061a3291ab05a67f6874514b2936b7210b8f5d7856300c329535dfacede0743",
+          "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+          "reproduction_tools/finish_jev_phase13_pipeline.py": "edb4cadf353506cabb0dfa111b7b8ad4e0cc83fac62b91f48efa4f1bf13f7cfd",
+          "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+          "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+          "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+          "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+          "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+          "reproduction_tools/queue_jev_phase13.py": "8db78588dc790d79684ccf0de2733651162371ea05e778a14c3c5db7dfddad1d",
+          "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+          "reproduction_tools/snapshot_jev_phase13_progress.py": "41b30742882627ee4cb6ed086d8fd9b13ae1f6d86e7fc4df3b62b3f8afbaa99f",
+          "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+          "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+          "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+        },
+        "source_commit": "0a69e911e57df202814aebefb03fd426298938f5",
+        "source_root": "/home/liuyeqiang/WWW_jev_phase13"
+      },
+      "canonical_evaluator": {
+        "SHA256": "0f4cb069872f2d9442d55f0fe8bcaf64d56e92f5a28c2da341c1294b946a5a57",
+        "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_pooled_v1/full_seed20261010/canonical_predictions/tracking_eval_runtime_state/native/evaluation/metrics.json"
+      },
+      "canonical_pooled_TrackEval": {
+        "AssA": 76.01133103670476,
+        "DetA": 73.9431625811346,
+        "Frag": 308.0,
+        "HOTA": 74.75795361285175,
+        "IDF1": 90.72006555362081,
+        "IDSW": 94.0,
+        "MOTA": 89.83536508734447
+      },
+      "crossview": {
+        "TrackEval_flattened_adaptation": {
+          "reports": [
+            {
+              "SHA256": "d6e0b0326dd41b63ca828dabec3c49188588018f004926e546ed9c54a755d684",
+              "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_pooled_v1/full_seed20261010/crossview_adapted/metrics.json",
+              "values": {
+                "allow_duplicate_gt": true,
+                "gt_policy": "raw per-view GT is read through manifest symlinks; no GT labels changed",
+                "metric_policy": "CVIDF1=TrackEval Identity IDF1*100; CVMA=TrackEval CLEAR MOTA*100",
+                "reports": {
+                  "cvidf1": {
+                    "CVIDF1": 89.69800759134536,
+                    "CVMA": 89.762473293955,
+                    "clear": {
+                      "CLR_F1": 0.9494038110087287,
+                      "CLR_FN": 2641,
+                      "CLR_FP": 1318,
+                      "CLR_Frames": 9843,
+                      "CLR_Pr": 0.9657324112110655,
+                      "CLR_Re": 0.9336181978132462,
+                      "CLR_TP": 37144,
+                      "FP_per_frame": 0.1339022655694402,
+                      "Frag": 315.0,
+                      "IDSW": 114,
+                      "ML": 2,
+                      "MLR": 0.05714285714285714,
+                      "MODA": 0.9004901344727912,
+                      "MOTA": 0.89762473293955,
+                      "MOTAL": 0.9004384339612583,
+                      "MOTP": 0.8308737533968166,
+                      "MOTP_sum": 30861.974696171354,
+                      "MT": 27,
+                      "MTR": 0.7714285714285715,
+                      "PT": 6,
+                      "PTR": 0.17142857142857143,
+                      "sMOTA": 0.7397253913829673
+                    },
+                    "clear_mota_raw": 0.89762473293955,
+                    "identity": {
+                      "IDF1": 0.8969800759134535,
+                      "IDFN": 4692,
+                      "IDFP": 3369,
+                      "IDP": 0.9124070511153867,
+                      "IDR": 0.8820661053160739,
+                      "IDTP": 35093
+                    },
+                    "identity_idf1_raw": 0.8969800759134535,
+                    "sequence_lengths": {
+                      "00116wood": 3600,
+                      "00118park": 3087,
+                      "00119park": 3156
+                    },
+                    "time_axis": "sequential"
+                  },
+                  "cvma": {
+                    "CVIDF1": 89.69800759134536,
+                    "CVMA": 86.11788362448158,
+                    "clear": {
+                      "CLR_F1": 0.9494038110087287,
+                      "CLR_FN": 2641,
+                      "CLR_FP": 1318,
+                      "CLR_Frames": 6565,
+                      "CLR_Pr": 0.9657324112110655,
+                      "CLR_Re": 0.9336181978132462,
+                      "CLR_TP": 37144,
+                      "FP_per_frame": 0.20076161462300077,
+                      "Frag": 14552.0,
+                      "IDSW": 1564,
+                      "ML": 2,
+                      "MLR": 0.05714285714285714,
+                      "MODA": 0.9004901344727912,
+                      "MOTA": 0.8611788362448158,
+                      "MOTAL": 0.9004098470089551,
+                      "MOTP": 0.8309093278235798,
+                      "MOTP_sum": 30863.29607267905,
+                      "MT": 27,
+                      "MTR": 0.7714285714285715,
+                      "PT": 6,
+                      "PTR": 0.17142857142857143,
+                      "sMOTA": 0.7033127076204362
+                    },
+                    "clear_mota_raw": 0.8611788362448158,
+                    "identity": {
+                      "IDF1": 0.8969800759134535,
+                      "IDFN": 4692,
+                      "IDFP": 3369,
+                      "IDP": 0.9124070511153867,
+                      "IDR": 0.8820661053160739,
+                      "IDTP": 35093
+                    },
+                    "identity_idf1_raw": 0.8969800759134535,
+                    "sequence_lengths": {
+                      "00116wood": 2401,
+                      "00118park": 2059,
+                      "00119park": 2105
+                    },
+                    "time_axis": "interleaved"
+                  }
+                },
+                "source_manifest": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_pooled_v1/full_seed20261010/raw_predictions/tracking_eval_runtime_state/native/prepared/manifest.json",
+                "status": "PASS"
+              }
+            }
+          ],
+          "scope": "actual repository TrackEval sequential-camera CVIDF1/interleaved CVMA adaptation, raw TRAIN GT permissive duplicate policy; not official native MATLAB"
+        },
+        "official_MATLAB": {
+          "metrics": null,
+          "reason": "native MATLAB evaluator not integrated/available; do not relabel Python TrackEval as official MATLAB scores",
+          "status": "NOT_RUN"
+        }
+      },
+      "heldout": "SEALED",
+      "per_video_mean_used_as_pooled": false,
+      "phase": "formal",
+      "seed": 20261010,
+      "status": "COMPLETE",
+      "strict_evaluator": {
+        "SHA256": "73bc7da354bec71fa0db81f52a5e52dfa854fbaba51378808dd2b64377db7625",
+        "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_pooled_v1/full_seed20261010/raw_predictions/tracking_eval_runtime_state/native/evaluation/metrics.json"
+      },
+      "strict_pooled_TrackEval": {
+        "AssA": 75.9515993819373,
+        "DetA": 73.81159786675184,
+        "Frag": 306.0,
+        "HOTA": 74.66081392703336,
+        "IDF1": 90.5542704512633,
+        "IDSW": 107.0,
+        "MOTA": 89.78006786477316
+      },
+      "variant": "full",
+      "video_results": [
+        {
+          "Full24": false,
+          "GTA_throw_mock": true,
+          "actual_mutated_state_online": true,
+          "binding": {
+            "CUDA_VISIBLE_DEVICES": "8",
+            "Full24": false,
+            "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+            "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+            "TRAIN": [
+              12,
+              13,
+              14,
+              16
+            ],
+            "VAL": [
+              17,
+              18,
+              19
+            ],
+            "dirty": false,
+            "heldout": "SEALED",
+            "official_TEST": false,
+            "source_SHA256": {
+              "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+              "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+              "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+              "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+              "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+              "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+              "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+              "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+              "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+              "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+              "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+              "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+              "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+              "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+              "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+              "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+              "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+              "reproduction_tools/finalize_jev_phase13_results.py": "6061a3291ab05a67f6874514b2936b7210b8f5d7856300c329535dfacede0743",
+              "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+              "reproduction_tools/finish_jev_phase13_pipeline.py": "edb4cadf353506cabb0dfa111b7b8ad4e0cc83fac62b91f48efa4f1bf13f7cfd",
+              "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+              "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+              "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+              "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+              "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+              "reproduction_tools/queue_jev_phase13.py": "8db78588dc790d79684ccf0de2733651162371ea05e778a14c3c5db7dfddad1d",
+              "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+              "reproduction_tools/snapshot_jev_phase13_progress.py": "72866d261fd45173095fb9c57d4555230d5f79a52d79c61c4bfda6eb6c4d3be8",
+              "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+              "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+              "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+            },
+            "source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+            "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/source_online_v4"
+          },
+          "bootstrap_payloads": 1,
+          "cached_stage2_only_wall_seconds_including_eval": 100.06968009471893,
+          "canonical_evaluator": {
+            "SHA256": "76483da230051bf4357c903f9263dae0009e04550edeb612d502609f14978975",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video17/canonical_eval/tracking_eval_runtime_state/native/evaluation/metrics.json"
+          },
+          "canonical_future_filtered_metrics": {
+            "AssA": 78.30044904578398,
+            "DetA": 73.87530569065638,
+            "Frag": 140.0,
+            "HOTA": 75.96889372241898,
+            "IDF1": 94.03110736916737,
+            "IDSW": 29.0,
+            "MOTA": 88.81595771886455
+          },
+          "canonical_predictions": {
+            "SHA256": "6b61ec82e66f2d5800d3197bca7870f18306449711ea9a5755a6af6f7a7a6626",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video17/CANONICAL_PREDICTIONS.json"
+          },
+          "commits_SHA256": "d053659b9811e7a0cacbdf50aff5d9e02b31c998b60915057b580a9586447660",
+          "counts": {
+            "ASSOCIATE_EXISTING": 10852,
+            "REACTIVATE": 7,
+            "START_NEW": 7,
+            "detections": 10866,
+            "native_memory_WRITEs": 10866,
+            "payloads": 2399
+          },
+          "cross_camera": {
+            "contaminated_retrieved_trajectory_rate": 0.75,
+            "cross_camera_identity_continuity_rate": 1.0,
+            "false_identity_joins": 265,
+            "latency_scope": "prebuilt index lookup only; annotation alignment/evaluation excluded",
+            "precision_micro": 0.9755444813584349,
+            "query_lookup_latency_us_p50_p95": [
+              0.3975,
+              1.5275499999999995
+            ],
+            "recall_micro": 0.9011166993436195
+          },
+          "decision_summary": {
+            "GT_actor_inputs": false,
+            "Gallery_contamination_fraction": 0.4,
+            "calibration": {
+              "Brier": 0.031609036629636364,
+              "ECE": 0.0011596010165839442,
+              "NLL": 0.009058278964926237,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.6666666666666666,
+                  "confidence": 0.5637295047442118,
+                  "count": 6,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 0.6666666666666666,
+                  "confidence": 0.656830198234982,
+                  "count": 9,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.8,
+                  "confidence": 0.7488793313503266,
+                  "count": 10,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 0.7692307692307693,
+                  "confidence": 0.8617928532453684,
+                  "count": 13,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9989094874591058,
+                  "confidence": 0.9997451244452268,
+                  "count": 7336,
+                  "lo": 0.9
+                }
+              ],
+              "risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.0024410089503661414
+                }
+              ],
+              "scope": "conditional certified options only; no calibration claim for contaminated/UNKNOWN or untrained REACT fallback"
+            },
+            "counts": {
+              "GT_UNKNOWN": 216,
+              "GT_known_births": 2,
+              "GT_known_recoveries": 4,
+              "MATCH_UNKNOWN_selected": 121,
+              "MATCH_certified_correct": 7251,
+              "MATCH_certified_rows": 7374,
+              "MATCH_certified_wrong": 2,
+              "MATCH_questions": 10866,
+              "REACT_UNKNOWN_selected": 1,
+              "REACT_certified_correct": 2,
+              "REACT_certified_rows": 3,
+              "REACT_questions": 14,
+              "certified_recovery_wrong": 0,
+              "contaminated_Gallery_IDs": 4,
+              "known_Gallery_IDs": 10,
+              "label_UNKNOWN": 3287,
+              "new_birth_previously_seen_GT": 1,
+              "normal_supported_correct": 7248,
+              "normal_supported_rows": 7370,
+              "recovery_history_UNKNOWN": 3
+            },
+            "normal_association_keep_rate": 0.9834464043419268,
+            "saved_logits_assignment_matches_actual_native_events": true,
+            "status": "COMPLETE"
+          },
+          "efficiency_scope": "cache-backed validation is not full FPS; isolated live benchmark disables journals/evaluator",
+          "frames": 1200,
+          "full_FPS": null,
+          "heldout": "SEALED",
+          "identity_summary": {
+            "birth_anchor_wrong_observations": 656,
+            "definition": "IoU>=.5 one-to-one per image; fixed global two-camera identity map; separate first-observation anchor temporal errors",
+            "extra_birth_fragments": 9,
+            "false_merge_tracks": 4,
+            "global_identity_wrong_observations": 92,
+            "global_unmapped_fragment_observations": 21,
+            "known_observations": 10663,
+            "unknown_GT_observations": 208,
+            "wrong_ID_duration_quantiles_frames": {
+              "max": 117.0,
+              "p50": 4.5,
+              "p90": 21.0
+            },
+            "wrong_ID_duration_total_camera_frames": 656
+          },
+          "official_TEST": false,
+          "phase": "formal",
+          "questions_SHA256": "c547581f5d15470bb4fe193df943ffe22c120a7b306c9d3de5a17d7c05568222",
+          "raw_predictions": {
+            "SHA256": "8fec2a03c9fefecfbddd0b20585a135d23b80b284f3860a12d2331c113ced4a3",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video17/RAW_PREDICTIONS.json"
+          },
+          "same_camera_ID_capacity_one": true,
+          "seed": 20261010,
+          "stage2_latency_with_audit_instrumentation_ms": {
+            "max": 43.607406318187714,
+            "p50": 21.529823541641235,
+            "p95": 30.419568717479706
+          },
+          "status": "COMPLETE",
+          "strict_evaluator": {
+            "SHA256": "598b181aaf819053fac2652f57422f6feed64023688ee371dc4dd228e67d646e",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video17/strict_eval/tracking_eval_runtime_state/native/evaluation/metrics.json"
+          },
+          "strict_online_metrics": {
+            "AssA": 78.16413504624627,
+            "DetA": 73.91973450432438,
+            "Frag": 141.0,
+            "HOTA": 75.92302158033849,
+            "IDF1": 93.88549685868507,
+            "IDSW": 32.0,
+            "MOTA": 88.85005540874606
+          },
+          "temperature": 1.0,
+          "trained": {
+            "checkpoint": {
+              "SHA256": "43598df01ad26b3c3b9cd4d8ef3982dc014d4c0bc8e13c6937b14014f25d7a21",
+              "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261010/LAST_FROZEN.pth",
+              "selection": "LAST at common frozen update budget"
+            },
+            "dataset_SHA256": {
+              "12": "a986ffeb01c450742504ab1feb5f2e14048d834743882959361cadb0a0e27721",
+              "13": "651a3e36ec84f522bd4fc67ed3589c23ff5515ee1b53408547fb4a24511030df",
+              "14": "e7feb08e4a386d9b72c9111ee26e0642abb10102bc978badca7207a81a7a4643",
+              "16": "5f795b31797c77505a86440a003364448babeaaa812e520c79612f376d02c056"
+            },
+            "training_binding": {
+              "CUDA_VISIBLE_DEVICES": "3",
+              "Full24": false,
+              "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+              "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+              "TRAIN": [
+                12,
+                13,
+                14,
+                16
+              ],
+              "VAL": [
+                17,
+                18,
+                19
+              ],
+              "dirty": false,
+              "heldout": "SEALED",
+              "official_TEST": false,
+              "source_SHA256": {
+                "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+                "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+                "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+                "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+                "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+                "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+                "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+                "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+                "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+                "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+                "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+                "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+                "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+                "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+                "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+                "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+                "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+                "reproduction_tools/finalize_jev_phase13_results.py": "6061a3291ab05a67f6874514b2936b7210b8f5d7856300c329535dfacede0743",
+                "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+                "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+                "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+                "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+                "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+                "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+                "reproduction_tools/queue_jev_phase13.py": "1c9bac9ab546ff6978e70b0a11a4461c9a55a73b49be5ad4d39c8a550de554a1",
+                "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+                "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+                "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+                "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+              },
+              "source_commit": "25cf4bd445ab142c160368e938e780389c688302",
+              "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/source_formal_v2"
+            },
+            "training_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261010/RESULT.json",
+            "training_result_SHA256": "46e48a560bc61ec8aba2044a6fba98a1185bed2d1675a2a9f6ba5daa6348b7aa"
+          },
+          "variant": "full"
+        },
+        {
+          "Full24": false,
+          "GTA_throw_mock": true,
+          "actual_mutated_state_online": true,
+          "binding": {
+            "CUDA_VISIBLE_DEVICES": "8",
+            "Full24": false,
+            "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+            "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+            "TRAIN": [
+              12,
+              13,
+              14,
+              16
+            ],
+            "VAL": [
+              17,
+              18,
+              19
+            ],
+            "dirty": false,
+            "heldout": "SEALED",
+            "official_TEST": false,
+            "source_SHA256": {
+              "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+              "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+              "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+              "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+              "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+              "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+              "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+              "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+              "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+              "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+              "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+              "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+              "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+              "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+              "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+              "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+              "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+              "reproduction_tools/finalize_jev_phase13_results.py": "6061a3291ab05a67f6874514b2936b7210b8f5d7856300c329535dfacede0743",
+              "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+              "reproduction_tools/finish_jev_phase13_pipeline.py": "edb4cadf353506cabb0dfa111b7b8ad4e0cc83fac62b91f48efa4f1bf13f7cfd",
+              "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+              "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+              "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+              "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+              "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+              "reproduction_tools/queue_jev_phase13.py": "8db78588dc790d79684ccf0de2733651162371ea05e778a14c3c5db7dfddad1d",
+              "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+              "reproduction_tools/snapshot_jev_phase13_progress.py": "72866d261fd45173095fb9c57d4555230d5f79a52d79c61c4bfda6eb6c4d3be8",
+              "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+              "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+              "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+            },
+            "source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+            "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/source_online_v4"
+          },
+          "bootstrap_payloads": 1,
+          "cached_stage2_only_wall_seconds_including_eval": 105.03573480248451,
+          "canonical_evaluator": {
+            "SHA256": "2d60cf107fa09c9d005fbd12d0d476a8b140fc7e6dfdc756f9fcbd20bb06351b",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video18/canonical_eval/tracking_eval_runtime_state/native/evaluation/metrics.json"
+          },
+          "canonical_future_filtered_metrics": {
+            "AssA": 77.70239851058336,
+            "DetA": 76.05654300313846,
+            "Frag": 67.0,
+            "HOTA": 76.68407905043061,
+            "IDF1": 92.60027955440722,
+            "IDSW": 16.0,
+            "MOTA": 92.31030673804061
+          },
+          "canonical_predictions": {
+            "SHA256": "f7c742531a288b8a60c1b4523e7ed0b0872362bb9089bfafd9925de61e2e71f0",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video18/CANONICAL_PREDICTIONS.json"
+          },
+          "commits_SHA256": "a4b91aa1c60a7d6a67037b7d7fe2249c5d62879d403b4d93d16fdf2483cd963c",
+          "counts": {
+            "ASSOCIATE_EXISTING": 11886,
+            "START_NEW": 15,
+            "detections": 11901,
+            "native_memory_WRITEs": 11901,
+            "payloads": 2057
+          },
+          "cross_camera": {
+            "contaminated_retrieved_trajectory_rate": 0.9166666666666666,
+            "cross_camera_identity_continuity_rate": 1.0,
+            "false_identity_joins": 438,
+            "latency_scope": "prebuilt index lookup only; annotation alignment/evaluation excluded",
+            "precision_micro": 0.9610735869178813,
+            "query_lookup_latency_us_p50_p95": [
+              0.3935,
+              1.6424499999999989
+            ],
+            "recall_micro": 0.9188546180644065
+          },
+          "decision_summary": {
+            "GT_actor_inputs": false,
+            "Gallery_contamination_fraction": 0.375,
+            "calibration": {
+              "Brier": 0.06916587635879154,
+              "ECE": 0.027299621727189055,
+              "NLL": 0.1781285191171206,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.6666666666666666,
+                  "confidence": 0.550085574388504,
+                  "count": 18,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 0.75,
+                  "confidence": 0.6531387530267239,
+                  "count": 16,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.5789473684210527,
+                  "confidence": 0.7566307814497697,
+                  "count": 38,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 0.5068493150684932,
+                  "confidence": 0.85982405404522,
+                  "count": 73,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9752129285870277,
+                  "confidence": 0.9989955247515907,
+                  "count": 9158,
+                  "lo": 0.9
+                }
+              ],
+              "risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.031065247769536675
+                }
+              ],
+              "scope": "conditional certified options only; no calibration claim for contaminated/UNKNOWN or untrained REACT fallback"
+            },
+            "counts": {
+              "GT_UNKNOWN": 525,
+              "GT_known_births": 2,
+              "MATCH_UNKNOWN_selected": 479,
+              "MATCH_certified_correct": 8817,
+              "MATCH_certified_rows": 9303,
+              "MATCH_certified_wrong": 7,
+              "MATCH_questions": 11901,
+              "REACT_questions": 15,
+              "contaminated_Gallery_IDs": 6,
+              "known_Gallery_IDs": 16,
+              "label_UNKNOWN": 2088,
+              "new_birth_previously_seen_GT": 2,
+              "normal_supported_correct": 8817,
+              "normal_supported_rows": 9296
+            },
+            "normal_association_keep_rate": 0.9484724612736661,
+            "saved_logits_assignment_matches_actual_native_events": true,
+            "status": "COMPLETE"
+          },
+          "efficiency_scope": "cache-backed validation is not full FPS; isolated live benchmark disables journals/evaluator",
+          "frames": 1029,
+          "full_FPS": null,
+          "heldout": "SEALED",
+          "identity_summary": {
+            "birth_anchor_wrong_observations": 850,
+            "definition": "IoU>=.5 one-to-one per image; fixed global two-camera identity map; separate first-observation anchor temporal errors",
+            "extra_birth_fragments": 11,
+            "false_merge_tracks": 6,
+            "global_identity_wrong_observations": 580,
+            "global_unmapped_fragment_observations": 414,
+            "known_observations": 11394,
+            "unknown_GT_observations": 512,
+            "wrong_ID_duration_quantiles_frames": {
+              "max": 375.0,
+              "p50": 3.0,
+              "p90": 136.1000000000002
+            },
+            "wrong_ID_duration_total_camera_frames": 850
+          },
+          "official_TEST": false,
+          "phase": "formal",
+          "questions_SHA256": "58cbe606c46510fd940a7eb1edc1ce56fadcded48d0a9fac4e94d95ebc45d5e8",
+          "raw_predictions": {
+            "SHA256": "8d217f080510d9403a1472160e28575ff410fefa3b29e08cdcdebbacefc44ca5",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video18/RAW_PREDICTIONS.json"
+          },
+          "same_camera_ID_capacity_one": true,
+          "seed": 20261010,
+          "stage2_latency_with_audit_instrumentation_ms": {
+            "max": 56.11013621091843,
+            "p50": 28.555333614349365,
+            "p95": 43.3074526488781
+          },
+          "status": "COMPLETE",
+          "strict_evaluator": {
+            "SHA256": "83fd5a9df4c03791b5b384f2a984baa5aefe55e4bae1c271516574f47568f538",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video18/strict_eval/tracking_eval_runtime_state/native/evaluation/metrics.json"
+          },
+          "strict_online_metrics": {
+            "AssA": 77.69611883805482,
+            "DetA": 75.67199739116472,
+            "Frag": 63.0,
+            "HOTA": 76.48777979294233,
+            "IDF1": 92.34213305174235,
+            "IDSW": 24.0,
+            "MOTA": 92.25932534624862
+          },
+          "temperature": 1.0,
+          "trained": {
+            "checkpoint": {
+              "SHA256": "43598df01ad26b3c3b9cd4d8ef3982dc014d4c0bc8e13c6937b14014f25d7a21",
+              "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261010/LAST_FROZEN.pth",
+              "selection": "LAST at common frozen update budget"
+            },
+            "dataset_SHA256": {
+              "12": "a986ffeb01c450742504ab1feb5f2e14048d834743882959361cadb0a0e27721",
+              "13": "651a3e36ec84f522bd4fc67ed3589c23ff5515ee1b53408547fb4a24511030df",
+              "14": "e7feb08e4a386d9b72c9111ee26e0642abb10102bc978badca7207a81a7a4643",
+              "16": "5f795b31797c77505a86440a003364448babeaaa812e520c79612f376d02c056"
+            },
+            "training_binding": {
+              "CUDA_VISIBLE_DEVICES": "3",
+              "Full24": false,
+              "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+              "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+              "TRAIN": [
+                12,
+                13,
+                14,
+                16
+              ],
+              "VAL": [
+                17,
+                18,
+                19
+              ],
+              "dirty": false,
+              "heldout": "SEALED",
+              "official_TEST": false,
+              "source_SHA256": {
+                "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+                "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+                "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+                "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+                "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+                "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+                "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+                "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+                "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+                "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+                "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+                "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+                "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+                "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+                "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+                "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+                "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+                "reproduction_tools/finalize_jev_phase13_results.py": "6061a3291ab05a67f6874514b2936b7210b8f5d7856300c329535dfacede0743",
+                "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+                "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+                "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+                "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+                "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+                "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+                "reproduction_tools/queue_jev_phase13.py": "1c9bac9ab546ff6978e70b0a11a4461c9a55a73b49be5ad4d39c8a550de554a1",
+                "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+                "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+                "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+                "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+              },
+              "source_commit": "25cf4bd445ab142c160368e938e780389c688302",
+              "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/source_formal_v2"
+            },
+            "training_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261010/RESULT.json",
+            "training_result_SHA256": "46e48a560bc61ec8aba2044a6fba98a1185bed2d1675a2a9f6ba5daa6348b7aa"
+          },
+          "variant": "full"
+        },
+        {
+          "Full24": false,
+          "GTA_throw_mock": true,
+          "actual_mutated_state_online": true,
+          "binding": {
+            "CUDA_VISIBLE_DEVICES": "8",
+            "Full24": false,
+            "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+            "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+            "TRAIN": [
+              12,
+              13,
+              14,
+              16
+            ],
+            "VAL": [
+              17,
+              18,
+              19
+            ],
+            "dirty": false,
+            "heldout": "SEALED",
+            "official_TEST": false,
+            "source_SHA256": {
+              "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+              "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+              "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+              "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+              "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+              "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+              "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+              "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+              "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+              "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+              "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+              "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+              "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+              "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+              "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+              "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+              "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+              "reproduction_tools/finalize_jev_phase13_results.py": "6061a3291ab05a67f6874514b2936b7210b8f5d7856300c329535dfacede0743",
+              "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+              "reproduction_tools/finish_jev_phase13_pipeline.py": "edb4cadf353506cabb0dfa111b7b8ad4e0cc83fac62b91f48efa4f1bf13f7cfd",
+              "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+              "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+              "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+              "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+              "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+              "reproduction_tools/queue_jev_phase13.py": "8db78588dc790d79684ccf0de2733651162371ea05e778a14c3c5db7dfddad1d",
+              "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+              "reproduction_tools/snapshot_jev_phase13_progress.py": "72866d261fd45173095fb9c57d4555230d5f79a52d79c61c4bfda6eb6c4d3be8",
+              "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+              "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+              "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+            },
+            "source_commit": "ae70cb12d6861294a666a1204d940cee0e775629",
+            "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/source_online_v4"
+          },
+          "bootstrap_payloads": 1,
+          "cached_stage2_only_wall_seconds_including_eval": 117.63809847086668,
+          "canonical_evaluator": {
+            "SHA256": "bdf2a4d6411bd663bd666ecba9f63bacbd1b6eee4d82ed03b9e92794214cdc6e",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video19/canonical_eval/tracking_eval_runtime_state/native/evaluation/metrics.json"
+          },
+          "canonical_future_filtered_metrics": {
+            "AssA": 72.98367909746518,
+            "DetA": 72.49921136999764,
+            "Frag": 101.0,
+            "HOTA": 72.40276543156614,
+            "IDF1": 86.98947632172388,
+            "IDSW": 49.0,
+            "MOTA": 88.78108688977586
+          },
+          "canonical_predictions": {
+            "SHA256": "3f7e4ea4f342bc2016410dbf81e331603380e1c9a5d7fc768d78a2678074b0b3",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video19/CANONICAL_PREDICTIONS.json"
+          },
+          "commits_SHA256": "c8709d756a6484d4ec2bd88d0df8c30d72f982e5efb5107b94daf2ee510774ba",
+          "counts": {
+            "ASSOCIATE_EXISTING": 15653,
+            "REACTIVATE": 9,
+            "START_NEW": 13,
+            "detections": 15675,
+            "native_memory_WRITEs": 15675,
+            "payloads": 2103
+          },
+          "cross_camera": {
+            "contaminated_retrieved_trajectory_rate": 0.8461538461538461,
+            "cross_camera_identity_continuity_rate": 0.7777777777777778,
+            "false_identity_joins": 674,
+            "latency_scope": "prebuilt index lookup only; annotation alignment/evaluation excluded",
+            "precision_micro": 0.9527415509746179,
+            "query_lookup_latency_us_p50_p95": [
+              0.59,
+              1.5072999999999992
+            ],
+            "recall_micro": 0.8343874731347866
+          },
+          "decision_summary": {
+            "GT_actor_inputs": false,
+            "Gallery_contamination_fraction": 0.45,
+            "calibration": {
+              "Brier": 0.05715240130217898,
+              "ECE": 0.004067278463725092,
+              "NLL": 0.016901902336342766,
+              "reliability_bins": [
+                {
+                  "accuracy": 0.3333333333333333,
+                  "confidence": 0.36082351207733154,
+                  "count": 3,
+                  "lo": 0.30000000000000004
+                },
+                {
+                  "accuracy": 0.25,
+                  "confidence": 0.4271669089794159,
+                  "count": 4,
+                  "lo": 0.4
+                },
+                {
+                  "accuracy": 0.7931034482758621,
+                  "confidence": 0.561404092558499,
+                  "count": 58,
+                  "lo": 0.5
+                },
+                {
+                  "accuracy": 0.8484848484848485,
+                  "confidence": 0.6453738814652569,
+                  "count": 99,
+                  "lo": 0.6000000000000001
+                },
+                {
+                  "accuracy": 0.8734177215189873,
+                  "confidence": 0.748211232167256,
+                  "count": 79,
+                  "lo": 0.7000000000000001
+                },
+                {
+                  "accuracy": 0.8783783783783784,
+                  "confidence": 0.851351862823641,
+                  "count": 74,
+                  "lo": 0.8
+                },
+                {
+                  "accuracy": 0.9988402176822196,
+                  "confidence": 0.9987821848314424,
+                  "count": 11209,
+                  "lo": 0.9
+                }
+              ],
+              "risk_coverage": [
+                {
+                  "coverage": 0.1,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.25,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.5,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 0.75,
+                  "risk": 0.0
+                },
+                {
+                  "coverage": 1.0,
+                  "risk": 0.0055526635432934235
+                }
+              ],
+              "scope": "conditional certified options only; no calibration claim for contaminated/UNKNOWN or untrained REACT fallback"
+            },
+            "counts": {
+              "GT_UNKNOWN": 606,
+              "GT_known_births": 6,
+              "GT_known_recoveries": 6,
+              "MATCH_UNKNOWN_selected": 408,
+              "MATCH_certified_correct": 11105,
+              "MATCH_certified_rows": 11526,
+              "MATCH_certified_wrong": 13,
+              "MATCH_questions": 15675,
+              "REACT_UNKNOWN_selected": 2,
+              "REACT_certified_correct": 5,
+              "REACT_certified_rows": 7,
+              "REACT_questions": 22,
+              "certified_recovery_wrong": 0,
+              "contaminated_Gallery_IDs": 9,
+              "known_Gallery_IDs": 20,
+              "label_UNKNOWN": 3558,
+              "new_birth_previously_seen_GT": 3,
+              "normal_supported_correct": 11098,
+              "normal_supported_rows": 11515,
+              "recovery_history_UNKNOWN": 4
+            },
+            "normal_association_keep_rate": 0.9637863656100738,
+            "saved_logits_assignment_matches_actual_native_events": true,
+            "status": "COMPLETE"
+          },
+          "efficiency_scope": "cache-backed validation is not full FPS; isolated live benchmark disables journals/evaluator",
+          "frames": 1052,
+          "full_FPS": null,
+          "heldout": "SEALED",
+          "identity_summary": {
+            "birth_anchor_wrong_observations": 813,
+            "definition": "IoU>=.5 one-to-one per image; fixed global two-camera identity map; separate first-observation anchor temporal errors",
+            "extra_birth_fragments": 20,
+            "false_merge_tracks": 9,
+            "global_identity_wrong_observations": 1499,
+            "global_unmapped_fragment_observations": 1315,
+            "known_observations": 15087,
+            "unknown_GT_observations": 598,
+            "wrong_ID_duration_quantiles_frames": {
+              "max": 611.0,
+              "p50": 1.0,
+              "p90": 31.0
+            },
+            "wrong_ID_duration_total_camera_frames": 813
+          },
+          "official_TEST": false,
+          "phase": "formal",
+          "questions_SHA256": "883f911356c88b5aad6a51cb1c78ddcc08f6e313c070722b33a218286e380eab",
+          "raw_predictions": {
+            "SHA256": "0ee7ffc793aeab72c19561e83c628ad98502c42bdd28465dcbae9c8979e9be0d",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video19/RAW_PREDICTIONS.json"
+          },
+          "same_camera_ID_capacity_one": true,
+          "seed": 20261010,
+          "stage2_latency_with_audit_instrumentation_ms": {
+            "max": 53.80678176879883,
+            "p50": 32.890841364860535,
+            "p95": 43.39914321899414
+          },
+          "status": "COMPLETE",
+          "strict_evaluator": {
+            "SHA256": "9fe63f35fdfcb4138bdf86b1dd4966945064c3ef89f5149437e78901fd60099a",
+            "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_online_v1/full_seed20261010/video19/strict_eval/tracking_eval_runtime_state/native/evaluation/metrics.json"
+          },
+          "strict_online_metrics": {
+            "AssA": 72.93721544627314,
+            "DetA": 72.421100071695,
+            "Frag": 102.0,
+            "HOTA": 72.33894897271288,
+            "IDF1": 86.87519549577729,
+            "IDSW": 51.0,
+            "MOTA": 88.65827448572306
+          },
+          "temperature": 1.0,
+          "trained": {
+            "checkpoint": {
+              "SHA256": "43598df01ad26b3c3b9cd4d8ef3982dc014d4c0bc8e13c6937b14014f25d7a21",
+              "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261010/LAST_FROZEN.pth",
+              "selection": "LAST at common frozen update budget"
+            },
+            "dataset_SHA256": {
+              "12": "a986ffeb01c450742504ab1feb5f2e14048d834743882959361cadb0a0e27721",
+              "13": "651a3e36ec84f522bd4fc67ed3589c23ff5515ee1b53408547fb4a24511030df",
+              "14": "e7feb08e4a386d9b72c9111ee26e0642abb10102bc978badca7207a81a7a4643",
+              "16": "5f795b31797c77505a86440a003364448babeaaa812e520c79612f376d02c056"
+            },
+            "training_binding": {
+              "CUDA_VISIBLE_DEVICES": "3",
+              "Full24": false,
+              "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+              "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+              "TRAIN": [
+                12,
+                13,
+                14,
+                16
+              ],
+              "VAL": [
+                17,
+                18,
+                19
+              ],
+              "dirty": false,
+              "heldout": "SEALED",
+              "official_TEST": false,
+              "source_SHA256": {
+                "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+                "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+                "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+                "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+                "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+                "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+                "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+                "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+                "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+                "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+                "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+                "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+                "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+                "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+                "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+                "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+                "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+                "reproduction_tools/finalize_jev_phase13_results.py": "6061a3291ab05a67f6874514b2936b7210b8f5d7856300c329535dfacede0743",
+                "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+                "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+                "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+                "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+                "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+                "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+                "reproduction_tools/queue_jev_phase13.py": "1c9bac9ab546ff6978e70b0a11a4461c9a55a73b49be5ad4d39c8a550de554a1",
+                "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+                "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+                "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+                "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+              },
+              "source_commit": "25cf4bd445ab142c160368e938e780389c688302",
+              "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/source_formal_v2"
+            },
+            "training_result": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/full/seed20261010/RESULT.json",
+            "training_result_SHA256": "46e48a560bc61ec8aba2044a6fba98a1185bed2d1675a2a9f6ba5daa6348b7aa"
+          },
+          "variant": "full"
+        }
+      ]
     }
   ],
   "status": "IN_PROGRESS",
   "strict_seed_summary": {
     "full": {
       "AssA": {
-        "mean": 77.09908421845253,
+        "mean": 76.71658927294745,
         "seeds": [
           20261008,
-          20261009
+          20261009,
+          20261010
         ],
-        "std_seed": 0.55176633790294
+        "std_seed": 0.7039664961978482
       },
       "Frag": {
-        "mean": 308.0,
+        "mean": 307.3333333333333,
         "seeds": [
           20261008,
-          20261009
+          20261009,
+          20261010
         ],
-        "std_seed": 1.0
+        "std_seed": 1.247219128924647
       },
       "HOTA": {
-        "mean": 75.25297930172998,
+        "mean": 75.05559084349777,
         "seeds": [
           20261008,
-          20261009
+          20261009,
+          20261010
         ],
-        "std_seed": 0.2696538960973811
+        "std_seed": 0.35552762106514313
       },
       "IDF1": {
-        "mean": 91.42842537094074,
+        "mean": 91.13704039771494,
         "seeds": [
           20261008,
-          20261009
+          20261009,
+          20261010
         ],
-        "std_seed": 0.5086456988766344
+        "std_seed": 0.5850561539152301
       },
       "IDSW": {
-        "mean": 124.5,
+        "mean": 118.66666666666667,
         "seeds": [
           20261008,
-          20261009
+          20261009,
+          20261010
         ],
-        "std_seed": 16.5
+        "std_seed": 15.797327481430381
       },
       "MOTA": {
-        "mean": 89.72100037702651,
+        "mean": 89.74068953960874,
         "seeds": [
           20261008,
-          20261009
+          20261009,
+          20261010
         ],
-        "std_seed": 0.04147291692848398
+        "std_seed": 0.04384056118956233
       }
     }
   }
