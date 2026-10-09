@@ -23,6 +23,9 @@ def main():
         if variant=='full':
             for block in ['visual.','state_read.','question_evidence.','question_read.','option_question.','option_state.','gate.']:
                 assert sum(v or 0 for key,v in grad.items() if key.startswith(block))>0,block
+        if variant in ['motip','camel','set_transformer']:
+            for block in ['state_slots','state_read.','state_layers.','decoder_layers.']:
+                assert sum(v or 0 for key,v in grad.items() if key.startswith(block))>0,(variant,block,'ordinary baseline must use its registered state/decoder capacity')
         bad=dict(xx,GT=torch.ones(1,device='cuda'))
         try:model(bad);raise AssertionError('GT key accepted')
         except ValueError:pass
@@ -31,7 +34,7 @@ def main():
         for a in ['history_visual','history_mask','identity_meta','identity_mask']:pad[a]=torch.cat([pad[a],torch.zeros_like(pad[a][:,:1])],1)
         for a in ['pair_evidence','legal']:pad[a]=torch.cat([pad[a],torch.zeros_like(pad[a][:,:,:1])],2)
         zp=model(pad);paderr=float((torch.cat([zp[:,:,:k],zp[:,:,-1:]],-1)-z).abs().max());assert paderr<3e-5,(variant,paderr)
-        checks.append({'variant':variant,'permutation_max_error':error,'masked_padding_max_error':paderr,'ID_integer_rename_exact':True,'empty_pool_private_terminal':True,'zero_questions':True,'GT_key_rejected':True,'capacity':profile(model,xx),'gradient_by_parameter':grad})
+        checks.append({'variant':variant,'permutation_max_error':error,'masked_padding_max_error':paderr,'ID_integer_rename_exact':True,'empty_pool_private_terminal':True,'zero_questions':True,'GT_key_rejected':True,'capacity':profile(model,xx),'observed_nonzero_gradient_parameter_tensors_numel':sum(p.numel() for key,p in model.named_parameters() if (grad[key] or 0)>0),'gradient_by_parameter':grad})
     # Tensor ablations preserve exact train/runtime transformations and remove
     # the original similarities as well as the visual vectors.
     for v in ['no_cross_camera','no_long_term']:

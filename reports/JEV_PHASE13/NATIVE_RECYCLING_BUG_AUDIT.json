@@ -362,5 +362,10 @@
     "gtr_rcnn_bytes_identical": true,
     "shadow_scores_batch_initialize_reset_AST_identical": true,
     "DIRECT_repeat_recovery_retested": true
+  },
+  "additional_capacity_correction": {
+    "old_Set": "state encoder computed but unused by four candidate-only readers; registration alone did not establish matched active capacity",
+    "new_Set": "three candidate self-attention layers plus one ordinary shared-state cross-attention; no QuestionReader/gate; all state/decoder parameter blocks must show nonzero supervised gradients before training",
+    "budget": "registered count unchanged; active capacity repaired before v3 Tiny/Pilot/formal; old attempts preserved"
   }
 }

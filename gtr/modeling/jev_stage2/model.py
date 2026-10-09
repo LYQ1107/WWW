@@ -51,7 +51,8 @@ class GlobalIdentityJev(nn.Module):
             for layer in self.decoder_layers[:2]:option=layer(option.reshape(b*q,k+1,d),option.reshape(b*q,k+1,d),torch.cat([x['legal'],torch.ones(b,q,1,dtype=torch.bool,device=det.device)],2).reshape(b*q,k+1)).reshape(b,q,k+1,d)
             for layer in self.decoder_layers[2:]:option=layer(option.reshape(b*q,k+1,d),state[:,None].expand(-1,q,-1,-1).reshape(b*q,8,d)).reshape(b,q,k+1,d)
         elif self.variant=='set_transformer':
-            for layer in self.decoder_layers:option=layer(option.reshape(b*q,k+1,d),option.reshape(b*q,k+1,d),torch.cat([x['legal'],torch.ones(b,q,1,dtype=torch.bool,device=det.device)],2).reshape(b*q,k+1)).reshape(b,q,k+1,d)
+            for layer in self.decoder_layers[:3]:option=layer(option.reshape(b*q,k+1,d),option.reshape(b*q,k+1,d),torch.cat([x['legal'],torch.ones(b,q,1,dtype=torch.bool,device=det.device)],2).reshape(b*q,k+1)).reshape(b,q,k+1,d)
+            option=self.decoder_layers[3](option.reshape(b*q,k+1,d),state[:,None].expand(-1,q,-1,-1).reshape(b*q,8,d)).reshape(b,q,k+1,d)
         elif self.variant!='no_option_reader':
             option=self.option_question(option.reshape(b*q,k+1,d),question_tokens.reshape(b*q,6,d)).reshape(b,q,k+1,d)
             option=self.option_state(option.reshape(b*q,k+1,d),state[:,None].expand(-1,q,-1,-1).reshape(b*q,8,d)).reshape(b,q,k+1,d)
