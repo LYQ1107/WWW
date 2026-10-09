@@ -280,6 +280,8 @@ def write_report(report, summaries, cosine, own):
     for variant in VARIANTS + ['cosine']:
         row=official['strict_seed_summary']['formal'][variant]
         lines.append('| '+variant+' | '+' | '.join(f'{row[k]["mean"]:.3f} ± {row[k]["std_seed"]:.3f}' for k in ['CVIDF1','CVMA'])+' |')
+    row=official['strict_seed_summary']['reference']['original_GMT']
+    lines.append('| Original GMT separate Stage2 full system | '+' | '.join(f'{row[k]["mean"]:.3f}' for k in ['CVIDF1','CVMA'])+' |')
     lines.extend(['', '## Bounded own-state round', '',
                   'The following comparison uses the same completed eligible seeds before and after the extra4k updates. Wrong-anchor observations count actual errors relative to each identity first GT anchor; they must be read together with births/fragments and full tracking metrics. Prefix error duration is censored and is not a counterfactual propagation estimate.', '',
                   '| Method | Eligible completed seeds | 20k HOTA paired | 24k HOTA | 20k IDSW paired | 24k IDSW | TRAIN wrong-anchor before | after | TRAIN extra births before | after |',

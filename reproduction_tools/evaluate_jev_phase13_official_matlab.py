@@ -70,16 +70,26 @@ def prepare(manifest_path, output):
 
 
 def evaluate_case(phase,name):
-    source=OUT/f'{phase}_pooled_v1'/name
+    original=name=='original_GMT'
+    if original:phase='reference'
+    source=(Path('/home/liuyeqiang/WWW_jev_phase12_runtime/20261009_v1/pooled_validation_v1/GMT_OFF')
+            if original else OUT/f'{phase}_pooled_v1'/name)
     output=OUT/f'{phase}_official_matlab_v2'/name
     result=output/'RESULT.json'
     if result.exists():
         r=json.loads(result.read_text());assert r['status']=='COMPLETE';return r
     assert (source/'RESULT.json').exists() and MATLAB.exists()
+    if original:
+        frozen=json.loads((REPORTS/'GMT_BASELINE_FREEZE.json').read_text())
+        prior_report=ROOT/'reports/JEV_PHASE12/MATCH_VALIDATION_RESULTS.json'
+        assert sha(prior_report)==frozen['original_full_online_metrics_report_SHA256']
+        assert json.loads((source/'RESULT.json').read_text())['pooled_metrics']==frozen['GMT_OFF_metrics']
     output.mkdir(parents=True,exist_ok=True)
     start=time.monotonic();reports={}
     for prediction_kind in ['raw_predictions','canonical_predictions']:
-        manifest=source/prediction_kind/'tracking_eval_runtime_state/native/prepared/manifest.json'
+        source_kind=({'raw_predictions':'strict_online','canonical_predictions':'canonical_GMT_filtered'}[prediction_kind]
+                     if original else prediction_kind)
+        manifest=source/source_kind/'tracking_eval_runtime_state/native/prepared/manifest.json'
         folder=output/prediction_kind
         jobs,inputs=prepare(manifest,folder)
         config=folder/'CONFIG.json';native=folder/'NATIVE.json';log=folder/'matlab.log'
@@ -103,6 +113,8 @@ def evaluate_case(phase,name):
        'official_toolkit_SHA256':{str(p.relative_to(KIT)):sha(p) for p in sorted(KIT.rglob('*')) if p.is_file() and p.suffix in ['.m','.cpp','.mexa64']},
        'adapter_script':reference(ROOT/'reproduction_tools/jev_phase13_official_matlab_eval.m'),
        'benchmark_option':'VisionTrack; skip MOT16 class/visibility preprocessing because converter auxiliary fields are unknown -1, not measured MOT16 visibility',
+       'source_pooled_result':reference(source/'RESULT.json'),
+       'comparison_scope':('frozen original GMT Stage2 full system; separate perception/RPCE, not same-frontend causal ablation' if original else 'same Stage1 primary/onpolicy controller experiment'),
        'unchanged_official_metric_functions':True,
        'input_policy':'official converter sequential max(GT,pred)+1; interleaved frame*n_views+index; two-decimal XYWH; auxiliary -1; actual raw/canonical frozen predictions',
        'aggregation':'sum official per-scene counts; no mean-of-video scores',
@@ -118,7 +130,7 @@ def main():
     args=parser.parse_args();protect()
     if not args.all:
         evaluate_case(args.phase,args.case);return
-    cases=[('formal','cosine_seed20261009')]
+    cases=[('formal','cosine_seed20261009'),('reference','original_GMT')]
     cases += [('formal',f'{v}_seed{s}') for v in VARIANTS for s in SEEDS]
     cases += [('formal',f'full_seed{s}_no_calibration') for s in SEEDS]
     cases += [('onpolicy',f'{v}_seed{s}') for v in ['full','motip','camel','set_transformer'] for s in SEEDS
@@ -127,9 +139,9 @@ def main():
         futures=[pool.submit(evaluate_case,*case) for case in cases]
         results=[future.result() for future in futures]
     summaries={}
-    for phase in ['formal','onpolicy']:
+    for phase in ['formal','onpolicy','reference']:
         summaries[phase]={}
-        for variant in ['cosine']+VARIANTS:
+        for variant in ['cosine','original_GMT']+VARIANTS:
             selected=[r for r in results if r['phase']==phase and r['case'].split('_seed')[0]==variant and not r['case'].endswith('_no_calibration')]
             if selected:
                 summaries[phase][variant]={key:{'mean':float(np.mean([r['reports']['raw_predictions'][key] for r in selected])),
