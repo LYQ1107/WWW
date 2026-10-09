@@ -15,7 +15,7 @@ def main(video):
     capture=PREVIOUS/'native_capture_v1'/f'video{video:02d}'/'compat'
     manifest=json.loads((capture/'RESULT.json').read_text());registry={tuple(r['key']):r for r in manifest['prefixes']}
     trace={tuple(r['key']):r for r in json.loads((capture/'FULL_NATIVE_TRACE.json').read_text())}
-    out=OUT/'native_parity_v1'/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True)
+    out=OUT/os.environ.get('JEV_PHASE12_NATIVE_OUTPUT','native_parity_v1')/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True)
     if (out/'RESULT.json').exists():
         complete=json.loads((out/'RESULT.json').read_text());assert complete['binding']==source;print('NATIVE_ALREADY_PASS',video);return
     model=build_model(video);torch.manual_seed(20261009);network=VisualJev().cuda().eval()
