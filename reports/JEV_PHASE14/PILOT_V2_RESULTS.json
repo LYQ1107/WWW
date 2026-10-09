@@ -1,0 +1,1790 @@
+{
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": null,
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "frozen_evidence_SHA256": "8aad518ca211a16a6776b6eb7213d6abfce65ba050a2a88ca972b17e1681840d",
+    "heldout": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "1891c752d1430ef415e76830a40ef41dc28f2189b097c9654d06b279d11a5adf",
+    "source_SHA256": {
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "3025d8080b237cadd562f09ccfb8b1c33d11aaf72ed0c2a3f251f3572785e1c2",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "reproduction_tools/jev_phase14_checkpoint_audit.py": "dd6a254903d1d249790ff7904019c979fafff959188488cdfce13481ffde81de",
+      "reproduction_tools/jev_phase14_common.py": "e5a526e80ab4e10a852e266df7f74880f3659e3f9cd9ab79f113b3eb93d588c4",
+      "reproduction_tools/jev_phase14_external.py": "5920dfbe1f2cbeb211247ef297e4f69b6faa28fd9440ff3efbc849d92963e5ca",
+      "reproduction_tools/jev_phase14_forensics.py": "e3e7a758b61e86979e34aaaaec5ffd6b89c5cf53eab5c676b92f96074e1f7d67",
+      "reproduction_tools/jev_phase14_freeze.py": "00006a4f539595887d49c5f4072202214f5a50f9d5c8239921784ac531f53953",
+      "reproduction_tools/jev_phase14_losses.py": "19502a62d8112aabf6403b6afbb7471b9155dea59f34dfaf27e358937283cb80",
+      "reproduction_tools/jev_phase14_native_contract.py": "f1a7d59834e5ab7f1a16cfc8fb04462bfbdddad6e190b95f15a9e59aef144d5a",
+      "reproduction_tools/jev_phase14_question_diagnostics.py": "ce5541b6696c7a3db0ccba8260d907b825d193689a294f07d674baf056aa58b0",
+      "reproduction_tools/jev_phase14_queue.py": "733cbe8c84355ae3cc5740649c599dfcea4c4d4596a3e3583ce29740b3b4fa7d",
+      "reproduction_tools/jev_phase14_supervision.py": "114ca9d744fc40e25e0ddaa9782b0286755ea0562137aee6828c705cff367a00",
+      "reproduction_tools/jev_phase14_tests.py": "ff68a1341146f9298a4729d11dcf4339af406c1cc450d546b1210316a243959e",
+      "reproduction_tools/jev_phase14_train.py": "7012489936200118d71be542fb98af78c8d1320ee10157a00a7ce287d1f11950"
+    },
+    "source_commit": "3146457b09c29cc38bb27b6fee51f5b582eda89b"
+  },
+  "cases": [
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "db4986fc5eded07e4fc79f514ebd51efe030af9dbb68ab8c8337b1ee3d987c19",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/full/standard_choice/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 154,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 0,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4242,
+          "false_defer": 0,
+          "normal_retained": 4068,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 211,
+          "trust_0_support": 1403,
+          "trust_1_correct": 4776,
+          "trust_1_support": 6505
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 0,
+            "false_absence": 629,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 0,
+            "false_absence": 547,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 0,
+            "false_absence": 3046,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9635243960208432,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.4422982376076739
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 144.18801879882812
+      },
+      "loss": "standard_choice",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 56.05207613110542,
+      "variant": "full"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "e94ed3d1ba9686282375c689cbc9b14cc83e56b72a7eb2caedab9d41dea4f6cb",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/full/legacy_structured/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5020132638559924,
+        "counts": {
+          "UNKNOWN_choice": 128,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 17,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4265,
+          "false_defer": 0,
+          "normal_retained": 4091,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 92,
+          "trust_0_support": 1403,
+          "trust_1_correct": 4921,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 0,
+            "false_absence": 629,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 0,
+            "false_absence": 547,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 17,
+            "false_absence": 3029,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9689720511605874,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.4110343871675004
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 194.04476928710938
+      },
+      "loss": "legacy_structured",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 63.449542082846165,
+      "variant": "full"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "443187c0f66db196e02b55aec00b19605483016c9834491a0dfe86b262d06fc2",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/full/cost_sensitive/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5007105637138797,
+        "counts": {
+          "UNKNOWN_choice": 148,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 6,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4245,
+          "false_defer": 0,
+          "normal_retained": 4071,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 67,
+          "trust_0_support": 1403,
+          "trust_1_correct": 5450,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 0,
+            "false_absence": 629,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 0,
+            "false_absence": 547,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 6,
+            "false_absence": 3040,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9642349597347228,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.44278593745805495
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 183.79698181152344
+      },
+      "loss": "cost_sensitive",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 63.74373974651098,
+      "variant": "full"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "f91d6d30fe574a6d0b0f20c8ade7c91d976861f9648e8e1d3610b3388de3b4e1",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/full/availability_joint/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 1.0,
+        "counts": {
+          "UNKNOWN_choice": 143,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4251,
+          "false_defer": 0,
+          "normal_retained": 4077,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 879,
+          "trust_0_support": 1403,
+          "trust_1_correct": 6420,
+          "trust_1_support": 6505,
+          "wrong_choice": 2
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9656560871624822,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.8067238699547418
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 257.3723449707031
+      },
+      "loss": "availability_joint",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 67.01133687794209,
+      "variant": "full"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "53db17cf80f9bf1279ae4fa20dcb5f704bbed78a5626297e2bc3df90efa34b85",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/fixed_question/standard_choice/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 162,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 0,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4234,
+          "false_defer": 0,
+          "normal_retained": 4060,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 766,
+          "trust_0_support": 1403,
+          "trust_1_correct": 2579,
+          "trust_1_support": 6505
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 0,
+            "false_absence": 629,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 0,
+            "false_absence": 547,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 0,
+            "false_absence": 3046,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9616295594504974,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.4712185867223141
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 61.35243225097656
+      },
+      "loss": "standard_choice",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 63.44754036515951,
+      "variant": "fixed_question"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "5aeb6798964aa558c36e5cec7a90714e29587ecbca796b7f62668c57285d79f0",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/fixed_question/legacy_structured/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 129,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 0,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4264,
+          "false_defer": 0,
+          "normal_retained": 4090,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 253,
+          "trust_0_support": 1403,
+          "trust_1_correct": 3746,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 0,
+            "false_absence": 629,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 0,
+            "false_absence": 547,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 0,
+            "false_absence": 3046,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9687351965892942,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.3780962941495193
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 116.38966369628906
+      },
+      "loss": "legacy_structured",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 69.75378634780645,
+      "variant": "fixed_question"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "3f8d578741230e77e16bc0f9f26af882cfde875c50336fdf00d9109e07f3a819",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/multi_question/standard_choice/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 154,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 0,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4242,
+          "false_defer": 0,
+          "normal_retained": 4068,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 605,
+          "trust_0_support": 1403,
+          "trust_1_correct": 3059,
+          "trust_1_support": 6505
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 0,
+            "false_absence": 629,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 0,
+            "false_absence": 547,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 0,
+            "false_absence": 3046,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9635243960208432,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.45073623392938045
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 144.18801879882812
+      },
+      "loss": "standard_choice",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 64.45295567810535,
+      "variant": "multi_question"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "6df0d23716e2677407d589a111e6a8678f2c995b879d7d7a530501241b3f349f",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/fixed_question/cost_sensitive/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 152,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 0,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4243,
+          "false_defer": 0,
+          "normal_retained": 4069,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 843,
+          "trust_0_support": 1403,
+          "trust_1_correct": 1168,
+          "trust_1_support": 6505,
+          "wrong_choice": 1
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 0,
+            "false_absence": 629,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 0,
+            "false_absence": 547,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 0,
+            "false_absence": 3046,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9637612505921365,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.39020474956760604
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 109.06163024902344
+      },
+      "loss": "cost_sensitive",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 71.30453857034445,
+      "variant": "fixed_question"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "c34b1083568054a32ea420c45befc677baa783f1fce6c4bf8faaea0b0c7b3a6e",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/fixed_question/availability_joint/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 1.0,
+        "counts": {
+          "UNKNOWN_choice": 127,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4268,
+          "false_defer": 0,
+          "normal_retained": 4094,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 1053,
+          "trust_0_support": 1403,
+          "trust_1_correct": 6367,
+          "trust_1_support": 6505,
+          "wrong_choice": 1
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.969682614874467,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.8646600591792157
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 144.72134399414062
+      },
+      "loss": "availability_joint",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 76.54143111407757,
+      "variant": "fixed_question"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "7b78f878c2fa75f465933ee8229e4fb83399bc44fbd27b604df5deecd2d86a45",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/multi_question/legacy_structured/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 128,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 0,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4265,
+          "false_defer": 0,
+          "normal_retained": 4091,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 358,
+          "trust_0_support": 1403,
+          "trust_1_correct": 2955,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 0,
+            "false_absence": 629,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 0,
+            "false_absence": 547,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 0,
+            "false_absence": 3046,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9689720511605874,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.35471672374394825
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 194.04476928710938
+      },
+      "loss": "legacy_structured",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 70.12625052779913,
+      "variant": "multi_question"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "e18cb2173c8d5ba1251b21a663d4bfd6b1cc2c0fe912f238d86d263e1f1ae9cc",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/multi_question/cost_sensitive/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 148,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 0,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4245,
+          "false_defer": 0,
+          "normal_retained": 4071,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 184,
+          "trust_0_support": 1403,
+          "trust_1_correct": 4066,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 0,
+            "false_absence": 629,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 0,
+            "false_absence": 547,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 0,
+            "false_absence": 3046,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9642349597347228,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.3781025944733559
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 183.79698181152344
+      },
+      "loss": "cost_sensitive",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 69.858134560287,
+      "variant": "multi_question"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "1401058dab8d22e16dc36023d4333a0470c85d513793296aa0bcaeaae4be8590",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/set_transformer/standard_choice/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5028735632183908,
+        "counts": {
+          "UNKNOWN_choice": 147,
+          "availability_0_correct": 1,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4247,
+          "false_defer": 0,
+          "normal_retained": 4073,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 1403,
+          "trust_0_support": 1403,
+          "trust_1_correct": 187,
+          "trust_1_support": 6505,
+          "wrong_choice": 2
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 0,
+            "false_presence": 38,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 1,
+            "false_presence": 135,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9647086688773093,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.5143735588009224
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 76.27915954589844
+      },
+      "loss": "standard_choice",
+      "parameters": 4099589,
+      "pilot_qualified": true,
+      "seconds": 61.78104890882969,
+      "variant": "set_transformer"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "22b20c4facd8caeac27b206d980201e18a9a2cf72d4efc46dd87a93bf8333554",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/set_transformer/legacy_structured/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5494930767681058,
+        "counts": {
+          "UNKNOWN_choice": 141,
+          "availability_0_correct": 64,
+          "availability_0_support": 174,
+          "availability_1_correct": 3087,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4253,
+          "false_defer": 0,
+          "normal_retained": 4079,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 1403,
+          "trust_0_support": 1403,
+          "trust_1_correct": 14,
+          "trust_1_support": 6505,
+          "wrong_choice": 2
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 570,
+            "false_absence": 59,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 2,
+            "false_presence": 36,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 62,
+            "false_presence": 74,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 533,
+            "false_absence": 14,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 1984,
+            "false_absence": 1062,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9661297963050687,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.501076095311299
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 90.95966339111328
+      },
+      "loss": "legacy_structured",
+      "parameters": 4099589,
+      "pilot_qualified": true,
+      "seconds": 64.29029274731874,
+      "variant": "set_transformer"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "816c4598a1998c969eec8e18e3eb37315252561f95f36d2fbac253f5443c20cf",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/set_transformer/cost_sensitive/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5280590992992371,
+        "counts": {
+          "UNKNOWN_choice": 157,
+          "availability_0_correct": 30,
+          "availability_0_support": 174,
+          "availability_1_correct": 3731,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4237,
+          "false_defer": 0,
+          "normal_retained": 4063,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 1403,
+          "trust_0_support": 1403,
+          "trust_1_correct": 44,
+          "trust_1_support": 6505,
+          "wrong_choice": 2
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 552,
+            "false_absence": 77,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 1,
+            "false_presence": 37,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 29,
+            "false_presence": 107,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 464,
+            "false_absence": 83,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 2715,
+            "false_absence": 331,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9623401231643771,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.5033820138355112
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 93.51285552978516
+      },
+      "loss": "cost_sensitive",
+      "parameters": 4099589,
+      "pilot_qualified": true,
+      "seconds": 65.42621403187513,
+      "variant": "set_transformer"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "08d5790c7940f53d493841e5e2d446fc1b86e67458018872c3c93cefb0a88b5d",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/set_transformer/availability_joint/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.9971264367816092,
+        "counts": {
+          "UNKNOWN_choice": 131,
+          "availability_0_correct": 173,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4263,
+          "false_defer": 0,
+          "normal_retained": 4089,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 757,
+          "trust_0_support": 1403,
+          "trust_1_correct": 6439,
+          "trust_1_support": 6505,
+          "wrong_choice": 2
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 135,
+            "false_presence": 1,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.968498342018001,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.7647060241505109
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 152.28524780273438
+      },
+      "loss": "availability_joint",
+      "parameters": 4099589,
+      "pilot_qualified": true,
+      "seconds": 69.07761604338884,
+      "variant": "set_transformer"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "27d2e1c8e00fa571a44ba9007c9224cc810800316b4655d669916035cffe6b07",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/motip/standard_choice/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 159,
+          "availability_0_correct": 0,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4201,
+          "false_defer": 0,
+          "normal_retained": 4063,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 1403,
+          "trust_0_support": 1403,
+          "trust_1_correct": 0,
+          "trust_1_support": 6505,
+          "wrong_choice": 36
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 0,
+            "false_presence": 38,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 100,
+            "availability_correct": 0,
+            "false_presence": 136,
+            "incorrect_match": 36,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9623401231643771,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.5
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 112.7420654296875
+      },
+      "loss": "standard_choice",
+      "parameters": 4099589,
+      "pilot_qualified": true,
+      "seconds": 55.66735453903675,
+      "variant": "motip"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "1905baccd9129f9ced02ee38e7875374b373a3acef6cd9abf6f49dd604f1320d",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/multi_question/availability_joint/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 1.0,
+        "counts": {
+          "UNKNOWN_choice": 136,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4257,
+          "false_defer": 0,
+          "normal_retained": 4083,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 986,
+          "trust_0_support": 1403,
+          "trust_1_correct": 6321,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9670772145902415,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.8372469118825752
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 262.74224853515625
+      },
+      "loss": "availability_joint",
+      "parameters": 4231173,
+      "pilot_qualified": true,
+      "seconds": 76.98998375236988,
+      "variant": "multi_question"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "61e3bf267ae58fa34f1da00f74889884d75437707903237e5f19ebc7e03efbb4",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/motip/legacy_structured/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.7580598615898114,
+        "counts": {
+          "UNKNOWN_choice": 141,
+          "availability_0_correct": 91,
+          "availability_0_support": 174,
+          "availability_1_correct": 4193,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4252,
+          "false_defer": 0,
+          "normal_retained": 4078,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 1403,
+          "trust_0_support": 1403,
+          "trust_1_correct": 0,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 627,
+            "false_absence": 2,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 29,
+            "false_presence": 9,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 62,
+            "false_presence": 74,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3019,
+            "false_absence": 27,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9658929417337755,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.5
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 154.0211639404297
+      },
+      "loss": "legacy_structured",
+      "parameters": 4099589,
+      "pilot_qualified": true,
+      "seconds": 62.31359374523163,
+      "variant": "motip"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "1bf3b24934bd34ec210fa3856a0dd3ef9f8216f184ecaddfeaa007e8aba01a2e",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/shared_mlp/standard_choice/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 148,
+          "availability_0_correct": 0,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4245,
+          "false_defer": 0,
+          "normal_retained": 4071,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 1397,
+          "trust_0_support": 1403,
+          "trust_1_correct": 549,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 0,
+            "false_presence": 38,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 0,
+            "false_presence": 136,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9642349597347228,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.5400600338683496
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 122.80903625488281
+      },
+      "loss": "standard_choice",
+      "parameters": 4349955,
+      "pilot_qualified": true,
+      "seconds": 27.921398535370827,
+      "variant": "shared_mlp"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "15015099cff418bcabb56cb5528506d94f5f568d97b4898cabcbdc4cbb19b2c5",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/shared_mlp/legacy_structured/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 127,
+          "availability_0_correct": 0,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4266,
+          "false_defer": 0,
+          "normal_retained": 4092,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 1403,
+          "trust_0_support": 1403,
+          "trust_1_correct": 0,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 0,
+            "false_presence": 38,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 0,
+            "false_presence": 136,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9692089057318807,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.5
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 163.1111602783203
+      },
+      "loss": "legacy_structured",
+      "parameters": 4349955,
+      "pilot_qualified": true,
+      "seconds": 37.8157848790288,
+      "variant": "shared_mlp"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "caeec056460a51f914db2b1b65ca035c16772b2a5b9196469009697b0080fbae",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/shared_mlp/cost_sensitive/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 143,
+          "availability_0_correct": 0,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4249,
+          "false_defer": 0,
+          "normal_retained": 4075,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 1392,
+          "trust_0_support": 1403,
+          "trust_1_correct": 215,
+          "trust_1_support": 6505,
+          "wrong_choice": 4
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 0,
+            "false_presence": 38,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 0,
+            "false_presence": 136,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9651823780198958,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.5126055783615104
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 116.66217041015625
+      },
+      "loss": "cost_sensitive",
+      "parameters": 4349955,
+      "pilot_qualified": true,
+      "seconds": 39.052552811801434,
+      "variant": "shared_mlp"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "a42c70dc10cddb3d809629277985c926e9d0ef5a406305ff57a5a06fca8e9e8d",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/shared_mlp/availability_joint/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.5,
+        "counts": {
+          "UNKNOWN_choice": 137,
+          "availability_0_correct": 0,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4256,
+          "false_defer": 0,
+          "normal_retained": 4082,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 650,
+          "trust_0_support": 1403,
+          "trust_1_correct": 6427,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 0,
+            "false_presence": 38,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 0,
+            "false_presence": 136,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9668403600189484,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.7256510836830926
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 184.81190490722656
+      },
+      "loss": "availability_joint",
+      "parameters": 4349955,
+      "pilot_qualified": false,
+      "seconds": 40.512277871370316,
+      "variant": "shared_mlp"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "f7cfc8f2789fed06e258d92389d4cdc63e56913b0bdea4e0ef33476f43fb690e",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/motip/cost_sensitive/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 0.8948937421388785,
+        "counts": {
+          "UNKNOWN_choice": 152,
+          "availability_0_correct": 138,
+          "availability_0_support": 174,
+          "availability_1_correct": 4208,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4240,
+          "false_defer": 2,
+          "normal_retained": 4066,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 1403,
+          "trust_0_support": 1403,
+          "trust_1_correct": 0,
+          "trust_1_support": 6505,
+          "wrong_choice": 4
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 29,
+            "false_presence": 9,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 109,
+            "false_presence": 27,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3032,
+            "false_absence": 14,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9630506868782568,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.5
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 147.91000366210938
+      },
+      "loss": "cost_sensitive",
+      "parameters": 4099589,
+      "pilot_qualified": true,
+      "seconds": 62.269277676939964,
+      "variant": "motip"
+    },
+    {
+      "actual_updates": 1000,
+      "checkpoint": {
+        "SHA256": "4a2c9749d09b181f8e44d160e44e70b6481ff7cdeeb0e2c2d15a644e7da796d5",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/pilot_v2/motip/availability_joint/seed20261009/LAST_FROZEN.pth"
+      },
+      "final": {
+        "availability_balanced_accuracy": 1.0,
+        "counts": {
+          "UNKNOWN_choice": 141,
+          "availability_0_correct": 174,
+          "availability_0_support": 174,
+          "availability_1_correct": 4222,
+          "availability_1_support": 4222,
+          "certified_rows": 4396,
+          "correct_choice": 4252,
+          "false_defer": 0,
+          "normal_retained": 4078,
+          "normal_supported": 4222,
+          "rows": 5350,
+          "trust_0_correct": 947,
+          "trust_0_support": 1403,
+          "trust_1_correct": 6382,
+          "trust_1_support": 6505,
+          "wrong_choice": 3
+        },
+        "difficulty": {
+          "count_matched_presence": {
+            "availability_correct": 629,
+            "false_absence": 0,
+            "rows": 629
+          },
+          "easy_absence": {
+            "DEFER_correct": 38,
+            "availability_correct": 38,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 38
+          },
+          "hard_absence": {
+            "DEFER_correct": 136,
+            "availability_correct": 136,
+            "false_presence": 0,
+            "incorrect_match": 0,
+            "rows": 136
+          },
+          "intervened_presence": {
+            "availability_correct": 547,
+            "false_absence": 0,
+            "rows": 547
+          },
+          "natural_presence": {
+            "availability_correct": 3046,
+            "false_absence": 0,
+            "rows": 3046
+          }
+        },
+        "normal_retention": 0.9658929417337755,
+        "scope": "reserved TRAIN temporal blocks, natural and explicit paired withheld inputs; not a video tracking metric",
+        "trust_balanced_accuracy": 0.8280368245710439
+      },
+      "gradient_health": {
+        "finite": true,
+        "max_norm": 358.4601745605469
+      },
+      "loss": "availability_joint",
+      "parameters": 4099589,
+      "pilot_qualified": true,
+      "seconds": 61.71123257279396,
+      "variant": "motip"
+    }
+  ],
+  "execution_binding": {
+    "CUDA_VISIBLE_DEVICES": null,
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "frozen_evidence_SHA256": "8aad518ca211a16a6776b6eb7213d6abfce65ba050a2a88ca972b17e1681840d",
+    "heldout": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "1891c752d1430ef415e76830a40ef41dc28f2189b097c9654d06b279d11a5adf",
+    "source_SHA256": {
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/model.py": "14316cc2ac714bea6d2d3600e7b7996ebce7bb9d2d703cb5575e1b27dedae943",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+      "reproduction_tools/jev_phase14_checkpoint_audit.py": "dd6a254903d1d249790ff7904019c979fafff959188488cdfce13481ffde81de",
+      "reproduction_tools/jev_phase14_common.py": "e5a526e80ab4e10a852e266df7f74880f3659e3f9cd9ab79f113b3eb93d588c4",
+      "reproduction_tools/jev_phase14_forensics.py": "e3e7a758b61e86979e34aaaaec5ffd6b89c5cf53eab5c676b92f96074e1f7d67",
+      "reproduction_tools/jev_phase14_freeze.py": "00006a4f539595887d49c5f4072202214f5a50f9d5c8239921784ac531f53953",
+      "reproduction_tools/jev_phase14_losses.py": "19502a62d8112aabf6403b6afbb7471b9155dea59f34dfaf27e358937283cb80",
+      "reproduction_tools/jev_phase14_question_diagnostics.py": "ce5541b6696c7a3db0ccba8260d907b825d193689a294f07d674baf056aa58b0",
+      "reproduction_tools/jev_phase14_queue.py": "733cbe8c84355ae3cc5740649c599dfcea4c4d4596a3e3583ce29740b3b4fa7d",
+      "reproduction_tools/jev_phase14_supervision.py": "114ca9d744fc40e25e0ddaa9782b0286755ea0562137aee6828c705cff367a00",
+      "reproduction_tools/jev_phase14_tests.py": "ff68a1341146f9298a4729d11dcf4339af406c1cc450d546b1210316a243959e",
+      "reproduction_tools/jev_phase14_train.py": "7012489936200118d71be542fb98af78c8d1320ee10157a00a7ce287d1f11950"
+    },
+    "source_commit": "3146457b09c29cc38bb27b6fee51f5b582eda89b"
+  },
+  "failed": [],
+  "same_supervision_evidence_budget": true,
+  "source_pin": "3146457b09c29cc38bb27b6fee51f5b582eda89b",
+  "status": "COMPLETE"
+}

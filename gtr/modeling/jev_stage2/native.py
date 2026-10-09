@@ -6,8 +6,8 @@ from .assignment import lawful_choice
 
 class NativeDirectExecutor:
     def __init__(self,policy,mode='JEV_DIRECT',temperature=(1.,1.),variant='full',react_learned=True):
-        assert mode in ['OFF','SHADOW','JEV_DIRECT'];self.mode=mode;self.policy=policy;self.temperature=temperature;self.variant=variant;self.react_learned=react_learned;self.memory=IdentityMemory();self.observer=None;self.commit_observer=None;self.latency=[]
-    def reset(self):self.memory=IdentityMemory();self.latency=[]
+        assert mode in ['OFF','SHADOW','JEV_DIRECT'];self.mode=mode;self.policy=policy;self.temperature=temperature;self.variant=variant;self.react_learned=react_learned;self.memory_factory=IdentityMemory;self.memory=self.memory_factory();self.observer=None;self.commit_observer=None;self.latency=[]
+    def reset(self):self.memory=self.memory_factory();self.latency=[]
     def initialize(self,instances,frame,view,first):
         if first and not self.memory.meta:
             for inst in instances[:-1]:

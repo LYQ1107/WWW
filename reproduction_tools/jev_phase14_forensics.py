@@ -105,7 +105,7 @@ def quantiles(values):
 def kbin(k):
     return '0' if k==0 else '1-9' if k<10 else '10-19' if k<20 else '20-29' if k<30 else '30-49' if k<50 else '50+'
 
-def audit_case(out, ann, video):
+def audit_case(out, ann, video, artifact_root=None):
     r = read(out/'RESULT.json'); rawpath = out/'RAW_PREDICTIONS.json'
     assert sha(rawpath) == r['raw_predictions']['SHA256']
     assert sha(out/'COMMITS.jsonl.gz') == r['commits_SHA256']
@@ -225,7 +225,7 @@ def audit_case(out, ann, video):
                 spans.append(dict(gt=gt, view=view, start=active[0]['key'][1], end=active[-1]['key'][1], observed_error_payloads=len(active), right_censored=True)); active=[]
             active.append(e)
         if active: spans.append(dict(gt=gt, view=view, start=active[0]['key'][1], end=active[-1]['key'][1], observed_error_payloads=len(active), right_censored=True))
-    path = OUT/'forensics_v1'/out.parent.name/f'video{video:02d}'
+    path = (OUT/'forensics_v1' if artifact_root is None else Path(artifact_root))/out.parent.name/f'video{video:02d}'
     # Phase prefix distinguishes 20k and 24k even if case/seed names match.
     path = path / ('24k' if 'onpolicy' in str(out) else '20k')
     path.mkdir(parents=True, exist_ok=True)

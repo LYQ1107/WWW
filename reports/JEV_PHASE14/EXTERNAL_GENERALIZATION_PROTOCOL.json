@@ -1,0 +1,73 @@
+{
+  "Full24": false,
+  "HTTP_range_access_verified": true,
+  "VisionTrack_official_TEST": false,
+  "archive_bytes": 6807496358,
+  "archive_url": "https://documents.epfl.ch/groups/c/cv/cvlab-unit/www/data/Wildtrack/Wildtrack_dataset_full.zip",
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": null,
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "frozen_evidence_SHA256": "8aad518ca211a16a6776b6eb7213d6abfce65ba050a2a88ca972b17e1681840d",
+    "heldout": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "1891c752d1430ef415e76830a40ef41dc28f2189b097c9654d06b279d11a5adf",
+    "source_SHA256": {
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/model.py": "14316cc2ac714bea6d2d3600e7b7996ebce7bb9d2d703cb5575e1b27dedae943",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+      "reproduction_tools/jev_phase14_checkpoint_audit.py": "dd6a254903d1d249790ff7904019c979fafff959188488cdfce13481ffde81de",
+      "reproduction_tools/jev_phase14_common.py": "e5a526e80ab4e10a852e266df7f74880f3659e3f9cd9ab79f113b3eb93d588c4",
+      "reproduction_tools/jev_phase14_forensics.py": "e3e7a758b61e86979e34aaaaec5ffd6b89c5cf53eab5c676b92f96074e1f7d67",
+      "reproduction_tools/jev_phase14_freeze.py": "00006a4f539595887d49c5f4072202214f5a50f9d5c8239921784ac531f53953",
+      "reproduction_tools/jev_phase14_losses.py": "19502a62d8112aabf6403b6afbb7471b9155dea59f34dfaf27e358937283cb80",
+      "reproduction_tools/jev_phase14_question_diagnostics.py": "ce5541b6696c7a3db0ccba8260d907b825d193689a294f07d674baf056aa58b0",
+      "reproduction_tools/jev_phase14_queue.py": "733cbe8c84355ae3cc5740649c599dfcea4c4d4596a3e3583ce29740b3b4fa7d",
+      "reproduction_tools/jev_phase14_supervision.py": "114ca9d744fc40e25e0ddaa9782b0286755ea0562137aee6828c705cff367a00",
+      "reproduction_tools/jev_phase14_tests.py": "ff68a1341146f9298a4729d11dcf4339af406c1cc450d546b1210316a243959e",
+      "reproduction_tools/jev_phase14_train.py": "7012489936200118d71be542fb98af78c8d1320ee10157a00a7ce287d1f11950"
+    },
+    "source_commit": "3146457b09c29cc38bb27b6fee51f5b582eda89b"
+  },
+  "calibration_external": false,
+  "camera_selection": [
+    "C1",
+    "C2"
+  ],
+  "dataset": "WILDTRACK official EPFL annotated release",
+  "download_budget_bytes": 2500000000,
+  "evaluation_role": "external TRAIN-release transfer scene with frozen frontend and frozen association policies; GT evaluation only after predictions committed",
+  "frames": "first320 annotated frame names in increasing order; within commonly used first360 training prefix, remaining80 and any official evaluation partition untouched",
+  "heldout20_21_22": "SEALED",
+  "independent_evidence_gate": "verify persistent personID semantics, currentview projected boxes, Stage1 and Stage2 training scene lists, no known scene/image overlap; unresolved initializer exposure prevents stronger absolute no-exposure claim",
+  "model_selection_external": false,
+  "native_timing": "unchanged tracker windows in observed-frame units; physical-time domain shift explicitly reported",
+  "official_page": "https://www.epfl.ch/labs/cvlab/data/data-wildtrack/",
+  "published_scope": "two fixed cameras and observed first320 annotation samples; not full7-camera WILDTRACK benchmark",
+  "required_models": [
+    "frozen_full20k",
+    "frozen_fixed_question20k",
+    "frozen_set20k",
+    "cosine",
+    "each_qualified_phase14_formal_LAST"
+  ],
+  "reserve_free_bytes": 3000000000,
+  "selection_reason": "first two numbered cameras, fixed native two-camera compatibility; no performance-based selection",
+  "status": "FROZEN_BEFORE_EXTERNAL_LABEL_OR_TRACKING_OUTCOMES",
+  "temporal_sampling": "use only actual 2FPS annotated images; no GT interpolation or invented detections; 320 observed frames of a fixed160s prefix, not full60FPS video",
+  "training_external": false
+}

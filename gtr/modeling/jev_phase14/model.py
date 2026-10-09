@@ -39,6 +39,10 @@ class ReliableIdentityPolicy(nn.Module):
     def details(self,x):
         expected={'detection_visual','detection_meta','history_visual','history_mask','identity_meta','pair_evidence','legal','question_mask','identity_mask','question_type'}
         if set(x)!=expected:raise ValueError('Only causal tensors may enter identity policy; refs and GT labels stay outside')
+        if x['detection_visual'].shape[1]==0:
+            b=x['detection_visual'].shape[0];k=x['history_visual'].shape[1];empty=x['detection_visual']
+            return dict(logits=empty.new_empty(b,0,k+1),choice_logits=empty.new_empty(b,0,k+1),
+                        availability_logits=empty.new_empty(b,0),trust_logits=empty.new_empty(b,0,k))
         if isinstance(self.core,SharedMLP):
             who,option,queries=self.core.features(x)
         else:
