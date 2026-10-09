@@ -1,0 +1,63 @@
+{
+  "status": "FROZEN_BEFORE_REAL_MATCH_TRAINING",
+  "models": [
+    "CandidateMLP",
+    "CandidateDeepSets",
+    "CandidateJEV",
+    "set_transformer",
+    "visual_deepsets",
+    "question_plain",
+    "full",
+    "no_question_reader",
+    "fixed_question",
+    "no_option_reader",
+    "no_gating",
+    "no_shared_state",
+    "no_history",
+    "no_H32",
+    "no_consequence",
+    "similarity",
+    "numerical_only"
+  ],
+  "same_visual_main": [
+    "set_transformer",
+    "visual_deepsets",
+    "question_plain",
+    "full"
+  ],
+  "extra_control_no_risk": "same fitted full checkpoint, native policy intervention",
+  "seeds": [
+    20261008,
+    20261009,
+    20261010
+  ],
+  "tiny_supervision": [
+    "CE",
+    "H32",
+    "joint"
+  ],
+  "tiny_model": "full",
+  "tiny_updates_initial": 1000,
+  "formal_supervision": "joint",
+  "formal_epochs": 100,
+  "batch": 16,
+  "AdamW_lr": 0.001,
+  "weight_decay": 0.0001,
+  "clip_grad": 5,
+  "old95_Tiny_gate_required": false,
+  "source_plan": [
+    "reproduction_tools/jev_phase12_learning.py",
+    "reproduction_tools/train_jev_phase12_match.py"
+  ],
+  "script_SHA256": {
+    "reproduction_tools/jev_phase12_learning.py": "17a0ac31be6dd1d3a7ff026738e22e420569c42079fb56ead44933a83e3428fa",
+    "reproduction_tools/train_jev_phase12_match.py": "99a7b42fde19f6dc361332dfc34655eca3f9b65b4c6fe32cd6cf1635b60a089e"
+  },
+  "architecture_freeze_SHA256": "acbfd580086a2f8d95cb24b166b4a2db2aade855186d03004297af2c151a2514",
+  "native_gate_SHA256": "0e5ac31b7299111a7636bfc3d85dd2639ac809c89aeee4b989bba2dd21b0176a",
+  "partial_supervision_contract_SHA256": "8cd19eee7c0328bbdf96828a1ede5c8e303eda872db134c5a93d1646473c38d8",
+  "visual_dataset_SHA256": "67f6dcf5acca15c6fa63d20674e9b0c9c8151b7943bd2b354c699a48ca0629e1",
+  "heldout": "SEALED",
+  "Full24": false,
+  "official_TEST": false
+}
