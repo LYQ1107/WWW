@@ -44,6 +44,13 @@ def main(kind,max_jobs):
                 if 'python' not in Path(args.split()[0]).name:continue
                 rss=int(next(l.split()[1] for l in (proc/'status').read_text().splitlines() if l.startswith('VmRSS:')))/1048576
                 estimate=5. if 'evaluate_jev_stage2_online.py' in args or '--phase validation' in args else 11.
+                if 'train_jev_stage2.py' in args:
+                    argv=args.split();v=argv[argv.index('--variant')+1];s=argv[argv.index('--seed')+1];phase=argv[argv.index('--phase')+1]
+                    # First persisted optimization progress proves the full
+                    # TRAIN+development corpus has already been loaded. Its
+                    # measured resident size is ~7.75GiB; retain another
+                    # .75GiB per loaded worker plus the14GiB host margin.
+                    if rss>=7.5 and (OUT/f'{phase}_training_v1'/v/f'seed{s}'/'PROGRESS.json').exists():estimate=rss+.75
                 deficit+=max(0.,estimate-rss)
             except (OSError,StopIteration,ValueError):continue
         required=5. if kind=='validation' else 11.
