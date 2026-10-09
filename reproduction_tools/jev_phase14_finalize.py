@@ -15,13 +15,14 @@ def counts(rows):
 def trace(path):
     with gzip.open(path,'rt') as f:return [json.loads(x) for x in f]
 
-def main(wait=False):
+def main(wait=False,primary_only=False):
     protect();source=binding();p=read(REPORTS/'FORMAL_PROTOCOL.json');variants=p['architectures'];seeds=p['seeds']
     queues=[OUT/'completion_queue_v2/RESULT.json',OUT/'metrics_queue_v2/RESULT.json',OUT/'diagnostic_queue_v1/RESULT.json',OUT/'external_eval_v1/completion_queue_v1/RESULT.json']
-    while any(not q.exists() for q in queues):
+    required_queues=queues[:3] if primary_only else queues
+    while any(not q.exists() for q in required_queues):
         assert wait,'complete prerequisites required before final report'
         time.sleep(10)
-    queue_results=[read(q) for q in queues];assert all(q['status']=='COMPLETE' for q in queue_results),[(str(f),q['status'],q.get('failed')) for f,q in zip(queues,queue_results)]
+    queue_results=[read(q) for q in required_queues];assert all(q['status']=='COMPLETE' for q in queue_results),[(str(f),q['status'],q.get('failed')) for f,q in zip(required_queues,queue_results)]
     online=[];official=[];training=[];risk=[];summaries={};matlab_summaries={}
     for phase in PHASES:
         summaries[phase]={};matlab_summaries[phase]={}
@@ -45,7 +46,10 @@ def main(wait=False):
                 f=OUT/'matched_TRAIN_native_risk_v1'/phase/name/'RESULT.json';d=read(f);assert d['status']=='COMPLETE' and len(d['results'])==4
                 c=counts([x['audit']['counts'] for x in d['results']]);risk.append(dict(phase=phase,variant=variant,seed=seed,counts=c,normal_retention=c.get('normal_correct_retained',0)/max(1,c.get('normal_supported',0)),result=ref(f),videos=[dict(video=x['video'],audit=x['audit'],trace=x['trace']) for x in d['results']]))
             summaries[phase][variant]=stats(group,KEYS);matlab_summaries[phase][variant]=stats(matgroup,['CVIDF1','CVMA'])
-    common=dict(status='COMPLETE',binding=source,frozen_evidence=ref(REPORTS/'PHASE13_FROZEN_EVIDENCE.json'),preregistered=ref(REPORTS/'PREREGISTRATION.json'),official_TEST=False,Full24=False,heldout='SEALED')
+    common=dict(status='COMPLETE',binding=source,frozen_evidence=ref(REPORTS/'PHASE13_FROZEN_EVIDENCE.json'),preregistered=ref(REPORTS/'PREREGISTRATION.json'),official_TEST=False,Full24=False,heldout='SEALED',
+        config_SHA256={name:sha(ROOT/name) for name in ['configs/VISION_test.yaml','configs/VISION_stage1.yaml']},
+        annotation_SHA256=sha('/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json'),seeds=seeds,
+        checkpoint_data_source_scope='each case references actual immutable training/result/data manifests; report aggregation HEAD is not an actor/training HEAD')
     save(REPORTS/'ONLINE_VALIDATION.json',dict(**common,cases=online,seed_summary=summaries,scope='36 exact six-camera pooled cases from108 complete native videos; one pooled score perseed, raw primary, canonical future-filtering separately; frozen frontend already exposed all24TRAIN',execution_queue=ref(queues[0])))
     save(REPORTS/'OFFICIAL_MATLAB_RESULTS.json',dict(**common,cases=official,seed_summary=matlab_summaries,scope='actual unchanged official MATLAB metric code; sum per-scene raw counts; sequential CVIDF1, interleaved CVMA, no mean-of-video scores',queue=ref(queues[1])))
     contrasts=[]
@@ -90,6 +94,11 @@ def main(wait=False):
     save(REPORTS/'PAIRED_NATIVE_FUTURE_RESULTS.json',dict(**common,cases=paired,summary=paired_summary,scope='468 actual same-prefix16scene-frame mutated-future branches, TRAIN only, historical Full20k three seeds, OOD inference dependency only',protocol=ref(REPORTS/'PAIRED_NATIVE_PROTOCOL.json')))
     for name in ['IDENTITY_MEMORY_FACTORIAL','CROSS_CAMERA_EVIDENCE_AUDIT']:
         d=read(REPORTS/(name+'.json'));d.update(status='COMPLETE_FROZEN_INPUT_AND_PAIRED_NATIVE_DEPENDENCY',paired_actual_mutated_future=ref(REPORTS/'PAIRED_NATIVE_FUTURE_RESULTS.json'),actual_official_cross_camera=ref(REPORTS/'OFFICIAL_MATLAB_RESULTS.json'),retrained_structural_claim=False);save(REPORTS/(name+'.json'),d)
+    if primary_only:
+        save(REPORTS/'PRIMARY_RESULTS_SNAPSHOT.json',dict(**common,scope='completed primary native, official MATLAB, full cache parity, matched TRAIN and paired memory evidence; external evaluation still pending',
+            completed_matrix=dict(formal20k=9,extra4k=27,complete_DEV_native_videos=108,full_uncached_parity_videos=9,official_DEV_pooled_cases=36,TRAIN_native_risk_rollouts=144,paired_native_future_branches=468),
+            external_status=read(OUT/'external_eval_v1/completion_queue_v1/PROGRESS.json'),reports=[ref(REPORTS/(n+'.json')) for n in ['ONLINE_VALIDATION','OFFICIAL_MATLAB_RESULTS','FAIR_BASELINE_RESULTS','ON_POLICY_STABILITY','FULL_VIDEO_CACHE_PARITY','PAIRED_NATIVE_FUTURE_RESULTS']]))
+        print('PHASE14_PRIMARY_RESULTS_COMPLETE_EXTERNAL_PENDING',flush=True);return
     external=[]
     for item in queue_results[3]['done']:
         f=Path(item['result']);d=read(f);assert d['status']=='COMPLETE' and d['actual_mutated_state_online'] and d['GT_actor_inputs'] is False
@@ -126,4 +135,4 @@ def main(wait=False):
     print('PHASE14_ALL_COMPLETED_EVIDENCE_AGGREGATED',gates,flush=True)
 
 if __name__=='__main__':
-    a=argparse.ArgumentParser();a.add_argument('--wait',action='store_true');main(a.parse_args().wait)
+    a=argparse.ArgumentParser();a.add_argument('--wait',action='store_true');a.add_argument('--primary-only',action='store_true');v=a.parse_args();main(v.wait,v.primary_only)
