@@ -1,0 +1,889 @@
+{
+  "SHA256": "27efd702cda1e8ffc21cde796233e1c9ddcf96ebb73634cf26826ad05470d5c1",
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": "9",
+    "Full24": false,
+    "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+    "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "VAL": [
+      17,
+      18,
+      19
+    ],
+    "dirty": false,
+    "heldout": "SEALED",
+    "official_TEST": false,
+    "source_SHA256": {
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+      "gtr/modeling/jev_stage2/model.py": "acaaecae92361270cec74f0f030cc621db0076a162e0c5ee0edf6c8d57807889",
+      "gtr/modeling/jev_stage2/native.py": "38c26207fe52a3e528d1c0face8c242f8b7d78c60bd51e2fbb3e117920d15350",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+      "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+      "reproduction_tools/audit_jev_stage2_gta_free.py": "b2bedc2f2fffef62c1299e46b711fb2c13607c36496238d4182e3057e48f0932",
+      "reproduction_tools/build_dense_jev_stage2_dataset.py": "84890c84bceecb3f1a86da3e586f47b34691a8860db06ef4dfd638dfe9f95d6c",
+      "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+      "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+      "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+      "reproduction_tools/jev_phase13_common.py": "6496142aa23a8151251c74a7f5f1148cd6d9a856672944f3648b72beb6c98af8",
+      "reproduction_tools/jev_phase13_learning.py": "10bc7febd61af1478fb038b85baf09e8935123c143f772625adbbda97d782955",
+      "reproduction_tools/jev_phase13_runtime.py": "e04e53729638e1bf52d7dc22d3261826134235b5ddc286a22ce4dc2a55a445dc",
+      "reproduction_tools/test_jev_phase13_structure.py": "a9c9da9c5fca3ae1a9a0117744a6be2b6b47094f59a752e95db64e268b278780",
+      "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7"
+    },
+    "source_commit": "2a305d0f9582c1d43c4e3bcbaa6ee799bd952261",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/source_contract_v1"
+  },
+  "checks": [
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 54546432,
+          "linear_MAC": 63984640
+        },
+        "executed_MAC": 118531072,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 237062144,
+        "registered_parameters": 4230659,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 3.5762786865234375e-07,
+      "permutation_max_error": 2.980232238769531e-07,
+      "variant": "full",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 59400192,
+          "linear_MAC": 66737152
+        },
+        "executed_MAC": 126137344,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 252274688,
+        "registered_parameters": 4099075,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 3.2782554626464844e-07,
+      "permutation_max_error": 3.2782554626464844e-07,
+      "variant": "motip",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 61022208,
+          "linear_MAC": 66737152
+        },
+        "executed_MAC": 127759360,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 255518720,
+        "registered_parameters": 4099075,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 2.7567148208618164e-07,
+      "permutation_max_error": 2.682209014892578e-07,
+      "variant": "camel",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 61022208,
+          "linear_MAC": 66737152
+        },
+        "executed_MAC": 127759360,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 255518720,
+        "registered_parameters": 4099075,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 2.384185791015625e-07,
+      "permutation_max_error": 3.2782554626464844e-07,
+      "variant": "set_transformer",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 33841152,
+          "linear_MAC": 45110272
+        },
+        "executed_MAC": 78951424,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 157902848,
+        "registered_parameters": 4230659,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 2.980232238769531e-07,
+      "permutation_max_error": 2.980232238769531e-07,
+      "variant": "no_question_reader",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 54546432,
+          "linear_MAC": 63984640
+        },
+        "executed_MAC": 118531072,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 237062144,
+        "registered_parameters": 4230659,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 3.5762786865234375e-07,
+      "permutation_max_error": 2.384185791015625e-07,
+      "variant": "fixed_question",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 30609408,
+          "linear_MAC": 38818816
+        },
+        "executed_MAC": 69428224,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 138856448,
+        "registered_parameters": 4230659,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 1.9371509552001953e-07,
+      "permutation_max_error": 1.6391277313232422e-07,
+      "variant": "no_option_reader",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 54546432,
+          "linear_MAC": 60445696
+        },
+        "executed_MAC": 114992128,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 229984256,
+        "registered_parameters": 4230659,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 2.980232238769531e-07,
+      "permutation_max_error": 2.384185791015625e-07,
+      "variant": "no_gating",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 54546432,
+          "linear_MAC": 63984640
+        },
+        "executed_MAC": 118531072,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 237062144,
+        "registered_parameters": 4230659,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 2.682209014892578e-07,
+      "permutation_max_error": 0.0,
+      "variant": "no_cross_camera",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 54546432,
+          "linear_MAC": 63984640
+        },
+        "executed_MAC": 118531072,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 237062144,
+        "registered_parameters": 4230659,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 2.384185791015625e-07,
+      "permutation_max_error": 2.384185791015625e-07,
+      "variant": "no_long_term",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 54546432,
+          "linear_MAC": 63198208
+        },
+        "executed_MAC": 117744640,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 235489280,
+        "registered_parameters": 4230659,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 3.5762786865234375e-07,
+      "permutation_max_error": 2.384185791015625e-07,
+      "variant": "no_competition",
+      "zero_questions": true
+    },
+    {
+      "GT_key_rejected": true,
+      "ID_integer_rename_exact": true,
+      "capacity": {
+        "breakdown": {
+          "attention_MAC": 54546432,
+          "linear_MAC": 63972352
+        },
+        "executed_MAC": 118518784,
+        "input_shapes": {
+          "detection_meta": [
+            1,
+            6,
+            8
+          ],
+          "detection_visual": [
+            1,
+            6,
+            1024
+          ],
+          "history_mask": [
+            1,
+            7,
+            4
+          ],
+          "history_visual": [
+            1,
+            7,
+            4,
+            1024
+          ],
+          "identity_mask": [
+            1,
+            7
+          ],
+          "identity_meta": [
+            1,
+            7,
+            12
+          ],
+          "legal": [
+            1,
+            6,
+            7
+          ],
+          "pair_evidence": [
+            1,
+            6,
+            7,
+            16
+          ],
+          "question_mask": [
+            1,
+            6
+          ],
+          "question_type": [
+            1,
+            6
+          ]
+        },
+        "matmul_FLOPs": 237037568,
+        "registered_parameters": 4230402,
+        "scope": "real executed matrix multiply count; nonlinear/normalization/softmax/Hungarian excluded; dormant MEMORY and REACT heads disclosed separately"
+      },
+      "empty_pool_private_terminal": true,
+      "masked_padding_max_error": 3.2782554626464844e-07,
+      "permutation_max_error": 3.2782554626464844e-07,
+      "variant": "no_typed_head",
+      "zero_questions": true
+    }
+  ],
+  "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/structural_v1/RESULT.json",
+  "status": "PASS"
+}

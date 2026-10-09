@@ -1,3 +1,3 @@
 # Phase XIII source audit
 
-See JEV_PHASE13_GMT_AUDIT.md, STAGE1_CHECKPOINT_AUDIT.json and the forthcoming exact20 repository external source manifest. No third-party runtime is imported or vendored. All original Phase V–XII branches and evidence are protected.
+The GMT function/checkpoint audit, exact20 external repository function/commit/license manifest, fresh Stage1 provenance and all experiment source SHA are preserved under reports/JEV_PHASE13. No third-party runtime is imported or vendored. OFF/SHADOW221 original full-state traces and DIRECT lifecycle/resume tests are real executions. Large data/caches/weights stay local. All Phase V–XII evidence remains protected.

@@ -1,0 +1,9 @@
+# Stage2 architecture freeze
+
+Input is VFCE1024, current detection metadata8, per-ID metadata12, pair evidence16, four historical1024 tokens (recent, native Gallery mean, current-view mean, other-view mean). Global ID integers remain outside the network. Arbitrary D/K are padded and masked; each detection has a private terminal.
+
+256D projection; eight shared state latents read the current detections and legal bank, followed by two latent self-attention layers. A real question contains six evidence keys: current visual/task, current metadata, pooled global history, current-view summary, other-view summary, pooled legal pair evidence. Question evidence self-attention and state reading precede each option reading all six question keys and shared state. Mean/max legal-option context adds explicit competition. Dynamic tanh question gate modulates the option residual. Separate MATCH and REACT heads score legal identities and DEFER/START_NEW; masked outputs go to native capacity-one Hungarian with private terminals. No single-key QuestionReader.
+
+Full registered parameters: 4,230,659. Style controls: 4,099,075 (3.1% fewer). Actual executed matrix multiply profiles use real shapes, not dormant parameter count. Ablations may retain dormant reader parameters; removed compute and gradients are disclosed. MEMORY WRITE/KEEP head is untrained and never writes; REACT formal support is insufficient and uses the common .75 cosine terminal fallback.
+
+No-cross removes other-view appearance/global observation counts and timestamps from tensors while retaining the frozen legal global namespace. No-long removes prototype/view-summary visual tokens and recomputes all similarity evidence. The same transform executes in collate and native input building. No-competition removes only explicit mean/max context; causal question/state context remains. No-typed-head is diagnostic under MATCH-only supervision: typed lifecycle value cannot be identified.

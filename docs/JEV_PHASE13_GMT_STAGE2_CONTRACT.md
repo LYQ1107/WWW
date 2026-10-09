@@ -1,0 +1,7 @@
+# Native global identity contract
+
+Only JEV_DIRECT replaces original GTA scoring. OFF follows the original code branches. SHADOW discards independent logits and cannot change original assignments. The real direct executor operates on actual Instances, shared ordered native Gallery, hit counters, possible IDs and old-ReID bank. Frame0 initializes the camera with most detections; later payloads follow native camera order. Historical observations span the native40-frame window. All actual legal active IDs are candidates; no GTA retrieval scores. The bank uses original eligibility>=10 observations/promotion/prototype rules.
+
+MATCH existing-ID or DEFER is followed by an actual stale query for unmatched rows. REACT existing stale-ID or START_NEW has a separate terminal meaning. Capacity-one Hungarian enforces unique ID within one camera; cameras can share IDs. Each actual birth/restore/association causes exactly one original native write. No trained MEMORY head is enabled without WRITE/KEEP labels. Identity metadata updates only after the committed observation, before the next decision.
+
+Lossless prefixes include original Instances/Gallery alias graph, hits, bank, ID counter, explicit trajectory RNG, global RNG and `phase13_identity_meta`. Missing metadata is forbidden for DIRECT resumes. The GTA/RPCE/activated pipeline throws in the full engineering lifecycle test. Test logits are forced after a real NN forward only to cover legal lifecycle branches; they are not tracking or training evidence. Original221 OFF/SHADOW prefix+next-frame traces are exact.

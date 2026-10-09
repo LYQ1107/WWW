@@ -1,7 +1,7 @@
 """Perception-cache backed actual native GMT loop with independent Stage2 executor."""
 import torch
 from jev_phase13_common import *
-def build_tracker(video,policy=None,variant='full',mode='JEV_DIRECT',temperature=(1.,1.),react_learned=True):
+def build_tracker(video,policy=None,variant='full',mode='JEV_DIRECT',temperature=(1.,1.),react_learned=False,live=False):
     allowed(video)
     from detectron2.config import get_cfg
     from detectron2.modeling import build_model
@@ -19,15 +19,23 @@ def build_tracker(video,policy=None,variant='full',mode='JEV_DIRECT',temperature
     def forbidden(*a,**kw):raise AssertionError('JEV_DIRECT may not invoke GTA scoring or activated/traj_score pipeline')
     if mode=='JEV_DIRECT':
         model.get_asso=forbidden;model.roi_heads._forward_transformer=forbidden;model.roi_heads.asso_predictor.forward=forbidden;model.roi_heads._activate_asso=forbidden;model.roi_heads.s_t_head.forward=forbidden
+    if live:
+        assert mode=='JEV_DIRECT'
+        from cache_jev_phase13_stage1 import extract
+        frontend_cfg=get_cfg();add_centernet_config(frontend_cfg);add_gtr_config(frontend_cfg);frontend_cfg.merge_from_file(str(ROOT/'configs/VISION_stage1.yaml'));frontend_cfg.freeze();model.jev_perception_cache_reader=None
+        def inference(payloads,*args,**kw):
+            assert len(payloads)==1
+            return [extract(model,frontend_cfg,payloads[0]['phase13_image_path'])]
+        model.inference=inference
     return model
 def cache_inputs(video):
     allowed(video);from gtr.modeling.jev_perception_cache import FrozenPerceptionCache
     reader=FrozenPerceptionCache(OUT/'stage1_cache_v1'/f'video{video:02d}');keys=sorted(reader.keys());frames=max(k[1] for k in keys)+1
     assert len(keys)==2*frames
-    values=[]
+    metadata={(i['frame_id']-1,i['view_id']-1):i for i in json.loads(ANNOTATIONS.read_text())['images'] if i['video_id']==video};values=[]
     for view in range(2):
         for frame in range(frames):
-            p=reader.load(video,frame,view);h,w=p['image_size'];values.append({'video_id':video,'view_num':2,'height':int(h),'width':int(w),'image':None})
+            i=metadata[frame,view];values.append({'video_id':video,'view_num':2,'height':int(i['height']),'width':int(i['width']),'image':None,'phase13_image_path':str(IMAGES/i['file_name'])})
     return values,frames,reader
 def run(model,values,frames,stop=None,prefix=None):
     return model.sliding_inference_GMT(values,2,[0,frames-1,list(range(frames))*2],native_raw=True,native_prefix=prefix,native_stop_frame=stop)
