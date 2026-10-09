@@ -110,6 +110,7 @@ def aggregate_onpolicy():
                 after = {r['video']: r['summary'] for r in r['after_online_TRAIN']}
                 paired = [{ 'video': v, 'before': before[v], 'after': after[v],
                             'wrong_anchor_observation_delta': after[v]['birth_anchor_wrong_observations'] - before[v]['birth_anchor_wrong_observations'],
+                            'extra_birth_fragments_delta': after[v]['extra_birth_fragments'] - before[v]['extra_birth_fragments'],
                             'wrong_ID_duration_total_camera_frames_delta': after[v]['wrong_ID_duration_total_camera_frames'] - before[v]['wrong_ID_duration_total_camera_frames']}
                           for v in TRAIN]
                 cases.append({'status': 'COMPLETE', 'variant': variant, 'seed': seed, 'training_result': reference(path),
@@ -155,8 +156,12 @@ def main():
     lifecycle = [{'name': 'MATCH_ONLY', 'status': 'COMPLETE', 'metrics_source': 'all formal cases; shared untrained cosine REACT and native WRITE fallback'},
                  {'name': 'MATCH_PLUS_REACTIVATION', 'status': 'NOT_RUN', 'reason': 'only9 natural stale-positive TRAIN rows, below frozen100 across3 videos; no invented detections/candidates', 'metrics': None},
                  {'name': 'THREE_LIFECYCLE', 'status': 'NOT_RUN', 'reason': 'stale support unqualified and0 WRITE/KEEP labels; future-GMT labels forbidden', 'metrics': None}]
+    official = read(REPORTS / 'OFFICIAL_MATLAB_CROSSVIEW.json')
+    assert official['status'] == 'COMPLETE'
+    assert sum(c['phase']=='formal' for c in official['cases']) == 40
+    assert all(c['status']=='COMPLETE' for c in official['cases'])
     save(REPORTS / 'ONLINE_VALIDATION.json', {'status': 'COMPLETE', 'binding': binding(), 'cases': cases, 'B1': cosine,
-                                             'strict_pooled_not_video_average': True, 'official_CVIDF1_CVMA': {'status': 'NOT_RUN', 'reason': 'native official MATLAB evaluator unavailable; separately labelled actual Python adaptation in pooled reports', 'metrics': None},
+                                             'strict_pooled_not_video_average': True, 'official_CVIDF1_CVMA': {'status':'COMPLETE','report':reference(REPORTS/'OFFICIAL_MATLAB_CROSSVIEW.json'),'environment_audit':reference(REPORTS/'MATLAB_ENVIRONMENT_AUDIT.json')},
                                              'lifecycle': lifecycle, 'development_preexposed': True, 'heldout': 'SEALED'})
     summaries = comparison['strict_seed_summary']
     full = summaries['full']
@@ -269,26 +274,28 @@ def write_report(report, summaries, cosine, own):
     lines.append('| Original GMT separate full system | ' + ' | '.join(f'{original[k]:.3f}' for k in METRICS) + ' |')
     lines.extend(['', '## Bounded own-state round', '',
                   'The following comparison uses the same completed eligible seeds before and after the extra4k updates. Wrong-anchor observations count actual errors relative to each identity first GT anchor; they must be read together with births/fragments and full tracking metrics. Prefix error duration is censored and is not a counterfactual propagation estimate.', '',
-                  '| Method | Eligible completed seeds | 20k HOTA paired | 24k HOTA | 20k IDSW paired | 24k IDSW | TRAIN wrong-anchor before | after |',
-                  '|---|---:|---:|---:|---:|---:|---:|---:|'])
+                  '| Method | Eligible completed seeds | 20k HOTA paired | 24k HOTA | 20k IDSW paired | 24k IDSW | TRAIN wrong-anchor before | after | TRAIN extra births before | after |',
+                  '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|'])
     for variant in MAIN:
         cc = [c for c in own['cases'] if c['variant'] == variant and c['status'] == 'COMPLETE']
         if not cc:
-            lines.append(f'| {variant} | 0 | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN |')
+            lines.append(f'| {variant} | 0 | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN |')
             continue
         before_tracking = [read(OUT/'formal_pooled_v1'/f'{variant}_seed{c["seed"]}'/'RESULT.json')['strict_pooled_TrackEval'] for c in cc]
         avg = lambda values: float(np.mean(values))
         before_errors = [sum(r['before']['birth_anchor_wrong_observations'] for r in c['paired_first256_TRAIN']) for c in cc]
         after_errors = [sum(r['after']['birth_anchor_wrong_observations'] for r in c['paired_first256_TRAIN']) for c in cc]
+        before_fragments = [sum(r['before']['extra_birth_fragments'] for r in c['paired_first256_TRAIN']) for c in cc]
+        after_fragments = [sum(r['after']['extra_birth_fragments'] for r in c['paired_first256_TRAIN']) for c in cc]
         values = [avg([r['HOTA'] for r in before_tracking]), avg([c['online_development']['tracking']['HOTA'] for c in cc]),
-                  avg([r['IDSW'] for r in before_tracking]), avg([c['online_development']['tracking']['IDSW'] for c in cc]), avg(before_errors), avg(after_errors)]
+                  avg([r['IDSW'] for r in before_tracking]), avg([c['online_development']['tracking']['IDSW'] for c in cc]), avg(before_errors), avg(after_errors), avg(before_fragments), avg(after_fragments)]
         lines.append('| '+variant+' | '+str(len(cc))+' | '+' | '.join(f'{v:.3f}' for v in values)+' |')
     lines.extend(['', 'Original GMT uses Stage2-trained perception/RPCE and is a separate strong full-system comparator. MOTIP-style/CAMEL-style are controlled adapters, not complete official framework reproductions.', '',
                   'Native state parity exposed a restored-ID recycling bug before primary training. Old data/models/results remain archived. The correction adds a recovered ID back to the real possible-ID set; the real GTA-throw lifecycle test now recovers the same ID twice and verifies full/resumed state through106 frames. All primary models use the regenerated v3 corpus. A dormant-state issue in the Set control was also repaired before training; every shared-state/ordinary decoder block has nonzero supervised gradients.', '',
                   'Tiny/Pilot use frozen examples and budgets; formal primary checkpoint is LAST at20k. All GT labels are offline and uncertain/contaminated candidate histories remain UNKNOWN. REACT has only9 natural clean TRAIN positives and MEMORY has0 WRITE/KEEP labels, so learned MATCH+REACT and three-lifecycle experiments are NOT_RUN. Common cosine recovery/native WRITE remain explicit fallbacks. The NoTyped result cannot identify typed lifecycle benefit under MATCH-only supervision.', '',
                   f'On-policy round status: {own["status"]}. Its frozen bound is first256 frames of each of four TRAIN videos, one4k update round per eligible main model/seed, with its own actual mutated histories. Total24k outcomes are kept separate from20k; before/after observed wrong-ID counts and censored duration are in ON_POLICY_TRAINING.json.', '',
                   'No-calibration runs use the exact same Full checkpoints with T=1 on all three development videos. Actual raw-prediction hashes and metric deltas are in ARCHITECTURE_ABLATION.json; positive uniform temperature should preserve a unique maximum-sum assignment, and calibration benefit is restricted to certified MATCH probabilities.', '',
-                  'Actual isolated live image/detector/VFCE/native measurements, executed matrix-multiply cost, latency p50/p95 and full VRAM are in EFFICIENCY.json. Cache-backed validation timing is never called full FPS. Offline canonical short-track filtering and the Python cross-camera evaluator adaptation are separately labelled; native official MATLAB CVIDF1/CVMA are NOT_RUN.', '',
+                  'Actual isolated live image/detector/VFCE/native measurements, executed matrix-multiply cost, latency p50/p95 and full VRAM are in EFFICIENCY.json. Cache-backed validation timing is never called full FPS. Native MATLAB R2020a was installed from the user-supplied ISO, and untouched official evaluator/MEX passed analytic perfect/miss/false-positive/ID-split fixtures. Actual native official CVIDF1/CVMA over all frozen raw and canonical cases are in OFFICIAL_MATLAB_CROSSVIEW.json. The separately labelled Python TrackEval adaptation remains available for comparison.', '',
                   '| Gate | Result |', '|---|---|'])
     lines.extend(f'| {k} | {v["status"]} |' for k, v in report['gates'].items())
     lines.extend(['', f'Frozen exploratory independent-value gate: {report["gates"]["G7"]["status"]}. These three preexposed scenes do not establish population-level significance. See exact per-seed paired deltas and structural ablation means in FINAL_GO_NO_GO.json.', '',

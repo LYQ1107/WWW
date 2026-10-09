@@ -12,7 +12,9 @@ def pooled(variant,seed,phase='formal',no_calibration=False):
         rows=[]
         for r in records:p=r[field];assert sha(p['path'])==p['SHA256'];rows.extend(json.loads(Path(p['path']).read_text()))
         save(out/target,rows);values[field],evaluation=metrics(out/target,VAL,out/field);values[field+'_evaluator']={'path':str(evaluation/'metrics.json'),'SHA256':sha(evaluation/'metrics.json')}
-    crossview={'official_MATLAB':{'status':'NOT_RUN','metrics':None,'reason':'native MATLAB evaluator not integrated/available; do not relabel Python TrackEval as official MATLAB scores'},'TrackEval_flattened_adaptation':None}
+    environment_audit=REPORTS/'MATLAB_ENVIRONMENT_AUDIT.json'
+    official=({**json.loads(environment_audit.read_text())['official_MATLAB_evaluation'],'environment_audit':{'path':str(environment_audit),'SHA256':sha(environment_audit)}} if environment_audit.exists() else {'status':'NOT_RUN','metrics':None,'reason':'native runtime availability not yet inspected; do not relabel Python TrackEval as official MATLAB scores'})
+    crossview={'official_MATLAB':official,'TrackEval_flattened_adaptation':None}
     # This is a separately labelled repository adaptation of cross-camera
     # conventions, never presented as a run of the official MATLAB package.
     prepared=out/'raw_predictions/tracking_eval_runtime_state/native/prepared/manifest.json'

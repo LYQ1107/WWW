@@ -69,6 +69,8 @@ def main():
     for phase in ['formal', 'onpolicy']:
         save(root / 'PROGRESS.json', {'status': 'RUNNING', 'stage': 'actual_pooled_TrackEval', 'phase': phase, 'binding': source})
         run('compare_jev_stage2_baselines.py', ['--phase', phase, '--only', 'all'], root / f'{phase}_pooled.log', root=DEV)
+    save(root / 'PROGRESS.json', {'status':'RUNNING','stage':'native_official_MATLAB','binding':source})
+    run('evaluate_jev_phase13_official_matlab.py', ['--all','--workers','4'], root / 'native_matlab.log', root=DEV)
     run('finalize_jev_phase13_results.py', [], root / 'final_report.log', root=DEV)
     save(root / 'RESULT.json', {'status': 'PASS', 'binding': source, 'final_report': str(DEV / 'reports/JEV_PHASE13/FINAL_GO_NO_GO.json'),
                                'scope': 'required execution complete; scientific gates may honestly FAIL/NO_GO and lifecycle qualification may remain NOT_RUN'})

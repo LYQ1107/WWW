@@ -27,6 +27,13 @@ def main():
                 f = json.loads(final.read_text())
                 case.update(result={'path': str(final), 'SHA256': sha(final)}, checkpoint=f['checkpoint'],
                             source_commit=f['binding']['source_commit'], source_root=f['binding']['source_root'])
+                if phase == 'onpolicy':
+                    case['paired_first256_TRAIN'] = {
+                        when: {k: sum(v['summary'][k] for v in f[when + '_online_TRAIN'])
+                               for k in ['birth_anchor_wrong_observations', 'extra_birth_fragments',
+                                         'wrong_ID_duration_total_camera_frames']}
+                        for when in ['before', 'after']}
+                    case['paired_interpretation'] = 'wrong-anchor reductions must be read with extra births and full-video tracking; changing an ID resets its anchor'
             cases.append(case)
     online = {}
     for phase in ['formal', 'onpolicy']:
