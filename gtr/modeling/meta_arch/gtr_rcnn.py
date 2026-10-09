@@ -821,6 +821,9 @@ class GTRRCNN(CustomRCNN):
         return instances
     
     def sliding_inference_GMT(self, batched_inputs,view_num,time, *, native_prefix=None, native_stop_frame=None, native_raw=False):
+        stage2_executor = getattr(self, 'jev_stage2_executor', None)
+        if stage2_executor is not None and native_prefix is None:
+            stage2_executor.reset()
         poss_ids.poss_ids = set()
         old_ids.old_ids = set()
         old_reids.old_reids = []
@@ -848,6 +851,10 @@ class GTRRCNN(CustomRCNN):
         if native_prefix is not None:
             from ..jev_native_state import restore_state
             restore_state(self, native_prefix)
+            if stage2_executor is not None:
+                if 'phase13_identity_meta' not in native_prefix and stage2_executor.mode == 'JEV_DIRECT':
+                    raise ValueError('Phase XIII direct resume requires actual identity metadata')
+                stage2_executor.memory.load_state_dict(native_prefix.get('phase13_identity_meta', {}))
             assert native_prefix['key'][0] == int(batched_inputs[0]['video_id'])
             instances = native_prefix['instances']
             id_count = native_prefix['id_count']
@@ -970,21 +977,26 @@ class GTRRCNN(CustomRCNN):
                                 galleries=id_reid_dict, frame=frame_id, view=int(id[i]), first=True)
                         if getattr(self, 'visual_jev_enabled', False):
                             self.visual_jev_controller.native_context(instances,id_reid_dict,frame_id,int(id[i]),True,video_id=self._jev_context['video_id'])
-                        asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
-                            instances_kv,
-                            k=len(instances_kv) - 1)  # n_k x N
+                        if stage2_executor is not None and stage2_executor.mode == 'JEV_DIRECT':
+                            instances_kv,id_count,id_count_dict,id_reid_dict = stage2_executor.commit(self,instances_kv,len(instances_kv)-1,id_count,id_count_dict,id_reid_dict,frame=frame_id,view=int(id[i]),first=True)
+                        else:
+                            if stage2_executor is not None and stage2_executor.mode == 'SHADOW':
+                                stage2_executor.shadow(instances_kv,len(instances_kv)-1,id_reid_dict,frame_id,int(id[i]),True)
+                            asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
+                                instances_kv,
+                                k=len(instances_kv) - 1)  # n_k x N
 
-                        instances_kv =instances_kv
-                        instances_kv, id_count,id_count_dict,id_reid_dict  = self.run_first_tracker_plus(
-                            instances_kv,
-                            [asso_output[0][:,:Np]],
-                            pred_boxes[:Np,:],
-                            len(instances_kv)-1,
-                            id_count,
-                            id_count_dict,
-                            id_reid_dict,
-                            view=id[i],
-                            frame_index=frame_id)
+                            instances_kv =instances_kv
+                            instances_kv, id_count,id_count_dict,id_reid_dict  = self.run_first_tracker_plus(
+                                instances_kv,
+                                [asso_output[0][:,:Np]],
+                                pred_boxes[:Np,:],
+                                len(instances_kv)-1,
+                                id_count,
+                                id_count_dict,
+                                id_reid_dict,
+                                view=id[i],
+                                frame_index=frame_id)
                         #start = end
                         instances[id[i]] = instances_kv[len(instances_kv)-1]
                 else:
@@ -1019,22 +1031,27 @@ class GTRRCNN(CustomRCNN):
                                 frame_old_instances=instacnes_old)
                         if getattr(self, 'visual_jev_enabled', False):
                             self.visual_jev_controller.native_context(instances,id_reid_dict,frame_id,i,video_id=self._jev_context['video_id'])
-                        asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
-                            instances_kv,
-                            k=len(instances_kv) - 1)
+                        if stage2_executor is not None and stage2_executor.mode == 'JEV_DIRECT':
+                            instances_kv,id_count,id_count_dict,id_reid_dict = stage2_executor.commit(self,instances_kv,len(instances_kv)-1,id_count,id_count_dict,id_reid_dict,frame=frame_id,view=i,first=False,instances_old=instacnes_old)
+                        else:
+                            if stage2_executor is not None and stage2_executor.mode == 'SHADOW':
+                                stage2_executor.shadow(instances_kv,len(instances_kv)-1,id_reid_dict,frame_id,i,False)
+                            asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
+                                instances_kv,
+                                k=len(instances_kv) - 1)
 
-                        instances_kv, id_count,id_count_dict = self.run_global_tracker_plus(
-                            view_num,
-                            instances_kv,
-                            [asso_output[0][:,:Np]],
-                            pred_boxes[:Np,:],
-                            len(instances_kv)-1,
-                            id_count,
-                            id_count_dict,
-                            id_reid_dict,
-                            instacnes_old,
-                            i,
-                            frame_index=frame_id)
+                            instances_kv, id_count,id_count_dict = self.run_global_tracker_plus(
+                                view_num,
+                                instances_kv,
+                                [asso_output[0][:,:Np]],
+                                pred_boxes[:Np,:],
+                                len(instances_kv)-1,
+                                id_count,
+                                id_count_dict,
+                                id_reid_dict,
+                                instacnes_old,
+                                i,
+                                frame_index=frame_id)
                         instances[win_ed+i] = instances_kv[-1]
                 else :
                     for i in range(view_num):
