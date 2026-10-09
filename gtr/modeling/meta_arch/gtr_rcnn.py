@@ -1475,16 +1475,22 @@ class GTRRCNN(CustomRCNN):
             pairs = dict(zip(pair_i,pair_j))
             lengths = id_inds.sum(0)
             thresholds = traj_score.new_tensor([legacy_acceptance_threshold(self.thred_bank,float(v),self.not_mult_thresh) for v in lengths])
+            from ..visual_jev_mcmot.identity_history_tokens import native_time_metadata
+            visual_context=getattr(self.visual_jev_controller,'current',None) or {}
+            actual_history={t:visual_context.get('galleries',{}).get(t,bank_gallery[t]) for t in references}
+            last_seen=native_time_metadata(visual_context.get('instances',[]),self._jev_context['frame'],self._jev_context['view'],history_limit=None)
+            entropy=-(torch.softmax(traj_score,dim=1)*torch.log_softmax(traj_score,dim=1)).sum(1) if len(references) else traj_score.new_zeros(n_k)
             context = torch.stack([self._jev_state(self._match_state_values(
                 accept_score=0.,reassociate_score=float(traj_score[r].max()) if len(references) else 0.,
-                threshold=self.thred_bank,candidate_count=len(references),candidate_entropy=0.,
-                track_count=len(references),track_age=0,frame_index=self._jev_context['frame'],
+                threshold=self.thred_bank,candidate_count=len(references),candidate_entropy=float(entropy[r]),
+                track_count=len(references),track_age=max(0,self._jev_context['frame']-last_seen[references[pairs[r]]][0]) if r in pairs and references[pairs[r]] in last_seen else 0,frame_index=self._jev_context['frame'],
                 window_length=max(1,T),view_index=self._jev_context['view'],has_old_track=True,
                 current_is_unmatched=True)) for r in range(n_k)]) if n_k else traj_score.new_zeros((0,64))
             features = evidence12(traj_score,references,pairs,lengths,hits=id_count_dict,
-                memory_lengths={t:len(bank_gallery[t]) for t in references},
-                galleries={t:bank_gallery[t].reid_features.mean(0) for t in references},
+                memory_lengths={t:len(actual_history[t]) for t in references},
+                galleries={t:actual_history[t].reid_features.mean(0) for t in references},
                 observations=instances[k].reid_features,bank_eligible=references)
+            features[...,8]=0. # Actual bank references are outside active window.
             bank_batch = CandidateBatch(references,traj_score,context,features,torch.isfinite(traj_score),thresholds,int(self._jev_context['view']))
             self.visual_jev_controller.reactivation(bank_batch,instances[k].reid_features,bank_gallery)
 
