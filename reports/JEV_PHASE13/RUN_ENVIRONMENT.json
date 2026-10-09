@@ -1,0 +1,407 @@
+{
+  "CUDA_runtime": "11.8",
+  "GPU_inventory": [
+    "0, Tesla V100-DGXS-32GB, 470.141.03, 32508 MiB",
+    "1, Tesla V100-DGXS-32GB, 470.141.03, 32508 MiB",
+    "2, Tesla V100-DGXS-32GB, 470.141.03, 32508 MiB",
+    "3, Tesla V100-DGXS-32GB, 470.141.03, 32508 MiB",
+    "4, Tesla V100-DGXS-32GB, 470.141.03, 32508 MiB",
+    "5, Tesla V100-DGXS-32GB, 470.141.03, 32508 MiB",
+    "6, Tesla V100-DGXS-32GB, 470.141.03, 32508 MiB",
+    "7, Tesla V100-DGXS-32GB, 470.141.03, 32508 MiB",
+    "8, Tesla V100-DGXS-32GB, 470.141.03, 32508 MiB",
+    "9, Tesla V100-DGXS-32GB, 470.141.03, 32508 MiB"
+  ],
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": null,
+    "Full24": false,
+    "Stage1_SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+    "Stage2_original_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "VAL": [
+      17,
+      18,
+      19
+    ],
+    "dirty": true,
+    "heldout": "SEALED",
+    "official_TEST": false,
+    "source_SHA256": {
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "f604438ac837f3d09164349e06e9bda0d86f148a74936e46161d1f7fedd5aa22",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "53623e1f9018bfc787809f4ae0bf47da0285e9aa144b5e70fc8aef6edc0a07d4",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/audit_jev_phase13_dense.py": "d95c73c771b7a6daae0d0dd506b7bd4f74fc3ff7ffbdc1307e64cf6454aca8a3",
+      "reproduction_tools/audit_jev_phase13_references.py": "d588643bfaba19d341ec74e465ef08aecfd6d2a0b5d892821b7cdec0ff730e29",
+      "reproduction_tools/audit_jev_phase13_stage1.py": "de8a67fc4d87d630a9369b7d63ba6077fa52ac31044ecea000854393e2b321d2",
+      "reproduction_tools/audit_jev_stage2_gta_free.py": "6e240ad7e91af7f2151f1f541736d0863ddd52d58ff6dab3176f67c24dc9cd39",
+      "reproduction_tools/benchmark_jev_phase13_live.py": "66a4e369b5a20ab5733f940cfc1c7a4f2fc508c110a320501ffef2fb09d5f6de",
+      "reproduction_tools/build_dense_jev_stage2_dataset.py": "98522d96f7e35f8de8d925e1e9a65ae2bd9c9ea871f3d29e801ff2c3986e8f3e",
+      "reproduction_tools/cache_jev_phase13_stage1.py": "580d37ea35a87bb2fd3ebe826db9420dfca55a428346b299ee780a39847f4e30",
+      "reproduction_tools/check_jev_phase13_off_shadow.py": "47565aec73eb2ad3035df8a06237b1af1575458faee3bcec80aa8b391ab79aaa",
+      "reproduction_tools/compare_jev_stage2_baselines.py": "6c311ccb6545b76d8287d0275ae4afb2da20de34a35c91618a436720093637c8",
+      "reproduction_tools/evaluate_jev_stage2_online.py": "8de6d13fa2bcdbf691b54cd6c12f5735882855cc74dbda699a2eb7997e342128",
+      "reproduction_tools/fetch_jev_phase13_references.py": "2434ceb6387a1df2426fde43f419bf3f58f1a74c47e6a62b8948fb63f7fbc6af",
+      "reproduction_tools/finalize_jev_phase13_training.py": "15722953e51adffb8fdbb30cab7798d994818336f5381b548132f3cf373d9954",
+      "reproduction_tools/freeze_jev_phase13_training.py": "435bf95e385c3998b49ba4e501943660a8bab6708345ac2e373ba9f63f96788b",
+      "reproduction_tools/jev_phase13_common.py": "2448576ce82a53bc490f9c797d7732b6d6cfad26388e172376a45279e840f732",
+      "reproduction_tools/jev_phase13_learning.py": "6743671fc6e1b9b895704a34847b3579993d6ea889fc68e1282945f174f5dc16",
+      "reproduction_tools/jev_phase13_online_audit.py": "aa8289c10fb5b49cb2c7786248ee50e97d0097daefb9e11385e025f513e00536",
+      "reproduction_tools/jev_phase13_runtime.py": "c4048bf4acfd446f5822f33b2d9416c00731fedda10d52a8f66f5244a39118be",
+      "reproduction_tools/queue_jev_phase13.py": "1c9bac9ab546ff6978e70b0a11a4461c9a55a73b49be5ad4d39c8a550de554a1",
+      "reproduction_tools/run_jev_phase13_case.py": "c3c05d077ea2aa17389a4420f1549174dd3213abff711880d6464f381edca057",
+      "reproduction_tools/test_jev_phase13_structure.py": "804986dd3f8a8cb9b4278c56c4725ba40321383ef5ce06e5c7b3c14d5ddcf85b",
+      "reproduction_tools/train_jev_stage2.py": "09922790638da352b96930eda4e217ae7469fbfcf71c9fea3f9ab77baf797fd7",
+      "reproduction_tools/train_jev_stage2_onpolicy.py": "84c43f3fa7b8cc2b53be2eaf312374f88f4a617e4aca1a058aae41d900ecc979"
+    },
+    "source_commit": "74f3730366daf7df910de40faba7e1a25e64537e",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase13"
+  },
+  "cuDNN": 8700,
+  "detectron2": "0.6",
+  "executable": "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+  "large_artifacts": "local server only",
+  "numpy": "1.24.1",
+  "packages": [
+    {
+      "name": "absl-py",
+      "version": "2.5.0"
+    },
+    {
+      "name": "antlr4-python3-runtime",
+      "version": "4.9.3"
+    },
+    {
+      "name": "appdirs",
+      "version": "1.4.4"
+    },
+    {
+      "name": "black",
+      "version": "21.4b2"
+    },
+    {
+      "name": "certifi",
+      "version": "2022.12.7"
+    },
+    {
+      "name": "charset-normalizer",
+      "version": "2.1.1"
+    },
+    {
+      "name": "click",
+      "version": "8.5.0"
+    },
+    {
+      "name": "cloudpickle",
+      "version": "3.1.2"
+    },
+    {
+      "name": "cmake",
+      "version": "3.25.0"
+    },
+    {
+      "name": "contourpy",
+      "version": "1.3.2"
+    },
+    {
+      "name": "cycler",
+      "version": "0.12.1"
+    },
+    {
+      "name": "decorator",
+      "version": "4.4.2"
+    },
+    {
+      "editable_project_location": "/data1/liuyeqiang/WWW/third_party/detectron2",
+      "name": "detectron2",
+      "version": "0.6"
+    },
+    {
+      "name": "exceptiongroup",
+      "version": "1.3.1"
+    },
+    {
+      "name": "filelock",
+      "version": "3.32.3"
+    },
+    {
+      "name": "fonttools",
+      "version": "4.65.0"
+    },
+    {
+      "name": "future",
+      "version": "1.0.0"
+    },
+    {
+      "name": "fvcore",
+      "version": "0.1.5.post20221221"
+    },
+    {
+      "name": "grpcio",
+      "version": "1.84.0"
+    },
+    {
+      "name": "hydra-core",
+      "version": "1.3.2"
+    },
+    {
+      "name": "idna",
+      "version": "3.4"
+    },
+    {
+      "name": "imageio",
+      "version": "2.35.1"
+    },
+    {
+      "name": "iniconfig",
+      "version": "2.3.0"
+    },
+    {
+      "name": "iopath",
+      "version": "0.1.9"
+    },
+    {
+      "name": "Jinja2",
+      "version": "3.1.6"
+    },
+    {
+      "name": "kiwisolver",
+      "version": "1.5.1"
+    },
+    {
+      "name": "lap",
+      "version": "0.5.12"
+    },
+    {
+      "name": "lit",
+      "version": "15.0.7"
+    },
+    {
+      "name": "Markdown",
+      "version": "3.10.3"
+    },
+    {
+      "name": "MarkupSafe",
+      "version": "3.0.3"
+    },
+    {
+      "name": "matplotlib",
+      "version": "3.7.5"
+    },
+    {
+      "name": "motmetrics",
+      "version": "1.4.0"
+    },
+    {
+      "name": "moviepy",
+      "version": "0.2.3.5"
+    },
+    {
+      "name": "mpmath",
+      "version": "1.3.0"
+    },
+    {
+      "name": "mypy_extensions",
+      "version": "1.1.0"
+    },
+    {
+      "name": "natsort",
+      "version": "8.4.0"
+    },
+    {
+      "name": "networkx",
+      "version": "3.0"
+    },
+    {
+      "name": "numpy",
+      "version": "1.24.1"
+    },
+    {
+      "name": "omegaconf",
+      "version": "2.3.0"
+    },
+    {
+      "name": "opencv-python",
+      "version": "4.8.1.78"
+    },
+    {
+      "name": "packaging",
+      "version": "26.3"
+    },
+    {
+      "name": "pandas",
+      "version": "2.0.3"
+    },
+    {
+      "name": "pathspec",
+      "version": "0.12.1"
+    },
+    {
+      "name": "Pillow",
+      "version": "9.5.0"
+    },
+    {
+      "name": "pip",
+      "version": "26.2.1"
+    },
+    {
+      "name": "pluggy",
+      "version": "1.6.0"
+    },
+    {
+      "name": "portalocker",
+      "version": "4.4.0"
+    },
+    {
+      "name": "protobuf",
+      "version": "7.36.2"
+    },
+    {
+      "name": "pycocotools",
+      "version": "2.0.7"
+    },
+    {
+      "name": "pydot",
+      "version": "4.0.1"
+    },
+    {
+      "name": "Pygments",
+      "version": "2.21.0"
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.3"
+    },
+    {
+      "name": "pytest",
+      "version": "9.1.1"
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0"
+    },
+    {
+      "name": "pytz",
+      "version": "2026.4"
+    },
+    {
+      "name": "PyYAML",
+      "version": "6.0.2"
+    },
+    {
+      "name": "regex",
+      "version": "2026.9.29"
+    },
+    {
+      "name": "requests",
+      "version": "2.28.1"
+    },
+    {
+      "name": "scipy",
+      "version": "1.10.1"
+    },
+    {
+      "name": "setuptools",
+      "version": "68.2.2"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0"
+    },
+    {
+      "name": "sympy",
+      "version": "1.14.0"
+    },
+    {
+      "name": "tabulate",
+      "version": "0.9.0"
+    },
+    {
+      "name": "tensorboard",
+      "version": "2.21.0"
+    },
+    {
+      "name": "tensorboard-data-server",
+      "version": "0.7.2"
+    },
+    {
+      "name": "termcolor",
+      "version": "3.3.0"
+    },
+    {
+      "name": "toml",
+      "version": "0.10.2"
+    },
+    {
+      "name": "tomli",
+      "version": "2.4.1"
+    },
+    {
+      "name": "torch",
+      "version": "2.0.0+cu118"
+    },
+    {
+      "name": "torchaudio",
+      "version": "2.0.1+cu118"
+    },
+    {
+      "name": "torchvision",
+      "version": "0.15.1+cu118"
+    },
+    {
+      "name": "tqdm",
+      "version": "4.67.1"
+    },
+    {
+      "name": "triton",
+      "version": "2.0.0"
+    },
+    {
+      "name": "typing_extensions",
+      "version": "4.16.0"
+    },
+    {
+      "name": "tzdata",
+      "version": "2026.4"
+    },
+    {
+      "name": "urllib3",
+      "version": "1.26.13"
+    },
+    {
+      "name": "Werkzeug",
+      "version": "3.1.9"
+    },
+    {
+      "name": "wheel",
+      "version": "0.47.0"
+    },
+    {
+      "name": "xmltodict",
+      "version": "1.0.4"
+    },
+    {
+      "name": "yacs",
+      "version": "0.1.8"
+    }
+  ],
+  "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+  "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+  "scipy": "1.10.1",
+  "status": "CAPTURED",
+  "thread_env": {
+    "MKL_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "torch": "2.0.0+cu118",
+  "training_deterministic": true,
+  "training_dtype": "FP32"
+}
