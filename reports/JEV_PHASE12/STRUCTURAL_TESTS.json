@@ -1,0 +1,517 @@
+{
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "Full24": false,
+    "architecture_freeze_SHA256": "417f3e475a2b8f531e31154f04af1e2e2d47721e3ff868244d4bdb518da2c3b5",
+    "config_SHA256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+    "dataset_SHA256": "061791361d60d2b3968a983bcd88952f09de473be02d07bf151cd999dd63e33a",
+    "dirty": true,
+    "heldout_status": "SEALED",
+    "official_TEST": false,
+    "source_SHA256": {
+      "gtr/config.py": "54a1cafdc84cef1a19527546b9a85e6ab4aaf786270ecc75ed59fe4e82910060",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "2b2c8c47979622d2e6afb7f499050bc0053c206cf89aa659e40568047111c984",
+      "gtr/modeling/visual_jev_mcmot/__init__.py": "a47712718a82580679730347a0b9671c47b0b4af56f41bd8c186d753886f080a",
+      "gtr/modeling/visual_jev_mcmot/action_option_encoder.py": "21993a98aa2cb0ce7ac34c6dea7e7b45b26a1d205ea39fa53b2718a7d85ef393",
+      "gtr/modeling/visual_jev_mcmot/calibration.py": "b16a5ad23bb8fde0fad169efc0df8bfc4190179a9cb5ca97ccfae76374bb50a1",
+      "gtr/modeling/visual_jev_mcmot/consequence_value_head.py": "612395fff3e402565c88e065f10e5494be0f6c5c50da9de38adea795b94cac7a",
+      "gtr/modeling/visual_jev_mcmot/identity_history_tokens.py": "2840b1015cb6919fa2bfb21a5a8c158af2a371ef790a52db02b526b467bb6aa7",
+      "gtr/modeling/visual_jev_mcmot/lifecycle_controller.py": "57723e0dec1f3f018dd0756ec80d0c22ba89077550d1fe086937809d903e30f9",
+      "gtr/modeling/visual_jev_mcmot/model.py": "2eca24c9751b5da6af311ae43189bac6358489db49bca8098bbf47851cfa2acf",
+      "gtr/modeling/visual_jev_mcmot/native_action_adapter.py": "8927c2a90ae12b1b5b65735bebf4b36a5cbd976b278d129d032f3c940a22f128",
+      "gtr/modeling/visual_jev_mcmot/option_reader.py": "14bab6635afc8640a2ebf93653363144ad8a748b2c3c73a370411453b8d09b7d",
+      "gtr/modeling/visual_jev_mcmot/schemas.py": "e5a0acfe190b5d191b46dd3a9adb17c38d194d877ed45e506ee43911e4024335",
+      "gtr/modeling/visual_jev_mcmot/typed_decision_heads.py": "371561afdff6d31298773578048dfed14f03048c8dcb508da0d2a390424876df",
+      "gtr/modeling/visual_jev_mcmot/typed_question_reader.py": "be7c4cfc025ed333114828a0633d300c6e780b3248ec1df584f92b4f8d42d4f0",
+      "gtr/modeling/visual_jev_mcmot/visual_state_encoder.py": "4181ad5ceeee08cf43e131a432530366951252d5ca962c417047a9f6e1019c5f",
+      "reproduction_tools/jev_phase12_common.py": "b5f579141c3003c56035a7aa3002f4c65997cd0a0c59e7373aa2d00ec3381c7e",
+      "reproduction_tools/test_jev_phase12_question_learning.py": "89d836957e6f1777d973b3364698e9e51d753b3e362532acded3dcceda5d76b1",
+      "reproduction_tools/test_jev_phase12_structure.py": "5b28bb3e86130f21c139748f3018d36397b0dc28f597b325e10ea6ce8aa3b76e"
+    },
+    "source_commit": "da329f643eb9361f4555cf766a71f26c2dbec83b",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase12"
+  },
+  "capacity": {
+    "fixed_question": {
+      "FLOPs_matmul": 154998272,
+      "MAC": 77499136,
+      "components": {
+        "attention": 10338304,
+        "linear": 67160832
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1253766
+    },
+    "full": {
+      "FLOPs_matmul": 154998272,
+      "MAC": 77499136,
+      "components": {
+        "attention": 10338304,
+        "linear": 67160832
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1253766
+    },
+    "no_H32": {
+      "FLOPs_matmul": 154998272,
+      "MAC": 77499136,
+      "components": {
+        "attention": 10338304,
+        "linear": 67160832
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1253766
+    },
+    "no_consequence": {
+      "FLOPs_matmul": 154998272,
+      "MAC": 77499136,
+      "components": {
+        "attention": 10338304,
+        "linear": 67160832
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1253766
+    },
+    "no_gating": {
+      "FLOPs_matmul": 151655936,
+      "MAC": 75827968,
+      "components": {
+        "attention": 10338304,
+        "linear": 65489664
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1253766
+    },
+    "no_history": {
+      "FLOPs_matmul": 154998272,
+      "MAC": 77499136,
+      "components": {
+        "attention": 10338304,
+        "linear": 67160832
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1253766
+    },
+    "no_option_reader": {
+      "FLOPs_matmul": 115365376,
+      "MAC": 57682688,
+      "components": {
+        "attention": 3104768,
+        "linear": 54577920
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1253766
+    },
+    "no_question_reader": {
+      "FLOPs_matmul": 152745472,
+      "MAC": 76372736,
+      "components": {
+        "attention": 9605120,
+        "linear": 66767616
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1253766
+    },
+    "no_shared_state": {
+      "FLOPs_matmul": 154998272,
+      "MAC": 77499136,
+      "components": {
+        "attention": 10338304,
+        "linear": 67160832
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1253766
+    },
+    "question_plain": {
+      "FLOPs_matmul": 199710208,
+      "MAC": 99855104,
+      "components": {
+        "attention": 3104768,
+        "linear": 96750336
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1382022
+    },
+    "set_transformer": {
+      "FLOPs_matmul": 161281536,
+      "MAC": 80640768,
+      "components": {
+        "attention": 15740928,
+        "linear": 64899840
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1187334
+    },
+    "similarity": {
+      "FLOPs_matmul": 158144000,
+      "MAC": 79072000,
+      "components": {
+        "attention": 10338304,
+        "linear": 68733696
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1270150
+    },
+    "visual_deepsets": {
+      "FLOPs_matmul": 162854400,
+      "MAC": 81427200,
+      "components": {
+        "attention": 2371584,
+        "linear": 79055616
+      },
+      "excludes": "normalization/softmax/GELU/memory movement",
+      "params": 1201158
+    }
+  },
+  "real_tracking_training_started": false,
+  "status": "PASS",
+  "tests": [
+    {
+      "details": {
+        "cases": [
+          [
+            "cpu",
+            0,
+            0
+          ],
+          [
+            "cpu",
+            0,
+            1
+          ],
+          [
+            "cpu",
+            0,
+            3
+          ],
+          [
+            "cpu",
+            0,
+            5
+          ],
+          [
+            "cpu",
+            1,
+            0
+          ],
+          [
+            "cpu",
+            1,
+            1
+          ],
+          [
+            "cpu",
+            1,
+            3
+          ],
+          [
+            "cpu",
+            1,
+            5
+          ],
+          [
+            "cpu",
+            2,
+            0
+          ],
+          [
+            "cpu",
+            2,
+            1
+          ],
+          [
+            "cpu",
+            2,
+            3
+          ],
+          [
+            "cpu",
+            2,
+            5
+          ],
+          [
+            "cpu",
+            7,
+            0
+          ],
+          [
+            "cpu",
+            7,
+            1
+          ],
+          [
+            "cpu",
+            7,
+            3
+          ],
+          [
+            "cpu",
+            7,
+            5
+          ],
+          [
+            "cpu",
+            41,
+            0
+          ],
+          [
+            "cpu",
+            41,
+            1
+          ],
+          [
+            "cpu",
+            41,
+            3
+          ],
+          [
+            "cpu",
+            41,
+            5
+          ],
+          [
+            "cuda:0",
+            0,
+            0
+          ],
+          [
+            "cuda:0",
+            0,
+            1
+          ],
+          [
+            "cuda:0",
+            0,
+            3
+          ],
+          [
+            "cuda:0",
+            0,
+            5
+          ],
+          [
+            "cuda:0",
+            1,
+            0
+          ],
+          [
+            "cuda:0",
+            1,
+            1
+          ],
+          [
+            "cuda:0",
+            1,
+            3
+          ],
+          [
+            "cuda:0",
+            1,
+            5
+          ],
+          [
+            "cuda:0",
+            2,
+            0
+          ],
+          [
+            "cuda:0",
+            2,
+            1
+          ],
+          [
+            "cuda:0",
+            2,
+            3
+          ],
+          [
+            "cuda:0",
+            2,
+            5
+          ],
+          [
+            "cuda:0",
+            7,
+            0
+          ],
+          [
+            "cuda:0",
+            7,
+            1
+          ],
+          [
+            "cuda:0",
+            7,
+            3
+          ],
+          [
+            "cuda:0",
+            7,
+            5
+          ],
+          [
+            "cuda:0",
+            41,
+            0
+          ],
+          [
+            "cuda:0",
+            41,
+            1
+          ],
+          [
+            "cuda:0",
+            41,
+            3
+          ],
+          [
+            "cuda:0",
+            41,
+            5
+          ]
+        ],
+        "params": 1253766
+      },
+      "name": "T1_CPU_CUDA_dynamic_shapes_empty_and_finite",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "gradient_norms": {
+          "current_visual": 0.03696221485733986,
+          "dynamic_context": 0.40731245279312134,
+          "option_evidence": 0.42059436440467834,
+          "option_visual": 0.024239851161837578,
+          "state_visual": 0.05313451588153839
+        },
+        "invoked": {
+          "option_encoder": 2,
+          "option_reader": 2,
+          "question_reader": 2,
+          "state_encoder": 2
+        },
+        "not_merely_different_static_types": true,
+        "same_state_dynamic_context_max_difference": 1.527816891670227
+      },
+      "name": "T2_dynamic_question_and_real_gradient_paths",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "current_visual_logit_max_difference": 0.006654396653175354,
+        "history_visual_logit_max_difference": 0.026608914136886597
+      },
+      "name": "T3_current_and_history_visual_used",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "max_errors": {
+          "action_representations": 4.76837158203125e-07,
+          "choice_logits": 1.7881393432617188e-07,
+          "consequences": 1.341104507446289e-07,
+          "probabilities": 4.470348358154297e-08
+        },
+        "semantic_selection_equivariant": true
+      },
+      "name": "T4_option_permutation_and_reference_selection",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "ABSTAIN_OR_FALLBACK": {
+          "bank_query": false,
+          "birth_increment": 0,
+          "request": "GROUP_NATIVE_FALLBACK"
+        },
+        "DEFER_TO_REACTIVATION": {
+          "bank_query": true,
+          "birth_increment": 0,
+          "request": "UNMATCHED_BANK_QUERY"
+        },
+        "START_NEW": {
+          "bank_query": false,
+          "birth_increment": 1,
+          "request": "FINAL_NATIVE_BIRTH"
+        }
+      },
+      "name": "T5_ABSTAIN_DEFER_NEW_distinct_requests",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "assigned_refs": [
+          17,
+          -1,
+          17
+        ],
+        "cross_camera_reuse_legal": true,
+        "whole_conflict_component_fallback": [
+          0,
+          1
+        ]
+      },
+      "name": "T6_lawful_assignment_and_group_fallback",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "runtime_imports": [
+          "action_option_encoder",
+          "calibration",
+          "consequence_value_head",
+          "dataclasses",
+          "enum",
+          "identity_history_tokens",
+          "jev_candidate_assignment",
+          "math",
+          "model",
+          "native_action_adapter",
+          "numpy",
+          "option_reader",
+          "schemas",
+          "time",
+          "torch",
+          "torch.nn",
+          "typed_decision_heads",
+          "typed_question_reader",
+          "types",
+          "typing",
+          "visual_state_encoder"
+        ],
+        "schemas": {
+          "OnlineVisualState": [
+            "visual",
+            "metadata",
+            "mask"
+          ],
+          "OptionTensors": [
+            "visual",
+            "visual_mask",
+            "evidence",
+            "kinds",
+            "mask"
+          ],
+          "QuestionDescriptor": [
+            "visual",
+            "context",
+            "types",
+            "mask"
+          ]
+        },
+        "unknown_future_field_rejected": true
+      },
+      "name": "T7_runtime_schema_and_import_leakage_barrier",
+      "status": "PASS"
+    },
+    {
+      "details": {
+        "NaN_and_wrong_typed_action_rejected": true,
+        "all_illegal_probabilities_zero": true,
+        "all_masked_row_zero": true
+      },
+      "name": "T1_masks_nonfinite_wrong_action_rejection",
+      "status": "PASS"
+    }
+  ]
+}

@@ -29,7 +29,7 @@ gallery observations. A single absent-state sentinel prevents all-masked attenti
 | Tensor | Shape | Source / meaning |
 |---|---|---|
 | state_visual | B,T,1152 | current detection vectors + bounded true history |
-| state_metadata | B,T,8 | kind one-hot4, log1p gallery length, camera indicators2, metadata-known flag |
+| state_metadata | B,T,8 | kind one-hot4, log1p gallery length, log1p actual age, camera value (0/1 or missing -1), metadata-known flag |
 | state_mask | B,T | true available observations only |
 | StateMemory / StateMask | B,8,128 / B,8 | one projected and pooled shared state |
 | question_visual | B,Q,1152 | actual current detection/new observation |

@@ -68,6 +68,8 @@ class GTRRCNN(CustomRCNN):
         self.with_bank = kwargs.pop('with_bank')
         self.multi_modal = kwargs.pop('multi_modal')
         self.jev_enabled = bool(kwargs.pop('jev_enabled'))
+        self.visual_jev_enabled = bool(kwargs.pop('visual_jev_enabled', False))
+        self.visual_jev_controller = None
         self.jev_mode = str(kwargs.pop('jev_mode')).lower()
         self.jev_state_dim = int(kwargs.pop('jev_state_dim'))
         self.jev_max_reassociate = int(kwargs.pop('jev_max_reassociate'))
@@ -143,6 +145,7 @@ class GTRRCNN(CustomRCNN):
         ret['with_bank'] = cfg.MODEL.ASSO_HEAD.WITH_BANK
         ret['multi_modal'] = cfg.MULTI_MODAL
         ret['jev_enabled'] = cfg.MODEL.JEV.ENABLED
+        ret['visual_jev_enabled'] = cfg.MODEL.JEV.VISUAL_JEV_ENABLED
         ret['jev_mode'] = cfg.MODEL.JEV.MODE
         ret['jev_state_dim'] = cfg.MODEL.JEV.STATE_DIM
         ret['jev_max_reassociate'] = cfg.MODEL.JEV.MAX_REASSOCIATE
@@ -317,6 +320,15 @@ class GTRRCNN(CustomRCNN):
         values, newborn = self.jev_candidate_policy.score(batch)
         assignment = assign_candidate_values(values, newborn, references, legal,
             mode=self.jev_candidate_policy.assignment_mode, legacy_thresholds=thresholds)
+        if getattr(self, 'visual_jev_enabled', False):
+            controller = self.visual_jev_controller
+            if controller is None:
+                raise ValueError('VISUAL_JEV_ENABLED requires an explicitly configured controller')
+            visual_result = controller.match(batch, original, galleries or {}, observations)
+            if visual_result is not None:
+                assignment, values = visual_result
+                # Unmatched MATCH means DEFER to the real bank, not bank-veto NEW.
+                newborn = values.new_zeros(m)
         if profiler is not None:
             torch.cuda.synchronize(scores.device)
             policy_end = time.perf_counter()
@@ -608,7 +620,17 @@ class GTRRCNN(CustomRCNN):
                 used.add(candidate_id)
         return original if preserve_off_ids else result
 
-    def _jev_memory_action(self, *, score, threshold, track_count, memory_count, view, frame_index, window_length, track_id=None, detection_index=None, bbox=None, tracker_state=None):
+    def _jev_memory_action(self, *, score, threshold, track_count, memory_count, view, frame_index, window_length, track_id=None, detection_index=None, bbox=None, tracker_state=None, visual_observation=None, visual_gallery=None):
+        if getattr(self, 'visual_jev_enabled', False):
+            if visual_observation is None or visual_gallery is None:
+                raise ValueError('memory question requires final committed identity evidence')
+            values = self._match_state_values(accept_score=score,reassociate_score=0.,
+                threshold=threshold,candidate_count=1,candidate_entropy=0.,
+                track_count=track_count,track_age=memory_count,frame_index=frame_index,
+                window_length=window_length,view_index=view,memory_count=memory_count,
+                track_score=score,track_length=max(1.,float(memory_count)))
+            self.visual_jev_controller.memory(visual_observation,visual_gallery,
+                self._jev_state(values),view)
         memory_context = {
             'decision_scope': 'memory',
             'track_id': int(track_id) if track_id is not None else None,
@@ -946,6 +968,8 @@ class GTRRCNN(CustomRCNN):
                         if prefix_observer is not None:
                             prefix_observer(instances=instances, id_count=id_count, hits=id_count_dict,
                                 galleries=id_reid_dict, frame=frame_id, view=int(id[i]), first=True)
+                        if getattr(self, 'visual_jev_enabled', False):
+                            self.visual_jev_controller.native_context(instances,id_reid_dict,frame_id,int(id[i]),True)
                         asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
                             instances_kv,
                             k=len(instances_kv) - 1)  # n_k x N
@@ -993,6 +1017,8 @@ class GTRRCNN(CustomRCNN):
                             prefix_observer(instances=instances, id_count=id_count, hits=id_count_dict,
                                 galleries=id_reid_dict, frame=frame_id, view=i, first=False,
                                 frame_old_instances=instacnes_old)
+                        if getattr(self, 'visual_jev_enabled', False):
+                            self.visual_jev_controller.native_context(instances,id_reid_dict,frame_id,i)
                         asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
                             instances_kv,
                             k=len(instances_kv) - 1)
@@ -1132,6 +1158,8 @@ class GTRRCNN(CustomRCNN):
                     track_id=id,
                     detection_index=i,
                     bbox=instances[k].pred_boxes.tensor[i],
+                    visual_observation=instances[k].reid_features[i],
+                    visual_gallery=id_reid_dict[id],
                     tracker_state=self._jev_tracker_state(
                         id_count=id_count,
                         id_count_dict=id_count_dict,
@@ -1356,6 +1384,8 @@ class GTRRCNN(CustomRCNN):
                     track_id=id,
                     detection_index=i,
                     bbox=instances[k].pred_boxes.tensor[i],
+                    visual_observation=instances[k].reid_features[i],
+                    visual_gallery=id_reid_dict[id],
                     tracker_state=self._jev_tracker_state(
                         id_count=id_count,
                         id_count_dict=id_count_dict,
@@ -1436,6 +1466,27 @@ class GTRRCNN(CustomRCNN):
         id_inds = (unique_ids[None, :] == ids[:, None]).float() # Np x M
 
         traj_score = torch.mm(asso_nonk, id_inds) # n_k x M
+
+        if getattr(self, 'visual_jev_enabled', False):
+            from ..jev_candidate_features import CandidateBatch, evidence12
+            references = tuple(int(t) for t in unique_ids.tolist())
+            bank_gallery = {int(t): Instances.cat([x[x.track_ids == t] for x in instances[:-1]]) for t in references}
+            pair_i,pair_j = linear_sum_assignment((-traj_score).cpu())
+            pairs = dict(zip(pair_i,pair_j))
+            lengths = id_inds.sum(0)
+            thresholds = traj_score.new_tensor([legacy_acceptance_threshold(self.thred_bank,float(v),self.not_mult_thresh) for v in lengths])
+            context = torch.stack([self._jev_state(self._match_state_values(
+                accept_score=0.,reassociate_score=float(traj_score[r].max()) if len(references) else 0.,
+                threshold=self.thred_bank,candidate_count=len(references),candidate_entropy=0.,
+                track_count=len(references),track_age=0,frame_index=self._jev_context['frame'],
+                window_length=max(1,T),view_index=self._jev_context['view'],has_old_track=True,
+                current_is_unmatched=True)) for r in range(n_k)]) if n_k else traj_score.new_zeros((0,64))
+            features = evidence12(traj_score,references,pairs,lengths,hits=id_count_dict,
+                memory_lengths={t:len(bank_gallery[t]) for t in references},
+                galleries={t:bank_gallery[t].reid_features.mean(0) for t in references},
+                observations=instances[k].reid_features,bank_eligible=references)
+            bank_batch = CandidateBatch(references,traj_score,context,features,torch.isfinite(traj_score),thresholds,int(self._jev_context['view']))
+            self.visual_jev_controller.reactivation(bank_batch,instances[k].reid_features,bank_gallery)
 
         match_i, match_j = linear_sum_assignment((- traj_score).cpu()) #
         track_ids = ids.new_full((n_k,), -1)

@@ -1,0 +1,17 @@
+{
+  "failures": [
+    {
+      "status": "FAIL",
+      "tests": [
+        {
+          "name": "T1_CPU_CUDA_dynamic_shapes_empty_and_finite",
+          "status": "FAIL",
+          "traceback": "Traceback (most recent call last):\n  File \"/home/liuyeqiang/WWW_jev_phase12/reproduction_tools/test_jev_phase12_structure.py\", line 25, in check\n    try:details=fn();report['tests'].append({'name':name,'status':'PASS','details':details})\n  File \"/home/liuyeqiang/WWW_jev_phase12/reproduction_tools/test_jev_phase12_structure.py\", line 36, in shapes\n    args=fixture(device,k,q);result=net(*args)\n  File \"/home/liuyeqiang/anaconda3/envs/GMT/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1501, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"/home/liuyeqiang/WWW_jev_phase12/gtr/modeling/visual_jev_mcmot/model.py\", line 83, in forward\n    question=self.encode_questions(memory,questions)\n  File \"/home/liuyeqiang/WWW_jev_phase12/gtr/modeling/visual_jev_mcmot/model.py\", line 46, in encode_questions\n    return self.question_reader(*state_memory,questions,self.normalized(questions.context,'state'),mode=mode)\n  File \"/home/liuyeqiang/anaconda3/envs/GMT/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1501, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"/home/liuyeqiang/WWW_jev_phase12/gtr/modeling/visual_jev_mcmot/typed_question_reader.py\", line 15, in forward\n    descriptor = self.type_descriptor(questions.types)\n  File \"/home/liuyeqiang/anaconda3/envs/GMT/lib/python3.10/site-packages/torch/nn/modules/module.py\", line 1501, in _call_impl\n    return forward_call(*args, **kwargs)\n  File \"/home/liuyeqiang/anaconda3/envs/GMT/lib/python3.10/site-packages/torch/nn/modules/sparse.py\", line 162, in forward\n    return F.embedding(\n  File \"/home/liuyeqiang/anaconda3/envs/GMT/lib/python3.10/site-packages/torch/nn/functional.py\", line 2210, in embedding\n    return torch.embedding(weight, input, padding_idx, scale_grad_by_freq, sparse)\nRuntimeError: Expected tensor for argument #1 'indices' to have one of the following scalar types: Long, Int; but got torch.FloatTensor instead (while checking arguments for embedding)\n"
+        }
+      ],
+      "raw_failure_path": "/home/liuyeqiang/WWW_jev_phase12_runtime/20261009_v1/structure_v1/FAILED.json",
+      "SHA256": "e816384036f84753670dc4d52ce6d3b6367f556000e4ab3c2e1ed5862cd63e72",
+      "resolution": "empty question fixture dtype explicitly int64; production modules unchanged by this fixture repair"
+    }
+  ]
+}

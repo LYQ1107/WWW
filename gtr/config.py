@@ -45,6 +45,7 @@ def add_gtr_config(cfg):
     # frozen and the OFF/SHADOW equivalence gate has passed.
     _C.MODEL.JEV = CN()
     _C.MODEL.JEV.ENABLED = False
+    _C.MODEL.JEV.VISUAL_JEV_ENABLED = False
     _C.MODEL.JEV.MODE = 'off'
     _C.MODEL.JEV.STATE_DIM = 64
     _C.MODEL.JEV.HIDDEN_DIM = 128
