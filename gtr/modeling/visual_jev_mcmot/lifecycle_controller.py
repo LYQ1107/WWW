@@ -10,6 +10,11 @@ class VisualLifecycleController:
         if mode not in {'OFF','SHADOW','MATCH_ONLY','FULL_LIFECYCLE'}:raise ValueError('unknown lifecycle mode')
         if mode=='FULL_LIFECYCLE' and not {'MATCH','MEMORY','REACTIVATION'}.issubset(qualified_tasks):
             raise ValueError('FULL_LIFECYCLE requires all real native supervision gates')
+        if mode=='FULL_LIFECYCLE':
+            # This release has no qualified learned lifecycle checkpoints or
+            # learned MEMORY/REACT executors. Reject even caller-supplied task
+            # strings instead of silently advertising FULL with native rules.
+            raise NotImplementedError('Phase XII FULL_LIFECYCLE is unavailable; MEMORY/REACT are untrained native fallback interfaces')
         if mode=='MATCH_ONLY' and 'MATCH' not in qualified_tasks:raise ValueError('unqualified MATCH checkpoint')
         self.model=model.eval();self.mode=mode;self.supervision=supervision;self.risk=risk
         self.qualified_tasks=set(qualified_tasks);self.observer=observer
