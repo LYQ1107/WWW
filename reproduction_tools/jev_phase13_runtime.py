@@ -23,6 +23,10 @@ def build_tracker(video,policy=None,variant='full',mode='JEV_DIRECT',temperature
         assert mode=='JEV_DIRECT'
         from cache_jev_phase13_stage1 import extract
         frontend_cfg=get_cfg();add_centernet_config(frontend_cfg);add_gtr_config(frontend_cfg);frontend_cfg.merge_from_file(str(ROOT/'configs/VISION_stage1.yaml'));frontend_cfg.freeze();model.jev_perception_cache_reader=None
+        # extract() filters through this model attribute. Native lifecycle
+        # configuration comes from VISION_test, but perception must retain
+        # the frozen Stage1 cache threshold (0.55 rather than0.525).
+        model.roi_heads.asso_thresh_test=float(frontend_cfg.MODEL.ASSO_HEAD.ASSO_THRESH_TEST)
         def inference(payloads,*args,**kw):
             assert len(payloads)==1
             return [extract(model,frontend_cfg,payloads[0]['phase13_image_path'])]
