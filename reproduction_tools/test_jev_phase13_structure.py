@@ -40,5 +40,5 @@ def main():
     for v in ['no_cross_camera','no_long_term']:
         a=transform_inputs(r['inputs'],v);b,_=collate([r],device='cpu',variant=v);assert all(torch.equal(a[t],b[t]) for t in a)
     result={'status':'PASS','binding':binding(),'dataset_SHA256':man[0]['DATASET']['SHA256'],'actual_record_key':r['key'],'checks':checks,'no_cross_and_no_long_train_runtime_tensor_transform_exact':True,'model_GT_inputs':False,'history_features_causal_by_native_builder':True}
-    save(OUT/'structural_v1/RESULT.json',result);print('PHASE13_STRUCTURE_PASS',flush=True)
+    save(OUT/'structural_v2/RESULT.json',result);print('PHASE13_STRUCTURE_PASS',flush=True)
 if __name__=='__main__':main()

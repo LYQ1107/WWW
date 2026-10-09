@@ -2,7 +2,7 @@
 from jev_phase13_learning import *
 
 def main():
-    protect();structure=OUT/'structural_v1/RESULT.json';direct=OUT/'gta_free_native_v1/RESULT.json';ss=json.loads(structure.read_text());dd=json.loads(direct.read_text());assert ss['status']==dd['status']=='PASS'
+    protect();structure=OUT/'structural_v2/RESULT.json';direct=OUT/'gta_free_native_v1/RESULT.json';ss=json.loads(structure.read_text());dd=json.loads(direct.read_text());assert ss['status']==dd['status']=='PASS'
     save(REPORTS/'STRUCTURAL_TESTS.json',{'status':'PASS','binding':ss['binding'],'path':str(structure),'SHA256':sha(structure),'checks':[{k:v for k,v in c.items() if k!='gradient_by_parameter'} for c in ss['checks']]})
     save(REPORTS/'GTA_FREE_CONTRACT.json',{'status':'PASS','binding':dd['binding'],'path':str(direct),'SHA256':sha(direct),**{k:v for k,v in dd.items() if k not in ['binding','full_trace']}})
     native=[]
