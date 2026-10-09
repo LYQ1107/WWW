@@ -204,6 +204,7 @@ def main():
         'G3': {'status': read(REPORTS / 'TINY_LEARNABILITY.json')['status'], 'evidence': reference(REPORTS / 'TINY_LEARNABILITY.json')},
         'G4': {'status': read(REPORTS / 'NATIVE_PARITY.json')['status'], 'evidence': reference(REPORTS / 'NATIVE_PARITY.json'), 'repeated_recovery_fixed': reference(REPORTS / 'NATIVE_RECYCLING_BUG_AUDIT.json')},
         'G5': {'status': 'PASS' if g5 else 'FAIL', 'Full_mean': {k: full[k]['mean'] for k in METRICS}, 'B1': b1,
+               'failure_reasons': [name for name, passed in [('HOTA must exceed B1', full['HOTA']['mean'] > b1['HOTA']), ('AssA must exceed B1', full['AssA']['mean'] > b1['AssA']), ('IDSW must not exceed1.25xB1', full['IDSW']['mean'] <= 1.25 * b1['IDSW'])] if not passed],
                'severe_collapse': full['HOTA']['mean'] < b1['HOTA'] - 5 or full['IDSW']['mean'] > 2 * b1['IDSW']},
         'G6': {'status': 'PASS' if g6 else 'FAIL', 'registered_parameters': caps, 'same_data_labels_candidates_native_solver': True, 'updates': 20000, 'seeds': SEEDS},
         'G7': {'status': 'EXPLORATORY_GO' if g7 else 'NO_GO', 'Full_minus_style_by_seed': seed_deltas, 'HOTA_reducing_ablations': reduced,
@@ -212,6 +213,7 @@ def main():
         'G9': {'status': 'NO_GO', 'reason': 'inherited true Stage1 was trained on all24 TRAIN videos including20/21/22; independent feature-level heldout authorization fails', 'heldout': 'SEALED'}
     }
     report = {'status': 'NO_GO_HELDOUT', 'execution': 'COMPLETE_WITH_SCIENTIFIC_QUALIFICATION_LIMITS', 'binding': binding(), 'gates': gates,
+              'claim_scope': 'MATCH-only controller on historically preexposed development; typed lifecycle and independent heldout superiority are not established',
               'main_claim_supported': g5 and g6 and g7 and full_efficiency['budget_PASS'], 'official_TEST': False, 'Full24': False,
               'lifecycle': lifecycle, 'onpolicy_status': own['status'], 'environment': reference(REPORTS / 'RUN_ENVIRONMENT.json')}
     save(REPORTS / 'FINAL_GO_NO_GO.json', report)
@@ -265,6 +267,22 @@ def write_report(report, summaries, cosine, own):
     lines.append('| B1 cosine | ' + ' | '.join(f'{cosine["tracking"][k]:.3f}' for k in METRICS) + ' |')
     original = read(REPORTS / 'GMT_BASELINE_FREEZE.json')['GMT_OFF_metrics']['strict_online']
     lines.append('| Original GMT separate full system | ' + ' | '.join(f'{original[k]:.3f}' for k in METRICS) + ' |')
+    lines.extend(['', '## Bounded own-state round', '',
+                  'The following comparison uses the same completed eligible seeds before and after the extra4k updates. Wrong-anchor observations count actual errors relative to each identity first GT anchor; they must be read together with births/fragments and full tracking metrics. Prefix error duration is censored and is not a counterfactual propagation estimate.', '',
+                  '| Method | Eligible completed seeds | 20k HOTA paired | 24k HOTA | 20k IDSW paired | 24k IDSW | TRAIN wrong-anchor before | after |',
+                  '|---|---:|---:|---:|---:|---:|---:|---:|'])
+    for variant in MAIN:
+        cc = [c for c in own['cases'] if c['variant'] == variant and c['status'] == 'COMPLETE']
+        if not cc:
+            lines.append(f'| {variant} | 0 | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN | NOT_RUN |')
+            continue
+        before_tracking = [read(OUT/'formal_pooled_v1'/f'{variant}_seed{c["seed"]}'/'RESULT.json')['strict_pooled_TrackEval'] for c in cc]
+        avg = lambda values: float(np.mean(values))
+        before_errors = [sum(r['before']['birth_anchor_wrong_observations'] for r in c['paired_first256_TRAIN']) for c in cc]
+        after_errors = [sum(r['after']['birth_anchor_wrong_observations'] for r in c['paired_first256_TRAIN']) for c in cc]
+        values = [avg([r['HOTA'] for r in before_tracking]), avg([c['online_development']['tracking']['HOTA'] for c in cc]),
+                  avg([r['IDSW'] for r in before_tracking]), avg([c['online_development']['tracking']['IDSW'] for c in cc]), avg(before_errors), avg(after_errors)]
+        lines.append('| '+variant+' | '+str(len(cc))+' | '+' | '.join(f'{v:.3f}' for v in values)+' |')
     lines.extend(['', 'Original GMT uses Stage2-trained perception/RPCE and is a separate strong full-system comparator. MOTIP-style/CAMEL-style are controlled adapters, not complete official framework reproductions.', '',
                   'Native state parity exposed a restored-ID recycling bug before primary training. Old data/models/results remain archived. The correction adds a recovered ID back to the real possible-ID set; the real GTA-throw lifecycle test now recovers the same ID twice and verifies full/resumed state through106 frames. All primary models use the regenerated v3 corpus. A dormant-state issue in the Set control was also repaired before training; every shared-state/ordinary decoder block has nonzero supervised gradients.', '',
                   'Tiny/Pilot use frozen examples and budgets; formal primary checkpoint is LAST at20k. All GT labels are offline and uncertain/contaminated candidate histories remain UNKNOWN. REACT has only9 natural clean TRAIN positives and MEMORY has0 WRITE/KEEP labels, so learned MATCH+REACT and three-lifecycle experiments are NOT_RUN. Common cosine recovery/native WRITE remain explicit fallbacks. The NoTyped result cannot identify typed lifecycle benefit under MATCH-only supervision.', '',
