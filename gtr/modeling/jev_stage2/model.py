@@ -66,6 +66,9 @@ class GlobalIdentityJev(nn.Module):
             heads=torch.stack([layer(option).squeeze(-1) for layer in self.choice],-1);logits=heads.gather(-1,x['question_type'][:,:,None,None].expand(-1,-1,k+1,1).clamp_max(1)).squeeze(-1)
         return logits.masked_fill(~legal,-1e4)
     def forward(self,x):
+        expected={'detection_visual','detection_meta','history_visual','history_mask','identity_meta','pair_evidence','legal','question_mask','identity_mask','question_type'}
+        if set(x)!=expected:raise ValueError('Only causal runtime tensors may enter Stage2; labels/refs are separate')
+        if x['detection_visual'].shape[1]==0:return x['detection_visual'].new_empty(x['detection_visual'].shape[0],0,x['history_visual'].shape[1]+1)
         state,h,det=self.encode_state(x)
         if self.variant=='no_shared_state':state=state*0
         qt,question=self.encode_questions(x,state,h,det);return self.score_questions(x,state,h,det,qt,question)

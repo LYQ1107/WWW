@@ -1,0 +1,5028 @@
+{
+  "commercial_JEV_exact_reproduction": false,
+  "repositories": [
+    {
+      "URL": "https://github.com/guanxuyu-sv/Visual-Jev",
+      "adaptation": "share past visual state, not LM generation",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/guanxuyu-sv_Visual-Jev",
+      "commit": "a392eaedfa41adae348f9767b55c0f54b3a13b57",
+      "file_count": 86,
+      "license": {
+        "SHA256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "shared multimodal prefix, candidate slot readout",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "guanxuyu-sv/Visual-Jev",
+      "sources": [
+        {
+          "SHA256": "45cc2d8aac83dd08ddc1c578610e0a459f4b2d737b1561da7b62f1c4087cd474",
+          "URL": "https://github.com/guanxuyu-sv/Visual-Jev/blob/a392eaedfa41adae348f9767b55c0f54b3a13b57/code/vdm/models/vdm_model.py",
+          "functions": [
+            {
+              "args": [
+                "self"
+              ],
+              "end": 78,
+              "line": 77,
+              "name": "n_questions"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 82,
+              "line": 81,
+              "name": "prefix_len"
+            },
+            {
+              "args": [
+                "self",
+                "hidden",
+                "k_max",
+                "dropout"
+              ],
+              "end": 101,
+              "line": 92,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "h"
+              ],
+              "end": 109,
+              "line": 103,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "model_path",
+                "dtype",
+                "device",
+                "attn_implementation",
+                "with_heads"
+              ],
+              "end": 139,
+              "line": 116,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 144,
+              "line": 142,
+              "name": "option_token_ids"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 157,
+              "line": 148,
+              "name": "vl"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 162,
+              "line": 160,
+              "name": "vl_model"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 166,
+              "line": 165,
+              "name": "lm_head"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 170,
+              "line": 169,
+              "name": "dtype"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 181,
+              "line": 173,
+              "name": "_build_option_ids"
+            },
+            {
+              "args": [
+                "self",
+                "image",
+                "questions",
+                "shared_context"
+              ],
+              "end": 235,
+              "line": 184,
+              "name": "prepare_group"
+            },
+            {
+              "args": [
+                "self",
+                "pixel_values",
+                "image_grid_thw"
+              ],
+              "end": 245,
+              "line": 238,
+              "name": "encode_vision"
+            },
+            {
+              "args": [
+                "self",
+                "ids",
+                "image_embeds"
+              ],
+              "end": 254,
+              "line": 247,
+              "name": "_embed"
+            },
+            {
+              "args": [
+                "self",
+                "hidden_last",
+                "qtypes",
+                "n_options"
+              ],
+              "end": 276,
+              "line": 257,
+              "name": "_readout"
+            },
+            {
+              "args": [
+                "self",
+                "g"
+              ],
+              "end": 295,
+              "line": 280,
+              "name": "run_independent"
+            },
+            {
+              "args": [
+                "self",
+                "g"
+              ],
+              "end": 313,
+              "line": 298,
+              "name": "run_vision_cache"
+            },
+            {
+              "args": [
+                "self",
+                "g"
+              ],
+              "end": 329,
+              "line": 315,
+              "name": "_pad_full"
+            },
+            {
+              "args": [
+                "self",
+                "g"
+              ],
+              "end": 355,
+              "line": 332,
+              "name": "run_independent_batch"
+            },
+            {
+              "args": [
+                "self",
+                "g"
+              ],
+              "end": 378,
+              "line": 358,
+              "name": "run_vision_cache_batch"
+            },
+            {
+              "args": [
+                "self",
+                "g"
+              ],
+              "end": 395,
+              "line": 381,
+              "name": "_prefill_prefix"
+            },
+            {
+              "args": [
+                "cache",
+                "batch"
+              ],
+              "end": 411,
+              "line": 398,
+              "name": "_fork"
+            },
+            {
+              "args": [
+                "self",
+                "g"
+              ],
+              "end": 430,
+              "line": 414,
+              "name": "run_prefix_share"
+            },
+            {
+              "args": [
+                "self",
+                "g"
+              ],
+              "end": 464,
+              "line": 433,
+              "name": "run_prefix_share_batch"
+            },
+            {
+              "args": [
+                "self",
+                "pixel_values",
+                "image_grid_thw",
+                "input_ids",
+                "position_ids",
+                "attention_mask",
+                "readout_index",
+                "qtypes",
+                "n_options"
+              ],
+              "end": 492,
+              "line": 467,
+              "name": "forward_train"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 502,
+              "line": 496,
+              "name": "trainable"
+            }
+          ],
+          "path": "code/vdm/models/vdm_model.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "32974d9dce169f2bf039fc055e6089f3c438720fa1fabd9958c0b3cca3fadad9",
+          "URL": "https://github.com/guanxuyu-sv/Visual-Jev/blob/a392eaedfa41adae348f9767b55c0f54b3a13b57/code/vdm/training/train.py",
+          "functions": [
+            {
+              "args": [
+                "s"
+              ],
+              "end": 55,
+              "line": 54,
+              "name": "set_seed"
+            },
+            {
+              "args": [
+                "args"
+              ],
+              "end": 79,
+              "line": 58,
+              "name": "build_model"
+            },
+            {
+              "args": [],
+              "end": 215,
+              "line": 82,
+              "name": "main"
+            },
+            {
+              "args": [
+                "step"
+              ],
+              "end": 162,
+              "line": 158,
+              "name": "lr_at"
+            }
+          ],
+          "path": "code/vdm/training/train.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "SFT slots; independent question suffixes reuse prefix cache"
+    },
+    {
+      "URL": "https://github.com/Liuziyu77/Valen",
+      "adaptation": "shared state, separate actual dynamic readers",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/Liuziyu77_Valen",
+      "commit": "5f775c4f6747216d6085d088c9004af66371638d",
+      "file_count": 283,
+      "license": {
+        "SHA256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "encode_state/encode_questions/score_questions; QuestionBlock and CandidateBlock",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "Liuziyu77/Valen",
+      "sources": [
+        {
+          "SHA256": "7d8936721ca2fee70ce6d8bd12c80fabfcf00ad3f140262a0bbf8c296bc04825",
+          "URL": "https://github.com/Liuziyu77/Valen/blob/5f775c4f6747216d6085d088c9004af66371638d/valen/modeling/dual_encoder/model.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "text_encoder",
+                "vision_encoder",
+                "config"
+              ],
+              "end": 56,
+              "line": 17,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 60,
+              "line": 58,
+              "name": "_amp"
+            },
+            {
+              "args": [
+                "self",
+                "sequences"
+              ],
+              "end": 75,
+              "line": 62,
+              "name": "_text_batch"
+            },
+            {
+              "args": [
+                "self",
+                "sequences",
+                "pool"
+              ],
+              "end": 93,
+              "line": 77,
+              "name": "_text_chunks"
+            },
+            {
+              "args": [
+                "self",
+                "state"
+              ],
+              "end": 119,
+              "line": 95,
+              "name": "encode_state"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "memory"
+              ],
+              "end": 128,
+              "line": 121,
+              "name": "encode_questions"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "memory",
+                "evidence"
+              ],
+              "end": 143,
+              "line": 130,
+              "name": "score_questions"
+            },
+            {
+              "args": [
+                "self",
+                "state"
+              ],
+              "end": 150,
+              "line": 145,
+              "name": "forward"
+            }
+          ],
+          "path": "valen/modeling/dual_encoder/model.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "7dc7292198dbf52e5f04e948d416d03090dc83796bfd704bdb02b0d4da7ce61b",
+          "URL": "https://github.com/Liuziyu77/Valen/blob/5f775c4f6747216d6085d088c9004af66371638d/valen/modeling/dual_encoder/layers.py",
+          "functions": [
+            {
+              "args": [
+                "length",
+                "width",
+                "device"
+              ],
+              "end": 91,
+              "line": 87,
+              "name": "positions"
+            },
+            {
+              "args": [
+                "self",
+                "width",
+                "heads"
+              ],
+              "end": 14,
+              "line": 8,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "x"
+              ],
+              "end": 17,
+              "line": 16,
+              "name": "_split"
+            },
+            {
+              "args": [
+                "self",
+                "memory"
+              ],
+              "end": 20,
+              "line": 19,
+              "name": "project_memory"
+            },
+            {
+              "args": [
+                "self",
+                "query",
+                "memory",
+                "mask",
+                "kv"
+              ],
+              "end": 27,
+              "line": 22,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "width",
+                "intermediate"
+              ],
+              "end": 32,
+              "line": 31,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "width",
+                "heads",
+                "intermediate"
+              ],
+              "end": 40,
+              "line": 36,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "x",
+                "mask"
+              ],
+              "end": 45,
+              "line": 42,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "width",
+                "heads",
+                "intermediate"
+              ],
+              "end": 55,
+              "line": 49,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "r",
+                "h",
+                "hmask",
+                "memory",
+                "mmask"
+              ],
+              "end": 64,
+              "line": 57,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "width",
+                "heads",
+                "intermediate"
+              ],
+              "end": 73,
+              "line": 68,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "u",
+                "r",
+                "owners",
+                "memory",
+                "mmask",
+                "chunk_size"
+              ],
+              "end": 84,
+              "line": 75,
+              "name": "forward"
+            }
+          ],
+          "path": "valen/modeling/dual_encoder/layers.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "4b1e0aec551fae0d1fb0503071c4a8956c99cd8ce63b3eb997477535ee49c744",
+          "URL": "https://github.com/Liuziyu77/Valen/blob/5f775c4f6747216d6085d088c9004af66371638d/valen/training/rlcd.py",
+          "functions": [
+            {
+              "args": [
+                "options"
+              ],
+              "end": 41,
+              "line": 25,
+              "name": "validate_options"
+            },
+            {
+              "args": [
+                "probabilities",
+                "target",
+                "actions",
+                "correctness_weight",
+                "confidence_weight"
+              ],
+              "end": 50,
+              "line": 44,
+              "name": "decision_reward"
+            },
+            {
+              "args": [
+                "rewards",
+                "epsilon"
+              ],
+              "end": 60,
+              "line": 53,
+              "name": "group_advantages"
+            },
+            {
+              "args": [
+                "log_probs",
+                "actions",
+                "old_log_probs",
+                "advantages",
+                "epsilon"
+              ],
+              "end": 71,
+              "line": 63,
+              "name": "clipped_policy_loss"
+            },
+            {
+              "args": [
+                "self",
+                "model",
+                "options",
+                "state",
+                "resuming",
+                "cache_frozen_features",
+                "batch_config"
+              ],
+              "end": 112,
+              "line": 92,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "model",
+                "pack"
+              ],
+              "end": 157,
+              "line": 115,
+              "name": "prepare"
+            },
+            {
+              "args": [
+                "self",
+                "model",
+                "question",
+                "rollout"
+              ],
+              "end": 160,
+              "line": 159,
+              "name": "loss"
+            },
+            {
+              "args": [
+                "self",
+                "model",
+                "state",
+                "rollouts"
+              ],
+              "end": 164,
+              "line": 162,
+              "name": "state_losses"
+            },
+            {
+              "args": [
+                "self",
+                "logits",
+                "question",
+                "rollout"
+              ],
+              "end": 181,
+              "line": 166,
+              "name": "loss_from_logits"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 184,
+              "line": 183,
+              "name": "state_dict"
+            }
+          ],
+          "path": "valen/training/rlcd.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "choice supervised; experimental RLCD not fully reproduced"
+    },
+    {
+      "URL": "https://github.com/tinnel123666888/OmniJev",
+      "adaptation": "runtime action representation and question gate",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/tinnel123666888_OmniJev",
+      "commit": "14dbec4f71e194852c8d7b88ab36ef639493f400",
+      "file_count": 71,
+      "license": {
+        "SHA256": "c35d34d2a8cc22ca043ecaf7989586960c9305d45a9ec81ff839b736a3ffbd21",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "OptionScorer question-dependent tanh gate and typed masked probabilities",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "tinnel123666888/OmniJev",
+      "sources": [
+        {
+          "SHA256": "7f3674537d616afe177be04f1842c3479ad4f8945644d5915fde43d533b13eb4",
+          "URL": "https://github.com/tinnel123666888/OmniJev/blob/14dbec4f71e194852c8d7b88ab36ef639493f400/mso/head.py",
+          "functions": [
+            {
+              "args": [
+                "mu",
+                "allow_abstain"
+              ],
+              "end": 102,
+              "line": 93,
+              "name": "choice_outputs"
+            },
+            {
+              "args": [
+                "probs"
+              ],
+              "end": 110,
+              "line": 105,
+              "name": "jev_confidence"
+            },
+            {
+              "args": [
+                "p",
+                "target"
+              ],
+              "end": 135,
+              "line": 133,
+              "name": "log_score"
+            },
+            {
+              "args": [
+                "p",
+                "target"
+              ],
+              "end": 140,
+              "line": 138,
+              "name": "brier"
+            },
+            {
+              "args": [
+                "p",
+                "target"
+              ],
+              "end": 145,
+              "line": 143,
+              "name": "rps"
+            },
+            {
+              "args": [
+                "mu",
+                "target"
+              ],
+              "end": 151,
+              "line": 148,
+              "name": "noul_loss"
+            },
+            {
+              "args": [
+                "self",
+                "d_model",
+                "d_hidden",
+                "n_types",
+                "norm"
+              ],
+              "end": 62,
+              "line": 43,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "u_opts",
+                "z_q",
+                "type_id",
+                "feats"
+              ],
+              "end": 72,
+              "line": 64,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "u_opts",
+                "z_q",
+                "type_id",
+                "feats"
+              ],
+              "end": 90,
+              "line": 74,
+              "name": "logits"
+            },
+            {
+              "args": [
+                "self",
+                "d_model",
+                "d_hidden"
+              ],
+              "end": 119,
+              "line": 116,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "z_q",
+                "u_levels"
+              ],
+              "end": 129,
+              "line": 121,
+              "name": "forward"
+            }
+          ],
+          "path": "mso/head.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "03d047b7ffa73ba5c3f142ba7a5881c20d07f73c4f0b3ccacc7ac10554b209bf",
+          "URL": "https://github.com/tinnel123666888/OmniJev/blob/14dbec4f71e194852c8d7b88ab36ef639493f400/mso/infer.py",
+          "functions": [
+            {
+              "args": [
+                "T_",
+                "L",
+                "blocks",
+                "spans",
+                "device",
+                "dtype"
+              ],
+              "end": 404,
+              "line": 389,
+              "name": "build_packed_mask"
+            },
+            {
+              "args": [],
+              "end": 416,
+              "line": 406,
+              "name": "main"
+            },
+            {
+              "args": [
+                "self",
+                "ckpt",
+                "base_model",
+                "tiny",
+                "max_pixels",
+                "align_options"
+              ],
+              "end": 105,
+              "line": 40,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "qtype",
+                "h_seq",
+                "ids",
+                "opens",
+                "closes",
+                "k"
+              ],
+              "end": 117,
+              "line": 107,
+              "name": "_score"
+            },
+            {
+              "args": [
+                "q"
+              ],
+              "end": 139,
+              "line": 120,
+              "name": "_options"
+            },
+            {
+              "args": [
+                "self",
+                "image_path",
+                "video",
+                "q"
+              ],
+              "end": 147,
+              "line": 141,
+              "name": "_encode"
+            },
+            {
+              "args": [
+                "self",
+                "q",
+                "opts"
+              ],
+              "end": 158,
+              "line": 149,
+              "name": "_prompt"
+            },
+            {
+              "args": [
+                "self",
+                "row"
+              ],
+              "end": 165,
+              "line": 160,
+              "name": "_spans_of"
+            },
+            {
+              "args": [
+                "self",
+                "image_path",
+                "video",
+                "questions",
+                "qids"
+              ],
+              "end": 221,
+              "line": 167,
+              "name": "_encode_many"
+            },
+            {
+              "args": [
+                "self",
+                "vec",
+                "qtype"
+              ],
+              "end": 231,
+              "line": 223,
+              "name": "_scale"
+            },
+            {
+              "args": [
+                "self",
+                "q",
+                "keys",
+                "opts",
+                "mu",
+                "lat"
+              ],
+              "end": 261,
+              "line": 233,
+              "name": "_finish"
+            },
+            {
+              "args": [
+                "self",
+                "image_path",
+                "q",
+                "video"
+              ],
+              "end": 279,
+              "line": 264,
+              "name": "ask"
+            },
+            {
+              "args": [
+                "self",
+                "image_path",
+                "video",
+                "questions"
+              ],
+              "end": 330,
+              "line": 282,
+              "name": "ask_packed"
+            },
+            {
+              "args": [
+                "self",
+                "image_path",
+                "video",
+                "questions"
+              ],
+              "end": 367,
+              "line": 333,
+              "name": "ask_branch"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "questions",
+                "packed"
+              ],
+              "end": 386,
+              "line": 369,
+              "name": "system_one"
+            }
+          ],
+          "path": "mso/infer.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "supervised public records; task temperatures"
+    },
+    {
+      "URL": "https://github.com/OmniJev/OneJev",
+      "adaptation": "cache sharing concept; do not import multi-billion LM",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/OmniJev_OneJev",
+      "commit": "de0c1125855e3f496f65a79f9aab2fbbc08e55ba",
+      "file_count": 70,
+      "license": {
+        "SHA256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "DecisionEngine prefix forks, vocabulary slot readout and task calibration",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "OmniJev/OneJev",
+      "sources": [
+        {
+          "SHA256": "f9665c68714818dbea8edc1e80d0b0d86737537dd606ff53cff37aafb84d6bf4",
+          "URL": "https://github.com/OmniJev/OneJev/blob/de0c1125855e3f496f65a79f9aab2fbbc08e55ba/qev/engine.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "model_path",
+                "device",
+                "dtype",
+                "calibration",
+                "max_branch_tokens",
+                "max_request_tokens",
+                "fork_token_budget",
+                "fork_mode",
+                "fork_tolerance",
+                "style",
+                "head_dtype"
+              ],
+              "end": 114,
+              "line": 60,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "head_dtype"
+              ],
+              "end": 130,
+              "line": 116,
+              "name": "_upcast_head"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 152,
+              "line": 132,
+              "name": "_verify_slots"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "suffix"
+              ],
+              "end": 156,
+              "line": 154,
+              "name": "_render_prompt"
+            },
+            {
+              "args": [
+                "self",
+                "text"
+              ],
+              "end": 159,
+              "line": 158,
+              "name": "_encode"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 191,
+              "line": 161,
+              "name": "_select_fork_mode"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "rendered"
+              ],
+              "end": 207,
+              "line": 193,
+              "name": "_prefix_and_suffix_ids"
+            },
+            {
+              "args": [
+                "self",
+                "vocab_logits",
+                "n_slots"
+              ],
+              "end": 216,
+              "line": 209,
+              "name": "_readout"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "rendered"
+              ],
+              "end": 239,
+              "line": 218,
+              "name": "_run_sequential"
+            },
+            {
+              "args": [
+                "self",
+                "cache",
+                "n"
+              ],
+              "end": 261,
+              "line": 241,
+              "name": "_fork"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "rendered"
+              ],
+              "end": 295,
+              "line": 263,
+              "name": "_run_batched"
+            },
+            {
+              "args": [
+                "self",
+                "base",
+                "P",
+                "idx",
+                "rendered",
+                "suffixes",
+                "results"
+              ],
+              "end": 324,
+              "line": 297,
+              "name": "_run_chunk"
+            },
+            {
+              "args": [
+                "self",
+                "q"
+              ],
+              "end": 332,
+              "line": 326,
+              "name": "_plan_chunks"
+            },
+            {
+              "args": [
+                "self",
+                "request",
+                "debias",
+                "debug"
+              ],
+              "end": 443,
+              "line": 334,
+              "name": "decide"
+            },
+            {
+              "args": [
+                "label"
+              ],
+              "end": 138,
+              "line": 136,
+              "name": "one"
+            }
+          ],
+          "path": "qev/engine.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "2b03b290ee9328caa5e23bea8d92b6dbd8fff61152305bbe0e445ad4d1e7a132",
+          "URL": "https://github.com/OmniJev/OneJev/blob/de0c1125855e3f496f65a79f9aab2fbbc08e55ba/qev/mm_engine.py",
+          "functions": [
+            {
+              "args": [
+                "name"
+              ],
+              "end": 47,
+              "line": 36,
+              "name": "local_model_dir"
+            },
+            {
+              "args": [],
+              "end": 63,
+              "line": 54,
+              "name": "_host_available"
+            },
+            {
+              "args": [
+                "evict",
+                "reserve_fraction",
+                "reserve_bytes"
+              ],
+              "end": 83,
+              "line": 66,
+              "name": "_make_room"
+            },
+            {
+              "args": [
+                "n",
+                "step"
+              ],
+              "end": 154,
+              "line": 153,
+              "name": "_bucket"
+            },
+            {
+              "args": [],
+              "end": 76,
+              "line": 72,
+              "name": "low"
+            },
+            {
+              "args": [
+                "self",
+                "decoder",
+                "step",
+                "max_len",
+                "max_graphs"
+              ],
+              "end": 97,
+              "line": 95,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "embeds",
+                "positions"
+              ],
+              "end": 116,
+              "line": 99,
+              "name": "__call__"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 122,
+              "line": 118,
+              "name": "_evict"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 125,
+              "line": 124,
+              "name": "clear"
+            },
+            {
+              "args": [
+                "self",
+                "size",
+                "embeds",
+                "positions"
+              ],
+              "end": 150,
+              "line": 127,
+              "name": "_capture"
+            },
+            {
+              "args": [
+                "self",
+                "decoder",
+                "fork",
+                "pad_id",
+                "step",
+                "max_len",
+                "width_step",
+                "max_width",
+                "max_rows",
+                "max_graphs"
+              ],
+              "end": 175,
+              "line": 169,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "embeds",
+                "positions",
+                "suffixes",
+                "delta"
+              ],
+              "end": 210,
+              "line": 177,
+              "name": "__call__"
+            },
+            {
+              "args": [
+                "self",
+                "size"
+              ],
+              "end": 215,
+              "line": 212,
+              "name": "_drop_prefix"
+            },
+            {
+              "args": [
+                "self",
+                "keep"
+              ],
+              "end": 227,
+              "line": 217,
+              "name": "_evict"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 231,
+              "line": 229,
+              "name": "clear"
+            },
+            {
+              "args": [
+                "self",
+                "run"
+              ],
+              "end": 241,
+              "line": 233,
+              "name": "_side_warmup"
+            },
+            {
+              "args": [
+                "self",
+                "size",
+                "embeds",
+                "positions"
+              ],
+              "end": 268,
+              "line": 243,
+              "name": "_capture_prefill"
+            },
+            {
+              "args": [
+                "self",
+                "key",
+                "cache",
+                "pos_dtype"
+              ],
+              "end": 300,
+              "line": 270,
+              "name": "_capture_branch"
+            },
+            {
+              "args": [
+                "self",
+                "model_path",
+                "device",
+                "dtype",
+                "calibration",
+                "max_branch_tokens",
+                "max_request_tokens",
+                "fork_token_budget",
+                "fork_mode",
+                "fork_tolerance",
+                "style",
+                "head_dtype",
+                "media_root",
+                "allow_local_paths",
+                "gpu_preprocess",
+                "cuda_graphs",
+                "quantize"
+              ],
+              "end": 407,
+              "line": 316,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "kind",
+                "stored_dir"
+              ],
+              "end": 418,
+              "line": 409,
+              "name": "_quantize"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 430,
+              "line": 420,
+              "name": "_init_slot_head"
+            },
+            {
+              "args": [
+                "self",
+                "hidden",
+                "n_slots"
+              ],
+              "end": 440,
+              "line": 432,
+              "name": "_readout_rows"
+            },
+            {
+              "args": [
+                "self",
+                "inputs"
+              ],
+              "end": 457,
+              "line": 442,
+              "name": "_embed"
+            },
+            {
+              "args": [
+                "self",
+                "name",
+                "call"
+              ],
+              "end": 479,
+              "line": 459,
+              "name": "_graph_call"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 482,
+              "line": 481,
+              "name": "_processor_kwargs"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 495,
+              "line": 484,
+              "name": "_normalize_on_gpu"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "suffix"
+              ],
+              "end": 499,
+              "line": 497,
+              "name": "_render_prompt"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "rendered"
+              ],
+              "end": 548,
+              "line": 501,
+              "name": "_prepare"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "rendered"
+              ],
+              "end": 552,
+              "line": 550,
+              "name": "_prefix_and_suffix_ids"
+            },
+            {
+              "args": [
+                "self",
+                "prep"
+              ],
+              "end": 559,
+              "line": 554,
+              "name": "_prefill"
+            },
+            {
+              "args": [
+                "self",
+                "prep",
+                "rendered"
+              ],
+              "end": 579,
+              "line": 561,
+              "name": "_run_single"
+            },
+            {
+              "args": [
+                "self",
+                "P",
+                "width",
+                "rows",
+                "delta"
+              ],
+              "end": 585,
+              "line": 581,
+              "name": "_suffix_positions"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "rendered"
+              ],
+              "end": 608,
+              "line": 587,
+              "name": "_run_sequential"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "rendered"
+              ],
+              "end": 642,
+              "line": 610,
+              "name": "_run_batched"
+            },
+            {
+              "args": [
+                "self",
+                "base",
+                "P",
+                "delta",
+                "idx",
+                "rendered",
+                "suffixes",
+                "results"
+              ],
+              "end": 670,
+              "line": 644,
+              "name": "_run_chunk_mm"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "rendered"
+              ],
+              "end": 685,
+              "line": 672,
+              "name": "_full_logits"
+            },
+            {
+              "args": [
+                "self",
+                "items"
+              ],
+              "end": 696,
+              "line": 687,
+              "name": "_set_media"
+            },
+            {
+              "args": [
+                "self",
+                "request",
+                "debias",
+                "debug",
+                "media"
+              ],
+              "end": 715,
+              "line": 698,
+              "name": "decide"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 765,
+              "line": 717,
+              "name": "_select_fork_mode"
+            },
+            {
+              "args": [],
+              "end": 134,
+              "line": 133,
+              "name": "run"
+            },
+            {
+              "args": [],
+              "end": 257,
+              "line": 251,
+              "name": "run"
+            },
+            {
+              "args": [],
+              "end": 289,
+              "line": 279,
+              "name": "run"
+            },
+            {
+              "args": [
+                "images"
+              ],
+              "end": 494,
+              "line": 493,
+              "name": "on_gpu"
+            }
+          ],
+          "path": "qev/mm_engine.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "7c4d015970bba3f676b982aa140c2c0c5e209bd7bfdd6761f0f982b95a2bd09d",
+          "URL": "https://github.com/OmniJev/OneJev/blob/de0c1125855e3f496f65a79f9aab2fbbc08e55ba/train/mm.py",
+          "functions": [
+            {
+              "args": [
+                "root"
+              ],
+              "end": 30,
+              "line": 28,
+              "name": "set_root"
+            },
+            {
+              "args": [
+                "text",
+                "media"
+              ],
+              "end": 49,
+              "line": 33,
+              "name": "content_parts"
+            },
+            {
+              "args": [
+                "processor",
+                "template_kwargs",
+                "messages_fn",
+                "state",
+                "suffix",
+                "media"
+              ],
+              "end": 57,
+              "line": 52,
+              "name": "render_prompt_mm"
+            },
+            {
+              "args": [
+                "media"
+              ],
+              "end": 79,
+              "line": 60,
+              "name": "load_media"
+            },
+            {
+              "args": [
+                "processor",
+                "prompts",
+                "medias",
+                "device"
+              ],
+              "end": 146,
+              "line": 127,
+              "name": "mm_inputs"
+            },
+            {
+              "args": [
+                "model",
+                "inputs",
+                "ends"
+              ],
+              "end": 158,
+              "line": 149,
+              "name": "mm_readout_logits"
+            },
+            {
+              "args": [
+                "bundle",
+                "rows",
+                "render",
+                "limit"
+              ],
+              "end": 172,
+              "line": 161,
+              "name": "check_lengths"
+            },
+            {
+              "args": [
+                "self",
+                "processor"
+              ],
+              "end": 92,
+              "line": 85,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "h",
+                "w"
+              ],
+              "end": 98,
+              "line": 94,
+              "name": "image_tokens"
+            },
+            {
+              "args": [
+                "self",
+                "n",
+                "h",
+                "w",
+                "fps"
+              ],
+              "end": 111,
+              "line": 101,
+              "name": "video_extra"
+            },
+            {
+              "args": [
+                "self",
+                "media"
+              ],
+              "end": 121,
+              "line": 113,
+              "name": "media_extra"
+            },
+            {
+              "args": [
+                "self",
+                "prompt",
+                "media"
+              ],
+              "end": 124,
+              "line": 123,
+              "name": "length"
+            }
+          ],
+          "path": "train/mm.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "multimodal SFT token-slot losses; public LM inference backend"
+    },
+    {
+      "URL": "https://github.com/TianyuCodings/NanoJev",
+      "adaptation": "ordinary attention control, not final JEV",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/TianyuCodings_NanoJev",
+      "commit": "76fdfc9ecdca45a9bcef17991a07d3041a87685a",
+      "file_count": 520,
+      "license": {
+        "SHA256": "c69c1bb0b33112f68f9e8ef7e91dd38ec59066fcba3f62f70cbc8c9c83cf6a8e",
+        "label": "MIT",
+        "path": "LICENSE"
+      },
+      "mechanism": "toy dynamic candidate attention/head",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "TianyuCodings/NanoJev",
+      "sources": [
+        {
+          "SHA256": "4f39babd5575e43d7acf3eca357329a93c60041f334bc2bd7424929bf9c0da86",
+          "URL": "https://github.com/TianyuCodings/NanoJev/blob/76fdfc9ecdca45a9bcef17991a07d3041a87685a/scripts/train_toy_decisions.py",
+          "functions": [
+            {
+              "args": [
+                "path",
+                "obj"
+              ],
+              "end": 25,
+              "line": 24,
+              "name": "dump"
+            },
+            {
+              "args": [
+                "path",
+                "tokenizer",
+                "max_length"
+              ],
+              "end": 83,
+              "line": 28,
+              "name": "load_examples"
+            },
+            {
+              "args": [
+                "logits",
+                "examples",
+                "objective"
+              ],
+              "end": 153,
+              "line": 144,
+              "name": "loss_for"
+            },
+            {
+              "args": [
+                "ex",
+                "logits"
+              ],
+              "end": 172,
+              "line": 156,
+              "name": "prediction_record"
+            },
+            {
+              "args": [
+                "model",
+                "examples",
+                "pad_token",
+                "batch",
+                "path"
+              ],
+              "end": 191,
+              "line": 176,
+              "name": "evaluate"
+            },
+            {
+              "args": [
+                "lm",
+                "tokenizer",
+                "examples",
+                "batch",
+                "path",
+                "use_chat"
+              ],
+              "end": 233,
+              "line": 195,
+              "name": "frozen_native_baseline"
+            },
+            {
+              "args": [
+                "model",
+                "examples",
+                "pad_token"
+              ],
+              "end": 259,
+              "line": 237,
+              "name": "benchmark"
+            },
+            {
+              "args": [],
+              "end": 359,
+              "line": 262,
+              "name": "main"
+            },
+            {
+              "args": [
+                "self",
+                "backbone",
+                "set_head"
+              ],
+              "end": 102,
+              "line": 87,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "examples",
+                "pad_token"
+              ],
+              "end": 141,
+              "line": 104,
+              "name": "forward"
+            }
+          ],
+          "path": "scripts/train_toy_decisions.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "supervised toy decision CE"
+    },
+    {
+      "URL": "https://github.com/arnodjiang/Vision-JEV",
+      "adaptation": "dynamic candidate pointer baseline",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/arnodjiang_Vision-JEV",
+      "commit": "68bb0b5d88c7167441ad7e889ba70f7b8f398071",
+      "file_count": 41,
+      "license": {
+        "SHA256": "ab25c01b3c2197008230e334f737a8072b3716dbdce2b593f324681c5dde4e74",
+        "label": "MIT",
+        "path": "LICENSE"
+      },
+      "mechanism": "CandidateHead gathers candidate/query positions from multimodal hidden states",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "arnodjiang/Vision-JEV",
+      "sources": [
+        {
+          "SHA256": "6b293743d10db9c40361805f4c7175d3c7c0157376c86959fe20fd9172b40daf",
+          "URL": "https://github.com/arnodjiang/Vision-JEV/blob/68bb0b5d88c7167441ad7e889ba70f7b8f398071/src/vision_jev/model.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "hidden_size",
+                "projection_size"
+              ],
+              "end": 16,
+              "line": 12,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "hidden",
+                "candidate_positions",
+                "query_positions",
+                "candidate_mask"
+              ],
+              "end": 33,
+              "line": 18,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "backbone",
+                "projection_size"
+              ],
+              "end": 41,
+              "line": 37,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "cls",
+                "name",
+                "revision"
+              ],
+              "end": 46,
+              "line": 44,
+              "name": "from_base"
+            },
+            {
+              "args": [
+                "self",
+                "mode",
+                "rank"
+              ],
+              "end": 67,
+              "line": 48,
+              "name": "configure_training"
+            },
+            {
+              "args": [
+                "self",
+                "candidate_positions",
+                "query_positions",
+                "candidate_mask",
+                "labels"
+              ],
+              "end": 79,
+              "line": 69,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "directory",
+                "processor",
+                "metadata"
+              ],
+              "end": 97,
+              "line": 81,
+              "name": "save"
+            },
+            {
+              "args": [
+                "cls",
+                "directory"
+              ],
+              "end": 117,
+              "line": 100,
+              "name": "load"
+            }
+          ],
+          "path": "src/vision_jev/model.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "candidate masked CE with configurable LoRA/full training"
+    },
+    {
+      "URL": "https://github.com/Xiaooolong/vev",
+      "adaptation": "cache reuse only, actual past state required",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/Xiaooolong_vev",
+      "commit": "2d8c403b1c8459d34be214d76c19e0b158a1979c",
+      "file_count": 244,
+      "license": {
+        "SHA256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "VevModel packed visual/text suffix and restricted token readout; checkpoint state cache",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "Xiaooolong/vev",
+      "sources": [
+        {
+          "SHA256": "04b561ccd7532e25db9f12aa333ea3722d43801d999db0c1560f385777993be0",
+          "URL": "https://github.com/Xiaooolong/vev/blob/2d8c403b1c8459d34be214d76c19e0b158a1979c/vev/model.py",
+          "functions": [
+            {
+              "args": [
+                "text"
+              ],
+              "end": 33,
+              "line": 31,
+              "name": "sanitize"
+            },
+            {
+              "args": [
+                "q",
+                "labels"
+              ],
+              "end": 55,
+              "line": 36,
+              "name": "question_text"
+            },
+            {
+              "args": [
+                "processor",
+                "segments",
+                "q",
+                "labels"
+              ],
+              "end": 65,
+              "line": 58,
+              "name": "render_row"
+            },
+            {
+              "args": [
+                "processor",
+                "text",
+                "images"
+              ],
+              "end": 79,
+              "line": 68,
+              "name": "encode_row"
+            },
+            {
+              "args": [
+                "processor",
+                "texts",
+                "images"
+              ],
+              "end": 112,
+              "line": 82,
+              "name": "encode_rows"
+            },
+            {
+              "args": [
+                "rows",
+                "pad_id"
+              ],
+              "end": 137,
+              "line": 115,
+              "name": "collate_rows"
+            },
+            {
+              "args": [
+                "ckpt",
+                "revision"
+              ],
+              "end": 205,
+              "line": 198,
+              "name": "resolve_checkpoint"
+            },
+            {
+              "args": [
+                "ckpt",
+                "revision"
+              ],
+              "end": 223,
+              "line": 208,
+              "name": "is_checkpoint"
+            },
+            {
+              "args": [
+                "ckpt",
+                "meta"
+              ],
+              "end": 228,
+              "line": 226,
+              "name": "base_source"
+            },
+            {
+              "args": [
+                "ckpt",
+                "dtype",
+                "device",
+                "attn_implementation",
+                "revision"
+              ],
+              "end": 242,
+              "line": 231,
+              "name": "load_checkpoint"
+            },
+            {
+              "args": [
+                "seqs"
+              ],
+              "end": 256,
+              "line": 251,
+              "name": "common_prefix_len"
+            },
+            {
+              "args": [
+                "cache",
+                "n"
+              ],
+              "end": 278,
+              "line": 259,
+              "name": "fork_cache"
+            },
+            {
+              "args": [
+                "self",
+                "base_id",
+                "dtype",
+                "lora_r",
+                "lora_alpha",
+                "lora_dropout",
+                "gradient_checkpointing",
+                "attn_implementation"
+              ],
+              "end": 173,
+              "line": 150,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "batch"
+              ],
+              "end": 176,
+              "line": 175,
+              "name": "hidden"
+            },
+            {
+              "args": [
+                "self",
+                "batch",
+                "decide",
+                "answer_ids"
+              ],
+              "end": 179,
+              "line": 178,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "h",
+                "decide",
+                "answer_ids"
+              ],
+              "end": 188,
+              "line": 181,
+              "name": "readout"
+            },
+            {
+              "args": [
+                "self",
+                "out_dir",
+                "meta"
+              ],
+              "end": 195,
+              "line": 190,
+              "name": "save"
+            },
+            {
+              "args": [
+                "self",
+                "ckpt",
+                "dtype",
+                "device",
+                "attn_implementation",
+                "prefix_min_tokens",
+                "revision"
+              ],
+              "end": 309,
+              "line": 290,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 313,
+              "line": 311,
+              "name": "_autocast"
+            },
+            {
+              "args": [
+                "self",
+                "row"
+              ],
+              "end": 321,
+              "line": 316,
+              "name": "_logits"
+            },
+            {
+              "args": [
+                "self",
+                "segments",
+                "rows"
+              ],
+              "end": 346,
+              "line": 323,
+              "name": "_prefix_len"
+            },
+            {
+              "args": [
+                "self",
+                "row"
+              ],
+              "end": 357,
+              "line": 348,
+              "name": "_positions"
+            },
+            {
+              "args": [
+                "self",
+                "segments",
+                "rows"
+              ],
+              "end": 381,
+              "line": 360,
+              "name": "_logits_shared"
+            },
+            {
+              "args": [
+                "self",
+                "state",
+                "questions",
+                "max_images",
+                "max_pixels",
+                "allow_remote",
+                "max_state_tokens",
+                "max_request_tokens"
+              ],
+              "end": 425,
+              "line": 383,
+              "name": "run"
+            },
+            {
+              "args": [
+                "rows",
+                "start"
+              ],
+              "end": 429,
+              "line": 428,
+              "name": "_order"
+            },
+            {
+              "args": [
+                "names",
+                "length",
+                "fits"
+              ],
+              "end": 440,
+              "line": 432,
+              "name": "_chunks"
+            },
+            {
+              "args": [
+                "self",
+                "h",
+                "chunk",
+                "decide",
+                "rows"
+              ],
+              "end": 446,
+              "line": 442,
+              "name": "_readout"
+            },
+            {
+              "args": [
+                "self",
+                "rows"
+              ],
+              "end": 459,
+              "line": 449,
+              "name": "_logits_rows_batched"
+            },
+            {
+              "args": [
+                "cache"
+              ],
+              "end": 473,
+              "line": 462,
+              "name": "_cache_bytes"
+            },
+            {
+              "args": [
+                "self",
+                "segments",
+                "rows"
+              ],
+              "end": 514,
+              "line": 476,
+              "name": "_logits_shared_batched"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 519,
+              "line": 516,
+              "name": "warmup"
+            },
+            {
+              "args": [
+                "ids"
+              ],
+              "end": 333,
+              "line": 329,
+              "name": "expand"
+            },
+            {
+              "args": [
+                "b",
+                "s"
+              ],
+              "end": 498,
+              "line": 497,
+              "name": "fits"
+            }
+          ],
+          "path": "vev/model.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "LoRA/full checkpoint SFT; padded candidate lists"
+    },
+    {
+      "URL": "https://github.com/IamBusy/OpenJev-Vision",
+      "adaptation": "calibration reference; no proof of MCMOT Jev architecture",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/IamBusy_OpenJev-Vision",
+      "commit": "c3daafec4319a23a2c5a5e9b3c7d7da25cb283a3",
+      "file_count": 272,
+      "license": {
+        "SHA256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "AttributeHead public feature NLL and model posterior with image/prior",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "IamBusy/OpenJev-Vision",
+      "sources": [
+        {
+          "SHA256": "b9d0b882d3de171290d42ac64f6e5bb92a6ccb076de53b70cc23221af933a529",
+          "URL": "https://github.com/IamBusy/OpenJev-Vision/blob/c3daafec4319a23a2c5a5e9b3c7d7da25cb283a3/src/openjev/vision/public_model.py",
+          "functions": [
+            {
+              "args": [
+                "data_dir",
+                "dataset"
+              ],
+              "end": 26,
+              "line": 21,
+              "name": "records_for"
+            },
+            {
+              "args": [
+                "data_dir",
+                "dataset",
+                "backbone_path",
+                "output",
+                "config",
+                "device"
+              ],
+              "end": 93,
+              "line": 29,
+              "name": "cache_features"
+            },
+            {
+              "args": [
+                "probabilities",
+                "labels"
+              ],
+              "end": 164,
+              "line": 134,
+              "name": "classification_metrics"
+            },
+            {
+              "args": [
+                "data_dir",
+                "dataset",
+                "feature_path",
+                "output",
+                "config"
+              ],
+              "end": 318,
+              "line": 167,
+              "name": "train_public"
+            },
+            {
+              "args": [
+                "self",
+                "dimensions",
+                "variant",
+                "feature_dim",
+                "rank"
+              ],
+              "end": 115,
+              "line": 97,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "features"
+              ],
+              "end": 128,
+              "line": 117,
+              "name": "logits"
+            },
+            {
+              "args": [
+                "self",
+                "features",
+                "temperature"
+              ],
+              "end": 131,
+              "line": 130,
+              "name": "forward"
+            }
+          ],
+          "path": "src/openjev/vision/public_model.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "4c0ab4ad499339858d1b24075f6112bf58c8ed1a329a0cc3f67862fe44453133",
+          "URL": "https://github.com/IamBusy/OpenJev-Vision/blob/c3daafec4319a23a2c5a5e9b3c7d7da25cb283a3/src/openjev/vision/model.py",
+          "functions": [
+            {
+              "args": [
+                "name"
+              ],
+              "end": 21,
+              "line": 16,
+              "name": "device_for"
+            },
+            {
+              "args": [
+                "images",
+                "device"
+              ],
+              "end": 30,
+              "line": 24,
+              "name": "image_tensor"
+            },
+            {
+              "args": [
+                "path",
+                "model",
+                "metadata"
+              ],
+              "end": 127,
+              "line": 110,
+              "name": "save_checkpoint"
+            },
+            {
+              "args": [
+                "self",
+                "hidden_dim"
+              ],
+              "end": 47,
+              "line": 34,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "images"
+              ],
+              "end": 52,
+              "line": 49,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "variant",
+                "hidden_dim",
+                "sensor_error"
+              ],
+              "end": 73,
+              "line": 56,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "images",
+                "priors"
+              ],
+              "end": 80,
+              "line": 75,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "outputs",
+                "priors",
+                "temperature"
+              ],
+              "end": 107,
+              "line": 82,
+              "name": "log_posterior"
+            },
+            {
+              "args": [
+                "self",
+                "checkpoint",
+                "device"
+              ],
+              "end": 146,
+              "line": 131,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "image",
+                "prior",
+                "calibrated"
+              ],
+              "end": 155,
+              "line": 149,
+              "name": "posterior"
+            }
+          ],
+          "path": "src/openjev/vision/model.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "public image observed-class supervision; not native identity actions"
+    },
+    {
+      "URL": "https://github.com/sseanliu/Jev-Vision",
+      "adaptation": "typed mask/interface reference, not tracking proof",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/sseanliu_Jev-Vision",
+      "commit": "14ceabceaf08af74d2dab05c9893a890e3b4cca8",
+      "file_count": 537,
+      "license": {
+        "SHA256": "e94869a322afcee6b5f9108ad71fc59824f07fd53a2a380be3ef867912542069",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "DecisionModel hidden/readout and packed masks, typed choice/noul probabilities",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "sseanliu/Jev-Vision",
+      "sources": [
+        {
+          "SHA256": "7697983a6d2f4dac760e791d4eab2e4fb69b037d32d8afa9e0602f4dc158e19a",
+          "URL": "https://github.com/sseanliu/Jev-Vision/blob/14ceabceaf08af74d2dab05c9893a890e3b4cca8/model/s1/model.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "backbone_name_or_config",
+                "rank",
+                "new_vocab_size",
+                "attn_implementation",
+                "torch_dtype",
+                "lora",
+                "trainable_token_ids"
+              ],
+              "end": 53,
+              "line": 22,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "input_ids",
+                "segment_ids",
+                "position_ids"
+              ],
+              "end": 60,
+              "line": 55,
+              "name": "hidden"
+            },
+            {
+              "args": [
+                "self",
+                "packed",
+                "device"
+              ],
+              "end": 70,
+              "line": 62,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "h",
+                "packed"
+              ],
+              "end": 84,
+              "line": 72,
+              "name": "readout"
+            },
+            {
+              "args": [
+                "logits",
+                "packed"
+              ],
+              "end": 106,
+              "line": 87,
+              "name": "probabilities"
+            }
+          ],
+          "path": "model/s1/model.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "packed typed head training; choice softmax and noul sigmoid"
+    },
+    {
+      "URL": "https://github.com/mohit67890/imajev",
+      "adaptation": "order audit; no unbounded Global IDs imported as fixed tokens",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/mohit67890_imajev",
+      "commit": "ccf586d43d2a580319b6535c893668904d909eb9",
+      "file_count": 970,
+      "license": {
+        "SHA256": "d7885daad509b79a132f2f1b10d5e5b3c95d248b5987948e68838e8dd80dcbba",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "compile_question and presentation-order scoring of one-token candidates",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "mohit67890/imajev",
+      "sources": [
+        {
+          "SHA256": "ca70271c0244a1a8fc1ff4a274d14d91e5edd999efd2779b99b55ed8275c7427",
+          "URL": "https://github.com/mohit67890/imajev/blob/ccf586d43d2a580319b6535c893668904d909eb9/src/vision_decision/scoring.py",
+          "functions": [
+            {
+              "args": [
+                "codes"
+              ],
+              "end": 16,
+              "line": 13,
+              "name": "check_readout_codes"
+            },
+            {
+              "args": [
+                "codes"
+              ],
+              "end": 20,
+              "line": 18,
+              "name": "max_options"
+            },
+            {
+              "args": [
+                "layout"
+              ],
+              "end": 25,
+              "line": 22,
+              "name": "check_prompt_layout"
+            },
+            {
+              "args": [
+                "tokenizer",
+                "rendered_prompt",
+                "count",
+                "limit"
+              ],
+              "end": 47,
+              "line": 27,
+              "name": "readout_codes"
+            },
+            {
+              "args": [
+                "count",
+                "limit"
+              ],
+              "end": 54,
+              "line": 49,
+              "name": "labels_for_count"
+            },
+            {
+              "args": [
+                "field"
+              ],
+              "end": 63,
+              "line": 56,
+              "name": "candidates"
+            },
+            {
+              "args": [
+                "value"
+              ],
+              "end": 66,
+              "line": 65,
+              "name": "key"
+            },
+            {
+              "args": [
+                "state",
+                "layout"
+              ],
+              "end": 77,
+              "line": 70,
+              "name": "render_state"
+            },
+            {
+              "args": [
+                "field",
+                "state",
+                "layout"
+              ],
+              "end": 103,
+              "line": 79,
+              "name": "compile_question"
+            },
+            {
+              "args": [
+                "field",
+                "value",
+                "desc",
+                "layout"
+              ],
+              "end": 115,
+              "line": 105,
+              "name": "option_text"
+            },
+            {
+              "args": [
+                "field",
+                "state",
+                "layout",
+                "limit"
+              ],
+              "end": 120,
+              "line": 117,
+              "name": "compile_prompt"
+            },
+            {
+              "args": [
+                "tokenizer",
+                "rendered_prompt",
+                "labels"
+              ],
+              "end": 132,
+              "line": 122,
+              "name": "verified_label_ids"
+            },
+            {
+              "args": [
+                "choices",
+                "logits",
+                "token_ids"
+              ],
+              "end": 149,
+              "line": 134,
+              "name": "result_from_logits"
+            },
+            {
+              "args": [
+                "n",
+                "k"
+              ],
+              "end": 156,
+              "line": 151,
+              "name": "cyclic_offsets"
+            },
+            {
+              "args": [
+                "items",
+                "offset"
+              ],
+              "end": 159,
+              "line": 158,
+              "name": "rotate"
+            },
+            {
+              "args": [
+                "choices",
+                "per_rotation"
+              ],
+              "end": 178,
+              "line": 161,
+              "name": "combine_rotations"
+            }
+          ],
+          "path": "src/vision_decision/scoring.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "599a01d7867c7ad1a640e752f345cf425331e41a8c5d957eed030e38607cf7b8",
+          "URL": "https://github.com/mohit67890/imajev/blob/ccf586d43d2a580319b6535c893668904d909eb9/src/vision_decision/smolvlm_backend.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "image",
+                "prompt",
+                "labels",
+                "choices"
+              ],
+              "end": 40,
+              "line": 8,
+              "name": "score_compiled"
+            }
+          ],
+          "path": "src/vision_decision/smolvlm_backend.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "VLM/adapter choice scoring and calibration; bounded readout token limits"
+    },
+    {
+      "URL": "https://github.com/TrackingLaboratory/CAMELTrack",
+      "adaptation": "multi-cue association control; camera geometry must be masked",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/TrackingLaboratory_CAMELTrack",
+      "commit": "46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2",
+      "file_count": 52,
+      "license": {
+        "SHA256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "GAFFE combines detection/tracklet tokens plus cls; temporal tokenization and similarity",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "TrackingLaboratory/CAMELTrack",
+      "sources": [
+        {
+          "SHA256": "d2a6139ac93f057fe8b6909d103f2d363ff7e3c67c853846a5d9d2c15dd7fed2",
+          "URL": "https://github.com/TrackingLaboratory/CAMELTrack/blob/46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2/cameltrack/camel.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "features",
+                "feats_masks",
+                "targets"
+              ],
+              "end": 45,
+              "line": 38,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "features",
+                "feats_masks",
+                "targets"
+              ],
+              "end": 67,
+              "line": 65,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "gaffe",
+                "temporal_encoders",
+                "sim_threshold",
+                "use_computed_sim_threshold",
+                "optimizer",
+                "merge_token_strat",
+                "sim_strat",
+                "ass_strat",
+                "norm_strat"
+              ],
+              "end": 139,
+              "line": 72,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "batch",
+                "batch_idx"
+              ],
+              "end": 160,
+              "line": 142,
+              "name": "training_step"
+            },
+            {
+              "args": [
+                "self",
+                "batch",
+                "batch_idx"
+              ],
+              "end": 180,
+              "line": 162,
+              "name": "validation_step"
+            },
+            {
+              "args": [
+                "self",
+                "batch",
+                "batch_idx",
+                "dataloader_idx"
+              ],
+              "end": 197,
+              "line": 182,
+              "name": "predict_step"
+            },
+            {
+              "args": [
+                "self",
+                "tracks",
+                "dets"
+              ],
+              "end": 219,
+              "line": 199,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "batch"
+              ],
+              "end": 233,
+              "line": 221,
+              "name": "train_val_preprocess"
+            },
+            {
+              "args": [
+                "self",
+                "batch"
+              ],
+              "end": 250,
+              "line": 235,
+              "name": "predict_preprocess"
+            },
+            {
+              "args": [
+                "self",
+                "tracks",
+                "dets"
+              ],
+              "end": 264,
+              "line": 252,
+              "name": "tokenize"
+            },
+            {
+              "args": [
+                "self",
+                "tracks",
+                "dets"
+              ],
+              "end": 285,
+              "line": 266,
+              "name": "similarity"
+            },
+            {
+              "args": [
+                "self",
+                "tracks",
+                "dets"
+              ],
+              "end": 339,
+              "line": 287,
+              "name": "compute_loss"
+            },
+            {
+              "args": [
+                "self",
+                "loss",
+                "step"
+              ],
+              "end": 349,
+              "line": 341,
+              "name": "log_loss"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 359,
+              "line": 351,
+              "name": "configure_optimizers"
+            },
+            {
+              "args": [
+                "self",
+                "checkpoint"
+              ],
+              "end": 363,
+              "line": 361,
+              "name": "on_save_checkpoint"
+            },
+            {
+              "args": [
+                "self",
+                "checkpoint"
+              ],
+              "end": 368,
+              "line": 365,
+              "name": "on_load_checkpoint"
+            }
+          ],
+          "path": "cameltrack/camel.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "fad8bef556ad55eb47515026074297508ed495cbeedcdea48d5bed757b12cc26",
+          "URL": "https://github.com/TrackingLaboratory/CAMELTrack/blob/46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2/cameltrack/architecture/gaffe.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "emb_dim",
+                "n_heads",
+                "n_layers",
+                "dim_feedforward",
+                "dropout",
+                "checkpoint_path"
+              ],
+              "end": 39,
+              "line": 10,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "tracks",
+                "dets"
+              ],
+              "end": 64,
+              "line": 41,
+              "name": "forward"
+            }
+          ],
+          "path": "cameltrack/architecture/gaffe.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "c28a9c9abcead128e2c45003dcc836bf0aa001d215c4bb8bcb54c8555c996293",
+          "URL": "https://github.com/TrackingLaboratory/CAMELTrack/blob/46a74bb22a28d2d699b4c5c5e317a26d3b87f1e2/cameltrack/architecture/temporal_encoder.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "det_tokenizer",
+                "hidden_dim",
+                "output_dim",
+                "n_heads",
+                "n_layers",
+                "dim_feedforward",
+                "dropout",
+                "checkpoint_path",
+                "freeze",
+                "name"
+              ],
+              "end": 65,
+              "line": 19,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "x"
+              ],
+              "end": 97,
+              "line": 67,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "hidden_dim",
+                "max_len"
+              ],
+              "end": 118,
+              "line": 105,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "x",
+                "age",
+                "mask"
+              ],
+              "end": 127,
+              "line": 120,
+              "name": "forward"
+            }
+          ],
+          "path": "cameltrack/architecture/temporal_encoder.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "dense sampled tracklet/detection InfoNCE in Camel training_step"
+    },
+    {
+      "URL": "https://github.com/MCG-NJU/MOTIP",
+      "adaptation": "dynamic history decoder control; do not train runtime integer ID classes",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/MCG-NJU_MOTIP",
+      "commit": "ffc0e905ac196a603027eca8d18fb0dff48c8bcc",
+      "file_count": 150,
+      "license": {
+        "SHA256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "IDDecoder history-conditioned unknown ID prediction and RuntimeTracker capacity assignment",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "MCG-NJU/MOTIP",
+      "sources": [
+        {
+          "SHA256": "a16cf34bb16fa14a17d715231af1439cb3f1c1fa15d18341e2a84c61cdf59d81",
+          "URL": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/models/motip/id_decoder.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "feature_dim",
+                "id_dim",
+                "ffn_dim_ratio",
+                "num_layers",
+                "head_dim",
+                "num_id_vocabulary",
+                "rel_pe_length",
+                "use_aux_loss",
+                "use_shared_aux_head"
+              ],
+              "end": 94,
+              "line": 14,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "seq_info",
+                "use_decoder_checkpoint"
+              ],
+              "end": 186,
+              "line": 96,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "layer",
+                "unknown_embeds",
+                "trajectory_embeds",
+                "self_attn_key_padding_mask",
+                "cross_attn_key_padding_mask",
+                "cross_attn_mask",
+                "rel_pe_idx"
+              ],
+              "end": 230,
+              "line": 188,
+              "name": "_forward_a_layer"
+            },
+            {
+              "args": [
+                "self",
+                "id_labels"
+              ],
+              "end": 235,
+              "line": 232,
+              "name": "id_label_to_embed"
+            },
+            {
+              "args": [
+                "self",
+                "unknown_features"
+              ],
+              "end": 241,
+              "line": 237,
+              "name": "generate_empty_id_embed"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 248,
+              "line": 243,
+              "name": "shuffle"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 252,
+              "line": 251,
+              "name": "dtype"
+            }
+          ],
+          "path": "models/motip/id_decoder.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "f0ac5da7c7331f8d11336924ad2c1996a15bf69fd99fe1b6de8bc573c96e8497",
+          "URL": "https://github.com/MCG-NJU/MOTIP/blob/ffc0e905ac196a603027eca8d18fb0dff48c8bcc/models/runtime_tracker.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "model",
+                "sequence_hw",
+                "use_sigmoid",
+                "assignment_protocol",
+                "miss_tolerance",
+                "det_thresh",
+                "newborn_thresh",
+                "id_thresh",
+                "area_thresh",
+                "only_detr",
+                "dtype"
+              ],
+              "end": 89,
+              "line": 15,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "image"
+              ],
+              "end": 160,
+              "line": 92,
+              "name": "update"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 163,
+              "line": 162,
+              "name": "get_track_results"
+            },
+            {
+              "args": [
+                "self",
+                "detr_out"
+              ],
+              "end": 179,
+              "line": 165,
+              "name": "_get_activate_detections"
+            },
+            {
+              "args": [
+                "self",
+                "boxes",
+                "output_embeds"
+              ],
+              "end": 223,
+              "line": 181,
+              "name": "_get_id_pred_labels"
+            },
+            {
+              "args": [
+                "self",
+                "pred_id_labels"
+              ],
+              "end": 257,
+              "line": 225,
+              "name": "_assign_newborn_id_labels"
+            },
+            {
+              "args": [
+                "self",
+                "boxes",
+                "output_embeds",
+                "id_labels"
+              ],
+              "end": 317,
+              "line": 259,
+              "name": "_update_trajectory_infos"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 326,
+              "line": 319,
+              "name": "_filter_out_inactive_tracks"
+            },
+            {
+              "args": [
+                "self",
+                "id_scores"
+              ],
+              "end": 345,
+              "line": 328,
+              "name": "_hungarian_assignment"
+            },
+            {
+              "args": [
+                "self",
+                "id_scores"
+              ],
+              "end": 378,
+              "line": 347,
+              "name": "_object_max_assignment"
+            },
+            {
+              "args": [
+                "self",
+                "id_scores"
+              ],
+              "end": 405,
+              "line": 380,
+              "name": "_id_max_assignment"
+            }
+          ],
+          "path": "models/runtime_tracker.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "direct ID-label prediction with trajectory masks, shuffled slot embedding"
+    },
+    {
+      "URL": "https://github.com/MCG-NJU/MeMOTR",
+      "adaptation": "actual short/long memory concept; GTA-free Stage1 adaptation",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/MCG-NJU_MeMOTR",
+      "commit": "eb7a177b9cbcb89742ec69b2545ab3af2ea31a80",
+      "file_count": 141,
+      "license": {
+        "SHA256": "74ea0a2469c5ffd7395eb39868b1e8c01edb8c9c5f4a488879b1e51807eec584",
+        "label": "MIT",
+        "path": "LICENSE"
+      },
+      "mechanism": "QueryUpdater short confidence fusion, long memory attention/EMA",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "MCG-NJU/MeMOTR",
+      "sources": [
+        {
+          "SHA256": "112864688ef785a40d8837e678ada82d25d974ac8610c93f823ec91392c570b4",
+          "URL": "https://github.com/MCG-NJU/MeMOTR/blob/eb7a177b9cbcb89742ec69b2545ab3af2ea31a80/models/query_updater.py",
+          "functions": [
+            {
+              "args": [
+                "config"
+              ],
+              "end": 270,
+              "line": 258,
+              "name": "build"
+            },
+            {
+              "args": [
+                "self",
+                "hidden_dim",
+                "ffn_dim",
+                "tp_drop_ratio",
+                "fp_insert_ratio",
+                "dropout",
+                "use_checkpoint",
+                "use_dab",
+                "update_threshold",
+                "long_memory_lambda",
+                "visualize"
+              ],
+              "end": 65,
+              "line": 19,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 70,
+              "line": 67,
+              "name": "reset_parameters"
+            },
+            {
+              "args": [
+                "self",
+                "previous_tracks",
+                "new_tracks",
+                "unmatched_dets",
+                "no_augment"
+              ],
+              "end": 80,
+              "line": 72,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "tracks"
+              ],
+              "end": 166,
+              "line": 82,
+              "name": "update_tracks_embedding"
+            },
+            {
+              "args": [
+                "self",
+                "previous_tracks",
+                "new_tracks",
+                "unmatched_dets",
+                "no_augment"
+              ],
+              "end": 255,
+              "line": 168,
+              "name": "select_active_tracks"
+            }
+          ],
+          "path": "models/query_updater.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "e87609757872ce1e04c26ea53f178f8e34cea999e4b3102312bc2b739f6f395d",
+          "URL": "https://github.com/MCG-NJU/MeMOTR/blob/eb7a177b9cbcb89742ec69b2545ab3af2ea31a80/models/memotr.py",
+          "functions": [
+            {
+              "args": [
+                "config"
+              ],
+              "end": 321,
+              "line": 290,
+              "name": "build"
+            },
+            {
+              "args": [
+                "self",
+                "backbone",
+                "transformer",
+                "query_updater",
+                "num_classes",
+                "n_det_queries",
+                "n_feature_levels",
+                "hidden_dim",
+                "ffn_dim",
+                "dropout",
+                "aux_loss",
+                "with_box_refine",
+                "use_checkpoint",
+                "checkpoint_level",
+                "use_dab",
+                "visualize"
+              ],
+              "end": 95,
+              "line": 29,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "frame",
+                "tracks"
+              ],
+              "end": 195,
+              "line": 97,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "output_classes",
+                "output_bboxes",
+                "query_mask",
+                "queries"
+              ],
+              "end": 207,
+              "line": 198,
+              "name": "set_aux_loss"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 216,
+              "line": 209,
+              "name": "get_det_reference_points"
+            },
+            {
+              "args": [
+                "self",
+                "tracks"
+              ],
+              "end": 230,
+              "line": 218,
+              "name": "get_track_reference_points"
+            },
+            {
+              "args": [
+                "self",
+                "tracks"
+              ],
+              "end": 243,
+              "line": 232,
+              "name": "get_track_query_embed"
+            },
+            {
+              "args": [
+                "self",
+                "tracks"
+              ],
+              "end": 253,
+              "line": 245,
+              "name": "get_reference_points"
+            },
+            {
+              "args": [
+                "self",
+                "tracks"
+              ],
+              "end": 265,
+              "line": 255,
+              "name": "get_query_embed"
+            },
+            {
+              "args": [
+                "self",
+                "tracks"
+              ],
+              "end": 278,
+              "line": 267,
+              "name": "get_query_mask"
+            },
+            {
+              "args": [
+                "self",
+                "previous_tracks",
+                "new_tracks",
+                "unmatched_dets",
+                "no_augment"
+              ],
+              "end": 287,
+              "line": 280,
+              "name": "postprocess_single_frame"
+            }
+          ],
+          "path": "models/memotr.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "end-to-end detection/tracking matching supervision"
+    },
+    {
+      "URL": "https://github.com/kamkyu94/TrackTrack",
+      "adaptation": "independent capacity/duplicate/initialization audit",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/kamkyu94_TrackTrack",
+      "commit": "ee7f1c5fcbdcac48ed8bfab38d52c0006bf304da",
+      "file_count": 413,
+      "license": {
+        "SHA256": "f45308e8b2709a77ef9391f5ddff5a0cc5b5dc871e0a7ddb68011ff333566350",
+        "label": "MIT",
+        "path": "LICENSE"
+      },
+      "mechanism": "Tracker.update and track-aware initiation/NMS with two association stages",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "kamkyu94/TrackTrack",
+      "sources": [
+        {
+          "SHA256": "e7bb4f38e09b99b8db467f36f7a435534662418be4724e1245c630e0bb9616cc",
+          "URL": "https://github.com/kamkyu94/TrackTrack/blob/ee7f1c5fcbdcac48ed8bfab38d52c0006bf304da/3. Tracker/trackers/tracker.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "args",
+                "vid_name"
+              ],
+              "end": 18,
+              "line": 7,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "dets"
+              ],
+              "end": 32,
+              "line": 20,
+              "name": "init_tracks"
+            },
+            {
+              "args": [
+                "self",
+                "dets",
+                "dets_95"
+              ],
+              "end": 106,
+              "line": 34,
+              "name": "update"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 134,
+              "line": 108,
+              "name": "update_without_detections"
+            }
+          ],
+          "path": "3. Tracker/trackers/tracker.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "frozen detector/reID plus rule association, not a new supervised JEV head"
+    },
+    {
+      "URL": "https://github.com/dvl-tum/SUSHI",
+      "adaptation": "offline reference only; future graph/subsequence merging forbidden",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/dvl-tum_SUSHI",
+      "commit": "ff1952b408835007f07d1fc78760872625fa6ae4",
+      "file_count": 85,
+      "license": {
+        "SHA256": "677bf73b7d2fab06fe0595de3d5ee686e4b2608f8c86a3da42a67bb8fafa4c4e",
+        "label": "MIT",
+        "path": "LICENSE"
+      },
+      "mechanism": "HICLTracker.track graphs over subsequences and hierarchical merges",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "strict past inputs required; SUSHI graph/subsequence tracker is offline",
+      "repository": "dvl-tum/SUSHI",
+      "sources": [
+        {
+          "SHA256": "1c7047e6aa70937dec7e7a7e9146fabe6ce91d7d1d3540eb39fdeaed19382652",
+          "URL": "https://github.com/dvl-tum/SUSHI/blob/ff1952b408835007f07d1fc78760872625fa6ae4/src/models/hiclnet.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "submodel_type",
+                "submodel_params",
+                "hicl_depth",
+                "use_motion",
+                "use_reid_edge",
+                "use_pos_edge",
+                "share_weights",
+                "edge_level_embed",
+                "node_level_embed"
+              ],
+              "end": 46,
+              "line": 9,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "data",
+                "ix_layer"
+              ],
+              "end": 59,
+              "line": 48,
+              "name": "forward"
+            }
+          ],
+          "path": "src/models/hiclnet.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "f13b2018b3fbdc14700619e97d3e1e37fdaa04d23e3c9f3689b931d9df613993",
+          "URL": "https://github.com/dvl-tum/SUSHI/blob/ff1952b408835007f07d1fc78760872625fa6ae4/src/tracker/hicl_tracker.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "config",
+                "seqs",
+                "splits"
+              ],
+              "end": 76,
+              "line": 37,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 100,
+              "line": 78,
+              "name": "_get_model"
+            },
+            {
+              "args": [
+                "self",
+                "mode"
+              ],
+              "end": 106,
+              "line": 102,
+              "name": "_get_dataset"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 117,
+              "line": 108,
+              "name": "_get_train_dataloader"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 124,
+              "line": 119,
+              "name": "_get_optimizer"
+            },
+            {
+              "args": [
+                "self",
+                "graph"
+              ],
+              "end": 138,
+              "line": 126,
+              "name": "_get_projector"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 156,
+              "line": 140,
+              "name": "_save_model"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 169,
+              "line": 158,
+              "name": "load_pretrained_model"
+            },
+            {
+              "args": [
+                "self",
+                "hicl_graphs"
+              ],
+              "end": 198,
+              "line": 171,
+              "name": "_hicl_to_curr"
+            },
+            {
+              "args": [
+                "self",
+                "graph",
+                "remove_negatives",
+                "decision_threshold"
+              ],
+              "end": 207,
+              "line": 200,
+              "name": "_postprocess_graph"
+            },
+            {
+              "args": [
+                "self",
+                "graph",
+                "decision_threshold"
+              ],
+              "end": 217,
+              "line": 209,
+              "name": "_project_graph"
+            },
+            {
+              "args": [
+                "self",
+                "graph"
+              ],
+              "end": 235,
+              "line": 219,
+              "name": "_assign_labels"
+            },
+            {
+              "args": [
+                "self",
+                "outputs",
+                "edge_labels",
+                "edge_mask"
+              ],
+              "end": 250,
+              "line": 237,
+              "name": "_calculate_loss"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 303,
+              "line": 252,
+              "name": "_train_epoch"
+            },
+            {
+              "args": [
+                "self",
+                "batch",
+                "curr_depth"
+              ],
+              "end": 323,
+              "line": 305,
+              "name": "predict_motion"
+            },
+            {
+              "args": [
+                "self",
+                "hicl_graphs",
+                "logs",
+                "oracle",
+                "mode",
+                "max_depth",
+                "project_max_depth"
+              ],
+              "end": 407,
+              "line": 325,
+              "name": "hicl_forward"
+            },
+            {
+              "args": [
+                "self",
+                "epoch_val_logs",
+                "epoc_val_logs_per_depth"
+              ],
+              "end": 419,
+              "line": 409,
+              "name": "_log_tb_class_metrics"
+            },
+            {
+              "args": [
+                "self",
+                "logs"
+              ],
+              "end": 429,
+              "line": 421,
+              "name": "_log_tb_train_metrics"
+            },
+            {
+              "args": [
+                "self",
+                "mot_metrics"
+              ],
+              "end": 445,
+              "line": 431,
+              "name": "_log_tb_mot_metrics"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 516,
+              "line": 448,
+              "name": "train"
+            },
+            {
+              "args": [
+                "self",
+                "dataset",
+                "output_path",
+                "mode",
+                "oracle"
+              ],
+              "end": 615,
+              "line": 518,
+              "name": "track"
+            },
+            {
+              "args": [
+                "self",
+                "subseq_dfs"
+              ],
+              "end": 679,
+              "line": 617,
+              "name": "_merge_subseq_dfs"
+            },
+            {
+              "args": [
+                "self",
+                "edge_preds",
+                "edge_labels",
+                "logs"
+              ],
+              "end": 701,
+              "line": 681,
+              "name": "_calculate_true_false_metrics"
+            },
+            {
+              "args": [
+                "self",
+                "logs"
+              ],
+              "end": 731,
+              "line": 703,
+              "name": "_postprocess_logs"
+            },
+            {
+              "args": [
+                "self",
+                "logs"
+              ],
+              "end": 749,
+              "line": 733,
+              "name": "_plot_losses"
+            },
+            {
+              "args": [
+                "self",
+                "logs"
+              ],
+              "end": 767,
+              "line": 751,
+              "name": "_plot_losses_per_depth"
+            },
+            {
+              "args": [
+                "self",
+                "logs"
+              ],
+              "end": 784,
+              "line": 769,
+              "name": "_plot_metrics"
+            },
+            {
+              "args": [
+                "self",
+                "df",
+                "output_file_path"
+              ],
+              "end": 801,
+              "line": 786,
+              "name": "_save_results"
+            },
+            {
+              "args": [
+                "self",
+                "alpha",
+                "gamma",
+                "logits",
+                "reduce"
+              ],
+              "end": 810,
+              "line": 805,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "inputs",
+                "targets"
+              ],
+              "end": 823,
+              "line": 812,
+              "name": "forward"
+            }
+          ],
+          "path": "src/tracker/hicl_tracker.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "graph edge association supervision"
+    },
+    {
+      "URL": "https://github.com/NirAharon/BoT-SORT",
+      "adaptation": "cosine/geometry baseline; no uncalibrated cross-camera pixel motion",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/NirAharon_BoT-SORT",
+      "commit": "251985436d6712aaf682aaaf5f71edb4987224bd",
+      "file_count": 721,
+      "license": {
+        "SHA256": "12a15474ca15cec568da311e6cd89e593e3cd2bb5b790e75b90e1608306a3a5f",
+        "label": "MIT",
+        "path": "LICENSE"
+      },
+      "mechanism": "BoTSORT.update combines IoU, reID smoothing, Kalman and camera motion compensation",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "NirAharon/BoT-SORT",
+      "sources": [
+        {
+          "SHA256": "ba6dd32ad4b96ee49d6f70654159269bd45ce15fd0fe5007f3a1b81bc257edf0",
+          "URL": "https://github.com/NirAharon/BoT-SORT/blob/251985436d6712aaf682aaaf5f71edb4987224bd/tracker/bot_sort.py",
+          "functions": [
+            {
+              "args": [
+                "tlista",
+                "tlistb"
+              ],
+              "end": 447,
+              "line": 436,
+              "name": "joint_stracks"
+            },
+            {
+              "args": [
+                "tlista",
+                "tlistb"
+              ],
+              "end": 458,
+              "line": 450,
+              "name": "sub_stracks"
+            },
+            {
+              "args": [
+                "stracksa",
+                "stracksb"
+              ],
+              "end": 474,
+              "line": 461,
+              "name": "remove_duplicate_stracks"
+            },
+            {
+              "args": [
+                "self",
+                "tlwh",
+                "score",
+                "feat",
+                "feat_history"
+              ],
+              "end": 33,
+              "line": 17,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "feat"
+              ],
+              "end": 43,
+              "line": 35,
+              "name": "update_features"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 51,
+              "line": 45,
+              "name": "predict"
+            },
+            {
+              "args": [
+                "stracks"
+              ],
+              "end": 65,
+              "line": 54,
+              "name": "multi_predict"
+            },
+            {
+              "args": [
+                "stracks",
+                "H"
+              ],
+              "end": 83,
+              "line": 68,
+              "name": "multi_gmc"
+            },
+            {
+              "args": [
+                "self",
+                "kalman_filter",
+                "frame_id"
+              ],
+              "end": 97,
+              "line": 85,
+              "name": "activate"
+            },
+            {
+              "args": [
+                "self",
+                "new_track",
+                "frame_id",
+                "new_id"
+              ],
+              "end": 110,
+              "line": 99,
+              "name": "re_activate"
+            },
+            {
+              "args": [
+                "self",
+                "new_track",
+                "frame_id"
+              ],
+              "end": 133,
+              "line": 112,
+              "name": "update"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 144,
+              "line": 136,
+              "name": "tlwh"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 153,
+              "line": 147,
+              "name": "tlbr"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 162,
+              "line": 156,
+              "name": "xywh"
+            },
+            {
+              "args": [
+                "tlwh"
+              ],
+              "end": 172,
+              "line": 165,
+              "name": "tlwh_to_xyah"
+            },
+            {
+              "args": [
+                "tlwh"
+              ],
+              "end": 181,
+              "line": 175,
+              "name": "tlwh_to_xywh"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 184,
+              "line": 183,
+              "name": "to_xywh"
+            },
+            {
+              "args": [
+                "tlbr"
+              ],
+              "end": 190,
+              "line": 187,
+              "name": "tlbr_to_tlwh"
+            },
+            {
+              "args": [
+                "tlwh"
+              ],
+              "end": 196,
+              "line": 193,
+              "name": "tlwh_to_tlbr"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 199,
+              "line": 198,
+              "name": "__repr__"
+            },
+            {
+              "args": [
+                "self",
+                "args",
+                "frame_rate"
+              ],
+              "end": 228,
+              "line": 203,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "output_results",
+                "img"
+              ],
+              "end": 433,
+              "line": 230,
+              "name": "update"
+            }
+          ],
+          "path": "tracker/bot_sort.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "frozen/pretrained detector/reID; threshold association rules"
+    },
+    {
+      "URL": "https://github.com/FoundationVision/ByteTrack",
+      "adaptation": "cascade requires actual low confidence detections, never same as reject-edge global resolve",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/FoundationVision_ByteTrack",
+      "commit": "d1bf0191adff59bc8fcfeaa0b33d3d1642552a99",
+      "file_count": 229,
+      "license": {
+        "SHA256": "e9d83751678cbaba6dfba902ea39215c423d93425e58f8450d6001f7261696f9",
+        "label": "MIT",
+        "path": "LICENSE"
+      },
+      "mechanism": "BYTETracker.update high detections then available low confidence IoU rescue",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "FoundationVision/ByteTrack",
+      "sources": [
+        {
+          "SHA256": "7cecdcdd7998103969a4ba1772f4c9fb5560fd5eef05ca03e0d2df28346ca50b",
+          "URL": "https://github.com/FoundationVision/ByteTrack/blob/d1bf0191adff59bc8fcfeaa0b33d3d1642552a99/yolox/tracker/byte_tracker.py",
+          "functions": [
+            {
+              "args": [
+                "tlista",
+                "tlistb"
+              ],
+              "end": 303,
+              "line": 292,
+              "name": "joint_stracks"
+            },
+            {
+              "args": [
+                "tlista",
+                "tlistb"
+              ],
+              "end": 314,
+              "line": 306,
+              "name": "sub_stracks"
+            },
+            {
+              "args": [
+                "stracksa",
+                "stracksb"
+              ],
+              "end": 330,
+              "line": 317,
+              "name": "remove_duplicate_stracks"
+            },
+            {
+              "args": [
+                "self",
+                "tlwh",
+                "score"
+              ],
+              "end": 24,
+              "line": 15,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 30,
+              "line": 26,
+              "name": "predict"
+            },
+            {
+              "args": [
+                "stracks"
+              ],
+              "end": 43,
+              "line": 33,
+              "name": "multi_predict"
+            },
+            {
+              "args": [
+                "self",
+                "kalman_filter",
+                "frame_id"
+              ],
+              "end": 57,
+              "line": 45,
+              "name": "activate"
+            },
+            {
+              "args": [
+                "self",
+                "new_track",
+                "frame_id",
+                "new_id"
+              ],
+              "end": 69,
+              "line": 59,
+              "name": "re_activate"
+            },
+            {
+              "args": [
+                "self",
+                "new_track",
+                "frame_id"
+              ],
+              "end": 88,
+              "line": 71,
+              "name": "update"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 101,
+              "line": 92,
+              "name": "tlwh"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 111,
+              "line": 105,
+              "name": "tlbr"
+            },
+            {
+              "args": [
+                "tlwh"
+              ],
+              "end": 122,
+              "line": 115,
+              "name": "tlwh_to_xyah"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 125,
+              "line": 124,
+              "name": "to_xyah"
+            },
+            {
+              "args": [
+                "tlbr"
+              ],
+              "end": 132,
+              "line": 129,
+              "name": "tlbr_to_tlwh"
+            },
+            {
+              "args": [
+                "tlwh"
+              ],
+              "end": 139,
+              "line": 136,
+              "name": "tlwh_to_tlbr"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 142,
+              "line": 141,
+              "name": "__repr__"
+            },
+            {
+              "args": [
+                "self",
+                "args",
+                "frame_rate"
+              ],
+              "end": 157,
+              "line": 146,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "output_results",
+                "img_info",
+                "img_size"
+              ],
+              "end": 289,
+              "line": 159,
+              "name": "update"
+            }
+          ],
+          "path": "yolox/tracker/byte_tracker.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "detector supervision, rule matching; no learned action controller"
+    },
+    {
+      "URL": "https://github.com/GerardMaggiolino/Deep-OC-SORT",
+      "adaptation": "past appearance smoothing concept, not global identity architecture",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/GerardMaggiolino_Deep-OC-SORT",
+      "commit": "6bb51d027b137233f5c520b6fcc4f2ae387a6ba9",
+      "file_count": 1149,
+      "license": {
+        "SHA256": "ca7c882eb15711022daa1b6e719f1e3801335a3e6cf7c3d6a8bf81967b278717",
+        "label": "MIT",
+        "path": "LICENSE.md"
+      },
+      "mechanism": "integrated OCSort.update embedding association, confidence-adaptive smoothing and GMC",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "GerardMaggiolino/Deep-OC-SORT",
+      "sources": [
+        {
+          "SHA256": "4328de6422ce2d961f8adfd734692877f78d3ff947917943d126fd3567800b3e",
+          "URL": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/trackers/ocsort_tracker/ocsort.py",
+          "functions": [
+            {
+              "args": [
+                "observations",
+                "cur_age",
+                "k"
+              ],
+              "end": 20,
+              "line": 12,
+              "name": "k_previous_obs"
+            },
+            {
+              "args": [
+                "bbox"
+              ],
+              "end": 35,
+              "line": 23,
+              "name": "convert_bbox_to_z"
+            },
+            {
+              "args": [
+                "x",
+                "score"
+              ],
+              "end": 48,
+              "line": 38,
+              "name": "convert_x_to_bbox"
+            },
+            {
+              "args": [
+                "bbox1",
+                "bbox2"
+              ],
+              "end": 56,
+              "line": 51,
+              "name": "speed_direction"
+            },
+            {
+              "args": [
+                "self",
+                "bbox",
+                "delta_t",
+                "orig"
+              ],
+              "end": 123,
+              "line": 66,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "bbox"
+              ],
+              "end": 158,
+              "line": 125,
+              "name": "update"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 173,
+              "line": 160,
+              "name": "predict"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 179,
+              "line": 175,
+              "name": "get_state"
+            },
+            {
+              "args": [
+                "self",
+                "det_thresh",
+                "max_age",
+                "min_hits",
+                "iou_threshold",
+                "delta_t",
+                "asso_func",
+                "inertia",
+                "use_byte"
+              ],
+              "end": 223,
+              "line": 198,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 226,
+              "line": 225,
+              "name": "dump_cache"
+            },
+            {
+              "args": [
+                "self",
+                "output_results",
+                "img_tensor",
+                "img_numpy",
+                "tag"
+              ],
+              "end": 361,
+              "line": 228,
+              "name": "update"
+            },
+            {
+              "args": [
+                "self",
+                "dets",
+                "cates",
+                "scores"
+              ],
+              "end": 482,
+              "line": 363,
+              "name": "update_public"
+            }
+          ],
+          "path": "trackers/ocsort_tracker/ocsort.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "2f4d4ccf8ce7f703367607bcb45d7a6b92ea496500881bf3599fe0a65563388c",
+          "URL": "https://github.com/GerardMaggiolino/Deep-OC-SORT/blob/6bb51d027b137233f5c520b6fcc4f2ae387a6ba9/trackers/integrated_ocsort_embedding/ocsort.py",
+          "functions": [
+            {
+              "args": [
+                "observations",
+                "cur_age",
+                "k"
+              ],
+              "end": 27,
+              "line": 19,
+              "name": "k_previous_obs"
+            },
+            {
+              "args": [
+                "bbox"
+              ],
+              "end": 42,
+              "line": 30,
+              "name": "convert_bbox_to_z"
+            },
+            {
+              "args": [
+                "bbox"
+              ],
+              "end": 50,
+              "line": 45,
+              "name": "convert_bbox_to_z_new"
+            },
+            {
+              "args": [
+                "x"
+              ],
+              "end": 55,
+              "line": 53,
+              "name": "convert_x_to_bbox_new"
+            },
+            {
+              "args": [
+                "x",
+                "score"
+              ],
+              "end": 68,
+              "line": 58,
+              "name": "convert_x_to_bbox"
+            },
+            {
+              "args": [
+                "bbox1",
+                "bbox2"
+              ],
+              "end": 76,
+              "line": 71,
+              "name": "speed_direction"
+            },
+            {
+              "args": [
+                "w",
+                "h",
+                "p",
+                "v"
+              ],
+              "end": 92,
+              "line": 79,
+              "name": "new_kf_process_noise"
+            },
+            {
+              "args": [
+                "w",
+                "h",
+                "m"
+              ],
+              "end": 99,
+              "line": 95,
+              "name": "new_kf_measurement_noise"
+            },
+            {
+              "args": [
+                "self",
+                "bbox",
+                "delta_t",
+                "orig",
+                "emb",
+                "alpha",
+                "new_kf"
+              ],
+              "end": 210,
+              "line": 109,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "bbox"
+              ],
+              "end": 250,
+              "line": 212,
+              "name": "update"
+            },
+            {
+              "args": [
+                "self",
+                "emb",
+                "alpha"
+              ],
+              "end": 254,
+              "line": 252,
+              "name": "update_emb"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 257,
+              "line": 256,
+              "name": "get_emb"
+            },
+            {
+              "args": [
+                "self",
+                "affine"
+              ],
+              "end": 276,
+              "line": 259,
+              "name": "apply_affine_correction"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 304,
+              "line": 278,
+              "name": "predict"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 310,
+              "line": 306,
+              "name": "get_state"
+            },
+            {
+              "args": [
+                "self",
+                "bbox"
+              ],
+              "end": 314,
+              "line": 312,
+              "name": "mahalanobis"
+            },
+            {
+              "args": [
+                "self",
+                "det_thresh",
+                "max_age",
+                "min_hits",
+                "iou_threshold",
+                "delta_t",
+                "asso_func",
+                "inertia",
+                "w_association_emb",
+                "alpha_fixed_emb",
+                "aw_param",
+                "embedding_off",
+                "cmc_off",
+                "aw_off",
+                "new_kf_off",
+                "grid_off"
+              ],
+              "end": 375,
+              "line": 333,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "output_results",
+                "img_tensor",
+                "img_numpy",
+                "tag"
+              ],
+              "end": 526,
+              "line": 377,
+              "name": "update"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 530,
+              "line": 528,
+              "name": "dump_cache"
+            }
+          ],
+          "path": "trackers/integrated_ocsort_embedding/ocsort.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "pretrained appearance embeddings plus online motion/assignment rules"
+    },
+    {
+      "URL": "https://github.com/SysCV/qdtrack",
+      "adaptation": "dense association supervision/partial multi-positive losses",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/SysCV_qdtrack",
+      "commit": "c5b10472d7bdd3b9ab75255dd10e48e21f48c54f",
+      "file_count": 84,
+      "license": {
+        "SHA256": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1",
+        "label": "Apache-2.0",
+        "path": "LICENSE"
+      },
+      "mechanism": "QuasiDenseEmbedTracker.match bisoftmax/cosine and category/capacity suppression",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "SysCV/qdtrack",
+      "sources": [
+        {
+          "SHA256": "a2fe5c209ee0d0c448d82207b41fcda4b78dba4a6ca865f9d50705b3061fcf6e",
+          "URL": "https://github.com/SysCV/qdtrack/blob/c5b10472d7bdd3b9ab75255dd10e48e21f48c54f/qdtrack/models/trackers/quasi_dense_embed_tracker.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "init_score_thr",
+                "obj_score_thr",
+                "match_score_thr",
+                "memo_tracklet_frames",
+                "memo_backdrop_frames",
+                "memo_momentum",
+                "nms_conf_thr",
+                "nms_backdrop_iou_thr",
+                "nms_class_iou_thr",
+                "with_cats",
+                "match_metric"
+              ],
+              "end": 41,
+              "line": 11,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 45,
+              "line": 44,
+              "name": "empty"
+            },
+            {
+              "args": [
+                "self",
+                "ids",
+                "bboxes",
+                "embeds",
+                "labels",
+                "frame_id"
+              ],
+              "end": 102,
+              "line": 47,
+              "name": "update_memo"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 135,
+              "line": 105,
+              "name": "memo"
+            },
+            {
+              "args": [
+                "self",
+                "bboxes",
+                "labels",
+                "track_feats",
+                "frame_id",
+                "asso_tau"
+              ],
+              "end": 206,
+              "line": 137,
+              "name": "match"
+            }
+          ],
+          "path": "qdtrack/models/trackers/quasi_dense_embed_tracker.py",
+          "status": "READ_SOURCE_BLOB"
+        },
+        {
+          "SHA256": "65c56bc1a8a4d76c17534f926e5afc2d073c6518776de1bf5e87f7c2acca04f9",
+          "URL": "https://github.com/SysCV/qdtrack/blob/c5b10472d7bdd3b9ab75255dd10e48e21f48c54f/qdtrack/models/roi_heads/track_heads/quasi_dense_embed_head.py",
+          "functions": [
+            {
+              "args": [
+                "self",
+                "num_convs",
+                "num_fcs",
+                "roi_feat_size",
+                "in_channels",
+                "conv_out_channels",
+                "fc_out_channels",
+                "embed_channels",
+                "conv_cfg",
+                "norm_cfg",
+                "softmax_temp",
+                "loss_track",
+                "loss_track_aux"
+              ],
+              "end": 52,
+              "line": 13,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "num_convs",
+                "num_fcs",
+                "in_channels"
+              ],
+              "end": 80,
+              "line": 54,
+              "name": "_add_conv_fc_branch"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 88,
+              "line": 82,
+              "name": "init_weights"
+            },
+            {
+              "args": [
+                "self",
+                "x"
+              ],
+              "end": 99,
+              "line": 90,
+              "name": "forward"
+            },
+            {
+              "args": [
+                "self",
+                "gt_match_indices",
+                "key_sampling_results",
+                "ref_sampling_results"
+              ],
+              "end": 118,
+              "line": 101,
+              "name": "get_track_targets"
+            },
+            {
+              "args": [
+                "self",
+                "key_embeds",
+                "ref_embeds",
+                "key_sampling_results",
+                "ref_sampling_results"
+              ],
+              "end": 141,
+              "line": 120,
+              "name": "match"
+            },
+            {
+              "args": [
+                "self",
+                "dists",
+                "cos_dists",
+                "targets",
+                "weights"
+              ],
+              "end": 159,
+              "line": 143,
+              "name": "loss"
+            },
+            {
+              "args": [
+                "gallery",
+                "num"
+              ],
+              "end": 176,
+              "line": 162,
+              "name": "random_choice"
+            }
+          ],
+          "path": "qdtrack/models/roi_heads/track_heads/quasi_dense_embed_head.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "MultiPosCrossEntropyLoss + auxiliary cosine track head loss"
+    },
+    {
+      "URL": "https://github.com/noahcao/OC_SORT",
+      "adaptation": "same-camera motion evidence only, no future state",
+      "checkout": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v1/external/noahcao_OC_SORT",
+      "commit": "8462e7e729a93ccd3bd995c0a79a890336cb3a0b",
+      "file_count": 270,
+      "license": {
+        "SHA256": "e9d83751678cbaba6dfba902ea39215c423d93425e58f8450d6001f7261696f9",
+        "label": "MIT",
+        "path": "LICENSE"
+      },
+      "mechanism": "OCSort.update observation-centric motion and IoU rematching",
+      "no_import_or_vendor_copy": true,
+      "online_limit": "original public runtime scope; no source claims of native GMT cross-camera Global ID execution",
+      "repository": "noahcao/OC_SORT",
+      "sources": [
+        {
+          "SHA256": "122cc1c27d3321eac0debdf3ba782b76d189e1ac878256b8291ffeb4314fa979",
+          "URL": "https://github.com/noahcao/OC_SORT/blob/8462e7e729a93ccd3bd995c0a79a890336cb3a0b/trackers/ocsort_tracker/ocsort.py",
+          "functions": [
+            {
+              "args": [
+                "observations",
+                "cur_age",
+                "k"
+              ],
+              "end": 19,
+              "line": 11,
+              "name": "k_previous_obs"
+            },
+            {
+              "args": [
+                "bbox"
+              ],
+              "end": 34,
+              "line": 22,
+              "name": "convert_bbox_to_z"
+            },
+            {
+              "args": [
+                "x",
+                "score"
+              ],
+              "end": 47,
+              "line": 37,
+              "name": "convert_x_to_bbox"
+            },
+            {
+              "args": [
+                "bbox1",
+                "bbox2"
+              ],
+              "end": 55,
+              "line": 50,
+              "name": "speed_direction"
+            },
+            {
+              "args": [
+                "self",
+                "bbox",
+                "delta_t",
+                "orig"
+              ],
+              "end": 107,
+              "line": 70,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "bbox"
+              ],
+              "end": 142,
+              "line": 109,
+              "name": "update"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 157,
+              "line": 144,
+              "name": "predict"
+            },
+            {
+              "args": [
+                "self"
+              ],
+              "end": 163,
+              "line": 159,
+              "name": "get_state"
+            },
+            {
+              "args": [
+                "self",
+                "det_thresh",
+                "max_age",
+                "min_hits",
+                "iou_threshold",
+                "delta_t",
+                "asso_func",
+                "inertia",
+                "use_byte"
+              ],
+              "end": 195,
+              "line": 180,
+              "name": "__init__"
+            },
+            {
+              "args": [
+                "self",
+                "output_results",
+                "img_info",
+                "img_size"
+              ],
+              "end": 330,
+              "line": 197,
+              "name": "update"
+            },
+            {
+              "args": [
+                "self",
+                "dets",
+                "cates",
+                "scores"
+              ],
+              "end": 425,
+              "line": 332,
+              "name": "update_public"
+            }
+          ],
+          "path": "trackers/ocsort_tracker/ocsort.py",
+          "status": "READ_SOURCE_BLOB"
+        }
+      ],
+      "status": "AUDITED_SOURCE_AND_MECHANISM",
+      "supervision": "motion rule tracker, no learned ID decoder"
+    }
+  ],
+  "status": "COMPLETE_20_EXACT_REPOSITORIES",
+  "third_party_code_vendored": false
+}

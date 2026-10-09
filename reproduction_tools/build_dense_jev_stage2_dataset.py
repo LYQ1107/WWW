@@ -10,7 +10,9 @@ class OfflineLabels:
         d=json.loads(ANNOTATIONS.read_text());self.images={(i['frame_id']-1,i['view_id']-1):i for i in d['images'] if i['video_id']==video};image_ids={i['id'] for i in self.images.values()};self.gt=collections.defaultdict(list)
         for a in d['annotations']:
             if a['image_id'] in image_ids:self.gt[a['image_id']].append(a)
-        self.reader=reader;self.video=video;self.aligned={};self.past=collections.defaultdict(set);self.ever=set();self.records=[];self.counts=collections.Counter();self.recall=collections.Counter()
+        self.reader=reader;self.video=video;self.aligned={};self.past=collections.defaultdict(set);self.ever=set();self.records=[];self.counts=collections.Counter();self.recall=collections.Counter();self.gt_first={}
+        for im in self.images.values():
+            for a in self.gt[im['id']]:self.gt_first[a['instance_id']]=min(im['frame_id']-1,self.gt_first.get(a['instance_id'],10**9))
     def current(self,frame,view):
         key=(frame,view)
         if key in self.aligned:return self.aligned[key]
@@ -28,24 +30,32 @@ class OfflineLabels:
             for ref in refs:
                 target=bootstrap[ref-1]
                 if target is not None:self.past[ref].add(target);self.ever.add(target)
+        reasons=[];gt_ids=[];support=[]
         for r,row in enumerate(rows):
             target=targets[row]
-            if target is None:self.counts['unknown_current_GT']+=1;continue
+            gt_ids.append(target)
+            if target is None:self.counts['unknown_current_GT']+=1;reasons.append('CURRENT_GT_UNKNOWN');support.append({'available_clean_global':False,'ambiguous_contains_target':False,'first_scene_GT_frame':None});continue
             for col,ref in enumerate(refs):
                 votes=self.past[ref]
                 if len(votes)==1:
                     known[r,col]=True;positive[r,col]=target in votes
                 elif len(votes)>1:self.counts['ambiguous_history_options']+=1
+            ambiguous_target=any(len(self.past[t])>1 and target in self.past[t] for t in refs)
+            global_ambiguous=any(len(v)>1 and target in v for v in self.past.values())
+            support.append({'available_clean_global':any(v=={target} for v in self.past.values()),'ambiguous_contains_target':ambiguous_target,'first_scene_GT_frame':self.gt_first[target]})
             if positive[r,:k].any():
                 gold[r]=int(torch.where(positive[r])[0][0]);labelled[r]=True;known[r,-1]=True;self.counts['normal_active_positive' if task==0 else 'real_stale_positive']+=1
-            elif task==0:
+                reasons.append('CLEAN_ACTIVE_ID' if task==0 else 'CLEAN_STALE_ID')
+            elif task==0 and not ambiguous_target:
                 gold[r]=k;labelled[r]=True;positive[r,k]=True;known[r,k]=True;self.counts['MATCH_DEFER_labels']+=1
-            elif target not in self.ever:
+                reasons.append('NO_CERTIFIED_ACTIVE_ID_DEFER')
+            elif task==1 and target not in self.ever and not global_ambiguous:
                 gold[r]=k;labelled[r]=True;positive[r,k]=True;known[r,k]=True;self.counts['genuine_NEW_labels']+=1
-            else:self.counts['REACT_correct_history_missing_or_ambiguous']+=1
+                reasons.append('NEW_TO_OBSERVED_MEMORY');self.counts['NEW_scene_first_frame']+=int(self.gt_first[target]==c['frame'])
+            else:self.counts['correct_history_missing_or_ambiguous']+=1;reasons.append('IDENTITY_CONTAMINATED_OR_MISSING_UNKNOWN')
             clean_support=any(target in self.past[t] and len(self.past[t])==1 for t in refs);self.recall['active_known_rows' if task==0 else 'stale_known_rows']+=1;self.recall['active_clean_support' if task==0 else 'stale_clean_support']+=int(clean_support)
         self.counts['MATCH_rows' if task==0 else 'REACT_rows']+=q;self.counts['supervised_rows']+=int(labelled.sum());self.counts['candidate_options']+=q*k
-        if q:self.records.append({'key':[self.video,c['frame'],c['view']],'task':task,'refs':refs,'rows':rows,'inputs':{k:v.detach().cpu().clone() for k,v in x.items()},'positive':positive,'known_options':known,'targets':gold,'supervised':labelled})
+        if q:self.records.append({'key':[self.video,c['frame'],c['view']],'task':task,'refs':refs,'rows':rows,'inputs':{k:v.detach().cpu().clone() for k,v in x.items()},'positive':positive,'known_options':known,'targets':gold,'supervised':labelled,'label_reasons':reasons,'GT_labels_OFFLINE_ONLY':gt_ids,'support_OFFLINE_ONLY':support})
     def after(self,**kw):
         key=(kw['frame'],kw['view']);labels=self.current(*key);inst=kw['instances'][-1]
         if kw['first'] and not self.past:
@@ -56,12 +66,13 @@ class OfflineLabels:
         for ref,target in zip(inst.track_ids.tolist(),labels):
             if target is not None:self.past[ref].add(target);self.ever.add(target)
 
-def main(video):
+def main(video,version='dense_native_v2'):
     allowed(video);protect();torch.set_num_threads(1);torch.manual_seed(20261009);source=binding();assert not source['dirty']
-    values,frames,reader=cache_inputs(video);out=OUT/'dense_native_v1'/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
+    values,frames,reader=cache_inputs(video);out=OUT/version/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
     labels=OfflineLabels(video,reader);model=build_tracker(video);model.jev_stage2_executor.observer=labels.before;model.jev_stage2_executor.commit_observer=labels.after;t=time.monotonic()
-    with torch.no_grad():raw,id_count=run(model,values,frames)
+    with torch.no_grad():raw,view_num=run(model,values,frames)
+    id_count=max((int(i.track_ids.max()) for i in raw if len(i)),default=0)
     path=out/'DATASET.pth';torch.save({'records':labels.records,'scope':'all actual B1-native decisions with fresh true Stage1 features; GT offline labels, histories neither teacher-forced nor GTA generated','video':video},path)
     save(out/'RESULT.json',{'status':'COMPLETE','binding':source,'video':video,'frames':frames,'record_groups':len(labels.records),'counts':dict(labels.counts),'recall':dict(labels.recall),'DATASET':{'path':str(path),'SHA256':sha(path),'bytes':path.stat().st_size},'natural_native_ids':id_count,'known_GT_targets_seen':len(labels.ever),'contaminated_historical_ids':sum(len(s)>1 for s in labels.past.values()),'GTA_throw_mock':True,'elapsed_seconds':time.monotonic()-t,'heldout':'SEALED','Full24':False,'official_TEST':False});print('DENSE_NATIVE_VIDEO_COMPLETE',video,len(labels.records),dict(labels.counts),flush=True)
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);main(p.parse_args().video)
+    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);p.add_argument('--version',default='dense_native_v2');a=p.parse_args();main(a.video,a.version)
