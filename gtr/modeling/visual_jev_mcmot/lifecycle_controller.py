@@ -6,7 +6,7 @@ from .native_action_adapter import lawful_match
 from .schemas import masked_softmax,ActionOption,QuestionType,ActionType
 
 class VisualLifecycleController:
-    def __init__(self,model,mode='SHADOW',*,supervision='joint',risk=True,qualified_tasks=(),observer=None,temperature=1.):
+    def __init__(self,model,mode='SHADOW',*,supervision='joint',risk=True,qualified_tasks=(),observer=None,temperature=1.,fast_tokens=False):
         if mode not in {'OFF','SHADOW','MATCH_ONLY','FULL_LIFECYCLE'}:raise ValueError('unknown lifecycle mode')
         if mode=='FULL_LIFECYCLE' and not {'MATCH','MEMORY','REACTIVATION'}.issubset(qualified_tasks):
             raise ValueError('FULL_LIFECYCLE requires all real native supervision gates')
@@ -16,6 +16,10 @@ class VisualLifecycleController:
         self.temperature=float(temperature)
         if not .05<=self.temperature<=20:raise ValueError('invalid frozen choice temperature')
         self.current=None;self.records=[];self.timings=[]
+        self.token_builder=build_match_inputs;self.metadata_builder=native_time_metadata
+        if fast_tokens:
+            from .fast_identity_history_tokens import build_match_inputs as fast_build,native_time_metadata as fast_metadata
+            self.token_builder=fast_build;self.metadata_builder=fast_metadata
 
     def native_context(self,instances,galleries,frame,view,first=False,video_id=None):
         self.current={'instances':instances,'galleries':galleries,'frame':frame,'view':view,'first':first,'video_id':video_id}
@@ -32,11 +36,11 @@ class VisualLifecycleController:
             inp=None;built=time.perf_counter();numeric=self.model.forward_numeric(batch.state64,batch.evidence12,batch.legal_mask)
             out={'choice_logits':numeric['choice_logits'][None],'consequences':numeric['consequences'][None]}
         else:
-            metadata=native_time_metadata(ctx['instances'],ctx['frame'],ctx['view'],first=ctx['first'])
+            metadata=self.metadata_builder(ctx['instances'],ctx['frame'],ctx['view'],first=ctx['first'])
             # Real MATCH supervision covers existing candidates only. DEFER
             # retains its frozen private solver dummy; an untrained terminal
             # token must not enter competition pooling and shift trained scores.
-            inp=build_match_inputs(batch,observations,galleries,frame=ctx['frame'],view=ctx['view'],metadata=metadata,include_terminal=self.mode=='SHADOW')
+            inp=self.token_builder(batch,observations,galleries,frame=ctx['frame'],view=ctx['view'],metadata=metadata,include_terminal=self.mode=='SHADOW')
             built=time.perf_counter();out=self.model(*inp)
         k=len(batch.candidate_ids)
         pref=out['choice_logits'][0,:,:k]
