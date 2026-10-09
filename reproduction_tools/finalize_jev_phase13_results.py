@@ -113,9 +113,18 @@ def aggregate_onpolicy():
                             'extra_birth_fragments_delta': after[v]['extra_birth_fragments'] - before[v]['extra_birth_fragments'],
                             'wrong_ID_duration_total_camera_frames_delta': after[v]['wrong_ID_duration_total_camera_frames'] - before[v]['wrong_ID_duration_total_camera_frames']}
                           for v in TRAIN]
+                totals = {when: {key: sum(p[when][key] for p in paired)
+                                  for key in ['birth_anchor_wrong_observations', 'extra_birth_fragments',
+                                              'wrong_ID_duration_total_camera_frames']}
+                          for when in ['before','after']}
+                tradeoff = (totals['after']['birth_anchor_wrong_observations'] < totals['before']['birth_anchor_wrong_observations']
+                            and totals['after']['extra_birth_fragments'] > totals['before']['extra_birth_fragments'])
                 cases.append({'status': 'COMPLETE', 'variant': variant, 'seed': seed, 'training_result': reference(path),
                               'training': r, 'own_state_manifest': reference(manifest_path), 'own_state_counts': read(manifest_path)['counts'],
-                              'paired_first256_TRAIN': paired, 'online_development': online})
+                              'paired_first256_TRAIN': paired, 'paired_TRAIN_totals':totals,
+                              'fewer_wrong_anchors_with_more_fragments':tradeoff,
+                              'error_interpretation':'new identities reset their first-GT anchor; reductions in wrong-anchor counts are not an unconditional tracking gain',
+                              'online_development': online})
             else:
                 full = read(OUT / 'formal_training_v1/full' / f'seed{seed}' / 'RESULT.json')
                 if full['TRAIN_FIXED_AUDIT_SUBSET']['certified_accuracy'] < .90:
@@ -300,6 +309,12 @@ def write_report(report, summaries, cosine, own):
         values = [avg([r['HOTA'] for r in before_tracking]), avg([c['online_development']['tracking']['HOTA'] for c in cc]),
                   avg([r['IDSW'] for r in before_tracking]), avg([c['online_development']['tracking']['IDSW'] for c in cc]), avg(before_errors), avg(after_errors), avg(before_fragments), avg(after_fragments)]
         lines.append('| '+variant+' | '+str(len(cc))+' | '+' | '.join(f'{v:.3f}' for v in values)+' |')
+    tradeoffs = [c for c in own['cases'] if c['status']=='COMPLETE' and c['fewer_wrong_anchors_with_more_fragments']]
+    if tradeoffs:
+        lines.extend(['', 'Observed prefix fragmentation tradeoffs:'])
+        for c in tradeoffs:
+            before,after=c['paired_TRAIN_totals']['before'],c['paired_TRAIN_totals']['after']
+            lines.append(f'- {c["variant"]} seed{c["seed"]}: wrong-anchor observations {before["birth_anchor_wrong_observations"]} → {after["birth_anchor_wrong_observations"]}, extra birth fragments {before["extra_birth_fragments"]} → {after["extra_birth_fragments"]}.')
     lines.extend(['', 'Original GMT uses Stage2-trained perception/RPCE and is a separate strong full-system comparator. MOTIP-style/CAMEL-style are controlled adapters, not complete official framework reproductions.', '',
                   'Native state parity exposed a restored-ID recycling bug before primary training. Old data/models/results remain archived. The correction adds a recovered ID back to the real possible-ID set; the real GTA-throw lifecycle test now recovers the same ID twice and verifies full/resumed state through106 frames. All primary models use the regenerated v3 corpus. A dormant-state issue in the Set control was also repaired before training; every shared-state/ordinary decoder block has nonzero supervised gradients.', '',
                   'Tiny/Pilot use frozen examples and budgets; formal primary checkpoint is LAST at20k. All GT labels are offline and uncertain/contaminated candidate histories remain UNKNOWN. REACT has only9 natural clean TRAIN positives and MEMORY has0 WRITE/KEEP labels, so learned MATCH+REACT and three-lifecycle experiments are NOT_RUN. Common cosine recovery/native WRITE remain explicit fallbacks. The NoTyped result cannot identify typed lifecycle benefit under MATCH-only supervision.', '',
