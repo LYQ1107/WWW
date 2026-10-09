@@ -1,5 +1,5 @@
 """Actual pooled TrackEval, both strict causal and canonical filtered outputs."""
-import argparse,time,collections,fcntl
+import argparse,time,collections,fcntl,gzip
 import numpy as np
 from jev_phase12_common import *
 from run_jev_phase10_closed_loop import metrics
@@ -47,11 +47,25 @@ def main(partial):
     complete=len(cases)==len(protocol['cases']);save(OUT/'POOLED_PROGRESS.json',{'status':'COMPLETE' if complete else 'RUNNING','complete_cases':len(cases),'total_cases':len(protocol['cases']),'case_names':[r['case']['name'] for r in cases]})
     if not complete:
         assert partial,'do not publish partial results as completed validation';return False
+    # Correct diagnostic bootstrap metadata from the real dominant camera.
+    # Original immutable actor/case artifacts are kept; predictions, actor
+    # decisions and all evaluated metrics remain unchanged.
+    ann=json.loads(Path('/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json').read_text());images={i['id']:i for i in ann['images'] if i['video_id'] in VAL};corrections=[]
+    for case in cases:
+        total=0
+        for run in case['per_video']:
+            folder=Path(run['strict_predictions']['path']).parent
+            with gzip.open(folder/'NATIVE_COMMITS.jsonl.gz','rt') as handle:first=json.loads(next(handle))
+            camera=1-first['key'][2];pred=json.loads(Path(run['strict_predictions']['path']).read_text());observed=sum(images[p['image_id']]['frame_id']==1 and images[p['image_id']]['view_id']==camera+1 for p in pred)
+            before=run['counts']['bootstrap_detections'];run['bootstrap_reference']={'camera':camera,'detections':observed,'actor_original_count':before,'definition':'dominant camera initializes native IDs before first association callback; observed directly in raw committed predictions'};run['counts']['bootstrap_detections']=observed;total+=observed
+            if before!=observed:corrections.append({'case':case['case']['name'],'video':run['video'],'actor_original_count':before,'actual_count':observed,'camera':camera})
+        case['counts']['bootstrap_detections']=total
+    save(REPORTS/'BOOTSTRAP_METADATA_CORRECTION.json',{'status':'COMPLETE','scope':'post-inference count metadata only; original actor/case files retained, no prediction/metric or policy change','corrections':corrections})
     byname={r['case']['name']:r for r in cases};offline=json.loads((REPORTS/'MATCH_OFFLINE_VALIDATION.json').read_text());training=json.loads((REPORTS/'MATCH_TRAINING_PROTOCOL.json').read_text());groups={}
     for model in training['models']+['full_no_risk']:
         records=[byname[f'{model}_s{seed}'] for seed in training['seeds']]
         groups[model]={'seeds':training['seeds'],'pooled_metric_mean':{scope:{m:float(np.mean([r['pooled_metrics'][scope][m] for r in records])) for m in records[0]['pooled_metrics'][scope]} for scope in ['strict_online','canonical_GMT_filtered']},'seed_metric_range':{scope:{m:[float(min(r['pooled_metrics'][scope][m] for r in records)),float(max(r['pooled_metrics'][scope][m] for r in records))] for m in records[0]['pooled_metrics'][scope]} for scope in ['strict_online','canonical_GMT_filtered']}}
-    report={'status':'COMPLETE','protocol_SHA256':sha(REPORTS/'ONLINE_PROTOCOL.json'),'videos':VAL,'native_video_actors':len(cases)*3,'cases':cases,'three_seed_groups':groups,'offline_validation':{'path':'reports/JEV_PHASE12/MATCH_OFFLINE_VALIDATION.json','SHA256':sha(REPORTS/'MATCH_OFFLINE_VALIDATION.json')},'primary':'strict causal committed stream; future complete-video length filter only separate canonical benchmark','data_scopes':'3 development videos and partial native labels; no heldout confirmatory claim','architecture_weights_or_temperature_retuned_after_MOT':False,'heldout':'SEALED','Full24':False,'official_TEST':False}
+    report={'status':'COMPLETE','protocol_SHA256':sha(REPORTS/'ONLINE_PROTOCOL.json'),'videos':VAL,'native_video_actors':len(cases)*3,'cases':cases,'three_seed_groups':groups,'offline_validation':{'path':'reports/JEV_PHASE12/MATCH_OFFLINE_VALIDATION.json','SHA256':sha(REPORTS/'MATCH_OFFLINE_VALIDATION.json')},'primary':'strict causal committed stream; future complete-video length filter only separate canonical benchmark','standard_TrackEval_identity_scope':'six camera sequences combined; joint-camera scene association reported separately','prefix_anchor_diagnostics_scope':'first two consistent observed native association commits; dominant-camera bootstrap excluded from commit journal, metrics evaluate all raw predictions including it; GT/anchor unknown remain censored','data_scopes':'3 development videos and partial native labels; no heldout confirmatory claim','architecture_weights_or_temperature_retuned_after_MOT':False,'heldout':'SEALED','Full24':False,'official_TEST':False}
     save(REPORTS/'MATCH_VALIDATION_RESULTS.json',report)
     ablation=json.loads((REPORTS/'ARCHITECTURE_ABLATION.json').read_text());ablation['online_three_seed_groups']=groups;ablation['no_risk']='same frozen Full weights and temperature; real mutated-state policy intervention';save(REPORTS/'ARCHITECTURE_ABLATION.json',ablation)
     isolated_path=OUT/'isolated_latency_v1/RESULT.json';latency={'status':'COMPLETE_ONLINE_ISOLATED_PENDING','actual_online_per_case':{r['case']['name']:r['latency'] for r in cases},'target_extra_policy_assignment_p95_ms':10.,'full_state_sharing':'once per camera payload, shared across all simultaneous MATCH questions','cross_stage_cache_hits':0,'MEMORY_REACTIVATION':'untrained native rule fallback; no trained neural execution latency claim','frozen_backbone_recomputed':False}

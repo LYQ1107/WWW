@@ -111,7 +111,9 @@ def run(video,name,smoke_frames=0,chunk_size=256):
     # synthetic candidate commit. Subsequent payloads must be exactly complete.
     assert counts['payloads']==frames*2-1,(counts['payloads'],frames)
     raw=raw_predictions(instances,images);save(out/'RAW_PREDICTIONS.json',raw)
-    counts['bootstrap_payloads']=1;counts['bootstrap_detections']=len(instances[0])
+    with gzip.open(out/'NATIVE_COMMITS.jsonl.gz','rt') as handle:first_commit=json.loads(next(handle))
+    assert first_commit['key'][1]==0
+    counts['bootstrap_payloads']=1;counts['bootstrap_detections']=len(instances[1-first_commit['key'][2]])
     if smoke_frames:
         save(done,{'status':'PASS','binding':source,'frames':frames,'counts':dict(counts),'raw_predictions_SHA256':sha(out/'RAW_PREDICTIONS.json'),'commits_SHA256':sha(out/'NATIVE_COMMITS.jsonl.gz'),'strict_online':True});return
     # Canonical GMT uses complete-video minimum-length filtering. Keep it as a
