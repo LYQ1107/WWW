@@ -14,11 +14,11 @@ def main():
     protect();assert not subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True).strip()
     assert read(REPORTS/'ACTION_SEMANTICS_TESTS.json')['status']=='PASS'
     assert read(REPORTS/'DYNAMIC_QUESTION_DIAGNOSTICS.json')['status']=='COMPLETE'
-    protocol=read(REPORTS/'PILOT_PROTOCOL.json');cases=list(itertools.product(protocol['models'],protocol['objectives']))
-    queue=OUT/'pilot_queue_v1';queue.mkdir(parents=True,exist_ok=True)
+    protocol=read(REPORTS/'PILOT_PROTOCOL.json');cases=list(itertools.product(protocol['models'],protocol['objectives']));version=protocol.get('execution_version',1)
+    queue=OUT/f'pilot_queue_v{version}';queue.mkdir(parents=True,exist_ok=True)
     pending=[];done=[];failed=[];active={};started=time.monotonic()
     for variant,loss in cases:
-        case=OUT/'pilot_v1'/variant/loss/'seed20261009'
+        case=OUT/f'pilot_v{version}'/variant/loss/'seed20261009'
         if (case/'RESULT.json').exists():done.append(dict(variant=variant,loss=loss,result=read(case/'RESULT.json')))
         elif (case/'FAILED.json').exists():failed.append(dict(variant=variant,loss=loss,failure=read(case/'FAILED.json')))
         else:pending.append((variant,loss))
@@ -26,7 +26,7 @@ def main():
         for gpu,(proc,handle,variant,loss) in list(active.items()):
             code=proc.poll()
             if code is None:continue
-            handle.close();case=OUT/'pilot_v1'/variant/loss/'seed20261009'
+            handle.close();case=OUT/f'pilot_v{version}'/variant/loss/'seed20261009'
             if code==0 and (case/'RESULT.json').exists():done.append(dict(variant=variant,loss=loss,result=read(case/'RESULT.json')))
             else:failed.append(dict(variant=variant,loss=loss,returncode=code,log=str(queue/f'{variant}_{loss}.log')))
             del active[gpu]
@@ -46,7 +46,7 @@ def main():
             active[gpu]=(proc,handle,variant,loss)
             print('PILOT_LAUNCH',gpu,proc.pid,variant,loss,flush=True)
         progress=dict(status='RUNNING',binding=binding(),total=len(cases),completed=len(done),failed=len(failed),pending=len(pending),
-                      active=[dict(gpu=g,pid=p.pid,variant=v,loss=l,progress=read(OUT/'pilot_v1'/v/l/'seed20261009/PROGRESS.json') if (OUT/'pilot_v1'/v/l/'seed20261009/PROGRESS.json').exists() else {'status':'STARTING'}) for g,(p,h,v,l) in active.items()],seconds=time.monotonic()-started)
+                      active=[dict(gpu=g,pid=p.pid,variant=v,loss=l,progress=read(OUT/f'pilot_v{version}'/v/l/'seed20261009/PROGRESS.json') if (OUT/f'pilot_v{version}'/v/l/'seed20261009/PROGRESS.json').exists() else {'status':'STARTING'}) for g,(p,h,v,l) in active.items()],seconds=time.monotonic()-started)
         save(queue/'PROGRESS.json',progress);time.sleep(10)
     save(queue/'RESULT.json',dict(status='PASS' if not failed else 'COMPLETE_WITH_FAILURES',binding=binding(),done=done,failed=failed,total=len(cases),seconds=time.monotonic()-started))
     save(queue/'PROGRESS.json',dict(status='COMPLETE',completed=len(done),failed=len(failed),total=len(cases)))

@@ -141,7 +141,8 @@ def main(variant,kind,seed=20261009,phase='pilot'):
     protect();assert read(REPORTS/'ERROR_ATTRIBUTION.json')['status']=='COMPLETE'
     assert variant in MODELS and kind in LOSSES
     protocol=read(REPORTS/'PREREGISTRATION.json');steps=protocol[phase]['updates']
-    out=OUT/f'{phase}_v1'/variant/kind/f'seed{seed}';out.mkdir(parents=True,exist_ok=True)
+    version=read(REPORTS/'PILOT_PROTOCOL.json').get('execution_version',1)
+    out=OUT/f'{phase}_v{version}'/variant/kind/f'seed{seed}';out.mkdir(parents=True,exist_ok=True)
     assert not (out/'RESULT.json').exists()
     torch.set_num_threads(1);torch.manual_seed(seed);np.random.seed(seed);rng=random.Random(seed)
     save(out/'PROGRESS.json',dict(status='LOADING_VERIFIED_TRAIN_DATA',variant=variant,loss=kind,seed=seed))

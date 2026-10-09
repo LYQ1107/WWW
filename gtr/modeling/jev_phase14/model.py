@@ -60,7 +60,13 @@ class ReliableIdentityPolicy(nn.Module):
                     if self.variant in ['set_transformer','motip']:query=query+state.mean(1)[:,None]
                     queries.append(query)
             else:queries=[who_query,who_query,who_query]
-        availability=self.availability_head(queries[1]).squeeze(-1)
+        # Every architecture's availability head sees the same detection-specific
+        # OptionReader evidence. A static query alone is identical across rows,
+        # which would unfairly handicap Fixed Question in a mixed-availability
+        # payload despite its WHO options containing the missing evidence.
+        option_legal=torch.cat([x['legal'],torch.ones_like(x['question_mask'])[:,:,None]],-1)
+        option_context=(option*option_legal[...,None]).sum(2)/option_legal.sum(2).clamp_min(1)[...,None]
+        availability=self.availability_head(queries[1]+option_context).squeeze(-1)
         trust=self.trust_head(option[:,:,:-1]+queries[2][:,:,None]).squeeze(-1)
         z=who
         if self.objective=='availability_joint':
