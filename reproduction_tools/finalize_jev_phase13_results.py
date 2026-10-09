@@ -272,6 +272,14 @@ def write_report(report, summaries, cosine, own):
     lines.append('| B1 cosine | ' + ' | '.join(f'{cosine["tracking"][k]:.3f}' for k in METRICS) + ' |')
     original = read(REPORTS / 'GMT_BASELINE_FREEZE.json')['GMT_OFF_metrics']['strict_online']
     lines.append('| Original GMT separate full system | ' + ' | '.join(f'{original[k]:.3f}' for k in METRICS) + ' |')
+    official = read(REPORTS/'OFFICIAL_MATLAB_CROSSVIEW.json')
+    lines.extend(['', '## Native official cross-camera metric engine', '',
+                  'Unchanged official evaluateTracking/CLEAR_MOT_HUN/IDmeasures and repository MEX ran in MATLAB R2020a on every frozen primary case. The VisionTrack benchmark parameter skips MOT16-only class/visibility cleaning: the original converter uses unknown auxiliary values of -1, which MOT16 defaults would incorrectly treat as low visibility. The failed-format diagnostic is retained in MATLAB_FORMAT_COMPATIBILITY_AUDIT.json. Sequential camera blocks use max(GT,pred)+1; CVMA uses interleaved frame*n_views+view_index, two-decimal geometry and the native end-frame clipping. Counts are pooled across scenes. Canonical outputs are secondary and separately recorded.', '',
+                  '| Method, 20k raw primary | CVIDF1 mean ± seed std | CVMA mean ± seed std |',
+                  '|---|---:|---:|'])
+    for variant in VARIANTS + ['cosine']:
+        row=official['strict_seed_summary']['formal'][variant]
+        lines.append('| '+variant+' | '+' | '.join(f'{row[k]["mean"]:.3f} ± {row[k]["std_seed"]:.3f}' for k in ['CVIDF1','CVMA'])+' |')
     lines.extend(['', '## Bounded own-state round', '',
                   'The following comparison uses the same completed eligible seeds before and after the extra4k updates. Wrong-anchor observations count actual errors relative to each identity first GT anchor; they must be read together with births/fragments and full tracking metrics. Prefix error duration is censored and is not a counterfactual propagation estimate.', '',
                   '| Method | Eligible completed seeds | 20k HOTA paired | 24k HOTA | 20k IDSW paired | 24k IDSW | TRAIN wrong-anchor before | after | TRAIN extra births before | after |',

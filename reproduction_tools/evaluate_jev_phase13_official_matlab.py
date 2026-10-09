@@ -126,10 +126,22 @@ def main():
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         futures=[pool.submit(evaluate_case,*case) for case in cases]
         results=[future.result() for future in futures]
+    summaries={}
+    for phase in ['formal','onpolicy']:
+        summaries[phase]={}
+        for variant in ['cosine']+VARIANTS:
+            selected=[r for r in results if r['phase']==phase and r['case'].split('_seed')[0]==variant and not r['case'].endswith('_no_calibration')]
+            if selected:
+                summaries[phase][variant]={key:{'mean':float(np.mean([r['reports']['raw_predictions'][key] for r in selected])),
+                                                 'std_seed':float(np.std([r['reports']['raw_predictions'][key] for r in selected])),
+                                                 'cases':[r['case'] for r in selected]}
+                                           for key in ['CVIDF1','CVMA']}
     report={'status':'COMPLETE','binding':binding(),'cases':results,
+            'strict_seed_summary':summaries,
             'metrics_scope':'actual native official MATLAB CVIDF1 and CVMA; raw primary, canonical separately',
             'native_smoke':reference(Path('/data1/liuyeqiang/matlab_R2020a_install_tools/official_metric_smoke.json')),
             'environment_audit':reference(REPORTS/'MATLAB_ENVIRONMENT_AUDIT.json'),
+            'format_compatibility_audit':reference(REPORTS/'MATLAB_FORMAT_COMPATIBILITY_AUDIT.json'),
             'large_files_uploaded':False,'heldout':'SEALED','official_TEST':False}
     save(REPORTS/'OFFICIAL_MATLAB_CROSSVIEW.json',report)
 
