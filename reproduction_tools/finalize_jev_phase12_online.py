@@ -1,10 +1,20 @@
 """Actual pooled TrackEval, both strict causal and canonical filtered outputs."""
-import argparse,time,collections
+import argparse,time,collections,fcntl
 import numpy as np
 from jev_phase12_common import *
 from run_jev_phase10_closed_loop import metrics
 
 def pool_case(case):
+    # Multiple reviewers may request a partial report while the watcher runs.
+    # Lock a whole deterministic formatter/evaluator transaction, not files
+    # individually, to avoid racing its non-atomic directory preparation.
+    root=OUT/'pooled_validation_locks';root.mkdir(exist_ok=True)
+    with (root/(case['name']+'.lock')).open('a') as lock:
+        try:fcntl.flock(lock.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError:return None
+        return _pool_case(case)
+
+def _pool_case(case):
     name=case['name'];runs=[]
     for video in VAL:
         p=OUT/'validation_closed_loop_v1'/name/f'video{video:02d}/RESULT.json'
