@@ -43,7 +43,8 @@ def load_policy(arm,seed,version,phase):
     result=read(path);assert result['status']=='COMPLETE'
     checkpoint=result['checkpoint'];assert sha(checkpoint['path'])==checkpoint['SHA256']
     policy=PersistentIdentityPolicy(arm).cuda().eval()
-    policy.load_state_dict(torch.load(checkpoint['path'],map_location='cpu')['model'],strict=True)
+    weights=torch.load(checkpoint['path'],map_location='cpu');policy.load_state_dict(weights['model'],strict=True)
+    policy.posterior_feedback=weights.get('posterior_feedback','native')
     return policy,checkpoint,ref(path)
 
 

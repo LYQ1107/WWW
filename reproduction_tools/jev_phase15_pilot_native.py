@@ -34,8 +34,9 @@ def main(video,version=1,arm='F_full',phase='pilot',posterior_input='native'):
     checkpoint=result['checkpoint'];assert sha(checkpoint['path'])==checkpoint['SHA256']
     torch.set_num_threads(1);torch.manual_seed(20261009)
     torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True
-    policy=PersistentIdentityPolicy(arm).cuda().eval();policy.load_state_dict(torch.load(checkpoint['path'],map_location='cpu')['model'],strict=True)
-    policy.posterior_feedback=posterior_input
+    weights=torch.load(checkpoint['path'],map_location='cpu')
+    policy=PersistentIdentityPolicy(arm).cuda().eval();policy.load_state_dict(weights['model'],strict=True)
+    policy.posterior_feedback='masked' if posterior_input=='masked' else weights.get('posterior_feedback','native')
     case=OUT/'train_commitment_prefixes_v1'/f'video{video:02d}';manifest=read(case/'RESULT.json')
     values,frames,reader=cache_inputs(video)
     metric=FrozenClearFuture('multi_question',20261009,video,case_override=case,duplicate_gt_diagnostic=video==14)
@@ -86,6 +87,7 @@ def main(video,version=1,arm='F_full',phase='pilot',posterior_input='native'):
     save(out/'RESULT.json',dict(status='COMPLETE',binding=source,version=version,arm=arm,phase=phase,video=video,
         cases=outcomes,seconds=time.monotonic()-begin,all_declared_prefixes_retained=True,
         posterior_input=posterior_input,same_weights_and_original_native_prefix=True,
+        effective_posterior_feedback=policy.posterior_feedback,
         policy_specific_value='pi_new_'+arm,original_policy='pi_multi_frozen20k',purely_single_action_causal_attribution=False))
     save(out/'PROGRESS.json',dict(status='COMPLETE',done=len(outcomes)))
 

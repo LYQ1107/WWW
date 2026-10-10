@@ -51,10 +51,11 @@ def objective(details, x, y, arm):
     availability = binary(details['availability_logits'], y['availability'], x['question_mask'])
     trust = binary(details['trust_logits'], y['trust'], x['legal'])
     valid = (y['commit_kind'] > 0) & x['question_mask']
-    commit = mass_loss(details.get('commitment_logits', details['logits']), y['commit_positive'], y['known_options'], valid)
+    commit = mass_loss(details.get('commitment_logits', details['logits']), y['commit_positive'], y.get('commit_known_options',y['known_options']), valid)
     target = dict(y)
     if arm in ['C_commitment', 'D_fixed', 'E_set', 'F_full']:
         target['positive'] = torch.where(valid[..., None], y['commit_positive'], y['positive'])
+        target['known_options'] = torch.where(valid[...,None], y.get('commit_known_options',y['known_options']),y['known_options'])
     assignment = whole_payload_joint_loss(details['logits'], x, target)
     risk = details['logits'].sum()*0
     if 'purity_logits' in details:

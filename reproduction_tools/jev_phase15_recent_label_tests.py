@@ -1,6 +1,7 @@
 """Recent contamination certificates cannot arise from mixtures or gaps alone."""
 import torch
 from jev_phase15_common import *
+from jev_phase15_losses import mass_loss
 from jev_phase15_recent_labels import recent_owner,patch_record
 
 
@@ -18,6 +19,12 @@ def main():
     assert patch['commit_kind'].tolist()==[2] and patch['safety'].tolist()==[[0,1]]
     assert patch['commit_known_options'][0,0] and not r['known_options'][0,0]
     assert not r['commit_positive'].any() and r['commit_kind'].tolist()==[0], 'original label overwritten'
+    who=torch.randn(1,3,requires_grad=True)
+    mass_loss(who,r['positive'],r['known_options'],torch.tensor([True])).backward()
+    assert who.grad[0,0]==0,'mixed WHO ownership was silently declared wrong'
+    commitment=torch.tensor([[2.,0.,-3.]],requires_grad=True)
+    mass_loss(commitment,patch['commit_positive'],patch['commit_known_options'],torch.tensor([True])).backward()
+    assert commitment.grad[0,0]>0 and commitment.grad[0,1]<0,'certified unsafe commitment not distinguishable from WHO'
     for segment in [[(1,1),(2,1),(3,1)],[(1,2),(2,None),(3,2)]]:
         assert not patch_record(r,{(10,0):segment})[0]
     save(OUT/'recent_label_contract_v2/RESULT.json',dict(status='PASS',binding=binding(seed=20261009),

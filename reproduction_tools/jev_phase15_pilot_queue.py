@@ -8,6 +8,9 @@ def main(version=1):
     protect();assert read(REPORTS/'COMMITMENT_LABEL_AUDIT.json')['status']=='PASS'
     assert read(REPORTS/'NATIVE_STATE_CONTRACT.json')['status']=='PASS_FOR_IMPLEMENTED_NO_ALIAS_ADAPTER'
     assert read(REPORTS/'COMMITMENT_FEASIBILITY_GO_NO_GO.json')['mechanism_GO']
+    if version>=2:
+        assert read(REPORTS/f'RESEARCH_VERSION_{version}_PROTOCOL.json')['status']=='FROZEN_BEFORE_TRAINING'
+        assert read(REPORTS/'RECENT_OWNER_LABEL_IDENTIFIABILITY.json')['new_reserved_correction_support']>0
     source=pin(f'source_full_payload_pilot_v{version}')
     for phase in ['tiny','pilot']:
         path=OUT/f'training_full_payload_v{version}'/'F_full/seed20261009'/phase/'RESULT.json'
@@ -21,7 +24,9 @@ def main(version=1):
     jobs=[dict(key=f'F_full_native_v{version}_TRAIN{video}',script='jev_phase15_pilot_native.py',
           args=['--video',str(video),'--version',str(version)],
           result=str(OUT/f'pilot_native_v{version}'/'F_full/pilot'/f'video{video:02d}'/'RESULT.json')) for video in TRAIN]
-    result=run_queue(source,jobs,f'pilot_native_queue_v{version}',max_active=4)
+    if version>=2:jobs.append(dict(key=f'all_query_coverage_v{version}',script='jev_phase15_all_query_audit.py',
+        args=['--version',str(version)],result=str(OUT/f'all_query_audit_v{version}/RESULT.json')))
+    result=run_queue(source,jobs,f'pilot_native_queue_v{version}',max_active=5)
     assert not result['failed'],result['failed']
 
 

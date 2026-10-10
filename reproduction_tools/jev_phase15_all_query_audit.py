@@ -49,14 +49,15 @@ def audit(model,records,limit=256):
 
 def main(version=1):
     protect();torch.set_num_threads(1);torch.manual_seed(20261009)
-    train,reserved,sources=load_records()
+    train,reserved,sources=load_records(label_version=2 if version>=2 else 1)
     constants=collections.Counter()
     for r in train+reserved:
         f=r['inputs']['commitment_features'];constants['payloads']+=1
         constants['posterior_input_nonconstant_payloads']+=int(bool((f[...,16]!=.5).any() or (f[...,17]!=0).any()))
     path=OUT/f'training_full_payload_v{version}/F_full/seed20261009/pilot/RESULT.json';result=read(path);ck=result['checkpoint']
     assert sha(ck['path'])==ck['SHA256']
-    full=PersistentIdentityPolicy('F_full').cuda().eval();full.load_state_dict(torch.load(ck['path'],map_location='cpu')['model'],strict=True)
+    weights=torch.load(ck['path'],map_location='cpu');full=PersistentIdentityPolicy('F_full').cuda().eval();full.load_state_dict(weights['model'],strict=True)
+    full.posterior_feedback=weights.get('posterior_feedback','native')
     original,oldck,oldsource=initialize('A_original')
     findings=dict(original= audit(original,reserved),F_full=audit(full,reserved))
     source=binding(seed=20261009,checkpoints=[ck,oldck],dataset=sources,evaluator='post-freeze all-query constrained assignment',scope='coverage repair; no optimizer updates, no DEV')

@@ -15,7 +15,7 @@ from gtr.modeling.jev_phase15.model import PersistentIdentityPolicy, ARMS
 from gtr.modeling.jev_stage2.assignment import lawful_choice
 
 
-def load_records(version=2):
+def load_records(version=2,label_version=1):
     records=[]; manifests=[]
     for video in TRAIN:
         folder=OUT/f'commitment_dataset_v{version}'/f'video{video:02d}'
@@ -26,6 +26,13 @@ def load_records(version=2):
             assert record['key'][0] in TRAIN
             assert record['audit_block']==((record['key'][1]//64)%5==4)
         records.extend(data['records']); manifests.append(ref(folder/'RESULT.json'))
+    if label_version>=2:
+        audit=read(OUT/'recent_owner_labels_v2/RESULT.json');assert audit['status']=='COMPLETE'
+        descriptor=audit['patch'];assert sha(descriptor['path'])==descriptor['SHA256']
+        data=torch.load(descriptor['path'],map_location='cpu');patches=data['patches']
+        keys={tuple(r['key']) for r in records};assert set(patches)<=keys
+        records=[dict(r,**patches.get(tuple(r['key']),{})) for r in records]
+        manifests.append(ref(OUT/'recent_owner_labels_v2/RESULT.json'))
     return [r for r in records if not r['audit_block']], [r for r in records if r['audit_block']], manifests
 
 
@@ -35,6 +42,7 @@ def batch(records, device='cuda:0'):
     y.update(availability=torch.full((b,q),-1,device=device), trust=torch.full((b,q,k),-1,device=device),
              safety=torch.full((b,q,k),-1,device=device),uncertainty=torch.full((b,q,k),-1,device=device),
              commit_positive=torch.zeros(b,q,k+1,dtype=torch.bool,device=device),
+             commit_known_options=torch.zeros(b,q,k+1,dtype=torch.bool,device=device),
              commit_kind=torch.zeros(b,q,dtype=torch.int8,device=device))
     for index,r in enumerate(records):
         qq=len(r['rows']);kk=len(r['refs'])
@@ -45,6 +53,9 @@ def batch(records, device='cuda:0'):
         y['commit_positive'][index,:qq,:kk]=r['commit_positive'][:,:kk].to(device)
         y['commit_positive'][index,:qq,k]=r['commit_positive'][:,kk].to(device)
         y['commit_kind'][index,:qq]=r['commit_kind'].to(device)
+        known=r.get('commit_known_options',r['known_options'])
+        y['commit_known_options'][index,:qq,:kk]=known[:,:kk].to(device)
+        y['commit_known_options'][index,:qq,k]=known[:,kk].to(device)
     return x,y
 
 
@@ -112,6 +123,7 @@ def assess(model,records,limit=256):
 def main(arm, phase, seed=20261009, version=1):
     protect();storage_guard();assert arm in ARMS and phase in ['tiny','pilot','formal'] and seed in SEEDS
     protocol=read(REPORTS/'PREREGISTRATION.json')['training'];assert version<=protocol['max_evidence_driven_versions']
+    if version>=2:assert read(REPORTS/f'RESEARCH_VERSION_{version}_PROTOCOL.json')['status']=='FROZEN_BEFORE_TRAINING'
     if phase=='formal':
         gate=read(REPORTS/'PILOT_RESULTS.json');assert gate['formal_qualified'] is True
     if arm!='F_full':
@@ -121,13 +133,14 @@ def main(arm, phase, seed=20261009, version=1):
     out=OUT/f'training_full_payload_v{version}'/arm/f'seed{seed}'/phase;out.mkdir(parents=True,exist_ok=True)
     assert not (out/'RESULT.json').exists()
     torch.set_num_threads(1);torch.manual_seed(seed);np.random.seed(seed);rng=random.Random(seed)
-    train,audit,manifests=load_records();assert train and audit
+    train,audit,manifests=load_records(label_version=2 if version>=2 else 1);assert train and audit
     grouped=collections.defaultdict(list)
     for r in train:grouped[r['key'][0],r['key'][1]//64].append(r)
     safe=[r for r in train if (r['commit_kind']==1).any()];correct=[r for r in train if (r['commit_kind']==2).any()]
     assert safe,'no certified safe continuation support'
     keys=sorted(grouped)
     model,checkpoint,initializer_manifest=initialize(arm,seed)
+    model.posterior_feedback='masked' if version>=3 else 'native'
     if phase=='tiny':
         tiny=([correct[0]] if correct else [])+[safe[0]]+[grouped[keys[0]][0],grouped[keys[-1]][-1]]
         tiny=tiny[:4]
@@ -171,7 +184,8 @@ def main(arm, phase, seed=20261009, version=1):
             final['safe_continuation_accuracy']>=threshold['safe_continuation_accuracy_min']) and (
             final['necessary_correction_accuracy']>=threshold['necessary_correction_accuracy_min'])
         artifact=out/'LAST_FROZEN.pth'
-        atomic_torch(artifact,dict(model=model.state_dict(),arm=arm,seed=seed,version=version,actual_updates=step,binding=source))
+        atomic_torch(artifact,dict(model=model.state_dict(),arm=arm,seed=seed,version=version,actual_updates=step,binding=source,
+            posterior_feedback=model.posterior_feedback,label_version=2 if version>=2 else 1))
         result=dict(status='COMPLETE',binding=source,arm=arm,phase=phase,version=version,seed=seed,
             actual_updates=step,checkpoint=ref(artifact),before=before,final=final,history=history,
             loss_before=first_loss,loss_last=float(np.mean(losses[-min(16,len(losses)):])),gradient_health=dict(gradients),
