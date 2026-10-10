@@ -5,12 +5,25 @@ from jev_phase16_common import *
 
 def joined_consequences(path):
     pending={};groups=collections.defaultdict(collections.Counter);counts=collections.Counter()
-    evidence_loss_risk=collections.Counter();examples=[]
+    evidence_loss_risk=collections.Counter();examples=[];react_scope=collections.Counter()
     with gzip.open(path,'rt') as stream:
         for line in stream:
             item=json.loads(line);key=tuple(item['key']),item['row']
             if item.get('record_type')!='COMMIT':
                 pending[key]=item
+                if item['task']=='REACT':
+                    react_scope['actual_REACT_queries']+=1
+                    react_scope['GT_known']+=item['current_GT_OFFLINE_ONLY'] is not None
+                    react_scope['actual_candidates_nonempty']+=bool(item['actual_candidates'])
+                    react_scope['pure_correct_stale_offered']+=bool(item['legal_pure_correct_IDs'])
+                    react_scope['pure_correct_selected']+=item['selected_certified_correct']
+                    available=set(item['actual_candidates'])
+                    supported=[item['raw_and_summary_scores'][str(i)] for i in
+                               item['anchored_correct_owner_IDs'] if i in available]
+                    react_scope['owner_raw075_support_but_three_summary_below075']+=any(
+                        s['raw_target']>=.75 and s['native_REACT_three_summary']<.75 for s in supported)
+                    react_scope['other_camera_slot_only_crosses075_for_owner']+=any(
+                        s['four_summary']>=.75 and s['native_REACT_three_summary']<.75 for s in supported)
                 if item['high_risk'] and item['current_GT_OFFLINE_ONLY'] is not None:
                     for identity in item['owner_anchored_summary_hidden_IDs']:
                         score=item['raw_and_summary_scores'][str(identity)]
@@ -45,6 +58,7 @@ def joined_consequences(path):
             for old in [k for k in pending if k[0]<key[0]]:del pending[old]
     return dict(counts=dict(counts),flag_action_correlations={k:dict(v) for k,v in groups.items()},
         high_risk_owner_hidden_diagnostics=dict(evidence_loss_risk),examples=examples,
+        actual_untrained_REACT_diagnostics=dict(react_scope),
         owner_definition='immutable earliest>=3/.8 pure past anchor; never relabel a mixture as a wrong WHO candidate',
         stage_scope='final native action joined to its last actual MATCH or REACT query')
 
@@ -57,12 +71,14 @@ def main():
         assert result['status']=='COMPLETE';inputs.append(ref(path))
         group_key=f'{scope}_{policy}_'+('TRAIN' if video in TRAIN else 'DEV')
         group=groups.setdefault(group_key,dict(counts=collections.Counter(),flags=collections.Counter(),
-            primary=collections.Counter(),clusters=collections.defaultdict(set),action=collections.Counter(),cases=0))
+            primary=collections.Counter(),clusters=collections.defaultdict(set),action=collections.Counter(),
+            react=collections.Counter(),cases=0))
         for item in result['cases']:
             assert scope!='windows' or item['parity']=='ALL_XV_BRANCH_IDS_EXACT'
             joined=joined_consequences(item['queries']['path']);summary=item['summary']
             group['counts'].update(summary['counts']);group['flags'].update(summary['multi_label_high_risk'])
             group['primary'].update(summary['primary_high_risk']);group['action'].update(joined['counts']);group['cases']+=1
+            group['react'].update(joined['actual_untrained_REACT_diagnostics'])
             for name,values in summary['clusters'].items():
                 group['clusters'][name].update(tuple(x) for x in values if x[0]!=14)
             cases.append(dict(scope=scope,policy=policy,video=video,tag=item['tag'],source=ref(path),
@@ -72,6 +88,7 @@ def main():
         n=g['counts']['current_GT_known'];risk=g['counts']['high_risk_GT_known_queries']
         compact[name]=dict(counts=dict(g['counts']),high_risk_primary=dict(g['primary']),
             high_risk_multi_label=dict(g['flags']),native_action_consequences=dict(g['action']),cases=g['cases'],
+            actual_untrained_REACT_diagnostics=dict(g['react']),
             cluster_counts={k:len(v) for k,v in g['clusters'].items()},
             observed_correct_content_rate=g['counts']['observed_correct_content_exists']/n if n else None,
             anchored_owner_content_rate=g['counts']['anchored_correct_owner_exists']/n if n else None,
@@ -89,6 +106,7 @@ def main():
         early6_engineering_windows_not_added_as_independent_samples=True,
         unknown_is_not_wrong=True,raw_person_content_is_not_correct_Global_ID=True,
         taxonomy_has_overlapping_mechanisms=True,
+        cross_policy_full_history_differences_are_not_single_decision_causal_effects=True,
         actual_REACT=dict(learned=False,cosine_slots=[0,1,2],DEFER=.75,
             latent_four_summary_has_other_camera_slot_not_used_by_native_REACT=True),
         supplementary_input_integrity=ref(REPORTS/'INPUT_INTEGRITY.json'),
