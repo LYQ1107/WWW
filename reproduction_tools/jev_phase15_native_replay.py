@@ -18,7 +18,17 @@ def gzip_rows(path):
         return [json.loads(line) for line in stream]
 
 
-def main(variant, seed, video):
+def journal_metadata(value):
+    """Preserve small causal metadata; reference large appearance sums by hash."""
+    if isinstance(value, torch.Tensor):
+        if value.numel() <= 8: return value.detach().cpu().tolist()
+        return {'shape': list(value.shape), 'dtype': str(value.dtype), 'SHA256': fingerprint(value)}
+    if isinstance(value, dict): return {str(k): journal_metadata(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)): return [journal_metadata(v) for v in value]
+    return value
+
+
+def main(variant, seed, video, execution_version):
     protect(); storage_guard(); assert video in DEV
     case = old_case(variant, seed, video); original = read(case / 'RESULT.json')
     for rel, digest in original['binding']['source_SHA256'].items():
@@ -34,7 +44,7 @@ def main(variant, seed, video):
     selected = {tuple(e['key'][1:]): e for e in reconstruction['selected_counterfactual_prefixes']}
     # Keep native full prefixes only for the predeclared worst-seed interventions.
     if variant != 'multi_question' or seed != 20261009: selected = {}
-    folder = OUT / 'native_replay_v1' / f'{variant}_seed{seed}' / f'video{video:02d}'
+    folder = OUT / f'native_replay_v{execution_version}' / f'{variant}_seed{seed}' / f'video{video:02d}'
     folder.mkdir(parents=True, exist_ok=True)
     assert not (folder / 'RESULT.json').exists(), 'completed native replay is immutable'
     torch.set_num_threads(1); torch.manual_seed(20261009)
@@ -97,7 +107,7 @@ def main(variant, seed, video):
                 'memory_and_bank_state_SHA256': fingerprint(state),
                 'causal_tensor_record_index': len(details),
                 'Gallery_lengths': {str(t): len(native['galleries'].get(t, [])) for t in d['refs']},
-                'identity_history_metadata': {str(t): executor.memory.meta.get(t) for t in d['refs']},
+                'identity_history_metadata': journal_metadata({str(t): executor.memory.meta.get(t) for t in d['refs']}),
                 'bank_IDs': state['bank_ids'], 'future_information_in_actor_inputs': False}
             journal.write(json.dumps(record, allow_nan=False) + '\n'); row_events.append(record)
             counts['switch_rows_with_WHO_Availability_Trust'] += 1
@@ -156,7 +166,8 @@ def main(variant, seed, video):
 if __name__ == '__main__':
     a = argparse.ArgumentParser(); a.add_argument('--variant', required=True)
     a.add_argument('--seed', type=int, required=True); a.add_argument('--video', type=int, required=True)
+    a.add_argument('--execution-version', type=int, default=2)
     args = a.parse_args()
-    try: main(args.variant, args.seed, args.video)
+    try: main(args.variant, args.seed, args.video, args.execution_version)
     except Exception:
         failure('native_replay', traceback.format_exc()); raise

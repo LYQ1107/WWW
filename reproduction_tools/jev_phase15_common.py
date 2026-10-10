@@ -57,12 +57,18 @@ def binding(seed=None, checkpoints=None, dataset=None, evaluator=None, scope=Non
         paths += list((ROOT / 'gtr/modeling' / folder).glob('*.py'))
     paths += [ROOT / 'gtr/modeling/meta_arch/gtr_rcnn.py', ROOT / 'gtr/modeling/jev_native_state.py',
               ROOT / 'reproduction_tools/jev_phase13_runtime.py']
+    environment = {'python': sys.version, 'platform': platform.platform(),
+                   'CUDA_VISIBLE_DEVICES': os.environ.get('CUDA_VISIBLE_DEVICES')}
+    if 'torch' in sys.modules:
+        torch = sys.modules['torch']
+        environment.update(torch=str(torch.__version__), torch_CUDA=torch.version.cuda)
+        if torch.cuda.is_initialized():
+            environment.update(GPU=torch.cuda.get_device_name(), cudnn=torch.backends.cudnn.version())
     return {'source_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
             'source_root': str(ROOT), 'source_SHA256': {str(p.relative_to(ROOT)): sha(p) for p in sorted(set(paths)) if p.is_file()},
             'config_SHA256': {p: sha(ROOT / p) for p in ['configs/VISION_stage1.yaml', 'configs/VISION_test.yaml']},
             'seed': seed, 'checkpoints': checkpoints, 'dataset': dataset, 'evaluator': evaluator, 'scope': scope,
-            'environment': {'python': sys.version, 'platform': platform.platform(),
-                            'CUDA_VISIBLE_DEVICES': os.environ.get('CUDA_VISIBLE_DEVICES')},
+            'environment': environment,
             'TRAIN': TRAIN, 'development': DEV, 'heldout_20_21_22': 'SEALED',
             'official_TEST': False, 'Full24': False,
             'preregistration_SHA256': sha(REPORTS / 'PREREGISTRATION.json') if (REPORTS / 'PREREGISTRATION.json').exists() else None}

@@ -73,15 +73,16 @@ def run_queue(source, jobs, name, max_active=4):
 
 
 def main():
-    source = pin('source_replay_v1'); jobs = []
+    version = 2
+    source = pin(f'source_replay_v{version}'); jobs = []
     pairs = [('multi_question', 20261009), ('fixed_question', 20261009), ('set_transformer', 20261009),
              ('multi_question', 20261008), ('multi_question', 20261010)]
     for variant, seed in pairs:
         for video in DEV:
             jobs.append({'key': f'{variant}_seed{seed}_video{video}', 'script': 'jev_phase15_native_replay.py',
-                         'args': ['--variant', variant, '--seed', str(seed), '--video', str(video)],
-                         'result': str(OUT / 'native_replay_v1' / f'{variant}_seed{seed}' / f'video{video:02d}' / 'RESULT.json')})
-    result = run_queue(source, jobs, 'native_replay_queue_v1')
+                         'args': ['--variant', variant, '--seed', str(seed), '--video', str(video), '--execution-version', str(version)],
+                         'result': str(OUT / f'native_replay_v{version}' / f'{variant}_seed{seed}' / f'video{video:02d}' / 'RESULT.json')})
+    result = run_queue(source, jobs, f'native_replay_queue_v{version}')
     assert not result['failed'], result['failed']
 
 

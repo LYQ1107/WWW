@@ -1,0 +1,95 @@
+{
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": null,
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": null,
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]"
+    },
+    "evaluator": null,
+    "heldout_20_21_22": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+    "scope": "Engineering journal serialization only; actual old native memory unchanged",
+    "seed": null,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase15_common.py": "c3b45cba8fec5d6ad0021927492d6a148c6d035cae3efd8b6c8ef8354061b0d8",
+      "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+      "reproduction_tools/jev_phase15_native_replay.py": "b3dc48639293e8e15cef0175b3cf19d2d3757c27d7cb3da4c0ef5da3e7fd3d0c",
+      "reproduction_tools/jev_phase15_queue.py": "ceaf14a4403b4c69061642f0c466a3efb6a46443c96adf3f4e85a83f35125984",
+      "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418"
+    },
+    "source_commit": "39ee103acb29a076f60e24ed12038c446f110b2a",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+  },
+  "original_logs_and_partial_prefixes_retained": true,
+  "real_prefix_logging_unit_test": {
+    "appearance_sum_hashes_and_causal_boxes_preserved": true,
+    "identity_count": 6,
+    "json_bytes": 3661,
+    "memory_unmodified": true,
+    "prefix": {
+      "SHA256": "b7390f9416edb142ccc853270b04f5a6ec6eed2149e71610158a824d7ba0c37a",
+      "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/native_replay_v1/multi_question_seed20261009/video17/PREFIX_000027_0.pth.xz"
+    },
+    "status": "PASS"
+  },
+  "reason": "IdentityMemory metadata includes torch tensors; JSON journal requires explicit causal scalar/box serialization before continuing. Policy/scores/native execution unchanged.",
+  "replacement_version": "native_replay_v2",
+  "scientific_model_or_metric_failure": false,
+  "status": "ENGINEERING_HARNESS_REPAIR",
+  "stopped_owned_processes": [
+    {
+      "pid": 36649,
+      "role": "owned replay queue"
+    },
+    {
+      "key": "fixed_question_seed20261009_video18",
+      "pid": 37833,
+      "role": "owned replay actor"
+    },
+    {
+      "key": "fixed_question_seed20261009_video19",
+      "pid": 37834,
+      "role": "owned replay actor"
+    },
+    {
+      "key": "set_transformer_seed20261009_video17",
+      "pid": 37835,
+      "role": "owned replay actor"
+    },
+    {
+      "key": "set_transformer_seed20261009_video18",
+      "pid": 38224,
+      "role": "owned replay actor"
+    }
+  ]
+}
