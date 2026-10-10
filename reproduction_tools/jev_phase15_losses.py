@@ -17,11 +17,15 @@ def binary(logits, targets, mask):
 
 def objective(details, x, y, arm):
     if arm == 'A_original': return old_objective(details, x, y, 'availability_joint')
+    if arm == 'B_continuity':
+        baseline,parts=old_objective(details,x,y,'availability_joint')
+        valid=(y['commit_kind']==1)&x['question_mask']
+        continuity=mass_loss(details['logits'],y['commit_positive'],y['known_options'],valid)
+        return baseline+continuity,dict(parts,ordinary_continuity=float(continuity.detach()))
     who = mass_loss(details['choice_logits'], y['positive'], y['known_options'], y['supervised'] & x['question_mask'])
     availability = binary(details['availability_logits'], y['availability'], x['question_mask'])
     trust = binary(details['trust_logits'], y['trust'], x['legal'])
     valid = (y['commit_kind'] > 0) & x['question_mask']
-    if arm == 'B_continuity': valid = (y['commit_kind'] == 1) & x['question_mask']
     commit = mass_loss(details.get('commitment_logits', details['logits']), y['commit_positive'], y['known_options'], valid)
     target = dict(y)
     if arm in ['C_commitment', 'D_fixed', 'E_set', 'F_full']:
