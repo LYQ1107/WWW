@@ -219,7 +219,7 @@ def main(video,policy_name='v3',scope='full',namespace='P0_r2'):
         else:
             predictions=raw_predictions(raw,audit.labels.images)
             reference=None
-            if policy_name=='original':reference=XV/'commitment_dataset_v2'/f'video{video:02d}/RAW_PREDICTIONS.json'
+            if policy_name=='original':reference=Path(read(XV/'train_commitment_prefixes_v1'/f'video{video:02d}/RESULT.json')['raw_predictions']['path'])
             if policy_name=='v2':reference=XV/'onpolicy_pilot_dataset_v3_r2'/f'video{video:02d}/RAW_PREDICTIONS.json'
             if video in DEV:reference=XV/'pilot_online_v3/F_full_seed20261009/live'/f'video{video:02d}/RAW_PREDICTIONS.json'
             if reference is not None:assert predictions==read(reference),('audit full predictions differ',reference)
