@@ -25,6 +25,10 @@ def main(version=3):
     if not list(toolkit.rglob('*.mexa64')):
         toolkit=Path('/home/liuyeqiang/WWW_jev_phase14/MOTChallengeEvalKit_cv_test/matlab_devkit')
     assert toolkit.exists() and list(toolkit.rglob('*.mexa64')),str(toolkit)
+    previous=read(ROOT/'reports/JEV_PHASE14/OFFICIAL_MATLAB_RESULTS.json')['cases'][0]['result']
+    assert sha(previous['path'])==previous['SHA256']
+    prior_toolkit=read(previous['path'])['official_toolkit_SHA256']
+    for name,digest in prior_toolkit.items():assert sha(toolkit/name)==digest,('official evaluator changed',name)
     save(config,dict(kit=str(toolkit),jobs=jobs,output=str(native),benchmark='VisionTrack'))
     env=os.environ.copy();env.update(JEV_MATLAB_CONFIG=str(config),OMP_NUM_THREADS='1',MKL_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
     script=ROOT/'reproduction_tools/jev_phase13_official_matlab_eval.m';start=time.monotonic()
@@ -42,6 +46,7 @@ def main(version=3):
         sequential_identity_counts=counts,interleaved_CLEAR_counts=errors,unchanged_official_metrics=True,
         native_MATLAB=str(MATLAB),native_version=result['version'],native_report=ref(native),native_log=ref(log),
         toolkit_SHA256={str(p.relative_to(toolkit)):sha(p) for p in sorted(toolkit.rglob('*')) if p.suffix in ['.m','.cpp','.mexa64'] and p.is_file()},
+        official_toolkit_full_hash_matches_prior=True,prior_official_evaluator_reference=previous,
         adapter=ref(script),input_manifest=ref(manifest),input_sources=inputs,raw_predictions=ref(predictions),
         raw_unfiltered=True,aggregation='sum per-scene counts; sequential CVIDF1/interleaved CVMA, no mean video score',seconds=time.monotonic()-start)
     save(out/'RESULT.json',report);save(REPORTS/'OFFICIAL_MATLAB_RESULTS.json',report)
