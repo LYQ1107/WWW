@@ -8,6 +8,7 @@ from jev_phase13_runtime import build_tracker,cache_inputs,run
 from gtr.modeling.jev_phase16.native_memory_commit_adapter import attach
 from gtr.modeling.jev_native_state import fingerprint
 from gtr.modeling.jev_phase16.safe_matching_memory import SafeMatchingMemory
+import gtr.modeling.jev_stage2.native as native_executor_module
 
 
 def quantile(values):
@@ -21,7 +22,7 @@ def main(version=3):
     model=build_tracker(17,policy,react_learned=False,live=True);executor=attach(model)
     assert model.jev_perception_cache_reader is None and executor.observer is None and executor.commit_observer is None
     out=OUT/'P8_latency_memory_only';out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
-    samples=[];original=executor.commit;components={k:[] for k in ['Stage1_image_IO_detector_VFCE','matching_memory_retrieval','JEV_scores','raw_state_plus_admission_trusted_update']}
+    samples=[];original=executor.commit;components={k:[] for k in ['Stage1_image_IO_detector_VFCE','image_preprocessing','backbone','detector','VFCE_pooling','VFCE_head','matching_memory_retrieval','JEV_scores','native_Hungarian','Bank_promotion','raw_state_plus_admission_trusted_update']}
     def measured(original, name):
         def call(*args,**kwargs):
             torch.cuda.synchronize();start=time.perf_counter();result=original(*args,**kwargs);torch.cuda.synchronize()
@@ -29,7 +30,14 @@ def main(version=3):
             return result
         return call
     model.inference=measured(model.inference,'Stage1_image_IO_detector_VFCE')
+    model.preprocess_image=measured(model.preprocess_image,'image_preprocessing')
+    model.backbone.forward=measured(model.backbone.forward,'backbone')
+    model.proposal_generator.forward=measured(model.proposal_generator.forward,'detector')
+    model.roi_heads.asso_pooler.forward=measured(model.roi_heads.asso_pooler.forward,'VFCE_pooling')
+    model.roi_heads.asso_head.forward=measured(model.roi_heads.asso_head.forward,'VFCE_head')
     executor.scores=measured(executor.scores,'JEV_scores')
+    native_executor_module.lawful_choice=measured(native_executor_module.lawful_choice,'native_Hungarian')
+    executor.promote_bank=measured(executor.promote_bank,'Bank_promotion')
     SafeMatchingMemory.build=measured(SafeMatchingMemory.build,'matching_memory_retrieval')
     SafeMatchingMemory.update=measured(SafeMatchingMemory.update,'raw_state_plus_admission_trusted_update')
     def commit(*a,**k):
@@ -62,6 +70,7 @@ def main(version=3):
         three_restart_full_Instance_parity=True,raw_SHA256=digests[0],
         full_video_uninstrumented_FPS=None,scope_not_complete_video=True,
         runtime_thresholds_pass=all(t['total_native_Stage2_ms']['p95']<=10 and t['full_two_camera_scene_FPS']>=25 for t in trials),
+        image_IO_decode_resize_ms=None,image_IO_decode_resize_scope='included in Stage1 aggregate; individual PIL/decode/resize not separately instrumented',
         concurrent_GPU_processes=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader'],text=True),
         hardware=torch.cuda.get_device_name(),pilot_runtime_is_not_formal_tracking_GO=True)
     save(out/'RESULT.json',result);save(REPORTS/'LATENCY_RESULTS.json',result)
