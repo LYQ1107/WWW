@@ -13,9 +13,10 @@ from gtr.modeling.jev_native_state import fingerprint
 from run_jev_phase10_closed_loop import raw_predictions,metrics
 
 
-def owner_propagation(trace):
+def owner_propagation(trace,initial_owners=None):
     """Actual committed errors persist after mixtures; gaps remain censored."""
-    owners={};episodes=[];active={};counts=collections.Counter()
+    owners=dict(initial_owners or {});episodes=[];active={};counts=collections.Counter()
+    counts['bootstrap_known_owner_seeds']=len(owners)
     for item in trace:
         frame,view=item['key'];gt=item['GT_OFFLINE_ONLY'];identity=item['identity']
         if gt is None:counts['unassessed_current_GT']+=1;continue
@@ -34,7 +35,7 @@ def owner_propagation(trace):
             del active[key]
     episodes.extend(dict(item,right_censored=True,end_reason='video end') for item in active.values())
     return dict(counts=dict(counts),episodes=episodes,
-        semantics='immutable first-observed GT owner for each native ID; continued errors counted after gallery mixtures; camera/frame observation gaps censored',
+        semantics='immutable first-observed GT owner for each native ID, including actual largest-camera bootstrap owners; continued errors counted after gallery mixtures; camera/frame observation gaps censored',
         scope='offline observed identity-confusion durations on actual committed IDs; IoU>=0.5 matching coverage disclosed; not interchangeable with CLEAR IDSW or global IDF1')
 
 
@@ -101,10 +102,12 @@ def main(video,arm='F_full',seed=20261009,version=1,phase='pilot',live=False):
         if live and bad:actual_duplicate_masks[frame,view]=sum(gt in bad for gt in targets if gt is not None)
         return [None if gt in bad else gt for gt in targets]
     risk.labels.current=current_labels
-    journal=gzip.open(out/'QUESTIONS.jsonl.gz','wt');commits=gzip.open(out/'COMMITS.jsonl.gz','wt')
+    journal=gzip.open(out/'QUESTIONS.jsonl.gz','wt');commits=gzip.open(out/'COMMITS.jsonl.gz','wt');bootstrap_owners=[None]
 
     def before(**d):
         risk.before(**d);c=d['context']
+        if bootstrap_owners[0] is None and risk.booted:
+            bootstrap_owners[0]={identity:next(iter(votes)) for identity,votes in risk.votes.items() if len(votes)==1}
         journal.write(json.dumps(dict(key=[video,c['frame'],c['view']],task=d['task'],refs=d['refs'],
             rows=c.get('rows',list(range(len(d['logits'])))),logits=d['logits'].cpu().tolist(),legal=d['batch']['legal'][0].cpu().tolist()))+'\n')
 
@@ -120,7 +123,7 @@ def main(video,arm='F_full',seed=20261009,version=1,phase='pilot',live=False):
     finally:journal.close();commits.close()
     assert risk.counts['payloads']==2*frames-1
     predictions=raw_predictions(raw,risk.labels.images);save(out/'RAW_PREDICTIONS.json',predictions)
-    identity=owner_propagation(risk.trace);save(out/'ERROR_PROPAGATION.json',identity)
+    identity=owner_propagation(risk.trace,bootstrap_owners[0]);save(out/'ERROR_PROPAGATION.json',identity)
     strict,evaluation=metrics(out/'RAW_PREDICTIONS.json',[video],out/'strict_eval')
     save(out/'RESULT.json',dict(status='COMPLETE',binding=source,video=video,frames=frames,arm=arm,seed=seed,version=version,phase=phase,
         live_images=live,trained=training,checkpoint=checkpoint,raw_predictions=ref(out/'RAW_PREDICTIONS.json'),
