@@ -1,0 +1,113 @@
+{
+  "alias": "DISABLED_NO_GT_RENUMBERING",
+  "arms": {
+    "A_original": {
+      "candidate_permutation": "PASS",
+      "parameters": 4231173
+    },
+    "B_continuity": {
+      "candidate_permutation": "PASS",
+      "parameters": 4231173
+    },
+    "C_commitment": {
+      "candidate_permutation": "PASS",
+      "parameters": 5754118
+    },
+    "D_fixed": {
+      "candidate_permutation": "PASS",
+      "parameters": 5923209
+    },
+    "E_set": {
+      "candidate_permutation": "PASS",
+      "parameters": 5791625
+    },
+    "F_full": {
+      "candidate_permutation": "PASS",
+      "parameters": 5923209
+    }
+  },
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": null,
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": null,
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+      "torch": "2.0.0+cu118",
+      "torch_CUDA": "11.8"
+    },
+    "evaluator": "executed tensor/state contracts on real Detectron2 Instances",
+    "heldout_20_21_22": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+    "scope": "structural unit contracts; full native restore parity still required",
+    "seed": 20261009,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/__init__.py": "4351cd60c528123b98699cbfa3efd1814428d11d917fb4c68dd8724b3ec2ff07",
+      "gtr/modeling/jev_phase15/candidate_reliability.py": "62f577b38782b1b79ee8cb056e8b59953caf9c7c2240f3db02e0f43a7ef4cb82",
+      "gtr/modeling/jev_phase15/commitment_option_reader.py": "491d5c8700daeaf8b0f2caf41fb6cd0c15d62ab6d24771d6d22c9178a4e0f7bf",
+      "gtr/modeling/jev_phase15/commitment_question.py": "89ee2b8c93ce304f1124f9a56e24b74c05f5c191652816359f5dead813fb4502",
+      "gtr/modeling/jev_phase15/commitment_state.py": "89d1ad35e60331f20e569305a90f27c18e6c29a96366fceb8f11c1d30592ff91",
+      "gtr/modeling/jev_phase15/identity_fragment_controller.py": "b8976d889d252df2bcda2c5b365004b099204ddd7a57657c5ac86aad8ac2bb96",
+      "gtr/modeling/jev_phase15/joint_action_ranker.py": "1e27fcfab7a85d47fdc1289f1133b6a45af727e3b5d5ee1606fd7418a42fa997",
+      "gtr/modeling/jev_phase15/model.py": "2c23acf9994b6d73b45158aa00386d8f4bb3b2774097c0cf0b7a2226e84aaf87",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase15_audit_finalize.py": "f21f4bf7d188dea5c6050aea6b8ef93d6500aa6e42deed34fe72f2ffc83a87ae",
+      "reproduction_tools/jev_phase15_causal_commitment.py": "d34d0b69cdc244c8970527fa52913c5203747c4b6fab1f5ef37d118a55e72513",
+      "reproduction_tools/jev_phase15_causal_finalize.py": "40cf0e62e1848cc1e26cf416af935c6f5ae3b1d569e6668ad3806f7ecc0ff9f4",
+      "reproduction_tools/jev_phase15_causal_metrics.py": "40368add9c2830751202b0f5a41cc7fb435c3c2081535d000c8f10d997946c72",
+      "reproduction_tools/jev_phase15_causal_queue.py": "e264cd5696695ed28dd906c86443ebf9de6fa67125a28e6558ce53f6b38a7eb4",
+      "reproduction_tools/jev_phase15_collect_dataset.py": "2514038c01c69a0251b51b61f0ba12c504fbe2fc40445bd37c052fb5efb52c39",
+      "reproduction_tools/jev_phase15_collect_train.py": "456eefaf8b4181ff16f585a002850e0af35e26feaf01e8d338b50ddda7393249",
+      "reproduction_tools/jev_phase15_commitment_labels.py": "92b9c1243dbba898383a7a035db6177131ed41094b8166f41799158028944488",
+      "reproduction_tools/jev_phase15_common.py": "7d6d5a9e22eb2bf547f66a123f9ac3fec081fcd99f043150182d6742756167f2",
+      "reproduction_tools/jev_phase15_dataset_queue.py": "d392762ea5ab97ce392eef6ced844b576dbcb82bc21fbba5bf5b770523777a43",
+      "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+      "reproduction_tools/jev_phase15_label_tests.py": "5711276baf21f5a18678a5f52e8becc86168ea9519d6b2bec3c6fc2206985e0c",
+      "reproduction_tools/jev_phase15_losses.py": "6ce166bdab04d20654fa0b3afb8e3761e3836279738b4487321f6fa7c999a9ad",
+      "reproduction_tools/jev_phase15_native_replay.py": "b3dc48639293e8e15cef0175b3cf19d2d3757c27d7cb3da4c0ef5da3e7fd3d0c",
+      "reproduction_tools/jev_phase15_queue.py": "ceaf14a4403b4c69061642f0c466a3efb6a46443c96adf3f4e85a83f35125984",
+      "reproduction_tools/jev_phase15_state_tests.py": "f5d98693580d1bd6b6e84ffac53ca5410933e38b46e41b20390165da2e7940a2",
+      "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418"
+    },
+    "source_commit": "d05ba4bffb827070d20a6c15394b328991aa4aa3",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+  },
+  "cached_base_inputs_exact": true,
+  "cross_camera_ID_reuse": true,
+  "deterministic_state_restore": true,
+  "dynamic_candidate_specific_values": true,
+  "native_full_loop": "PENDING",
+  "no_GT_or_future_inputs": true,
+  "same_camera_unique": true,
+  "snapshot_deepcopy": true,
+  "stale_recycling": true,
+  "status": "PASS"
+}
