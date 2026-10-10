@@ -62,7 +62,7 @@ def main():
         P0_original_aggregation_path_repair=ref(REPORTS/'P0_REFERENCE_PATH_REPAIR.json'),
         P1_initial_slow_observer_restart=ref(REPORTS/'P1_ENGINEERING_RESTART.json'),
         P1_exact_old_partial_equivalence=ref(REPORTS/'P1_ENGINEERING_EQUIVALENCE.json'),
-        P2_contract_attempts=failures,final_native_parity=ref(REPORTS/'NATIVE_MEMORY_PARITY.json'),
+        P2_contract_attempts=failures,finalization_attempts=[ref(p) for p in sorted(OUT.glob('FINALIZATION_ENGINEERING_ATTEMPT*.json'))],final_native_parity=ref(REPORTS/'NATIVE_MEMORY_PARITY.json'),
         all_original_logs_retained=True))
     conclusion=dict(status='RESEARCH_COMPLETED_NO_GO',execution_status='COMPLETE_WITH_PREDECLARED_CONDITIONAL_NOT_RUN',
         binding=binding(checkpoints=[ck],inputs=[ref(REPORTS/'ONLINE_VALIDATION.json'),ref(REPORTS/'LATENCY_RESULTS.json')]+sources,
@@ -78,7 +78,7 @@ def main():
         reserved_correction_clusters=labels['necessary_correction_reserved_clusters'],
         major_research_hypotheses_used=2,V3_not_started_due_to_failed_prerequisites=True,
         new_weight_checkpoint=None,prior_V_to_XV_results_and_weights_preserved=True,SEALED20_21_22='UNREAD',official_TEST='UNREAD',Full24='NOT_RUN',
-        new_metrics_for_unrun_stages_are_null=True,scientific_blocker=ref(REPORTS/'SCIENTIFIC_BLOCKERS.json'))
+        new_metrics_for_unrun_stages_are_null=True,scientific_blocker=None)
     blockers=dict(status='UNQUALIFIED_FOR_LEARNED_RECOVERY',binding=src,
         observed_information='Raw target-person content is widespread but Global ID ownership often contaminated; target content is not ownership certification',
         P1_discovery='Original support recall99.389% saturates the >=2pp gate; local readers do not prove additional recoverable support. Wrong activation reduction in shadow is not native safe benefit.',
@@ -91,6 +91,7 @@ def main():
         ordinary_association='A simpler calibrated association/admission baseline remains scientifically justified; no claim that dynamic JEV is superior.',
         no_unsupported_third_training_version=True)
     save(REPORTS/'SCIENTIFIC_BLOCKERS.json',blockers)
+    conclusion['scientific_blocker']=ref(REPORTS/'SCIENTIFIC_BLOCKERS.json')
     save(REPORTS/'FINAL_GO_NO_GO.json',conclusion)
     required=['FINAL_GOAL','PREREGISTRATION','EVIDENCE_AVAILABILITY_AUDIT','RAW_GALLERY_RECOVERABILITY','CANDIDATE_FAILURE_TAXONOMY','MULTI_PROTOTYPE_RESULTS','SAFE_MEMORY_ADMISSION','NATIVE_MEMORY_PARITY','MATCH_VS_MEMORY_CAUSAL_FACTORIAL','LABEL_ELIGIBILITY','TINY_RESULTS','PILOT_RESULTS','FORMAL_TRAINING_RESULTS','FAIR_BASELINE_RESULTS','ONLINE_VALIDATION','OFFICIAL_MATLAB_RESULTS','LATENCY_RESULTS','FINAL_GO_NO_GO']
     for name in required:assert (REPORTS/(name+'.json')).is_file(),name
