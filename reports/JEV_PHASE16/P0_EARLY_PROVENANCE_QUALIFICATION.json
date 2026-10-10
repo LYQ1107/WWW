@@ -1,0 +1,106 @@
+{
+  "all6_original_XV_branch_IDs_exact": true,
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "actual_recovery": {
+      "Bank_only_after_MATCH_DEFER": true,
+      "DEFER_logit": 0.75,
+      "START_NEW": "native allocation after unavailable/rejected Bank candidates",
+      "bank_size": 10,
+      "cosine_slots": [
+        0,
+        1,
+        2
+      ],
+      "react_learned": false,
+      "test_len": 40,
+      "with_bank": true
+    },
+    "checkpoints": [
+      {
+        "SHA256": "7f74f099e9cb365528af3b05aab5d9e87d96eb2063f94efd28ed28cc0864a57b",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v3/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+      }
+    ],
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": {
+      "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+      "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+    },
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "1",
+      "GPU": "Tesla V100-DGXS-32GB",
+      "cudnn": 8700,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+      "torch": "2.0.0+cu118",
+      "torch_CUDA": "11.8"
+    },
+    "evaluator": "all actual raw Gallery/Bank observer, frozen solver",
+    "heldout_20_21_22": "SEALED",
+    "inputs": [
+      {
+        "SHA256": "0816bb0d6aa79ba73d99ec6fcc2c2a83c136551da325fe810d7354f6d081476e",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v3/F_full/seed20261009/pilot/RESULT.json"
+      }
+    ],
+    "native_state": null,
+    "official_TEST": false,
+    "preregistration_SHA256": "53a8361e713ba8d02155656636504d44ee12e4417de97f520946549d0e906939",
+    "scope": "windows v3 actual mutated native states; annotations never enter decisions",
+    "seed": 20261009,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/__init__.py": "4351cd60c528123b98699cbfa3efd1814428d11d917fb4c68dd8724b3ec2ff07",
+      "gtr/modeling/jev_phase15/candidate_reliability.py": "62f577b38782b1b79ee8cb056e8b59953caf9c7c2240f3db02e0f43a7ef4cb82",
+      "gtr/modeling/jev_phase15/commitment_option_reader.py": "a7d10acf0ff8ab99c75d84f74536327d192143b14ad759a68f60bc8add7154ac",
+      "gtr/modeling/jev_phase15/commitment_question.py": "cb88861bd86c212fc0daf5fc7a65aefc6f64ce15d0de7e397b85473fdcd042b4",
+      "gtr/modeling/jev_phase15/commitment_state.py": "89d1ad35e60331f20e569305a90f27c18e6c29a96366fceb8f11c1d30592ff91",
+      "gtr/modeling/jev_phase15/identity_fragment_controller.py": "b8976d889d252df2bcda2c5b365004b099204ddd7a57657c5ac86aad8ac2bb96",
+      "gtr/modeling/jev_phase15/joint_action_ranker.py": "1e27fcfab7a85d47fdc1289f1133b6a45af727e3b5d5ee1606fd7418a42fa997",
+      "gtr/modeling/jev_phase15/model.py": "f77d3c78b74ede0ff2d05409bbe3287d6d6044b5199de5bc8d4dd406dbc781af",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_phase16/__init__.py": "fd73454f85489bf8dac315c761403bc7edb589e07410c17e1d45819982af927d",
+      "gtr/modeling/jev_phase16/evidence_ledger.py": "17a81da611273524a3db213e73bc91dabc8c741d4091c53f96c4ab61f1294433",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase16_candidate_audit.py": "db355d2460d531157a9c6f18dbd817c076cf77f0c8a50a7dd17d257e518ae16e",
+      "reproduction_tools/jev_phase16_common.py": "fad43f1b10603367b2f4913d9c0f7c03160693572a22278bc87956aa77ada42c",
+      "reproduction_tools/jev_phase16_freeze.py": "9f30445d42bb8a532eddb2e8f6ba085df64897a3fe7963999a3308cf6711d8a9",
+      "reproduction_tools/jev_phase16_ledger_contract.py": "6b767b0d4efb65c73d96c31d551981e598642f5e1ee44585e1f95f36692d8247",
+      "reproduction_tools/jev_phase16_queue.py": "41742b8b5f1a5b37ec094b14eeee37f78ae3de50a5b788fdf7a5bae4bc49d9e3"
+    },
+    "source_commit": "2aa772371fcfc41da84f9d9d594517cb8e7c1e64",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase16"
+  },
+  "no_new_training": true,
+  "schema_extension": "Separate actual frozen NN logits, four-token availability and the actual three-token cosine REACT path. Complete audit uses P0_r2; six early H32 replays retained as engineering qualification, not additional independent clusters.",
+  "scientific_gates_and_actions_unchanged": true,
+  "source": {
+    "SHA256": "4fcfa527b1ecd51c29535e8a6304abdd267098cbd7158b42c2ca4a2979c25946",
+    "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P0/windows/v3/video12/RESULT.json"
+  },
+  "status": "PASS_ENGINEERING_QUALIFICATION_ONLY"
+}

@@ -62,14 +62,14 @@ def run_queue(source,jobs,name,max_active=6):
     return result
 
 def main():
-    protocol=read(REPORTS/'PREREGISTRATION.json');source=pin('source_P0_v1');jobs=[]
+    protocol=read(REPORTS/'PREREGISTRATION.json');source=pin('source_P0_r2');jobs=[]
     for item in protocol['P0']['full_replays']:
         v,p=item['video'],item['policy'];jobs.append(dict(key=f'full_{p}_video{v}',script='jev_phase16_candidate_audit.py',
-            args=['--video',str(v),'--policy',p,'--scope','full'],result=str(OUT/'P0/full'/p/f'video{v:02d}/RESULT.json')))
+            args=['--video',str(v),'--policy',p,'--scope','full'],result=str(OUT/'P0_r2/full'/p/f'video{v:02d}/RESULT.json')))
     for p in ['v1','v2','v3']:
         for v in TRAIN:
             jobs.append(dict(key=f'windows_{p}_video{v}',script='jev_phase16_candidate_audit.py',
-                args=['--video',str(v),'--policy',p,'--scope','windows'],result=str(OUT/'P0/windows'/p/f'video{v:02d}/RESULT.json')))
-    r=run_queue(source,jobs,'P0_queue_v1');assert not r['failed'],r['failed']
+                args=['--video',str(v),'--policy',p,'--scope','windows'],result=str(OUT/'P0_r2/windows'/p/f'video{v:02d}/RESULT.json')))
+    r=run_queue(source,jobs,'P0_queue_r2');assert not r['failed'],r['failed']
 
 if __name__=='__main__':main()

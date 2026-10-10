@@ -55,7 +55,7 @@ class CandidateAudit:
         dv=d['batch']['detection_visual'][0];q=len(rows);allrefs=sorted(self.ledger.records)
         if not q:return
         gt_tensor=torch.tensor([-1 if gt is None else gt for gt in targets],device=dv.device)
-        raw_scores={};summary_scores={};evidence={};pure_correct=[[] for _ in rows]
+        raw_scores={};summary_scores={};recovery_scores={};evidence={};pure_correct=[[] for _ in rows]
         meta=self.executor.memory.meta;galleries=self.native_context['galleries']
         bank=set(old_reids.old_reids[0].track_ids.tolist()) if old_reids.old_reids else set()
         for identity in allrefs:
@@ -69,6 +69,8 @@ class CandidateAudit:
             vals=self.executor.memory.history_values(identity,galleries[identity],meta[identity],key[1])
             present=[v for v in vals if v is not None]
             summary_scores[identity]=(dv@torch.stack(present).T).max(-1).values.cpu().tolist()
+            recovery_present=[v for v in vals[:3] if v is not None]
+            recovery_scores[identity]=(dv@torch.stack(recovery_present).T).max(-1).values.cpu().tolist()
             pure=sum(votes.values())>=3 and sum(votes.values())/n>=.8 and len(votes)==1
             evidence[identity]=dict(votes=votes,unknown=n-sum(votes.values()),pure=pure,owner=self.owner.get(identity))
             if pure:
@@ -131,16 +133,19 @@ class CandidateAudit:
             cluster=(self.video,target,key[1],key[0]//64)
             if target is not None and owner_hidden:
                 self.clusters['owner_anchored_summary_loss'].add(cluster)
+                if highrisk:self.clusters['high_risk_owner_anchored_summary_loss'].add(cluster)
             if highrisk and target is not None:self.clusters['high_risk_known'].add(cluster)
             record=dict(key=[self.video,*key],row=row,task=kind,current_GT_OFFLINE_ONLY=target,
                 selected_ID=chosen,selected_certified_correct=selected_correct,high_risk=highrisk,
                 actual_candidates=refs,legal_pure_correct_IDs=supported,raw_target_content_IDs=content,
+                actual_frozen_logits=d['logits'][ri].detach().cpu().tolist(),
                 qualified_raw_target_IDs=qualified,anchored_correct_owner_IDs=owners,
                 mixed_target_content_IDs=mixed,summary_hidden_IDs=hidden,owner_anchored_summary_hidden_IDs=owner_hidden,
                 pending_native_Bank_IDs=pending_bank,ineligible_pure_IDs=legal_omitted,
                 raw_best_target_cosine=raw_max,summary_best_target_ID_cosine=summary_max,
                 raw_and_summary_scores={str(i):dict(raw_target=raw_scores[i][ri][0],
                     raw_foreign=raw_scores[i][ri][1],raw_max=raw_scores[i][ri][2],four_summary=summary_scores[i][ri],
+                    native_REACT_three_summary=recovery_scores[i][ri],
                     owner_GT_OFFLINE_ONLY=evidence[i]['owner'],target_count=evidence[i]['votes'].get(target,0),
                     known_GT_count=len(evidence[i]['votes'])) for i in allrefs},
                 raw_unknown_count=raw_unknown_total,flags=flags,primary=primary,
@@ -172,13 +177,13 @@ class CandidateAudit:
             overlap_is_not_independent=True,GT_used_only_after_native_scores=True,
             raw_target_content_does_not_certify_Global_ID=True)
 
-def main(video,policy_name='v3',scope='full'):
+def main(video,policy_name='v3',scope='full',namespace='P0_r2'):
     protect();storage_guard();assert video in TRAIN+DEV and (video in TRAIN or policy_name=='v3' and scope=='full')
     torch.set_num_threads(1);torch.manual_seed(20261009)
     torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True
     policy,checkpoint,training=load_policy(policy_name);values,frames,reader=cache_inputs(video)
     model=build_tracker(video,policy,react_learned=False);executor=attach(model)
-    out=OUT/'P0'/scope/policy_name/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True)
+    assert namespace in ['P0_r2','P0'];out=OUT/namespace/scope/policy_name/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True)
     assert not (out/'RESULT.json').exists()
     source=binding(checkpoints=[checkpoint],inputs=[training],evaluator='all actual raw Gallery/Bank observer, frozen solver',
         scope=f'{scope} {policy_name} actual mutated native states; annotations never enter decisions')
@@ -236,5 +241,5 @@ def main(video,policy_name='v3',scope='full'):
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True)
     p.add_argument('--policy',choices=['original','v1','v2','v3'],default='v3')
-    p.add_argument('--scope',choices=['full','windows'],default='full');a=p.parse_args()
-    main(a.video,a.policy,a.scope)
+    p.add_argument('--scope',choices=['full','windows'],default='full');p.add_argument('--namespace',default='P0_r2')
+    a=p.parse_args();main(a.video,a.policy,a.scope,a.namespace)
