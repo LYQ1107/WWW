@@ -66,7 +66,7 @@ class SafeMatchingMemory(CommitmentMemory):
                 self.admission.accepted[int(ref)].remove(j)
                 r['status'] = 'QUARANTINED_BACKDATE'
                 continue
-            self.trusted.update(ref, gallery.reid_features[j,:1024], r['box'], (1,1), r['frame'], r['view'])
+            self.trusted.update(ref, gallery.reid_features[j,:1024], r['box'].to(gallery.reid_features.device), (1,1), r['frame'], r['view'])
 
     def build(self, current, refs, galleries, frame, view, active, **kwargs):
         self.raw_galleries = galleries
