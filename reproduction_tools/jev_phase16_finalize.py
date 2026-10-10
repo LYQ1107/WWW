@@ -93,6 +93,8 @@ def main():
     required=['FINAL_GOAL','PREREGISTRATION','EVIDENCE_AVAILABILITY_AUDIT','RAW_GALLERY_RECOVERABILITY','CANDIDATE_FAILURE_TAXONOMY','MULTI_PROTOTYPE_RESULTS','SAFE_MEMORY_ADMISSION','NATIVE_MEMORY_PARITY','MATCH_VS_MEMORY_CAUSAL_FACTORIAL','LABEL_ELIGIBILITY','TINY_RESULTS','PILOT_RESULTS','FORMAL_TRAINING_RESULTS','FAIR_BASELINE_RESULTS','ONLINE_VALIDATION','OFFICIAL_MATLAB_RESULTS','LATENCY_RESULTS','FINAL_GO_NO_GO']
     for name in required:assert (REPORTS/(name+'.json')).is_file(),name
     trials=runtime['trials'];metrics=pooled['pooled_raw_TrackEval'];s=p1['strict_TRAIN']
+    sums=factorial['strict_window_sums'];factorial_rows='\n'.join(
+        f"|{a}|{sums[a+'_H32']['future_CLEAR_IDSW']}|{sums[a+'_H32']['new_cross_GT_gallery_mix']}|{sums[a+'_H32']['wrong_owner_observations']}|{sums[a+'_H32']['UNKNOWN_owner_observations']}|" for a in 'ABCD')
     report=f'''# WWW / JEV Phase XVI 最终研究报告
 
 执行完成；科研结论 **NO_GO**。完成 P0/P1/P2/P3、真实图像完整 DEV、官方 MATLAB 和实际延迟。没有合格依据启动新读取器、Tiny/Pilot、三种子20k或 matched4k；未运行指标为 null，既有 XV 失败与权重保持原样。
@@ -113,9 +115,19 @@ P1 七个视频、五种四槽读取；冻结同一个 XV V3 seed20261009 LAST15
 
 预选记忆规则门槛：**{safety['status']}**。严格有害prefix/H检查 {safety['strict_worsened_prefix_H_checks']} 个，安全收益独立cluster {safety['independent_safe_benefit_clusters']} 个（要求≥8）。所有有害路径、身份错误 episode 和交互效应保留在 `MATCH_VS_MEMORY_CAUSAL_FACTORIAL.json`。窗口求和存在重叠，不能当全视频或独立样本统计。
 
+下面为18个严格前缀的H32描述性窗口求和，**窗口重叠，不是独立事件数或完整视频指标**。
+
+|组|Future CLEAR IDSW|新增混合|错误owner观测|UNKNOWN owner观测|
+|---|---:|---:|---:|---:|
+{factorial_rows}
+
+E的首次决策干预在这组前缀仅改变一条严格目标提交；其IDSW小幅变化没有产生合格的必要身份纠错标签。记忆组的混合和IDSW恶化，说明隔离匹配证据不能自动保证提交身份正确。最早反例H32短期改善仍在H64增加混合3次和false_split_birth1次，按预定规则否决。没有据此追改参数或挑选序列。
+
 认证owner为过去首次单GT、至少三条、已知覆盖≥80%，建立后不因混合而取消。错误转UNKNOWN不算纠错。传播只统计实际检测到的错误帧，观测断点与horizon/video end删失；额外按每个GT/camera比较最长错误episode，避免总量掩盖个别人恶化。
 
 标签资格：安全恢复 {labels['safe_recovery_independent_clusters']} cluster，不安全恢复 {labels['unsafe_recovery_independent_clusters']}，reserved必要纠错 {labels['necessary_correction_reserved_clusters']}，结论 **{labels['status']}**。不制造缺失恢复动作标签，不启动第三个学习版本。
+
+这些恢复标签计数专指24个冻结前缀的目标首次实际动作与安全后果。大量原有正常关联监督和记忆规则的有害后果分别保留；后者不能冒充新JEV恢复动作标签。这是本轮有界资格审计，不是对所有可能TRAIN动作作穷尽搜索。
 
 ## 完整实际图像与官方指标
 
