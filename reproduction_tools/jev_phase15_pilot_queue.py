@@ -8,12 +8,12 @@ def main(version=1):
     protect();assert read(REPORTS/'COMMITMENT_LABEL_AUDIT.json')['status']=='PASS'
     assert read(REPORTS/'NATIVE_STATE_CONTRACT.json')['status']=='PASS_FOR_IMPLEMENTED_NO_ALIAS_ADAPTER'
     assert read(REPORTS/'COMMITMENT_FEASIBILITY_GO_NO_GO.json')['mechanism_GO']
-    source=pin(f'source_pilot_v{version}')
+    source=pin(f'source_full_payload_pilot_v{version}')
     for phase in ['tiny','pilot']:
-        path=OUT/f'training_v{version}'/'F_full/seed20261009'/phase/'RESULT.json'
+        path=OUT/f'training_full_payload_v{version}'/'F_full/seed20261009'/phase/'RESULT.json'
         jobs=[dict(key=f'F_full_{phase}_v{version}',script='jev_phase15_train.py',
              args=['--arm','F_full','--phase',phase,'--version',str(version)],result=str(path))]
-        result=run_queue(source,jobs,f'{phase}_queue_v{version}',max_active=1)
+        result=run_queue(source,jobs,f'{phase}_full_payload_queue_v{version}',max_active=1)
         assert not result['failed'],result['failed']
         measurement=read(path);assert measurement['actual_updates']==(128 if phase=='tiny' else 1500)
         # Missing correction audit support is preserved as a failed scientific

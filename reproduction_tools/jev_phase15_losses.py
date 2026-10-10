@@ -2,6 +2,31 @@
 import torch
 from torch.nn import functional as F
 from jev_phase14_losses import safe_joint_loss, objective as old_objective
+from gtr.modeling.jev_stage2.assignment import lawful_choice
+
+
+def whole_payload_joint_loss(logits,x,y):
+    terms=[]
+    for b in range(len(logits)):
+        rows=torch.where(x['question_mask'][b])[0]
+        if not len(rows):continue
+        z=logits[b,rows];legal=x['legal'][b,rows];k=legal.shape[-1]
+        supervised=y['supervised'][b,rows]
+        known=y['known_options'][b,rows]&supervised[:,None]
+        positive=y['positive'][b,rows]
+        admissible=positive|~known
+        full_legal=torch.cat([legal,torch.ones(len(rows),1,dtype=torch.bool,device=z.device)],1)
+        admissible &= full_legal
+        costs=2*(known&~positive).float()
+        oracle=z.clone();oracle[:,-1]=oracle[:,-1].masked_fill(~admissible[:,-1],-1e9)
+        first=lawful_choice(oracle,legal&admissible[:,:k])
+        if any(c<0 and not admissible[row,-1] for row,c in enumerate(first)):continue
+        second=lawful_choice(z+costs,legal)
+        idx=torch.arange(len(rows),device=z.device)
+        a=torch.tensor([k if c<0 else c for c in first],device=z.device)
+        c=torch.tensor([k if choice<0 else choice for choice in second],device=z.device)
+        terms.append(torch.relu((z[idx,c]+costs[idx,c]).sum()-z[idx,a].sum())/len(rows))
+    return torch.stack(terms).mean() if terms else logits.sum()*0
 
 
 def mass_loss(logits, positive, known, valid):
@@ -30,7 +55,7 @@ def objective(details, x, y, arm):
     target = dict(y)
     if arm in ['C_commitment', 'D_fixed', 'E_set', 'F_full']:
         target['positive'] = torch.where(valid[..., None], y['commit_positive'], y['positive'])
-    assignment = safe_joint_loss(details['logits'], x, target)
+    assignment = whole_payload_joint_loss(details['logits'], x, target)
     risk = details['logits'].sum()*0
     if 'purity_logits' in details:
         risk = binary(details['purity_logits'], y['trust'], x['legal']) + binary(

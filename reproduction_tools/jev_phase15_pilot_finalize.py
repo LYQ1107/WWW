@@ -5,8 +5,8 @@ from jev_phase15_common import *
 def main(version=1):
     protect();source=binding(seed=20261009,evaluator='frozen TRAIN assessment plus real native futures',
         scope='bounded research pilot; never a three-seed formal tracking result')
-    tiny=OUT/f'training_v{version}'/'F_full/seed20261009/tiny/RESULT.json'
-    pilot=OUT/f'training_v{version}'/'F_full/seed20261009/pilot/RESULT.json'
+    tiny=OUT/f'training_full_payload_v{version}'/'F_full/seed20261009/tiny/RESULT.json'
+    pilot=OUT/f'training_full_payload_v{version}'/'F_full/seed20261009/pilot/RESULT.json'
     prior=read(REPORTS/'TINY_RESULTS.json') if (REPORTS/'TINY_RESULTS.json').exists() else {'versions':[]}
     if tiny.exists():
         result=read(tiny);assert result['status']=='COMPLETE'

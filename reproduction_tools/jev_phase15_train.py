@@ -118,7 +118,7 @@ def main(arm, phase, seed=20261009, version=1):
         assert read(REPORTS/'PILOT_RESULTS.json')['full_pilot_qualified'] is True
     if phase!='tiny':assert read(REPORTS/'COMMITMENT_FEASIBILITY_GO_NO_GO.json')['mechanism_GO'] is True
     steps=protocol['Tiny_updates' if phase=='tiny' else 'Pilot_updates' if phase=='pilot' else 'formal_updates']
-    out=OUT/f'training_v{version}'/arm/f'seed{seed}'/phase;out.mkdir(parents=True,exist_ok=True)
+    out=OUT/f'training_full_payload_v{version}'/arm/f'seed{seed}'/phase;out.mkdir(parents=True,exist_ok=True)
     assert not (out/'RESULT.json').exists()
     torch.set_num_threads(1);torch.manual_seed(seed);np.random.seed(seed);rng=random.Random(seed)
     train,audit,manifests=load_records();assert train and audit

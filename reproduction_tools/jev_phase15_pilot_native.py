@@ -29,7 +29,7 @@ def converted_prefix(prefix):
 
 def main(video,version=1,arm='F_full',phase='pilot'):
     protect();assert video in TRAIN
-    training=OUT/f'training_v{version}'/arm/'seed20261009'/phase/'RESULT.json'
+    training=OUT/f'training_full_payload_v{version}'/arm/'seed20261009'/phase/'RESULT.json'
     result=read(training);assert result['status']=='COMPLETE'
     checkpoint=result['checkpoint'];assert sha(checkpoint['path'])==checkpoint['SHA256']
     torch.set_num_threads(1);torch.manual_seed(20261009)

@@ -39,7 +39,7 @@ def owner_propagation(trace):
 
 
 def load_policy(arm,seed,version,phase):
-    path=OUT/f'training_v{version}'/arm/f'seed{seed}'/phase/'RESULT.json'
+    path=OUT/f'training_full_payload_v{version}'/arm/f'seed{seed}'/phase/'RESULT.json'
     result=read(path);assert result['status']=='COMPLETE'
     checkpoint=result['checkpoint'];assert sha(checkpoint['path'])==checkpoint['SHA256']
     policy=PersistentIdentityPolicy(arm).cuda().eval()
