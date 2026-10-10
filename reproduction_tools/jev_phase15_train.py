@@ -36,7 +36,7 @@ def load_records(version=2,label_version=1,onpolicy_pilot=False):
     if onpolicy_pilot:
         records=[dict(r,corpus_actor='frozen_multi') for r in records]
         for video in TRAIN:
-            path=OUT/'onpolicy_pilot_dataset_v3'/f'video{video:02d}'/'RESULT.json';result=read(path);assert result['status']=='PASS'
+            path=OUT/'onpolicy_pilot_dataset_v3_r2'/f'video{video:02d}'/'RESULT.json';result=read(path);assert result['status']=='PASS'
             descriptor=result['DATASET'];assert sha(descriptor['path'])==descriptor['SHA256']
             data=load_dense(descriptor['path'])
             for r in data['records']:

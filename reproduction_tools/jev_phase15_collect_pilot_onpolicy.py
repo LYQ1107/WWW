@@ -38,7 +38,7 @@ def main(video):
         if bad:
             targets=risk.labels.current(*key);duplicate_labels+=sum(gt in bad for gt in targets if gt is not None)
             risk.labels.aligned[key]=[None if gt in bad else gt for gt in targets]
-    out=OUT/'onpolicy_pilot_dataset_v3'/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
+    out=OUT/'onpolicy_pilot_dataset_v3_r2'/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
     source=binding(seed=20261009,checkpoints=[checkpoint],dataset=ref(ANNOTATIONS),evaluator='past-certified labels on frozen v2 actual native mutated histories',
         scope='one TRAIN-only diagnostic pilot corpus collection; no gradient, no ideal/GT native state')
     source['perception_input_provenance']=perception_provenance(video)
@@ -47,6 +47,10 @@ def main(video):
     def before_native(**d):
         if (d['frame'],d['view'])==(32,0):
             prefix[0]=out/'NATIVE_PREFIX_32_0.pth.xz';fast_dense(prefix[0],phase13_prefix(model,d))
+        if (d['frame'],d['view'])==(96,0):
+            # The previous observer ran before the adapter's posterior write.
+            # This boundary sees the complete actual post-commit state of95/1.
+            memory[0]=fingerprint(executor.memory.state_dict())
     def before(**d):
         risk.before(**d)
         if d['task']!=0 or not len(d['logits']):return
@@ -66,7 +70,6 @@ def main(video):
         assert len(ids)==len(targets)
         for identity,gt in zip(ids,targets):recent[identity,key[1]].append((key[0],gt))
         if key in expected:expected[key]['ids']=ids
-        if key==(95,1):memory[0]=fingerprint(executor.memory.state_dict())
         if time.monotonic()-last[0]>=15:
             save(out/'PROGRESS.json',dict(status='COLLECTING_ACTUAL_V2_NATIVE',key=(video,*key),frames=frames,records=len(records),counts=dict(counts),seconds=time.monotonic()-start));journal.flush();last[0]=time.monotonic()
         risk.trace.clear()
