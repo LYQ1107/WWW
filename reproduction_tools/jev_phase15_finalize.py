@@ -12,6 +12,21 @@ def document(name,body):
 
 def main(version=3):
     protect();assert version==3
+    originals=OUT/'finalization_inputs';originals.mkdir(exist_ok=True)
+    frozen_refs={}
+    for p in REPORTS.glob('*.json'):
+        target=originals/p.name
+        if not target.exists():shutil.copy2(p,target)
+        frozen_refs[(str(p),sha(target))]=ref(target)
+    def historical(value):
+        if isinstance(value,dict):
+            result={k:historical(v) for k,v in value.items()}
+            key=(value.get('path'),value.get('SHA256'))
+            if key in frozen_refs:
+                result.update(frozen_refs[key],original_report_path=value['path'])
+            return result
+        if isinstance(value,list):return [historical(v) for v in value]
+        return value
     for v in [1,2,3]:pilot_finalize(v)
     pilots=read(REPORTS/'PILOT_RESULTS.json');assert len(pilots['versions'])==3
     assert all(not r['full_pilot_qualified'] and not r['pending_native_videos'] for r in pilots['versions']), 'qualified pilot requires actual formal matrix, not this failure delivery'
@@ -33,18 +48,18 @@ def main(version=3):
         evaluator='all bounded TRAIN audits, actual full live DEV TrackEval, official native MATLAB, synchronized runtime',
         scope='bounded scientific NO_GO after three evidence-driven versions; formal matrix conditional and not eligible')
     basic=dict(binding=source,Full24=False,heldout_20_21_22='SEALED',official_TEST=False)
-    original_labels=read(REPORTS/'COMMITMENT_LABEL_AUDIT.json')
+    original_labels=historical(read(REPORTS/'COMMITMENT_LABEL_AUDIT.json'))
     save(REPORTS/'COMMITMENT_LABEL_AUDIT.json',dict(original_labels,original_frozen_corpus_audit=original_labels,
         version2_recent_certificate_audit=ref(REPORTS/'RECENT_OWNER_LABEL_IDENTIFIABILITY.json'),
         version3_own_policy_counts=dict(labels),version3_own_policy_collections=[ref(OUT/'onpolicy_pilot_dataset_v3_r2'/f'video{v:02d}/RESULT.json') for v in TRAIN],
         final_versions_retained=True))
-    unknown=read(REPORTS/'UNKNOWN_RELIABILITY_AUDIT.json')
+    unknown=historical(read(REPORTS/'UNKNOWN_RELIABILITY_AUDIT.json'))
     save(REPORTS/'UNKNOWN_RELIABILITY_AUDIT.json',dict(unknown,initial_label_audit=unknown,
         final_all_query_audits=[ref(REPORTS/f'ALL_QUERY_RELIABILITY_V{v}.json') for v in [1,2,3]],
         selected_action_probability_corrected_audits=[ref(REPORTS/f'SELECTED_ACTION_RISK_V{v}.json') for v in [1,2]],
         conditional_accuracy_is_not_all_query_accuracy=True,UNKNOWN_is_neither_negative_nor_positive=True,
         posterior_feature_attribution=ref(REPORTS/'POSTERIOR_FEEDBACK_ATTRIBUTION.json')))
-    contract=read(REPORTS/'NATIVE_STATE_CONTRACT.json')
+    contract=historical(read(REPORTS/'NATIVE_STATE_CONTRACT.json'))
     save(REPORTS/'NATIVE_STATE_CONTRACT.json',dict(contract,original_contract=contract,
         actual_learned_policy_restore_payloads_bitwise=sum(r['persistent_restore_payloads_exact'] for r in collections_native),
         learned_full_inputs_logits_IDs_and_final_memory_exact=all(r['full_inputs_logits_IDs_and_commitment_memory_exact'] for r in collections_native),
@@ -52,6 +67,10 @@ def main(version=3):
         safety_gate_is_separate_and_FAILED=True))
     structural=read(REPORTS/'STRUCTURAL_TESTS.json');structural.update(native_full_loop='PASS_ACTUAL_512_OLD_AND_512_LEARNED_RESTORE',
         full_loop_contract=ref(REPORTS/'NATIVE_STATE_CONTRACT.json'));save(REPORTS/'STRUCTURAL_TESTS.json',structural)
+    repair=read(REPORTS/'MATLAB_AGGREGATION_PATH_REPAIR.json')
+    repair.update(status='REPAIRED_OFFICIAL_EVALUATION_COMPLETE',official_result=ref(OUT/f'pilot_pooled_live_v{version}/RESULT.json'),
+        repaired_execution_log=ref(OUT/'MATLAB_AGGREGATION_PATH_REPAIRED.log'))
+    save(REPORTS/'MATLAB_AGGREGATION_PATH_REPAIR.json',repair)
     notrun=dict(status='NOT_RUN_PILOT_SAFETY_GATE_FAILED',metrics=None,actual_updates=0,
         reason='Frozen protocol forbids formal training and new controls before a reliable F pilot; all three completed pilots fail real native safety.')
     save(REPORTS/'FORMAL_TRAINING_RESULTS.json',dict(**basic,**notrun,formal_seeds=SEEDS,formal_budget_per_run=20000,
@@ -116,7 +135,7 @@ def main(version=3):
         posterior_negative_attribution_scope='v1 checkpoint, all24 frozen TRAIN windows only; not an extrapolation to later weights or unseen states',
         fair_ordinary_network_superiority_or_equivalence_not_tested=True,prior_failures_weights_and_seeds_preserved=True,
         recommended_next_qualified_research='Repair identifiable compatibility/recovery for no-clean-candidate states, collecting independently certified correction events; investigate candidate/lifecycle constraints before more Q4 capacity or epochs. Freeze a new budget/protocol before further versions.'))
-    final=read(REPORTS/'FINAL_GOAL.json');final.update(status='BOUNDED_EXECUTION_COMPLETE_SCIENTIFIC_NO_GO',scientific_status='SCIENTIFIC_NO_GO',
+    final=historical(read(REPORTS/'FINAL_GOAL.json'));final.update(status='BOUNDED_EXECUTION_COMPLETE_SCIENTIFIC_NO_GO',scientific_status='SCIENTIFIC_NO_GO',
         result=ref(REPORTS/'FINAL_GO_NO_GO.json'),objective_success=False,formal_training_conditional_NOT_RUN=True)
     save(REPORTS/'FINAL_GOAL.json',final)
     tiny=read(REPORTS/'TINY_RESULTS.json');rows=[]
@@ -225,6 +244,9 @@ V1相同权重、同prefix/RNG，仅屏蔽过去可靠性反馈的24个干预窗
 代码与紧凑JSON在独立 Phase XV branch；模型、数据、原始轨迹、失败和hash绑定文件留服务器。所有原始V–XIV研究资产仍保留，完整最终保护校验见FINAL_PRIOR_INTEGRITY.json。阶段条件及精确失败事件分别见FINAL_GO_NO_GO.json与NATIVE_UNSAFE_EVENTS.json。
 ''')
     architecture=ROOT/'docs/JEV_PHASE15_PERSISTENT_IDENTITY_ARCHITECTURE.md'
+    body=architecture.read_text().replace('Version 1 structural tests passed for state snapshots, restore, stale recycling, cross-camera sharing, candidate permutation and candidate-specific values. Complete TRAIN native parity and data qualification are pending. No optimizer update has yet been run. The research gates and loss weights remain the frozen preregistration.',
+        'Structural contracts passed for snapshots, restore, stale recycling, cross-camera sharing, candidate permutation and candidate-specific values. Full TRAIN collection verified 512 original-policy and 512 learned-policy restored payloads bitwise, including final memory. Three independent Tiny128/Pilot1500 versions and an extra retained legacy Tiny128 completed 5012 optimizer updates. All three pilots failed native safety; formal20k, controlled architecture retraining and matched4k remain unqualified and NOT_RUN. Full live DEV and native official MATLAB evaluation are complete diagnostics, not formal three-seed success. The research gates and loss weights remain the frozen preregistration.')
+    architecture.write_text(body)
     extra='''\n## Final implementation qualification\n\nWHO certificate and concrete commitment certificate are separate. V2 adds `commit_known_options` only for a reliably wrong recent committed segment; mixed WHO labels stay UNKNOWN. V3 collects the frozen second pilot's real full TRAIN histories, including actual stored posterior inputs, and mixes those with the immutable frozen-Multi corpus. Neither repair changes native candidate generation, Gallery/Bank, one-to-one capacity or IDs. The two-channel posterior intervention changed zero actual IDs; it is a retained negative attribution. Three bounded pilots fail native safety; this is an implemented failed research version, not a validated tracking or architecture advantage.\n'''
     if '## Final implementation qualification' not in architecture.read_text():architecture.write_text(architecture.read_text()+extra)
     required=['FINAL_GOAL','PHASE14_FROZEN_EVIDENCE','SWITCH_EVENT_LEDGER','SEED20261009_FAILURE_ATLAS','COMMITMENT_NATIVE_CAUSAL_BRANCHES','COMMITMENT_FEASIBILITY_GO_NO_GO','COMMITMENT_LABEL_AUDIT','UNKNOWN_RELIABILITY_AUDIT','NATIVE_STATE_CONTRACT','STRUCTURAL_TESTS','TINY_RESULTS','PILOT_RESULTS','FORMAL_TRAINING_RESULTS','FAIR_BASELINE_RESULTS','ON_POLICY_STABILITY','ONLINE_VALIDATION','OFFICIAL_MATLAB_RESULTS','EFFICIENCY','GENERALIZATION_QUALIFICATION','FINAL_GO_NO_GO']
@@ -234,6 +256,7 @@ V1相同权重、同prefix/RNG，仅屏蔽过去可靠性反馈的24个干预窗
         all_large_weights_data_predictions_and_failed_logs_server_only=True,
         preserved_prior_bytes=ref(OUT/'final_integrity/RESULT.json'),
         actual_failure_traces=ref(REPORTS/'NATIVE_UNSAFE_EVENTS.json'),
+        initial_reports_preserved=[ref(p) for p in sorted(originals.glob('*.json'))],
         no_protected_prior_files_modified=True,task_delivery_is_not_scientific_success=True)
     save(REPORTS/'DELIVERY_AUDIT.json',delivery)
     print('PHASE15_BOUNDED_FINAL_DELIVERY',metrics,official['CVIDF1'],official['CVMA'],flush=True)
