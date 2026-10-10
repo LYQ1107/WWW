@@ -10,7 +10,7 @@ from jev_phase13_runtime import build_tracker,cache_inputs,run
 from jev_phase16_memory_risk import MemoryRisk as NativeRisk
 from gtr.modeling.jev_phase16.native_memory_commit_adapter import attach
 from gtr.modeling.jev_phase15.model import PersistentIdentityPolicy
-from gtr.modeling.jev_native_state import fingerprint
+from gtr.modeling.jev_native_state import fingerprint, prefix_state
 from run_jev_phase10_closed_loop import raw_predictions,metrics
 
 
@@ -76,6 +76,14 @@ def main(video,arm='F_full',seed=20261009,version=2,phase='safe_memory',live=Tru
         scope='complete previously reused DEVELOPMENT; no sealed evaluation or independent test claim')
     source['perception_input_provenance']=perception_provenance(video)
     source['perception_execution']='current images through actual Stage1 detector/VFCE' if live else 'frozen Stage1 cache'
+    startup=[None]
+    def native_start(**d):
+        if startup[0] is not None:return
+        state=prefix_state(model,**d);state['phase13_identity_meta']=executor.memory.state_dict()
+        digest=fingerprint(state);path=out/'ACTUAL_NATIVE_START.pt';torch.save(state,path)
+        startup[0]=dict(kind='actual first pre-association native state including all RNG',state_SHA256=digest,
+            artifact=ref(path),matching_memory_SHA256=fingerprint(state['phase13_identity_meta']),GT_or_future_inputs=False)
+    model.jev_native_prefix_observer=native_start
     risk=NativeRisk(video,reader);start=time.monotonic();last_progress=[0.];admission_counts=collections.Counter();admission_events=[]
     if live:
         risk.labels.reader=ActualLiveLabelReader();active_labels[0]=risk.labels
@@ -120,6 +128,7 @@ def main(video,arm='F_full',seed=20261009,version=2,phase='safe_memory',live=Tru
     with gzip.open(out/'ADMISSION_EVENTS.jsonl.gz','wt') as stream:
         for event in admission_events:stream.write(json.dumps(event,allow_nan=False)+'\n')
     strict,evaluation=metrics(out/'RAW_PREDICTIONS.json',[video],out/'strict_eval')
+    assert startup[0] is not None;source['native_state']=startup[0]
     save(out/'RESULT.json',dict(status='COMPLETE',binding=source,video=video,frames=frames,arm=arm,seed=seed,version=version,phase=phase,
         live_images=live,trained=training,checkpoint=checkpoint,raw_predictions=ref(out/'RAW_PREDICTIONS.json'),
         strict_online_metrics=strict,evaluator_result=ref(evaluation/'metrics.json'),native_risk=risk.summary(),

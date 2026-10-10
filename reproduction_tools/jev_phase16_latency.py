@@ -6,7 +6,7 @@ import torch
 from jev_phase16_common import *
 from jev_phase13_runtime import build_tracker,cache_inputs,run
 from gtr.modeling.jev_phase16.native_memory_commit_adapter import attach
-from gtr.modeling.jev_native_state import fingerprint
+from gtr.modeling.jev_native_state import fingerprint,prefix_state
 from gtr.modeling.jev_phase16.safe_matching_memory import SafeMatchingMemory
 import gtr.modeling.jev_stage2.native as native_executor_module
 
@@ -22,6 +22,12 @@ def main(version=3):
     model=build_tracker(17,policy,react_learned=False,live=True);executor=attach(model)
     assert model.jev_perception_cache_reader is None and executor.observer is None and executor.commit_observer is None
     out=OUT/'P8_latency_memory_only';out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
+    startup=[]
+    def native_start(**d):
+        if d['frame']!=0:return
+        state=prefix_state(model,**d);state['phase13_identity_meta']=executor.memory.state_dict()
+        startup.append(fingerprint(state))
+    model.jev_native_prefix_observer=native_start
     samples=[];original=executor.commit;components={k:[] for k in ['Stage1_image_IO_detector_VFCE','image_preprocessing','backbone','detector','VFCE_pooling','VFCE_head','matching_memory_retrieval','JEV_scores','native_Hungarian','Bank_promotion','raw_state_plus_admission_trusted_update']}
     def measured(original, name):
         def call(*args,**kwargs):
@@ -54,6 +60,7 @@ def main(version=3):
         assert len(samples)==2*frames-1
         digest=fingerprint(raw[:2*frames]);digests.append(digest)
         trial=dict(repeat=repeat,scene_frames=frames,camera_payloads=2*frames,seconds=seconds,
+            actual_native_start_SHA256=startup[-1],
             full_two_camera_scene_FPS=frames/seconds,camera_payload_FPS=2*frames/seconds,
             total_native_Stage2_ms=quantile(samples[16:]),peak_allocated_MiB=torch.cuda.max_memory_allocated()/2**20,
             component_ms={name:quantile(v[16:]) for name,v in components.items()},
@@ -62,7 +69,7 @@ def main(version=3):
         print('PHASE16_REAL_IMAGE_MEMORY_RUNTIME',version,trial,flush=True)
         del raw
     assert len(set(digests))==1,'restart changed actual committed prediction fields'
-    result=dict(status='COMPLETE',binding=binding(seed=20261009,checkpoints=[ck],inputs=[ref(ANNOTATIONS),ref(REPORTS/'P8_EVALUATION_SCOPE.json')],
+    result=dict(status='COMPLETE',binding=binding(seed=20261009,checkpoints=[ck],inputs=[ref(ANNOTATIONS),ref(REPORTS/'P8_EVALUATION_SCOPE.json')],native_state=dict(actual_trial_start_SHA256=[t['actual_native_start_SHA256'] for t in trials]),
         evaluator='CUDA-synchronized real image/native runtime, no GT/evaluator/journals',scope='three restarts of actual live DEV17 first256 scene frames; shared GPU, diagnostic pilot'),
         trained=trained,trials=trials,perception_cache_hits=0,strict_original_Stage1=True,
         includes_image_IO_detector_VFCE_history_policy_assignment_Gallery_Bank_posteriors=True,

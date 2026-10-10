@@ -6,7 +6,7 @@ from jev_phase16_gpu_queue import run_stack_queue
 
 def main():
     protect();storage_guard()
-    descriptor=read(OUT/'source_P8_components.json')
+    descriptor=read(OUT/'source_P8_native_provenance.json')
     source=Path(descriptor['path'])
     assert subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip()==descriptor['commit']
     assert read(OUT/'P2_P3_queue/RESULT.json')['status']=='COMPLETE'
