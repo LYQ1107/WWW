@@ -19,9 +19,11 @@ def audit(model,records,limit=256):
         part=items[start:start+4];x,y=batch(part);details=model.details(x)
         for index,r in enumerate(part):
             q=len(r['rows']);k=len(r['refs']);z=torch.cat([details['logits'][index,:q,:k],details['logits'][index,:q,-1:]],-1)
-            choices=lawful_choice(z,x['legal'][index,:q,:k]);confidence=z.softmax(-1).max(-1).values.cpu().tolist()
+            choices=lawful_choice(z,x['legal'][index,:q,:k]);probability=z.softmax(-1).cpu()
+            confidence=[float(probability[row,k if col<0 else col]) for row,col in enumerate(choices)]
             for row,col in enumerate(choices):
                 col=k if col<0 else col;gt=r['GT_labels_OFFLINE_ONLY'][row];counts['all_query_rows']+=1
+                counts['joint_selected_differs_row_argmax']+=int(col!=int(probability[row].argmax()))
                 counts['DEFER_all_rows']+=int(col==k)
                 if gt is None:counts['current_GT_UNKNOWN_rows']+=1;continue
                 counts['current_GT_known_rows']+=1;certified=bool(r['supervised'][row])
@@ -44,10 +46,11 @@ def audit(model,records,limit=256):
             selected_UNKNOWN=sum(not v[1] for v in selected),selected_mixed=sum(v[3] for v in selected),
             certified_selection_support=len(known),certified_selection_risk=sum(not v[2] for v in known)/len(known) if known else None))
     return dict(counts=dict(counts),risk_coverage=curves,examples=examples,
+        confidence_scope='probability of actual joint-selected action, not row maximum; uncalibrated',
         UNKNOWN_is_not_certified_wrong=True,scope='reserved real TRAIN queries, including uncertified WHO queries; UNKNOWN current GT unassessed')
 
 
-def main(version=1):
+def main(version=1,revision=1):
     protect();torch.set_num_threads(1);torch.manual_seed(20261009)
     train,reserved,sources=load_records(label_version=2 if version>=2 else 1,onpolicy_pilot=version>=3)
     constants=collections.Counter()
@@ -63,10 +66,13 @@ def main(version=1):
     source=binding(seed=20261009,checkpoints=[ck,oldck],dataset=sources,evaluator='post-freeze all-query constrained assignment',scope='coverage repair; no optimizer updates, no DEV')
     value=dict(status='COMPLETE',binding=source,version=version,results=findings,training_input_support=dict(constants),
         old_conditional_assessment_retained=True,no_extra_optimizer_updates=True)
-    save(OUT/f'all_query_audit_v{version}/RESULT.json',value);save(REPORTS/f'ALL_QUERY_RELIABILITY_V{version}.json',value)
+    namespace=f'all_query_audit_v{version}' if revision==1 else f'all_query_selected_probability_v{version}'
+    value['measurement_revision']=revision
+    save(OUT/f'{namespace}/RESULT.json',value)
+    save(REPORTS/f'ALL_QUERY_RELIABILITY_V{version}.json' if revision==1 else REPORTS/f'SELECTED_ACTION_RISK_V{version}.json',value)
     print('PHASE15_ALL_QUERY_AUDIT',version,{k:v['counts'] for k,v in findings.items()},dict(constants),flush=True)
 
 
 if __name__=='__main__':
     import argparse
-    p=argparse.ArgumentParser();p.add_argument('--version',type=int,default=1);a=p.parse_args();main(a.version)
+    p=argparse.ArgumentParser();p.add_argument('--version',type=int,default=1);p.add_argument('--revision',type=int,default=1);a=p.parse_args();main(a.version,a.revision)

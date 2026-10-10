@@ -22,6 +22,9 @@ def main(version=3):
     for v in [1,2,3]:
         value=read(OUT/f'all_query_audit_v{v}/RESULT.json');assert value['status']=='COMPLETE';queries.append(value)
         save(REPORTS/f'ALL_QUERY_RELIABILITY_V{v}.json',value)
+        if v<3:
+            corrected=read(OUT/f'all_query_selected_probability_v{v}/RESULT.json');assert corrected['status']=='COMPLETE'
+            save(REPORTS/f'SELECTED_ACTION_RISK_V{v}.json',corrected)
     for video in TRAIN:
         result=read(OUT/'onpolicy_pilot_dataset_v3_r2'/f'video{video:02d}/RESULT.json');assert result['status']=='PASS'
         collections_native.append(result);labels.update(result['counts'])
@@ -38,6 +41,7 @@ def main(version=3):
     unknown=read(REPORTS/'UNKNOWN_RELIABILITY_AUDIT.json')
     save(REPORTS/'UNKNOWN_RELIABILITY_AUDIT.json',dict(unknown,initial_label_audit=unknown,
         final_all_query_audits=[ref(REPORTS/f'ALL_QUERY_RELIABILITY_V{v}.json') for v in [1,2,3]],
+        selected_action_probability_corrected_audits=[ref(REPORTS/f'SELECTED_ACTION_RISK_V{v}.json') for v in [1,2]],
         conditional_accuracy_is_not_all_query_accuracy=True,UNKNOWN_is_neither_negative_nor_positive=True,
         posterior_feature_attribution=ref(REPORTS/'POSTERIOR_FEEDBACK_ATTRIBUTION.json')))
     contract=read(REPORTS/'NATIVE_STATE_CONTRACT.json')
@@ -107,6 +111,7 @@ def main(version=3):
             'No clean compatible certificate for many UNKNOWN queries; repeated ambiguous/mixed IDs cannot be declared negative.',
             'Global cross-camera identity quality and error duration require complete raw evaluation; temporal IDSW alone cannot certify success.'],
         posterior_feedback_causal_explanation_rejected=True,all_formal_and4k_unrun_metrics_null=True,
+        posterior_negative_attribution_scope='v1 checkpoint, all24 frozen TRAIN windows only; not an extrapolation to later weights or unseen states',
         fair_ordinary_network_superiority_or_equivalence_not_tested=True,prior_failures_weights_and_seeds_preserved=True,
         recommended_next_qualified_research='Repair identifiable compatibility/recovery for no-clean-candidate states, collecting independently certified correction events; investigate candidate/lifecycle constraints before more Q4 capacity or epochs. Freeze a new budget/protocol before further versions.'))
     final=read(REPORTS/'FINAL_GOAL.json');final.update(status='BOUNDED_EXECUTION_COMPLETE_SCIENTIFIC_NO_GO',scientific_status='SCIENTIFIC_NO_GO',

@@ -94,7 +94,8 @@ def assess(model,records,limit=256):
         part=items[begin:begin+4];x,y=batch(part);details=model.details(x)
         for index,r in enumerate(part):
             q=len(r['rows']);k=len(r['refs']);z=torch.cat([details['logits'][index,:q,:k],details['logits'][index,:q,-1:]],-1)
-            choice=lawful_choice(z,x['legal'][index,:q,:k]);confidence=z.softmax(-1).max(-1).values.cpu().tolist()
+            choice=lawful_choice(z,x['legal'][index,:q,:k]);probability=z.softmax(-1).cpu()
+            confidence=[float(probability[row,k if col<0 else col]) for row,col in enumerate(choice)]
             for row,col in enumerate(choice):
                 col=k if col<0 else col;count['rows']+=1
                 if r['positive'][row,:k].any():
@@ -126,6 +127,7 @@ def assess(model,records,limit=256):
         safe_continuation_accuracy=rates('kind1_correct','kind1_support'),
         necessary_correction_accuracy=rates('kind2_correct','kind2_support'),
         normal_retention=rates('normal_retained','normal_supported'),selective_risk_coverage=coverage,
+        confidence_scope='row softmax probability of the actual joint-selected action, not row maximum; not calibrated',
         scope='reserved TRAIN temporal blocks, unchanged actual predicted-state payloads; not full-video tracking metrics')
 
 
