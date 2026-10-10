@@ -1,0 +1,762 @@
+{
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": null,
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": {
+      "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+      "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+    },
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+      "torch": "2.0.0+cu118",
+      "torch_CUDA": "11.8"
+    },
+    "evaluator": "exact native paired outputs + unmodified TrackEval CLEAR + qualified ownership observer",
+    "heldout_20_21_22": "SEALED",
+    "inputs": [
+      {
+        "SHA256": "118d04dee72ff7191c7e8a8d2f4ac553298b98935aabdc220e2b716a865057b9",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/A/video12/RESULT.json"
+      },
+      {
+        "SHA256": "db97385e6aa1a0d45b1c5692f203e97b913b9dd4366b35a8867290e32c6a26ec",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/A/video13/RESULT.json"
+      },
+      {
+        "SHA256": "1851f8ebcf16cd6c70d6da799ae142482ab86157d49a641b0f9cd5b4e4a28deb",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/A/video14/RESULT.json"
+      },
+      {
+        "SHA256": "e572b050afbfab3ecb04133bce6d0a203dd5c935e052ba7faebb343f1b2b4450",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/A/video16/RESULT.json"
+      },
+      {
+        "SHA256": "4201c45b27fe2aa4b4c74b6b172b9376e7ca6638fc3837de461d3ef6ac17f46a",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video12/RESULT.json"
+      },
+      {
+        "SHA256": "fd4afb81c5b55aca589d7a238dd379e45af68d021441ec3a28c74f6b43ae7249",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video13/RESULT.json"
+      },
+      {
+        "SHA256": "25b26ac588debdf1657d355333f98e8a508847685e999ed2c1e08a3090bba2af",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video14/RESULT.json"
+      },
+      {
+        "SHA256": "786bc9322fade6fa6304f60d849de74bd9b91aff797c6b4b0477297ef4979107",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/RESULT.json"
+      },
+      {
+        "SHA256": "c1c2beb0b293e7c3ee55d91150e658ebeb36ba73bf5e905369ce6e9a56362a8d",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/C/video12/RESULT.json"
+      },
+      {
+        "SHA256": "712c5c8586f0e77f5099ff2c096813aacdcd2ef54fd63daf356a56a352068c8a",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/C/video13/RESULT.json"
+      },
+      {
+        "SHA256": "72f4682db9a07363c8e376d2515dc7bb0b5b0cf6d04530ff7df7f2f986037108",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/C/video14/RESULT.json"
+      },
+      {
+        "SHA256": "3a18e69f6f9b80aca1b950555005862ffb331fbd976a03ddaf740b2d68367b85",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/C/video16/RESULT.json"
+      },
+      {
+        "SHA256": "7a966e28e9e54d6f137f68541ee2f2e5d88fc89ff80ab1814a6ec583b2ff1bb9",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/D/video12/RESULT.json"
+      },
+      {
+        "SHA256": "231f10b78aa20164c190c91774b440b0cc71e6f2996c8164b73377a30422afaf",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/D/video13/RESULT.json"
+      },
+      {
+        "SHA256": "b9bc67d4a86bc876052583f4d4feb5d88e971cb59338f705758c3645968a91aa",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/D/video14/RESULT.json"
+      },
+      {
+        "SHA256": "38783649f7b8f40a99a06e7adef939f06aa75941cb384994c8d2430520c2338a",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/D/video16/RESULT.json"
+      },
+      {
+        "SHA256": "2e5ec065b6cbf41eb0ce0f29379a5dcc1f46e3ddaa79c70c9d2b0d08121eaef5",
+        "path": "/home/liuyeqiang/WWW_jev_phase16/reports/JEV_PHASE16/P2_P3_PROTOCOL.json"
+      }
+    ],
+    "native_state": null,
+    "official_TEST": false,
+    "preregistration_SHA256": "53a8361e713ba8d02155656636504d44ee12e4417de97f520946549d0e906939",
+    "scope": "24 original overlapping TRAIN prefixes, 96 actual mutated futures; strict18, TRAIN14 diagnostic6; H64 predeclared8 prefixes",
+    "seed": 20261009,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/__init__.py": "4351cd60c528123b98699cbfa3efd1814428d11d917fb4c68dd8724b3ec2ff07",
+      "gtr/modeling/jev_phase15/candidate_reliability.py": "62f577b38782b1b79ee8cb056e8b59953caf9c7c2240f3db02e0f43a7ef4cb82",
+      "gtr/modeling/jev_phase15/commitment_option_reader.py": "a7d10acf0ff8ab99c75d84f74536327d192143b14ad759a68f60bc8add7154ac",
+      "gtr/modeling/jev_phase15/commitment_question.py": "cb88861bd86c212fc0daf5fc7a65aefc6f64ce15d0de7e397b85473fdcd042b4",
+      "gtr/modeling/jev_phase15/commitment_state.py": "89d1ad35e60331f20e569305a90f27c18e6c29a96366fceb8f11c1d30592ff91",
+      "gtr/modeling/jev_phase15/identity_fragment_controller.py": "b8976d889d252df2bcda2c5b365004b099204ddd7a57657c5ac86aad8ac2bb96",
+      "gtr/modeling/jev_phase15/joint_action_ranker.py": "1e27fcfab7a85d47fdc1289f1133b6a45af727e3b5d5ee1606fd7418a42fa997",
+      "gtr/modeling/jev_phase15/model.py": "f77d3c78b74ede0ff2d05409bbe3287d6d6044b5199de5bc8d4dd406dbc781af",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_phase16/__init__.py": "fd73454f85489bf8dac315c761403bc7edb589e07410c17e1d45819982af927d",
+      "gtr/modeling/jev_phase16/evidence_ledger.py": "17a81da611273524a3db213e73bc91dabc8c741d4091c53f96c4ab61f1294433",
+      "gtr/modeling/jev_phase16/history_segment_encoder.py": "268daf3fa6d308d70649218e5178ee16c1201d78be59f9845987b60775ec0436",
+      "gtr/modeling/jev_phase16/multi_prototype_memory.py": "4efc35daba8a9da0f8c088e87ebabefa43eff1542b7fe06bf1a341805a14119e",
+      "gtr/modeling/jev_phase16/native_memory_commit_adapter.py": "3af6eabf784d13b3cdf7f131a6ea082a713de9379038fa4ffb8dfff46409fc54",
+      "gtr/modeling/jev_phase16/safe_matching_memory.py": "ab5950d96b4887d1a4fdb26fa124fdf80680a3b6a396f26442d35eff9ea6ab2b",
+      "gtr/modeling/jev_phase16/safe_memory_admission.py": "958a1148b28e104c0a2c5907b009ea2fc1a8d7e231bf1777476ce619a43b9caa",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase16_admission_shadow.py": "2640e63a57c9697345df0949dfe5b064dfe0a7d3ca00b77ff87697a6c41f0fd0",
+      "reproduction_tools/jev_phase16_candidate_audit.py": "045b755f9c12db49fe1c7b5ba77a6d27aedbe58e8f41ebbf994c2d79918d3dce",
+      "reproduction_tools/jev_phase16_common.py": "fad43f1b10603367b2f4913d9c0f7c03160693572a22278bc87956aa77ada42c",
+      "reproduction_tools/jev_phase16_evaluate.py": "afc8ac1a5bc28ac3419c5e3d44b6dd994f92adcfbf1c26fac07757848808f59f",
+      "reproduction_tools/jev_phase16_finalize.py": "d161a79b31ecfb9af1d7a255177e584a87eb04a420616f21796988c0f7be8c7c",
+      "reproduction_tools/jev_phase16_finish_memory.py": "a2bd06076debebbadf2e061dc8a063e235f99dca8dd14a484b5d5029a2a5cf1c",
+      "reproduction_tools/jev_phase16_finish_p0.py": "ecf65ac941b2210d5569fd716766a72887c5149b88610b92b734c1a138c3ae50",
+      "reproduction_tools/jev_phase16_freeze.py": "9f30445d42bb8a532eddb2e8f6ba085df64897a3fe7963999a3308cf6711d8a9",
+      "reproduction_tools/jev_phase16_gpu_queue.py": "8177f84731ec3e6695d505fa4b1bf575129202e3909023eb8b91a3aebf5488e5",
+      "reproduction_tools/jev_phase16_input_registry.py": "e771451ee8722f210fceabd553c28c22b55016617d3b48a88775a5e30c77f76d",
+      "reproduction_tools/jev_phase16_latency.py": "71bac994835e01e3a8b42ae50582a04d43d62177fa6cc1f03c32c3b63fcd66f6",
+      "reproduction_tools/jev_phase16_ledger_contract.py": "6b767b0d4efb65c73d96c31d551981e598642f5e1ee44585e1f95f36692d8247",
+      "reproduction_tools/jev_phase16_matlab.py": "7b96456a2fc13c8c25c0e3d06b79b2778015fe4b0a379ab8a98b4f840e8f98c8",
+      "reproduction_tools/jev_phase16_memory_contract.py": "97285d9f49f9cd1dd07d07fce46cd066f75a8eba4ef1a7ee7c75463a1d125298",
+      "reproduction_tools/jev_phase16_memory_factorial.py": "d19e288b7d8ba292c009070b6e5a7bde75f84825341f002954165680c68d5e5e",
+      "reproduction_tools/jev_phase16_memory_results.py": "b2c0b4a983259321289ca5bf3054da72563a4f7f2bd9fb899c4df17529cb8b56",
+      "reproduction_tools/jev_phase16_memory_risk.py": "3f05b6a902a841477d9e885a2b43c4c51d96a25035ec5556b68da01407cdcb16",
+      "reproduction_tools/jev_phase16_original_completion_repair.py": "f1163951d8d0a9ce8651954ef0c8488fdb24acd742b2416d4a597d2e2a4ca341",
+      "reproduction_tools/jev_phase16_p1_integrity.py": "81c543fd8dd6debfe90e99fcf2f9dbec507da416a4358a148de2cde6264b81ab",
+      "reproduction_tools/jev_phase16_p1_queue.py": "762e9c82ca211bde907ce9f592651bf0e836a6c97828b1a9064aa2196b913aa7",
+      "reproduction_tools/jev_phase16_p2_p3_queue.py": "416c3e49162e5acaaf8298d16f9f77c3c55c82df8e264a9946f10d93c521f61c",
+      "reproduction_tools/jev_phase16_p2_protocol.py": "ef0f5d0002c966ee1c9e041dd1c140c558fbd195afc9a87d86e4efdd67059550",
+      "reproduction_tools/jev_phase16_p8_queue.py": "33248ecdec3a51529e403c1ad3cf2ade48cf7e5ba19b7a7bf66c9bda4f709c59",
+      "reproduction_tools/jev_phase16_prototype_audit.py": "81d8cf5fd3041ce4ae584eb7ae8c252936c10881ef20d98c250650d1a8e7f42c",
+      "reproduction_tools/jev_phase16_prototype_contract.py": "9c1f6e47eb3b60631b788a61cbc91c1db0d34137db92d327a958b4a4b109eb22",
+      "reproduction_tools/jev_phase16_prototype_results.py": "bd2b479d2a597a7e0f45f4dfe045161a0b99d12f11cfa1362c6360e0042b6d87",
+      "reproduction_tools/jev_phase16_queue.py": "2a629bbb851b860df80038471a8626b9fe7c04a09b979cf096396604a13d7a9e",
+      "reproduction_tools/jev_phase16_recoverability.py": "116b21f6a8dbe48ca1f8c6912c4747718d4a5966cb1c84184430df5a81ae5521"
+    },
+    "source_commit": "d58d03a38e4e295656e6d5dad3b2a548ea7f4125",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase16"
+  },
+  "conditional_interactions_included": true,
+  "factorial": {
+    "SHA256": "2937269fa59547ac02e72bed2162415037220b2d55b121edb8efbfb609a20238",
+    "path": "/home/liuyeqiang/WWW_jev_phase16/reports/JEV_PHASE16/MATCH_VS_MEMORY_CAUSAL_FACTORIAL.json"
+  },
+  "no_claim_of_dynamic_JEV_independent_value": true,
+  "safety": {
+    "DEV_not_used_for_gate": true,
+    "P1_reader_qualified": false,
+    "V3_learning_qualified": false,
+    "binding": {
+      "Full24": false,
+      "TRAIN": [
+        12,
+        13,
+        14,
+        16
+      ],
+      "checkpoints": null,
+      "config_SHA256": {
+        "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+        "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+      },
+      "dataset": {
+        "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+        "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+      },
+      "development": [
+        17,
+        18,
+        19
+      ],
+      "environment": {
+        "CUDA_VISIBLE_DEVICES": null,
+        "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+        "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+        "torch": "2.0.0+cu118",
+        "torch_CUDA": "11.8"
+      },
+      "evaluator": "exact native paired outputs + unmodified TrackEval CLEAR + qualified ownership observer",
+      "heldout_20_21_22": "SEALED",
+      "inputs": [
+        {
+          "SHA256": "118d04dee72ff7191c7e8a8d2f4ac553298b98935aabdc220e2b716a865057b9",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/A/video12/RESULT.json"
+        },
+        {
+          "SHA256": "db97385e6aa1a0d45b1c5692f203e97b913b9dd4366b35a8867290e32c6a26ec",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/A/video13/RESULT.json"
+        },
+        {
+          "SHA256": "1851f8ebcf16cd6c70d6da799ae142482ab86157d49a641b0f9cd5b4e4a28deb",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/A/video14/RESULT.json"
+        },
+        {
+          "SHA256": "e572b050afbfab3ecb04133bce6d0a203dd5c935e052ba7faebb343f1b2b4450",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/A/video16/RESULT.json"
+        },
+        {
+          "SHA256": "4201c45b27fe2aa4b4c74b6b172b9376e7ca6638fc3837de461d3ef6ac17f46a",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video12/RESULT.json"
+        },
+        {
+          "SHA256": "fd4afb81c5b55aca589d7a238dd379e45af68d021441ec3a28c74f6b43ae7249",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video13/RESULT.json"
+        },
+        {
+          "SHA256": "25b26ac588debdf1657d355333f98e8a508847685e999ed2c1e08a3090bba2af",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video14/RESULT.json"
+        },
+        {
+          "SHA256": "786bc9322fade6fa6304f60d849de74bd9b91aff797c6b4b0477297ef4979107",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/RESULT.json"
+        },
+        {
+          "SHA256": "c1c2beb0b293e7c3ee55d91150e658ebeb36ba73bf5e905369ce6e9a56362a8d",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/C/video12/RESULT.json"
+        },
+        {
+          "SHA256": "712c5c8586f0e77f5099ff2c096813aacdcd2ef54fd63daf356a56a352068c8a",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/C/video13/RESULT.json"
+        },
+        {
+          "SHA256": "72f4682db9a07363c8e376d2515dc7bb0b5b0cf6d04530ff7df7f2f986037108",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/C/video14/RESULT.json"
+        },
+        {
+          "SHA256": "3a18e69f6f9b80aca1b950555005862ffb331fbd976a03ddaf740b2d68367b85",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/C/video16/RESULT.json"
+        },
+        {
+          "SHA256": "7a966e28e9e54d6f137f68541ee2f2e5d88fc89ff80ab1814a6ec583b2ff1bb9",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/D/video12/RESULT.json"
+        },
+        {
+          "SHA256": "231f10b78aa20164c190c91774b440b0cc71e6f2996c8164b73377a30422afaf",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/D/video13/RESULT.json"
+        },
+        {
+          "SHA256": "b9bc67d4a86bc876052583f4d4feb5d88e971cb59338f705758c3645968a91aa",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/D/video14/RESULT.json"
+        },
+        {
+          "SHA256": "38783649f7b8f40a99a06e7adef939f06aa75941cb384994c8d2430520c2338a",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/D/video16/RESULT.json"
+        },
+        {
+          "SHA256": "2e5ec065b6cbf41eb0ce0f29379a5dcc1f46e3ddaa79c70c9d2b0d08121eaef5",
+          "path": "/home/liuyeqiang/WWW_jev_phase16/reports/JEV_PHASE16/P2_P3_PROTOCOL.json"
+        }
+      ],
+      "native_state": null,
+      "official_TEST": false,
+      "preregistration_SHA256": "53a8361e713ba8d02155656636504d44ee12e4417de97f520946549d0e906939",
+      "scope": "24 original overlapping TRAIN prefixes, 96 actual mutated futures; strict18, TRAIN14 diagnostic6; H64 predeclared8 prefixes",
+      "seed": 20261009,
+      "source_SHA256": {
+        "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+        "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+        "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+        "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+        "gtr/modeling/jev_phase15/__init__.py": "4351cd60c528123b98699cbfa3efd1814428d11d917fb4c68dd8724b3ec2ff07",
+        "gtr/modeling/jev_phase15/candidate_reliability.py": "62f577b38782b1b79ee8cb056e8b59953caf9c7c2240f3db02e0f43a7ef4cb82",
+        "gtr/modeling/jev_phase15/commitment_option_reader.py": "a7d10acf0ff8ab99c75d84f74536327d192143b14ad759a68f60bc8add7154ac",
+        "gtr/modeling/jev_phase15/commitment_question.py": "cb88861bd86c212fc0daf5fc7a65aefc6f64ce15d0de7e397b85473fdcd042b4",
+        "gtr/modeling/jev_phase15/commitment_state.py": "89d1ad35e60331f20e569305a90f27c18e6c29a96366fceb8f11c1d30592ff91",
+        "gtr/modeling/jev_phase15/identity_fragment_controller.py": "b8976d889d252df2bcda2c5b365004b099204ddd7a57657c5ac86aad8ac2bb96",
+        "gtr/modeling/jev_phase15/joint_action_ranker.py": "1e27fcfab7a85d47fdc1289f1133b6a45af727e3b5d5ee1606fd7418a42fa997",
+        "gtr/modeling/jev_phase15/model.py": "f77d3c78b74ede0ff2d05409bbe3287d6d6044b5199de5bc8d4dd406dbc781af",
+        "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+        "gtr/modeling/jev_phase16/__init__.py": "fd73454f85489bf8dac315c761403bc7edb589e07410c17e1d45819982af927d",
+        "gtr/modeling/jev_phase16/evidence_ledger.py": "17a81da611273524a3db213e73bc91dabc8c741d4091c53f96c4ab61f1294433",
+        "gtr/modeling/jev_phase16/history_segment_encoder.py": "268daf3fa6d308d70649218e5178ee16c1201d78be59f9845987b60775ec0436",
+        "gtr/modeling/jev_phase16/multi_prototype_memory.py": "4efc35daba8a9da0f8c088e87ebabefa43eff1542b7fe06bf1a341805a14119e",
+        "gtr/modeling/jev_phase16/native_memory_commit_adapter.py": "3af6eabf784d13b3cdf7f131a6ea082a713de9379038fa4ffb8dfff46409fc54",
+        "gtr/modeling/jev_phase16/safe_matching_memory.py": "ab5950d96b4887d1a4fdb26fa124fdf80680a3b6a396f26442d35eff9ea6ab2b",
+        "gtr/modeling/jev_phase16/safe_memory_admission.py": "958a1148b28e104c0a2c5907b009ea2fc1a8d7e231bf1777476ce619a43b9caa",
+        "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+        "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+        "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+        "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+        "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+        "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+        "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+        "reproduction_tools/jev_phase16_admission_shadow.py": "2640e63a57c9697345df0949dfe5b064dfe0a7d3ca00b77ff87697a6c41f0fd0",
+        "reproduction_tools/jev_phase16_candidate_audit.py": "045b755f9c12db49fe1c7b5ba77a6d27aedbe58e8f41ebbf994c2d79918d3dce",
+        "reproduction_tools/jev_phase16_common.py": "fad43f1b10603367b2f4913d9c0f7c03160693572a22278bc87956aa77ada42c",
+        "reproduction_tools/jev_phase16_evaluate.py": "afc8ac1a5bc28ac3419c5e3d44b6dd994f92adcfbf1c26fac07757848808f59f",
+        "reproduction_tools/jev_phase16_finalize.py": "d161a79b31ecfb9af1d7a255177e584a87eb04a420616f21796988c0f7be8c7c",
+        "reproduction_tools/jev_phase16_finish_memory.py": "a2bd06076debebbadf2e061dc8a063e235f99dca8dd14a484b5d5029a2a5cf1c",
+        "reproduction_tools/jev_phase16_finish_p0.py": "ecf65ac941b2210d5569fd716766a72887c5149b88610b92b734c1a138c3ae50",
+        "reproduction_tools/jev_phase16_freeze.py": "9f30445d42bb8a532eddb2e8f6ba085df64897a3fe7963999a3308cf6711d8a9",
+        "reproduction_tools/jev_phase16_gpu_queue.py": "8177f84731ec3e6695d505fa4b1bf575129202e3909023eb8b91a3aebf5488e5",
+        "reproduction_tools/jev_phase16_input_registry.py": "e771451ee8722f210fceabd553c28c22b55016617d3b48a88775a5e30c77f76d",
+        "reproduction_tools/jev_phase16_latency.py": "71bac994835e01e3a8b42ae50582a04d43d62177fa6cc1f03c32c3b63fcd66f6",
+        "reproduction_tools/jev_phase16_ledger_contract.py": "6b767b0d4efb65c73d96c31d551981e598642f5e1ee44585e1f95f36692d8247",
+        "reproduction_tools/jev_phase16_matlab.py": "7b96456a2fc13c8c25c0e3d06b79b2778015fe4b0a379ab8a98b4f840e8f98c8",
+        "reproduction_tools/jev_phase16_memory_contract.py": "97285d9f49f9cd1dd07d07fce46cd066f75a8eba4ef1a7ee7c75463a1d125298",
+        "reproduction_tools/jev_phase16_memory_factorial.py": "d19e288b7d8ba292c009070b6e5a7bde75f84825341f002954165680c68d5e5e",
+        "reproduction_tools/jev_phase16_memory_results.py": "b2c0b4a983259321289ca5bf3054da72563a4f7f2bd9fb899c4df17529cb8b56",
+        "reproduction_tools/jev_phase16_memory_risk.py": "3f05b6a902a841477d9e885a2b43c4c51d96a25035ec5556b68da01407cdcb16",
+        "reproduction_tools/jev_phase16_original_completion_repair.py": "f1163951d8d0a9ce8651954ef0c8488fdb24acd742b2416d4a597d2e2a4ca341",
+        "reproduction_tools/jev_phase16_p1_integrity.py": "81c543fd8dd6debfe90e99fcf2f9dbec507da416a4358a148de2cde6264b81ab",
+        "reproduction_tools/jev_phase16_p1_queue.py": "762e9c82ca211bde907ce9f592651bf0e836a6c97828b1a9064aa2196b913aa7",
+        "reproduction_tools/jev_phase16_p2_p3_queue.py": "416c3e49162e5acaaf8298d16f9f77c3c55c82df8e264a9946f10d93c521f61c",
+        "reproduction_tools/jev_phase16_p2_protocol.py": "ef0f5d0002c966ee1c9e041dd1c140c558fbd195afc9a87d86e4efdd67059550",
+        "reproduction_tools/jev_phase16_p8_queue.py": "33248ecdec3a51529e403c1ad3cf2ade48cf7e5ba19b7a7bf66c9bda4f709c59",
+        "reproduction_tools/jev_phase16_prototype_audit.py": "81d8cf5fd3041ce4ae584eb7ae8c252936c10881ef20d98c250650d1a8e7f42c",
+        "reproduction_tools/jev_phase16_prototype_contract.py": "9c1f6e47eb3b60631b788a61cbc91c1db0d34137db92d327a958b4a4b109eb22",
+        "reproduction_tools/jev_phase16_prototype_results.py": "bd2b479d2a597a7e0f45f4dfe045161a0b99d12f11cfa1362c6360e0042b6d87",
+        "reproduction_tools/jev_phase16_queue.py": "2a629bbb851b860df80038471a8626b9fe7c04a09b979cf096396604a13d7a9e",
+        "reproduction_tools/jev_phase16_recoverability.py": "116b21f6a8dbe48ca1f8c6912c4747718d4a5966cb1c84184430df5a81ae5521"
+      },
+      "source_commit": "d58d03a38e4e295656e6d5dad3b2a548ea7f4125",
+      "source_root": "/home/liuyeqiang/WWW_jev_phase16"
+    },
+    "independent_safe_benefit_clusters": 2,
+    "major_scientific_versions_used": 2,
+    "required_clusters": 8,
+    "safety_violations": [
+      {
+        "H": 64,
+        "case": {
+          "SHA256": "4d419a6315ce9d227b263c34ee6dce49564a3a5b96dc19b49a801c7411ce85bb",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video12/frame000003_view1_row6.jsonl.gz"
+        },
+        "future_IDSW_delta": 3,
+        "key": [
+          12,
+          3,
+          1
+        ],
+        "row": 6,
+        "video": 12,
+        "worsening": {
+          "false_split_birth": 1,
+          "new_cross_GT_gallery_mix": 3
+        }
+      },
+      {
+        "H": 32,
+        "case": {
+          "SHA256": "e357728196274cede897b717486ac51af6573994874a4712ff1f42bf175dd09a",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video13/frame000704_view0_row1.jsonl.gz"
+        },
+        "future_IDSW_delta": 1,
+        "key": [
+          13,
+          704,
+          0
+        ],
+        "row": 1,
+        "video": 13,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 1,
+          "per_GT_camera_duration_increases": {
+            "7_camera1": 1
+          },
+          "wrong_owner_episode_max_frames": 1,
+          "wrong_owner_observations": 1
+        }
+      },
+      {
+        "H": 16,
+        "case": {
+          "SHA256": "bb92737bf22030522b0b9dc05d3417c2b13cc3656c73bcf2468803248119e2e3",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000013_view0_row30.jsonl.gz"
+        },
+        "future_IDSW_delta": 2,
+        "key": [
+          16,
+          13,
+          0
+        ],
+        "row": 30,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 1,
+          "per_GT_camera_duration_increases": {
+            "28_camera0": 9,
+            "4_camera0": 1,
+            "54_camera1": 1
+          },
+          "wrong_owner_episode_max_frames": 5,
+          "wrong_owner_observations": 6
+        }
+      },
+      {
+        "H": 32,
+        "case": {
+          "SHA256": "bb92737bf22030522b0b9dc05d3417c2b13cc3656c73bcf2468803248119e2e3",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000013_view0_row30.jsonl.gz"
+        },
+        "future_IDSW_delta": 10,
+        "key": [
+          16,
+          13,
+          0
+        ],
+        "row": 30,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 7,
+          "per_GT_camera_duration_increases": {
+            "28_camera0": 9,
+            "49_camera1": 1,
+            "4_camera0": 1
+          },
+          "wrong_owner_observations": 4
+        }
+      },
+      {
+        "H": 8,
+        "case": {
+          "SHA256": "bb92737bf22030522b0b9dc05d3417c2b13cc3656c73bcf2468803248119e2e3",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000013_view0_row30.jsonl.gz"
+        },
+        "future_IDSW_delta": 2,
+        "key": [
+          16,
+          13,
+          0
+        ],
+        "row": 30,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 3,
+          "per_GT_camera_duration_increases": {
+            "28_camera0": 1,
+            "54_camera1": 1
+          },
+          "wrong_owner_episode_max_frames": 1,
+          "wrong_owner_observations": 3
+        }
+      },
+      {
+        "H": 16,
+        "case": {
+          "SHA256": "d44b5db0c6fe6db7a1336d5386c49936d5c668a3097c38d4dc6ebe88da8bda50",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000017_view0_row31.jsonl.gz"
+        },
+        "future_IDSW_delta": 1,
+        "key": [
+          16,
+          17,
+          0
+        ],
+        "row": 31,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 2,
+          "per_GT_camera_duration_increases": {
+            "4_camera0": 1,
+            "54_camera1": 2
+          }
+        }
+      },
+      {
+        "H": 32,
+        "case": {
+          "SHA256": "d44b5db0c6fe6db7a1336d5386c49936d5c668a3097c38d4dc6ebe88da8bda50",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000017_view0_row31.jsonl.gz"
+        },
+        "future_IDSW_delta": 7,
+        "key": [
+          16,
+          17,
+          0
+        ],
+        "row": 31,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 5,
+          "per_GT_camera_duration_increases": {
+            "49_camera1": 1,
+            "4_camera0": 1,
+            "53_camera1": 1
+          }
+        }
+      },
+      {
+        "H": 8,
+        "case": {
+          "SHA256": "d44b5db0c6fe6db7a1336d5386c49936d5c668a3097c38d4dc6ebe88da8bda50",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000017_view0_row31.jsonl.gz"
+        },
+        "future_IDSW_delta": 0,
+        "key": [
+          16,
+          17,
+          0
+        ],
+        "row": 31,
+        "video": 16,
+        "worsening": {
+          "per_GT_camera_duration_increases": {
+            "4_camera0": 1,
+            "54_camera1": 2
+          },
+          "wrong_owner_episode_max_frames": 1,
+          "wrong_owner_observations": 2
+        }
+      },
+      {
+        "H": 16,
+        "case": {
+          "SHA256": "10ad772f4987b54651425391a081693c6f56573c868da59042dc1beb9d78019e",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000019_view0_row29.jsonl.gz"
+        },
+        "future_IDSW_delta": -3,
+        "key": [
+          16,
+          19,
+          0
+        ],
+        "row": 29,
+        "video": 16,
+        "worsening": {
+          "per_GT_camera_duration_increases": {
+            "28_camera0": 7,
+            "49_camera1": 1,
+            "4_camera0": 1,
+            "54_camera1": 2
+          }
+        }
+      },
+      {
+        "H": 32,
+        "case": {
+          "SHA256": "10ad772f4987b54651425391a081693c6f56573c868da59042dc1beb9d78019e",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000019_view0_row29.jsonl.gz"
+        },
+        "future_IDSW_delta": 3,
+        "key": [
+          16,
+          19,
+          0
+        ],
+        "row": 29,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 3,
+          "per_GT_camera_duration_increases": {
+            "28_camera0": 12,
+            "49_camera1": 1,
+            "4_camera0": 1,
+            "53_camera1": 2
+          }
+        }
+      },
+      {
+        "H": 8,
+        "case": {
+          "SHA256": "10ad772f4987b54651425391a081693c6f56573c868da59042dc1beb9d78019e",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000019_view0_row29.jsonl.gz"
+        },
+        "future_IDSW_delta": -4,
+        "key": [
+          16,
+          19,
+          0
+        ],
+        "row": 29,
+        "video": 16,
+        "worsening": {
+          "per_GT_camera_duration_increases": {
+            "4_camera0": 1,
+            "54_camera1": 2
+          }
+        }
+      },
+      {
+        "H": 16,
+        "case": {
+          "SHA256": "4181a5fd1343c6a92ea84974d67be141ab7d1b8844ec05f40339fcd1fdbfde33",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000021_view0_row13.jsonl.gz"
+        },
+        "future_IDSW_delta": 3,
+        "key": [
+          16,
+          21,
+          0
+        ],
+        "row": 13,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 1
+        }
+      },
+      {
+        "H": 32,
+        "case": {
+          "SHA256": "4181a5fd1343c6a92ea84974d67be141ab7d1b8844ec05f40339fcd1fdbfde33",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000021_view0_row13.jsonl.gz"
+        },
+        "future_IDSW_delta": 7,
+        "key": [
+          16,
+          21,
+          0
+        ],
+        "row": 13,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 4,
+          "per_GT_camera_duration_increases": {
+            "28_camera0": 2,
+            "32_camera0": 13,
+            "48_camera1": 3,
+            "53_camera1": 2,
+            "54_camera1": 1
+          },
+          "wrong_owner_episode_max_frames": 10,
+          "wrong_owner_observations": 21
+        }
+      },
+      {
+        "H": 16,
+        "case": {
+          "SHA256": "f383a405eaa9e314091b41a7de358a3e5a1512818aa6013c6bb4c774ee9087bf",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000023_view0_row17.jsonl.gz"
+        },
+        "future_IDSW_delta": -1,
+        "key": [
+          16,
+          23,
+          0
+        ],
+        "row": 17,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 1,
+          "per_GT_camera_duration_increases": {
+            "54_camera1": 2
+          }
+        }
+      },
+      {
+        "H": 32,
+        "case": {
+          "SHA256": "f383a405eaa9e314091b41a7de358a3e5a1512818aa6013c6bb4c774ee9087bf",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000023_view0_row17.jsonl.gz"
+        },
+        "future_IDSW_delta": 3,
+        "key": [
+          16,
+          23,
+          0
+        ],
+        "row": 17,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 4,
+          "per_GT_camera_duration_increases": {
+            "48_camera1": 5,
+            "53_camera1": 4,
+            "54_camera1": 2
+          },
+          "wrong_owner_observations": 6
+        }
+      },
+      {
+        "H": 16,
+        "case": {
+          "SHA256": "851f985ca9ee96c9f34ac031f57776bfd3f398a9ae869094aabc25a1021d3f00",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000029_view0_row25.jsonl.gz"
+        },
+        "future_IDSW_delta": -1,
+        "key": [
+          16,
+          29,
+          0
+        ],
+        "row": 25,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 1,
+          "per_GT_camera_duration_increases": {
+            "54_camera1": 2
+          }
+        }
+      },
+      {
+        "H": 32,
+        "case": {
+          "SHA256": "851f985ca9ee96c9f34ac031f57776bfd3f398a9ae869094aabc25a1021d3f00",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000029_view0_row25.jsonl.gz"
+        },
+        "future_IDSW_delta": 1,
+        "key": [
+          16,
+          29,
+          0
+        ],
+        "row": 25,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 3,
+          "per_GT_camera_duration_increases": {
+            "48_camera1": 11,
+            "53_camera1": 2,
+            "54_camera1": 2
+          },
+          "wrong_owner_observations": 9
+        }
+      },
+      {
+        "H": 8,
+        "case": {
+          "SHA256": "851f985ca9ee96c9f34ac031f57776bfd3f398a9ae869094aabc25a1021d3f00",
+          "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P3_factorial/B/video16/frame000029_view0_row25.jsonl.gz"
+        },
+        "future_IDSW_delta": 0,
+        "key": [
+          16,
+          29,
+          0
+        ],
+        "row": 25,
+        "video": 16,
+        "worsening": {
+          "new_cross_GT_gallery_mix": 1,
+          "per_GT_camera_duration_increases": {
+            "54_camera1": 1
+          }
+        }
+      }
+    ],
+    "selected_rule": "bounded_quarantine",
+    "status": "NO_GO_SAFE_MEMORY",
+    "strict_worsened_prefix_H_checks": 18,
+    "thresholds_unchanged": true
+  },
+  "status": "COMPLETE"
+}
