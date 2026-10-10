@@ -15,6 +15,7 @@ def scalar(result, horizon):
         false_split_birth=counts.get('false_split_birth',0),
         false_birth_seen_GT_proxy=counts.get('false_birth_seen_GT_proxy',0),
         owner_correct_observations=counts.get('owner_correct',0),
+        UNKNOWN_owner_observations=c['UNKNOWN_owner'],
         writes_into_polluted_raw_gallery=counts.get('already_polluted_write',0))
 
 
@@ -57,7 +58,8 @@ def main():
                 ('B_minus_A_memory','B','A'),('C_minus_A_first_reader','C','A'),('D_minus_A_joint','D','A'),
                 ('D_minus_C_memory_given_reader','D','C'),('D_minus_B_reader_given_memory','D','B')]}
             interaction={f:values['D'][f]-values['C'][f]-values['B'][f]+values['A'][f] for f in values['A']}
-            durations={};recovery={}
+            durations={};recovery={};coverage={}
+            a_rows={(tuple(e['key']),e['row']):e for e in all_traces['A'] if key[1]<=e['key'][0]<key[1]+int(h)}
             for arm,r in g.items():
                 c=r['H'][h]['identity_consequences'];per={}
                 for e in c['error_propagation_intervals']:
@@ -66,9 +68,20 @@ def main():
                 correct=next((e for e in all_traces[arm] if e['GT_OFFLINE_ONLY']==gt and e['key'][1]==key[2] and e['owner_correct'] and key[1]<=e['key'][0]<key[1]+int(h)),None)
                 recovery[arm]=dict(first_wrong_in_A=first['wrong_owner'],scene_frames_to_first_observed_correct_owner=correct['key'][0]-key[1] if first['wrong_owner'] and correct else None,
                     unavailable_or_right_censored=not first['wrong_owner'] or correct is None)
+                transitions=collections.Counter()
+                for e in all_traces[arm]:
+                    old=a_rows.get((tuple(e['key']),e['row']))
+                    if old is None or e['GT_OFFLINE_ONLY'] is None:continue
+                    assert old['GT_OFFLINE_ONLY']==e['GT_OFFLINE_ONLY']
+                    transitions['A_wrong_to_actual_correct']+=old['wrong_owner'] and e['owner_correct']
+                    transitions['A_wrong_to_actual_UNKNOWN']+=old['wrong_owner'] and not e['owner_assessed']
+                    transitions['A_correct_to_actual_wrong']+=old['owner_correct'] and e['wrong_owner']
+                    transitions['A_correct_to_actual_UNKNOWN']+=old['owner_correct'] and not e['owner_assessed']
+                coverage[arm]=dict(transitions)
             horizons[h]=dict(actual=values,paired_deltas=deltas,interaction_D_minus_C_minus_B_plus_A=interaction,
                 per_GT_camera_wrong_owner_max_episode=durations,target_recovery_latency=recovery,
-                corrected_observed_propagation={a:r['H'][h]['identity_consequences'] for a,r in g.items()})
+                corrected_observed_propagation={a:r['H'][h]['identity_consequences'] for a,r in g.items()},
+                paired_owner_coverage_transitions=coverage,UNKNOWN_does_not_count_as_correct_recovery=True)
             for arm in 'ABCD':
                 if strict:totals[arm+'_H'+h].update(values[arm])
             for arm in 'BCD':
