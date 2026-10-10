@@ -49,7 +49,7 @@ def audit(model,records,limit=256):
 
 def main(version=1):
     protect();torch.set_num_threads(1);torch.manual_seed(20261009)
-    train,reserved,sources=load_records(label_version=2 if version>=2 else 1)
+    train,reserved,sources=load_records(label_version=2 if version>=2 else 1,onpolicy_pilot=version>=3)
     constants=collections.Counter()
     for r in train+reserved:
         f=r['inputs']['commitment_features'];constants['payloads']+=1

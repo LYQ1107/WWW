@@ -15,7 +15,7 @@ from gtr.modeling.jev_phase15.model import PersistentIdentityPolicy, ARMS
 from gtr.modeling.jev_stage2.assignment import lawful_choice
 
 
-def load_records(version=2,label_version=1):
+def load_records(version=2,label_version=1,onpolicy_pilot=False):
     records=[]; manifests=[]
     for video in TRAIN:
         folder=OUT/f'commitment_dataset_v{version}'/f'video{video:02d}'
@@ -33,6 +33,15 @@ def load_records(version=2,label_version=1):
         keys={tuple(r['key']) for r in records};assert set(patches)<=keys
         records=[dict(r,**patches.get(tuple(r['key']),{})) for r in records]
         manifests.append(ref(OUT/'recent_owner_labels_v2/RESULT.json'))
+    if onpolicy_pilot:
+        records=[dict(r,corpus_actor='frozen_multi') for r in records]
+        for video in TRAIN:
+            path=OUT/'onpolicy_pilot_dataset_v3'/f'video{video:02d}'/'RESULT.json';result=read(path);assert result['status']=='PASS'
+            descriptor=result['DATASET'];assert sha(descriptor['path'])==descriptor['SHA256']
+            data=load_dense(descriptor['path'])
+            for r in data['records']:
+                assert r['key'][0] in TRAIN and r['audit_block']==((r['key'][1]//64)%5==4) and r['corpus_actor']=='F_pilot_v2'
+            records.extend(data['records']);manifests.append(ref(path))
     return [r for r in records if not r['audit_block']], [r for r in records if r['audit_block']], manifests
 
 
@@ -133,14 +142,14 @@ def main(arm, phase, seed=20261009, version=1):
     out=OUT/f'training_full_payload_v{version}'/arm/f'seed{seed}'/phase;out.mkdir(parents=True,exist_ok=True)
     assert not (out/'RESULT.json').exists()
     torch.set_num_threads(1);torch.manual_seed(seed);np.random.seed(seed);rng=random.Random(seed)
-    train,audit,manifests=load_records(label_version=2 if version>=2 else 1);assert train and audit
+    train,audit,manifests=load_records(label_version=2 if version>=2 else 1,onpolicy_pilot=version>=3);assert train and audit
     grouped=collections.defaultdict(list)
-    for r in train:grouped[r['key'][0],r['key'][1]//64].append(r)
+    for r in train:grouped[r['key'][0],r['key'][1]//64,r.get('corpus_actor','frozen_multi')].append(r)
     safe=[r for r in train if (r['commit_kind']==1).any()];correct=[r for r in train if (r['commit_kind']==2).any()]
     assert safe,'no certified safe continuation support'
     keys=sorted(grouped)
     model,checkpoint,initializer_manifest=initialize(arm,seed)
-    model.posterior_feedback='masked' if version>=3 else 'native'
+    model.posterior_feedback=read(REPORTS/f'RESEARCH_VERSION_{version}_PROTOCOL.json').get('posterior_feedback','native') if version>=2 else 'native'
     if phase=='tiny':
         tiny=([correct[0]] if correct else [])+[safe[0]]+[grouped[keys[0]][0],grouped[keys[-1]][-1]]
         tiny=tiny[:4]
@@ -157,11 +166,13 @@ def main(arm, phase, seed=20261009, version=1):
         initial_scores_parity=True,development_GT=False,training_payloads=len(train),reserved_payloads=len(audit),
         train_safe_payloads=len(safe),train_correction_payloads=len(correct),executed_profile=profile(model,probe)))
     before=assess(model,audit,128);begin=time.monotonic();losses=[];history=[];gradients=collections.defaultdict(float)
-    first_loss=None;step=0
+    first_loss=None;step=0;sampled_actors=collections.Counter()
     try:
         for step in range(1,steps+1):
-            part=tiny if phase=='tiny' else [rng.choice(grouped[rng.choice(keys)]) for _ in range(2)]+[
+            natural=[rng.choice(grouped[rng.choice([k for k in keys if k[-1]==actor])]) for actor in ['frozen_multi','F_pilot_v2']] if version>=3 else [rng.choice(grouped[rng.choice(keys)]) for _ in range(2)]
+            part=tiny if phase=='tiny' else natural+[
                 rng.choice(safe),rng.choice(correct) if correct else rng.choice(grouped[rng.choice(keys)])]
+            sampled_actors.update(r.get('corpus_actor','frozen_multi') for r in part)
             assert all(not r['audit_block'] and r['key'][0] in TRAIN for r in part)
             x,y=batch(part);model.train();optimizer.zero_grad(set_to_none=True)
             details=model.details(x);loss,parts=objective(details,x,y,arm);assert torch.isfinite(loss)
@@ -191,6 +202,7 @@ def main(arm, phase, seed=20261009, version=1):
             loss_before=first_loss,loss_last=float(np.mean(losses[-min(16,len(losses)):])),gradient_health=dict(gradients),
             label_assessment_qualified=bool(passed),native_pilot_safety='PENDING_REAL_MUTATED_BRANCHES',
             formal_qualified=False,seconds=time.monotonic()-begin,manifests=manifests)
+        result['sampled_actor_payloads']=dict(sampled_actors)
         save(out/'RESULT.json',result);save(out/'PROGRESS.json',dict(status='COMPLETE',actual_updates=step,qualified=bool(passed)))
         print('PHASE15_TRAIN_COMPLETE',arm,phase,version,passed,final,flush=True)
     except Exception:

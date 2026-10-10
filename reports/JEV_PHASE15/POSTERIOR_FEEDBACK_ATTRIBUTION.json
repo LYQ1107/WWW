@@ -1,0 +1,1385 @@
+{
+  "attribution_scope": "same weights, native prefix, RNG, VFCE and future; only previous purity/posterior-available actor input channels masked; actual mutated-state subsequent decisions",
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": null,
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": null,
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.9.12 (main, Apr  5 2022, 06:56:58) \n[GCC 7.5.0]"
+    },
+    "evaluator": null,
+    "heldout_20_21_22": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+    "scope": null,
+    "seed": 20261009,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/__init__.py": "4351cd60c528123b98699cbfa3efd1814428d11d917fb4c68dd8724b3ec2ff07",
+      "gtr/modeling/jev_phase15/candidate_reliability.py": "62f577b38782b1b79ee8cb056e8b59953caf9c7c2240f3db02e0f43a7ef4cb82",
+      "gtr/modeling/jev_phase15/commitment_option_reader.py": "a7d10acf0ff8ab99c75d84f74536327d192143b14ad759a68f60bc8add7154ac",
+      "gtr/modeling/jev_phase15/commitment_question.py": "cb88861bd86c212fc0daf5fc7a65aefc6f64ce15d0de7e397b85473fdcd042b4",
+      "gtr/modeling/jev_phase15/commitment_state.py": "89d1ad35e60331f20e569305a90f27c18e6c29a96366fceb8f11c1d30592ff91",
+      "gtr/modeling/jev_phase15/identity_fragment_controller.py": "b8976d889d252df2bcda2c5b365004b099204ddd7a57657c5ac86aad8ac2bb96",
+      "gtr/modeling/jev_phase15/joint_action_ranker.py": "1e27fcfab7a85d47fdc1289f1133b6a45af727e3b5d5ee1606fd7418a42fa997",
+      "gtr/modeling/jev_phase15/model.py": "f77d3c78b74ede0ff2d05409bbe3287d6d6044b5199de5bc8d4dd406dbc781af",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase15_all_query_audit.py": "5f174ca6b76f45f7ab8fba445a79d82b83633e69a5cf1687c2575a99f523734c",
+      "reproduction_tools/jev_phase15_audit_finalize.py": "f21f4bf7d188dea5c6050aea6b8ef93d6500aa6e42deed34fe72f2ffc83a87ae",
+      "reproduction_tools/jev_phase15_causal_commitment.py": "9fd95591b20902d362ebfbe84bac34d854aaae18998a60851b4b859af021f253",
+      "reproduction_tools/jev_phase15_causal_finalize.py": "ce92b61d6b8e5be953404c5a14720e6c84a6bd28c2fc0b3a4131957a483fd0ac",
+      "reproduction_tools/jev_phase15_causal_metrics.py": "dd093e75cf92220d6bb9dd4d685efc115596d6c27a1443d6d47b91ba4bdcb268",
+      "reproduction_tools/jev_phase15_causal_queue.py": "e264cd5696695ed28dd906c86443ebf9de6fa67125a28e6558ce53f6b38a7eb4",
+      "reproduction_tools/jev_phase15_collect_dataset.py": "92f029955cf63c3653004e467605e939dced6cc4be2fe2d14d79ffa97f8169d4",
+      "reproduction_tools/jev_phase15_collect_train.py": "456eefaf8b4181ff16f585a002850e0af35e26feaf01e8d338b50ddda7393249",
+      "reproduction_tools/jev_phase15_commitment_labels.py": "92b9c1243dbba898383a7a035db6177131ed41094b8166f41799158028944488",
+      "reproduction_tools/jev_phase15_common.py": "7d6d5a9e22eb2bf547f66a123f9ac3fec081fcd99f043150182d6742756167f2",
+      "reproduction_tools/jev_phase15_dataset_finalize.py": "695fa56009ed2bb7f2591e7b122e700f0d908507dbba74b29189bac674c26682",
+      "reproduction_tools/jev_phase15_dataset_queue.py": "8803284ee461d16de0b0d541aa85277445728fd4ba28c67880df814ce25afe2e",
+      "reproduction_tools/jev_phase15_duplicate_queue.py": "a0dc0d3a3d152eaac954e0de6b1e6cdb219db7300cd9fe9f8a8b9fe66015e6f9",
+      "reproduction_tools/jev_phase15_evaluate.py": "eabc5c424c16f2e3c8206abc2c360e9d7b35e677511b2d975000ea0bce5e65ad",
+      "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+      "reproduction_tools/jev_phase15_label_tests.py": "06af8022a1c07f13b2ef1f922e7818dd06ffe0166e6d6ef049b514d7d43bb4de",
+      "reproduction_tools/jev_phase15_latency.py": "b3906c9650e2f20d642f52e8ef686ad6223c5d0ced1afcf8401d67047d9c73ee",
+      "reproduction_tools/jev_phase15_losses.py": "0f5a8172c0033883ba0c7e908da683e06beda4c684a49afb7661083e52b71388",
+      "reproduction_tools/jev_phase15_matlab.py": "65bfaa4ca6a0e2f1da4ddc26ad8ca45d87cd958b7a4fc81e6666e888a808f53d",
+      "reproduction_tools/jev_phase15_native_replay.py": "b3dc48639293e8e15cef0175b3cf19d2d3757c27d7cb3da4c0ef5da3e7fd3d0c",
+      "reproduction_tools/jev_phase15_pilot_finalize.py": "aff1add167deb652b9a97f13862ff69a8edfb3af81af069fdb7f5eb51d7e6b47",
+      "reproduction_tools/jev_phase15_pilot_native.py": "60369e2b9fe9afe6d6297c7d30f6ac0cfacdc94814ce1ed6c8dd52f0b73a648d",
+      "reproduction_tools/jev_phase15_pilot_queue.py": "a56da6bacdacf6c66613c0c70f698f31583cac4c2c0257bd0b7a87315baf77ed",
+      "reproduction_tools/jev_phase15_posterior_audit_queue.py": "55a62004346f0da08dfa7673e603bf82db0475d2ef59b9978071abf466d733d2",
+      "reproduction_tools/jev_phase15_posterior_finalize.py": "079439c487e6259e191f2aa3f4cf5eb53de10e520b46101a9f1ca378270b9217",
+      "reproduction_tools/jev_phase15_posterior_tests.py": "49321eee27a6edc90db09e66a1e41aee0ff699bab68c94d4cffaa437bd761a11",
+      "reproduction_tools/jev_phase15_queue.py": "b0a0b20357e2599b0955de10f0536e44cb48cc8b0f47b2398e3af7cacc435f4c",
+      "reproduction_tools/jev_phase15_recent_label_tests.py": "f1bc25683d425167b34afeed0a9d08f075312c75a48d01eb3a08db33b47b1bde",
+      "reproduction_tools/jev_phase15_recent_labels.py": "28ea865ba932fab54f97bdfe1fe49f930eb5d10ebde807aa6d562aadeed0f0a9",
+      "reproduction_tools/jev_phase15_state_tests.py": "f5d98693580d1bd6b6e84ffac53ca5410933e38b46e41b20390165da2e7940a2",
+      "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418",
+      "reproduction_tools/jev_phase15_train.py": "4c278ad7ef7900a3eddaa472c02c82d91f0f7443169d15b7a50ebe8a1abd82ba"
+    },
+    "source_commit": "17935be9b94ced8de0828d4c7fcbe865136bb547",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+  },
+  "cases": [
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "5aab1f2d2e143ca968c72d65b5eab27551f1b24ed63ab050968214871b8bbebe",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "key": [
+        12,
+        3,
+        1
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "435299249a65e6ad7599017690f8a46bc95b976ce5c798c71c987c02897cba95",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "qualified": true,
+      "row": 6
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "5aab1f2d2e143ca968c72d65b5eab27551f1b24ed63ab050968214871b8bbebe",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "key": [
+        12,
+        4,
+        1
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "435299249a65e6ad7599017690f8a46bc95b976ce5c798c71c987c02897cba95",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "qualified": true,
+      "row": 7
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "5aab1f2d2e143ca968c72d65b5eab27551f1b24ed63ab050968214871b8bbebe",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "key": [
+        12,
+        5,
+        1
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "435299249a65e6ad7599017690f8a46bc95b976ce5c798c71c987c02897cba95",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "qualified": true,
+      "row": 4
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "5aab1f2d2e143ca968c72d65b5eab27551f1b24ed63ab050968214871b8bbebe",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "key": [
+        12,
+        20,
+        1
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "435299249a65e6ad7599017690f8a46bc95b976ce5c798c71c987c02897cba95",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "qualified": true,
+      "row": 7
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "5aab1f2d2e143ca968c72d65b5eab27551f1b24ed63ab050968214871b8bbebe",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "key": [
+        12,
+        29,
+        1
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "435299249a65e6ad7599017690f8a46bc95b976ce5c798c71c987c02897cba95",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "qualified": true,
+      "row": 7
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "5aab1f2d2e143ca968c72d65b5eab27551f1b24ed63ab050968214871b8bbebe",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "key": [
+        12,
+        30,
+        1
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "435299249a65e6ad7599017690f8a46bc95b976ce5c798c71c987c02897cba95",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video12/RESULT.json"
+      },
+      "qualified": true,
+      "row": 7
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "3a0bc2d42cd9b7be1dd67f5d3fad547dcc516f23f262c8c4b90d0ef96de3b11a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "key": [
+        13,
+        301,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "8d86be0a13daf6c9a1561d20011c7f465f93b76ec2242cf92ecf52df9470190f",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "qualified": true,
+      "row": 1
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "3a0bc2d42cd9b7be1dd67f5d3fad547dcc516f23f262c8c4b90d0ef96de3b11a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "key": [
+        13,
+        303,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "8d86be0a13daf6c9a1561d20011c7f465f93b76ec2242cf92ecf52df9470190f",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "qualified": true,
+      "row": 1
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "3a0bc2d42cd9b7be1dd67f5d3fad547dcc516f23f262c8c4b90d0ef96de3b11a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "key": [
+        13,
+        304,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "8d86be0a13daf6c9a1561d20011c7f465f93b76ec2242cf92ecf52df9470190f",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "qualified": true,
+      "row": 0
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "3a0bc2d42cd9b7be1dd67f5d3fad547dcc516f23f262c8c4b90d0ef96de3b11a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "key": [
+        13,
+        502,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "8d86be0a13daf6c9a1561d20011c7f465f93b76ec2242cf92ecf52df9470190f",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "qualified": true,
+      "row": 1
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "3a0bc2d42cd9b7be1dd67f5d3fad547dcc516f23f262c8c4b90d0ef96de3b11a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "key": [
+        13,
+        704,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "8d86be0a13daf6c9a1561d20011c7f465f93b76ec2242cf92ecf52df9470190f",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "qualified": true,
+      "row": 1
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "3a0bc2d42cd9b7be1dd67f5d3fad547dcc516f23f262c8c4b90d0ef96de3b11a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "key": [
+        13,
+        743,
+        1
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "8d86be0a13daf6c9a1561d20011c7f465f93b76ec2242cf92ecf52df9470190f",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video13/RESULT.json"
+      },
+      "qualified": true,
+      "row": 4
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "262b5419e7d4a95fdd6098d9d287c4972583135d9b6d861ab8639943acbffc22",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "key": [
+        14,
+        1,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "a3042bab86198ffb0631745df4f8db52cc41801a9054760b95ea1edd01f41dec",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "qualified": false,
+      "row": 11
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "262b5419e7d4a95fdd6098d9d287c4972583135d9b6d861ab8639943acbffc22",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "key": [
+        14,
+        36,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "a3042bab86198ffb0631745df4f8db52cc41801a9054760b95ea1edd01f41dec",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "qualified": false,
+      "row": 10
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "262b5419e7d4a95fdd6098d9d287c4972583135d9b6d861ab8639943acbffc22",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "key": [
+        14,
+        40,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "a3042bab86198ffb0631745df4f8db52cc41801a9054760b95ea1edd01f41dec",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "qualified": false,
+      "row": 9
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "262b5419e7d4a95fdd6098d9d287c4972583135d9b6d861ab8639943acbffc22",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "key": [
+        14,
+        40,
+        1
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "a3042bab86198ffb0631745df4f8db52cc41801a9054760b95ea1edd01f41dec",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "qualified": false,
+      "row": 15
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "262b5419e7d4a95fdd6098d9d287c4972583135d9b6d861ab8639943acbffc22",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "key": [
+        14,
+        41,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "a3042bab86198ffb0631745df4f8db52cc41801a9054760b95ea1edd01f41dec",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "qualified": false,
+      "row": 9
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "262b5419e7d4a95fdd6098d9d287c4972583135d9b6d861ab8639943acbffc22",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "key": [
+        14,
+        41,
+        1
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "a3042bab86198ffb0631745df4f8db52cc41801a9054760b95ea1edd01f41dec",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video14/RESULT.json"
+      },
+      "qualified": false,
+      "row": 15
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "4fcf47950c2218764ab79832b289b79de2f00ba872dcc42df5756e62efb37317",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "key": [
+        16,
+        13,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "f329205163b2ecab29f575f339665cebc144539f67f5aa959a81e05920ec9a9e",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "qualified": true,
+      "row": 30
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "4fcf47950c2218764ab79832b289b79de2f00ba872dcc42df5756e62efb37317",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "key": [
+        16,
+        17,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "f329205163b2ecab29f575f339665cebc144539f67f5aa959a81e05920ec9a9e",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "qualified": true,
+      "row": 31
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "4fcf47950c2218764ab79832b289b79de2f00ba872dcc42df5756e62efb37317",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "key": [
+        16,
+        19,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "f329205163b2ecab29f575f339665cebc144539f67f5aa959a81e05920ec9a9e",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "qualified": true,
+      "row": 29
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "4fcf47950c2218764ab79832b289b79de2f00ba872dcc42df5756e62efb37317",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "key": [
+        16,
+        21,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "f329205163b2ecab29f575f339665cebc144539f67f5aa959a81e05920ec9a9e",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "qualified": true,
+      "row": 13
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "4fcf47950c2218764ab79832b289b79de2f00ba872dcc42df5756e62efb37317",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "key": [
+        16,
+        23,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "f329205163b2ecab29f575f339665cebc144539f67f5aa959a81e05920ec9a9e",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "qualified": true,
+      "row": 17
+    },
+    {
+      "changed_actual_commits": 0,
+      "intervention": {
+        "SHA256": "4fcf47950c2218764ab79832b289b79de2f00ba872dcc42df5756e62efb37317",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_masked_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "key": [
+        16,
+        29,
+        0
+      ],
+      "masked_minus_feedback": {
+        "16": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "32": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        },
+        "8": {
+          "UNKNOWN_selected": 0,
+          "false_birth": 0,
+          "false_split_birth": 0,
+          "future_CLEAR_IDSW": 0,
+          "history_corrective_switches": 0,
+          "new_cross_GT_gallery_mix": 0,
+          "past_pure_owner_wrong_observations": 0,
+          "pure_fragment_hops": 0,
+          "writes_into_already_polluted_history": 0
+        }
+      },
+      "original": {
+        "SHA256": "f329205163b2ecab29f575f339665cebc144539f67f5aa959a81e05920ec9a9e",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_native_v1/F_full/pilot/video16/RESULT.json"
+      },
+      "qualified": true,
+      "row": 25
+    }
+  ],
+  "changed_actual_commits_in_all24_overlapping_windows": 0,
+  "eligible18_H32_overlapping_delta_sum": {
+    "UNKNOWN_selected": 0,
+    "false_birth": 0,
+    "false_split_birth": 0,
+    "future_CLEAR_IDSW": 0,
+    "history_corrective_switches": 0,
+    "new_cross_GT_gallery_mix": 0,
+    "past_pure_owner_wrong_observations": 0,
+    "pure_fragment_hops": 0,
+    "writes_into_already_polluted_history": 0
+  },
+  "feature_family_GT_free": true,
+  "input_support": "both channels constant (.5,0) in frozen corpus; audit proves actual support separately",
+  "intervention_tests": {
+    "SHA256": "bdc89e9df6a68b1d0c49c591397a36357a393a3047cb62c5c220b9e6de9d7645",
+    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/posterior_feedback_contract_v1/RESULT.json"
+  },
+  "mechanism_diagnosis": "NO_EFFECT_ON_ACTUAL_IDS",
+  "status": "COMPLETE",
+  "whole_video_gain_claimed": false
+}
