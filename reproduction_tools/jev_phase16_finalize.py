@@ -34,7 +34,7 @@ def main():
         p=OUT/'P8_memory_only_live'/f'video{video:02d}/RESULT.json';d=read(p)
         assert d['status']=='COMPLETE' and d['live_images'] and d['checkpoint']==ck
         live.append(dict(video=video,result=ref(p),metrics=d['strict_online_metrics'],
-            native_risk=d['native_risk'],propagation=d['error_propagation'],admission_counts=d['admission_counts'],
+            legacy_single_GT_history_diagnostic=d['native_risk'],qualified_owner_propagation=d['error_propagation'],admission_counts=d['admission_counts'],
             raw_predictions=d['raw_predictions'],actual_mutated_state_online=True,full_image_cache_FPS_claim=False))
         propagation[str(video)]=read(d['error_propagation']['path'])
     historical_path=XV/'pilot_pooled_live_v3/RESULT.json';historical=read(historical_path)
@@ -46,6 +46,8 @@ def main():
         historical_XV_V3_CVIDF1=historical['CVIDF1'],historical_XV_V3_CVMA=historical['CVMA'],
         three_seed_new_model_worst_IDSW=None,three_seed_new_model_mean_IDSW=None,
         diagnostic_seed20261009_IDSW=pooled['pooled_raw_TrackEval']['IDSW'],
+        native_risk_tag_scope='Legacy single-known-GT history tags supplementary only; primary owner propagation/split risk use >=3 and>=.8 coverage',
+        full_cold_start_distinct_from_shared_legacy_prefix_admission=True,
         prior_failure_824_preserved=True,Stage1_has_seen_all24_TRAIN=True,independent_full_system_generalization=False,
         DEV_rule_or_threshold_selection=False,raw_unfiltered=True,official_TEST=False,Full24=False)
     save(REPORTS/'ONLINE_VALIDATION.json',online)
@@ -70,7 +72,7 @@ def main():
         Tiny='NOT_RUN',Pilot='NOT_RUN',Formal_three_seed_20k='NOT_RUN',Matched4k='NOT_RUN',
         real_image_online='COMPLETE_MEMORY_ONLY_DIAGNOSTIC',official_MATLAB='COMPLETE_UNCHANGED',actual_latency='COMPLETE_THREE_RESTARTS',
         GO_TRACKING='FAIL',GO_JEV_INDEPENDENT_VALUE='NOT_ESTABLISHED',GO_DEPLOYMENT='PASS' if runtime['runtime_thresholds_pass'] else 'FAIL',
-        tracking_blockers=['P1 no qualified reader','No qualified formal three-seed results','Native safety/label audit retained; cannot infer safe architecture from one pilot seed'],
+        tracking_blockers=['P1 no qualified reader','No qualified formal three-seed results','Native safety/label audit failed','Cold-start full-video diagnostic1494 IDSW and lower HOTA/AssA/CVIDF1; frozen rule seriously degrades tracking'],
         memory_safety_violations=safety['strict_worsened_prefix_H_checks'],memory_safe_benefit_independent_clusters=safety['independent_safe_benefit_clusters'],
         safe_recovery_label_clusters=labels['safe_recovery_independent_clusters'],unsafe_recovery_label_clusters=labels['unsafe_recovery_independent_clusters'],
         reserved_correction_clusters=labels['necessary_correction_reserved_clusters'],
@@ -145,6 +147,8 @@ E的首次决策干预在这组前缀仅改变一条严格目标提交；其IDSW
 |CVMA|{historical['CVMA']:.6f}|{pooled['CVMA']:.6f}|
 
 各视频、认证覆盖、wrong-owner持续帧数、混合/出生、raw predictions SHA 在 ONLINE_VALIDATION.json 中。CVIDF1/CVMA 使用未修改官方 MATLAB、求和场景计数；完整toolkit哈希与历史一致。当前仅seed20261009，三种子新模型最差/均值均null。历史原关联最差824、XV V3的147完整保留，不能把单种子诊断当三种子恢复证明。
+
+完整冷启动结果明确否决该规则：三个视频IDSW为320/431/743，合并1494，远高于XV参考147；HOTA、AssA和官方跨相机指标均严重下降。前缀实验共同保留旧历史，完整视频从冷启动使用新接纳规则，二者范围不同。这提示冷启动的隔离/fallback与改变后的WHO/Q4输入需要重新取得可靠资格；当前不能继续训练或部署该规则。主认证owner/false_split统计使用≥3与≥80%门槛，旧single-GT标签只作为明确标注的补充诊断。
 
 ## 实际运行成本
 
