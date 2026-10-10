@@ -1,0 +1,353 @@
+{
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": [
+      {
+        "SHA256": "7f74f099e9cb365528af3b05aab5d9e87d96eb2063f94efd28ed28cc0864a57b",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v3/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+      }
+    ],
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": {
+      "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+      "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+    },
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": "5",
+      "GPU": "Tesla V100-DGXS-32GB",
+      "cudnn": 8700,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+      "torch": "2.0.0+cu118",
+      "torch_CUDA": "11.8"
+    },
+    "evaluator": "CUDA-synchronized real image/native runtime, no GT/evaluator/journals",
+    "heldout_20_21_22": "SEALED",
+    "inputs": [
+      {
+        "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+        "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+      },
+      {
+        "SHA256": "e17d290e061909b16946ebdeed528a7f9c155e7a4deaa8533ec44be4454cd368",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/source_P8_native_provenance/reports/JEV_PHASE16/P8_EVALUATION_SCOPE.json"
+      }
+    ],
+    "native_state": {
+      "actual_trial_start_SHA256": [
+        "9eafb8696006e6c4bc40e3ccb7bc249abeec229673b8aaa999f79f03fabb84d4",
+        "2009cbabc5a49683dbf1dc5395428c2be53f95781ee9a8057ae9d3736c4eb894",
+        "b47748bc7a8e73081299fa9f3f833263b73159d4a7816898f9cf3b60679b8778"
+      ]
+    },
+    "official_TEST": false,
+    "preregistration_SHA256": "53a8361e713ba8d02155656636504d44ee12e4417de97f520946549d0e906939",
+    "scope": "three restarts of actual live DEV17 first256 scene frames; shared GPU, diagnostic pilot",
+    "seed": 20261009,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/__init__.py": "4351cd60c528123b98699cbfa3efd1814428d11d917fb4c68dd8724b3ec2ff07",
+      "gtr/modeling/jev_phase15/candidate_reliability.py": "62f577b38782b1b79ee8cb056e8b59953caf9c7c2240f3db02e0f43a7ef4cb82",
+      "gtr/modeling/jev_phase15/commitment_option_reader.py": "a7d10acf0ff8ab99c75d84f74536327d192143b14ad759a68f60bc8add7154ac",
+      "gtr/modeling/jev_phase15/commitment_question.py": "cb88861bd86c212fc0daf5fc7a65aefc6f64ce15d0de7e397b85473fdcd042b4",
+      "gtr/modeling/jev_phase15/commitment_state.py": "89d1ad35e60331f20e569305a90f27c18e6c29a96366fceb8f11c1d30592ff91",
+      "gtr/modeling/jev_phase15/identity_fragment_controller.py": "b8976d889d252df2bcda2c5b365004b099204ddd7a57657c5ac86aad8ac2bb96",
+      "gtr/modeling/jev_phase15/joint_action_ranker.py": "1e27fcfab7a85d47fdc1289f1133b6a45af727e3b5d5ee1606fd7418a42fa997",
+      "gtr/modeling/jev_phase15/model.py": "f77d3c78b74ede0ff2d05409bbe3287d6d6044b5199de5bc8d4dd406dbc781af",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_phase16/__init__.py": "fd73454f85489bf8dac315c761403bc7edb589e07410c17e1d45819982af927d",
+      "gtr/modeling/jev_phase16/evidence_ledger.py": "17a81da611273524a3db213e73bc91dabc8c741d4091c53f96c4ab61f1294433",
+      "gtr/modeling/jev_phase16/history_segment_encoder.py": "268daf3fa6d308d70649218e5178ee16c1201d78be59f9845987b60775ec0436",
+      "gtr/modeling/jev_phase16/multi_prototype_memory.py": "4efc35daba8a9da0f8c088e87ebabefa43eff1542b7fe06bf1a341805a14119e",
+      "gtr/modeling/jev_phase16/native_memory_commit_adapter.py": "3af6eabf784d13b3cdf7f131a6ea082a713de9379038fa4ffb8dfff46409fc54",
+      "gtr/modeling/jev_phase16/safe_matching_memory.py": "ab5950d96b4887d1a4fdb26fa124fdf80680a3b6a396f26442d35eff9ea6ab2b",
+      "gtr/modeling/jev_phase16/safe_memory_admission.py": "958a1148b28e104c0a2c5907b009ea2fc1a8d7e231bf1777476ce619a43b9caa",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase16_admission_shadow.py": "2640e63a57c9697345df0949dfe5b064dfe0a7d3ca00b77ff87697a6c41f0fd0",
+      "reproduction_tools/jev_phase16_candidate_audit.py": "045b755f9c12db49fe1c7b5ba77a6d27aedbe58e8f41ebbf994c2d79918d3dce",
+      "reproduction_tools/jev_phase16_common.py": "fad43f1b10603367b2f4913d9c0f7c03160693572a22278bc87956aa77ada42c",
+      "reproduction_tools/jev_phase16_evaluate.py": "afc8ac1a5bc28ac3419c5e3d44b6dd994f92adcfbf1c26fac07757848808f59f",
+      "reproduction_tools/jev_phase16_finalize.py": "d161a79b31ecfb9af1d7a255177e584a87eb04a420616f21796988c0f7be8c7c",
+      "reproduction_tools/jev_phase16_finish_memory.py": "a2bd06076debebbadf2e061dc8a063e235f99dca8dd14a484b5d5029a2a5cf1c",
+      "reproduction_tools/jev_phase16_finish_p0.py": "ecf65ac941b2210d5569fd716766a72887c5149b88610b92b734c1a138c3ae50",
+      "reproduction_tools/jev_phase16_freeze.py": "9f30445d42bb8a532eddb2e8f6ba085df64897a3fe7963999a3308cf6711d8a9",
+      "reproduction_tools/jev_phase16_gpu_queue.py": "8177f84731ec3e6695d505fa4b1bf575129202e3909023eb8b91a3aebf5488e5",
+      "reproduction_tools/jev_phase16_input_registry.py": "e771451ee8722f210fceabd553c28c22b55016617d3b48a88775a5e30c77f76d",
+      "reproduction_tools/jev_phase16_latency.py": "71bac994835e01e3a8b42ae50582a04d43d62177fa6cc1f03c32c3b63fcd66f6",
+      "reproduction_tools/jev_phase16_ledger_contract.py": "6b767b0d4efb65c73d96c31d551981e598642f5e1ee44585e1f95f36692d8247",
+      "reproduction_tools/jev_phase16_matlab.py": "7b96456a2fc13c8c25c0e3d06b79b2778015fe4b0a379ab8a98b4f840e8f98c8",
+      "reproduction_tools/jev_phase16_memory_contract.py": "97285d9f49f9cd1dd07d07fce46cd066f75a8eba4ef1a7ee7c75463a1d125298",
+      "reproduction_tools/jev_phase16_memory_factorial.py": "d19e288b7d8ba292c009070b6e5a7bde75f84825341f002954165680c68d5e5e",
+      "reproduction_tools/jev_phase16_memory_results.py": "b2c0b4a983259321289ca5bf3054da72563a4f7f2bd9fb899c4df17529cb8b56",
+      "reproduction_tools/jev_phase16_memory_risk.py": "3f05b6a902a841477d9e885a2b43c4c51d96a25035ec5556b68da01407cdcb16",
+      "reproduction_tools/jev_phase16_original_completion_repair.py": "f1163951d8d0a9ce8651954ef0c8488fdb24acd742b2416d4a597d2e2a4ca341",
+      "reproduction_tools/jev_phase16_p1_integrity.py": "81c543fd8dd6debfe90e99fcf2f9dbec507da416a4358a148de2cde6264b81ab",
+      "reproduction_tools/jev_phase16_p1_queue.py": "762e9c82ca211bde907ce9f592651bf0e836a6c97828b1a9064aa2196b913aa7",
+      "reproduction_tools/jev_phase16_p2_p3_queue.py": "416c3e49162e5acaaf8298d16f9f77c3c55c82df8e264a9946f10d93c521f61c",
+      "reproduction_tools/jev_phase16_p2_protocol.py": "ef0f5d0002c966ee1c9e041dd1c140c558fbd195afc9a87d86e4efdd67059550",
+      "reproduction_tools/jev_phase16_p8_queue.py": "33248ecdec3a51529e403c1ad3cf2ade48cf7e5ba19b7a7bf66c9bda4f709c59",
+      "reproduction_tools/jev_phase16_prototype_audit.py": "81d8cf5fd3041ce4ae584eb7ae8c252936c10881ef20d98c250650d1a8e7f42c",
+      "reproduction_tools/jev_phase16_prototype_contract.py": "9c1f6e47eb3b60631b788a61cbc91c1db0d34137db92d327a958b4a4b109eb22",
+      "reproduction_tools/jev_phase16_prototype_results.py": "bd2b479d2a597a7e0f45f4dfe045161a0b99d12f11cfa1362c6360e0042b6d87",
+      "reproduction_tools/jev_phase16_queue.py": "2a629bbb851b860df80038471a8626b9fe7c04a09b979cf096396604a13d7a9e",
+      "reproduction_tools/jev_phase16_recoverability.py": "116b21f6a8dbe48ca1f8c6912c4747718d4a5966cb1c84184430df5a81ae5521"
+    },
+    "source_commit": "b3cd936a972b40a0609b09ad45760698d88dcfb5",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/source_P8_native_provenance"
+  },
+  "concurrent_GPU_processes": "GPU-4887936a-1127-862b-7691-0ba879764df1, 13192, 2099 MiB\nGPU-6bcdf8a3-f609-d699-a3aa-b41b25ca475c, 16536, 12131 MiB\nGPU-2121a646-b548-38b5-e6dd-ba913aa3daaf, 25129, 19396 MiB\nGPU-5477fe7b-4eda-da6c-b0d5-83e2687b86ae, 13193, 2101 MiB\nGPU-17231133-4742-e269-cf2b-bfa4bb6e9f8c, 13194, 2115 MiB\nGPU-6a5187fc-4b8f-b8cd-ddd1-f76b4be1b68d, 13195, 2091 MiB\nGPU-7c4bd41d-77d6-78e9-e6dc-b1b4b7f473bc, 25130, 18692 MiB\nGPU-30aaddaf-5be2-2673-3278-e1e33ce55aa1, 25131, 18716 MiB\nGPU-9914f516-bcdd-bef2-d453-bf5e3719a01f, 25132, 18692 MiB\n",
+  "full_video_uninstrumented_FPS": null,
+  "hardware": "Tesla V100-DGXS-32GB",
+  "image_IO_decode_resize_ms": null,
+  "image_IO_decode_resize_scope": "included in Stage1 aggregate; individual PIL/decode/resize not separately instrumented",
+  "includes_image_IO_detector_VFCE_history_policy_assignment_Gallery_Bank_posteriors": true,
+  "perception_cache_hits": 0,
+  "pilot_runtime_is_not_formal_tracking_GO": true,
+  "raw_SHA256": "5cff6cde6326044d83127fc43eaa9c5a49f02923119d16e5ebed5bc239a6c869",
+  "runtime_thresholds_pass": false,
+  "scope_not_complete_video": true,
+  "status": "COMPLETE",
+  "strict_original_Stage1": true,
+  "three_restart_full_Instance_parity": true,
+  "total_native_Stage2_includes_adapter_posterior_write": true,
+  "trained": {
+    "SHA256": "0816bb0d6aa79ba73d99ec6fcc2c2a83c136551da325fe810d7354f6d081476e",
+    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v3/F_full/seed20261009/pilot/RESULT.json"
+  },
+  "trials": [
+    {
+      "actual_native_start_SHA256": "9eafb8696006e6c4bc40e3ccb7bc249abeec229673b8aaa999f79f03fabb84d4",
+      "camera_payload_FPS": 6.491683841797775,
+      "camera_payloads": 512,
+      "component_ms": {
+        "Bank_promotion": null,
+        "JEV_scores": {
+          "max": 36.87160462141037,
+          "p50": 17.012126743793488,
+          "p95": 25.597931444644924
+        },
+        "Stage1_image_IO_detector_VFCE": {
+          "max": 212.2751921415329,
+          "p50": 106.79508745670319,
+          "p95": 149.61871318519115
+        },
+        "VFCE_head": {
+          "max": 5.995213985443115,
+          "p50": 0.4047118127346039,
+          "p95": 0.6237663328647614
+        },
+        "VFCE_pooling": {
+          "max": 2.2696778178215027,
+          "p50": 0.7368661463260651,
+          "p95": 1.1643487960100174
+        },
+        "backbone": {
+          "max": 38.304463028907776,
+          "p50": 27.41241827607155,
+          "p95": 27.883922681212425
+        },
+        "detector": {
+          "max": 31.55023604631424,
+          "p50": 13.684477657079697,
+          "p95": 20.768893882632256
+        },
+        "image_preprocessing": {
+          "max": 4.327878355979919,
+          "p50": 2.128392457962036,
+          "p95": 3.0543599277734756
+        },
+        "matching_memory_retrieval": {
+          "max": 24.324052035808563,
+          "p50": 10.294526815414429,
+          "p95": 16.4299875497818
+        },
+        "native_Hungarian": {
+          "max": 1.4274641871452332,
+          "p50": 0.6296411156654358,
+          "p95": 0.9271979331970215
+        },
+        "raw_state_plus_admission_trusted_update": {
+          "max": 5.535557866096497,
+          "p50": 1.6375444829463959,
+          "p95": 2.795987576246261
+        }
+      },
+      "component_timings_overlap_total": true,
+      "full_two_camera_scene_FPS": 3.2458419208988873,
+      "peak_allocated_MiB": 664.83740234375,
+      "repeat": 0,
+      "scene_frames": 256,
+      "seconds": 78.87013792991638,
+      "synchronization_overhead_included": true,
+      "total_native_Stage2_ms": {
+        "max": 86.663618683815,
+        "p50": 38.022980093955994,
+        "p95": 56.64521232247351
+      }
+    },
+    {
+      "actual_native_start_SHA256": "2009cbabc5a49683dbf1dc5395428c2be53f95781ee9a8057ae9d3736c4eb894",
+      "camera_payload_FPS": 6.563450578350698,
+      "camera_payloads": 512,
+      "component_ms": {
+        "Bank_promotion": null,
+        "JEV_scores": {
+          "max": 37.387579679489136,
+          "p50": 16.910947859287262,
+          "p95": 26.2322187423706
+        },
+        "Stage1_image_IO_detector_VFCE": {
+          "max": 214.8766815662384,
+          "p50": 106.20466619729996,
+          "p95": 144.8500230908394
+        },
+        "VFCE_head": {
+          "max": 1.1009126901626587,
+          "p50": 0.3851950168609619,
+          "p95": 0.5973316729068756
+        },
+        "VFCE_pooling": {
+          "max": 1.6535744071006775,
+          "p50": 0.7056742906570435,
+          "p95": 1.153571531176567
+        },
+        "backbone": {
+          "max": 35.620853304862976,
+          "p50": 27.41195261478424,
+          "p95": 27.901163324713707
+        },
+        "detector": {
+          "max": 28.627239167690277,
+          "p50": 13.593710958957672,
+          "p95": 19.991915673017502
+        },
+        "image_preprocessing": {
+          "max": 6.554819643497467,
+          "p50": 2.0547136664390564,
+          "p95": 2.865031361579895
+        },
+        "matching_memory_retrieval": {
+          "max": 38.95195573568344,
+          "p50": 10.160580277442932,
+          "p95": 15.661409497261046
+        },
+        "native_Hungarian": {
+          "max": 1.6758143901824951,
+          "p50": 0.6120279431343079,
+          "p95": 0.96396803855896
+        },
+        "raw_state_plus_admission_trusted_update": {
+          "max": 5.95487654209137,
+          "p50": 1.6190186142921448,
+          "p95": 2.71594263613224
+        }
+      },
+      "component_timings_overlap_total": true,
+      "full_two_camera_scene_FPS": 3.281725289175349,
+      "peak_allocated_MiB": 664.83740234375,
+      "repeat": 1,
+      "scene_frames": 256,
+      "seconds": 78.00774819403887,
+      "synchronization_overhead_included": true,
+      "total_native_Stage2_ms": {
+        "max": 102.154940366745,
+        "p50": 37.98266500234604,
+        "p95": 56.28808364272116
+      }
+    },
+    {
+      "actual_native_start_SHA256": "b47748bc7a8e73081299fa9f3f833263b73159d4a7816898f9cf3b60679b8778",
+      "camera_payload_FPS": 6.494134976262753,
+      "camera_payloads": 512,
+      "component_ms": {
+        "Bank_promotion": null,
+        "JEV_scores": {
+          "max": 37.377484142780304,
+          "p50": 16.856133937835693,
+          "p95": 25.62916874885559
+        },
+        "Stage1_image_IO_detector_VFCE": {
+          "max": 211.74052357673645,
+          "p50": 106.27713054418564,
+          "p95": 150.82203038036823
+        },
+        "VFCE_head": {
+          "max": 1.0463148355484009,
+          "p50": 0.38105249404907227,
+          "p95": 0.6327442824840546
+        },
+        "VFCE_pooling": {
+          "max": 1.8047764897346497,
+          "p50": 0.7095560431480408,
+          "p95": 1.148127019405365
+        },
+        "backbone": {
+          "max": 41.3791686296463,
+          "p50": 27.40449085831642,
+          "p95": 27.750417590141296
+        },
+        "detector": {
+          "max": 32.3663055896759,
+          "p50": 13.510793447494507,
+          "p95": 20.318802446126938
+        },
+        "image_preprocessing": {
+          "max": 3.922484815120697,
+          "p50": 2.029702067375183,
+          "p95": 2.8070118278265
+        },
+        "matching_memory_retrieval": {
+          "max": 30.452966690063477,
+          "p50": 10.162606835365295,
+          "p95": 15.276473760604858
+        },
+        "native_Hungarian": {
+          "max": 1.299537718296051,
+          "p50": 0.5833432078361511,
+          "p95": 0.9199827909469603
+        },
+        "raw_state_plus_admission_trusted_update": {
+          "max": 5.367077887058258,
+          "p50": 1.6158632934093475,
+          "p95": 2.6538655161857605
+        }
+      },
+      "component_timings_overlap_total": true,
+      "full_two_camera_scene_FPS": 3.2470674881313766,
+      "peak_allocated_MiB": 664.83740234375,
+      "repeat": 2,
+      "scene_frames": 256,
+      "seconds": 78.84036932885647,
+      "synchronization_overhead_included": true,
+      "total_native_Stage2_ms": {
+        "max": 86.1932560801506,
+        "p50": 37.6911535859108,
+        "p95": 56.189204752445214
+      }
+    }
+  ],
+  "warmup_scene_frames": 8
+}
