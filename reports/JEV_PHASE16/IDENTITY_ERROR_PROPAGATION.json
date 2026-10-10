@@ -1,0 +1,4012 @@
+{
+  "UNKNOWN_excluded_from_wrong_not_counted_correct": true,
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": [
+      {
+        "SHA256": "7f74f099e9cb365528af3b05aab5d9e87d96eb2063f94efd28ed28cc0864a57b",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v3/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+      }
+    ],
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": {
+      "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+      "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+    },
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]"
+    },
+    "evaluator": "unmodified pooled raw TrackEval + actual image/native commits",
+    "heldout_20_21_22": "SEALED",
+    "inputs": [
+      {
+        "SHA256": "917d739412fe8a92f52e3855f79e3ea842a6225bd1cf57d0b7741c1411f0c437",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P8_pooled_memory_live/RESULT.json"
+      },
+      {
+        "SHA256": "cb8ad2765b3d2311fec9d439e0016acdfad4d2c002e36a939c0293925d5656cf",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P8_memory_only_live/video17/RESULT.json"
+      },
+      {
+        "SHA256": "6938d7762f9de14cf8a351a89eda5e6c1a5ac892d308f30038f81ef57f70e847",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P8_memory_only_live/video18/RESULT.json"
+      },
+      {
+        "SHA256": "216eec67e690ed196318caf042af5bbfe2b9723f7571f3d02ed67972ed349c4e",
+        "path": "/home/liuyeqiang/WWW_jev_phase16_runtime/20261011_v1/P8_memory_only_live/video19/RESULT.json"
+      }
+    ],
+    "native_state": null,
+    "official_TEST": false,
+    "preregistration_SHA256": "53a8361e713ba8d02155656636504d44ee12e4417de97f520946549d0e906939",
+    "scope": "reused DEV17/18/19, seed20261009 frozen XV V3; no formal three-seed or unseen-system claim",
+    "seed": 20261009,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/__init__.py": "4351cd60c528123b98699cbfa3efd1814428d11d917fb4c68dd8724b3ec2ff07",
+      "gtr/modeling/jev_phase15/candidate_reliability.py": "62f577b38782b1b79ee8cb056e8b59953caf9c7c2240f3db02e0f43a7ef4cb82",
+      "gtr/modeling/jev_phase15/commitment_option_reader.py": "a7d10acf0ff8ab99c75d84f74536327d192143b14ad759a68f60bc8add7154ac",
+      "gtr/modeling/jev_phase15/commitment_question.py": "cb88861bd86c212fc0daf5fc7a65aefc6f64ce15d0de7e397b85473fdcd042b4",
+      "gtr/modeling/jev_phase15/commitment_state.py": "89d1ad35e60331f20e569305a90f27c18e6c29a96366fceb8f11c1d30592ff91",
+      "gtr/modeling/jev_phase15/identity_fragment_controller.py": "b8976d889d252df2bcda2c5b365004b099204ddd7a57657c5ac86aad8ac2bb96",
+      "gtr/modeling/jev_phase15/joint_action_ranker.py": "1e27fcfab7a85d47fdc1289f1133b6a45af727e3b5d5ee1606fd7418a42fa997",
+      "gtr/modeling/jev_phase15/model.py": "f77d3c78b74ede0ff2d05409bbe3287d6d6044b5199de5bc8d4dd406dbc781af",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_phase16/__init__.py": "fd73454f85489bf8dac315c761403bc7edb589e07410c17e1d45819982af927d",
+      "gtr/modeling/jev_phase16/evidence_ledger.py": "17a81da611273524a3db213e73bc91dabc8c741d4091c53f96c4ab61f1294433",
+      "gtr/modeling/jev_phase16/history_segment_encoder.py": "268daf3fa6d308d70649218e5178ee16c1201d78be59f9845987b60775ec0436",
+      "gtr/modeling/jev_phase16/multi_prototype_memory.py": "4efc35daba8a9da0f8c088e87ebabefa43eff1542b7fe06bf1a341805a14119e",
+      "gtr/modeling/jev_phase16/native_memory_commit_adapter.py": "3af6eabf784d13b3cdf7f131a6ea082a713de9379038fa4ffb8dfff46409fc54",
+      "gtr/modeling/jev_phase16/safe_matching_memory.py": "ab5950d96b4887d1a4fdb26fa124fdf80680a3b6a396f26442d35eff9ea6ab2b",
+      "gtr/modeling/jev_phase16/safe_memory_admission.py": "958a1148b28e104c0a2c5907b009ea2fc1a8d7e231bf1777476ce619a43b9caa",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase16_admission_shadow.py": "2640e63a57c9697345df0949dfe5b064dfe0a7d3ca00b77ff87697a6c41f0fd0",
+      "reproduction_tools/jev_phase16_candidate_audit.py": "045b755f9c12db49fe1c7b5ba77a6d27aedbe58e8f41ebbf994c2d79918d3dce",
+      "reproduction_tools/jev_phase16_common.py": "fad43f1b10603367b2f4913d9c0f7c03160693572a22278bc87956aa77ada42c",
+      "reproduction_tools/jev_phase16_evaluate.py": "afc8ac1a5bc28ac3419c5e3d44b6dd994f92adcfbf1c26fac07757848808f59f",
+      "reproduction_tools/jev_phase16_finalize.py": "2b56727607f1e4b9edadca5011b33c7d1eba96ee6bd59a6a5f0ffcd0b6fea334",
+      "reproduction_tools/jev_phase16_finish_memory.py": "a2bd06076debebbadf2e061dc8a063e235f99dca8dd14a484b5d5029a2a5cf1c",
+      "reproduction_tools/jev_phase16_finish_p0.py": "ecf65ac941b2210d5569fd716766a72887c5149b88610b92b734c1a138c3ae50",
+      "reproduction_tools/jev_phase16_freeze.py": "9f30445d42bb8a532eddb2e8f6ba085df64897a3fe7963999a3308cf6711d8a9",
+      "reproduction_tools/jev_phase16_gpu_queue.py": "8177f84731ec3e6695d505fa4b1bf575129202e3909023eb8b91a3aebf5488e5",
+      "reproduction_tools/jev_phase16_input_registry.py": "e771451ee8722f210fceabd553c28c22b55016617d3b48a88775a5e30c77f76d",
+      "reproduction_tools/jev_phase16_latency.py": "71bac994835e01e3a8b42ae50582a04d43d62177fa6cc1f03c32c3b63fcd66f6",
+      "reproduction_tools/jev_phase16_ledger_contract.py": "6b767b0d4efb65c73d96c31d551981e598642f5e1ee44585e1f95f36692d8247",
+      "reproduction_tools/jev_phase16_matlab.py": "7b96456a2fc13c8c25c0e3d06b79b2778015fe4b0a379ab8a98b4f840e8f98c8",
+      "reproduction_tools/jev_phase16_memory_contract.py": "97285d9f49f9cd1dd07d07fce46cd066f75a8eba4ef1a7ee7c75463a1d125298",
+      "reproduction_tools/jev_phase16_memory_factorial.py": "d19e288b7d8ba292c009070b6e5a7bde75f84825341f002954165680c68d5e5e",
+      "reproduction_tools/jev_phase16_memory_results.py": "b2c0b4a983259321289ca5bf3054da72563a4f7f2bd9fb899c4df17529cb8b56",
+      "reproduction_tools/jev_phase16_memory_risk.py": "3f05b6a902a841477d9e885a2b43c4c51d96a25035ec5556b68da01407cdcb16",
+      "reproduction_tools/jev_phase16_original_completion_repair.py": "f1163951d8d0a9ce8651954ef0c8488fdb24acd742b2416d4a597d2e2a4ca341",
+      "reproduction_tools/jev_phase16_p1_integrity.py": "81c543fd8dd6debfe90e99fcf2f9dbec507da416a4358a148de2cde6264b81ab",
+      "reproduction_tools/jev_phase16_p1_queue.py": "762e9c82ca211bde907ce9f592651bf0e836a6c97828b1a9064aa2196b913aa7",
+      "reproduction_tools/jev_phase16_p2_p3_queue.py": "416c3e49162e5acaaf8298d16f9f77c3c55c82df8e264a9946f10d93c521f61c",
+      "reproduction_tools/jev_phase16_p2_protocol.py": "ef0f5d0002c966ee1c9e041dd1c140c558fbd195afc9a87d86e4efdd67059550",
+      "reproduction_tools/jev_phase16_p8_queue.py": "33248ecdec3a51529e403c1ad3cf2ade48cf7e5ba19b7a7bf66c9bda4f709c59",
+      "reproduction_tools/jev_phase16_prototype_audit.py": "81d8cf5fd3041ce4ae584eb7ae8c252936c10881ef20d98c250650d1a8e7f42c",
+      "reproduction_tools/jev_phase16_prototype_contract.py": "9c1f6e47eb3b60631b788a61cbc91c1db0d34137db92d327a958b4a4b109eb22",
+      "reproduction_tools/jev_phase16_prototype_results.py": "bd2b479d2a597a7e0f45f4dfe045161a0b99d12f11cfa1362c6360e0042b6d87",
+      "reproduction_tools/jev_phase16_queue.py": "2a629bbb851b860df80038471a8626b9fe7c04a09b979cf096396604a13d7a9e",
+      "reproduction_tools/jev_phase16_recoverability.py": "116b21f6a8dbe48ca1f8c6912c4747718d4a5966cb1c84184430df5a81ae5521"
+    },
+    "source_commit": "6b9a7dd9029920883fe782ea7e56f6c6e704443e",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase16"
+  },
+  "full_video": {
+    "17": {
+      "UNKNOWN_current": 208,
+      "UNKNOWN_owner": 2158,
+      "counts": {
+        "already_polluted_write": 7896,
+        "false_birth_seen_GT_proxy": 3,
+        "false_split_birth": 0,
+        "new_cross_GT_gallery_mix": 20,
+        "owner_assessed": 8500,
+        "owner_correct": 8293,
+        "wrong_owner": 207
+      },
+      "error_propagation_intervals": [
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 119,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 119,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 32,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 32,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 154,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 154,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 163,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 163,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 185,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 14,
+          "right_censored": false,
+          "start": 172,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 199,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 2,
+          "right_censored": true,
+          "start": 198,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 210,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 210,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 202,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 202,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 214,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 214,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 221,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 5,
+          "right_censored": true,
+          "start": 217,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 224,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 224,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 226,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 226,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 228,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 224,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 234,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 233,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 240,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 240,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 246,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 243,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 250,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 249,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 257,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 6,
+          "right_censored": false,
+          "start": 252,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 396,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 393,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 414,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 12,
+          "right_censored": false,
+          "start": 403,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 464,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 464,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 623,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 622,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 629,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 629,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 635,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 7,
+          "right_censored": false,
+          "start": 629,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 634,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 3,
+          "right_censored": true,
+          "start": 632,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 647,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 6,
+          "right_censored": false,
+          "start": 642,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 650,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 649,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 648,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 7,
+          "right_censored": true,
+          "start": 642,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 811,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 811,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 812,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 812,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 813,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 813,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 814,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 814,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 817,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 817,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 819,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 819,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 827,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 823,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 842,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 15,
+          "right_censored": false,
+          "start": 828,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 847,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 847,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 871,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 2,
+          "right_censored": true,
+          "start": 870,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 875,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 874,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 893,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 16,
+          "right_censored": false,
+          "start": 878,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 895,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 894,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 899,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 896,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 902,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 900,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 903,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 903,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 907,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 904,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 909,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 908,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 915,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 914,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 923,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 8,
+          "right_censored": false,
+          "start": 916,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 925,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 924,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 978,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 978,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 986,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 983,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 998,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 998,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 1000,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 999,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 1029,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 1025,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 1032,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 1032,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 1034,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 1031,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1036,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 1036,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1042,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 1038,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1048,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 1047,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1051,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 1051,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 1095,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 1094,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 1109,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 1105,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 1129,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 1129,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1131,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 1131,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1143,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 1143,
+          "view": 1
+        }
+      ],
+      "observed_episode_scope": "IoU>=.5 detector-observed owner errors; gaps split episodes; absence and video/horizon end censored, not continuous invisible duration",
+      "owners": "Immutable earliest past-only single-GT >=3 and>=.8observed coverage; mixed histories retain previously established owner; uncertifiable IDs UNKNOWN",
+      "wrong_owner_episode_max_frames": 16,
+      "wrong_owner_observed_frames": 207
+    },
+    "18": {
+      "UNKNOWN_current": 512,
+      "UNKNOWN_owner": 1014,
+      "counts": {
+        "already_polluted_write": 6567,
+        "false_birth_seen_GT_proxy": 3,
+        "false_split_birth": 0,
+        "new_cross_GT_gallery_mix": 35,
+        "owner_assessed": 10375,
+        "owner_correct": 8067,
+        "wrong_owner": 2308
+      },
+      "error_propagation_intervals": [
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 277,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 276,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 333,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 55,
+          "right_censored": true,
+          "start": 279,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 335,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 335,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 341,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 5,
+          "right_censored": true,
+          "start": 337,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 356,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 35,
+          "right_censored": false,
+          "start": 322,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 365,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 23,
+          "right_censored": true,
+          "start": 343,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 456,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 37,
+          "right_censored": false,
+          "start": 420,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 467,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 467,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 475,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 2,
+          "right_censored": true,
+          "start": 474,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 479,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 477,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 487,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 486,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 466,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 100,
+          "right_censored": true,
+          "start": 367,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 502,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 502,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 505,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 2,
+          "right_censored": true,
+          "start": 504,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 525,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 19,
+          "right_censored": true,
+          "start": 507,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 545,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 545,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 537,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 537,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 556,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 10,
+          "right_censored": true,
+          "start": 547,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 558,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 555,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 586,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 583,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 588,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 588,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 592,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 591,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 596,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 595,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 598,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 598,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 613,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 14,
+          "right_censored": false,
+          "start": 600,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 616,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 614,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 608,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 51,
+          "right_censored": true,
+          "start": 558,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 617,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 617,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 622,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 3,
+          "right_censored": true,
+          "start": 620,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 624,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 624,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 626,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 17,
+          "right_censored": false,
+          "start": 610,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 627,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 11,
+          "right_censored": true,
+          "start": 617,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 628,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 3,
+          "right_censored": true,
+          "start": 626,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 642,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 15,
+          "right_censored": false,
+          "start": 628,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 635,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 635,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 646,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 18,
+          "right_censored": false,
+          "start": 629,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 647,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 647,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 645,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 3,
+          "right_censored": true,
+          "start": 643,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 649,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 649,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 651,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 651,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 653,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 6,
+          "right_censored": true,
+          "start": 648,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 657,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 657,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 659,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 658,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 663,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 660,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 665,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 664,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 666,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 666,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 667,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 667,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 671,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 669,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 668,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 15,
+          "right_censored": true,
+          "start": 654,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 672,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 668,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 672,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 672,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 683,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 11,
+          "right_censored": false,
+          "start": 673,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 693,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 692,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 696,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 13,
+          "right_censored": false,
+          "start": 684,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 697,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 697,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 691,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 37,
+          "right_censored": true,
+          "start": 655,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 701,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 698,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 704,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 703,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 704,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 6,
+          "right_censored": true,
+          "start": 699,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 695,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 695,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 726,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 726,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 728,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 23,
+          "right_censored": false,
+          "start": 706,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 732,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 732,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 734,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 734,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 741,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 740,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 744,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 742,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 745,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 745,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 739,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 59,
+          "right_censored": true,
+          "start": 681,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 748,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 748,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 747,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 2,
+          "right_censored": true,
+          "start": 746,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 745,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 40,
+          "right_censored": true,
+          "start": 706,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 752,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 752,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 751,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 3,
+          "right_censored": true,
+          "start": 749,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 752,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 750,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 753,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 753,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 761,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 5,
+          "right_censored": true,
+          "start": 757,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 791,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 791,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 790,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 28,
+          "right_censored": true,
+          "start": 763,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 799,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 797,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 816,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 816,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 820,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 820,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 828,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 827,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 832,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 832,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 832,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 832,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 839,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 839,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 849,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 845,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 860,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 69,
+          "right_censored": true,
+          "start": 792,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 871,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 17,
+          "right_censored": false,
+          "start": 855,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 873,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 873,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 887,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 887,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 888,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 13,
+          "right_censored": false,
+          "start": 876,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 888,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 27,
+          "right_censored": true,
+          "start": 862,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 892,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 889,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 897,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 897,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 901,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 901,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 908,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 160,
+          "right_censored": true,
+          "start": 749,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 912,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 912,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 922,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 193,
+          "right_censored": true,
+          "start": 730,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 938,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 34,
+          "right_censored": false,
+          "start": 905,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 943,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 940,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 945,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 945,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 955,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 8,
+          "right_censored": false,
+          "start": 948,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 984,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 984,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 983,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 94,
+          "right_censored": true,
+          "start": 890,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 987,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 987,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 986,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 2,
+          "right_censored": true,
+          "start": 985,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 1007,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 19,
+          "right_censored": false,
+          "start": 989,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 995,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 80,
+          "right_censored": true,
+          "start": 916,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 1028,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 4,
+          "right_censored": true,
+          "start": 1025,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 9,
+          "end": 895,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 309,
+          "right_censored": true,
+          "start": 587,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 988,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 988,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "end": 1028,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 375,
+          "right_censored": true,
+          "start": 654,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 1028,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 101,
+          "right_censored": true,
+          "start": 928,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 1028,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 19,
+          "right_censored": true,
+          "start": 1010,
+          "view": 0
+        }
+      ],
+      "observed_episode_scope": "IoU>=.5 detector-observed owner errors; gaps split episodes; absence and video/horizon end censored, not continuous invisible duration",
+      "owners": "Immutable earliest past-only single-GT >=3 and>=.8observed coverage; mixed histories retain previously established owner; uncertifiable IDs UNKNOWN",
+      "wrong_owner_episode_max_frames": 375,
+      "wrong_owner_observed_frames": 2308
+    },
+    "19": {
+      "UNKNOWN_current": 596,
+      "UNKNOWN_owner": 2329,
+      "counts": {
+        "already_polluted_write": 9762,
+        "false_birth_seen_GT_proxy": 3,
+        "false_split_birth": 0,
+        "new_cross_GT_gallery_mix": 63,
+        "owner_assessed": 12750,
+        "owner_correct": 9602,
+        "wrong_owner": 3148
+      },
+      "error_propagation_intervals": [
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 73,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 72,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 78,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 75,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 198,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 195,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 204,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 202,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 252,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 45,
+          "right_censored": false,
+          "start": 208,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 255,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 254,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 257,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 257,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 262,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 260,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 282,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 19,
+          "right_censored": false,
+          "start": 264,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 289,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 9,
+          "right_censored": false,
+          "start": 281,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 291,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 291,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 296,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 13,
+          "right_censored": true,
+          "start": 284,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 323,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 320,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 338,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 47,
+          "right_censored": false,
+          "start": 292,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 339,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 19,
+          "right_censored": true,
+          "start": 321,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 342,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 17,
+          "right_censored": false,
+          "start": 326,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 11,
+          "end": 340,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 340,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 346,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 345,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 367,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 367,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 369,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 367,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 395,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 391,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 398,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 398,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 400,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 6,
+          "right_censored": false,
+          "start": 395,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 400,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 6,
+          "right_censored": false,
+          "start": 395,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 11,
+          "end": 346,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 3,
+          "right_censored": true,
+          "start": 344,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 411,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 70,
+          "right_censored": false,
+          "start": 342,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 414,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 414,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 421,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 421,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 424,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 423,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 428,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 428,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 431,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 428,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 436,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 11,
+          "right_censored": false,
+          "start": 426,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 435,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 7,
+          "right_censored": true,
+          "start": 429,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 431,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 4,
+          "right_censored": true,
+          "start": 428,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 443,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 443,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 442,
+          "end_reason": "gap before next non-wrong observation",
+          "observed_wrong_frames": 6,
+          "right_censored": true,
+          "start": 437,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 443,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 46,
+          "right_censored": false,
+          "start": 398,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 443,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 440,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 445,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 22,
+          "right_censored": true,
+          "start": 424,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 450,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 450,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 450,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 449,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 452,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 452,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 452,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 452,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 454,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 453,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 456,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 456,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 448,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 2,
+          "right_censored": true,
+          "start": 447,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 462,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 462,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 463,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 463,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 464,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 463,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 464,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 463,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 464,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 463,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 468,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 465,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 469,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 469,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 473,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 471,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 473,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 8,
+          "right_censored": false,
+          "start": 466,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 461,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 461,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 475,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 12,
+          "right_censored": false,
+          "start": 464,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 477,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 476,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 479,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 14,
+          "right_censored": false,
+          "start": 466,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 479,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 478,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 479,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 478,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 481,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 481,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 481,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 481,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 485,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 8,
+          "right_censored": false,
+          "start": 478,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 485,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 483,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 485,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 483,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 489,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 489,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 489,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 489,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 490,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 486,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 492,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 491,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 493,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 493,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 495,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 493,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 496,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 496,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 496,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 495,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 497,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 497,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 498,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 498,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 498,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 498,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 498,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 498,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 499,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 498,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 503,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 500,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 505,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 505,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 505,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 505,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 506,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 505,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 508,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 508,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 509,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 507,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 509,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 505,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 509,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 507,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 513,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 43,
+          "right_censored": false,
+          "start": 471,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 515,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 513,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 516,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 515,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 518,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 8,
+          "right_censored": false,
+          "start": 511,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 518,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 8,
+          "right_censored": false,
+          "start": 511,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 518,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 8,
+          "right_censored": false,
+          "start": 511,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 521,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 520,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 521,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 520,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 521,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 520,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 521,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 520,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 539,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 539,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 9,
+          "end": 538,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 7,
+          "right_censored": true,
+          "start": 532,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 541,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 541,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 541,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 541,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 543,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 543,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 548,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 31,
+          "right_censored": false,
+          "start": 518,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 549,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 549,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 9,
+          "end": 548,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 9,
+          "right_censored": true,
+          "start": 540,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 552,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 550,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 556,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 553,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 557,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 555,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 9,
+          "end": 561,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 12,
+          "right_censored": true,
+          "start": 550,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 575,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 101,
+          "right_censored": false,
+          "start": 475,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 578,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 577,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 560,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 3,
+          "right_censored": true,
+          "start": 558,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 583,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 583,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 586,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 6,
+          "right_censored": false,
+          "start": 581,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 592,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 6,
+          "right_censored": false,
+          "start": 587,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 9,
+          "end": 585,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 23,
+          "right_censored": true,
+          "start": 563,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 597,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 4,
+          "right_censored": false,
+          "start": 594,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 602,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 602,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 605,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 605,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 9,
+          "end": 605,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 13,
+          "right_censored": true,
+          "start": 593,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 614,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 610,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 614,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 9,
+          "right_censored": false,
+          "start": 606,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 614,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 613,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 615,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 112,
+          "right_censored": false,
+          "start": 504,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 618,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 618,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 624,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 624,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 626,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 41,
+          "right_censored": false,
+          "start": 586,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 628,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 628,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 631,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 631,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 631,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 629,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 632,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 630,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 636,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 19,
+          "right_censored": false,
+          "start": 618,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 637,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 637,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 638,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 638,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 644,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 6,
+          "right_censored": false,
+          "start": 639,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 645,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 645,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 647,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 9,
+          "right_censored": false,
+          "start": 639,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 638,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 78,
+          "right_censored": true,
+          "start": 561,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "end": 649,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 13,
+          "right_censored": false,
+          "start": 637,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 652,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 7,
+          "right_censored": false,
+          "start": 646,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 656,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 654,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 657,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 657,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 659,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 658,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 664,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 660,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 670,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 6,
+          "right_censored": false,
+          "start": 665,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 676,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 674,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 682,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 678,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 684,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 683,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 684,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 682,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 692,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 7,
+          "right_censored": false,
+          "start": 686,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 692,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 690,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 697,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 697,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 697,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 697,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 700,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 699,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 724,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 24,
+          "right_censored": false,
+          "start": 701,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 725,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 9,
+          "right_censored": false,
+          "start": 717,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 726,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 725,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 728,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 79,
+          "right_censored": false,
+          "start": 650,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 731,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 4,
+          "right_censored": true,
+          "start": 728,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 737,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 736,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 743,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 743,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 748,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 746,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "end": 776,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 50,
+          "right_censored": false,
+          "start": 727,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 777,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 777,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 712,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 14,
+          "right_censored": true,
+          "start": 699,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "end": 798,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 797,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 801,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 6,
+          "right_censored": false,
+          "start": 796,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "end": 802,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 802,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 802,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 800,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 803,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 803,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 804,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 804,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 809,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 805,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 817,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 4,
+          "right_censored": true,
+          "start": 814,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 829,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 829,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 829,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 93,
+          "right_censored": true,
+          "start": 737,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 856,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 855,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 864,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 166,
+          "right_censored": false,
+          "start": 699,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 864,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 57,
+          "right_censored": false,
+          "start": 808,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 9,
+          "end": 627,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 15,
+          "right_censored": true,
+          "start": 613,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 865,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 13,
+          "right_censored": false,
+          "start": 853,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 865,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 218,
+          "right_censored": false,
+          "start": 648,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 9,
+          "end": 865,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 865,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 868,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 50,
+          "right_censored": false,
+          "start": 819,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 871,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 869,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 872,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 872,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 875,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 873,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 876,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 11,
+          "right_censored": false,
+          "start": 866,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 878,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 876,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 880,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 879,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 881,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 877,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 887,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 5,
+          "right_censored": false,
+          "start": 883,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 890,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 889,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 913,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 33,
+          "right_censored": false,
+          "start": 881,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 913,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 29,
+          "right_censored": false,
+          "start": 885,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 914,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 914,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 914,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 913,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 924,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 10,
+          "right_censored": false,
+          "start": 915,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 929,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 929,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 933,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 19,
+          "right_censored": false,
+          "start": 915,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 935,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 934,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 943,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 943,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 945,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 10,
+          "right_censored": false,
+          "start": 936,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 946,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 944,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 947,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 947,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 955,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 955,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 952,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 5,
+          "right_censored": true,
+          "start": 948,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 978,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 538,
+          "right_censored": false,
+          "start": 441,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 980,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 33,
+          "right_censored": false,
+          "start": 948,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 981,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 981,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 988,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 7,
+          "right_censored": false,
+          "start": 982,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 989,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 988,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 992,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 18,
+          "right_censored": false,
+          "start": 975,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 993,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 992,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 994,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 994,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 995,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 7,
+          "right_censored": false,
+          "start": 989,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 995,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 995,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "end": 884,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 19,
+          "right_censored": true,
+          "start": 866,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 995,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 995,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 996,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 996,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 997,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 997,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 998,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 997,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 998,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 997,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "end": 996,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 996,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1001,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 999,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 1002,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 1002,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 1003,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 1003,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "end": 1003,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 1002,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "end": 1001,
+          "end_reason": "observation gap",
+          "observed_wrong_frames": 3,
+          "right_censored": true,
+          "start": 999,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1011,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 14,
+          "right_censored": false,
+          "start": 998,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 1015,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 14,
+          "right_censored": false,
+          "start": 1002,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1016,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 3,
+          "right_censored": false,
+          "start": 1014,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 1036,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 20,
+          "right_censored": false,
+          "start": 1017,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1037,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 1,
+          "right_censored": false,
+          "start": 1037,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 1039,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 2,
+          "right_censored": false,
+          "start": 1038,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "end": 1049,
+          "end_reason": "next observed non-wrong owner",
+          "observed_wrong_frames": 8,
+          "right_censored": false,
+          "start": 1042,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 11,
+          "end": 411,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 411,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "end": 478,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 53,
+          "right_censored": true,
+          "start": 426,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 9,
+          "end": 549,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 1,
+          "right_censored": true,
+          "start": 549,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "end": 572,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 20,
+          "right_censored": true,
+          "start": 553,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "end": 1024,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 21,
+          "right_censored": true,
+          "start": 1004,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 9,
+          "end": 883,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 14,
+          "right_censored": true,
+          "start": 870,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 1051,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 116,
+          "right_censored": true,
+          "start": 936,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 12,
+          "end": 1042,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 18,
+          "right_censored": true,
+          "start": 1025,
+          "view": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "end": 1041,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 2,
+          "right_censored": true,
+          "start": 1040,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 8,
+          "end": 1051,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 11,
+          "right_censored": true,
+          "start": 1041,
+          "view": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "end": 1051,
+          "end_reason": "horizon/video end",
+          "observed_wrong_frames": 2,
+          "right_censored": true,
+          "start": 1050,
+          "view": 0
+        }
+      ],
+      "observed_episode_scope": "IoU>=.5 detector-observed owner errors; gaps split episodes; absence and video/horizon end censored, not continuous invisible duration",
+      "owners": "Immutable earliest past-only single-GT >=3 and>=.8observed coverage; mixed histories retain previously established owner; uncertifiable IDs UNKNOWN",
+      "wrong_owner_episode_max_frames": 538,
+      "wrong_owner_observed_frames": 3148
+    }
+  },
+  "immutable_qualified_owner": true,
+  "observed_gaps_censored": true,
+  "official_MOT_IDSW_distinct": true,
+  "paired_native_factorial": {
+    "SHA256": "2937269fa59547ac02e72bed2162415037220b2d55b121edb8efbfb609a20238",
+    "path": "/home/liuyeqiang/WWW_jev_phase16/reports/JEV_PHASE16/MATCH_VS_MEMORY_CAUSAL_FACTORIAL.json"
+  },
+  "status": "COMPLETE"
+}
