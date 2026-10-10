@@ -94,6 +94,16 @@ def old_case(variant, seed, video):
     return PHASE14 / 'formal_online_v2' / f'{variant}_seed{seed}' / f'video{video:02d}'
 
 
+def perception_provenance(video):
+    assert video in TRAIN + DEV
+    root = PHASE13 / 'stage1_cache_v1' / f'video{video:02d}'
+    frozen = read(ROOT / 'reports/JEV_PHASE14/SOURCE_INTERFACE_MANIFEST.json')['Stage1']
+    return {'video': video, 'index': ref(root / 'index.jsonl'), 'cache_result': ref(root / 'RESULT.json'),
+            'Stage1': frozen, 'payload_checksums_verified_by_reader_on_every_load': True,
+            'perception_cache_is_not_a_measured_full_image_runtime': True,
+            'cache_reused_without_copy_or_modification': True}
+
+
 def load_old_policy(variant, seed):
     import torch
     from gtr.modeling.jev_phase14.model import ReliableIdentityPolicy
