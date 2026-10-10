@@ -1,0 +1,116 @@
+{
+  "status": "PASS",
+  "task": "Project-scoped home and data1 storage cleanup, 2026-10-10",
+  "pre_cleanup_project_commit": "0dc9607192c22bb4487b77b41de20f188caf7f1a",
+  "before": {
+    "home": {
+      "available_bytes": 3927060480,
+      "used_bytes": 1788622266368
+    },
+    "data1": {
+      "available_bytes": 90015440896,
+      "used_bytes": 1703037816832
+    }
+  },
+  "after": {
+    "home": {
+      "available_bytes": 81672007680,
+      "used_bytes": 1710877319168
+    },
+    "data1": {
+      "available_bytes": 29614084096,
+      "used_bytes": 1763439173632
+    }
+  },
+  "duplicate_source_files_replaced_by_hardlinks": 18318,
+  "immutable_source_snapshots": 38,
+  "duplicate_released_bytes": 6543446016,
+  "cache_directories_removed": 733,
+  "cache_released_bytes": 36892672,
+  "redundant_temporary_files_removed": 0,
+  "retained_unique_temporary_files": 78,
+  "relocations": [
+    {
+      "original_path": "/home/liuyeqiang/WWW_jev_phase6_runtime",
+      "destination": "/data1/liuyeqiang/WWW_storage_maintenance/20261010/home_runtime/WWW_jev_phase6_runtime",
+      "files": 2482,
+      "allocated_home_bytes_released": 38831017984,
+      "manifest": "/data1/liuyeqiang/WWW_storage_maintenance/20261010/WWW_jev_phase6_runtime.manifest.json",
+      "manifest_SHA256": "0c24cd9143b5fca212d949191d91cb88f33cd3b199c4de0cde136dd4d4d5fb13",
+      "verification": "ALL_FILE_SHA256_AND_SYMLINKS_EQUAL",
+      "seconds": 456.6526577472687
+    },
+    {
+      "original_path": "/home/liuyeqiang/WWW_jev_phase10_runtime",
+      "destination": "/data1/liuyeqiang/WWW_storage_maintenance/20261010/home_runtime/WWW_jev_phase10_runtime",
+      "files": 4224,
+      "allocated_home_bytes_released": 28479893504,
+      "manifest": "/data1/liuyeqiang/WWW_storage_maintenance/20261010/WWW_jev_phase10_runtime.manifest.json",
+      "manifest_SHA256": "4c0c517e52f774b223e7b467e974b2f154c692d5a17f7151ae33510def648433",
+      "verification": "ALL_FILE_SHA256_AND_SYMLINKS_EQUAL",
+      "source_unchanged_checksum_and_metadata_check": true,
+      "resumed_existing_copy": true,
+      "seconds": 230.08268189430237
+    },
+    {
+      "original_path": "/home/liuyeqiang/WWW_jev_phase14_runtime",
+      "destination": "/data1/liuyeqiang/WWW_storage_maintenance/20261010/home_runtime/WWW_jev_phase14_runtime",
+      "files": 2736,
+      "allocated_home_bytes_released": 3823726592,
+      "manifest": "/data1/liuyeqiang/WWW_storage_maintenance/20261010/WWW_jev_phase14_runtime.manifest.json",
+      "manifest_SHA256": "b586bc4adf94351a0c73e32359875658df02c3df0167865ed24047b2481de8f1",
+      "verification": "ALL_FILE_SHA256_AND_SYMLINKS_EQUAL",
+      "source_unchanged_checksum_and_metadata_check": true,
+      "resumed_existing_copy": false,
+      "seconds": 68.66829919815063
+    }
+  ],
+  "data1_cleanup": {
+    "duplicate_files_coalesced": 15097,
+    "released_bytes": 10770714624,
+    "cache_directories_removed": 392,
+    "cache_released_bytes": 22900736,
+    "scope": "immutable generic TrackEval fixtures, committed historical reports and pinned source snapshots",
+    "manifest": "/data1/liuyeqiang/WWW_storage_maintenance/20261010/DATA1_DEDUP_AND_CACHE.json",
+    "manifest_SHA256": "16abf372d194e33b4a1b4f3865c76e91b8fa97a852557f9d214f19f86b1746ed",
+    "before": {
+      "available_bytes": 18825297920,
+      "used_bytes": 1774227959808
+    },
+    "after": {
+      "available_bytes": 29620637696,
+      "used_bytes": 1763432620032
+    }
+  },
+  "original_runtime_paths_preserved_with_directory_symlinks": true,
+  "phase14_referenced_files_verified": 1167,
+  "historical_checkpoints_SHA256_verified": 323,
+  "protected_phase13_reports_SHA256_verified": 11,
+  "original_phase14_delivery_audit_SHA256": "8ada90eb9a349d37237bd2a9a01d98cf70322ecab4f3b2fa3dcec6251d142bfa",
+  "scientific_models_deleted": 0,
+  "scientific_results_deleted": 0,
+  "heldout_20_21_22_content_read": false,
+  "official_TEST_read": false,
+  "other_projects_or_users_cleaned": false,
+  "shared_conda_environment_or_model_caches_deleted": false,
+  "hardlink_scope": "Only immutable pinned source snapshots; editable worktrees and model weights excluded",
+  "data1_hardlink_scope": "Committed historical reports and immutable public fixtures; model weights and editable source excluded",
+  "uninspectable_transport_processes": "OpenSSH sshd/SFTP may have nondumpable proc links; relocation additionally checks source/destination checksums and metadata",
+  "reserved_data1_bytes": 16106127360,
+  "accounting": "Verified duplicate/cache release and relocated allocations are separate; filesystem drift is not attributed to cleanup",
+  "retained_failure_evidence": "/home/liuyeqiang/WWW_failed_artifacts/train_off.failed_partial_20261005.jsonl",
+  "server_manifests": [
+    {
+      "path": "/data1/liuyeqiang/WWW_storage_maintenance/20261010/DEDUP_AND_CACHE.json",
+      "SHA256": "e08f961cf61f58082abde57cb66909fae0facec57af473727dd9b8f1ea3a3c91"
+    },
+    {
+      "path": "/data1/liuyeqiang/WWW_storage_maintenance/20261010/RELOCATION.json",
+      "SHA256": "a7f6917299451e0ceb413157aa2ea73d546de6904ba34821ca1d5baffcaaa970"
+    },
+    {
+      "path": "/data1/liuyeqiang/WWW_storage_maintenance/20261010/WORKER_RESTARTS.json",
+      "SHA256": "c4b1c91c9b6882ecb6e68c643733d0b6b7ec88a1b55f1d1d030901924a5d07a7"
+    }
+  ]
+}
