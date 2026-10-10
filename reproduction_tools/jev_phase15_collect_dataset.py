@@ -8,7 +8,7 @@ import torch
 from jev_phase15_common import *
 from jev_phase13_runtime import build_tracker, cache_inputs, run
 from jev_phase14_native_risk import NativeRisk
-from jev_phase14_artifacts import save_dense
+from jev_phase14_artifacts import save_dense, load_dense
 from jev_phase15_commitment_labels import certify
 from audit_jev_stage2_gta_free import phase13_prefix
 from gtr.modeling.jev_phase15.native_commit_adapter import attach, FrozenOriginalPolicy
@@ -24,19 +24,31 @@ def main(video):
     values, frames, reader = cache_inputs(video); risk = NativeRisk(video, reader)
     model = build_tracker(video, policy=FrozenOriginalPolicy(policy), react_learned=False)
     executor = attach(model)
-    out = OUT/'commitment_dataset_v1'/f'video{video:02d}'; out.mkdir(parents=True, exist_ok=True)
+    out = OUT/'commitment_dataset_v2'/f'video{video:02d}'; out.mkdir(parents=True, exist_ok=True)
     assert not (out/'RESULT.json').exists()
     source = binding(seed=20261009, checkpoints=[checkpoint], dataset=ref(ANNOTATIONS),
         evaluator='TRAIN-only offline certificates on actual frozen Multi mutated histories',
         scope='new persistent observations; original policy and native lifecycle unaltered')
     source['perception_input_provenance'] = perception_provenance(video)
+    # Repeated annotation identities in a camera/frame are uncertifiable. This
+    # masks offline labels only; downloaded GT, detections and decisions stay intact.
+    duplicate_labels = 0
+    for key,image in risk.labels.images.items():
+        repeated=collections.Counter(a['instance_id'] for a in risk.labels.gt[image['id']])
+        bad={identity for identity,n in repeated.items() if n>1}
+        if bad:
+            actual=risk.labels.current(*key)
+            duplicate_labels+=sum(gt in bad for gt in actual if gt is not None)
+            risk.labels.aligned[key]=[None if gt in bad else gt for gt in actual]
     records = []; counts = collections.Counter(); native = [None]; prefix = [None]
     expected = {}; saved_memory = [None]; start = time.monotonic(); last_progress = [0.]
     journal = gzip.open(out/'COMMITS.jsonl.gz', 'wt')
 
     def before_native(**d):
         native[0] = d
-        if (d['frame'], d['view']) == (32, 0): prefix[0] = phase13_prefix(model, d)
+        if (d['frame'], d['view']) == (32, 0):
+            prefix[0] = out/'NATIVE_PREFIX_32_0.pth.xz'
+            save_dense(prefix[0],phase13_prefix(model,d),reserve=30*2**30)
 
     def before(**d):
         risk.before(**d)
@@ -79,12 +91,19 @@ def main(video):
     original = read(natural['raw_predictions']['path'])
     assert predictions == original, 'instrumented state changed original committed predictions'
     assert prefix[0] is not None and saved_memory[0] is not None
+    storage_guard(); artifact = out/'DATASET.pth.xz'
+    save(out/'PROGRESS.json', dict(status='SERIALIZING_BEFORE_RESTORE_AUDIT', records=len(records), counts=dict(counts)))
+    save_dense(artifact, dict(records=records, binding=source, native_policy='pi_multi_seed20261009_20k'), reserve=30*2**30)
+    save(out/'COLLECTION.json',dict(status='COLLECTED_PENDING_NATIVE_RESTORE',binding=source,DATASET=ref(artifact),
+         counts=dict(counts),raw_predictions_exact=True,duplicate_GT_offline_labels_masked=duplicate_labels))
     restored_payloads = [0]
 
     def verify_before(**d):
         if d['task'] != 0 or not len(d['logits']): return
         key = d['context']['frame'], d['context']['view']; old = expected[key]
-        assert all(torch.equal(value.cpu(), old['inputs'][name]) for name,value in d['batch'].items())
+        differences={name:float((value.cpu().float()-old['inputs'][name].float()).abs().max())
+            for name,value in d['batch'].items() if not torch.equal(value.cpu(),old['inputs'][name])}
+        assert not differences, (key,differences)
         assert torch.equal(d['logits'].cpu(), old['logits'])
 
     def verify_after(**d):
@@ -94,18 +113,17 @@ def main(video):
 
     executor.observer = verify_before; executor.commit_observer = verify_after
     model.jev_native_prefix_observer = None
-    with torch.no_grad(): run(model, values, frames, stop=95, prefix=prefix[0])
+    restored_prefix=load_dense(prefix[0],map_location='cuda:0')
+    with torch.no_grad(): run(model, values, frames, stop=95, prefix=restored_prefix)
     assert fingerprint(executor.memory.state_dict()) == saved_memory[0]
     assert restored_payloads[0] == 128
-    storage_guard(); artifact = out/'DATASET.pth.xz'
-    save(out/'PROGRESS.json', dict(status='SERIALIZING_LOSSLESS_DATASET', records=len(records), counts=dict(counts)))
-    save_dense(artifact, dict(records=records, binding=source, native_policy='pi_multi_seed20261009_20k'), reserve=30*2**30)
     result = dict(status='PASS', binding=source, video=video, frames=frames, records=len(records),
         counts=dict(counts), DATASET=ref(artifact), original_native_source=ref(OUT/'train_commitment_prefixes_v1'/f'video{video:02d}'/'RESULT.json'),
         exact_original_native_predictions=True, persistent_restore_payloads_exact=restored_payloads[0],
         persistent_restore_inputs_logits_IDS_and_final_memory_exact=True,
         GTA_free_throw='PASS_ACTUAL_NATIVE_EXECUTION', GT_actor_inputs=False, teacher_forced_IDs=False,
         reserved_TRAIN_blocks_never_gradients=True, seconds=time.monotonic()-start,
+        duplicate_GT_offline_labels_masked=duplicate_labels,raw_GT_annotations_modified=False,
         correction_semantics='strong causal predecessor certified pure wrong with clean compatible alternatives; mixed predecessor alone remains UNKNOWN')
     save(out/'RESULT.json', result); save(out/'PROGRESS.json', dict(status='PASS', records=len(records), counts=dict(counts)))
     print('PHASE15_COMMITMENT_DATASET_PASS', video, len(records), dict(counts), flush=True)

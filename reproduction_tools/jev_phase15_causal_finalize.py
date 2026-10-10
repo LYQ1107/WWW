@@ -59,7 +59,7 @@ def main():
     policy_counts = collections.defaultdict(collections.Counter)
     for video in DEV + TRAIN:
         for policy in ['pi_multi_frozen20k', 'pi_fixed_frozen20k']:
-            folder = OUT / 'causal_commitment_v1' / policy / f'video{video:02d}'
+            folder = OUT / ('causal_commitment_v2_duplicate_diagnostic' if video==14 else 'causal_commitment_v1') / policy / f'video{video:02d}'
             final = folder / 'RESULT.json'
             if not final.exists(): pending.append({'video': video, 'policy': policy}); continue
             summary = read(final); assert summary['status'] == 'COMPLETE'
@@ -70,13 +70,15 @@ def main():
                 key = tuple(item['key']), item['row']; grouped[key][branch['action']] = branch, descriptor
                 if branch['status'] == 'COMPLETE':
                     assert sha(branch['committed_future_trace']['path']) == branch['committed_future_trace']['SHA256']
-                branch_records.append({'video': video, 'scope': 'TRAIN' if video in TRAIN else 'DEVELOPMENT_DIAGNOSTIC',
+                corrected = corrected_propagation_censoring(branch) if branch['status']=='COMPLETE' else None
+                branch_records.append({'video': video, 'scope': 'TRAIN_DUPLICATE_GT_DIAGNOSTIC' if video==14 else 'TRAIN' if video in TRAIN else 'DEVELOPMENT_DIAGNOSTIC',
                     'policy': policy, 'key': item['key'], 'row': item['row'], 'action': branch['action'],
                     'status': branch['status'], 'native_branch': descriptor,
                     'actor_source_commit': branch['binding']['source_commit'], 'starting_state_SHA256': branch['starting_state_SHA256'],
-                    'H': branch.get('H'), 'GT_in_model_inputs': False,
+                    'H': {h:dict(future_CLEAR_IDSW=m['future_CLEAR_IDSW'],counts=m['identity_consequences']['counts']) for h,m in branch['H'].items()} if branch.get('H') else None, 'GT_in_model_inputs': False,
                     'offline_research_intervention': True,
-                    'corrected_observation_gap_censoring': corrected_propagation_censoring(branch) if branch['status'] == 'COMPLETE' else None})
+                    'corrected_observation_gap_censoring': {h:dict(episodes=len(items),right_censored=sum(t['right_censored'] for t in items),
+                        observed_error_frames=sum(t['observed_wrong_frames'] for t in items)) for h,items in corrected.items()} if corrected else None})
                 policy_counts[policy]['executed' if branch['status'] == 'COMPLETE' else 'not_legal'] += 1
             for key, actions in grouped.items():
                 baseline, baseline_ref = actions['SELECT_JEV_BEST_ID']
@@ -104,7 +106,7 @@ def main():
                     adverse_merge = any(deltas[h]['new_cross_GT_gallery_mix'] > 0 for h in deltas)
                     adverse_birth = any(deltas[h]['false_birth'] > 0 for h in deltas)
                     benefit = deltas['32']['future_CLEAR_IDSW'] < 0 and not adverse_merge and not adverse_birth
-                    if action == 'KEEP_PREVIOUS_COMMITTED_ID' and item['pure_previous_continuation_candidate']:
+                    if video != 14 and action == 'KEEP_PREVIOUS_COMMITTED_ID' and item['pure_previous_continuation_candidate']:
                         safe_support[policy].add(group)
                         if benefit: positive[policy].add(group)
                     if benefit: policy_counts[policy]['favorable_legal_actions'] += 1
@@ -131,6 +133,7 @@ def main():
         'pending': pending, 'branches': branch_records, 'paired_comparisons': comparisons,
         'policy_specific_counts': {p: dict(c) for p, c in policy_counts.items()},
         'future_values_are_policy_specific': True, 'different_policies_pooled_as_one_value': False,
+        'video14_strict_CLEAR': 'UNAVAILABLE_RAW_GT_DUPLICATES; permissive native branches are diagnostic only and excluded from feasibility gate',
         'unaltered_pi_multi_matches_original_future': True if original else None,
         'no_past_ID_rewriting_or_candidate_fabrication': True,
         'full_video_HOTA_or_official_CVIDF1_claimed_from_prefixes': False}

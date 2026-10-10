@@ -7,10 +7,10 @@ def main():
     protect(); assert read(REPORTS/'STRUCTURAL_TESTS.json')['status'] == 'PASS'
     for video in TRAIN:
         assert read(OUT/'train_commitment_prefixes_v1'/f'video{video:02d}'/'RESULT.json')['status']=='PASS'
-    source=pin('source_dataset_v1')
+    source=pin('source_dataset_v2')
     jobs=[dict(key=f'commitment_DATASET_TRAIN{video}',script='jev_phase15_collect_dataset.py',
-               args=['--video',str(video)],result=str(OUT/'commitment_dataset_v1'/f'video{video:02d}'/'RESULT.json')) for video in TRAIN]
-    result=run_queue(source,jobs,'commitment_dataset_queue_v1',max_active=4)
+               args=['--video',str(video)],result=str(OUT/'commitment_dataset_v2'/f'video{video:02d}'/'RESULT.json')) for video in TRAIN]
+    result=run_queue(source,jobs,'commitment_dataset_queue_v2',max_active=4)
     assert not result['failed'], result['failed']
 
 

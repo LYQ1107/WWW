@@ -143,7 +143,7 @@ def risk_at_horizon(risk, boundary, end):
         'fragment_hop_is_not_CLEAR_IDSW': True, 'cross_camera_diagnostic_is_not_official_CVIDF1': True}
 
 
-def main(video, continuation):
+def main(video, continuation, duplicate_gt_diagnostic=False):
     protect(); assert video in TRAIN + DEV
     training_case = OUT / 'train_commitment_prefixes_v1' / f'video{video:02d}'
     replay = (training_case / 'RESULT.json') if video in TRAIN else (
@@ -160,12 +160,15 @@ def main(video, continuation):
     torch.set_num_threads(1); torch.manual_seed(20261009)
     torch.backends.cudnn.benchmark = False; torch.backends.cudnn.deterministic = True
     values, total_frames, reader = cache_inputs(video)
-    metric = FrozenClearFuture('multi_question', 20261009, video, case_override=training_case if video in TRAIN else None)
+    metric = FrozenClearFuture('multi_question', 20261009, video, case_override=training_case if video in TRAIN else None,
+                               duplicate_gt_diagnostic=duplicate_gt_diagnostic)
+    source['strict_CLEAR_causal_gate_eligible'] = not duplicate_gt_diagnostic
+    source['raw_GT_duplicate_audit'] = metric.evaluator
     event_path = training_case / 'SWITCH_EVENTS.jsonl.gz' if video in TRAIN else (
         OUT / 'failure_reconstruction_v1/multi_question_seed20261009' / f'video{video:02d}' / 'SWITCH_EVENTS.jsonl.gz')
     with gzip.open(event_path, 'rt') as stream: all_events = [json.loads(line) for line in stream]
     by_event = {(tuple(e['key']), e['row']): e for e in all_events}
-    folder = OUT / 'causal_commitment_v1' / continuation / f'video{video:02d}'
+    folder = OUT / ('causal_commitment_v2_duplicate_diagnostic' if duplicate_gt_diagnostic else 'causal_commitment_v1') / continuation / f'video{video:02d}'
     folder.mkdir(parents=True, exist_ok=True); results = []; begin = time.monotonic()
     for item in manifest['counterfactual_prefixes']:
         boundary = tuple(item['key'][1:]); event = by_event[tuple(item['key']), item['row']]
@@ -241,6 +244,7 @@ def main(video, continuation):
 if __name__ == '__main__':
     p = argparse.ArgumentParser(); p.add_argument('--video', type=int, required=True)
     p.add_argument('--continuation', choices=['pi_multi_frozen20k', 'pi_fixed_frozen20k'], required=True)
+    p.add_argument('--duplicate-gt-diagnostic',action='store_true')
     args = p.parse_args()
-    try: main(args.video, args.continuation)
+    try: main(args.video, args.continuation, args.duplicate_gt_diagnostic)
     except Exception: failure('causal_commitment', traceback.format_exc()); raise

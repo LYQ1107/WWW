@@ -17,7 +17,7 @@ def truncate(value, original_frames, stop):
 
 
 class FrozenClearFuture:
-    def __init__(self, variant, seed, video, case_override=None):
+    def __init__(self, variant, seed, video, case_override=None, duplicate_gt_diagnostic=False):
         sys.path.insert(0, str(ROOT / 'TrackEval'))
         for name, kind in [('float', float), ('int', int), ('bool', bool)]:
             if name not in np.__dict__: setattr(np, name, kind)
@@ -30,7 +30,12 @@ class FrozenClearFuture:
         cfg.update(GT_FOLDER=manifest['trackeval_gt'], TRACKERS_FOLDER=manifest['trackeval_trackers'],
                    TRACKERS_TO_EVAL=['GMT'], BENCHMARK='VisionTrack', SPLIT_TO_EVAL='test',
                    SKIP_SPLIT_FOL=True, SEQ_INFO=manifest['seq_lengths'], PRINT_CONFIG=False)
-        self.dataset = trackeval.datasets.MotChallenge2DBox(cfg)
+        if duplicate_gt_diagnostic:
+            assert video == 14, 'explicit isolated diagnostic scope only'
+            from evaluate_visiontrack import PermissiveVisionTrackDataset
+            dataset_class = PermissiveVisionTrackDataset
+        else: dataset_class = trackeval.datasets.MotChallenge2DBox
+        self.dataset = dataset_class(cfg)
         self.templates = {}; self.original = original; self.raw_by_key = collections.defaultdict(list)
         annotations = read(ANNOTATIONS)
         images = {im['id']: im for im in annotations['images'] if im['video_id'] == video}
@@ -51,6 +56,11 @@ class FrozenClearFuture:
             'CLEAR_code': ref(ROOT / 'TrackEval/trackeval/metrics/clear.py'),
             'dataset_code': ref(ROOT / 'TrackEval/trackeval/datasets/mot_challenge_2d_box.py'),
             'GT_and_box_source': ref(out / 'strict_eval/tracking_eval_runtime_state/native/prepared/manifest.json'),
+            'strict_GT_unique': not any(manifest.get('gt_duplicate_rows',{}).values()),
+            'duplicate_gt_diagnostic': duplicate_gt_diagnostic,
+            'raw_GT_duplicate_rows': manifest.get('gt_duplicate_rows',{}),
+            'permissive_dataset_code': ref(ROOT/'reproduction_tools/evaluate_visiontrack.py') if duplicate_gt_diagnostic else None,
+            'strict_clear_causal_gate_eligible': not duplicate_gt_diagnostic,
             'internal_split_label_test_is_frozen_TRAIN_subset': True, 'official_TEST_accessed': False}
 
     def ids(self, instances):

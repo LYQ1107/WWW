@@ -7,7 +7,8 @@ from gtr.modeling.jev_stage2.model import Reader
 class CommitmentOptionReader(nn.Module):
     def __init__(self, variant='dynamic', d=256):
         super().__init__(); self.variant = variant
-        self.reader = Reader(d)
+        self.reader = Reader(d) if variant != 'ordinary' else None
+        self.extra = nn.Sequential(nn.Linear(d,4*d),nn.GELU(),nn.Linear(4*d,d),nn.LayerNorm(d)) if variant in ['fixed_control','ordinary'] else None
         self.terminal = nn.Parameter(torch.randn(1, 1, 1, d) * .02)
         self.value = nn.Sequential(nn.Linear(3*d, d), nn.GELU(), nn.Linear(d, 1))
 
@@ -18,7 +19,8 @@ class CommitmentOptionReader(nn.Module):
         if self.variant == 'set':
             options = self.reader(options.reshape(b*q, k+1, d), options.reshape(b*q, k+1, d),
                                   mask.reshape(b*q, k+1)).reshape(b, q, k+1, d)
-        else:
+        elif self.reader is not None:
             options = self.reader(options.reshape(b*q, k+1, d), query.reshape(b*q, 1, d)).reshape(b, q, k+1, d)
+        if self.extra is not None: options = options+self.extra(options)
         return self.value(torch.cat([options, query[:, :, None].expand(-1, -1, k+1, -1),
                                     det[:, :, None].expand(-1, -1, k+1, -1)], -1)).squeeze(-1)

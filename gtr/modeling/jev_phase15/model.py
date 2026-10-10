@@ -16,8 +16,8 @@ class PersistentIdentityPolicy(nn.Module):
         variant = 'fixed_question' if arm == 'D_fixed' else 'set_transformer' if arm == 'E_set' else 'multi_question'
         self.identity = ReliableIdentityPolicy(variant, 'availability_joint')
         if arm in ARMS[2:]:
-            question = 'fixed' if arm == 'D_fixed' or ablation == 'fixed_Q4' else 'dynamic'
-            option = 'set' if arm == 'E_set' or ablation == 'ordinary_option' else 'dynamic'
+            question = 'fixed' if arm == 'D_fixed' or ablation == 'fixed_Q4' else 'pooled' if arm == 'E_set' else 'dynamic'
+            option = 'ordinary' if ablation == 'ordinary_option' else 'fixed_control' if question == 'fixed' else 'set' if arm == 'E_set' else 'dynamic'
             self.question = CommitmentQuestion(question)
             self.option = CommitmentOptionReader(option)
         if arm in ['D_fixed', 'E_set', 'F_full']: self.reliability = CandidateReliability()
@@ -36,7 +36,7 @@ class PersistentIdentityPolicy(nn.Module):
         if hasattr(self, 'reliability'):
             risk = self.reliability(x); result.update(risk)
             # Purity alone never certifies identity compatibility.
-            adjustment = F.logsigmoid(risk['safety_logits']) + F.logsigmoid(-risk['uncertainty_logits'])
+            adjustment = F.logsigmoid(risk['safety_logits']) + F.logsigmoid(-risk['uncertainty_logits']) + 1.3862943611198906
             z = torch.cat([z[:, :, :-1] + adjustment, z[:, :, -1:]], -1)
         legal = torch.cat([x['legal'], torch.ones_like(x['question_mask'])[:, :, None]], -1)
         result['logits'] = z.masked_fill(~legal, -1e4)
