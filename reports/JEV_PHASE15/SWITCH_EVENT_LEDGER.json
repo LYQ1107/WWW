@@ -1,0 +1,2286 @@
+{
+  "CORRECTIVE_SWITCH_is_history_certificate_not_proven_future_benefit": true,
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": null,
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": {
+      "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+      "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+    },
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]"
+    },
+    "evaluator": null,
+    "heldout_20_21_22": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+    "scope": null,
+    "seed": null,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase15_common.py": "c3b45cba8fec5d6ad0021927492d6a148c6d035cae3efd8b6c8ef8354061b0d8",
+      "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+      "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418"
+    },
+    "source_commit": "f39f1e51d103a8d29e6f0db36e19f6a6a85af148",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+  },
+  "cases": [
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 9,
+        "CORRECTIVE_SWITCH": 5,
+        "FALSE_BIRTH": 2,
+        "POLLUTED_HISTORY_SWITCH": 303,
+        "WRONG_EXISTING_MERGE": 10,
+        "certified_pure_previous_and_legal": 8,
+        "previous_ID_not_legal_MATCH_candidate": 0
+      },
+      "event_stream": {
+        "SHA256": "ac29422ad4969aa3731fa5800d756c6176273b21302837bd5cfeedfe89ee4039",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261009/video17/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 329,
+      "frames": 1200,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 191,
+          "reconstructed_IDSW": 191,
+          "sequence": "00116wood_View1"
+        },
+        {
+          "official_IDSW": 138,
+          "reconstructed_IDSW": 138,
+          "sequence": "00116wood_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "de90a2a142857d8b92af6f0336243e46b9493c4ca6ff0a63c78f8a18a03e5415",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261009/video17/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            28,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 1,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            48,
+            0
+          ],
+          "native_id": 1,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            35,
+            0
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 2,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            215,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 1,
+          "pure_previous_continuation_candidate": false,
+          "row": 4
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            17,
+            27,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 1,
+          "pure_previous_continuation_candidate": true,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            17,
+            32,
+            1
+          ],
+          "native_id": 1,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 5
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 17
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 3,
+        "CORRECTIVE_SWITCH": 96,
+        "FALSE_BIRTH": 2,
+        "POLLUTED_HISTORY_SWITCH": 171,
+        "PURE_FRAGMENT_HOP": 152,
+        "WRONG_EXISTING_MERGE": 8,
+        "certified_pure_previous_and_legal": 249,
+        "previous_ID_not_legal_MATCH_candidate": 0
+      },
+      "event_stream": {
+        "SHA256": "5753ebbf052c3653b3dbb24ec4f7644a748afc0171df5861b2e7fe24aa4c8a80",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261009/video18/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 432,
+      "frames": 1029,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 208,
+          "reconstructed_IDSW": 208,
+          "sequence": "00118park_View1"
+        },
+        {
+          "official_IDSW": 224,
+          "reconstructed_IDSW": 224,
+          "sequence": "00118park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "c70b01fc4902586d6d25421885438db79dfd6bdaef365d1c00a2dfc3bc8b671d",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261009/video18/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            18,
+            61,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 4
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            18,
+            81,
+            0
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": true,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            283,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 5
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            284,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            18,
+            282,
+            1
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 6
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            18,
+            283,
+            0
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            18,
+            61,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "FALSE_BIRTH",
+          "key": [
+            18,
+            280,
+            1
+          ],
+          "native_id": 8,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 5
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 18
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 4,
+        "CORRECTIVE_SWITCH": 8,
+        "FALSE_BIRTH": 1,
+        "POLLUTED_HISTORY_SWITCH": 31,
+        "PURE_FRAGMENT_HOP": 6,
+        "RECOVERY_SWITCH": 1,
+        "WRONG_EXISTING_MERGE": 12,
+        "certified_pure_previous_and_legal": 20,
+        "previous_ID_not_legal_MATCH_candidate": 3
+      },
+      "event_stream": {
+        "SHA256": "a5979df08897bb55143da2b70435b085fa161fdabfbc4df41b2d439d51036b4c",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261009/video19/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 63,
+      "frames": 1052,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 23,
+          "reconstructed_IDSW": 23,
+          "sequence": "00119park_View1"
+        },
+        {
+          "official_IDSW": 40,
+          "reconstructed_IDSW": 40,
+          "sequence": "00119park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "a31e6b730057562250bf37b22ded178fbc49565074af22ac1462970f35f32b13",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261009/video19/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            46,
+            0
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            48,
+            0
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            118,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            142,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            120,
+            1
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": false,
+          "row": 8
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            223,
+            0
+          ],
+          "native_id": 11,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 8,
+          "pure_previous_continuation_candidate": false,
+          "row": 7
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            19,
+            12,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 12,
+          "pure_previous_continuation_candidate": true,
+          "row": 7
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            19,
+            108,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": true,
+          "row": 6
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 19
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 6,
+        "CORRECTIVE_SWITCH": 15,
+        "FALSE_BIRTH": 3,
+        "POLLUTED_HISTORY_SWITCH": 14,
+        "PURE_FRAGMENT_HOP": 8,
+        "WRONG_EXISTING_MERGE": 6,
+        "certified_pure_previous_and_legal": 30,
+        "previous_ID_not_legal_MATCH_candidate": 2
+      },
+      "event_stream": {
+        "SHA256": "1a198d5324c8e6aa48f60723901aed4fcadd64812a90fe164f9a2515173a21af",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/fixed_question_seed20261009/video17/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 52,
+      "frames": 1200,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 23,
+          "reconstructed_IDSW": 23,
+          "sequence": "00116wood_View1"
+        },
+        {
+          "official_IDSW": 29,
+          "reconstructed_IDSW": 29,
+          "sequence": "00116wood_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "f31fd8fd8684f16855e159bfca2956205dd868688912b6caab8d42fba0b955b6",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/fixed_question_seed20261009/video17/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            17,
+            48,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            17,
+            194,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 8,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            231,
+            1
+          ],
+          "native_id": 4,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 1,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            564,
+            1
+          ],
+          "native_id": 11,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 1,
+          "pure_previous_continuation_candidate": true,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            241,
+            1
+          ],
+          "native_id": 1,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 4,
+          "pure_previous_continuation_candidate": false,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            571,
+            1
+          ],
+          "native_id": 1,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 11,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            17,
+            30,
+            0
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "FALSE_BIRTH",
+          "key": [
+            17,
+            154,
+            1
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": false,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 4
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "fixed_question",
+      "video": 17
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 5,
+        "CORRECTIVE_SWITCH": 3,
+        "FALSE_BIRTH": 2,
+        "POLLUTED_HISTORY_SWITCH": 9,
+        "PURE_FRAGMENT_HOP": 39,
+        "WRONG_EXISTING_MERGE": 4,
+        "certified_pure_previous_and_legal": 45,
+        "previous_ID_not_legal_MATCH_candidate": 0
+      },
+      "event_stream": {
+        "SHA256": "24bfeab99313ebd83f2cb805d179a9a8a4792741a88d9ff1163dfe78c8a603d7",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/fixed_question_seed20261009/video18/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 62,
+      "frames": 1029,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 36,
+          "reconstructed_IDSW": 36,
+          "sequence": "00118park_View1"
+        },
+        {
+          "official_IDSW": 26,
+          "reconstructed_IDSW": 26,
+          "sequence": "00118park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "7df94244fd84120a9b0439f59a62d807842a732e613f36ac3517cd5e66d6d832",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/fixed_question_seed20261009/video18/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            18,
+            281,
+            1
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 6
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            18,
+            295,
+            0
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 9,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            322,
+            0
+          ],
+          "native_id": 2,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 8,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            392,
+            0
+          ],
+          "native_id": 8,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 2,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            18,
+            488,
+            1
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 9,
+          "pure_previous_continuation_candidate": false,
+          "row": 4
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            18,
+            716,
+            1
+          ],
+          "native_id": 4,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 12,
+          "pure_previous_continuation_candidate": false,
+          "row": 8
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            18,
+            261,
+            0
+          ],
+          "native_id": 8,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 2,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            18,
+            281,
+            0
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "fixed_question",
+      "video": 18
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 6,
+        "CORRECTIVE_SWITCH": 21,
+        "FALSE_BIRTH": 1,
+        "POLLUTED_HISTORY_SWITCH": 39,
+        "PURE_FRAGMENT_HOP": 4,
+        "RECOVERY_SWITCH": 1,
+        "WRONG_EXISTING_MERGE": 20,
+        "certified_pure_previous_and_legal": 32,
+        "previous_ID_not_legal_MATCH_candidate": 3
+      },
+      "event_stream": {
+        "SHA256": "5c998fb3544bb2c1df2a99416c73af53ade40a1dfcf0204f73a13c788f87a501",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/fixed_question_seed20261009/video19/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 92,
+      "frames": 1052,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 48,
+          "reconstructed_IDSW": 48,
+          "sequence": "00119park_View1"
+        },
+        {
+          "official_IDSW": 44,
+          "reconstructed_IDSW": 44,
+          "sequence": "00119park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "d271194c408d9a9bccf0beddeae68d470c0c44ea42127d4949083c319c17a06e",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/fixed_question_seed20261009/video19/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            31,
+            0
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            50,
+            0
+          ],
+          "native_id": 4,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 15,
+          "pure_previous_continuation_candidate": true,
+          "row": 6
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            118,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            142,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            120,
+            1
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": false,
+          "row": 8
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            124,
+            0
+          ],
+          "native_id": 11,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 15,
+          "pure_previous_continuation_candidate": false,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            19,
+            27,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            19,
+            47,
+            0
+          ],
+          "native_id": 15,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 4,
+          "pure_previous_continuation_candidate": true,
+          "row": 7
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "fixed_question",
+      "video": 19
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 8,
+        "CORRECTIVE_SWITCH": 31,
+        "FALSE_BIRTH": 6,
+        "POLLUTED_HISTORY_SWITCH": 62,
+        "PURE_FRAGMENT_HOP": 14,
+        "RECOVERY_SWITCH": 2,
+        "WRONG_EXISTING_MERGE": 7,
+        "certified_pure_previous_and_legal": 52,
+        "previous_ID_not_legal_MATCH_candidate": 4
+      },
+      "event_stream": {
+        "SHA256": "694fc8caaa64d290c2c0586dda79630024c66a1cf779f8fda3d884a68d929313",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/set_transformer_seed20261009/video17/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 130,
+      "frames": 1200,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 53,
+          "reconstructed_IDSW": 53,
+          "sequence": "00116wood_View1"
+        },
+        {
+          "official_IDSW": 77,
+          "reconstructed_IDSW": 77,
+          "sequence": "00116wood_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "75f99bf159b0f6814f6673d452edf6fbf75197c742b9f7abfdd239e2a22fbf73",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/set_transformer_seed20261009/video17/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            17,
+            27,
+            1
+          ],
+          "native_id": 4,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 8,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            17,
+            51,
+            1
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 13,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            118,
+            1
+          ],
+          "native_id": 14,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 4,
+          "pure_previous_continuation_candidate": false,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            136,
+            1
+          ],
+          "native_id": 4,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 14,
+          "pure_previous_continuation_candidate": false,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            128,
+            0
+          ],
+          "native_id": 12,
+          "previous_ID_in_legal_MATCH_set": false,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            241,
+            1
+          ],
+          "native_id": 1,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 4,
+          "pure_previous_continuation_candidate": false,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            17,
+            22,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 4,
+          "pure_previous_continuation_candidate": true,
+          "row": 4
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "category": "FALSE_BIRTH",
+          "key": [
+            17,
+            25,
+            1
+          ],
+          "native_id": 8,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": true,
+          "row": 4
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "set_transformer",
+      "video": 17
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 4,
+        "CORRECTIVE_SWITCH": 29,
+        "FALSE_BIRTH": 3,
+        "POLLUTED_HISTORY_SWITCH": 28,
+        "PURE_FRAGMENT_HOP": 1,
+        "WRONG_EXISTING_MERGE": 4,
+        "certified_pure_previous_and_legal": 32,
+        "previous_ID_not_legal_MATCH_candidate": 0
+      },
+      "event_stream": {
+        "SHA256": "8ee1e691a705a9f66731eecb74163f3711ef195691971ae91f5954cd073e45d2",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/set_transformer_seed20261009/video18/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 69,
+      "frames": 1029,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 32,
+          "reconstructed_IDSW": 32,
+          "sequence": "00118park_View1"
+        },
+        {
+          "official_IDSW": 37,
+          "reconstructed_IDSW": 37,
+          "sequence": "00118park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "4712043d3b48cd0b6ae69fe6f7305e55578fc0e3c84b85a9d211c5e5257f0775",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/set_transformer_seed20261009/video18/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            18,
+            547,
+            1
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 12,
+          "pure_previous_continuation_candidate": true,
+          "row": 6
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            291,
+            0
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            302,
+            0
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            18,
+            292,
+            0
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 9,
+          "pure_previous_continuation_candidate": false,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            18,
+            303,
+            0
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 9,
+          "pure_previous_continuation_candidate": false,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "FALSE_BIRTH",
+          "key": [
+            18,
+            280,
+            1
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 9,
+          "pure_previous_continuation_candidate": false,
+          "row": 5
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            18,
+            281,
+            1
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": false,
+          "row": 6
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "set_transformer",
+      "video": 18
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 8,
+        "CORRECTIVE_SWITCH": 24,
+        "FALSE_BIRTH": 2,
+        "POLLUTED_HISTORY_SWITCH": 29,
+        "PURE_FRAGMENT_HOP": 17,
+        "WRONG_EXISTING_MERGE": 17,
+        "certified_pure_previous_and_legal": 47,
+        "previous_ID_not_legal_MATCH_candidate": 3
+      },
+      "event_stream": {
+        "SHA256": "acf63bb774e43b69b3398fe0604a05fd8f857a274bad845877b624f7f9771ff8",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/set_transformer_seed20261009/video19/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 97,
+      "frames": 1052,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 61,
+          "reconstructed_IDSW": 61,
+          "sequence": "00119park_View1"
+        },
+        {
+          "official_IDSW": 36,
+          "reconstructed_IDSW": 36,
+          "sequence": "00119park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "e236499a982c6c656d145e3697321e55b023847029d3634577af34f91c9d1109",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/set_transformer_seed20261009/video19/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            31,
+            0
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            54,
+            1
+          ],
+          "native_id": 16,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 5
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            147,
+            1
+          ],
+          "native_id": 15,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": false,
+          "row": 5
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            148,
+            0
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": false,
+          "previous_native_id": 13,
+          "pure_previous_continuation_candidate": false,
+          "row": 6
+        },
+        {
+          "GT_OFFLINE_ONLY": 4,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            50,
+            0
+          ],
+          "native_id": 4,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": false,
+          "row": 6
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            117,
+            0
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": false,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "FALSE_BIRTH",
+          "key": [
+            19,
+            2,
+            1
+          ],
+          "native_id": 12,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 9
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "FALSE_BIRTH",
+          "key": [
+            19,
+            16,
+            0
+          ],
+          "native_id": 16,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 6
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "set_transformer",
+      "video": 19
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 5,
+        "CORRECTIVE_SWITCH": 11,
+        "FALSE_BIRTH": 1,
+        "POLLUTED_HISTORY_SWITCH": 12,
+        "WRONG_EXISTING_MERGE": 3,
+        "certified_pure_previous_and_legal": 14,
+        "previous_ID_not_legal_MATCH_candidate": 0
+      },
+      "event_stream": {
+        "SHA256": "ff4e1267220428b30de5cab1e646b89947985c9e5ff63117b1403fdd06a2db4c",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261008/video17/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 32,
+      "frames": 1200,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 4,
+          "reconstructed_IDSW": 4,
+          "sequence": "00116wood_View1"
+        },
+        {
+          "official_IDSW": 28,
+          "reconstructed_IDSW": 28,
+          "sequence": "00116wood_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "e02251d104706571bc9b85637c618336251b726c779b3f14f4e645805e00dcab",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261008/video17/RESULT.json"
+      },
+      "seed": 20261008,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            48,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            128,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            35,
+            0
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            69,
+            1
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            17,
+            30,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 3,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            17,
+            103,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 4,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 17
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 4,
+        "CORRECTIVE_SWITCH": 3,
+        "FALSE_BIRTH": 2,
+        "POLLUTED_HISTORY_SWITCH": 18,
+        "PURE_FRAGMENT_HOP": 1,
+        "WRONG_EXISTING_MERGE": 2,
+        "certified_pure_previous_and_legal": 3,
+        "previous_ID_not_legal_MATCH_candidate": 0
+      },
+      "event_stream": {
+        "SHA256": "1c09d7d6d25e65fa5f381f54459bad28958a340ced1536b3df1b1749bf695383",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261008/video18/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 30,
+      "frames": 1029,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 16,
+          "reconstructed_IDSW": 16,
+          "sequence": "00118park_View1"
+        },
+        {
+          "official_IDSW": 14,
+          "reconstructed_IDSW": 14,
+          "sequence": "00118park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "3fa052d425685c3e0270537f57e57e6fee26e0cbdc105146fe1f51aa016b7ff3",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261008/video18/RESULT.json"
+      },
+      "seed": 20261008,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            18,
+            281,
+            0
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            493,
+            0
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            494,
+            0
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            18,
+            605,
+            1
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": false,
+          "row": 6
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            18,
+            608,
+            1
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": false,
+          "row": 5
+        },
+        {
+          "GT_OFFLINE_ONLY": 11,
+          "category": "FALSE_BIRTH",
+          "key": [
+            18,
+            252,
+            1
+          ],
+          "native_id": 8,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": false,
+          "row": 4
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            18,
+            281,
+            1
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": false,
+          "row": 6
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 18
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 6,
+        "CORRECTIVE_SWITCH": 22,
+        "POLLUTED_HISTORY_SWITCH": 68,
+        "PURE_FRAGMENT_HOP": 8,
+        "WRONG_EXISTING_MERGE": 15,
+        "certified_pure_previous_and_legal": 34,
+        "previous_ID_not_legal_MATCH_candidate": 1
+      },
+      "event_stream": {
+        "SHA256": "ee3fafd1cb66ebc29350f4420c8af55a665a4c24e45d7bd5d418ba2da7da8add",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261008/video19/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 119,
+      "frames": 1052,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 64,
+          "reconstructed_IDSW": 64,
+          "sequence": "00119park_View1"
+        },
+        {
+          "official_IDSW": 55,
+          "reconstructed_IDSW": 55,
+          "sequence": "00119park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "d79a4bbc17e83df22a642d8a663f35d0341d1ee8c944f0d450930819732cbe44",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261008/video19/RESULT.json"
+      },
+      "seed": 20261008,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            56,
+            1
+          ],
+          "native_id": 12,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": true,
+          "row": 8
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            78,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            142,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            157,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            120,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": false,
+          "row": 7
+        },
+        {
+          "GT_OFFLINE_ONLY": 7,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            264,
+            0
+          ],
+          "native_id": 2,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            19,
+            12,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 12,
+          "pure_previous_continuation_candidate": true,
+          "row": 7
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            19,
+            108,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": true,
+          "row": 6
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 19
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 7,
+        "CORRECTIVE_SWITCH": 7,
+        "FALSE_BIRTH": 1,
+        "POLLUTED_HISTORY_SWITCH": 9,
+        "WRONG_EXISTING_MERGE": 4,
+        "certified_pure_previous_and_legal": 9,
+        "previous_ID_not_legal_MATCH_candidate": 1
+      },
+      "event_stream": {
+        "SHA256": "e1d43b1330669107be5f546fa1a36781e06938c5ee48226a0b009fee4981174d",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261010/video17/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 28,
+      "frames": 1200,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 4,
+          "reconstructed_IDSW": 4,
+          "sequence": "00116wood_View1"
+        },
+        {
+          "official_IDSW": 24,
+          "reconstructed_IDSW": 24,
+          "sequence": "00116wood_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "e3948a383a0e6cb32551fd60833229b206374e41e721177ef55cc71b55be936e",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261010/video17/RESULT.json"
+      },
+      "seed": 20261010,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            48,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            53,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            35,
+            0
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            50,
+            1
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            17,
+            34,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            17,
+            154,
+            1
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": false,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 4
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 17
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 3,
+        "FALSE_BIRTH": 2,
+        "POLLUTED_HISTORY_SWITCH": 19,
+        "PURE_FRAGMENT_HOP": 21,
+        "WRONG_EXISTING_MERGE": 4,
+        "certified_pure_previous_and_legal": 21,
+        "previous_ID_not_legal_MATCH_candidate": 0
+      },
+      "event_stream": {
+        "SHA256": "c8df6f1d57cb20512d95307bbd9c6721baaaf453ee0fdc0a0e7ae2530dbe37e9",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261010/video18/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 49,
+      "frames": 1029,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 19,
+          "reconstructed_IDSW": 19,
+          "sequence": "00118park_View1"
+        },
+        {
+          "official_IDSW": 30,
+          "reconstructed_IDSW": 30,
+          "sequence": "00118park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "f43d38b1019d4fa8e1014ad3ef1a1e99b81507fb08d87414b2c8a3fe21c54922",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261010/video18/RESULT.json"
+      },
+      "seed": 20261010,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            18,
+            281,
+            0
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            18,
+            300,
+            1
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 9,
+          "pure_previous_continuation_candidate": true,
+          "row": 5
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            554,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 9,
+          "pure_previous_continuation_candidate": false,
+          "row": 4
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            643,
+            1
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": false,
+          "row": 7
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            18,
+            281,
+            1
+          ],
+          "native_id": 9,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": false,
+          "row": 6
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "FALSE_BIRTH",
+          "key": [
+            18,
+            397,
+            0
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 18
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 6,
+        "CORRECTIVE_SWITCH": 23,
+        "FALSE_BIRTH": 1,
+        "POLLUTED_HISTORY_SWITCH": 32,
+        "PURE_FRAGMENT_HOP": 17,
+        "WRONG_EXISTING_MERGE": 14,
+        "certified_pure_previous_and_legal": 45,
+        "previous_ID_not_legal_MATCH_candidate": 2
+      },
+      "event_stream": {
+        "SHA256": "93358222c1bd4cf3d4dcd80f682751d68426e7d04afc78d0f840f6fc864846e4",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261010/video19/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 93,
+      "frames": 1052,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 34,
+          "reconstructed_IDSW": 34,
+          "sequence": "00119park_View1"
+        },
+        {
+          "official_IDSW": 59,
+          "reconstructed_IDSW": 59,
+          "sequence": "00119park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "2c0ecfcadff596188d618bf92d242d686be616045eddf21e07807357b96264ba",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261010/video19/RESULT.json"
+      },
+      "seed": 20261010,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            29,
+            0
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            56,
+            1
+          ],
+          "native_id": 12,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 13,
+          "pure_previous_continuation_candidate": true,
+          "row": 8
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            118,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            142,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            120,
+            1
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": false,
+          "row": 8
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            269,
+            1
+          ],
+          "native_id": 1,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 12,
+          "pure_previous_continuation_candidate": false,
+          "row": 7
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            19,
+            15,
+            0
+          ],
+          "native_id": 12,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 13,
+          "pure_previous_continuation_candidate": true,
+          "row": 6
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            19,
+            27,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 3,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 19
+    }
+  ],
+  "deployment_GT_or_future_inputs": false,
+  "each_event_in_one_primary_category": true,
+  "long_training_gate": "PENDING_NATIVE_REPLAY_AND_COUNTERFACTUAL",
+  "status": "SAVED_RECONSTRUCTION_PASS_NATIVE_REPLAY_PENDING",
+  "worst_seed_CLEAR_IDSW": 824,
+  "worst_seed_counts": {
+    "AMBIGUOUS_UNKNOWN": 16,
+    "CORRECTIVE_SWITCH": 109,
+    "FALSE_BIRTH": 5,
+    "POLLUTED_HISTORY_SWITCH": 505,
+    "PURE_FRAGMENT_HOP": 158,
+    "RECOVERY_SWITCH": 1,
+    "WRONG_EXISTING_MERGE": 30,
+    "certified_pure_previous_and_legal": 277,
+    "previous_ID_not_legal_MATCH_candidate": 3
+  }
+}

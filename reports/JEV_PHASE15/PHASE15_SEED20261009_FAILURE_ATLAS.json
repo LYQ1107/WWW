@@ -1,0 +1,3594 @@
+{
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": null,
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": null,
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]"
+    },
+    "evaluator": null,
+    "heldout_20_21_22": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+    "scope": null,
+    "seed": 20261009,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase15_common.py": "c3b45cba8fec5d6ad0021927492d6a148c6d035cae3efd8b6c8ef8354061b0d8",
+      "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+      "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418"
+    },
+    "source_commit": "f39f1e51d103a8d29e6f0db36e19f6a6a85af148",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+  },
+  "counts": {
+    "AMBIGUOUS_UNKNOWN": 16,
+    "CORRECTIVE_SWITCH": 109,
+    "FALSE_BIRTH": 5,
+    "POLLUTED_HISTORY_SWITCH": 505,
+    "PURE_FRAGMENT_HOP": 158,
+    "RECOVERY_SWITCH": 1,
+    "WRONG_EXISTING_MERGE": 30,
+    "certified_pure_previous_and_legal": 277,
+    "previous_ID_not_legal_MATCH_candidate": 3
+  },
+  "scope": "824 exact CLEAR changes; neither all harmful nor all safely avoidable",
+  "status": "SAVED_RECONSTRUCTION_PASS_NATIVE_REPLAY_PENDING",
+  "videos": [
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "binding": {
+        "Full24": false,
+        "TRAIN": [
+          12,
+          13,
+          14,
+          16
+        ],
+        "checkpoints": [
+          {
+            "SHA256": "9831544476de466eed6919a10a3ffbe4dd6925aee252c1b3f3d87b25febbd434",
+            "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_v2/multi_question/availability_joint/seed20261009/LAST_FROZEN.pth"
+          }
+        ],
+        "config_SHA256": {
+          "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+          "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+        },
+        "dataset": {
+          "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+          "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+        },
+        "development": [
+          17,
+          18,
+          19
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": null,
+          "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+          "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]"
+        },
+        "evaluator": "unmodified TrackEval CLEAR with exact saved preprocessing",
+        "heldout_20_21_22": "SEALED",
+        "official_TEST": false,
+        "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+        "scope": "complete historical development video; offline only",
+        "seed": 20261009,
+        "source_SHA256": {
+          "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+          "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+          "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+          "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+          "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+          "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+          "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+          "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+          "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+          "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+          "reproduction_tools/jev_phase15_common.py": "c3b45cba8fec5d6ad0021927492d6a148c6d035cae3efd8b6c8ef8354061b0d8",
+          "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+          "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418"
+        },
+        "source_commit": "f39f1e51d103a8d29e6f0db36e19f6a6a85af148",
+        "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+      },
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 9,
+        "CORRECTIVE_SWITCH": 5,
+        "FALSE_BIRTH": 2,
+        "POLLUTED_HISTORY_SWITCH": 303,
+        "WRONG_EXISTING_MERGE": 10,
+        "certified_pure_previous_and_legal": 8,
+        "previous_ID_not_legal_MATCH_candidate": 0
+      },
+      "event_stream": {
+        "SHA256": "ac29422ad4969aa3731fa5800d756c6176273b21302837bd5cfeedfe89ee4039",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261009/video17/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 329,
+      "examples": {
+        "AMBIGUOUS_UNKNOWN": [
+          {
+            "CLEAR_GT_relabelled": 2,
+            "GT_OFFLINE_ONLY": 3,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 139,
+              "gallery_before": 138,
+              "hits": 139,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 0
+            },
+            "category": "AMBIGUOUS_UNKNOWN",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": false,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 1,
+            "final_committed_ID": 6,
+            "frame": 121,
+            "key": [
+              17,
+              121,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "SELECTED_HISTORY_ALREADY_POLLUTED",
+              "FIRST_CURRENT_GT_INTRODUCTION_IN_SELECTED_HISTORY"
+            ],
+            "previous_CLEAR_frame": 110,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 4,
+              "3": 230
+            },
+            "previous_native_id": 4,
+            "pure_previous_continuation_candidate": false,
+            "row": 0,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "1": 134,
+              "5": 2
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 0,
+            "GT_OFFLINE_ONLY": 1,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 143,
+              "gallery_before": 142,
+              "hits": 143,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 0
+            },
+            "category": "AMBIGUOUS_UNKNOWN",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 1,
+            "final_committed_ID": 6,
+            "frame": 123,
+            "key": [
+              17,
+              123,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 121,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": false,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 4,
+              "3": 234
+            },
+            "previous_native_id": 4,
+            "pure_previous_continuation_candidate": false,
+            "row": 0,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "1": 138,
+              "5": 2
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 2,
+            "GT_OFFLINE_ONLY": 3,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 240,
+              "gallery_before": 239,
+              "hits": 240,
+              "identity": 4,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 3
+            },
+            "category": "AMBIGUOUS_UNKNOWN",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 3,
+            "final_committed_ID": 4,
+            "frame": 123,
+            "key": [
+              17,
+              123,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            "native_id": 4,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 122,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": false,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 138,
+              "5": 2
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": false,
+            "row": 3,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "1": 4,
+              "3": 234
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "CORRECTIVE_SWITCH": [
+          {
+            "CLEAR_GT_relabelled": 1,
+            "GT_OFFLINE_ONLY": 2,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 69,
+              "gallery_before": 68,
+              "hits": 69,
+              "identity": 3,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 2
+            },
+            "category": "CORRECTIVE_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 2,
+            "final_committed_ID": 3,
+            "frame": 35,
+            "key": [
+              17,
+              35,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            "native_id": 3,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 34,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "4": 35
+            },
+            "previous_native_id": 2,
+            "pure_previous_continuation_candidate": false,
+            "row": 2,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "2": 67
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 70,
+              "gallery_before": 69,
+              "hits": 70,
+              "identity": 7,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 4
+            },
+            "category": "CORRECTIVE_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 7,
+            "frame": 215,
+            "key": [
+              17,
+              215,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "native_id": 7,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 202,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 130,
+              "5": 4
+            },
+            "previous_native_id": 1,
+            "pure_previous_continuation_candidate": false,
+            "row": 4,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 12
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 6,
+            "GT_OFFLINE_ONLY": 7,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 59,
+              "gallery_before": 58,
+              "hits": 59,
+              "identity": 9,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 6
+            },
+            "category": "CORRECTIVE_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 7,
+            "final_committed_ID": 9,
+            "frame": 681,
+            "key": [
+              17,
+              681,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                9
+              ]
+            },
+            "native_id": 9,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 680,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 494,
+              "2": 3,
+              "5": 4,
+              "7": 2
+            },
+            "previous_native_id": 1,
+            "pure_previous_continuation_candidate": false,
+            "row": 6,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "7": 53
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "FALSE_BIRTH": [
+          {
+            "CLEAR_GT_relabelled": 7,
+            "GT_OFFLINE_ONLY": 8,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "START_NEW",
+              "gallery_after": 1,
+              "gallery_before": 0,
+              "hits": 1,
+              "identity": 10,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 5
+            },
+            "category": "FALSE_BIRTH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 8,
+            "final_committed_ID": 10,
+            "frame": 811,
+            "key": [
+              17,
+              811,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [
+                1
+              ],
+              "possible_ids": [
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                9
+              ]
+            },
+            "native_id": 10,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 810,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 523,
+              "8": 20
+            },
+            "previous_native_id": 7,
+            "pure_previous_continuation_candidate": false,
+            "row": 5,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {},
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 6,
+            "GT_OFFLINE_ONLY": 7,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "START_NEW",
+              "gallery_after": 1,
+              "gallery_before": 0,
+              "hits": 1,
+              "identity": 12,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 6
+            },
+            "category": "FALSE_BIRTH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 7,
+            "final_committed_ID": 12,
+            "frame": 1157,
+            "key": [
+              17,
+              1157,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [
+                1
+              ],
+              "possible_ids": [
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                9,
+                10
+              ]
+            },
+            "native_id": 12,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 1155,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "7": 347
+            },
+            "previous_native_id": 9,
+            "pure_previous_continuation_candidate": false,
+            "row": 6,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {},
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "POLLUTED_HISTORY_SWITCH": [
+          {
+            "CLEAR_GT_relabelled": 0,
+            "GT_OFFLINE_ONLY": 1,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 7,
+              "gallery_before": 6,
+              "hits": 7,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 0
+            },
+            "category": "POLLUTED_HISTORY_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 1,
+            "final_committed_ID": 6,
+            "frame": 28,
+            "key": [
+              17,
+              28,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 27,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 55
+            },
+            "previous_native_id": 1,
+            "pure_previous_continuation_candidate": true,
+            "row": 0,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "1": 2,
+              "5": 2
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 0,
+            "GT_OFFLINE_ONLY": 1,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 57,
+              "gallery_before": 56,
+              "hits": 57,
+              "identity": 1,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 1
+            },
+            "category": "POLLUTED_HISTORY_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 1,
+            "final_committed_ID": 1,
+            "frame": 48,
+            "key": [
+              17,
+              48,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            "native_id": 1,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 47,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 41,
+              "5": 2
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": false,
+            "row": 1,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "1": 55,
+              "5": 1
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 0,
+            "GT_OFFLINE_ONLY": 1,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 50,
+              "gallery_before": 49,
+              "hits": 50,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 1
+            },
+            "category": "POLLUTED_HISTORY_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 1,
+            "final_committed_ID": 6,
+            "frame": 52,
+            "key": [
+              17,
+              52,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 51,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 59,
+              "5": 1
+            },
+            "previous_native_id": 1,
+            "pure_previous_continuation_candidate": false,
+            "row": 1,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "1": 45,
+              "5": 2
+            },
+            "variant": "multi_question",
+            "view": 0
+          }
+        ],
+        "WRONG_EXISTING_MERGE": [
+          {
+            "CLEAR_GT_relabelled": 0,
+            "GT_OFFLINE_ONLY": 1,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 5,
+              "gallery_before": 4,
+              "hits": 5,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 1
+            },
+            "category": "WRONG_EXISTING_MERGE",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 1,
+            "final_committed_ID": 6,
+            "frame": 27,
+            "key": [
+              17,
+              27,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "FIRST_CURRENT_GT_INTRODUCTION_IN_SELECTED_HISTORY"
+            ],
+            "previous_CLEAR_frame": 26,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 54
+            },
+            "previous_native_id": 1,
+            "pure_previous_continuation_candidate": true,
+            "row": 1,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 2
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 56,
+              "gallery_before": 55,
+              "hits": 56,
+              "identity": 1,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 5
+            },
+            "category": "WRONG_EXISTING_MERGE",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 1,
+            "frame": 32,
+            "key": [
+              17,
+              32,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            "native_id": 1,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "FIRST_CURRENT_GT_INTRODUCTION_IN_SELECTED_HISTORY"
+            ],
+            "previous_CLEAR_frame": 19,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 10,
+              "5": 2
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": false,
+            "row": 5,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "1": 55
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 1,
+            "GT_OFFLINE_ONLY": 2,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 35,
+              "gallery_before": 34,
+              "hits": 35,
+              "identity": 2,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 2
+            },
+            "category": "WRONG_EXISTING_MERGE",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 2,
+            "final_committed_ID": 2,
+            "frame": 34,
+            "key": [
+              17,
+              34,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            "native_id": 2,
+            "overlapping_tags": [
+              "FIRST_CURRENT_GT_INTRODUCTION_IN_SELECTED_HISTORY"
+            ],
+            "previous_CLEAR_frame": 33,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "2": 67
+            },
+            "previous_native_id": 3,
+            "pure_previous_continuation_candidate": true,
+            "row": 2,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "4": 34
+            },
+            "variant": "multi_question",
+            "view": 0
+          }
+        ]
+      },
+      "frames": 1200,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 191,
+          "reconstructed_IDSW": 191,
+          "sequence": "00116wood_View1"
+        },
+        {
+          "official_IDSW": 138,
+          "reconstructed_IDSW": 138,
+          "sequence": "00116wood_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "de90a2a142857d8b92af6f0336243e46b9493c4ca6ff0a63c78f8a18a03e5415",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261009/video17/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            28,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 1,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            17,
+            48,
+            0
+          ],
+          "native_id": 1,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            35,
+            0
+          ],
+          "native_id": 3,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 2,
+          "pure_previous_continuation_candidate": false,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            17,
+            215,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 1,
+          "pure_previous_continuation_candidate": false,
+          "row": 4
+        },
+        {
+          "GT_OFFLINE_ONLY": 1,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            17,
+            27,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 1,
+          "pure_previous_continuation_candidate": true,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            17,
+            32,
+            1
+          ],
+          "native_id": 1,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 5
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 17
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "binding": {
+        "Full24": false,
+        "TRAIN": [
+          12,
+          13,
+          14,
+          16
+        ],
+        "checkpoints": [
+          {
+            "SHA256": "9831544476de466eed6919a10a3ffbe4dd6925aee252c1b3f3d87b25febbd434",
+            "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_v2/multi_question/availability_joint/seed20261009/LAST_FROZEN.pth"
+          }
+        ],
+        "config_SHA256": {
+          "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+          "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+        },
+        "dataset": {
+          "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+          "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+        },
+        "development": [
+          17,
+          18,
+          19
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": null,
+          "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+          "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]"
+        },
+        "evaluator": "unmodified TrackEval CLEAR with exact saved preprocessing",
+        "heldout_20_21_22": "SEALED",
+        "official_TEST": false,
+        "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+        "scope": "complete historical development video; offline only",
+        "seed": 20261009,
+        "source_SHA256": {
+          "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+          "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+          "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+          "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+          "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+          "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+          "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+          "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+          "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+          "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+          "reproduction_tools/jev_phase15_common.py": "c3b45cba8fec5d6ad0021927492d6a148c6d035cae3efd8b6c8ef8354061b0d8",
+          "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+          "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418"
+        },
+        "source_commit": "f39f1e51d103a8d29e6f0db36e19f6a6a85af148",
+        "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+      },
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 3,
+        "CORRECTIVE_SWITCH": 96,
+        "FALSE_BIRTH": 2,
+        "POLLUTED_HISTORY_SWITCH": 171,
+        "PURE_FRAGMENT_HOP": 152,
+        "WRONG_EXISTING_MERGE": 8,
+        "certified_pure_previous_and_legal": 249,
+        "previous_ID_not_legal_MATCH_candidate": 0
+      },
+      "event_stream": {
+        "SHA256": "5753ebbf052c3653b3dbb24ec4f7644a748afc0171df5861b2e7fe24aa4c8a80",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261009/video18/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 432,
+      "examples": {
+        "AMBIGUOUS_UNKNOWN": [
+          {
+            "CLEAR_GT_relabelled": 5,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 6,
+              "gallery_before": 5,
+              "hits": 6,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 0
+            },
+            "category": "AMBIGUOUS_UNKNOWN",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 6,
+            "frame": 61,
+            "key": [
+              18,
+              61,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [],
+            "previous_CLEAR_frame": 60,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 122
+            },
+            "previous_native_id": 5,
+            "pure_previous_continuation_candidate": true,
+            "row": 0,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {},
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 240,
+              "gallery_before": 239,
+              "hits": 240,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 6
+            },
+            "category": "AMBIGUOUS_UNKNOWN",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 6,
+            "frame": 281,
+            "key": [
+              18,
+              281,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 280,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": false,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 330
+            },
+            "previous_native_id": 5,
+            "pure_previous_continuation_candidate": false,
+            "row": 6,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "6": 225
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 587,
+              "gallery_before": 586,
+              "hits": 587,
+              "identity": 5,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 6
+            },
+            "category": "AMBIGUOUS_UNKNOWN",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 5,
+            "frame": 555,
+            "key": [
+              18,
+              555,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ]
+            },
+            "native_id": 5,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 554,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": false,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "6": 556
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": false,
+            "row": 6,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "2": 7,
+              "5": 5,
+              "6": 541
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "CORRECTIVE_SWITCH": [
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 338,
+              "gallery_before": 337,
+              "hits": 338,
+              "identity": 5,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 6
+            },
+            "category": "CORRECTIVE_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 5,
+            "frame": 282,
+            "key": [
+              18,
+              282,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "native_id": 5,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 281,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "6": 227
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": false,
+            "row": 6,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 330
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 5,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 339,
+              "gallery_before": 338,
+              "hits": 339,
+              "identity": 5,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 0
+            },
+            "category": "CORRECTIVE_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 5,
+            "frame": 283,
+            "key": [
+              18,
+              283,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "native_id": 5,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 282,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "6": 227
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": false,
+            "row": 0,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 331
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 340,
+              "gallery_before": 339,
+              "hits": 340,
+              "identity": 5,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 5
+            },
+            "category": "CORRECTIVE_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 5,
+            "frame": 291,
+            "key": [
+              18,
+              291,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ]
+            },
+            "native_id": 5,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 290,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "6": 243
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": false,
+            "row": 5,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 332
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "FALSE_BIRTH": [
+          {
+            "CLEAR_GT_relabelled": 1,
+            "GT_OFFLINE_ONLY": 2,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "START_NEW",
+              "gallery_after": 1,
+              "gallery_before": 0,
+              "hits": 1,
+              "identity": 8,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 5
+            },
+            "category": "FALSE_BIRTH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 2,
+            "final_committed_ID": 8,
+            "frame": 280,
+            "key": [
+              18,
+              280,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "native_id": 8,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 279,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "6": 223
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": false,
+            "row": 5,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {},
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 9,
+            "GT_OFFLINE_ONLY": 12,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "START_NEW",
+              "gallery_after": 1,
+              "gallery_before": 0,
+              "hits": 1,
+              "identity": 12,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 1
+            },
+            "category": "FALSE_BIRTH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 12,
+            "final_committed_ID": 12,
+            "frame": 888,
+            "key": [
+              18,
+              888,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [
+                1
+              ],
+              "possible_ids": [
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11
+              ]
+            },
+            "native_id": 12,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 887,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 617,
+              "12": 879
+            },
+            "previous_native_id": 2,
+            "pure_previous_continuation_candidate": false,
+            "row": 1,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {},
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "POLLUTED_HISTORY_SWITCH": [
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 242,
+              "gallery_before": 241,
+              "hits": 242,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 5
+            },
+            "category": "POLLUTED_HISTORY_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 6,
+            "frame": 283,
+            "key": [
+              18,
+              283,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 282,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 332
+            },
+            "previous_native_id": 5,
+            "pure_previous_continuation_candidate": true,
+            "row": 5,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "6": 227
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 5,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 243,
+              "gallery_before": 242,
+              "hits": 243,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 0
+            },
+            "category": "POLLUTED_HISTORY_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 6,
+            "frame": 284,
+            "key": [
+              18,
+              284,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 283,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 332
+            },
+            "previous_native_id": 5,
+            "pure_previous_continuation_candidate": true,
+            "row": 0,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "6": 228
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 258,
+              "gallery_before": 257,
+              "hits": 258,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 5
+            },
+            "category": "POLLUTED_HISTORY_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 6,
+            "frame": 292,
+            "key": [
+              18,
+              292,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 291,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 334
+            },
+            "previous_native_id": 5,
+            "pure_previous_continuation_candidate": true,
+            "row": 5,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "2": 1,
+              "6": 243
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "PURE_FRAGMENT_HOP": [
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 7,
+              "gallery_before": 6,
+              "hits": 7,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 4
+            },
+            "category": "PURE_FRAGMENT_HOP",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 6,
+            "frame": 61,
+            "key": [
+              18,
+              61,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "BOTH_PURE_SAME_GT"
+            ],
+            "previous_CLEAR_frame": 60,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 122
+            },
+            "previous_native_id": 5,
+            "pure_previous_continuation_candidate": true,
+            "row": 4,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 1
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 5,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 123,
+              "gallery_before": 122,
+              "hits": 123,
+              "identity": 5,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 1
+            },
+            "category": "PURE_FRAGMENT_HOP",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 5,
+            "frame": 81,
+            "key": [
+              18,
+              81,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            "native_id": 5,
+            "overlapping_tags": [
+              "BOTH_PURE_SAME_GT"
+            ],
+            "previous_CLEAR_frame": 80,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 40
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": true,
+            "row": 1,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 122
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 124,
+              "gallery_before": 123,
+              "hits": 124,
+              "identity": 5,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 4
+            },
+            "category": "PURE_FRAGMENT_HOP",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 5,
+            "frame": 81,
+            "key": [
+              18,
+              81,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+              ]
+            },
+            "native_id": 5,
+            "overlapping_tags": [
+              "BOTH_PURE_SAME_GT"
+            ],
+            "previous_CLEAR_frame": 80,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 40
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": true,
+            "row": 4,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 123
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "WRONG_EXISTING_MERGE": [
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 492,
+              "gallery_before": 491,
+              "hits": 492,
+              "identity": 3,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 2
+            },
+            "category": "WRONG_EXISTING_MERGE",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 3,
+            "frame": 492,
+            "key": [
+              18,
+              492,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ]
+            },
+            "native_id": 3,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "FIRST_CURRENT_GT_INTRODUCTION_IN_SELECTED_HISTORY"
+            ],
+            "previous_CLEAR_frame": 491,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 243,
+              "12": 483
+            },
+            "previous_native_id": 2,
+            "pure_previous_continuation_candidate": false,
+            "row": 2,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "11": 491
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 533,
+              "gallery_before": 532,
+              "hits": 533,
+              "identity": 5,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 2
+            },
+            "category": "WRONG_EXISTING_MERGE",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 5,
+            "frame": 507,
+            "key": [
+              18,
+              507,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ]
+            },
+            "native_id": 5,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "FIRST_CURRENT_GT_INTRODUCTION_IN_SELECTED_HISTORY"
+            ],
+            "previous_CLEAR_frame": 506,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 13,
+              "11": 506
+            },
+            "previous_native_id": 3,
+            "pure_previous_continuation_candidate": false,
+            "row": 2,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 515
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 1,
+            "GT_OFFLINE_ONLY": 2,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 579,
+              "gallery_before": 578,
+              "hits": 579,
+              "identity": 5,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 6
+            },
+            "category": "WRONG_EXISTING_MERGE",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 2,
+            "final_committed_ID": 5,
+            "frame": 547,
+            "key": [
+              18,
+              547,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9
+              ]
+            },
+            "native_id": 5,
+            "overlapping_tags": [
+              "SELECTED_HISTORY_ALREADY_POLLUTED",
+              "FIRST_CURRENT_GT_INTRODUCTION_IN_SELECTED_HISTORY"
+            ],
+            "previous_CLEAR_frame": 537,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "2": 206
+            },
+            "previous_native_id": 8,
+            "pure_previous_continuation_candidate": true,
+            "row": 6,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 5,
+              "6": 540
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ]
+      },
+      "frames": 1029,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 208,
+          "reconstructed_IDSW": 208,
+          "sequence": "00118park_View1"
+        },
+        {
+          "official_IDSW": 224,
+          "reconstructed_IDSW": 224,
+          "sequence": "00118park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "c70b01fc4902586d6d25421885438db79dfd6bdaef365d1c00a2dfc3bc8b671d",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261009/video18/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            18,
+            61,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 4
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            18,
+            81,
+            0
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": true,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            283,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 5
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            18,
+            284,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            18,
+            282,
+            1
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 6
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            18,
+            283,
+            0
+          ],
+          "native_id": 5,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            18,
+            61,
+            0
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 5,
+          "pure_previous_continuation_candidate": true,
+          "row": 0
+        },
+        {
+          "GT_OFFLINE_ONLY": 2,
+          "category": "FALSE_BIRTH",
+          "key": [
+            18,
+            280,
+            1
+          ],
+          "native_id": 8,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": false,
+          "row": 5
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 18
+    },
+    {
+      "actor_source_commit": "ca4d07f75a290f20aece8a1ce48c48a9fee503fa",
+      "binding": {
+        "Full24": false,
+        "TRAIN": [
+          12,
+          13,
+          14,
+          16
+        ],
+        "checkpoints": [
+          {
+            "SHA256": "9831544476de466eed6919a10a3ffbe4dd6925aee252c1b3f3d87b25febbd434",
+            "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_v2/multi_question/availability_joint/seed20261009/LAST_FROZEN.pth"
+          }
+        ],
+        "config_SHA256": {
+          "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+          "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+        },
+        "dataset": {
+          "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+          "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+        },
+        "development": [
+          17,
+          18,
+          19
+        ],
+        "environment": {
+          "CUDA_VISIBLE_DEVICES": null,
+          "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+          "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]"
+        },
+        "evaluator": "unmodified TrackEval CLEAR with exact saved preprocessing",
+        "heldout_20_21_22": "SEALED",
+        "official_TEST": false,
+        "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+        "scope": "complete historical development video; offline only",
+        "seed": 20261009,
+        "source_SHA256": {
+          "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+          "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+          "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+          "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+          "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+          "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+          "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+          "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+          "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+          "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+          "reproduction_tools/jev_phase15_common.py": "c3b45cba8fec5d6ad0021927492d6a148c6d035cae3efd8b6c8ef8354061b0d8",
+          "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+          "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418"
+        },
+        "source_commit": "f39f1e51d103a8d29e6f0db36e19f6a6a85af148",
+        "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+      },
+      "counts": {
+        "AMBIGUOUS_UNKNOWN": 4,
+        "CORRECTIVE_SWITCH": 8,
+        "FALSE_BIRTH": 1,
+        "POLLUTED_HISTORY_SWITCH": 31,
+        "PURE_FRAGMENT_HOP": 6,
+        "RECOVERY_SWITCH": 1,
+        "WRONG_EXISTING_MERGE": 12,
+        "certified_pure_previous_and_legal": 20,
+        "previous_ID_not_legal_MATCH_candidate": 3
+      },
+      "event_stream": {
+        "SHA256": "a5979df08897bb55143da2b70435b085fa161fdabfbc4df41b2d439d51036b4c",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/failure_reconstruction_v1/multi_question_seed20261009/video19/SWITCH_EVENTS.jsonl.gz"
+      },
+      "every_CLEAR_IDSW_classified_exactly_once": true,
+      "every_saved_option_assignment_matches_native_commit": true,
+      "exact_CLEAR_switches": 63,
+      "examples": {
+        "AMBIGUOUS_UNKNOWN": [
+          {
+            "CLEAR_GT_relabelled": 5,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 6,
+              "gallery_before": 5,
+              "hits": 6,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 7
+            },
+            "category": "AMBIGUOUS_UNKNOWN",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 6,
+            "frame": 12,
+            "key": [
+              19,
+              12,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [],
+            "previous_CLEAR_frame": 11,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 12
+            },
+            "previous_native_id": 12,
+            "pure_previous_continuation_candidate": true,
+            "row": 7,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {},
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 5,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 153,
+              "gallery_before": 152,
+              "hits": 153,
+              "identity": 12,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 8
+            },
+            "category": "AMBIGUOUS_UNKNOWN",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 12,
+            "frame": 124,
+            "key": [
+              19,
+              124,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 12,
+            "overlapping_tags": [
+              "BOTH_PURE_SAME_GT"
+            ],
+            "previous_CLEAR_frame": 123,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": false,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 16
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": false,
+            "row": 8,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 137
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 135,
+              "gallery_before": 134,
+              "hits": 135,
+              "identity": 10,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 9
+            },
+            "category": "AMBIGUOUS_UNKNOWN",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 10,
+            "frame": 151,
+            "key": [
+              19,
+              151,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 10,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 150,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": false,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 159,
+              "6": 10
+            },
+            "previous_native_id": 7,
+            "pure_previous_continuation_candidate": false,
+            "row": 9,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 120
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "CORRECTIVE_SWITCH": [
+          {
+            "CLEAR_GT_relabelled": 5,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 30,
+              "gallery_before": 29,
+              "hits": 30,
+              "identity": 6,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 5
+            },
+            "category": "CORRECTIVE_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 6,
+            "frame": 118,
+            "key": [
+              19,
+              118,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 6,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 117,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 118,
+              "6": 10
+            },
+            "previous_native_id": 7,
+            "pure_previous_continuation_candidate": false,
+            "row": 5,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 11
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 110,
+              "gallery_before": 109,
+              "hits": 110,
+              "identity": 10,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 8
+            },
+            "category": "CORRECTIVE_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 10,
+            "frame": 120,
+            "key": [
+              19,
+              120,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 10,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 119,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 122,
+              "6": 10
+            },
+            "previous_native_id": 7,
+            "pure_previous_continuation_candidate": false,
+            "row": 8,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 104
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 9,
+            "GT_OFFLINE_ONLY": 10,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 204,
+              "gallery_before": 203,
+              "hits": 204,
+              "identity": 11,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 7
+            },
+            "category": "CORRECTIVE_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 10,
+            "final_committed_ID": 11,
+            "frame": 223,
+            "key": [
+              19,
+              223,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 11,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 212,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "10": 8,
+              "13": 210
+            },
+            "previous_native_id": 8,
+            "pure_previous_continuation_candidate": false,
+            "row": 7,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "10": 189
+            },
+            "variant": "multi_question",
+            "view": 0
+          }
+        ],
+        "FALSE_BIRTH": [
+          {
+            "CLEAR_GT_relabelled": 7,
+            "GT_OFFLINE_ONLY": 8,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "START_NEW",
+              "gallery_after": 1,
+              "gallery_before": 0,
+              "hits": 1,
+              "identity": 13,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 4
+            },
+            "category": "FALSE_BIRTH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 8,
+            "final_committed_ID": 13,
+            "frame": 444,
+            "key": [
+              19,
+              444,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [
+                2,
+                10
+              ],
+              "possible_ids": [
+                1,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                11,
+                12
+              ]
+            },
+            "native_id": 13,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 443,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "1": 1,
+              "6": 563,
+              "8": 3,
+              "11": 1
+            },
+            "previous_native_id": 12,
+            "pure_previous_continuation_candidate": false,
+            "row": 4,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {},
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "POLLUTED_HISTORY_SWITCH": [
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 238,
+              "gallery_before": 237,
+              "hits": 238,
+              "identity": 7,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 1
+            },
+            "category": "POLLUTED_HISTORY_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 7,
+            "frame": 118,
+            "key": [
+              19,
+              118,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 7,
+            "overlapping_tags": [
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 117,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 104
+            },
+            "previous_native_id": 10,
+            "pure_previous_continuation_candidate": true,
+            "row": 1,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 118,
+              "6": 10
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 286,
+              "gallery_before": 285,
+              "hits": 286,
+              "identity": 7,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 2
+            },
+            "category": "POLLUTED_HISTORY_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 7,
+            "frame": 142,
+            "key": [
+              19,
+              142,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 7,
+            "overlapping_tags": [
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 138,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 118
+            },
+            "previous_native_id": 10,
+            "pure_previous_continuation_candidate": true,
+            "row": 2,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 144,
+              "6": 10
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 316,
+              "gallery_before": 315,
+              "hits": 316,
+              "identity": 7,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 2
+            },
+            "category": "POLLUTED_HISTORY_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 7,
+            "frame": 157,
+            "key": [
+              19,
+              157,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 7,
+            "overlapping_tags": [
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 156,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 126
+            },
+            "previous_native_id": 10,
+            "pure_previous_continuation_candidate": true,
+            "row": 2,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 165,
+              "6": 10
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "PURE_FRAGMENT_HOP": [
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 46,
+              "gallery_before": 45,
+              "hits": 46,
+              "identity": 10,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 3
+            },
+            "category": "PURE_FRAGMENT_HOP",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 10,
+            "frame": 46,
+            "key": [
+              19,
+              46,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 10,
+            "overlapping_tags": [
+              "BOTH_PURE_SAME_GT"
+            ],
+            "previous_CLEAR_frame": 45,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 46
+            },
+            "previous_native_id": 7,
+            "pure_previous_continuation_candidate": true,
+            "row": 3,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 42
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 4,
+            "GT_OFFLINE_ONLY": 5,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 97,
+              "gallery_before": 96,
+              "hits": 97,
+              "identity": 7,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 2
+            },
+            "category": "PURE_FRAGMENT_HOP",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 5,
+            "final_committed_ID": 7,
+            "frame": 48,
+            "key": [
+              19,
+              48,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 7,
+            "overlapping_tags": [
+              "BOTH_PURE_SAME_GT"
+            ],
+            "previous_CLEAR_frame": 47,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 46
+            },
+            "previous_native_id": 10,
+            "pure_previous_continuation_candidate": true,
+            "row": 2,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 46
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 5,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 72,
+              "gallery_before": 71,
+              "hits": 72,
+              "identity": 12,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 8
+            },
+            "category": "PURE_FRAGMENT_HOP",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 12,
+            "frame": 56,
+            "key": [
+              19,
+              56,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 12,
+            "overlapping_tags": [
+              "BOTH_PURE_SAME_GT"
+            ],
+            "previous_CLEAR_frame": 21,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 10
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": true,
+            "row": 8,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 56
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "RECOVERY_SWITCH": [
+          {
+            "CLEAR_GT_relabelled": 8,
+            "GT_OFFLINE_ONLY": 9,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "REACTIVATE",
+              "gallery_after": 124,
+              "gallery_before": 123,
+              "hits": 124,
+              "identity": 14,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 9
+            },
+            "category": "RECOVERY_SWITCH",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 9,
+            "final_committed_ID": 14,
+            "frame": 865,
+            "key": [
+              19,
+              865,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [
+                2,
+                10,
+                4
+              ],
+              "possible_ids": [
+                1,
+                3,
+                5,
+                6,
+                7,
+                8,
+                9,
+                11,
+                12,
+                13,
+                14
+              ]
+            },
+            "native_id": 14,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "SELECTED_HISTORY_ALREADY_POLLUTED"
+            ],
+            "previous_CLEAR_frame": 627,
+            "previous_ID_in_legal_MATCH_set": false,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "5": 1,
+              "6": 37,
+              "9": 28,
+              "10": 325
+            },
+            "previous_native_id": 11,
+            "pure_previous_continuation_candidate": false,
+            "row": 9,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "9": 52,
+              "10": 59
+            },
+            "variant": "multi_question",
+            "view": 1
+          }
+        ],
+        "WRONG_EXISTING_MERGE": [
+          {
+            "CLEAR_GT_relabelled": 5,
+            "GT_OFFLINE_ONLY": 6,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 218,
+              "gallery_before": 217,
+              "hits": 218,
+              "identity": 7,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 6
+            },
+            "category": "WRONG_EXISTING_MERGE",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 6,
+            "final_committed_ID": 7,
+            "frame": 108,
+            "key": [
+              19,
+              108,
+              1
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 7,
+            "overlapping_tags": [
+              "FIRST_CURRENT_GT_INTRODUCTION_IN_SELECTED_HISTORY"
+            ],
+            "previous_CLEAR_frame": 94,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "6": 11
+            },
+            "previous_native_id": 6,
+            "pure_previous_continuation_candidate": true,
+            "row": 6,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "5": 108
+            },
+            "variant": "multi_question",
+            "view": 1
+          },
+          {
+            "CLEAR_GT_relabelled": 9,
+            "GT_OFFLINE_ONLY": 10,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 189,
+              "gallery_before": 188,
+              "hits": 189,
+              "identity": 8,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 6
+            },
+            "category": "WRONG_EXISTING_MERGE",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 10,
+            "final_committed_ID": 8,
+            "frame": 201,
+            "key": [
+              19,
+              201,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 8,
+            "overlapping_tags": [
+              "FIRST_CURRENT_GT_INTRODUCTION_IN_SELECTED_HISTORY"
+            ],
+            "previous_CLEAR_frame": 200,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "10": 189
+            },
+            "previous_native_id": 11,
+            "pure_previous_continuation_candidate": true,
+            "row": 6,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "13": 188
+            },
+            "variant": "multi_question",
+            "view": 0
+          },
+          {
+            "CLEAR_GT_relabelled": 10,
+            "GT_OFFLINE_ONLY": 11,
+            "GT_scope": "offline diagnostics only",
+            "WHO_Availability_Trust_and_visual_tokens": "PENDING_EXACT_NATIVE_REPLAY",
+            "action": {
+              "action": "ASSOCIATE_EXISTING",
+              "gallery_after": 554,
+              "gallery_before": 553,
+              "hits": 554,
+              "identity": 12,
+              "memory": "WRITE_FROZEN_NATIVE_FALLBACK",
+              "row": 6
+            },
+            "category": "WRONG_EXISTING_MERGE",
+            "corrective_scope": "clean candidate replaces demonstrably mixed old history; future benefit/necessity still requires paired native intervention",
+            "current_alignment_agrees_with_CLEAR": true,
+            "diagnostic_alignment_GT_OFFLINE_ONLY": 11,
+            "final_committed_ID": 12,
+            "frame": 411,
+            "key": [
+              19,
+              411,
+              0
+            ],
+            "native_bank": {
+              "old_reids_IDs": [],
+              "possible_ids": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10,
+                11,
+                12
+              ]
+            },
+            "native_id": 12,
+            "overlapping_tags": [
+              "PREVIOUS_HISTORY_ALREADY_POLLUTED",
+              "FIRST_CURRENT_GT_INTRODUCTION_IN_SELECTED_HISTORY"
+            ],
+            "previous_CLEAR_frame": 346,
+            "previous_ID_in_legal_MATCH_set": true,
+            "previous_alignment_agreed_with_CLEAR": true,
+            "previous_history_GT_OFFLINE_ONLY": {
+              "10": 46,
+              "11": 4,
+              "13": 366
+            },
+            "previous_native_id": 8,
+            "pure_previous_continuation_candidate": false,
+            "row": 6,
+            "seed": 20261009,
+            "selected_history_GT_OFFLINE_ONLY": {
+              "6": 512
+            },
+            "variant": "multi_question",
+            "view": 0
+          }
+        ]
+      },
+      "frames": 1052,
+      "offline_upper_bound_only": true,
+      "per_camera_CLEAR": [
+        {
+          "official_IDSW": 23,
+          "reconstructed_IDSW": 23,
+          "sequence": "00119park_View1"
+        },
+        {
+          "official_IDSW": 40,
+          "reconstructed_IDSW": 40,
+          "sequence": "00119park_View2"
+        }
+      ],
+      "saved_native_result": {
+        "SHA256": "a31e6b730057562250bf37b22ded178fbc49565074af22ac1462970f35f32b13",
+        "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_online_v2/multi_question_seed20261009/video19/RESULT.json"
+      },
+      "seed": 20261009,
+      "selected_counterfactual_prefixes": [
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            46,
+            0
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": true,
+          "row": 3
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "PURE_FRAGMENT_HOP",
+          "key": [
+            19,
+            48,
+            0
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            118,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 1
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "POLLUTED_HISTORY_SWITCH",
+          "key": [
+            19,
+            142,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 10,
+          "pure_previous_continuation_candidate": true,
+          "row": 2
+        },
+        {
+          "GT_OFFLINE_ONLY": 5,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            120,
+            1
+          ],
+          "native_id": 10,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 7,
+          "pure_previous_continuation_candidate": false,
+          "row": 8
+        },
+        {
+          "GT_OFFLINE_ONLY": 10,
+          "category": "CORRECTIVE_SWITCH",
+          "key": [
+            19,
+            223,
+            0
+          ],
+          "native_id": 11,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 8,
+          "pure_previous_continuation_candidate": false,
+          "row": 7
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "AMBIGUOUS_UNKNOWN",
+          "key": [
+            19,
+            12,
+            1
+          ],
+          "native_id": 6,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 12,
+          "pure_previous_continuation_candidate": true,
+          "row": 7
+        },
+        {
+          "GT_OFFLINE_ONLY": 6,
+          "category": "WRONG_EXISTING_MERGE",
+          "key": [
+            19,
+            108,
+            1
+          ],
+          "native_id": 7,
+          "previous_ID_in_legal_MATCH_set": true,
+          "previous_native_id": 6,
+          "pure_previous_continuation_candidate": true,
+          "row": 6
+        }
+      ],
+      "selection_uses_future_utility": false,
+      "status": "COMPLETE_SAVED_CLEAR_RECONSTRUCTION_NATIVE_REPLAY_PENDING",
+      "variant": "multi_question",
+      "video": 19
+    }
+  ]
+}
