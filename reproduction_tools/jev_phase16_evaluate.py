@@ -1,0 +1,139 @@
+"""Strict unfiltered complete native videos, with explicit live/cache provenance."""
+import argparse
+import collections
+import gzip
+import time
+import torch
+from jev_phase16_common import *
+from jev_phase15_common import perception_provenance
+from jev_phase13_runtime import build_tracker,cache_inputs,run
+from jev_phase16_memory_risk import MemoryRisk as NativeRisk
+from gtr.modeling.jev_phase16.native_memory_commit_adapter import attach
+from gtr.modeling.jev_phase15.model import PersistentIdentityPolicy
+from gtr.modeling.jev_native_state import fingerprint
+from run_jev_phase10_closed_loop import raw_predictions,metrics
+
+
+def owner_propagation(trace,initial_owners=None):
+    """Actual committed errors persist after mixtures; gaps remain censored."""
+    owners=dict(initial_owners or {});episodes=[];active={};counts=collections.Counter()
+    counts['bootstrap_known_owner_seeds']=len(owners)
+    for item in trace:
+        frame,view=item['key'];gt=item['GT_OFFLINE_ONLY'];identity=item['identity']
+        if gt is None:counts['unassessed_current_GT']+=1;continue
+        if identity not in owners:owners[identity]=gt
+        wrong=owners[identity]!=gt;counts['assessed_observations']+=1;counts['wrong_fixed_owner_observations']+=wrong
+        key=gt,view;old=active.get(key)
+        if wrong:
+            if old is not None and frame>old['end']+1:
+                episodes.append(dict(old,right_censored=True,end_reason='observation gap'));old=None
+            if old is None:old=dict(GT_OFFLINE_ONLY=gt,view=view,start=frame,end=frame,observed_frames=1)
+            else:old.update(end=frame,observed_frames=old['observed_frames']+1)
+            active[key]=old
+        elif old is not None:
+            episodes.append(dict(old,right_censored=frame!=old['end']+1,
+                end_reason='actual certified next-frame correct-owner commit' if frame==old['end']+1 else 'gap before correction'))
+            del active[key]
+    episodes.extend(dict(item,right_censored=True,end_reason='video end') for item in active.values())
+    return dict(counts=dict(counts),episodes=episodes,
+        semantics='immutable first-observed GT owner for each native ID, including actual largest-camera bootstrap owners; continued errors counted after gallery mixtures; camera/frame observation gaps censored',
+        scope='offline observed identity-confusion durations on actual committed IDs; IoU>=0.5 matching coverage disclosed; not interchangeable with CLEAR IDSW or global IDF1')
+
+
+def main(video,arm='F_full',seed=20261009,version=2,phase='safe_memory',live=True):
+    protect();storage_guard();assert video in DEV
+    torch.set_num_threads(1);torch.manual_seed(20261009)
+    torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True
+    policy,checkpoint,training=load_policy('v3')
+    values,frames,reader=cache_inputs(video)
+    model=build_tracker(video,policy,react_learned=False,live=live);executor=attach(model)
+    frontend_checks=[];actual_label_payloads={};active_labels=[None]
+    class ActualLiveLabelReader:
+        def load(self,v,f,cam):
+            return actual_label_payloads.get((v,f,cam)) or reader.load(v,f,cam)
+    if live:
+        actual_inference=model.inference
+        keys={p['phase13_image_path']:(index%frames,index//frames) for index,p in enumerate(values)}
+        def checked_inference(payloads,*a,**k):
+            result=actual_inference(payloads,*a,**k);frame,view=keys[payloads[0]['phase13_image_path']]
+            inst=result[0]
+            actual_label_payloads[video,frame,view]=dict(pred_boxes=inst.pred_boxes.tensor.detach().cpu(),image_size=inst.image_size)
+            if active_labels[0] is not None:active_labels[0].aligned.pop((frame,view),None)
+            for old in list(actual_label_payloads):
+                if old[1]<frame-1:del actual_label_payloads[old]
+            if frame in [0,32]:
+                cached=reader.load(video,frame,view);inst=result[0]
+                fields=dict(pred_boxes=inst.pred_boxes.tensor.cpu(),detection_scores=inst.scores.cpu(),reid_features=inst.reid_features.cpu())
+                same={name:torch.equal(value,cached[name]) for name,value in fields.items()}
+                frontend_checks.append(dict(key=[video,frame,view],shape_equal={name:list(value.shape)==list(cached[name].shape) for name,value in fields.items()},
+                    fields_bitwise_equal=same,live_fields_SHA256=fingerprint(fields),cache_fields_SHA256=fingerprint({n:cached[n] for n in fields})))
+            return result
+        model.inference=checked_inference
+    out=OUT/'P8_memory_only_live'/f'video{video:02d}'
+    out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
+    source=binding(seed=seed,checkpoints=[checkpoint],inputs=[ref(ANNOTATIONS),ref(REPORTS/'P8_EVALUATION_SCOPE.json')],
+        evaluator='post-freeze TrackEval raw predictions plus actual-commit offline risk',
+        scope='complete previously reused DEVELOPMENT; no sealed evaluation or independent test claim')
+    source['perception_input_provenance']=perception_provenance(video)
+    source['perception_execution']='current images through actual Stage1 detector/VFCE' if live else 'frozen Stage1 cache'
+    risk=NativeRisk(video,reader);start=time.monotonic();last_progress=[0.];admission_counts=collections.Counter();admission_events=[]
+    if live:
+        risk.labels.reader=ActualLiveLabelReader();active_labels[0]=risk.labels
+    duplicate_by_key={};actual_duplicate_masks={}
+    duplicate_labels=0
+    for key,image in risk.labels.images.items():
+        duplicates=collections.Counter(a['instance_id'] for a in risk.labels.gt[image['id']]);bad={gt for gt,n in duplicates.items() if n>1}
+        if bad:
+            duplicate_by_key[key]=bad
+            targets=risk.labels.current(*key);duplicate_labels+=sum(gt in bad for gt in targets if gt is not None)
+            risk.labels.aligned[key]=[None if gt in bad else gt for gt in targets]
+    original_current=risk.labels.current
+    def current_labels(frame,view):
+        targets=original_current(frame,view);bad=duplicate_by_key.get((frame,view),set())
+        if live and bad:actual_duplicate_masks[frame,view]=sum(gt in bad for gt in targets if gt is not None)
+        return [None if gt in bad else gt for gt in targets]
+    risk.labels.current=current_labels
+    journal=gzip.open(out/'QUESTIONS.jsonl.gz','wt');commits=gzip.open(out/'COMMITS.jsonl.gz','wt');bootstrap_owners=[None]
+
+    def before(**d):
+        risk.before(**d);c=d['context']
+        if bootstrap_owners[0] is None and risk.booted:
+            bootstrap_owners[0]={identity:next(iter(votes)) for identity,votes in risk.votes.items() if len(votes)==1}
+        journal.write(json.dumps(dict(key=[video,c['frame'],c['view']],task=d['task'],refs=d['refs'],
+            rows=c.get('rows',list(range(len(d['logits'])))),logits=d['logits'].cpu().tolist(),legal=d['batch']['legal'][0].cpu().tolist()))+'\n')
+
+    def after(**d):
+        risk.after(**d);ids=d['instances'][-1].track_ids.cpu().tolist()
+        for event in executor.memory.last_admission:
+            admission_counts[event['status']]+=1;admission_counts['admitted']+=len(event['admitted_indices']);admission_events.append(dict(key=[video,d['frame'],d['view']],**event))
+        assert len(ids)==len(set(ids));commits.write(json.dumps(dict(key=[video,d['frame'],d['view']],ids=ids,events=d['events'],id_count=d['id_count']))+'\n')
+        if time.monotonic()-last_progress[0]>=15:
+            save(out/'PROGRESS.json',dict(status='RUNNING',key=[video,d['frame'],d['view']],frames=frames,
+                counts=dict(risk.counts),seconds=time.monotonic()-start));journal.flush();commits.flush();last_progress[0]=time.monotonic()
+    executor.observer=before;executor.commit_observer=after
+    try:
+        with torch.no_grad():raw,_=run(model,values,frames)
+    finally:journal.close();commits.close()
+    assert risk.counts['payloads']==2*frames-1
+    predictions=raw_predictions(raw,risk.labels.images);save(out/'RAW_PREDICTIONS.json',predictions)
+    identity=risk.horizon((0,0),frames);save(out/'ERROR_PROPAGATION.json',identity)
+    with gzip.open(out/'ADMISSION_EVENTS.jsonl.gz','wt') as stream:
+        for event in admission_events:stream.write(json.dumps(event,allow_nan=False)+'\n')
+    strict,evaluation=metrics(out/'RAW_PREDICTIONS.json',[video],out/'strict_eval')
+    save(out/'RESULT.json',dict(status='COMPLETE',binding=source,video=video,frames=frames,arm=arm,seed=seed,version=version,phase=phase,
+        live_images=live,trained=training,checkpoint=checkpoint,raw_predictions=ref(out/'RAW_PREDICTIONS.json'),
+        strict_online_metrics=strict,evaluator_result=ref(evaluation/'metrics.json'),native_risk=risk.summary(),
+        error_propagation=ref(out/'ERROR_PROPAGATION.json'),commits=ref(out/'COMMITS.jsonl.gz'),questions=ref(out/'QUESTIONS.jsonl.gz'),
+        final_identity_and_commitment_memory_SHA256=fingerprint(executor.memory.state_dict()),
+        live_frontend_vs_frozen_cache_four_payload_checks=frontend_checks,
+        duplicate_GT_offline_risk_labels_masked=sum(actual_duplicate_masks.values()) if live else duplicate_labels,
+        cached_duplicate_GT_premask_count=duplicate_labels,raw_evaluation_GT_modified=False,
+        live_offline_GT_alignment_uses_actual_current_detections=bool(live),
+        native_Gallery_Bank_updates=True,admission_counts=dict(admission_counts),admission_trace=ref(out/'ADMISSION_EVENTS.jsonl.gz'),rule='bounded_quarantine',scientific_promotion=False,short_track_filter_or_GT_renumbering=False,actual_mutated_state_online=True,
+        full_FPS=None,latency_scope='instrumented validation; no deployment FPS claim',seconds=time.monotonic()-start))
+    save(out/'PROGRESS.json',dict(status='COMPLETE',frames=frames,strict_metrics=strict))
+    print('PHASE16_MEMORY_ONLY_FULL_NATIVE_VIDEO_COMPLETE',arm,version,phase,video,strict,flush=True)
+
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);a=p.parse_args();main(a.video)

@@ -6,10 +6,11 @@ from gtr.modeling.jev_phase16.evidence_ledger import EvidenceLedger
 
 
 class MemoryRisk(NativeRisk):
-    def __init__(self, video, reader, prefix):
+    def __init__(self, video, reader, prefix=None):
         super().__init__(video,reader)
         self.labels=duplicate_masked_labels(video,reader)
-        self.booted=True;self.owner={};self.qualified_support={};self.strong_trace=[]
+        self.booted=prefix is not None;self.owner={};self.qualified_support={};self.strong_trace=[]
+        if prefix is None:return
         ledger=EvidenceLedger.from_prefix(prefix)
         for identity,records in ledger.records.items():
             for r in records:
@@ -27,6 +28,7 @@ class MemoryRisk(NativeRisk):
 
     def before(self, **d):
         super().before(**d)
+        for identity in list(self.votes):self.certify(identity)
         if d['task']!=0:return
         c=d['context'];key=c['frame'],c['view'];gts=self.labels.current(*key)
         legal=d['batch']['legal'][0].cpu().tolist()
