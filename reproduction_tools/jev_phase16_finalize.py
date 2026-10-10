@@ -159,7 +159,7 @@ E的首次决策干预在这组前缀仅改变一条严格目标提交；其IDSW
 
 ## 实际运行成本
 
-真实 DEV17前256双摄像头场景、三次重新启动、八帧warmup；无GT/evaluator/journal。场景FPS为 {', '.join(f"{t['full_two_camera_scene_FPS']:.3f}" for t in trials)}，Stage2 p95为 {', '.join(f"{t['total_native_Stage2_ms']['p95']:.3f}" for t in trials)} ms。共享GPU情况、同步开销和组件计时全部披露。完整视频无observer FPS未测量，null。附加状态每ID最多六条持久外观向量；原始 Gallery和状态元数据仍随历史增长，不宣称总内存常数。
+真实 DEV17前256双摄像头场景、三次重新启动、八帧warmup；无GT/evaluator/journal。场景FPS为 {', '.join(f"{t['full_two_camera_scene_FPS']:.3f}" for t in trials)}，Stage2 p95为 {', '.join(f"{t['total_native_Stage2_ms']['p95']:.3f}" for t in trials)} ms。共享GPU情况、同步开销和组件计时全部披露。完整视频无observer FPS未测量，null。附加序列化状态每ID最多六条外观向量，派生归一化缓存至多四条，新增持久外观向量总上界十条（≤16）；原始 Gallery和状态元数据仍随历史增长，不宣称总内存常数。
 
 组件统计按实际actor代码排除每个组件前16次调用，并非统一按scene时间排除；总Stage2排除前16次native payload调用。Bank promotion在该过滤后没有剩余计时样本，null，不表示没有Bank调用或零开销。完整FPS包含真实图像读取和全部native路径，部署门槛没有通过。
 
