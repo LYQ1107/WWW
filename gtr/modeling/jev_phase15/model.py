@@ -24,6 +24,11 @@ class PersistentIdentityPolicy(nn.Module):
 
     def details(self, x):
         assert 'commitment_features' in x
+        if getattr(self,'posterior_feedback','native')=='masked':
+            # Causal diagnostic: retain actual posterior state, remove only its
+            # unsupported input feedback. Both fields were constant in corpus v2.
+            x=dict(x);f=x['commitment_features'].clone();f[...,16]=.5;f[...,17]=0
+            x['commitment_features']=f
         base = {key: val for key, val in x.items() if key != 'commitment_features'}
         result = self.identity.details(base)
         z = result['logits']
