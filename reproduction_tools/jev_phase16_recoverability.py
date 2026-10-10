@@ -90,7 +90,14 @@ def main():
         unknown_is_not_wrong=True,raw_person_content_is_not_correct_Global_ID=True,
         taxonomy_has_overlapping_mechanisms=True,
         actual_REACT=dict(learned=False,cosine_slots=[0,1,2],DEFER=.75,
-            latent_four_summary_has_other_camera_slot_not_used_by_native_REACT=True))
+            latent_four_summary_has_other_camera_slot_not_used_by_native_REACT=True),
+        supplementary_input_integrity=ref(REPORTS/'INPUT_INTEGRITY.json'),
+        lifecycle_absence_is_not_an_illegal_tracker_bug=True,
+        C_pending_scope='actual Bank or inactive poss-ID with sufficient Gallery size; '
+            'potential promotion is conditional on MATCH DEFER and nonempty instances_old',
+        D_scope='pure historical ID outside this query candidate set and outside C proxy; '
+            'this diagnoses frozen lifecycle eligibility, not a proved erroneous native rule',
+        original_queue_failure_reconciliation=ref(REPORTS/'P0_REFERENCE_PATH_REPAIR.json'))
     save(REPORTS/'EVIDENCE_AVAILABILITY_AUDIT.json',dict(**common,groups=compact,
         individual_cases=cases,
         denominator_scope='all MATCH/REACT queries separately; final actions separately; counterfactual windows overlap'))
@@ -123,6 +130,10 @@ def main():
         'The additional six early provenance windows are retained engineering qualification, not independent evidence. '
         'A-G flags overlap; the primary category precedence is E/C/D/F/B/A/G. Unknown observations cannot be labelled wrong. '
         'A denotes no observed target content, with UNKNOWN-history ambiguity disclosed.\n\n'+
+        'C includes actual stale Bank membership and a potential promotion proxy: an inactive poss-ID with enough Gallery '
+        'observations. The latter does not assert the Bank was offered; promotion additionally needs MATCH DEFER and '
+        'nonempty instances_old. D records an ID excluded by the frozen lifecycle, not an illegal candidate fabrication '
+        'or a demonstrated implementation bug. Actual offered refs are retained per query.\n\n'+
         'Default REACT is untrained: actual Bank IDs are offered only after MATCH DEFER, then '
         'max(last, global mean, own-camera mean) cosine is compared through the same one-to-one solver with0.75 terminal. '
         'The fourth other-camera token is used by the WHO model but excluded from this fallback. '
