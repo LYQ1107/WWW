@@ -1,4 +1,5 @@
 {
+  "GT_fields_in_runtime_ledger": false,
   "binding": {
     "Full24": false,
     "TRAIN": [
@@ -24,15 +25,22 @@
     "environment": {
       "CUDA_VISIBLE_DEVICES": null,
       "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
-      "python": "3.9.12 (main, Apr  5 2022, 06:56:58) \n[GCC 7.5.0]"
+      "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+      "torch": "2.0.0+cu118",
+      "torch_CUDA": "11.8"
     },
-    "evaluator": "frozen source/report/hash inspection",
+    "evaluator": "exact real native Gallery tensor equality and deep restore",
     "heldout_20_21_22": "SEALED",
-    "inputs": null,
-    "native_state": null,
+    "inputs": [
+      {
+        "SHA256": "2d1baf991b7b62771c40b14bfd3c4e15a0714619c8cd7405e871b6be0519e5ad",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/train_commitment_prefixes_v1/video12/PREFIX_000003_1.pth.xz"
+      }
+    ],
+    "native_state": "071ae21793da22747fee4402a1f2357d910d3bd2e4ec0b420f13fb6dcdf67d72",
     "official_TEST": false,
     "preregistration_SHA256": "53a8361e713ba8d02155656636504d44ee12e4417de97f520946549d0e906939",
-    "scope": "protocol registration, no new inference or training",
+    "scope": "TRAIN12 frame3 camera1 row6 actual original harmful prefix, not a scientific recovery outcome",
     "seed": 20261009,
     "source_SHA256": {
       "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
@@ -48,6 +56,8 @@
       "gtr/modeling/jev_phase15/joint_action_ranker.py": "1e27fcfab7a85d47fdc1289f1133b6a45af727e3b5d5ee1606fd7418a42fa997",
       "gtr/modeling/jev_phase15/model.py": "f77d3c78b74ede0ff2d05409bbe3287d6d6044b5199de5bc8d4dd406dbc781af",
       "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_phase16/__init__.py": "fd73454f85489bf8dac315c761403bc7edb589e07410c17e1d45819982af927d",
+      "gtr/modeling/jev_phase16/evidence_ledger.py": "17a81da611273524a3db213e73bc91dabc8c741d4091c53f96c4ab61f1294433",
       "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
       "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
       "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
@@ -55,18 +65,18 @@
       "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
       "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
       "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase16_candidate_audit.py": "087ceb4db89622897686fa91de2eb0ffc7422c984130dac44aacf5d1aa6af42e",
       "reproduction_tools/jev_phase16_common.py": "fad43f1b10603367b2f4913d9c0f7c03160693572a22278bc87956aa77ada42c",
-      "reproduction_tools/jev_phase16_freeze.py": "fbd1e6b2919eec02475d24797c9e7118d0815ffa0715c516570f7b7a3d94f7da"
+      "reproduction_tools/jev_phase16_freeze.py": "fbd1e6b2919eec02475d24797c9e7118d0815ffa0715c516570f7b7a3d94f7da",
+      "reproduction_tools/jev_phase16_ledger_contract.py": "6b767b0d4efb65c73d96c31d551981e598642f5e1ee44585e1f95f36692d8247",
+      "reproduction_tools/jev_phase16_queue.py": "41742b8b5f1a5b37ec094b14eeee37f78ae3de50a5b788fdf7a5bae4bc49d9e3"
     },
-    "source_commit": "3e16cbf914d70bbde0d999faabc85afc9b5ae43f",
+    "source_commit": "5988538869f8d32eed53dc20ed02eadba3a8ddb4",
     "source_root": "/home/liuyeqiang/WWW_jev_phase16"
   },
-  "branch": "jev/www-jev-phase16-evidence-recovery-20261011",
-  "protected_prior": {
-    "SHA256": "b6e967a1e4c5fd731dd3a448cc103e43941dae27415624fc4e66f3c0b87538f0",
-    "path": "/home/liuyeqiang/WWW_jev_phase16/reports/JEV_PHASE16/FROZEN_PRIOR_EVIDENCE.json"
-  },
-  "scientific_status": "NOT_YET_EVALUATED",
-  "status": "ACTIVE_P0",
-  "versions_completed": []
+  "identities": 9,
+  "observations": 48,
+  "raw_gallery_order_and_vectors_exact": true,
+  "snapshot_deepcopy": true,
+  "status": "PASS"
 }

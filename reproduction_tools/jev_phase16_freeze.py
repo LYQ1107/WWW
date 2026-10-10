@@ -23,6 +23,7 @@ def main():
         elif isinstance(value,list):
             for v in value:collect(v)
     for name in ['TINY_RESULTS','PILOT_RESULTS']:collect(read(original/(name+'.json')))
+    for path in XV.glob('training*/**/*FROZEN.pth'):checkpoints[str(path)]=sha(path)
     for p,h in checkpoints.items():assert sha(p)==h
     save(REPORTS/'FROZEN_PRIOR_EVIDENCE.json',dict(status='PASS',starting_commit=BASE,
         prior_report_SHA256=preserved,phase15_model_checkpoint_SHA256=checkpoints,
