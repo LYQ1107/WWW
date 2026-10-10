@@ -1,0 +1,949 @@
+{
+  "action_choices_before_execution_did_not_use_future": true,
+  "best_outcome_selection_after_execution_is_for_research_bound_only": true,
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": null,
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": {
+      "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+      "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+    },
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.9.12 (main, Apr  5 2022, 06:56:58) \n[GCC 7.5.0]"
+    },
+    "evaluator": "actual frozen native branches + unmodified TrackEval CLEAR",
+    "heldout_20_21_22": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+    "scope": "conditional action attribution; overlapping windows are not full-video gains",
+    "seed": 20261009,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase15_audit_finalize.py": "f21f4bf7d188dea5c6050aea6b8ef93d6500aa6e42deed34fe72f2ffc83a87ae",
+      "reproduction_tools/jev_phase15_causal_commitment.py": "d34d0b69cdc244c8970527fa52913c5203747c4b6fab1f5ef37d118a55e72513",
+      "reproduction_tools/jev_phase15_causal_finalize.py": "40cf0e62e1848cc1e26cf416af935c6f5ae3b1d569e6668ad3806f7ecc0ff9f4",
+      "reproduction_tools/jev_phase15_causal_metrics.py": "40368add9c2830751202b0f5a41cc7fb435c3c2081535d000c8f10d997946c72",
+      "reproduction_tools/jev_phase15_causal_queue.py": "e264cd5696695ed28dd906c86443ebf9de6fa67125a28e6558ce53f6b38a7eb4",
+      "reproduction_tools/jev_phase15_collect_train.py": "456eefaf8b4181ff16f585a002850e0af35e26feaf01e8d338b50ddda7393249",
+      "reproduction_tools/jev_phase15_common.py": "7d6d5a9e22eb2bf547f66a123f9ac3fec081fcd99f043150182d6742756167f2",
+      "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+      "reproduction_tools/jev_phase15_native_replay.py": "b3dc48639293e8e15cef0175b3cf19d2d3757c27d7cb3da4c0ef5da3e7fd3d0c",
+      "reproduction_tools/jev_phase15_queue.py": "ceaf14a4403b4c69061642f0c466a3efb6a46443c96adf3f4e85a83f35125984",
+      "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418"
+    },
+    "source_commit": "f9ce698941f55831d770064262ff0ce7bb427f8f",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+  },
+  "cases": [
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 10,
+      "best_executed_action_H32_IDSW": 10,
+      "key": [
+        17,
+        27,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "73415b7ba49acfed983f0c4d5622ca5a243becd022caa4fc54676f839b7f0f40",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video17/frame000027_view0_row1_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 1,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 10,
+      "best_executed_action_H32_IDSW": 10,
+      "key": [
+        17,
+        28,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "d7bb20738afb596853f187269f431df7227d1d9d6626ba195cd7d2b9227b2f55",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video17/frame000028_view1_row0_SELECT_JEV_BEST_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "SELECT_JEV_BEST_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 0,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 11,
+      "best_executed_action_H32_IDSW": 10,
+      "key": [
+        17,
+        32,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "27cdf5943613e0da4bf460870fa028d6da4a7b5ebf93909fd4de775020fa8716",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video17/frame000032_view1_row5_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 5,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 9,
+      "best_executed_action_H32_IDSW": 9,
+      "key": [
+        17,
+        35,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "752a7460382d2d10f0560304e956d2d44aa049bdd62cc02716079685bce49bc7",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video17/frame000035_view0_row2_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 2,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 11,
+      "best_executed_action_H32_IDSW": 11,
+      "key": [
+        17,
+        48,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "00b29c2eb77e45ea4259b41c59363a1e11ec8a640c3a001666d0bf58c9cebc82",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video17/frame000048_view0_row1_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 1,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 15,
+      "best_executed_action_H32_IDSW": 15,
+      "key": [
+        17,
+        215,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "7c0d2078accd44e6d395a89a057005cd30e4b84b86bece66786e1cab0e00a769",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video17/frame000215_view1_row4_SELECT_JEV_BEST_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "SELECT_JEV_BEST_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 4,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 3,
+      "best_executed_action_H32_IDSW": 3,
+      "key": [
+        17,
+        27,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "f7ac47d37f1555ae85d02d17b981845899f055b9fb6eaa093e14d6239ff8f820",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video17/frame000027_view0_row1_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 1,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 2,
+      "best_executed_action_H32_IDSW": 2,
+      "key": [
+        17,
+        28,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "8c5444dcd3fa13c4ca2d1c8bbd7dd348740981c6058fe78a642b76d42a0f6e69",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video17/frame000028_view1_row0_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 0,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 4,
+      "best_executed_action_H32_IDSW": 4,
+      "key": [
+        17,
+        32,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "cd18c5c855cee3179d21636629431d13fdb699384862a183b1947c6077e4753a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video17/frame000032_view1_row5_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 5,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 3,
+      "best_executed_action_H32_IDSW": 1,
+      "key": [
+        17,
+        35,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "036064f470c77376b68d2eab0a98c5299f682a48efca2f94b8cb15df10f4c857",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video17/frame000035_view0_row2_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 2,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 10,
+      "best_executed_action_H32_IDSW": 8,
+      "key": [
+        17,
+        48,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "d6b3013f1a51a702a22f2bcc77fd19c22b28607e8f59482063c1dbfa69fc0d15",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video17/frame000048_view0_row1_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 1,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 3,
+      "best_executed_action_H32_IDSW": 2,
+      "key": [
+        17,
+        215,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "d082335959c8ae0f4b8f88d20c565a36b959d1d23be2d59033975704437c388c",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video17/frame000215_view1_row4_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 4,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 17
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 14,
+      "best_executed_action_H32_IDSW": 6,
+      "key": [
+        18,
+        61,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "3336761ef73208ccca166123b8c10b64e4578f8a377d58c3bca90ab62ee86075",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video18/frame000061_view0_row0_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 0,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 13,
+      "best_executed_action_H32_IDSW": 5,
+      "key": [
+        18,
+        61,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "13bcd8f989cab884306a08eb86ac295fe8cfb12917f10630a0ed111f244e0aa9",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video18/frame000061_view1_row4_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 4,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 28,
+      "best_executed_action_H32_IDSW": 20,
+      "key": [
+        18,
+        81,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "e5ead86346af8ddcc4bfab73b994e327ea4c7945871b16a9ab3434391e4d138d",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video18/frame000081_view0_row1_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 1,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 21,
+      "best_executed_action_H32_IDSW": 21,
+      "key": [
+        18,
+        280,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "2490852a26a4e58f30e3fc3d6cd64db5594e03ed20232996450888d5b47553a0",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video18/frame000280_view1_row5_DEFER.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "DEFER",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 5,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 20,
+      "best_executed_action_H32_IDSW": 20,
+      "key": [
+        18,
+        282,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "085af82aaef667995329eea2ec841e8412405d9722039732d166549329be4ea4",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video18/frame000282_view1_row6_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 6,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 19,
+      "best_executed_action_H32_IDSW": 19,
+      "key": [
+        18,
+        283,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "05a2ca632e6a59798e39109263b013f3fb40345dfb18037a1319824bd4258bc6",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video18/frame000283_view0_row0_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 0,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 18,
+      "best_executed_action_H32_IDSW": 18,
+      "key": [
+        18,
+        283,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "9bebf565ad0ff49bd8928bab3063b131016290f67506c5749b6137fdadb89f65",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video18/frame000283_view1_row5_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 5,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 17,
+      "best_executed_action_H32_IDSW": 17,
+      "key": [
+        18,
+        284,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "636748704e337c6585643a9146801a1f87c8057830ac113fc24fb278a0236cf8",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video18/frame000284_view0_row0_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 0,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 1,
+      "best_executed_action_H32_IDSW": 0,
+      "key": [
+        18,
+        61,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "2d8c7cbbd52c9c70ffbb1177bdaadcf53ccbf1f74801002c5c8fae21da33200d",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video18/frame000061_view0_row0_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 0,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 15,
+      "best_executed_action_H32_IDSW": 0,
+      "key": [
+        18,
+        61,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "e71a73b9113ca890d3fe1951fe3cf91d3ef060c92d91da8c30e32e8524183a96",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video18/frame000061_view1_row4_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 4,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 23,
+      "best_executed_action_H32_IDSW": 20,
+      "key": [
+        18,
+        81,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "4c6cd8bc586077307275553cd298ae0e77b847c15ce0652f740e76c7610982aa",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video18/frame000081_view0_row1_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 1,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 15,
+      "best_executed_action_H32_IDSW": 15,
+      "key": [
+        18,
+        280,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "033c7d04492bd8c4cb2723408da1bb65ea3731e5b0b8deab4f5ebddc5ffb2fa6",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video18/frame000280_view1_row5_DEFER.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "DEFER",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 5,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 16,
+      "best_executed_action_H32_IDSW": 16,
+      "key": [
+        18,
+        282,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "ed8636aca496258520ce11a0101298238aeb7dd4e38def21bfceb58dc53325e3",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video18/frame000282_view1_row6_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 6,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 16,
+      "best_executed_action_H32_IDSW": 16,
+      "key": [
+        18,
+        283,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "88539e150d5402aa49d9fa46121c27987857887d9ab65b430771fbfcac9c5aa4",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video18/frame000283_view0_row0_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 0,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 15,
+      "best_executed_action_H32_IDSW": 15,
+      "key": [
+        18,
+        283,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "47e0d8de5b3f47dba04937085a62fbfad1cf07a07e2898a9c699b140ffa19e23",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video18/frame000283_view1_row5_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 5,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 14,
+      "best_executed_action_H32_IDSW": 14,
+      "key": [
+        18,
+        284,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "1ecd866493240904940ea640da75515031c0958eb002a032dee4095c033e9e84",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video18/frame000284_view0_row0_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 0,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 18
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 1,
+      "best_executed_action_H32_IDSW": 1,
+      "key": [
+        19,
+        12,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "f219b7ffc3eed74d25cca85b46df1833eb4207b493213fe8c132619d1b7339e3",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video19/frame000012_view1_row7_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 7,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 3,
+      "best_executed_action_H32_IDSW": 1,
+      "key": [
+        19,
+        46,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "fd7a5261a4f62d677d4bc266ba85cd32583c4d290c7c69993ec122d587190012",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video19/frame000046_view0_row3_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 3,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 4,
+      "best_executed_action_H32_IDSW": 4,
+      "key": [
+        19,
+        48,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "f1141e25a65cce17308af5b51efc6326a9a45a6237c0dc9e9b7ba1e1676106c6",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video19/frame000048_view0_row2_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 2,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 5,
+      "best_executed_action_H32_IDSW": 5,
+      "key": [
+        19,
+        108,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "dbc44542e0d08ed7b7b0148a565d2d4e585655d36868864ba8d19d901b4be37b",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video19/frame000108_view1_row6_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 6,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 5,
+      "best_executed_action_H32_IDSW": 5,
+      "key": [
+        19,
+        118,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "c252683864be8cc3673a98327a0d3ad3ec67e517403baf9177195e46368198b9",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video19/frame000118_view1_row1_SELECT_JEV_BEST_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "SELECT_JEV_BEST_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 1,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 4,
+      "best_executed_action_H32_IDSW": 4,
+      "key": [
+        19,
+        120,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "31a37f08801c001370a4f14dd384d04bb7569b5774a0b0d321b9373cef556f36",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video19/frame000120_view1_row8_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 8,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 3,
+      "best_executed_action_H32_IDSW": 3,
+      "key": [
+        19,
+        142,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "d057a7193ad39fd44efdc448dbfefd40f516ed8c7e07c8f501747997c3231d0b",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video19/frame000142_view1_row2_NATIVE_CONSERVATIVE_FALLBACK.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "NATIVE_CONSERVATIVE_FALLBACK",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 2,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 1,
+      "best_executed_action_H32_IDSW": 1,
+      "key": [
+        19,
+        223,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "0faf9aae6bc19c65e636e88fa87389ef384f8e700da674e491ec9412ad9a23eb",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_multi_frozen20k/video19/frame000223_view0_row7_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_multi_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 7,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 1,
+      "best_executed_action_H32_IDSW": 0,
+      "key": [
+        19,
+        12,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "f26b4ea53550c3ed05c3f54b4b646876d2de7110645f0f974161579a817041f0",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video19/frame000012_view1_row7_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 7,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 4,
+      "best_executed_action_H32_IDSW": 2,
+      "key": [
+        19,
+        46,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "5bf579fb5b1adc185c31a87cf9eb967439bdab0b28c996168c5ffd594d6acc94",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video19/frame000046_view0_row3_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 3,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 5,
+      "best_executed_action_H32_IDSW": 5,
+      "key": [
+        19,
+        48,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "bedfe5c3065da1f58e351b6af8c1e7f4eb2c2aeb051b5cfe8a76c0e97c589697",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video19/frame000048_view0_row2_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 2,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 5,
+      "best_executed_action_H32_IDSW": 5,
+      "key": [
+        19,
+        108,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "89814b8c27a57aa27b0a1fa4331e59e33293f0f888ccfb6e8d3b76ad61d91f7f",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video19/frame000108_view1_row6_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 6,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 6,
+      "best_executed_action_H32_IDSW": 4,
+      "key": [
+        19,
+        118,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "bd8fb84a4a048877f2d0da968e0ab880b24ecc1c54ef695ba7581723e6251c72",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video19/frame000118_view1_row1_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 1,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 5,
+      "best_executed_action_H32_IDSW": 5,
+      "key": [
+        19,
+        120,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "28bcec0e27c6148ac61f9c3d823ba69f0af831005522b82a4ea575223213d186",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video19/frame000120_view1_row8_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 8,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 4,
+      "best_executed_action_H32_IDSW": 3,
+      "key": [
+        19,
+        142,
+        1
+      ],
+      "oracle_branch": {
+        "SHA256": "7d03c838c1cd43c05bbb40d868c7345ed9b03c2603ad51a9bf00b9d30aa7d657",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video19/frame000142_view1_row2_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 2,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    },
+    {
+      "actual_executed_actions_were_chosen_without_future_frames": true,
+      "baseline_H32_IDSW": 2,
+      "best_executed_action_H32_IDSW": 2,
+      "key": [
+        19,
+        223,
+        0
+      ],
+      "oracle_branch": {
+        "SHA256": "c89f1e403270e0e15d92a90ea5bb0413f04e9f1aea4a9e4d948772a9d837916e",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/causal_commitment_v1/pi_fixed_frozen20k/video19/frame000223_view0_row7_KEEP_PREVIOUS_COMMITTED_ID.json"
+      },
+      "policy": "pi_fixed_frozen20k",
+      "posthoc_offline_oracle_action": "KEEP_PREVIOUS_COMMITTED_ID",
+      "posthoc_summary_is_not_a_deployable_action_selector": true,
+      "row": 7,
+      "scope": "DEVELOPMENT_DIAGNOSTIC",
+      "video": 19
+    }
+  ],
+  "offline_upper_bound_only": true,
+  "status": "RUNNING",
+  "supervision_eligibility": "TRAIN only; DEVELOPMENT never enters gradients"
+}
