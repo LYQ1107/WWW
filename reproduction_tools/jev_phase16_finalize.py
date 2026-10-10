@@ -82,7 +82,8 @@ def main():
         safe_recovery_label_clusters=labels['safe_recovery_independent_clusters'],unsafe_recovery_label_clusters=labels['unsafe_recovery_independent_clusters'],
         reserved_correction_clusters=labels['necessary_correction_reserved_clusters'],
         major_research_hypotheses_used=2,V3_not_started_due_to_failed_prerequisites=True,
-        new_weight_checkpoint=None,prior_V_to_XV_results_and_weights_preserved=True,SEALED20_21_22='UNREAD',official_TEST='UNREAD',Full24='NOT_RUN',
+        new_weight_checkpoint=None,prior_V_to_XV_results_and_weights_preserved=True,SEALED20_21_22='NO_VIDEO_CACHE_IMAGES_SELECTED_LABELS_OR_EVALUATION',official_TEST='UNREAD',Full24='NOT_RUN',
+        shared_TRAIN_annotation_manifest='Existing train.json parsed/hashed by standard loaders; selected per-video observations and labels restricted to declared TRAIN/DEV',
         new_metrics_for_unrun_stages_are_null=True,scientific_blocker=None)
     blockers=dict(status='UNQUALIFIED_FOR_LEARNED_RECOVERY',binding=src,
         observed_information='Raw target-person content is widespread but Global ID ownership often contaminated; target content is not ownership certification',
@@ -107,7 +108,7 @@ def main():
 
 执行完成；科研结论 **NO_GO**。完成 P0/P1/P2/P3、真实图像完整 DEV、官方 MATLAB 和实际延迟。没有合格依据启动新读取器、Tiny/Pilot、三种子20k或 matched4k；未运行指标为 null，既有 XV 失败与权重保持原样。
 
-冻结起点 `{BASE}`。分支 `{BRANCH}`。V1 是冻结证据读取，V2 是冻结权重安全写入；V3 学习版因前置资格失败未启动。数据为 TRAIN12/13/14/16 与已反复使用的 DEV17/18/19；20/21/22、official TEST、Full24 未读取/未执行。Stage1 已接触全部24个 TRAIN，不能声称全系统未见泛化。
+冻结起点 `{BASE}`。分支 `{BRANCH}`。V1 是冻结证据读取，V2 是冻结权重安全写入；V3 学习版因前置资格失败未启动。数据为 TRAIN12/13/14/16 与已反复使用的 DEV17/18/19。未使用20/21/22的视频缓存、图像、所选决策标签或评测；现有共享TRAIN标注train.json按标准loader解析并哈希，逐视频观测和标签提取限定在上述TRAIN/DEV。official TEST 未读取，Full24未执行。Stage1 已接触全部24个 TRAIN，不能声称全系统未见泛化。
 
 ## 证据与读取
 
