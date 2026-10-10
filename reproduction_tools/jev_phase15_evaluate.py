@@ -55,6 +55,20 @@ def main(video,arm='F_full',seed=20261009,version=1,phase='pilot',live=False):
     policy,checkpoint,training=load_policy(arm,seed,version,phase)
     values,frames,reader=cache_inputs(video)
     model=build_tracker(video,policy,react_learned=False,live=live);executor=attach(model)
+    frontend_checks=[]
+    if live:
+        actual_inference=model.inference
+        keys={p['phase13_image_path']:(index%frames,index//frames) for index,p in enumerate(values)}
+        def checked_inference(payloads,*a,**k):
+            result=actual_inference(payloads,*a,**k);frame,view=keys[payloads[0]['phase13_image_path']]
+            if frame in [0,32]:
+                cached=reader.load(video,frame,view);inst=result[0]
+                fields=dict(pred_boxes=inst.pred_boxes.tensor.cpu(),detection_scores=inst.scores.cpu(),reid_features=inst.reid_features.cpu())
+                same={name:torch.equal(value,cached[name]) for name,value in fields.items()}
+                frontend_checks.append(dict(key=[video,frame,view],shape_equal={name:list(value.shape)==list(cached[name].shape) for name,value in fields.items()},
+                    fields_bitwise_equal=same,live_fields_SHA256=fingerprint(fields),cache_fields_SHA256=fingerprint({n:cached[n] for n in fields})))
+            return result
+        model.inference=checked_inference
     out=OUT/f'{phase}_online_v{version}'/f'{arm}_seed{seed}'/('live' if live else 'frozen_perception')/f'video{video:02d}'
     out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
     source=binding(seed=seed,checkpoints=[checkpoint],dataset=ref(ANNOTATIONS),
@@ -63,6 +77,12 @@ def main(video,arm='F_full',seed=20261009,version=1,phase='pilot',live=False):
     source['perception_input_provenance']=perception_provenance(video)
     source['perception_execution']='current images through actual Stage1 detector/VFCE' if live else 'frozen Stage1 cache'
     risk=NativeRisk(video,reader);start=time.monotonic();last_progress=[0.]
+    duplicate_labels=0
+    for key,image in risk.labels.images.items():
+        duplicates=collections.Counter(a['instance_id'] for a in risk.labels.gt[image['id']]);bad={gt for gt,n in duplicates.items() if n>1}
+        if bad:
+            targets=risk.labels.current(*key);duplicate_labels+=sum(gt in bad for gt in targets if gt is not None)
+            risk.labels.aligned[key]=[None if gt in bad else gt for gt in targets]
     journal=gzip.open(out/'QUESTIONS.jsonl.gz','wt');commits=gzip.open(out/'COMMITS.jsonl.gz','wt')
 
     def before(**d):
@@ -89,6 +109,8 @@ def main(video,arm='F_full',seed=20261009,version=1,phase='pilot',live=False):
         strict_online_metrics=strict,evaluator_result=ref(evaluation/'metrics.json'),native_risk=risk.summary(),
         error_propagation=ref(out/'ERROR_PROPAGATION.json'),commits=ref(out/'COMMITS.jsonl.gz'),questions=ref(out/'QUESTIONS.jsonl.gz'),
         final_identity_and_commitment_memory_SHA256=fingerprint(executor.memory.state_dict()),
+        live_frontend_vs_frozen_cache_four_payload_checks=frontend_checks,
+        duplicate_GT_offline_risk_labels_masked=duplicate_labels,raw_evaluation_GT_modified=False,
         native_Gallery_Bank_updates=True,short_track_filter_or_GT_renumbering=False,actual_mutated_state_online=True,
         full_FPS=None,latency_scope='instrumented validation; no deployment FPS claim',seconds=time.monotonic()-start))
     save(out/'PROGRESS.json',dict(status='COMPLETE',frames=frames,strict_metrics=strict))
