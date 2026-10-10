@@ -43,6 +43,7 @@ class PrototypeAudit:
     def append(self,inst,frame,view):
         for m in self.views.values():m.append_instance(inst,frame,view)
         targets=self.labels.current(frame,view)
+        assert len(inst)==len(targets)
         for row,(identity,gt) in enumerate(zip(inst.track_ids.tolist() if inst.has('track_ids') else [],targets)):
             self.past_GT[frame,view,row]=gt;self.observed[identity]+=1
             if gt is not None:self.votes[identity][gt]+=1
@@ -60,9 +61,10 @@ class PrototypeAudit:
         task='MATCH' if d['task']==0 else 'REACT';rows=context.get('rows',list(range(len(d['logits']))))
         source={r['row']:r for r in self.cursor.at(key) if r.get('record_type')!='COMMIT' and r['task']==task}
         assert set(rows)==set(source),(key,task,'query rows differ from frozen P0')
+        original_rows=d['logits'].cpu().tolist();legal_rows=d['batch']['legal'][0].cpu().tolist()
         for ri,row in enumerate(rows):
             assert source[row]['actual_candidates']==refs
-            assert source[row]['actual_frozen_logits']==d['logits'][ri].cpu().tolist(),'changed original frozen scores'
+            assert source[row]['actual_frozen_logits']==original_rows[ri],'changed original frozen scores'
         saved_details=getattr(self.policy,'runtime_details',None);results={};provenance={}
         try:
             for variant in VARIANTS:
@@ -78,24 +80,28 @@ class PrototypeAudit:
                 self.read_ms[variant].append((read_end-begin)*1000);self.forward_ms[variant+'_'+task].append((end-read_end)*1000)
                 details=getattr(self.policy,'runtime_details',None) if task=='MATCH' else None
                 who=details['choice_logits'][0] if details is not None else None
-                results[variant]=(x,logits,lawful_choice(logits,x['legal'][0]),
-                    lawful_choice(who,x['legal'][0]) if who is not None else None,who)
+                choices=lawful_choice(logits,x['legal'][0]);who_choices=lawful_choice(who,x['legal'][0]) if who is not None else None
+                # Observer-only values cross the device boundary once per
+                # payload/variant. No per-row GPU scalar synchronization.
+                slots=x['pair_evidence'][0,:,:,:4].cpu().tolist()
+                results[variant]=(slots,logits.cpu().tolist(),choices,who_choices,
+                    who.cpu().tolist() if who is not None else None)
         finally:
             if saved_details is not None:self.policy.runtime_details=saved_details
         for ri,row in enumerate(rows):
             record=source[row];gt=record['current_GT_OFFLINE_ONLY'];cluster=(self.video,gt,key[2],key[1]//64)
-            legal={r for col,r in enumerate(refs) if bool(d['batch']['legal'][0,ri,col])}
+            legal={r for col,r in enumerate(refs) if legal_rows[ri][col]}
             eligible=[r for r in record['anchored_correct_owner_IDs'] if r in legal and record['raw_and_summary_scores'][str(r)]['raw_target']>=.75]
             pure_wrong=[r for r in legal if gt is not None and len(self.votes[r])==1 and
                 sum(self.votes[r].values())>=3 and sum(self.votes[r].values())/self.observed[r]>=.8 and gt not in self.votes[r]]
             owner_wrong=[r for r in legal if gt is not None and r in self.owner and self.owner[r]!=gt]
             paired={}
-            for variant,(x,logits,choices,who_choices,who_logits) in results.items():
+            for variant,(slots,logits,choices,who_choices,who_logits) in results.items():
                 col=choices[ri];chosen=refs[col] if col>=0 else None;c=self.counts[variant+'_'+task]
-                scores=x['pair_evidence'][0,ri,:,:4].max(-1).values
-                support=bool(eligible) and any(float(scores[refs.index(r)])>=.75 for r in eligible)
-                false=any(float(scores[refs.index(r)])>=.75 for r in pure_wrong)
-                wrong_owner=any(float(scores[refs.index(r)])>=.75 for r in owner_wrong)
+                scores=[max(v) for v in slots[ri]]
+                support=bool(eligible) and any(scores[refs.index(r)]>=.75 for r in eligible)
+                false=any(scores[refs.index(r)]>=.75 for r in pure_wrong)
+                wrong_owner=any(scores[refs.index(r)]>=.75 for r in owner_wrong)
                 c['queries']+=1;c['GT_known']+=gt is not None
                 c['negative_denominator_GT_known_legal']+=gt is not None and bool(legal)
                 c['positive_eligible']+=bool(eligible);c['positive_supported']+=support
@@ -124,17 +130,22 @@ class PrototypeAudit:
                             if item is None:continue
                             targets=[self.past_GT[k] for k in item['keys']];v=collections.Counter(g for g in targets if g is not None)
                             qualified=sum(v.values())>=3 and sum(v.values())/len(targets)>=.8 and set(v)=={gt}
-                            local=local or qualified and float(x['pair_evidence'][0,ri,i,slot])>=.75
+                            local=local or qualified and slots[ri][i][slot]>=.75
                 c['pure_local_segment_supported']+=local
                 if eligible and gt is not None:self.clusters[variant+'_'+task].add(cluster)
                 a_support=paired[VARIANTS[0]]['positive_supported'] if variant!=VARIANTS[0] else support
                 if support and not a_support:self.clusters[variant+'_'+task+'_new_support_vs_A'].add(cluster)
                 paired[variant]=dict(selected_ID=chosen,positive_eligible=bool(eligible),positive_supported=support,
                     pure_wrong_activation=false,known_wrong_owner_activation=wrong_owner,pure_local_support=local,
-                    logits=logits[ri].cpu().tolist(),WHO_head_selected_ID=who_chosen,
-                    WHO_head_logits=who_logits[ri].cpu().tolist() if who_logits is not None else None)
-            self.stream.write(json.dumps(dict(key=list(key),row=row,task=task,GT_OFFLINE_ONLY=gt,
-                actual_candidates=refs,high_risk=record['high_risk'],variants=paired),allow_nan=False)+'\n')
+                    logits=logits[ri],WHO_head_selected_ID=who_chosen,
+                    WHO_head_logits=who_logits[ri] if who_logits is not None else None)
+            item=dict(key=list(key),row=row,task=task,GT_OFFLINE_ONLY=gt,
+                actual_candidates=refs,high_risk=record['high_risk'],variants=paired)
+            self.stream.write(json.dumps(item,allow_nan=False)+'\n')
+            if self.old_partial is not None:
+                old=self.old_partial.get((key,row,task))
+                if old is not None:assert item==old,'engineering batch transfer changed frozen paired reader output'
+                self.old_overlap_verified+=old is not None
 
     def after(self,**d):
         key=(self.video,d['frame'],d['view']);inst=d['instances'][-1]
@@ -152,7 +163,7 @@ def main(video):
     p0=OUT/'P0_r2/full/v3'/f'video{video:02d}/RESULT.json';baseline=read(p0)['cases'][0]['queries']
     assert sha(baseline['path'])==baseline['SHA256'];cursor=TraceCursor(baseline['path'])
     model=build_tracker(video,policy,react_learned=False);executor=attach(model)
-    out=OUT/'P1'/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
+    out=OUT/'P1_r2'/f'video{video:02d}';out.mkdir(parents=True,exist_ok=True);assert not (out/'RESULT.json').exists()
     source=binding(checkpoints=[checkpoint],inputs=[training,ref(p0),ref(REPORTS/'P1_PROTOCOL.json')],
         native_state=dict(kind='actual original frozen whole native query/commit trace',trace=baseline,restorable_start_snapshot_captured=False),
         evaluator='paired four-slot all-query frozen model/prototype diagnostics; original native outputs unchanged',
@@ -162,6 +173,11 @@ def main(video):
     start=time.monotonic();last=[0.]
     with gzip.open(out/'PAIRED_READERS.jsonl.gz','wt') as stream:
         audit=PrototypeAudit(video,reader,policy,cursor,stream)
+        partial=OUT/'P1_initial_engineering'/f'video{video:02d}/VALID_PAIRED_PREFIX.jsonl.gz'
+        audit.old_partial=None;audit.old_overlap_verified=0
+        if partial.exists():
+            with gzip.open(partial,'rt') as old:
+                audit.old_partial={(tuple(r['key']),r['row'],r['task']):r for r in map(json.loads,old)}
         model.jev_native_prefix_observer=audit.native_before;executor.observer=audit.before
         def after(**d):
             audit.after(**d)
@@ -171,6 +187,7 @@ def main(video):
         executor.commit_observer=after
         with torch.no_grad():raw,_=run(model,values,frames)
     cursor.stream.close();assert audit.actual_payloads==2*frames-1
+    if audit.old_partial is not None:assert audit.old_overlap_verified==len(audit.old_partial)
     memory={v:dict(IDs=len(m.identities),max_vectors_per_ID=max((m.stored_vectors(i) for i in m.identities),default=0),
         stored_vectors=sum(m.stored_vectors(i) for i in m.identities),persisted_feature_MiB=sum(m.stored_vectors(i) for i in m.identities)*1024*4/2**20,
         state_SHA256=fingerprint(m.state_dict())) for v,m in audit.views.items()}
@@ -182,6 +199,9 @@ def main(video):
         original_raw_Gallery_visual_MiB=audit.raw_vectors_max*1024*4/2**20,
         final_original_identity_and_commitment_memory_SHA256=fingerprint(executor.memory.state_dict()),
         paired_reader_trace=ref(out/'PAIRED_READERS.jsonl.gz'),every_original_logit_and_committed_ID_exact_vs_P0=True,
+        engineering_previous_partial=ref(partial) if partial.exists() else None,
+        engineering_exact_overlap_verified=audit.old_overlap_verified,
+        no_new_reader_or_gate_version=True,
         shadow_decisions_not_executed_and_not_native_benefit=True,actual_training_updates=0,
         joint_policy_scores_include_availability_trust_Q4_reliability=True,WHO_head_diagnosed_separately=True,
         cache_audit_is_not_full_image_FPS=True,strict_train_gate_eligible=video in TRAIN and video!=14,seconds=time.monotonic()-start))

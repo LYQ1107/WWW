@@ -24,8 +24,10 @@ def summarize(results):
 def main():
     protect();results=[];inputs=[]
     for video in TRAIN+DEV:
-        path=OUT/'P1'/f'video{video:02d}/RESULT.json';r=read(path)
+        path=OUT/'P1_r2'/f'video{video:02d}/RESULT.json';r=read(path)
         assert r['status']=='COMPLETE' and r['every_original_logit_and_committed_ID_exact_vs_P0']
+        p0=read(OUT/'P0_r2/full/v3'/f'video{video:02d}/RESULT.json')
+        assert r['final_original_identity_and_commitment_memory_SHA256']==p0['cases'][0]['final_observed_identity_memory_SHA256']
         results.append(r);inputs.append(ref(path))
     strict=summarize([r for r in results if r['strict_train_gate_eligible']])
     base=strict[VARIANTS[0]];passing=[]
@@ -51,8 +53,11 @@ def main():
         per_video=[dict(video=r['video'],counts=r['counts'],read_latency_ms=r['read_latency_ms'],
             forward_latency_ms=r['forward_latency_ms'],bounded_memory=r['bounded_memory'],
             original_raw_Gallery_visual_MiB=r['original_raw_Gallery_visual_MiB']) for r in results])
-    for name in ['MULTI_PROTOTYPE_RESULTS','MULTI_PROTOTYPE_IDENTITY_MEMORY','HISTORY_SEGMENT_RETRIEVAL','CANDIDATE_RECOVERY_ABLATION']:
-        save(REPORTS/(name+'.json'),common)
+    save(REPORTS/'MULTI_PROTOTYPE_RESULTS.json',common)
+    for name in ['MULTI_PROTOTYPE_IDENTITY_MEMORY','HISTORY_SEGMENT_RETRIEVAL','CANDIDATE_RECOVERY_ABLATION']:
+        save(REPORTS/(name+'.json'),dict(status='COMPLETE',binding=common['binding'],
+            canonical_result=ref(REPORTS/'MULTI_PROTOTYPE_RESULTS.json'),selected_reader=selected,
+            scientific_status=common['scientific_status'],safe_recovery_proven=False))
     print('PHASE16_P1_GATE',common['scientific_status'],selected,{v:(x.get('positive_support_gain_pp'),x.get('certified_wrong_activation_gain_pp')) for v,x in strict.items()},flush=True)
 
 
