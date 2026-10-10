@@ -18,6 +18,13 @@ def summarize(results):
             independent_eligible_cluster_count=len(clusters[key]),
             new_support_cluster_count_vs_A=len(clusters[key+'_new_support_vs_A']),
             REACT_counts=dict(counts[variant+'_REACT']))
+        if variant==VARIANTS[0]:
+            # Original raw summaries did not receive a per-token local-purity
+            # provenance audit in these neutral runs. The implementation's
+            # initialized False is not a measured zero support rate.
+            output[variant]['counts']['pure_local_segment_supported']=None
+            output[variant]['REACT_counts']['pure_local_segment_supported']=None
+            output[variant]['original_summary_local_purity_status']='NOT_MEASURED; no comparison to initialized zero'
     return output
 
 
@@ -49,6 +56,8 @@ def main():
         DEV_diagnostic=summarize([r for r in results if r['video'] in DEV]),
         selected_reader=selected,passing_readers=passing,scientific_status='GO_FROZEN_NATIVE_CAUSAL_TRIAL' if selected else 'NO_GO_PROTOTYPE_DEPLOYMENT',
         actual_training_updates=0,original_native_trajectory_parity=True,safe_recovery_proven=False,
+        preregistered_support_gain_ceiling_pp=100*(1-base['positive_support_recall']),
+        recall_ceiling_does_not_authorize_changing_the_frozen_gate=True,
         cached_forward_timing_is_not_real_image_FPS=True,source_results=inputs,
         per_video=[dict(video=r['video'],counts=r['counts'],read_latency_ms=r['read_latency_ms'],
             forward_latency_ms=r['forward_latency_ms'],bounded_memory=r['bounded_memory'],
