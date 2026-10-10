@@ -176,7 +176,7 @@ GO_TRACKING **FAIL**；GO_JEV_INDEPENDENT_VALUE **NOT_ESTABLISHED**；GO_DEPLOYM
 代码位于 `gtr/modeling/jev_phase16/` 与 `reproduction_tools/jev_phase16_*`；报告在 `reports/JEV_PHASE16/`，原始大轨迹/日志/权重仅在服务器。各实际阶段绑定actor Git SHA、source/dataset/config/checkpoint SHA、seed、native前缀/RNG和evaluator环境。FINAL_GO_NO_GO.json 区分执行完成与科研失败，SCIENTIFIC_BLOCKERS.json列出后续证据需求。
 '''
     (ROOT/'docs/JEV_PHASE16_FINAL_RESEARCH_REPORT.md').write_text(report)
-    goal=read(REPORTS/'FINAL_GOAL.json');goal['execution_status']='COMPLETE_WITH_CONDITIONAL_NOT_RUN';goal['scientific_status']='NO_GO';goal['final_result']=ref(REPORTS/'FINAL_GO_NO_GO.json');save(REPORTS/'FINAL_GOAL.json',goal)
+    goal=read(REPORTS/'FINAL_GOAL.json');goal['status']='COMPLETE_EXECUTION_SCIENTIFIC_NO_GO';goal['execution_status']='COMPLETE_WITH_CONDITIONAL_NOT_RUN';goal['scientific_status']='NO_GO';goal['final_result']=ref(REPORTS/'FINAL_GO_NO_GO.json');save(REPORTS/'FINAL_GOAL.json',goal)
     save(REPORTS/'ARTIFACT_SHA_MANIFEST.json',dict(status='COMPLETE',binding=binding(scope='Phase XVI compact delivery manifest'),
         reports={p.name:sha(p) for p in sorted(REPORTS.glob('*.json')) if p.name!='ARTIFACT_SHA_MANIFEST.json'},
         documents={p.name:sha(p) for p in sorted((ROOT/'docs').glob('JEV_PHASE16_*.md'))},
