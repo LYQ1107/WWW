@@ -28,6 +28,23 @@ def main():
     for name in ['SEED20261009_FAILURE_ATLAS', 'PHASE15_SEED20261009_FAILURE_ATLAS']:
         atlas = read(REPORTS / (name + '.json')); atlas['status'] = status
         atlas['complete_worst_seed_native_replay'] = primary
+        for item in atlas['videos']:
+            p = OUT / 'native_replay_v2' / f'{item["variant"]}_seed{item["seed"]}' / f'video{item["video"]:02d}' / 'RESULT.json'
+            replay = read(p)
+            import gzip
+            with gzip.open(replay['recovered_head_journal']['path'], 'rt') as stream:
+                heads = {(tuple(r['key']), r['row']): r for r in map(json.loads, stream)}
+            item['native_replay'] = ref(p)
+            for examples in item['examples'].values():
+                for example in examples:
+                    key = tuple(example['key']), example['row']
+                    head = heads[key]
+                    example['WHO_Availability_Trust_and_visual_tokens'] = {
+                        'status': 'RECOVERED_FROM_EXACT_NATIVE_REPLAY',
+                        'WHO_logits': head['WHO_logits'], 'Availability_logit': head['Availability_logit'],
+                        'Trust_logits': head['Trust_logits'], 'final_option_scores': head['final_option_scores'],
+                        'visual_tensors': replay['causal_visual_inputs'],
+                        'causal_tensor_record_index': head['causal_tensor_record_index']}
         save(REPORTS / (name + '.json'), atlas)
     risk = read(REPORTS / 'PHASE15_CORRECTIVE_VS_HARMFUL_SWITCH.json')
     risk.update(status=status, primary_native_replay_all_WHO_Q2_Q3_inputs_recovered=True)
@@ -37,11 +54,12 @@ def main():
          'every_native_commit_and_final_state_equal': True, 'P1_worst_seed': 'PASS',
          'P1_all_controls': 'PASS' if not pending else 'PENDING',
          'new_training_started': False, 'new_tracking_improvement_established': False})
-    save(REPORTS / 'COUNTERFACTUAL_PREFIX_MANIFEST.json', {'status': 'FROZEN_BEFORE_CAUSAL_OUTCOMES',
-         'binding': binding(seed=20261009), 'primary_replays': primary,
-         'development_GT_used_only_for_diagnosis_and_research_interventions': True,
-         'development_events_are_not_training_examples': True,
-         'certified_candidate_actions_are_not_deployable': True})
+    if not (REPORTS / 'COUNTERFACTUAL_PREFIX_MANIFEST.json').exists():
+        save(REPORTS / 'COUNTERFACTUAL_PREFIX_MANIFEST.json', {'status': 'FROZEN_BEFORE_CAUSAL_OUTCOMES',
+             'binding': binding(seed=20261009), 'primary_replays': primary,
+             'development_GT_used_only_for_diagnosis_and_research_interventions': True,
+             'development_events_are_not_training_examples': True,
+             'certified_candidate_actions_are_not_deployable': True})
     print('PHASE15_P1_NATIVE_AUDIT', status, len(completed), len(pending), flush=True)
 
 
