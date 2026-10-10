@@ -87,7 +87,9 @@ def main(version=3):
         formal_three_seed_metrics=None,independent_test=False,formal_tracking_GO_claimed=False,full_FPS=None))
     save(REPORTS/'IDENTITY_ERROR_PROPAGATION.json',dict(**basic,status='COMPLETE',cases=propagations,longest_observed_examples=examples,
         gaps_and_video_end_are_censored=True,continued_wrong_owner_after_gallery_mixing_counted=True,
-        current_GT_unknown_unassessed=True,identity_owner_is_fixed_first_observed_GT_not_canonical_GT_mapping=True))
+        current_GT_unknown_unassessed=True,identity_owner_is_fixed_first_observed_GT_not_canonical_GT_mapping=True,
+        actual_bootstrap_owner_seeds_included=True,duration_semantics_contract=ref(OUT/'error_duration_contract/RESULT.json'),
+        physical_time_seconds=None,physical_frame_rate_not_independently_verified=True))
     exposure=read(ROOT/'reports/JEV_PHASE14/PRETRAIN_EXPOSURE_AUDIT.json')
     save(REPORTS/'GENERALIZATION_QUALIFICATION.json',dict(**basic,status='NO_GO_ABSOLUTE_UNSEEN_FULL_SYSTEM',
         prior_exposure_audit=ref(ROOT/'reports/JEV_PHASE14/PRETRAIN_EXPOSURE_AUDIT.json'),
@@ -131,18 +133,20 @@ def main(version=3):
 
 V1 实现 Q4 和可靠性，但原保留区没有必要纠错认证；认证准确率不代表所有查询。V2 增加 actual recent3-frame 的局部不安全承诺认证，全球混合 WHO 标签仍 UNKNOWN；新增训练12、保留5个纠错标签。V3 在 V2 原生错误和状态变化证据后，采集它自己真实产生的完整 TRAIN 历史，与原 Multi corpus 混合，固定相同1500 updates，不改变层数、学习率或损失权重。
 
+三版 Tiny 的固定四个代表 payload 均来自原 frozen-Multi corpus，V1和V3相同输入/初始化可产生相同loss与权重；不能把它们当作独立数据复现。V3的新 own-state 干预发生在 Pilot；1500 steps共6000个采样payload中2958来自实际own-v2状态、3042来自原Multi，7个审计纠错样本最终做对5个。Tiny loss下降只证明局部梯度可学，不证明新状态泛化或原生安全。
+
 另保留旧工程 Tiny128：旧联合损失丢掉未知检测行，修复后在新命名空间重跑。总计新梯度 updates5012，其中正式20k=0；旧文件、旧权重和失败日志仍在服务器。训练数据仅12/13/14/16，reserved temporal block不送入优化器，DEV17/18/19仅作诊断，20/21/22封存。
 
 A–F 三种子20k、公平架构消融和 matched4k 正式 on-policy 都依赖可靠 F Pilot。三版都未通过原生安全门，因此这些条件阶段 NOT_RUN、指标 null。历史 Fixed/Multi/Set 仅作历史参考，不能冒充本次同监督/同算力对照；本次没有证明普通网络与 Jev 等价或更优，也没有证明 Jev 独立优势。
 
-反馈通道归因：same checkpoint/prefix/RNG 的24个实际 native 窗口屏蔽 purity/posterior-available 输入，实际 ID 变化数0。排除该反馈作为已观察失败的解释；不能将“分布上未覆盖”推断成已证明的因果原因。三版各自 all-query audit、全部不安全 horizon 和 raw轨迹均由 JSON SHA绑定。
+反馈通道归因：V1 same checkpoint/prefix/RNG 的24个实际 native 窗口屏蔽 purity/posterior-available 输入，实际 ID 变化数0。该阴性归因只排除该通道对这些V1窗口的动作影响，不外推到后两版权重、其他状态或完整视频；不能将“分布上未覆盖”推断成已证明的因果原因。三版各自 all-query audit、全部不安全 horizon 和 raw轨迹均由 JSON SHA绑定。
 ''')
     last=queries[-1]['results']['F_full']['counts']
     document('JEV_PHASE15_UNKNOWN_RELIABILITY.md',f'''# Phase XV UNKNOWN and Reliability
 
 UNKNOWN 保留为合法推理候选，不自动作负例或正例。WHO 的已认证纯净身份兼容性、具体 Commit 的可安全延续性、全局 history purity、预测 safety 与 uncertainty 分开。
 
-V1 all-query audit:3140个当前 GT已知查询中1309选择 UNKNOWN，995选择全局混合历史；WHO认证查询仅1822。认证子集接近满分不能代表其余困难查询的风险。V2 在3160个已知查询中1310选择UNKNOWN，990选择混合历史；31? 不采用未认证情况的猜测真值。两版各自选择认证错误11和12，UNKNOWN 不计为已认证错误。
+V1 all-query audit:3140个当前 GT已知查询中1309选择 UNKNOWN，995选择全局混合历史；WHO认证查询仅1822。认证子集接近满分不能代表其余困难查询的风险。V2 在3160个已知查询中1310选择UNKNOWN，990选择混合历史；不采用未认证情况的猜测真值。两版各自选择认证错误11和12，UNKNOWN 不计为已认证错误。
 
 V3 全部保留查询计数（其审计 corpus 与前两版不同，不能直接把绝对计数当改进）：
 
@@ -150,12 +154,12 @@ V3 全部保留查询计数（其审计 corpus 与前两版不同，不能直接
 {json.dumps(last,ensure_ascii=False,indent=2)}
 ```
 
-Risk-coverage 的 coverage 分母采用全部当前 GT已知查询，certified-selection risk仅在被选候选已有认证时计算，UNKNOWN数量另列。当前 GT未知的检测另列 unassessed。置信度是模型 softmax而非经过独立校准的概率；高置信 UNKNOWN不等于正确。
+Risk-coverage 的 coverage 分母采用全部当前 GT已知查询，certified-selection risk仅在被选候选已有认证时计算，UNKNOWN数量另列。当前 GT未知的检测另列 unassessed。置信度是实际联合分配选中动作的softmax概率；不能用单行最大分替代。在V1/V2分别有201/157个查询的联合动作不同于单行argmax；旧最大概率口径保留，SELECTED_ACTION_RISK_V1/V2修正副本分别绑定不变的checkpoint，没有额外SGD。概率未经独立校准，高置信UNKNOWN不等于正确。
 
 V2 recent3-frame 认证只给“该候选当前局部承诺不安全”提供证据；未知/缺帧、跨帧不连续、最近属于当前人、没有纯净兼容替代，都不制造纠错标签。WHO对混合历史仍UNKNOWN。更一般的无纯净候选状态不能随意补充正确候选或宣称 DEFER一定安全：P2 DEFER实际常造成假出生和错误混合。
 
 完全保留 annotation，重复 GT身份仅使离线认证/风险观察 UNKNOWN；TrackEval及官方 MATLAB仍读取原始GT。训练不能用DEV结果挑门槛。真实完整视频风险观察、错误时长与CVIDF1独立报告。
-'''.replace('；31? 不采用','；不采用'))
+''')
     full_rows='\n'.join(f"| video{c['video']:02d} | {c['frames']} | {json.dumps(c['metrics'],ensure_ascii=False)} |" for c in online)
     longest='\n'.join(f"- video{x['video']:02d}, camera{x['view']}, GT{x['GT_OFFLINE_ONLY']}, frame{x['start']}–{x['end']}: {x['observed_frames']}个实际错误观测帧，right_censored={x['right_censored']}。" for x in examples)
     runtime='\n'.join(f"- Trial{t['repeat']}: sceneFPS {t['full_two_camera_scene_FPS']:.3f}, total native Stage2 p95 {t['total_native_Stage2_ms']['p95']:.3f}ms。" for t in efficiency['trials'])
@@ -167,7 +171,7 @@ V2 recent3-frame 认证只给“该候选当前局部承诺不安全”提供证
 
 P0 从0dc9607冻结 V–XIV，332个checkpoint原始hash以及83个受保护报告保留。P1 完成15个旧模型/视频实际原生重放，含 Multi三个种子和seed20261009的Fixed/Set，inputs/scores/IDs/最终状态完全一致。最坏种子824个CLEAR IDSW：pure fragment158、polluted history505、history corrective109、wrong existing merge30、false birth5、recovery1、ambiguous16；其中277个有合法纯净旧候选，只占33.62%，不能把所有切换都罚掉。
 
-P2 冻结46个前缀、5个动作、2个后续策略，共460个声明分支；430实际执行、30个认证替代不可用。πMulti与πFixed分别有8/18、12/18独立安全延续获益cluster，达到预冻结机制可行性门。这是条件性实际因果证据，不是完整视频收益或架构优越性。TRAIN14原始GT重复导致严格CLEAR失败，另保留6个隔离的permissive诊断，排除严格门；原始失败不覆盖。DEFER多数窗口增加出生，强制KEEP也有混合增多窗口。
+P2 冻结46个前缀、5个动作、2个后续策略，共460个声明分支；430实际执行、30个认证替代不可用。πMulti与πFixed分别有8/18、12/18独立安全延续获益cluster，达到预冻结机制可行性门。这是条件性实际因果证据，不是完整视频收益或架构优越性。KEEP目标及ALT兼容性由过去观测的GT离线认证，仅用于研究干预，不代表部署模型已识别该动作；任何动作仍受原生合法候选限制。TRAIN14原始GT重复导致严格CLEAR失败，另保留6个隔离的permissive诊断，排除严格门；原始失败不覆盖。DEFER多数窗口增加出生，强制KEEP也有混合增多窗口。
 
 建立 GT-free Persistent CommitmentState，明确WHO vs具体native ID承诺，动态candidate-conditioned Q4，独立purity/safety/uncertainty，真实整个检测集合的Hungarian loss，原生 Gallery/Bank/ID/REACT/START_NEW不变。原 Multi四个完整TRAIN预测完全不变，512 payload恢复bitwise一致；另用第三版收集器验证512个学习式、带posterior状态payload恢复。Alias关闭；没有GT canonical renumbering。
 
@@ -175,7 +179,11 @@ P2 冻结46个前缀、5个动作、2个后续策略，共460个声明分支；4
 
 详见 `JEV_PHASE15_TRAINING_AND_ABLATIONS.md` 和 `PILOT_RESULTS.json`。V1 缺必要纠错审计支持；V2 建立过去真实连续片段证据，必要纠错5/5但仍出现native污染；V3 使用V2自身完整TRAIN mutated-state历史，修复训练状态分布，并再次固定Tiny128/Pilot1500。全部版本及失败保留，没有挑最好checkpoint、丢最差种子、调DEV阈值或增加epochs。
 
-相同权重、同prefix/RNG，仅屏蔽过去可靠性反馈的24个干预窗口没有任何实际ID变化。不能再将这次失败归因为该通道。原全局混合状态中大量查询缺少可认证纯净兼容候选；在 UNKNOWN上保持强延续可能延长身份混合，靠把UNKNOWN当负例无法可信解决。
+V1相同权重、同prefix/RNG，仅屏蔽过去可靠性反馈的24个干预窗口没有任何实际ID变化；该证据只否定此通道在这些V1窗口的动作解释，不能覆盖V2/V3或未观察状态。原全局混合状态中大量查询缺少可认证纯净兼容候选；在 UNKNOWN上保持强延续可能延长身份混合，靠把UNKNOWN当负例无法可信解决。
+
+具体反例：TRAIN12 frame3/camera1/row6前缀，V3在H32把IDSW减少4，却使新跨GT混合增加2、固定owner错误观测增加36、污染历史写入增加71。第一步仍延续可认证正确的ID9，后续策略自行产生的不安全提交才改变历史。它说明第一步延续正确及IDSW下降都不能保证闭环身份正确。这些数值是配对窗口差值；不同H及相邻窗口不当独立样本，精确输入与后续raw轨迹见NATIVE_UNSAFE_EVENTS.json的源文件引用。
+
+出生口径：冻结的false_birth代理统计已出现GT再次START_NEW，可能包含必要恢复；false_split_birth另要求仍有可认证正确的合法旧候选。两者均保留，不把所有恢复出生自动判错。三版均存在实际新混合增加，故原生安全失败不只依赖该保守出生代理。
 
 ## 完整视频与官方指标
 
@@ -195,7 +203,7 @@ P2 冻结46个前缀、5个动作、2个后续策略，共460个声明分支；4
 
 ## 真正错误持续时间
 
-在实际提交ID上固定第一次可观察GT为身份owner，后续混合仍累计错误；gap和视频结束右删失，不把缺帧当纠正。当前GT不能可靠匹配则unassessed。该offline observed-confusion定义与CLEAR/全局IDF1不同，完整episodes保存在服务器。
+在实际提交ID上固定第一次可观察GT为身份owner，包含真实最大摄像头bootstrap；后续混合仍累计错误。gap和视频结束右删失，不把缺帧当纠正；当前GT不能可靠匹配则unassessed。计量单位是实际错误观测帧，未验证真实采样帧率，不把它猜成秒。该offline observed-confusion定义与CLEAR/全局IDF1不同，完整episodes保存在服务器。
 
 {longest}
 

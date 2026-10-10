@@ -78,7 +78,11 @@ def run_queue(source, jobs, name, max_active=4):
     result = {'status': 'COMPLETE' if not failed else 'COMPLETE_WITH_FAILURES',
               'binding': binding(), 'actor_source_commit': head, 'done': done, 'failed': failed,
               'launches': launches, 'seconds': time.monotonic() - begin}
-    save(folder / 'RESULT.json', result); return result
+    save(folder / 'RESULT.json', result)
+    save(folder / 'PROGRESS.json', {'status': result['status'], 'total': len(jobs),
+         'done': len(done), 'failed': len(failed), 'pending': 0, 'active': [],
+         'seconds': result['seconds'], 'result': ref(folder/'RESULT.json')})
+    return result
 
 
 def main():

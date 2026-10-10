@@ -15,8 +15,25 @@ def main(version=3):
         r=read(f);assert r['status']=='COMPLETE' and r['live_images']
         p=r['raw_predictions'];assert sha(p['path'])==p['SHA256'];pooled.extend(read(p['path']));sources.append(ref(f))
     predictions=out/'RAW_PREDICTIONS.json';save(predictions,pooled)
-    strict,path=metrics(predictions,DEV,out/'trackeval_raw')
-    manifest=path/'tracking_eval_runtime_state/native/prepared/manifest.json'
+    native_eval=out/'trackeval_raw/tracking_eval_runtime_state/native'
+    manifest=native_eval/'prepared/manifest.json'
+    evaluated=native_eval/'evaluation'
+    resumed_trackeval=False
+    if (evaluated/'metrics.json').exists():
+        # metrics() returns the evaluation directory, not its runtime root.
+        # Reuse only the completed exact pooled-input evaluation; keep the
+        # prior prepared inputs and failed aggregation attempt immutable.
+        from run_early_pilot_tracking import extract_metrics
+        provenance=read(manifest)
+        assert provenance['predictions_sha256']==sha(predictions)
+        assert provenance['annotation_sha256']==sha(provenance['annotation'])
+        assert provenance['status']=='PASS' and len(provenance['sequences'])==6
+        completed=read(evaluated/'metrics.json')
+        assert completed['status']=='PASS' and Path(completed['prepared_manifest'])==manifest
+        strict=extract_metrics(evaluated);resumed_trackeval=True
+    else:
+        strict,path=metrics(predictions,DEV,out/'trackeval_raw')
+        assert path==evaluated
     folder=out/'official_matlab_raw';jobs,inputs=prepare(manifest,folder)
     config=folder/'CONFIG.json';native=folder/'NATIVE.json';log=folder/'matlab.log'
     # The qualified compiled official toolkit is reused read-only; the previous
@@ -48,6 +65,7 @@ def main(version=3):
         toolkit_SHA256={str(p.relative_to(toolkit)):sha(p) for p in sorted(toolkit.rglob('*')) if p.suffix in ['.m','.cpp','.mexa64'] and p.is_file()},
         official_toolkit_full_hash_matches_prior=True,prior_official_evaluator_reference=previous,
         adapter=ref(script),input_manifest=ref(manifest),input_sources=inputs,raw_predictions=ref(predictions),
+        pooled_TrackEval_result=ref(evaluated/'metrics.json'),resumed_completed_exact_input_TrackEval=resumed_trackeval,
         raw_unfiltered=True,aggregation='sum per-scene counts; sequential CVIDF1/interleaved CVMA, no mean video score',seconds=time.monotonic()-start)
     save(out/'RESULT.json',report);save(REPORTS/'OFFICIAL_MATLAB_RESULTS.json',report)
     print('PHASE15_MATLAB_COMPLETE',version,strict,report['CVIDF1'],report['CVMA'],flush=True)
