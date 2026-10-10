@@ -16,7 +16,10 @@ class MemoryRisk(NativeRisk):
             for r in records:
                 gt=self.labels.current(*r['key'][:2])[r['key'][2]]
                 self.observations[identity]+=1
-                if gt is not None:self.votes[identity][gt]+=1;self.ever.add(gt);self.latest[gt,r['key'][1]]=(r['key'][0],identity)
+                if gt is not None:
+                    self.votes[identity][gt]+=1;self.ever.add(gt)
+                    old=self.latest.get((gt,r['key'][1]))
+                    if old is None or r['key'][0]>=old[0]:self.latest[gt,r['key'][1]]=(r['key'][0],identity)
                 self.certify(identity)
         self.prefix_votes={i:dict(v) for i,v in self.votes.items()}
         self.prefix_latest=dict(self.latest);self.prefix_ever=set(self.ever)
@@ -65,11 +68,14 @@ class MemoryRisk(NativeRisk):
             old=active.get(key)
             if r['wrong_owner']:
                 if old is None or frame!=old['end']+1:
-                    if old:episodes.append(old)
+                    if old:old['right_censored']=True;old['end_reason']='observation gap';episodes.append(old)
                     active[key]=dict(GT_OFFLINE_ONLY=key[0],view=key[1],start=frame,end=frame,observed_wrong_frames=1,right_censored=False)
                 else:old['end']=frame;old['observed_wrong_frames']+=1
-            elif old:episodes.append(active.pop(key))
-        for e in active.values():e['right_censored']=True;episodes.append(e)
+            elif old:
+                old=active.pop(key);old['right_censored']=frame!=old['end']+1
+                old['end_reason']='next observed non-wrong owner' if not old['right_censored'] else 'gap before next non-wrong observation'
+                episodes.append(old)
+        for e in active.values():e['right_censored']=True;e['end_reason']='horizon/video end';episodes.append(e)
         return dict(counts=dict(counts),wrong_owner_observed_frames=counts['wrong_owner'],
             wrong_owner_episode_max_frames=max((e['observed_wrong_frames'] for e in episodes),default=0),
             error_propagation_intervals=episodes,observed_episode_scope='IoU>=.5 detector-observed owner errors; gaps split episodes; absence and video/horizon end censored, not continuous invisible duration',
