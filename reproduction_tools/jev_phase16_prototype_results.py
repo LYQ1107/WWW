@@ -59,7 +59,8 @@ def main():
         preregistered_support_gain_ceiling_pp=100*(1-base['positive_support_recall']),
         recall_ceiling_does_not_authorize_changing_the_frozen_gate=True,
         cached_forward_timing_is_not_real_image_FPS=True,source_results=inputs,
-        per_video=[dict(video=r['video'],counts=r['counts'],read_latency_ms=r['read_latency_ms'],
+        per_video=[dict(video=r['video'],counts={k:(dict(v,pure_local_segment_supported=None)
+            if k.startswith(VARIANTS[0]+'_') else v) for k,v in r['counts'].items()},read_latency_ms=r['read_latency_ms'],
             forward_latency_ms=r['forward_latency_ms'],bounded_memory=r['bounded_memory'],
             original_raw_Gallery_visual_MiB=r['original_raw_Gallery_visual_MiB']) for r in results])
     save(REPORTS/'MULTI_PROTOTYPE_RESULTS.json',common)
