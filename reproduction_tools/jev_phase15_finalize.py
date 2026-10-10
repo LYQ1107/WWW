@@ -55,6 +55,7 @@ def main(version=3):
         final_versions_retained=True))
     unknown=historical(read(REPORTS/'UNKNOWN_RELIABILITY_AUDIT.json'))
     save(REPORTS/'UNKNOWN_RELIABILITY_AUDIT.json',dict(unknown,initial_label_audit=unknown,
+        status='COMPLETE_THREE_MODEL_ALL_QUERY_AUDITS_SCIENTIFIC_NO_GO',initial_label_audit_status=unknown['status'],
         final_all_query_audits=[ref(REPORTS/f'ALL_QUERY_RELIABILITY_V{v}.json') for v in [1,2,3]],
         selected_action_probability_corrected_audits=[ref(REPORTS/f'SELECTED_ACTION_RISK_V{v}.json') for v in [1,2]],
         conditional_accuracy_is_not_all_query_accuracy=True,UNKNOWN_is_neither_negative_nor_positive=True,
@@ -179,7 +180,7 @@ V2 recent3-frame 认证只给“该候选当前局部承诺不安全”提供证
 
 完全保留 annotation，重复 GT身份仅使离线认证/风险观察 UNKNOWN；TrackEval及官方 MATLAB仍读取原始GT。训练不能用DEV结果挑门槛。真实完整视频风险观察、错误时长与CVIDF1独立报告。
 ''')
-    full_rows='\n'.join(f"| video{c['video']:02d} | {c['frames']} | {json.dumps(c['metrics'],ensure_ascii=False)} |" for c in online)
+    full_rows='\n'.join(f"| video{c['video']:02d} | {c['frames']} | {c['metrics']['HOTA']:.3f} | {c['metrics']['AssA']:.3f} | {c['metrics']['IDF1']:.3f} | {int(c['metrics']['IDSW'])} | {c['metrics']['MOTA']:.3f} | {int(c['metrics']['Frag'])} |" for c in online)
     longest='\n'.join(f"- video{x['video']:02d}, camera{x['view']}, GT{x['GT_OFFLINE_ONLY']}, frame{x['start']}–{x['end']}: {x['observed_frames']}个实际错误观测帧，right_censored={x['right_censored']}。" for x in examples)
     runtime='\n'.join(f"- Trial{t['repeat']}: sceneFPS {t['full_two_camera_scene_FPS']:.3f}, total native Stage2 p95 {t['total_native_Stage2_ms']['p95']:.3f}ms。" for t in efficiency['trials'])
     document('JEV_PHASE15_FINAL_RESEARCH_REPORT.md',f'''# WWW / JEV Phase XV Final Research Report
@@ -190,7 +191,7 @@ V2 recent3-frame 认证只给“该候选当前局部承诺不安全”提供证
 
 P0 从0dc9607冻结 V–XIV，332个checkpoint原始hash以及83个受保护报告保留。P1 完成15个旧模型/视频实际原生重放，含 Multi三个种子和seed20261009的Fixed/Set，inputs/scores/IDs/最终状态完全一致。最坏种子824个CLEAR IDSW：pure fragment158、polluted history505、history corrective109、wrong existing merge30、false birth5、recovery1、ambiguous16；其中277个有合法纯净旧候选，只占33.62%，不能把所有切换都罚掉。
 
-P2 冻结46个前缀、5个动作、2个后续策略，共460个声明分支；430实际执行、30个认证替代不可用。πMulti与πFixed分别有8/18、12/18独立安全延续获益cluster，达到预冻结机制可行性门。这是条件性实际因果证据，不是完整视频收益或架构优越性。KEEP目标及ALT兼容性由过去观测的GT离线认证，仅用于研究干预，不代表部署模型已识别该动作；任何动作仍受原生合法候选限制。TRAIN14原始GT重复导致严格CLEAR失败，另保留6个隔离的permissive诊断，排除严格门；原始失败不覆盖。DEFER多数窗口增加出生，强制KEEP也有混合增多窗口。
+P2 冻结46个前缀、5个动作、2个后续策略，共460个声明分支；430实际执行、30个认证替代不可用。πMulti与πFixed分别有8/18、12/18个安全延续获益cluster，达到预冻结机制可行性门；cluster按video/GT/camera/64-frame block去重，不能当作总体统计独立样本。这是条件性实际因果证据，不是完整视频收益或架构优越性。KEEP目标及ALT兼容性由过去观测的GT离线认证，仅用于研究干预，不代表部署模型已识别该动作；任何动作仍受原生合法候选限制。TRAIN14原始GT重复导致严格CLEAR失败，另保留6个隔离的permissive诊断，排除严格门；原始失败不覆盖。DEFER多数窗口增加出生，强制KEEP也有混合增多窗口。
 
 建立 GT-free Persistent CommitmentState，明确WHO vs具体native ID承诺，动态candidate-conditioned Q4，独立purity/safety/uncertainty，真实整个检测集合的Hungarian loss，原生 Gallery/Bank/ID/REACT/START_NEW不变。原 Multi四个完整TRAIN预测完全不变，512 payload恢复bitwise一致；另用第三版收集器验证512个学习式、带posterior状态payload恢复。Alias关闭；没有GT canonical renumbering。
 
@@ -208,8 +209,8 @@ V1相同权重、同prefix/RNG，仅屏蔽过去可靠性反馈的24个干预窗
 
 预先固定第三版LAST、seed20261009，在 DEV17/18/19完整当前图像→真实Stage1/VFCE→实际native Gallery/Bank状态运行。没有截断、短轨过滤、理想化teacher state或GT重编号。以下是诊断，不是合格正式三种子比较。
 
-| 视频 | 完整scene frames | raw TrackEval |
-|---|---:|---|
+| 视频 | scene frames | HOTA | AssA | IDF1 | IDSW | MOTA | Frag |
+|---|---:|---:|---:|---:|---:|---:|---:|
 {full_rows}
 
 六个camera的 pooled raw TrackEval：
@@ -240,6 +241,22 @@ V1相同权重、同prefix/RNG，仅屏蔽过去可靠性反馈的24个干预窗
 2. 高认证延续准确率未足以解决全部查询的安全、错误后恢复及跨摄像头统一身份，三版均未达到完整native Pilot安全门。
 3. 新增Q4和可靠性模块是否优于普通continuity或Fixed/Set同监督网络，本次没有资格开展正式公平对照，结论为未证实；不能声称等价，也不能声称Jev胜出。
 4. 下一步必须先让无纯净兼容候选的状态具备可识别的纠错/恢复证据，区分必要出生与反复碎裂，检查视觉候选及原生生命周期约束。需新冻结预算和独立可认证纠错事件，再扩展架构或长训。对未知历史一律加负标签、靠总IDSW下降宣告成功或继续盲增epochs，都不构成当前阻塞的解决。
+
+## 修改代码与复核
+
+| 新增代码 | 具体变化 |
+|---|---|
+| `gtr/modeling/jev_phase15/commitment_state.py`、`native_commit_adapter.py` | GT-free过去承诺、版本化快照、原生提交后的posterior回写 |
+| `commitment_question.py`、`commitment_option_reader.py`、`candidate_reliability.py`、`model.py` | 动态Q4、具体ID承诺、分离purity/safety/uncertainty；保留旧WHO初始化 |
+| `joint_action_ranker.py`、`identity_fragment_controller.py` | 合法同容量分配接口；Alias关闭且不改写历史ID |
+| `reproduction_tools/jev_phase15_commitment_labels.py`、`jev_phase15_losses.py`、`jev_phase15_train.py` | 过去纯净/局部不安全认证，UNKNOWN无伪负标签，完整检测集合联合损失与有界训练 |
+| `jev_phase15_collect_pilot_onpolicy.py`、`jev_phase15_pilot_native.py`、`jev_phase15_all_query_audit.py` | 真实own-state采集、同prefix/RNG未来闭环、实际联合动作的风险覆盖 |
+| `jev_phase15_evaluate.py`、`jev_phase15_matlab.py`、`jev_phase15_latency.py` | 完整图像原生评测、原始官方MATLAB指标、三次实际图像速度重启 |
+| `jev_phase15_finalize.py`、`jev_phase15_delivery_check.py` | 条件阶段null结果、原始报告快照、SHA交付及只读复核 |
+
+工程失败也保留：初版journal张量序列化；初版前缀活引用被后续Gallery/hits污染；原始GT重复导致严格CLEAR拒绝；旧联合损失删除UNKNOWN检测行；own-state observer在posterior写回前抓取最终状态；最终MATLAB汇总目录返回值解释错误及重试覆盖保护。修复均在新命名空间或明确版本下执行；原输出、源版本及日志未删除。汇总目录修复不重新训练，也不重新生成native预测。
+
+在服务器工作树可运行只读复核：`python reproduction_tools/jev_phase15_delivery_check.py --all-phase15-refs`。检查20个必要JSON、6个文档及全部Phase XV本地SHA引用，复算官方指标聚合公式，核查三版Pilot均失败、正式梯度为0、三个完整视频和三次速度记录齐全；不会重跑实验或改写报告。机器之外的服务器产物只能按清单核对，不能凭GitHub小文件宣称已复现实验。
 
 代码与紧凑JSON在独立 Phase XV branch；模型、数据、原始轨迹、失败和hash绑定文件留服务器。所有原始V–XIV研究资产仍保留，完整最终保护校验见FINAL_PRIOR_INTEGRITY.json。阶段条件及精确失败事件分别见FINAL_GO_NO_GO.json与NATIVE_UNSAFE_EVENTS.json。
 ''')

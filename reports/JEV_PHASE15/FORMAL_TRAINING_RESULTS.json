@@ -1,4 +1,7 @@
 {
+  "Full24": false,
+  "actual_updates": 0,
+  "all_new_training_updates_including_engineering": 5012,
   "binding": {
     "Full24": false,
     "TRAIN": [
@@ -7,12 +10,42 @@
       14,
       16
     ],
-    "checkpoints": null,
+    "checkpoints": [
+      {
+        "SHA256": "6f3eaecec4c4710100f7e98afb06abb972b3ab8a7d81ee5dbf48cc3c549e76b3",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v1/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+      },
+      {
+        "SHA256": "1946b9c8ec4e294c08edb6efa66dfe4d140817d711ba4ed55c4a9c8fa524c62c",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v2/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+      },
+      {
+        "SHA256": "7f74f099e9cb365528af3b05aab5d9e87d96eb2063f94efd28ed28cc0864a57b",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v3/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+      }
+    ],
     "config_SHA256": {
       "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
       "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
     },
-    "dataset": null,
+    "dataset": [
+      {
+        "SHA256": "852f65f576d972d0929371e6adb5ead2f01daf48e043c03eb07324414b70753e",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/onpolicy_pilot_dataset_v3_r2/video12/DATASET.pth.xz"
+      },
+      {
+        "SHA256": "bc86801b4c528941296a85b0b22623d4a731fe8c9fb229c1868e0b282b5dcb1a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/onpolicy_pilot_dataset_v3_r2/video13/DATASET.pth.xz"
+      },
+      {
+        "SHA256": "c8a913f23b1883aa7cd117509dd2e2a36f54e66adc6ebc3fbc1f3d421f341b21",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/onpolicy_pilot_dataset_v3_r2/video14/DATASET.pth.xz"
+      },
+      {
+        "SHA256": "603b0de2bf2a6f6b2929688d7e2abbf0036481c6dab5c46b20279b241cd60d92",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/onpolicy_pilot_dataset_v3_r2/video16/DATASET.pth.xz"
+      }
+    ],
     "development": [
       17,
       18,
@@ -23,12 +56,12 @@
       "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
       "python": "3.9.12 (main, Apr  5 2022, 06:56:58) \n[GCC 7.5.0]"
     },
-    "evaluator": "existing TrackEval JSON and traceback inspection",
+    "evaluator": "all bounded TRAIN audits, actual full live DEV TrackEval, official native MATLAB, synchronized runtime",
     "heldout_20_21_22": "SEALED",
     "official_TEST": false,
     "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
-    "scope": "aggregation path repair; no model, data, tracking or optimizer changes",
-    "seed": null,
+    "scope": "bounded scientific NO_GO after three evidence-driven versions; formal matrix conditional and not eligible",
+    "seed": 20261009,
     "source_SHA256": {
       "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
       "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
@@ -67,7 +100,7 @@
       "reproduction_tools/jev_phase15_duplicate_queue.py": "a0dc0d3a3d152eaac954e0de6b1e6cdb219db7300cd9fe9f8a8b9fe66015e6f9",
       "reproduction_tools/jev_phase15_error_duration_tests.py": "816e721d5efb099c5a46f03222f91b377dac0c06ce9aeed55c5e774b49ed0aca",
       "reproduction_tools/jev_phase15_evaluate.py": "1fa57b17e996fd8b4dd306db655b6cf88caf6581a0e865428b9bc95eaa915f5c",
-      "reproduction_tools/jev_phase15_finalize.py": "c201150652fdf8fe60224ffc3dd9892dfbf0e9fb41d85079b9caf791f0d8e9b2",
+      "reproduction_tools/jev_phase15_finalize.py": "7a2ef254ccbb11d5d38f71b23a7f99b33f043e082f1ddc38520d0804ab18c60f",
       "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
       "reproduction_tools/jev_phase15_integrity_audit.py": "1f9f26236d124c30283aeb6d6a3d8f1e919c51135036ad013e59a23934c55087",
       "reproduction_tools/jev_phase15_label_tests.py": "06af8022a1c07f13b2ef1f922e7818dd06ffe0166e6d6ef049b514d7d43bb4de",
@@ -89,33 +122,46 @@
       "reproduction_tools/jev_phase15_train.py": "fbe9ccab4e15f8cfffd43633e0e2ee785f183b521a24ee0bfc61a052675ad48a",
       "reproduction_tools/jev_phase15_v3_queue.py": "29f5dc60002a73461435b1a416abde0afae1cc3dc664766bb9686b373e20dc21"
     },
-    "source_commit": "63d3bb84430a61c7005d66b6c881dd931ce1f75e",
+    "source_commit": "cdf5e5ff8f215ab1e5315c8e05e668a75cf00c94",
     "source_root": "/home/liuyeqiang/WWW_jev_phase15"
   },
-  "completed_live_jobs": {
-    "SHA256": "14cb4fd3341d1aa1aec04a85cd99c87120195db44c669a94590969fa9fab2ae8",
-    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/complete_live_diagnostic_queue_v3/RESULT.json"
+  "bounded_Tiny_and_Pilot_actual_updates": 4884,
+  "extra_retained_legacy_engineering_Tiny_updates": 128,
+  "formal_budget_per_run": 20000,
+  "formal_seeds": [
+    20261008,
+    20261009,
+    20261010
+  ],
+  "heldout_20_21_22": "SEALED",
+  "last_checkpoints": [
+    {
+      "SHA256": "6f3eaecec4c4710100f7e98afb06abb972b3ab8a7d81ee5dbf48cc3c549e76b3",
+      "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v1/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+    },
+    {
+      "SHA256": "1946b9c8ec4e294c08edb6efa66dfe4d140817d711ba4ed55c4a9c8fa524c62c",
+      "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v2/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+    },
+    {
+      "SHA256": "7f74f099e9cb365528af3b05aab5d9e87d96eb2063f94efd28ed28cc0864a57b",
+      "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v3/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+    }
+  ],
+  "metrics": null,
+  "official_TEST": false,
+  "pilots": {
+    "SHA256": "f600b0034d4586e34479a2cc60a899dc17a68bf76d53f0c86034d3a77ee53175",
+    "path": "/home/liuyeqiang/WWW_jev_phase15/reports/JEV_PHASE15/PILOT_RESULTS.json"
   },
-  "initial_failure": "metrics() returned native/evaluation; appending tracking_eval_runtime_state/native/prepared produced a nonexistent manifest path. Initial session stderr unavailable after tool session ended; recorded from exact source and directory contracts.",
-  "initial_source": {
-    "SHA256": "8e299eda4d84d1e6aed0e1d2acf578349c93fab904721ba00ebfb8eecf2eda32",
-    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/source_complete_live_diagnostic_v3/reproduction_tools/jev_phase15_matlab.py"
-  },
-  "new_matlab_script_SHA256": "933c3fd439244ef479333feddda49e22610324e0d74a2fa231b0c6b27172e8dd",
-  "official_result": {
-    "SHA256": "9425f212a6606950b359dcd2ab243f641d74c072640bc84a5e536e1a69abab74",
-    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/RESULT.json"
-  },
-  "repair": "Derive native/prepared manifest from pool output root; resume completed exact-input TrackEval only after predictions/annotation SHA and PASS report checks.",
-  "repaired_execution_log": {
-    "SHA256": "0f5a648a6abc67fe7ecd824ee7577e4f19e7e402e87aef90ca52e149f83f3605",
-    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/MATLAB_AGGREGATION_PATH_REPAIRED.log"
-  },
-  "retry_failure": "Immutable prepared-directory overwrite guard; no prepared evaluation files overwritten.",
-  "retry_failure_log": {
-    "SHA256": "b946248cdb42fad8376908b4929714a42fd32a1048c6b2d5b523f92ad035c1a7",
-    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/MATLAB_AGGREGATION_RESUME.log"
-  },
-  "status": "REPAIRED_OFFICIAL_EVALUATION_COMPLETE",
-  "training_or_native_predictions_changed": false
+  "planned_arms": [
+    "A_original",
+    "B_continuity",
+    "C_commitment",
+    "D_fixed",
+    "E_set",
+    "F_full"
+  ],
+  "reason": "Frozen protocol forbids formal training and new controls before a reliable F pilot; all three completed pilots fail real native safety.",
+  "status": "NOT_RUN_PILOT_SAFETY_GATE_FAILED"
 }

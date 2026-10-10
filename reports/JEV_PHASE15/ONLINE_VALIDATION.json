@@ -1,0 +1,539 @@
+{
+  "Full24": false,
+  "actual_GT_used_for_scoring_only": true,
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": [
+      {
+        "SHA256": "6f3eaecec4c4710100f7e98afb06abb972b3ab8a7d81ee5dbf48cc3c549e76b3",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v1/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+      },
+      {
+        "SHA256": "1946b9c8ec4e294c08edb6efa66dfe4d140817d711ba4ed55c4a9c8fa524c62c",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v2/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+      },
+      {
+        "SHA256": "7f74f099e9cb365528af3b05aab5d9e87d96eb2063f94efd28ed28cc0864a57b",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v3/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+      }
+    ],
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": [
+      {
+        "SHA256": "852f65f576d972d0929371e6adb5ead2f01daf48e043c03eb07324414b70753e",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/onpolicy_pilot_dataset_v3_r2/video12/DATASET.pth.xz"
+      },
+      {
+        "SHA256": "bc86801b4c528941296a85b0b22623d4a731fe8c9fb229c1868e0b282b5dcb1a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/onpolicy_pilot_dataset_v3_r2/video13/DATASET.pth.xz"
+      },
+      {
+        "SHA256": "c8a913f23b1883aa7cd117509dd2e2a36f54e66adc6ebc3fbc1f3d421f341b21",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/onpolicy_pilot_dataset_v3_r2/video14/DATASET.pth.xz"
+      },
+      {
+        "SHA256": "603b0de2bf2a6f6b2929688d7e2abbf0036481c6dab5c46b20279b241cd60d92",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/onpolicy_pilot_dataset_v3_r2/video16/DATASET.pth.xz"
+      }
+    ],
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.9.12 (main, Apr  5 2022, 06:56:58) \n[GCC 7.5.0]"
+    },
+    "evaluator": "all bounded TRAIN audits, actual full live DEV TrackEval, official native MATLAB, synchronized runtime",
+    "heldout_20_21_22": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+    "scope": "bounded scientific NO_GO after three evidence-driven versions; formal matrix conditional and not eligible",
+    "seed": 20261009,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/__init__.py": "4351cd60c528123b98699cbfa3efd1814428d11d917fb4c68dd8724b3ec2ff07",
+      "gtr/modeling/jev_phase15/candidate_reliability.py": "62f577b38782b1b79ee8cb056e8b59953caf9c7c2240f3db02e0f43a7ef4cb82",
+      "gtr/modeling/jev_phase15/commitment_option_reader.py": "a7d10acf0ff8ab99c75d84f74536327d192143b14ad759a68f60bc8add7154ac",
+      "gtr/modeling/jev_phase15/commitment_question.py": "cb88861bd86c212fc0daf5fc7a65aefc6f64ce15d0de7e397b85473fdcd042b4",
+      "gtr/modeling/jev_phase15/commitment_state.py": "89d1ad35e60331f20e569305a90f27c18e6c29a96366fceb8f11c1d30592ff91",
+      "gtr/modeling/jev_phase15/identity_fragment_controller.py": "b8976d889d252df2bcda2c5b365004b099204ddd7a57657c5ac86aad8ac2bb96",
+      "gtr/modeling/jev_phase15/joint_action_ranker.py": "1e27fcfab7a85d47fdc1289f1133b6a45af727e3b5d5ee1606fd7418a42fa997",
+      "gtr/modeling/jev_phase15/model.py": "f77d3c78b74ede0ff2d05409bbe3287d6d6044b5199de5bc8d4dd406dbc781af",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase15_all_query_audit.py": "cf983b9f27cf4a81e8287b2d3c3fb996dc4b570efc5a5bd15311a8cd7658ad01",
+      "reproduction_tools/jev_phase15_audit_finalize.py": "f21f4bf7d188dea5c6050aea6b8ef93d6500aa6e42deed34fe72f2ffc83a87ae",
+      "reproduction_tools/jev_phase15_causal_commitment.py": "9fd95591b20902d362ebfbe84bac34d854aaae18998a60851b4b859af021f253",
+      "reproduction_tools/jev_phase15_causal_finalize.py": "ce92b61d6b8e5be953404c5a14720e6c84a6bd28c2fc0b3a4131957a483fd0ac",
+      "reproduction_tools/jev_phase15_causal_metrics.py": "dd093e75cf92220d6bb9dd4d685efc115596d6c27a1443d6d47b91ba4bdcb268",
+      "reproduction_tools/jev_phase15_causal_queue.py": "e264cd5696695ed28dd906c86443ebf9de6fa67125a28e6558ce53f6b38a7eb4",
+      "reproduction_tools/jev_phase15_collect_dataset.py": "92f029955cf63c3653004e467605e939dced6cc4be2fe2d14d79ffa97f8169d4",
+      "reproduction_tools/jev_phase15_collect_pilot_onpolicy.py": "1bbb37a8364fed7582af8987bbe5bdef3a241b6eac75ad6e5099b3cbc1251e35",
+      "reproduction_tools/jev_phase15_collect_train.py": "456eefaf8b4181ff16f585a002850e0af35e26feaf01e8d338b50ddda7393249",
+      "reproduction_tools/jev_phase15_commitment_labels.py": "92b9c1243dbba898383a7a035db6177131ed41094b8166f41799158028944488",
+      "reproduction_tools/jev_phase15_common.py": "7d6d5a9e22eb2bf547f66a123f9ac3fec081fcd99f043150182d6742756167f2",
+      "reproduction_tools/jev_phase15_dataset_finalize.py": "695fa56009ed2bb7f2591e7b122e700f0d908507dbba74b29189bac674c26682",
+      "reproduction_tools/jev_phase15_dataset_queue.py": "8803284ee461d16de0b0d541aa85277445728fd4ba28c67880df814ce25afe2e",
+      "reproduction_tools/jev_phase15_diagnostic_validation_queue.py": "a94d32b0f825ce493a7fa366e0314b83db3d4f35a6f3f9a3a100396a312bfc26",
+      "reproduction_tools/jev_phase15_duplicate_queue.py": "a0dc0d3a3d152eaac954e0de6b1e6cdb219db7300cd9fe9f8a8b9fe66015e6f9",
+      "reproduction_tools/jev_phase15_error_duration_tests.py": "816e721d5efb099c5a46f03222f91b377dac0c06ce9aeed55c5e774b49ed0aca",
+      "reproduction_tools/jev_phase15_evaluate.py": "1fa57b17e996fd8b4dd306db655b6cf88caf6581a0e865428b9bc95eaa915f5c",
+      "reproduction_tools/jev_phase15_finalize.py": "7a2ef254ccbb11d5d38f71b23a7f99b33f043e082f1ddc38520d0804ab18c60f",
+      "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+      "reproduction_tools/jev_phase15_integrity_audit.py": "1f9f26236d124c30283aeb6d6a3d8f1e919c51135036ad013e59a23934c55087",
+      "reproduction_tools/jev_phase15_label_tests.py": "06af8022a1c07f13b2ef1f922e7818dd06ffe0166e6d6ef049b514d7d43bb4de",
+      "reproduction_tools/jev_phase15_latency.py": "b3906c9650e2f20d642f52e8ef686ad6223c5d0ced1afcf8401d67047d9c73ee",
+      "reproduction_tools/jev_phase15_losses.py": "0f5a8172c0033883ba0c7e908da683e06beda4c684a49afb7661083e52b71388",
+      "reproduction_tools/jev_phase15_matlab.py": "933c3fd439244ef479333feddda49e22610324e0d74a2fa231b0c6b27172e8dd",
+      "reproduction_tools/jev_phase15_native_replay.py": "b3dc48639293e8e15cef0175b3cf19d2d3757c27d7cb3da4c0ef5da3e7fd3d0c",
+      "reproduction_tools/jev_phase15_pilot_finalize.py": "aff1add167deb652b9a97f13862ff69a8edfb3af81af069fdb7f5eb51d7e6b47",
+      "reproduction_tools/jev_phase15_pilot_native.py": "60369e2b9fe9afe6d6297c7d30f6ac0cfacdc94814ce1ed6c8dd52f0b73a648d",
+      "reproduction_tools/jev_phase15_pilot_queue.py": "a56da6bacdacf6c66613c0c70f698f31583cac4c2c0257bd0b7a87315baf77ed",
+      "reproduction_tools/jev_phase15_posterior_audit_queue.py": "55a62004346f0da08dfa7673e603bf82db0475d2ef59b9978071abf466d733d2",
+      "reproduction_tools/jev_phase15_posterior_finalize.py": "079439c487e6259e191f2aa3f4cf5eb53de10e520b46101a9f1ca378270b9217",
+      "reproduction_tools/jev_phase15_posterior_tests.py": "49321eee27a6edc90db09e66a1e41aee0ff699bab68c94d4cffaa437bd761a11",
+      "reproduction_tools/jev_phase15_queue.py": "668113ab040cb1ff1ddc5e94db2ee9c99a64075053a799e75b914f3cbc050519",
+      "reproduction_tools/jev_phase15_recent_label_tests.py": "f1bc25683d425167b34afeed0a9d08f075312c75a48d01eb3a08db33b47b1bde",
+      "reproduction_tools/jev_phase15_recent_labels.py": "28ea865ba932fab54f97bdfe1fe49f930eb5d10ebde807aa6d562aadeed0f0a9",
+      "reproduction_tools/jev_phase15_state_tests.py": "f5d98693580d1bd6b6e84ffac53ca5410933e38b46e41b20390165da2e7940a2",
+      "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418",
+      "reproduction_tools/jev_phase15_train.py": "fbe9ccab4e15f8cfffd43633e0e2ee785f183b521a24ee0bfc61a052675ad48a",
+      "reproduction_tools/jev_phase15_v3_queue.py": "29f5dc60002a73461435b1a416abde0afae1cc3dc664766bb9686b373e20dc21"
+    },
+    "source_commit": "cdf5e5ff8f215ab1e5315c8e05e668a75cf00c94",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+  },
+  "cases": [
+    {
+      "complete_native_state_SHA256": "e049824cd502e5bbdf70cb02409d6a7fb0a68efdc05680b0ad8b074070784d5e",
+      "frames": 1200,
+      "metrics": {
+        "AssA": 72.83246620354143,
+        "DetA": 73.85527763787805,
+        "Frag": 139.0,
+        "HOTA": 73.25767017418025,
+        "IDF1": 91.0627378108132,
+        "IDSW": 29.0,
+        "MOTA": 88.87562867615719
+      },
+      "perception_checks": [
+        {
+          "cache_fields_SHA256": "db75638fed08f39cadcb30d79ca7ffc67cc05798c6af4e8804846b2839415301",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            17,
+            0,
+            0
+          ],
+          "live_fields_SHA256": "db75638fed08f39cadcb30d79ca7ffc67cc05798c6af4e8804846b2839415301",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        },
+        {
+          "cache_fields_SHA256": "82a2ff95e9c758ab2d68f9b2d290d9dfbf5366a0837cc1c7a5b4f752b3e834b7",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            17,
+            0,
+            1
+          ],
+          "live_fields_SHA256": "82a2ff95e9c758ab2d68f9b2d290d9dfbf5366a0837cc1c7a5b4f752b3e834b7",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        },
+        {
+          "cache_fields_SHA256": "e3df7557d4bb1b377e572859f6ddc79bf977004645c8ff3e24c5879f1b6f2cdd",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            17,
+            32,
+            0
+          ],
+          "live_fields_SHA256": "e3df7557d4bb1b377e572859f6ddc79bf977004645c8ff3e24c5879f1b6f2cdd",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        },
+        {
+          "cache_fields_SHA256": "af4257d1328d6ff338fa8d05368f237adfac85fc410cc619b551a241bc20970d",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            17,
+            32,
+            1
+          ],
+          "live_fields_SHA256": "af4257d1328d6ff338fa8d05368f237adfac85fc410cc619b551a241bc20970d",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        }
+      ],
+      "result": {
+        "SHA256": "7ebf3475b3d5c29f3106d17a6546c02348cdabec104998a2360c77eece7b115a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_online_v3/F_full_seed20261009/live/video17/RESULT.json"
+      },
+      "risk": {
+        "contaminated_observed_IDs": 4,
+        "counts": {
+          "ASSOCIATE_EXISTING": 10853,
+          "MATCH_CERTIFIED_CORRECT": 5841,
+          "MATCH_CERTIFIED_WRONG": 3,
+          "MATCH_DEFER": 6,
+          "MATCH_GT_UNKNOWN": 208,
+          "MATCH_SELECTED_UNKNOWN": 4808,
+          "REACTIVATE": 6,
+          "REACT_CERTIFIED_CORRECT": 1,
+          "REACT_CERTIFIED_WRONG": 1,
+          "REACT_DEFER": 3,
+          "REACT_GT_UNKNOWN": 7,
+          "REACT_SELECTED_UNKNOWN": 1,
+          "START_NEW": 7,
+          "UNKNOWN_selected_with_correct_available": 638,
+          "commit_to_already_polluted": 4805,
+          "detections": 10866,
+          "false_birth": 2,
+          "false_defer": 2,
+          "false_split_birth": 2,
+          "new_cross_GT_gallery_mix": 8,
+          "normal_correct_retained": 5841,
+          "normal_supported": 6484,
+          "observed_same_camera_fragment_hop": 43,
+          "payloads": 2399,
+          "recent_cross_camera_ID_mismatch": 693,
+          "recent_cross_camera_queries": 6756,
+          "wrong_anchor_certified_pure": 4,
+          "wrong_reactivation_certified": 1
+        },
+        "normal_retention": 0.9008328192473781,
+        "scope": "actual commits with IoU>=.5 past observed GT only; unknown excluded from wrong-anchor certification; fragment hops and40-frame cross-view mismatch are diagnostics, not CLEAR IDSW or CVIDF1"
+      },
+      "video": 17
+    },
+    {
+      "complete_native_state_SHA256": "79f605d5b7f44468752d5b96348908d38229c8b20d8a8fa3c63e481395539613",
+      "frames": 1029,
+      "metrics": {
+        "AssA": 71.33892960379389,
+        "DetA": 75.86389201586591,
+        "Frag": 62.0,
+        "HOTA": 73.34138297804377,
+        "IDF1": 87.65364308342133,
+        "IDSW": 41.0,
+        "MOTA": 92.04690288044863
+      },
+      "perception_checks": [
+        {
+          "cache_fields_SHA256": "08ce63a4906cb752f02a9208ca92a1b5e73a66a14650d36172ac1eb850d198d5",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            18,
+            0,
+            0
+          ],
+          "live_fields_SHA256": "08ce63a4906cb752f02a9208ca92a1b5e73a66a14650d36172ac1eb850d198d5",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        },
+        {
+          "cache_fields_SHA256": "3f760d04b633459fb9617bc8b40b00ff211177560e86a17d84d3e16ef4802be4",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            18,
+            0,
+            1
+          ],
+          "live_fields_SHA256": "3f760d04b633459fb9617bc8b40b00ff211177560e86a17d84d3e16ef4802be4",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        },
+        {
+          "cache_fields_SHA256": "5e995efc547c2272c15df29fb3c5a5a9645cfe8ee688fe79b4c40358d636c4d0",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            18,
+            32,
+            0
+          ],
+          "live_fields_SHA256": "5e995efc547c2272c15df29fb3c5a5a9645cfe8ee688fe79b4c40358d636c4d0",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        },
+        {
+          "cache_fields_SHA256": "65da9baa262ed3493057c063cf71d347e2182eb79e9a1788d384b3a01de9c065",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            18,
+            32,
+            1
+          ],
+          "live_fields_SHA256": "65da9baa262ed3493057c063cf71d347e2182eb79e9a1788d384b3a01de9c065",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        }
+      ],
+      "result": {
+        "SHA256": "c3628e9ec066f56626c10529b010ba3c5b7246c69d2d687df0b7bd37f27168b1",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_online_v3/F_full_seed20261009/live/video18/RESULT.json"
+      },
+      "risk": {
+        "contaminated_observed_IDs": 5,
+        "counts": {
+          "ASSOCIATE_EXISTING": 11893,
+          "MATCH_CERTIFIED_CORRECT": 9021,
+          "MATCH_CERTIFIED_WRONG": 5,
+          "MATCH_DEFER": 3,
+          "MATCH_GT_UNKNOWN": 512,
+          "MATCH_SELECTED_UNKNOWN": 2360,
+          "REACT_DEFER": 3,
+          "REACT_GT_UNKNOWN": 5,
+          "START_NEW": 8,
+          "UNKNOWN_selected_with_correct_available": 15,
+          "commit_to_already_polluted": 2356,
+          "detections": 11901,
+          "false_birth": 3,
+          "false_defer": 1,
+          "false_split_birth": 1,
+          "new_cross_GT_gallery_mix": 10,
+          "normal_correct_retained": 9021,
+          "normal_supported": 9040,
+          "observed_same_camera_fragment_hop": 53,
+          "payloads": 2057,
+          "recent_cross_camera_ID_mismatch": 412,
+          "recent_cross_camera_queries": 6114,
+          "wrong_anchor_certified_pure": 5,
+          "wrong_reactivation_certified": 0
+        },
+        "normal_retention": 0.9978982300884955,
+        "scope": "actual commits with IoU>=.5 past observed GT only; unknown excluded from wrong-anchor certification; fragment hops and40-frame cross-view mismatch are diagnostics, not CLEAR IDSW or CVIDF1"
+      },
+      "video": 18
+    },
+    {
+      "complete_native_state_SHA256": "dcd5e9d38858f11f7ce6b17206955fead1c97055ba5ee913223123bd39fc7b16",
+      "frames": 1052,
+      "metrics": {
+        "AssA": 78.96182919407427,
+        "DetA": 72.53409478598226,
+        "Frag": 102.0,
+        "HOTA": 75.40310134608279,
+        "IDF1": 92.26149515170472,
+        "IDSW": 77.0,
+        "MOTA": 88.4986183604544
+      },
+      "perception_checks": [
+        {
+          "cache_fields_SHA256": "c59bd85a2ff5308817e77209cb1ba5c9043d9d8a3f161adc4f19561a30e8b09e",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            19,
+            0,
+            0
+          ],
+          "live_fields_SHA256": "c59bd85a2ff5308817e77209cb1ba5c9043d9d8a3f161adc4f19561a30e8b09e",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        },
+        {
+          "cache_fields_SHA256": "8a864df44eb02ee57368e3407c552eec18832277b55a47bb76057ff323487c1e",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            19,
+            0,
+            1
+          ],
+          "live_fields_SHA256": "8a864df44eb02ee57368e3407c552eec18832277b55a47bb76057ff323487c1e",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        },
+        {
+          "cache_fields_SHA256": "0f2362b0ee7f8eddd01cb62be69380f987b553169f2471e3ca95e35c97a3330f",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            19,
+            32,
+            0
+          ],
+          "live_fields_SHA256": "0f2362b0ee7f8eddd01cb62be69380f987b553169f2471e3ca95e35c97a3330f",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        },
+        {
+          "cache_fields_SHA256": "4d75b746125d79a9d8078356d4e12823d61973062856b66316d0dc7d8ea79f8e",
+          "fields_bitwise_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          },
+          "key": [
+            19,
+            32,
+            1
+          ],
+          "live_fields_SHA256": "4d75b746125d79a9d8078356d4e12823d61973062856b66316d0dc7d8ea79f8e",
+          "shape_equal": {
+            "detection_scores": true,
+            "pred_boxes": true,
+            "reid_features": true
+          }
+        }
+      ],
+      "result": {
+        "SHA256": "203c12d90986cbc167bbc3d9ba2634ac7e80cfbe3a1ab927b8961e41a93b5ab5",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_online_v3/F_full_seed20261009/live/video19/RESULT.json"
+      },
+      "risk": {
+        "contaminated_observed_IDs": 6,
+        "counts": {
+          "ASSOCIATE_EXISTING": 15670,
+          "MATCH_CERTIFIED_CORRECT": 11414,
+          "MATCH_CERTIFIED_WRONG": 6,
+          "MATCH_DEFER": 5,
+          "MATCH_GT_UNKNOWN": 596,
+          "MATCH_SELECTED_UNKNOWN": 3654,
+          "REACTIVATE": 1,
+          "REACT_DEFER": 4,
+          "REACT_SELECTED_UNKNOWN": 1,
+          "START_NEW": 4,
+          "UNKNOWN_selected_with_correct_available": 138,
+          "commit_to_already_polluted": 3654,
+          "detections": 15675,
+          "false_birth": 1,
+          "false_defer": 0,
+          "false_split_birth": 0,
+          "new_cross_GT_gallery_mix": 17,
+          "normal_correct_retained": 11414,
+          "normal_supported": 11556,
+          "observed_same_camera_fragment_hop": 82,
+          "payloads": 2103,
+          "recent_cross_camera_ID_mismatch": 726,
+          "recent_cross_camera_queries": 10793,
+          "wrong_anchor_certified_pure": 6,
+          "wrong_reactivation_certified": 0
+        },
+        "normal_retention": 0.9877120110764971,
+        "scope": "actual commits with IoU>=.5 past observed GT only; unknown excluded from wrong-anchor certification; fragment hops and40-frame cross-view mismatch are diagnostics, not CLEAR IDSW or CVIDF1"
+      },
+      "video": 19
+    }
+  ],
+  "formal_three_seed_metrics": null,
+  "formal_tracking_GO_claimed": false,
+  "full_FPS": null,
+  "full_video_live_frontend_and_native": true,
+  "heldout_20_21_22": "SEALED",
+  "independent_test": false,
+  "official_TEST": false,
+  "pooled_raw_TrackEval": {
+    "AssA": 74.89070796515838,
+    "DetA": 73.89697836976762,
+    "Frag": 303.0,
+    "HOTA": 74.18826995442981,
+    "IDF1": 90.52104234028143,
+    "IDSW": 147.0,
+    "MOTA": 89.659419379163
+  },
+  "raw_filter_or_GT_renumbering": false,
+  "raw_predictions": {
+    "SHA256": "36a77809f54cef5cd413058e97ee0dedb4cd6d33c09661558e0aace1bf7c08c7",
+    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/RAW_PREDICTIONS.json"
+  },
+  "seed": 20261009,
+  "status": "COMPLETE_SINGLE_LAST_PILOT_LIVE_DIAGNOSTIC",
+  "version": 3
+}

@@ -1,0 +1,310 @@
+{
+  "CVIDF1": 90.28588955487112,
+  "CVMA": 86.78145029533744,
+  "adapter": {
+    "SHA256": "9771ffbae8429561decb0fde8872806058629d6e2fbb705c1f126ea745363a4e",
+    "path": "/home/liuyeqiang/WWW_jev_phase15/reproduction_tools/jev_phase13_official_matlab_eval.m"
+  },
+  "aggregation": "sum per-scene counts; sequential CVIDF1/interleaved CVMA, no mean video score",
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "checkpoints": null,
+    "config_SHA256": {
+      "configs/VISION_stage1.yaml": "f3b9fe641956bdcab145cf2747f2582d8cc5642c221b89cd3f4c60a691a04ab6",
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+    },
+    "dataset": [
+      {
+        "SHA256": "7ebf3475b3d5c29f3106d17a6546c02348cdabec104998a2360c77eece7b115a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_online_v3/F_full_seed20261009/live/video17/RESULT.json"
+      },
+      {
+        "SHA256": "c3628e9ec066f56626c10529b010ba3c5b7246c69d2d687df0b7bd37f27168b1",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_online_v3/F_full_seed20261009/live/video18/RESULT.json"
+      },
+      {
+        "SHA256": "203c12d90986cbc167bbc3d9ba2634ac7e80cfbe3a1ab927b8961e41a93b5ab5",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_online_v3/F_full_seed20261009/live/video19/RESULT.json"
+      }
+    ],
+    "development": [
+      17,
+      18,
+      19
+    ],
+    "environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "platform": "Linux-4.15.0-197-generic-x86_64-with-glibc2.27",
+      "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+      "torch": "2.0.0+cu118",
+      "torch_CUDA": "11.8"
+    },
+    "evaluator": "unchanged TrackEval and native official MATLAB",
+    "heldout_20_21_22": "SEALED",
+    "official_TEST": false,
+    "preregistration_SHA256": "d78ec66292607c8c835d9b0ad380a2a38ce648526a223ca09ca6caf746d6a180",
+    "scope": "complete reused DEVELOPMENT, single diagnostic LAST pilot; no formal three-seed or independent-test claim",
+    "seed": 20261009,
+    "source_SHA256": {
+      "gtr/modeling/jev_native_state.py": "da444cf0a3220fc8cecd40d461619f28c98dfef8458ca6793e18a0c031ce442d",
+      "gtr/modeling/jev_phase14/__init__.py": "0a3bd9a0464be709265178197d0e0d8187fa1fc604ecc7fe823287e8a4c153ea",
+      "gtr/modeling/jev_phase14/memory.py": "d31b28738f025de792049a49cfb5b3a5d5fca5b5f7bf2e2c34c185f3d7d5fa27",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/__init__.py": "4351cd60c528123b98699cbfa3efd1814428d11d917fb4c68dd8724b3ec2ff07",
+      "gtr/modeling/jev_phase15/candidate_reliability.py": "62f577b38782b1b79ee8cb056e8b59953caf9c7c2240f3db02e0f43a7ef4cb82",
+      "gtr/modeling/jev_phase15/commitment_option_reader.py": "a7d10acf0ff8ab99c75d84f74536327d192143b14ad759a68f60bc8add7154ac",
+      "gtr/modeling/jev_phase15/commitment_question.py": "cb88861bd86c212fc0daf5fc7a65aefc6f64ce15d0de7e397b85473fdcd042b4",
+      "gtr/modeling/jev_phase15/commitment_state.py": "89d1ad35e60331f20e569305a90f27c18e6c29a96366fceb8f11c1d30592ff91",
+      "gtr/modeling/jev_phase15/identity_fragment_controller.py": "b8976d889d252df2bcda2c5b365004b099204ddd7a57657c5ac86aad8ac2bb96",
+      "gtr/modeling/jev_phase15/joint_action_ranker.py": "1e27fcfab7a85d47fdc1289f1133b6a45af727e3b5d5ee1606fd7418a42fa997",
+      "gtr/modeling/jev_phase15/model.py": "f77d3c78b74ede0ff2d05409bbe3287d6d6044b5199de5bc8d4dd406dbc781af",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_stage2/__init__.py": "43732f79e824631dd2a7c5d2fee3dfa07d1969a21ac8c093b90e5a0b4194aa57",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/memory.py": "087d86d078fceea09c98983002daa5ff659f38859db6ebe0484228fb05ab004f",
+      "gtr/modeling/jev_stage2/model.py": "31cf7e7f2a5f39914956e6387a3e9276d66a93aaa28af4c9a3b447449c6784eb",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_phase13_runtime.py": "e1d515c59e6c3710123df03a51090502166d18842d715ea413e7cd690f37afde",
+      "reproduction_tools/jev_phase15_all_query_audit.py": "cf983b9f27cf4a81e8287b2d3c3fb996dc4b570efc5a5bd15311a8cd7658ad01",
+      "reproduction_tools/jev_phase15_audit_finalize.py": "f21f4bf7d188dea5c6050aea6b8ef93d6500aa6e42deed34fe72f2ffc83a87ae",
+      "reproduction_tools/jev_phase15_causal_commitment.py": "9fd95591b20902d362ebfbe84bac34d854aaae18998a60851b4b859af021f253",
+      "reproduction_tools/jev_phase15_causal_finalize.py": "ce92b61d6b8e5be953404c5a14720e6c84a6bd28c2fc0b3a4131957a483fd0ac",
+      "reproduction_tools/jev_phase15_causal_metrics.py": "dd093e75cf92220d6bb9dd4d685efc115596d6c27a1443d6d47b91ba4bdcb268",
+      "reproduction_tools/jev_phase15_causal_queue.py": "e264cd5696695ed28dd906c86443ebf9de6fa67125a28e6558ce53f6b38a7eb4",
+      "reproduction_tools/jev_phase15_collect_dataset.py": "92f029955cf63c3653004e467605e939dced6cc4be2fe2d14d79ffa97f8169d4",
+      "reproduction_tools/jev_phase15_collect_pilot_onpolicy.py": "1bbb37a8364fed7582af8987bbe5bdef3a241b6eac75ad6e5099b3cbc1251e35",
+      "reproduction_tools/jev_phase15_collect_train.py": "456eefaf8b4181ff16f585a002850e0af35e26feaf01e8d338b50ddda7393249",
+      "reproduction_tools/jev_phase15_commitment_labels.py": "92b9c1243dbba898383a7a035db6177131ed41094b8166f41799158028944488",
+      "reproduction_tools/jev_phase15_common.py": "7d6d5a9e22eb2bf547f66a123f9ac3fec081fcd99f043150182d6742756167f2",
+      "reproduction_tools/jev_phase15_dataset_finalize.py": "695fa56009ed2bb7f2591e7b122e700f0d908507dbba74b29189bac674c26682",
+      "reproduction_tools/jev_phase15_dataset_queue.py": "8803284ee461d16de0b0d541aa85277445728fd4ba28c67880df814ce25afe2e",
+      "reproduction_tools/jev_phase15_diagnostic_validation_queue.py": "a94d32b0f825ce493a7fa366e0314b83db3d4f35a6f3f9a3a100396a312bfc26",
+      "reproduction_tools/jev_phase15_duplicate_queue.py": "a0dc0d3a3d152eaac954e0de6b1e6cdb219db7300cd9fe9f8a8b9fe66015e6f9",
+      "reproduction_tools/jev_phase15_error_duration_tests.py": "816e721d5efb099c5a46f03222f91b377dac0c06ce9aeed55c5e774b49ed0aca",
+      "reproduction_tools/jev_phase15_evaluate.py": "1fa57b17e996fd8b4dd306db655b6cf88caf6581a0e865428b9bc95eaa915f5c",
+      "reproduction_tools/jev_phase15_finalize.py": "c201150652fdf8fe60224ffc3dd9892dfbf0e9fb41d85079b9caf791f0d8e9b2",
+      "reproduction_tools/jev_phase15_freeze.py": "5667cf13cdff98004fd729587f75aaec5769ee0c09412114feccbf4dc2a446d9",
+      "reproduction_tools/jev_phase15_integrity_audit.py": "1f9f26236d124c30283aeb6d6a3d8f1e919c51135036ad013e59a23934c55087",
+      "reproduction_tools/jev_phase15_label_tests.py": "06af8022a1c07f13b2ef1f922e7818dd06ffe0166e6d6ef049b514d7d43bb4de",
+      "reproduction_tools/jev_phase15_latency.py": "b3906c9650e2f20d642f52e8ef686ad6223c5d0ced1afcf8401d67047d9c73ee",
+      "reproduction_tools/jev_phase15_losses.py": "0f5a8172c0033883ba0c7e908da683e06beda4c684a49afb7661083e52b71388",
+      "reproduction_tools/jev_phase15_matlab.py": "933c3fd439244ef479333feddda49e22610324e0d74a2fa231b0c6b27172e8dd",
+      "reproduction_tools/jev_phase15_native_replay.py": "b3dc48639293e8e15cef0175b3cf19d2d3757c27d7cb3da4c0ef5da3e7fd3d0c",
+      "reproduction_tools/jev_phase15_pilot_finalize.py": "aff1add167deb652b9a97f13862ff69a8edfb3af81af069fdb7f5eb51d7e6b47",
+      "reproduction_tools/jev_phase15_pilot_native.py": "60369e2b9fe9afe6d6297c7d30f6ac0cfacdc94814ce1ed6c8dd52f0b73a648d",
+      "reproduction_tools/jev_phase15_pilot_queue.py": "a56da6bacdacf6c66613c0c70f698f31583cac4c2c0257bd0b7a87315baf77ed",
+      "reproduction_tools/jev_phase15_posterior_audit_queue.py": "55a62004346f0da08dfa7673e603bf82db0475d2ef59b9978071abf466d733d2",
+      "reproduction_tools/jev_phase15_posterior_finalize.py": "079439c487e6259e191f2aa3f4cf5eb53de10e520b46101a9f1ca378270b9217",
+      "reproduction_tools/jev_phase15_posterior_tests.py": "49321eee27a6edc90db09e66a1e41aee0ff699bab68c94d4cffaa437bd761a11",
+      "reproduction_tools/jev_phase15_queue.py": "668113ab040cb1ff1ddc5e94db2ee9c99a64075053a799e75b914f3cbc050519",
+      "reproduction_tools/jev_phase15_recent_label_tests.py": "f1bc25683d425167b34afeed0a9d08f075312c75a48d01eb3a08db33b47b1bde",
+      "reproduction_tools/jev_phase15_recent_labels.py": "28ea865ba932fab54f97bdfe1fe49f930eb5d10ebde807aa6d562aadeed0f0a9",
+      "reproduction_tools/jev_phase15_state_tests.py": "f5d98693580d1bd6b6e84ffac53ca5410933e38b46e41b20390165da2e7940a2",
+      "reproduction_tools/jev_phase15_switch_forensics.py": "c19ac763cdc14b642727912ab86364bfd0f90e26e0e2ac37da7e81d42d75a418",
+      "reproduction_tools/jev_phase15_train.py": "fbe9ccab4e15f8cfffd43633e0e2ee785f183b521a24ee0bfc61a052675ad48a",
+      "reproduction_tools/jev_phase15_v3_queue.py": "29f5dc60002a73461435b1a416abde0afae1cc3dc664766bb9686b373e20dc21"
+    },
+    "source_commit": "7bb2e6d3ab2437e0f25d86feb847ad9053fd794c",
+    "source_root": "/home/liuyeqiang/WWW_jev_phase15"
+  },
+  "checkpoint": {
+    "SHA256": "7f74f099e9cb365528af3b05aab5d9e87d96eb2063f94efd28ed28cc0864a57b",
+    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/training_full_payload_v3/F_full/seed20261009/pilot/LAST_FROZEN.pth"
+  },
+  "input_manifest": {
+    "SHA256": "b308213705a9f219e40c3e5c20b231411ff82a08bbd85ec304c4bfb16a562160",
+    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/manifest.json"
+  },
+  "input_sources": [
+    {
+      "groundtruth": {
+        "SHA256": "806f0b2ab43a8f6a2cac827a96c4ccbad63f014bf165aec860a82f528c55875f",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/gt/00116wood_View1/gt/gt.txt"
+      },
+      "prediction": {
+        "SHA256": "846ea5ed310bb8280ffe5b58690152a3317179f94c1f7e0f2150be3f90349123",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/trackers/GMT/data/00116wood_View1.txt"
+      },
+      "sequence": "00116wood_View1"
+    },
+    {
+      "groundtruth": {
+        "SHA256": "9a433e4c05fa0819415dd33198245b077f8ba95aeb02f5f307c2a42f5f556f50",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/gt/00116wood_View2/gt/gt.txt"
+      },
+      "prediction": {
+        "SHA256": "c564e5194705196fedcf77c4bbfe05e7a3f63c8ce5ec65b25dab4d1eb747301f",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/trackers/GMT/data/00116wood_View2.txt"
+      },
+      "sequence": "00116wood_View2"
+    },
+    {
+      "groundtruth": {
+        "SHA256": "8a46927990c20cf7af608984844ad1b9a80f40231e161a4822f97466de8c0169",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/gt/00118park_View1/gt/gt.txt"
+      },
+      "prediction": {
+        "SHA256": "e2793cf61e56e34cef8f63dce5e0914cf3019b63d0bedfbd8b2ea4bd3974187c",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/trackers/GMT/data/00118park_View1.txt"
+      },
+      "sequence": "00118park_View1"
+    },
+    {
+      "groundtruth": {
+        "SHA256": "527e2f2e0d75940e2dad1da7d0ebe20e850600ea4908cf07aa59d2b7b48dc6e4",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/gt/00118park_View2/gt/gt.txt"
+      },
+      "prediction": {
+        "SHA256": "4fcd21d0581286e8e3e121402f24699d13a47f9b08c794909bf4f22b0c26098b",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/trackers/GMT/data/00118park_View2.txt"
+      },
+      "sequence": "00118park_View2"
+    },
+    {
+      "groundtruth": {
+        "SHA256": "00483b8b506caff7c6b2de08f41e25c0fcf777774f4f8a0d07ff74b2ec705260",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/gt/00119park_View1/gt/gt.txt"
+      },
+      "prediction": {
+        "SHA256": "c6a1ad73d8000556f17698dfa2b4dfd188f0f43f9fa22fb193625f61496de36b",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/trackers/GMT/data/00119park_View1.txt"
+      },
+      "sequence": "00119park_View1"
+    },
+    {
+      "groundtruth": {
+        "SHA256": "604b245e4dd63b517d0f7df6b70d9b03fcc2c20d0d5b8c73a546cb509bedf44a",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/gt/00119park_View2/gt/gt.txt"
+      },
+      "prediction": {
+        "SHA256": "d074ffd3a981c571a3951a39713c6beb73eefd9fc3018cd726bbac3a271d4007",
+        "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/prepared/trackeval/trackers/GMT/data/00119park_View2.txt"
+      },
+      "sequence": "00119park_View2"
+    }
+  ],
+  "interleaved_CLEAR_counts": {
+    "fn": 2641,
+    "fp": 1318,
+    "id_switches": 1300,
+    "tp": 37144
+  },
+  "native_MATLAB": "/data1/liuyeqiang/MATLAB/R2020a/bin/matlab",
+  "native_log": {
+    "SHA256": "78b5f42ad54b343499843c2db6a6eb7622e6118f9b03668a2b7d67ac2a7b9c49",
+    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/official_matlab_raw/matlab.log"
+  },
+  "native_report": {
+    "SHA256": "e33420084a770425bdbcd392de7bf763255d7c898beddb16c3094da287a7d921",
+    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/official_matlab_raw/NATIVE.json"
+  },
+  "native_version": "9.8.0.1323502 (R2020a)",
+  "official_toolkit_full_hash_matches_prior": true,
+  "pooled_TrackEval_result": {
+    "SHA256": "b2ac434c48c39ceed6ec6359a8b1457ed30d2c024a34c5b61b032e846d66c4d3",
+    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/trackeval_raw/tracking_eval_runtime_state/native/evaluation/metrics.json"
+  },
+  "pooled_raw_TrackEval": {
+    "AssA": 74.89070796515838,
+    "DetA": 73.89697836976762,
+    "Frag": 303.0,
+    "HOTA": 74.18826995442981,
+    "IDF1": 90.52104234028143,
+    "IDSW": 147.0,
+    "MOTA": 89.659419379163
+  },
+  "prior_official_evaluator_reference": {
+    "SHA256": "a7f989d504be11be76fad4104d671108b3e581ad7d0a15e34b45ba98e23c51b8",
+    "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_official_matlab_v2/fixed_question_seed20261008/RESULT.json"
+  },
+  "raw_predictions": {
+    "SHA256": "36a77809f54cef5cd413058e97ee0dedb4cd6d33c09661558e0aace1bf7c08c7",
+    "path": "/home/liuyeqiang/WWW_jev_phase15_runtime/20261010_v1/pilot_pooled_live_v3/RAW_PREDICTIONS.json"
+  },
+  "raw_unfiltered": true,
+  "resumed_completed_exact_input_TrackEval": true,
+  "seconds": 14.91834969818592,
+  "sequential_identity_counts": {
+    "IDFN": 4462,
+    "IDFP": 3139,
+    "IDTP": 35323,
+    "n_gt": 39785,
+    "n_tr": 38462
+  },
+  "status": "COMPLETE",
+  "toolkit_SHA256": {
+    "Demo.m": "ca0d0e0519200fe9f2d5223bd2d37f1e23822f277d4bb9103ddf77489396b2c4",
+    "average.m": "9dafb07cd513dac30e64ef02d8bbc7e249ccea6ed20317e5f6f84dd30517526a",
+    "compile.m": "cbc1d8b6a408281d5a88ff7ae22105eb11416e251cabf54e1f974aad41b26cf1",
+    "evaluateDetection.m": "49279a7a086ea00bd42b9a85919d31e087499efaf153428bdec709264dd09fea",
+    "evaluateTracking.m": "3a9de497409fc2bfc1c5534cda0f9ce9ab10a425e45c79b557526bc51fb83aae",
+    "utils/CLEAR_MOD_HUN.m": "4e7aaf3351fcf0841e5236dc006c0660c760fab464be5a7beb170cbc549782c5",
+    "utils/CLEAR_MOT_HUN.m": "d0ce5953d9c9a5f65296bf955e90e305de2944c9d045aeeeb3c4e7cbc73235c8",
+    "utils/Hungarian.m": "1d83ec20881144f6ad3839ccc0ea00bcd4a805eae3d67c0a18713e37fa516241",
+    "utils/IDmeasures.m": "90ce9ccf607978bd69d1071238ff1eb0f477489067465b267623e83bad2d1299",
+    "utils/MinCostMatching.cpp": "dd22d80d78abb900c2b41b2b7de2e5e8f525b04287a65cf5e9adbcfefebfb555",
+    "utils/MinCostMatching.mexa64": "0c44d71aff3dd90161b27568e10d237e627731e9c8e331b4dc04ed8ed3a45efc",
+    "utils/boxIntersect.m": "70971beee2ea56a596e9d783b12b61e89121cd76005eebf53fa825cf6c3175a5",
+    "utils/boxUnion.m": "b13e20376261a90938bafc5acd16df75ed38ea17da506962239c1108e3843206",
+    "utils/boxiou.m": "ca8a162b0ed29aae61d353956a13f94ed658a26368f322973de90184f2a67272",
+    "utils/camera/calib_towncentre.m": "1738b75551c9fd3951e047e001c694b2e7bfe59284fe9471124aaa29462c6c02",
+    "utils/camera/distortedToUndistortedImageCoord.m": "927bd6cfa6ae564188e6a7ff57d47589f61da4c99877198f15466fe42a8f768a",
+    "utils/camera/distortedToUndistortedSensorCoord.m": "f5fa510f5ffc05c08b03ad457ddd0d79c12bfa28a1c2fcd0f8e269e71eb8bfe7",
+    "utils/camera/getRotTrans.m": "34d185efaf1a92f027e6ceb9caeac41ca82cf79604330e91ceee9e89a604dcfd",
+    "utils/camera/imageToWorld.m": "68e26bf16414142c26c32813b0f7c6f5681b654c266d8b83f7094096b7dd1d64",
+    "utils/camera/parseCameraParameters.m": "20f4662a47bd123513187e29a901918196680808a7f94129ab2afb7b06e989a4",
+    "utils/camera/undistortedToDistortedImageCoord.m": "008ceb355b579878f7913f1abd64d18d7a4a544161cc2ad1f2815f3e84184f7a",
+    "utils/camera/undistortedToDistortedSensorCoord.m": "22d1b1bba6865e16c85f1fb2dcb4bfa954a8352e6e9f280ea4c152834507de6b",
+    "utils/camera/worldToImage.m": "a53c46baa316f13ce4b6c0177135cb08dc9ea02c332adebca8260b2be21f1560",
+    "utils/classIDToString.m": "efde74df8d8f3f1230d86d5be5d2e92594e46858787034107a615c90468d044d",
+    "utils/classStringToID.m": "e9dd4eeb313210134263f96a75a3400e5f2236bb9f71945f89a1ef84f0826c58",
+    "utils/cleanRequired.m": "8dcbfa7fc951526608df399cc9eaf87cc61fbdf1332ff47996e9367e5f60ab23",
+    "utils/clearMOTLoopMatlab.m": "b247c0f1604e8c689fd90fd7a12ecadc160687a5ce46152da80425c14469a9a9",
+    "utils/clearMOTMex.cpp": "b2ac14029f421cad40c396c44342295028e61d069d97c8b683b5b74b9bfc243f",
+    "utils/clearMOTMex.mexa64": "5e106928555c18eea53604088afded146297a8c2d1ae3cd3b0abf9feab4fde79",
+    "utils/convertMatToStruct.m": "383e9f6fbaca977771c0d83cc0b96b74e6c4546eb248657ea00bc6d634a26cd1",
+    "utils/convertTXTToStruct.m": "43683e6b2e359c1dcd347d28069bbbde104d7aaa33ef97898e33fb4757745f61",
+    "utils/costBlockMex.cpp": "32ea59674c07e5a7284cd28df1f235844b9f5d4b2a2bdea6da66f59f96ce70bf",
+    "utils/costBlockMex.mexa64": "e59649aebc376cd390de2b9968dcaa41fd919398d893110cb6ea8bf640b37a60",
+    "utils/costFunction.m": "1b072fa1e4237df59007dda3bf69335d0bc61acbe6e4c14bfa4bab4ee254cdbc",
+    "utils/evaluateBenchmark.m": "a384056c8099e453a627235b6354bab6e51cb01075f37713b446a2a6a853fcba",
+    "utils/evaluateMultiCam.m": "50625fe8d5414349971ed8393c60f0bf454815b40eee495e72aa87fb52d1bc55",
+    "utils/external/PrintTable.m": "5b969532a4a0b7ba3b557be709618ac3c563f72898bfe931dddde74537d7a5b7",
+    "utils/external/dollar/toolbox/detector/Contents.m": "38965fe6f9e6d4d1279beed4e22c8f90061ab2dc2cd8d57a0559d5a93d3a0db3",
+    "utils/external/dollar/toolbox/detector/acfDemoCal.m": "0ff5abd2e3e1c50805eed14a847abbf0639a73be3f30c2a6f56291282098550f",
+    "utils/external/dollar/toolbox/detector/acfDemoInria.m": "d3eaf42ab97f466ff8b6c25645cae811d59b81f6d7f27065d0e1f618420bc3ac",
+    "utils/external/dollar/toolbox/detector/acfDetect.m": "b127e745f74718322313fc513dfe71fe0efccb0563d83cc984eaa0932fbd3a0a",
+    "utils/external/dollar/toolbox/detector/acfDetect1.mexa64": "b42fcdaa6e146c2ae66058e563e0fbb808c84eef5ec18732bdf06d916b4a3a93",
+    "utils/external/dollar/toolbox/detector/acfModify.m": "79b6186cd3b54d17b8b0128ffe53b084cb99317201d157071a29a79d13d7abbb",
+    "utils/external/dollar/toolbox/detector/acfTest.m": "df1c8ad1b4fba14518a420474acf227e5ce31b5f41e4a9529f3cc719224101ed",
+    "utils/external/dollar/toolbox/detector/acfTrain.m": "ecfe963d6142610c6bb52bad8775796fed78a2a3889b4cacef0468bb1f2641b9",
+    "utils/external/dollar/toolbox/detector/bbApply.m": "0dc30ef30512f06eadd3225678e821ce87a5730056b9f8f6927b0b77d322a246",
+    "utils/external/dollar/toolbox/detector/bbGt.m": "6fb35c5ad325955ea1d156931e08d0ec0b0b7c5f53cd17a2acbe91016301f6cc",
+    "utils/external/dollar/toolbox/detector/bbLabeler.m": "574331dee7a2142a84e6bb1ce64ef2770a6b22fc9167733b0ac9be476ac65f4a",
+    "utils/external/dollar/toolbox/detector/bbNms.m": "f6863ddf1d28798b648b8720fd5ee3e0690251b16e36bfa67ec5f31f8395cb7f",
+    "utils/external/dollar/toolbox/detector/detectPeople.m": "83cbad27a8e8c3bd9fc8a403213f0cfade5a98ff2f3e45c8e1acc53052f0b21e",
+    "utils/external/dollar/toolbox/detector/evalDetections.m": "367181346c9e0dc3a7dc15ac071ec5cb1d53b2bb6108897db9e7fe0f6a66b3ef",
+    "utils/external/dollar/toolbox/detector/private/acfDetect1.cpp": "07643fc9afeb40e0b6c0b154e5070f4d3d3b5643a3128d588fc43077f9d85486",
+    "utils/external/dollar/toolbox/detector/private/acfDetect1.mexa64": "b42fcdaa6e146c2ae66058e563e0fbb808c84eef5ec18732bdf06d916b4a3a93",
+    "utils/external/dollar/toolbox/detector/writeDets.m": "27bde83e12cfb93b2de796d3f5c3941f65c0e5fab3f02b816b6b2be0a2e7a9dd",
+    "utils/external/iniconfig/IniConfig.m": "6a5b0940e6580e16012871310caee9479b4eed8f8f36767e5565bf88393b6214",
+    "utils/getClassLabels.m": "d1c932ce0d16a61761ae7d5ecd4f1a75310f922a408bc08e3de9bd38c26012ed",
+    "utils/getImgExt.m": "a6dec507ba56a6d020185637ba6c2f02dad7641971e014bd903f20bf41d3788c",
+    "utils/getROIs.m": "a69d33e8c3f0fa05b9ab21dc18f1dc53ec71a17eef1c8c4ed1daaf98fc44ab1e",
+    "utils/getSeqInfoFromFile.m": "903ef0f9ba4b0a8136c7b828c1c26bb9731e5b2f3605beae31ab63e15a5cb788",
+    "utils/parseSequences2.m": "a629d0516d546851e1e8cc843448370fbaf59faeea1b4e40f8ec8d3896795246",
+    "utils/preprocessResult.m": "08d1c9f068750509b94406d586b56cdafe8d940e953546727b0b3d79572a93f9",
+    "utils/printMetrics.m": "838babd87eae7eaf5f15d8a8dd12feea54c78acf0275939bbce4e8cc1d500035",
+    "utils/printMetricsDet.m": "992731de10faa2aaebc6dd03bae8d714f32e53bcaa72db64bf9dd5309f803db9",
+    "utils/printMetricsExt.m": "34d1e4ccbd800ad169ddbb850f8a6f1a26ba12a4224954b4bc7683cbeac257c1"
+  },
+  "unchanged_official_metrics": true,
+  "version": 3
+}
