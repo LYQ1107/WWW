@@ -55,7 +55,12 @@ def main():
         full_video=propagation,paired_native_factorial=ref(REPORTS/'MATCH_VS_MEMORY_CAUSAL_FACTORIAL.json'),
         immutable_qualified_owner=True,UNKNOWN_excluded_from_wrong_not_counted_correct=True,observed_gaps_censored=True,
         official_MOT_IDSW_distinct=True))
-    save(REPORTS/'LATENCY_RESULTS.json',runtime)
+    latency_report=dict(runtime)
+    latency_report['server_original_result']=ref(runtime_path)
+    latency_report['component_sample_filter']='First16 invocations of each component excluded, as recorded actor source; not a uniform scene-frame timestamp filter'
+    latency_report['total_Stage2_sample_filter']='First16 native payload invocations excluded after separate8-scene warmup'
+    latency_report['null_Bank_promotion_scope']='No remaining samples after invocation filter; cannot infer no Bank calls or zero Bank cost'
+    save(REPORTS/'LATENCY_RESULTS.json',latency_report)
     failures=[]
     for p in sorted(OUT.glob('P2_contract_engineering_attempt*.json')):failures.append(ref(p))
     save(REPORTS/'ENGINEERING_FAILURES_AND_REPAIRS.json',dict(status='RETAINED_AND_REPAIRED',binding=binding(scope='engineering provenance; no extra hypothesis or relaxed science gates'),
@@ -112,7 +117,7 @@ P1 七个视频、五种四槽读取；冻结同一个 XV V3 seed20261009 LAST15
 
 ## 安全写入与因果归因
 
-五个 GT-free 规则在相同实际 raw commits 上做影子比较。bounded_quarantine 在结果前选定；实际原始 Gallery、hits、Bank、ID输出始终保留。独立匹配视图控制 WHO历史与 Q4前驱，CONFIRMED 只表示规则一致性。
+五个 GT-free 规则在相同实际 raw commits 上做影子比较。bounded_quarantine 在结果前选定；Gallery、hits、Bank、ID输出按各组真实原生动作更新并保留，原始观测不删除。独立匹配视图控制 WHO历史与 Q4前驱，CONFIRMED 只表示规则一致性。
 
 24个原始前缀×四组=96条真实变异未来，H8/H16/H32全部保留，八个预定前缀额外H64。严格前缀18个，TRAIN14六个因重复GT只作诊断。A/B/C/D起始前缀、RNG、首次原始输入和原始分数相同；A全部H32 ID与XV原分支精确相等。C/D的E读取只干预一次目标决策，是失败读取器负对照，不是部署扩展。后续状态从未同步。
 
@@ -154,6 +159,8 @@ E的首次决策干预在这组前缀仅改变一条严格目标提交；其IDSW
 ## 实际运行成本
 
 真实 DEV17前256双摄像头场景、三次重新启动、八帧warmup；无GT/evaluator/journal。场景FPS为 {', '.join(f"{t['full_two_camera_scene_FPS']:.3f}" for t in trials)}，Stage2 p95为 {', '.join(f"{t['total_native_Stage2_ms']['p95']:.3f}" for t in trials)} ms。共享GPU情况、同步开销和组件计时全部披露。完整视频无observer FPS未测量，null。附加状态每ID最多六条持久外观向量；原始 Gallery和状态元数据仍随历史增长，不宣称总内存常数。
+
+组件统计按实际actor代码排除每个组件前16次调用，并非统一按scene时间排除；总Stage2排除前16次native payload调用。Bank promotion在该过滤后没有剩余计时样本，null，不表示没有Bank调用或零开销。完整FPS包含真实图像读取和全部native路径，部署门槛没有通过。
 
 ## 最终资格与限制
 
