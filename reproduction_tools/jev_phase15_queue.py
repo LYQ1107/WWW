@@ -27,8 +27,16 @@ def pin(name):
 
 
 def gpus():
-    rows = subprocess.check_output(['nvidia-smi', '--query-gpu=index,memory.used,memory.free,utilization.gpu', '--format=csv,noheader,nounits'], text=True)
-    return [tuple(map(int, row.split(','))) for row in rows.strip().splitlines()]
+    rows = subprocess.check_output(['nvidia-smi', '--query-gpu=index,memory.used,memory.free,utilization.gpu,uuid', '--format=csv,noheader,nounits'], text=True)
+    processes = subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader,nounits'],text=True)
+    counts = {}
+    for row in processes.strip().splitlines():
+        identifier = row.split(',')[0].strip(); counts[identifier] = counts.get(identifier,0)+1
+    result=[]
+    for row in rows.strip().splitlines():
+        fields=[field.strip() for field in row.split(',')]
+        result.append(tuple(map(int,fields[:4]))+(counts.get(fields[4],0),))
+    return result
 
 
 def run_queue(source, jobs, name, max_active=4):
@@ -45,8 +53,8 @@ def run_queue(source, jobs, name, max_active=4):
             (done if good else failed).append(item); del active[gpu]
             print('PHASE15_JOB_FINISHED', job['key'], code, flush=True)
         candidates = [g for g in gpus() if g[0] not in active and g[2] >= 8192]
-        candidates.sort(key=lambda g: (g[1] >= 1000, g[3], g[1], g[0]))
-        for gpu, used, free, utilization in candidates:
+        candidates.sort(key=lambda g: (g[4] > 0, g[4], g[3], g[1], g[0]))
+        for gpu, used, free, utilization, process_count in candidates:
             if not pending or len(active) >= max_active: break
             storage_guard(); job = pending.pop(0)
             if Path(job['result']).exists():
@@ -60,7 +68,8 @@ def run_queue(source, jobs, name, max_active=4):
             proc = subprocess.Popen(command, cwd=source, env=env, stdout=log, stderr=subprocess.STDOUT)
             active[gpu] = proc, log, job
             launches.append({'key': job['key'], 'pid': proc.pid, 'GPU': gpu, 'command': command,
-                             'source_commit': head, 'log': str(path), 'GPU_free_MiB_at_launch': free})
+                             'source_commit': head, 'log': str(path), 'GPU_free_MiB_at_launch': free,
+                             'GPU_compute_processes_at_launch':process_count})
             print('PHASE15_JOB_LAUNCH', gpu, proc.pid, job['key'], flush=True)
         save(folder / 'PROGRESS.json', {'status': 'RUNNING', 'total': len(jobs), 'done': len(done),
             'failed': len(failed), 'pending': len(pending), 'seconds': time.monotonic() - begin,
