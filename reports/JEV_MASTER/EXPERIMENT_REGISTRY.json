@@ -10,12 +10,28 @@
       "description": "Frozen50groups past-onlyfirst3ReID diagnostic; no native actions or training",
       "evidence": [
         {
-          "SHA256": "613c780dab79ba5cce75d10db9adff2972cee90c6c2c4622ff2823399d190749",
-          "path": "/home/liuyeqiang/WWW_jev_phase20/reports/JEV_PHASE20/PREREGISTRATION.json"
+          "SHA256": "245924cc966ed316068a77074d528798993f17d92553176c186417356c516e2c",
+          "path": "/home/liuyeqiang/WWW_jev_phase20/reports/JEV_PHASE20/PAST_ANCHOR_EVIDENCE_AUDIT.json"
         }
       ],
       "id": "E20_ANCHOR_AUDIT",
       "requires": [],
+      "requires_learning_gate": false,
+      "status": "COMPLETE"
+    },
+    {
+      "commands": [
+        [
+          "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+          "/home/liuyeqiang/WWW_jev_phase20/reproduction_tools/jev_phase20_retrieval_audit.py"
+        ]
+      ],
+      "description": "Secondary Webidentity-index diagnostic on all66 existing nativefuturebranches",
+      "evidence": [],
+      "id": "E20_RETRIEVAL_VALUE",
+      "requires": [
+        "E20_ANCHOR_AUDIT"
+      ],
       "requires_learning_gate": false,
       "status": "PENDING"
     }
