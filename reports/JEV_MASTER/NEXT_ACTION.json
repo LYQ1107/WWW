@@ -1,11 +1,41 @@
 {
-  "commands": [
-    [
-      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
-      "/home/liuyeqiang/WWW_jev_master_audit/reproduction_tools/jev_master_wildtrack_labels.py"
-    ]
+  "candidate_order": [
+    "MMPTRACK lawful TRAIN/VAL copy if available",
+    "SCOUT manual release with verified roles/license/identity quality; pseudo annotations ineligible"
   ],
-  "experiment": "REUSED_WILDTRACK_TRAIN_LABEL_AUDIT",
-  "reason": "Immutable reused Phase14 first320 TRAIN label validity; no images/scores/new sources/native runs/training; wholeprefixTRAIN not newRESERVED",
-  "status": "READY"
+  "commands": [],
+  "evidence": [
+    {
+      "SHA256": "545b979b1cd008fc5c7d6e16e74989373f674bb8979fcc34afe40dd7868fa3d7",
+      "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/EXISTING_SOURCE_ACCESS_AUDIT.json"
+    },
+    {
+      "SHA256": "3bf9252a044915edba1048309fa81e0e03561d7f26731306558fb49a34678c1d",
+      "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/WILDTRACK_OFFLINE_GT_INTERFACE_AUDIT.json"
+    }
+  ],
+  "experiment": "INDEPENDENT_RESERVED_SOURCE",
+  "gate_unchanged": {
+    "qualified": false,
+    "required_RESERVED": 3,
+    "required_TRAIN": 8,
+    "safe_RESERVED": 1,
+    "safe_TRAIN": 3
+  },
+  "next_checks": [
+    "Identify lawful independent manual cohort and prospective roles",
+    "No more resampling current dev for favorable corrections",
+    "Native experiment stage requires explicit preregistration/resource/gate plan; no training before independent safety qualification"
+  ],
+  "protected": [
+    "all original results/models",
+    "WILDTRACK author TEST last40",
+    "unselected TRAINtail40",
+    "VisionTrack20/21/22",
+    "all officialTEST",
+    "Full24"
+  ],
+  "reason": "Existing WILDTRACK TRAIN input is available, but one historically exposed capture and zero newRESERVED. 276 declared IDs and one co-occurrence component do not certify safe independent action groups. No extra approval is required for ordinary reuse; real blocker is missing lawful independent validation evidence.",
+  "scientific_success": false,
+  "status": "NEED_INDEPENDENT_LAWFUL_MANUAL_COHORT"
 }
