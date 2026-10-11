@@ -1,70 +1,73 @@
 {
-  "run_id": "PHASE19_20261011_v1",
-  "previous_registry": {
-    "path": "/home/liuyeqiang/WWW_jev_phase18/reports/JEV_MASTER/EXPERIMENT_REGISTRY.json",
-    "SHA256": "8429d516566ab82cf63eaffdb08736a5c60661e068ffc235e52464b69a827d4f"
-  },
   "experiments": [
     {
-      "id": "E19_SCOPE_AUDIT",
-      "status": "COMPLETE",
-      "requires": [],
-      "requires_learning_gate": false,
       "commands": [],
       "evidence": [
         {
-          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/HISTORICAL_EXPOSURE_AUDIT.json",
-          "SHA256": "573a23b68088afbc7f40e14a4af65863342d619954ad50c8b8b2f9b3eddcc20e"
+          "SHA256": "573a23b68088afbc7f40e14a4af65863342d619954ad50c8b8b2f9b3eddcc20e",
+          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/HISTORICAL_EXPOSURE_AUDIT.json"
         },
         {
-          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/SCOPE_GT_CACHE_PREFLIGHT.json",
-          "SHA256": "c803da8e5a12d8059070cf1adf479165086684338a002340bced6e9f59e75361"
+          "SHA256": "c803da8e5a12d8059070cf1adf479165086684338a002340bced6e9f59e75361",
+          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/SCOPE_GT_CACHE_PREFLIGHT.json"
         }
-      ]
+      ],
+      "id": "E19_SCOPE_AUDIT",
+      "requires": [],
+      "requires_learning_gate": false,
+      "status": "COMPLETE"
     },
     {
+      "actor_source_commit": "fad03f8df428b35e9c2745815353cd3b913c0f5f",
+      "commands": [],
+      "description": "same frozen Stage1 extraction for11 authorized videos",
+      "evidence": [],
       "id": "E19_CACHE",
-      "status": "READY",
+      "progress_path": "/home/liuyeqiang/WWW_jev_phase19_runtime/20261011_v1/cache_queue_v1/PROGRESS.json",
       "requires": [
         "E19_SCOPE_AUDIT"
       ],
       "requires_learning_gate": false,
-      "commands": [],
-      "description": "same frozen Stage1 extraction for11 authorized videos",
-      "evidence": []
+      "result_path": "/home/liuyeqiang/WWW_jev_phase19_runtime/20261011_v1/cache_queue_v1/RESULT.json",
+      "status": "RUNNING"
     },
     {
+      "commands": [],
+      "description": "complete native frozen V3 trajectories, observer-only ownership",
+      "evidence": [],
       "id": "E19_CENSUS",
-      "status": "PENDING",
       "requires": [
         "E19_CACHE"
       ],
       "requires_learning_gate": false,
-      "commands": [],
-      "description": "complete native frozen V3 trajectories, observer-only ownership",
-      "evidence": []
+      "status": "PENDING"
     },
     {
+      "commands": [],
+      "description": "up to16 independent groups /80 branch native causal diagnostic",
+      "evidence": [],
       "id": "E19_NATIVE_FUTURES",
-      "status": "PENDING",
       "requires": [
         "E19_CENSUS"
       ],
       "requires_learning_gate": false,
-      "commands": [],
-      "description": "up to16 independent groups /80 branch native causal diagnostic",
-      "evidence": []
+      "status": "PENDING"
     },
     {
+      "commands": [],
+      "description": "honest independent safe supervision qualification",
+      "evidence": [],
       "id": "E19_QUALIFY",
-      "status": "PENDING",
       "requires": [
         "E19_NATIVE_FUTURES"
       ],
       "requires_learning_gate": false,
-      "commands": [],
-      "description": "honest independent safe supervision qualification",
-      "evidence": []
+      "status": "PENDING"
     }
-  ]
+  ],
+  "previous_registry": {
+    "SHA256": "8429d516566ab82cf63eaffdb08736a5c60661e068ffc235e52464b69a827d4f",
+    "path": "/home/liuyeqiang/WWW_jev_phase18/reports/JEV_MASTER/EXPERIMENT_REGISTRY.json"
+  },
+  "run_id": "PHASE19_20261011_v1"
 }

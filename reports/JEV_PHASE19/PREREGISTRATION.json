@@ -95,5 +95,42 @@
   "models": "frozen XV V3 only; no new teacher/head/LoRA/training",
   "source_base": "efa231955c41d40ee9135a03a545b3e88ff028e8",
   "source_authorization": "user answer: \u6309\u8be5\u65b9\u6848\u8ffd\u52a0\u6570\u636e\u5ba1\u8ba1\u4e0e\u6709\u754c\u5b9e\u9a8c",
-  "historical_exposure": "Stage1 all24; old controllers may have used06/07; V3 training explicit12/13/14/16; no fully unseen system claim"
+  "historical_exposure": "Stage1 all24; old controllers may have used06/07; V3 training explicit12/13/14/16; no fully unseen system claim",
+  "strict_intervention_eligibility": {
+    "all_complete_H64": true,
+    "at_least_one_GT_free_alternative": true,
+    "raw_GT_unique_from_frame_zero_through_future_end": true,
+    "duplicate_current_GT_owner_labels": "UNKNOWN",
+    "filtering_timing": "static annotation audit and frozen rules before any new native trajectory outcomes",
+    "diagnostic_ineligible_events": "retained full census; no permissive CLEAR; never used for strict safe labels"
+  },
+  "event_sampling_per_video_quota": {
+    "available_error": {
+      "2": 3,
+      "3": 3,
+      "4": 3,
+      "5": 3,
+      "6": 3,
+      "7": 3,
+      "8": 3,
+      "9": 3,
+      "10": 3,
+      "11": 3,
+      "15": 2
+    },
+    "correct_control": {
+      "2": 3,
+      "3": 3,
+      "4": 3,
+      "5": 3,
+      "6": 3,
+      "7": 3,
+      "8": 3,
+      "9": 3,
+      "10": 3,
+      "11": 3,
+      "15": 2
+    },
+    "shortfall": "do not replace missing strata with favorable outcome videos"
+  }
 }
