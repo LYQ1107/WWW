@@ -1,0 +1,87 @@
+{
+  "GT_only_offline_partition_audit": true,
+  "intervention_events": {
+    "SHA256": "86e0afdff4e9891ecd21d4f723591d0fa232d5dcdb84a2ec3a49503c777513e1",
+    "path": "/home/liuyeqiang/WWW_jev_phase18_runtime/20261011_v1/selection/INTERVENTION_EVENTS.json"
+  },
+  "no_new_training": true,
+  "original16_rollouts_still_execute_for_causal_diagnostics": true,
+  "pre_outcome_reserved_leakage": [
+    {
+      "RESERVED": [
+        1
+      ],
+      "TRAIN": [
+        3,
+        5,
+        6,
+        7
+      ],
+      "component": "1",
+      "members": [
+        1,
+        3,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "RESERVED": [
+        2,
+        12
+      ],
+      "TRAIN": [
+        4,
+        8,
+        9,
+        10,
+        11
+      ],
+      "component": "2",
+      "members": [
+        2,
+        4,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    }
+  ],
+  "pre_outcome_reserved_qualification": "FAIL_INDEPENDENCE",
+  "purpose": "64-frame blocks are sampling units, not automatically independent episodes/owners. Same-video overlapping immutable owner/alias/conflict GT components across time remain one conservative qualification unit.",
+  "qualification_components": {
+    "0": [
+      0
+    ],
+    "1": [
+      1,
+      3,
+      5,
+      6,
+      7
+    ],
+    "13": [
+      13
+    ],
+    "14": [
+      14
+    ],
+    "15": [
+      15
+    ],
+    "2": [
+      2,
+      4,
+      8,
+      9,
+      10,
+      11,
+      12
+    ]
+  },
+  "rule": "Merge selected components across all time on physical owner/conflict overlap; any mixed TRAIN/RESERVED component is contaminated and cannot supply a reserved safe group. No resampling after outcomes.",
+  "status": "FROZEN_BEFORE_MAIN_COUNTERFACTUAL_OUTCOMES"
+}
