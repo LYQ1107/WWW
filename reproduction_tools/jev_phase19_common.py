@@ -23,6 +23,9 @@ def save(p,x):
  p=Path(p);assert any(p.resolve().is_relative_to(d.resolve()) for d in [OUT,REPORTS,MASTER]),p
  p.parent.mkdir(parents=True,exist_ok=True);t=p.with_name(p.name+'.tmp.'+str(os.getpid()));t.write_text(json.dumps(x,indent=2,sort_keys=True,allow_nan=False)+'\n');t.replace(p)
 def allowed(video):assert video in SCOPE,('outside authorized scope',video)
+def census_case(video):
+ allowed(video);item=read(REPORTS/'CENSUS_RESULTS_INDEX.json')['per_video'][str(video)]
+ assert sha(item['path'])==item['SHA256'];return Path(item['path']).parent
 def protect():
  subprocess.run(['git','merge-base','--is-ancestor',BASE,'HEAD'],cwd=ROOT,check=True)
  names=subprocess.check_output(['git','diff',BASE,'--name-only'],cwd=ROOT,text=True).splitlines()

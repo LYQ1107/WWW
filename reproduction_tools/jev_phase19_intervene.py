@@ -16,9 +16,9 @@ def main(video,resume=False):
  protect();allowed(video);assert read(ROOT/'reports/JEV_PHASE18/NATIVE_CONSTRAINT_CONTRACT.json')['status']=='PASS_REAL_NATIVE_PARITY'
  torch.set_num_threads(1);torch.manual_seed(20261009);torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True
  selected=[e for e in read(OUT/'selection/INTERVENTION_EVENTS.json') if e['event_key'][0]==video];assert selected
- census=read(OUT/'census_v1'/f'video{video:02d}/RESULT.json');commits={tuple(e['key']):e for e in rows(census['commits']['path'])};queries={(tuple(e['key']),e['task']):e for e in rows(census['queries']['path'])}
+ census=read(census_case(video)/'RESULT.json');commits={tuple(e['key']):e for e in rows(census['commits']['path'])};queries={(tuple(e['key']),e['task']):e for e in rows(census['queries']['path'])}
  values,frames,reader=cache_inputs(video);policy,checkpoint,_=load_policy('v3');model=build_tracker(video,policy);executor=attach(model);branch_model=[None];branch_executor=[None]
- metric=AuditedClearFuture('multi_question',20261009,video,case_override=OUT/'census_v1'/f'video{video:02d}')
+ metric=AuditedClearFuture('multi_question',20261009,video,case_override=census_case(video))
  original_folder=OUT/'interventions'/f'video{video:02d}'
  folder=(OUT/'interventions_v2'/f'video{video:02d}') if resume else original_folder
  folder.mkdir(parents=True,exist_ok=True);assert not (folder/'RESULT.json').exists();start=time.monotonic();results=[];captured=set();replay_count=[0];latest=[0]
@@ -76,7 +76,7 @@ def main(video,resume=False):
    for e in wanted:
     branch(e,blob,initial,'BASE',None)
     for n,reference in enumerate(e['alternatives_GT_free']):branch(e,blob,initial,f'ALT{n}',reference)
-    captured.add(e['selection_index']);save(folder/f'PREFIX_{e["selection_index"]:02d}.json',dict(event_key=e['event_key'],actual_native_fingerprint=initial,serialized_bytes=len(blob),serialized_SHA256=digest,persistent_prefix=saved_prefix,otherwise='RAM serialized exact native state; reconstructable from frozen checkpoint/cache and verified full original replay; no fabricated lightweight mirror',source_census=ref(OUT/'census_v1'/f'video{video:02d}/RESULT.json')))
+    captured.add(e['selection_index']);save(folder/f'PREFIX_{e["selection_index"]:02d}.json',dict(event_key=e['event_key'],actual_native_fingerprint=initial,serialized_bytes=len(blob),serialized_SHA256=digest,persistent_prefix=saved_prefix,otherwise='RAM serialized exact native state; reconstructable from frozen checkpoint/cache and verified full original replay; no fabricated lightweight mirror',source_census=ref(census_case(video)/'RESULT.json')))
   finally:
    restore_state(model,state);executor.memory.load_state_dict(state['phase13_identity_meta']);assert fingerprint(prefix_state(model,**d))==fingerprint({k:v for k,v in state.items() if k!='phase13_identity_meta'});assert fingerprint(executor.memory.state_dict())==fingerprint(state['phase13_identity_meta'])
   save(folder/'PROGRESS.json',dict(status='RUNNING',captured_groups=len(captured),total_groups=len(selected),completed_branches=len(results),last_key=list(key),seconds=time.monotonic()-start,pid=os.getpid()));del buf,blob,state

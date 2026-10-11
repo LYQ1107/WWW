@@ -13,7 +13,7 @@ def main():
   a=find(a);b=find(b)
   if a!=b:parent[max(a,b)]=min(a,b)
  for v in SCOPE:
-  path=OUT/'census_v1'/f'video{v:02d}/RESULT.json';r=read(path);assert r['status']=='COMPLETE';sources.append(ref(path));events=rows(r['events']['path']);counts[str(v)]=r['counts'];all_events+=events
+  path=census_case(v)/'RESULT.json';r=read(path);assert r['status']=='COMPLETE';sources.append(ref(path));events=rows(r['events']['path']);counts[str(v)]=r['counts'];all_events+=events
   for e in events:
    gt=e['GT_OFFLINE']
    if gt is None:continue
