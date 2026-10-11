@@ -12,3 +12,6 @@ Phase XIX: approved02–09 + reserved10/11/15,11 complete frozen trajectories,66
 
 
 Phase XX: fixed50 past-onlyfirst3 evidence audit:35correct vs35baseline,2corrections/2anti-corrections; no unconditional replacement. Existing66nativebranches show3safeactions in2units reduce laterindexwrongreturns63/64/64 with unchanged laterIDs. Exploratory mechanisms, no newpolicy claim or gate change. Independent source/annotation qualification proposed before further learning.
+
+
+Phase XXI: fixed original12group/2weight execution audit, unchanged .05/.02/exact decision gates; compute-only preferred FP32_MATH. Option-order, independent teacher identity value and native deployment remain separate. One bound-reference memory repair; original failed attempt preserved. No new training/native actions/data.

@@ -1,0 +1,1579 @@
+{
+  "environment": {
+    "CUDA": "11.8",
+    "device": "Tesla V100-DGXS-32GB",
+    "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+    "torch": "2.5.1+cu118"
+  },
+  "measurements": [
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        89.84845876693726,
+        89.83229845762253
+      ],
+      "max_of2_total_ms": 89.84845876693726,
+      "p50_total_ms": 89.84037861227989,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8570.27099609375,
+      "prepare_ms": 18.87848973274231,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        89.84845876693726,
+        89.83229845762253
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        94.33365613222122,
+        89.80163931846619
+      ],
+      "max_of2_total_ms": 94.33365613222122,
+      "p50_total_ms": 92.0676477253437,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8570.27783203125,
+      "prepare_ms": 18.87848973274231,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        94.33365613222122,
+        89.80163931846619
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        143.00350099802017,
+        145.04237473011017
+      ],
+      "max_of2_total_ms": 145.04237473011017,
+      "p50_total_ms": 144.02293786406517,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 8579.39990234375,
+      "prepare_ms": 18.87848973274231,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        143.00350099802017,
+        145.04237473011017
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "KV_fork_ms": 2.856895327568054,
+      "N": 1,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 93.55255961418152,
+      "profile": "FP16_DEFAULT",
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        92.76358783245087,
+        89.53973278403282
+      ],
+      "max_of2_total_ms": 371.05435132980347,
+      "p50_total_ms": 364.6066412329674,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8576.81396484375,
+      "prepare_ms": 35.4619026184082,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        371.05435132980347,
+        358.1589311361313
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        42.07620210945606,
+        41.28355719149113
+      ],
+      "max_of2_total_ms": 168.30480843782425,
+      "p50_total_ms": 166.71951860189438,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8607.54052734375,
+      "prepare_ms": 35.4619026184082,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        168.30480843782425,
+        165.1342287659645
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        41.161708533763885,
+        40.14878906309605
+      ],
+      "max_of2_total_ms": 164.64683413505554,
+      "p50_total_ms": 162.62099519371986,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 8706.59619140625,
+      "prepare_ms": 35.4619026184082,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        164.64683413505554,
+        160.5951562523842
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "KV_fork_ms": 3.9319097995758057,
+      "N": 4,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 90.98586440086365,
+      "profile": "FP16_DEFAULT",
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        89.71453551203012,
+        92.88875013589859
+      ],
+      "max_of2_total_ms": 743.1100010871887,
+      "p50_total_ms": 730.4131425917149,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8576.83251953125,
+      "prepare_ms": 58.223336935043335,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        717.716284096241,
+        743.1100010871887
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        34.65257491916418,
+        34.30692572146654
+      ],
+      "max_of2_total_ms": 277.22059935331345,
+      "p50_total_ms": 275.8380025625229,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8681.89453125,
+      "prepare_ms": 58.223336935043335,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        277.22059935331345,
+        274.45540577173233
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        24.538245052099228,
+        24.81132559478283
+      ],
+      "max_of2_total_ms": 198.49060475826263,
+      "p50_total_ms": 197.39828258752823,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 8841.4755859375,
+      "prepare_ms": 58.223336935043335,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        196.30596041679382,
+        198.49060475826263
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "KV_fork_ms": 3.76177579164505,
+      "N": 8,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 92.58241951465607,
+      "profile": "FP16_DEFAULT",
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        89.43693852052093,
+        88.48417038097978
+      ],
+      "max_of2_total_ms": 1430.9910163283348,
+      "p50_total_ms": 1423.3688712120056,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8586.5712890625,
+      "prepare_ms": 114.63054269552231,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        1430.9910163283348,
+        1415.7467260956764
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        32.039280980825424,
+        32.13003138080239
+      ],
+      "max_of2_total_ms": 514.0805020928383,
+      "p50_total_ms": 513.3544988930225,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8835.9609375,
+      "prepare_ms": 114.63054269552231,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        512.6284956932068,
+        514.0805020928383
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        17.117291688919067,
+        17.4463945440948
+      ],
+      "max_of2_total_ms": 279.1423127055168,
+      "p50_total_ms": 276.50948986411095,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 9111.4677734375,
+      "prepare_ms": 114.63054269552231,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        273.8766670227051,
+        279.1423127055168
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "KV_fork_ms": 4.1076913475990295,
+      "N": 16,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 90.2780368924141,
+      "profile": "FP16_DEFAULT",
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        90.22226394154131,
+        88.2876452524215
+      ],
+      "max_of2_total_ms": 2887.112446129322,
+      "p50_total_ms": 2856.158547103405,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8601.3818359375,
+      "prepare_ms": 182.53535777330399,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        2887.112446129322,
+        2825.204648077488
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        30.485378112643957,
+        30.48476646654308
+      ],
+      "max_of2_total_ms": 975.5320996046066,
+      "p50_total_ms": 975.5223132669926,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 9142.7978515625,
+      "prepare_ms": 182.53535777330399,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        975.5320996046066,
+        975.5125269293785
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        13.967714738100767,
+        13.945014216005802
+      ],
+      "max_of2_total_ms": 446.96687161922455,
+      "p50_total_ms": 446.6036632657051,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 9662.82666015625,
+      "prepare_ms": 182.53535777330399,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        446.96687161922455,
+        446.24045491218567
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "KV_fork_ms": 7.818445563316345,
+      "N": 32,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 94.25312280654907,
+      "profile": "FP16_DEFAULT",
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        144.30861920118332,
+        126.69970840215683
+      ],
+      "max_of2_total_ms": 144.30861920118332,
+      "p50_total_ms": 135.50416380167007,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8696.27099609375,
+      "prepare_ms": 16.834668815135956,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        144.30861920118332,
+        126.69970840215683
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        152.15092152357101,
+        133.31742584705353
+      ],
+      "max_of2_total_ms": 152.15092152357101,
+      "p50_total_ms": 142.73417368531227,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8696.27783203125,
+      "prepare_ms": 16.834668815135956,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        152.15092152357101,
+        133.31742584705353
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        229.67620193958282,
+        228.20766270160675
+      ],
+      "max_of2_total_ms": 229.67620193958282,
+      "p50_total_ms": 228.9419323205948,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 8710.07373046875,
+      "prepare_ms": 16.834668815135956,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        229.67620193958282,
+        228.20766270160675
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "KV_fork_ms": 2.590857446193695,
+      "N": 1,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 136.46642863750458,
+      "profile": "FP16_DEFAULT",
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        128.97255271673203,
+        129.79634292423725
+      ],
+      "max_of2_total_ms": 519.185371696949,
+      "p50_total_ms": 517.5377912819386,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8702.81396484375,
+      "prepare_ms": 35.352304577827454,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        515.8902108669281,
+        519.185371696949
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        55.239515379071236,
+        55.20861782133579
+      ],
+      "max_of2_total_ms": 220.95806151628494,
+      "p50_total_ms": 220.89626640081406,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8787.45458984375,
+      "prepare_ms": 35.352304577827454,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        220.95806151628494,
+        220.83447128534317
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        58.08454006910324,
+        66.6679423302412
+      ],
+      "max_of2_total_ms": 266.6717693209648,
+      "p50_total_ms": 249.5049647986889,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 8845.96337890625,
+      "prepare_ms": 35.352304577827454,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        232.33816027641296,
+        266.6717693209648
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "KV_fork_ms": 4.646383225917816,
+      "N": 4,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 146.14398032426834,
+      "profile": "FP16_DEFAULT",
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        130.62088005244732,
+        133.51910840719938
+      ],
+      "max_of2_total_ms": 1068.152867257595,
+      "p50_total_ms": 1056.5599538385868,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8702.83251953125,
+      "prepare_ms": 54.66504395008087,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        1044.9670404195786,
+        1068.152867257595
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        47.78321273624897,
+        47.81789053231478
+      ],
+      "max_of2_total_ms": 382.5431242585182,
+      "p50_total_ms": 382.404413074255,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8917.41015625,
+      "prepare_ms": 54.66504395008087,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        382.26570188999176,
+        382.5431242585182
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        35.95855180174112,
+        38.70647866278887
+      ],
+      "max_of2_total_ms": 309.65182930231094,
+      "p50_total_ms": 298.66012185811996,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 9008.3037109375,
+      "prepare_ms": 54.66504395008087,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        287.668414413929,
+        309.65182930231094
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "KV_fork_ms": 3.8614943623542786,
+      "N": 8,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 134.27992910146713,
+      "profile": "FP16_DEFAULT",
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        137.54908414557576,
+        126.89172523096204
+      ],
+      "max_of2_total_ms": 2200.785346329212,
+      "p50_total_ms": 2115.5264750123024,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8712.5712890625,
+      "prepare_ms": 97.07492589950562,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        2200.785346329212,
+        2030.2676036953926
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        44.28565129637718,
+        44.221915770322084
+      ],
+      "max_of2_total_ms": 708.5704207420349,
+      "p50_total_ms": 708.0605365335941,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 9177.6171875,
+      "prepare_ms": 97.07492589950562,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        708.5704207420349,
+        707.5506523251534
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        25.181591976433992,
+        25.007161777466536
+      ],
+      "max_of2_total_ms": 402.9054716229439,
+      "p50_total_ms": 401.5100300312042,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 9318.3427734375,
+      "prepare_ms": 97.07492589950562,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        402.9054716229439,
+        400.11458843946457
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "KV_fork_ms": 4.119537770748138,
+      "N": 16,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 132.34704732894897,
+      "profile": "FP16_DEFAULT",
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        130.75871882028878,
+        131.54151570051908
+      ],
+      "max_of2_total_ms": 4209.328502416611,
+      "p50_total_ms": 4196.803752332926,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8727.3818359375,
+      "prepare_ms": 213.82801979780197,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        4184.279002249241,
+        4209.328502416611
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        43.75983402132988,
+        42.359723476693034
+      ],
+      "max_of2_total_ms": 1400.3146886825562,
+      "p50_total_ms": 1377.9129199683666,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 9700.1103515625,
+      "prepare_ms": 213.82801979780197,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        1400.3146886825562,
+        1355.511151254177
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        19.81708104722202,
+        19.889362389221787
+      ],
+      "max_of2_total_ms": 636.4595964550972,
+      "p50_total_ms": 635.3030949831009,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 9952.13916015625,
+      "prepare_ms": 213.82801979780197,
+      "profile": "FP16_DEFAULT",
+      "total_batch_ms": [
+        634.1465935111046,
+        636.4595964550972
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "KV_fork_ms": 7.831856608390808,
+      "N": 32,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 137.68209517002106,
+      "profile": "FP16_DEFAULT",
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        207.89694041013718,
+        205.60944825410843
+      ],
+      "max_of2_total_ms": 207.89694041013718,
+      "p50_total_ms": 206.7531943321228,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 17088.8271484375,
+      "prepare_ms": 17.39513874053955,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        207.89694041013718,
+        205.60944825410843
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        210.88413894176483,
+        208.36086571216583
+      ],
+      "max_of2_total_ms": 210.88413894176483,
+      "p50_total_ms": 209.62250232696533,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 17088.3359375,
+      "prepare_ms": 17.39513874053955,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        210.88413894176483,
+        208.36086571216583
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        208.27410370111465,
+        215.93187749385834
+      ],
+      "max_of2_total_ms": 215.93187749385834,
+      "p50_total_ms": 212.1029905974865,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 17153.64013671875,
+      "prepare_ms": 17.39513874053955,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        208.27410370111465,
+        215.93187749385834
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "KV_fork_ms": 2.9024407267570496,
+      "N": 1,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 142.86848157644272,
+      "profile": "FP32_MATH",
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        200.86044259369373,
+        200.4684302955866
+      ],
+      "max_of2_total_ms": 803.4417703747749,
+      "p50_total_ms": 802.6577457785606,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 17098.26904296875,
+      "prepare_ms": 32.54494071006775,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        803.4417703747749,
+        801.8737211823463
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        152.78426557779312,
+        154.10929173231125
+      ],
+      "max_of2_total_ms": 616.437166929245,
+      "p50_total_ms": 613.7871146202087,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 17225.0654296875,
+      "prepare_ms": 32.54494071006775,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        611.1370623111725,
+        616.437166929245
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        94.42956000566483,
+        93.75744871795177
+      ],
+      "max_of2_total_ms": 377.7182400226593,
+      "p50_total_ms": 376.3740174472332,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 17400.6982421875,
+      "prepare_ms": 32.54494071006775,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        377.7182400226593,
+        375.0297948718071
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "KV_fork_ms": 3.9119496941566467,
+      "N": 4,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 126.03646516799927,
+      "profile": "FP32_MATH",
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        197.61457294225693,
+        197.82371073961258
+      ],
+      "max_of2_total_ms": 1582.5896859169006,
+      "p50_total_ms": 1581.753134727478,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 17100.93115234375,
+      "prepare_ms": 66.23410433530807,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        1580.9165835380554,
+        1582.5896859169006
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        144.1442845389247,
+        143.47051922231913
+      ],
+      "max_of2_total_ms": 1153.1542763113976,
+      "p50_total_ms": 1150.4592150449753,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 17407.88330078125,
+      "prepare_ms": 66.23410433530807,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        1153.1542763113976,
+        1147.764153778553
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        66.99464563280344,
+        66.36747438460588
+      ],
+      "max_of2_total_ms": 535.9571650624275,
+      "p50_total_ms": 533.4484800696373,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 17693.40673828125,
+      "prepare_ms": 66.23410433530807,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        535.9571650624275,
+        530.9397950768471
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "KV_fork_ms": 3.8602128624916077,
+      "N": 8,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 127.55513191223145,
+      "profile": "FP32_MATH",
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        199.54709662124515,
+        198.2173197902739
+      ],
+      "max_of2_total_ms": 3192.7535459399223,
+      "p50_total_ms": 3182.1153312921524,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 17118.1025390625,
+      "prepare_ms": 95.0765386223793,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        3192.7535459399223,
+        3171.4771166443825
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        139.63024970144033,
+        139.33237036690116
+      ],
+      "max_of2_total_ms": 2234.0839952230453,
+      "p50_total_ms": 2231.700960546732,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 17764.3759765625,
+      "prepare_ms": 95.0765386223793,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        2234.0839952230453,
+        2229.3179258704185
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        56.16802489385009,
+        56.16090074181557
+      ],
+      "max_of2_total_ms": 898.6883983016014,
+      "p50_total_ms": 898.6314050853252,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 18292.94775390625,
+      "prepare_ms": 95.0765386223793,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        898.6883983016014,
+        898.5744118690491
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "KV_fork_ms": 5.871124565601349,
+      "N": 16,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 130.00956922769547,
+      "profile": "FP32_MATH",
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        198.5031368676573,
+        197.6683372631669
+      ],
+      "max_of2_total_ms": 6352.100379765034,
+      "p50_total_ms": 6338.743586093187,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 17150.3662109375,
+      "prepare_ms": 179.49534952640533,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        6352.100379765034,
+        6325.386792421341
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        138.11335642822087,
+        138.1193909328431
+      ],
+      "max_of2_total_ms": 4419.820509850979,
+      "p50_total_ms": 4419.723957777023,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 18482.42138671875,
+      "prepare_ms": 179.49534952640533,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        4419.627405703068,
+        4419.820509850979
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        52.50755324959755,
+        52.49760183505714
+      ],
+      "max_of2_total_ms": 1680.2417039871216,
+      "p50_total_ms": 1680.082481354475,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 19508.06787109375,
+      "prepare_ms": 179.49534952640533,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        1680.2417039871216,
+        1679.9232587218285
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "KV_fork_ms": 10.608084499835968,
+      "N": 32,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 130.27877360582352,
+      "profile": "FP32_MATH",
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        218.19040179252625,
+        217.79851615428925
+      ],
+      "max_of2_total_ms": 218.19040179252625,
+      "p50_total_ms": 217.99445897340775,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 17216.9189453125,
+      "prepare_ms": 17.42400974035263,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        218.19040179252625,
+        217.79851615428925
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        219.72037106752396,
+        218.5550406575203
+      ],
+      "max_of2_total_ms": 219.72037106752396,
+      "p50_total_ms": 219.13770586252213,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 17215.29296875,
+      "prepare_ms": 17.42400974035263,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        219.72037106752396,
+        218.5550406575203
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        230.20286113023758,
+        228.43516618013382
+      ],
+      "max_of2_total_ms": 230.20286113023758,
+      "p50_total_ms": 229.3190136551857,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 17279.64013671875,
+      "prepare_ms": 17.42400974035263,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        230.20286113023758,
+        228.43516618013382
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "KV_fork_ms": 3.131747245788574,
+      "N": 1,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 142.14760810136795,
+      "profile": "FP32_MATH",
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        212.50019781291485,
+        213.78868632018566
+      ],
+      "max_of2_total_ms": 855.1547452807426,
+      "p50_total_ms": 852.577768266201,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 17224.66259765625,
+      "prepare_ms": 35.802245140075684,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        850.0007912516594,
+        855.1547452807426
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        162.73140534758568,
+        163.53732906281948
+      ],
+      "max_of2_total_ms": 654.1493162512779,
+      "p50_total_ms": 652.5374688208103,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 17355.37158203125,
+      "prepare_ms": 35.802245140075684,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        650.9256213903427,
+        654.1493162512779
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        100.79333372414112,
+        100.65755806863308
+      ],
+      "max_of2_total_ms": 403.1733348965645,
+      "p50_total_ms": 402.9017835855484,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 17532.3076171875,
+      "prepare_ms": 35.802245140075684,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        403.1733348965645,
+        402.6302322745323
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "KV_fork_ms": 3.8558393716812134,
+      "N": 4,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 136.33476197719574,
+      "profile": "FP32_MATH",
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        212.16369327157736,
+        211.2765498459339
+      ],
+      "max_of2_total_ms": 1697.3095461726189,
+      "p50_total_ms": 1693.760972470045,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 17229.9267578125,
+      "prepare_ms": 63.30447643995285,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        1697.3095461726189,
+        1690.2123987674713
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        152.97470521181822,
+        153.13017554581165
+      ],
+      "max_of2_total_ms": 1225.0414043664932,
+      "p50_total_ms": 1224.4195230305195,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 17541.4716796875,
+      "prepare_ms": 63.30447643995285,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        1223.7976416945457,
+        1225.0414043664932
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        72.13662937283516,
+        71.69459760189056
+      ],
+      "max_of2_total_ms": 577.0930349826813,
+      "p50_total_ms": 575.3249078989029,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 17819.3720703125,
+      "prepare_ms": 63.30447643995285,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        577.0930349826813,
+        573.5567808151245
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "KV_fork_ms": 3.915563225746155,
+      "N": 8,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 137.92065531015396,
+      "profile": "FP32_MATH",
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        210.43478231877089,
+        211.0139336436987
+      ],
+      "max_of2_total_ms": 3376.222938299179,
+      "p50_total_ms": 3371.5897276997566,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 17247.2724609375,
+      "prepare_ms": 113.80473524332047,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        3366.956517100334,
+        3376.222938299179
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        148.88375205919147,
+        147.93024398386478
+      ],
+      "max_of2_total_ms": 2382.1400329470634,
+      "p50_total_ms": 2374.51196834445,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 17906.5927734375,
+      "prepare_ms": 113.80473524332047,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        2382.1400329470634,
+        2366.8839037418365
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        60.42923638597131,
+        60.29983563348651
+      ],
+      "max_of2_total_ms": 966.8677821755409,
+      "p50_total_ms": 965.8325761556625,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 18420.38525390625,
+      "prepare_ms": 113.80473524332047,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        966.8677821755409,
+        964.7973701357841
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "KV_fork_ms": 5.906932055950165,
+      "N": 16,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 137.90994137525558,
+      "profile": "FP32_MATH",
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        211.34848962537944,
+        215.09704738855362
+      ],
+      "max_of2_total_ms": 6883.105516433716,
+      "p50_total_ms": 6823.128592222929,
+      "p95_estimate": null,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 17279.3505859375,
+      "prepare_ms": 206.49001747369766,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        6763.151668012142,
+        6883.105516433716
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        146.50358771905303,
+        146.62593649700284
+      ],
+      "max_of2_total_ms": 4692.029967904091,
+      "p50_total_ms": 4690.072387456894,
+      "p95_estimate": null,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 18641.1640625,
+      "prepare_ms": 206.49001747369766,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        4688.114807009697,
+        4692.029967904091
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        55.915978737175465,
+        55.81299681216478
+      ],
+      "max_of2_total_ms": 1789.3113195896149,
+      "p50_total_ms": 1787.663608789444,
+      "p95_estimate": null,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 19635.81787109375,
+      "prepare_ms": 206.49001747369766,
+      "profile": "FP32_MATH",
+      "total_batch_ms": [
+        1789.3113195896149,
+        1786.015897989273
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "KV_fork_ms": 10.563522577285767,
+      "N": 32,
+      "full_execution_ms": null,
+      "path": "prefill_and_fork_components",
+      "prefill_ms": 138.73735070228577,
+      "profile": "FP32_MATH",
+      "variant": "published_answer_LoRA"
+    }
+  ],
+  "not_dynamic32identity_candidates": true,
+  "not_image_IO_or_live_serving": true,
+  "not_native_MOT": true,
+  "p95": null,
+  "source": "Existing decoded montage and repeated five question templates",
+  "speedups": [
+    {
+      "N": 1,
+      "batch_ms": 92.0676477253437,
+      "batch_over_shared": 0.6392568370757786,
+      "batch_peak_MiB": 8570.27783203125,
+      "profile": "FP16_DEFAULT",
+      "serial_ms": 89.84037861227989,
+      "serial_over_shared": 0.6237921538378489,
+      "shared_ms": 144.02293786406517,
+      "shared_peak_MiB": 8579.39990234375,
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "batch_ms": 166.71951860189438,
+      "batch_over_shared": 1.0252029167777028,
+      "batch_peak_MiB": 8607.54052734375,
+      "profile": "FP16_DEFAULT",
+      "serial_ms": 364.6066412329674,
+      "serial_over_shared": 2.2420637679571147,
+      "shared_ms": 162.62099519371986,
+      "shared_peak_MiB": 8706.59619140625,
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "batch_ms": 275.8380025625229,
+      "batch_over_shared": 1.3973677934113422,
+      "batch_peak_MiB": 8681.89453125,
+      "profile": "FP16_DEFAULT",
+      "serial_ms": 730.4131425917149,
+      "serial_over_shared": 3.7002000879508308,
+      "shared_ms": 197.39828258752823,
+      "shared_peak_MiB": 8841.4755859375,
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "batch_ms": 513.3544988930225,
+      "batch_over_shared": 1.8565529130494138,
+      "batch_peak_MiB": 8835.9609375,
+      "profile": "FP16_DEFAULT",
+      "serial_ms": 1423.3688712120056,
+      "serial_over_shared": 5.1476311786315625,
+      "shared_ms": 276.50948986411095,
+      "shared_peak_MiB": 9111.4677734375,
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "batch_ms": 975.5223132669926,
+      "batch_over_shared": 2.184313281565291,
+      "batch_peak_MiB": 9142.7978515625,
+      "profile": "FP16_DEFAULT",
+      "serial_ms": 2856.158547103405,
+      "serial_over_shared": 6.39528687744808,
+      "shared_ms": 446.6036632657051,
+      "shared_peak_MiB": 9662.82666015625,
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "batch_ms": 142.73417368531227,
+      "batch_over_shared": 0.6234514238546611,
+      "batch_peak_MiB": 8696.27783203125,
+      "profile": "FP16_DEFAULT",
+      "serial_ms": 135.50416380167007,
+      "serial_over_shared": 0.5918713205054948,
+      "shared_ms": 228.9419323205948,
+      "shared_peak_MiB": 8710.07373046875,
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "batch_ms": 220.89626640081406,
+      "batch_over_shared": 0.8853381598199558,
+      "batch_peak_MiB": 8787.45458984375,
+      "profile": "FP16_DEFAULT",
+      "serial_ms": 517.5377912819386,
+      "serial_over_shared": 2.0742584890024527,
+      "shared_ms": 249.5049647986889,
+      "shared_peak_MiB": 8845.96337890625,
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "batch_ms": 382.404413074255,
+      "batch_over_shared": 1.2803999767197516,
+      "batch_peak_MiB": 8917.41015625,
+      "profile": "FP16_DEFAULT",
+      "serial_ms": 1056.5599538385868,
+      "serial_over_shared": 3.5376666535363936,
+      "shared_ms": 298.66012185811996,
+      "shared_peak_MiB": 9008.3037109375,
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "batch_ms": 708.0605365335941,
+      "batch_over_shared": 1.7634940190125903,
+      "batch_peak_MiB": 9177.6171875,
+      "profile": "FP16_DEFAULT",
+      "serial_ms": 2115.5264750123024,
+      "serial_over_shared": 5.268925597818539,
+      "shared_ms": 401.5100300312042,
+      "shared_peak_MiB": 9318.3427734375,
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "batch_ms": 1377.9129199683666,
+      "batch_over_shared": 2.168906354855739,
+      "batch_peak_MiB": 9700.1103515625,
+      "profile": "FP16_DEFAULT",
+      "serial_ms": 4196.803752332926,
+      "serial_over_shared": 6.605986631380351,
+      "shared_ms": 635.3030949831009,
+      "shared_peak_MiB": 9952.13916015625,
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 1,
+      "batch_ms": 209.62250232696533,
+      "batch_over_shared": 0.9883052649869117,
+      "batch_peak_MiB": 17088.3359375,
+      "profile": "FP32_MATH",
+      "serial_ms": 206.7531943321228,
+      "serial_over_shared": 0.9747773652304783,
+      "shared_ms": 212.1029905974865,
+      "shared_peak_MiB": 17153.64013671875,
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "batch_ms": 613.7871146202087,
+      "batch_over_shared": 1.6307903472807082,
+      "batch_peak_MiB": 17225.0654296875,
+      "profile": "FP32_MATH",
+      "serial_ms": 802.6577457785606,
+      "serial_over_shared": 2.1326066852930183,
+      "shared_ms": 376.3740174472332,
+      "shared_peak_MiB": 17400.6982421875,
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "batch_ms": 1150.4592150449753,
+      "batch_over_shared": 2.1566454081841084,
+      "batch_peak_MiB": 17407.88330078125,
+      "profile": "FP32_MATH",
+      "serial_ms": 1581.753134727478,
+      "serial_over_shared": 2.9651469519999254,
+      "shared_ms": 533.4484800696373,
+      "shared_peak_MiB": 17693.40673828125,
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "batch_ms": 2231.700960546732,
+      "batch_over_shared": 2.483444210738252,
+      "batch_peak_MiB": 17764.3759765625,
+      "profile": "FP32_MATH",
+      "serial_ms": 3182.1153312921524,
+      "serial_over_shared": 3.541068466208356,
+      "shared_ms": 898.6314050853252,
+      "shared_peak_MiB": 18292.94775390625,
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "batch_ms": 4419.723957777023,
+      "batch_over_shared": 2.630658915158654,
+      "batch_peak_MiB": 18482.42138671875,
+      "profile": "FP32_MATH",
+      "serial_ms": 6338.743586093187,
+      "serial_over_shared": 3.7728764250805833,
+      "shared_ms": 1680.082481354475,
+      "shared_peak_MiB": 19508.06787109375,
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "batch_ms": 219.13770586252213,
+      "batch_over_shared": 0.955601990299973,
+      "batch_peak_MiB": 17215.29296875,
+      "profile": "FP32_MATH",
+      "serial_ms": 217.99445897340775,
+      "serial_over_shared": 0.9506165908300737,
+      "shared_ms": 229.3190136551857,
+      "shared_peak_MiB": 17279.64013671875,
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "batch_ms": 652.5374688208103,
+      "batch_over_shared": 1.6195943910043689,
+      "batch_peak_MiB": 17355.37158203125,
+      "profile": "FP32_MATH",
+      "serial_ms": 852.577768266201,
+      "serial_over_shared": 2.1160933085945812,
+      "shared_ms": 402.9017835855484,
+      "shared_peak_MiB": 17532.3076171875,
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "batch_ms": 1224.4195230305195,
+      "batch_over_shared": 2.1282226898573224,
+      "batch_peak_MiB": 17541.4716796875,
+      "profile": "FP32_MATH",
+      "serial_ms": 1693.760972470045,
+      "serial_over_shared": 2.944007723662949,
+      "shared_ms": 575.3249078989029,
+      "shared_peak_MiB": 17819.3720703125,
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "batch_ms": 2374.51196834445,
+      "batch_over_shared": 2.458513024892786,
+      "batch_peak_MiB": 17906.5927734375,
+      "profile": "FP32_MATH",
+      "serial_ms": 3371.5897276997566,
+      "serial_over_shared": 3.490863541919257,
+      "shared_ms": 965.8325761556625,
+      "shared_peak_MiB": 18420.38525390625,
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "batch_ms": 4690.072387456894,
+      "batch_over_shared": 2.623576585884008,
+      "batch_peak_MiB": 18641.1640625,
+      "profile": "FP32_MATH",
+      "serial_ms": 6823.128592222929,
+      "serial_over_shared": 3.816785528706579,
+      "shared_ms": 1787.663608789444,
+      "shared_peak_MiB": 19635.81787109375,
+      "variant": "published_answer_LoRA"
+    }
+  ],
+  "status": "FIXED_MICROBENCHMARK_COMPLETE",
+  "timing_samples": 2
+}

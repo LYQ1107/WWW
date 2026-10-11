@@ -1,0 +1,112 @@
+{
+  "actor_commit": "b1b78b40307928c6737035c0ebd9d1b6a8b38b56",
+  "compute_only_preferred_profile": "FP32_MATH",
+  "decisions_exact_path_checks": {
+    "FP16_DEFAULT": 96,
+    "FP16_MATH": 96,
+    "FP32_MATH": 96
+  },
+  "failure_reasons": {
+    "FP16_DEFAULT": {
+      "decisions_differ": 0,
+      "logit_exceeds_tolerance": 22,
+      "probability_exceeds_tolerance": 1
+    },
+    "FP16_MATH": {
+      "decisions_differ": 0,
+      "logit_exceeds_tolerance": 25,
+      "probability_exceeds_tolerance": 3
+    },
+    "FP32_MATH": {
+      "decisions_differ": 0,
+      "logit_exceeds_tolerance": 0,
+      "probability_exceeds_tolerance": 0
+    }
+  },
+  "full_forward_cross_profile": [
+    {
+      "WHO_total": 24,
+      "changed_full_forward_WHO_decisions": 0,
+      "changed_full_forward_question_decisions": 0,
+      "max_probability_delta": 0.0,
+      "profile": "FP16_DEFAULT",
+      "question_total": 120,
+      "reference": "FP16_DEFAULT"
+    },
+    {
+      "WHO_total": 24,
+      "changed_full_forward_WHO_decisions": 0,
+      "changed_full_forward_question_decisions": 0,
+      "max_probability_delta": 0.0618075430393219,
+      "profile": "FP16_MATH",
+      "question_total": 120,
+      "reference": "FP16_DEFAULT"
+    },
+    {
+      "WHO_total": 24,
+      "changed_full_forward_WHO_decisions": 0,
+      "changed_full_forward_question_decisions": 0,
+      "max_probability_delta": 0.05615857243537903,
+      "profile": "FP32_MATH",
+      "question_total": 120,
+      "reference": "FP16_DEFAULT"
+    }
+  ],
+  "identification_limits": [
+    "FP16_DEFAULT versus FP16_MATH changes backend only.",
+    "FP16_MATH versus FP32_MATH changes runtime precision only, including any adapter dtype recorded per case.",
+    "Default backend flags admit available SDPA kernels; actual per-operation kernel traces were not collected.",
+    "Finite 12-group audit does not establish universal floating-point equivalence.",
+    "Option reversal changes the prompt; a passing same-prompt cache audit cannot establish presentation invariance."
+  ],
+  "native_serving_cache": "NOT_IMPLEMENTED_OR_QUALIFIED",
+  "original_default_reproduced_exact_groups": 24,
+  "original_total": 24,
+  "path_checks_per_profile": 96,
+  "per_profile_summary": {
+    "FP16_DEFAULT": {
+      "all_paths_pass": false,
+      "group_variants": 24,
+      "max_logit_delta": 0.21875,
+      "max_probability_delta": 0.034580498933792114,
+      "order_exact": 18,
+      "order_total": 24,
+      "path_passes": {
+        "independent_batch": 18,
+        "prefix_share": 15,
+        "prefix_share_batch": 17,
+        "vision_cache": 24
+      }
+    },
+    "FP16_MATH": {
+      "all_paths_pass": false,
+      "group_variants": 24,
+      "max_logit_delta": 0.125,
+      "max_probability_delta": 0.02224254608154297,
+      "order_exact": 18,
+      "order_total": 24,
+      "path_passes": {
+        "independent_batch": 14,
+        "prefix_share": 16,
+        "prefix_share_batch": 17,
+        "vision_cache": 24
+      }
+    },
+    "FP32_MATH": {
+      "all_paths_pass": true,
+      "group_variants": 24,
+      "max_logit_delta": 0.00018310546875,
+      "max_probability_delta": 4.217028617858887e-05,
+      "order_exact": 18,
+      "order_total": 24,
+      "path_passes": {
+        "independent_batch": 24,
+        "prefix_share": 24,
+        "prefix_share_batch": 24,
+        "vision_cache": 24
+      }
+    }
+  },
+  "status": "FIXED_PROFILE_NUMERICAL_ATTRIBUTION_COMPLETE",
+  "teacher_identity_superiority": "NOT_ESTABLISHED"
+}
