@@ -9,3 +9,6 @@ Phase XIX initial aggregation (superseded: one UNKNOWN changed row cannot certif
 
 
 Phase XIX: approved02–09 + reserved10/11/15,11 complete frozen trajectories,66 native futures. 5qualified-safe actions in4 representatives =>3TRAIN/1RESERVED owner-conflict units;8/3 gate fails. Full-census graph ceiling7TRAIN disclosed. No training or architecture verdict. Bounded authorization complete; master science pending evidence/scope review.
+
+
+Phase XX: fixed50 past-onlyfirst3 evidence audit:35correct vs35baseline,2corrections/2anti-corrections; no unconditional replacement. Existing66nativebranches show3safeactions in2units reduce laterindexwrongreturns63/64/64 with unchanged laterIDs. Exploratory mechanisms, no newpolicy claim or gate change. Independent source/annotation qualification proposed before further learning.
