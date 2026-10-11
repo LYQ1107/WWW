@@ -30,3 +30,7 @@ Bounded filename search found Phase14 first320TRAIN labels. Prior release metada
 ## SCOUT normal access flow and terms
 
 The separately lazy-loaded officialDownloadView is21,088bytes and adds dataset-specific terms absent from previously reviewedhomepage. Normal flow requires researcher registration, registeredemail verification and downloadauthorizationPOST before archive link. Annotation package advertised839.92MB, wire/expanded sizes unmeasured, above64MiBstageA. Sourceaudit14assertions passed; noPOST/privateinfo/archive/viewerGT,0GPU. Dataset portions may not be redistributed withoutpermission; no vendoredsource/data uploaded. Asked for existingapproved serverpath; need lawful independentmanualcohort rather than ordinary-step approval. Prior3/1safe groups and8/3qualification unchanged.
+
+## Execution blocked after three no-progress continuations
+
+Three consecutive continuations revalidated same missing lawful independentmanualcohort. Sixregisteredjobs terminal, no live task process, no ready qualified learning task, unchanged3TRAIN/1RESERVEDbelow8/3. MASTER scientificstatus staysPIVOT_REQUIRED; executionstatusBLOCKED_EVIDENCE. ExistingWILDTRAIN remains reusable, not freshvalidation. Need approvedsourcepath/normalresearchaccess before nextsourceaudit. No Gate/TEST/heldout unlock, no successfulcompletion claim. This is operational bookkeeping, not new scientificprogress.
