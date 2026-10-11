@@ -1,0 +1,75 @@
+{
+  "GT_usage": "offline selection of error/control groups and outcome labels only, never actor feature or action-alternative chooser",
+  "candidate_selection": "GT-free top NN2 + cosine2 dedup excluding baseline, at most3 refs+DEFER; baseline DEFER permits4 refs; all legal masks retained",
+  "event_sampling": {
+    "available_error": 24,
+    "correct_control": 32,
+    "unavailable_error": 8
+  },
+  "frozen_checkpoint_SHA256": "7f74f099e9cb365528af3b05aab5d9e87d96eb2063f94efd28ed28cc0864a57b",
+  "grouping": "video,timeblock64; union actual wrong owner/current GT conflicts and numeric nearest competing-owner margin<=.05; merge same GT across cameras",
+  "horizons": [
+    16,
+    32,
+    64
+  ],
+  "hypotheses": [
+    {
+      "claim": "Prior frozen prefix selection understates or misclassifies lawful owner correction opportunities; complete TRAIN trajectories and native constrained interventions identify the evidence/action bottleneck",
+      "id": "E18_H1",
+      "reject": "fewer than8 independent safe TRAIN groups plus3 pre-reserved safe groups, anti-correction risk, absent owner evidence or native parity failure"
+    }
+  ],
+  "intervention_sampling": {
+    "available_error": 12,
+    "correct_control": 4,
+    "pre_reserved_control": 1,
+    "pre_reserved_error": 3
+  },
+  "learning_gate": {
+    "UNKNOWN_not_correction": true,
+    "anti_correction_negatives": true,
+    "fair_same_evidence_controls_required": true,
+    "full_cold_safety_required": true,
+    "pre_reserved_safe_groups": 3,
+    "safe_TRAIN_groups": 8
+  },
+  "max_H64_baselines": 16,
+  "max_H64_interventions": 64,
+  "max_alternative_actions": 4,
+  "max_census_videos": 4,
+  "max_intervention_groups": 16,
+  "max_main_hypotheses": 1,
+  "max_sampled_groups": 64,
+  "max_selected_state_replay_videos": 3,
+  "minimum_free_VRAM_MiB": 8192,
+  "native_solver": "original lawful_choice on remaining rows/columns, private DEFER; native MATCH/REACT/Bank/gallery unchanged; explicit feasibility checks, no fabricated second scoring round",
+  "new_training_updates": 0,
+  "owner": "earliest past-only singleGT>=3 and>=.8 known coverage remains immutable through mixtures; current pure support separate",
+  "scope": {
+    "DEV_used": false,
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      16
+    ],
+    "diagnostic": [
+      14
+    ],
+    "official_TEST": false,
+    "sealed": [
+      20,
+      21,
+      22
+    ]
+  },
+  "seed": 20261009,
+  "space": {
+    "home_reserve_GiB": 30,
+    "persistent_prefix_GiB": 2,
+    "runtime_GiB": 3
+  },
+  "status": "PREREGISTERED_BEFORE_NEW_TRAJECTORIES",
+  "workers_max": 6
+}
