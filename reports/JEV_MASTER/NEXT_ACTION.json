@@ -1,8 +1,4 @@
 {
-  "candidate_order": [
-    "MMPTRACK lawful TRAIN/VAL copy if available",
-    "SCOUT manual release with verified roles/license/identity quality; pseudo annotations ineligible"
-  ],
   "commands": [],
   "evidence": [
     {
@@ -10,32 +6,33 @@
       "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/EXISTING_SOURCE_ACCESS_AUDIT.json"
     },
     {
-      "SHA256": "3bf9252a044915edba1048309fa81e0e03561d7f26731306558fb49a34678c1d",
-      "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/WILDTRACK_OFFLINE_GT_INTERFACE_AUDIT.json"
+      "SHA256": "c61ead16e2e22643c8faaa1c5dd9ca067fa3c08f4a24d0311f820daf2d973f5c",
+      "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/SCOUT_ACCESS_TERMS_AUDIT.json"
     }
   ],
   "experiment": "INDEPENDENT_RESERVED_SOURCE",
   "gate_unchanged": {
+    "RESERVED_safe_independent": 1,
+    "TRAIN_safe_independent": 3,
     "qualified": false,
     "required_RESERVED": 3,
-    "required_TRAIN": 8,
-    "safe_RESERVED": 1,
-    "safe_TRAIN": 3
+    "required_TRAIN": 8
   },
-  "next_checks": [
-    "Identify lawful independent manual cohort and prospective roles",
-    "No more resampling current dev for favorable corrections",
-    "Native experiment stage requires explicit preregistration/resource/gate plan; no training before independent safety qualification"
+  "next_on_path_received": [
+    "Validate actual officialTRAIN/VAL roles and access provenance before label content",
+    "Freeze small manualGT files within64MiB; no wholearchive/image/model download",
+    "Audit unique IDs, timestamps, unknown cross-cohort identity dependencies and capture independence",
+    "Only then specify bounded native study; training/heldout do not unlock automatically"
   ],
+  "pending_user_input": "Provide server directory of an existing approved MMPTRACK TRAIN/VAL or SCOUT manual annotations; otherwise researcher completes normal access process.",
   "protected": [
-    "all original results/models",
-    "WILDTRACK author TEST last40",
-    "unselected TRAINtail40",
+    "all frozenPhaseV-XXI results",
+    "WILDTRACK authorTESTlast40",
     "VisionTrack20/21/22",
     "all officialTEST",
     "Full24"
   ],
-  "reason": "Existing WILDTRACK TRAIN input is available, but one historically exposed capture and zero newRESERVED. 276 declared IDs and one co-occurrence component do not certify safe independent action groups. No extra approval is required for ordinary reuse; real blocker is missing lawful independent validation evidence.",
+  "reason": "Both preferred MMPTRACK and SCOUT need legitimate research access. SCOUT normal flow additionally registers researcher information and verifies email; advertised annotations exceed64MiB. Existing WILDTRACK is availableTRAIN, not newRESERVED. No ordinary-step approval requirement is imposed.",
   "scientific_success": false,
-  "status": "NEED_INDEPENDENT_LAWFUL_MANUAL_COHORT"
+  "status": "NEED_APPROVED_SOURCE_PATH_AND_INDEPENDENT_COHORT"
 }

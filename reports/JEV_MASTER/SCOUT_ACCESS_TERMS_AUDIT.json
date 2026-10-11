@@ -1,0 +1,119 @@
+{
+  "GPU_seconds": 0,
+  "actor": {
+    "SHA256": "89bd076738049afa184ed92bc554f6e9a104648a6a6683a09a6e4e1fb71f039a",
+    "path": "/home/liuyeqiang/WWW_jev_master_audit/reproduction_tools/jev_master_scout_access.py"
+  },
+  "actor_commit": "6466bec61251222b2935b9312bb4ba5f16ae7233",
+  "advertised_annotations_package": {
+    "actual_transport_bytes": "NOT_MEASURED",
+    "exceeds_64_MiB_audit_budget": true,
+    "expanded_bytes": "NOT_MEASURED",
+    "unit": "MB as displayed by UI",
+    "value": 839.92
+  },
+  "assertions": [
+    {
+      "byte_offset": 990,
+      "meaning": "Researcher name is collected by the normal registration flow"
+    },
+    {
+      "byte_offset": 1003,
+      "meaning": "Institution is collected"
+    },
+    {
+      "byte_offset": 1027,
+      "meaning": "Research purpose is collected"
+    },
+    {
+      "byte_offset": 1043,
+      "meaning": "Terms acceptance is required by the UI"
+    },
+    {
+      "byte_offset": 1844,
+      "meaning": "Registration uses a POST request"
+    },
+    {
+      "byte_offset": 8599,
+      "meaning": "The normal download flow verifies the registered email"
+    },
+    {
+      "byte_offset": 9178,
+      "meaning": "Download authorization is requested before creating the archive link"
+    },
+    {
+      "byte_offset": 9288,
+      "meaning": "Download request identifies the registration record"
+    },
+    {
+      "byte_offset": 1866,
+      "meaning": "The UI performs external mutations; this audit executes none of them"
+    },
+    {
+      "byte_offset": 19033,
+      "meaning": "Dataset-specific terms are in the lazy download component"
+    },
+    {
+      "byte_offset": 19737,
+      "meaning": "Dataset portions require permission for redistribution"
+    },
+    {
+      "byte_offset": 6176,
+      "meaning": "The registration acknowledgement limits intended use"
+    },
+    {
+      "byte_offset": 11555,
+      "meaning": "Annotation package size is a UI advertisement, not measured archive bytes"
+    },
+    {
+      "byte_offset": 11607,
+      "meaning": "The advertised standalone annotation package is a tar.gz"
+    }
+  ],
+  "backend_authorization_live_behavior": "NOT_TESTED; static UI flow is evidence, not a claim about exploitability",
+  "classification": "NORMAL_DOWNLOAD_ACCESS_AND_BUDGET_NOT_ESTABLISHED_FOR_AGENT",
+  "dataset_terms": {
+    "attribution_required": true,
+    "classification": "Dataset-specific agreement; not inferred from JS dependency MIT licenses",
+    "privacy_ethics_conditions": true,
+    "provided_without_warranty": true,
+    "redistribution_requires_explicit_permission": true,
+    "registration_data_storage_disclosed": true,
+    "research_use_acknowledgement": true
+  },
+  "existing_budget_MiB": 64,
+  "existing_learning_gate_unchanged": true,
+  "lawful_next_route": "User-provided existing approved TRAIN/VAL copy or a normally authorized manual subset. Re-freeze actual source roles/quality/dependencies before reading labels; no inference from filenames alone.",
+  "native_actions": 0,
+  "new_GT_bytes": 0,
+  "new_image_bytes": 0,
+  "new_source_data_eligible": false,
+  "no_download_authorization_submitted": true,
+  "no_email_verification_submitted": true,
+  "no_external_registration_submitted": true,
+  "no_protected_archive_or_viewer_GT_requested": true,
+  "normal_access_flow": [
+    "Researcher registration with name/institution/email/purpose and terms",
+    "Registered email verification",
+    "Download authorization/logging",
+    "Archive link generated after successful authorization"
+  ],
+  "normal_role_audit": "No explicit independent participant/capture TRAIN/RESERVED manifest in this component",
+  "official_page": "https://scout.epfl.ch/download",
+  "protocol": {
+    "SHA256": "d7d4442864234d4e2921a2e73d75027722d90775f4a857e8088697b060607dcd",
+    "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/SCOUT_ACCESS_TERMS_PROTOCOL.json"
+  },
+  "route_binding": {
+    "SHA256": "98d289ced271f9d899f81a9f6d2ed3c0bfc9b6915a830c7b67cc355c12d59274",
+    "path": "/home/liuyeqiang/WWW_jev_master_audit_runtime/public_source_review_v1/scout_frontend.js"
+  },
+  "source": {
+    "SHA256": "6c3cf533abe69ff06aef8e21077219308e39c0f55358d9f7807de2a9306828b6",
+    "path": "/home/liuyeqiang/WWW_jev_master_audit_runtime/scout_access_review_v1/DownloadView-BzwziPJH.js"
+  },
+  "source_snapshot_bytes": 21088,
+  "source_url": "https://scout.epfl.ch/assets/DownloadView-BzwziPJH.js",
+  "status": "COMPLETE_PUBLIC_DOWNLOAD_FLOW_AUDIT",
+  "training": false
+}
