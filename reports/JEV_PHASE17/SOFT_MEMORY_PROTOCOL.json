@@ -1,0 +1,18 @@
+{
+  "status": "PREREGISTERED",
+  "rules": {
+    "E1": "all positive recency weights .25+.75exp(-age/40) in global/own/other mean; latest slot, raw Q4 and all metadata preserved",
+    "E2": "global WHO mean .5 raw observation mean +.5 equal-camera mean, own/other means and latest/Q4/metadata preserved"
+  },
+  "scope": "24 actual H32 prefixes per rule, TRAIN14 diagnostic only",
+  "full_gate": "no increase in known wrong-owner frames/perGT-camera episodes, false split or crossGT mixing at H8/16/32; conditional 3 reused DEV cold videos",
+  "learning_gate": "unchanged 8 independent safe corrections +3 reserved, full cold safety, fair controls",
+  "no_runtime_GT": true,
+  "all_observations_retained": true,
+  "parameters_not_tuned": true,
+  "raw_gallery_unchanged": true,
+  "positive_weights_are_not_ownership_certification": true,
+  "max_variants": 2,
+  "max_prefix_branches": 48,
+  "max_full_videos": 6
+}

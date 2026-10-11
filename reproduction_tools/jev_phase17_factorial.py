@@ -15,15 +15,15 @@ from gtr.modeling.jev_stage2.assignment import lawful_choice
 from run_jev_phase10_closed_loop import raw_predictions,metrics
 
 ARMS=['B0','B1','B2','B3']
-def run_case(video,arm,scope,entry=None,stop=None,live=False,case_name=None):
+def run_case(video,arm,scope,entry=None,stop=None,live=False,case_name=None,memory_factory=None,namespace="factorial",capture_limit=32):
  protect();assert video in (DEV if scope in ['cold','contract'] else TRAIN);torch.set_num_threads(1)
  torch.manual_seed(20261009);torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True
  values,frames,reader=cache_inputs(video);policy,checkpoint,training=load_policy('v3')
  prefix=converted_prefix(load_dense(entry['prefix']['path'],map_location='cuda:0')) if entry else None
  if entry:assert sha(entry['prefix']['path'])==entry['prefix']['SHA256']
  model=build_tracker(video,policy,react_learned=False,live=live);executor=attach(model,prefix=prefix)
- executor.memory_factory=lambda:FactorMemory(arm,prefix);executor.reset()
- folder=OUT/'factorial'/scope/arm/f'video{video:02d}'
+ executor.memory_factory=(lambda:memory_factory(prefix)) if memory_factory else (lambda:FactorMemory(arm,prefix));executor.reset()
+ folder=OUT/namespace/scope/arm/f'video{video:02d}'
  if entry:folder=folder/f'frame{entry["key"][1]:06d}_view{entry["key"][2]}_row{entry["row"]}'
  if case_name:folder=folder/case_name
  folder.mkdir(parents=True,exist_ok=True);assert not (folder/'RESULT.json').exists()
@@ -53,7 +53,7 @@ def run_case(video,arm,scope,entry=None,stop=None,live=False,case_name=None):
    indices,flag=executor.memory.admission.matching_indices(ref_id)
    if flag or not indices:fallback.append({'identity':ref_id,'reason':'pending_without_accepted' if indices else 'last_quarantined_real_observation','indices':indices or [len(executor.memory.raw_galleries[ref_id])-1]})
   row=dict(key=key,task=task,refs=d['refs'],rows=d['context'].get('rows',list(range(len(actual)))),original_logits=base.cpu().tolist(),actual_logits=actual.cpu().tolist(),original_assignment=original,actual_assignment=executed,changed_rows=changed,WHO_raw_SHA256=fingerprint({k:raw[k] for k in ['history_visual','history_mask','identity_meta','pair_evidence']}),WHO_safe_SHA256=fingerprint({k:safe[k] for k in ['history_visual','history_mask','identity_meta','pair_evidence']}),Q4_raw_SHA256=fingerprint(raw['commitment_features']),Q4_safe_SHA256=fingerprint(safe['commitment_features']),Q4_max_abs_delta=float((raw['commitment_features']-safe['commitment_features']).abs().max()) if raw['commitment_features'].numel() else 0,fallback=fallback)
-  if (changed or counter['queries']==1) and capture_count[0]<32:
+  if (changed or counter['queries']==1) and capture_count[0]<capture_limit:
    n=capture_count[0];p=folder/f'event{n:03d}.pt';torch.save({'raw_batch':raw,'safe_batch':safe,'actual_batch':d['batch'],'raw_memory':executor.memory.state_dict()['raw'],'trusted_memory':executor.memory.trusted.state_dict(),'admission':executor.memory.admission.state_dict(),'Gallery':executor.memory.raw_galleries},p);row['source_state']=ref(p);capture_count[0]+=1
    if changed and first_changed[0] is None:
     state=prefix_state(model,**pending_native);state['phase13_identity_meta']=executor.memory.state_dict();sp=folder/'FIRST_LOCAL_DIVERGENCE_NATIVE.pt';torch.save(state,sp);row['first_divergence_native']=ref(sp);row['first_divergence_fingerprint']=fingerprint(state);first_changed[0]=copy.deepcopy(row)
