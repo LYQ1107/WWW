@@ -15,7 +15,15 @@ def main():
   elif isinstance(x,list):
    for v in x:walk(v)
  sources=[read(p) for p in REPORTS.glob('*.json') if p.name!='ARTIFACT_SHA_MANIFEST.json']
- for x in sources:walk(x)
+ actors=set()
+ for x in sources:
+  walk(x);b=x.get('binding')
+  if b:
+   commit=b['source_commit'];actors.add(commit)
+   subprocess.run(['git','merge-base','--is-ancestor',commit,'HEAD'],cwd=ROOT,check=True)
+   for name,digest in b['source_SHA256'].items():
+    original=subprocess.check_output(['git','show',commit+':'+name],cwd=ROOT)
+    assert hashlib.sha256(original).hexdigest()==digest,('source not bound to commit',commit,name)
  for p in OUT.glob('*RESULT.json'):walk(read(p))
  provenance=read(OUT/'PROTOTYPE_PROVENANCE.json');walk(provenance)
  for path,digest in provenance['payload_hashes'].items():verify(path,digest)
@@ -33,6 +41,7 @@ def main():
  save(REPORTS/'ARTIFACT_SHA_MANIFEST.json',dict(status='PASS',files=files,
   prior_manifest=ref(prior_manifest),frozen_Phase19_files_verified=len(old['files']),
   referenced_evidence_files_verified=len(checked),new_feature_payloads_or_native_actions=0,
+  actual_source_actor_commits_verified=sorted(actors),
   reused_feature_payloads_verified=len(provenance['payload_hashes']),
   runtime_MiB=size(OUT)/2**20,runtime_cap_MiB=64,home_free_GiB=shutil.disk_usage(OUT).free/2**30,
   master_scientific_goal_complete=False,large_artifacts_server_only=True))
