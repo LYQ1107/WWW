@@ -1,0 +1,43 @@
+{
+  "claim": "No extra head was instantiated; published QA adapter is trained, not evidence that no training is required.",
+  "comparison": {
+    "SHA256": "f596750984da5fa403d8c84c7c1886c05dddc8e0611d52e85bf7dd2998ef45a8",
+    "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/VISUAL_JEV_COMPARISON.json"
+  },
+  "controls": {
+    "D0_GMT_GTA": {
+      "metrics": null,
+      "reason": "original GTA scores not captured in exact factorial frontend; frozen JEV logits are not GMT GTA",
+      "status": "NOT_RUN"
+    },
+    "D1_cosine": {
+      "rule": "max4slot cosine .75 frozen REACT threshold; numeric visual probe only, not native MATCH ownership control",
+      "status": "COMPLETE_DIAGNOSTIC"
+    },
+    "D2_pretrained": {
+      "new_head": false,
+      "status": "COMPLETE"
+    },
+    "D3_identity_task_LoRA": {
+      "metrics": null,
+      "reason": "qualified independent identity supervision unavailable",
+      "status": "NOT_RUN"
+    },
+    "D4_same_image_MLP_DeepSets_Attention": {
+      "metrics": null,
+      "reason": "qualified train/reserved correction supervision unavailable; no architecture superiority inference",
+      "status": "NOT_RUN"
+    },
+    "published_generic_QA_LoRA": {
+      "identity_task_training": false,
+      "new_head": false,
+      "status": "COMPLETE"
+    },
+    "trained_linear_head": {
+      "metrics": null,
+      "reason": "same qualification barrier",
+      "status": "NOT_RUN"
+    }
+  },
+  "status": "COMPLETE_WITH_UNQUALIFIED_CONTROLS_NOT_RUN"
+}

@@ -1,0 +1,649 @@
+{
+  "N_counts_questions_not_identity_candidates": true,
+  "deployment_qualification": false,
+  "environment": {
+    "CUDA": "11.8",
+    "GPU": "Tesla V100-DGXS-32GB",
+    "dtype": "float16",
+    "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+    "torch": "2.5.1+cu118"
+  },
+  "measurements": [
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        94.13768351078033,
+        91.01138263940811,
+        90.9009575843811
+      ],
+      "p50_amortized_ms": 91.01138263940811,
+      "p50_total_batch_ms": 91.01138263940811,
+      "p95_total_batch_ms": 94.13768351078033,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8570.84765625,
+      "prepare_ms": 9.951114654541016,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        94.13768351078033,
+        91.01138263940811,
+        90.9009575843811
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        91.65447950363159,
+        91.51888638734818,
+        91.59663319587708
+      ],
+      "p50_amortized_ms": 91.59663319587708,
+      "p50_total_batch_ms": 91.59663319587708,
+      "p95_total_batch_ms": 91.65447950363159,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8570.8544921875,
+      "prepare_ms": 9.951114654541016,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        91.65447950363159,
+        91.51888638734818,
+        91.59663319587708
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        145.59057354927063,
+        145.6495225429535,
+        144.97747272253036
+      ],
+      "p50_amortized_ms": 145.59057354927063,
+      "p50_total_batch_ms": 145.59057354927063,
+      "p95_total_batch_ms": 145.6495225429535,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 8579.9765625,
+      "prepare_ms": 9.951114654541016,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        145.59057354927063,
+        145.6495225429535,
+        144.97747272253036
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        90.90807661414146,
+        90.75357764959335,
+        90.3950072824955
+      ],
+      "p50_amortized_ms": 90.75357764959335,
+      "p50_total_batch_ms": 363.0143105983734,
+      "p95_total_batch_ms": 363.63230645656586,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8577.390625,
+      "prepare_ms": 28.564825654029846,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        363.63230645656586,
+        363.0143105983734,
+        361.580029129982
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        41.7725145816803,
+        41.82583838701248,
+        41.63673520088196
+      ],
+      "p50_amortized_ms": 41.7725145816803,
+      "p50_total_batch_ms": 167.0900583267212,
+      "p95_total_batch_ms": 167.30335354804993,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8608.328125,
+      "prepare_ms": 28.564825654029846,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        167.0900583267212,
+        167.30335354804993,
+        166.54694080352783
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        41.25239700078964,
+        41.56479053199291,
+        41.124558076262474
+      ],
+      "p50_amortized_ms": 41.25239700078964,
+      "p50_total_batch_ms": 165.00958800315857,
+      "p95_total_batch_ms": 166.25916212797165,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 8703.0791015625,
+      "prepare_ms": 28.564825654029846,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        165.00958800315857,
+        166.25916212797165,
+        164.4982323050499
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        91.11476223915815,
+        89.70540296286345,
+        89.86385632306337
+      ],
+      "p50_amortized_ms": 89.86385632306337,
+      "p50_total_batch_ms": 718.910850584507,
+      "p95_total_batch_ms": 728.9180979132652,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8577.4091796875,
+      "prepare_ms": 47.55517095327377,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        728.9180979132652,
+        717.6432237029076,
+        718.910850584507
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        34.67223234474659,
+        34.68186594545841,
+        34.95638072490692
+      ],
+      "p50_amortized_ms": 34.68186594545841,
+      "p50_total_batch_ms": 277.4549275636673,
+      "p95_total_batch_ms": 279.65104579925537,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8681.70556640625,
+      "prepare_ms": 47.55517095327377,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        277.3778587579727,
+        277.4549275636673,
+        279.65104579925537
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        25.58885980397463,
+        25.154736824333668,
+        25.122192688286304
+      ],
+      "p50_amortized_ms": 25.154736824333668,
+      "p50_total_batch_ms": 201.23789459466934,
+      "p95_total_batch_ms": 204.71087843179703,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 8854.67724609375,
+      "prepare_ms": 47.55517095327377,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        204.71087843179703,
+        201.23789459466934,
+        200.97754150629044
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        90.44393245130777,
+        93.47623959183693,
+        94.56654358655214
+      ],
+      "p50_amortized_ms": 93.47623959183693,
+      "p50_total_batch_ms": 1495.6198334693909,
+      "p95_total_batch_ms": 1513.0646973848343,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8587.14794921875,
+      "prepare_ms": 91.36472642421722,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        1447.1029192209244,
+        1495.6198334693909,
+        1513.0646973848343
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        32.514640130102634,
+        32.46777597814798,
+        32.5064267963171
+      ],
+      "p50_amortized_ms": 32.5064267963171,
+      "p50_total_batch_ms": 520.1028287410736,
+      "p95_total_batch_ms": 520.2342420816422,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8836.53759765625,
+      "prepare_ms": 91.36472642421722,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        520.2342420816422,
+        519.4844156503677,
+        520.1028287410736
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        17.47731026262045,
+        17.58694788441062,
+        17.579248640686274
+      ],
+      "p50_amortized_ms": 17.579248640686274,
+      "p50_total_batch_ms": 281.2679782509804,
+      "p95_total_batch_ms": 281.3911661505699,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 9111.10693359375,
+      "prepare_ms": 91.36472642421722,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        279.6369642019272,
+        281.3911661505699,
+        281.2679782509804
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        90.55764623917639,
+        90.51385172642767,
+        90.38950083777308
+      ],
+      "p50_amortized_ms": 90.51385172642767,
+      "p50_total_batch_ms": 2896.4432552456856,
+      "p95_total_batch_ms": 2897.8446796536446,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8601.95849609375,
+      "prepare_ms": 182.1501925587654,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        2897.8446796536446,
+        2896.4432552456856,
+        2892.4640268087387
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        31.05409466661513,
+        31.069512013345957,
+        31.09968453645706
+      ],
+      "p50_amortized_ms": 31.069512013345957,
+      "p50_total_batch_ms": 994.2243844270706,
+      "p95_total_batch_ms": 995.189905166626,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 9143.37451171875,
+      "prepare_ms": 182.1501925587654,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        993.7310293316841,
+        994.2243844270706,
+        995.189905166626
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        14.116441132500768,
+        14.176683267578483,
+        14.114790828898549
+      ],
+      "p50_amortized_ms": 14.116441132500768,
+      "p50_total_batch_ms": 451.72611624002457,
+      "p95_total_batch_ms": 453.65386456251144,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 9663.9658203125,
+      "prepare_ms": 182.1501925587654,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        451.72611624002457,
+        453.65386456251144,
+        451.67330652475357
+      ],
+      "variant": "pretrained"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        134.5449909567833,
+        132.8909993171692,
+        134.1683194041252
+      ],
+      "p50_amortized_ms": 134.1683194041252,
+      "p50_total_batch_ms": 134.1683194041252,
+      "p95_total_batch_ms": 134.5449909567833,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8696.8486328125,
+      "prepare_ms": 15.44547826051712,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        134.5449909567833,
+        132.8909993171692,
+        134.1683194041252
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        131.6976100206375,
+        132.2784349322319,
+        133.5030347108841
+      ],
+      "p50_amortized_ms": 132.2784349322319,
+      "p50_total_batch_ms": 132.2784349322319,
+      "p95_total_batch_ms": 133.5030347108841,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8696.85546875,
+      "prepare_ms": 15.44547826051712,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        131.6976100206375,
+        132.2784349322319,
+        133.5030347108841
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 1,
+      "amortized_ms_per_question": [
+        227.89109498262405,
+        241.01818352937698,
+        228.71389985084534
+      ],
+      "p50_amortized_ms": 228.71389985084534,
+      "p50_total_batch_ms": 228.71389985084534,
+      "p95_total_batch_ms": 241.01818352937698,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 8710.6513671875,
+      "prepare_ms": 15.44547826051712,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        227.89109498262405,
+        241.01818352937698,
+        228.71389985084534
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        145.3030239790678,
+        132.536843419075,
+        132.02145509421825
+      ],
+      "p50_amortized_ms": 132.536843419075,
+      "p50_total_batch_ms": 530.1473736763,
+      "p95_total_batch_ms": 581.2120959162712,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8703.3916015625,
+      "prepare_ms": 28.01664173603058,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        581.2120959162712,
+        530.1473736763,
+        528.085820376873
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        55.83298020064831,
+        55.725859478116035,
+        56.53552897274494
+      ],
+      "p50_amortized_ms": 55.83298020064831,
+      "p50_total_batch_ms": 223.33192080259323,
+      "p95_total_batch_ms": 226.14211589097977,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8788.2431640625,
+      "prepare_ms": 28.01664173603058,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        223.33192080259323,
+        222.90343791246414,
+        226.14211589097977
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 4,
+      "amortized_ms_per_question": [
+        59.63513441383839,
+        58.51844698190689,
+        58.60402435064316
+      ],
+      "p50_amortized_ms": 58.60402435064316,
+      "p50_total_batch_ms": 234.41609740257263,
+      "p95_total_batch_ms": 238.54053765535355,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 8854.025390625,
+      "prepare_ms": 28.01664173603058,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        238.54053765535355,
+        234.07378792762756,
+        234.41609740257263
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        135.30758302658796,
+        132.53783714026213,
+        131.59052934497595
+      ],
+      "p50_amortized_ms": 132.53783714026213,
+      "p50_total_batch_ms": 1060.302697122097,
+      "p95_total_batch_ms": 1082.4606642127037,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8703.41015625,
+      "prepare_ms": 50.140492618083954,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        1082.4606642127037,
+        1060.302697122097,
+        1052.7242347598076
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        47.659145668148994,
+        47.73225076496601,
+        47.64575511217117
+      ],
+      "p50_amortized_ms": 47.659145668148994,
+      "p50_total_batch_ms": 381.27316534519196,
+      "p95_total_batch_ms": 381.8580061197281,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 8917.22216796875,
+      "prepare_ms": 50.140492618083954,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        381.27316534519196,
+        381.8580061197281,
+        381.1660408973694
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 8,
+      "amortized_ms_per_question": [
+        39.0515448525548,
+        38.223122246563435,
+        35.86057387292385
+      ],
+      "p50_amortized_ms": 38.223122246563435,
+      "p50_total_batch_ms": 305.7849779725075,
+      "p95_total_batch_ms": 312.4123588204384,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 9017.99072265625,
+      "prepare_ms": 50.140492618083954,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        312.4123588204384,
+        305.7849779725075,
+        286.8845909833908
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        132.92736047878861,
+        133.66743456572294,
+        140.1127609424293
+      ],
+      "p50_amortized_ms": 133.66743456572294,
+      "p50_total_batch_ms": 2138.678953051567,
+      "p95_total_batch_ms": 2241.804175078869,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8713.14892578125,
+      "prepare_ms": 93.09304505586624,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        2126.837767660618,
+        2138.678953051567,
+        2241.804175078869
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        44.70927640795708,
+        44.772268272936344,
+        44.80597050860524
+      ],
+      "p50_amortized_ms": 44.772268272936344,
+      "p50_total_batch_ms": 716.3562923669815,
+      "p95_total_batch_ms": 716.8955281376839,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 9178.19482421875,
+      "prepare_ms": 93.09304505586624,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        715.3484225273132,
+        716.3562923669815,
+        716.8955281376839
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 16,
+      "amortized_ms_per_question": [
+        26.28496754914522,
+        25.843657553195953,
+        25.851850397884846
+      ],
+      "p50_amortized_ms": 25.851850397884846,
+      "p50_total_batch_ms": 413.62960636615753,
+      "p95_total_batch_ms": 420.55948078632355,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 9319.95166015625,
+      "prepare_ms": 93.09304505586624,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        420.55948078632355,
+        413.49852085113525,
+        413.62960636615753
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        134.60931763984263,
+        136.1071183346212,
+        135.2095203474164
+      ],
+      "p50_amortized_ms": 135.2095203474164,
+      "p50_total_batch_ms": 4326.704651117325,
+      "p95_total_batch_ms": 4355.427786707878,
+      "path": "independent_serial",
+      "peak_allocated_MiB": 8727.95947265625,
+      "prepare_ms": 341.0700783133507,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        4307.498164474964,
+        4355.427786707878,
+        4326.704651117325
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        42.87102399393916,
+        42.84682450816035,
+        42.83599881455302
+      ],
+      "p50_amortized_ms": 42.84682450816035,
+      "p50_total_batch_ms": 1371.0983842611313,
+      "p95_total_batch_ms": 1371.8727678060532,
+      "path": "independent_batch",
+      "peak_allocated_MiB": 9700.68798828125,
+      "prepare_ms": 341.0700783133507,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        1371.8727678060532,
+        1371.0983842611313,
+        1370.7519620656967
+      ],
+      "variant": "published_answer_LoRA"
+    },
+    {
+      "N": 32,
+      "amortized_ms_per_question": [
+        20.179616985842586,
+        20.09646617807448,
+        20.090973936021328
+      ],
+      "p50_amortized_ms": 20.09646617807448,
+      "p50_total_batch_ms": 643.0869176983833,
+      "p95_total_batch_ms": 645.7477435469627,
+      "path": "shared_prefix_batch",
+      "peak_allocated_MiB": 9953.279296875,
+      "prepare_ms": 341.0700783133507,
+      "scope": "decoded real crop montage, processor preparation separately measured, full vision/prefix/suffix/readout execution; excludes disk decoding and serving queue; diagnostic not online GMT FPS",
+      "total_batch_ms": [
+        645.7477435469627,
+        643.0869176983833,
+        642.9111659526825
+      ],
+      "variant": "published_answer_LoRA"
+    }
+  ],
+  "new_teacher_scene_FPS": null,
+  "online_GMT_new_teacher_latency": null,
+  "p95_is_max_of_three": true,
+  "repeated_questions_when_N_gt5": true,
+  "sample_repeats": 3,
+  "status": "COMPLETE_TEACHER_OFFLINE_DIAGNOSTIC"
+}
