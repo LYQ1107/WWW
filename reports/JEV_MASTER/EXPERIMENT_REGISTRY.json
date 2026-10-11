@@ -1,111 +1,28 @@
 {
   "experiments": [
     {
-      "commands": [],
+      "commands": [
+        [
+          "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+          "/home/liuyeqiang/WWW_jev_phase20/reproduction_tools/jev_phase20_anchor_audit.py"
+        ]
+      ],
+      "description": "Frozen50groups past-onlyfirst3ReID diagnostic; no native actions or training",
       "evidence": [
         {
-          "SHA256": "573a23b68088afbc7f40e14a4af65863342d619954ad50c8b8b2f9b3eddcc20e",
-          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/HISTORICAL_EXPOSURE_AUDIT.json"
-        },
-        {
-          "SHA256": "c803da8e5a12d8059070cf1adf479165086684338a002340bced6e9f59e75361",
-          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/SCOPE_GT_CACHE_PREFLIGHT.json"
+          "SHA256": "613c780dab79ba5cce75d10db9adff2972cee90c6c2c4622ff2823399d190749",
+          "path": "/home/liuyeqiang/WWW_jev_phase20/reports/JEV_PHASE20/PREREGISTRATION.json"
         }
       ],
-      "id": "E19_SCOPE_AUDIT",
+      "id": "E20_ANCHOR_AUDIT",
       "requires": [],
       "requires_learning_gate": false,
-      "status": "COMPLETE"
-    },
-    {
-      "actor_source_commit": "fad03f8df428b35e9c2745815353cd3b913c0f5f",
-      "commands": [],
-      "description": "same frozen Stage1 extraction for11 authorized videos",
-      "evidence": [
-        {
-          "SHA256": "fd81c602cc2822cfd438125eb5d0e30fcf3933a5cd310432218c6567099fe56f",
-          "path": "/home/liuyeqiang/WWW_jev_phase19_runtime/20261011_v1/cache_queue_v1/RESULT.json"
-        }
-      ],
-      "id": "E19_CACHE",
-      "progress_path": "/home/liuyeqiang/WWW_jev_phase19_runtime/20261011_v1/cache_queue_v1/PROGRESS.json",
-      "requires": [
-        "E19_SCOPE_AUDIT"
-      ],
-      "requires_learning_gate": false,
-      "result_path": "/home/liuyeqiang/WWW_jev_phase19_runtime/20261011_v1/cache_queue_v1/RESULT.json",
-      "status": "COMPLETE"
-    },
-    {
-      "actor_source_commit": "07ac1d5958c21cd35b50660edd551033cc41fc9b",
-      "commands": [],
-      "description": "complete native frozen V3 trajectories, observer-only ownership",
-      "evidence": [
-        {
-          "SHA256": "f4f12fcc25533a4218f24f4f77bedfdf9b77817c2446de349c72ed2cc8c18a99",
-          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/CENSUS_RESULTS_INDEX.json"
-        },
-        {
-          "SHA256": "b2e8dfd913e4e658a64fb1d60fa13c27415e2189252faf3e9ed1d217b03dc9a6",
-          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/ENGINEERING_ATTEMPTS.json"
-        }
-      ],
-      "final_repair_actor": "aae6738c2c16a87a9791913b102266e4b0dbffdc",
-      "id": "E19_CENSUS",
-      "progress_path": "/home/liuyeqiang/WWW_jev_phase19_runtime/20261011_v1/census_queue_v1/PROGRESS.json",
-      "requires": [
-        "E19_CACHE"
-      ],
-      "requires_learning_gate": false,
-      "result_path": "/home/liuyeqiang/WWW_jev_phase19_runtime/20261011_v1/census_queue_v1/RESULT.json",
-      "scheduling": "pipeline only completed immutable perception caches; total cache+census GPUworkers<=6, no new cache pending before overlap",
-      "status": "COMPLETE"
-    },
-    {
-      "actor_source_commit": "d4ccc31c1bb63665c9d35eb95f7bc9e1293dac78",
-      "commands": [],
-      "description": "16 fixed groups /66 real native branches, all complete",
-      "evidence": [
-        {
-          "SHA256": "8886cb3c345eb746e54ba485c743dd8c3668638237383ea46e2f98ef5ee30a13",
-          "path": "/home/liuyeqiang/WWW_jev_phase19_runtime/20261011_v1/intervention_queue_v1/RESULT.json"
-        },
-        {
-          "SHA256": "b76fbc6c221f2d52207a8050f9512f3bf4ec8cc7739f317f17f87e3feedce00f",
-          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/NATIVE_PAIRED_OWNER_OUTCOMES.json"
-        }
-      ],
-      "id": "E19_NATIVE_FUTURES",
-      "requires": [
-        "E19_CENSUS"
-      ],
-      "requires_learning_gate": false,
-      "status": "COMPLETE"
-    },
-    {
-      "commands": [],
-      "description": "honest independent safe supervision qualification",
-      "evidence": [
-        {
-          "SHA256": "dca52846912470b2cd433a80c726acc2ee4d0bdcffc5a31c8d1fa9b92c92dff9",
-          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/LEARNING_ELIGIBILITY.json"
-        },
-        {
-          "SHA256": "940bf90d8858aae204f70aaa56f5da2834a5f399ebe08ca70820128ea7a3bcff",
-          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/FINAL_GO_NO_GO.json"
-        }
-      ],
-      "id": "E19_QUALIFY",
-      "requires": [
-        "E19_NATIVE_FUTURES"
-      ],
-      "requires_learning_gate": false,
-      "status": "NO_GO"
+      "status": "PENDING"
     }
   ],
   "previous_registry": {
-    "SHA256": "8429d516566ab82cf63eaffdb08736a5c60661e068ffc235e52464b69a827d4f",
-    "path": "/home/liuyeqiang/WWW_jev_phase18/reports/JEV_MASTER/EXPERIMENT_REGISTRY.json"
+    "SHA256": "4dd4db702297357173a95770e8dafa960858aa4007e167cce5daea2850f3f466",
+    "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_MASTER/EXPERIMENT_REGISTRY.json"
   },
-  "run_id": "PHASE19_20261011_v1"
+  "run_id": "PHASE20_20261011_v1"
 }

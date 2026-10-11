@@ -1,7 +1,9 @@
 """Recoverable, evidence-hashed research progression; no implicit training/test unlock."""
 import argparse,subprocess
 from pathlib import Path
-if (Path(__file__).resolve().parents[1]/'reports/JEV_PHASE19/PREREGISTRATION.json').exists():
+if (Path(__file__).resolve().parents[1]/'reports/JEV_PHASE20/PREREGISTRATION.json').exists():
+ from jev_phase20_common import *
+elif (Path(__file__).resolve().parents[1]/'reports/JEV_PHASE19/PREREGISTRATION.json').exists():
  from jev_phase19_common import *
 elif (Path(__file__).resolve().parents[1]/'reports/JEV_PHASE18/PREREGISTRATION.json').exists():
  from jev_phase18_common import *
