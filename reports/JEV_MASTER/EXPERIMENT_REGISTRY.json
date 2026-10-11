@@ -17,37 +17,52 @@
     {
       "commands": [],
       "description": "WHO/Q4 native2x2",
-      "evidence": [],
+      "evidence": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/WHO_Q4_FACTORIAL.json",
+          "SHA256": "0047a1d4f77bdc5d0bef8b9b6c9eb824de6a3c7075c5a058fd96b93a8f451e81"
+        }
+      ],
       "id": "P2",
       "requires": [
         "P1"
       ],
       "requires_learning_gate": false,
-      "status": "RUNNING",
+      "status": "COMPLETE",
       "actor_source_commit": "3958c80",
       "progress_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/factorial_queue_v1/PROGRESS.json"
     },
     {
       "commands": [],
       "description": "first divergence and propagation",
-      "evidence": [],
+      "evidence": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/FIRST_DIVERGENCE.json",
+          "SHA256": "32c5af671f4e62a63d270adaf4cdb80a4875efa84d60bf1c3dffc9e848bcacda"
+        }
+      ],
       "id": "P3",
       "requires": [
         "P2"
       ],
       "requires_learning_gate": false,
-      "status": "PENDING"
+      "status": "COMPLETE"
     },
     {
       "commands": [],
       "description": "owner identifiability",
-      "evidence": [],
+      "evidence": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/OWNER_IDENTIFIABILITY.json",
+          "SHA256": "fea292bf002155fd09ecfeb463d3e4a08ac12dc6023abbe1e15863b4d4ca3b97"
+        }
+      ],
       "id": "P4",
       "requires": [
         "P3"
       ],
       "requires_learning_gate": false,
-      "status": "PENDING"
+      "status": "COMPLETE"
     },
     {
       "commands": [],
@@ -58,10 +73,13 @@
         "P4"
       ],
       "requires_learning_gate": false,
-      "status": "PENDING"
+      "status": "RUNNING",
+      "progress_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/teacher_inference/PROGRESS.json"
     },
     {
-      "commands": [],
+      "commands": [
+        "__REGISTER_AFTER_TEACHER_REVIEW__"
+      ],
       "description": "soft evidence weighting",
       "evidence": [],
       "id": "P6",
@@ -98,13 +116,18 @@
     {
       "commands": [],
       "description": "online and identity retrieval",
-      "evidence": [],
+      "evidence": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/IDENTITY_INDEX_RETRIEVAL.json",
+          "SHA256": "a923e7c4829b1e0817c82107dc43808a99a14e635ee4aebdcc0494824567c4e1"
+        }
+      ],
       "id": "P9",
       "requires": [
         "P3"
       ],
       "requires_learning_gate": false,
-      "status": "PENDING"
+      "status": "COMPLETE"
     },
     {
       "commands": [],
