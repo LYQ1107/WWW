@@ -15,7 +15,7 @@ IDSW归因：WHO单独+120、Q4单独+183，联合+1347；交互差分+1044。�
 
 96个前缀分支的原生/raw-memory/RNG起点相同。H8/16/32严格有害检查B1/B2/B3为15/3/17，局部收益组1/2/3；这些是重叠窗口，不能计独立样本。B3第三个局部组在旧XVI H64已混合+3、假拆分+1，不能成为长期安全标签；原XVI18次有害检查及2个安全组结论完整保留。错误传播按检测可观测owner错误连续帧计，缺失观测分段并右删失，UNKNOWN不当错或恢复。
 
-273个严格TRAIN首payload事件中，只有1个所选owner错误且合法正确owner候选可用的机会；不等同已经找到安全联合纠错动作。187个候选池超过16。12个困难组、261个全部合法候选进入离线teacher，不Top16、不比较独立softmax作全局排名。组按预注册video/owner/camera/time-block划分，跨相机同owner/time仍可能相关，未作独立样本显著性声明。C4只是余弦间隔代理，不能据此断言信息理论上不可辨识。
+273个严格TRAIN首payload事件中，按当前纯净历史口径有1个、按最早不可变owner敏感性口径有2个所选owner错误且合法正确owner候选可用的组；不等同已经找到安全联合纠错动作。187个候选池超过16。12个困难组、261个全部合法候选进入离线teacher，不Top16、不比较独立softmax作全局排名。组按预注册video/owner/camera/time-block划分，跨相机同owner/time仍可能相关，未作独立样本显著性声明。C4只是余弦间隔代理，不能据此断言信息理论上不可辨识。
 
 无新增head的Qwen预训练及公开通用QA LoRA的WHO准确率49.17%/28.93%，固定余弦探针95.45%；唯一机会中正确ID2与错误ID6都被视觉版本选为same。通用QA适配还失去假前提拒答能力。真实完整分词检查发现上游prefix/suffix拼接缺陷，保留原失败、在局部适配器中修复并用serial full forward重跑；新token全部验证通过。FP16数值parity或选项逆序仍失败，语义决定一致仅18/24组。原LM head无需新增head，但使用已训练的通用QA LoRA不能叫“不需要训练”。
 
@@ -58,3 +58,5 @@ Tiny、pilot、20k、matched4k、身份任务LoRA、新head、同图像MLP/DeepS
 ```
 
 精确模型revision、文件SHA、裁剪来源、包版本、GPU、actor源码SHA、原始结果SHA均在JSON中。校验阶段包括源码编译、真实原生状态/ID parity、WHO/Q4不变项断言、完整tokenization、M-RoPE/KV分叉、执行路径误差、选项逆序、真实GPU推理与未修改的MATLAB/TrackEval。原源码BPE缺陷、FP16/顺序资格失败不是测试PASS；所有科学负结果保留。
+
+补充owner敏感性：P4当前纯净历史与P3最早不变owner口径分开。敏感性复核的第二个机会video13/frame743/camera1/row5，其正确owner ID6最近视觉历史混合[6,7]，两个teacher都选different；不能据这些视觉选择证明GlobalID恢复。两种口径都不是经过真实候选干预确认的安全标签。新检查只复用已有状态/推理，无新增GPU实验。

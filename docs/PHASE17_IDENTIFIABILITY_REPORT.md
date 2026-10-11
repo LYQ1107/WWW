@@ -9,3 +9,7 @@
 对只到H32的配对实验，B1/B2/B3分别有1/2/3个局部安全收益组；B3新增的那个局部组在旧XVI H64已有混合和假拆分增加，不能升级为长期安全标签。保留原XVI的18次有害检查与2个安全组结论。
 
 下一项需要的证据是授权TRAIN内独立、合法正确候选存在的真实错误事件，以及相同证据的普通模型对照。现有前缀的相邻帧、多个H或多个相同owner别名不得扩充为独立训练样本。SEALED20/21/22继续封存。
+
+补充敏感性复核：上述240个known/2个wrong/1个机会采用“当前前缀仍单GT”的纯历史口径；P3错误传播采用最早已认证owner、后续混合仍保留该owner。后者在273个事件中248个known、5个wrong、2个错误且正确候选可用组，已记录OWNER_CERTIFICATION_SENSITIVITY；不能用纯历史口径替代不可变owner。第二个机会video13/frame743/camera1/row5也在原teacher样本中，正确owner ID6图像历史混合[6,7]，两个视觉版本均选different，不构成可靠所有权恢复。未新增推理、干预或标签升级。
+
+P4的available_stale_bank字段仅表示前缀存在Bank载荷，不表示某个ID通过native REACT资格；本轮P4主要审计MATCH候选，不能据该字段推断合法REACT owner存在。

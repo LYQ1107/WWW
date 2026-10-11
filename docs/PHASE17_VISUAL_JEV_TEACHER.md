@@ -6,7 +6,7 @@
 
 242个已知WHO对：预训练准确率49.17%、NLL1.949、ECE0.306；通用QA LoRA准确率28.93%、NLL1.875、ECE0.329。冻结余弦0.75探针准确率95.45%；相对其N01/N10分别为4/116和2/163。这是聚类在12组内的候选对诊断，不是独立样本显著性或公平架构归因。19个混合/未知对单独报告，不自动算错。假前提正确拒答分别97.70%和2.68%，QA适配不能保证迁移后的拒答。
 
-唯一具备合法正确owner的原生错误事件video16/frame21/camera0/row0：正确ID2与错误所选ID6，预训练给same概率0.99986/0.99970，QA LoRA给0.94128/0.92243，均选择same，无法可靠区分。这不证明所有VLM都无用，但本轮没有“数值证据不能区分、视觉teacher能够修复”的合格owner增益。D0原GMT GTA分数和D4同图像MLP/DeepSets/Attention没有在同前端完成，明确NOT_RUN，不能把图像或预训练带来的作用归因于JEV结构。身份任务LoRA及新增head训练也NOT_RUN。
+当前纯净历史口径下唯一具备合法正确owner的原生错误事件video16/frame21/camera0/row0：正确ID2与错误所选ID6，预训练给same概率0.99986/0.99970，QA LoRA给0.94128/0.92243，均选择same，无法可靠区分。这不证明所有VLM都无用，但本轮没有“数值证据不能区分、视觉teacher能够修复”的合格owner增益。D0原GMT GTA分数和D4同图像MLP/DeepSets/Attention没有在同前端完成，明确NOT_RUN，不能把图像或预训练带来的作用归因于JEV结构。身份任务LoRA及新增head训练也NOT_RUN。
 
 发现并保留上游分词缺陷：prepare_group分别分词prefix/suffix，未调用源码split_ids检查，真实完整分词与拼接不一致。原输出仍在teacher_inference。局部TokenVerifiedVDM改用真实完整tokenization的公共前缀，全部新候选验证拼接完全相同；teacher科学输出来自teacher_inference_v2的独立serial full forward。原失败与新输出均有SHA，不改外部源码、不放宽误差门槛。
 
@@ -15,3 +15,5 @@ V100 FP16缓存执行仍未全部通过0.05有效logit差、0.02概率差且决�
 N=1/4/8/16/32各1次warmup、3次CUDA同步测量，p95取3次最大值，样本很小。N32共享执行对serial中位数有6.41x/6.73x的诊断加速，每问14.12/20.10ms；N1反而变慢。N>5重复部分问题，K2/3/4/8/16采用重复不确定选项压力测试，不是多ID排序稳定性证明。这些数值不能作为合格在线MOT吞吐或25FPS证据；不同候选图像没有共享同一视觉prefix。
 
 结论：不扩大VLM，不接入在线逐帧控制器，不生成已验证纠错标签。优先审计原生候选/owner证据与数值控制器错误，资格满足后再比较同证据的轻量模型。
+
+不可变owner敏感性复核另发现video13/frame743/camera1/row5的机会，原12组teacher已包含该事件，未新增推理。正确owner ID6的图片历史混合[6,7]，两个视觉版本均判different；该混合视觉标签为UNKNOWN，不能把对图像混合的判断直接作为GlobalID纠错。敏感性原始probe见ANCHORED_TEACHER_PROBE_AUDIT。

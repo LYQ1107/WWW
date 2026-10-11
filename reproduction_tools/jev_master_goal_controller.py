@@ -38,6 +38,8 @@ def tick(execute=False):
    e['status']='EXECUTED_AWAITING_EVIDENCE_REVIEW';save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
   return action
  save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
+ if not active and goal['master_status']=='PIVOT_REQUIRED':
+  return read(MASTER/'NEXT_ACTION.json')
  action=dict(status='WAIT_FOR_EVIDENCE_REVIEW' if active else 'ROUND_COMPLETE_REQUIRES_SCIENTIFIC_REVIEW',active=active,master_status=goal['master_status'],scientific_success=False)
  save(MASTER/'NEXT_ACTION.json',action);return action
 if __name__=='__main__':
