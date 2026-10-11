@@ -16,8 +16,8 @@ def alternatives(refs,logits,cos,legal,original):
  for j in byscore+bycos:
   if refs[j] not in result:result.append(refs[j])
  return result[:3]+[None] if original is not None else result[:4]
-def main(video):
- protect();allowed(video);folder=OUT/'census_v1'/f'video{video:02d}';folder.mkdir(parents=True,exist_ok=True);assert not (folder/'RESULT.json').exists()
+def main(video,attempt='v1'):
+ protect();allowed(video);assert attempt in ['v1','v2'];folder=OUT/('census_'+attempt)/f'video{video:02d}';folder.mkdir(parents=True,exist_ok=True);assert not (folder/'RESULT.json').exists()
  torch.set_num_threads(1);torch.manual_seed(20261009);torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True
  policy,checkpoint,training=load_policy('v3');values,frames,reader=cache_inputs(video);model=build_tracker(video,policy);executor=attach(model);risk=MemoryRisk(video,reader)
  counts=collections.Counter();pending={};start=time.monotonic();heartbeat=[0]
@@ -49,7 +49,7 @@ def main(video):
    queries.flush();commits.flush();events.flush();save(folder/'PROGRESS.json',dict(status='RUNNING',key=key,total_frames=frames,elapsed_seconds=time.monotonic()-start,counts=dict(counts),pid=os.getpid()));heartbeat[0]=time.monotonic();print('CENSUS_PROGRESS',video,key,flush=True)
  executor.observer=before;executor.commit_observer=after
  try:
-  with torch.no_grad():run(model,values,frames)
+  with torch.no_grad():raw,_=run(model,values,frames)
  finally:queries.close();commits.close();events.close()
  with gzip.open(folder/'OWNER_TRACE.jsonl.gz','wt') as f:
   for r in risk.strong_trace:f.write(json.dumps(r)+'\n')
@@ -59,4 +59,4 @@ def main(video):
  result=dict(status='COMPLETE',raw_predictions=ref(predictions),strict_evaluation=evaluation,binding=binding(checkpoint=checkpoint,training=training),video=video,frames=frames,queries=ref(folder/'QUERIES.jsonl.gz'),commits=ref(folder/'COMMITS.jsonl.gz'),events=ref(folder/'EVENTS.jsonl.gz'),owner_trace=ref(folder/'OWNER_TRACE.jsonl.gz'),owner_propagation=risk.horizon((0,0),frames),counts=dict(counts),GT_actor_inputs=False,actual_native_mutated_state=True,seconds=time.monotonic()-start)
  save(folder/'RESULT.json',result);save(folder/'PROGRESS.json',dict(status='COMPLETE',result=ref(folder/'RESULT.json')));print('CENSUS_COMPLETE',video,dict(counts),flush=True)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);main(p.parse_args().video)
+ p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True);p.add_argument('--attempt',default='v1');a=p.parse_args();main(a.video,a.attempt)

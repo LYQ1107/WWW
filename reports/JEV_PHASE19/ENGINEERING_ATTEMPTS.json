@@ -1,0 +1,20 @@
+{
+  "status": "FIX_IMPLEMENTED",
+  "failed_actor": "07ac1d5958c21cd35b50660edd551033cc41fc9b",
+  "ordinary_errors": [
+    {
+      "case": "complete native forward then export",
+      "error": "raw forward return value not captured",
+      "recovery": "export cached frozen boxes/scores and exact actual committed IDs; one source-defined bootstrap is separately verified, no GT-created IDs or perception changes; original complete logs retained"
+    },
+    {
+      "case": "video04 frame627 view0 empty detection",
+      "error": "existing cache writer changes(0,1024) empty feature tensor into(0,0)",
+      "repair": "reader restores known empty feature schema only for zero-row payload; raw cache SHA and every nonempty feature unchanged; new native replay version for incomplete video"
+    }
+  ],
+  "max_engineering_retry_attempts": 2,
+  "current_repair_round": 1,
+  "no_parameter_tuning": true,
+  "no_old_artifact_overwrite": true
+}
