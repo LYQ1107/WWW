@@ -1,0 +1,37 @@
+{
+  "dataset_labels_or_images_downloaded": false,
+  "decision": "Prepare source-access and small metadata audit; no downloads, training or new native branches on external data before scope/data access established.",
+  "literature_notes": "Sources consulted to assess data access, annotation validity and independent validation feasibility, not evidence of JEV performance.",
+  "local_existing_dataset_directories": [
+    "AVIS",
+    "KITTI",
+    "Refer-DanceTrack",
+    "SportsMOT",
+    "VisionTrack"
+  ],
+  "no_new_dataset_path_established": true,
+  "sources": [
+    {
+      "acquisition": "Official site requests signed research terms and email; no agreement signed, request sent, or dataset accessed by this agent.",
+      "facts": "Official website: synchronized15FPS RGB and camera calibration, boundingboxeswithpersistentIDs, fiveenvironments, different participants train/validation/test.",
+      "feasibility": "Preferred if user has approved dataset copy; actual clip sizes, IDs, metadata quality and prior model exposure unverified.",
+      "name": "MMPTRACK",
+      "paper": "https://openaccess.thecvf.com/content/WACV2023/html/Han_MMPTRACK_Large-Scale_Densely_Annotated_Multi-Camera_Multiple_People_Tracking_Benchmark_WACV_2023_paper.html",
+      "url": "https://iccv2021-mmp.github.io/subpage/dataset.html"
+    },
+    {
+      "facts": "Official page: seven synchronized calibratedviews;400annotatedframes at2FPS.",
+      "feasibility": "Public alternative but one calibrated location/limited annotated times; not automatic source of independent trainvalidation or matched highFPS causal episodes. Download sizes and exposure unverified.",
+      "name": "WILDTRACK",
+      "url": "https://www.epfl.ch/labs/cvlab/data/data-wildtrack/"
+    },
+    {
+      "facts": "Official release news: manualcompleteannotationsfirst8camerasofsequence1;remainingcameras have automatedpseudo-labels thatmaybenoisy.",
+      "feasibility": "Only manuallyverifiedsubset could qualify; toolkit mentions splits but person/time disjointness, currently released manualvalidation and archivegranularity need audit. No pseudo-labels as strictGT.",
+      "name": "SCOUT",
+      "toolkit": "https://github.com/cvlab-epfl/scout_toolkit",
+      "url": "https://scout.epfl.ch/"
+    }
+  ],
+  "status": "OFFICIAL_SOURCE_DOCUMENTATION_AUDIT_ONLY"
+}
