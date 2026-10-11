@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=Path('/home/liuyeqiang/WWW_jev_phase21')
 for p in [SOURCE,SOURCE/'reproduction_tools',SOURCE/'third_party/CenterNet2']:sys.path.insert(0,str(p))
-OUT=Path(os.environ.get('JEV_MASTER_GTA_OUT','/home/liuyeqiang/WWW_jev_master_audit_runtime/20261011_v2'));OUT.mkdir(parents=True,exist_ok=True)
+OUT=Path(os.environ.get('JEV_MASTER_GTA_OUT','/home/liuyeqiang/WWW_jev_master_audit_runtime/20261011_v3'));OUT.mkdir(parents=True,exist_ok=True)
 REPORTS=ROOT/'reports/JEV_MASTER'
 def read(p):return json.loads(Path(p).read_text())
 def sha(p):
@@ -66,7 +66,10 @@ def main():
   prefix=load_dense(event['prefix']['path'],map_location='cpu');raw=load_dense(event['source_state']['path'],map_location='cpu')['raw_batch']
   video,frame,view,row=event['GT_free_event_key'];assert prefix['key']==[video,frame,view] and not prefix['first']
   begin=max(0,frame+1-model.test_len)*2;end=frame*2+view
-  assert len(prefix['instances'])==end+1
+  # The prefix includes both current-camera detections, even before camera0 commit.
+  assert len(prefix['instances'])==2*(frame+1)
+  # Strictly slice through the actual query, excluding uncommitted camera1.
+  assert end+1<=len(prefix['instances'])
   originals=prefix['instances'][begin:end+1];batch=[]
   for offset,inst in enumerate(originals):
    key=divmod(begin+offset,2);assert key<=tuple([frame,view])
@@ -110,7 +113,7 @@ def main():
    refs=refs,legal_refs=legal_refs,target_row=row,raw_GTA_scores=scores.tolist(),ranked_legal_refs=order,old_correct_owner_refs_OFFLINE=event['certified_correct_available'],
    rank_of_correct_owner=min([order.index(v)+1 for v in event['certified_correct_available'] if v in order],default=None),
    predictions=evaluated,prefix_VFCE_unchanged=True,current_VFCE_matches_original_query=True,repeat_max_score_delta=delta,
-   trajectory_draws=rngs[0],timing_ms=durations,window_start_payload=begin,window_payload_count=len(batch),
+   trajectory_draws=rngs[0],timing_ms=durations,window_start_payload=begin,window_payload_count=len(batch),uncommitted_same_scene_camera_excluded=len(prefix['instances'])-(end+1),
    GTA_input_dim=1152,available_cache_dim=1024,geometry_no_jitter=True,actual_source_camera_feature=True))
   save(OUT/'PARTIAL_CASES.json',cases);save(OUT/'PROGRESS.json',dict(status='RUNNING',group=index,completed=len(cases),total=12,pid=os.getpid(),seconds=time.monotonic()-start))
   print('COMMON_CACHE_GTA_GROUP',index,event['GT_free_event_key'],evaluated,flush=True)
