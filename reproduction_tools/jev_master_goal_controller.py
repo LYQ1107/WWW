@@ -8,10 +8,15 @@ def validate_evidence(paths):
 def tick(execute=False):
  protect();goal=read(MASTER/'MASTER_GOAL.json');registry=read(MASTER/'EXPERIMENT_REGISTRY.json')
  validate_evidence(read(MASTER/'EVIDENCE_REGISTRY.json')['entries'])
- by_id={e['id']:e for e in registry['experiments']}
+ by_id={e['id']:e for e in registry['experiments']};active=[]
  for e in registry['experiments']:
   validate_evidence(e['evidence'])
   if e['status'] in TERMINAL:continue
+  if e['status'] in {'RUNNING','EXECUTED_AWAITING_EVIDENCE_REVIEW'}:
+   progress=Path(e.get('progress_path','/missing'));result=Path(e.get('result_path','/missing'))
+   active.append(dict(experiment=e['id'],progress=read(progress) if progress.exists() else None,result_present=result.exists(),status=e['status']))
+   # An external live task is not a missing implementation. Continue independent work.
+   continue
   if not all(by_id[i]['status'] in TERMINAL for i in e['requires']):continue
   if e['requires_learning_gate']:
    gate=REPORTS/'LEARNING_ELIGIBILITY.json'
@@ -33,7 +38,7 @@ def tick(execute=False):
    e['status']='EXECUTED_AWAITING_EVIDENCE_REVIEW';save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
   return action
  save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
- action=dict(status='ROUND_COMPLETE_REQUIRES_SCIENTIFIC_REVIEW',master_status=goal['master_status'],scientific_success=False)
+ action=dict(status='WAIT_FOR_EVIDENCE_REVIEW' if active else 'ROUND_COMPLETE_REQUIRES_SCIENTIFIC_REVIEW',active=active,master_status=goal['master_status'],scientific_success=False)
  save(MASTER/'NEXT_ACTION.json',action);return action
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--execute-next',action='store_true');a=p.parse_args();print(json.dumps(tick(a.execute_next),indent=2))
