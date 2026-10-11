@@ -1,0 +1,39 @@
+"""Recoverable, evidence-hashed research progression; no implicit training/test unlock."""
+import argparse,subprocess
+from jev_phase17_common import *
+TERMINAL={'COMPLETE','NO_GO','NOT_RUN','BLOCKED_EVIDENCE'}
+def validate_evidence(paths):
+ for item in paths:
+  assert sha(item['path'])==item['SHA256'],('evidence changed',item['path'])
+def tick(execute=False):
+ protect();goal=read(MASTER/'MASTER_GOAL.json');registry=read(MASTER/'EXPERIMENT_REGISTRY.json')
+ validate_evidence(read(MASTER/'EVIDENCE_REGISTRY.json')['entries'])
+ by_id={e['id']:e for e in registry['experiments']}
+ for e in registry['experiments']:
+  validate_evidence(e['evidence'])
+  if e['status'] in TERMINAL:continue
+  if not all(by_id[i]['status'] in TERMINAL for i in e['requires']):continue
+  if e['requires_learning_gate']:
+   gate=REPORTS/'LEARNING_ELIGIBILITY.json'
+   if not gate.exists() or read(gate).get('qualified') is not True:
+    e.update(status='NOT_RUN',reason='No predeclared learning eligibility; no training executed',metrics=None)
+    continue
+  action=dict(status='READY' if e['commands'] else 'NEEDS_EXECUTABLE_IMPLEMENTATION',experiment=e['id'],reason=e['description'],commands=e['commands'])
+  save(MASTER/'NEXT_ACTION.json',action);goal.update(current_phase_status=e['id']+'_'+action['status'],next_experiment=e['id']);save(MASTER/'MASTER_GOAL.json',goal)
+  save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
+  if execute and e['commands']:
+   e['status']='RUNNING';save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
+   log=OUT/'controller'/e['id'];log.mkdir(parents=True,exist_ok=True)
+   for n,cmd in enumerate(e['commands']):
+    assert cmd[0]==PYTHON and Path(cmd[1]).name.startswith('jev_phase17_'),cmd
+    with (log/f'attempt_{time.time_ns()}_{n}.log').open('w') as stream:
+     p=subprocess.run(cmd,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT)
+    if p.returncode:
+     e.update(status='ENGINEERING_FAIL',returncode=p.returncode);save(MASTER/'EXPERIMENT_REGISTRY.json',registry);return action
+   e['status']='EXECUTED_AWAITING_EVIDENCE_REVIEW';save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
+  return action
+ save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
+ action=dict(status='ROUND_COMPLETE_REQUIRES_SCIENTIFIC_REVIEW',master_status=goal['master_status'],scientific_success=False)
+ save(MASTER/'NEXT_ACTION.json',action);return action
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--execute-next',action='store_true');a=p.parse_args();print(json.dumps(tick(a.execute_next),indent=2))

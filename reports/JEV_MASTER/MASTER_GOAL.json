@@ -1,0 +1,97 @@
+{
+  "active_hypotheses": [
+    {
+      "claim": "Hard admission changes WHO and/or Q4 causally and may reduce correct evidence continuity",
+      "experiments": "four cold-start arms on each DEV video and 24 frozen TRAIN prefixes with H32; first-divergence paired scoring at identical state",
+      "id": "H1",
+      "primary": "IDSW and qualified wrong-owner observed durations; separate UNKNOWN exposure",
+      "reject": "no verified state/score divergence or mixed-factor adapter fails exact B0 parity",
+      "versions": 1
+    },
+    {
+      "claim": "Past visual evidence can resolve at least some owner-conflicted legal candidates; bounded original-LM-head teacher may add evidence",
+      "experiments": "all frozen TRAIN prefixes and at most64 independent TRAIN difficult/conflict/time groups; at most one pretrained4B VLM and one licensed published adapter, no task LoRA without supervision qualification",
+      "id": "H2",
+      "primary": "independent correct-vs-wrong ownership, N01/N10 with abstention and alias masks",
+      "reject": "no correct legal owner or no reliable visual gain, cache parity failure; do not enlarge model"
+    },
+    {
+      "claim": "Soft evidence weighting preserves useful observations better than hard filtering",
+      "experiments": "at most2 distinct GT-free soft rules after H1/H2, same24 H32 prefixes; full3DEV only if native contract and prefix safety pass",
+      "id": "H3",
+      "primary": "paired harm/benefit independent clusters plus full IDSW/AssA, UNKNOWN",
+      "reject": "any qualified false merge/birth or longer perGT wrong episode in prefix gate; full IDSW>1.25x B0 or AssA drop>2pp; no tuning after failure"
+    }
+  ],
+  "artifact_registry": "reports/JEV_MASTER/EXPERIMENT_REGISTRY.json",
+  "conditions_for_final_evaluation": "qualified independent training/reserved validation and safety gates, frozen model and protocol; no automatic heldout access",
+  "current_phase": "XVII",
+  "current_phase_status": "P1_NEEDS_EXECUTABLE_IMPLEMENTATION",
+  "evidence_registry": "reports/JEV_MASTER/EVIDENCE_REGISTRY.json",
+  "final_scientific_objective": "Reliable online identity association, evidence memory and lawful reactivation with independently attributable gains",
+  "forbidden_data_scope": {
+    "Full24": true,
+    "controller_heldout": [
+      20,
+      21,
+      22
+    ],
+    "official_TEST": true
+  },
+  "frozen_reference": {
+    "commit": "666e2b922eb676b3552db0c6dc8b67b1b3978450",
+    "path": "/home/liuyeqiang/WWW_jev_phase16",
+    "repository": "https://github.com/LYQ1107/WWW"
+  },
+  "goal_id": "WWW_JEV_EVIDENCE_GROUNDED_IDENTITY_LIFECYCLE",
+  "master_status": "ACTIVE",
+  "next_experiment": "P1",
+  "paper_readiness": "NOT_READY; DEV reuse and independent JEV value not established",
+  "permitted_data_scope": {
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "annotation_manifest": "existing shared train.json parsed/hashed; selection only authorized videos; no extracted sealed labels",
+    "reused_DEV": [
+      17,
+      18,
+      19
+    ]
+  },
+  "rejected_hypotheses": [
+    {
+      "id": "XVI_hard_quarantine",
+      "result": "NO_GO_SAFE_MEMORY;96branches,18harmful prefix/H,2safe clusters; frozen-weight mechanism change, not new-model training failure"
+    }
+  ],
+  "remaining_authorized_budget": {
+    "GPU_workers_max": 6,
+    "cold_factorial_video_runs": 12,
+    "external_env_cap_GiB": 6,
+    "external_model_download_cap_GiB": 12,
+    "home_reserve_GiB": 30,
+    "horizon": 32,
+    "max_main_hypotheses": 3,
+    "new_training_updates_initially_authorized": 0,
+    "prefix_factorial_branches": 96,
+    "runtime_cap_GiB": 32,
+    "soft_full_runs_max": 6,
+    "soft_prefix_branches_max": 48,
+    "soft_rule_versions_max": 2,
+    "teacher_groups_max": 64
+  },
+  "scientific_success_criteria": [
+    "causal native safety",
+    "independent controller validation",
+    "fair strong baseline superiority or honest mechanism attribution",
+    "improved cross-camera retrieval reliability",
+    "runtime cost disclosure and deployment qualification",
+    "complete reproducible paper evidence"
+  ],
+  "target_conference": "WWW2027",
+  "tool_goal_completion": "A phase completion does not complete the master scientific goal",
+  "web_relevance": "Trustworthy continuously updated cross-camera identity index for multi-source online multimedia retrieval"
+}
