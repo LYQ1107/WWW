@@ -1,6 +1,10 @@
 """Recoverable, evidence-hashed research progression; no implicit training/test unlock."""
 import argparse,subprocess
-from jev_phase17_common import *
+from pathlib import Path
+if (Path(__file__).resolve().parents[1]/'reports/JEV_PHASE18/PREREGISTRATION.json').exists():
+ from jev_phase18_common import *
+else:
+ from jev_phase17_common import *
 TERMINAL={'COMPLETE','NO_GO','NOT_RUN','BLOCKED_EVIDENCE'}
 def validate_evidence(paths):
  for item in paths:
@@ -30,7 +34,7 @@ def tick(execute=False):
    e['status']='RUNNING';save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
    log=OUT/'controller'/e['id'];log.mkdir(parents=True,exist_ok=True)
    for n,cmd in enumerate(e['commands']):
-    assert cmd[0]==PYTHON and Path(cmd[1]).name.startswith('jev_phase17_'),cmd
+    assert cmd[0]==PYTHON and Path(cmd[1]).name.startswith('jev_phase'+str(goal.get('current_phase_number',17))+'_'),cmd
     with (log/f'attempt_{time.time_ns()}_{n}.log').open('w') as stream:
      p=subprocess.run(cmd,cwd=ROOT,stdout=stream,stderr=subprocess.STDOUT)
     if p.returncode:

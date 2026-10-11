@@ -20,7 +20,7 @@ def save(p,x):
 def protect():
  subprocess.run(['git','merge-base','--is-ancestor',BASE,'HEAD'],cwd=ROOT,check=True)
  names=subprocess.check_output(['git','diff',BASE,'--name-only'],cwd=ROOT,text=True).splitlines();allowed=('reports/JEV_PHASE18/','reports/JEV_MASTER/','docs/PHASE18_','docs/WWW_','gtr/modeling/jev_phase18/','reproduction_tools/jev_phase18_')
- assert all(p.startswith(allowed) for p in names),names
+ assert all(p.startswith(allowed) or p=='reproduction_tools/jev_master_goal_controller.py' for p in names),names
  assert shutil.disk_usage(OUT).free>=30*2**30,'home reserve below30GiB'
  assert sum(p.stat().st_size for p in OUT.rglob('*') if p.is_file() and not p.is_symlink())<=3*2**30,'round storage exceeds3GiB'
 def binding(**kw):

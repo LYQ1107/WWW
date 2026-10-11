@@ -2,6 +2,8 @@
   "experiments": [
     {
       "actor_source_commit": "006211cb32a03b5c4e24234e660d359e473d4dbd",
+      "commands": [],
+      "description": "E18_CENSUS",
       "evidence": [
         {
           "SHA256": "3df095f7cd88cda752943d13d5db0fd026bee1808e49181f68c489b0ba87ed32",
@@ -10,9 +12,12 @@
       ],
       "id": "E18_CENSUS",
       "requires": [],
+      "requires_learning_gate": false,
       "status": "COMPLETE"
     },
     {
+      "commands": [],
+      "description": "E18_SELECT",
       "evidence": [
         {
           "SHA256": "a5d5c872fe1797e6f172e6194e28e30c5e2c5c0c60d038b07e8c464d715d7ec7",
@@ -24,22 +29,33 @@
       "requires": [
         "E18_CENSUS"
       ],
+      "requires_learning_gate": false,
       "status": "COMPLETE"
     },
     {
+      "actor_source_commit": "41f1e853342ea0097b4a13ad30ad16302c8bd56a",
+      "commands": [],
+      "description": "E18_INTERVENE",
       "evidence": [],
       "id": "E18_INTERVENE",
+      "previous_success_actor": "b12020a6f29e30b0333562eef882eb4c95210b0e",
+      "progress_path": "/home/liuyeqiang/WWW_jev_phase18_runtime/20261011_v1/intervention_queue_v2/PROGRESS.json",
       "requires": [
         "E18_SELECT"
       ],
-      "status": "IMPLEMENTED_AWAITING_PINNED_EXECUTION"
+      "requires_learning_gate": false,
+      "result_path": "/home/liuyeqiang/WWW_jev_phase18_runtime/20261011_v1/intervention_queue_v2/RESULT.json",
+      "status": "RUNNING"
     },
     {
+      "commands": [],
+      "description": "E18_QUALIFY",
       "evidence": [],
       "id": "E18_QUALIFY",
       "requires": [
         "E18_INTERVENE"
       ],
+      "requires_learning_gate": false,
       "status": "PENDING"
     }
   ],
