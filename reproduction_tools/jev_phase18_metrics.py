@@ -18,6 +18,6 @@ class AuditedClearFuture(FrozenClearFuture):
    per_camera_future_CLEAR_IDSW=None,scene_frame_horizon_requested=horizon,
    scene_frames_observed=end-boundary[0],right_censored_at_video_end=end<boundary[0]+horizon,
    matching_history_retained_from_frame_zero=True,
-   evaluator=dict(self.evaluator,strict_clear_causal_gate_eligible=False,
+   evaluator=dict(self.evaluator,strict_clear_causal_gate_eligible=False,strict_GT_unique=False,
     status='NOT_EVALUABLE_DUPLICATE_GT_IN_PREFIX_OR_FUTURE',actual_duplicate_timesteps=invalid,
     raw_GT_unchanged=True,permissive_evaluation=False))

@@ -49,7 +49,7 @@ def compare(event,base,probe):
   if clear is not None and clear>0:harms.append('MORE_STRICT_CLEAR_IDSW')
   all_harms.update(harms)
   checks[str(h)]=dict(transitions=dict(transitions),introduced_harm_rows=dict(introduced),changed_ID_rows=dict(changed_assessed),anchored_target_split_repaired=target_repair,consequence_deltas=deltas,delta_strict_CLEAR_IDSW=clear,longer_GT_camera_episodes=longer,harm_reasons=harms,strict_CLEAR_evaluable=clear is not None)
- audit=probe['constraint'];other_accepted=[r for r in audit['changed_rows'] if r!=audit['row'] and audit['original_columns'][r]<len(audit['refs'])]
+ audit=probe['constraint'];other_accepted=[r for r in audit['changed_rows'] if r!=audit['row'] and 0<=audit['original_columns'][r]<len(audit['refs'])]
  return dict(event_key=event['event_key'],selection_index=event['selection_index'],split=event['split'],category=event['sampled_stratum'],variant=probe['variant'],reference=probe['reference'],BASE=ref(Path(base['owner_trace']['path']).parent/'RESULT.json'),PROBE=ref(Path(probe['owner_trace']['path']).parent/'RESULT.json'),H=checks,real_correction=bool(real),harm_reasons=sorted(all_harms),strict_CLEAR_all_H_evaluable=strict,safe_correction=bool(real and not all_harms and strict),owner_only_safe_diagnostic=bool(real and not all_harms),constraint=audit,other_original_MATCH_rows_reassigned=other_accepted)
 
 def coverage(events):
