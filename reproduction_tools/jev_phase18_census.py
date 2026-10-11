@@ -17,7 +17,7 @@ def alternatives(refs,logits,cos,legal,original):
   if refs[j] not in result:result.append(refs[j])
  return result[:3]+[None] if original is not None else result[:4]
 def main(video):
- protect();assert video in TRAIN+DIAGNOSTIC;folder=OUT/'census'/f'video{video:02d}';folder.mkdir(parents=True,exist_ok=True);assert not (folder/'RESULT.json').exists()
+ protect();assert video in TRAIN+DIAGNOSTIC;folder=OUT/'census_v2'/f'video{video:02d}';folder.mkdir(parents=True,exist_ok=True);assert not (folder/'RESULT.json').exists()
  torch.set_num_threads(1);torch.manual_seed(20261009);torch.backends.cudnn.benchmark=False;torch.backends.cudnn.deterministic=True
  policy,checkpoint,training=load_policy('v3');values,frames,reader=cache_inputs(video);model=build_tracker(video,policy,react_learned=False);executor=attach(model);risk=MemoryRisk(video,reader)
  counts=collections.Counter();pending={};start=time.monotonic();heartbeat=[0]
@@ -28,7 +28,7 @@ def main(video):
   if task!=0:
    for local,row in enumerate(d['context']['rows']):pending[row]['actual_REACT_refs']=refs;pending[row]['actual_REACT_legal']=legal[local].tolist()
    return
-  current_gt=risk.labels.current(*key);cos=x['pair_evidence'][0,:,:4].max(-1).values.cpu().tolist();assert len(current_gt)==len(score)
+  current_gt=risk.labels.current(*key);cos=x['pair_evidence'][0,:,:,:4].max(-1).values.cpu().tolist();assert len(current_gt)==len(score)
   owners=[risk.owner.get(r) for r in refs];pure=[];mixed=[];known_coverage=[]
   for r in refs:
    v=risk.votes[r];n=sum(v.values());pure.append(next(iter(v)) if len(v)==1 and n>=3 and n/max(1,risk.observations[r])>=.8 else None);mixed.append(len(v)>1);known_coverage.append(n/max(1,risk.observations[r]))
@@ -39,9 +39,9 @@ def main(video):
     best=cos[row][refs.index(closest)];close_conflict=sorted({owners[j] for j,r in enumerate(refs) if mask[j] and owners[j] is not None and best-cos[row][j]<=.05})
    pending[row]=dict(event_key=[video,*key,row],GT_OFFLINE=gt,refs=refs,legal=mask,owner_GT_OFFLINE=owners,current_pure_owner_GT_OFFLINE=pure,mixed_history=mixed,known_coverage=known_coverage,original_MATCH_ref=selected,original_MATCH_column=col,scores=score[row].tolist(),cosine=cos[row],alternatives_GT_free=alt,correct_owner_refs_OFFLINE=available,current_pure_correct_refs_OFFLINE=pure_available,numeric_Recall_at_K={str(k):bool(set(ranked[:k])&set(available)) if available else None for k in [1,4,8,16,32,len(ranked)]},alternative_owner_coverage_OFFLINE=bool(set(a for a in alt if a is not None)&set(available)) if available else None,numeric_close_owner_conflict_OFFLINE=close_conflict,actual_REACT_refs=None,actual_REACT_legal=None)
  def after(**d):
-  d['video']=video;risk.after(**d);inst=d['instances'][-1];ids=inst.track_ids.cpu().tolist();key=[d['frame'],d['view']];commits.write(json.dumps(dict(key=key,ids=ids,events=d['events'],committed_vectors_SHA=fingerprint(inst.reid_features),raw_memory_SHA=fingerprint(executor.memory.state_dict())))+'\n')
+  d['video']=video;past_owners=dict(risk.owner);risk.after(**d);inst=d['instances'][-1];ids=inst.track_ids.cpu().tolist();key=[d['frame'],d['view']];commits.write(json.dumps(dict(key=key,ids=ids,events=d['events'],committed_vectors_SHA=fingerprint(inst.reid_features),raw_memory_SHA=fingerprint(executor.memory.state_dict())))+'\n')
   for row,(ref,action) in enumerate(zip(ids,d['events'])):
-   item=pending.pop(row);gt=item['GT_OFFLINE'];owner=next((o for r,o in zip(item['refs'],item['owner_GT_OFFLINE']) if r==ref),risk.owner.get(ref));known=gt is not None and owner is not None;available=bool(item['correct_owner_refs_OFFLINE']);wrong=known and owner!=gt;correct=known and owner==gt;false_split=action['action']=='START_NEW' and available
+   item=pending.pop(row);gt=item['GT_OFFLINE'];owner=next((o for r,o in zip(item['refs'],item['owner_GT_OFFLINE']) if r==ref),past_owners.get(ref));known=gt is not None and owner is not None;available=bool(item['correct_owner_refs_OFFLINE']);wrong=known and owner!=gt;correct=known and owner==gt;false_split=action['action']=='START_NEW' and available
    category='UNKNOWN_CURRENT' if gt is None else 'AVAILABLE_ERROR' if (wrong or false_split) and available else 'UNAVAILABLE_ERROR' if wrong else 'CORRECT_CONTROL' if correct else 'UNKNOWN_OWNER_OR_NEW'
    item.update(actual_committed_ref=ref,actual_action=action['action'],owner_before_commit_OFFLINE=owner,known_owner=known,wrong_owner=wrong,correct_owner=correct,false_split_with_anchored_support=false_split,category=category,strict=video in TRAIN)
    events.write(json.dumps(item,allow_nan=False)+'\n');counts[category]+=1;counts['events']+=1;counts['legal_K_gt16']+=sum(item['legal'])>16

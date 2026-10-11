@@ -17,4 +17,4 @@ def queue(jobs,name):
   save(folder/'PROGRESS.json',dict(status='RUNNING',done=len(done),failed=len(failed),pending=len(pending),active=[dict(pid=pid,GPU=g,key=j['key']) for pid,(g,p,s,j) in active.items()],seconds=time.monotonic()-start))
   if active or pending:time.sleep(10)
  r=dict(status='COMPLETE' if not failed else 'ENGINEERING_FAIL',binding=binding(),done=done,failed=failed,launches=launches,seconds=time.monotonic()-start);save(folder/'RESULT.json',r);save(folder/'PROGRESS.json',r)
-if __name__=='__main__':queue([dict(key=f'census_video{v}',script='jev_phase18_census.py',args=['--video',str(v)],result=str(OUT/'census'/f'video{v:02d}/RESULT.json')) for v in TRAIN+DIAGNOSTIC],'census_queue_v1')
+if __name__=='__main__':queue([dict(key=f'census_video{v}',script='jev_phase18_census.py',args=['--video',str(v)],result=str(OUT/'census_v2'/f'video{v:02d}/RESULT.json')) for v in TRAIN+DIAGNOSTIC],'census_queue_v2')
