@@ -17,3 +17,6 @@ Phase XIX扩展11个授权视频，66真实native分支，最终只有3TRAIN＋1
 
 
 Phase XXI: fixed original12group/2weight execution audit, unchanged .05/.02/exact decision gates; compute-only preferred FP32_MATH. Option-order, independent teacher identity value and native deployment remain separate. One bound-reference memory repair; original failed attempt preserved. No new training/native actions/data.
+
+
+MASTER requirements audit: common-cache adapted GTA on existing12XVII target rows produced5correct/2wrong/5UNKNOWN; cosine5/1/6; nativeXVjoint choices6/2/4. GTA top1 equals cosine11/12; this is not originalGMT replay, matched-solver comparison, independent validation or newpolicy gain. Independent supervision remains3TRAIN/1RESERVED; originaltraininggate unchanged. Full completion evidence matrix and source-input limitations are recorded separately; master remainsPIVOT_REQUIRED/NOT_READY.
