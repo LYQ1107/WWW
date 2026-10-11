@@ -2,6 +2,37 @@
 from jev_phase19_common import *
 from jev_phase18_outcomes import compare, coverage
 import collections
+import gzip
+
+
+def verify_whole_census_protocol(events, protocol):
+    """Reproduce the frozen owner-conflict graph including unsampled bridges."""
+    parent={}
+    def find(x):
+        parent.setdefault(x,x)
+        if parent[x]!=x:parent[x]=find(parent[x])
+        return parent[x]
+    def union(a,b):
+        a=find(a);b=find(b)
+        if a!=b:parent[max(a,b)]=min(a,b)
+    for video in SCOPE:
+        census=read(census_case(video)/'RESULT.json')
+        source=census['events'];assert sha(source['path'])==source['SHA256']
+        with gzip.open(source['path'],'rt') as f:
+            for line in f:
+                e=json.loads(line);gt=e['GT_OFFLINE']
+                if gt is None:continue
+                a=(video,gt);find(a)
+                conflicts=list(e['numeric_close_owner_conflict_OFFLINE'])
+                if e['wrong_owner'] and e['owner_before_commit_OFFLINE'] is not None:
+                    conflicts.append(e['owner_before_commit_OFFLINE'])
+                for other in conflicts:union(a,(video,other))
+    reproduced={}
+    for e in events:
+        key=str(find((e['event_key'][0],e['GT_OFFLINE'])))
+        reproduced.setdefault(key,[]).append(e['selection_index'])
+    assert reproduced==protocol['qualification_components'],(reproduced,protocol['qualification_components'])
+    return True
 
 
 def qualify(protocol, events, safe):
@@ -23,6 +54,7 @@ def main():
     selected_protocol=read(REPORTS/'INDEPENDENCE_QUALIFICATION_PROTOCOL.json')
     whole_protocol=read(REPORTS/'WHOLE_CENSUS_DEPENDENCY_PROTOCOL.json')
     assert whole_protocol['original_intervention_events_SHA256']==sha(OUT/'selection/INTERVENTION_EVENTS.json')
+    assert verify_whole_census_protocol(events,whole_protocol)
     expected=sum(1+len(e['alternatives_GT_free']) for e in events)
     assert len(events)==16 and expected==66
     queue=read(OUT/'intervention_queue_v1/RESULT.json')
