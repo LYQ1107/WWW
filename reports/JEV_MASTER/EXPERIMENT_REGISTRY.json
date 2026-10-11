@@ -15,30 +15,30 @@
       "status": "COMPLETE"
     },
     {
+      "actor_source_commit": "3958c80",
       "commands": [],
       "description": "WHO/Q4 native2x2",
       "evidence": [
         {
-          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/WHO_Q4_FACTORIAL.json",
-          "SHA256": "0047a1d4f77bdc5d0bef8b9b6c9eb824de6a3c7075c5a058fd96b93a8f451e81"
+          "SHA256": "0047a1d4f77bdc5d0bef8b9b6c9eb824de6a3c7075c5a058fd96b93a8f451e81",
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/WHO_Q4_FACTORIAL.json"
         }
       ],
       "id": "P2",
+      "progress_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/factorial_queue_v1/PROGRESS.json",
       "requires": [
         "P1"
       ],
       "requires_learning_gate": false,
-      "status": "COMPLETE",
-      "actor_source_commit": "3958c80",
-      "progress_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/factorial_queue_v1/PROGRESS.json"
+      "status": "COMPLETE"
     },
     {
       "commands": [],
       "description": "first divergence and propagation",
       "evidence": [
         {
-          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/FIRST_DIVERGENCE.json",
-          "SHA256": "32c5af671f4e62a63d270adaf4cdb80a4875efa84d60bf1c3dffc9e848bcacda"
+          "SHA256": "32c5af671f4e62a63d270adaf4cdb80a4875efa84d60bf1c3dffc9e848bcacda",
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/FIRST_DIVERGENCE.json"
         }
       ],
       "id": "P3",
@@ -53,8 +53,8 @@
       "description": "owner identifiability",
       "evidence": [
         {
-          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/OWNER_IDENTIFIABILITY.json",
-          "SHA256": "fea292bf002155fd09ecfeb463d3e4a08ac12dc6023abbe1e15863b4d4ca3b97"
+          "SHA256": "fea292bf002155fd09ecfeb463d3e4a08ac12dc6023abbe1e15863b4d4ca3b97",
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/OWNER_IDENTIFIABILITY.json"
         }
       ],
       "id": "P4",
@@ -67,17 +67,24 @@
     {
       "commands": [],
       "description": "bounded no-new-head teacher",
-      "evidence": [],
+      "evidence": [
+        {
+          "SHA256": "3146aa585f5939f30f634a06779953689d03b1925a3bbf9900e203673d8fe0b1",
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/VISUAL_JEV_COMPARISON.json"
+        }
+      ],
       "id": "P5",
+      "progress_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/teacher_inference/PROGRESS.json",
       "requires": [
         "P4"
       ],
       "requires_learning_gate": false,
-      "status": "RUNNING",
-      "progress_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/teacher_inference/PROGRESS.json",
-      "result_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/teacher_inference_v2/RESULT.json"
+      "result_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/teacher_inference_v2/RESULT.json",
+      "scientific_qualification": "NO_GO",
+      "status": "COMPLETE"
     },
     {
+      "actor_source_commit": "6224eab",
       "commands": [
         [
           "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
@@ -85,48 +92,65 @@
         ]
       ],
       "description": "soft evidence weighting",
-      "evidence": [],
+      "evidence": [
+        {
+          "SHA256": "803db5019a3872252eb78b48653beb575446d483d8b8a40bbedb9c0ebc8c6f09",
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/SOFT_MEMORY_CAUSAL_RESULTS.json"
+        }
+      ],
       "id": "P6",
+      "progress_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/soft_queue_v1/PROGRESS.json",
       "requires": [
         "P3",
         "P4"
       ],
       "requires_learning_gate": false,
-      "status": "PENDING",
-      "progress_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/soft_queue_v1/PROGRESS.json",
       "result_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/soft_queue_v1/RESULT.json",
-      "actor_source_commit": "6224eab"
+      "scientific_qualification": "NO_GO",
+      "status": "COMPLETE"
     },
     {
       "commands": [],
       "description": "eligible tiny and pilot",
-      "evidence": [],
+      "evidence": [
+        {
+          "SHA256": "b8c9d16b43884dafb012ba936b32d190d7a90426d3382259320aeb867da59cee",
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/TRAINING_RESULTS.json"
+        }
+      ],
       "id": "P7",
       "requires": [
         "P5",
         "P6"
       ],
       "requires_learning_gate": true,
-      "status": "PENDING"
+      "scientific_qualification": "NOT_ESTABLISHED",
+      "status": "NOT_RUN"
     },
     {
       "commands": [],
       "description": "fair architecture comparisons",
-      "evidence": [],
+      "evidence": [
+        {
+          "SHA256": "b6fa496ebe03b84075974fa742f53dd9b2655a84f4b7e901945bfb02465438f0",
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/FAIR_BASELINE_RESULTS.json"
+        }
+      ],
       "id": "P8",
       "requires": [
         "P7"
       ],
       "requires_learning_gate": true,
-      "status": "PENDING"
+      "scientific_qualification": "NOT_ESTABLISHED",
+      "status": "NOT_RUN"
     },
     {
       "commands": [],
       "description": "online and identity retrieval",
       "evidence": [
         {
-          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/IDENTITY_INDEX_RETRIEVAL.json",
-          "SHA256": "a923e7c4829b1e0817c82107dc43808a99a14e635ee4aebdcc0494824567c4e1"
+          "SHA256": "a923e7c4829b1e0817c82107dc43808a99a14e635ee4aebdcc0494824567c4e1",
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/IDENTITY_INDEX_RETRIEVAL.json"
         }
       ],
       "id": "P9",
@@ -139,19 +163,30 @@
     {
       "commands": [],
       "description": "unified lifecycle evidence judgement",
-      "evidence": [],
+      "evidence": [
+        {
+          "SHA256": "4995e3106391001ed9416c1c9a55ed46b111396dc246e4147893d9c0e2cbb4b5",
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/FINAL_GO_NO_GO.json"
+        }
+      ],
       "id": "P10",
       "requires": [
         "P8",
         "P9"
       ],
       "requires_learning_gate": false,
-      "status": "PENDING"
+      "scientific_qualification": "NOT_ESTABLISHED",
+      "status": "COMPLETE"
     },
     {
       "commands": [],
       "description": "paper readiness and next goal",
-      "evidence": [],
+      "evidence": [
+        {
+          "SHA256": "4995e3106391001ed9416c1c9a55ed46b111396dc246e4147893d9c0e2cbb4b5",
+          "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/FINAL_GO_NO_GO.json"
+        }
+      ],
       "id": "P11",
       "requires": [
         "P5",
@@ -159,7 +194,8 @@
         "P9"
       ],
       "requires_learning_gate": false,
-      "status": "PENDING"
+      "scientific_qualification": "NOT_ESTABLISHED",
+      "status": "COMPLETE"
     }
   ],
   "run_id": "20261011_v1",

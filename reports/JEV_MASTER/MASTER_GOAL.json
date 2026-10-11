@@ -1,32 +1,15 @@
 {
-  "active_hypotheses": [
+  "active_hypotheses": [],
+  "artifact_registry": "reports/JEV_MASTER/EXPERIMENT_REGISTRY.json",
+  "completed_supported_hypotheses": [
     {
-      "claim": "Hard admission changes WHO and/or Q4 causally and may reduce correct evidence continuity",
-      "experiments": "four cold-start arms on each DEV video and 24 frozen TRAIN prefixes with H32; first-divergence paired scoring at identical state",
-      "id": "H1",
-      "primary": "IDSW and qualified wrong-owner observed durations; separate UNKNOWN exposure",
-      "reject": "no verified state/score divergence or mixed-factor adapter fails exact B0 parity",
-      "versions": 1
-    },
-    {
-      "claim": "Past visual evidence can resolve at least some owner-conflicted legal candidates; bounded original-LM-head teacher may add evidence",
-      "experiments": "all frozen TRAIN prefixes and at most64 independent TRAIN difficult/conflict/time groups; at most one pretrained4B VLM and one licensed published adapter, no task LoRA without supervision qualification",
-      "id": "H2",
-      "primary": "independent correct-vs-wrong ownership, N01/N10 with abstention and alias masks",
-      "reject": "no correct legal owner or no reliable visual gain, cache parity failure; do not enlarge model"
-    },
-    {
-      "claim": "Soft evidence weighting preserves useful observations better than hard filtering",
-      "experiments": "at most2 distinct GT-free soft rules after H1/H2, same24 H32 prefixes; full3DEV only if native contract and prefix safety pass",
-      "id": "H3",
-      "primary": "paired harm/benefit independent clusters plus full IDSW/AssA, UNKNOWN",
-      "reject": "any qualified false merge/birth or longer perGT wrong episode in prefix gate; full IDSW>1.25x B0 or AssA drop>2pp; no tuning after failure"
+      "id": "XVII_H1",
+      "result": "SUPPORTED_HARD_MEMORY_FAILURE_MECHANISM"
     }
   ],
-  "artifact_registry": "reports/JEV_MASTER/EXPERIMENT_REGISTRY.json",
   "conditions_for_final_evaluation": "qualified independent training/reserved validation and safety gates, frozen model and protocol; no automatic heldout access",
   "current_phase": "XVII",
-  "current_phase_status": "P5_TEACHER_RUNNING_P6_PREREGISTERED",
+  "current_phase_status": "ROUND_COMPLETE_DIAGNOSTICS_NO_QUALIFIED_LEARNING",
   "evidence_registry": "reports/JEV_MASTER/EVIDENCE_REGISTRY.json",
   "final_scientific_objective": "Reliable online identity association, evidence memory and lawful reactivation with independently attributable gains",
   "forbidden_data_scope": {
@@ -44,9 +27,10 @@
     "repository": "https://github.com/LYQ1107/WWW"
   },
   "goal_id": "WWW_JEV_EVIDENCE_GROUNDED_IDENTITY_LIFECYCLE",
-  "master_status": "ACTIVE",
-  "next_experiment": "P6_SOFT_EVIDENCE_WEIGHTING",
-  "paper_readiness": "NOT_READY; DEV reuse and independent JEV value not established",
+  "master_status": "PIVOT_REQUIRED",
+  "next_automatic_conditions": "New bounded preregistration on authorized TRAIN; native true-future interventions and >=8 independent safe +>=3 reserved groups with anti-correction negatives; fair controls and cold safety before learning. Outside current TRAIN requires documented necessity/split/resource impact and authorization.",
+  "next_experiment": "NEXT_ROUND_NATIVE_OWNER_CANDIDATE_EVIDENCE",
+  "paper_readiness": "NOT_READY",
   "permitted_data_scope": {
     "TRAIN": [
       12,
@@ -65,23 +49,22 @@
     {
       "id": "XVI_hard_quarantine",
       "result": "NO_GO_SAFE_MEMORY;96branches,18harmful prefix/H,2safe clusters; frozen-weight mechanism change, not new-model training failure"
+    },
+    {
+      "id": "XVII_H2",
+      "result": "NO_QUALIFIED_INCREMENTAL_VISUAL_OWNERSHIP_EVIDENCE"
+    },
+    {
+      "id": "XVII_H3",
+      "result": "REJECTED_TWO_FIXED_SOFT_RULES"
     }
   ],
   "remaining_authorized_budget": {
-    "GPU_workers_max": 6,
-    "cold_factorial_video_runs": 12,
-    "external_env_cap_GiB": 6,
-    "external_model_download_cap_GiB": 12,
-    "home_reserve_GiB": 30,
-    "horizon": 32,
-    "max_main_hypotheses": 3,
-    "new_training_updates_initially_authorized": 0,
-    "prefix_factorial_branches": 96,
-    "runtime_cap_GiB": 32,
-    "soft_full_runs_max": 6,
-    "soft_prefix_branches_max": 48,
-    "soft_rule_versions_max": 2,
-    "teacher_groups_max": 64
+    "conditional_full_runs_eligible": 0,
+    "new_training_updates": 0,
+    "remaining_rule_variants": 0,
+    "remaining_same_round_hypotheses": 0,
+    "sealed_unlock": false
   },
   "scientific_success_criteria": [
     "causal native safety",
