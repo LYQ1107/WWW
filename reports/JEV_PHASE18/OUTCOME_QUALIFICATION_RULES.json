@@ -1,0 +1,24 @@
+{
+  "status": "OPERATIONALIZED_BEFORE_AGGREGATE_OUTCOME_INSPECTION",
+  "implements": "PREREGISTRATION safety and UNKNOWN-not-correction rules; conservative diagnostic labels, not a learned online policy",
+  "pairing": "full native fingerprint, GT-free alternatives; align all detector rows by frame/view/row; physical offline GT must agree",
+  "real_correction": "known wrong\u2192known correct N01 or boundary anchored false-split birth\u2192known correct existing owner; UNKNOWN transitions never counted as corrections",
+  "harms_at_every_H": [
+    16,
+    32,
+    64
+  ],
+  "harm_checks": [
+    "any known correct\u2192known wrong N10",
+    "new mix/anchored false split/pure support split introduced at any row",
+    "increase in total wrong-owner observed frames",
+    "increase of longest observed wrong episode for any GT/camera",
+    "increase in evaluated strict future CLEAR IDSW",
+    "known correct\u2192UNKNOWN coverage loss"
+  ],
+  "safe_correction": "at least one real correction; none of the harm checks at any H; strict CLEAR must be evaluable at all H; all altered rows assessed, UNKNOWN disclosed",
+  "diagnostic_owner_only": "same checks except unevaluable CLEAR; never training safety label",
+  "independent_groups": "use frozen prospective cross-time components; mixed TRAIN/RESERVED cannot supply RESERVED; no resampling",
+  "unexecuted_actions": "value null; action-set coverage separate from policy performance",
+  "no_testing_or_training": true
+}
