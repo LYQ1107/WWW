@@ -1,0 +1,2147 @@
+{
+  "binding": {
+    "Full24": false,
+    "TRAIN": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "official_TEST": false,
+    "preregistration": {
+      "SHA256": "2020600f379ba067f6fa1c8f52212656e861876916fc59da664d3f6930787fab",
+      "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_PHASE17/PREREGISTRATION.json"
+    },
+    "reused_DEV": [
+      17,
+      18,
+      19
+    ],
+    "sealed_20_21_22": true,
+    "source_SHA256": {
+      "gtr/modeling/jev_phase17/__init__.py": "6205cdfaa0b7109a09dbf2945602e28e5d7384a899c9799b4148995f546c2f17",
+      "gtr/modeling/jev_phase17/factor_memory.py": "8e6be39d5794f5876404638ac9704b55235c96ea56100d3d5975bc141d415175",
+      "reproduction_tools/jev_phase17_common.py": "cbbcbde26db55f5c97110614945b1f60798f1ca8d70752ce09b35aef84347002",
+      "reproduction_tools/jev_phase17_external_audit.py": "ccd18dfc44467706895bf5e05f9cf1d24973f4232ed9862f899f9f0dd9a2b4f7",
+      "reproduction_tools/jev_phase17_integrity.py": "2ed817afc2d81a7366aaf63771512c052de49f77b3d167b9c2b85eb0107f2920"
+    },
+    "source_commit": "d52027037225388a5ad4803038d33fc997b90436"
+  },
+  "commercial_Jev_replication_claim": false,
+  "repositories": [
+    {
+      "IO": "one image/public context plus question/candidate lists -> masked logits and conditional option distributions",
+      "adaptation": "real past/current crop montage with provenance; binary compatible/unknown questions and Recall@K; no runtime4B rollout",
+      "commit": "a392eaedfa41adae348f9767b55c0f54b3a13b57",
+      "files": [
+        {
+          "SHA256": "25d66790bc28cf10f3bf2af532771cfbf9e16d4aecd8f693a9cc46ff4c96983a",
+          "core_functions": [],
+          "path": "README.md",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "e728b4bb4eb969650936daddccedf4c48cdbdfcac7a210b103be6eb11277681d",
+          "core_functions": [],
+          "path": "REPRODUCE.md",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "45cc2d8aac83dd08ddc1c578610e0a459f4b2d737b1561da7b62f1c4087cd474",
+          "core_functions": [
+            {
+              "line": 64,
+              "name": "PreparedGroup"
+            },
+            {
+              "line": 88,
+              "name": "DecisionHeads"
+            },
+            {
+              "line": 115,
+              "name": "VDM"
+            },
+            {
+              "line": 77,
+              "name": "n_questions"
+            },
+            {
+              "line": 81,
+              "name": "prefix_len"
+            },
+            {
+              "line": 92,
+              "name": "__init__"
+            },
+            {
+              "line": 103,
+              "name": "forward"
+            },
+            {
+              "line": 116,
+              "name": "__init__"
+            },
+            {
+              "line": 142,
+              "name": "option_token_ids"
+            },
+            {
+              "line": 148,
+              "name": "vl"
+            },
+            {
+              "line": 160,
+              "name": "vl_model"
+            },
+            {
+              "line": 165,
+              "name": "lm_head"
+            },
+            {
+              "line": 169,
+              "name": "dtype"
+            },
+            {
+              "line": 173,
+              "name": "_build_option_ids"
+            },
+            {
+              "line": 184,
+              "name": "prepare_group"
+            },
+            {
+              "line": 238,
+              "name": "encode_vision"
+            },
+            {
+              "line": 247,
+              "name": "_embed"
+            },
+            {
+              "line": 257,
+              "name": "_readout"
+            },
+            {
+              "line": 280,
+              "name": "run_independent"
+            },
+            {
+              "line": 298,
+              "name": "run_vision_cache"
+            },
+            {
+              "line": 315,
+              "name": "_pad_full"
+            },
+            {
+              "line": 332,
+              "name": "run_independent_batch"
+            },
+            {
+              "line": 358,
+              "name": "run_vision_cache_batch"
+            },
+            {
+              "line": 381,
+              "name": "_prefill_prefix"
+            },
+            {
+              "line": 398,
+              "name": "_fork"
+            },
+            {
+              "line": 414,
+              "name": "run_prefix_share"
+            },
+            {
+              "line": 433,
+              "name": "run_prefix_share_batch"
+            },
+            {
+              "line": 467,
+              "name": "forward_train"
+            },
+            {
+              "line": 496,
+              "name": "trainable"
+            }
+          ],
+          "path": "code/vdm/models/vdm_model.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "1a253be26d17ae1544c8a9c72f4f3ea4178f7746ffc5745e333d5da21157815b",
+          "core_functions": [
+            {
+              "line": 31,
+              "name": "prefix_text"
+            },
+            {
+              "line": 45,
+              "name": "suffix_text"
+            },
+            {
+              "line": 64,
+              "name": "option_token_strings"
+            },
+            {
+              "line": 69,
+              "name": "split_ids"
+            }
+          ],
+          "path": "code/vdm/models/prompts.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "32974d9dce169f2bf039fc055e6089f3c438720fa1fabd9958c0b3cca3fadad9",
+          "core_functions": [
+            {
+              "line": 45,
+              "name": "Cfg"
+            },
+            {
+              "line": 54,
+              "name": "set_seed"
+            },
+            {
+              "line": 58,
+              "name": "build_model"
+            },
+            {
+              "line": 82,
+              "name": "main"
+            },
+            {
+              "line": 158,
+              "name": "lr_at"
+            }
+          ],
+          "path": "code/vdm/training/train.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "fe12fc4b6b9bd4438d6f5ba93c2ec11a239d9db2b34abb38030afc3050a03450",
+          "core_functions": [
+            {
+              "line": 32,
+              "name": "masked_log_softmax"
+            },
+            {
+              "line": 39,
+              "name": "decision_logits"
+            },
+            {
+              "line": 52,
+              "name": "answer_sft_loss"
+            },
+            {
+              "line": 69,
+              "name": "decision_loss"
+            },
+            {
+              "line": 79,
+              "name": "answerability_loss"
+            },
+            {
+              "line": 86,
+              "name": "_pairs_by_base"
+            },
+            {
+              "line": 93,
+              "name": "sufficiency_rank_loss"
+            },
+            {
+              "line": 112,
+              "name": "consistency_loss"
+            },
+            {
+              "line": 144,
+              "name": "total_loss"
+            }
+          ],
+          "path": "code/vdm/training/losses.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "53695ec848b4b87f0b29aa567f8ef7f66f1872ced9d9308f577a3b0d293113f7",
+          "core_functions": [
+            {
+              "line": 15,
+              "name": "main"
+            }
+          ],
+          "path": "code/examples/quickstart.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "2ab8b8f2697a8b038d5cc8b83b87b2827d54e1f85205f36158f3c4cfd2c31d40",
+          "core_functions": [],
+          "path": "code/requirements.txt",
+          "reading_scope": "source inspected, not merely README"
+        }
+      ],
+      "license": "Apache-2.0",
+      "license_files": [
+        {
+          "SHA256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/Visual-Jev/LICENSE"
+        }
+      ],
+      "mechanism": "Qwen3-VL visual/public prefix with independent question/options suffixes; full-sequence M-RoPE slicing; attention KV clone; original LM option-token logits, optional typed heads",
+      "name": "Visual-Jev",
+      "not_portable": "K_MAX16 slot limit; Qwen3-VL DeepStack and current transformers API; noncausal public history must be prevented; hardware timings not GMT",
+      "paths": [
+        "README.md",
+        "REPRODUCE.md",
+        "code/vdm/models/vdm_model.py",
+        "code/vdm/models/prompts.py",
+        "code/vdm/training/train.py",
+        "code/vdm/training/losses.py",
+        "code/examples/quickstart.py",
+        "code/requirements.txt"
+      ],
+      "repo": "guanxuyu-sv/Visual-Jev",
+      "reuse": "LM readout and independently verified prefix/cache execution; offline teacher",
+      "source_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/Visual-Jev",
+      "training": "answer-SFT LoRA a2, original pretrained control, matched typed-head controls; no-new-head does not mean no training",
+      "url": "https://github.com/guanxuyu-sv/Visual-Jev"
+    },
+    {
+      "IO": "compiled shared state, typed questions, candidate token spans -> variable length candidate logits",
+      "adaptation": "typed WHO/OWNER/WRITE/OLD_OR_NEW with legal IDs; separate evidence and ownership reliability; compare ordinary Attention same evidence",
+      "commit": "5f775c4f6747216d6085d088c9004af66371638d",
+      "files": [
+        {
+          "SHA256": "24e5ed8fea6b8d217a307423fa42e20acdf324a5cf9f6584181bdf184f945761",
+          "core_functions": [],
+          "path": "README.md",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "7d8936721ca2fee70ce6d8bd12c80fabfcf00ad3f140262a0bbf8c296bc04825",
+          "core_functions": [
+            {
+              "line": 13,
+              "name": "ValenDualEncoder"
+            },
+            {
+              "line": 17,
+              "name": "__init__"
+            },
+            {
+              "line": 58,
+              "name": "_amp"
+            },
+            {
+              "line": 62,
+              "name": "_text_batch"
+            },
+            {
+              "line": 77,
+              "name": "_text_chunks"
+            },
+            {
+              "line": 95,
+              "name": "encode_state"
+            },
+            {
+              "line": 121,
+              "name": "encode_questions"
+            },
+            {
+              "line": 130,
+              "name": "score_questions"
+            },
+            {
+              "line": 145,
+              "name": "forward"
+            }
+          ],
+          "path": "valen/modeling/dual_encoder/model.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "7dc7292198dbf52e5f04e948d416d03090dc83796bfd704bdb02b0d4da7ce61b",
+          "core_functions": [
+            {
+              "line": 7,
+              "name": "Attention"
+            },
+            {
+              "line": 30,
+              "name": "FFN"
+            },
+            {
+              "line": 35,
+              "name": "FusionBlock"
+            },
+            {
+              "line": 48,
+              "name": "QuestionBlock"
+            },
+            {
+              "line": 67,
+              "name": "CandidateBlock"
+            },
+            {
+              "line": 87,
+              "name": "positions"
+            },
+            {
+              "line": 8,
+              "name": "__init__"
+            },
+            {
+              "line": 16,
+              "name": "_split"
+            },
+            {
+              "line": 19,
+              "name": "project_memory"
+            },
+            {
+              "line": 22,
+              "name": "forward"
+            },
+            {
+              "line": 31,
+              "name": "__init__"
+            },
+            {
+              "line": 36,
+              "name": "__init__"
+            },
+            {
+              "line": 42,
+              "name": "forward"
+            },
+            {
+              "line": 49,
+              "name": "__init__"
+            },
+            {
+              "line": 57,
+              "name": "forward"
+            },
+            {
+              "line": 68,
+              "name": "__init__"
+            },
+            {
+              "line": 75,
+              "name": "forward"
+            }
+          ],
+          "path": "valen/modeling/dual_encoder/layers.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "63b5970a8bfa121eff94d50ffd35e1fa8387f3af5abccc5f5b75381fb084fc34",
+          "core_functions": [
+            {
+              "line": 8,
+              "name": "head_signature"
+            },
+            {
+              "line": 26,
+              "name": "DecisionHead"
+            },
+            {
+              "line": 46,
+              "name": "MLPHead"
+            },
+            {
+              "line": 66,
+              "name": "role_features"
+            },
+            {
+              "line": 84,
+              "name": "RoleHead"
+            },
+            {
+              "line": 98,
+              "name": "RoleMLPHead"
+            },
+            {
+              "line": 108,
+              "name": "MixerBlock"
+            },
+            {
+              "line": 122,
+              "name": "MixerHead"
+            },
+            {
+              "line": 133,
+              "name": "build_head"
+            },
+            {
+              "line": 28,
+              "name": "__init__"
+            },
+            {
+              "line": 34,
+              "name": "forward"
+            },
+            {
+              "line": 39,
+              "name": "extract_features"
+            },
+            {
+              "line": 42,
+              "name": "score_features"
+            },
+            {
+              "line": 48,
+              "name": "__init__"
+            },
+            {
+              "line": 56,
+              "name": "extract_features"
+            },
+            {
+              "line": 61,
+              "name": "score_features"
+            },
+            {
+              "line": 73,
+              "name": "pool"
+            },
+            {
+              "line": 85,
+              "name": "__init__"
+            },
+            {
+              "line": 91,
+              "name": "extract_features"
+            },
+            {
+              "line": 94,
+              "name": "project"
+            },
+            {
+              "line": 100,
+              "name": "__init__"
+            },
+            {
+              "line": 104,
+              "name": "score_features"
+            },
+            {
+              "line": 109,
+              "name": "__init__"
+            },
+            {
+              "line": 116,
+              "name": "forward"
+            },
+            {
+              "line": 123,
+              "name": "__init__"
+            },
+            {
+              "line": 128,
+              "name": "score_features"
+            }
+          ],
+          "path": "valen/modeling/qwen/heads.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "ea45d4724bcafca559fc5a2a18092918b633746771c19da6554c29bc5f2cef64",
+          "core_functions": [
+            {
+              "line": 10,
+              "name": "collate_branches"
+            },
+            {
+              "line": 46,
+              "name": "branch_batches"
+            }
+          ],
+          "path": "valen/modeling/qwen/batching.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "4b1e0aec551fae0d1fb0503071c4a8956c99cd8ce63b3eb997477535ee49c744",
+          "core_functions": [
+            {
+              "line": 25,
+              "name": "validate_options"
+            },
+            {
+              "line": 44,
+              "name": "decision_reward"
+            },
+            {
+              "line": 53,
+              "name": "group_advantages"
+            },
+            {
+              "line": 63,
+              "name": "clipped_policy_loss"
+            },
+            {
+              "line": 75,
+              "name": "Rollout"
+            },
+            {
+              "line": 87,
+              "name": "RLCDObjective"
+            },
+            {
+              "line": 92,
+              "name": "__init__"
+            },
+            {
+              "line": 115,
+              "name": "prepare"
+            },
+            {
+              "line": 159,
+              "name": "loss"
+            },
+            {
+              "line": 162,
+              "name": "state_losses"
+            },
+            {
+              "line": 166,
+              "name": "loss_from_logits"
+            },
+            {
+              "line": 183,
+              "name": "state_dict"
+            }
+          ],
+          "path": "valen/training/rlcd.py",
+          "reading_scope": "source inspected, not merely README"
+        }
+      ],
+      "license": "Apache-2.0",
+      "license_files": [
+        {
+          "SHA256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+          "path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/Valen/LICENSE"
+        }
+      ],
+      "mechanism": "immutable fused state memory; QuestionBlock instruction/state attention; CandidateBlock reads question-specific evidence and shared projected state KV; candidate chunks retain order; shared scalar head",
+      "name": "Valen",
+      "not_portable": "new task heads and task training required; Qwen branch batching does not itself prove shared-prefix KV; not commercial TypeSafe architecture",
+      "paths": [
+        "README.md",
+        "valen/modeling/dual_encoder/model.py",
+        "valen/modeling/dual_encoder/layers.py",
+        "valen/modeling/qwen/heads.py",
+        "valen/modeling/qwen/batching.py",
+        "valen/training/rlcd.py"
+      ],
+      "repo": "Liuziyu77/Valen",
+      "reuse": "state/question/candidate decomposition and chunks preserving candidate identity",
+      "source_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/Valen",
+      "training": "SFT and explicit experimental GRPO-like RLCD with detached group rollouts, correctness/confidence reward, clipping, optional KL/Brier",
+      "url": "https://github.com/Liuziyu77/Valen"
+    },
+    {
+      "IO": "typed request state/questions -> Choice/Noul/Score distributions plus diagnostics",
+      "adaptation": "hash video/frame/camera/history/model/prompt/state version; reject unknown cache type; independently test chunk comparability instead of comparing softmaxes",
+      "commit": "474b50cabb325504dc0a4fb7622bd5a6f289c15d",
+      "files": [
+        {
+          "SHA256": "f9665c68714818dbea8edc1e80d0b0d86737537dd606ff53cff37aafb84d6bf4",
+          "core_functions": [
+            {
+              "line": 35,
+              "name": "BranchResult"
+            },
+            {
+              "line": 46,
+              "name": "EngineInfo"
+            },
+            {
+              "line": 59,
+              "name": "DecisionEngine"
+            },
+            {
+              "line": 60,
+              "name": "__init__"
+            },
+            {
+              "line": 116,
+              "name": "_upcast_head"
+            },
+            {
+              "line": 132,
+              "name": "_verify_slots"
+            },
+            {
+              "line": 154,
+              "name": "_render_prompt"
+            },
+            {
+              "line": 158,
+              "name": "_encode"
+            },
+            {
+              "line": 161,
+              "name": "_select_fork_mode"
+            },
+            {
+              "line": 193,
+              "name": "_prefix_and_suffix_ids"
+            },
+            {
+              "line": 209,
+              "name": "_readout"
+            },
+            {
+              "line": 218,
+              "name": "_run_sequential"
+            },
+            {
+              "line": 241,
+              "name": "_fork"
+            },
+            {
+              "line": 263,
+              "name": "_run_batched"
+            },
+            {
+              "line": 297,
+              "name": "_run_chunk"
+            },
+            {
+              "line": 326,
+              "name": "_plan_chunks"
+            },
+            {
+              "line": 334,
+              "name": "decide"
+            },
+            {
+              "line": 136,
+              "name": "one"
+            }
+          ],
+          "path": "qev/engine.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "2b03b290ee9328caa5e23bea8d92b6dbd8fff61152305bbe0e445ad4d1e7a132",
+          "core_functions": [
+            {
+              "line": 36,
+              "name": "local_model_dir"
+            },
+            {
+              "line": 50,
+              "name": "GraphMemoryLow"
+            },
+            {
+              "line": 54,
+              "name": "_host_available"
+            },
+            {
+              "line": 66,
+              "name": "_make_room"
+            },
+            {
+              "line": 86,
+              "name": "DecoderGraphs"
+            },
+            {
+              "line": 153,
+              "name": "_bucket"
+            },
+            {
+              "line": 157,
+              "name": "ForkGraphs"
+            },
+            {
+              "line": 304,
+              "name": "Prepared"
+            },
+            {
+              "line": 315,
+              "name": "MMDecisionEngine"
+            },
+            {
+              "line": 72,
+              "name": "low"
+            },
+            {
+              "line": 95,
+              "name": "__init__"
+            },
+            {
+              "line": 99,
+              "name": "__call__"
+            },
+            {
+              "line": 118,
+              "name": "_evict"
+            },
+            {
+              "line": 124,
+              "name": "clear"
+            },
+            {
+              "line": 127,
+              "name": "_capture"
+            },
+            {
+              "line": 169,
+              "name": "__init__"
+            },
+            {
+              "line": 177,
+              "name": "__call__"
+            },
+            {
+              "line": 212,
+              "name": "_drop_prefix"
+            },
+            {
+              "line": 217,
+              "name": "_evict"
+            },
+            {
+              "line": 229,
+              "name": "clear"
+            },
+            {
+              "line": 233,
+              "name": "_side_warmup"
+            },
+            {
+              "line": 243,
+              "name": "_capture_prefill"
+            },
+            {
+              "line": 270,
+              "name": "_capture_branch"
+            },
+            {
+              "line": 316,
+              "name": "__init__"
+            },
+            {
+              "line": 409,
+              "name": "_quantize"
+            },
+            {
+              "line": 420,
+              "name": "_init_slot_head"
+            },
+            {
+              "line": 432,
+              "name": "_readout_rows"
+            },
+            {
+              "line": 442,
+              "name": "_embed"
+            },
+            {
+              "line": 459,
+              "name": "_graph_call"
+            },
+            {
+              "line": 481,
+              "name": "_processor_kwargs"
+            },
+            {
+              "line": 484,
+              "name": "_normalize_on_gpu"
+            },
+            {
+              "line": 497,
+              "name": "_render_prompt"
+            },
+            {
+              "line": 501,
+              "name": "_prepare"
+            },
+            {
+              "line": 550,
+              "name": "_prefix_and_suffix_ids"
+            },
+            {
+              "line": 554,
+              "name": "_prefill"
+            },
+            {
+              "line": 561,
+              "name": "_run_single"
+            },
+            {
+              "line": 581,
+              "name": "_suffix_positions"
+            },
+            {
+              "line": 587,
+              "name": "_run_sequential"
+            },
+            {
+              "line": 610,
+              "name": "_run_batched"
+            },
+            {
+              "line": 644,
+              "name": "_run_chunk_mm"
+            },
+            {
+              "line": 672,
+              "name": "_full_logits"
+            },
+            {
+              "line": 687,
+              "name": "_set_media"
+            },
+            {
+              "line": 698,
+              "name": "decide"
+            },
+            {
+              "line": 717,
+              "name": "_select_fork_mode"
+            },
+            {
+              "line": 133,
+              "name": "run"
+            },
+            {
+              "line": 251,
+              "name": "run"
+            },
+            {
+              "line": 279,
+              "name": "run"
+            },
+            {
+              "line": 493,
+              "name": "on_gpu"
+            }
+          ],
+          "path": "qev/mm_engine.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "17dfae09e4dff47cb8ce80e172eba116f188b82b70c2777bd14fd9b8a71680de",
+          "core_functions": [
+            {
+              "line": 30,
+              "name": "PromptStyle"
+            },
+            {
+              "line": 51,
+              "name": "render_entry"
+            },
+            {
+              "line": 60,
+              "name": "render_state"
+            },
+            {
+              "line": 69,
+              "name": "RenderedQuestion"
+            },
+            {
+              "line": 83,
+              "name": "_options_block"
+            },
+            {
+              "line": 96,
+              "name": "render_question"
+            },
+            {
+              "line": 145,
+              "name": "state_block"
+            },
+            {
+              "line": 151,
+              "name": "build_messages"
+            },
+            {
+              "line": 79,
+              "name": "__post_init__"
+            }
+          ],
+          "path": "qev/prompt.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "bce4b7d353ac115a9e50aef284975ddeed9a3bb452e3fd928a556668705bc2f3",
+          "core_functions": [
+            {
+              "line": 19,
+              "name": "_Lenient"
+            },
+            {
+              "line": 23,
+              "name": "NoulCriteria"
+            },
+            {
+              "line": 28,
+              "name": "NoulQuestion"
+            },
+            {
+              "line": 34,
+              "name": "ChoiceQuestion"
+            },
+            {
+              "line": 48,
+              "name": "ScoreQuestion"
+            },
+            {
+              "line": 65,
+              "name": "SystemOneRequest"
+            },
+            {
+              "line": 77,
+              "name": "NoulAnswer"
+            },
+            {
+              "line": 82,
+              "name": "ChoiceAnswer"
+            },
+            {
+              "line": 89,
+              "name": "ScoreAnswer"
+            },
+            {
+              "line": 100,
+              "name": "Usage"
+            },
+            {
+              "line": 105,
+              "name": "SystemOneResponse"
+            },
+            {
+              "line": 111,
+              "name": "ModelMetadata"
+            },
+            {
+              "line": 117,
+              "name": "ModelMetadataList"
+            },
+            {
+              "line": 40,
+              "name": "_check"
+            },
+            {
+              "line": 54,
+              "name": "_check"
+            },
+            {
+              "line": 71,
+              "name": "_check"
+            }
+          ],
+          "path": "qev/schema.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "3fa6013a81c7e79a702afcdcc0ebd089bee7047590c18cc44708850f5aeda1ee",
+          "core_functions": [
+            {
+              "line": 13,
+              "name": "Calibration"
+            },
+            {
+              "line": 35,
+              "name": "softmax"
+            },
+            {
+              "line": 43,
+              "name": "fit_temperature"
+            },
+            {
+              "line": 75,
+              "name": "ece"
+            },
+            {
+              "line": 90,
+              "name": "adaptive_ece"
+            },
+            {
+              "line": 105,
+              "name": "brier"
+            },
+            {
+              "line": 109,
+              "name": "nll"
+            },
+            {
+              "line": 113,
+              "name": "tvd"
+            },
+            {
+              "line": 20,
+              "name": "temperature"
+            },
+            {
+              "line": 24,
+              "name": "load"
+            },
+            {
+              "line": 28,
+              "name": "save"
+            },
+            {
+              "line": 47,
+              "name": "nll"
+            }
+          ],
+          "path": "qev/calibrate.py",
+          "reading_scope": "source inspected, not merely README"
+        }
+      ],
+      "license": "Apache-2.0",
+      "license_files": [
+        {
+          "SHA256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/OneJev/LICENSE"
+        }
+      ],
+      "mechanism": "LM option readout; longest-common token prefix; deepcopy/fork attention KV plus conv/recurrent layer states; sequential fallback on fork/parity/OOM; cyclic order averaging; chunk-plus-none choices",
+      "name": "OneJev",
+      "not_portable": "chunk merger uses none mass heuristic; no guaranteed global posterior calibration. MM preparation key uses object identity, unsafe for in-place identity history mutation unless invalidated",
+      "paths": [
+        "qev/engine.py",
+        "qev/mm_engine.py",
+        "qev/prompt.py",
+        "qev/schema.py",
+        "qev/calibrate.py"
+      ],
+      "repo": "OmniJev/OneJev",
+      "reuse": "hybrid-state fork, memory bounds, rejection, temperature and calibration metrics",
+      "source_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/OneJev",
+      "training": "inference library with primitive/K temperature calibration, not task learning proof",
+      "url": "https://github.com/OmniJev/OneJev"
+    },
+    {
+      "IO": "stored observation/graph query plus actual retrieved candidates -> probabilities, graph routes and retrieved evidence",
+      "adaptation": "raw append-only Gallery plus reversible weights and source indices; appearance consistency distinct from owner correctness",
+      "commit": "7ab0c73c6d8f4f611ad252c1e6ba8083f8df0e44",
+      "files": [
+        {
+          "SHA256": "5c6b8fa0125994c3c1186d85309aa7e00f09a86e911302160a74655f81bd692d",
+          "core_functions": [
+            {
+              "line": 17,
+              "name": "RetrievalController"
+            },
+            {
+              "line": 18,
+              "name": "__init__"
+            },
+            {
+              "line": 21,
+              "name": "query"
+            },
+            {
+              "line": 31,
+              "name": "_query"
+            }
+          ],
+          "path": "memory/jev_mem_retrieval.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "c1cde01f332448eb733e721e48e265bf134dac7e9eb3e702639c397fe1dfed2b",
+          "core_functions": [
+            {
+              "line": 12,
+              "name": "MemoryAdmission"
+            },
+            {
+              "line": 26,
+              "name": "MemoryTypeScores"
+            },
+            {
+              "line": 34,
+              "name": "GraphNeeds"
+            },
+            {
+              "line": 43,
+              "name": "timestamp_value"
+            },
+            {
+              "line": 50,
+              "name": "node_state"
+            },
+            {
+              "line": 61,
+              "name": "cosine"
+            },
+            {
+              "line": 69,
+              "name": "find_candidates"
+            },
+            {
+              "line": 96,
+              "name": "WritePolicy"
+            },
+            {
+              "line": 161,
+              "name": "allocate_graph_budgets"
+            },
+            {
+              "line": 19,
+              "name": "score"
+            },
+            {
+              "line": 97,
+              "name": "__init__"
+            },
+            {
+              "line": 100,
+              "name": "memory_type"
+            },
+            {
+              "line": 108,
+              "name": "assess_observation"
+            },
+            {
+              "line": 125,
+              "name": "relations"
+            },
+            {
+              "line": 145,
+              "name": "add"
+            }
+          ],
+          "path": "memory/jev_mem_policies.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "2e8f4b8483e1da30f4e2d7d9d9ece227c3890dbb641f3d96ac7bbccff5ce8e9c",
+          "core_functions": [
+            {
+              "line": 10,
+              "name": "noul"
+            },
+            {
+              "line": 14,
+              "name": "observation_questions"
+            },
+            {
+              "line": 19,
+              "name": "admission_questions"
+            },
+            {
+              "line": 44,
+              "name": "memory_type_questions"
+            },
+            {
+              "line": 66,
+              "name": "relation_questions"
+            },
+            {
+              "line": 86,
+              "name": "consolidation_questions"
+            },
+            {
+              "line": 112,
+              "name": "routing_questions"
+            },
+            {
+              "line": 129,
+              "name": "stopping_questions"
+            },
+            {
+              "line": 146,
+              "name": "traversal_questions"
+            },
+            {
+              "line": 160,
+              "name": "choice_fixture"
+            }
+          ],
+          "path": "memory/jev_questions.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "278c877f25b5f9599c33480fe4424c31b3476762e772023e54ebeb194fdef4c4",
+          "core_functions": [
+            {
+              "line": 33,
+              "name": "JevUnavailable"
+            },
+            {
+              "line": 38,
+              "name": "CallBudget"
+            },
+            {
+              "line": 55,
+              "name": "ProbabilityResult"
+            },
+            {
+              "line": 64,
+              "name": "DecisionLog"
+            },
+            {
+              "line": 80,
+              "name": "JevClient"
+            },
+            {
+              "line": 45,
+              "name": "remaining_seconds"
+            },
+            {
+              "line": 48,
+              "name": "consume"
+            },
+            {
+              "line": 65,
+              "name": "__init__"
+            },
+            {
+              "line": 69,
+              "name": "emit"
+            },
+            {
+              "line": 81,
+              "name": "__init__"
+            },
+            {
+              "line": 98,
+              "name": "_get_sdk"
+            },
+            {
+              "line": 108,
+              "name": "retrieval_slot"
+            },
+            {
+              "line": 119,
+              "name": "close"
+            },
+            {
+              "line": 127,
+              "name": "__enter__"
+            },
+            {
+              "line": 130,
+              "name": "__exit__"
+            },
+            {
+              "line": 133,
+              "name": "probabilities"
+            },
+            {
+              "line": 140,
+              "name": "evaluate"
+            },
+            {
+              "line": 228,
+              "name": "_question_payload"
+            },
+            {
+              "line": 243,
+              "name": "_probability"
+            },
+            {
+              "line": 249,
+              "name": "_validate"
+            },
+            {
+              "line": 274,
+              "name": "_retry_after"
+            },
+            {
+              "line": 290,
+              "name": "_log"
+            },
+            {
+              "line": 295,
+              "name": "_failure"
+            }
+          ],
+          "path": "memory/jev_client.py",
+          "reading_scope": "source inspected, not merely README"
+        }
+      ],
+      "license": "MIT",
+      "license_files": [
+        {
+          "SHA256": "7eaabf482340080117c32a313b89b166c0a6a7fdd49f55185bfaa1b66e7f1894",
+          "path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/Jev-Mem/LICENSE"
+        }
+      ],
+      "mechanism": "existing MAGMA graph/vector retrieval; separate admission/type, candidate relation and stopping questions; real evidence traversal with node/edge/depth/call/deadline budgets; content-hash response cache",
+      "name": "Jev-Mem",
+      "not_portable": "text semantic entities and narrative timestamps are not GlobalID certification; remote service not authorised deployment",
+      "paths": [
+        "memory/jev_mem_retrieval.py",
+        "memory/jev_mem_policies.py",
+        "memory/jev_questions.py",
+        "memory/jev_client.py"
+      ],
+      "repo": "libingzheren/Jev-Mem",
+      "reuse": "keep source observations separate from association read view; query budgets and auditable fallback",
+      "source_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/Jev-Mem",
+      "training": "SDK/optional local backend; no identity tracking checkpoint here; mock fixtures explicitly labelled",
+      "url": "https://github.com/libingzheren/Jev-Mem"
+    },
+    {
+      "IO": "state/task/candidate action descriptions -> categorical/Boolean probabilities; environment execution supplies outcome data",
+      "adaptation": "do not equate local edge utility to joint assignment; actual executed branch outcomes and unknown/censored masks",
+      "commit": "76fdfc9ecdca45a9bcef17991a07d3041a87685a",
+      "files": [
+        {
+          "SHA256": "4f39babd5575e43d7acf3eca357329a93c60041f334bc2bd7424929bf9c0da86",
+          "core_functions": [
+            {
+              "line": 24,
+              "name": "dump"
+            },
+            {
+              "line": 28,
+              "name": "load_examples"
+            },
+            {
+              "line": 86,
+              "name": "DecisionModel"
+            },
+            {
+              "line": 144,
+              "name": "loss_for"
+            },
+            {
+              "line": 156,
+              "name": "prediction_record"
+            },
+            {
+              "line": 176,
+              "name": "evaluate"
+            },
+            {
+              "line": 195,
+              "name": "frozen_native_baseline"
+            },
+            {
+              "line": 237,
+              "name": "benchmark"
+            },
+            {
+              "line": 262,
+              "name": "main"
+            },
+            {
+              "line": 87,
+              "name": "__init__"
+            },
+            {
+              "line": 104,
+              "name": "forward"
+            }
+          ],
+          "path": "scripts/train_toy_decisions.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "a4aedc3b7ad25d875af67943bef6dbc017799f46c4ae0a845fc200e1866fa6cd",
+          "core_functions": [
+            {
+              "line": 34,
+              "name": "file_sha256"
+            },
+            {
+              "line": 42,
+              "name": "_nonempty_string"
+            },
+            {
+              "line": 46,
+              "name": "_action_identity"
+            },
+            {
+              "line": 54,
+              "name": "policy_target_kind"
+            },
+            {
+              "line": 61,
+              "name": "policy_target_usable"
+            },
+            {
+              "line": 76,
+              "name": "target_transform"
+            },
+            {
+              "line": 84,
+              "name": "validate_unified_records"
+            },
+            {
+              "line": 184,
+              "name": "read_unified_dataset"
+            },
+            {
+              "line": 202,
+              "name": "prepare_unified_examples"
+            },
+            {
+              "line": 232,
+              "name": "objective_for"
+            },
+            {
+              "line": 248,
+              "name": "population_weights"
+            },
+            {
+              "line": 273,
+              "name": "sampling_cell"
+            },
+            {
+              "line": 283,
+              "name": "validate_sampling_pools"
+            },
+            {
+              "line": 304,
+              "name": "BalancedQuestionSampler"
+            },
+            {
+              "line": 343,
+              "name": "loss_spec"
+            },
+            {
+              "line": 359,
+              "name": "TDTargetProvider"
+            },
+            {
+              "line": 492,
+              "name": "mixed_question_loss"
+            },
+            {
+              "line": 527,
+              "name": "summarize_predictions"
+            },
+            {
+              "line": 591,
+              "name": "evaluate_unified"
+            },
+            {
+              "line": 616,
+              "name": "parse_args"
+            },
+            {
+              "line": 675,
+              "name": "main"
+            },
+            {
+              "line": 311,
+              "name": "__init__"
+            },
+            {
+              "line": 325,
+              "name": "sample"
+            },
+            {
+              "line": 366,
+              "name": "__init__"
+            },
+            {
+              "line": 425,
+              "name": "targets"
+            },
+            {
+              "line": 482,
+              "name": "refresh"
+            },
+            {
+              "line": 760,
+              "name": "save_best"
+            }
+          ],
+          "path": "scripts/train_unified_games.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "c176e06d7088bafbf0fbe4ca7e2be05eef6f1f5c3bf00b2d946caa21cce42313",
+          "core_functions": [
+            {
+              "line": 25,
+              "name": "encode"
+            },
+            {
+              "line": 29,
+              "name": "digest"
+            },
+            {
+              "line": 33,
+              "name": "file_digest"
+            },
+            {
+              "line": 41,
+              "name": "source_hashes"
+            },
+            {
+              "line": 48,
+              "name": "environment_group"
+            },
+            {
+              "line": 61,
+              "name": "read_rows"
+            },
+            {
+              "line": 65,
+              "name": "write_json"
+            },
+            {
+              "line": 69,
+              "name": "factory"
+            },
+            {
+              "line": 77,
+              "name": "LocalEnvironments"
+            },
+            {
+              "line": 106,
+              "name": "RemoteEnvironments"
+            },
+            {
+              "line": 144,
+              "name": "serve"
+            },
+            {
+              "line": 163,
+              "name": "policy_request"
+            },
+            {
+              "line": 168,
+              "name": "outcome_question"
+            },
+            {
+              "line": 177,
+              "name": "outcome_request"
+            },
+            {
+              "line": 183,
+              "name": "behavior_distribution"
+            },
+            {
+              "line": 200,
+              "name": "choose"
+            },
+            {
+              "line": 209,
+              "name": "policy_identity"
+            },
+            {
+              "line": 223,
+              "name": "validate_cases"
+            },
+            {
+              "line": 235,
+              "name": "generate_cases"
+            },
+            {
+              "line": 276,
+              "name": "summarize"
+            },
+            {
+              "line": 296,
+              "name": "rollout"
+            },
+            {
+              "line": 429,
+              "name": "make_dataset"
+            },
+            {
+              "line": 519,
+              "name": "main"
+            },
+            {
+              "line": 78,
+              "name": "__init__"
+            },
+            {
+              "line": 81,
+              "name": "reset"
+            },
+            {
+              "line": 89,
+              "name": "step"
+            },
+            {
+              "line": 97,
+              "name": "close"
+            },
+            {
+              "line": 102,
+              "name": "describe"
+            },
+            {
+              "line": 107,
+              "name": "__init__"
+            },
+            {
+              "line": 115,
+              "name": "call"
+            },
+            {
+              "line": 126,
+              "name": "reset"
+            },
+            {
+              "line": 129,
+              "name": "step"
+            },
+            {
+              "line": 132,
+              "name": "close"
+            }
+          ],
+          "path": "scripts/unified_game_pipeline.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "b58abcd15ce7ec79452738e023b9a0e6362f3743d6f34eb35e9ba341c169b785",
+          "core_functions": [
+            {
+              "line": 9,
+              "name": "_validate"
+            },
+            {
+              "line": 19,
+              "name": "brier_loss"
+            },
+            {
+              "line": 29,
+              "name": "paired_brier_policy_loss"
+            },
+            {
+              "line": 63,
+              "name": "grouped_calibrated_loss"
+            }
+          ],
+          "path": "scripts/calibrated_objectives.py",
+          "reading_scope": "source inspected, not merely README"
+        }
+      ],
+      "license": "MIT",
+      "license_files": [
+        {
+          "SHA256": "c69c1bb0b33112f68f9e8ef7e91dd38ec59066fcba3f62f70cbc8c9c83cf6a8e",
+          "path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/NanoJev/LICENSE"
+        }
+      ],
+      "mechanism": "candidate semantic leaf paths; one padded backbone forward, shared scalar with optional candidate set attention, Boolean sigmoid / choice softmax; no generative decoding",
+      "name": "NanoJev",
+      "not_portable": "toy game transitions are not ownership labels or joint Hungarian utility; train_toy forward repeats prefix, sharing is separate optimisation",
+      "paths": [
+        "scripts/train_toy_decisions.py",
+        "scripts/train_unified_games.py",
+        "scripts/unified_game_pipeline.py",
+        "scripts/calibrated_objectives.py"
+      ],
+      "repo": "TianyuCodings/NanoJev",
+      "reuse": "target eligibility, action/outcome role separation, permutation tests and bounded execution feedback",
+      "source_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/NanoJev",
+      "training": "gold/valid teacher-distribution CE; unified policy and actual environment outcome roles; lagged-model Expected SARSA distinct from actual outcomes",
+      "url": "https://github.com/TianyuCodings/NanoJev"
+    },
+    {
+      "IO": "validated requests/model templates -> logits/probabilities plus token/runtime usage",
+      "adaptation": "serve offline teacher first; numerical/commit parity before replacing native execution; separately time total batch and amortized question",
+      "commit": "eae6b2d6dd06fb014118c99f660261cf4ecf04f9",
+      "files": [
+        {
+          "SHA256": "7c4e65bf8d807e076a3a0371f0442a519f882d9f27febbd6c8d6565ad2efedd2",
+          "core_functions": [
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 23,
+              "name": "_json"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 31,
+              "name": "_render_kev"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 53,
+              "name": "_indexed"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 70,
+              "name": "_answer"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 99,
+              "name": "_readout_positions"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 110,
+              "name": "_thisthat_question"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 151,
+              "name": "DecisionCompiler"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 152,
+              "name": "__init__"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 164,
+              "name": "_question"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 285,
+              "name": "_base"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 293,
+              "name": "_row"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 296,
+              "name": "encode"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 320,
+              "name": "user"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 385,
+              "name": "compile"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 482,
+              "name": "DecisionService"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 483,
+              "name": "__init__"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 499,
+              "name": "_probabilities"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 522,
+              "name": "_encode"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 551,
+              "name": "_score"
+            },
+            {
+              "extraction": "textual Python newer-syntax fallback",
+              "line": 560,
+              "name": "systemone"
+            }
+          ],
+          "path": "vllm_jev/decision.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "70524303fad91d21da4a998e93289d223b7f392df38c38d26ada0755d0be1dd1",
+          "core_functions": [
+            {
+              "line": 31,
+              "name": "ChoiceRequest"
+            },
+            {
+              "line": 41,
+              "name": "BatchChoiceRequest"
+            },
+            {
+              "line": 45,
+              "name": "SystemOneRequest"
+            },
+            {
+              "line": 62,
+              "name": "_gather_cancel_on_error"
+            },
+            {
+              "line": 73,
+              "name": "_compile_serialized"
+            },
+            {
+              "line": 88,
+              "name": "_JevService"
+            },
+            {
+              "line": 311,
+              "name": "_system_one"
+            },
+            {
+              "line": 510,
+              "name": "JevEndpointPlugin"
+            },
+            {
+              "line": 89,
+              "name": "__init__"
+            },
+            {
+              "line": 120,
+              "name": "_encode"
+            },
+            {
+              "line": 160,
+              "name": "_one_score"
+            },
+            {
+              "line": 174,
+              "name": "_token_scores"
+            },
+            {
+              "line": 212,
+              "name": "choice"
+            },
+            {
+              "line": 289,
+              "name": "noul"
+            },
+            {
+              "line": 312,
+              "name": "describe"
+            },
+            {
+              "line": 397,
+              "name": "answer"
+            },
+            {
+              "line": 514,
+              "name": "attach_router"
+            },
+            {
+              "line": 649,
+              "name": "init_state"
+            },
+            {
+              "line": 517,
+              "name": "prepare_choice"
+            },
+            {
+              "line": 531,
+              "name": "choice"
+            },
+            {
+              "line": 543,
+              "name": "batch"
+            },
+            {
+              "line": 570,
+              "name": "system_one"
+            }
+          ],
+          "path": "vllm_jev/endpoint.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "32ef3e3f52c3c7a0e61473339d1a5fcdac703ac15b38bafbcfbc3eef38f5477a",
+          "core_functions": [
+            {
+              "line": 14,
+              "name": "Node"
+            },
+            {
+              "line": 23,
+              "name": "ComponentEviction"
+            },
+            {
+              "line": 24,
+              "name": "__init__"
+            },
+            {
+              "line": 35,
+              "name": "_children"
+            },
+            {
+              "line": 40,
+              "name": "_is_leaf"
+            },
+            {
+              "line": 43,
+              "name": "_drop"
+            },
+            {
+              "line": 54,
+              "name": "_tombstone_mamba"
+            },
+            {
+              "line": 71,
+              "name": "touch"
+            },
+            {
+              "line": 81,
+              "name": "insert"
+            },
+            {
+              "line": 105,
+              "name": "enforce_caps"
+            },
+            {
+              "line": 125,
+              "name": "native_evicted"
+            },
+            {
+              "line": 155,
+              "name": "close_tenant"
+            },
+            {
+              "line": 164,
+              "name": "moved"
+            },
+            {
+              "line": 174,
+              "name": "reset"
+            }
+          ],
+          "path": "vllm_jev/prefix_components.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "669cbb393b329e79c6a5dfae7271ad31b2b18b1d2aa738a22f5c74f25a8c8372",
+          "core_functions": [
+            {
+              "line": 16,
+              "name": "_Runtime"
+            },
+            {
+              "line": 31,
+              "name": "install"
+            },
+            {
+              "line": 62,
+              "name": "initialize"
+            },
+            {
+              "line": 70,
+              "name": "remove_node"
+            },
+            {
+              "line": 75,
+              "name": "evict_blocks"
+            },
+            {
+              "line": 80,
+              "name": "close_tenant"
+            },
+            {
+              "line": 89,
+              "name": "refresh_locks"
+            },
+            {
+              "line": 100,
+              "name": "ready"
+            },
+            {
+              "line": 121,
+              "name": "cow_headroom"
+            },
+            {
+              "line": 130,
+              "name": "add_request"
+            },
+            {
+              "line": 193,
+              "name": "split"
+            },
+            {
+              "line": 213,
+              "name": "register"
+            },
+            {
+              "line": 219,
+              "name": "partial"
+            },
+            {
+              "line": 244,
+              "name": "discard_pending"
+            },
+            {
+              "line": 252,
+              "name": "free_request"
+            },
+            {
+              "line": 307,
+              "name": "native_evict"
+            },
+            {
+              "line": 313,
+              "name": "native_move"
+            },
+            {
+              "line": 319,
+              "name": "native_reset"
+            }
+          ],
+          "path": "vllm_jev/online_prefix.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "b8f1c8255518f88f081de412a0d2937b851e49aef8ba628b358b1ca703adf907",
+          "core_functions": [
+            {
+              "line": 9,
+              "name": "matmul_mode"
+            },
+            {
+              "line": 16,
+              "name": "configure_matmul"
+            }
+          ],
+          "path": "vllm_jev/precision.py",
+          "reading_scope": "source inspected, not merely README"
+        },
+        {
+          "SHA256": "287ad0dbe46471b7d35e77e3ce055d225552fc1600f49988a8790c35ed90f569",
+          "core_functions": [
+            {
+              "line": 21,
+              "name": "export_vjev"
+            },
+            {
+              "line": 95,
+              "name": "verify_vjev"
+            }
+          ],
+          "path": "vllm_jev/vjev_export.py",
+          "reading_scope": "source inspected, not merely README"
+        }
+      ],
+      "license": "Apache-2.0",
+      "license_files": [
+        {
+          "SHA256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/vllm-jev/LICENSE"
+        }
+      ],
+      "mechanism": "AsyncLLM encode pooling at readout positions; semaphore/compile lock, within-request dedup tasks and cancellation; request random salt; optional full/Mamba prefix eviction with active ref protection",
+      "name": "vllm-jev",
+      "not_portable": "version-sensitive private vLLM scheduler hooks; dedicated runtime required; acceleration alone no scientific benefit",
+      "paths": [
+        "vllm_jev/decision.py",
+        "vllm_jev/endpoint.py",
+        "vllm_jev/prefix_components.py",
+        "vllm_jev/online_prefix.py",
+        "vllm_jev/precision.py",
+        "vllm_jev/vjev_export.py"
+      ],
+      "repo": "mode-io/vllm-jev",
+      "reuse": "tenant salt, cache version, correct hybrid-component invalidation, cancellation and cold/warm accounting",
+      "source_path": "/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1/external/vllm-jev",
+      "training": "export/serving different public heads; not an identity-learning algorithm",
+      "url": "https://github.com/mode-io/vllm-jev"
+    }
+  ],
+  "runtime_reproduction_status": "NOT_YET_RUN",
+  "status": "COMPLETE_SOURCE_AUDIT"
+}

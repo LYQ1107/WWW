@@ -1,5 +1,5 @@
 """Immutable source manifest for six manually inspected external mechanisms."""
-import ast
+import ast,re
 from jev_phase17_common import *
 SPECS={
  'Visual-Jev':{'repo':'guanxuyu-sv/Visual-Jev','license':'Apache-2.0','paths':['README.md','REPRODUCE.md','code/vdm/models/vdm_model.py','code/vdm/models/prompts.py','code/vdm/training/train.py','code/vdm/training/losses.py','code/examples/quickstart.py','code/requirements.txt'],'mechanism':'Qwen3-VL visual/public prefix with independent question/options suffixes; full-sequence M-RoPE slicing; attention KV clone; original LM option-token logits, optional typed heads','training':'answer-SFT LoRA a2, original pretrained control, matched typed-head controls; no-new-head does not mean no training','IO':'one image/public context plus question/candidate lists -> masked logits and conditional option distributions','reuse':'LM readout and independently verified prefix/cache execution; offline teacher','not_portable':'K_MAX16 slot limit; Qwen3-VL DeepStack and current transformers API; noncausal public history must be prevented; hardware timings not GMT','adaptation':'real past/current crop montage with provenance; binary compatible/unknown questions and Recall@K; no runtime4B rollout'},
@@ -15,7 +15,11 @@ def main():
   for rel in spec['paths']:
    p=root/rel;assert p.is_file(),p;funcs=[]
    if p.suffix=='.py':
-    tree=ast.parse(p.read_text());funcs=[{'name':n.name,'line':n.lineno} for n in ast.walk(tree) if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef))]
+    try:
+     tree=ast.parse(p.read_text());funcs=[{'name':n.name,'line':n.lineno} for n in ast.walk(tree) if isinstance(n,(ast.FunctionDef,ast.AsyncFunctionDef,ast.ClassDef))]
+    except SyntaxError as error:
+     funcs=[{'name':m.group(1),'line':i+1,'extraction':'textual Python newer-syntax fallback'} for i,line in enumerate(p.read_text().splitlines()) if (m:=re.match(r'\s*(?:async )?(?:def|class) (\w+)',line))]
+     save(OUT/'engineering'/(name+'_'+p.name+'_AST.json'),dict(status='PYTHON_SYNTAX_VERSION_MISMATCH',python=sys.version,error=str(error),source=ref(p),repair='read-only textual symbol extraction; source unmodified'))
    files.append(dict(path=rel,SHA256=sha(p),core_functions=funcs,reading_scope='source inspected, not merely README'))
   licenses=[ref(p) for p in root.glob('LICENSE*') if p.is_file()]
   entries.append(dict(name=name,commit=head,url='https://github.com/'+spec['repo'],source_path=str(root),files=files,license_files=licenses,**spec))
