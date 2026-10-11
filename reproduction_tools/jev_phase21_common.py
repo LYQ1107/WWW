@@ -3,7 +3,8 @@ import hashlib,json,os,subprocess,sys,time,shutil
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'reproduction_tools'))
-OUT=Path('/home/liuyeqiang/WWW_jev_phase21_runtime/20261011_v1')
+OUT=Path(os.environ.get('JEV_PHASE21_OUT','/home/liuyeqiang/WWW_jev_phase21_runtime/20261011_v1'))
+OUT.mkdir(parents=True,exist_ok=True)
 REPORTS=ROOT/'reports/JEV_PHASE21';MASTER=ROOT/'reports/JEV_MASTER'
 PRIOR=Path('/home/liuyeqiang/WWW_jev_phase20')
 TEACHER=Path('/home/liuyeqiang/WWW_jev_phase17_runtime/20261011_v1')

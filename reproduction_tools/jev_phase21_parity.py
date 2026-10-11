@@ -28,7 +28,7 @@ def main():
     save(OUT/'PROGRESS.json',dict(status='VERIFYING_FROZEN_WEIGHTS',path=str(p),seconds=time.monotonic()-started))
     assert sha(p)==f['SHA256'];verified.append(f)
  def guard():
-  protect();assert time.monotonic()-started<1800,'preregistered wall limit reached'
+  protect();assert time.monotonic()-started<1620,'preregistered wall limit reached'
  for profile in pre['profiles']:
   guard();gc.collect();torch.cuda.empty_cache()
   free,_=torch.cuda.mem_get_info();assert free/2**20>=26000,'insufficient free VRAM for fixed FP32 admission budget'
@@ -91,7 +91,9 @@ def main():
      save(OUT/'PARTIAL_LATENCIES.json',latencies)
      save(OUT/'PROGRESS.json',dict(status='LATENCY_STRESS',profile=profile['name'],variant=variant,N=n,completed_tests=len(tests),seconds=time.monotonic()-started,pid=os.getpid()))
      print('VISUAL_LATENCY_DONE',profile['name'],variant,n,flush=True)
-  del model;gc.collect();torch.cuda.empty_cache()
+  # Bound method and final parameter references also own the previous model.
+  del model,method,param;gc.collect();torch.cuda.empty_cache()
+  save(OUT/('RELEASE_'+profile['name']+'.json'),dict(free_MiB=torch.cuda.mem_get_info()[0]/2**20,allocated_MiB=torch.cuda.memory_allocated()/2**20))
  assert len(tests)==72
  summaries={}
  for p in pre['profiles']:
