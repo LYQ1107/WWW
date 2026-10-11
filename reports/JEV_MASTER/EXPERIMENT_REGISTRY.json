@@ -1,79 +1,70 @@
 {
+  "run_id": "PHASE19_20261011_v1",
+  "previous_registry": {
+    "path": "/home/liuyeqiang/WWW_jev_phase18/reports/JEV_MASTER/EXPERIMENT_REGISTRY.json",
+    "SHA256": "8429d516566ab82cf63eaffdb08736a5c60661e068ffc235e52464b69a827d4f"
+  },
   "experiments": [
     {
-      "actor_source_commit": "006211cb32a03b5c4e24234e660d359e473d4dbd",
-      "commands": [],
-      "description": "E18_CENSUS",
-      "evidence": [
-        {
-          "SHA256": "3df095f7cd88cda752943d13d5db0fd026bee1808e49181f68c489b0ba87ed32",
-          "path": "/home/liuyeqiang/WWW_jev_phase18/reports/JEV_PHASE18/COMPLETE_NATIVE_OWNER_CENSUS.json"
-        }
-      ],
-      "id": "E18_CENSUS",
+      "id": "E19_SCOPE_AUDIT",
+      "status": "COMPLETE",
       "requires": [],
       "requires_learning_gate": false,
-      "status": "COMPLETE"
-    },
-    {
       "commands": [],
-      "description": "E18_SELECT",
       "evidence": [
         {
-          "SHA256": "a5d5c872fe1797e6f172e6194e28e30c5e2c5c0c60d038b07e8c464d715d7ec7",
-          "path": "/home/liuyeqiang/WWW_jev_phase18/reports/JEV_PHASE18/INDEPENDENCE_QUALIFICATION_PROTOCOL.json"
+          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/HISTORICAL_EXPOSURE_AUDIT.json",
+          "SHA256": "573a23b68088afbc7f40e14a4af65863342d619954ad50c8b8b2f9b3eddcc20e"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_phase19/reports/JEV_PHASE19/SCOPE_GT_CACHE_PREFLIGHT.json",
+          "SHA256": "c803da8e5a12d8059070cf1adf479165086684338a002340bced6e9f59e75361"
         }
-      ],
-      "groups": 16,
-      "id": "E18_SELECT",
-      "requires": [
-        "E18_CENSUS"
-      ],
-      "requires_learning_gate": false,
-      "status": "COMPLETE"
+      ]
     },
     {
-      "actor_source_commit": "41f1e853342ea0097b4a13ad30ad16302c8bd56a",
-      "commands": [],
-      "description": "E18_INTERVENE",
-      "evidence": [
-        {
-          "SHA256": "c027110473c6fbaa37b99c7377d266b9027dd2e11ad8c3aba000415fa2cf6c45",
-          "path": "/home/liuyeqiang/WWW_jev_phase18/reports/JEV_PHASE18/NATIVE_PAIRED_OWNER_OUTCOMES.json"
-        }
-      ],
-      "id": "E18_INTERVENE",
-      "previous_success_actor": "b12020a6f29e30b0333562eef882eb4c95210b0e",
-      "progress_path": "/home/liuyeqiang/WWW_jev_phase18_runtime/20261011_v1/intervention_queue_v2/PROGRESS.json",
+      "id": "E19_CACHE",
+      "status": "READY",
       "requires": [
-        "E18_SELECT"
+        "E19_SCOPE_AUDIT"
       ],
       "requires_learning_gate": false,
-      "result_path": "/home/liuyeqiang/WWW_jev_phase18_runtime/20261011_v1/intervention_queue_v2/RESULT.json",
-      "status": "COMPLETE"
+      "commands": [],
+      "description": "same frozen Stage1 extraction for11 authorized videos",
+      "evidence": []
     },
     {
-      "commands": [],
-      "description": "E18_QUALIFY",
-      "evidence": [
-        {
-          "SHA256": "7da7cc10ee04a084a51a940e8c485f70a53cf1ed98d9ec344bcc29ec5e473c1d",
-          "path": "/home/liuyeqiang/WWW_jev_phase18/reports/JEV_PHASE18/LEARNING_ELIGIBILITY.json"
-        }
-      ],
-      "id": "E18_QUALIFY",
-      "reason": "No independent qualified8+3; no training",
+      "id": "E19_CENSUS",
+      "status": "PENDING",
       "requires": [
-        "E18_INTERVENE"
+        "E19_CACHE"
       ],
       "requires_learning_gate": false,
-      "status": "NO_GO"
+      "commands": [],
+      "description": "complete native frozen V3 trajectories, observer-only ownership",
+      "evidence": []
+    },
+    {
+      "id": "E19_NATIVE_FUTURES",
+      "status": "PENDING",
+      "requires": [
+        "E19_CENSUS"
+      ],
+      "requires_learning_gate": false,
+      "commands": [],
+      "description": "up to16 independent groups /80 branch native causal diagnostic",
+      "evidence": []
+    },
+    {
+      "id": "E19_QUALIFY",
+      "status": "PENDING",
+      "requires": [
+        "E19_NATIVE_FUTURES"
+      ],
+      "requires_learning_gate": false,
+      "commands": [],
+      "description": "honest independent safe supervision qualification",
+      "evidence": []
     }
-  ],
-  "previous_registry": {
-    "SHA256": "4d1bbd6e5bf1ec0b2c2b55d8d36cf9e6987899f0d5faa3bf78c686f1003aa725",
-    "path": "/home/liuyeqiang/WWW_jev_phase17/reports/JEV_MASTER/EXPERIMENT_REGISTRY.json"
-  },
-  "run_id": "PHASE18_20261011_v1",
-  "schema_version": 1
+  ]
 }

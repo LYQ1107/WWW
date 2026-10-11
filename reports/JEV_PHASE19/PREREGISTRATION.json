@@ -1,0 +1,99 @@
+{
+  "GT_usage": "offline selection of error/control groups and outcome labels only, never actor feature or action-alternative chooser",
+  "candidate_selection": "GT-free top NN2 + cosine2 dedup excluding baseline, at most3 refs+DEFER; baseline DEFER permits4 refs; all legal masks retained",
+  "event_sampling": {
+    "available_error": 32,
+    "correct_control": 32
+  },
+  "frozen_checkpoint_SHA256": "7f74f099e9cb365528af3b05aab5d9e87d96eb2063f94efd28ed28cc0864a57b",
+  "grouping": "video,timeblock64; union actual wrong owner/current GT conflicts and numeric nearest competing-owner margin<=.05; merge same GT across cameras",
+  "horizons": [
+    16,
+    32,
+    64
+  ],
+  "hypotheses": [
+    {
+      "id": "E19_H1",
+      "claim": "Authorized independent video partition supplies qualified safe causal action supervision and anti-correction controls",
+      "reject": "insufficient8 independent safe TRAIN +3 RESERVED groups, native parity failure, harmful action consequences or resource exhaustion"
+    }
+  ],
+  "intervention_sampling": {
+    "available_error": 12,
+    "correct_control": 4,
+    "RESERVED_error": 3,
+    "RESERVED_control": 1
+  },
+  "learning_gate": {
+    "UNKNOWN_not_correction": true,
+    "anti_correction_negatives": true,
+    "fair_same_evidence_controls_required": true,
+    "full_cold_safety_required": true,
+    "pre_reserved_safe_groups": 3,
+    "safe_TRAIN_groups": 8
+  },
+  "max_H64_baselines": 16,
+  "max_H64_interventions": 64,
+  "max_alternative_actions": 4,
+  "max_census_videos": 11,
+  "max_intervention_groups": 16,
+  "max_main_hypotheses": 1,
+  "max_sampled_groups": 64,
+  "max_selected_state_replay_videos": 11,
+  "minimum_free_VRAM_MiB": 8192,
+  "native_solver": "original lawful_choice on remaining rows/columns, private DEFER; native MATCH/REACT/Bank/gallery unchanged; explicit feasibility checks, no fabricated second scoring round",
+  "new_training_updates": 0,
+  "owner": "earliest past-only singleGT>=3 and>=.8 known coverage remains immutable through mixtures; current pure support separate",
+  "scope": {
+    "TRAIN": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "RESERVED": [
+      10,
+      11,
+      15
+    ],
+    "reused_old_diagnostics": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "sealed": [
+      20,
+      21,
+      22
+    ],
+    "official_TEST": false,
+    "Full24": false
+  },
+  "seed": 20261009,
+  "space": {
+    "runtime_GiB": 8,
+    "home_reserve_GiB": 30,
+    "per_video_cache_MiB": {
+      "default": 512,
+      "video15": 1024
+    },
+    "persistent_prefix_GiB": 1
+  },
+  "status": "PREREGISTERED_BEFORE_NEW_PERCEPTION_OR_NATIVE_TRAJECTORIES",
+  "workers_max": 6,
+  "max_engineering_retry_attempts": 2,
+  "independence": "merge same-video physical owner/alias/conflicts across all time; videos pre-split; different video IDs are separate trajectories, not proof of unseen people",
+  "representative": "earliest eligible class event; H64 must not cross duplicate-GT timestep including unchanged past prefix; qualification eligibility frozen before outcomes",
+  "sampling": "uniform group draws seeded20261009, stratified fixed video coverage first; missing categories not fabricated; no resampling after outcomes",
+  "candidate_scope": "active legal MATCH allrefs; actual queried REACT pool separately; unavailable does not prove absent Bank",
+  "models": "frozen XV V3 only; no new teacher/head/LoRA/training",
+  "source_base": "efa231955c41d40ee9135a03a545b3e88ff028e8",
+  "source_authorization": "user answer: \u6309\u8be5\u65b9\u6848\u8ffd\u52a0\u6570\u636e\u5ba1\u8ba1\u4e0e\u6709\u754c\u5b9e\u9a8c",
+  "historical_exposure": "Stage1 all24; old controllers may have used06/07; V3 training explicit12/13/14/16; no fully unseen system claim"
+}
