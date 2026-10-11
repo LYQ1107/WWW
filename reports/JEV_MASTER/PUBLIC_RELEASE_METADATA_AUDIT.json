@@ -1,0 +1,338 @@
+{
+  "GPU_seconds": 0,
+  "actor": {
+    "SHA256": "8d388f85c8e0aa269ee086ba6df8761f6267fdc0947984619a75cc31eb6ddcd3",
+    "path": "/home/liuyeqiang/WWW_jev_master_audit/reproduction_tools/jev_master_public_release_audit.py"
+  },
+  "actor_commit": "c1059cf366fbb6d62bc1c7e50a4a23559d30b0e5",
+  "assertions": [
+    {
+      "SHA256": "269076719960ae9a9ca7ee461cd3ff923af68430d0200ef7b9cc5402d0a77f53",
+      "file": "cvlab-epfl/umpn/configs/files/config_scout.yaml",
+      "line": 8,
+      "meaning": "Released example trains using the dataset named scoutval."
+    },
+    {
+      "SHA256": "cc0f7e212e5db91b522887121d68a93a4c66f002a14cb3e964fc624b04823507",
+      "file": "cvlab-epfl/umpn/configs/files/config_wildtrack.yaml",
+      "line": 5,
+      "meaning": "Released WILDTRACK example uses this same dataset for temporal splitting."
+    },
+    {
+      "SHA256": "269076719960ae9a9ca7ee461cd3ff923af68430d0200ef7b9cc5402d0a77f53",
+      "file": "cvlab-epfl/umpn/configs/files/config_scout.yaml",
+      "line": 10,
+      "meaning": "Example requests a 90/10 split, not participant/session disjointness."
+    },
+    {
+      "SHA256": "cc0f7e212e5db91b522887121d68a93a4c66f002a14cb3e964fc624b04823507",
+      "file": "cvlab-epfl/umpn/configs/files/config_wildtrack.yaml",
+      "line": 7,
+      "meaning": "Example requests a 90/10 split, not participant/session disjointness."
+    },
+    {
+      "SHA256": "630dc42ddaa98e42e6cb68e4ed1906cc1e1590d263c2e29143cf4a4e61aef0e5",
+      "file": "cvlab-epfl/umpn/datasets/factory.py",
+      "line": 34,
+      "meaning": "scoutval selects sequence_1 cameras 0 through 7."
+    },
+    {
+      "SHA256": "630dc42ddaa98e42e6cb68e4ed1906cc1e1590d263c2e29143cf4a4e61aef0e5",
+      "file": "cvlab-epfl/umpn/datasets/factory.py",
+      "line": 30,
+      "meaning": "scouttrain also includes the same sequence, using other cameras."
+    },
+    {
+      "SHA256": "3683092ea308f36cdee6343896a9044020566723d31ba97f4ae1fee250bab31f",
+      "file": "cvlab-epfl/umpn/datasets/utils.py",
+      "line": 255,
+      "meaning": "TRAIN is a prefix of dataset indices."
+    },
+    {
+      "SHA256": "3683092ea308f36cdee6343896a9044020566723d31ba97f4ae1fee250bab31f",
+      "file": "cvlab-epfl/umpn/datasets/utils.py",
+      "line": 256,
+      "meaning": "The variable test_idx supplies the internal validation tail; no official TEST data was opened."
+    },
+    {
+      "SHA256": "630dc42ddaa98e42e6cb68e4ed1906cc1e1590d263c2e29143cf4a4e61aef0e5",
+      "file": "cvlab-epfl/umpn/datasets/factory.py",
+      "line": 91,
+      "meaning": "The split function is actually used by the dataloader factory."
+    },
+    {
+      "SHA256": "0c6d3b4ecb25137929a3a8c9dd1fccb05043064bd670f1421fbe623a4ab311dd",
+      "file": "cvlab-epfl/umpn/datasets/sceneset.py",
+      "line": 119,
+      "meaning": "Missing normalization statistics scan the entire scene before any external restriction."
+    },
+    {
+      "SHA256": "0c6d3b4ecb25137929a3a8c9dd1fccb05043064bd670f1421fbe623a4ab311dd",
+      "file": "cvlab-epfl/umpn/datasets/sceneset.py",
+      "line": 121,
+      "meaning": "The statistics scan uses the scene getter; restrict fit to frozen TRAIN in any new adapter."
+    },
+    {
+      "SHA256": "0c6d3b4ecb25137929a3a8c9dd1fccb05043064bd670f1421fbe623a4ab311dd",
+      "file": "cvlab-epfl/umpn/datasets/sceneset.py",
+      "line": 154,
+      "meaning": "GT-derived fields exist in the getter; do not feed them into an online policy."
+    },
+    {
+      "SHA256": "44c944501100c47a882e3569a640be4d59fcfd1241e8dba9321e4c083b89bb14",
+      "file": "cvlab-epfl/umpn/datasets/scout.py",
+      "line": 145,
+      "meaning": "Detector bottom-center projection via calibration is separate from annotation world points."
+    },
+    {
+      "SHA256": "b1ddb2d049b3061f9bc65251bc59b59af8e991c208c4a14f0a3aae32fb1dc817",
+      "file": "cvlab-epfl/scout_toolkit/src/loading.py",
+      "line": 59,
+      "meaning": "Official COCO reader interprets category_id as identity; generic person-category assumptions are unsafe."
+    },
+    {
+      "SHA256": "b1ddb2d049b3061f9bc65251bc59b59af8e991c208c4a14f0a3aae32fb1dc817",
+      "file": "cvlab-epfl/scout_toolkit/src/loading.py",
+      "line": 111,
+      "meaning": "Use explicit per-camera timestamps; nominal viewer FPS is insufficient."
+    },
+    {
+      "SHA256": "98d289ced271f9d899f81a9f6d2ed3c0bfc9b6915a830c7b67cc355c12d59274",
+      "file": "scout_frontend.js",
+      "line": 3621,
+      "meaning": "Release announcement limits complete annotations to sequence_1 first eight cameras."
+    },
+    {
+      "SHA256": "98d289ced271f9d899f81a9f6d2ed3c0bfc9b6915a830c7b67cc355c12d59274",
+      "file": "scout_frontend.js",
+      "line": 3621,
+      "meaning": "Other camera annotations must not be treated as equivalent manual identity supervision."
+    },
+    {
+      "SHA256": "3d5299a0815de03fd102fdeec1602377e6b8ccb15334a43f8455b0c715395608",
+      "file": "mmp_release.html",
+      "line": 80,
+      "meaning": "Official page declares participant split counts; actual cohort uniqueness remains unverified."
+    },
+    {
+      "SHA256": "3d5299a0815de03fd102fdeec1602377e6b8ccb15334a43f8455b0c715395608",
+      "file": "mmp_release.html",
+      "line": 146,
+      "meaning": "Dataset access requires the recipient to sign terms and contact the provider."
+    }
+  ],
+  "candidates": {
+    "MMPTRACK": {
+      "access": "Recipient-signed terms; no legitimate local copy established, no message/signature sent",
+      "fps": 15,
+      "helper_license": "MIT applies to helper code only, not dataset terms",
+      "identity_scope": "Per-environment IDs versus separately requested cross-environment retrieval IDs must be audited",
+      "participant_counts": {
+        "TEST": 7,
+        "TRAIN": 14,
+        "VAL": 7
+      },
+      "priority": "PREFERRED_IF_LAWFUL_COPY_AVAILABLE"
+    },
+    "SCOUT": {
+      "actual_manual_quality": "NOT_VERIFIED_WITHOUT_LABELS_AND_PROVENANCE",
+      "complete_annotation_release_scope": "sequence_1 cameras 0..7 per website announcement",
+      "converted_viewer_metadata": {
+        "dataset_name": "Converted Dataset from scout",
+        "sequences": [
+          {
+            "description": "Sequence 1",
+            "duration_sec": 1199.8,
+            "fps": 10.0,
+            "id": "sequence_1",
+            "num_cameras": 25,
+            "num_frames": 11998
+          },
+          {
+            "description": "Sequence 2",
+            "duration_sec": 1199.3,
+            "fps": 10.0,
+            "id": "sequence_2",
+            "num_cameras": 22,
+            "num_frames": 11993
+          }
+        ]
+      },
+      "data_specific_license": "NOT_VERIFIED; JS dependency licenses do not grant dataset rights",
+      "example_train_source": "scoutval sequence_1 cameras0..7 then 90/10 temporal split",
+      "independent_split": "NOT_CERTIFIED; other camera partitions share sequence_1",
+      "loader_ID_semantics": "COCO category_id becomes track_id",
+      "missing_labels": "Missing-file versus genuine empty frame must be distinguished in an adapter",
+      "other_annotations": "AUTO_PSEUDO_NOT_ELIGIBLE_AS_MANUAL_SUPERVISION",
+      "raw_archive_fps": "NOT_VERIFIED; converted metadata is not raw archive timing"
+    },
+    "WILDTRACK": {
+      "acquisition": "One published camera setup; seven cameras are not seven independent captures",
+      "archive_size_method": "HEAD_ONLY",
+      "complete_archive_bytes": 6807496358,
+      "data_specific_license": "NOT_VERIFIED",
+      "gt_fps": 2,
+      "gt_frames_reported": 400,
+      "identity": "personID distinct from positionID; persistence/uniqueness not checked",
+      "label_interpolation": false,
+      "raw_video_fps": 60,
+      "released_image_fps": 10,
+      "split": "UMPN example 90/10 temporal; no participant-disjoint enforcement shown"
+    }
+  },
+  "dataset_qualification": "NOT_CERTIFIED_WITHOUT_LICENSED_PROSPECTIVE_TRAIN_VAL_GT_AUDIT",
+  "engineering_requirements": [
+    "Freeze whole capture/cohort roles before label results; never count cameras or frames as independent groups.",
+    "Do not infer actual participant overlap from a temporal split alone; audit identity cohorts on legal labels.",
+    "Fit all normalization on TRAIN only; prohibit GT world positions/GT-filled detections as policy inputs.",
+    "Verify real detector availability, score semantics, timestamp alignment and manual ID persistence.",
+    "No automatic image/model download; select small labels separately only after lawful scope is established."
+  ],
+  "learning_gate_unchanged": {
+    "RESERVED_independent_safe": 1,
+    "TRAIN_independent_safe": 3,
+    "qualified": false,
+    "required_RESERVED": 3,
+    "required_TRAIN": 8
+  },
+  "next_action": "Resolve lawful label access and prospective independent cohorts; do not extend MATCH architecture yet",
+  "not_run": [
+    "dataset annotation content audit",
+    "images",
+    "archive body reads",
+    "training",
+    "new native interventions",
+    "MOT evaluation",
+    "official TEST",
+    "Full24"
+  ],
+  "protocol": {
+    "SHA256": "d7739431ab4b3c29753217b0569f7a6f56c113eb2f6df99e1eb0d400e4e72714",
+    "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/PUBLIC_RELEASE_METADATA_PROTOCOL.json"
+  },
+  "snapshot_bytes": 1138570,
+  "snapshot_files": 24,
+  "source_audit_benefit_claim": false,
+  "source_discovery_before_protocol": true,
+  "sources": [
+    {
+      "SHA256": "99596bee59a01953a43c3b2a074b08cfb35ab7be1be14de6061b149506c6622d",
+      "snapshot": "cvlab-epfl/scout_toolkit/README.md",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/scout_toolkit/1acd79513bfcf16aecef1150283af58c8273542e/README.md"
+    },
+    {
+      "SHA256": "b1ddb2d049b3061f9bc65251bc59b59af8e991c208c4a14f0a3aae32fb1dc817",
+      "snapshot": "cvlab-epfl/scout_toolkit/src/loading.py",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/scout_toolkit/1acd79513bfcf16aecef1150283af58c8273542e/src/loading.py"
+    },
+    {
+      "SHA256": "b046440c16d69f6f7a4c0d2e913e33d4791051f2b37b4ea0891df6b2d416a404",
+      "snapshot": "cvlab-epfl/umpn/README.md",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/README.md"
+    },
+    {
+      "SHA256": "44c944501100c47a882e3569a640be4d59fcfd1241e8dba9321e4c083b89bb14",
+      "snapshot": "cvlab-epfl/umpn/datasets/scout.py",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/datasets/scout.py"
+    },
+    {
+      "SHA256": "a1c63a96b571e0b685da1f1dd2135a08ee22d0ceb01c3abda440ffdfed5c8027",
+      "snapshot": "cvlab-epfl/umpn/datasets/wildtrack.py",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/datasets/wildtrack.py"
+    },
+    {
+      "SHA256": "630dc42ddaa98e42e6cb68e4ed1906cc1e1590d263c2e29143cf4a4e61aef0e5",
+      "snapshot": "cvlab-epfl/umpn/datasets/factory.py",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/datasets/factory.py"
+    },
+    {
+      "SHA256": "3683092ea308f36cdee6343896a9044020566723d31ba97f4ae1fee250bab31f",
+      "snapshot": "cvlab-epfl/umpn/datasets/utils.py",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/datasets/utils.py"
+    },
+    {
+      "SHA256": "4bb2fb1512cbb2cd51d1a01dddc8048b140ced7fd0a54a316237e2e3a365c1ba",
+      "snapshot": "cvlab-epfl/umpn/datasets/basedataset.py",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/datasets/basedataset.py"
+    },
+    {
+      "SHA256": "0c6d3b4ecb25137929a3a8c9dd1fccb05043064bd670f1421fbe623a4ab311dd",
+      "snapshot": "cvlab-epfl/umpn/datasets/sceneset.py",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/datasets/sceneset.py"
+    },
+    {
+      "SHA256": "6cc7a6069c0ad57d0948bd41fc505091a7df5eb219b59a2d2d5cab99d792a012",
+      "snapshot": "cvlab-epfl/umpn/configs/arguments.py",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/configs/arguments.py"
+    },
+    {
+      "SHA256": "269076719960ae9a9ca7ee461cd3ff923af68430d0200ef7b9cc5402d0a77f53",
+      "snapshot": "cvlab-epfl/umpn/configs/files/config_scout.yaml",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/configs/files/config_scout.yaml"
+    },
+    {
+      "SHA256": "cc0f7e212e5db91b522887121d68a93a4c66f002a14cb3e964fc624b04823507",
+      "snapshot": "cvlab-epfl/umpn/configs/files/config_wildtrack.yaml",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/configs/files/config_wildtrack.yaml"
+    },
+    {
+      "SHA256": "c3b78e7028eddb06288e539efbf6b45ce7eef916934976ee9f95d13a6d91f7f3",
+      "snapshot": "cvlab-epfl/umpn/configs/pathes.py",
+      "url": "https://raw.githubusercontent.com/cvlab-epfl/umpn/0f86307f49314a342dcaa7179647f7f126362158/configs/pathes.py"
+    },
+    {
+      "SHA256": "96446a8a35919db4d6194cc30e54905f9f27dfecb5e38a26bb9a586927ce6944",
+      "snapshot": "iccv2021-mmp/mmp-tracking-helper/LICENSE",
+      "url": "https://raw.githubusercontent.com/iccv2021-mmp/mmp-tracking-helper/d816fd04e7c896d39ac4ddc413f59318095c566b/LICENSE"
+    },
+    {
+      "SHA256": "fd85420a2cfc553adf2949e44fa87702950b9c41f21608e5678950dd5b4eb425",
+      "snapshot": "iccv2021-mmp/mmp-tracking-helper/mmp_cameraview_evaluate.py",
+      "url": "https://raw.githubusercontent.com/iccv2021-mmp/mmp-tracking-helper/d816fd04e7c896d39ac4ddc413f59318095c566b/mmp_cameraview_evaluate.py"
+    },
+    {
+      "SHA256": "cab24f33aa2de287ab87c885f4eda4c1f7befb44b263731a384a5abbd3d2338b",
+      "snapshot": "iccv2021-mmp/mmp-tracking-helper/mmp_data_visualize.py",
+      "url": "https://raw.githubusercontent.com/iccv2021-mmp/mmp-tracking-helper/d816fd04e7c896d39ac4ddc413f59318095c566b/mmp_data_visualize.py"
+    },
+    {
+      "SHA256": "3d5299a0815de03fd102fdeec1602377e6b8ccb15334a43f8455b0c715395608",
+      "snapshot": "mmp_release.html",
+      "url": "https://iccv2021-mmp.github.io/subpage/dataset.html"
+    },
+    {
+      "SHA256": "4a0ed710255b47957fd39006b0a72084c98e799cc5e00753cd2c9f5a63654964",
+      "snapshot": "scout_index.html",
+      "url": "https://scout.epfl.ch/"
+    },
+    {
+      "SHA256": "984148e900c0e8b216e7ff2bba5a68307d8aaca5397dba1f0636743a9ae283aa",
+      "snapshot": "wildtrack_release.html",
+      "url": "https://www.epfl.ch/labs/cvlab/data/data-wildtrack/"
+    },
+    {
+      "SHA256": "98d289ced271f9d899f81a9f6d2ed3c0bfc9b6915a830c7b67cc355c12d59274",
+      "snapshot": "scout_frontend.js",
+      "url": "https://scout.epfl.ch/assets/index-CwZV8b6g.js"
+    },
+    {
+      "SHA256": "d3e18dcd2adea2be4dd0a31be355f164778402f9b040568e9ba83e4c4e3bb770",
+      "snapshot": "scout_metadata.json",
+      "url": "https://scout.epfl.ch/media/dataset_metadata.json"
+    }
+  ],
+  "status": "COMPLETE_PUBLIC_SOURCE_REVIEW_ONLY",
+  "syntax_checked_files": [
+    "cvlab-epfl/scout_toolkit/src/loading.py",
+    "cvlab-epfl/umpn/configs/arguments.py",
+    "cvlab-epfl/umpn/configs/pathes.py",
+    "cvlab-epfl/umpn/datasets/basedataset.py",
+    "cvlab-epfl/umpn/datasets/factory.py",
+    "cvlab-epfl/umpn/datasets/sceneset.py",
+    "cvlab-epfl/umpn/datasets/scout.py",
+    "cvlab-epfl/umpn/datasets/utils.py",
+    "cvlab-epfl/umpn/datasets/wildtrack.py",
+    "iccv2021-mmp/mmp-tracking-helper/mmp_cameraview_evaluate.py",
+    "iccv2021-mmp/mmp-tracking-helper/mmp_data_visualize.py"
+  ]
+}

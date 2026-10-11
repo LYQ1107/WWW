@@ -18,3 +18,7 @@ Phase XXI: fixed original12group/2weight execution audit, unchanged .05/.02/exac
 
 
 MASTER completion audit: all original clauses/sections/deliverables indexed with scoped evidence, not completion. Distinct adapted common-cache GTA12targets completed(5correct/2wrong/5UNKNOWN; cosine5/1/6; nativejointXV6/2/4). No matchedsolver superiority, extra independent labels, native benefit or training qualification. OriginalD0 remains not reconstructed. Twoengineering failures preserved; source-A scope/path question remains pending.
+
+## Public release audit — source only
+
+24 frozen public source snapshots and19 assertions passed, 1,138,570 bytes retained,0 GPU. UMPN SCOUT trains on scoutval then temporal90/10; WILDTRACK example also temporal. Default whole-scene statistics are not a lawful TRAIN-only fit. No actual participant overlap inferred without GT. MMPTRACK remains preferred if lawful copy is supplied. Source metadata completion does not qualify learning or MASTER success. Labels/images/training and TEST remain unopened. Previous canonical MASTER manifest remains tied to1d0dac28; historical versions verified fromGit, current source-audit versions have a separate manifest.
