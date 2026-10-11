@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 SOURCE=Path('/home/liuyeqiang/WWW_jev_phase21')
 for p in [SOURCE,SOURCE/'reproduction_tools',SOURCE/'third_party/CenterNet2']:sys.path.insert(0,str(p))
-OUT=Path('/home/liuyeqiang/WWW_jev_master_audit_runtime/20261011_v1');OUT.mkdir(parents=True,exist_ok=True)
+OUT=Path(os.environ.get('JEV_MASTER_GTA_OUT','/home/liuyeqiang/WWW_jev_master_audit_runtime/20261011_v2'));OUT.mkdir(parents=True,exist_ok=True)
 REPORTS=ROOT/'reports/JEV_MASTER'
 def read(p):return json.loads(Path(p).read_text())
 def sha(p):
@@ -75,10 +75,12 @@ def main():
    item=inst.to('cuda');item.reid_features=inst.reid_features.to('cuda').clone()
    with torch.no_grad():item.reid_features=torch.cat([item.reid_features,model.roi_heads.s_t_head(geometry(item,key[1]))],dim=1)
    batch.append(item)
-  assert torch.equal(batch[-1].reid_features[:,:1024].cpu(),raw['detection_visual'][0])
+  assert torch.equal(batch[-1].reid_features[:,:1024].cpu(),originals[-1].reid_features)
+  normalised=torch.nn.functional.normalize(batch[-1].reid_features[:,:1024],dim=-1).cpu()
+  assert torch.allclose(normalised,raw['detection_visual'][0],atol=1e-7,rtol=1e-6)
   actual=read(Path(event['source_state']['path']).parent/'RESULT.json')
   with gzip.open(actual['queries']['path'],'rt') as f:q=json.loads(f.readline())
-  assert q['task']==0 and q['context']['frame']==frame and q['context']['view']==view
+  assert q['task']==0 and q['key']==[frame,view]
   refs=q['refs'];past_ids=torch.cat([x.track_ids for x in batch[:-1]])
   unique=torch.unique(past_ids);assert unique.tolist()==refs
   legal=raw['legal'][0];assert legal.shape==(len(batch[-1]),len(refs))
