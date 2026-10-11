@@ -72,7 +72,7 @@ def main():
     save(REPORTS/'FINAL_GO_NO_GO.json',decision)
     text=f'''# Phase XIX — 扩展范围的原生身份纠错证据报告
 
-用户已批准追加 TRAIN02–09、预留10/11/15 的数据审计与有界实验。本轮已完成11个视频的完整冻结策略轨迹、50组事前抽样和16组/66个真实原生分支。工程与原生配对验证通过；独立安全监督只有 TRAIN3组、预留2组，低于冻结的8＋3要求。结论是当前监督与验证资格不足：不进入训练，也不把未执行的训练解释为架构失败。WWW主目标仍 ACTIVE，独立增益未建立、论文 NOT_READY。
+用户已批准追加 TRAIN02–09、预留10/11/15 的数据审计与有界实验。本轮已完成11个视频的完整冻结策略轨迹、50组事前抽样和16组/66个真实原生分支。工程与原生配对验证通过；独立安全监督只有 TRAIN3组、预留1组，低于冻结的8＋3要求。结论是当前监督与验证资格不足：不进入训练，也不把未执行的训练解释为架构失败。WWW主目标仍 ACTIVE，独立增益未建立、论文 NOT_READY。
 
 ## 范围、暴露与标注
 
@@ -100,15 +100,16 @@ def main():
 | 有真实纠错 | 19 |
 | 有副作用 | 43 |
 | 同时纠错与副作用 | 13 |
-| 所有H均安全的纠错动作 | 6 |
-| 安全时间代表 | 5 |
+| 未观测到伤害的纠错动作（诊断） | 6 |
+| 全部改动行可评估的合格安全动作 | 5 |
+| 合格安全时间代表 | 4 |
 | 合并全轨迹依赖后的安全TRAIN组 | 3 / 8所需 |
-| 合并全轨迹依赖后的安全预留组 | 2 / 3所需 |
+| 合并全轨迹依赖后的安全预留组 | 1 / 3所需 |
 | 严格CLEAR不可评估动作 | 0 |
 
 19与43是相交集合，不应相减当净收益；多动作与多H也不是独立试验。真实纠错仅含known-wrong→known-correct或有过去owner支持的目标false-split修复；wrong→UNKNOWN不算纠错。任何H发生反改错、正确覆盖变UNKNOWN、新混入/false-split、错误观测增加、任一GT-camera最长观测错误段延长或严格CLEAR IDSW增加，都算副作用。观察缺口和窗口结束作截尾，没有伪造不可见时间的传播长度。
 
-安全动作位于TRAIN03、04、07以及预留10、11。4个正确控制组的11个替代动作全部存在副作用，显示必须保留正确关联。部分纠错会通过全局改配或后续Bank路径发生，不能只按目标行即时标签建训练正例。每个动作的H16/32/64转移、污染、传播段、IDSW以及其他原MATCH行改配均在NATIVE_PAIRED_OWNER_OUTCOMES.json。
+合格安全动作位于TRAIN03、04、07以及预留10。video11的ALT0虽有一行真实纠错且未观测到已定义伤害，却同时改配一条GT为UNKNOWN的检测；它不能满足冻结规则“所有改动行都需可评估”，仅保留为诊断。首次汇总漏执行这一资格条件，已保留原汇总并修正；没有更改原始分支、伤害定义或8＋3门槛。4个正确控制组的11个替代动作全部存在副作用，显示必须保留正确关联。部分纠错会通过全局改配或后续Bank路径发生，不能只按目标行即时标签建训练正例。每个动作的H16/32/64转移、污染、传播段、IDSW以及其他原MATCH行改配均在NATIVE_PAIRED_OWNER_OUTCOMES.json。
 
 ## 独立性与学习门槛
 
@@ -116,7 +117,7 @@ def main():
 
 应明确承认设计限制：本轮固定代表在全图审计后最多只有7个TRAIN组件，即使全部安全也达不到8个的门槛。这个上限在干预结果前已冻结。本轮继续完成因果诊断，但不降低门槛、不追加有利代表来凑资格。因此NO_GO同时包含样本设计/覆盖不足和已观测的安全副作用，不能单凭这个门槛失败拒绝JEV架构。
 
-新的controller训练、三类学习控制器对照、全视频新策略冷启动及部署测试均NOT_RUN；新策略HOTA/AssA/IDF1/MOTA增益为null。6个安全oracle动作说明有局部可纠错机会，并不证明某个可部署策略能够选到它们，更不证明JEV显著优于传统控制器。
+新的controller训练、三类学习控制器对照、全视频新策略冷启动及部署测试均NOT_RUN；新策略HOTA/AssA/IDF1/MOTA增益为null。5个合格安全oracle动作说明有局部可纠错机会，并不证明某个可部署策略能够选到它们，更不证明JEV显著优于传统控制器。
 
 ## 工程修改、复核与成本
 
@@ -137,7 +138,8 @@ def main():
     goal.update(current_phase_status='BOUNDED_EVIDENCE_COMPLETE_LEARNING_NO_GO',master_status='PIVOT_REQUIRED',
         active_hypotheses=[],remaining_authorized_budget=pre,next_experiment='REVIEW_EVIDENCE_AND_NEXT_SCOPE',
         scientific_SUCCESS=False,paper_readiness='NOT_READY')
-    goal.setdefault('rejected_hypotheses',[]).append(dict(id='E19_H1',result='INSUFFICIENT_INDEPENDENT_SAFE_SUPERVISION;3TRAIN+2RESERVED; no new training, not architecture failure'))
+    goal['rejected_hypotheses']=[h for h in goal.get('rejected_hypotheses',[]) if h.get('id')!='E19_H1']
+    goal['rejected_hypotheses'].append(dict(id='E19_H1',result='INSUFFICIENT_INDEPENDENT_SAFE_SUPERVISION;3TRAIN+1RESERVED; no new training, not architecture failure'))
     save(MASTER/'MASTER_GOAL.json',goal)
     registry=read(MASTER/'EXPERIMENT_REGISTRY.json')
     for e in registry['experiments']:
@@ -150,9 +152,9 @@ def main():
     save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
     save(MASTER/'NEXT_ACTION.json',dict(status='PIVOT_REQUIRED',scientific_success=False,
         action=decision['next_research'],completed_authorized_round=True,new_training_authorized=False,
-        reason='Qualified supervision3TRAIN/2RESERVED below8/3; design ceiling7TRAIN, historical validation exposure and anti-correction harms.'))
+        reason='Qualified supervision3TRAIN/1RESERVED below8/3; design ceiling7TRAIN, historical validation exposure and anti-correction harms.'))
     with (MASTER/'RESEARCH_DECISIONS.md').open('a') as f:
-        f.write('\n\nPhase XIX: approved02–09 + reserved10/11/15,11 complete frozen trajectories,66 native futures. 6safe actions in5 representatives =>3TRAIN/2RESERVED owner-conflict units;8/3 gate fails. Full-census graph ceiling7TRAIN disclosed. No training or architecture verdict. Bounded authorization complete; master science pending evidence/scope review.\n')
+        f.write('\n\nPhase XIX: approved02–09 + reserved10/11/15,11 complete frozen trajectories,66 native futures. 5qualified-safe actions in4 representatives =>3TRAIN/1RESERVED owner-conflict units;8/3 gate fails. Full-census graph ceiling7TRAIN disclosed. No training or architecture verdict. Bounded authorization complete; master science pending evidence/scope review.\n')
     print(json.dumps(dict(decision=decision,resources={k:resources[k] for k in ['runtime_GiB','home_free_GiB']}),indent=2))
 
 

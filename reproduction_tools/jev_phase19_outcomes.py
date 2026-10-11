@@ -88,7 +88,14 @@ def main():
         key=tuple(e['event_key']);base=lookup[key+('BASE',)]
         for n,r in enumerate(e['alternatives_GT_free']):
             probe=lookup[key+(f'ALT{n}',)];assert probe['reference']==r
-            pairs.append(compare(e,base,probe))
+            p=compare(e,base,probe)
+            p['observed_harm_free_correction']=p['safe_correction']
+            p['all_changed_rows_assessed']=all(h['changed_ID_rows'].get('UNKNOWN',0)==0 for h in p['H'].values())
+            # Frozen XVIII rule explicitly requires all altered rows assessed.
+            # UNKNOWN is not a demonstrated harm, but cannot certify safety.
+            p['safe_correction']=p['safe_correction'] and p['all_changed_rows_assessed']
+            p['qualification_exclusions']=[] if p['all_changed_rows_assessed'] else ['UNKNOWN_CHANGED_ROW']
+            pairs.append(p)
         ps=[p for p in pairs if p['selection_index']==e['selection_index']]
         groups.append(dict(selection_index=e['selection_index'],event_key=e['event_key'],split=e['split'],
             category=e['sampled_stratum'],correct_owner_in_alternatives=e['alternative_owner_coverage_OFFLINE'],
@@ -106,6 +113,8 @@ def main():
         harmful_action_variants=sum(bool(p['harm_reasons']) for p in pairs),
         correction_and_harm_action_variants=sum(p['real_correction'] and bool(p['harm_reasons']) for p in pairs),
         owner_only_safe_action_variants=sum(p['owner_only_safe_diagnostic'] for p in pairs),
+        observed_harm_free_correction_variants=sum(p['observed_harm_free_correction'] for p in pairs),
+        observed_harm_free_but_UNKNOWN_changed_row_variants=sum(p['observed_harm_free_correction'] and not p['all_changed_rows_assessed'] for p in pairs),
         strict_CLEAR_unevaluable_action_variants=sum(not p['strict_CLEAR_all_H_evaluable'] for p in pairs),
         independent_qualification_units=len(units),independent_safe_TRAIN_groups=nt,independent_safe_RESERVED_groups=nr,
         required_TRAIN=8,required_RESERVED=3,
@@ -122,6 +131,9 @@ def main():
         sources=sources,queue=ref(OUT/'intervention_queue_v1/RESULT.json'),
         rules=ref(ROOT/'reports/JEV_PHASE18/OUTCOME_QUALIFICATION_RULES.json'),
         outcome_comparator=ref(ROOT/'reproduction_tools/jev_phase18_outcomes.py'),summary=summary,
+        aggregation_correction=dict(initial_aggregate=ref(OUT/'outcome_aggregate_v1/NATIVE_PAIRED_OWNER_OUTCOMES.json'),
+            review=ref(OUT/'outcome_aggregate_v1/REVIEW_CORRECTION.json'),
+            implements='pre-existing frozen all-altered-rows-assessed rule; original harm counts unchanged; UNKNOWN diagnostic excluded from qualified safety'),
         groups=groups,qualification_units=units,selected_event_only_units_diagnostic=old_units,
         qualification_protocol=ref(REPORTS/'WHOLE_CENSUS_DEPENDENCY_PROTOCOL.json'),per_video=by_video,pairs=pairs,
         scientific_limitations=[
