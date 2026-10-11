@@ -142,6 +142,29 @@
       "result_path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/WILDTRACK_OFFLINE_GT_INTERFACE_AUDIT.json",
       "returncode": 0,
       "status": "COMPLETE"
+    },
+    {
+      "commands": [
+        [
+          "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+          "/home/liuyeqiang/WWW_jev_master_audit/reproduction_tools/jev_master_scout_access.py"
+        ]
+      ],
+      "description": "Verify official SCOUT lazy download terms, normal access flow and advertised annotation size; no data or POSTs",
+      "evidence": [
+        {
+          "SHA256": "d7d4442864234d4e2921a2e73d75027722d90775f4a857e8088697b060607dcd",
+          "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/SCOUT_ACCESS_TERMS_PROTOCOL.json"
+        }
+      ],
+      "id": "SCOUT_ACCESS_TERMS_AUDIT",
+      "requires": [
+        "PUBLIC_RELEASE_METADATA_AUDIT",
+        "WILDTRACK_OFFLINE_GT_INTERFACE"
+      ],
+      "requires_learning_gate": false,
+      "result_path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/SCOUT_ACCESS_TERMS_AUDIT.json",
+      "status": "PENDING"
     }
   ],
   "previous_registry": {
