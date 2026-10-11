@@ -82,6 +82,7 @@
       "status": "COMPLETE"
     },
     {
+      "actual_actor_commit": "cab2c265e695845e45aa16c0e1f58b449545bc8f",
       "commands": [
         [
           "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
@@ -89,13 +90,45 @@
         ]
       ],
       "description": "Immutable reused Phase14 first320 TRAIN label validity; no images/scores/new sources/native runs/training; wholeprefixTRAIN not newRESERVED",
-      "evidence": [],
+      "evidence": [
+        {
+          "SHA256": "ada216edcc0499b3438df844840427292591f4180a296d2068e49295755334f2",
+          "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/WILDTRACK_REUSED_TRAIN_PROTOCOL.json"
+        },
+        {
+          "SHA256": "7306beac53849e72cdb1f42aa61946a8899bca4acb3152e5dc960d16f353a5a4",
+          "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/WILDTRACK_REUSED_TRAIN_LABEL_AUDIT.json"
+        },
+        {
+          "SHA256": "545b979b1cd008fc5c7d6e16e74989373f674bb8979fcc34afe40dd7868fa3d7",
+          "path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/EXISTING_SOURCE_ACCESS_AUDIT.json"
+        }
+      ],
       "id": "REUSED_WILDTRACK_TRAIN_LABEL_AUDIT",
+      "metrics": null,
       "requires": [
         "PUBLIC_RELEASE_METADATA_AUDIT"
       ],
       "requires_learning_gate": false,
       "result_path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/WILDTRACK_REUSED_TRAIN_LABEL_AUDIT.json",
+      "returncode": 0,
+      "status": "COMPLETE"
+    },
+    {
+      "commands": [
+        [
+          "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+          "/home/liuyeqiang/WWW_jev_master_audit/reproduction_tools/jev_master_wildtrack_gt_reader.py"
+        ]
+      ],
+      "description": "Fix exact absent sentinel in future offline-only GT reader; preserve original metrics and files",
+      "evidence": [],
+      "id": "WILDTRACK_OFFLINE_GT_INTERFACE",
+      "requires": [
+        "REUSED_WILDTRACK_TRAIN_LABEL_AUDIT"
+      ],
+      "requires_learning_gate": false,
+      "result_path": "/home/liuyeqiang/WWW_jev_master_audit/reports/JEV_MASTER/WILDTRACK_OFFLINE_GT_INTERFACE_AUDIT.json",
       "status": "PENDING"
     }
   ],

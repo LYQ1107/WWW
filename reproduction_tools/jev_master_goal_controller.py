@@ -42,7 +42,7 @@ def tick(execute=False):
    e['status']='RUNNING';save(MASTER/'EXPERIMENT_REGISTRY.json',registry)
    log=OUT/'controller'/e['id'];log.mkdir(parents=True,exist_ok=True)
    for n,cmd in enumerate(e['commands']):
-    bounded_audits={'PUBLIC_RELEASE_METADATA_AUDIT':'jev_master_public_release_audit.py','REUSED_WILDTRACK_TRAIN_LABEL_AUDIT':'jev_master_wildtrack_labels.py'}
+    bounded_audits={'PUBLIC_RELEASE_METADATA_AUDIT':'jev_master_public_release_audit.py','REUSED_WILDTRACK_TRAIN_LABEL_AUDIT':'jev_master_wildtrack_labels.py','WILDTRACK_OFFLINE_GT_INTERFACE':'jev_master_wildtrack_gt_reader.py'}
     source_audit = e['id'] in bounded_audits and cmd==[PYTHON,str(ROOT/'reproduction_tools'/bounded_audits[e['id']])]
     assert source_audit or (cmd[0]==PYTHON and Path(cmd[1]).name.startswith('jev_phase'+str(goal.get('current_phase_number',17))+'_')),cmd
     with (log/f'attempt_{time.time_ns()}_{n}.log').open('w') as stream:
