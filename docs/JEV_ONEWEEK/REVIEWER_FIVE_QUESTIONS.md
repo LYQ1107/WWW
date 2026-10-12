@@ -1,11 +1,33 @@
-# 五个审稿人问题：所有实验强制检查
+# 五个审稿人问题：当前可核查答案
 
-每次计划登记须引用下表问题、同条件契约、结果和限制。Attention或多Head的存在不能替代独立价值证据。
+工作仍在执行，未完成项不视为通过。
 
-| 问题 | 必需实验 | 当前状态 |
-| --- | --- | --- |
-| Q1：JEV 与二次关联有什么区别？ | 原 GMT、规则二次、重复Hungarian、学习二次、新JEV及评分×求解2×2；额外求解数、候选范围和历史分开归因 | NOT_RUN |
-| Q2：为什么固定或可学习阈值不够？ | 固定、state阈值、pair阈值、Binary JEV、相对候选关系；同合法集与历史，检查决策能否被阈值重现 | NOT_RUN |
-| Q3：为什么融合、MLP 或普通 Attention 不够？ | 固定/线性融合、MLP、DeepSets、Attention、Fixed、Multi；相同全部证据/监督/更新/求解，披露继承共同初始化 | NOT_RUN |
-| Q4：增加多少参数和成本？ | 真实加载与forward-active计数、替换GTA净变化，按同GPU/真实双相机完整视频三次重启分解参数/FLOPs/显存/scene FPS/p50/p95 | NOT_RUN |
-| Q5：是否符合 JEV 思想？ | State一次、两个可独立验证Question、动态Options、概率不确定性与共享计算；固定/单问题/无共享/无Reader/无cross/无stability/顺序/数量/敏感性/校准 | NOT_RUN |
+**Q1：是否只是二次关联？**
+
+重复相同输入 Hungarian 必须保持分配；规则屏蔽边后重解是不同干预。真实评分×求解对照运行中。固定同状态 H64：parent181、JEV173、MLP205、Attention173 个已知错误观测；JEV与Attention相同。精确触发预算诊断单独保存，不替代完整在线结果。
+
+证据：`reports/JEV_ONEWEEK/PAIRED_NATIVE_RESULTS.json / SAME_STATE_BUDGET_DIAGNOSTIC.json`。
+
+**Q2：阈值为什么不够？**
+
+固定、state/pair可学习门限正在同条件比较。新Binary与pair门限是同权重精确重参数化，不能冒充旧Phase VI独立Binary。严格同接口旧VI模型尚未重放。没有证据证明所有阈值都不够。
+
+证据：`reports/JEV_ONEWEEK/MAIN_RESULTS.json / MECHANISM_jev_pilot_SEED20261009.json`。
+
+**Q3：MLP或普通Attention为什么不够？**
+
+新JEV与最强已完成普通控制 mlp 的 HOTA 均值差 -0.119，尚不支持独立架构优势。 各新增控制共享相同冻结XIV初始化、证据、当前标签、最多4方案和4000更新。新模块JEV169092、MLP154980、Attention168964参数；不是整个历史预训练架构的独立公平比较。
+
+证据：`reports/JEV_ONEWEEK/FORMAL_CURRENT_RESULTS.json / NEW_MODULE_PARAMETER_READS.json`。
+
+**Q4：参数和延迟？**
+
+完整原GMT53515309参数；新JEV36165558，总变化−17349751，但完整前端不同，不能把该差值解释为纯关联模块开销。共同前端parent35996466，新JEV增169092。完整视频3次重启FPS和单独组件profile仍以实际完成状态为准；MAC/FLOPs含自定义核缺口，明确PARTIAL。
+
+证据：`reports/JEV_ONEWEEK/PARAMETERS_AND_FPS.json`。
+
+**Q5：是否真是JEV？**
+
+每摄像头因果关联事件共享State编码1次，实际重复编码2次同输出；动态合法ID/私有DEFER和问题条件化均实现。TRAIN16共同可认证两问题标签分歧0，不能据两个Head或embedding敏感性证明独立语义价值。目前应称JEV-inspired关联研究实现。
+
+证据：`reports/JEV_ONEWEEK/TRAINED_CONTRACT_CALIBRATION_SEED20261009.json / QUESTION_SEPARATION_AND_PLAN_COVERAGE.json`。
