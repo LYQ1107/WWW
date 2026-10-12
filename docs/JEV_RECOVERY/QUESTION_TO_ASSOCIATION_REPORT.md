@@ -47,7 +47,7 @@
 | 融合器 | Tiny | Pilot | 同状态净纠错 | 完整在线 |
 |---|---|---|---:|---|
 | explicit_scores | COMPLETE | PENDING | PENDING | PENDING |
-| independent_readers | PENDING | PENDING | PENDING | PENDING |
+| independent_readers | COMPLETE | PENDING | PENDING | PENDING |
 | mlp | PENDING | PENDING | PENDING | PENDING |
 | attention | PENDING | PENDING | PENDING | PENDING |
 
