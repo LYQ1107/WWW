@@ -11,6 +11,13 @@ def main(gpu,arms,seeds):
     assert read(REPORTS/'PILOT_NATIVE_SUMMARY.json')['status']=='PARTIAL_COMPLETE_FIXED_SCOPE_CONTROLS'
     for arm in arms:
         for seed in seeds:
+            completed=OUT/'matlab_v1/formal'/arm/f'seed{seed}'/'17_18_19/RESULT.json'
+            if completed.exists():
+                assert read(completed)['status']=='COMPLETE'
+                for video in DEV:
+                    assert read(OUT/'online_v1/formal'/arm/f'seed{seed}'/f'video{video:02d}/RESULT.json')['status']=='COMPLETE'
+                assert read(OUT/'training_v1'/arm/f'seed{seed}/formal/RESULT.json')['total_updates']==4000
+                print('SKIP_COMPLETE_TRAIN_NATIVE_MATLAB_BLOCK',arm,seed,flush=True);continue
             for phase in ['pilot','formal']:
                 path=OUT/'training_v1'/arm/f'seed{seed}'/phase/'RESULT.json'
                 if path.exists():

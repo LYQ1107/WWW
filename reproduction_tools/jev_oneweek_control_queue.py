@@ -11,6 +11,12 @@ def main(gpu,arms,seeds):
     for arm in arms:
         chosen=[20261009] if arm in ['cosine','XV_V3_reference','base_single','base_repeat','base_rule','edge_single','edge_repeat','edge_rule'] else seeds
         for seed in chosen:
+            completed=OUT/'matlab_v1/formal'/arm/f'seed{seed}'/'17_18_19/RESULT.json'
+            if completed.exists():
+                assert read(completed)['status']=='COMPLETE'
+                for video in DEV:
+                    assert read(OUT/'online_v1/formal'/arm/f'seed{seed}'/f'video{video:02d}/RESULT.json')['status']=='COMPLETE'
+                print('SKIP_COMPLETE_NATIVE_MATLAB_BLOCK',arm,seed,flush=True);continue
             for video in DEV:
                 path=OUT/'online_v1/formal'/arm/f'seed{seed}'/f'video{video:02d}'/'RESULT.json'
                 if path.exists():assert read(path)['status']=='COMPLETE';continue
