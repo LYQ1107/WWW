@@ -6,7 +6,8 @@ from jev_recovery_common import *
 def inputs():
     names=['QUESTION_TO_ASSOCIATION_DIAGNOSIS.json','DIAGNOSTIC_FUSION_RESULT_INDEX.json',
            'R2_XIV_MECHANISM_GATE.json','R3_XIII_MECHANISM_GATE.json',
-           'COMPLETE_INPUT_ASSESSMENT_AUDIT.json','QUESTION_INTERVENTION_NATIVE_INDEX.json']
+           'COMPLETE_INPUT_ASSESSMENT_AUDIT.json','QUESTION_INTERVENTION_NATIVE_INDEX.json',
+           'QUESTION_CLASSIFICATION_PRECISION_AUDIT.json','QUESTION_CERTIFIED_ALTERNATIVE_AUDIT.json']
     files=[REPORTS/n for n in names if (REPORTS/n).exists()]
     for folder in ['diagnostic_fusion','diagnostic_fusion_native','question_intervention_native',
                    'question_intervention_paired','complete_input_all_pilots_v2']:
@@ -56,13 +57,28 @@ def render():
             rank=c.get('WHO_only_rank_correct',0)/max(1,c.get('WHO_only_rank_pairs',0))
             text.append(f"| {mode} | {c.get('N01',0)} | {c.get('N10',0)} | {c['net_certified_corrections']} | {c.get('rows_changed_vs_full',0)} | {rank:.6f} |")
         c=d['interventions']['full']
-        text+=['',f"完整模型中两辅助问题均正确、最终身份错误且存在合法正确替代的行数：{c.get('both_correct_final_wrong_with_legal_correct_alternative',0)}。没有合法正确替代的对应行数：{c.get('both_correct_final_wrong_without_legal_correct_alternative',0)}；后者不定义为排名失败。",
+        text+=['',f"完整模型中两辅助问题均正确、最终身份错误且存在合法正确替代的行数：{c.get('both_correct_final_wrong_with_legal_correct_alternative',0)}。没有被方案覆盖的已认证正确 active-ID 替代的对应行数：{c.get('both_correct_final_wrong_without_legal_correct_alternative',0)}；此统计尚需区分 private MATCH DEFER 与合法 active-ID 未进入方案，不能把475全部称为没有任何合法正确动作。",
                '',f"已认证正确合法身份未进入最终方案的行数：{c.get('legal_certified_correct_absent_from_plans',0)}。UNKNOWN 比较：{c.get('UNKNOWN_comparison',0)}。完整模型正负辅助交叉表与最多 40 个事件的 ID、历史可用性、早期外观余弦、原始/修正分数保存在诊断 JSON。",
                '', '把两个辅助输出置零后最终分数逐位相等：最终评分没有直接读取辅助 Head 输出。这个结果证明直接输出路径缺失，不能证明辅助训练没有通过隐藏表示起作用。屏蔽／平均的差异检验 B；两问题正确但合法纠错仍失败检验 A；覆盖、UNKNOWN、认证与依赖审计检验 C。三种原因可能共同存在，不能仅由一个比例排他归因。']
         text+=['','此 checkpoint 删除联合方案残差没有改变选中方案；在该全量状态样本上不能把当前身份收益归因于联合方案残差。完整融合比单路或平均的冻结干预更好，只证明本权重中组合表示的作用，不能替代同预算重训的架构对照。相同全量源状态下普通 MLP 净纠错151、阈值119、普通 Attention147，JEV107；没有建立 JEV 独立优势。']
     else:text+=['','冻结干预正在执行；尚未生成完成结果。']
+    precision=REPORTS/'QUESTION_CLASSIFICATION_PRECISION_AUDIT.json'
+    if precision.exists():
+        text+=['','### 正例召回不是完整分类优势','',
+               '| 模型 | 问题 | TP | FP | 正例精度 | 正例召回 |',
+               '|---|---|---:|---:|---:|---:|']
+        for c in read(precision)['rows']:
+            if c['arm'] not in ['jev','threshold']:continue
+            text.append(f"| {c['arm']} | {c['question']} | {c['TP']} | {c['FP']} | {c['positive_precision']:.6f} | {c['positive_recall']:.6f} |")
+        text+=['','JEV较高正例召回同时伴随更多假阳性。不能只由正例正确数断言全面更强，也不能把未直接参与原评分的Head假阳性直接归因为IDSW。须由融合学习与实际状态干预检验。']
+    alternatives=REPORTS/'QUESTION_CERTIFIED_ALTERNATIVE_AUDIT.json'
+    if alternatives.exists():
+        c=read(alternatives)['counts']
+        text+=['','### 合法替代与真正Global ID恢复分开','',
+               f"两问题均正确而身份错误：正确active ID已进方案{c.get('certified_active_ID_in_plans',0)}行；仅已认证private DEFER在方案中{c.get('only_certified_private_DEFER_in_plans',0)}行；正确active ID合法但未进方案{c.get('certified_active_ID_legal_but_not_in_plans',0)}行；没有任何已认证正确替代{c.get('no_certified_correct_alternative',0)}行。",
+               f"N01分解：恢复已有active ID {c.get('N01_existing_active_ID',0)}；private MATCH DEFER {c.get('N01_private_MATCH_DEFER',0)}。合法DEFER是当前MATCH正确动作，不证明原Global ID恢复或Bank安全。原188/475只统计被方案覆盖的active-ID替代，旧结果保留，此新审计补足动作语义。"]
     text+=['','## 第5/6项：重新训练的最小融合对照', '',
-           '同一冻结 R2 JEV 前端和辅助 Head，四个最终融合器：显式辅助概率门控、两个独立最终 Reader、普通 MLP、普通 Attention。新增参数81786/82274/82476/81826，差距小于1%。同样两路表示、两预测概率、原余量和因果早期外观，同批次与损失；Tiny128 后 fresh Pilot1000，再做全部 TRAIN16 原生在线和身份提交审计。',
+           '同一冻结 R2 JEV 前端和辅助 Head，四个最终融合器：显式辅助概率门控、两个独立最终 Reader、普通 MLP、普通 Attention。新增参数81786/82274/82476/81826，差距小于1%。同样两路表示、两预测sigmoid分数（未校准）、原余量和因果早期外观，同批次与损失；Tiny128 后 fresh Pilot1000，再做全部 TRAIN16 原生在线和身份提交审计。',
            '', '这只对比相同已训练 JEV 前端上的最终融合，不代表从头训练的普通控制器架构。原纯 MLP/Attention 主对照继续独立报告。新增融合梯度只有1000步，属于已允许 R2 范围；既有正式4000和原晋级条件均不变，没有第四个大型版本，也没有 DEV 调参。',
            '', '| 融合器 | Tiny | Pilot | 同状态净纠错 | 完整在线 |',
            '|---|---|---|---:|---|']
