@@ -1,4 +1,4 @@
-"""Reuse canonical fuser jobs on currently idle GPU6, never add experiments."""
+"""Reuse canonical fuser jobs on an idle project GPU; never add experiments."""
 from jev_recovery_common import *
 from jev_recovery_controller import run_job
 from jev_recovery_publish import publish
@@ -6,11 +6,15 @@ from jev_recovery_publish import publish
 
 if __name__=='__main__':
     protect()
-    uuid=subprocess.check_output(['nvidia-smi','-i','6','--query-gpu=uuid','--format=csv,noheader'],text=True).strip()
     processes=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader'],text=True)
-    assert not any(line.startswith(uuid+',') for line in processes.splitlines()),'Prefer idle device at launch'
+    gpu=2
+    for index in [6,5,2]:
+        uuid=subprocess.check_output(['nvidia-smi','-i',str(index),'--query-gpu=uuid','--format=csv,noheader'],text=True).strip()
+        if not any(line.startswith(uuid+',') for line in processes.splitlines()):
+            gpu=index;break
+    print('CANONICAL_FUSION_ADDITIONAL_QUEUE_GPU',gpu,flush=True)
     for kind in ['independent_readers','mlp','attention']:
         assert read(OUT/'diagnostic_fusion_v2'/kind/'tiny/RESULT.json')['engineering_pass']
-        run_job(f'R2_FUSION_{kind}_pilot_v2','jev_recovery_fusion_experiment.py',['--kind',kind,'--phase','pilot'],6)
+        run_job(f'R2_FUSION_{kind}_pilot_v2','jev_recovery_fusion_experiment.py',['--kind',kind,'--phase','pilot'],gpu)
         assert read(OUT/'diagnostic_fusion_v2'/kind/'pilot/RESULT.json')['engineering_pass']
-        publish('Complete canonical '+kind+' final-fusion pilot using free GPU6; existing queue reuses locked result')
+        publish('Complete canonical '+kind+' final-fusion pilot on GPU'+str(gpu)+'; existing queue reuses locked result')

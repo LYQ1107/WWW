@@ -1,0 +1,637 @@
+{
+  "auxiliary_heads_frozen": true,
+  "backbone_checkpoint": {
+    "SHA256": "b918902dec6ddd6b99323846accd735df556d3d82adac7a06d7c3caa73978967",
+    "bytes": 2098273,
+    "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R2/XIV/jev/seed20261009/pilot/NEW_MODULES.pth"
+  },
+  "batch_key_digest": "6eedd106a524badf78106bfe844ace2aa0cfca8f22befe123ad4dc50c011c258",
+  "before": {
+    "counts": {
+      "UNKNOWN_selected": 393,
+      "known_correct": 2778,
+      "known_selected": 3233,
+      "nonbase_plan_selected": 23,
+      "plans_generated": 1024,
+      "rank_pair_correct": 1115,
+      "rank_pairs": 1327,
+      "rows": 3626
+    },
+    "known_correct_rate": 0.859263841633158,
+    "questions": {
+      "cross": {
+        "0_correct": 65551,
+        "0_support": 65946,
+        "1_correct": 940,
+        "1_support": 1001
+      },
+      "stability": {
+        "0_correct": 134106,
+        "0_support": 135501,
+        "1_correct": 2889,
+        "1_support": 2994
+      }
+    },
+    "rank_pair_accuracy": 0.840241145440844,
+    "scope": "Deterministic reused TRAIN16 controller audit; correlated rows, not full MOT or independent generalization"
+  },
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": "2",
+    "additional_protocols": {
+      "CANDIDATE_EXECUTION_FREEZE.json": {
+        "SHA256": "7c5ea698d815a51e25bbae8a5ac14826aea4e3601375bf8d0a6a93ea1d066978",
+        "bytes": 884,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/CANDIDATE_EXECUTION_FREEZE.json"
+      },
+      "DIAGNOSTIC_FUSION_PREREGISTRATION.json": {
+        "SHA256": "82bad6fe413eb023038d11cd02904775a358edd7347229398e4e56492ea765d4",
+        "bytes": 2041,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/DIAGNOSTIC_FUSION_PREREGISTRATION.json"
+      },
+      "PREREGISTRATION.json": {
+        "SHA256": "9ee454202c585eb27e5df123b35d08b036bea9c94c2ddb9f9ab629c912384049",
+        "bytes": 1825,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/PREREGISTRATION.json"
+      },
+      "QUESTION_INTERVENTION_NATIVE_PROTOCOL.json": {
+        "SHA256": "3c5965cc763e92b3839d39d1aac1a20a7c32add606ddc48f42c5caedab603d49",
+        "bytes": 1241,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/QUESTION_INTERVENTION_NATIVE_PROTOCOL.json"
+      },
+      "QUESTION_TO_ASSOCIATION_PROTOCOL.json": {
+        "SHA256": "8c69ba0bbc969c1a27d07a2542ec41b1d1e62fed13c87bf24f9cda98d5f8be77",
+        "bytes": 2073,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/QUESTION_TO_ASSOCIATION_PROTOCOL.json"
+      },
+      "R2_ANCHOR_LABEL_PROTOCOL.json": {
+        "SHA256": "53ab551202034f349ca7f0b4944d465d76e48d5a3ca370296f7e42a5d1659035",
+        "bytes": 873,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_ANCHOR_LABEL_PROTOCOL.json"
+      },
+      "R2_EARLY_EVIDENCE_PROTOCOL.json": {
+        "SHA256": "33dd0e5e209bc116dc3aa4fdf3a359763172e992dd73ffc5f90a6ab2dca10c70",
+        "bytes": 752,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_EARLY_EVIDENCE_PROTOCOL.json"
+      },
+      "R2_LABEL_PROTOCOL.json": {
+        "SHA256": "dec9a457a3f50455d6dddeec23109d6a96cc740c20de8200e12b7d7674885800",
+        "bytes": 667,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_LABEL_PROTOCOL.json"
+      },
+      "R2_PERSISTENT_QUESTION_PROTOCOL.json": {
+        "SHA256": "b13512f3abdd0bb6d16b3a8935047ff5278c0e22111546e1d1456b34577ae076",
+        "bytes": 599,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_PERSISTENT_QUESTION_PROTOCOL.json"
+      },
+      "R2_PREREGISTRATION.json": {
+        "SHA256": "e6b411c1fa9e978d19d19264638d11c9cb66332f37da55627b8597851b9d04a6",
+        "bytes": 972,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_PREREGISTRATION.json"
+      },
+      "R2_PROPOSAL_PROTOCOL.json": {
+        "SHA256": "425f95c85bf7c0fbb04aadf4e3444e4d9afd96743f2299ed872ddb1f56fbc71e",
+        "bytes": 404,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_PROPOSAL_PROTOCOL.json"
+      },
+      "SOLVER_BUDGET_PROTOCOL.json": {
+        "SHA256": "7293b9c50e0142a541b93a840340fca1ce6beddff5bdec34d8acd4179d894236",
+        "bytes": 628,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/SOLVER_BUDGET_PROTOCOL.json"
+      }
+    },
+    "commit": "9cf2f5594987ff84874c8ae7c255d28d5539dccb",
+    "official_TEST": false,
+    "protocol": {
+      "SHA256": "9ee454202c585eb27e5df123b35d08b036bea9c94c2ddb9f9ab629c912384049",
+      "bytes": 1825,
+      "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/PREREGISTRATION.json"
+    },
+    "scope": "R2 supplementary final-fuser diagnostic",
+    "sealed20_21_22": true,
+    "sources": {
+      "gtr/modeling/jev_oneweek/__init__.py": "4d0bec368997f7bb9141eaf5d463cf220ef2da75ca4084adf0bc29c4404c9114",
+      "gtr/modeling/jev_oneweek/evidence.py": "144bc1845d905ba8af179179159e001a573df7588af880debbcf61d759500e30",
+      "gtr/modeling/jev_oneweek/model.py": "7c9c7817b1508d24bcac5264bf9d5da57bc38267adda054c01fbdbf6d881ea72",
+      "gtr/modeling/jev_oneweek/native.py": "fb34a8c31f5de78267f3580c1210980009af8a8af5d57b90bf02fa60393ae6b0",
+      "gtr/modeling/jev_oneweek/plans.py": "b094b40b07b75fcd2d408b7758eb7d82871905a681774e466ed5889199cf7145",
+      "gtr/modeling/jev_recovery/__init__.py": "110df14ad024683123e8d3f84e622834644de88dae8708cf10d43c41e3474a84",
+      "gtr/modeling/jev_recovery/diagnostic_fusion.py": "a848240fb8dfbc823024b9fe049ac84ae0ce5426d5143b1219732cf87d8fe026",
+      "gtr/modeling/jev_recovery/model.py": "afbcc23827746e0ab2924a32600de2e634cb0981c72ae229b0bf5e6e7e2b27fe",
+      "gtr/modeling/jev_recovery/native.py": "168d2941e9073df7ff103bbac9886e88509b7ffbd7c7c39e19ae882461936ad7",
+      "gtr/modeling/jev_recovery/plans.py": "9de719f355dfc089864b54e62b3c7910063d0e2fb8edf5a22bdc23bb7828626c",
+      "reproduction_tools/jev_recovery_addendum_online_queue.py": "ddbcd27bb5f75bc38df7e9ea3617d9f65f1d16dcbe6eadbc8ce6a5ca6a089754",
+      "reproduction_tools/jev_recovery_addendum_report.py": "6d641d0bb9d2ec8635a623ddd84d314f4ce9b3b7f7f365d9032d46e790f7014f",
+      "reproduction_tools/jev_recovery_alternative_audit.py": "34a1ef37c3109cbc09b7db28a323c735efa2574d25ee1d4c9642d9069cd3dcd4",
+      "reproduction_tools/jev_recovery_anchor_supervision.py": "06108b4c803db8b11cc9a89bbc5afb01077050beec819c6f5092d83625b79ab2",
+      "reproduction_tools/jev_recovery_audit.py": "8bb109059063e14cbe120e70e26e160b99739b8240f5002520dc75ba2a851f68",
+      "reproduction_tools/jev_recovery_auxiliary_queue.py": "9225ad975b54b6b3a395cce62ae449985598a693ecf47d50e0e8ff2c9453c3a7",
+      "reproduction_tools/jev_recovery_certified_probe.py": "fe06f4ac2ed63a41749f98c49396928b88c18bcef2eae461202a475beefafe4a",
+      "reproduction_tools/jev_recovery_common.py": "f44bb00b25e2303911f60e9581a166b1b8dc066dd00bcaf8ce7024a44913e053",
+      "reproduction_tools/jev_recovery_complete_input_all_pilots.py": "377be895300d5360953adfb7dd1e0d63ae0e59aceec5a2fc7054b7a749c9600a",
+      "reproduction_tools/jev_recovery_complete_input_assessment.py": "b21ebb514552b1f54ac56cd50e1a44595b5b2ded8c8f6b8f3d5a490b1d106505",
+      "reproduction_tools/jev_recovery_component_profile.py": "a1335f30f665bcb17007dadba410ca03e7847c4ab729a6e6b74262b34eae7655",
+      "reproduction_tools/jev_recovery_controller.py": "bea258a12fc75ff70e4592d0267ee0fe4bbeb5854d5aa0863e68d20cd5601992",
+      "reproduction_tools/jev_recovery_early_evidence.py": "624f63a68556748a26038f1b624071a910e9104d05804e0843dc85dcc3e33af5",
+      "reproduction_tools/jev_recovery_evidence_contract.py": "f2f2e7554803dbebf837e4255a3419f4a5faf79ba6cc9598de1718aede920d81",
+      "reproduction_tools/jev_recovery_finish.py": "5bbad99197288f1a2583da8446cbfe8651fce77ab25e1528ad281810722f5fe7",
+      "reproduction_tools/jev_recovery_fusion_experiment.py": "3567683db4de30385fb5de84fb895dd71ba38dae65e9a4e7433dbfedabee457f",
+      "reproduction_tools/jev_recovery_fusion_parallel.py": "1797cb68b70e3a11bc1ed89376aa4b29a8ce04bb503ab4825cd9cc5985d02158",
+      "reproduction_tools/jev_recovery_fusion_queue.py": "7abfc7f84097008d0a971c63b29ca41c0e8bff1e03acfaa6bccf14e6a444e0ca",
+      "reproduction_tools/jev_recovery_gate.py": "f937ef22e7ad6f2e87b13d7e5f9d12bdab49d12cbd4231e0830ebca1a2955093",
+      "reproduction_tools/jev_recovery_learning.py": "de21b1da3a6add9e09939ef051787c8caa17771213182f00991f4e079e9495af",
+      "reproduction_tools/jev_recovery_native_main_queue.py": "b95d1d2cc84ec564feb14d5f33f3050c7374dac3f7a379034d43249349ca2181",
+      "reproduction_tools/jev_recovery_online.py": "09ff3625102e809f5173a15423d767d72577b0a4dac8ea2d5d234fddacf34b27",
+      "reproduction_tools/jev_recovery_paired_native.py": "20639eb1d58c4a91ac0bd21f84170574cd2e3d439b9e5ed1c2f49fcf006ab7e6",
+      "reproduction_tools/jev_recovery_progression.py": "0d33fba36095f7cd0ee91d166ed04ed40ff403d5f37525970a96a4049f636a12",
+      "reproduction_tools/jev_recovery_publish.py": "919cd4a62052c92b445a5dd0ee5aa126a1b175eac8306ee61defbb55cfea8ba0",
+      "reproduction_tools/jev_recovery_question_association.py": "1d466db843c23e4882c1440fed7d94db383cfd8a902d07ab2632b8703d64a54f",
+      "reproduction_tools/jev_recovery_question_intervention_online.py": "35fc870be4f024436c04d6b77cfa38cb9a721f69ca24dbcc874d67cec5071630",
+      "reproduction_tools/jev_recovery_question_labels.py": "d8da83bf8db930fa121509f482dbfc941986e5b59a75c7ab23008614437cab5a",
+      "reproduction_tools/jev_recovery_question_paired_native.py": "c4c110fc3113795e9016e2cba5f3dc3cd17373ce9678f0e9a43e3bfbecebe88e",
+      "reproduction_tools/jev_recovery_question_probe.py": "9f808c91a3135fbc33cf8c6e5a64ce4548266ec50504ce617dd1323da01cfdae",
+      "reproduction_tools/jev_recovery_r2_coverage.py": "04ecacd9f02d7ca1aa2f4412a99294823fd7f21fcdcf89be1f7998cde1a3b969",
+      "reproduction_tools/jev_recovery_refresh.py": "dfd058f526aeac92cd3284a0dad5a0ebd4839ec9c7056087d2aa802be5796822",
+      "reproduction_tools/jev_recovery_results.py": "f1f48b13f6b1439b00274fc473261e3c2b1dae198b7ccd0e982ab6808c2d031d",
+      "reproduction_tools/jev_recovery_retrieval.py": "b4e6e380517add4227e7000c825b1cf4d536bf5d3a7e8622f0c6d6090b9e75b6",
+      "reproduction_tools/jev_recovery_solver_audit.py": "b512f5d0abbf84f4dcc1d1c25780a8a3f0dbfbce4836c11e9e59df1e3424de3e",
+      "reproduction_tools/jev_recovery_tests.py": "73954c444df0e60df7b9c25567c480da4348cd1b20c7b883ea0701df167ec455",
+      "reproduction_tools/jev_recovery_train.py": "f790d665273e5d3b46d2c695afb073b78403200bf2f97ec915cebdc19a9618e6"
+    }
+  },
+  "checkpoint": {
+    "SHA256": "fc6a29ffbf555e9d83b2a7a62d03484301b3599bfcaf120637d14b26d8fc2010",
+    "bytes": 330843,
+    "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/diagnostic_fusion_v2/explicit_scores/pilot/FUSER.pth"
+  },
+  "engineering_pass": true,
+  "final": {
+    "counts": {
+      "UNKNOWN_selected": 392,
+      "known_correct": 2782,
+      "known_selected": 3234,
+      "nonbase_plan_selected": 55,
+      "plans_generated": 1024,
+      "rank_pair_correct": 1109,
+      "rank_pairs": 1327,
+      "rows": 3626
+    },
+    "known_correct_rate": 0.860235003092146,
+    "questions": {
+      "cross": {
+        "0_correct": 65551,
+        "0_support": 65946,
+        "1_correct": 940,
+        "1_support": 1001
+      },
+      "stability": {
+        "0_correct": 134106,
+        "0_support": 135501,
+        "1_correct": 2889,
+        "1_support": 2994
+      }
+    },
+    "rank_pair_accuracy": 0.8357196684250189,
+    "scope": "Deterministic reused TRAIN16 controller audit; correlated rows, not full MOT or independent generalization"
+  },
+  "fixture_after": 0.04080746520825735,
+  "fixture_before": 0.33299255128724903,
+  "history": [
+    {
+      "components": {
+        "cross": 0.08087565004825592,
+        "current_edge_compatibility": 0.9434717297554016,
+        "current_plan_ranking": 0.006243834556819786,
+        "stability": 0.08143891394138336
+      },
+      "loss": 0.14116964703965365,
+      "rank_pairs": 44,
+      "seconds": 0.413800984621048,
+      "step": 1,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.02385583333671093,
+        "current_edge_compatibility": 1.2298719882965088,
+        "current_plan_ranking": 1.968560719995728e-06,
+        "stability": 0.026444798335433006
+      },
+      "loss": 0.1355643297787552,
+      "rank_pairs": 35,
+      "seconds": 12.992705881595612,
+      "step": 32,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.022101713344454765,
+        "current_edge_compatibility": 1.3840986490249634,
+        "current_plan_ranking": 0.12223752477458395,
+        "stability": 0.09766815602779388
+      },
+      "loss": 0.29058986046603597,
+      "rank_pairs": 47,
+      "seconds": 24.76585627347231,
+      "step": 64,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.03279648721218109,
+        "current_edge_compatibility": 1.0191876888275146,
+        "current_plan_ranking": 0.45573184104216763,
+        "stability": 0.16825349628925323
+      },
+      "loss": 0.6079131087805099,
+      "rank_pairs": 21,
+      "seconds": 37.03872090578079,
+      "step": 96,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.016999198123812675,
+        "current_edge_compatibility": 1.5154247283935547,
+        "current_plan_ranking": 0.004218343324737317,
+        "stability": 0.04414374381303787
+      },
+      "loss": 0.17104654913373446,
+      "rank_pairs": 38,
+      "seconds": 48.713340155780315,
+      "step": 128,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.017681295052170753,
+        "current_edge_compatibility": 0.8227758407592773,
+        "current_plan_ranking": 0.04967371950316486,
+        "stability": 0.09672131389379501
+      },
+      "loss": 0.1605519598202711,
+      "rank_pairs": 48,
+      "seconds": 60.71895907074213,
+      "step": 160,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.022634249180555344,
+        "current_edge_compatibility": 0.8833516240119934,
+        "current_plan_ranking": 0.1118629474445663,
+        "stability": 0.05047577992081642
+      },
+      "loss": 0.21847561861122472,
+      "rank_pairs": 27,
+      "seconds": 73.63824798166752,
+      "step": 192,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.025776516646146774,
+        "current_edge_compatibility": 0.4709238111972809,
+        "current_plan_ranking": 0.3164485862871406,
+        "stability": 0.053463879972696304
+      },
+      "loss": 0.38335106730663754,
+      "rank_pairs": 28,
+      "seconds": 86.18942756205797,
+      "step": 224,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.017164628952741623,
+        "current_edge_compatibility": 0.5430759191513062,
+        "current_plan_ranking": 0.023232023940563368,
+        "stability": 0.03364229574799538
+      },
+      "loss": 0.09024134628582017,
+      "rank_pairs": 60,
+      "seconds": 99.53144137561321,
+      "step": 256,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.034231483936309814,
+        "current_edge_compatibility": 0.35335004329681396,
+        "current_plan_ranking": 2.5084648680142728e-06,
+        "stability": 0.018152423202991486
+      },
+      "loss": 0.04843348957937474,
+      "rank_pairs": 22,
+      "seconds": 113.12704231590033,
+      "step": 288,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.02713625691831112,
+        "current_edge_compatibility": 0.29736024141311646,
+        "current_plan_ranking": 0.3287104851818818,
+        "stability": 0.03993906080722809
+      },
+      "loss": 0.3752153403378266,
+      "rank_pairs": 43,
+      "seconds": 127.02895746380091,
+      "step": 320,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.01969323866069317,
+        "current_edge_compatibility": 0.08575236797332764,
+        "current_plan_ranking": 0.00851846694391179,
+        "stability": 0.032056741416454315
+      },
+      "loss": 0.030031199784986258,
+      "rank_pairs": 8,
+      "seconds": 140.80035512149334,
+      "step": 352,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.01959061063826084,
+        "current_edge_compatibility": 0.33731040358543396,
+        "current_plan_ranking": 0.25476107408125404,
+        "stability": 0.07468428462743759
+      },
+      "loss": 0.3120608370455027,
+      "rank_pairs": 24,
+      "seconds": 153.55919125676155,
+      "step": 384,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.025329237803816795,
+        "current_edge_compatibility": 0.23964272439479828,
+        "current_plan_ranking": 0.017249776016262448,
+        "stability": 0.08134125918149948
+      },
+      "loss": 0.06788167354026166,
+      "rank_pairs": 39,
+      "seconds": 167.98428474366665,
+      "step": 416,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.1350959986448288,
+        "current_edge_compatibility": 0.16074208915233612,
+        "current_plan_ranking": 0.009409795775012973,
+        "stability": 0.028947465121746063
+      },
+      "loss": 0.06649486839671612,
+      "rank_pairs": 23,
+      "seconds": 184.82665751874447,
+      "step": 448,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.024246210232377052,
+        "current_edge_compatibility": 0.16405530273914337,
+        "current_plan_ranking": 0.0005594379352204445,
+        "stability": 0.025714652612805367
+      },
+      "loss": 0.029455183920430388,
+      "rank_pairs": 27,
+      "seconds": 199.50789996236563,
+      "step": 480,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.02273658476769924,
+        "current_edge_compatibility": 0.3730067312717438,
+        "current_plan_ranking": 0.17929402247467793,
+        "stability": 0.1297408640384674
+      },
+      "loss": 0.2547140556613521,
+      "rank_pairs": 32,
+      "seconds": 215.34237403422594,
+      "step": 512,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.0490577295422554,
+        "current_edge_compatibility": 0.438040167093277,
+        "current_plan_ranking": 0.28462651817103396,
+        "stability": 0.18878784775733948
+      },
+      "loss": 0.38789192659755717,
+      "rank_pairs": 24,
+      "seconds": 229.24652437120676,
+      "step": 544,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.0448308065533638,
+        "current_edge_compatibility": 0.2301294058561325,
+        "current_plan_ranking": 0.05987515138009885,
+        "stability": 0.08628491312265396
+      },
+      "loss": 0.11566702300230364,
+      "rank_pairs": 20,
+      "seconds": 239.3767176195979,
+      "step": 576,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.02838481217622757,
+        "current_edge_compatibility": 0.2378980666399002,
+        "current_plan_ranking": 0.042172377396460056,
+        "stability": 0.08090383559465408
+      },
+      "loss": 0.09328434563064146,
+      "rank_pairs": 24,
+      "seconds": 249.6365088969469,
+      "step": 608,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.017910443246364594,
+        "current_edge_compatibility": 0.16420143842697144,
+        "current_plan_ranking": 8.10615599096821e-05,
+        "stability": 0.0388980396091938
+      },
+      "loss": 0.030703326861554484,
+      "rank_pairs": 15,
+      "seconds": 259.81332494318485,
+      "step": 640,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.027105705812573433,
+        "current_edge_compatibility": 0.10308923572301865,
+        "current_plan_ranking": 0.0840709860147059,
+        "stability": 0.03203270584344864
+      },
+      "loss": 0.10916451259414554,
+      "rank_pairs": 45,
+      "seconds": 270.59823866188526,
+      "step": 672,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.10090254247188568,
+        "current_edge_compatibility": 0.10730381309986115,
+        "current_plan_ranking": 0.0002367698336347924,
+        "stability": 0.022062674164772034
+      },
+      "loss": 0.04170845511652082,
+      "rank_pairs": 27,
+      "seconds": 286.09998044371605,
+      "step": 704,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.08011189103126526,
+        "current_edge_compatibility": 0.12213896214962006,
+        "current_plan_ranking": 0.034318734650949194,
+        "stability": 0.030846793204545975
+      },
+      "loss": 0.07427230080727693,
+      "rank_pairs": 44,
+      "seconds": 301.5579019635916,
+      "step": 736,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.03130523860454559,
+        "current_edge_compatibility": 0.11273401230573654,
+        "current_plan_ranking": 0.0005839997487057131,
+        "stability": 0.034401748329401016
+      },
+      "loss": 0.02828414734023699,
+      "rank_pairs": 29,
+      "seconds": 316.5236786827445,
+      "step": 768,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.3730255365371704,
+        "current_edge_compatibility": 0.3203464150428772,
+        "current_plan_ranking": 0.006742607463023001,
+        "stability": 0.22020000219345093
+      },
+      "loss": 0.18708363514008217,
+      "rank_pairs": 20,
+      "seconds": 331.0274931937456,
+      "step": 800,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.02995997481048107,
+        "current_edge_compatibility": 0.15210498869419098,
+        "current_plan_ranking": 0.0015774879157864003,
+        "stability": 0.10374981164932251
+      },
+      "loss": 0.050215434052082196,
+      "rank_pairs": 31,
+      "seconds": 346.6466213911772,
+      "step": 832,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.023367546498775482,
+        "current_edge_compatibility": 0.06950273364782333,
+        "current_plan_ranking": 0.0019198424667615471,
+        "stability": 0.026620276272296906
+      },
+      "loss": 0.02136707180370875,
+      "rank_pairs": 41,
+      "seconds": 361.95568883419037,
+      "step": 864,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.15443342924118042,
+        "current_edge_compatibility": 0.08840803056955338,
+        "current_plan_ranking": 0.0006664815735059471,
+        "stability": 0.06248624995350838
+      },
+      "loss": 0.06373720349781091,
+      "rank_pairs": 26,
+      "seconds": 377.3491848036647,
+      "step": 896,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.024644358083605766,
+        "current_edge_compatibility": 0.23904632031917572,
+        "current_plan_ranking": 0.017716495817984575,
+        "stability": 0.1273443102836609
+      },
+      "loss": 0.07961829615243815,
+      "rank_pairs": 37,
+      "seconds": 392.22668647021055,
+      "step": 928,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.10423203557729721,
+        "current_edge_compatibility": 0.09126994758844376,
+        "current_plan_ranking": 1.0772166862580588,
+        "stability": 0.07165084779262543
+      },
+      "loss": 1.1303143999967387,
+      "rank_pairs": 33,
+      "seconds": 406.73684971034527,
+      "step": 960,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.12282413244247437,
+        "current_edge_compatibility": 0.06211522966623306,
+        "current_plan_ranking": 1.1431422066874629e-05,
+        "stability": 0.029499461874365807
+      },
+      "loss": 0.04430385157091636,
+      "rank_pairs": 18,
+      "seconds": 421.568580545485,
+      "step": 992,
+      "total": 1000
+    },
+    {
+      "components": {
+        "cross": 0.09876567125320435,
+        "current_edge_compatibility": 0.20152568817138672,
+        "current_plan_ranking": 0.06176259467482112,
+        "stability": 0.11098840087652206
+      },
+      "loss": 0.13435368338703654,
+      "rank_pairs": 41,
+      "seconds": 425.376464612782,
+      "step": 1000,
+      "total": 1000
+    }
+  ],
+  "independent_validation": false,
+  "kind": "explicit_scores",
+  "new_parameters": 81786,
+  "phase": "pilot",
+  "rank_batches": 1000,
+  "scope": "Final fusion learning on common frozen trained JEV frontend; not pure end-to-end ordinary controller",
+  "status": "COMPLETE",
+  "updates": 1000
+}
