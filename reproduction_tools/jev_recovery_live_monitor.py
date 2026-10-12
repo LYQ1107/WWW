@@ -36,8 +36,16 @@ def main():
                            ('frozen_online',REPORTS/'QUESTION_INTERVENTION_NATIVE_INDEX.json')]:
             if path.exists():phases[label]=read(path).get('status')
         failed=[ref(p) for p in unreviewed_failures()]
+        supervisors=[]
+        for proc in pathlib.Path('/proc').iterdir():
+            if not proc.name.isdigit():continue
+            try:
+                command=[a.decode(errors='replace') for a in (proc/'cmdline').read_bytes().split(b'\0') if a]
+                if len(command)>1 and pathlib.Path(command[1]).name in ['jev_recovery_progression.py','jev_recovery_finish.py'] and (proc/'cwd').resolve()==ROOT:
+                    supervisors.append(dict(PID=int(proc.name),command=command,state=(proc/'stat').read_text().split(') ',1)[1].split()[0]))
+            except OSError:continue
         status=dict(status='VERIFIED_MONITORING',updated_UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
-                    live_jobs=live,phases=phases,unreviewed_failures=failed,
+                    live_jobs=live,original_supervisors=supervisors,phases=phases,unreviewed_failures=failed,
                     free_GiB={p:shutil.disk_usage(p).free/2**30 for p in ['/home','/data1']},
                     automatic_restart=False,scientific_success_not_inferred=True)
         save(OUT/'live_monitor/STATUS.json',status)
@@ -45,7 +53,12 @@ def main():
         if signature!=last_signature:
             save(OUT/'live_monitor/events'/f'{time.time_ns()}.json',status)
             print('MONITOR_CHANGE',status['updated_UTC'],signature,flush=True);last_signature=signature
-        if phases.get('progression')=='BOUNDED_TRAIN_ONLINE_ROUTES_COMPLETE' and 'finish' in phases:
+        original_live=[r for r in live if r['job'].startswith(('R1_','R2_XIV_','R3_XIII_'))]
+        if phases.get('progression')=='BOUNDED_TRAIN_ONLINE_ROUTES_COMPLETE' and 'finish' in phases and not supervisors and not original_live:
+            publication=read(OUT/'publication/LAST_VERIFIED.json')
+            head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+            if publication['local_HEAD']!=head or publication['remote_HEAD']!=head:
+                time.sleep(30);continue
             save(OUT/'live_monitor/ORIGINAL_QUEUE_TERMINAL_OBSERVATION.json',status)
             print('ORIGINAL_QUEUE_FINISHED_REQUIRES_FULL_EVIDENCE_REVIEW',flush=True)
             break
