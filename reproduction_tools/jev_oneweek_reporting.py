@@ -58,6 +58,10 @@ def refresh():
                                cases=fps,missing_methods=[n for n in required_fps if n not in fps]),
                       instrumented_components=components,
                       new_parameters_reference='NEW_MODULE_PARAMETER_READS.json')
+    original_components=REPORTS/'ORIGINAL_GMT_STAGE2_COMPONENT_PROFILE.json'
+    if original_components.exists():parameters['original_GMT_separate_Stage2_profile']=read(original_components)
+    parameters['complete_FLOPs']=dict(status='NOT_AVAILABLE_COMPLETE_OPERATOR_COVERAGE',value=None,
+         reason='Native fused MHA/custom deformable/ROI/pointwise kernels are not all counted; actual partial MACs are retained, not presented as exact total FLOPs')
     save(REPORTS/'PARAMETERS_AND_FPS.json',parameters)
     matrix=REPORTS/'FORMAL_STRICT_IDENTITY_MATRIX.json';identity={}
     if matrix.exists():
