@@ -1,0 +1,5 @@
+# 有效监督与历史依赖
+
+局部改变行组不是独立试验。同一视频内共享人物或native ID历史的组经连通聚类去重；同人跨64帧块和跨摄像头的相邻事件仍相关。完整计数见EFFECTIVE_SUPERVISION_DEPENDENCIES.json。
+
+旧START中的TRAIN_independent_conflict_groups和采样索引中的independent_group_keys是局部组名称，不能据此宣称IID、独立身份世界、泛化显著性或旧8TRAIN+3RES门槛达成。旧记录保持原样，本审计明确其含义。跨视频逻辑GT编号也不证明不同实际人物。
