@@ -109,12 +109,37 @@ def online(kind, phase, identity=False):
     old.main(kind,20261009,phase,16)
 
 
+def probe(kind):
+    protect(); torch.set_num_threads(1)
+    _,records,sources=load_records(2); model,descriptor=build(kind,'pilot')
+    count=collections.Counter()
+    selected=[records[i] for i in torch.linspace(0,len(records)-1,min(128,len(records))).long().tolist()]
+    with torch.no_grad():
+        for r in selected:
+            x,_=batch([r]); before=model.backbone.details(x); after=model.details(x)
+            assert before['plans']==after['plans']
+            pp=before['plans'][0]
+            u=pp[int(before['plan_scores'][0].argmax())];v=pp[int(after['plan_scores'][0].argmax())]
+            k=len(r['refs'])
+            for row,(a,b) in enumerate(zip(u,v)):
+                ca,cb=k if a<0 else a,k if b<0 else b
+                count['rows']+=1; count['changed_rows']+=a!=b
+                if bool(r['known_options'][row,ca]) and bool(r['known_options'][row,cb]):
+                    count['N%d%d'%(int(r['positive'][row,ca]),int(r['positive'][row,cb]))]+=1
+                else:
+                    count['UNKNOWN_comparison']+=1;count['UNKNOWN_changed_rows']+=a!=b
+    save(REPORTS/'diagnostic_fusion'/f'{kind}_CERTIFIED.json',dict(status='COMPLETE_PAIRED_FROZEN_STATE',
+        checkpoint=descriptor,counts=dict(count),net=count['N01']-count['N10'],sources=sources,
+        before='Identical frozen R2 JEV Pilot1000 seed09',native_mutation=False,independent_validation=False))
+
+
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--kind',choices=KINDS,required=True)
     p.add_argument('--phase',choices=['tiny','pilot'],default='pilot')
-    p.add_argument('--mode',choices=['train','online','identity'],default='train');a=p.parse_args()
+    p.add_argument('--mode',choices=['train','probe','online','identity'],default='train');a=p.parse_args()
     try:
         if a.mode=='train': train(a.kind,a.phase)
+        elif a.mode=='probe': probe(a.kind)
         else: online(a.kind,a.phase,a.mode=='identity')
     except Exception:
         import traceback
