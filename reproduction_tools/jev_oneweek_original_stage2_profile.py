@@ -16,16 +16,25 @@ def main():
         rows=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader'],text=True).splitlines()
         assert not [r for r in rows if r.strip().startswith(uuid+',') and int(r.split(',')[1])!=os.getpid()]
     clean();values,frames,_=cache_inputs(17);model,cfg=original_model();original_live_payloads(model,values,cfg)
-    original=model.get_asso;start=[None];times=[]
+    original=model.get_asso;start=[None];times=[];commit_depth=[0];nested_bank_association_calls=[0]
     def get_asso(*args,**kwargs):
-        assert start[0] is None
-        torch.cuda.synchronize();start[0]=time.perf_counter()
+        if start[0] is None:
+            assert commit_depth[0]==0
+            torch.cuda.synchronize();start[0]=time.perf_counter()
+        else:
+            # memory_bank invokes get_asso inside the current native commit.
+            # Its cost belongs to this same Stage2 interval, not a new payload.
+            assert commit_depth[0]>0
+            nested_bank_association_calls[0]+=1
         return original(*args,**kwargs)
     model.get_asso=get_asso
     def wrap_commit(function):
         def commit(*args,**kwargs):
             assert start[0] is not None
-            value=function(*args,**kwargs);torch.cuda.synchronize()
+            commit_depth[0]+=1
+            try:value=function(*args,**kwargs)
+            finally:commit_depth[0]-=1
+            torch.cuda.synchronize()
             times.append((time.perf_counter()-start[0])*1000);start[0]=None
             return value
         return commit
@@ -42,6 +51,8 @@ def main():
     result=dict(status='COMPLETE',binding=binding('Actual original GMT live-image Stage2 from get_asso through original Gallery/Bank commit'),
                 GPU_UUID=uuid,hardware=torch.cuda.get_device_name(),video=17,scene_frames=frames,
                 camera_commits=len(times),Stage2_p50_p95_ms=list(map(float,np.quantile(times[16:],[.5,.95]))),
+                nested_bank_get_asso_calls=nested_bank_association_calls[0],
+                nested_bank_association_included_in_outer_commit_interval=True,
                 Stage2_sum_ms=float(sum(times)),warmup_excluded_camera_payloads=16,
                 includes_original_GTA_history_aggregation_threshold_assignment_Gallery_Bank=True,
                 excludes_caller_instance_list_slicing_and_first_bootstrap_ID_creation=True,
