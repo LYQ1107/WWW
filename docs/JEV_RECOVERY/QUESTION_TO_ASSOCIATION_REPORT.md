@@ -92,7 +92,7 @@ H64使用事前固定的真实XV native prefix32/0，五方法起始state/input/
 | cross_representation_only | 182 | 68.40825658812663 | 66.95776955834098 | 1267.0 |
 | persistent_representation_only | 181 | 67.16304126284368 | 64.50461640916198 | 1252.0 |
 | mean_representations | 182 | 65.17244909664248 | 60.90525899319354 | 1337.0 |
-| no_joint_plan_residual | 286 | PENDING | PENDING | PENDING |
+| no_joint_plan_residual | 286 | 67.33177074062783 | 64.96536206810643 | 1333.0 |
 
 原生提交、初始状态SHA及每步预测源文件在question_intervention_paired / question_intervention_native报告。H64统计遵循冻结first-known-owner口径，与同状态anchor N01/N10证书不同，不能混合成一个纠错指标。40个源状态错误例并非已经在H64窗口逐个提交；完整状态机制验证与例案表须分别解读。
 
