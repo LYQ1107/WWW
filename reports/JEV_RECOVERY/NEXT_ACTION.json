@@ -1,13 +1,17 @@
 {
+  "GPU": 2,
   "MASTER": "ACTIVE_RESEARCH",
-  "action": "Complete R2 common-evidence Tiny/Pilot and all mandatory ablations, then strong XIII route using frozen TRAIN gates",
-  "running": [
-    {
-      "GPU": 6,
-      "PID": 14375,
-      "experiment_id": "R2_XIV_attention_fusion_tiny",
-      "log": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/controller_logs/R2_XIV_attention_fusion_tiny.log"
-    }
+  "command": [
+    "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+    "/home/liuyeqiang/WWW_jev_recovery_20261012/reproduction_tools/jev_recovery_certified_probe.py",
+    "--revision",
+    "2",
+    "--base",
+    "XIV",
+    "--arm",
+    "jev"
   ],
+  "experiment_id": "R2_XIV_jev_certified_probe",
+  "log": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/controller_logs/R2_XIV_jev_certified_probe.log",
   "status": "EXECUTING"
 }
