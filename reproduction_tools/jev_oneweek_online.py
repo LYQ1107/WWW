@@ -71,6 +71,14 @@ class SolverFactorControl(nn.Module):
 
 def policy(arm,seed,phase):
     from jev_phase15_common import load_old_policy
+    if arm in ['no_cross_evidence','no_stability_evidence']:
+        from gtr.modeling.jev_oneweek.evidence import EvidenceIntervention
+        network,checkpoint,_=load_model('jev',seed,phase)
+        return EvidenceIntervention(network,arm).eval(),checkpoint
+    if arm=='no_shared_recompute':
+        network,checkpoint,_=load_model('jev',seed,phase)
+        network.arm='no_shared'
+        return network.eval(),checkpoint
     if arm=='cosine':return None,None
     if arm in ['parent','extra_hungarian','fixed_threshold','fixed_fusion']:
         original,checkpoint,_=load_old_policy('multi_question',seed)
