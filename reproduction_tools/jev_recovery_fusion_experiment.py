@@ -1,8 +1,9 @@
 """Bounded R2 diagnostic fuser learning, separate IDs/weights/native namespace."""
 import argparse, collections, random, torch
 from jev_recovery_common import *
-from jev_recovery_learning import load_records, load_model, batch, loss, assess, conflict_groups, question_conflict_groups
+from jev_recovery_learning import load_records, load_model, batch, loss, conflict_groups, question_conflict_groups
 from gtr.modeling.jev_recovery.diagnostic_fusion import DiagnosticFusion
+from jev_recovery_complete_input_assessment import assess
 
 KINDS = ['explicit_scores','independent_readers','mlp','attention']
 
@@ -13,7 +14,7 @@ def build(kind, phase=None):
         torch.manual_seed(20261009)
         model = DiagnosticFusion(backbone,kind).cuda()
     if phase:
-        descriptor = read(OUT/'diagnostic_fusion'/kind/phase/'RESULT.json')['checkpoint']
+        descriptor = read(OUT/'diagnostic_fusion_v2'/kind/phase/'RESULT.json')['checkpoint']
         assert sha(descriptor['path']) == descriptor['SHA256']
         saved = torch.load(descriptor['path'],map_location='cuda:0')
         assert saved['backbone_checkpoint'] == source
@@ -25,9 +26,9 @@ def build(kind, phase=None):
 
 def train(kind, phase):
     protect(); torch.set_num_threads(1)
-    protocol = read(REPORTS/'DIAGNOSTIC_FUSION_PREREGISTRATION.json')
+    protocol = read(REPORTS/'DIAGNOSTIC_FUSION_PREREGISTRATION_V2.json')
     target = protocol['updates'][phase]
-    folder = OUT/'diagnostic_fusion'/kind/phase; folder.mkdir(parents=True,exist_ok=False)
+    folder = OUT/'diagnostic_fusion_v2'/kind/phase; folder.mkdir(parents=True,exist_ok=False)
     records,validation,sources = load_records(2)
     groups = conflict_groups(records,2); semantic = question_conflict_groups(records)
     keys = sorted(groups); semantic_keys = sorted(semantic)
@@ -55,7 +56,7 @@ def train(kind, phase):
         assert all(torch.equal(a,b) for a,b in zip(old['plan_scores'],initial['plan_scores']))
         fixture_before = float(loss(initial,x,y,fixtures,weights)[0])
     before = assess(model,validation,128)
-    save(folder/'START.json',dict(status='FROZEN_MODEL_AND_BATCHES',protocol=ref(REPORTS/'DIAGNOSTIC_FUSION_PREREGISTRATION.json'),
+    save(folder/'START.json',dict(status='FROZEN_MODEL_AND_BATCHES',protocol=ref(REPORTS/'DIAGNOSTIC_FUSION_PREREGISTRATION_V2.json'),
         backbone_checkpoint=source,new_parameters=count,frozen_parameters=sum(p.numel() for p in model.parameters() if not p.requires_grad),
         exact_initial_plan_scores_and_edges=True,TRAIN16_gradient=False,DEV_gradient=False,sources=sources))
     digest = hashlib.sha256(); rank_batches=0; history=[]; began=time.monotonic()
@@ -104,7 +105,7 @@ def online(kind, phase, identity=False):
     else: import jev_oneweek_online as old
     from jev_recovery_online import configure
     configure(old,2,'XIV')
-    old.OUT=OUT/'diagnostic_fusion_native';old.REPORTS=REPORTS/'diagnostic_fusion_native'
+    old.OUT=OUT/'diagnostic_fusion_native_v2';old.REPORTS=REPORTS/'diagnostic_fusion_native'
     old.policy=lambda arm,seed,ph:build(arm,ph)
     old.main(kind,20261009,phase,16)
 
