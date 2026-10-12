@@ -4,11 +4,12 @@ from jev_recovery_common import *
 from jev_recovery_learning import *
 def main(arm,phase,seed,revision,base):
  protect();protocol=read(REPORTS/'PREREGISTRATION.json');budget=protocol['training'];assert seed in SEEDS
- assert read(REPORTS/'MODEL_AND_NATIVE_CONTRACT_TESTS.json')['status']=='PASS'
+ contract=REPORTS/('MODEL_AND_NATIVE_CONTRACT_TESTS.json' if revision==1 else f'R{revision}_MODEL_AND_NATIVE_CONTRACT_TESTS.json')
+ assert read(contract)['status']=='PASS'
  target={'tiny':128,'pilot':1000,'formal':budget['formal_total_updates']}[phase]
  folder=OUT/f'training_R{revision}'/base/arm/f'seed{seed}'/phase
  folder.mkdir(parents=True,exist_ok=False)
- train,validation,sources=load_records();groups=conflict_groups(train);assert groups,'No certified train conflict groups'
+ train,validation,sources=load_records(revision);groups=conflict_groups(train);assert groups,'No certified train conflict groups'
  keys=sorted(groups);model,initializer=initialize(arm,seed,revision,base)
  rng=random.Random(seed);ordinary=collections.defaultdict(list)
  for r in train:ordinary[r['key'][0],r['key'][1]//64].append(r)
@@ -22,10 +23,12 @@ def main(arm,phase,seed,revision,base):
   pilot=read(folder.parent/'pilot/RESULT.json');assert pilot['engineering_training_pass']
   cp=pilot['checkpoint'];assert sha(cp['path'])==cp['SHA256'];s=torch.load(cp['path'],map_location='cuda:0')
   model.load_state_dict(s['new_modules'],strict=False);optimizer.load_state_dict(s['optimizer']);start=s['updates'];assert start==1000
- fixture=[groups[k][0] for k in keys[:4]];before=assess(model,validation,128)
+ fixture_keys=[next(k for k in keys if k[0]==v) for v in [12,13,14] if any(k[0]==v for k in keys)]
+ fixture_keys+=(keys[:4]);fixture_keys=fixture_keys[:4]
+ fixture=[groups[k][0] for k in fixture_keys];before=assess(model,validation,128)
  x,y=batch(fixture);initial=float(loss(model.details(x),x,y,fixture,weights)[0].detach())
  save(folder/'START.json',dict(binding=binding('Bounded dependence-aware TRAIN conflict learning'),arm=arm,revision=revision,base=base,seed=seed,phase=phase,total_updates=target,start_updates=start,initializer=initializer,sources=sources,TRAIN_independent_conflict_groups=len(groups),sampling='50% group-balanced certified conflicts, 50% video/block-balanced all records',pos_weights=weights,trainable_parameters=sum(p.numel() for p in model.parameters() if p.requires_grad),DEV_gradient=False))
- history=[];rank_batches=0;nonzero_batches=0;seen_groups=set();all_keys=hashlib.sha256();gradients=collections.Counter();begin=time.monotonic()
+ history=[];rank_batches=0;nonzero_batches=0;seen_groups=set();actual_gradient_groups=set();all_keys=hashlib.sha256();gradients=collections.Counter();begin=time.monotonic()
  # Advance identical RNG draws on formal continuation to avoid pilot replay.
  def sampled():
   part=[];samplegroups=[]
@@ -38,10 +41,25 @@ def main(arm,phase,seed,revision,base):
  if phase=='formal':
   for _ in range(start):sampled()
  for step in range(start+1,target+1):
-  part,sg=(fixture,keys[:4]) if phase=='tiny' else sampled()
+  part,sg=(fixture,fixture_keys) if phase=='tiny' else sampled()
   assert all(r['key'][0] in [12,13,14] and not r['audit_block'] for r in part)
   all_keys.update(json.dumps([r['key'] for r in part]).encode());x,y=batch(part);model.train();optimizer.zero_grad(set_to_none=True)
   d=model.details(x);value,components,pairs=loss(d,x,y,part,weights);assert torch.isfinite(value)
+  # Audit whether the certified ranking term actually reaches a scoring head.
+  # This is separate from auxiliary/edge BCE gradients.
+  ranking=torch.stack([torch.nn.functional.softplus(-sign*(d['plan_scores'][i][a]-d['plan_scores'][i][b])/math.sqrt(n)) for i,a,b,sign,n in pairs]).mean() if pairs else None
+  rank_gradient=False
+  if ranking is not None:
+   heads=[model.edge_value.weight]
+   if hasattr(model,'plan_value') and model.recovery_arm!='no_interaction':heads.append(model.plan_value.weight)
+   rr=torch.autograd.grad(ranking,heads,retain_graph=True,allow_unused=True)
+   rank_gradient=any(g is not None and bool(g.abs().max()>0) for g in rr)
+  if rank_gradient:
+   for i,a,b,sign,n in pairs:
+    record=part[i];pp=d['plans'][i];changed=[row for row,(u,v) in enumerate(zip(pp[a],pp[b])) if u!=v]
+    people=tuple(sorted({record['GT_labels_OFFLINE_ONLY'][row] for row in changed if record['GT_labels_OFFLINE_ONLY'][row] is not None}))
+    ids=tuple(sorted({record['refs'][c] for p in (pp[a],pp[b]) for row,c in enumerate(p) if row in changed and c>=0}))
+    actual_gradient_groups.add((record['key'][0],people,ids,record['key'][1]//64,record['key'][2]))
   value.backward();norm=torch.nn.utils.clip_grad_norm_([p for p in model.parameters() if p.requires_grad],1.);assert torch.isfinite(norm)
   for name,p in model.named_parameters():
    if p.grad is not None:
@@ -56,7 +74,7 @@ def main(arm,phase,seed,revision,base):
  with torch.no_grad():last=float(loss(model.details(x),x,y,fixture,weights)[0])
  final=assess(model,validation,128);cp=folder/'NEW_MODULES.pth'
  torch.save(dict(new_modules={k:v.cpu() for k,v in model.state_dict().items() if not k.startswith('identity.')},optimizer=optimizer.state_dict(),initializer=initializer,updates=target,arm=arm,seed=seed,revision=revision,base=base),cp)
- result=dict(status='COMPLETE',binding=binding('TRAIN-only learned recovery residual'),arm=arm,phase=phase,seed=seed,revision=revision,base=base,total_updates=target,actual_new_updates=target-start,checkpoint=ref(cp),initializer=initializer,before=before,final=final,history=history,fixture_loss_before=initial,fixture_loss_after=last,rank_supervised_batches=rank_batches,rank_nonzero_batch_fraction=nonzero_batches/(target-start),sampled_conflict_groups_with_ranking=len(seen_groups),TRAIN_conflict_groups=len(groups),batch_key_digest=all_keys.hexdigest(),max_abs_gradients=dict(gradients),engineering_training_pass=bool(gradients) and rank_batches>0 and (phase!='tiny' or last<initial),supervision_eligible='CURRENT_MATCH_ONLY',future_safety_qualified=False,independent_validation=False,seconds=time.monotonic()-begin)
+ result=dict(status='COMPLETE',binding=binding('TRAIN-only learned recovery residual'),arm=arm,phase=phase,seed=seed,revision=revision,base=base,total_updates=target,actual_new_updates=target-start,checkpoint=ref(cp),initializer=initializer,before=before,final=final,history=history,fixture_loss_before=initial,fixture_loss_after=last,rank_supervised_batches=rank_batches,rank_nonzero_batch_fraction=nonzero_batches/(target-start),sampled_conflict_groups_with_ranking=len(seen_groups),certified_changed_row_groups_with_nonzero_ranking_head_gradient=len(actual_gradient_groups),ranking_gradient_group_definition='Exact changed-row person/native-ID/camera/64-frame cluster; nonzero derivative into edge or plan scoring head, not merely positive softplus loss',TRAIN_conflict_groups=len(groups),batch_key_digest=all_keys.hexdigest(),max_abs_gradients=dict(gradients),engineering_training_pass=bool(gradients) and rank_batches>0 and (phase!='tiny' or last<initial),supervision_eligible='CURRENT_MATCH_ONLY',future_safety_qualified=False,independent_validation=False,seconds=time.monotonic()-begin)
  save(folder/'RESULT.json',result);save(REPORTS/f'TRAIN_R{revision}_{base}_{arm}_{phase}_SEED{seed}.json',result);print('RECOVERY_TRAIN_COMPLETE',arm,phase,flush=True)
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--arm',required=True);p.add_argument('--phase',choices=['tiny','pilot','formal'],required=True);p.add_argument('--seed',type=int,default=20261009);p.add_argument('--revision',type=int,default=1);p.add_argument('--base',default='XIV');a=p.parse_args()

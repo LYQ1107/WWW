@@ -1,0 +1,24 @@
+{
+  "frozen_before_R1_DEV": true,
+  "arms": [
+    "f0_mean",
+    "mlp_fusion",
+    "attention_fusion",
+    "jev",
+    "threshold",
+    "mlp",
+    "attention",
+    "fixed_question",
+    "cross_only",
+    "stability_only",
+    "no_interaction",
+    "no_shared"
+  ],
+  "F0": "Shared typed per-ID view readers, then original mean; same 169092 registered new params",
+  "F1": "Same typed streams, 256->104->64 ordinary MLP shared between fusion and plan pooling",
+  "F2": "Per-concrete-ID Reader with separately typed cross and continuity keys; existing plan Reader weights shared with joint plan reading",
+  "ordinary_MLP": "All original evidence with width200; approximately matched 169k budget",
+  "ordinary_Attention": "Original same-evidence standard Attention; approximately matched 169k budget",
+  "new_label_semantics": "Inherited certified cross/continuity; no manufactured disagreements. Limited rare aliases explicitly disclosed.",
+  "new_heads_calibrated": false
+}

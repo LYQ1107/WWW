@@ -1,12 +1,12 @@
 """Real TRAIN fixtures, constrained proposal reachability, and both native base parity."""
-import gc,torch,traceback
+import gc,torch,traceback,argparse
 from jev_recovery_common import *
 from jev_recovery_learning import initialize,batch
 from jev_oneweek_tests import fixture
 from gtr.modeling.jev_recovery.plans import plans
 from gtr.modeling.jev_stage2.assignment import lawful_choice
 
-def main():
+def main(revision=1):
  protect();torch.set_num_threads(1)
  records=fixture();x,y=batch(records);results=[]
  # A real capacity conflict is re-solved, rather than independently overriding
@@ -15,8 +15,9 @@ def main():
  pp=plans(z,mask);assert pp[0]==(0,-1) and any(p[1]>=0 for p in pp)
  empty=plans(torch.zeros(2,1,device='cuda:0'),torch.zeros(2,0,device='cuda:0',dtype=torch.bool));assert empty==[(-1,-1)]
  for base in ('XIV','XIII'):
-  for arm in ('threshold','mlp','attention','jev'):
-   model,cp=initialize(arm,20261009,base=base);model.eval()
+  arms=('threshold','mlp','attention','jev') if revision==1 else ('threshold','mlp','attention','jev','f0_mean','mlp_fusion','attention_fusion','fixed_question','cross_only','stability_only','no_interaction')
+  for arm in arms:
+   model,cp=initialize(arm,20261009,revision=revision,base=base);model.eval()
    with torch.no_grad():d=model.details(x);old=model.identity({k:v for k,v in x.items() if k!='commitment_features'})
    assert torch.equal(d['base_logits'],old) and torch.equal(d['edge_logits'],old)
    for i,r in enumerate(records):
@@ -35,7 +36,7 @@ def main():
  for base in ('XIV','XIII'):
   digests=[]
   for residual in (False,True):
-   seed_all();model,cp=initialize('jev',20261009,base=base)
+   seed_all();model,cp=initialize('jev',20261009,revision=revision,base=base)
    actor=model.eval() if residual else FrozenPlanControl(model.identity,'parent').eval()
    tracker=build_tracker(12,actor,react_learned=False);prune(tracker);ex=attach_jevtrack(tracker);commits=[];last=[None]
    def after(**d):
@@ -47,8 +48,9 @@ def main():
    del tracker,actor,model,ex,raw;gc.collect();torch.cuda.empty_cache()
   assert digests[0]==digests[1];native.append(dict(base=base,exact_native_parity=digests[0]))
   print('RECOVERY_NATIVE_PARITY',base,flush=True)
- result=dict(status='PASS',binding=binding('Actual TRAIN12 96-scene native mutated-state parity of XIV and XIII zero residual'),initializers=results,native=native,DEFER_expansion=True,capacity_conflict_globally_resolved=True,zero_K_private_DEFER=True,hard_quarantine=False,learned_memory_admission=False,legacy_XVI_memory_failure='Guard unchanged native Bank/NEW/gallery, no new memory controller; full learned-weight regression still pending')
- save(REPORTS/'MODEL_AND_NATIVE_CONTRACT_TESTS.json',result);print('RECOVERY_CONTRACT_PASS',flush=True)
+ result=dict(status='PASS',revision=revision,binding=binding('Actual TRAIN12 96-scene native mutated-state parity of XIV and XIII zero residual'),initializers=results,native=native,DEFER_expansion=True,capacity_conflict_globally_resolved=True,zero_K_private_DEFER=True,hard_quarantine=False,learned_memory_admission=False,legacy_XVI_memory_failure='Guard unchanged native Bank/NEW/gallery, no new memory controller; full learned-weight regression still pending')
+ save(REPORTS/('MODEL_AND_NATIVE_CONTRACT_TESTS.json' if revision==1 else f'R{revision}_MODEL_AND_NATIVE_CONTRACT_TESTS.json'),result);print('RECOVERY_CONTRACT_PASS',flush=True)
 if __name__=='__main__':
- try:main()
+ p=argparse.ArgumentParser();p.add_argument('--revision',type=int,default=1);a=p.parse_args()
+ try:main(a.revision)
  except Exception:failure('native_contract',traceback.format_exc());raise
