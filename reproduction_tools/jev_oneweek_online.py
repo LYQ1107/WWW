@@ -74,6 +74,18 @@ def policy(arm,seed,phase):
     if arm in ['base_single','base_repeat','base_rule','edge_single','edge_repeat','edge_rule']:
         network,checkpoint,_=load_model('jev',seed,phase)
         return SolverFactorControl(network,arm).eval(),checkpoint
+    if arm=='XIII_fixed_reference':
+        from gtr.modeling.jev_stage2.model import GlobalIdentityJev
+        manifest=read(REPORTS/'REUSED_EVIDENCE_REGISTRY.json')
+        descriptor=next(r['asset'] for r in manifest['weights'] if r['label']==f'XIII fixed_question seed{seed}')
+        assert sha(descriptor['path'])==descriptor['SHA256']
+        network=GlobalIdentityJev('fixed_question').cuda().eval()
+        network.load_state_dict(torch.load(descriptor['path'],map_location='cpu')['model'],strict=True)
+        return FrozenPlanControl(network,'parent').eval(),descriptor
+    if arm=='XV_V3_reference':
+        assert seed==20261009,'Only the actual qualified frozen XV V3 seed09 pilot exists'
+        from jev_phase15_evaluate import load_policy
+        return load_policy('F_full',seed,3,'pilot')[:2]
     return load_model(arm,seed,phase)[:2]
 
 
