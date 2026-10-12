@@ -8,6 +8,15 @@ def register(name,update):
   r['jobs'].setdefault(name,dict(status='PLANNED')).update(update);save(REPORTS/'EXPERIMENT_REGISTRY.json',r)
 
 def run_job(name,script,args=(),gpu=None):
+ locks=OUT/'job_locks';locks.mkdir(exist_ok=True)
+ assert '/' not in name and name not in ('.','..')
+ # Different finite queues may request the same immutable experiment. Hold
+ # this lock through completion so only one launches it; later callers reuse it.
+ with (locks/(name+'.lock')).open('a') as lock:
+  fcntl.flock(lock,fcntl.LOCK_EX)
+  return _run_job(name,script,args,gpu)
+
+def _run_job(name,script,args=(),gpu=None):
  protect();r=read(REPORTS/'EXPERIMENT_REGISTRY.json');old=r['jobs'].get(name,{})
  if old.get('status')=='COMPLETE':return
  if old.get('status') in ('RUNNING','FAILED'):raise RuntimeError('Existing running/failed job needs explicit recorded recovery: '+name)
