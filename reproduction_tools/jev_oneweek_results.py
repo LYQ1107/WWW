@@ -3,12 +3,14 @@ import numpy as np
 from jev_oneweek_common import *
 
 
-def main():
+def main(quiet=False):
     protect()
     from run_early_pilot_tracking import extract_metrics
     arms=['parent','cosine','fixed_threshold','fixed_fusion','extra_hungarian',
           'linear','state_threshold','threshold','binary','mlp','deepsets','attention',
-          'fixed_question','jev','cross_only','stability_only','additive','no_question_reader']
+          'fixed_question','jev','cross_only','stability_only','additive','no_question_reader',
+          'XIII_fixed_reference','XV_V3_reference','no_cross_evidence','no_stability_evidence',
+          'base_single','base_repeat','base_rule','edge_single','edge_repeat','edge_rule']
     values={};table=[]
     for arm in arms:
         cases=[]
@@ -35,7 +37,7 @@ def main():
     doc='# 当前真实正式结果（未完成项保留 NOT_RUN）\n\n每个种子使用完整DEV17/18/19，先真实合并六个相机，再取种子均值。部分种子的均值不是最终主表，也不能因优劣选种子。\n\n| 方法 | 完成种子 | HOTA | AssA | CVIDF1 | CVMA | IDSW |\n| --- | ---: | ---: | ---: | ---: | ---: | ---: |\n'+'\n'.join(table)
     doc+='\n\n原始完整GMT HOTA78.110为不同完整前端的冻结参考，已逐字段复现；不能混入此表作单一关联模块因果差值。当前独立JEV贡献 NOT_ESTABLISHED。\n'
     (DOCS/'CURRENT_FORMAL_RESULTS.md').write_text(doc)
-    print(doc,flush=True)
+    if not quiet:print(doc,flush=True)
 
 
 if __name__=='__main__':main()

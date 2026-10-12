@@ -41,6 +41,9 @@ def summarize_day1():
 
 def snapshot(message=None):
     protect()
+    if (REPORTS/'FORMAL_CURRENT_RESULTS.json').exists():
+        from jev_oneweek_reporting import refresh
+        refresh()
     failures=[read(p) for p in (OUT/'failures').glob('*.json')]
     save(REPORTS/'ENGINEERING_FAILURES.json',dict(status='RETAINED',failures=failures,
          publication_failures=[read(p) for p in (OUT/'publication_failures').glob('*.json')],
