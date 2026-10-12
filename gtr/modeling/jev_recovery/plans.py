@@ -3,7 +3,7 @@ import torch
 from gtr.modeling.jev_stage2.assignment import lawful_choice
 from gtr.modeling.jev_oneweek.plans import plans as old_plans
 
-def plans(logits,legal,maximum=4,mode='expanded'):
+def plans(logits,legal,maximum=4,mode='expanded',affinity=None):
  assert maximum in (4,8) and mode in ('old','expanded')
  old=old_plans(logits,legal)
  if mode=='old':return old
@@ -19,6 +19,13 @@ def plans(logits,legal,maximum=4,mode='expanded'):
    if col==base[row]:continue
    gap=float(z[row,base[row] if base[row]>=0 else k]-z[row,col])
    if base[row]<0 or gap<=.5:trials.append((0 if base[row]<0 else 1,gap,row,col))
+  if affinity is not None:
+   rival=sorted(cols,key=lambda c:(-float(affinity[row,c]),c))[:2]
+   for col in rival:
+    if col!=base[row] and float(affinity[row,col])>=.65:
+     # Early appearance offers a bounded alternative even when a corrupted
+     # mean makes the frozen scorer confidently prefer the wrong identity.
+     trials.append((-1,-float(affinity[row,col]),row,col))
  trials.sort()
  # Budget four favors formerly unreachable DEFER alternatives. Budget eight
  # preserves all original proposals first. Both are explicitly separate arms.

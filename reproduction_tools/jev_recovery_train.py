@@ -4,6 +4,11 @@ from jev_recovery_common import *
 from jev_recovery_learning import *
 def main(arm,phase,seed,revision,base):
  protect();protocol=read(REPORTS/'PREREGISTRATION.json');budget=protocol['training'];assert seed in SEEDS
+ if model_revision(revision)>=2:
+  while not all((REPORTS/n).exists() for n in ['R2_CANDIDATE_AND_QUESTION_AUDIT.json','R2_EARLY_EVIDENCE_CONTRACT.json']):
+   if unreviewed_failures():raise RuntimeError('R2 evidence prerequisite failed; review original log')
+   save(OUT/'training_dependencies/PROGRESS.json',dict(status='WAITING_R2_FROZEN_COVERAGE_AND_EVIDENCE_PARITY'));time.sleep(20)
+  assert read(REPORTS/'R2_EARLY_EVIDENCE_CONTRACT.json')['status']=='PASS'
  contract=REPORTS/('MODEL_AND_NATIVE_CONTRACT_TESTS.json' if revision==1 else f'R{revision}_MODEL_AND_NATIVE_CONTRACT_TESTS.json')
  assert read(contract)['status']=='PASS'
  if phase not in ('tiny','tiny8') and revision in (1,2):assert read(REPORTS/f'R{revision}_8PLAN_CONTRACT_TESTS.json')['status']=='PASS'

@@ -48,7 +48,10 @@ def load_records(revision=1):
   patch={tuple(r['key']):r for r in load_dense(cp['path'])['patches']}
   def anchored(r):
    meta=patch[tuple(r['key'])]
-   return dict(r,known_options=meta['known_options'],positive=meta['positive'])
+   k=len(r['refs']);target=torch.full_like(r['oneweek_labels']['stability'],-1)
+   target[meta['known_options'][:,:k]]=meta['positive'][:,:k][meta['known_options'][:,:k]].to(torch.int8)
+   annotation=dict(r['oneweek_labels'],stability=target)
+   return dict(r,known_options=meta['known_options'],positive=meta['positive'],oneweek_labels=annotation)
   train=[anchored(r) for r in train];validation=[anchored(r) for r in validation];sources.append(cp)
   evidence=read(REPORTS/'R2_EARLY_EVIDENCE.json');cp=evidence['patch'];assert sha(cp['path'])==cp['SHA256']
   patch={tuple(r['key']):r for r in load_dense(cp['path'])['patches']}
@@ -67,6 +70,8 @@ def load_model(arm,seed,phase,revision=1,base='XIV'):
  assert initializer==saved['initializer'];return model.eval(),checkpoint,result
 
 def conflict_groups(train,revision=1):
+ if model_revision(revision)>=2:
+  return audited_r2_conflict_groups(train)
  patch=read(OUT/'audit/PROPOSAL_PATCH.json')['records'];index={tuple(r['key']):r for r in train}
  groups=collections.defaultdict(set)
  for row in patch:
@@ -86,6 +91,15 @@ def conflict_groups(train,revision=1):
   for group in computed:
    # Lists in JSON become a hashable conservative video/person/ID/time key.
    g=(group[0],tuple(group[1]),tuple(group[2]),group[3],group[4]);groups[g].add(key)
+ return {g:[index[k] for k in sorted(keys)] for g,keys in sorted(groups.items())}
+
+def audited_r2_conflict_groups(train):
+ patch=read(OUT/'R2_coverage/PROPOSAL_PATCH.json')['records'];index={tuple(r['key']):r for r in train};groups=collections.defaultdict(set)
+ for row in patch:
+  key=tuple(row['key'])
+  if key not in index:continue
+  for group in row['independent_group_keys']:
+   group=(group[0],tuple(group[1]),tuple(group[2]),group[3],group[4]);groups[group].add(key)
  return {g:[index[k] for k in sorted(keys)] for g,keys in sorted(groups.items())}
 
 def question_conflict_groups(train):

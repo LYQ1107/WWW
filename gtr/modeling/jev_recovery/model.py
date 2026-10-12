@@ -105,7 +105,11 @@ class RecoveryTrack(JevTrack):
   for index in range(len(x['question_mask'])):
    q=int(x['question_mask'][index].sum());k=int(x['identity_mask'][index].sum())
    logits=torch.cat([result['base_logits'][index,:q,:k],result['base_logits'][index,:q,-1:]],-1)
-   pp=plans(logits,x['legal'][index,:q,:k],maximum=self.maximum)
+   affinity=None
+   if self.revision>=2 and 'anchor_visual' in x:
+    affinity=x['detection_visual'][index,:q]@x['anchor_visual'][index,:k].T
+    affinity=affinity.masked_fill(~x['anchor_mask'][index,:k][None],-1.)
+   pp=plans(logits,x['legal'][index,:q,:k],maximum=self.maximum,affinity=affinity)
    all_plans.append(pp);scores.append(self.score_plans(result,x,index,pp))
   result.update(plans=all_plans,plan_scores=scores,arm=self.arm)
   return result
