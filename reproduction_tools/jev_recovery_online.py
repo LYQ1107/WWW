@@ -4,13 +4,20 @@ from jev_recovery_common import *
 from jev_recovery_learning import load_model,initialize
 
 def configure(module,revision,base):
+ from jev_recovery_learning import model_revision
+ if model_revision(revision)>=2:
+  import gtr.modeling.jev_oneweek.native as native
+  from gtr.modeling.jev_recovery.native import attach_jevtrack
+  native.attach_jevtrack=attach_jevtrack
  module.OUT=OUT/f'R{revision}_{base}';module.REPORTS=REPORTS/f'R{revision}_{base}'
  for name in ('protect','binding','save','ref','read','failure'):setattr(module,name,globals()[name])
  def policy(arm,seed,phase):
   if arm=='parent':
    from jev_oneweek_online import FrozenPlanControl
+   class OriginalBase(FrozenPlanControl):
+    def forward(self,x):return super().forward({key:value for key,value in x.items() if key not in ('anchor_visual','anchor_mask')})
    model,cp=initialize('jev',seed,revision,base)
-   return FrozenPlanControl(model.identity,'parent').eval(),cp
+   return OriginalBase(model.identity,'parent').eval(),cp
   model,cp,_=load_model(arm,seed,phase,revision,base);return model,cp
  module.policy=policy
  return module

@@ -1,7 +1,7 @@
 """Reuse immutable inputs and labels, with dependence-aware certified conflict sampling."""
 import collections,torch
 from jev_recovery_common import *
-from jev_oneweek_learning import batch,comparisons,loss,assess,load_records as inherited_load_records
+from jev_oneweek_learning import batch as inherited_batch,comparisons,loss,assess,load_records as inherited_load_records
 from gtr.modeling.jev_recovery.model import RecoveryTrack
 
 def model_revision(revision):return read(REPORTS/'R3_PREREGISTRATION.json')['mechanism_revision'] if revision==3 else revision
@@ -20,7 +20,18 @@ def initialize(arm,seed,revision=1,base='XIV',maximum=None):
   checkpoint=next(r['asset'] for r in registry['weights'] if r['label']==f'XIII fixed_question seed{seed}')
   assert sha(checkpoint['path'])==checkpoint['SHA256'];model.identity.core.load_state_dict(torch.load(checkpoint['path'],map_location='cpu')['model'],strict=True)
  assert sum(p.numel() for p in model.parameters() if p.requires_grad)<=500000
+ if hasattr(model,'early_evidence'):
+  with torch.random.fork_rng(devices=[0]):torch.manual_seed(seed+137);model.early_evidence.reset_parameters()
  return model,checkpoint
+
+def batch(records):
+ x,y=inherited_batch(records)
+ if 'anchor_visual' in records[0]:
+  b,q=x['question_mask'].shape;k=x['identity_mask'].shape[1]
+  x['anchor_visual']=torch.zeros(b,k,1024,device='cuda:0');x['anchor_mask']=torch.zeros(b,k,dtype=torch.bool,device='cuda:0')
+  for i,r in enumerate(records):
+   kk=len(r['refs']);x['anchor_visual'][i,:kk]=r['anchor_visual'].to('cuda:0');x['anchor_mask'][i,:kk]=r['anchor_mask'].to('cuda:0')
+ return x,y
 
 def load_records(revision=1):
  train,validation,sources=inherited_load_records()
@@ -39,6 +50,11 @@ def load_records(revision=1):
    meta=patch[tuple(r['key'])]
    return dict(r,known_options=meta['known_options'],positive=meta['positive'])
   train=[anchored(r) for r in train];validation=[anchored(r) for r in validation];sources.append(cp)
+  evidence=read(REPORTS/'R2_EARLY_EVIDENCE.json');cp=evidence['patch'];assert sha(cp['path'])==cp['SHA256']
+  patch={tuple(r['key']):r for r in load_dense(cp['path'])['patches']}
+  def enriched(r):
+   meta=patch[tuple(r['key'])];return dict(r,anchor_visual=meta['anchor_visual'],anchor_mask=meta['anchor_mask'])
+  train=[enriched(r) for r in train];validation=[enriched(r) for r in validation];sources.append(cp)
  return train,validation,sources
 
 def load_model(arm,seed,phase,revision=1,base='XIV'):

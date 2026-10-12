@@ -27,9 +27,20 @@ class RecoveryTrack(JevTrack):
   if revision>=2 and original_arm=='mlp':
    # Pure ordinary MLP sees the same full evidence; match the ~169k new budget.
    self.ordinary=nn.Sequential(nn.Linear(5*self.d,200),nn.GELU(),nn.Linear(200,self.d))
+  if revision>=2:self.early_evidence=nn.Linear(1,self.d)
 
  def encode(self,x):
   if self.revision==1:return super().encode(x)
+  plain={key:value for key,value in x.items() if key not in ('anchor_visual','anchor_mask')}
+  k=x['identity_mask'].shape[1]
+  if 'anchor_visual' in x:
+   cosine=torch.einsum('bqd,bkd->bqk',x['detection_visual'],x['anchor_visual'])
+   extra=self.early_evidence(cosine[...,None])*x['anchor_mask'][:,None,:,None]
+  else:extra=x['detection_visual'].new_zeros(len(x['question_mask']),x['question_mask'].shape[1],k,self.d)
+  # Identical additional causal evidence reaches JEV and ordinary controls
+  # before their nonlinear processing. It never changes the frozen base input.
+  old_evidence=self.evidence.forward
+  self.evidence.forward=lambda value:old_evidence(value)+extra
   captured={};hooks=[];original_state=self.identity.core.encode_state
   def state(value):
    out=original_state(value);captured['history']=out[1];return out
@@ -50,8 +61,9 @@ class RecoveryTrack(JevTrack):
      keys=torch.cat([shared[:,None,None].expand(-1,q,k+1,-1,-1),h[:,:,:,None]],3)
      return old(query.reshape(b*q*(k+1),1,d),keys.reshape(b*q*(k+1),-1,d)).reshape(b,q*(k+1),d)
     reader.forward=typed
-  try:result=super().encode(x)
+  try:result=super().encode(plain)
   finally:
+   self.evidence.forward=old_evidence
    self.identity.core.encode_state=original_state
    for hook in hooks:hook.remove()
    for reader,old in old_readers:reader.forward=old
