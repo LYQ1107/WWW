@@ -17,7 +17,7 @@ def main():
     while not (REPORTS/'R2_XIV_MECHANISM_GATE.json').exists():
         if unreviewed_failures():raise RuntimeError('Retained original failure requires review')
         time.sleep(30)
-    run_job('R2_XIV_complete_input_all_pilot_audit_v2','jev_recovery_complete_input_assessment.py',gpu=2)
+    run_job('R2_XIV_complete_input_all_pilot_audit_v2','jev_recovery_complete_input_all_pilots.py',gpu=2)
     save(REPORTS/'QUESTION_INTERVENTION_NATIVE_INDEX.json',dict(status='COMPLETE_FROZEN_INTERVENTIONS',
         baseline=ref(REPORTS/'R2_XIV/ONLINE_jev_pilot_SEED20261009_VIDEO16.json'),
         source=[ref(p) for p in (REPORTS/'question_intervention_native').glob('*.json')],
