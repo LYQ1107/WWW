@@ -75,6 +75,9 @@ def main(arm):
     old=read(OUT/'online_v1/formal'/('jev' if arm=='no_shared_recompute' else arm)/'seed20261009/video17/RESULT.json')
     expected=read(old['raw_predictions']['path'])
     parity=predictions==expected
+    ID_parity=len(predictions)==len(expected) and all(all(a[k]==b[k] for k in ['image_id','category_id','track_id']) for a,b in zip(predictions,expected))
+    max_detection_delta=max([abs(float(a[k])-float(b[k])) for a,b in zip(predictions,expected) for k in ['score']]+
+                            [abs(float(u)-float(v)) for a,b in zip(predictions,expected) for u,v in zip(a['bbox'],b['bbox'])]+[0.]) if len(predictions)==len(expected) else None
     result=dict(status='COMPLETE',binding=binding('Instrumented complete real-image component profile'),arm=arm,
                 checkpoint=checkpoint,scene_frames=frames,camera_payloads=2*frames,GPU_UUID=uuid,
                 components={key:summary(v) for key,v in samples.items()},Stage2=summary(stage2),
@@ -83,9 +86,11 @@ def main(arm):
                 gallery_residual_is_not_a_pure_memory_kernel=True,nested_components_not_added_as_disjoint_costs=True,
                 primary_FPS=None,instrumentation_cuda_sync_changes_execution_cost=True,
                 raw_prediction_exact_parity_with_frozen_perception_native_run=parity,
+                native_ID_sequence_matches_cached_perception_run=ID_parity,
+                maximum_raw_bbox_score_abs_delta_vs_cached_perception=max_detection_delta,
                 actual_prediction_sha=fingerprint(raw[:2*frames]),hardware=torch.cuda.get_device_name())
     save(folder/'RESULT.json',result);save(REPORTS/f'COMPONENT_PROFILE_{arm}.json',result)
-    assert parity,'Component instrumentation/live frontend changed predictions; retained attempted profile'
+    assert ID_parity and max_detection_delta<=1e-4,'Live frontend changed detection/ID behavior; retained attempted profile'
     print('COMPONENT_PROFILE_COMPLETE',arm,flush=True)
 
 

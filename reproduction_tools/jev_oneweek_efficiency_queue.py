@@ -18,7 +18,7 @@ def main(gpu,training_log):
         time.sleep(20)
     gpu_uuid=subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=uuid','--format=csv,noheader'],text=True).strip()
     os.environ['JEV_EXPECTED_GPU_UUID']=gpu_uuid
-    for arm in ['parent','cosine','mlp','attention','jev','deepsets','fixed_question','XIII_fixed_reference','XV_V3_reference','original_GMT']:
+    for arm in ['parent','cosine','mlp','attention','jev','deepsets','fixed_question','no_shared_recompute','XIII_fixed_reference','XV_V3_reference','original_GMT']:
         folder=OUT/'full_video_efficiency_v1/formal'/arm/'seed20261009/video17'
         if (folder/'RESULT.json').exists():continue
         existing=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader'],text=True)
@@ -29,6 +29,10 @@ def main(gpu,training_log):
                 [PYTHON,str(ROOT/'reproduction_tools/jev_oneweek_profile_latency.py'),'--arm',arm,
                  '--phase','formal','--seed','20261009','--video','17'],gpu)
         publish(f'Record three complete real-image same-GPU FPS restarts for {arm}')
+        if arm in ['parent','mlp','attention','jev','no_shared_recompute']:
+            run_job(f'component_profile_{arm}',
+                    [PYTHON,str(ROOT/'reproduction_tools/jev_oneweek_component_profile.py'),'--arm',arm],gpu)
+            publish(f'Record separate same-GPU complete-video components for {arm}')
     save(status,dict(status='COMPLETE',GPU=gpu))
 
 
