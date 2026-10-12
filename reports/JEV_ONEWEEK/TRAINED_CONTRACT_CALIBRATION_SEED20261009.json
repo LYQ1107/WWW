@@ -1,0 +1,713 @@
+{
+  "TRAIN16_payloads": 2067,
+  "actual_shared_state_encoder_calls_per_event": {
+    "jev": 1.0,
+    "no_shared": 2.0
+  },
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": "1",
+    "Full24": false,
+    "commit": "c5237d26df406131b046e646eecf482220398ced",
+    "official_TEST": false,
+    "protocol": {
+      "SHA256": "97086d8e04936ac6ed80d888fd5af686187f20c05acc1fac45234fe4c35169d5",
+      "bytes": 5622,
+      "path": "/home/liuyeqiang/WWW_jev_oneweek_20261012/reports/JEV_ONEWEEK/PREREGISTRATION.json"
+    },
+    "scope": "Post-training real TRAIN inputs and natural TRAIN16 calibration",
+    "sealed20_21_22": true,
+    "sources": {
+      "gtr/modeling/jev_oneweek/__init__.py": "4d0bec368997f7bb9141eaf5d463cf220ef2da75ca4084adf0bc29c4404c9114",
+      "gtr/modeling/jev_oneweek/evidence.py": "144bc1845d905ba8af179179159e001a573df7588af880debbcf61d759500e30",
+      "gtr/modeling/jev_oneweek/model.py": "7c9c7817b1508d24bcac5264bf9d5da57bc38267adda054c01fbdbf6d881ea72",
+      "gtr/modeling/jev_oneweek/native.py": "fb34a8c31f5de78267f3580c1210980009af8a8af5d57b90bf02fa60393ae6b0",
+      "gtr/modeling/jev_oneweek/plans.py": "b094b40b07b75fcd2d408b7758eb7d82871905a681774e466ed5889199cf7145",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_oneweek_assess.py": "8e36b17ad863cb6943180b77d2b1ba5e3dcf4ddb62707555b403ac50c7c84bc9",
+      "reproduction_tools/jev_oneweek_asset_audit.py": "d8ee199a0f37ce32fee076a463e245716313b2fc16d51ec4341215bae2ef0ee8",
+      "reproduction_tools/jev_oneweek_common.py": "92f09423bc75ff7f802526172e7af0d583ce04df5a6f01de7b6bf4f4160b3b80",
+      "reproduction_tools/jev_oneweek_control_queue.py": "76768ed47c450d8b82e12f5d3fff230e46e5cba908aaed43a3eaeb671f016511",
+      "reproduction_tools/jev_oneweek_controller.py": "5d32b18d15a211d9b0c1addb8d5fc9fe13367dd180357d371879894b5c7b4c84",
+      "reproduction_tools/jev_oneweek_count_params.py": "0e187c4864b784512aa2f2b4ef1bf21eaebb3a9cc27900a2c8a056c193ef058a",
+      "reproduction_tools/jev_oneweek_efficiency_queue.py": "3aa7cad966c8b38fa3ede4fec73f6d8cd65b7e18c7e880ae55a866ac972f7fbc",
+      "reproduction_tools/jev_oneweek_evidence_contract.py": "70be521633a41a842587a798d4734a7e0f28200d5558b67b8764efad2cd22dc0",
+      "reproduction_tools/jev_oneweek_freeze.py": "b4570ad937ab6347683008b8b2aece6965c550ef17c25c81efe4ccd0026005a8",
+      "reproduction_tools/jev_oneweek_identity_analysis.py": "b9c4e6304a40d583e3cffe3f19be2398ecce4b53bfef78c21f23e70c7c6004e3",
+      "reproduction_tools/jev_oneweek_learning.py": "e825707733964cc304cb40512bd85bdf9cac10fece9ac82dbb246ea82188dea6",
+      "reproduction_tools/jev_oneweek_matlab.py": "58fd1c6670ae0f1977cb16089ff2320a366ca0540d87cd67ee743f1fae3648d9",
+      "reproduction_tools/jev_oneweek_mechanism_probe.py": "7c77973d3cc96721c7355faed64373ff616de88649b4d215654e84740c714d06",
+      "reproduction_tools/jev_oneweek_new_parameters.py": "ad3a3b485f5250a9a1f78aae32104b00328c1fa95ed0b91e316625055c953e9e",
+      "reproduction_tools/jev_oneweek_online.py": "fa3d74c9a848b2bfc622380994facb4cece20d9de84e4f605ef99a77912160dc",
+      "reproduction_tools/jev_oneweek_paired_native.py": "b31cc85bf9ad630f74085821fca88bc44306619b6b1b71256ace9c3a686701d8",
+      "reproduction_tools/jev_oneweek_profile_latency.py": "48c143ec8ed9d08a9f0366132377c3fcd065e811f660e3cd25d3dd566fde32e3",
+      "reproduction_tools/jev_oneweek_publish.py": "aef14c32234cef2a9110f574ea53f948533ef4440389e0653e0bc934d5155e85",
+      "reproduction_tools/jev_oneweek_queue.py": "a82629b5728936b375e4114d0846b72c4df6ef2bcf8867d359daf7350b81b1cd",
+      "reproduction_tools/jev_oneweek_restore_gmt.py": "545da0838f162027235b286f6d938d40481b0ae9929aa1b39f284912c4a0d870",
+      "reproduction_tools/jev_oneweek_results.py": "44e71227bc98b06e785929702c51865f3242cdfbe20fc69e5529d971675cfe62",
+      "reproduction_tools/jev_oneweek_supervision.py": "a165c616a79451b7c5f25819568a155eb0f44e005b50e90ffc82f69b7b5ad2f0",
+      "reproduction_tools/jev_oneweek_tests.py": "52d0f73aa8564ea5c5483ebb2a2ba4d03fd2ce2a61e5a11365b7ef4abc0a5e19",
+      "reproduction_tools/jev_oneweek_train.py": "6519106abc6d0f07c214cfbbb51e1d0c2533c7635ca5e685898fee0a068a4b81",
+      "reproduction_tools/jev_oneweek_trained_contract.py": "9188b0284032d28f4dd2ef2daf370577da2a130f9d071ba86b8d4566350c782f"
+    }
+  },
+  "calibration": {
+    "cross": {
+      "TRAIN_class_weight_log_odds_corrected": {
+        "Brier": 0.0003746434094819387,
+        "ECE20": 0.00019634155216030142,
+        "bins": [
+          {
+            "bin": 0,
+            "count": 771535,
+            "mean_probability": 0.00011445798179050708,
+            "positive_rate": 0.00017108750737166817
+          },
+          {
+            "bin": 1,
+            "count": 121,
+            "mean_probability": 0.07041425876750433,
+            "positive_rate": 0.1652892561983471
+          },
+          {
+            "bin": 2,
+            "count": 50,
+            "mean_probability": 0.12410152047872543,
+            "positive_rate": 0.32
+          },
+          {
+            "bin": 3,
+            "count": 36,
+            "mean_probability": 0.17381341548429596,
+            "positive_rate": 0.2777777777777778
+          },
+          {
+            "bin": 4,
+            "count": 18,
+            "mean_probability": 0.22185050199429193,
+            "positive_rate": 0.2777777777777778
+          },
+          {
+            "bin": 5,
+            "count": 33,
+            "mean_probability": 0.2729843719439073,
+            "positive_rate": 0.36363636363636365
+          },
+          {
+            "bin": 6,
+            "count": 27,
+            "mean_probability": 0.3276622913501881,
+            "positive_rate": 0.37037037037037035
+          },
+          {
+            "bin": 7,
+            "count": 15,
+            "mean_probability": 0.37455882827440895,
+            "positive_rate": 0.5333333333333333
+          },
+          {
+            "bin": 8,
+            "count": 29,
+            "mean_probability": 0.42908049143593885,
+            "positive_rate": 0.3448275862068966
+          },
+          {
+            "bin": 9,
+            "count": 27,
+            "mean_probability": 0.476640029086007,
+            "positive_rate": 0.4444444444444444
+          },
+          {
+            "bin": 10,
+            "count": 18,
+            "mean_probability": 0.5179545515113406,
+            "positive_rate": 0.4444444444444444
+          },
+          {
+            "bin": 11,
+            "count": 18,
+            "mean_probability": 0.5719014439317915,
+            "positive_rate": 0.3888888888888889
+          },
+          {
+            "bin": 12,
+            "count": 26,
+            "mean_probability": 0.6204128998976487,
+            "positive_rate": 0.46153846153846156
+          },
+          {
+            "bin": 13,
+            "count": 33,
+            "mean_probability": 0.6732239398089322,
+            "positive_rate": 0.3333333333333333
+          },
+          {
+            "bin": 14,
+            "count": 31,
+            "mean_probability": 0.7213171047549094,
+            "positive_rate": 0.45161290322580644
+          },
+          {
+            "bin": 15,
+            "count": 41,
+            "mean_probability": 0.7755337590124549,
+            "positive_rate": 0.5365853658536586
+          },
+          {
+            "bin": 16,
+            "count": 44,
+            "mean_probability": 0.8234000842679631,
+            "positive_rate": 0.7954545454545454
+          },
+          {
+            "bin": 17,
+            "count": 47,
+            "mean_probability": 0.8801178158597743,
+            "positive_rate": 0.9148936170212766
+          },
+          {
+            "bin": 18,
+            "count": 118,
+            "mean_probability": 0.9322449852854519,
+            "positive_rate": 0.8983050847457628
+          },
+          {
+            "bin": 19,
+            "count": 12254,
+            "mean_probability": 0.9960430786390571,
+            "positive_rate": 0.998449485882161
+          }
+        ],
+        "known": 784521,
+        "positive": 12728,
+        "precision": 0.9891528107680126,
+        "recall": 0.981536769327467
+      },
+      "UNKNOWN_edges": 1759037,
+      "raw_weighted_sigmoid": {
+        "Brier": 0.0004979424886937873,
+        "ECE20": 0.0013395936884558124,
+        "bins": [
+          {
+            "bin": 0,
+            "count": 770297,
+            "mean_probability": 0.000995070610634726,
+            "positive_rate": 7.919023441607587e-05
+          },
+          {
+            "bin": 1,
+            "count": 644,
+            "mean_probability": 0.06974167570541179,
+            "positive_rate": 0.031055900621118012
+          },
+          {
+            "bin": 2,
+            "count": 234,
+            "mean_probability": 0.1219089444185424,
+            "positive_rate": 0.07692307692307693
+          },
+          {
+            "bin": 3,
+            "count": 114,
+            "mean_probability": 0.17335663108449234,
+            "positive_rate": 0.05263157894736842
+          },
+          {
+            "bin": 4,
+            "count": 92,
+            "mean_probability": 0.22228802060303482,
+            "positive_rate": 0.10869565217391304
+          },
+          {
+            "bin": 5,
+            "count": 72,
+            "mean_probability": 0.270707584089703,
+            "positive_rate": 0.08333333333333333
+          },
+          {
+            "bin": 6,
+            "count": 60,
+            "mean_probability": 0.32840424329042434,
+            "positive_rate": 0.16666666666666666
+          },
+          {
+            "bin": 7,
+            "count": 50,
+            "mean_probability": 0.3717623770236969,
+            "positive_rate": 0.06
+          },
+          {
+            "bin": 8,
+            "count": 38,
+            "mean_probability": 0.4255939000531247,
+            "positive_rate": 0.21052631578947367
+          },
+          {
+            "bin": 9,
+            "count": 29,
+            "mean_probability": 0.47458682286328285,
+            "positive_rate": 0.13793103448275862
+          },
+          {
+            "bin": 10,
+            "count": 27,
+            "mean_probability": 0.5251929186008595,
+            "positive_rate": 0.2222222222222222
+          },
+          {
+            "bin": 11,
+            "count": 19,
+            "mean_probability": 0.5706012092138592,
+            "positive_rate": 0.47368421052631576
+          },
+          {
+            "bin": 12,
+            "count": 24,
+            "mean_probability": 0.6223431105415026,
+            "positive_rate": 0.25
+          },
+          {
+            "bin": 13,
+            "count": 28,
+            "mean_probability": 0.6770784961325782,
+            "positive_rate": 0.32142857142857145
+          },
+          {
+            "bin": 14,
+            "count": 21,
+            "mean_probability": 0.7259300322759719,
+            "positive_rate": 0.19047619047619047
+          },
+          {
+            "bin": 15,
+            "count": 25,
+            "mean_probability": 0.7805290222167969,
+            "positive_rate": 0.32
+          },
+          {
+            "bin": 16,
+            "count": 40,
+            "mean_probability": 0.8259350642561912,
+            "positive_rate": 0.375
+          },
+          {
+            "bin": 17,
+            "count": 51,
+            "mean_probability": 0.8799494084189919,
+            "positive_rate": 0.39215686274509803
+          },
+          {
+            "bin": 18,
+            "count": 83,
+            "mean_probability": 0.9268366895526289,
+            "positive_rate": 0.4457831325301205
+          },
+          {
+            "bin": 19,
+            "count": 12573,
+            "mean_probability": 0.9991689329641129,
+            "positive_rate": 0.9916487711763302
+          }
+        ],
+        "known": 784521,
+        "positive": 12728,
+        "precision": 0.9760297882243426,
+        "recall": 0.98852922690132
+      },
+      "training_pos_weight": 10.936536162124046
+    },
+    "stability": {
+      "TRAIN_class_weight_log_odds_corrected": {
+        "Brier": 0.00029837097075425975,
+        "ECE20": 0.0003842749791194345,
+        "bins": [
+          {
+            "bin": 0,
+            "count": 686116,
+            "mean_probability": 6.681893095257756e-05,
+            "positive_rate": 4.0809425811378834e-05
+          },
+          {
+            "bin": 1,
+            "count": 104,
+            "mean_probability": 0.07162561758349721,
+            "positive_rate": 0.14423076923076922
+          },
+          {
+            "bin": 2,
+            "count": 39,
+            "mean_probability": 0.12371094505756329,
+            "positive_rate": 0.2564102564102564
+          },
+          {
+            "bin": 3,
+            "count": 41,
+            "mean_probability": 0.176194825550405,
+            "positive_rate": 0.4634146341463415
+          },
+          {
+            "bin": 4,
+            "count": 35,
+            "mean_probability": 0.2261290809937886,
+            "positive_rate": 0.4
+          },
+          {
+            "bin": 5,
+            "count": 27,
+            "mean_probability": 0.27494105917436107,
+            "positive_rate": 0.3333333333333333
+          },
+          {
+            "bin": 6,
+            "count": 29,
+            "mean_probability": 0.326493579765846,
+            "positive_rate": 0.5517241379310345
+          },
+          {
+            "bin": 7,
+            "count": 22,
+            "mean_probability": 0.37592164223844354,
+            "positive_rate": 0.4090909090909091
+          },
+          {
+            "bin": 8,
+            "count": 26,
+            "mean_probability": 0.4256176409813074,
+            "positive_rate": 0.5769230769230769
+          },
+          {
+            "bin": 9,
+            "count": 24,
+            "mean_probability": 0.4764918014407158,
+            "positive_rate": 0.75
+          },
+          {
+            "bin": 10,
+            "count": 22,
+            "mean_probability": 0.5191177427768707,
+            "positive_rate": 0.7272727272727273
+          },
+          {
+            "bin": 11,
+            "count": 27,
+            "mean_probability": 0.5721992828227855,
+            "positive_rate": 0.8888888888888888
+          },
+          {
+            "bin": 12,
+            "count": 34,
+            "mean_probability": 0.6276253847514882,
+            "positive_rate": 0.9411764705882353
+          },
+          {
+            "bin": 13,
+            "count": 46,
+            "mean_probability": 0.6768958568572998,
+            "positive_rate": 0.8478260869565217
+          },
+          {
+            "bin": 14,
+            "count": 56,
+            "mean_probability": 0.7266894568290029,
+            "positive_rate": 0.8571428571428571
+          },
+          {
+            "bin": 15,
+            "count": 66,
+            "mean_probability": 0.7729872943777026,
+            "positive_rate": 0.9393939393939394
+          },
+          {
+            "bin": 16,
+            "count": 106,
+            "mean_probability": 0.8275716838971624,
+            "positive_rate": 0.9056603773584906
+          },
+          {
+            "bin": 17,
+            "count": 223,
+            "mean_probability": 0.8784721239799876,
+            "positive_rate": 0.9372197309417041
+          },
+          {
+            "bin": 18,
+            "count": 579,
+            "mean_probability": 0.9309910379337317,
+            "positive_rate": 0.9810017271157168
+          },
+          {
+            "bin": 19,
+            "count": 26382,
+            "mean_probability": 0.9946809036706777,
+            "positive_rate": 0.9987112425138351
+          }
+        ],
+        "known": 714004,
+        "positive": 27595,
+        "precision": 0.9964053592825243,
+        "recall": 0.9944555173038594
+      },
+      "UNKNOWN_edges": 1829554,
+      "raw_weighted_sigmoid": {
+        "Brier": 0.00031414103113296793,
+        "ECE20": 0.0006471389579956351,
+        "bins": [
+          {
+            "bin": 0,
+            "count": 685500,
+            "mean_probability": 0.0004000227858340258,
+            "positive_rate": 1.75054704595186e-05
+          },
+          {
+            "bin": 1,
+            "count": 320,
+            "mean_probability": 0.07156322435475886,
+            "positive_rate": 0.0125
+          },
+          {
+            "bin": 2,
+            "count": 134,
+            "mean_probability": 0.12251154422315198,
+            "positive_rate": 0.03731343283582089
+          },
+          {
+            "bin": 3,
+            "count": 80,
+            "mean_probability": 0.17253684625029564,
+            "positive_rate": 0.0375
+          },
+          {
+            "bin": 4,
+            "count": 52,
+            "mean_probability": 0.22218484316880888,
+            "positive_rate": 0.057692307692307696
+          },
+          {
+            "bin": 5,
+            "count": 40,
+            "mean_probability": 0.2793764412403107,
+            "positive_rate": 0.075
+          },
+          {
+            "bin": 6,
+            "count": 30,
+            "mean_probability": 0.3264572749535243,
+            "positive_rate": 0.2
+          },
+          {
+            "bin": 7,
+            "count": 28,
+            "mean_probability": 0.3726338839956692,
+            "positive_rate": 0.07142857142857142
+          },
+          {
+            "bin": 8,
+            "count": 25,
+            "mean_probability": 0.42436405777931213,
+            "positive_rate": 0.16
+          },
+          {
+            "bin": 9,
+            "count": 20,
+            "mean_probability": 0.468257275223732,
+            "positive_rate": 0.15
+          },
+          {
+            "bin": 10,
+            "count": 19,
+            "mean_probability": 0.5239944803087335,
+            "positive_rate": 0.2631578947368421
+          },
+          {
+            "bin": 11,
+            "count": 20,
+            "mean_probability": 0.5750726103782654,
+            "positive_rate": 0.45
+          },
+          {
+            "bin": 12,
+            "count": 22,
+            "mean_probability": 0.6242159740491346,
+            "positive_rate": 0.36363636363636365
+          },
+          {
+            "bin": 13,
+            "count": 28,
+            "mean_probability": 0.6735811957291195,
+            "positive_rate": 0.5
+          },
+          {
+            "bin": 14,
+            "count": 33,
+            "mean_probability": 0.7235743927233147,
+            "positive_rate": 0.30303030303030304
+          },
+          {
+            "bin": 15,
+            "count": 29,
+            "mean_probability": 0.7753736068462503,
+            "positive_rate": 0.4482758620689655
+          },
+          {
+            "bin": 16,
+            "count": 42,
+            "mean_probability": 0.8237515645367759,
+            "positive_rate": 0.5
+          },
+          {
+            "bin": 17,
+            "count": 59,
+            "mean_probability": 0.8762600724979982,
+            "positive_rate": 0.711864406779661
+          },
+          {
+            "bin": 18,
+            "count": 119,
+            "mean_probability": 0.9312859327853227,
+            "positive_rate": 0.8823529411764706
+          },
+          {
+            "bin": 19,
+            "count": 27404,
+            "mean_probability": 0.9987323010225329,
+            "positive_rate": 0.9970442271201284
+          }
+        ],
+        "known": 714004,
+        "positive": 27595,
+        "precision": 0.991899189918992,
+        "recall": 0.9983692697952528
+      },
+      "training_pos_weight": 7.8483510992671555
+    }
+  },
+  "calibration_fitted_parameters": 0,
+  "checkpoint": {
+    "SHA256": "541cd7a8cc91d18bac4de3bcb64d3a3788e0a47ed0214316ecb91f0f8aca8ca7",
+    "bytes": 2099025,
+    "path": "/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1/training_v1/jev/seed20261009/formal/NEW_MODULES.pth"
+  },
+  "distinct_architectural_heads_do_not_prove_distinct_semantic_value": true,
+  "independent_generalization": false,
+  "joint_known_edges": 446356,
+  "joint_target_disagreements": 0,
+  "mean_question_probability_difference_on_joint_known": 0.0011497261429474596,
+  "permutation_and_dynamic_candidates": [
+    {
+      "aux_equivariant_within_2e_5": true,
+      "aux_permutation_max_abs_error": 1.9073486328125e-06,
+      "committed_primary_choice_equivariant": true,
+      "dynamic_K": [
+        {
+          "K": 0,
+          "plan_count": 1,
+          "valid": true
+        },
+        {
+          "K": 1,
+          "plan_count": 1,
+          "valid": true
+        },
+        {
+          "K": 5,
+          "plan_count": 1,
+          "valid": true
+        },
+        {
+          "K": 11,
+          "plan_count": 1,
+          "valid": true
+        }
+      ],
+      "key": [
+        12,
+        8,
+        0
+      ],
+      "proposal_set_equivariant": true
+    },
+    {
+      "aux_equivariant_within_2e_5": true,
+      "aux_permutation_max_abs_error": 1.9073486328125e-06,
+      "committed_primary_choice_equivariant": true,
+      "dynamic_K": [
+        {
+          "K": 0,
+          "plan_count": 1,
+          "valid": true
+        },
+        {
+          "K": 1,
+          "plan_count": 1,
+          "valid": true
+        },
+        {
+          "K": 4,
+          "plan_count": 3,
+          "valid": true
+        },
+        {
+          "K": 8,
+          "plan_count": 2,
+          "valid": true
+        }
+      ],
+      "key": [
+        12,
+        533,
+        1
+      ],
+      "proposal_set_equivariant": true
+    },
+    {
+      "aux_equivariant_within_2e_5": true,
+      "aux_permutation_max_abs_error": 3.0994415283203125e-06,
+      "committed_primary_choice_equivariant": true,
+      "dynamic_K": [
+        {
+          "K": 0,
+          "plan_count": 1,
+          "valid": true
+        },
+        {
+          "K": 1,
+          "plan_count": 2,
+          "valid": true
+        },
+        {
+          "K": 5,
+          "plan_count": 4,
+          "valid": true
+        },
+        {
+          "K": 10,
+          "plan_count": 3,
+          "valid": true
+        }
+      ],
+      "key": [
+        12,
+        1199,
+        1
+      ],
+      "proposal_set_equivariant": true
+    }
+  ],
+  "same_weights_shared_and_recomputed_bitwise_equal": true,
+  "single_payload_model_timing": {
+    "jev": {
+      "median_ms": 23.326754570007324,
+      "p95_ms": 32.12083429098129
+    },
+    "no_shared": {
+      "median_ms": 25.470100343227386,
+      "p95_ms": 45.52940353751172
+    }
+  },
+  "status": "COMPLETE",
+  "timing_scope": "64 synchronised real TRAIN12 payload runs including plan generation; possibly contended GPU, diagnostic only, not primary full FPS",
+  "weighted_sigmoid_is_not_assumed_calibrated_probability": true
+}

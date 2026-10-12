@@ -24,6 +24,7 @@ def analyse(arm,seed,phase,video):
     keys=sorted(groups,key=lambda key:(key[0],0 if key[0]==0 and key[1]==boot_view else 1 if key[0]==0 else key[1]))
     owner={};ever_person=set();seen_ids=set();index=collections.defaultdict(collections.Counter)
     all_past_person=collections.Counter();counts=collections.Counter();statuses={};episodes=[];active={}
+    first_correct_id={};persons_per_id=collections.defaultdict(collections.Counter)
     def close(person_view,end,reason,censored):
         event=active.pop(person_view)
         event.update(end=event['last'],duration_camera_frames=event['last']-event['start']+1,
@@ -40,6 +41,11 @@ def analyse(arm,seed,phase,video):
                 continue
             owner.setdefault(identity,gt);correct=owner[identity]==gt
             counts['known_rows']+=1;counts['immutable_owner_correct' if correct else 'immutable_owner_wrong']+=1
+            persons_per_id[identity][gt]+=1
+            if correct:first_correct_id.setdefault(gt,identity)
+            if gt in first_correct_id:
+                counts['known_rows_with_first_owner_correct_ID_anchor']+=1
+                counts['first_owner_correct_ID_preserved_rows']+=identity==first_correct_id[gt]
             fragment=new and gt in ever_person;counts['previous_person_new_native_ID_births']+=fragment
             statuses[rowkey]=dict(known=True,id=identity,gt=gt,owner=owner[identity],correct=correct,
                                  new_native_ID=new,previous_person_new_native_ID=fragment)
@@ -72,6 +78,11 @@ def analyse(arm,seed,phase,video):
                   wrong_owner_episodes=episodes,
                   observed_error_duration_camera_frames=sum(e['duration_camera_frames'] for e in episodes),
                   right_censored_episodes=sum(e['right_censored'] for e in episodes),
+                  native_IDs_with_multiple_observed_GT=sum(len(v)>1 for v in persons_per_id.values()),
+                  observations_in_posthoc_polluted_native_IDs=sum(sum(v.values()) for v in persons_per_id.values() if len(v)>1),
+                  first_owner_correct_ID_preservation_rate=counts['first_owner_correct_ID_preserved_rows']/counts['known_rows_with_first_owner_correct_ID_anchor'] if counts['known_rows_with_first_owner_correct_ID_anchor'] else None,
+                  preservation_definition='Fraction of known rows keeping each person first observed owner-correct predicted native ID, including its own anchor row; per-run causal anchor, not cross-run numeric-ID equality or proof of restoring a baseline ID',
+                  false_merge_definition='A predicted native ID observed with more than one known GT over this run; posthoc complete-video diagnostic with duplicate GT UNKNOWN, not actor input',
                   cross_past_index_precision=tp/(tp+fp) if tp+fp else None,
                   cross_past_index_recall=tp/counts['cross_known_relevant_prior_observations'] if counts['cross_known_relevant_prior_observations'] else None,
                   index_definition='Actual predicted Global ID lookup into already committed other-camera observations; no whole-video GT-selected ID mapping; UNKNOWN retrieved observations excluded from known precision and counted separately',
