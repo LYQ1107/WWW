@@ -1,0 +1,44 @@
+{
+  "status": "FROZEN_BEFORE_NEW_DIAGNOSTIC",
+  "experiment_ID": "R2_XIV_question_to_association_pilot_frozen_v1",
+  "revision": 2,
+  "base": "XIV",
+  "phase": "pilot",
+  "seed": 20261009,
+  "TRAIN16_all_reused_events": true,
+  "new_gradients": 0,
+  "new_models": 0,
+  "interventions": [
+    "full",
+    "cross_representation_only",
+    "persistent_representation_only",
+    "mean_representations",
+    "no_joint_plan_residual",
+    "zero_auxiliary_logits"
+  ],
+  "mask_semantics": "Zero representation including private DEFER before final two-key fusion; keep type embeddings, weights, base logits and fixed plans. This is frozen intervention, not retrained cross_only/stability_only.",
+  "score_head_intervention": "Set both auxiliary logits to zero after encoding. Identity scores must remain bitwise equal: direct-logit-use test only; hidden representations still learned under auxiliary loss.",
+  "ABC": {
+    "A": "Stratify selected certified choices by both question correctness and presence of certified legal correct alternatives",
+    "B": "Same checkpoint frozen stream masking, mean fusion, joint residual removal, score-use structural check",
+    "C": "Track actual label overlays, UNKNOWN, owner coverage, certified plan pairs and correlated person/ID support"
+  },
+  "metrics": [
+    "N01",
+    "N10",
+    "UNKNOWN_comparison",
+    "known_to_UNKNOWN",
+    "changed_Global_ID",
+    "rank_pairs",
+    "rank_pair_correct",
+    "both_aux_correct_final_wrong_with_legal_correct_alternative"
+  ],
+  "ranking_definition": "Existing comparisons includes 0.25 certified Persistent preference; additionally report WHO-only pair ranks independently.",
+  "same_candidates": true,
+  "full_online": false,
+  "native_mutation": false,
+  "independent_validation": false,
+  "trainable_explicit_logit_fusion": "PENDING_MINIMAL_DESIGN_FREEZE_AND_EQUAL_MLP_ATTENTION_BUDGET; never substitute inference heuristic",
+  "trainable_independent_final_readers": "PENDING_MINIMAL_DESIGN_FREEZE_AND_EQUAL_MLP_ATTENTION_BUDGET; no fourth major revision",
+  "failure_examples_limit": 40
+}
