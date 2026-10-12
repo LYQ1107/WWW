@@ -101,3 +101,5 @@ H64使用事前固定的真实XV native prefix32/0，五方法起始state/input/
 继续全部预注册 R2 消融、完整 TRAIN16 和既有机制 Gate，再执行强 XIII Fixed 原始及阈值／MLP／Attention／JEV 增量。同状态 N01/N10 与完整 mutated-state 指标分开报告。两 Gate 失败也不反复调 DEV17/18/19，不修改阈值求成功。强基座历史参考不是本次已完成同基座结果。
 
 Stage2、真实 FPS、参数与三种子正式指标以原 finisher 完成文件为准。此报告不会把 pending 值填成0，也不会宣称独立验证或研究突破。
+
+R2_XIV_MECHANISM_GATE.json：formal_eligible=True。
