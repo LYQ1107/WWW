@@ -49,6 +49,7 @@ class SolverFactorControl(nn.Module):
         details=self.model.encode(x)
         score=details['base_logits'] if self.kind.startswith('base_') else details['edge_logits']
         legal=x['legal'][0];choice=lawful_choice(score[0],legal);self.solve_calls+=1
+        initial_choice=list(choice)
         if self.kind.endswith('repeat'):
             repeat=lawful_choice(score[0],legal);self.solve_calls+=1
             assert repeat==choice,'Unchanged Hungarian rerun must reproduce the same result'
@@ -62,7 +63,7 @@ class SolverFactorControl(nn.Module):
                     mask[row,col]=False;rejected+=1
             choice=lawful_choice(score[0],mask);self.solve_calls+=2;self.masked_edges+=rejected
             self.triggered_events+=bool(rejected)
-        self.reassigned_rows+=sum(a!=b for a,b in zip(lawful_choice(details['base_logits'][0],legal),choice))
+        self.reassigned_rows+=sum(a!=b for a,b in zip(initial_choice,choice))
         self.runtime_choice=list(choice)
         self.runtime_details=dict(base_logits=details['base_logits'],edge_logits=details['edge_logits'])
         return score
@@ -145,7 +146,7 @@ def main(arm,seed,phase,video):
     save(folder/'IDENTITY_ANALYSIS.json',identity)
     result=dict(status='COMPLETE',binding=source,arm=arm,seed=seed,phase=phase,video=video,frames=frames,
                 counts=dict(counts),solver_diagnostics=solver_diagnostics,
-                solver_diagnostics_scope='Factor controls: counted solver calls exclude diagnostic base-choice calculation; reassigned rows compare same-state frozen base assignment',
+                solver_diagnostics_scope='Factor controls: all assignment calls counted; reassigned rows compare the initial assignment under the same scorer with the final constrained assignment',
                 raw_online_metrics=score,metrics_source=ref(metric_root/'metrics.json'),
                 raw_predictions=ref(folder/'RAW_PREDICTIONS.json'),commits=ref(folder/'COMMITS.jsonl.gz'),
                 actual_mutated_state_online=True,no_GT_actor_input=True,current_Bank_NEW_fallback_unmodified=True,
