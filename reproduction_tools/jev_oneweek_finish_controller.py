@@ -42,7 +42,10 @@ def main():
     # planned primary timing methods. Selection is only for cost verification;
     # no accuracy experiment, checkpoint or DEV sequence is selected/replaced.
     from jev_oneweek_reporting import refresh
-    refresh()
+    with (OUT/'PUBLICATION.lock').open('a') as publication_lock:
+        fcntl.flock(publication_lock,fcntl.LOCK_EX)
+        with (OUT/'REGISTRY.lock').open('a') as registry_lock:
+            fcntl.flock(registry_lock,fcntl.LOCK_EX);refresh()
     control=read(REPORTS/'GO_NO_GO.json')['association']['strongest_completed_ordinary_control']
     while read(OUT/'efficiency_queue/PROGRESS.json')['status']!='COMPLETE':time.sleep(15)
     if control and not (OUT/'full_video_efficiency_v1/formal'/control/'seed20261009/video17/RESULT.json').exists():
