@@ -5,9 +5,11 @@ from jev_recovery_common import *
 
 def inputs():
     names=['QUESTION_TO_ASSOCIATION_DIAGNOSIS.json','DIAGNOSTIC_FUSION_RESULT_INDEX.json',
-           'R2_XIV_MECHANISM_GATE.json','R3_XIII_MECHANISM_GATE.json']
+           'R2_XIV_MECHANISM_GATE.json','R3_XIII_MECHANISM_GATE.json',
+           'COMPLETE_INPUT_ASSESSMENT_AUDIT.json','QUESTION_INTERVENTION_NATIVE_INDEX.json']
     files=[REPORTS/n for n in names if (REPORTS/n).exists()]
-    for folder in ['diagnostic_fusion','diagnostic_fusion_native']:
+    for folder in ['diagnostic_fusion','diagnostic_fusion_native','question_intervention_native',
+                   'question_intervention_paired','complete_input_all_pilots_v2']:
         files+=list((REPORTS/folder).glob('*.json'))
     files+=list(REPORTS.glob('TRAIN_R2_XIV_*_pilot_SEED20261009.json'))
     files+=list((REPORTS/'R2_XIV').glob('ONLINE_*VIDEO16.json'))
@@ -31,6 +33,20 @@ def render():
     text+=['','这里的当前排名 targets 包含 0.25 Persistent 偏好；新诊断另报纯 WHO 排名。这些是固定 128 个复用 TRAIN16 状态的相关样本，不是完整 MOT 或独立验证。',
            '', '## A/B/C 的冻结权重诊断', '',
            '同一个 JEV Pilot checkpoint，全部 2067 个真实 TRAIN16 状态与相同合法方案；不写原生状态。屏蔽的是最后融合的隐藏表示，包括 private DEFER 表示，类型向量和权重保留。简单平均使用原训练评分头，属于分布改变的冻结干预，不代表重新训练的平均架构。']
+    audit=REPORTS/'COMPLETE_INPUT_ASSESSMENT_AUDIT.json'
+    final_audit=REPORTS/'complete_input_all_pilots_v2/COMPLETE_INPUT_ASSESSMENT_AUDIT.json'
+    if final_audit.exists():audit=final_audit
+    if audit.exists():
+        corrected=read(audit)
+        text+=['','### 评估接口发现及保留式复核','',
+            '上方原始表格保留 inherited assess 数字。该函数仍解析旧模块 batch，没有早期原型/affinity 候选。原训练、certified probe、全量同状态诊断与实际在线采用 recovery batch，未因此漏用证据。修正是隔离克隆 evaluator 的全局 batch，重评同一个 checkpoint；没有改权重、标签或 Gate。新旧方案集合改变，所以新旧排名也不是相同方案集合的因果对照。',
+            '', '| 完整 R2 输入 | Cross 正例正确/总数 | Persistent 正例正确/总数 | 排名 |',
+            '|---|---:|---:|---:|']
+        for row in corrected['rows']:
+            if row['arm'] not in ['jev','threshold','mlp','attention']:continue
+            d=row['complete_recovery_input_assessment'];q=d['questions']
+            text.append(f"| {row['arm']} | {q['cross'].get('1_correct',0)}/{q['cross'].get('1_support',0)} | {q['stability'].get('1_correct',0)}/{q['stability'].get('1_support',0)} | {d['rank_pair_accuracy']:.6f} |")
+        text+=['','原945对702、2895对1261不能直接代表实际完整R2输入下的差距。完整输入仍须检验辅助预测能否改变已认证正确身份。接口修正的首个Tiny失败发生在梯度前，日志保留；修正后的融合器用v2新ID/目录。等待式finisher曾因失败守卫暂停，审核后原脚本恢复，没有中断原神经实验。']
     path=REPORTS/'QUESTION_TO_ASSOCIATION_DIAGNOSIS.json'
     if path.exists():
         d=read(path)
@@ -43,6 +59,7 @@ def render():
         text+=['',f"完整模型中两辅助问题均正确、最终身份错误且存在合法正确替代的行数：{c.get('both_correct_final_wrong_with_legal_correct_alternative',0)}。没有合法正确替代的对应行数：{c.get('both_correct_final_wrong_without_legal_correct_alternative',0)}；后者不定义为排名失败。",
                '',f"已认证正确合法身份未进入最终方案的行数：{c.get('legal_certified_correct_absent_from_plans',0)}。UNKNOWN 比较：{c.get('UNKNOWN_comparison',0)}。完整模型正负辅助交叉表与最多 40 个事件的 ID、历史可用性、早期外观余弦、原始/修正分数保存在诊断 JSON。",
                '', '把两个辅助输出置零后最终分数逐位相等：最终评分没有直接读取辅助 Head 输出。这个结果证明直接输出路径缺失，不能证明辅助训练没有通过隐藏表示起作用。屏蔽／平均的差异检验 B；两问题正确但合法纠错仍失败检验 A；覆盖、UNKNOWN、认证与依赖审计检验 C。三种原因可能共同存在，不能仅由一个比例排他归因。']
+        text+=['','此 checkpoint 删除联合方案残差没有改变选中方案；在该全量状态样本上不能把当前身份收益归因于联合方案残差。完整融合比单路或平均的冻结干预更好，只证明本权重中组合表示的作用，不能替代同预算重训的架构对照。相同全量源状态下普通 MLP 净纠错151、阈值119、普通 Attention147，JEV107；没有建立 JEV 独立优势。']
     else:text+=['','冻结干预正在执行；尚未生成完成结果。']
     text+=['','## 第5/6项：重新训练的最小融合对照', '',
            '同一冻结 R2 JEV 前端和辅助 Head，四个最终融合器：显式辅助概率门控、两个独立最终 Reader、普通 MLP、普通 Attention。新增参数81786/82274/82476/81826，差距小于1%。同样两路表示、两预测概率、原余量和因果早期外观，同批次与损失；Tiny128 后 fresh Pilot1000，再做全部 TRAIN16 原生在线和身份提交审计。',
@@ -59,6 +76,18 @@ def render():
         p=REPORTS/'diagnostic_fusion_native'/f'ONLINE_{kind}_pilot_SEED20261009_VIDEO16.json'
         online=read(p)['status'] if p.exists() else 'PENDING'
         text.append(f'| {kind} | {states[0]} | {states[1]} | {net} | {online} |')
+    text+=['','## 冻结干预的实际原生状态验证','',
+           'H64使用事前固定的真实XV native prefix32/0，五方法起始state/input/candidate校验，全部未来动作与Gallery/Bank状态重新执行；这是配对干预，不是独立全视频。完整TRAIN16冷启动干预另跑，开始状态相同，之后状态自然分叉，不能再声称全程输入相同。',
+           '', '| 冻结干预 | H64已知错误观测 | 完整TRAIN16 HOTA | AssA | IDSW |',
+           '|---|---:|---:|---:|---:|']
+    paired=REPORTS/'question_intervention_paired/PAIRED_NATIVE_RESULTS.json'
+    cases={c['arm']:c for c in read(paired)['cases']} if paired.exists() else {}
+    for mode in ['full','cross_representation_only','persistent_representation_only','mean_representations','no_joint_plan_residual']:
+        p=REPORTS/'R2_XIV/ONLINE_jev_pilot_SEED20261009_VIDEO16.json' if mode=='full' else REPORTS/'question_intervention_native'/f'ONLINE_{mode}_pilot_SEED20261009_VIDEO16.json'
+        metric=read(p)['raw_online_metrics'] if p.exists() else {}
+        wrong=cases.get(mode,{}).get('future_known_wrong_observations','PENDING')
+        text.append(f"| {mode} | {wrong} | {metric.get('HOTA','PENDING')} | {metric.get('AssA','PENDING')} | {metric.get('IDSW','PENDING')} |")
+    text+=['','原生提交、初始状态SHA及每步预测源文件在question_intervention_paired / question_intervention_native报告。H64统计遵循冻结first-known-owner口径，与同状态anchor N01/N10证书不同，不能混合成一个纠错指标。40个源状态错误例并非已经在H64窗口逐个提交；完整状态机制验证与例案表须分别解读。']
     text+=['','## 原 R2/R3 晋级与强基座', '',
            '继续全部预注册 R2 消融、完整 TRAIN16 和既有机制 Gate，再执行强 XIII Fixed 原始及阈值／MLP／Attention／JEV 增量。同状态 N01/N10 与完整 mutated-state 指标分开报告。两 Gate 失败也不反复调 DEV17/18/19，不修改阈值求成功。强基座历史参考不是本次已完成同基座结果。',
            '', 'Stage2、真实 FPS、参数与三种子正式指标以原 finisher 完成文件为准。此报告不会把 pending 值填成0，也不会宣称独立验证或研究突破。']
@@ -80,7 +109,7 @@ def main(watch):
             publish('Reconcile actual completed additive question-to-association evidence without altering gates')
             prior=current
         if not watch:break
-        if (REPORTS/'DIAGNOSTIC_FUSION_RESULT_INDEX.json').exists() and (OUT/'finish/READY.json').exists():break
+        if (REPORTS/'DIAGNOSTIC_FUSION_RESULT_INDEX.json').exists() and (REPORTS/'QUESTION_INTERVENTION_NATIVE_INDEX.json').exists() and (OUT/'finish/READY.json').exists():break
         time.sleep(30)
 
 
