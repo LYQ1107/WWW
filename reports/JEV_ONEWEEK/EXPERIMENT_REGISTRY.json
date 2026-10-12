@@ -71,9 +71,75 @@
       },
       "status": "COMPLETE_EXISTING_MODELS_NEW_PENDING"
     },
+    "pilot_attention_seed20261009": {
+      "GPU": 4,
+      "PID": 7680,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_train.py",
+        "--arm",
+        "attention",
+        "--phase",
+        "pilot",
+        "--seed",
+        "20261009"
+      ],
+      "exit_code": 0,
+      "log": {
+        "SHA256": "c9e5110c1bbef62ba7198c6b36bf13aed5ee49ecaea2c8e2364dd92644d0cb82",
+        "bytes": 11929,
+        "path": "/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1/controller_logs/pilot_attention_seed20261009_1791800505999220397.log"
+      },
+      "results": null,
+      "status": "COMPLETE"
+    },
     "pilot_controls": {
       "results": null,
       "status": "PLANNED"
+    },
+    "pilot_jev_seed20261009": {
+      "GPU": 3,
+      "PID": 7683,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_train.py",
+        "--arm",
+        "jev",
+        "--phase",
+        "pilot",
+        "--seed",
+        "20261009"
+      ],
+      "exit_code": 0,
+      "log": {
+        "SHA256": "ac831fb0e1a424e7995f6fea9969be592759fbe7c4c7b9b220e26a3920c6f58d",
+        "bytes": 11739,
+        "path": "/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1/controller_logs/pilot_jev_seed20261009_1791800505999916100.log"
+      },
+      "results": null,
+      "status": "COMPLETE"
+    },
+    "pilot_mlp_seed20261009": {
+      "GPU": 5,
+      "PID": 7686,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_train.py",
+        "--arm",
+        "mlp",
+        "--phase",
+        "pilot",
+        "--seed",
+        "20261009"
+      ],
+      "exit_code": 0,
+      "log": {
+        "SHA256": "e6869b1adede908d5f6eb5f07840074b499d7e9b17c482ed37ce5e9fdea3b2b5",
+        "bytes": 11732,
+        "path": "/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1/controller_logs/pilot_mlp_seed20261009_1791800506007408587.log"
+      },
+      "results": null,
+      "status": "COMPLETE"
     },
     "tiny_training": {
       "GPU": 3,
@@ -99,5 +165,5 @@
     }
   },
   "max_major_versions": 3,
-  "status": "DAY1_COMPLETE_NEXT_NEW_MODEL_AND_SUPERVISION"
+  "status": "BOUNDED_EXPERIMENTS_RUNNING"
 }
