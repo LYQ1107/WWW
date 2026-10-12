@@ -106,7 +106,7 @@ def refresh():
       ('Q2：阈值为什么不够？','固定、state/pair可学习门限正在同条件比较。新Binary与pair门限是同权重精确重参数化，不能冒充旧Phase VI独立Binary。严格同接口旧VI模型尚未重放。没有证据证明所有阈值都不够。','MAIN_RESULTS.json / MECHANISM_jev_pilot_SEED20261009.json'),
       ('Q3：MLP或普通Attention为什么不够？',q3+' 各新增控制共享相同冻结XIV初始化、证据、当前标签、最多4方案和4000更新。新模块JEV169092、MLP154980、Attention168964参数；不是整个历史预训练架构的独立公平比较。','FORMAL_CURRENT_RESULTS.json / NEW_MODULE_PARAMETER_READS.json'),
       ('Q4：参数和延迟？','完整原GMT53515309参数；新JEV36165558，总变化−17349751，但完整前端不同，不能把该差值解释为纯关联模块开销。共同前端parent35996466，新JEV增169092。完整视频3次重启FPS和单独组件profile仍以实际完成状态为准；MAC/FLOPs含自定义核缺口，明确PARTIAL。','PARAMETERS_AND_FPS.json'),
-      ('Q5：是否真是JEV？','每摄像头因果关联事件共享State编码1次，实际重复编码2次同输出；动态合法ID/私有DEFER和问题条件化均实现。TRAIN16共同可认证两问题标签分歧0，不能据两个Head或embedding敏感性证明独立语义价值。目前应称JEV-inspired关联研究实现。','TRAINED_CONTRACT_CALIBRATION_SEED20261009.json / QUESTION_SEPARATION_AND_PLAN_COVERAGE.json')]
+      ('Q5：是否真是JEV？','每摄像头因果关联事件共享State编码1次，实际重复编码2次同输出；动态合法ID/私有DEFER和问题条件化均实现。真实TRAIN已知两问题有270个分歧，其中106个旧暴露reserved边同时答对79个，证明函数可输出不同语义答案，未证明JEV专属收益。TRAIN16共同可认证两问题标签分歧0；同证据普通控制的两输出Head也必须比较。目前应称JEV-inspired关联研究实现，不声称TypeSafe商业内部架构复现。','TRAINED_CONTRACT_CALIBRATION_SEED20261009.json / QUESTION_SEPARATION_AND_PLAN_COVERAGE.json / TYPED_QUESTION_ORDINARY_CONTROL_COMPARISON.json')]
     (DOCS/'REVIEWER_FIVE_QUESTIONS.md').write_text('# 五个审稿人问题：当前可核查答案\n\n工作仍在执行，未完成项不视为通过。\n\n'+'\n\n'.join('**'+title+'**\n\n'+answer+'\n\n证据：`reports/JEV_ONEWEEK/'+evidence+'`。' for title,answer,evidence in questions)+'\n')
     twelve=[
       '原始完整GMT冻结参考HOTA78.110；前端1152D/Stage2权重不同。共同前端XIV parent三种子HOTA73.505、AssA73.639、CVIDF1 88.546；新版和旧参考见主表，不能跨训练阶段拼最佳值。',
