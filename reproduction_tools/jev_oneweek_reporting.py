@@ -127,10 +127,22 @@ def refresh():
     note='冻结的有限实验与必要诊断已完成；本版本不能支撑独立JEV贡献，原MASTER保持未完成。' if finished else '此报告仍是进行中的证据汇总；正式对照、归因、消融及完整视频效率未全部完成前不宣布任务完成。'
     report='# JEVTrack 本周实验报告\n\n当前结论：JEV独立贡献 **NOT_ESTABLISHED**。'+note+'\n\n'+'\n'.join(table)+'\n\n'
     report+='上述学习模型首先对DEV17/18/19六个相机进行真实pooled评测，再计算三个固定种子的均值/样本标准差；种子波动不是三个独立数据集或显著性证明。DetA/IDF1/MOTA/Frag和逐种子数据见MAIN_RESULTS。全部主指标为未做未来短轨筛选的完整在线结果，CVIDF1/CVMA来自冻结官方MATLAB。\n\n'
-    for index,answer in enumerate(twelve,1):
-        report+='**%d. %s**\n\n'%(index,answer)
+    titles=['原GMT与已有/新JEV达到什么水平？','新模型是否提高多摄像头Global ID一致性？',
+            '哪些错误被真正纠正？','哪些正确关联被反改错？','比简单二次关联多了什么？',
+            '比固定/学习式阈值多了什么？','比融合、MLP和普通Attention多了什么？',
+            '两个问题为何需要共享状态，能否退化为普通Head？','实现是否符合JEV思想？',
+            '参数、FPS、Stage2与显存是多少？','是否提高HOTA/AssA/CVIDF1并保持身份稳定？','是否足以支撑WWW独立贡献论文？']
+    evidence=['MAIN_RESULTS.json / BASELINE_PARITY.md','CROSS_CAMERA_ANALYSIS.json',
+              'CROSS_CAMERA_ANALYSIS.json / PAIRED_NATIVE_RESULTS.json','CROSS_CAMERA_ANALYSIS.json / SAME_STATE_BUDGET_DIAGNOSTIC.json',
+              'MAIN_RESULTS.json / PAIRED_NATIVE_RESULTS.json / SAME_STATE_BUDGET_DIAGNOSTIC.json',
+              'MAIN_RESULTS.json / MECHANISM_jev_pilot_SEED20261009.json','MAIN_RESULTS.json / TYPED_QUESTION_ORDINARY_CONTROL_COMPARISON.json',
+              'TRAINED_CONTRACT_CALIBRATION_SEED20261009.json / ABLATIONS.json','MODEL_AND_NATIVE_CONTRACT_TESTS.json / QUESTION_SEPARATION_AND_PLAN_COVERAGE.json',
+              'PARAMETERS_AND_FPS.json','MAIN_RESULTS.json / CROSS_CAMERA_ANALYSIS.json','GO_NO_GO.json / REVIEWER_FIVE_QUESTIONS.md']
+    for index,(title,answer,source) in enumerate(zip(titles,twelve,evidence),1):
+        report+='**%d. %s**\n\n%s\n\n'%(index,title,answer)
+        report+='实验/具体数值：上方完整主表及 `%s`，未完成项为NOT_RUN/PARTIAL。模型/权重：该工件cases中的seed/checkpoint/initializer路径与SHA，新增模块均为最后4000-update权重，旧参考另标训练阶段。复现：`REPRODUCTION.md` 中对应CLI，服务器运行根 `/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1`。局限：已暴露TRAIN/DEV，完整GMT不同前端；本项不证明独立安全或未来价值。证据状态：实际工件的COMPLETE/PARTIAL/NOT_RUN；独立JEV贡献NOT_ESTABLISHED。\n\n'%source
     report+='复现代码、协议、START和权重SHA均绑定每个工件。模型保存在 `/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1/training_v1/`，真实轨迹/详细事件留服务器；GitHub只传源代码、小指标、失败、配置与SHA清单。参数完整前向读数仅覆盖真实TRAIN12首2帧，未观察Bank分支不能当成永久Dormant。\n\n'
-    report+='关键局限：新梯度只有TRAIN12/13/14非旧reserved时间块，TRAIN16与DEV均已旧暴露；前端旧Stage1训练曾见全部TRAIN。未读取20/21/22或官方TEST，不启动Full24，没有新下载。当前GT认证的困难选项多数UNKNOWN，置信度校准是预暴露控制器诊断而非独立泛化。完整原GMT前端和主表共同Stage1不同；M5是XIV/native规则，未冒充原完整GMT传统cascade；旧VI Binary接口不一致。原MASTER长期安全Goal及8TRAIN/3RES安全门均未通过、未完成。\n\n'
+    report+='关键局限：新梯度只有TRAIN12/13/14非旧reserved时间块，TRAIN16与DEV均已旧暴露；前端旧Stage1训练曾见全部TRAIN。统一TRAIN注释文件包含全部TRAIN行，助手只筛选允许视频的GT用于本轮监督/评测；20/21/22不参与本轮模型输入、训练或评测。未读取官方TEST，不启动Full24，没有新下载。当前GT认证的困难选项多数UNKNOWN，置信度校准是预暴露控制器诊断而非独立泛化。完整原GMT前端和主表共同Stage1不同；M5是XIV/native规则，未冒充原完整GMT传统cascade；旧VI Binary接口不一致。原MASTER长期安全Goal及8TRAIN/3RES安全门均未通过、未完成。\n\n'
     report+='状态与原始工件：`EXPERIMENT_REGISTRY.json`、`MAIN_RESULTS.json`、`ABLATIONS.json`、`PARAMETERS_AND_FPS.json`、`CROSS_CAMERA_ANALYSIS.json`、`GO_NO_GO.json`、`ENGINEERING_FAILURES.json`、`ARTIFACT_SHA_MANIFEST.json`。缺失实验均为NOT_RUN/PARTIAL，不以零代替。下一步只完成冻结有限矩阵，不通过扩大模型、反复调DEV或挑选种子制造成功。\n'
     (DOCS/'FINAL_REPORT.md').write_text(report)
 

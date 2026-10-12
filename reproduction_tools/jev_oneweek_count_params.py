@@ -56,7 +56,9 @@ class ParameterReads(TorchDispatchMode):
                     registered_parameters_by_module={name:sum(p.numel() for p in module.parameters())
                                                       for name,module in self.modules.items()} if hasattr(self,'modules') else None,
                     counted_MACs=dict(self.macs), counted_dense_FLOPs=2*sum(self.macs.values()),
-                    FLOP_completeness='PARTIAL_CUSTOM_DEFORMABLE_ROI_POINTWISE_NOT_COUNTED',
+                    FLOP_completeness='PARTIAL_NATIVE_MHA_CUSTOM_DEFORMABLE_ROI_POINTWISE_NOT_COUNTED',
+                    operator_counts=dict(self.operator_counts),
+                    native_MHA_operator_calls_not_in_MAC_total=sum(n for name,n in self.operator_counts.items() if '_native_multi_head_attention' in name),
                     observed_scope='TRAIN12 first2 actual scene frames, real image to native tracks; bank-specific branches may be unobserved')
 
 
