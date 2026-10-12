@@ -15,6 +15,12 @@ assess = torch.no_grad()(types.FunctionType(raw.__code__,dict(raw.__globals__,ba
 
 def main():
     protect();torch.set_num_threads(1)
+    destination = REPORTS/'COMPLETE_INPUT_ASSESSMENT_AUDIT.json'
+    registry = read(ROOT/'reports/JEV_RECOVERY/EXPERIMENT_REGISTRY.json')
+    job = registry['jobs'].get('R2_XIV_complete_input_all_pilot_audit_v2',{})
+    if job.get('PID') == os.getpid():
+        destination = ROOT/'reports/JEV_RECOVERY/complete_input_all_pilots_v2/COMPLETE_INPUT_ASSESSMENT_AUDIT.json'
+    assert not destination.exists(),'Preserve a completed audit; use a fresh registered namespace'
     _,records,sources=load_records(2);rows=[]
     for arm in ['jev','threshold','mlp','attention','f0_mean','mlp_fusion','attention_fusion',
                 'fixed_question','cross_only','stability_only','no_interaction','no_shared']:
@@ -25,14 +31,14 @@ def main():
         rows.append(dict(arm=arm,checkpoint=checkpoint,original_result=ref(p),
             original_inherited_assessment=training['final'],complete_recovery_input_assessment=final))
         del actor;torch.cuda.empty_cache()
-        save(REPORTS/'COMPLETE_INPUT_ASSESSMENT_AUDIT.json',dict(status='IN_PROGRESS',
+        save(destination,dict(status='IN_PROGRESS',
             old_results_immutable=True,trained_weights_unchanged=True,new_gradients=0,
             reason='Historical imported assess resolves historical batch: R2 training batch and certified probe are correct, but inherited assessment omits anchor evidence/affinity proposals.',
             sources=sources,rows=rows,independent_validation=False))
         print('COMPLETE_INPUT_ASSESS',arm,final['rank_pair_accuracy'],flush=True)
-    report=read(REPORTS/'COMPLETE_INPUT_ASSESSMENT_AUDIT.json');report['status']='COMPLETE_AVAILABLE_PILOT_AUDIT'
+    report=read(destination);report['status']='COMPLETE_AVAILABLE_PILOT_AUDIT'
     report['missing_arms']=[a for a in ['no_interaction','no_shared'] if not any(r['arm']==a for r in rows)]
-    save(REPORTS/'COMPLETE_INPUT_ASSESSMENT_AUDIT.json',report)
+    save(destination,report)
 
 
 if __name__=='__main__':main()
