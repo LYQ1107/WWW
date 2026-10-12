@@ -47,10 +47,13 @@ def main(gpu):
   if unreviewed_failures():raise RuntimeError('Predecessor failure requires retained-log review')
   save(OUT/'progression/PROGRESS.json',dict(status='WAITING_R1_TRAIN_GATE',GPU=gpu));time.sleep(20)
  # Wait for original R1 controller to release GPU and finish its publication.
- registry=read(REPORTS/'EXPERIMENT_REGISTRY.json')
- assert not any(j['status']=='RUNNING' for j in registry['jobs'].values())
+ while True:
+  registry=read(REPORTS/'EXPERIMENT_REGISTRY.json')
+  busy=[name for name,j in registry['jobs'].items() if j['status']=='RUNNING' and j.get('GPU')==gpu]
+  if not busy:break
+  save(OUT/'progression/PROGRESS.json',dict(status='WAITING_OWN_GPU_PREDECESSOR',GPU=gpu,jobs=busy));time.sleep(20)
  decisions=[read(REPORTS/'R1_XIV_MECHANISM_GATE.json')]
- while not all((REPORTS/n).exists() for n in ['R2_QUESTION_SUPERVISION.json','R2_ANCHOR_SUPERVISION.json']):
+ while not all((REPORTS/n).exists() for n in ['R2_QUESTION_SUPERVISION.json','R2_ANCHOR_SUPERVISION.json','R2_EARLY_EVIDENCE.json','R2_CANDIDATE_AND_QUESTION_AUDIT.json','R2_EARLY_EVIDENCE_CONTRACT.json']):
   if unreviewed_failures():raise RuntimeError('R2 label audit failed')
   time.sleep(20)
  # Revision 2 was predeclared before any new DEV: broad core/ordinary/fusion and
