@@ -38,3 +38,7 @@ Three consecutive continuations revalidated same missing lawful independentmanua
 ## 2026-10-12 — User confirms no licensed MMPTRACK/SCOUT copies
 
 The existing-directory question is answered: neithercopy currently exists. Execution remainsblocked; no model/data qualifier changed. Prepared officialapplication links and unsentplaceholder MMPTRACK emaildraft, withTRAIN/VAL-only initialannotationaudit request and optionalcross-environmentidentitylabels. Researcher handles agreement/signature/application; no externalcontact/registration performed. After normalaccess, validateactualroles/quality/dependencies within64MiB before any boundednative/training stage. This is operational source-access clarification, not scientificprogress or automaticgoalresume.
+
+## 2026-10-12 — Official alternative source routes
+
+User requested Baidu/other routes, then clarified concern about downloadingmanydatasets. Authorpublished CvMHATB datasetshare(MHAT), MVCrowdTrack(9xbs), firstMVTrackTransprojectshare(1390; latestREADMEdoesnotnamefirstfolder), Dropboxbundle(iMUSELab) identified. DIVOTrackcurrentHF filesremainencrypted withlicense/passwordrequirement. ThreeBaidusharepages HTTP200codeprompts, no filelist/archive/GT, cannotassertsuccessfuldownload. ThreeREADMEcommits/SHA pinned. PrioritizeCvMHATBmetadatafirst, onecandidateatime, no bulkdata; newGTcumulative64MiB and8/3gate unchanged. No trustworthy applicationfreeMMP/SCOUTmirrorfound inboundedsearch. Keep scientific/sourcequalification separate from linkdiscovery.
