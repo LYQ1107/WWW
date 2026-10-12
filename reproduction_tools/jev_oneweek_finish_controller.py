@@ -56,7 +56,8 @@ def main():
     run_job('remaining_actual_parameter_reads',[PYTHON,str(ROOT/'reproduction_tools/jev_oneweek_new_parameters.py'),
             '--tag','extra','--arms','linear','state_threshold','threshold','stability_only','additive','no_question_reader'],5)
     run_job('original_GMT_actual_Stage2_profile',[PYTHON,str(ROOT/'reproduction_tools/jev_oneweek_original_stage2_profile.py')],5)
-    files.append(OUT/'original_stage2_profile_v1/RESULT.json')
+    files.append(OUT/'original_stage2_profile_v2/RESULT.json')
+    assert read(files[-1])['primary_full_FPS_raw_Instance_digest_exact']
     run_job('formal_identity_final_snapshot',[PYTHON,str(ROOT/'reproduction_tools/jev_oneweek_identity_matrix.py')])
     # All immutable native and true timing inputs exist. Readiness never means
     # the model won, and the original MASTER remains incomplete.

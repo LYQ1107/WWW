@@ -654,6 +654,54 @@
       "status": "FAIL"
     },
     {
+      "old_job": {
+        "GPU": 5,
+        "PID": 36488,
+        "command": [
+          "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+          "/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_original_stage2_profile.py"
+        ],
+        "exit_code": 1,
+        "log": {
+          "SHA256": "46c6887fa689a25ab75b58f8f4556b3edea304e9d51154d92bde292b4ef6d4b2",
+          "bytes": 75380,
+          "path": "/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1/controller_logs/original_GMT_actual_Stage2_profile_1791826258651014888.log"
+        },
+        "previous_failed_attempts": [
+          {
+            "cause": "Instrumentation rejected legitimate nested Bank get_asso during original native commit; include it in existing outer interval, preserving frozen core algorithms and exact prediction check",
+            "old_job": {
+              "GPU": 5,
+              "PID": 35306,
+              "command": [
+                "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+                "/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_original_stage2_profile.py"
+              ],
+              "exit_code": 1,
+              "log": {
+                "SHA256": "0488bd49845c1179623732218813fd572a4a5bf2b013ac28c5ff0e9654f807ca",
+                "bytes": 17042,
+                "path": "/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1/controller_logs/original_GMT_actual_Stage2_profile_1791823653590281881.log"
+              },
+              "results": null,
+              "status": "ENGINEERING_OR_SCIENCE_FAILURE_REVIEW_REQUIRED"
+            },
+            "original_failure_logs_retained": true,
+            "status": "RETRY_AFTER_VERIFIED_ENGINEERING_CAUSE"
+          }
+        ],
+        "results": null,
+        "status": "ENGINEERING_OR_SCIENCE_FAILURE_REVIEW_REQUIRED"
+      },
+      "reason": "Align separate profile with frozen live FPS warm8/reset seed09. Require exact full raw Instance digest against all3 actual primary restarts; keep cache prediction mismatch explicit, not a relaxed claim of cache parity.",
+      "retained_attempt": {
+        "SHA256": "8fc585f5f30c9106c64ba0f5b021202c49e572e1c02dad77ebea81e10ce9e8d4",
+        "bytes": 7000,
+        "path": "/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1/original_stage2_profile_v1/RESULT.json"
+      },
+      "status": "PREDICTION_PROTOCOL_ALIGNMENT_RETRY"
+    },
+    {
       "binding": {
         "CUDA_VISIBLE_DEVICES": null,
         "Full24": false,

@@ -16,6 +16,10 @@ def main():
         rows=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid','--format=csv,noheader'],text=True).splitlines()
         assert not [r for r in rows if r.strip().startswith(uuid+',') and int(r.split(',')[1])!=os.getpid()]
     clean();values,frames,_=cache_inputs(17);model,cfg=original_model();original_live_payloads(model,values,cfg)
+    # Match the already frozen primary FPS seed/warmup/cold-state protocol.
+    # ROI jitter uses Torch RNG; cached perception is a different realization.
+    with torch.no_grad():warm,_=run(model,values,frames,stop=7)
+    del warm;seed_all(20261009)
     original=model.get_asso;start=[None];times=[];commit_depth=[0];nested_bank_association_calls=[0]
     def get_asso(*args,**kwargs):
         if start[0] is None:
@@ -46,7 +50,12 @@ def main():
     predictions=raw_predictions(raw,images)
     frozen=read(REPORTS/'ORIGINAL_GMT_RESTORE_VIDEO17.json')['predictions']
     exact=predictions==read(frozen['path'])
-    folder=OUT/'original_stage2_profile_v1';folder.mkdir(exist_ok=False)
+    from gtr.modeling.jev_native_state import fingerprint
+    primary=read(REPORTS/'EFFICIENCY_original_GMT_formal_SEED20261009_VIDEO17.json')
+    expected_digests={t['current_prediction_sha'] for t in primary['trials']}
+    assert len(expected_digests)==1
+    actual_digest=fingerprint(raw[:2*frames]);primary_exact=actual_digest in expected_digests
+    folder=OUT/'original_stage2_profile_v2';folder.mkdir(exist_ok=False)
     save(folder/'RAW_PREDICTIONS.json',predictions)
     result=dict(status='COMPLETE',binding=binding('Actual original GMT live-image Stage2 from get_asso through original Gallery/Bank commit'),
                 GPU_UUID=uuid,hardware=torch.cuda.get_device_name(),video=17,scene_frames=frames,
@@ -57,10 +66,13 @@ def main():
                 includes_original_GTA_history_aggregation_threshold_assignment_Gallery_Bank=True,
                 excludes_caller_instance_list_slicing_and_first_bootstrap_ID_creation=True,
                 exact_live_vs_frozen_cache_raw_prediction_parity=exact,raw_predictions=ref(folder/'RAW_PREDICTIONS.json'),
+                primary_full_FPS_raw_Instance_digest_exact=primary_exact,
+                actual_raw_Instance_digest=actual_digest,primary_full_FPS_source=ref(REPORTS/'EFFICIENCY_original_GMT_formal_SEED20261009_VIDEO17.json'),
+                cached_quality_reference_and_live_timing_are_distinct_jitter_realizations=not exact,
                 primary_FPS=None,synchronised_separate_instrumented_run_not_primary_FPS=True,
                 no_GT_in_model=True,original_complete_frontend_differs_from_VFCE1024_family=True)
     save(folder/'RESULT.json',result);save(REPORTS/'ORIGINAL_GMT_STAGE2_COMPONENT_PROFILE.json',result)
-    assert exact,'Actual original live-image inference differs from the frozen raw reference; attempted result retained'
+    assert primary_exact,'Instrumented original run differs from actual frozen primary FPS runs; attempted result retained'
     print('ORIGINAL_GMT_STAGE2_PROFILE_COMPLETE',result['Stage2_p50_p95_ms'],flush=True)
 
 
