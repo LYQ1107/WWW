@@ -5,6 +5,8 @@ def publish(message):
  protect()
  with (OUT/'PUBLICATION.lock').open('a') as lock:
   fcntl.flock(lock,fcntl.LOCK_EX)
+  from jev_recovery_results import refresh
+  refresh()
   files=[p for folder in (DOCS,REPORTS,ROOT/'configs/JEV_RECOVERY',ROOT/'gtr/modeling/jev_recovery') for p in folder.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='ARTIFACT_SHA_MANIFEST.json']
   files+=list((ROOT/'reproduction_tools').glob('jev_recovery_*.py'))
   assert all(p.stat().st_size<8*2**20 for p in files)

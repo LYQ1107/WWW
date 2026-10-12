@@ -15,7 +15,11 @@ def refresh():
   summary.append(dict(track=track,arm=arm,status='COMPLETE_THREE_SEEDS' if len(rows)==3 else 'PARTIAL',completed_seeds=[r['seed'] for r in rows],metrics={k:dict(mean=float(np.mean([r['metrics'][k] for r in rows])),sample_seed_SD=float(np.std([r['metrics'][k] for r in rows],ddof=1)) if len(rows)>1 else None) for k in ['HOTA','DetA','AssA','IDF1','MOTA','IDSW','Frag','CVIDF1','CVMA']}))
  save(REPORTS/'FULL_ONLINE_RESULTS.json',dict(status='PARTIAL_UNTIL_FROZEN_JOBS_COMPLETE',cases=cases,summary=summary,no_missing_metrics_imputed=True,pooled_six_camera_first=True,three_seeds_not_significance=True,pre_exposed_DEV_not_independent=True))
  save(REPORTS/'FAIR_BASELINE_RESULTS.json',dict(status='ACTUAL_COMPLETED_CASES_ONLY',cases=[c for c in cases if c['arm'] in ['parent','threshold','mlp','attention','mlp_fusion','attention_fusion','f0_mean']],same_evidence_and_updates=True))
- save(REPORTS/'TRAINING_RESULTS.json',dict(status='COMPLETED_SNAPSHOT',cases=[read(p) for p in REPORTS.glob('TRAIN_R*.json')]))
+ training=[]
+ for p in REPORTS.glob('TRAIN_R*.json'):
+  value=read(p)
+  training.append(dict(source=ref(p),**{k:value.get(k) for k in ['arm','phase','seed','revision','base','total_updates','maximum_plans','engineering_training_pass','rank_supervised_batches','rank_nonzero_batch_fraction','certified_changed_row_groups_with_nonzero_ranking_head_gradient','checkpoint']}))
+ save(REPORTS/'TRAINING_RESULTS.json',dict(status='COMPLETED_SNAPSHOT',cases=training,full_histories_in_individual_reports=True))
  inherited=ref(ROOT/'reports/JEV_ONEWEEK/FORMAL_CURRENT_RESULTS.json')
  gates=[read(p) for p in REPORTS.glob('R*_MECHANISM_GATE.json')]
  goal=read(REPORTS/'MASTER_GOAL.json');goal.update(status='ACTIVE_RESEARCH',revision_gates=gates,scientific_success=False,JEV_INDEPENDENT_VALUE='NOT_ESTABLISHED',CROSS_CAMERA='PENDING_NEW_RUN_DIAGNOSTICS',EFFICIENCY='PENDING_NEW_MODELS',independent_validation='INELIGIBLE on old DEV');save(REPORTS/'MASTER_GOAL.json',goal)

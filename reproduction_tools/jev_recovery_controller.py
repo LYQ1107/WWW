@@ -15,11 +15,14 @@ def run_job(name,script,args=(),gpu=None):
  if gpu is not None:env['CUDA_VISIBLE_DEVICES']=str(gpu)
  log=OUT/'controller_logs'/f'{name}.log';log.parent.mkdir(exist_ok=True)
  command=[PYTHON,str(ROOT/'reproduction_tools'/script),*map(str,args)]
+ save(REPORTS/'NEXT_ACTION.json',dict(status='EXECUTING',experiment_id=name,command=command,GPU=gpu,log=str(log),MASTER='ACTIVE_RESEARCH'))
  with log.open('x') as f:
   p=subprocess.Popen(command,cwd=ROOT,env=env,stdout=f,stderr=subprocess.STDOUT)
   register(name,dict(status='RUNNING',PID=p.pid,GPU=gpu,command=command,log=str(log),source=binding(name)))
   while p.poll() is None:
-   save(OUT/'controller/PROGRESS.json',dict(status='EXECUTING',job=name,PID=p.pid,log=str(log),alive=pathlib.Path('/proc',str(p.pid)).exists(),updated_UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime())))
+   progress=dict(status='EXECUTING',job=name,PID=p.pid,log=str(log),alive=pathlib.Path('/proc',str(p.pid)).exists(),updated_UTC=time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()))
+   save(OUT/'controller'/name/'PROGRESS.json',progress)
+   save(OUT/'controller/PROGRESS.json',progress)
    time.sleep(20)
  register(name,dict(status='COMPLETE' if p.returncode==0 else 'FAILED',exit_code=p.returncode,log=ref(log)))
  if p.returncode:raise RuntimeError('Retained failed job: '+name)
