@@ -89,7 +89,7 @@ H64使用事前固定的真实XV native prefix32/0，五方法起始state/input/
 | 冻结干预 | H64已知错误观测 | 完整TRAIN16 HOTA | AssA | IDSW |
 |---|---:|---:|---:|---:|
 | full | 286 | 67.33177074062783 | 64.96536206810643 | 1333.0 |
-| cross_representation_only | 182 | PENDING | PENDING | PENDING |
+| cross_representation_only | 182 | 68.40825658812663 | 66.95776955834098 | 1267.0 |
 | persistent_representation_only | 181 | PENDING | PENDING | PENDING |
 | mean_representations | 182 | PENDING | PENDING | PENDING |
 | no_joint_plan_residual | 286 | PENDING | PENDING | PENDING |
