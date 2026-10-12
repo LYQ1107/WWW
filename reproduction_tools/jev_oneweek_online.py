@@ -17,7 +17,8 @@ class FrozenPlanControl(nn.Module):
         for p in self.parameters():p.requires_grad_(False)
     def forward(self,x):
         z=self.identity({k:v for k,v in x.items() if k!='commitment_features'})
-        if not len(z[0]):self.runtime_choice=[];return z
+        if not len(z[0]):
+            self.runtime_choice=[];self.runtime_details={};return z
         candidates=plans(z[0],x['legal'][0]) if self.kind!='parent' else [tuple(lawful_choice(z[0],x['legal'][0]))]
         modified=z[0].clone()
         if self.kind=='fixed_threshold':modified[:,:-1]-=.1
@@ -44,7 +45,7 @@ class SolverFactorControl(nn.Module):
         self.triggered_events=0;self.reassigned_rows=0
     def forward(self,x):
         if not x['question_mask'].any():
-            self.runtime_choice=[]
+            self.runtime_choice=[];self.runtime_details={}
             return x['detection_visual'].new_empty(1,0,x['identity_mask'].shape[1]+1)
         details=self.model.encode(x)
         score=details['base_logits'] if self.kind.startswith('base_') else details['edge_logits']
