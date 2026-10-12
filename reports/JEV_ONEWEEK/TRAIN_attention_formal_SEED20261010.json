@@ -1,0 +1,1519 @@
+{
+  "JEV_independent_value": "NOT_ESTABLISHED",
+  "actual_new_updates": 3000,
+  "arm": "attention",
+  "before": {
+    "counts": {
+      "UNKNOWN_selected": 1934,
+      "known_correct": 1691,
+      "known_selected": 1692,
+      "nonbase_plan_selected": 15,
+      "plans_generated": 389,
+      "rank_pair_correct": 1,
+      "rank_pairs": 1,
+      "rows": 3626
+    },
+    "known_correct_rate": 0.9994089834515366,
+    "questions": {
+      "cross": {
+        "0_correct": 47076,
+        "0_support": 47142,
+        "1_correct": 782,
+        "1_support": 782
+      },
+      "stability": {
+        "0_correct": 41874,
+        "0_support": 41926,
+        "1_correct": 1688,
+        "1_support": 1688
+      }
+    },
+    "rank_pair_accuracy": 1.0,
+    "scope": "Deterministic reused TRAIN16 controller audit; correlated rows, not full MOT or independent generalization"
+  },
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": "4",
+    "Full24": false,
+    "commit": "97e7e456700ba7160b9b4b471a5706b0ee0636ce",
+    "official_TEST": false,
+    "protocol": {
+      "SHA256": "97086d8e04936ac6ed80d888fd5af686187f20c05acc1fac45234fe4c35169d5",
+      "bytes": 5622,
+      "path": "/home/liuyeqiang/WWW_jev_oneweek_20261012/reports/JEV_ONEWEEK/PREREGISTRATION.json"
+    },
+    "scope": "Equal-supervision current association training, not future safe action learning",
+    "sealed20_21_22": true,
+    "sources": {
+      "gtr/modeling/jev_oneweek/__init__.py": "4d0bec368997f7bb9141eaf5d463cf220ef2da75ca4084adf0bc29c4404c9114",
+      "gtr/modeling/jev_oneweek/model.py": "7c9c7817b1508d24bcac5264bf9d5da57bc38267adda054c01fbdbf6d881ea72",
+      "gtr/modeling/jev_oneweek/native.py": "fb34a8c31f5de78267f3580c1210980009af8a8af5d57b90bf02fa60393ae6b0",
+      "gtr/modeling/jev_oneweek/plans.py": "b094b40b07b75fcd2d408b7758eb7d82871905a681774e466ed5889199cf7145",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_oneweek_assess.py": "8e36b17ad863cb6943180b77d2b1ba5e3dcf4ddb62707555b403ac50c7c84bc9",
+      "reproduction_tools/jev_oneweek_asset_audit.py": "d8ee199a0f37ce32fee076a463e245716313b2fc16d51ec4341215bae2ef0ee8",
+      "reproduction_tools/jev_oneweek_common.py": "92f09423bc75ff7f802526172e7af0d583ce04df5a6f01de7b6bf4f4160b3b80",
+      "reproduction_tools/jev_oneweek_control_queue.py": "76768ed47c450d8b82e12f5d3fff230e46e5cba908aaed43a3eaeb671f016511",
+      "reproduction_tools/jev_oneweek_controller.py": "5d32b18d15a211d9b0c1addb8d5fc9fe13367dd180357d371879894b5c7b4c84",
+      "reproduction_tools/jev_oneweek_count_params.py": "0e187c4864b784512aa2f2b4ef1bf21eaebb3a9cc27900a2c8a056c193ef058a",
+      "reproduction_tools/jev_oneweek_efficiency_queue.py": "3aa7cad966c8b38fa3ede4fec73f6d8cd65b7e18c7e880ae55a866ac972f7fbc",
+      "reproduction_tools/jev_oneweek_freeze.py": "b4570ad937ab6347683008b8b2aece6965c550ef17c25c81efe4ccd0026005a8",
+      "reproduction_tools/jev_oneweek_identity_analysis.py": "b9c4e6304a40d583e3cffe3f19be2398ecce4b53bfef78c21f23e70c7c6004e3",
+      "reproduction_tools/jev_oneweek_learning.py": "e825707733964cc304cb40512bd85bdf9cac10fece9ac82dbb246ea82188dea6",
+      "reproduction_tools/jev_oneweek_matlab.py": "58fd1c6670ae0f1977cb16089ff2320a366ca0540d87cd67ee743f1fae3648d9",
+      "reproduction_tools/jev_oneweek_mechanism_probe.py": "7c77973d3cc96721c7355faed64373ff616de88649b4d215654e84740c714d06",
+      "reproduction_tools/jev_oneweek_online.py": "273b49c302d9b7ad2a878bf674bf9aa4ad2f092c76e9605ce053c7469b6831b2",
+      "reproduction_tools/jev_oneweek_paired_native.py": "b31cc85bf9ad630f74085821fca88bc44306619b6b1b71256ace9c3a686701d8",
+      "reproduction_tools/jev_oneweek_profile_latency.py": "de75140873f50d80c8a9600ed2ad022ff67386c112d736872ab2e3fc4f4398f1",
+      "reproduction_tools/jev_oneweek_publish.py": "aef14c32234cef2a9110f574ea53f948533ef4440389e0653e0bc934d5155e85",
+      "reproduction_tools/jev_oneweek_queue.py": "a82629b5728936b375e4114d0846b72c4df6ef2bcf8867d359daf7350b81b1cd",
+      "reproduction_tools/jev_oneweek_restore_gmt.py": "545da0838f162027235b286f6d938d40481b0ae9929aa1b39f284912c4a0d870",
+      "reproduction_tools/jev_oneweek_results.py": "44e71227bc98b06e785929702c51865f3242cdfbe20fc69e5529d971675cfe62",
+      "reproduction_tools/jev_oneweek_supervision.py": "a165c616a79451b7c5f25819568a155eb0f44e005b50e90ffc82f69b7b5ad2f0",
+      "reproduction_tools/jev_oneweek_tests.py": "52d0f73aa8564ea5c5483ebb2a2ba4d03fd2ce2a61e5a11365b7ef4abc0a5e19",
+      "reproduction_tools/jev_oneweek_train.py": "6519106abc6d0f07c214cfbbb51e1d0c2533c7635ca5e685898fee0a068a4b81"
+    }
+  },
+  "checkpoint": {
+    "SHA256": "9fbe1552dc399b0dcf68328cc663e4c7e8a1e4e0c49d295911d949b098ea4cc8",
+    "bytes": 2096969,
+    "path": "/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1/training_v1/attention/seed20261010/formal/NEW_MODULES.pth"
+  },
+  "controller_audit_is_NOT_independent_generalization": true,
+  "engineering_training_pass": true,
+  "final": {
+    "counts": {
+      "UNKNOWN_selected": 1934,
+      "known_correct": 1691,
+      "known_selected": 1692,
+      "nonbase_plan_selected": 19,
+      "plans_generated": 389,
+      "rank_pair_correct": 1,
+      "rank_pairs": 1,
+      "rows": 3626
+    },
+    "known_correct_rate": 0.9994089834515366,
+    "questions": {
+      "cross": {
+        "0_correct": 47120,
+        "0_support": 47142,
+        "1_correct": 777,
+        "1_support": 782
+      },
+      "stability": {
+        "0_correct": 41923,
+        "0_support": 41926,
+        "1_correct": 1678,
+        "1_support": 1688
+      }
+    },
+    "rank_pair_accuracy": 1.0,
+    "scope": "Deterministic reused TRAIN16 controller audit; correlated rows, not full MOT or independent generalization"
+  },
+  "fixture_loss_after": 0.0,
+  "fixture_loss_before": 0.0,
+  "history": [
+    {
+      "certified_rank_pairs": 2,
+      "components": {
+        "cross": 0.012692048214375973,
+        "current_edge_compatibility": 0.3373872935771942,
+        "current_plan_ranking": 0.022821973159778533,
+        "stability": 0.03064768761396408
+      },
+      "elapsed": 0.10554882884025574,
+      "grad_norm": 1.5641363859176636,
+      "loss": 0.06739563596235555,
+      "step": 1001,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.010849136859178543,
+        "current_edge_compatibility": 0.5869759917259216,
+        "current_plan_ranking": -0.0,
+        "stability": 0.008645064197480679
+      },
+      "elapsed": 1.7616005390882492,
+      "grad_norm": 0.3584803342819214,
+      "loss": 0.06357114762067795,
+      "step": 1024,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.013064679689705372,
+        "current_edge_compatibility": 0.4317730665206909,
+        "current_plan_ranking": -0.0,
+        "stability": 0.007797272875905037
+      },
+      "elapsed": 4.129744350910187,
+      "grad_norm": 0.2607647478580475,
+      "loss": 0.04839279502630234,
+      "step": 1056,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.010751726105809212,
+        "current_edge_compatibility": 0.40663421154022217,
+        "current_plan_ranking": -0.0,
+        "stability": 0.0077043562196195126
+      },
+      "elapsed": 6.501271851360798,
+      "grad_norm": 0.3023719787597656,
+      "loss": 0.045277442783117294,
+      "step": 1088,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.010802099481225014,
+        "current_edge_compatibility": 0.3866838812828064,
+        "current_plan_ranking": -0.0,
+        "stability": 0.008615230210125446
+      },
+      "elapsed": 8.824536979198456,
+      "grad_norm": 0.25688502192497253,
+      "loss": 0.04352272301912308,
+      "step": 1120,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.03746322914958,
+        "current_edge_compatibility": 0.47961848974227905,
+        "current_plan_ranking": 0.4307802564900075,
+        "stability": 0.10139703750610352
+      },
+      "elapsed": 11.216411285102367,
+      "grad_norm": 12.431882858276367,
+      "loss": 0.5134571738045369,
+      "step": 1152,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.008899277076125145,
+        "current_edge_compatibility": 0.22015251219272614,
+        "current_plan_ranking": -0.0,
+        "stability": 0.007836936041712761
+      },
+      "elapsed": 13.480591528117657,
+      "grad_norm": 0.14164215326309204,
+      "loss": 0.026199303567409515,
+      "step": 1184,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.008501855656504631,
+        "current_edge_compatibility": 0.24626348912715912,
+        "current_plan_ranking": 0.01584929872431692,
+        "stability": 0.015034842304885387
+      },
+      "elapsed": 15.859736733138561,
+      "grad_norm": 2.6937553882598877,
+      "loss": 0.046359823012136786,
+      "step": 1216,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.009618865326046944,
+        "current_edge_compatibility": 0.020915819332003593,
+        "current_plan_ranking": -0.0,
+        "stability": 0.007273708004504442
+      },
+      "elapsed": 18.182428926229477,
+      "grad_norm": 0.04551100358366966,
+      "loss": 0.006314725149422884,
+      "step": 1248,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.007895250804722309,
+        "current_edge_compatibility": 0.12914425134658813,
+        "current_plan_ranking": 0.0,
+        "stability": 0.005550971254706383
+      },
+      "elapsed": 20.66094919294119,
+      "grad_norm": 0.0765998438000679,
+      "loss": 0.016275981441140175,
+      "step": 1280,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.006695587653666735,
+        "current_edge_compatibility": 0.2355157434940338,
+        "current_plan_ranking": -0.0,
+        "stability": 0.005841238424181938
+      },
+      "elapsed": 23.093904688954353,
+      "grad_norm": 0.1891784369945526,
+      "loss": 0.02668577991425991,
+      "step": 1312,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.018637556582689285,
+        "current_edge_compatibility": 0.15265874564647675,
+        "current_plan_ranking": 0.0,
+        "stability": 0.004816090222448111
+      },
+      "elapsed": 25.427206948399544,
+      "grad_norm": 0.11318076401948929,
+      "loss": 0.021129285916686058,
+      "step": 1344,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.006568362470716238,
+        "current_edge_compatibility": 0.28020352125167847,
+        "current_plan_ranking": -0.0,
+        "stability": 0.004870409145951271
+      },
+      "elapsed": 27.777362503111362,
+      "grad_norm": 0.14117522537708282,
+      "loss": 0.030880045145750046,
+      "step": 1376,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.006218498107045889,
+        "current_edge_compatibility": 0.22244590520858765,
+        "current_plan_ranking": 0.0,
+        "stability": 0.005749035626649857
+      },
+      "elapsed": 30.0882885530591,
+      "grad_norm": 0.1331862360239029,
+      "loss": 0.025236474350094795,
+      "step": 1408,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.005989543627947569,
+        "current_edge_compatibility": 0.29109832644462585,
+        "current_plan_ranking": 0.0,
+        "stability": 0.004639825783669949
+      },
+      "elapsed": 32.81101454794407,
+      "grad_norm": 0.17120371758937836,
+      "loss": 0.03176717460155487,
+      "step": 1440,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.005464819259941578,
+        "current_edge_compatibility": 0.15187983214855194,
+        "current_plan_ranking": -0.0,
+        "stability": 0.004049271810799837
+      },
+      "elapsed": 35.369928888976574,
+      "grad_norm": 0.0968298390507698,
+      "loss": 0.017566505819559097,
+      "step": 1472,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.037089623510837555,
+        "current_edge_compatibility": 0.14998672902584076,
+        "current_plan_ranking": 0.007591192240933069,
+        "stability": 0.010094476863741875
+      },
+      "elapsed": 37.80599420517683,
+      "grad_norm": 1.3444615602493286,
+      "loss": 0.034385891261616834,
+      "step": 1504,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0057199206203222275,
+        "current_edge_compatibility": 0.1253075897693634,
+        "current_plan_ranking": 0.0,
+        "stability": 0.003829844295978546
+      },
+      "elapsed": 40.021141424775124,
+      "grad_norm": 0.10407055914402008,
+      "loss": 0.014918200671672821,
+      "step": 1536,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.006054923869669437,
+        "current_edge_compatibility": 0.10603134334087372,
+        "current_plan_ranking": 0.0,
+        "stability": 0.003701879410073161
+      },
+      "elapsed": 42.46447092294693,
+      "grad_norm": 0.10127875953912735,
+      "loss": 0.013042335398495197,
+      "step": 1568,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.008570455946028233,
+        "current_edge_compatibility": 0.1867346316576004,
+        "current_plan_ranking": 0.0,
+        "stability": 0.005637166555970907
+      },
+      "elapsed": 44.794532746076584,
+      "grad_norm": 0.12306801229715347,
+      "loss": 0.02222536876797676,
+      "step": 1600,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.006177263334393501,
+        "current_edge_compatibility": 0.006097833625972271,
+        "current_plan_ranking": 0.0,
+        "stability": 0.004222055897116661
+      },
+      "elapsed": 47.07954643666744,
+      "grad_norm": 0.020941508933901787,
+      "loss": 0.003209613263607025,
+      "step": 1632,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.006060237064957619,
+        "current_edge_compatibility": 0.15263882279396057,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0033105944748967886
+      },
+      "elapsed": 49.56697714328766,
+      "grad_norm": 0.11819121986627579,
+      "loss": 0.017606589943170547,
+      "step": 1664,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.007051224820315838,
+        "current_edge_compatibility": 0.06242511048913002,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0035193280782550573
+      },
+      "elapsed": 52.113287307322025,
+      "grad_norm": 0.039098210632801056,
+      "loss": 0.008885149843990803,
+      "step": 1696,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.005685157608240843,
+        "current_edge_compatibility": 0.04871566966176033,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0035124707501381636
+      },
+      "elapsed": 54.508624859154224,
+      "grad_norm": 0.05299175903201103,
+      "loss": 0.007170974276959896,
+      "step": 1728,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.009258875623345375,
+        "current_edge_compatibility": 0.278152197599411,
+        "current_plan_ranking": 0.0,
+        "stability": 0.02113952860236168
+      },
+      "elapsed": 56.80669020116329,
+      "grad_norm": 0.17053860425949097,
+      "loss": 0.03541482239961624,
+      "step": 1760,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.003932449966669083,
+        "current_edge_compatibility": 0.17191794514656067,
+        "current_plan_ranking": 0.0,
+        "stability": 0.006651367526501417
+      },
+      "elapsed": 58.999367758631706,
+      "grad_norm": 0.14241072535514832,
+      "loss": 0.019837750121951103,
+      "step": 1792,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.004219001159071922,
+        "current_edge_compatibility": 0.10238345712423325,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0027467356994748116
+      },
+      "elapsed": 61.29342583566904,
+      "grad_norm": 0.08006993681192398,
+      "loss": 0.011979780159890652,
+      "step": 1824,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.004323205444961786,
+        "current_edge_compatibility": 0.040537092834711075,
+        "current_plan_ranking": 0.0,
+        "stability": 0.003118246328085661
+      },
+      "elapsed": 63.5904036462307,
+      "grad_norm": 0.05213041231036186,
+      "loss": 0.005914072506129742,
+      "step": 1856,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.004740909207612276,
+        "current_edge_compatibility": 0.00014215099508874118,
+        "current_plan_ranking": 0.0,
+        "stability": 0.002379152923822403
+      },
+      "elapsed": 66.0185203999281,
+      "grad_norm": 0.015431414358317852,
+      "loss": 0.0017942306585609913,
+      "step": 1888,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.004777875728905201,
+        "current_edge_compatibility": 0.05761924386024475,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0035289765801280737
+      },
+      "elapsed": 68.61986146122217,
+      "grad_norm": 0.10853920876979828,
+      "loss": 0.007838637568056583,
+      "step": 1920,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0032932483591139317,
+        "current_edge_compatibility": 0.11204158514738083,
+        "current_plan_ranking": 0.0,
+        "stability": 0.003491099225357175
+      },
+      "elapsed": 70.98664554208517,
+      "grad_norm": 0.05567396059632301,
+      "loss": 0.012900246307253838,
+      "step": 1952,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.005789509974420071,
+        "current_edge_compatibility": 0.08506286144256592,
+        "current_plan_ranking": 0.00013063291581066896,
+        "stability": 0.006486169993877411
+      },
+      "elapsed": 73.34254785627127,
+      "grad_norm": 0.07909634709358215,
+      "loss": 0.011705838865877116,
+      "step": 1984,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.004215318243950605,
+        "current_edge_compatibility": 0.08228734880685806,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0023157692048698664
+      },
+      "elapsed": 75.75377447158098,
+      "grad_norm": 0.06495151668787003,
+      "loss": 0.009861506521701813,
+      "step": 2016,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0034843713510781527,
+        "current_edge_compatibility": 0.09916051477193832,
+        "current_plan_ranking": 0.0,
+        "stability": 0.008391051553189754
+      },
+      "elapsed": 77.97638557106256,
+      "grad_norm": 0.07555045187473297,
+      "loss": 0.01288490742444992,
+      "step": 2048,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0030977095011621714,
+        "current_edge_compatibility": 0.09606973826885223,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0019741554278880358
+      },
+      "elapsed": 80.40547136962414,
+      "grad_norm": 0.04497040808200836,
+      "loss": 0.01087494008243084,
+      "step": 2080,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.01403801515698433,
+        "current_edge_compatibility": 0.13472041487693787,
+        "current_plan_ranking": 0.0,
+        "stability": 0.010849670507013798
+      },
+      "elapsed": 82.77067819982767,
+      "grad_norm": 0.15597409009933472,
+      "loss": 0.01969396322965622,
+      "step": 2112,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.004166928585618734,
+        "current_edge_compatibility": 0.04633234441280365,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0025177460629493
+      },
+      "elapsed": 85.14715894311666,
+      "grad_norm": 0.05525587126612663,
+      "loss": 0.006304402835667133,
+      "step": 2144,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.003103980328887701,
+        "current_edge_compatibility": 0.140309676527977,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0025363529566675425
+      },
+      "elapsed": 87.50649933516979,
+      "grad_norm": 0.07708904147148132,
+      "loss": 0.015441050752997398,
+      "step": 2176,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.002879104809835553,
+        "current_edge_compatibility": 0.032502252608537674,
+        "current_plan_ranking": 0.0,
+        "stability": 0.002073602983728051
+      },
+      "elapsed": 89.96810092777014,
+      "grad_norm": 0.04050377756357193,
+      "loss": 0.004488402046263218,
+      "step": 2208,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.010315055027604103,
+        "current_edge_compatibility": 0.08026951551437378,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0015791342593729496
+      },
+      "elapsed": 92.4044925570488,
+      "grad_norm": 0.07533740252256393,
+      "loss": 0.011000499129295349,
+      "step": 2240,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.0036065957974642515,
+        "current_edge_compatibility": 0.13538935780525208,
+        "current_plan_ranking": 0.0006570431044981035,
+        "stability": 0.009170734323561192
+      },
+      "elapsed": 94.74321761727333,
+      "grad_norm": 0.1285044103860855,
+      "loss": 0.017390311846016363,
+      "step": 2272,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.002493522595614195,
+        "current_edge_compatibility": 0.04221614450216293,
+        "current_plan_ranking": 0.0,
+        "stability": 0.001609484083019197
+      },
+      "elapsed": 97.01976533979177,
+      "grad_norm": 0.030512697994709015,
+      "loss": 0.005247366148978472,
+      "step": 2304,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.003287821775302291,
+        "current_edge_compatibility": 0.09561938792467117,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0019561208318918943
+      },
+      "elapsed": 99.4449992775917,
+      "grad_norm": 0.10266133397817612,
+      "loss": 0.010872924700379372,
+      "step": 2336,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.002733315574005246,
+        "current_edge_compatibility": 0.15127681195735931,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0018030544742941856
+      },
+      "elapsed": 101.77083741873503,
+      "grad_norm": 0.010713349096477032,
+      "loss": 0.01626177318394184,
+      "step": 2368,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.00304989330470562,
+        "current_edge_compatibility": 0.017529984936118126,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0017929745372384787
+      },
+      "elapsed": 104.17888881266117,
+      "grad_norm": 0.02768353372812271,
+      "loss": 0.002963715698570013,
+      "step": 2400,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.002657795324921608,
+        "current_edge_compatibility": 0.07405771315097809,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0016700655687600374
+      },
+      "elapsed": 106.66579992324114,
+      "grad_norm": 0.06062869727611542,
+      "loss": 0.00848773680627346,
+      "step": 2432,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0026511065661907196,
+        "current_edge_compatibility": 0.014579195529222488,
+        "current_plan_ranking": 0.0,
+        "stability": 0.00215534376911819
+      },
+      "elapsed": 109.11887753009796,
+      "grad_norm": 0.028138885274529457,
+      "loss": 0.002659532241523266,
+      "step": 2464,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0025580027140676975,
+        "current_edge_compatibility": 0.04132106155157089,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0020019803196191788
+      },
+      "elapsed": 111.47090155631304,
+      "grad_norm": 0.04777053743600845,
+      "loss": 0.005272102076560259,
+      "step": 2496,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.002133292378857732,
+        "current_edge_compatibility": 0.03863856941461563,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0013145508710294962
+      },
+      "elapsed": 114.1602847352624,
+      "grad_norm": 0.03266219422221184,
+      "loss": 0.0047258175909519196,
+      "step": 2528,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.003199015511199832,
+        "current_edge_compatibility": 0.01653159409761429,
+        "current_plan_ranking": 0.0,
+        "stability": 0.002511653583496809
+      },
+      "elapsed": 116.81348450481892,
+      "grad_norm": 0.02962677739560604,
+      "loss": 0.0030808267183601856,
+      "step": 2560,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0031799061689525843,
+        "current_edge_compatibility": 0.05284176766872406,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0016411631368100643
+      },
+      "elapsed": 119.48919308185577,
+      "grad_norm": 0.04381857439875603,
+      "loss": 0.006489444058388472,
+      "step": 2592,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.007165169809013605,
+        "current_edge_compatibility": 0.08593657612800598,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0014128193724900484
+      },
+      "elapsed": 122.08932569622993,
+      "grad_norm": 0.13795597851276398,
+      "loss": 0.010738154873251915,
+      "step": 2624,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.07217858731746674,
+        "current_edge_compatibility": 0.2187674194574356,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0013395058922469616
+      },
+      "elapsed": 124.5185183212161,
+      "grad_norm": 0.06779435276985168,
+      "loss": 0.04025626555085182,
+      "step": 2656,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.002259819535538554,
+        "current_edge_compatibility": 0.07827947288751602,
+        "current_plan_ranking": 1.8966216156019578e-05,
+        "stability": 0.006670854520052671
+      },
+      "elapsed": 127.17173735797405,
+      "grad_norm": 0.10755845904350281,
+      "loss": 0.010079582519391311,
+      "step": 2688,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.020643586292862892,
+        "current_edge_compatibility": 0.12646453082561493,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0012902896851301193
+      },
+      "elapsed": 129.7609351426363,
+      "grad_norm": 0.04644148796796799,
+      "loss": 0.018129922449588776,
+      "step": 2720,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.0024112840183079243,
+        "current_edge_compatibility": 0.00012819786206819117,
+        "current_plan_ranking": 1.2425873403985938e-06,
+        "stability": 0.0021467432379722595
+      },
+      "elapsed": 132.09861048310995,
+      "grad_norm": 0.01550215668976307,
+      "loss": 0.0011535691876172636,
+      "step": 2752,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.02744290977716446,
+        "current_edge_compatibility": 0.133792906999588,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0012235584435984492
+      },
+      "elapsed": 134.4173242971301,
+      "grad_norm": 0.09894175082445145,
+      "loss": 0.02054590731859207,
+      "step": 2784,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0031791003420948982,
+        "current_edge_compatibility": 0.06451763957738876,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0015282677486538887
+      },
+      "elapsed": 136.76391611993313,
+      "grad_norm": 0.05892612412571907,
+      "loss": 0.007628606166690588,
+      "step": 2816,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.02014184556901455,
+        "current_edge_compatibility": 0.08348893374204636,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0009448289638385177
+      },
+      "elapsed": 139.2686314061284,
+      "grad_norm": 0.08814691007137299,
+      "loss": 0.013620561920106411,
+      "step": 2848,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.018275627866387367,
+        "current_edge_compatibility": 0.1113400086760521,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0010636360384523869
+      },
+      "elapsed": 141.64749731123447,
+      "grad_norm": 0.1909702569246292,
+      "loss": 0.015968818217515945,
+      "step": 2880,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.004766406491398811,
+        "current_edge_compatibility": 0.0015040949219837785,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0011139496928080916
+      },
+      "elapsed": 144.27056677639484,
+      "grad_norm": 0.02159734256565571,
+      "loss": 0.0016204986022785306,
+      "step": 2912,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0019017746672034264,
+        "current_edge_compatibility": 0.05901163071393967,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0009494249825365841
+      },
+      "elapsed": 146.89872880280018,
+      "grad_norm": 0.05026664584875107,
+      "loss": 0.006613962817937136,
+      "step": 2944,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0017699067248031497,
+        "current_edge_compatibility": 0.050879817456007004,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0010667461901903152
+      },
+      "elapsed": 149.54443834722042,
+      "grad_norm": 0.03940802440047264,
+      "loss": 0.005797144956886768,
+      "step": 2976,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.001787830493412912,
+        "current_edge_compatibility": 0.05504284426569939,
+        "current_plan_ranking": 1.3150705638704102e-07,
+        "stability": 0.001377475680783391
+      },
+      "elapsed": 151.96658645570278,
+      "grad_norm": 0.030031854286789894,
+      "loss": 0.006295742541203828,
+      "step": 3008,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.002949157264083624,
+        "current_edge_compatibility": 0.002086977707222104,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0018655774183571339
+      },
+      "elapsed": 154.26537776738405,
+      "grad_norm": 0.02604670822620392,
+      "loss": 0.0014123814180493355,
+      "step": 3040,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0013916383031755686,
+        "current_edge_compatibility": 0.03741316497325897,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0009528569062240422
+      },
+      "elapsed": 156.6085852533579,
+      "grad_norm": 0.0224638469517231,
+      "loss": 0.004327440168708563,
+      "step": 3072,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.0011817922350019217,
+        "current_edge_compatibility": 0.015286129899322987,
+        "current_plan_ranking": 5.92914489865147e-07,
+        "stability": 0.0012527607614174485
+      },
+      "elapsed": 159.08926456421614,
+      "grad_norm": 0.020859386771917343,
+      "loss": 0.0021378442291969655,
+      "step": 3104,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0013439430622383952,
+        "current_edge_compatibility": 0.049106717109680176,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0010703038424253464
+      },
+      "elapsed": 161.37744266539812,
+      "grad_norm": 0.037211671471595764,
+      "loss": 0.005514233373105526,
+      "step": 3136,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0017943541752174497,
+        "current_edge_compatibility": 0.042778223752975464,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0008394224569201469
+      },
+      "elapsed": 163.7443613409996,
+      "grad_norm": 0.02864076755940914,
+      "loss": 0.00493626669049263,
+      "step": 3168,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.007252796553075314,
+        "current_edge_compatibility": 0.007997114211320877,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0011750863632187247
+      },
+      "elapsed": 165.98786699026823,
+      "grad_norm": 0.07348793745040894,
+      "loss": 0.0029066819697618484,
+      "step": 3200,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0024657738395035267,
+        "current_edge_compatibility": 0.04048072546720505,
+        "current_plan_ranking": 0.0,
+        "stability": 0.001499226433224976
+      },
+      "elapsed": 168.41646557301283,
+      "grad_norm": 0.07285290956497192,
+      "loss": 0.005039322655647993,
+      "step": 3232,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.003311005886644125,
+        "current_edge_compatibility": 0.005984253715723753,
+        "current_plan_ranking": 0.0,
+        "stability": 0.000855906109791249
+      },
+      "elapsed": 170.76014091074467,
+      "grad_norm": 0.02221575751900673,
+      "loss": 0.0016401533503085375,
+      "step": 3264,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0018160875188186765,
+        "current_edge_compatibility": 2.5658380309323547e-06,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0015598260797560215
+      },
+      "elapsed": 172.99144331365824,
+      "grad_norm": 0.015883926302194595,
+      "loss": 0.0008442349499091506,
+      "step": 3296,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.003544905688613653,
+        "current_edge_compatibility": 0.0799800232052803,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0012809265172109008
+      },
+      "elapsed": 175.23870777338743,
+      "grad_norm": 0.03963211551308632,
+      "loss": 0.009204460307955742,
+      "step": 3328,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0011453278129920363,
+        "current_edge_compatibility": 0.020861588418483734,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0010505043901503086
+      },
+      "elapsed": 177.6239856109023,
+      "grad_norm": 0.02096295729279518,
+      "loss": 0.00263511692173779,
+      "step": 3360,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0013937413459643722,
+        "current_edge_compatibility": 0.05835963040590286,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0007000393234193325
+      },
+      "elapsed": 180.08617191016674,
+      "grad_norm": 0.042512305080890656,
+      "loss": 0.006359408143907785,
+      "step": 3392,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0012054378166794777,
+        "current_edge_compatibility": 0.03188971430063248,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0007727427873760462
+      },
+      "elapsed": 182.4199657663703,
+      "grad_norm": 0.01785028725862503,
+      "loss": 0.0036835165228694677,
+      "step": 3424,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.008149996399879456,
+        "current_edge_compatibility": 0.01909670978784561,
+        "current_plan_ranking": 1.7520913565540061e-07,
+        "stability": 0.001700727385468781
+      },
+      "elapsed": 184.8586571663618,
+      "grad_norm": 0.10946126282215118,
+      "loss": 0.004372527128436509,
+      "step": 3456,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0052593606524169445,
+        "current_edge_compatibility": 0.031042415648698807,
+        "current_plan_ranking": 0.0,
+        "stability": 0.003831511130556464
+      },
+      "elapsed": 187.1459399908781,
+      "grad_norm": 0.11835432052612305,
+      "loss": 0.005376959219574928,
+      "step": 3488,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.0013407840160652995,
+        "current_edge_compatibility": 0.021577047184109688,
+        "current_plan_ranking": 0.00010791169128095562,
+        "stability": 0.009216721169650555
+      },
+      "elapsed": 189.4829951375723,
+      "grad_norm": 0.30893224477767944,
+      "loss": 0.00490499268865859,
+      "step": 3520,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.000871759548317641,
+        "current_edge_compatibility": 0.022739509120583534,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0027703363448381424
+      },
+      "elapsed": 191.73799374699593,
+      "grad_norm": 0.03405557945370674,
+      "loss": 0.003184475004673004,
+      "step": 3552,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0008642339380457997,
+        "current_edge_compatibility": 0.026285957545042038,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0006209405837580562
+      },
+      "elapsed": 194.07421995699406,
+      "grad_norm": 0.019789423793554306,
+      "loss": 0.0029998894315212965,
+      "step": 3584,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.006967632565647364,
+        "current_edge_compatibility": 8.302630703838076e-06,
+        "current_plan_ranking": 1.0536939713349777e-05,
+        "stability": 0.0057557872496545315
+      },
+      "elapsed": 196.52208411693573,
+      "grad_norm": 0.024327455088496208,
+      "loss": 0.0031922221566433135,
+      "step": 3616,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0009978727903217077,
+        "current_edge_compatibility": 0.05182437226176262,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0006346938898786902
+      },
+      "elapsed": 198.90463182330132,
+      "grad_norm": 0.039449647068977356,
+      "loss": 0.005590579006820917,
+      "step": 3648,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.002352470997720957,
+        "current_edge_compatibility": 0.013271242380142212,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0005720657063648105
+      },
+      "elapsed": 201.14078417420387,
+      "grad_norm": 0.0287918820977211,
+      "loss": 0.0020582585129886866,
+      "step": 3680,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.003100442001596093,
+        "current_edge_compatibility": 0.005275037605315447,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0010002399794757366
+      },
+      "elapsed": 203.4370920136571,
+      "grad_norm": 0.02943282015621662,
+      "loss": 0.0015526743372902274,
+      "step": 3712,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.001780483522452414,
+        "current_edge_compatibility": 0.001010591397061944,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0006434679962694645
+      },
+      "elapsed": 205.92956519126892,
+      "grad_norm": 0.008037792518734932,
+      "loss": 0.0007070470019243658,
+      "step": 3744,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0011094147339463234,
+        "current_edge_compatibility": 0.009903248399496078,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0006060676532797515
+      },
+      "elapsed": 208.26768471300602,
+      "grad_norm": 0.0176710058003664,
+      "loss": 0.0014191954396665096,
+      "step": 3776,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.006441977806389332,
+        "current_edge_compatibility": 0.0046705217100679874,
+        "current_plan_ranking": -0.0,
+        "stability": 0.0008015198982320726
+      },
+      "elapsed": 210.52978819608688,
+      "grad_norm": 0.121150903403759,
+      "loss": 0.002277926541864872,
+      "step": 3808,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0008091754862107337,
+        "current_edge_compatibility": 0.014909072779119015,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0006249243160709739
+      },
+      "elapsed": 212.83152509480715,
+      "grad_norm": 0.01205253042280674,
+      "loss": 0.0018494322430342436,
+      "step": 3840,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0014108609175309539,
+        "current_edge_compatibility": 6.807895260863006e-05,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0013128825230523944
+      },
+      "elapsed": 215.08512673527002,
+      "grad_norm": 0.01030139159411192,
+      "loss": 0.0006877437699586153,
+      "step": 3872,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0010837622685357928,
+        "current_edge_compatibility": 0.0952671617269516,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0010287535842508078
+      },
+      "elapsed": 217.59657240658998,
+      "grad_norm": 0.04809132590889931,
+      "loss": 0.010054845362901688,
+      "step": 3904,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.0024730870500206947,
+        "current_edge_compatibility": 0.03536321967840195,
+        "current_plan_ranking": 0.0,
+        "stability": 0.004560480825603008
+      },
+      "elapsed": 219.92055773735046,
+      "grad_norm": 0.29270032048225403,
+      "loss": 0.005294714123010635,
+      "step": 3936,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.021412640810012817,
+        "current_edge_compatibility": 0.11009396612644196,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0005462788976728916
+      },
+      "elapsed": 222.07814475893974,
+      "grad_norm": 0.11003360152244568,
+      "loss": 0.016499126330018044,
+      "step": 3968,
+      "total_steps": 4000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.008801732212305069,
+        "current_edge_compatibility": 0.03627950698137283,
+        "current_plan_ranking": 2.433248422193045e-05,
+        "stability": 0.0019829829689115286
+      },
+      "elapsed": 224.6350156366825,
+      "grad_norm": 0.1626698523759842,
+      "loss": 0.006348462129003281,
+      "step": 4000,
+      "total_steps": 4000
+    }
+  ],
+  "initializer": {
+    "SHA256": "501b39f6d69a95c3e45f510ecdf08ce65e7523cae1fa9579eea5e5aec18a8cbf",
+    "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_v2/multi_question/availability_joint/seed20261010/LAST_FROZEN.pth"
+  },
+  "max_abs_gradients": {
+    "continuity_head.bias": 0.014398218132555485,
+    "continuity_head.weight": 0.035649243742227554,
+    "cross_head.bias": 0.04224022477865219,
+    "cross_head.weight": 0.09177301079034805,
+    "current.bias": 0.01299067959189415,
+    "current.weight": 0.012034108862280846,
+    "edge_value.bias": 2.5975070983008663e-09,
+    "edge_value.weight": 0.07192179560661316,
+    "evidence.bias": 0.012990626506507397,
+    "evidence.weight": 0.1462070792913437,
+    "history.bias": 0.02598128281533718,
+    "history.weight": 0.06855646520853043,
+    "norm.bias": 0.009790856391191483,
+    "norm.weight": 0.018371185287833214,
+    "option.bias": 0.012990677729249,
+    "option.weight": 0.04144074395298958,
+    "plan_reader.attn.in_proj_bias": 0.0026835233438760042,
+    "plan_reader.attn.in_proj_weight": 0.0057867830619215965,
+    "plan_reader.attn.out_proj.bias": 0.002620548941195011,
+    "plan_reader.attn.out_proj.weight": 0.0043280282989144325,
+    "plan_reader.ff.0.bias": 0.0007304420578293502,
+    "plan_reader.ff.0.weight": 0.0013981685042381287,
+    "plan_reader.ff.2.bias": 0.001170939183793962,
+    "plan_reader.ff.2.weight": 0.002387384185567498,
+    "plan_reader.norm1.bias": 0.0009077993454411626,
+    "plan_reader.norm1.weight": 0.0010449120309203863,
+    "plan_reader.norm2.bias": 0,
+    "plan_reader.norm2.weight": 0.0005798593629151583,
+    "plan_value.bias": 0,
+    "plan_value.weight": 0.03783784806728363,
+    "readers.0.attn.in_proj_bias": 0.007856479845941067,
+    "readers.0.attn.in_proj_weight": 0.009452791884541512,
+    "readers.0.attn.out_proj.bias": 0.012990681454539299,
+    "readers.0.attn.out_proj.weight": 0.010447196662425995,
+    "readers.0.ff.0.bias": 0.006616211961954832,
+    "readers.0.ff.0.weight": 0.019891364499926567,
+    "readers.0.ff.2.bias": 0.005918874405324459,
+    "readers.0.ff.2.weight": 0.012186700478196144,
+    "readers.0.norm1.bias": 0.01240651123225689,
+    "readers.0.norm1.weight": 0.01848292350769043,
+    "readers.0.norm2.bias": 0.006400034297257662,
+    "readers.0.norm2.weight": 0.00874326005578041,
+    "readers.1.attn.in_proj_bias": 0.004918695893138647,
+    "readers.1.attn.in_proj_weight": 0.005918086972087622,
+    "readers.1.attn.out_proj.bias": 0.006400034297257662,
+    "readers.1.attn.out_proj.weight": 0.007196960970759392,
+    "readers.1.ff.0.bias": 0.0041290647350251675,
+    "readers.1.ff.0.weight": 0.010413453914225101,
+    "readers.1.ff.2.bias": 0.005324163008481264,
+    "readers.1.ff.2.weight": 0.009945198893547058,
+    "readers.1.norm1.bias": 0.006952839437872171,
+    "readers.1.norm1.weight": 0.010001715272665024,
+    "readers.1.norm2.bias": 0.009669745340943336,
+    "readers.1.norm2.weight": 0.012761402875185013,
+    "shared.bias": 0.00619019940495491,
+    "shared.weight": 0.03829072043299675
+  },
+  "phase": "formal",
+  "rank_supervised_batches": 479,
+  "science_association_gain": "NOT_RUN_FULL_NATIVE",
+  "seconds": 227.0799404680729,
+  "seed": 20261010,
+  "status": "COMPLETE",
+  "total_updates": 4000
+}
