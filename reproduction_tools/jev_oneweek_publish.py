@@ -1,5 +1,6 @@
 """Refresh exact compact evidence and push a completed milestone without binaries."""
 import argparse
+import fcntl
 from jev_oneweek_common import *
 
 
@@ -37,7 +38,7 @@ def summarize_day1():
     (DOCS/'BASELINE_PARITY.md').write_text(text)
 
 
-def publish(message=None):
+def snapshot(message=None):
     protect()
     failures=[read(p) for p in (OUT/'failures').glob('*.json')]
     save(REPORTS/'ENGINEERING_FAILURES.json',dict(status='RETAINED',failures=failures,
@@ -51,11 +52,17 @@ def publish(message=None):
     save(REPORTS/'ARTIFACT_SHA_MANIFEST.json',dict(status='VERIFIED_COMPACT_MILESTONE',
          no_binary_upload=True,science_status='NOT_ESTABLISHED',files={str(p.relative_to(ROOT)):sha(p) for p in paths}))
     if message is None:return
-    prefixes=['docs/JEV_ONEWEEK','reports/JEV_ONEWEEK']
-    extra=[str(p.relative_to(ROOT)) for p in paths if str(p.relative_to(ROOT)).startswith(('reproduction_tools/jev_oneweek_','gtr/modeling/jev_oneweek/'))]
-    subprocess.run(['git','add',*prefixes,*extra],cwd=ROOT,check=True)
+    selected=[str(p.relative_to(ROOT)) for p in paths]+['reports/JEV_ONEWEEK/ARTIFACT_SHA_MANIFEST.json']
+    subprocess.run(['git','add',*selected],cwd=ROOT,check=True)
     subprocess.run(['git','-c','core.whitespace=cr-at-eol','diff','--cached','--check'],cwd=ROOT,check=True)
     subprocess.run(['git','-c','gc.auto=0','commit','-m',message],cwd=ROOT,check=True)
+
+
+def publish(message=None):
+    with (OUT/'REGISTRY.lock').open('a') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX)
+        snapshot(message)
+    if message is None:return
     ssh="ssh -i /home/liuyeqiang/.ssh/id_ed25519_www_codex -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o HostKeyAlias=github.com -o ConnectTimeout=20 -o ConnectionAttempts=1 -o 'ProxyCommand=nc -X connect -x 127.0.0.1:17891 %h %p'"
     env=dict(os.environ,GIT_SSH_COMMAND=ssh)
     subprocess.run(['git','push','origin','HEAD:refs/heads/jev/www-jev-oneweek-20261012'],cwd=ROOT,env=env,check=True,timeout=120)

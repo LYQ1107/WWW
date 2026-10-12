@@ -34,6 +34,8 @@ def tiny_records(train,model):
 def main(arm,phase,seed):
     protect();assert arm in ARMS and seed in SEEDS
     contract=read(REPORTS/'MODEL_AND_NATIVE_CONTRACT_TESTS.json');assert contract['status']=='PASS'
+    if phase!='tiny':
+        assert read(REPORTS/'TRAIN_jev_tiny_SEED20261009.json')['engineering_training_pass']
     budget=read(REPORTS/'PREREGISTRATION.json')['training']
     requested={'tiny':budget['tiny_updates'],'pilot':budget['pilot_updates'],'formal':budget['formal_total_updates']}[phase]
     folder=OUT/'training_v1'/arm/f'seed{seed}'/phase
@@ -64,7 +66,7 @@ def main(arm,phase,seed):
         model.load_state_dict(saved['new_modules'],strict=False);optimizer.load_state_dict(saved['optimizer'])
         start_step=saved['updates'];assert start_step==1000
     fixture=tiny_records(train,model) if phase=='tiny' else None
-    before=assess(model,validation,64);begin=time.monotonic();history=[];gradients=collections.Counter();rank_batches=0
+    before=assess(model,validation,128);begin=time.monotonic();history=[];gradients=collections.Counter();rank_batches=0
     initial_batch=fixture or [groups[sorted(groups)[0]][0]]
     x,y=batch(initial_batch);details=model.details(x)
     initial_loss,_,_=loss(details,x,y,initial_batch,weights)

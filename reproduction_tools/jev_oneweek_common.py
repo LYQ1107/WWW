@@ -59,7 +59,17 @@ def protect():
     assert all(name.startswith(allowed) for name in changes), changes
     for partition in ('/home/liuyeqiang', '/data1/liuyeqiang'):
         assert shutil.disk_usage(partition).free >= 30*2**30, 'Storage reserve below 30 GiB'
-    assert sum(p.stat().st_size for p in OUT.rglob('*') if p.is_file()) <= 8*2**30, 'Sprint runtime retention budget exceeded'
+    assert runtime_bytes() <= 8*2**30, 'Sprint runtime retention budget exceeded'
+
+
+def runtime_bytes():
+    total=0
+    for path in OUT.rglob('*'):
+        try:
+            if path.is_file():total+=path.stat().st_size
+        except FileNotFoundError:
+            pass  # Another task atomically replaced a small progress temporary.
+    return total
 
 
 def binding(scope):
