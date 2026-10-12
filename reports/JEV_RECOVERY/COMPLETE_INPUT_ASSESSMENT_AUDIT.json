@@ -1,5 +1,9 @@
 {
   "independent_validation": false,
+  "missing_arms": [
+    "no_interaction",
+    "no_shared"
+  ],
   "new_gradients": 0,
   "old_results_immutable": true,
   "reason": "Historical imported assess resolves historical batch: R2 training batch and certified probe are correct, but inherited assessment omits anchor evidence/affinity proposals.",
@@ -571,6 +575,148 @@
         "bytes": 32492,
         "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R2/XIV/fixed_question/seed20261009/pilot/RESULT.json"
       }
+    },
+    {
+      "arm": "cross_only",
+      "checkpoint": {
+        "SHA256": "0fa74b8356053d9b9cc82b7176b5e14f5f6c64312478e6e7b1638cd4708f3314",
+        "bytes": 2096085,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R2/XIV/cross_only/seed20261009/pilot/NEW_MODULES.pth"
+      },
+      "complete_recovery_input_assessment": {
+        "counts": {
+          "UNKNOWN_selected": 393,
+          "known_correct": 2776,
+          "known_selected": 3233,
+          "nonbase_plan_selected": 14,
+          "plans_generated": 1024,
+          "rank_pair_correct": 1113,
+          "rank_pairs": 1327,
+          "rows": 3626
+        },
+        "known_correct_rate": 0.8586452211568203,
+        "questions": {
+          "cross": {
+            "0_correct": 65595,
+            "0_support": 65946,
+            "1_correct": 928,
+            "1_support": 1001
+          },
+          "stability": {
+            "0_correct": 0,
+            "0_support": 135501,
+            "1_correct": 2994,
+            "1_support": 2994
+          }
+        },
+        "rank_pair_accuracy": 0.838733986435569,
+        "scope": "Deterministic reused TRAIN16 controller audit; correlated rows, not full MOT or independent generalization"
+      },
+      "original_inherited_assessment": {
+        "counts": {
+          "UNKNOWN_selected": 393,
+          "known_correct": 2775,
+          "known_selected": 3233,
+          "nonbase_plan_selected": 7,
+          "plans_generated": 717,
+          "rank_pair_correct": 637,
+          "rank_pairs": 756,
+          "rows": 3626
+        },
+        "known_correct_rate": 0.8583359109186514,
+        "questions": {
+          "cross": {
+            "0_correct": 65545,
+            "0_support": 65946,
+            "1_correct": 938,
+            "1_support": 1001
+          },
+          "stability": {
+            "0_correct": 0,
+            "0_support": 135501,
+            "1_correct": 2994,
+            "1_support": 2994
+          }
+        },
+        "rank_pair_accuracy": 0.8425925925925926,
+        "scope": "Deterministic reused TRAIN16 controller audit; correlated rows, not full MOT or independent generalization"
+      },
+      "original_result": {
+        "SHA256": "9cada9245570dff62b649ae4b23ff525173e4da8f38f629bfea23a49661f2fc2",
+        "bytes": 31971,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R2/XIV/cross_only/seed20261009/pilot/RESULT.json"
+      }
+    },
+    {
+      "arm": "stability_only",
+      "checkpoint": {
+        "SHA256": "387fd0cbbb581e4c892943ce4c773c10a8398ffdb76e5ac447f02b53683c3ed1",
+        "bytes": 2096085,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R2/XIV/stability_only/seed20261009/pilot/NEW_MODULES.pth"
+      },
+      "complete_recovery_input_assessment": {
+        "counts": {
+          "UNKNOWN_selected": 392,
+          "known_correct": 2789,
+          "known_selected": 3234,
+          "nonbase_plan_selected": 24,
+          "plans_generated": 1024,
+          "rank_pair_correct": 1124,
+          "rank_pairs": 1327,
+          "rows": 3626
+        },
+        "known_correct_rate": 0.8623995052566481,
+        "questions": {
+          "cross": {
+            "0_correct": 65946,
+            "0_support": 65946,
+            "1_correct": 0,
+            "1_support": 1001
+          },
+          "stability": {
+            "0_correct": 134526,
+            "0_support": 135501,
+            "1_correct": 2845,
+            "1_support": 2994
+          }
+        },
+        "rank_pair_accuracy": 0.8470233609645818,
+        "scope": "Deterministic reused TRAIN16 controller audit; correlated rows, not full MOT or independent generalization"
+      },
+      "original_inherited_assessment": {
+        "counts": {
+          "UNKNOWN_selected": 393,
+          "known_correct": 2773,
+          "known_selected": 3233,
+          "nonbase_plan_selected": 11,
+          "plans_generated": 717,
+          "rank_pair_correct": 642,
+          "rank_pairs": 756,
+          "rows": 3626
+        },
+        "known_correct_rate": 0.8577172904423136,
+        "questions": {
+          "cross": {
+            "0_correct": 65946,
+            "0_support": 65946,
+            "1_correct": 0,
+            "1_support": 1001
+          },
+          "stability": {
+            "0_correct": 134504,
+            "0_support": 135501,
+            "1_correct": 2845,
+            "1_support": 2994
+          }
+        },
+        "rank_pair_accuracy": 0.8492063492063492,
+        "scope": "Deterministic reused TRAIN16 controller audit; correlated rows, not full MOT or independent generalization"
+      },
+      "original_result": {
+        "SHA256": "406ce4b3a00adbed4d2337524fcb11f4efb4ad3f99752d9f9bd6eb6ba7a8afc8",
+        "bytes": 32698,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R2/XIV/stability_only/seed20261009/pilot/RESULT.json"
+      }
     }
   ],
   "sources": [
@@ -606,6 +752,6 @@
       "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/early_evidence/PATCH.pth.xz"
     }
   ],
-  "status": "IN_PROGRESS",
+  "status": "COMPLETE_AVAILABLE_PILOT_AUDIT",
   "trained_weights_unchanged": true
 }
