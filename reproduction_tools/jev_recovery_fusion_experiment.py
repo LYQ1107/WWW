@@ -116,7 +116,9 @@ def online(kind, phase, identity=False):
             path=pathlib.Path(path)
             if path.name=='STRICT_CAUSAL_IDENTITY_ANALYSIS.json':
                 path=path.with_name('STRICT_CAUSAL_IDENTITY_ANALYSIS_FUSION_V3.json')
-                assert not path.exists(),'Preserve completed identity audit'
+                if path.exists():
+                    assert read(path)==value,'Existing audit must match exactly before reuse'
+                    return
             return original_save(path,value)
         old.save=preserved_save
         def routed(arm,seed,ph,video):
