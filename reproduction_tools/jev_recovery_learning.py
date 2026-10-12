@@ -32,6 +32,13 @@ def load_records(revision=1):
   train=[dict(r,oneweek_labels=labels[tuple(r['key'])]) for r in train]
   validation=[dict(r,oneweek_labels=labels[tuple(r['key'])]) for r in validation]
   sources.append(cp)
+  anchor=read(REPORTS/'R2_ANCHOR_SUPERVISION.json');assert anchor['current_persistence_supervision_eligible']
+  cp=anchor['patch'];assert sha(cp['path'])==cp['SHA256']
+  patch={tuple(r['key']):r for r in load_dense(cp['path'])['patches']}
+  def anchored(r):
+   meta=patch[tuple(r['key'])]
+   return dict(r,known_options=meta['known_options'],positive=meta['positive'])
+  train=[anchored(r) for r in train];validation=[anchored(r) for r in validation];sources.append(cp)
  return train,validation,sources
 
 def load_model(arm,seed,phase,revision=1,base='XIV'):
@@ -43,7 +50,7 @@ def load_model(arm,seed,phase,revision=1,base='XIV'):
  assert not unexpected and all(n.startswith('identity.') for n in missing)
  assert initializer==saved['initializer'];return model.eval(),checkpoint,result
 
-def conflict_groups(train):
+def conflict_groups(train,revision=1):
  patch=read(OUT/'audit/PROPOSAL_PATCH.json')['records'];index={tuple(r['key']):r for r in train}
  groups=collections.defaultdict(set)
  for row in patch:
@@ -51,7 +58,16 @@ def conflict_groups(train):
   if key not in index:continue
   assert row['train_gradient']
   variant=read(REPORTS/'CANDIDATE_EXECUTION_FREEZE.json')['patch_variant']
-  for group in row['proposals'][variant]['independent_group_keys']:
+  if model_revision(revision)>=2:
+   record=index[key];pp=row['proposals'][variant]['plans']
+   pairs=comparisons(dict(plans=[pp]),None,[record]);computed=[]
+   for _,a,b,sign,n in pairs:
+    changed=[rr for rr,(u,v) in enumerate(zip(pp[a],pp[b])) if u!=v]
+    people=tuple(sorted({record['GT_labels_OFFLINE_ONLY'][rr] for rr in changed if record['GT_labels_OFFLINE_ONLY'][rr] is not None}))
+    ids=tuple(sorted({record['refs'][c] for p in (pp[a],pp[b]) for rr,c in enumerate(p) if rr in changed and c>=0}))
+    computed.append((key[0],people,ids,key[1]//64,key[2]))
+  else:computed=row['proposals'][variant]['independent_group_keys']
+  for group in computed:
    # Lists in JSON become a hashable conservative video/person/ID/time key.
    g=(group[0],tuple(group[1]),tuple(group[2]),group[3],group[4]);groups[g].add(key)
  return {g:[index[k] for k in sorted(keys)] for g,keys in sorted(groups.items())}

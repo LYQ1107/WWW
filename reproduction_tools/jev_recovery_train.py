@@ -10,7 +10,7 @@ def main(arm,phase,seed,revision,base):
  target={'tiny':128,'tiny8':128,'pilot':1000,'formal':budget['formal_total_updates']}[phase]
  folder=OUT/f'training_R{revision}'/base/arm/f'seed{seed}'/phase
  folder.mkdir(parents=True,exist_ok=False)
- train,validation,sources=load_records(revision);groups=conflict_groups(train);assert groups,'No certified train conflict groups'
+ train,validation,sources=load_records(revision);groups=conflict_groups(train,revision);assert groups,'No certified train conflict groups'
  semantic_groups=question_conflict_groups(train) if model_revision(revision)>=2 else {}
  keys=sorted(groups);model,initializer=initialize(arm,seed,revision,base)
  rng=random.Random(seed);ordinary=collections.defaultdict(list)

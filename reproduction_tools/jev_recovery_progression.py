@@ -50,7 +50,7 @@ def main(gpu):
  registry=read(REPORTS/'EXPERIMENT_REGISTRY.json')
  assert not any(j['status']=='RUNNING' for j in registry['jobs'].values())
  decisions=[read(REPORTS/'R1_XIV_MECHANISM_GATE.json')]
- while not (REPORTS/'R2_QUESTION_SUPERVISION.json').exists():
+ while not all((REPORTS/n).exists() for n in ['R2_QUESTION_SUPERVISION.json','R2_ANCHOR_SUPERVISION.json']):
   if unreviewed_failures():raise RuntimeError('R2 label audit failed')
   time.sleep(20)
  # Revision 2 was predeclared before any new DEV: broad core/ordinary/fusion and
