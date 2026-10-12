@@ -23,7 +23,7 @@ def refresh():
     current=read(REPORTS/'FORMAL_CURRENT_RESULTS.json');arms=current['arms']
     previous=read(REPORTS/'MAIN_RESULTS.json');rows={'M0':previous['rows']['M0']}
     for row,names in METHODS.items():
-        rows[row]=dict(status='COMPLETE' if all(arms.get(n,{}).get('cases') for n in names) else 'PARTIAL_OR_NOT_RUN',
+        rows[row]=dict(status='COMPLETE' if all(len(arms.get(n,{}).get('cases',[]))==(1 if n in ['cosine','XV_V3_reference'] else 3) for n in names) else 'PARTIAL_OR_NOT_RUN',
                       methods={n:arms[n] for n in names},
                       comparison_scope='Common Stage1 VFCE1024 and native lifecycle; learned incremental controls share frozen XIV initialization',
                       original_full_GMT_same_common_frontend=False)

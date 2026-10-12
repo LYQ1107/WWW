@@ -48,7 +48,7 @@ def snapshot(message=None):
     save(REPORTS/'ENGINEERING_FAILURES.json',dict(status='RETAINED',failures=failures,
          publication_failures=[read(p) for p in (OUT/'publication_failures').glob('*.json')],
          no_scientific_failure_hidden=True))
-    paths=[p for folder in (DOCS,REPORTS,ROOT/'gtr/modeling/jev_oneweek') if folder.exists()
+    paths=[p for folder in (DOCS,REPORTS,ROOT/'gtr/modeling/jev_oneweek',ROOT/'configs/JEV_ONEWEEK') if folder.exists()
            for p in folder.rglob('*') if p.is_file() and '__pycache__' not in p.parts
            and p.name!='ARTIFACT_SHA_MANIFEST.json']
     paths+=list((ROOT/'reproduction_tools').glob('jev_oneweek_*.py'))
