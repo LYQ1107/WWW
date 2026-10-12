@@ -58,7 +58,7 @@ def snapshot(message=None):
     subprocess.run(['git','-c','gc.auto=0','commit','-m',message],cwd=ROOT,check=True)
 
 
-def publish(message=None):
+def _publish_locked(message=None):
     with (OUT/'REGISTRY.lock').open('a') as lock:
         fcntl.flock(lock,fcntl.LOCK_EX)
         snapshot(message)
@@ -70,6 +70,12 @@ def publish(message=None):
     remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/jev/www-jev-oneweek-20261012'],cwd=ROOT,env=env,text=True,timeout=60).split()[0]
     assert local==remote
     print('VERIFIED_REMOTE_HEAD',local,flush=True)
+
+
+def publish(message=None):
+    with (OUT/'PUBLICATION.lock').open('a') as lock:
+        fcntl.flock(lock,fcntl.LOCK_EX)
+        _publish_locked(message)
 
 
 if __name__=='__main__':
