@@ -43,8 +43,9 @@ def main(kind,arm,seed,phase,revision,base,videos):
   import jev_oneweek_new_parameters as old
   configure(old,revision,base);old.REPORTS=REPORTS/f'R{revision}_{base}'/'parameters'/arm;old.main([arm],arm)
  elif kind=='paired':
-  import jev_oneweek_paired_native as old
-  configure(old,revision,base);old.main(['parent','jev','threshold','mlp','attention'],seed,phase,16)
+  os.environ['JEV_RECOVERY_REVISION']=str(revision);os.environ['JEV_RECOVERY_BASE']=base
+  import jev_recovery_paired_native as paired
+  paired.main(['parent','jev','threshold','mlp','attention'],seed,phase,16)
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--kind',choices=['online','matlab','identity','efficiency','parameters','paired'],default='online');p.add_argument('--arm',required=True);p.add_argument('--seed',type=int,default=20261009);p.add_argument('--phase',default='pilot');p.add_argument('--revision',type=int,default=1);p.add_argument('--base',default='XIV');p.add_argument('--videos',type=int,nargs='+',required=True);a=p.parse_args()
  try:main(a.kind,a.arm,a.seed,a.phase,a.revision,a.base,a.videos)
