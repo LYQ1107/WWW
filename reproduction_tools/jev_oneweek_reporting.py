@@ -21,6 +21,7 @@ def refresh():
     from jev_oneweek_results import main
     main(quiet=True)
     current=read(REPORTS/'FORMAL_CURRENT_RESULTS.json');arms=current['arms']
+    finished=(OUT/'FINAL_AUDIT_READY.json').exists()
     previous=read(REPORTS/'MAIN_RESULTS.json');rows={'M0':previous['rows']['M0']}
     for row,names in METHODS.items():
         rows[row]=dict(status='COMPLETE' if all(len(arms.get(n,{}).get('cases',[]))==(1 if n in ['cosine','XV_V3_reference'] else 3) for n in names) else 'PARTIAL_OR_NOT_RUN',
@@ -31,7 +32,7 @@ def refresh():
     rows['M10']['single_seed_reason']='Only the real frozen XV V3 seed09 pilot exists; missing seeds not fabricated'
     rows['M8']['reference_scope']='Frozen old independently trained Fixed Question, not equal incremental training budget'
     rows['M5']['reference_scope']='Native XIV-score rule/repeated-solver controls; not the original complete GMT legacy cascade'
-    save(REPORTS/'MAIN_RESULTS.json',dict(status='RUNNING_SNAPSHOT',rows=rows,raw_online_primary=True,
+    save(REPORTS/'MAIN_RESULTS.json',dict(status='COMPLETE_FROZEN_SCOPE_WITH_DECLARED_REFERENCE_GAPS' if finished else 'RUNNING_SNAPSHOT',rows=rows,raw_online_primary=True,
          all_completed_seed_metrics_are_genuine_six_camera_pooled=True,old_different_phase_scores_not_spliced=True,
          original_GMT_reference_frontend_difference_disclosed=True,new_JEV_value='NOT_ESTABLISHED',
          true_old_PhaseVI_binary_same_contract='NOT_RUN_DIFFERENT_FEATURE_AND_ACTION_INTERFACE',
@@ -39,12 +40,14 @@ def refresh():
     ablations={row:{name:arms.get(name,dict(status='NOT_RUN',summary=None)) for name in names} for row,names in ABLATIONS.items()}
     shared=REPORTS/'TRAINED_CONTRACT_CALIBRATION_SEED20261009.json'
     if shared.exists():ablations['A5']['functional_same_weights_recompute']=read(shared)
-    save(REPORTS/'ABLATIONS.json',dict(status='RUNNING_SNAPSHOT',values=ablations,
+    save(REPORTS/'ABLATIONS.json',dict(status='COMPLETE_FROZEN_SCOPE' if finished else 'RUNNING_SNAPSHOT',values=ablations,
          evidence_removal_is_frozen_weight_inference_intervention=True,evidence_removal_proposals_can_change=True,
          current_identity_continuity_not_future_safety=True))
     parameters=read(REPORTS/'PARAMETERS_AND_FPS.json')
     new=REPORTS/'NEW_MODULE_PARAMETER_READS.json'
     if new.exists():parameters['new_JEVTrack']=read(new)
+    extra=REPORTS/'NEW_MODULE_PARAMETER_READS_EXTRA.json'
+    if extra.exists():parameters['remaining_new_controller_parameters']=read(extra)
     fps={}
     for path in REPORTS.glob('EFFICIENCY_*_formal_SEED20261009_VIDEO17.json'):
         item=read(path);fps[item['arm']]=item
@@ -75,7 +78,7 @@ def refresh():
                     duration_p50_p95=c['analysis']['observed_error_duration_p50_p95_camera_frames'],
                     right_censored=c['analysis']['right_censored_episodes'],
                     local_evidence=c['analysis']['detailed_local_analysis']) for c in chosen])
-    save(REPORTS/'CROSS_CAMERA_ANALYSIS.json',dict(status='PARTIAL_SNAPSHOT' if identity else 'NOT_RUN',methods=identity,
+    save(REPORTS/'CROSS_CAMERA_ANALYSIS.json',dict(status='COMPLETE_FROZEN_SCOPE' if finished else 'PARTIAL_SNAPSHOT' if identity else 'NOT_RUN',methods=identity,
          primary_retrieval='Actual opaque predicted Global ID lookup into already committed other-camera observations; no GT-selected whole-video mapping',
          pooled_pair_weighted_not_independent_observations=True,
          N01_N10_scope='Independent complete cold-start runs, own first-known owners; not equal-state causal effects',
@@ -85,12 +88,15 @@ def refresh():
     strongest=max(ordinary,key=lambda n:ordinary[n]['summary']['HOTA']['mean']) if ordinary else None
     delta={key:jev['summary'][key]['mean']-ordinary[strongest]['summary'][key]['mean'] for key in METRICS} if strongest and jev['status']=='COMPLETE_THREE_SEEDS' else None
     engineering=read(REPORTS/'MODEL_AND_NATIVE_CONTRACT_TESTS.json')['status']=='PASS' and shared.exists() and new.exists()
-    save(REPORTS/'GO_NO_GO.json',dict(status='ACTIVE_FINITE_RESEARCH_AUDIT',original_MASTER_goal_achieved=False,
+    save(REPORTS/'GO_NO_GO.json',dict(status='COMPLETE_BOUNDED_RESEARCH_NO_GO_FOR_INDEPENDENT_JEV_CLAIM' if finished else 'ACTIVE_FINITE_RESEARCH_AUDIT',original_MASTER_goal_achieved=False,
          engineering=dict(status='MODEL_CONTRACT_PASS_FULL_TIMING_PENDING' if engineering and parameters['status']!='COMPLETE' else 'PASS' if engineering else 'PARTIAL'),
          association=dict(status='NOT_SUPERIOR_TO_STRONGEST_COMPLETE_ORDINARY_CONTROL' if delta and delta['HOTA']<.5 else 'NOT_ESTABLISHED',
                           strongest_completed_ordinary_control=strongest,paired_mean_differences=delta),
          JEV_independent_value='NOT_ESTABLISHED',paper_readiness='NOT_READY',
          missing_efficiency_methods=parameters['FPS']['missing_methods'],algorithm_major_revision=1,
+         scientific_success_gate_achieved=False,finite_sprint_evidence_complete=finished,
+         strongest_ordinary_accuracy_baseline_has_full_FPS=strongest in fps if strongest else False,
+         JEV_FPS_relative_to_strongest_ordinary=(fps['jev']['mean_scene_FPS']/fps[strongest]['mean_scene_FPS']-1) if strongest in fps and 'jev' in fps else None,
          significance_not_claimed_from_three_correlated_development_sequences=True,
          publication_only_negative_hypothesis_not_theoretical_impossibility=True,
          original_MASTER_long_term_safety_gate_unchanged=True))
@@ -118,7 +124,8 @@ def refresh():
       questions[4][1],questions[3][1],
       '新JEV主实验已为真实完全mutated-state online，所有检测/ID提交和Gallery/Bank会影响下一帧；主要HOTA/AssA相对MLP未达到预注册探索目标，CVIDF1优势不一致。',
       '目前不足以支撑声称JEV具有明确独立贡献的WWW论文。持续更新多摄像头身份索引与错误检索属于真实Web相关问题；研究动机不代替独立性能与可靠性证据。']
-    report='# JEVTrack 本周实验报告（随真实完成工件更新）\n\n当前结论：JEV独立贡献 **NOT_ESTABLISHED**。此报告仍是进行中的证据汇总；正式对照、归因、消融及完整视频效率未全部完成前不宣布任务完成。\n\n'+'\n'.join(table)+'\n\n'
+    note='冻结的有限实验与必要诊断已完成；本版本不能支撑独立JEV贡献，原MASTER保持未完成。' if finished else '此报告仍是进行中的证据汇总；正式对照、归因、消融及完整视频效率未全部完成前不宣布任务完成。'
+    report='# JEVTrack 本周实验报告\n\n当前结论：JEV独立贡献 **NOT_ESTABLISHED**。'+note+'\n\n'+'\n'.join(table)+'\n\n'
     report+='上述学习模型首先对DEV17/18/19六个相机进行真实pooled评测，再计算三个固定种子的均值/样本标准差；种子波动不是三个独立数据集或显著性证明。DetA/IDF1/MOTA/Frag和逐种子数据见MAIN_RESULTS。全部主指标为未做未来短轨筛选的完整在线结果，CVIDF1/CVMA来自冻结官方MATLAB。\n\n'
     for index,answer in enumerate(twelve,1):
         report+='**%d. %s**\n\n'%(index,answer)

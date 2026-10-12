@@ -1,18 +1,19 @@
 """Measure new controllers with real images and native parameter storage reads."""
 import gc
+import argparse
 import torch
 from jev_oneweek_common import *
 from jev_oneweek_online import policy
 from jev_oneweek_count_params import ParameterReads
 
 
-def main():
+def main(arms,tag):
     protect()
     from jev_phase13_runtime import build_tracker,cache_inputs,run
     from jev_phase14_latency import prune
     from gtr.modeling.jev_oneweek.native import attach_jevtrack
     values,frames,_=cache_inputs(12);cases=[]
-    for arm in ['jev','mlp','attention','deepsets','fixed_question','cross_only']:
+    for arm in arms:
         seed_all();actor,checkpoint=policy(arm,20261009,'formal')
         model=build_tracker(12,actor,react_learned=False,live=True)
         removed=prune(model)['removed_total'];attach_jevtrack(model)
@@ -28,13 +29,16 @@ def main():
         cases.append(item)
         print('NEW_ACTUAL_PARAMETERS',arm,item['total_loaded_parameters'],item['actual_forward_active_parameters'],flush=True)
         del raw,model,actor,counter;gc.collect();torch.cuda.empty_cache()
-    save(REPORTS/'NEW_MODULE_PARAMETER_READS.json',dict(status='COMPLETE',binding=binding('New trained models actual real-image native parameter reads'),
+    target='NEW_MODULE_PARAMETER_READS.json' if tag=='main' else 'NEW_MODULE_PARAMETER_READS_EXTRA.json'
+    save(REPORTS/target,dict(status='COMPLETE',binding=binding('New trained models actual real-image native parameter reads'),
          cases=cases,hardware=torch.cuda.get_device_name(),partial_FLOPs_not_claimed_complete=True,
          prefix_scope_not_all_gallery_branches=True))
 
 
 if __name__=='__main__':
-    try:main()
+    p=argparse.ArgumentParser();p.add_argument('--arms',nargs='+',default=['jev','mlp','attention','deepsets','fixed_question','cross_only'])
+    p.add_argument('--tag',choices=['main','extra'],default='main');a=p.parse_args()
+    try:main(a.arms,a.tag)
     except Exception:
         import traceback
         failure('new_parameters',traceback.format_exc());raise
