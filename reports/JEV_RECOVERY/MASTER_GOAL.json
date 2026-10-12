@@ -21,6 +21,94 @@
       "GT_only_posthoc": true,
       "JEV_independent_value": "NOT_ESTABLISHED",
       "base": "XIV",
+      "formal_eligible": true,
+      "independent_validation": false,
+      "master_complete": false,
+      "revision": 2,
+      "rows": {
+        "attention": {
+          "ENGINEERING": "PASS",
+          "SUPERVISION": "CURRENT_MATCH_ELIGIBLE",
+          "TRAIN16_AssA": 64.26540857044598,
+          "TRAIN16_HOTA": 67.03983916953065,
+          "TRAIN16_HOTA_delta": -0.1512473498988527,
+          "TRAIN16_IDSW": 1301.0,
+          "certified_net_N01_minus_N10": 11,
+          "certified_probe": {
+            "SHA256": "273dcaecf6e9f1264c92faf0b516367c4c5ff45fb5444012a769b77a5c6198df",
+            "bytes": 18643,
+            "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/CERTIFIED_PROBE_R2_XIV_attention_pilot.json"
+          },
+          "controller_known_correct_delta": 0.0006627664855621829,
+          "current_mechanism": true,
+          "no_severe_online_collapse": true,
+          "rank_nonzero_batch_fraction": 1.0
+        },
+        "jev": {
+          "ENGINEERING": "PASS",
+          "SUPERVISION": "CURRENT_MATCH_ELIGIBLE",
+          "TRAIN16_AssA": 64.96536206810643,
+          "TRAIN16_HOTA": 67.33177074062783,
+          "TRAIN16_HOTA_delta": 0.14068422119832746,
+          "TRAIN16_IDSW": 1333.0,
+          "certified_net_N01_minus_N10": 5,
+          "certified_probe": {
+            "SHA256": "6de65db4abfe6ec9aa2f7f59f93074a064099f092903863b0ef3318a1a50d656",
+            "bytes": 16860,
+            "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/CERTIFIED_PROBE_R2_XIV_jev_pilot.json"
+          },
+          "controller_known_correct_delta": 8.788201752985003e-05,
+          "current_mechanism": true,
+          "no_severe_online_collapse": true,
+          "rank_nonzero_batch_fraction": 1.0
+        },
+        "mlp": {
+          "ENGINEERING": "PASS",
+          "SUPERVISION": "CURRENT_MATCH_ELIGIBLE",
+          "TRAIN16_AssA": 63.2996171672902,
+          "TRAIN16_HOTA": 66.48891023578422,
+          "TRAIN16_HOTA_delta": -0.7021762836452865,
+          "TRAIN16_IDSW": 1504.0,
+          "certified_net_N01_minus_N10": 10,
+          "certified_probe": {
+            "SHA256": "774c895338c034e986e00b3b143582ce7f95d1bc8e977f9d46af9a5894e702eb",
+            "bytes": 22266,
+            "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/CERTIFIED_PROBE_R2_XIV_mlp_pilot.json"
+          },
+          "controller_known_correct_delta": 0.0021665119158155166,
+          "current_mechanism": true,
+          "no_severe_online_collapse": true,
+          "rank_nonzero_batch_fraction": 1.0
+        },
+        "threshold": {
+          "ENGINEERING": "PASS",
+          "SUPERVISION": "CURRENT_MATCH_ELIGIBLE",
+          "TRAIN16_AssA": 64.88879368110591,
+          "TRAIN16_HOTA": 67.16527224274633,
+          "TRAIN16_HOTA_delta": -0.02581427668317815,
+          "TRAIN16_IDSW": 1219.0,
+          "certified_net_N01_minus_N10": 11,
+          "certified_probe": {
+            "SHA256": "77e9cfa3743fe267c801080bdd71e9ff7f362a34da9abbff74d2cc5cc802ed90",
+            "bytes": 14681,
+            "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/CERTIFIED_PROBE_R2_XIV_threshold_pilot.json"
+          },
+          "controller_known_correct_delta": 0.00035336054496815095,
+          "current_mechanism": true,
+          "no_severe_online_collapse": true,
+          "rank_nonzero_batch_fraction": 1.0
+        }
+      },
+      "rule": "At least one controlled arm has positive fully certified same-state N01 minus N10 and nonzero certified ranking gradients; cold TRAIN16 HOTA may fall at most 1 point. Increasing conditional known accuracy by moving to UNKNOWN is not a correction. Gate identical across arms; none selected by DEV.",
+      "status": "COMPLETE_TRAIN_GATE"
+    },
+    {
+      "ASSOCIATION": "TRAIN_DIAGNOSTIC_ONLY",
+      "CROSS_CAMERA": "NOT_ESTABLISHED",
+      "EFFICIENCY": "PENDING",
+      "GT_only_posthoc": true,
+      "JEV_independent_value": "NOT_ESTABLISHED",
+      "base": "XIV",
       "formal_eligible": false,
       "independent_validation": false,
       "master_complete": false,
