@@ -4,9 +4,9 @@
 
 **Q1：是否只是二次关联？**
 
-重复相同输入 Hungarian 保持分配，base_single/base_repeat六相机pooled指标完全一致；规则屏蔽边后重解是不同干预。冻结0.1 margin规则在已完成DEV上没有屏蔽边，属于未触发的规则诊断，不能据此否定其他重关联规则。相同新JEV权重只用edge单次全局Hungarian：seed09 HOTA71.577、CVIDF1 77.662、IDSW90，原base单次HOTA73.476、CVIDF1 87.196、IDSW824；IDSW下降不代表关联质量提高。固定同状态H64：parent181、JEV173、MLP205、Attention173个已知错误观测，JEV与Attention相同。精确触发预算诊断单独保存，不替代完整在线结果。
+重复相同输入 Hungarian 必须保持分配；规则屏蔽边后重解是不同干预。真实评分×求解对照运行中。固定同状态 H64：parent181、JEV173、MLP205、Attention173 个已知错误观测；JEV与Attention相同。精确触发预算诊断单独保存，不替代完整在线结果。
 
-证据：`reports/JEV_ONEWEEK/MAIN_RESULTS.json / PAIRED_NATIVE_RESULTS.json / SAME_STATE_BUDGET_DIAGNOSTIC.json`。
+证据：`reports/JEV_ONEWEEK/PAIRED_NATIVE_RESULTS.json / SAME_STATE_BUDGET_DIAGNOSTIC.json`。
 
 **Q2：阈值为什么不够？**
 

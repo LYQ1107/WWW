@@ -60,7 +60,7 @@ N10真实反改错完整保留，不能只报告IDSW下降。见CROSS_CAMERA_ANA
 
 **5. 比简单二次关联多了什么？**
 
-重复相同输入 Hungarian 保持分配，base_single/base_repeat六相机pooled指标完全一致；规则屏蔽边后重解是不同干预。冻结0.1 margin规则在已完成DEV上没有屏蔽边，属于未触发的规则诊断，不能据此否定其他重关联规则。相同新JEV权重只用edge单次全局Hungarian：seed09 HOTA71.577、CVIDF1 77.662、IDSW90，原base单次HOTA73.476、CVIDF1 87.196、IDSW824；IDSW下降不代表关联质量提高。固定同状态H64：parent181、JEV173、MLP205、Attention173个已知错误观测，JEV与Attention相同。精确触发预算诊断单独保存，不替代完整在线结果。
+重复相同输入 Hungarian 必须保持分配；规则屏蔽边后重解是不同干预。真实评分×求解对照运行中。固定同状态 H64：parent181、JEV173、MLP205、Attention173 个已知错误观测；JEV与Attention相同。精确触发预算诊断单独保存，不替代完整在线结果。
 
 实验/具体数值：上方完整主表及 `MAIN_RESULTS.json / PAIRED_NATIVE_RESULTS.json / SAME_STATE_BUDGET_DIAGNOSTIC.json`，未完成项为NOT_RUN/PARTIAL。模型/权重：该工件cases中的seed/checkpoint/initializer路径与SHA，新增模块均为最后4000-update权重，旧参考另标训练阶段。复现：`REPRODUCTION.md` 中对应CLI，服务器运行根 `/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1`。局限：已暴露TRAIN/DEV，完整GMT不同前端；本项不证明独立安全或未来价值。证据状态：实际工件的COMPLETE/PARTIAL/NOT_RUN；独立JEV贡献NOT_ESTABLISHED。
 
