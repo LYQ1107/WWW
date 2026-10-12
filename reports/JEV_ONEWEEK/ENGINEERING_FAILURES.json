@@ -34,6 +34,45 @@
     },
     {
       "binding": {
+        "CUDA_VISIBLE_DEVICES": "3",
+        "Full24": false,
+        "commit": "87e33eea2893b8449d6a3a28f921b719aca641fc",
+        "official_TEST": false,
+        "protocol": {
+          "SHA256": "97086d8e04936ac6ed80d888fd5af686187f20c05acc1fac45234fe4c35169d5",
+          "bytes": 5622,
+          "path": "/home/liuyeqiang/WWW_jev_oneweek_20261012/reports/JEV_ONEWEEK/PREREGISTRATION.json"
+        },
+        "scope": "contract_tests",
+        "sealed20_21_22": true,
+        "sources": {
+          "gtr/modeling/jev_oneweek/__init__.py": "4d0bec368997f7bb9141eaf5d463cf220ef2da75ca4084adf0bc29c4404c9114",
+          "gtr/modeling/jev_oneweek/model.py": "09641553a8ddd192c05db48f90706711da7324f03c2282e64a9bbb9fda51af2e",
+          "gtr/modeling/jev_oneweek/native.py": "fb34a8c31f5de78267f3580c1210980009af8a8af5d57b90bf02fa60393ae6b0",
+          "gtr/modeling/jev_oneweek/plans.py": "b094b40b07b75fcd2d408b7758eb7d82871905a681774e466ed5889199cf7145",
+          "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+          "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+          "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+          "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+          "reproduction_tools/jev_oneweek_asset_audit.py": "d8ee199a0f37ce32fee076a463e245716313b2fc16d51ec4341215bae2ef0ee8",
+          "reproduction_tools/jev_oneweek_common.py": "6353f41a3d070408f0241e9ef16f927eaf29a1e29772e2fbc8cc04194e3b3938",
+          "reproduction_tools/jev_oneweek_controller.py": "b88b285babe62ce5d1bdda2e1536e829a465c4331059dc5af729fd3b57c075e9",
+          "reproduction_tools/jev_oneweek_count_params.py": "0e187c4864b784512aa2f2b4ef1bf21eaebb3a9cc27900a2c8a056c193ef058a",
+          "reproduction_tools/jev_oneweek_freeze.py": "b4570ad937ab6347683008b8b2aece6965c550ef17c25c81efe4ccd0026005a8",
+          "reproduction_tools/jev_oneweek_learning.py": "1cfed48285104b6b6ba5d1a097277d9e23842f9e9d2827142095ea144ef94fe3",
+          "reproduction_tools/jev_oneweek_publish.py": "b46b33c873b536ca2eda6080e0cf166df060655a2011ee0fa9450d9d5fe141e5",
+          "reproduction_tools/jev_oneweek_restore_gmt.py": "545da0838f162027235b286f6d938d40481b0ae9929aa1b39f284912c4a0d870",
+          "reproduction_tools/jev_oneweek_supervision.py": "a165c616a79451b7c5f25819568a155eb0f44e005b50e90ffc82f69b7b5ad2f0",
+          "reproduction_tools/jev_oneweek_tests.py": "1c1e2a48fa5b3f993f68c86235d47cbb7323c49db0739d63ff1745db0fc6fd35"
+        }
+      },
+      "error": "Traceback (most recent call last):\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_tests.py\", line 102, in <module>\n    try:main()\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_tests.py\", line 84, in main\n    with torch.no_grad():raw,_=run(tracker,values,frames,stop=95)\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_phase13_runtime.py\", line 45, in run\n    return model.sliding_inference_GMT(values,2,[0,frames-1,list(range(frames))*2],native_raw=True,native_prefix=prefix,native_stop_frame=stop)\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/gtr/modeling/meta_arch/gtr_rcnn.py\", line 981, in sliding_inference_GMT\n    instances_kv,id_count,id_count_dict,id_reid_dict = stage2_executor.commit(self,instances_kv,len(instances_kv)-1,id_count,id_count_dict,id_reid_dict,frame=frame_id,view=int(id[i]),first=True)\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/gtr/modeling/jev_phase15/native_commit_adapter.py\", line 54, in commit\n    result = original_commit(*args, **kwargs)\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/gtr/modeling/jev_stage2/native.py\", line 69, in commit\n    if self.commit_observer is not None:self.commit_observer(instances=instances,id_count=id_count,hits=hits,galleries=galleries,frame=frame,view=view,first=first,events=events)\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_tests.py\", line 81, in observed\n    last[0]=phase13_prefix(tracker,d)\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/audit_jev_stage2_gta_free.py\", line 26, in phase13_prefix\n    p=prefix_state(model,**values);p['phase13_identity_meta']=model.jev_stage2_executor.memory.state_dict();return p\nTypeError: prefix_state() got an unexpected keyword argument 'events'\n",
+      "stage": "contract_tests",
+      "status": "FAIL"
+    },
+    {
+      "binding": {
         "CUDA_VISIBLE_DEVICES": "4",
         "Full24": false,
         "commit": "d49c90e58dee9919a955d56947908928fc95f18b",
