@@ -23,10 +23,10 @@ def main(gpu):
         publish('Record exact same-state correction of supplementary '+kind+' final fuser')
     for kind in KINDS:
         run_job(f'R2_FUSION_{kind}_TRAIN16_v2','jev_recovery_fusion_experiment.py',['--kind',kind,'--mode','online'],gpu)
-        run_job(f'R2_FUSION_{kind}_identity_v2','jev_recovery_fusion_experiment.py',['--kind',kind,'--mode','identity'],None)
+        run_job(f'R2_FUSION_{kind}_identity_v3','jev_recovery_fusion_experiment.py',['--kind',kind,'--mode','identity'],None)
         publish('Record complete TRAIN16 native state and identity of supplementary '+kind+' final fuser')
     save(REPORTS/'DIAGNOSTIC_FUSION_RESULT_INDEX.json',dict(status='COMPLETE_BOUNDED_TRAIN16_DIAGNOSTICS',
-        sources=[ref(p) for p in (REPORTS/'diagnostic_fusion').glob('*.json')]+[ref(p) for p in (REPORTS/'diagnostic_fusion_native').glob('*.json')],
+        sources=[ref(p) for p in (REPORTS/'diagnostic_fusion').glob('*.json')]+[ref(p) for p in (REPORTS/'diagnostic_fusion_native').rglob('*.json')],
         frontend='Common frozen R2 JEV Pilot; same auxiliary predictions for all new final fusers',
         pure_ordinary_architecture_advantage_not_tested_here=True,independent_validation=False,
         original_R2_R3_gates_changed=False,major_revision=2,no_DEV_tuning=True))

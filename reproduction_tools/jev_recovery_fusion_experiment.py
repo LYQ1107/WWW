@@ -107,6 +107,24 @@ def online(kind, phase, identity=False):
     configure(old,2,'XIV')
     old.OUT=OUT/'diagnostic_fusion_native_v2';old.REPORTS=REPORTS/'diagnostic_fusion_native'
     old.policy=lambda arm,seed,ph:build(arm,ph)
+    if identity:
+        # Compare with the actual common frozen frontend trajectory, rather
+        # than an unexecuted parent in the supplementary namespace.
+        analyse=old.analyse; original_save=old.save
+        old.REPORTS=REPORTS/'diagnostic_fusion_native/identity_v3'
+        def preserved_save(path,value):
+            path=pathlib.Path(path)
+            if path.name=='STRICT_CAUSAL_IDENTITY_ANALYSIS.json':
+                path=path.with_name('STRICT_CAUSAL_IDENTITY_ANALYSIS_FUSION_V3.json')
+                assert not path.exists(),'Preserve completed identity audit'
+            return original_save(path,value)
+        old.save=preserved_save
+        def routed(arm,seed,ph,video):
+            if arm!='parent':return analyse(arm,seed,ph,video)
+            current=old.OUT;old.OUT=OUT/'R2_XIV'
+            try:return analyse('jev',seed,ph,video)
+            finally:old.OUT=current
+        old.analyse=routed
     old.main(kind,20261009,phase,16)
 
 
