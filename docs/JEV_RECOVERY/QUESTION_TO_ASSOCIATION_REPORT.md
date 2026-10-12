@@ -78,7 +78,7 @@ N01分解：恢复已有active ID 238；private MATCH DEFER 0。合法DEFER是�
 | 融合器 | Tiny | Pilot | 同状态净纠错 | 完整在线 |
 |---|---|---|---:|---|
 | explicit_scores | COMPLETE | COMPLETE | PENDING | PENDING |
-| independent_readers | COMPLETE | PENDING | PENDING | PENDING |
+| independent_readers | COMPLETE | COMPLETE | PENDING | PENDING |
 | mlp | COMPLETE | PENDING | PENDING | PENDING |
 | attention | COMPLETE | PENDING | PENDING | PENDING |
 
