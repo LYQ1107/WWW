@@ -32,12 +32,48 @@ class FrozenPlanControl(nn.Module):
         return z
 
 
+class SolverFactorControl(nn.Module):
+    """Same learned edge scorer with one/repeated/constraint-changing solves.
+
+    This isolates the additive component. Hungarian cannot optimize the full
+    non-additive joint plan value, which remains a separate same-plan comparison.
+    """
+    def __init__(self,model,kind):
+        super().__init__();self.model=model;self.kind=kind
+        self.solve_calls=0;self.masked_edges=0
+    def forward(self,x):
+        if not x['question_mask'].any():
+            self.runtime_choice=[]
+            return x['detection_visual'].new_empty(1,0,x['identity_mask'].shape[1]+1)
+        details=self.model.encode(x)
+        score=details['base_logits'] if self.kind.startswith('base_') else details['edge_logits']
+        legal=x['legal'][0];choice=lawful_choice(score[0],legal);self.solve_calls+=1
+        if self.kind.endswith('repeat'):
+            repeat=lawful_choice(score[0],legal);self.solve_calls+=1
+            assert repeat==choice,'Unchanged Hungarian rerun must reproduce the same result'
+        elif self.kind.endswith('rule'):
+            # A frozen rejection rule changes the mask. This is deliberately
+            # separate from the identical-input solver-count-only intervention.
+            proposed=lawful_choice(details['base_logits'][0],legal)
+            mask=legal.clone();rejected=0
+            for row,col in enumerate(proposed):
+                if col>=0 and float(details['base_logits'][0,row,col]-details['base_logits'][0,row,-1])<.1:
+                    mask[row,col]=False;rejected+=1
+            choice=lawful_choice(score[0],mask);self.solve_calls+=2;self.masked_edges+=rejected
+        self.runtime_choice=list(choice)
+        self.runtime_details=dict(base_logits=details['base_logits'],edge_logits=details['edge_logits'])
+        return score
+
+
 def policy(arm,seed,phase):
     from jev_phase15_common import load_old_policy
     if arm=='cosine':return None,None
     if arm in ['parent','extra_hungarian','fixed_threshold','fixed_fusion']:
         original,checkpoint,_=load_old_policy('multi_question',seed)
         return FrozenPlanControl(original,arm).eval(),checkpoint
+    if arm in ['base_single','base_repeat','base_rule','edge_single','edge_repeat','edge_rule']:
+        network,checkpoint,_=load_model('jev',seed,phase)
+        return SolverFactorControl(network,arm).eval(),checkpoint
     return load_model(arm,seed,phase)[:2]
 
 
