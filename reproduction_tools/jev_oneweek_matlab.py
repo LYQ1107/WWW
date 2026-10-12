@@ -47,6 +47,8 @@ def prepare(manifest_path,output):
 
 def main(arm,seed,phase,videos):
     protect();assert set(videos)<=set(TRAIN+DEV)
+    for video in videos:
+        assert (OUT/'online_v1'/phase/arm/f'seed{seed}'/f'video{video:02d}'/'RESULT.json').exists(),'Wait for completed tracking input before starting MATLAB'
     folder=OUT/'matlab_v1'/phase/arm/f'seed{seed}'/('_'.join(map(str,videos)))
     report_path=REPORTS/(f'MATLAB_{arm}_{phase}_SEED{seed}_VIDEOS_'+('_'.join(map(str,videos)))+'.json')
     if (folder/'RESULT.json').exists():
@@ -56,7 +58,8 @@ def main(arm,seed,phase,videos):
         save(report_path,completed)
         print('REUSED_COMPLETED_EXACT_MATLAB_INPUT',arm,completed['CVIDF1'],completed['CVMA'],flush=True)
         return
-    folder.mkdir(parents=True,exist_ok=False)
+    assert not folder.exists() or not any(folder.iterdir()),'Incomplete nonempty MATLAB output requires explicit recovery'
+    folder.mkdir(parents=True,exist_ok=True)
     sources=[];predictions=[]
     for video in videos:
         result=read(OUT/'online_v1'/phase/arm/f'seed{seed}'/f'video{video:02d}'/'RESULT.json')
