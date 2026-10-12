@@ -1,0 +1,615 @@
+{
+  "JEV_independent_value": "NOT_ESTABLISHED",
+  "actual_new_updates": 1000,
+  "arm": "threshold",
+  "before": {
+    "counts": {
+      "UNKNOWN_selected": 1935,
+      "known_correct": 1688,
+      "known_selected": 1691,
+      "nonbase_plan_selected": 0,
+      "plans_generated": 431,
+      "rank_pair_correct": 1,
+      "rank_pairs": 1,
+      "rows": 3626
+    },
+    "known_correct_rate": 0.9982259018332348,
+    "questions": {
+      "cross": {
+        "0_correct": 37284,
+        "0_support": 47142,
+        "1_correct": 0,
+        "1_support": 782
+      },
+      "stability": {
+        "0_correct": 1908,
+        "0_support": 41926,
+        "1_correct": 1632,
+        "1_support": 1688
+      }
+    },
+    "rank_pair_accuracy": 1.0,
+    "scope": "Deterministic reused TRAIN16 controller audit; correlated rows, not full MOT or independent generalization"
+  },
+  "binding": {
+    "CUDA_VISIBLE_DEVICES": "3",
+    "Full24": false,
+    "commit": "11a4b4157bad3433692c0780a9e193049ae0df6a",
+    "official_TEST": false,
+    "protocol": {
+      "SHA256": "97086d8e04936ac6ed80d888fd5af686187f20c05acc1fac45234fe4c35169d5",
+      "bytes": 5622,
+      "path": "/home/liuyeqiang/WWW_jev_oneweek_20261012/reports/JEV_ONEWEEK/PREREGISTRATION.json"
+    },
+    "scope": "Equal-supervision current association training, not future safe action learning",
+    "sealed20_21_22": true,
+    "sources": {
+      "gtr/modeling/jev_oneweek/__init__.py": "4d0bec368997f7bb9141eaf5d463cf220ef2da75ca4084adf0bc29c4404c9114",
+      "gtr/modeling/jev_oneweek/model.py": "7c9c7817b1508d24bcac5264bf9d5da57bc38267adda054c01fbdbf6d881ea72",
+      "gtr/modeling/jev_oneweek/native.py": "fb34a8c31f5de78267f3580c1210980009af8a8af5d57b90bf02fa60393ae6b0",
+      "gtr/modeling/jev_oneweek/plans.py": "b094b40b07b75fcd2d408b7758eb7d82871905a681774e466ed5889199cf7145",
+      "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+      "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+      "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+      "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+      "reproduction_tools/jev_oneweek_assess.py": "8e36b17ad863cb6943180b77d2b1ba5e3dcf4ddb62707555b403ac50c7c84bc9",
+      "reproduction_tools/jev_oneweek_asset_audit.py": "d8ee199a0f37ce32fee076a463e245716313b2fc16d51ec4341215bae2ef0ee8",
+      "reproduction_tools/jev_oneweek_common.py": "92f09423bc75ff7f802526172e7af0d583ce04df5a6f01de7b6bf4f4160b3b80",
+      "reproduction_tools/jev_oneweek_control_queue.py": "76768ed47c450d8b82e12f5d3fff230e46e5cba908aaed43a3eaeb671f016511",
+      "reproduction_tools/jev_oneweek_controller.py": "5d32b18d15a211d9b0c1addb8d5fc9fe13367dd180357d371879894b5c7b4c84",
+      "reproduction_tools/jev_oneweek_count_params.py": "0e187c4864b784512aa2f2b4ef1bf21eaebb3a9cc27900a2c8a056c193ef058a",
+      "reproduction_tools/jev_oneweek_efficiency_queue.py": "3aa7cad966c8b38fa3ede4fec73f6d8cd65b7e18c7e880ae55a866ac972f7fbc",
+      "reproduction_tools/jev_oneweek_freeze.py": "b4570ad937ab6347683008b8b2aece6965c550ef17c25c81efe4ccd0026005a8",
+      "reproduction_tools/jev_oneweek_identity_analysis.py": "b9c4e6304a40d583e3cffe3f19be2398ecce4b53bfef78c21f23e70c7c6004e3",
+      "reproduction_tools/jev_oneweek_learning.py": "e825707733964cc304cb40512bd85bdf9cac10fece9ac82dbb246ea82188dea6",
+      "reproduction_tools/jev_oneweek_matlab.py": "58fd1c6670ae0f1977cb16089ff2320a366ca0540d87cd67ee743f1fae3648d9",
+      "reproduction_tools/jev_oneweek_mechanism_probe.py": "7c77973d3cc96721c7355faed64373ff616de88649b4d215654e84740c714d06",
+      "reproduction_tools/jev_oneweek_online.py": "273b49c302d9b7ad2a878bf674bf9aa4ad2f092c76e9605ce053c7469b6831b2",
+      "reproduction_tools/jev_oneweek_paired_native.py": "b31cc85bf9ad630f74085821fca88bc44306619b6b1b71256ace9c3a686701d8",
+      "reproduction_tools/jev_oneweek_profile_latency.py": "de75140873f50d80c8a9600ed2ad022ff67386c112d736872ab2e3fc4f4398f1",
+      "reproduction_tools/jev_oneweek_publish.py": "aef14c32234cef2a9110f574ea53f948533ef4440389e0653e0bc934d5155e85",
+      "reproduction_tools/jev_oneweek_queue.py": "a82629b5728936b375e4114d0846b72c4df6ef2bcf8867d359daf7350b81b1cd",
+      "reproduction_tools/jev_oneweek_restore_gmt.py": "545da0838f162027235b286f6d938d40481b0ae9929aa1b39f284912c4a0d870",
+      "reproduction_tools/jev_oneweek_results.py": "44e71227bc98b06e785929702c51865f3242cdfbe20fc69e5529d971675cfe62",
+      "reproduction_tools/jev_oneweek_supervision.py": "a165c616a79451b7c5f25819568a155eb0f44e005b50e90ffc82f69b7b5ad2f0",
+      "reproduction_tools/jev_oneweek_tests.py": "52d0f73aa8564ea5c5483ebb2a2ba4d03fd2ce2a61e5a11365b7ef4abc0a5e19",
+      "reproduction_tools/jev_oneweek_train.py": "6519106abc6d0f07c214cfbbb51e1d0c2533c7635ca5e685898fee0a068a4b81"
+    }
+  },
+  "checkpoint": {
+    "SHA256": "b1e446168b6f88db89608cf0afce8b13672878301e49e0a8372ea14fec91e422",
+    "bytes": 1458111,
+    "path": "/data1/liuyeqiang/WWW_jev_oneweek_runtime/20261012_v1/training_v1/threshold/seed20261008/pilot/NEW_MODULES.pth"
+  },
+  "controller_audit_is_NOT_independent_generalization": true,
+  "engineering_training_pass": true,
+  "final": {
+    "counts": {
+      "UNKNOWN_selected": 1934,
+      "known_correct": 1689,
+      "known_selected": 1692,
+      "nonbase_plan_selected": 29,
+      "plans_generated": 431,
+      "rank_pair_correct": 1,
+      "rank_pairs": 1,
+      "rows": 3626
+    },
+    "known_correct_rate": 0.99822695035461,
+    "questions": {
+      "cross": {
+        "0_correct": 47063,
+        "0_support": 47142,
+        "1_correct": 782,
+        "1_support": 782
+      },
+      "stability": {
+        "0_correct": 41884,
+        "0_support": 41926,
+        "1_correct": 1688,
+        "1_support": 1688
+      }
+    },
+    "rank_pair_accuracy": 1.0,
+    "scope": "Deterministic reused TRAIN16 controller audit; correlated rows, not full MOT or independent generalization"
+  },
+  "fixture_loss_after": 0.0,
+  "fixture_loss_before": 0.0,
+  "history": [
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 1.4303618669509888,
+        "current_edge_compatibility": 2.5672686100006104,
+        "current_plan_ranking": 0.0,
+        "stability": 1.440492033958435
+      },
+      "elapsed": 0.0757894441485405,
+      "grad_norm": 3.316391944885254,
+      "loss": 0.974440336227417,
+      "step": 1,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.15761961042881012,
+        "current_edge_compatibility": 3.921076536178589,
+        "current_plan_ranking": 0.0,
+        "stability": 0.17146025598049164
+      },
+      "elapsed": 1.5731607154011726,
+      "grad_norm": 0.7972874641418457,
+      "loss": 0.4743776321411133,
+      "step": 32,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.05801154673099518,
+        "current_edge_compatibility": 4.349915504455566,
+        "current_plan_ranking": 0.0,
+        "stability": 0.06612541526556015
+      },
+      "elapsed": 3.217130720615387,
+      "grad_norm": 0.6696266531944275,
+      "loss": 0.46602579951286316,
+      "step": 64,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.04903507977724075,
+        "current_edge_compatibility": 3.5344436168670654,
+        "current_plan_ranking": 0.5239255203393739,
+        "stability": 0.06249413639307022
+      },
+      "elapsed": 4.806577757000923,
+      "grad_norm": 1.4704442024230957,
+      "loss": 0.9052521920291227,
+      "step": 96,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.046688262373209,
+        "current_edge_compatibility": 1.2748517990112305,
+        "current_plan_ranking": 0.0,
+        "stability": 0.059380579739809036
+      },
+      "elapsed": 6.398170739412308,
+      "grad_norm": 0.3820689916610718,
+      "loss": 0.15400239825248718,
+      "step": 128,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.11407073587179184,
+        "current_edge_compatibility": 7.780107498168945,
+        "current_plan_ranking": 0.0,
+        "stability": 0.03980313241481781
+      },
+      "elapsed": 8.328032545745373,
+      "grad_norm": 0.7566608190536499,
+      "loss": 0.8164792656898499,
+      "step": 160,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.03702813386917114,
+        "current_edge_compatibility": 4.116745948791504,
+        "current_plan_ranking": 0.0,
+        "stability": 0.04221450537443161
+      },
+      "elapsed": 10.070067003369331,
+      "grad_norm": 0.6438248157501221,
+      "loss": 0.43148523569107056,
+      "step": 192,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.04177727922797203,
+        "current_edge_compatibility": 2.1319408416748047,
+        "current_plan_ranking": 0.0,
+        "stability": 0.04772386699914932
+      },
+      "elapsed": 11.761828877031803,
+      "grad_norm": 0.5276798009872437,
+      "loss": 0.23556937277317047,
+      "step": 224,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.041439395397901535,
+        "current_edge_compatibility": 7.128178119659424,
+        "current_plan_ranking": 0.13692372305262177,
+        "stability": 0.03607630729675293
+      },
+      "elapsed": 13.470976546406746,
+      "grad_norm": 3.596813678741455,
+      "loss": 0.8691204973863372,
+      "step": 256,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.03186097741127014,
+        "current_edge_compatibility": 3.0903120040893555,
+        "current_plan_ranking": 0.0,
+        "stability": 0.031289223581552505
+      },
+      "elapsed": 15.422502018511295,
+      "grad_norm": 0.6358451843261719,
+      "loss": 0.32481876015663147,
+      "step": 288,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.02954176254570484,
+        "current_edge_compatibility": 6.116195201873779,
+        "current_plan_ranking": 0.0,
+        "stability": 0.026730814948678017
+      },
+      "elapsed": 17.155015021562576,
+      "grad_norm": 0.7380084991455078,
+      "loss": 0.6256876587867737,
+      "step": 320,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.02511032670736313,
+        "current_edge_compatibility": 6.454311370849609,
+        "current_plan_ranking": 0.0,
+        "stability": 0.02388458512723446
+      },
+      "elapsed": 18.84077198803425,
+      "grad_norm": 0.7497075796127319,
+      "loss": 0.6576799154281616,
+      "step": 352,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.028059616684913635,
+        "current_edge_compatibility": 3.249727487564087,
+        "current_plan_ranking": 0.0,
+        "stability": 0.023504838347434998
+      },
+      "elapsed": 20.506546400487423,
+      "grad_norm": 0.6442363858222961,
+      "loss": 0.33786386251449585,
+      "step": 384,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.03177795186638832,
+        "current_edge_compatibility": 1.7053760290145874,
+        "current_plan_ranking": 0.07254628806773668,
+        "stability": 0.02764902263879776
+      },
+      "elapsed": 22.426384791731834,
+      "grad_norm": 4.70208215713501,
+      "loss": 0.25794063757572416,
+      "step": 416,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.032400526106357574,
+        "current_edge_compatibility": 0.45014113187789917,
+        "current_plan_ranking": 0.0,
+        "stability": 0.025203406810760498
+      },
+      "elapsed": 24.094245433807373,
+      "grad_norm": 0.20676176249980927,
+      "loss": 0.059415094554424286,
+      "step": 448,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.02012023515999317,
+        "current_edge_compatibility": 1.7569175958633423,
+        "current_plan_ranking": 0.00914907337795926,
+        "stability": 0.0185317974537611
+      },
+      "elapsed": 25.770977675914764,
+      "grad_norm": 0.6972818970680237,
+      "loss": 0.19450385005842877,
+      "step": 480,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.020537201315164566,
+        "current_edge_compatibility": 4.231688022613525,
+        "current_plan_ranking": -0.0,
+        "stability": 0.016084156930446625
+      },
+      "elapsed": 27.422479562461376,
+      "grad_norm": 0.6287420988082886,
+      "loss": 0.4323241412639618,
+      "step": 512,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.021588562056422234,
+        "current_edge_compatibility": 2.3323581218719482,
+        "current_plan_ranking": 0.2339810938937151,
+        "stability": 0.041232239454984665
+      },
+      "elapsed": 29.192538790404797,
+      "grad_norm": 21.14671516418457,
+      "loss": 0.4829221149337971,
+      "step": 544,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.016356702893972397,
+        "current_edge_compatibility": 3.711521863937378,
+        "current_plan_ranking": -0.0,
+        "stability": 0.026501910760998726
+      },
+      "elapsed": 30.856401063501835,
+      "grad_norm": 0.6430035829544067,
+      "loss": 0.38186684250831604,
+      "step": 576,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.015468847006559372,
+        "current_edge_compatibility": 2.663851737976074,
+        "current_plan_ranking": 0.0,
+        "stability": 0.013156457804143429
+      },
+      "elapsed": 32.540198504924774,
+      "grad_norm": 0.54575115442276,
+      "loss": 0.27354148030281067,
+      "step": 608,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.019536202773451805,
+        "current_edge_compatibility": 0.8084235787391663,
+        "current_plan_ranking": 0.0,
+        "stability": 0.0161326564848423
+      },
+      "elapsed": 34.292234376072884,
+      "grad_norm": 0.2364722043275833,
+      "loss": 0.08975957334041595,
+      "step": 640,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.01800651103258133,
+        "current_edge_compatibility": 1.5965468883514404,
+        "current_plan_ranking": 0.0,
+        "stability": 0.011296464130282402
+      },
+      "elapsed": 36.20191712677479,
+      "grad_norm": 0.4366529583930969,
+      "loss": 0.16698043048381805,
+      "step": 672,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.01629769802093506,
+        "current_edge_compatibility": 0.4387464225292206,
+        "current_plan_ranking": 0.0,
+        "stability": 0.013987663201987743
+      },
+      "elapsed": 37.979933477938175,
+      "grad_norm": 0.23042604327201843,
+      "loss": 0.05144598335027695,
+      "step": 704,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.011480212211608887,
+        "current_edge_compatibility": 0.35017964243888855,
+        "current_plan_ranking": -0.0,
+        "stability": 0.012362750247120857
+      },
+      "elapsed": 39.67103197425604,
+      "grad_norm": 0.1363128274679184,
+      "loss": 0.040978703647851944,
+      "step": 736,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.010288546793162823,
+        "current_edge_compatibility": 0.9412475824356079,
+        "current_plan_ranking": 0.0,
+        "stability": 0.010444769635796547
+      },
+      "elapsed": 41.46214696019888,
+      "grad_norm": 0.21316468715667725,
+      "loss": 0.0993080884218216,
+      "step": 768,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.012365970760583878,
+        "current_edge_compatibility": 0.19558943808078766,
+        "current_plan_ranking": -0.0,
+        "stability": 0.06748645752668381
+      },
+      "elapsed": 43.612448036670685,
+      "grad_norm": 3.049321174621582,
+      "loss": 0.03952205181121826,
+      "step": 800,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.43321943283081055,
+        "current_edge_compatibility": 0.09681842476129532,
+        "current_plan_ranking": 0.0,
+        "stability": 0.009007968008518219
+      },
+      "elapsed": 45.24901092797518,
+      "grad_norm": 1.9948785305023193,
+      "loss": 0.12023869156837463,
+      "step": 832,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.00947036873549223,
+        "current_edge_compatibility": 4.021189212799072,
+        "current_plan_ranking": 0.0,
+        "stability": 0.006277688313275576
+      },
+      "elapsed": 46.92166641354561,
+      "grad_norm": 0.6716656684875488,
+      "loss": 0.40605592727661133,
+      "step": 864,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.02922067418694496,
+        "current_edge_compatibility": 0.8217081427574158,
+        "current_plan_ranking": -0.0,
+        "stability": 0.00707682128995657
+      },
+      "elapsed": 48.62876680493355,
+      "grad_norm": 0.26041746139526367,
+      "loss": 0.09124518930912018,
+      "step": 896,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.008369403891265392,
+        "current_edge_compatibility": 1.1593509912490845,
+        "current_plan_ranking": 0.0,
+        "stability": 0.006946349050849676
+      },
+      "elapsed": 50.5572923719883,
+      "grad_norm": 0.3400024473667145,
+      "loss": 0.11976403743028641,
+      "step": 928,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.009198383428156376,
+        "current_edge_compatibility": 0.07925005257129669,
+        "current_plan_ranking": 0.0,
+        "stability": 0.008070036768913269
+      },
+      "elapsed": 52.2033412232995,
+      "grad_norm": 0.06397433578968048,
+      "loss": 0.012242110446095467,
+      "step": 960,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 0,
+      "components": {
+        "cross": 0.013309714384377003,
+        "current_edge_compatibility": 0.28712618350982666,
+        "current_plan_ranking": 0.0,
+        "stability": 0.008193708024919033
+      },
+      "elapsed": 53.96305716782808,
+      "grad_norm": 0.12343323230743408,
+      "loss": 0.03408847376704216,
+      "step": 992,
+      "total_steps": 1000
+    },
+    {
+      "certified_rank_pairs": 1,
+      "components": {
+        "cross": 0.01854877918958664,
+        "current_edge_compatibility": 0.08227536082267761,
+        "current_plan_ranking": 0.0002347268282945764,
+        "stability": 0.011920163407921791
+      },
+      "elapsed": 54.391748793423176,
+      "grad_norm": 0.10147005319595337,
+      "loss": 0.016079498932468475,
+      "step": 1000,
+      "total_steps": 1000
+    }
+  ],
+  "initializer": {
+    "SHA256": "f759bc56f2a7aedb980afeb2e1ee14d1ab8c364f6948390f2c3889cdff15e1ee",
+    "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/formal_v2/multi_question/availability_joint/seed20261008/LAST_FROZEN.pth"
+  },
+  "max_abs_gradients": {
+    "continuity_head.bias": 0.022619202733039856,
+    "continuity_head.weight": 0.09323541074991226,
+    "cross_head.bias": 0.05312548950314522,
+    "cross_head.weight": 0.09730749577283859,
+    "current.bias": 0.010453904047608376,
+    "current.weight": 0.011240972205996513,
+    "edge_value.bias": 0.09157712757587433,
+    "edge_value.weight": 0.3713710606098175,
+    "evidence.bias": 0.014425398781895638,
+    "evidence.weight": 0.1448259949684143,
+    "history.bias": 0.015828020870685577,
+    "history.weight": 0.03731265291571617,
+    "norm.bias": 0.008559677749872208,
+    "norm.weight": 0.02009936235845089,
+    "option.bias": 0.013563159853219986,
+    "option.weight": 0.042311906814575195,
+    "ordinary.0.bias": 0.021444171667099,
+    "ordinary.0.weight": 0.053379420191049576,
+    "ordinary.2.bias": 0.07388490438461304,
+    "ordinary.2.weight": 0.047092005610466
+  },
+  "phase": "pilot",
+  "rank_supervised_batches": 138,
+  "science_association_gain": "NOT_RUN_FULL_NATIVE",
+  "seconds": 56.58253361284733,
+  "seed": 20261008,
+  "status": "COMPLETE",
+  "total_updates": 1000
+}
