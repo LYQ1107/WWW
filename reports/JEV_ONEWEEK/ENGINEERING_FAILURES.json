@@ -2,6 +2,38 @@
   "failures": [
     {
       "binding": {
+        "CUDA_VISIBLE_DEVICES": null,
+        "Full24": false,
+        "commit": "b6716fb8b7de622557312093d3f21e8966dddc7d",
+        "official_TEST": false,
+        "protocol": {
+          "SHA256": "97086d8e04936ac6ed80d888fd5af686187f20c05acc1fac45234fe4c35169d5",
+          "bytes": 5622,
+          "path": "/home/liuyeqiang/WWW_jev_oneweek_20261012/reports/JEV_ONEWEEK/PREREGISTRATION.json"
+        },
+        "scope": "supervision",
+        "sealed20_21_22": true,
+        "sources": {
+          "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+          "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+          "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+          "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+          "reproduction_tools/jev_oneweek_asset_audit.py": "d8ee199a0f37ce32fee076a463e245716313b2fc16d51ec4341215bae2ef0ee8",
+          "reproduction_tools/jev_oneweek_common.py": "6353f41a3d070408f0241e9ef16f927eaf29a1e29772e2fbc8cc04194e3b3938",
+          "reproduction_tools/jev_oneweek_controller.py": "b88b285babe62ce5d1bdda2e1536e829a465c4331059dc5af729fd3b57c075e9",
+          "reproduction_tools/jev_oneweek_count_params.py": "0e187c4864b784512aa2f2b4ef1bf21eaebb3a9cc27900a2c8a056c193ef058a",
+          "reproduction_tools/jev_oneweek_freeze.py": "b4570ad937ab6347683008b8b2aece6965c550ef17c25c81efe4ccd0026005a8",
+          "reproduction_tools/jev_oneweek_restore_gmt.py": "545da0838f162027235b286f6d938d40481b0ae9929aa1b39f284912c4a0d870",
+          "reproduction_tools/jev_oneweek_supervision.py": "86c9bc3cea020f0730671ef2a0d5f129b7757c8e94915a2af2a9d897ffd0cbed"
+        }
+      },
+      "error": "Traceback (most recent call last):\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_supervision.py\", line 142, in <module>\n    try:main()\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_supervision.py\", line 118, in main\n    source=ref(folder/'RESULT.json'),commits=ref(folder/'COMMITS.jsonl.gz'),\nTypeError: 'int' object is not callable\n",
+      "stage": "supervision",
+      "status": "FAIL"
+    },
+    {
+      "binding": {
         "CUDA_VISIBLE_DEVICES": "4",
         "Full24": false,
         "commit": "d49c90e58dee9919a955d56947908928fc95f18b",
@@ -31,6 +63,6 @@
       "status": "FAIL"
     }
   ],
-  "repair": "Native callback exposes frame, not frame_index; observer only fixed, original failure and START retained. Retry in separate attempt01 folder.",
+  "no_scientific_failure_hidden": true,
   "status": "RETAINED"
 }
