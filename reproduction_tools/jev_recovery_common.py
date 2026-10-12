@@ -34,5 +34,11 @@ def protect():
 def binding(scope):
  files=list((ROOT/'reproduction_tools').glob('jev_recovery_*.py'))+list((ROOT/'gtr/modeling/jev_recovery').glob('*.py'))
  files+=list((ROOT/'gtr/modeling/jev_oneweek').glob('*.py'))
- return dict(scope=scope,commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),sources={str(p.relative_to(ROOT)):sha(p) for p in files},CUDA_VISIBLE_DEVICES=os.environ.get('CUDA_VISIBLE_DEVICES'),protocol=ref(REPORTS/'PREREGISTRATION.json'),official_TEST=False,sealed20_21_22=True)
+ protocols={p.name:ref(p) for p in REPORTS.glob('*PROTOCOL.json')}
+ protocols.update({p.name:ref(p) for p in REPORTS.glob('*PREREGISTRATION.json')})
+ if (REPORTS/'CANDIDATE_EXECUTION_FREEZE.json').exists():protocols['CANDIDATE_EXECUTION_FREEZE.json']=ref(REPORTS/'CANDIDATE_EXECUTION_FREEZE.json')
+ return dict(scope=scope,commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),sources={str(p.relative_to(ROOT)):sha(p) for p in files},CUDA_VISIBLE_DEVICES=os.environ.get('CUDA_VISIBLE_DEVICES'),protocol=ref(REPORTS/'PREREGISTRATION.json'),additional_protocols=protocols,official_TEST=False,sealed20_21_22=True)
 def failure(stage,error):save(OUT/'failures'/f'{stage}_{time.time_ns()}.json',dict(status='FAIL',stage=stage,error=str(error),binding=binding(stage)))
+def unreviewed_failures():
+ p=OUT/'recovery/RESOLVED.json';resolved=set(read(p)['reviewed_failure_paths']) if p.exists() else set()
+ return [p for p in (OUT/'failures').glob('*.json') if str(p) not in resolved]

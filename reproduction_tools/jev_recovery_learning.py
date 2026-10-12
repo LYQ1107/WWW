@@ -4,8 +4,11 @@ from jev_recovery_common import *
 from jev_oneweek_learning import batch,comparisons,loss,assess,load_records as inherited_load_records
 from gtr.modeling.jev_recovery.model import RecoveryTrack
 
-def initialize(arm,seed,revision=1,base='XIV',maximum=4):
+def model_revision(revision):return read(REPORTS/'R3_PREREGISTRATION.json')['mechanism_revision'] if revision==3 else revision
+
+def initialize(arm,seed,revision=1,base='XIV',maximum=None):
  from jev_oneweek_common import seed_all,PHASE14
+ if maximum is None:maximum=read(REPORTS/'CANDIDATE_EXECUTION_FREEZE.json')['maximum']
  source_revision=revision
  if revision==3:source_revision=read(REPORTS/'R3_PREREGISTRATION.json')['mechanism_revision']
  seed_all(seed);model=RecoveryTrack(arm,source_revision,base,maximum).cuda()
@@ -47,7 +50,19 @@ def conflict_groups(train):
   key=tuple(row['key'])
   if key not in index:continue
   assert row['train_gradient']
-  for group in row['proposals']['P1_4']['independent_group_keys']:
+  variant=read(REPORTS/'CANDIDATE_EXECUTION_FREEZE.json')['patch_variant']
+  for group in row['proposals'][variant]['independent_group_keys']:
    # Lists in JSON become a hashable conservative video/person/ID/time key.
    g=(group[0],tuple(group[1]),tuple(group[2]),group[3],group[4]);groups[g].add(key)
  return {g:[index[k] for k in sorted(keys)] for g,keys in sorted(groups.items())}
+
+def question_conflict_groups(train):
+ groups=collections.defaultdict(list)
+ for r in train:
+  a=r['oneweek_labels']['cross'];b=r['oneweek_labels']['stability'];mask=(a>=0)&(b>=0)&(a!=b)
+  for row,col in torch.nonzero(mask).tolist():
+   person=r['GT_labels_OFFLINE_ONLY'][row]
+   key=(r['key'][0],person,r['refs'][col],r['key'][1]//64,r['key'][2])
+   groups[key].append(r)
+ # One event per dependency group; repeated candidate rows never multiply it.
+ return {key:list({tuple(r['key']):r for r in records}.values()) for key,records in groups.items()}

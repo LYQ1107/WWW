@@ -44,14 +44,14 @@ def formal(revision,base,arms,gpu):
 def main(gpu):
  protect()
  while not (REPORTS/'R1_XIV_MECHANISM_GATE.json').exists():
-  if list((OUT/'failures').glob('*.json')):raise RuntimeError('Predecessor failure requires retained-log review')
+  if unreviewed_failures():raise RuntimeError('Predecessor failure requires retained-log review')
   save(OUT/'progression/PROGRESS.json',dict(status='WAITING_R1_TRAIN_GATE',GPU=gpu));time.sleep(20)
  # Wait for original R1 controller to release GPU and finish its publication.
  registry=read(REPORTS/'EXPERIMENT_REGISTRY.json')
  assert not any(j['status']=='RUNNING' for j in registry['jobs'].values())
  decisions=[read(REPORTS/'R1_XIV_MECHANISM_GATE.json')]
  while not (REPORTS/'R2_QUESTION_SUPERVISION.json').exists():
-  if list((OUT/'failures').glob('*.json')):raise RuntimeError('R2 label audit failed')
+  if unreviewed_failures():raise RuntimeError('R2 label audit failed')
   time.sleep(20)
  # Revision 2 was predeclared before any new DEV: broad core/ordinary/fusion and
  # required question/shared-compute ablations, with fixed uniform tiny/pilot.

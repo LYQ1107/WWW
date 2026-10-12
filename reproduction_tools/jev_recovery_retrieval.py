@@ -1,9 +1,9 @@
 """Common observation/query denominator; causal native-ID lookups, event/person macros."""
 import collections,gc
 from jev_recovery_common import *
-def aligned(arm,seed,video):
+def aligned(arm,seed,video,source_out=OLD_OUT):
  from jev_phase7_offline import IdentityEvaluator
- path=OLD_OUT/'online_v1/formal'/arm/f'seed{seed}'/f'video{video:02d}/RESULT.json'
+ path=source_out/'online_v1/formal'/arm/f'seed{seed}'/f'video{video:02d}/RESULT.json'
  result=read(path);p=result['raw_predictions'];assert sha(p['path'])==p['SHA256']
  evaluator=IdentityEvaluator(video);rows=evaluator.align(read(p['path']));bad={}
  for image in evaluator.images.values():
@@ -13,12 +13,14 @@ def aligned(arm,seed,video):
  return rows,ref(path)
 def summary(c):
  tp,fp=c['TP'],c['FP'];den=c['queries'];return dict(counts=dict(c),pair_precision=tp/(tp+fp) if tp+fp else None,pair_recall=tp/c['relevant'] if c['relevant'] else None,event_precision_answered=c['sum_event_precision']/c['answered'] if c['answered'] else None,event_precision_empty_zero=c['sum_event_precision']/den if den else None,event_recall=c['sum_event_recall']/den if den else None,query_answer_coverage=c['answered']/den if den else None,mean_returned_known_history=c['known_returns']/den if den else None,mean_relevant_history=c['relevant']/den if den else None)
-def main():
- protect();arms=['jev','threshold','mlp','attention','XIII_fixed_reference','parent'];cases=[];sources=[]
+def main(revision=None,base='XIV'):
+ protect();arms=['jev','threshold','mlp','attention','XIII_fixed_reference','parent'] if revision is None else ['jev','threshold','mlp','attention','parent'];cases=[];sources=[]
+ source_out=OLD_OUT if revision is None else OUT/f'R{revision}_{base}'
+ target_reports=REPORTS if revision is None else REPORTS/f'R{revision}_{base}'
  for seed in SEEDS:
   for video in DEV:
    runs={}
-   for arm in arms:runs[arm],s=aligned(arm,seed,video);sources.append(s)
+   for arm in arms:runs[arm],s=aligned(arm,seed,video,source_out);sources.append(s)
    base=runs['parent'];assert all(set(r)==set(base) for r in runs.values())
    for r in runs.values():assert all(r[k]['gt']==base[k]['gt'] for k in base)
    groups=collections.defaultdict(list)
@@ -46,10 +48,12 @@ def main():
    save(OUT/'retrieval/PROGRESS.json',dict(status='RUNNING',seed=seed,video=video,complete_cases=len(cases)));print('RECOVERY_FIXED_QUERY_RETRIEVAL',seed,video,flush=True)
    del runs,base;gc.collect()
  result=dict(status='COMPLETE',binding=binding('Frozen historical formal runs with exact common current/previous observation query denominator'),cases=cases,sources=sources,query_rule='Every identical current known detection with at least one earlier known same-person observation in other camera; all policies same denominator. Query before own camera payload commits.',no_GT_ID_mapping=True,actor_GT=False,independence='Person/video/history trajectories and seeds dependent; millions of returns are not independent corrections',empty_precision_convention='Answer-only event precision and fixed-denominator event precision with empty=0 both shown; pair precision separately',scope='Old trajectories diagnostic, no retraining or model selection from DEV')
- save(REPORTS/'CROSS_CAMERA_ADVANTAGE_AUDIT.json',result);save(REPORTS/'CROSS_CAMERA_RETRIEVAL.json',result)
+ save(target_reports/'CROSS_CAMERA_ADVANTAGE_AUDIT.json',result);save(target_reports/'CROSS_CAMERA_RETRIEVAL.json',dict(status='COMPLETE',detailed_audit=ref(target_reports/'CROSS_CAMERA_ADVANTAGE_AUDIT.json'),common_query_denominator=True))
  (DOCS/'CROSS_CAMERA_IDENTITY_ANALYSIS.md').write_text('# 固定查询分母检索\n\n相同感知观测、相同已知当前人物、相同过去目标观测提供查询。Global ID 返回来自各策略真实过去索引，无整视频最优 GT-ID 映射。分别报告空返回、已知回答覆盖、每次查询平均和每人平均，避免长轨迹返回对数放大。UNKNOWN 返回单独统计。此处是旧 DEV 诊断，不作参数选择或独立验证。\n')
  print('RECOVERY_RETRIEVAL_COMPLETE',flush=True)
 if __name__=='__main__':
- try:main()
+ import argparse
+ p=argparse.ArgumentParser();p.add_argument('--revision',type=int);p.add_argument('--base',default='XIV');a=p.parse_args()
+ try:main(a.revision,a.base)
  except Exception:
   import traceback;failure('fixed_query_retrieval',traceback.format_exc());raise

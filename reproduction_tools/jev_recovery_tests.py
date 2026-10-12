@@ -6,7 +6,7 @@ from jev_oneweek_tests import fixture
 from gtr.modeling.jev_recovery.plans import plans
 from gtr.modeling.jev_stage2.assignment import lawful_choice
 
-def main(revision=1):
+def main(revision=1,tag=None):
  protect();torch.set_num_threads(1)
  records=fixture();x,y=batch(records);results=[]
  # A real capacity conflict is re-solved, rather than independently overriding
@@ -23,7 +23,7 @@ def main(revision=1):
    for i,r in enumerate(records):
     q=len(r['rows']);k=len(r['refs']);score=torch.cat([old[i,:q,:k],old[i,:q,-1:]],-1)
     assert d['plans'][i][int(d['plan_scores'][i].argmax())]==tuple(lawful_choice(score,x['legal'][i,:q,:k]))
-   results.append(dict(base=base,arm=arm,initial_logits_bitwise_exact=True,initial_choices_exact=True,trainable_parameters=sum(p.numel() for p in model.parameters() if p.requires_grad),initializer=cp))
+   results.append(dict(base=base,arm=arm,maximum_plans=model.maximum,initial_logits_bitwise_exact=True,initial_choices_exact=True,trainable_parameters=sum(p.numel() for p in model.parameters() if p.requires_grad),initializer=cp))
    del model,d,old;gc.collect();torch.cuda.empty_cache()
  from jev_phase13_runtime import build_tracker,cache_inputs,run
  from jev_oneweek_online import FrozenPlanControl
@@ -49,8 +49,9 @@ def main(revision=1):
   assert digests[0]==digests[1];native.append(dict(base=base,exact_native_parity=digests[0]))
   print('RECOVERY_NATIVE_PARITY',base,flush=True)
  result=dict(status='PASS',revision=revision,binding=binding('Actual TRAIN12 96-scene native mutated-state parity of XIV and XIII zero residual'),initializers=results,native=native,DEFER_expansion=True,capacity_conflict_globally_resolved=True,zero_K_private_DEFER=True,hard_quarantine=False,learned_memory_admission=False,legacy_XVI_memory_failure='Guard unchanged native Bank/NEW/gallery, no new memory controller; full learned-weight regression still pending')
- save(REPORTS/('MODEL_AND_NATIVE_CONTRACT_TESTS.json' if revision==1 else f'R{revision}_MODEL_AND_NATIVE_CONTRACT_TESTS.json'),result);print('RECOVERY_CONTRACT_PASS',flush=True)
+ target=('MODEL_AND_NATIVE_CONTRACT_TESTS.json' if revision==1 else f'R{revision}_MODEL_AND_NATIVE_CONTRACT_TESTS.json') if tag is None else f'R{revision}_{tag}_CONTRACT_TESTS.json'
+ save(REPORTS/target,result);print('RECOVERY_CONTRACT_PASS',flush=True)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--revision',type=int,default=1);a=p.parse_args()
- try:main(a.revision)
+ p=argparse.ArgumentParser();p.add_argument('--revision',type=int,default=1);p.add_argument('--tag');a=p.parse_args()
+ try:main(a.revision,a.tag)
  except Exception:failure('native_contract',traceback.format_exc());raise

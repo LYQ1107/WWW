@@ -27,15 +27,16 @@ def run_job(name,script,args=(),gpu=None):
 def r1(gpu):
  protect();dependencies=['QUESTION_DISAGREEMENT_CENSUS.json','QUESTION_EFFECTIVE_SUPERVISION.json','LEGAL_ASSOCIATION_COVERAGE.json']
  while not all((REPORTS/n).exists() for n in dependencies):
-  if list((OUT/'failures').glob('*.json')):raise RuntimeError('Audit dependency failed; review retained failure')
+  if unreviewed_failures():raise RuntimeError('Audit dependency failed; review retained failure')
   save(OUT/'controller/PROGRESS.json',dict(status='WAITING_AUDIT',dependencies=dependencies));time.sleep(20)
  from jev_recovery_publish import publish
  publish('Record complete TRAIN disagreement census and legal candidate coverage')
  run_job('R1_contract','jev_recovery_tests.py',gpu=gpu)
  publish('Verify zero residual native parity on XIV and strong XIII Fixed bases')
  for arm in ('jev','threshold','mlp','attention'):
-  run_job('R1_'+arm+'_tiny','jev_recovery_train.py',['--arm',arm,'--phase','tiny'],gpu)
-  tiny=read(REPORTS/f'TRAIN_R1_XIV_{arm}_tiny_SEED20261009.json')
+  phase='tiny8' if arm=='jev' else 'tiny'
+  run_job('R1_'+arm+'_'+phase,'jev_recovery_train.py',['--arm',arm,'--phase',phase],gpu)
+  tiny=read(REPORTS/f'TRAIN_R1_XIV_{arm}_{phase}_SEED20261009.json')
   assert tiny['engineering_training_pass'],'Tiny failed for '+arm
  publish('Record equal-supervision Tiny128 learning on expanded legal plans')
  for arm in ('jev','threshold','mlp','attention'):
