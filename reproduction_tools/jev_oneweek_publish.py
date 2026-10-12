@@ -1,6 +1,7 @@
 """Refresh exact compact evidence and push a completed milestone without binaries."""
 import argparse
 import fcntl
+import signal
 from jev_oneweek_common import *
 
 
@@ -42,6 +43,7 @@ def snapshot(message=None):
     protect()
     failures=[read(p) for p in (OUT/'failures').glob('*.json')]
     save(REPORTS/'ENGINEERING_FAILURES.json',dict(status='RETAINED',failures=failures,
+         publication_failures=[read(p) for p in (OUT/'publication_failures').glob('*.json')],
          no_scientific_failure_hidden=True))
     paths=[p for folder in (DOCS,REPORTS,ROOT/'gtr/modeling/jev_oneweek') if folder.exists()
            for p in folder.rglob('*') if p.is_file() and '__pycache__' not in p.parts
@@ -55,7 +57,29 @@ def snapshot(message=None):
     selected=[str(p.relative_to(ROOT)) for p in paths]+['reports/JEV_ONEWEEK/ARTIFACT_SHA_MANIFEST.json']
     subprocess.run(['git','add',*selected],cwd=ROOT,check=True)
     subprocess.run(['git','-c','core.whitespace=cr-at-eol','diff','--cached','--check'],cwd=ROOT,check=True)
-    subprocess.run(['git','-c','gc.auto=0','commit','-m',message],cwd=ROOT,check=True)
+    unchanged=subprocess.run(['git','diff','--cached','--quiet'],cwd=ROOT).returncode
+    assert unchanged in [0,1]
+    if unchanged:
+        subprocess.run(['git','-c','gc.auto=0','commit','-m',message],cwd=ROOT,check=True)
+    else:print('NO_NEW_COMMIT_RETRY_EXISTING_HEAD',flush=True)
+
+
+def network_command(command,env,timeout):
+    # Killing git alone leaves its ssh/proxy children alive. Isolate this
+    # publication subprocess group so timeouts can reap only our own children.
+    process=subprocess.Popen(command,cwd=ROOT,env=env,start_new_session=True,
+                             stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+    try:
+        stdout,stderr=process.communicate(timeout=timeout)
+    except subprocess.TimeoutExpired:
+        os.killpg(process.pid,signal.SIGTERM)
+        try:stdout,stderr=process.communicate(timeout=5)
+        except subprocess.TimeoutExpired:
+            os.killpg(process.pid,signal.SIGKILL);stdout,stderr=process.communicate()
+        raise subprocess.TimeoutExpired(command,timeout,output=stdout,stderr=stderr)
+    if stderr:print(stderr,end='',flush=True)
+    if process.returncode:raise subprocess.CalledProcessError(process.returncode,command,output=stdout,stderr=stderr)
+    return stdout
 
 
 def _publish_locked(message=None):
@@ -63,12 +87,20 @@ def _publish_locked(message=None):
         fcntl.flock(lock,fcntl.LOCK_EX)
         snapshot(message)
     if message is None:return
-    ssh="ssh -i /home/liuyeqiang/.ssh/id_ed25519_www_codex -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o HostKeyAlias=github.com -o ConnectTimeout=20 -o ConnectionAttempts=1 -o 'ProxyCommand=nc -X connect -x 127.0.0.1:17891 %h %p'"
+    ssh="ssh -i /home/liuyeqiang/.ssh/id_ed25519_www_codex -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o HostKeyAlias=github.com -o ConnectTimeout=20 -o ConnectionAttempts=1 -o ServerAliveInterval=15 -o ServerAliveCountMax=2 -o 'ProxyCommand=nc -X connect -x 127.0.0.1:17891 %h %p'"
     env=dict(os.environ,GIT_SSH_COMMAND=ssh)
-    subprocess.run(['git','push','origin','HEAD:refs/heads/jev/www-jev-oneweek-20261012'],cwd=ROOT,env=env,check=True,timeout=120)
-    local=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
-    remote=subprocess.check_output(['git','ls-remote','origin','refs/heads/jev/www-jev-oneweek-20261012'],cwd=ROOT,env=env,text=True,timeout=60).split()[0]
-    assert local==remote
+    for attempt in range(3):
+        try:
+            network_command(['git','push','origin','HEAD:refs/heads/jev/www-jev-oneweek-20261012'],env,90)
+            local=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+            remote=network_command(['git','ls-remote','origin','refs/heads/jev/www-jev-oneweek-20261012'],env,45).split()[0]
+            assert local==remote
+            break
+        except (subprocess.TimeoutExpired,subprocess.CalledProcessError) as error:
+            save(OUT/'publication_failures'/f'{time.time_ns()}.json',dict(status='PUBLICATION_ATTEMPT_FAILED',attempt=attempt,
+                 command=error.cmd,error=str(error),local_HEAD=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()))
+            if attempt==2:raise
+            time.sleep(3)
     print('VERIFIED_REMOTE_HEAD',local,flush=True)
 
 
