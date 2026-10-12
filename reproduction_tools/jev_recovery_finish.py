@@ -13,6 +13,8 @@ def main(gpu):
  decisions=read(p)['decisions'];eff=[];identity=[]
  for decision in decisions:
   revision=decision['revision'];base=decision['base'];phase='formal' if decision['formal_eligible'] else 'pilot'
+  run_job(f'R{revision}_{base}_question_mechanism_{phase}','jev_recovery_question_probe.py',['--revision',revision,'--base',base,'--phase',phase],gpu)
+  if phase=='formal':run_job(f'R{revision}_{base}_fixed_query_retrieval','jev_recovery_retrieval.py',['--revision',revision,'--base',base],None)
   run_job(f'R{revision}_{base}_paired_{phase}','jev_recovery_online.py',['--kind','paired','--arm','jev','--revision',revision,'--base',base,'--phase',phase,'--videos',16],gpu)
   for arm in ('parent','jev','threshold','mlp','attention'):
    # Every pilot has one complete native TRAIN16. Promoted methods also have
