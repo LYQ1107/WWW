@@ -80,7 +80,7 @@ N01分解：恢复已有active ID 238；private MATCH DEFER 0。合法DEFER是�
 | explicit_scores | COMPLETE | COMPLETE | 2 | PENDING |
 | independent_readers | COMPLETE | COMPLETE | -4 | PENDING |
 | mlp | COMPLETE | COMPLETE | 9 | PENDING |
-| attention | COMPLETE | COMPLETE | PENDING | PENDING |
+| attention | COMPLETE | COMPLETE | 1 | PENDING |
 
 ## 冻结干预的实际原生状态验证
 
