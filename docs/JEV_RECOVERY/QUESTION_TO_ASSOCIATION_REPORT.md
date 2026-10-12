@@ -63,7 +63,7 @@
 |---|---|---|---:|---|
 | explicit_scores | COMPLETE | PENDING | PENDING | PENDING |
 | independent_readers | COMPLETE | PENDING | PENDING | PENDING |
-| mlp | PENDING | PENDING | PENDING | PENDING |
+| mlp | COMPLETE | PENDING | PENDING | PENDING |
 | attention | PENDING | PENDING | PENDING | PENDING |
 
 ## 冻结干预的实际原生状态验证
