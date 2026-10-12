@@ -1,0 +1,36 @@
+{
+  "failures": [
+    {
+      "binding": {
+        "CUDA_VISIBLE_DEVICES": "4",
+        "Full24": false,
+        "commit": "d49c90e58dee9919a955d56947908928fc95f18b",
+        "official_TEST": false,
+        "protocol": {
+          "SHA256": "97086d8e04936ac6ed80d888fd5af686187f20c05acc1fac45234fe4c35169d5",
+          "bytes": 5622,
+          "path": "/home/liuyeqiang/WWW_jev_oneweek_20261012/reports/JEV_ONEWEEK/PREREGISTRATION.json"
+        },
+        "scope": "original_GMT_restore",
+        "sealed20_21_22": true,
+        "sources": {
+          "gtr/modeling/jev_phase14/model.py": "3eff3d82ecc90f2951edb8b7fc284b4c259c1a2d180f883857e9e8c3b7e4729b",
+          "gtr/modeling/jev_phase15/native_commit_adapter.py": "21d6728dc4b0e70c00c7165e990669d3149bb8a56338b2fc7500333330dfa399",
+          "gtr/modeling/jev_stage2/assignment.py": "0c2b4f1ad4aa8ae0c6cc916dc54afe37c999d581077862baee353383aae8c295",
+          "gtr/modeling/jev_stage2/native.py": "ddab4fab9524bc18f8e8c654d1c2bfeef20be6ffccd751709df2d9d6e7be1406",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "e31e85626dfa654cf4e5c3b07f1c987ac507e728b01c922cc9c7114724f8711e",
+          "reproduction_tools/jev_oneweek_asset_audit.py": "d8ee199a0f37ce32fee076a463e245716313b2fc16d51ec4341215bae2ef0ee8",
+          "reproduction_tools/jev_oneweek_common.py": "6353f41a3d070408f0241e9ef16f927eaf29a1e29772e2fbc8cc04194e3b3938",
+          "reproduction_tools/jev_oneweek_count_params.py": "0e187c4864b784512aa2f2b4ef1bf21eaebb3a9cc27900a2c8a056c193ef058a",
+          "reproduction_tools/jev_oneweek_freeze.py": "b4570ad937ab6347683008b8b2aece6965c550ef17c25c81efe4ccd0026005a8",
+          "reproduction_tools/jev_oneweek_restore_gmt.py": "a726d789fb15fd4fba0f3d52719475e1d31b1858da49623378419dd0d7619d1f"
+        }
+      },
+      "error": "Traceback (most recent call last):\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_restore_gmt.py\", line 82, in <module>\n    try:main(args.video)\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_restore_gmt.py\", line 50, in main\n    with torch.no_grad():raw,_=run(model,values,frames)\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_phase13_runtime.py\", line 45, in run\n    return model.sliding_inference_GMT(values,2,[0,frames-1,list(range(frames))*2],native_raw=True,native_prefix=prefix,native_stop_frame=stop)\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/gtr/modeling/meta_arch/gtr_rcnn.py\", line 990, in sliding_inference_GMT\n    instances_kv, id_count,id_count_dict,id_reid_dict  = self.run_first_tracker_plus(\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/gtr/modeling/meta_arch/gtr_rcnn.py\", line 1196, in run_first_tracker_plus\n    self._candidate_observe_commit(instances, id_count, id_count_dict, id_reid_dict,\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/gtr/modeling/meta_arch/gtr_rcnn.py\", line 348, in _candidate_observe_commit\n    observer(instances=instances, id_count=id_count, hits=hits, galleries=galleries,\n  File \"/home/liuyeqiang/WWW_jev_oneweek_20261012/reproduction_tools/jev_oneweek_restore_gmt.py\", line 36, in committed\n    key=[video,int(d['frame_index']),int(d['view'])]\nKeyError: 'frame_index'\n",
+      "stage": "original_GMT_restore",
+      "status": "FAIL"
+    }
+  ],
+  "repair": "Native callback exposes frame, not frame_index; observer only fixed, original failure and START retained. Retry in separate attempt01 folder.",
+  "status": "RETAINED"
+}

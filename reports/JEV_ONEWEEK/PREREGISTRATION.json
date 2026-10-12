@@ -1,0 +1,140 @@
+{
+  "Full24": false,
+  "TRAIN_authorized": [
+    12,
+    13,
+    14,
+    16
+  ],
+  "ablations": [
+    "strongest ordinary control",
+    "cross_camera_only",
+    "stability_only",
+    "both",
+    "fixed_question",
+    "no_shared_state",
+    "additive_edges_only",
+    "equal_extra_solver_no_JEV",
+    "ordinary_attention_all_evidence"
+  ],
+  "architecture": "Phase XIV algorithm + Phase XV native interface; no hard/soft memory control",
+  "attribution": "Paired same-state local interventions and separately labelled full mutated-state closed-loop outcomes",
+  "base": "d49c90e58dee9919a955d56947908928fc95f18b",
+  "budget": {
+    "major_algorithm_versions_max": 3,
+    "minimum_home_and_data1_free_GiB": 30,
+    "new_large_downloads": 0,
+    "runtime_full_restarts_per_method": 3,
+    "runtime_retention_GiB_max": 8,
+    "speed_relative_loss_target": 0.1
+  },
+  "candidate_plans": {
+    "additive_vs_interaction_required": true,
+    "base_always_included": true,
+    "generation": "Deterministic legal-edge conflicts, native per-camera capacity, GT/\u672a\u6765\u5e27 forbidden",
+    "max_count": 4,
+    "same_set_for_strong_controls": true,
+    "same_solver_budget": true,
+    "zero_initialized_output_parity": true
+  },
+  "comparisons": {
+    "M0": "Original complete GMT/GTA (separate full frontend reference)",
+    "M1": "Same-Stage1 cosine",
+    "M10": "Phase XV V3 frozen diagnostic",
+    "M11": "New JEVTrack",
+    "M2": "Fixed threshold",
+    "M3": "State/pair learned thresholds and Binary JEV",
+    "M4": "Fixed/learned linear fusion",
+    "M5": "Original-rule second association and repeated Hungarian",
+    "M6": "Small MLP and DeepSets",
+    "M7": "Ordinary Attention/SetTransformer",
+    "M8": "Phase XIII Fixed Question",
+    "M9": "Phase XIV Multi-question"
+  },
+  "conference_dates": {
+    "abstract": "2026-10-18 AoE",
+    "full_paper": "2026-10-25 AoE",
+    "official_source": "https://www2027.thewebconf.org/research-track-papers/"
+  },
+  "controller_audit_video": 16,
+  "development": [
+    17,
+    18,
+    19
+  ],
+  "extra_solve": "Rerunning unchanged Hungarian is a no-op control, not a claimed reassociation benefit",
+  "future_short_track_filter_secondary_only": true,
+  "gates": {
+    "JEV_independence": "All five reviewer questions require separate actual evidence; otherwise NOT_ESTABLISHED",
+    "collapse": "Record full native failures, retain safe baseline. Never delete a failing seed or relabel UNKNOWN",
+    "engineering": "Finite loss/gradients, legality, GT separation, initial native parity, order/dynamic K and full native transitions",
+    "exploratory_HOTA_target_points": 0.5,
+    "pilot": "Finite learning and no label-contract violation; association improvements assessed on reused controller audit, no original MASTER safe-action gate reinterpretation",
+    "science": "Positive HOTA/AssA/CVIDF1 against strongest fair ordinary control plus protection/IDSW/cost evidence"
+  },
+  "mechanism_factorial": [
+    "OriginalScores_OriginalSolve",
+    "OriginalScores_ExtraSolve",
+    "JEVScores_OriginalSolve",
+    "JEVScores_ExtraSolve"
+  ],
+  "metrics": "Frozen TrackEval and official MATLAB; true pooled camera/scene counts, not mean-of-video HOTA",
+  "model_selection": "Last fixed-budget checkpoint; use only controller audit16 for preregistered engineering/pilot gates. No DEV tuning, best-seed selection or best-checkpoint search",
+  "new_gradient_videos": [
+    12,
+    13,
+    14
+  ],
+  "official_TEST": false,
+  "original_MASTER_safety_gate_unchanged": true,
+  "primary_metrics": [
+    "HOTA",
+    "DetA",
+    "AssA",
+    "IDF1",
+    "MOTA",
+    "IDSW",
+    "Frag",
+    "CVIDF1",
+    "CVMA"
+  ],
+  "raw_online_primary": true,
+  "scientific_success_not_assumed": true,
+  "scope": "Controlled current association learning; not future safe-action learning",
+  "sealed20_21_22": true,
+  "seeds": [
+    20261008,
+    20261009,
+    20261010
+  ],
+  "split": {
+    "inherited_backbone_and_initializers_exposure": "All24TRAIN Stage1; previous Stage2 TRAIN12/13/14/16; repeated DEV17/18/19",
+    "known_prior_temporal_audit": "(frame//64)%5==4; preserve annotations, do not rename it independent validation",
+    "person_namespace": "Treat GT persons within each video as dependent; audit cross-video scene/person overlap before claiming independence",
+    "unit": "video plus GT-person dependency groups; temporal blocks are correlated diagnostics",
+    "video16_role": "No gradients for new sprint modules; exposed to inherited initializers, not independent system heldout"
+  },
+  "status": "FROZEN_BEFORE_NEW_SPRINT_RESULTS",
+  "supervision": {
+    "cross_camera": "Current GT vs certified other-camera past observations; per-view mixed/duplicate/unmatched history UNKNOWN",
+    "current_choice": "Certified known past owners with current TRAIN detection GT; UNKNOWN masked",
+    "horizon_value_heads": false,
+    "learned_MEMORY_WRITE": false,
+    "learned_REACT": false,
+    "stability": "Observable predecessor continuity supported by current and past certified identities; not purity alone, not future value"
+  },
+  "training": {
+    "batch_payloads": 4,
+    "formal_total_updates": 4000,
+    "frozen_common_initializer": true,
+    "learning_rate": 0.0001,
+    "natural_sampling": "Uniform video, then 64-frame block, then payload. Additional natural hard stratum has separately recorded weight; no copied rare safety events",
+    "optimizer": "AdamW",
+    "ordinary_controls_same_supervision": true,
+    "pilot_updates": 1000,
+    "synthetic_corruption_in_primary": false,
+    "tiny_updates": 128,
+    "trainable_new_parameter_target": 500000,
+    "weight_decay": 0.01
+  }
+}
