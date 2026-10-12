@@ -41,6 +41,7 @@ class SolverFactorControl(nn.Module):
     def __init__(self,model,kind):
         super().__init__();self.model=model;self.kind=kind
         self.solve_calls=0;self.masked_edges=0
+        self.triggered_events=0;self.reassigned_rows=0
     def forward(self,x):
         if not x['question_mask'].any():
             self.runtime_choice=[]
@@ -60,6 +61,8 @@ class SolverFactorControl(nn.Module):
                 if col>=0 and float(details['base_logits'][0,row,col]-details['base_logits'][0,row,-1])<.1:
                     mask[row,col]=False;rejected+=1
             choice=lawful_choice(score[0],mask);self.solve_calls+=2;self.masked_edges+=rejected
+            self.triggered_events+=bool(rejected)
+        self.reassigned_rows+=sum(a!=b for a,b in zip(lawful_choice(details['base_logits'][0],legal),choice))
         self.runtime_choice=list(choice)
         self.runtime_details=dict(base_logits=details['base_logits'],edge_logits=details['edge_logits'])
         return score
@@ -127,6 +130,9 @@ def main(arm,seed,phase,video):
         with torch.no_grad():raw,_=run(model,values,frames)
     finally:journal.close()
     assert counts['camera_commits']==frames*2-1
+    solver_diagnostics={key:getattr(actor,key) for key in
+                        ['solve_calls','masked_edges','triggered_events','reassigned_rows']
+                        if actor is not None and hasattr(actor,key)}
     from jev_phase13_common import ANNOTATIONS
     images={(i['frame_id']-1,i['view_id']-1):i for i in read(ANNOTATIONS)['images'] if i['video_id']==video}
     predictions=raw_predictions(raw,images);save(folder/'RAW_PREDICTIONS.json',predictions)
@@ -138,7 +144,9 @@ def main(arm,seed,phase,video):
     evaluator=IdentityEvaluator(video);aligned=evaluator.align(predictions);identity=evaluator.summarize(aligned)
     save(folder/'IDENTITY_ANALYSIS.json',identity)
     result=dict(status='COMPLETE',binding=source,arm=arm,seed=seed,phase=phase,video=video,frames=frames,
-                counts=dict(counts),raw_online_metrics=score,metrics_source=ref(metric_root/'metrics.json'),
+                counts=dict(counts),solver_diagnostics=solver_diagnostics,
+                solver_diagnostics_scope='Factor controls: counted solver calls exclude diagnostic base-choice calculation; reassigned rows compare same-state frozen base assignment',
+                raw_online_metrics=score,metrics_source=ref(metric_root/'metrics.json'),
                 raw_predictions=ref(folder/'RAW_PREDICTIONS.json'),commits=ref(folder/'COMMITS.jsonl.gz'),
                 actual_mutated_state_online=True,no_GT_actor_input=True,current_Bank_NEW_fallback_unmodified=True,
                 frozen_four_slot_history_and_native_causal_order=True,per_camera_capacity_one=True,

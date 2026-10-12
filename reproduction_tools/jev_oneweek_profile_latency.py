@@ -18,6 +18,11 @@ def main(arm,seed,phase,video):
     folder=OUT/'full_video_efficiency_v1'/phase/arm/f'seed{seed}'/f'video{video:02d}'
     folder.mkdir(parents=True,exist_ok=False)
     trials=[];digests=[]
+    visible=os.environ.get('CUDA_VISIBLE_DEVICES','')
+    uuid=os.environ.get('JEV_EXPECTED_GPU_UUID')
+    if uuid is None and visible.isdigit():
+        uuid=subprocess.check_output(['nvidia-smi','-i',visible,'--query-gpu=uuid','--format=csv,noheader'],text=True).strip()
+    assert uuid,'Physical timing GPU UUID must be established before measurements'
     for repeat in range(3):
         seed_all(seed)
         if arm=='original_GMT':
@@ -33,7 +38,6 @@ def main(arm,seed,phase,video):
         # native run afterwards, preserving real cold-start state semantics.
         with torch.no_grad():warm,_=run(model,values,frames,stop=7)
         del warm;seed_all(seed)
-        uuid=os.environ.get('JEV_EXPECTED_GPU_UUID')
         concurrent_before=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader'],text=True)
         if uuid:
             other=[line for line in concurrent_before.splitlines() if line.strip().startswith(uuid+',') and int(line.split(',')[1])!=os.getpid()]
@@ -64,7 +68,7 @@ def main(arm,seed,phase,video):
                 trials=trials,mean_scene_FPS=float(np.mean([t['full_two_camera_scene_FPS'] for t in trials])),
                 std_scene_FPS=float(np.std([t['full_two_camera_scene_FPS'] for t in trials])),
                 three_fresh_full_restart_prediction_parity=True,hardware=torch.cuda.get_device_name(),
-                torch=str(torch.__version__),CUDA=torch.version.cuda,threads=1,warmup_scene_frames=8,
+                torch=str(torch.__version__),CUDA=torch.version.cuda,GPU_UUID=uuid,threads=1,warmup_scene_frames=8,
                 includes_actual_image_IO_backbone_detector_VFCE_history_assignment_Bank_Gallery=True,
                 GT_evaluation_and_journals_in_timed_region=False,cached_perception_hits=0,
                 same_common_frontend=arm!='original_GMT',detailed_component_breakdown='PENDING_SEPARATE_INSTRUMENTED_PROFILE')
