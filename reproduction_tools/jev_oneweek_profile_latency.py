@@ -35,6 +35,9 @@ def main(arm,seed,phase,video):
         del warm;seed_all(seed)
         uuid=os.environ.get('JEV_EXPECTED_GPU_UUID')
         concurrent_before=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader'],text=True)
+        if uuid:
+            other=[line for line in concurrent_before.splitlines() if line.strip().startswith(uuid+',') and int(line.split(',')[1])!=os.getpid()]
+            assert not other,'Timing GPU has another active process; preserve this attempted run separately'
         torch.cuda.synchronize();torch.cuda.reset_peak_memory_stats();start=time.perf_counter()
         with torch.no_grad():raw,_=run(model,values,frames)
         torch.cuda.synchronize();seconds=time.perf_counter()-start
@@ -49,6 +52,9 @@ def main(arm,seed,phase,video):
                    peak_reserved_MiB=torch.cuda.max_memory_reserved()/2**20,
                    current_prediction_sha=digest,concurrent_GPU_processes_before=concurrent_before,
                    concurrent_GPU_processes_after=subprocess.check_output(['nvidia-smi','--query-compute-apps=gpu_uuid,pid,used_memory','--format=csv,noheader'],text=True))
+        if uuid:
+            other=[line for line in trial['concurrent_GPU_processes_after'].splitlines() if line.strip().startswith(uuid+',') and int(line.split(',')[1])!=os.getpid()]
+            assert not other,'A new process acquired the GPU during the timing run'
         trials.append(trial);save(folder/'PROGRESS.json',dict(status='FULL_VIDEO_RESTARTS',trials=trials))
         print('FULL_VIDEO_SCENE_FPS',arm,repeat,trial['full_two_camera_scene_FPS'],flush=True)
         del raw,model,actor,executor;gc.collect();torch.cuda.empty_cache()

@@ -17,7 +17,7 @@ def main(gpu,training_log):
         save(status,dict(status='WAITING_FOR_OWN_FORMAL_GPU5_QUEUE',dependency=str(training_log)))
         time.sleep(20)
     gpu_uuid=subprocess.check_output(['nvidia-smi','-i',str(gpu),'--query-gpu=uuid','--format=csv,noheader'],text=True).strip()
-    env=dict(os.environ,JEV_EXPECTED_GPU_UUID=gpu_uuid)
+    os.environ['JEV_EXPECTED_GPU_UUID']=gpu_uuid
     for arm in ['parent','cosine','mlp','attention','jev','deepsets','fixed_question','XIII_fixed_reference','XV_V3_reference','original_GMT']:
         folder=OUT/'full_video_efficiency_v1/formal'/arm/'seed20261009/video17'
         if (folder/'RESULT.json').exists():continue
