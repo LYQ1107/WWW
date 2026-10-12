@@ -72,7 +72,7 @@ JEV较高正例召回同时伴随更多假阳性。不能只由正例正确数�
 
 | 融合器 | Tiny | Pilot | 同状态净纠错 | 完整在线 |
 |---|---|---|---:|---|
-| explicit_scores | COMPLETE | PENDING | PENDING | PENDING |
+| explicit_scores | COMPLETE | COMPLETE | PENDING | PENDING |
 | independent_readers | COMPLETE | PENDING | PENDING | PENDING |
 | mlp | COMPLETE | PENDING | PENDING | PENDING |
 | attention | COMPLETE | PENDING | PENDING | PENDING |
