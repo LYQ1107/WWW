@@ -16,7 +16,7 @@
 
 **Q3：MLP或普通Attention为什么不够？**
 
-新JEV与最强已完成普通控制 mlp 的 HOTA 均值差 -0.119，尚不支持独立架构优势。 各新增控制共享相同冻结XIV初始化、证据、当前标签、最多4方案和4000更新。新模块JEV169092、MLP154980、Attention168964参数；不是整个历史预训练架构的独立公平比较。
+新JEV与最强已完成普通控制 threshold 的 HOTA 均值差 -0.377，尚不支持独立架构优势。 各新增控制共享相同冻结XIV初始化、证据、当前标签、最多4方案和4000更新。新模块JEV169092、MLP154980、Attention168964参数；不是整个历史预训练架构的独立公平比较。
 
 证据：`reports/JEV_ONEWEEK/FORMAL_CURRENT_RESULTS.json / NEW_MODULE_PARAMETER_READS.json`。
 
@@ -28,6 +28,6 @@
 
 **Q5：是否真是JEV？**
 
-每摄像头因果关联事件共享State编码1次，实际重复编码2次同输出；动态合法ID/私有DEFER和问题条件化均实现。TRAIN16共同可认证两问题标签分歧0，不能据两个Head或embedding敏感性证明独立语义价值。目前应称JEV-inspired关联研究实现。
+每摄像头因果关联事件共享State编码1次，实际重复编码2次同输出；动态合法ID/私有DEFER和问题条件化均实现。真实TRAIN已知两问题有270个分歧，其中106个旧暴露reserved边JEV同时答对79个、MLP和pair阈值105个、Attention99个；函数可以输出不同语义答案，普通控制同样能做到且表现更好。TRAIN16共同可认证两问题标签分歧0；没有独立JEV语义增益证据。目前应称JEV-inspired关联研究实现，不声称全scene只编码一次、整个生命周期State或TypeSafe商业内部架构复现。
 
-证据：`reports/JEV_ONEWEEK/TRAINED_CONTRACT_CALIBRATION_SEED20261009.json / QUESTION_SEPARATION_AND_PLAN_COVERAGE.json`。
+证据：`reports/JEV_ONEWEEK/TRAINED_CONTRACT_CALIBRATION_SEED20261009.json / QUESTION_SEPARATION_AND_PLAN_COVERAGE.json / TYPED_QUESTION_ORDINARY_CONTROL_COMPARISON.json`。
