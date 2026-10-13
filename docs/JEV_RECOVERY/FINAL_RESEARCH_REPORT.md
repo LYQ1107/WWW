@@ -15,7 +15,7 @@ MASTER 仍在执行。下表只读取实际已完成官方合并评价，不用�
 | R2_XIV | no_interaction | 1/3 | 69.040 | 65.097 | 80.693 | 4576.0 |
 | R2_XIV | no_shared | 1/3 | 69.479 | 65.828 | 81.463 | 2471.0 |
 | R2_XIV | parent | 2/3 | 73.070 | 72.761 | 87.551 | 502.5 |
-| R2_XIV | stability_only | 1/3 | 72.712 | 72.131 | 87.827 | 2370.0 |
+| R2_XIV | stability_only | 2/3 | 71.783 | 70.343 | 85.123 | 1993.5 |
 | R2_XIV | threshold | 2/3 | 71.834 | 70.343 | 85.463 | 644.5 |
 
 未完成的同状态干预、强基座正式实验、身份回归及完整 FPS 均仍是验收项。不能以脚本完成或单个负结果结束 MASTER。详见 EXPERIMENT_REGISTRY.json、NEXT_ACTION.json 及本地 PROGRESS。
