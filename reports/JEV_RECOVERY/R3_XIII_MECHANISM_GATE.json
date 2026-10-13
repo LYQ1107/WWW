@@ -1,0 +1,88 @@
+{
+  "ASSOCIATION": "TRAIN_DIAGNOSTIC_ONLY",
+  "CROSS_CAMERA": "NOT_ESTABLISHED",
+  "EFFICIENCY": "PENDING",
+  "GT_only_posthoc": true,
+  "JEV_independent_value": "NOT_ESTABLISHED",
+  "base": "XIII",
+  "formal_eligible": true,
+  "independent_validation": false,
+  "master_complete": false,
+  "revision": 3,
+  "rows": {
+    "attention": {
+      "ENGINEERING": "PASS",
+      "SUPERVISION": "CURRENT_MATCH_ELIGIBLE",
+      "TRAIN16_AssA": 69.68967592878387,
+      "TRAIN16_HOTA": 69.72711912218476,
+      "TRAIN16_HOTA_delta": 0.017067227112391947,
+      "TRAIN16_IDSW": 1103.0,
+      "certified_net_N01_minus_N10": -4,
+      "certified_probe": {
+        "SHA256": "eee0b4e74723ee00cf1d97305347c243795e747564771dfb6029b55e3494aba8",
+        "bytes": 29093,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/CERTIFIED_PROBE_R3_XIII_attention_pilot.json"
+      },
+      "controller_known_correct_delta": 0.0008890981210335491,
+      "current_mechanism": false,
+      "no_severe_online_collapse": true,
+      "rank_nonzero_batch_fraction": 1.0
+    },
+    "jev": {
+      "ENGINEERING": "PASS",
+      "SUPERVISION": "CURRENT_MATCH_ELIGIBLE",
+      "TRAIN16_AssA": 67.02251855170773,
+      "TRAIN16_HOTA": 68.55628004743585,
+      "TRAIN16_HOTA_delta": -1.15377184763652,
+      "TRAIN16_IDSW": 1455.0,
+      "certified_net_N01_minus_N10": -8,
+      "certified_probe": {
+        "SHA256": "eb7f8196735cdb69d37034493785faa3e78a6a7a6f35c4b3653d80ab6f8e8a15",
+        "bytes": 23197,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/CERTIFIED_PROBE_R3_XIII_jev_pilot.json"
+      },
+      "controller_known_correct_delta": -0.0009690623001494814,
+      "current_mechanism": false,
+      "no_severe_online_collapse": false,
+      "rank_nonzero_batch_fraction": 1.0
+    },
+    "mlp": {
+      "ENGINEERING": "PASS",
+      "SUPERVISION": "CURRENT_MATCH_ELIGIBLE",
+      "TRAIN16_AssA": 66.98870206000765,
+      "TRAIN16_HOTA": 68.53591121156612,
+      "TRAIN16_HOTA_delta": -1.174140683506252,
+      "TRAIN16_IDSW": 1180.0,
+      "certified_net_N01_minus_N10": 0,
+      "certified_probe": {
+        "SHA256": "e3db3cc0747dfe4879fb442df2550cf8047b68a738b6bab6fb27a4a4c317edeb",
+        "bytes": 27677,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/CERTIFIED_PROBE_R3_XIII_mlp_pilot.json"
+      },
+      "controller_known_correct_delta": -0.00038977829441300127,
+      "current_mechanism": false,
+      "no_severe_online_collapse": false,
+      "rank_nonzero_batch_fraction": 1.0
+    },
+    "threshold": {
+      "ENGINEERING": "PASS",
+      "SUPERVISION": "CURRENT_MATCH_ELIGIBLE",
+      "TRAIN16_AssA": 71.10608141880303,
+      "TRAIN16_HOTA": 70.6049738968192,
+      "TRAIN16_HOTA_delta": 0.8949220017468349,
+      "TRAIN16_IDSW": 1002.0,
+      "certified_net_N01_minus_N10": 4,
+      "certified_probe": {
+        "SHA256": "827591b0ca7d28438120d0708976837fa751fceb4e07b93bb871317a0f1acc75",
+        "bytes": 19144,
+        "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/CERTIFIED_PROBE_R3_XIII_threshold_pilot.json"
+      },
+      "controller_known_correct_delta": 0.0006191950464395912,
+      "current_mechanism": true,
+      "no_severe_online_collapse": true,
+      "rank_nonzero_batch_fraction": 1.0
+    }
+  },
+  "rule": "At least one controlled arm has positive fully certified same-state N01 minus N10 and nonzero certified ranking gradients; cold TRAIN16 HOTA may fall at most 1 point. Increasing conditional known accuracy by moving to UNKNOWN is not a correction. Gate identical across arms; none selected by DEV.",
+  "status": "COMPLETE_TRAIN_GATE"
+}
