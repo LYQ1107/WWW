@@ -63,7 +63,10 @@ def main(gpu):
  # Decide what to migrate from TRAIN evidence, never from new DEV performance.
  r2=decisions[-1];good=r2['rows']['jev']['current_mechanism'] and r2['rows']['jev']['no_severe_online_collapse']
  source_revision=2 if good else 1
- save(REPORTS/'R3_PREREGISTRATION.json',dict(status='FROZEN_BEFORE_STRONG_BASE_NEW_GRADIENTS',base='XIII',mechanism_revision=source_revision,source_gate=ref(REPORTS/'R2_XIV_MECHANISM_GATE.json'),reason='Transfer typed mechanism only if TRAIN JEV mechanism qualifies; otherwise transfer bounded proposal/supervision correction alone',arms=['jev','threshold','mlp','attention'],seeds=SEEDS,DEV_selection=False))
+ preregistration=dict(status='FROZEN_BEFORE_STRONG_BASE_NEW_GRADIENTS',base='XIII',mechanism_revision=source_revision,source_gate=ref(REPORTS/'R2_XIV_MECHANISM_GATE.json'),reason='Transfer typed mechanism only if TRAIN JEV mechanism qualifies; otherwise transfer bounded proposal/supervision correction alone',arms=['jev','threshold','mlp','attention'],seeds=SEEDS,DEV_selection=False)
+ existing=REPORTS/'R3_PREREGISTRATION.json'
+ if existing.exists():assert read(existing)==preregistration,'Preserve frozen R3 protocol; resume cannot change it'
+ else:save(existing,preregistration)
  decisions.append(stage(3,'XIII',['jev','threshold','mlp','attention'],gpu))
  # A negative route gets a full report and the next scientifically grounded
  # route, rather than more steps on that failed hypothesis.
