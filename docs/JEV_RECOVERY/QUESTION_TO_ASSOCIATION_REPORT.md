@@ -103,3 +103,5 @@ H64使用事前固定的真实XV native prefix32/0，五方法起始state/input/
 Stage2、真实 FPS、参数与三种子正式指标以原 finisher 完成文件为准。此报告不会把 pending 值填成0，也不会宣称独立验证或研究突破。
 
 R2_XIV_MECHANISM_GATE.json：formal_eligible=True。
+
+R3_XIII_MECHANISM_GATE.json：formal_eligible=True。
