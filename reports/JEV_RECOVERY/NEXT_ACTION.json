@@ -1,21 +1,23 @@
 {
-  "action": "Review full three-route evidence and finish frozen same-state/identity/FPS gates; MASTER not automatically complete",
-  "decisions": [
-    {
-      "SHA256": "07005647ae2f8cf7ffc14350f3c020ab1c1a8e08dafc71312b228dc177118082",
-      "bytes": 3657,
-      "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R1_XIV_MECHANISM_GATE.json"
-    },
-    {
-      "SHA256": "acba1986649df529419df055fb6a4090a0da772dc2821a2868afda726153f7e3",
-      "bytes": 3659,
-      "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_XIV_MECHANISM_GATE.json"
-    },
-    {
-      "SHA256": "0cee1af4086d22efb06e862900b090e306f57cab0ae0d3c805e7d5cf032e6434",
-      "bytes": 3666,
-      "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R3_XIII_MECHANISM_GATE.json"
-    }
+  "GPU": 6,
+  "MASTER": "ACTIVE_RESEARCH",
+  "command": [
+    "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+    "/home/liuyeqiang/WWW_jev_recovery_20261012/reproduction_tools/jev_recovery_online.py",
+    "--kind",
+    "efficiency",
+    "--arm",
+    "parent",
+    "--revision",
+    "1",
+    "--base",
+    "XIV",
+    "--phase",
+    "pilot",
+    "--videos",
+    "17"
   ],
-  "status": "EVIDENCE_REVIEW_REQUIRED"
+  "experiment_id": "R1_XIV_parent_FPS_pilot",
+  "log": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/controller_logs/R1_XIV_parent_FPS_pilot.log",
+  "status": "EXECUTING"
 }
