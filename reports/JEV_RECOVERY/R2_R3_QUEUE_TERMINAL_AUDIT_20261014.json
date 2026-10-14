@@ -1,0 +1,56 @@
+{
+  "status": "COMPLETE_BOUNDED_R2_R3_QUEUE_TERMINAL",
+  "captured_UTC": "2026-10-14T02:04:51.119107+00:00",
+  "scope": "R2/R3 bounded recovery queue terminal-state audit",
+  "queue_terminal": true,
+  "scientific_success_inferred": false,
+  "master_goal_complete": false,
+  "registry": {
+    "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/EXPERIMENT_REGISTRY.json",
+    "status": "ACTIVE",
+    "total_jobs": 552,
+    "status_counts": {
+      "COMPLETE": 550,
+      "FAILED": 2
+    },
+    "failed_jobs": [
+      "R2_FUSION_explicit_scores_identity_v2",
+      "R2_FUSION_explicit_scores_tiny_v1"
+    ],
+    "all_jobs_terminal": true,
+    "R2_R3_job_count": 518,
+    "R2_R3_status_counts": {
+      "COMPLETE": 516,
+      "FAILED": 2
+    },
+    "SHA256": "c6a4655bd660d45e9ca5d940275c58333d1056eba7be47a957d819ee0ce85cd6"
+  },
+  "monitor": {
+    "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/live_monitor/STATUS.json",
+    "status": "VERIFIED_MONITORING",
+    "live_jobs": [],
+    "unreviewed_failures": [],
+    "automatic_restart": false,
+    "scientific_success_not_inferred": true,
+    "SHA256": "ae375fd524b3faed7440379d0b4b894eb94e06c0450952817187b57b9c020f3b"
+  },
+  "ready_marker": {
+    "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/finish/READY.json",
+    "MASTER_BREAKTHROUGH": false,
+    "legacy_goal_gate_unchanged": true,
+    "SHA256": "b77d26feb0cf8a3c249ec200c6a6ead51cfe9b01de2b1c70561f0beaead29375"
+  },
+  "formal_online_summary": {
+    "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/FULL_ONLINE_RESULTS.json",
+    "formal_R2_R3_three_seed_entries": 18,
+    "SHA256": "8bf123ed10e26c48622ea97752a7ca215210cd99eaa382db93e3938887ab0ebd"
+  },
+  "scientific_review": {
+    "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/RECOVERY_FINAL_REVIEW_20261014.json",
+    "decision": "NO_GO_FOR_JEV_INDEPENDENT_ADVANTAGE",
+    "development_status": "DEVELOPMENT_NOT_ESTABLISHED",
+    "SHA256": "94c639eb5953db69e8fc8828d540fc51c6d864a2454d2dc1851ab65a67a63550"
+  },
+  "failure_interpretation": "The two FAILED registry entries remain preserved with their logs; they are not silently converted to success and are excluded from the claim that all jobs completed.",
+  "next_action": "Do not restart the bounded queue. Preserve the reviewed NO_GO package; any new policy or independent-data experiment needs a new preregistered scope and valid supervision."
+}
