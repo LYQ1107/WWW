@@ -9,11 +9,11 @@ def write_csv(path,rows,fields):
 def main():
     metric_rows=[];runtime_rows=[];experiments=[]
     for path in sorted((RUNTIME/'baseline').glob('*/*.json')):
-        if path.name.endswith('_manifest.json'):
+        if path.name.endswith('_manifest.json') and 'aborted' not in path.name:
             value=json.loads(path.read_text());runtime_rows.append(dict(method=path.parent.name,video_id=value['video_id'],full_video=value['full_video'],causal_online=value['causal_online'],
                 camera_image_fps=value['camera_image_fps'],synchronized_group_fps=value['synchronized_group_fps'],total_seconds=value['total_seconds'],inference_seconds=value['inference_seconds'],read_preprocess_seconds=value['read_preprocess_seconds'],peak_gpu_bytes=value['peak_gpu_bytes'],
                 geo_calls=value.get('geo_calls',0),geo_seconds=value.get('geo_seconds',0),detection_p50=value['detection_latency_p50'],detection_p95=value['detection_latency_p95'],end_to_end_p50=None,end_to_end_p95=None,
-                latency_note='full-video offline; detector latency is not online identity latency',source=str(path)))
+                latency_note=('shared GPU contention detected; no fair speed claim' if path.parent.name=='B2_l17_sym_w025_smoke60' else 'full-video offline; detector latency is not online identity latency'),source=str(path)))
             experiments.append(dict(path=str(path),sha256=sha256(path),**value))
         elif path.name.endswith('.metrics.json'):
             value=json.loads(path.read_text());metric_rows.append(dict(method=path.parent.name,video_id=value['video_id'],full_video=value['full_video'],causal_online=value['causal_online'],
