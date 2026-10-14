@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--total-call-budget', type=int, default=-1)
     parser.add_argument('--query-interval', type=int, default=20)
     parser.add_argument('--index-mib', type=int, default=100)
+    parser.add_argument('--diagnose-scoring', action='store_true')
     args = parser.parse_args()
     # Frozen development selection; no TEST and no GT-driven query selection.
     allowed = {1, 10, 11, 18, 19}
@@ -65,6 +66,7 @@ def main():
     index = CausalClipIndex(max_bytes=args.index_mib << 20)
     predictions = {video: [] for video in args.video_ids}
     query_latencies, round_latencies = [], []
+    diagnostic_latencies = collections.defaultdict(list)
     images, published, requests, augmented_queries = 0, 0, 0, 0
     shared_encoder, shared_head = None, None
     torch.cuda.reset_peak_memory_stats()
@@ -118,6 +120,14 @@ def main():
                     # total input-to-publication/query round latency.
                     payload = json.dumps(dict(query=public, response=response))
                     query_latencies.append(time.perf_counter()-query_start)
+                    if args.diagnose_scoring:
+                        diagnostic_responses = {}
+                        for scoring in ['native', 'native_encoded', 'learned_cosine', 'equal_cosine_encoded']:
+                            scoring_start = time.perf_counter()
+                            diagnostic_responses[scoring] = index.query(**kwargs, scoring=scoring)
+                            json.dumps(diagnostic_responses[scoring])
+                            diagnostic_latencies[scoring].append(time.perf_counter()-scoring_start)
+                        payload = json.dumps(dict(query=public, response=response, diagnostic_responses=diagnostic_responses))
                     query_file.write(payload+'\n')
                     requests += 1
                     augmented_queries += target['extra'] is not None
@@ -135,6 +145,10 @@ def main():
                   setup_time_included=False, first_foundation_load_included=True, seconds=seconds, images=images, camera_image_fps=images/seconds,
                   synchronized_round_fps=len(round_latencies)/seconds, round_latency_seconds=percentiles(round_latencies), query_latency_seconds=percentiles(query_latencies),
                   requests=requests, augmented_queries=augmented_queries, published_targets=published, used_cache=False,
+                  speed_eligible=not args.diagnose_scoring,diagnostic_scoring=args.diagnose_scoring,
+                  scoring_mode_latency_seconds={mode:percentiles(values) for mode,values in diagnostic_latencies.items()},
+                  scoring_diagnostic_scope='same actual query/gallery snapshot; native and learned on identical encoded candidates and identical source observations (native_encoded uses GMT vector saved at the extra-feature observation); no GT candidate selection; absent features count as failed queries on the full-gallery denominator; archived identity vectors describe their past source observations and remain usable until clip TTL, without propagated geometry claims',
+                  scoring_timing_scope='when diagnostics enabled, complete producer runs five ranking rules serially; its full throughput is diagnostic cost, not single-ranker production throughput; per-mode scoring/response serialization measured separately',
                   protocol='causal GMT OFF tracking; independent per-scene banks and RNG; online optional TRAIN head features used only for retrieval',
                   temporal_scope='within-scene cameras synchronized by dataset frame_id; unrelated scenes interleaved by ordinal replay round, no physical cross-scene synchronization claim',
                   query_scope='every current detector target at fixed query interval; all other camera clips including unrelated scene distractors; no GT selection',

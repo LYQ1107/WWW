@@ -16,19 +16,50 @@ def iou_matrix(left, right):
     return intersection / np.maximum(area1+area2-intersection, 1e-12)
 
 
+def ranking_outcome(response, positive_ids):
+    ranks = [rank for rank, clip_id in enumerate(response['ranked_clip_ids'], 1) if clip_id in positive_ids]
+    return min(ranks) if ranks else None
+
+
+def empty_ranking_stats():
+    return dict(requests=0, matched=0, eligible=0, covered=0, hits1=0, hits5=0, hits10=0, reciprocal=0.)
+
+
+def record_ranking(stats, response, positive_ids):
+    # Eligibility is defined by the original full published gallery. Candidate
+    # restrictions or absent query features cannot shrink this denominator.
+    stats['eligible'] += 1
+    rank = ranking_outcome(response, positive_ids)
+    if rank is not None:
+        stats['covered'] += 1
+        stats['reciprocal'] += 1/rank
+        for k in [1,5,10]:
+            stats[f'hits{k}'] += rank <= k
+
+
+def finalize_ranking(stats):
+    ratio = lambda numerator, denominator: numerator/denominator if denominator else None
+    return dict(**stats, recall_at_k={str(k):ratio(stats[f'hits{k}'], stats['eligible']) for k in [1,5,10]},
+                mrr=ratio(stats['reciprocal'], stats['eligible']), candidate_positive_coverage=ratio(stats['covered'], stats['eligible']),
+                success_at_k_all_requests={str(k):ratio(stats[f'hits{k}'], stats['requests']) for k in [1,5,10]})
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--run', type=Path, required=True)
+    parser.add_argument('--query-scene', type=int)
     args = parser.parse_args()
-    report_path = args.run/'retrieval.metrics.json'
+    report_path = args.run/('retrieval.metrics.json' if args.query_scene is None else f'retrieval.scene_{args.query_scene}.metrics.json')
     if report_path.exists():
         raise FileExistsError(report_path)
     manifest = json.loads((args.run/'manifest.json').read_text())
+    if args.query_scene is not None and args.query_scene not in manifest['video_ids']:
+        raise ValueError('query scene is not present in this run')
     for name, expected in manifest['artifacts'].items():
         if sha256(args.run/name) != expected:
             raise ValueError(f'changed public run artifact: {name}')
     data = train_data()
-    labels, gt_counts, gt_hashes = {}, {}, {}
+    labels, gt_counts, gt_hashes, image_scenes = {}, {}, {}, {}
     for scene in manifest['video_ids']:
         records = video_records(data, scene)
         image_by_view_frame = {(r['view_id'], r['frame_id']): r['image_id'] for r in records}
@@ -54,8 +85,11 @@ def main():
         for row in json.loads((args.run/f'video_{scene:02d}.json').read_text()):
             predictions[row['image_id']].append(row)
         for record in records:
+            image_scenes[record['image_id']] = scene
             gt_counts[record['image_id']] = len(ground_truth[record['image_id']])
         for image_id, rows in predictions.items():
+            if len({row['track_id'] for row in rows}) != len(rows):
+                raise ValueError('ambiguous detector labels: duplicate predicted track IDs within one image')
             truth = ground_truth[image_id]
             gt_counts[image_id] = len(truth)
             for row in rows:
@@ -71,7 +105,7 @@ def main():
     snapshots, query_images = {}, set()
     for line in (args.run/'gallery_snapshots.jsonl').open():
         snapshot = json.loads(line)
-        query_images.update(snapshot['query_image_ids'])
+        query_images.update(image_id for image_id in snapshot['query_image_ids'] if args.query_scene is None or image_scenes[image_id] == args.query_scene)
         rows = []
         for clip in snapshot['entries']:
             counts = collections.Counter(labels.get((obs['image_id'], clip['track'])) for obs in clip['observations'])
@@ -85,10 +119,15 @@ def main():
     requests = matched = eligible = 0
     hits = {1:0, 5:0, 10:0}
     reciprocal = reciprocal10 = 0.
-    per_scene = collections.defaultdict(lambda: dict(requests=0, matched=0, eligible=0, hits1=0))
+    per_scene = collections.defaultdict(empty_ranking_stats)
+    diagnostic_stats = collections.defaultdict(empty_ranking_stats)
     for line in (args.run/'queries.jsonl').open():
         row = json.loads(line)
         query, response = row['query'], row['response']
+        if args.query_scene is not None and query['scene'] != args.query_scene:
+            continue
+        for mode in row.get('diagnostic_responses', {}):
+            diagnostic_stats[mode]['requests'] += 1
         requests += 1
         scene = per_scene[query['scene']]
         scene['requests'] += 1
@@ -98,20 +137,22 @@ def main():
             continue
         matched += 1
         scene['matched'] += 1
+        for mode in row.get('diagnostic_responses', {}):
+            diagnostic_stats[mode]['matched'] += 1
         positive_ids = {clip_id for clip_id, camera, target_id in snapshots[query['round_id']]
                         if camera != (query['scene'], query['camera']) and target_id == identity}
         if not positive_ids:
             continue
         eligible += 1
-        scene['eligible'] += 1
-        ranks = [rank for rank, clip_id in enumerate(response['ranked_clip_ids'], 1) if clip_id in positive_ids]
-        rank = min(ranks) if ranks else None
+        record_ranking(scene, response, positive_ids)
+        for mode, diagnostic_response in row.get('diagnostic_responses', {}).items():
+            record_ranking(diagnostic_stats[mode], diagnostic_response, positive_ids)
+        rank = ranking_outcome(response, positive_ids)
         if rank is not None:
             reciprocal += 1/rank
             reciprocal10 += (1/rank if rank <= 10 else 0.)
             for k in hits:
                 hits[k] += rank <= k
-            scene['hits1'] += rank == 1
     ratio = lambda numerator, denominator: numerator/denominator if denominator else None
     report = dict(status='PASS', run_manifest_sha256=sha256(args.run/'manifest.json'), raw_gt_sha256=gt_hashes,
                   requests=requests, gt_matched_queries=matched, gallery_eligible_queries=eligible,
@@ -119,7 +160,9 @@ def main():
                   gallery_eligibility_among_matched=ratio(eligible, matched),
                   recall_at_k={str(k):ratio(count, eligible) for k, count in hits.items()}, mrr=ratio(reciprocal, eligible), mrr_at_10=ratio(reciprocal10, eligible),
                   success_at_k_all_requests={str(k):ratio(count, requests) for k, count in hits.items()},
-                  per_scene=dict(per_scene),
+                  query_scene=args.query_scene,per_scene={scene:finalize_ranking(stats) for scene,stats in per_scene.items()},
+                  scoring_diagnostics={mode:finalize_ranking(stats) for mode,stats in diagnostic_stats.items()},
+                  scoring_diagnostic_denominator='all native-gallery eligible detector queries retained across every scorer, including missing-feature queries and positives without encoded gallery candidates',
                   metric_protocol='one-to-one detector/GT IoU>=0.5; identity=(scene,raw_GT_ID); clip positive requires strict GT majority across all its observations; Recall and full MRR conditional on GT-matched query with at least one positive other-camera clip; all candidate ranks retained',
                   query_selection_uses_gt=False, ranking_uses_gt=False, future_gallery_allowed=False,
                   limitations='finite local dataset replay, not live Internet feeds; clip identity majority is an evaluation convention')

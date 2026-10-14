@@ -76,7 +76,7 @@ def main():
     for path in sorted((RUNTIME/'retrieval').glob('*/retrieval.metrics.json')):
         manifest_path = path.parent/'manifest.json'
         manifest = json.loads(manifest_path.read_text())
-        if not manifest['full_video']:
+        if not manifest['full_video'] or not manifest.get('speed_eligible',True):
             continue
         retrieval_runs.append((manifest, json.loads(path.read_text())))
         sources[str(path)] = sha256(path)

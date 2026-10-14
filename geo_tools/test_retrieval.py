@@ -8,12 +8,45 @@ from gtr.geometry.retrieval_index import CausalClipIndex
 from gtr.geometry.isolated_stream import IsolatedCausalStream
 from gtr.geometry.runtime import GeometryRuntime
 from gtr.geometry.memory_audit import retained_payload_bytes
+from evaluate_live_retrieval import empty_ranking_stats, record_ranking, finalize_ranking
 from detectron2.config import get_cfg
 from gtr.config import add_gtr_config
 from test_empty_tracking import model_stub, detections
 
 
 class Tests(unittest.TestCase):
+    def test_consistent_candidates_and_archived_identity_features(self):
+        index = CausalClipIndex(feature_age=1)
+        positive = index.publish(1, 2, 1, 0, 1, 1, [0,0,10,10], [1,0], [0,1])
+        index.publish(1, 2, 2, 0, 2, 1, [0,0,10,10], [0,1])
+        learned = index.query(1,1,40,[1,0],[0,1],scoring='learned_cosine')
+        native = index.query(1,1,40,[1,0],[0,1],scoring='native_encoded')
+        self.assertEqual(learned['ranked_clip_ids'], [positive])
+        self.assertEqual(native['ranked_clip_ids'], learned['ranked_clip_ids'])
+        self.assertFalse(index.query(1,1,40,[1,0],scoring='learned_cosine')['ranked_clip_ids'])
+        residual = index.query(1,1,40,[1,0],[0,1],feature_weight=2)
+        self.assertFalse(any(row['used_extra'] for row in residual['results']))
+
+    def test_encoded_native_uses_exact_feature_source_observation(self):
+        index = CausalClipIndex()
+        index.publish(1,2,1,0,1,1,[0,0,10,10],[1,0],[0,1])
+        index.publish(1,2,1,1,2,2,[0,0,10,10],[0,1])
+        paired = index.query(1,1,1,[1,0],[0,1],scoring='native_encoded')
+        whole_clip = index.query(1,1,1,[1,0],scoring='native')
+        self.assertEqual(paired['results'][0]['score'], 1.)
+        self.assertAlmostEqual(whole_clip['results'][0]['score'], 2**-.5, places=6)
+
+    def test_missing_candidates_keep_full_gallery_denominator_and_full_mrr(self):
+        stats = empty_ranking_stats()
+        stats.update(requests=2,matched=2)
+        record_ranking(stats, {'ranked_clip_ids':[]}, {'positive'})
+        record_ranking(stats, {'ranked_clip_ids':[str(i) for i in range(11)]+['positive']}, {'positive'})
+        result = finalize_ranking(stats)
+        self.assertEqual(result['eligible'], 2)
+        self.assertEqual(result['candidate_positive_coverage'], .5)
+        self.assertEqual(result['recall_at_k']['10'], 0.)
+        self.assertAlmostEqual(result['mrr'], 1/24)
+
     def test_memory_audit_deduplicates_aliases_and_views(self):
         tensor = torch.zeros(100, dtype=torch.float32)
         array = np.zeros(100, dtype=np.float32)

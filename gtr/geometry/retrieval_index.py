@@ -29,7 +29,7 @@ class CausalClipIndex:
     def entry_bytes(entry):
         # Includes arrays plus serialized public metadata. Python allocator/RSS
         # is reported separately by the live runner; this is a payload bound.
-        return sum(entry[k].nbytes for k in ('gmt_sum', 'extra') if entry[k] is not None) + len(json.dumps(entry['metadata']).encode())
+        return sum(entry[k].nbytes for k in ('gmt_sum', 'gmt_at_extra', 'extra') if entry[k] is not None) + len(json.dumps(entry['metadata']).encode())
 
     def advance(self, round_id):
         if round_id < self.last_round:
@@ -48,7 +48,7 @@ class CausalClipIndex:
         key = f'{int(scene)}:{int(camera)}:{int(track)}:{round_id // self.clip_groups}'
         entry = self.entries.pop(key, None)
         if entry is None:
-            entry = dict(gmt_sum=np.zeros_like(gmt), extra=None, extra_round=None, count=0,
+            entry = dict(gmt_sum=np.zeros_like(gmt), gmt_at_extra=None, extra=None, extra_round=None, count=0,
                          scene=int(scene), camera=int(camera), last_round=round_id,
                          metadata=dict(clip_id=key, scene=int(scene), camera=int(camera), track=int(track), observations=[]))
         else:
@@ -60,7 +60,10 @@ class CausalClipIndex:
         entry['last_round'] = round_id
         if extra is not None:
             entry['extra'] = extra
+            entry['gmt_at_extra'] = gmt.copy()
             entry['extra_round'] = round_id
+            entry['metadata']['encoded_source_image_id'] = int(image_id)
+            entry['metadata']['encoded_source_round_id'] = int(round_id)
         entry['metadata']['observations'].append(dict(image_id=int(image_id), frame_id=int(frame_id), round_id=int(round_id), bbox=list(map(float, bbox))))
         self.entries[key] = entry
         self.bytes += self.entry_bytes(entry)
@@ -71,21 +74,32 @@ class CausalClipIndex:
         self.peak_bytes = max(self.peak_bytes, self.bytes)
         return key
 
-    def query(self, scene, camera, round_id, gmt, extra=None, feature_weight=0., scale=1., bias=0., top_k=10):
+    def query(self, scene, camera, round_id, gmt, extra=None, feature_weight=0., scale=1., bias=0., top_k=10, scoring='residual'):
         self.advance(round_id)
         if top_k < 1:
             raise ValueError('top_k must be positive')
+        if scoring not in {'residual', 'native', 'native_encoded', 'learned_cosine', 'equal_cosine_encoded'}:
+            raise ValueError('unknown retrieval scoring rule')
         gmt = unit(gmt)
         extra = None if extra is None else unit(extra)
         scores = []
+        encoded_only = scoring in {'native_encoded', 'learned_cosine', 'equal_cosine_encoded'}
         for key, entry in self.entries.items():
             if (entry['scene'], entry['camera']) == (scene, camera):
                 continue
-            score = float(gmt @ unit(entry['gmt_sum']))
-            augmented = extra is not None and entry['extra'] is not None and round_id - entry['extra_round'] <= self.feature_age
-            if augmented:
+            encoded = extra is not None and entry['extra'] is not None
+            if encoded_only and not encoded:
+                continue
+            score = float(gmt @ (entry['gmt_at_extra'] if encoded_only else unit(entry['gmt_sum'])))
+            augmented = encoded and round_id - entry['extra_round'] <= self.feature_age
+            if scoring == 'residual' and augmented:
                 score += feature_weight * float(np.tanh(scale * (extra @ entry['extra']) + bias))
-            scores.append(dict(clip_id=key, score=score, used_extra=bool(augmented)))
+            elif scoring == 'learned_cosine':
+                score = float(extra @ entry['extra'])
+            elif scoring == 'equal_cosine_encoded':
+                score = .5 * (score + float(extra @ entry['extra']))
+            used_extra = (scoring == 'residual' and augmented) or scoring in {'learned_cosine', 'equal_cosine_encoded'}
+            scores.append(dict(clip_id=key, score=score, used_extra=bool(used_extra)))
         scores.sort(key=lambda row: (-row['score'], row['clip_id']))
         return dict(results=scores[:top_k], ranked_clip_ids=[row['clip_id'] for row in scores],
                     candidates=len(scores), augmented_candidates=sum(row['used_extra'] for row in scores))
