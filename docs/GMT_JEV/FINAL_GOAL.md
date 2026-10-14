@@ -14,4 +14,4 @@ GMT-JEV: Task-Adaptive Cross-Camera Identity Reasoning for Efficient Global Mult
 
 本轮预算12 GPU-wall-hours、全部新增磁盘留存≤512 MiB、目标盘余量≥30 GiB。data1当前低于门槛，不新增实验文件；本轮在home盘执行。新工作区约242 MiB，后续运行留存将受剩余总额约束。
 
-旧路线 SUPERSEDED：旧 JEV_MASTER、Recovery、Fastcheck 的结果、checkpoint 和NO_GO都保留。应用内旧目标因API限制仍为blocked，本文件及机器当前目标指针是新研究的权威入口；不能为切换目标而虚假完成旧目标。
+旧路线 SUPERSEDED：旧 JEV_MASTER、Recovery、Fastcheck 的结果、checkpoint 和NO_GO都保留。用户已清除应用内旧 Goal，新的 GMT-JEV Goal 已注册为 active，与本文件及机器入口一致；旧研究结果未被改写为成功。
