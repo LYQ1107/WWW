@@ -40,17 +40,22 @@ class ResidualHead(nn.Module):
   return torch.sigmoid(self.gate(h)).squeeze(-1),torch.tanh(self.delta(h)).squeeze(-1)
 
 class IdentityCorrection(nn.Module):
- def __init__(self,kind='observe',enabled=True):
+ def __init__(self,kind='observe',enabled=True,cache_features=False):
   super().__init__();assert kind in ['observe','threshold','rule','confidence','mlp','attention','cic']
-  self.kind=kind;self.enabled=enabled
+  self.kind=kind;self.enabled=enabled;self.cache_features=cache_features
   self.head=ResidualHead(kind) if kind in ['mlp','attention','cic'] else None
   self.observer=None;self.reset()
- def reset(self):self.summaries={};self.last=None
+ def reset(self):self.summaries={};self.last=None;self._cached_zero=None
  def _add(self,identity,feature,view,frame):
   vector=F.normalize(feature[:1024].detach(),dim=0)
   state=self.summaries.setdefault(int(identity),dict(sums={},counts={},last=-1))
   state['sums'][view]=state['sums'].get(view,torch.zeros_like(vector))+vector
   state['counts'][view]=state['counts'].get(view,0)+1;state['last']=frame
+  if self.cache_features:
+   if self._cached_zero is None:self._cached_zero=torch.zeros_like(vector)
+   state.setdefault('units',{})[view]=F.normalize(state['sums'][view],dim=0)
+   a=state['sums'].get(0,self._cached_zero);b=state['sums'].get(1,self._cached_zero)
+   state['consistency']=(a+b).norm()/max(1,sum(state['counts'].values()))
  def committed(self,instance,view,frame):
   if self.kind=='confidence' and self.observer is None:return
   for identity,feature in zip(instance.track_ids.tolist(),instance.reid_features):self._add(identity,feature,view,frame)
@@ -68,11 +73,16 @@ class IdentityCorrection(nn.Module):
   probs=torch.softmax(avg*10,-1);entropy=-(probs*probs.clamp_min(1e-8).log()).sum(-1)/max(1.,math.log(k))
   same=[];other=[];ns=[];no=[];total=[];age=[];consistency=[]
   zero=scores.new_zeros(1024)
+  zero_scalar=scores.new_zeros(()) if self.cache_features else None
   for t in ids.tolist():
    s=self.summaries.get(t,dict(sums={},counts={},last=-1));a=s['sums'].get(view,zero);b=s['sums'].get(1-view,zero)
    ca=s['counts'].get(view,0);cb=s['counts'].get(1-view,0)
-   same.append(F.normalize(a,dim=0));other.append(F.normalize(b,dim=0));ns.append(ca);no.append(cb);total.append(ca+cb)
-   age.append(max(0,frame-s['last']));consistency.append((a+b).norm()/max(1,ca+cb))
+   if self.cache_features:
+    same.append(s.get('units',{}).get(view,zero));other.append(s.get('units',{}).get(1-view,zero))
+    consistency.append(s.get('consistency',zero_scalar))
+   else:
+    same.append(F.normalize(a,dim=0));other.append(F.normalize(b,dim=0));consistency.append((a+b).norm()/max(1,ca+cb))
+   ns.append(ca);no.append(cb);total.append(ca+cb);age.append(max(0,frame-s['last']))
   obs=F.normalize(current.reid_features[:,:1024].detach(),dim=-1)
   same_cos=obs@torch.stack(same).T;other_cos=obs@torch.stack(other).T
   ns=scores.new_tensor(ns);no=scores.new_tensor(no);total=scores.new_tensor(total);age=scores.new_tensor(age)

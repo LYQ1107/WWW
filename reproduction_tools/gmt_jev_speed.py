@@ -10,7 +10,9 @@ def main(kind,gpu):
  folder=OUT/'speed'/kind;folder.mkdir(parents=True,exist_ok=False)
  values,frames,images=metadata(16);seed();m,cfg,_=model();actor=None
  if kind!='original':
-  actor=IdentityCorrection(kind.replace('_zero','')).cuda().eval();m.gmt_identity_correction=actor
+  if kind=='rule_cached':
+   assert read(REPORTS/'FEATURE_CACHE_PARITY.json')['status']=='PASS_EXACT_FULL_NATIVE_RULE'
+  actor=IdentityCorrection(kind.replace('_zero','').replace('_cached',''),cache_features=kind.endswith('_cached')).cuda().eval();m.gmt_identity_correction=actor
   def committed(**d):actor.committed(d['instances'][-1],d['view'],d['frame'])
   m.jev_candidate_commit_observer=committed
  assert m.jev_perception_cache_reader is None
@@ -58,7 +60,7 @@ def main(kind,gpu):
   full_system_parameters=sum(p.numel() for p in m.parameters()),extra_trainable_parameters=sum(p.numel() for p in actor.parameters()) if actor else 0,
   deployed_parameters=sum(p.numel() for p in m.parameters()),no_GTA_or_RPCE_pruning=True,all_native_states_reset_between_trials=True,model_object_reused=True,
   no_GT_or_eval_in_timed_loop=True,no_perception_cache=True,stock_predictions=ref(folder/'STOCK_PREDICTIONS.json.gz'),stock_prediction_SHA=digests[0],
-  untrained_prototype=kind.endswith('_zero'),extra_neural_FLOPs='NOT_MEASURED_YET' if kind.endswith('_zero') else 0,source=binding())
+  untrained_prototype=kind.endswith('_zero'),cache_features=bool(actor and actor.cache_features),extra_neural_FLOPs='NOT_MEASURED_YET' if kind.endswith('_zero') else 0,source=binding())
  save(REPORTS/f'SPEED_{kind}.json',result);print('GMT_SPEED_COMPLETE',kind,result['mean_full_scene_FPS'],flush=True)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--kind',choices=['original','threshold','rule','confidence','mlp_zero','attention_zero','cic_zero'],required=True);p.add_argument('--gpu',type=int,required=True);a=p.parse_args();main(a.kind,a.gpu)
+ p=argparse.ArgumentParser();p.add_argument('--kind',choices=['original','threshold','rule','rule_cached','confidence','mlp_zero','attention_zero','cic_zero'],required=True);p.add_argument('--gpu',type=int,required=True);a=p.parse_args();main(a.kind,a.gpu)

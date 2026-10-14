@@ -27,4 +27,4 @@ def save(p,d):
  q.write_text(json.dumps(d,indent=2,sort_keys=True,allow_nan=False,ensure_ascii=False)+'\n');q.replace(p)
 def binding():return dict(HEAD=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),GMT_checkpoint=ref(STAGE2) if STAGE2.exists() else None,
  CUDA_VISIBLE_DEVICES=os.environ.get('CUDA_VISIBLE_DEVICES'),GT_actor_input=False,official_TEST=False,Full24=False,sealed20_21_22=True,
- source_SHA256={str(p.relative_to(ROOT)):sha(p) for p in list((ROOT/'reproduction_tools').glob('gmt_jev_*.py'))+[ROOT/n for n in ['gtr/modeling/meta_arch/gtr_rcnn.py','gtr/modeling/roi_heads/gtr_roi_heads.py','gtr/modeling/roi_heads/transformer.py','configs/VISION_test.yaml']]},goal=ref(REPORTS/'MASTER_GOAL.json'))
+ source_SHA256={str(p.relative_to(ROOT)):sha(p) for p in list((ROOT/'reproduction_tools').glob('gmt_jev_*.py'))+list((ROOT/'gtr/modeling/gmt_jev').glob('*.py'))+[ROOT/n for n in ['gtr/modeling/meta_arch/gtr_rcnn.py','gtr/modeling/roi_heads/gtr_roi_heads.py','gtr/modeling/roi_heads/transformer.py','configs/VISION_test.yaml']]},goal=ref(REPORTS/'MASTER_GOAL.json'))
