@@ -1,5 +1,6 @@
 import cv2
 import torch
+import random
 from scipy.optimize import linear_sum_assignment
 import torch.nn.functional as F
 import numpy as np
@@ -368,6 +369,12 @@ class GTRRCNN(CustomRCNN):
             # an empty frame without changing any nonempty decision path.
             pred_boxes, _ = self.roi_heads._get_boxes_time(instances)
             query_inds = list(range(sum(n_t[:k]), sum(n_t[:k + 1])))
+            # Even an empty query formerly entered the evaluation encoder and
+            # sampled its RPCE history-ID mapping. Preserve that consumption so
+            # later nonempty frames use the same Python RNG stream.
+            if n_k == 0 and Np > 0:
+                unique_trajs = {int(track) for inst in instances[:-1] for track in inst.track_ids}
+                random.sample(range(400), len(unique_trajs))
             return [instances[k].reid_features.new_zeros((n_k, Np))], pred_boxes, n_t, Np, query_inds
         traj_ids=instances[k].reid_features.new_empty((0,),dtype=torch.float32)
         for i in range(len(instances)-1):

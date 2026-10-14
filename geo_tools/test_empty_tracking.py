@@ -1,5 +1,5 @@
 """Actual GMT GTA and causal runner contracts across empty detector groups."""
-import types, unittest, torch
+import types, unittest, torch, random
 from common import ROOT
 from detectron2.structures import Instances, Boxes
 from gtr.modeling.meta_arch.gtr_rcnn import GTRRCNN
@@ -34,6 +34,11 @@ class Tests(unittest.TestCase):
             history, query = detections(history_count), detections(query_count)
             history.track_ids = torch.arange(history_count)
             before = torch.get_rng_state().clone()
+            py_before = random.getstate()
+            if query_count == 0 and history_count > 0:
+                random.sample(range(400), history_count)
+            py_expected = random.getstate()
+            random.setstate(py_before)
             outputs, boxes, counts, npast, indices = model.get_asso([history, query], 1)
             self.assertEqual(outputs[0].shape, (query_count, history_count))
             self.assertEqual(boxes.shape, (history_count + query_count, 4))
@@ -41,6 +46,7 @@ class Tests(unittest.TestCase):
             self.assertEqual(npast, history_count)
             self.assertEqual(indices, list(range(history_count, history_count + query_count)))
             self.assertTrue(torch.equal(before, torch.get_rng_state()))
+            self.assertEqual(random.getstate(), py_expected)
             if len(boxes):
                 self.assertTrue(torch.allclose(boxes[0], torch.tensor([.1, .1, .3, .4])))
 
