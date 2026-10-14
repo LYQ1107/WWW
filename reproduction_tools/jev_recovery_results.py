@@ -13,7 +13,16 @@ def refresh():
  summary=[]
  for (track,arm),rows in sorted(arms.items()):
   summary.append(dict(track=track,arm=arm,status='COMPLETE_THREE_SEEDS' if len(rows)==3 else 'PARTIAL',completed_seeds=[r['seed'] for r in rows],metrics={k:dict(mean=float(np.mean([r['metrics'][k] for r in rows])),sample_seed_SD=float(np.std([r['metrics'][k] for r in rows],ddof=1)) if len(rows)>1 else None) for k in ['HOTA','DetA','AssA','IDF1','MOTA','IDSW','Frag','CVIDF1','CVMA']}))
- save(REPORTS/'FULL_ONLINE_RESULTS.json',dict(status='PARTIAL_UNTIL_FROZEN_JOBS_COMPLETE',cases=cases,summary=summary,no_missing_metrics_imputed=True,pooled_six_camera_first=True,three_seeds_not_significance=True,pre_exposed_DEV_not_independent=True))
+ registry_path=REPORTS/'EXPERIMENT_REGISTRY.json'
+ registry=read(registry_path) if registry_path.is_file() else {}
+ registry_jobs=registry.get('jobs',{}) if isinstance(registry,dict) else {}
+ reviewed_failed_jobs=sorted(name for name,value in registry_jobs.items() if isinstance(value,dict) and value.get('status')=='FAILED')
+ formal_routes_complete=bool(summary) and all(row.get('status')=='COMPLETE_THREE_SEEDS' for row in summary)
+ queue_audit_path=REPORTS/'R2_R3_QUEUE_TERMINAL_AUDIT_20261014.json'
+ queue_audit=read(queue_audit_path) if queue_audit_path.is_file() else {}
+ queue_terminal=queue_audit.get('queue_terminal') is True
+ online_status='COMPLETE_BOUNDED_FORMAL_RESULTS_WITH_REVIEWED_QUEUE_FAILURES' if formal_routes_complete and queue_terminal and reviewed_failed_jobs else ('COMPLETE_BOUNDED_FORMAL_RESULTS' if formal_routes_complete else 'PARTIAL_UNTIL_FROZEN_JOBS_COMPLETE')
+ save(REPORTS/'FULL_ONLINE_RESULTS.json',dict(status=online_status,cases=cases,summary=summary,formal_routes_complete=formal_routes_complete,queue_terminal=queue_terminal,reviewed_failed_jobs=reviewed_failed_jobs,scientific_success_inferred=False,no_missing_metrics_imputed=True,pooled_six_camera_first=True,three_seeds_not_significance=True,pre_exposed_DEV_not_independent=True))
  save(REPORTS/'FAIR_BASELINE_RESULTS.json',dict(status='ACTUAL_COMPLETED_CASES_ONLY',cases=[c for c in cases if c['arm'] in ['parent','threshold','mlp','attention','mlp_fusion','attention_fusion','f0_mean']],same_evidence_and_updates=True))
  training=[]
  for p in REPORTS.glob('TRAIN_R*.json'):
