@@ -67,7 +67,7 @@ class GeometryRuntime:
             self.scheduler=SparseScheduler(policy=self.cfg.UPDATE_POLICY,interval=self.cfg.UPDATE_INTERVAL,min_interval=self.cfg.MIN_UPDATE_INTERVAL,
                 max_age=self.cfg.MAX_GEOMETRY_AGE,budget=self.cfg.COMPUTE_BUDGET//self.update_cost,window=self.cfg.BUDGET_WINDOW,seed=self.cfg.SCHEDULER_SEED,offset=self.cfg.UPDATE_OFFSET,
                 total_budget=None if self.cfg.TOTAL_CALL_BUDGET<0 else self.cfg.TOTAL_CALL_BUDGET//self.update_cost)
-            self.motion=CausalBackgroundMotion()
+            if self.cfg.UPDATE_POLICY in {'motion','joint'}:self.motion=CausalBackgroundMotion()
         if self.active and self.cfg.ASYNC_WORKER:
             from .update_signals import CausalBackgroundMotion
             from .temporal_geometry import TemporalGeometryConsumer

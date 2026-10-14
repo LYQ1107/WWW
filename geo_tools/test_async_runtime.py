@@ -59,6 +59,7 @@ class Tests(unittest.TestCase):
         g.ENABLED=True;g.GEOMETRY_ENABLED=True;g.GEOMETRY_WEIGHT=.5
         g.SPARSE_UPDATE_ENABLED=True;g.UPDATE_POLICY='fixed'
         runtime=GeometryRuntime(g)
+        self.assertIsNone(runtime.motion)
         def forbidden(*args):raise AssertionError('fixed policy does not need GTA feedback')
         runtime.record_identity_feedback(torch.zeros(1,1),[detections(1),detections(1)],1,forbidden)
 
