@@ -15,10 +15,10 @@ class CausalBackgroundMotion:
             h,w=image.shape;small=cv2.resize(image,(320,180))
             scaled=foreground.detach().cpu().numpy()*np.array([320/w,180/h]*2)
             mask=background_mask(small,scaled)
-            previous=self.previous.get(camera);self.previous[camera]=(small,mask)
-            row=dict(camera=camera,valid=False,inliers=0,normalized_motion=0.,median_residual_processed_px=None)
+            previous=self.previous.get(camera);self.previous[camera]=(small,mask,(h,w))
+            row=dict(camera=camera,valid=False,inliers=0,normalized_motion=0.,median_residual_processed_px=None,temporal_H_original=None)
             if previous is not None:
-                old,old_mask=previous
+                old,old_mask,(old_h,old_w)=previous
                 points=cv2.goodFeaturesToTrack(old,maxCorners=128,qualityLevel=.01,minDistance=5,mask=old_mask)
                 if points is not None and len(points)>=12:
                     forward,status,_=cv2.calcOpticalFlowPyrLK(old,small,points,None)
@@ -43,7 +43,8 @@ class CausalBackgroundMotion:
                                         coverage=cv2.contourArea(cv2.convexHull(a[inside]))/(320*180)
                                         if np.isfinite(residual).all() and np.median(residual)<=2. and coverage>=.01:
                                             motion=float(np.median(np.linalg.norm(b[inside]-a[inside],axis=1))/np.hypot(320,180))
-                                            row.update(valid=True,inliers=int(inside.sum()),normalized_motion=motion,median_residual_processed_px=float(np.median(residual)))
+                                            H_original=np.diag([w/320,h/180,1.])@H@np.diag([320/old_w,180/old_h,1.])
+                                            row.update(valid=True,inliers=int(inside.sum()),normalized_motion=motion,median_residual_processed_px=float(np.median(residual)),temporal_H_original=H_original.tolist())
                                             values.append(motion)
             details.append(row)
         return max(values,default=0.),details

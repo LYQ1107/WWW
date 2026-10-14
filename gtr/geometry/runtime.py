@@ -16,10 +16,11 @@ class GeometryRuntime:
         if self.active and cfg.UPDATE_INTERVAL<1:raise ValueError('update interval must be positive')
         if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD not in {'orb','sift','orb_homography','sift_homography','vggt_camera'}:
             raise ValueError('unsupported online geometry method')
-        if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD=='vggt_camera' and cfg.FEATURE_BACKBONE!='vggt':
+        if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD=='vggt_camera' and cfg.FEATURE_BACKBONE!='vggt' and not cfg.ASYNC_WORKER:
             raise ValueError('VGGT camera geometry requires the VGGT encoder')
         if self.active and cfg.ASYNC_WORKER:
-            raise NotImplementedError('separate-device async integration is pending')
+            if not self.score.geometry_weight or cfg.GEOMETRY_METHOD!='vggt_camera' or not cfg.ASYNC_GPU:
+                raise ValueError('async mode requires explicit separate GPU and VGGT camera geometry')
         if self.active and self.score.feature_weight:
             if cfg.FEATURE_BACKBONE not in {'gmt','vggt','dinov2'}:raise ValueError('unsupported feature backbone')
             if cfg.FEATURE_BACKBONE=='gmt' and (cfg.SYMMETRIZE_VIEW_ORDER or cfg.FEATURE_LAYERS!=[-1] or cfg.PROJECTION_DIM!=0 or cfg.POOLING!='reid'):
@@ -48,10 +49,15 @@ class GeometryRuntime:
         if self.calibration.get('dim',256)!=projection_dim:raise ValueError('calibration projection dimension mismatch')
 
     def reset(self):
+        if getattr(self,'async_worker',None) is not None:self.async_worker.close()
+        self.async_worker=None;self.temporal=None;self.async_trace=[];self.async_peak_gpu_bytes=0;self.async_shutdown_seconds=0.
         self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.geometry_valid_calls=0;self.geometry_invalid_calls=0;self.failed=0;self.seconds=0.
         self.scheduler=None;self.motion=None;self.schedule_trace=[];self.motion_failures=0
         self.pending_margin=1.;self.pending_handoff=False;self.identity_source_frame=None;self.last_success_frame=None;self.observed_frame=None
         self.update_cost=2 if self.score.feature_weight and self.cfg.FEATURE_BACKBONE=='vggt' and self.cfg.SYMMETRIZE_VIEW_ORDER else 1
+        if self.active and self.cfg.ASYNC_WORKER:
+            feature_cost=(2 if self.cfg.SYMMETRIZE_VIEW_ORDER else 1) if self.score.feature_weight and self.cfg.FEATURE_BACKBONE!='gmt' else 0
+            self.update_cost=feature_cost+1
         self.budget_unit=('encoder_calls' if (self.score.feature_weight and self.cfg.FEATURE_BACKBONE!='gmt') or (self.score.geometry_weight and self.cfg.GEOMETRY_METHOD=='vggt_camera') else 'geometry_estimates' if self.score.geometry_weight else 'native_feature_observations')
         if self.active and self.cfg.SPARSE_UPDATE_ENABLED:
             from .sparse_scheduler import SparseScheduler
@@ -59,6 +65,51 @@ class GeometryRuntime:
             self.scheduler=SparseScheduler(policy=self.cfg.UPDATE_POLICY,interval=self.cfg.UPDATE_INTERVAL,min_interval=self.cfg.MIN_UPDATE_INTERVAL,
                 max_age=self.cfg.MAX_GEOMETRY_AGE,budget=self.cfg.COMPUTE_BUDGET//self.update_cost,window=self.cfg.BUDGET_WINDOW,seed=self.cfg.SCHEDULER_SEED,offset=self.cfg.UPDATE_OFFSET)
             self.motion=CausalBackgroundMotion()
+        if self.active and self.cfg.ASYNC_WORKER:
+            from .update_signals import CausalBackgroundMotion
+            from .temporal_geometry import TemporalGeometryConsumer
+            if self.motion is None:self.motion=CausalBackgroundMotion()
+            self.temporal=TemporalGeometryConsumer(self.cfg.MAX_GEOMETRY_AGE)
+
+    def prepare_async(self):
+        if not self.active or not self.cfg.ASYNC_WORKER:return
+        import os
+        main_gpu=os.environ.get('CUDA_VISIBLE_DEVICES','').split(',')[0]
+        if main_gpu==self.cfg.ASYNC_GPU:raise ValueError('async worker must use a different physical GPU')
+        if self.async_worker is not None:return
+        from .process_worker import ProcessGeometryWorker,vggt_camera_factory
+        self.async_worker=ProcessGeometryWorker(vggt_camera_factory,dict(checkpoint=self.cfg.VGGT_CHECKPOINT,vggt_source=self.cfg.VGGT_SOURCE),
+            gpu=self.cfg.ASYNC_GPU,max_age=self.cfg.MAX_GEOMETRY_AGE,timeout=self.cfg.ASYNC_TIMEOUT,startup_timeout=self.cfg.ASYNC_STARTUP_TIMEOUT)
+
+    def close_async(self):
+        if self.async_worker is not None:self.async_shutdown_seconds+=self.async_worker.close()
+
+    def async_report(self):
+        if self.async_worker is None:return None
+        return dict(encoder_calls=self.async_worker.encoder_calls,worker_stats=self.async_worker.stats,worker_error=self.async_worker.error,
+            peak_gpu_bytes=max(self.async_peak_gpu_bytes,self.async_worker.ready_peak_gpu_bytes or 0) or None,shutdown_seconds=self.async_shutdown_seconds,worker_trace=self.async_worker.trace,
+            consumption_trace=self.async_trace,propagation_stats=self.temporal.stats,
+            scope='separate CUDA process; one pending payload; async startup overlaps main inference; shutdown wait charged; propagated F requires current independent pixel validation')
+
+    def _consume_async(self,records,boxes,frame):
+        if self.async_worker is None:raise RuntimeError('prepare_async must be called before streaming')
+        message=self.async_worker.poll(frame)
+        if message is not None:
+            self.async_peak_gpu_bytes=max(self.async_peak_gpu_bytes,message['result'].get('peak_gpu_bytes',0))
+            if message['result'].get('valid'):self.geometry_valid_calls+=1
+            else:self.geometry_invalid_calls+=1
+            self.temporal.receive(message,frame)
+        candidate=self.temporal.candidate(frame)
+        if candidate is None:return
+        from .background_patch_matcher import validate_candidate
+        images=[cv2.imread(r['file_name'],cv2.IMREAD_GRAYSCALE) for r in records]
+        background=estimate_background(*images,*[b.cpu().numpy() for b in boxes],method='sift',mask_targets=True)
+        validation=validate_candidate(candidate['F'],'F',background['points1'],background['points2'],[image.shape for image in images])
+        candidate.update(validation);candidate['inlier_ratio']=candidate['inlier_ratio']*candidate['confidence_decay']
+        self.geometry[frame]=candidate
+        self.async_trace.append(dict(frame=frame,source_frame=candidate['source_frame'],completed_at=candidate['completed_at'],observed_at=time.monotonic(),
+            valid=candidate['valid'],propagation_residual_processed_px=candidate['propagation_residual_processed_px'],validation_matches=candidate['validation_matches']))
+        if candidate['valid']:self.last_success_frame=frame
 
     def record_identity_feedback(self,logits,instances,k,activate):
         if self.scheduler is None:return
@@ -99,15 +150,23 @@ class GeometryRuntime:
             inst.geo_xyxy=boxes
         self.geometry={t:x for t,x in self.geometry.items() if frame-t<=self.cfg.MAX_GEOMETRY_AGE}
         self.observed_frame=frame
+        motion=0.;details=[]
+        if self.motion is not None:
+            try:motion,details=self.motion.observe(records,original_boxes)
+            except (OSError,ValueError,cv2.error):self.motion_failures+=1
+        if self.cfg.ASYNC_WORKER:
+            self.temporal.add_motion(frame,details)
+            try:self._consume_async(records,original_boxes,frame)
+            except (OSError,ValueError,cv2.error):self.failed+=1;self.geometry.pop(frame,None)
         if self.scheduler is None:
             chosen=(frame-self.cfg.UPDATE_OFFSET)%self.cfg.UPDATE_INTERVAL==0
         else:
-            try:motion,details=self.motion.observe(records,original_boxes)
-            except (OSError,ValueError,cv2.error):
-                motion=0.;details=[];self.motion_failures+=1
             age=float('inf') if self.last_success_frame is None else frame-self.last_success_frame
+            available=sum(len(x) for x in instances)>0
+            if self.cfg.ASYNC_WORKER and not self.score.feature_weight:
+                available=available and self.async_worker.ready and not self.async_worker.disabled and self.async_worker.pending is None
             chosen=self.scheduler.should_update(frame,motion=motion,margin=self.pending_margin,handoff=self.pending_handoff,
-                budget_available=sum(len(x) for x in instances)>0,state_age=age)
+                budget_available=available,state_age=age)
             self.schedule_trace.append(dict(frame=frame,chosen=chosen,motion=motion,motion_details=details,previous_identity_margin=self.pending_margin,
                 identity_source_frame=self.identity_source_frame,handoff=self.pending_handoff,last_success_frame=self.last_success_frame,
                 reserved_units_in_window=len(self.scheduler.calls)*self.update_cost,update_cost=self.update_cost,budget_unit=self.budget_unit))
@@ -115,7 +174,12 @@ class GeometryRuntime:
         if not chosen:return
         start=time.perf_counter()
         camera_meta=None
+        async_submitted=False
         try:
+            if self.cfg.ASYNC_WORKER:
+                payload=dict(records=[dict(file_name=r['file_name'],width=r['width'],height=r['height'],view_id=r['view_id']) for r in records],
+                    boxes=[box.cpu().tolist() for box in original_boxes])
+                async_submitted=self.async_worker.submit(frame,payload)
             if self.score.feature_weight:
                 if self.cfg.FEATURE_BACKBONE=='gmt':
                     for inst in instances:
@@ -137,7 +201,7 @@ class GeometryRuntime:
                     if self.cfg.FEATURE_BACKBONE=='dinov2':self.dinov2_calls+=1
                     else:self.vggt_calls+=1
                     if self.cfg.FEATURE_BACKBONE=='vggt':
-                        use_camera=self.score.geometry_weight!=0 and self.cfg.GEOMETRY_METHOD=='vggt_camera'
+                        use_camera=self.score.geometry_weight!=0 and self.cfg.GEOMETRY_METHOD=='vggt_camera' and not self.cfg.ASYNC_WORKER
                         result,_,camera_meta=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=projection_dim,camera=use_camera)
                     else:
                         result,_,_=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=projection_dim)
@@ -162,7 +226,7 @@ class GeometryRuntime:
                         foundation=None if self.cfg.FEATURE_BACKBONE=='gmt' else inst.geo_vector
                         inst.geo_vector=self.head.encode(inst.reid_features,foundation)
                         inst.geo_valid=valid&torch.isfinite(inst.geo_vector).all(-1)&(inst.geo_vector.norm(dim=-1)>0)
-            if self.score.geometry_weight and len(instances)==2:
+            if self.score.geometry_weight and len(instances)==2 and not self.cfg.ASYNC_WORKER:
                 # Fundamental is only used for same-time coordinates. No stale-position projection.
                 images=[cv2.imread(r['file_name'],cv2.IMREAD_GRAYSCALE) for r in records]
                 method='sift' if self.cfg.GEOMETRY_METHOD=='vggt_camera' else self.cfg.GEOMETRY_METHOD
@@ -190,7 +254,8 @@ class GeometryRuntime:
                 if valid:self.geometry_valid_calls+=1
                 else:self.geometry_invalid_calls+=1
                 self.geometry[frame]=result
-            self.calls+=1
+            if not self.cfg.ASYNC_WORKER or self.score.feature_weight or async_submitted:self.calls+=1
+            if self.cfg.ASYNC_WORKER:self._consume_async(records,original_boxes,frame)
             if self.scheduler is not None:
                 feature_valid=self.score.feature_weight and any(bool(inst.geo_valid.any()) for inst in instances)
                 geometry_valid=self.score.geometry_weight and self.geometry.get(frame,{}).get('valid',False)
