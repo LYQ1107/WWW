@@ -20,7 +20,7 @@ def model_stub():
     roi = types.SimpleNamespace(delay_cls=False, _forward_transformer=forbidden)
     roi._get_boxes_time = types.MethodType(GTRROIHeads._get_boxes_time, roi)
     roi._activate_asso = types.MethodType(GTRROIHeads._activate_asso, roi)
-    model = types.SimpleNamespace(roi_heads=roi, test_len=2, with_bank=False,
+    model = types.SimpleNamespace(roi_heads=roi, test_len=2, with_bank=False, bank_size=100,
                                  overlap_thresh=.5, not_mult_thresh=False, not_clamp_box=False,
                                  geo_runtime=types.SimpleNamespace(reset=lambda: None, observe=lambda *args: None))
     for name in ['get_asso', 'run_first_tracker_plus', 'run_global_tracker_plus']:

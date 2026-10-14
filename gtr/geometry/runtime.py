@@ -12,12 +12,13 @@ class GeometryRuntime:
         self.cfg=cfg;self.vggt=None;self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.geometry_valid_calls=0;self.geometry_invalid_calls=0;self.failed=0;self.seconds=0.;self.calibration=None
         self.score=PairScoreAdapter(cfg.ENABLED,cfg.FEATURE_WEIGHT if cfg.FEATURE_ENABLED else 0.,cfg.GEOMETRY_WEIGHT if cfg.GEOMETRY_ENABLED else 0.,cfg.MAX_RESIDUAL)
         self.active=cfg.ENABLED and (self.score.feature_weight!=0 or self.score.geometry_weight!=0)
+        if self.active and cfg.UPDATE_INTERVAL<1:raise ValueError('update interval must be positive')
         if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD not in {'orb','sift','orb_homography','sift_homography','vggt_camera'}:
             raise ValueError('unsupported online geometry method')
         if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD=='vggt_camera' and cfg.FEATURE_BACKBONE!='vggt':
             raise ValueError('VGGT camera geometry requires the VGGT encoder')
-        if self.active and (cfg.ASYNC_WORKER or cfg.SPARSE_UPDATE_ENABLED):
-            raise NotImplementedError('adaptive/async policy integration is pending; current runtime supports synchronous fixed intervals')
+        if self.active and cfg.ASYNC_WORKER:
+            raise NotImplementedError('separate-device async integration is pending')
         if self.active and self.score.feature_weight:
             if cfg.FEATURE_BACKBONE not in {'gmt','vggt','dinov2'}:raise ValueError('unsupported feature backbone')
             if cfg.FEATURE_BACKBONE=='gmt' and (cfg.SYMMETRIZE_VIEW_ORDER or cfg.FEATURE_LAYERS!=[-1] or cfg.PROJECTION_DIM!=0 or cfg.POOLING!='reid'):
@@ -31,8 +32,27 @@ class GeometryRuntime:
             if self.calibration.get('normalization','absolute') not in {'absolute','candidate_row_zscore'}:raise ValueError('unsupported score normalization')
             projection_dim=cfg.FEATURE_DIM if cfg.PROJECTION_DIM<0 else cfg.PROJECTION_DIM
             if self.calibration.get('dim',256)!=projection_dim:raise ValueError('calibration projection dimension mismatch')
+        self.reset()
 
-    def reset(self):self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.geometry_valid_calls=0;self.geometry_invalid_calls=0;self.failed=0;self.seconds=0.
+    def reset(self):
+        self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.geometry_valid_calls=0;self.geometry_invalid_calls=0;self.failed=0;self.seconds=0.
+        self.scheduler=None;self.motion=None;self.schedule_trace=[];self.motion_failures=0
+        self.pending_margin=1.;self.pending_handoff=False;self.identity_source_frame=None;self.last_success_frame=None;self.observed_frame=None
+        self.update_cost=2 if self.score.feature_weight and self.cfg.FEATURE_BACKBONE=='vggt' and self.cfg.SYMMETRIZE_VIEW_ORDER else 1
+        self.budget_unit=('encoder_calls' if (self.score.feature_weight and self.cfg.FEATURE_BACKBONE!='gmt') or (self.score.geometry_weight and self.cfg.GEOMETRY_METHOD=='vggt_camera') else 'geometry_estimates' if self.score.geometry_weight else 'native_feature_observations')
+        if self.active and self.cfg.SPARSE_UPDATE_ENABLED:
+            from .sparse_scheduler import SparseScheduler
+            from .update_signals import CausalBackgroundMotion
+            self.scheduler=SparseScheduler(policy=self.cfg.UPDATE_POLICY,interval=self.cfg.UPDATE_INTERVAL,min_interval=self.cfg.MIN_UPDATE_INTERVAL,
+                max_age=self.cfg.MAX_GEOMETRY_AGE,budget=self.cfg.COMPUTE_BUDGET//self.update_cost,window=self.cfg.BUDGET_WINDOW,seed=self.cfg.SCHEDULER_SEED,offset=self.cfg.UPDATE_OFFSET)
+            self.motion=CausalBackgroundMotion()
+
+    def record_identity_feedback(self,logits,instances,k,activate):
+        if self.scheduler is None:return
+        from .update_signals import identity_update_signal
+        margin,handoff=identity_update_signal(logits,instances,k,activate)
+        self.pending_margin=min(self.pending_margin,margin);self.pending_handoff|=handoff
+        self.identity_source_frame=self.observed_frame
 
     def observe(self,instances,records,frame):
         if not self.active:return
@@ -40,8 +60,8 @@ class GeometryRuntime:
         # preserve Python, NumPy and CPU/CUDA RNG streams for paired validity.
         py_state=random.getstate();np_state=np.random.get_state()
         device=instances[0].reid_features.device
-        index=device.index if device.index is not None else torch.cuda.current_device()
-        with torch.random.fork_rng(devices=[index]):
+        devices=[device.index if device.index is not None else torch.cuda.current_device()] if device.type=='cuda' else []
+        with torch.random.fork_rng(devices=devices):
             try:return self._observe_impl(instances,records,frame)
             finally:random.setstate(py_state);np.random.set_state(np_state)
 
@@ -63,7 +83,21 @@ class GeometryRuntime:
             inst.geo_frame=torch.full((n,),frame,device=device,dtype=torch.long)
             inst.geo_xyxy=boxes
         self.geometry={t:x for t,x in self.geometry.items() if frame-t<=self.cfg.MAX_GEOMETRY_AGE}
-        if frame%self.cfg.UPDATE_INTERVAL:return
+        self.observed_frame=frame
+        if self.scheduler is None:
+            chosen=(frame-self.cfg.UPDATE_OFFSET)%self.cfg.UPDATE_INTERVAL==0
+        else:
+            try:motion,details=self.motion.observe(records,original_boxes)
+            except (OSError,ValueError,cv2.error):
+                motion=0.;details=[];self.motion_failures+=1
+            age=float('inf') if self.last_success_frame is None else frame-self.last_success_frame
+            chosen=self.scheduler.should_update(frame,motion=motion,margin=self.pending_margin,handoff=self.pending_handoff,
+                budget_available=sum(len(x) for x in instances)>0,state_age=age)
+            self.schedule_trace.append(dict(frame=frame,chosen=chosen,motion=motion,motion_details=details,previous_identity_margin=self.pending_margin,
+                identity_source_frame=self.identity_source_frame,handoff=self.pending_handoff,last_success_frame=self.last_success_frame,
+                reserved_units_in_window=len(self.scheduler.calls)*self.update_cost,update_cost=self.update_cost,budget_unit=self.budget_unit))
+            self.pending_margin=1.;self.pending_handoff=False;self.identity_source_frame=None
+        if not chosen:return
         start=time.perf_counter()
         camera_meta=None
         try:
@@ -85,18 +119,18 @@ class GeometryRuntime:
                     from vggt.utils.load_fn import load_and_preprocess_images
                     images=load_and_preprocess_images([r['file_name'] for r in records],mode='pad')
                     mapped=[PadMapping(r['width'],r['height']).boxes(b) for r,b in zip(records,original_boxes)]
+                    if self.cfg.FEATURE_BACKBONE=='dinov2':self.dinov2_calls+=1
+                    else:self.vggt_calls+=1
                     if self.cfg.FEATURE_BACKBONE=='vggt':
                         use_camera=self.score.geometry_weight!=0 and self.cfg.GEOMETRY_METHOD=='vggt_camera'
                         result,_,camera_meta=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=projection_dim,camera=use_camera)
                     else:
                         result,_,_=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=projection_dim)
-                    if self.cfg.FEATURE_BACKBONE=='dinov2':self.dinov2_calls+=1
-                    else:self.vggt_calls+=1
                     reverse=None
                     if self.cfg.SYMMETRIZE_VIEW_ORDER:
                         if len(instances)!=2:raise ValueError('symmetric mode currently supports exactly two cameras')
-                        reverse,_,_=self.vggt.extract(images.flip(0),mapped[::-1],modes=(self.cfg.POOLING,),dim=projection_dim)
                         self.vggt_calls+=1
+                        reverse,_,_=self.vggt.extract(images.flip(0),mapped[::-1],modes=(self.cfg.POOLING,),dim=projection_dim)
                     for v,inst in enumerate(instances):
                         chunks=[result[f'layer_{l}/{self.cfg.POOLING}'][v].to(inst.reid_features.device) for l in levels]
                         if reverse is not None:chunks += [reverse[f'layer_{l}/{self.cfg.POOLING}'][1-v].to(inst.reid_features.device) for l in levels]
@@ -118,8 +152,8 @@ class GeometryRuntime:
                         for v,boxes in enumerate(mapped):
                             for x1,y1,x2,y2 in boxes.round().int().tolist():
                                 inputs[v,:,max(0,y1):min(518,y2),max(0,x1):min(518,x2)]=1.
-                        _,_,camera_meta=self.vggt.extract(inputs,mapped,modes=(),camera=True)
                         self.vggt_calls+=1
+                        _,_,camera_meta=self.vggt.extract(inputs,mapped,modes=(),camera=True)
                     from vggt.utils.pose_enc import pose_encoding_to_extri_intri
                     from .camera_geometry import validate_camera_fundamental
                     E,K=pose_encoding_to_extri_intri(camera_meta['pose'],(518,518))
@@ -131,6 +165,12 @@ class GeometryRuntime:
                 else:self.geometry_invalid_calls+=1
                 self.geometry[frame]=result
             self.calls+=1
+            if self.scheduler is not None:
+                feature_valid=self.score.feature_weight and any(bool(inst.geo_valid.any()) for inst in instances)
+                geometry_valid=self.score.geometry_weight and self.geometry.get(frame,{}).get('valid',False)
+                if self.cfg.GEOMETRY_METHOD.endswith('_homography'):
+                    geometry_valid=self.score.geometry_weight and self.geometry.get(frame,{}).get('H_valid',False)
+                if feature_valid or geometry_valid:self.last_success_frame=frame
         except (RuntimeError,ValueError,OSError,cv2.error):
             self.failed+=1
             if not self.cfg.FALLBACK_TO_GMT:raise

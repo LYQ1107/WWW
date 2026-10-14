@@ -369,7 +369,7 @@ class GTRRCNN(CustomRCNN):
             pred_boxes, _ = self.roi_heads._get_boxes_time(instances)
             query_inds = list(range(sum(n_t[:k]), sum(n_t[:k + 1])))
             return [instances[k].reid_features.new_zeros((n_k, Np))], pred_boxes, n_t, Np, query_inds
-        traj_ids=torch.Tensor().cuda()
+        traj_ids=instances[k].reid_features.new_empty((0,),dtype=torch.float32)
         for i in range(len(instances)-1):
             traj_ids=torch.cat([traj_ids,instances[i].track_ids])
         reid_features = torch.cat(
@@ -377,6 +377,7 @@ class GTRRCNN(CustomRCNN):
         asso_output, pred_boxes, _, query_inds,_,_ = self.roi_heads._forward_transformer(
             instances, reid_features,None, k,None,None,traj_ids) # [n_k x N], N x 4
         if geo_context:
+            self.geo_runtime.record_identity_feedback(asso_output[0],instances,k,self.roi_heads._activate_asso)
             asso_output = self.geo_runtime.adapt(asso_output, instances, k)
         return asso_output,pred_boxes,n_t,Np,query_inds
 
