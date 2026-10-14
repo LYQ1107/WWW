@@ -8,6 +8,8 @@ Fixed last checkpoints, unchanged architecture and frozen identity backbone. All
 | attention | D0 | 300 | 2417 | -5 | 0.7508 |
 | attention | D1 | 1000 | 3122 | -12 | 0.7514 |
 | attention | D1 | 300 | 2589 | -14 | 0.7495 |
+| direct_attention | D1 | 1000 | 907 | -21 | N/A: direct readout |
+| direct_jev | D1 | 1000 | 907 | 11 | N/A: direct readout |
 | jev | D0 | 1000 | 2867 | -38 | 0.7074 |
 | jev | D0 | 300 | 2417 | -54 | 0.6627 |
 | jev | D1 | 1000 | 3122 | -28 | 0.7048 |

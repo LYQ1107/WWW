@@ -11,7 +11,9 @@ def main():
    pair=[t for t in training if t['dataset']==dataset and t['steps']==steps]
    if len(pair)==2:assert pair[0]['schedule_SHA']==pair[1]['schedule_SHA'],'same-data schedules differ'
  rows=['# Closed-loop training evidence','','Fixed last checkpoints, unchanged architecture and frozen identity backbone. All methods see identical state/label pools and identical sampled schedule within a data arm. TRAIN16 is pre-exposed gradient-free diagnostics, not independent validation.','','| Architecture | Dataset | New steps | Gradient groups | Source-state net N01−N10 | Rank accuracy |','|---|---|---:|---:|---:|---:|']
- for t in training:rows.append(f"| {t['arm']} | {t['dataset']} | {t['steps']} | {t['gradient_groups']} | {t['net']} | {t['rank_accuracy']:.4f} |")
+ for t in training:
+  rank=f"{t['rank_accuracy']:.4f}" if t['rank_accuracy'] is not None else 'N/A: direct readout'
+  rows.append(f"| {t['arm']} | {t['dataset']} | {t['steps']} | {t['gradient_groups']} | {t['net']} | {rank} |")
  rows+=['','At300 steps JEV D1−D0 is +55 source-state net corrections; Attention D1−D0 is −9. This is a fixed-source-state diagnostic and cannot establish full native benefit or architecture-specific science. All four300 pilots have real ranking-head gradients and pass the preregistered signal eligibility; qualification is not positive-result selection.']
  (DOCS/'CLOSED_LOOP_TRAINING_RESULTS.md').write_text('\n'.join(rows)+'\n')
  (DOCS/'ONLINE_EVALUATION.md').write_text('# Full native online evaluation\n\n'+('Completed rows are recorded in FINAL_RESULTS.json; all use full cold-start TRAIN16 and frozen evaluators.\n' if online else 'P2 source-state pilots completed. Full cold-start native evaluation is pending fixed-budget1000 checkpoints. No prefix accuracy or cached-perception throughput is reported as full-video identity performance/FPS.\n'))
