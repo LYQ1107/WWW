@@ -28,4 +28,7 @@ def main(name,gpu,script,args):
  print('TERMINAL',name,r['jobs'][name]['status'],r['jobs'][name]['seconds'],flush=True)
  if code:raise SystemExit(code)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--name',required=True);p.add_argument('--gpu',type=int);p.add_argument('--script',required=True);a,rest=p.parse_known_args();main(a.name,a.gpu,a.script,rest)
+ p=argparse.ArgumentParser();p.add_argument('--name',required=True);p.add_argument('--gpu',type=int);p.add_argument('--script',required=True);a,rest=p.parse_known_args()
+ # An explicit separator preserves child flags such as its own --gpu.
+ if rest and rest[0]=='--':rest=rest[1:]
+ main(a.name,a.gpu,a.script,rest)

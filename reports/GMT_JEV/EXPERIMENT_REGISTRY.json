@@ -306,7 +306,13 @@
         "--kind",
         "confidence"
       ],
-      "log": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P4_confidence_full_TRAIN16/OUTPUT.log",
+      "exit_code": 0,
+      "log": {
+        "SHA256": "074219b9183e0ef6d4bfdc0b6cf3628afed2164375623fca2d8821c7532be2f0",
+        "bytes": 122471,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P4_confidence_full_TRAIN16/OUTPUT.log"
+      },
+      "seconds": 971.8835736438632,
       "source": {
         "CUDA_VISIBLE_DEVICES": null,
         "Full24": false,
@@ -342,7 +348,7 @@
         }
       },
       "started_wall_time": 1791996811.7521944,
-      "status": "RUNNING"
+      "status": "COMPLETE"
     },
     "P4_rule_full_TRAIN16": {
       "GPU": 4,
@@ -409,7 +415,13 @@
         "--kind",
         "rule"
       ],
-      "log": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P4_rule_full_TRAIN16_idle8/OUTPUT.log",
+      "exit_code": 0,
+      "log": {
+        "SHA256": "b9688f7308774cd9ad11883a9f812740504da015fe27274df0e7550c38ac1cdb",
+        "bytes": 119006,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P4_rule_full_TRAIN16_idle8/OUTPUT.log"
+      },
+      "seconds": 816.8040044084191,
       "source": {
         "CUDA_VISIBLE_DEVICES": null,
         "Full24": false,
@@ -445,7 +457,7 @@
         }
       },
       "started_wall_time": 1791996983.7563188,
-      "status": "RUNNING"
+      "status": "COMPLETE"
     },
     "P4_threshold_full_TRAIN16": {
       "GPU": 0,
@@ -512,7 +524,13 @@
         "--kind",
         "threshold"
       ],
-      "log": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P4_threshold_full_TRAIN16_idle7/OUTPUT.log",
+      "exit_code": 0,
+      "log": {
+        "SHA256": "c1b8fed40fe3bc60735d49c39df52c642e770d807c3fbe777533e9cc82ded314",
+        "bytes": 116991,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P4_threshold_full_TRAIN16_idle7/OUTPUT.log"
+      },
+      "seconds": 767.9580540582538,
       "source": {
         "CUDA_VISIBLE_DEVICES": null,
         "Full24": false,
@@ -548,6 +566,110 @@
         }
       },
       "started_wall_time": 1791996982.896218,
+      "status": "COMPLETE"
+    },
+    "P5_original_full_image_GPU7": {
+      "GPU": 7,
+      "PID": 26438,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_gmt_jev_20261014/reproduction_tools/gmt_jev_speed.py",
+        "--kind",
+        "original"
+      ],
+      "exit_code": 2,
+      "log": {
+        "SHA256": "82abf4ea0afd800aabc5023106afdde8c0200c918b00c154b1035eddd7e1470c",
+        "bytes": 213,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P5_original_full_image_GPU7/OUTPUT.log"
+      },
+      "seconds": 2.3301797658205032,
+      "source": {
+        "CUDA_VISIBLE_DEVICES": null,
+        "Full24": false,
+        "GMT_checkpoint": {
+          "SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+          "bytes": 638238241,
+          "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
+        },
+        "GT_actor_input": false,
+        "HEAD": "a9fe0cb5e6ba7d63b44a8f495912a98190634fca",
+        "goal": {
+          "SHA256": "ff2bace2014e974683c22eca64914a0823274dd44318835fd2039c71ad4cd4f9",
+          "bytes": 3701,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/MASTER_GOAL.json"
+        },
+        "official_TEST": false,
+        "sealed20_21_22": true,
+        "source_SHA256": {
+          "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "935bbb74fa581225acc3da010d9972edaf5376263b1b800a33208a30af031b30",
+          "gtr/modeling/roi_heads/gtr_roi_heads.py": "8c7bd0e35269bfe8a20c04b046a5bd4d713a5c0e5581111c4941c2ee20ca463f",
+          "gtr/modeling/roi_heads/transformer.py": "22f4f578eac16948005019f6c6883dcc2abc81cf25b38c1e17be65e90cf3ded0",
+          "reproduction_tools/gmt_jev_baseline.py": "ff88f327e5cf40c81a438813f03df5ce3e5bdfed11e424d1a81a8f2e7b6f21fc",
+          "reproduction_tools/gmt_jev_calibration_probe.py": "8e85e4dd5f8047facc0d87c8766776f0c8aa791cb589f1743e3e4df002a22a15",
+          "reproduction_tools/gmt_jev_common.py": "98851e515ff3643170fe922a8219e79c6e7054153e0490976cce1226ce04902f",
+          "reproduction_tools/gmt_jev_controller.py": "f1efc267b15d640e4cdbb41954c431c791e2b577271b3040a3e1076ffc31f260",
+          "reproduction_tools/gmt_jev_evaluate.py": "1b2a01f75428908c0771a54e1aee46ecc57482a01dc92248d68b7a6012e078d8",
+          "reproduction_tools/gmt_jev_job.py": "1fe092f327389e649554ac3e92733ae1ed80dabd63bfed62d9361aa2af662bff",
+          "reproduction_tools/gmt_jev_online.py": "328b28f3b043327efec5b1c0349d177c5c9b1479db9677723823cb8e13b3b6d4",
+          "reproduction_tools/gmt_jev_opportunity.py": "869955845644dbeef6e59b3ac0efa2b6dcbc082b9e57500aa4bad8b9e34e35dc",
+          "reproduction_tools/gmt_jev_publish.py": "e0a3b7886e0b35b689d99361465de2d1eba3a413bc1d03382f837e1ad8767c1a",
+          "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3",
+          "reproduction_tools/gmt_jev_speed.py": "75c0b1b63200985b1a594a118cfabb71f48cfcd927cc9fa0d21c4a218b82f4a5"
+        }
+      },
+      "started_wall_time": 1791998530.6303322,
+      "status": "FAILED"
+    },
+    "P5_original_full_image_GPU7_retry": {
+      "GPU": 7,
+      "PID": 33768,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_gmt_jev_20261014/reproduction_tools/gmt_jev_speed.py",
+        "--kind",
+        "original",
+        "--gpu",
+        "7"
+      ],
+      "log": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P5_original_full_image_GPU7_retry/OUTPUT.log",
+      "source": {
+        "CUDA_VISIBLE_DEVICES": null,
+        "Full24": false,
+        "GMT_checkpoint": {
+          "SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+          "bytes": 638238241,
+          "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
+        },
+        "GT_actor_input": false,
+        "HEAD": "a9fe0cb5e6ba7d63b44a8f495912a98190634fca",
+        "goal": {
+          "SHA256": "ff2bace2014e974683c22eca64914a0823274dd44318835fd2039c71ad4cd4f9",
+          "bytes": 3701,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/MASTER_GOAL.json"
+        },
+        "official_TEST": false,
+        "sealed20_21_22": true,
+        "source_SHA256": {
+          "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "935bbb74fa581225acc3da010d9972edaf5376263b1b800a33208a30af031b30",
+          "gtr/modeling/roi_heads/gtr_roi_heads.py": "8c7bd0e35269bfe8a20c04b046a5bd4d713a5c0e5581111c4941c2ee20ca463f",
+          "gtr/modeling/roi_heads/transformer.py": "22f4f578eac16948005019f6c6883dcc2abc81cf25b38c1e17be65e90cf3ded0",
+          "reproduction_tools/gmt_jev_baseline.py": "ff88f327e5cf40c81a438813f03df5ce3e5bdfed11e424d1a81a8f2e7b6f21fc",
+          "reproduction_tools/gmt_jev_calibration_probe.py": "8e85e4dd5f8047facc0d87c8766776f0c8aa791cb589f1743e3e4df002a22a15",
+          "reproduction_tools/gmt_jev_common.py": "98851e515ff3643170fe922a8219e79c6e7054153e0490976cce1226ce04902f",
+          "reproduction_tools/gmt_jev_controller.py": "f1efc267b15d640e4cdbb41954c431c791e2b577271b3040a3e1076ffc31f260",
+          "reproduction_tools/gmt_jev_evaluate.py": "1b2a01f75428908c0771a54e1aee46ecc57482a01dc92248d68b7a6012e078d8",
+          "reproduction_tools/gmt_jev_job.py": "20fabf1db8c521a14acff2e68658d08ddda5edfdf548280a6481d719f5f9ed36",
+          "reproduction_tools/gmt_jev_online.py": "328b28f3b043327efec5b1c0349d177c5c9b1479db9677723823cb8e13b3b6d4",
+          "reproduction_tools/gmt_jev_opportunity.py": "869955845644dbeef6e59b3ac0efa2b6dcbc082b9e57500aa4bad8b9e34e35dc",
+          "reproduction_tools/gmt_jev_publish.py": "e0a3b7886e0b35b689d99361465de2d1eba3a413bc1d03382f837e1ad8767c1a",
+          "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3",
+          "reproduction_tools/gmt_jev_speed.py": "75c0b1b63200985b1a594a118cfabb71f48cfcd927cc9fa0d21c4a218b82f4a5"
+        }
+      },
+      "started_wall_time": 1791998815.13793,
       "status": "RUNNING"
     }
   },
