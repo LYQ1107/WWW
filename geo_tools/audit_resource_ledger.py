@@ -66,7 +66,7 @@ def main():
                     cache='target vector cache and retrieval index are separate payloads, not total system memory caps',
                     missing='null means not measured; never substitute zero; do not add noncoincident peaks'),provenance=provenance()))
     with (ROOT/'results/resource_ledger_v1.csv').open('w',newline='') as stream:
-        writer=csv.DictWriter(stream,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
+        writer=csv.DictWriter(stream,fieldnames=list(rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(rows)
     print(json.dumps(dict(gmt=parameters['gmt'],complete_runs=len(rows),output=str(output))))
 
 

@@ -894,6 +894,24 @@
       "sha256": "cb9906ac1d5a84262bd67ee5e370b1b2bc9b191bfd9cd08b78f6923a93c0460c"
     },
     {
+      "method": "cache_vggt_fixed20_total80_scene1_full_v1",
+      "video_id": 1,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 86.55351457210155,
+      "DetA": 87.93225734540148,
+      "AssA": 85.2196946037858,
+      "IDF1": 94.66487334678322,
+      "MOTA": 89.67007963594995,
+      "IDSW": 278,
+      "CVIDF1": 94.66487334678322,
+      "CVMA_sequential": 89.67007963594995,
+      "CVMA": 89.3287827076223,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/cache_vggt_fixed20_total80_scene1_full_v1/predictions.metrics.json",
+      "sha256": "77a6477b8ad21d0eb582169003f0dd4734350b51d016c58e03ac39f030b0b233"
+    },
+    {
       "method": "camera_index_corrected_B0_scene1_full_v1",
       "video_id": 1,
       "full_video": true,
@@ -1306,6 +1324,24 @@
       "CVMA": 93.21947489166455,
       "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_fixed20_offset9_total80_v18_v1/predictions.metrics.json",
       "sha256": "06eb0f9367473e8435bf4966dd8472881ee915d228752603f21e48191b58e93b"
+    },
+    {
+      "method": "causal_motion_total80_strict_suite_v1_v1",
+      "video_id": 1,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 86.55351457210155,
+      "DetA": 87.93225734540148,
+      "AssA": 85.2196946037858,
+      "IDF1": 94.66487334678322,
+      "MOTA": 89.67007963594995,
+      "IDSW": 278,
+      "CVIDF1": 94.66487334678322,
+      "CVMA_sequential": 89.67007963594995,
+      "CVMA": 89.3287827076223,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_motion_total80_strict_suite_v1_v1/predictions.metrics.json",
+      "sha256": "77a6477b8ad21d0eb582169003f0dd4734350b51d016c58e03ac39f030b0b233"
     },
     {
       "method": "causal_random_total80_strict_suite_v1_v1",
@@ -2301,9 +2337,54 @@
     "actual_vggt_calls": 4,
     "limitations": "Cache source ages are enforced in implementation and tested separately; these runs did not log per-target source-age traces. Prefix equality checks actual identity outputs and scheduling, not every hidden tensor."
   },
+  "cached_feature_complete_scene": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/target_cache_full_scene1_actual_budget_accuracy_v1.json",
+    "sha256": "766adef54d9657e9aef9d6cdf857f3e4e71ce0c88fc30b08029aa8c16edf4143",
+    "status": "PASS",
+    "baseline": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/online_B0_full_v1_source44_v1",
+    "rows": [
+      {
+        "run": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/cache_vggt_fixed20_total80_scene1_full_v1",
+        "manifest_sha256": "f7253f608b9b258086414b7e9a754e4d55a7f839182b2e61b2e9565bbb8b9263",
+        "commit": "917aff56f06fd1ce19857cb1fb4eb80ccb8b85cb",
+        "planned_total_cap": 80,
+        "actual_encoder_calls": 80,
+        "failures": 0,
+        "valid_geometry_calls": 0,
+        "exact_baseline_predictions": true,
+        "predictions": 4527,
+        "metrics": {
+          "HOTA": 86.55351457210155,
+          "DetA": 87.93225734540148,
+          "AssA": 85.2196946037858,
+          "IDF1": 94.66487334678322,
+          "MOTA": 89.67007963594995,
+          "IDSW": 278,
+          "CVIDF1": 94.66487334678322,
+          "CVMA_sequential": 89.67007963594995,
+          "CVMA": 89.3287827076223
+        },
+        "metric_delta": {
+          "HOTA": 0.0,
+          "DetA": 0.0,
+          "AssA": 0.0,
+          "IDF1": 0.0,
+          "MOTA": 0.0,
+          "IDSW": 0,
+          "CVIDF1": 0.0,
+          "CVMA_sequential": 0.0,
+          "CVMA": 0.0
+        },
+        "camera_image_fps": 6.034343564489992,
+        "input_to_identity_p50": 0.27366360649466515,
+        "input_to_identity_p95": 0.34867404028773247
+      }
+    ],
+    "speed_scope": "single descriptive measurements on actual V100 hardware; no repeated timing or hardware-normalized Pareto superiority claim"
+  },
   "resource_ledger": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/resource_ledger_v1.json",
-    "sha256": "b2ab9834aa489b4280c5ccae025a146668fc3b1b0f8b00f29d3359bd9e7d7ff1",
+    "sha256": "45529a2fd15cade8d847ee51e09b54b501c81e9faa84b28b975cacadabc4236b",
     "status": "MEASURED_SCOPE_LEDGER_NOT_FINAL_MATRIX",
     "scopes": {
       "cuda": "PyTorch per-process allocator peak, not all processes or complete device occupancy",
@@ -2680,5 +2761,5 @@
     }
   ],
   "retrieval_full_video_evaluation": true,
-  "source_commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a"
+  "source_commit": "d4cf1915c141f62b2f8a0326c0ef189a03b1c4e7"
 }

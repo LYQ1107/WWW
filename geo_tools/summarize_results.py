@@ -77,6 +77,7 @@ def main():
     attribution=evidence('causal_dense_scene1_backbone_controls_partial_v1.json',['status','scope'])
     camera_control=evidence('camera_index_corrected_scene1_accuracy_audit_v1.json',['status','video_id','exact_serialized_predictions','metric_delta','interpretation'])
     cached_prefix=evidence('target_cache_actual_gpu_prefix40_60_v1.json',['status','groups','exact_identity_output_prefix','exact_scheduler_prefix','actual_vggt_calls','limitations'])
+    cached_full=evidence('target_cache_full_scene1_actual_budget_accuracy_v1.json',['status','baseline','rows','speed_scope'])
     resource_ledger=evidence('resource_ledger_v1.json',['status','scopes'])
     tiny_path=ROOT/'results/causal_B8_fixed20_total80_strict_suite_v1_metrics.json'
     tiny_audit_path=ROOT/'results/causal_B8_fixed20_total80_identity_pair_audit_v1.json'
@@ -96,7 +97,7 @@ def main():
         limitations=['original GMT offline full-video postprocessing','conflicting raw GT identities in several original TRAIN sequences','B8 has an extremely small audited full-strict numerical identity signal, not stable method improvement; scene1 attribution is complete but does not establish independent VGGT/geometry benefit; remaining dense scenes/stability pending','WWW application evidence pending'],
         preliminary_complete_video_signal=signal,
         preliminary_full_dev_signal=tiny,
-        scene1_attribution=attribution,camera_encoding_control=camera_control,cached_feature_prefix=cached_prefix,resource_ledger=resource_ledger,
+        scene1_attribution=attribution,camera_encoding_control=camera_control,cached_feature_prefix=cached_prefix,cached_feature_complete_scene=cached_full,resource_ledger=resource_ledger,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
     save_json(ROOT/'results/final_summary.json',summary)
@@ -112,6 +113,10 @@ def main():
         lines[6:6]=['The inherited single-image camera encoding issue is confirmed in source. Actual corrected-camera GMT-only scene1 predictions exactly equal the locked causal baseline; all metric differences are zero. The repair does not explain this scene1 head gain. Other strict scenes remain pending.','']
     if cached_prefix and cached_prefix['status']=='PASS':
         lines[6:6]=['Actual cached-feature VGGT40/60-group GPU runs pass exact40-group identity-output and scheduler-prefix equality with active target reuse (4/6 actual VGGT calls). This is a short-prefix correctness result, not a full-video accuracy, speed, or whole-process memory claim. Per-target source-age traces were not recorded.','']
+    if cached_full and cached_full['status']=='PASS':
+        row=cached_full['rows'][0]
+        if row['exact_baseline_predictions']:
+            lines[6:6]=[f"Complete cached-feature scene1 run: {row['actual_encoder_calls']} actual VGGT calls, exact baseline identities and unchanged metrics; no retained dense identity gain. Measured {row['camera_image_fps']:.4f} images/s and P95 {row['input_to_identity_p95']*1000:.2f}ms are one descriptive full-pipeline run, not stable speed superiority. The other backbone controls and bounded failure traces remain pending.",'']
     if tiny:
         base=json.loads((ROOT/'results/causal_B0_strict_suite_v1_metrics.json').read_text())['metrics']
         delta=tiny['metrics']['CVIDF1']-base['CVIDF1']

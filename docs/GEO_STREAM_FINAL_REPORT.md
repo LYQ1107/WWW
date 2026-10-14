@@ -6,6 +6,8 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 
 Complete strict B8 fixed20/80-call-per-video CVIDF1 change is only +0.001627 percentage points, with unchanged total IDSW. The common-detection identity audit finds one small scene19 relation correction and no harms. This is an extremely small preliminary full-DEV signal; no stable VGGT/geometry/scheduler contribution is established.
 
+Complete cached-feature scene1 run: 80 actual VGGT calls, exact baseline identities and unchanged metrics; no retained dense identity gain. Measured 6.0343 images/s and P95 348.67ms are one descriptive full-pipeline run, not stable speed superiority. The other backbone controls and bounded failure traces remain pending.
+
 Actual cached-feature VGGT40/60-group GPU runs pass exact40-group identity-output and scheduler-prefix equality with active target reuse (4/6 actual VGGT calls). This is a short-prefix correctness result, not a full-video accuracy, speed, or whole-process memory claim. Per-target source-age traces were not recorded.
 
 The inherited single-image camera encoding issue is confirmed in source. Actual corrected-camera GMT-only scene1 predictions exactly equal the locked causal baseline; all metric differences are zero. The repair does not explain this scene1 head gain. Other strict scenes remain pending.
@@ -63,6 +65,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | B6_vggt_camera_dense_causal_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | C_dino_head_dense_causal_v1_v1 | 1 | yes | 87.2226 | 86.5408 | 95.4719 | 95.4719 | 213 |
 | C_gmt_head_dense_causal_v1_v1 | 1 | yes | 87.0230 | 86.1452 | 95.2477 | 95.2477 | 234 |
+| cache_vggt_fixed20_total80_scene1_full_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | camera_index_corrected_B0_scene1_full_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k10_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k10_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
@@ -86,6 +89,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_B9_joint_total80_strict_suite_v1_v19 | 19 | yes | 77.4614 | 81.0226 | 94.0520 | 94.0520 | 106 |
 | causal_fixed20_offset5_total80_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_fixed20_offset9_total80_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| causal_motion_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_random_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_random_total80_strict_suite_v1_v10 | 10 | yes | 80.9472 | 80.9342 | 98.8793 | 98.8793 | 35 |
 | causal_random_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |

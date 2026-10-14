@@ -53,6 +53,13 @@ class AssociationTrace:
         if len(query) and query.has('geo_frame'):
             record.update(frame=int(query.geo_frame[0]), camera=int(query.geo_camera[0]),
                           valid_query_features=int(query.geo_valid.sum()))
+            sources=query.geo_feature_frame if query.has('geo_feature_frame') else query.geo_frame
+            valid=query.geo_valid.detach().cpu().tolist()
+            ages=(query.geo_frame-sources).detach().cpu().tolist()
+            record.update(query_feature_valid=valid,
+                          feature_source_frames=sources.detach().cpu().tolist(),
+                          feature_ages=[age if legal else None for age,legal in zip(ages,valid)],
+                          query_boxes_original_xyxy=query.geo_xyxy.detach().cpu().tolist())
         self.records.append(record)
         return result
 
