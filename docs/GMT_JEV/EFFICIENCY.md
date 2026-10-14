@@ -11,6 +11,7 @@
 | mlp_zero | 1.5615 | 3.1230 | 0.9159 | 5119 |
 | attention_zero | 1.5829 | 3.1657 | 0.9284 | 4898 |
 | cic_zero | 1.5202 | 3.0403 | 0.8916 | 4962 |
+| rule_cached | 1.4591 | 2.9182 | 0.8558 | 0 |
 
 每个场景时刻读取两张图像，图像 FPS 为场景 FPS 的两倍，相对效率比值一致。完整计时包含原生 min_track_len=50 和 stock 后处理；不包含模型加载与 8 帧 warmup。每次完整运行重置原生状态、随机状态和额外摘要，不复用 perception cache。GPU 型号为 V100-DGXS-32GB，实际 UUID 及每次 VRAM、Stage2 p50/p95 见 JSON。
 
