@@ -1,7 +1,54 @@
 {
-  "status": "ACTIVE",
-  "jobs": {},
   "GPU_wall_hours_cap": 12,
+  "jobs": {
+    "P0_original_OFF_prefix32": {
+      "GPU": 0,
+      "PID": 36630,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_gmt_jev_20261014/reproduction_tools/gmt_jev_baseline.py",
+        "--video",
+        "16",
+        "--frames",
+        "32"
+      ],
+      "exit_code": 0,
+      "log": {
+        "SHA256": "2cd1fc06a6daf47966e6a9d157543a0ca074025d06ad7cb6821716faebcc4b34",
+        "bytes": 4982,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P0_original_OFF_prefix32/OUTPUT.log"
+      },
+      "seconds": 73.1558533757925,
+      "source": {
+        "CUDA_VISIBLE_DEVICES": null,
+        "Full24": false,
+        "GMT_checkpoint": {
+          "SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+          "bytes": 638238241,
+          "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
+        },
+        "GT_actor_input": false,
+        "HEAD": "1c081af90a7b724c3ebad2326a9a0be4866e3685",
+        "goal": {
+          "SHA256": "14d3c43f2971e577715b64dee04bd6d6a241b5b423d02036e43532d9459d5651",
+          "bytes": 3632,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/MASTER_GOAL.json"
+        },
+        "official_TEST": false,
+        "sealed20_21_22": true,
+        "source_SHA256": {
+          "reproduction_tools/gmt_jev_baseline.py": "d5ac458d01de4e703bd5e51c03d31ce22733e4c5ee594722a3fae966ae7466fc",
+          "reproduction_tools/gmt_jev_common.py": "574ffe1842e9cb70e481797d4fc2aeb503fd2e285d37825237805365cab8afe8",
+          "reproduction_tools/gmt_jev_controller.py": "f1efc267b15d640e4cdbb41954c431c791e2b577271b3040a3e1076ffc31f260",
+          "reproduction_tools/gmt_jev_job.py": "e571d78339a5b52ccd56784d59a9ba73a4c870a62fbd473007f57c77acfd9fae",
+          "reproduction_tools/gmt_jev_publish.py": "fd67426a171b0f3558d37a3fe9f7de69ed8bf869ec5936e6c5fada0c45e84c65",
+          "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3"
+        }
+      },
+      "status": "COMPLETE"
+    }
+  },
   "retention_cap_bytes": 536870912,
-  "scientific_success": false
+  "scientific_success": false,
+  "status": "ACTIVE"
 }

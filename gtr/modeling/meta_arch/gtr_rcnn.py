@@ -1112,6 +1112,11 @@ class GTRRCNN(CustomRCNN):
 
         traj_score = torch.mm(asso_nonk, id_inds) # n_k x M
 
+        correction = getattr(self, 'gmt_identity_correction', None)
+        if correction is not None and correction.enabled:
+            traj_score = correction(traj_score, unique_ids, id_inds.sum(0),
+                instances[k], id_reid_dict, view=int(view), frame=int(frame_index), first=True)
+
         match_i, match_j = self._candidate_initial_pairs(traj_score) #
         track_ids = ids.new_full((n_k,), -1)
         for i, j in zip(match_i, match_j):
@@ -1319,6 +1324,11 @@ class GTRRCNN(CustomRCNN):
         id_inds = (unique_ids[None, :] == ids[:, None]).float() # Np x M
 
         traj_score = torch.mm(asso_nonk, id_inds) # n_k x M
+
+        correction = getattr(self, 'gmt_identity_correction', None)
+        if correction is not None and correction.enabled:
+            traj_score = correction(traj_score, unique_ids, id_inds.sum(0),
+                instances[k], id_reid_dict, view=int(view), frame=int(frame_index), first=False)
 
         match_i, match_j = self._candidate_initial_pairs(traj_score) #
         track_ids = ids.new_full((n_k,), -1)
