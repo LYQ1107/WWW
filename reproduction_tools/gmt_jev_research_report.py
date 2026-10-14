@@ -24,6 +24,14 @@ def main():
    if r['untrained_prototype']:
     r['full_video_stock_prediction_parity_with_original']=r['stock_prediction_SHA']==completed['original']['stock_prediction_SHA']
     assert r['full_video_stock_prediction_parity_with_original'],kind+' zero residual changes stock output'
+ if 'rule_cached' in completed:
+  proof=read(REPORTS/'FEATURE_CACHE_PARITY.json')
+  assert proof['status']=='PASS_EXACT_FULL_NATIVE_RULE' and proof['frames']==1034 and proof['score_feature_pairs']==2067
+  cached=completed['rule_cached'];uncached=completed['rule']
+  cached['full_video_stock_prediction_parity_with_uncached_rule']=cached['stock_prediction_SHA']==uncached['stock_prediction_SHA']
+  assert cached['full_video_stock_prediction_parity_with_uncached_rule'],'Feature cache changes native stock predictions'
+  cached['feature_cache_parity_report']=ref(REPORTS/'FEATURE_CACHE_PARITY.json')
+  cached['FPS_ratio_to_uncached_rule']=cached['mean_scene_FPS']/uncached['mean_scene_FPS']
  speed=dict(status='COMPLETE' if not pending else 'PENDING_REAL_MEASUREMENTS',methods=completed,pending=pending,
   conventions=dict(scene='One synchronized two-camera time step',image='Two image inputs per scene; image FPS = 2 * scene FPS',
    stage2='Actual GTA through native commit, with shared CUDA synchronization instrumentation. Per-trial p50/p95, excluding first16 events.',
@@ -92,6 +100,10 @@ def main():
   'HEAD_COST_PREFIX.json 若已完成，则使用真实 TRAIN16 前64场景帧的原生候选尺寸，记录 Linear 与 Attention 矩阵乘法，并单列特征余弦矩阵乘法。每个 MAC 算两 FLOPs；排除偏置、归一化、GELU、softmax、reduction、逐元素运算、Python 与数据移动，不能称作总 FLOPs 或完整视频总开销。', '',
   '计时使用同一 GPU 的串行方法块，宿主机仍有其他卡任务；CUDA 同步剖析开销各方法一致计入。三次原生输出必须逐次严格相同；95% 门槛是预注册开发指标，不等于独立种子验证。']
  (DOCS/'EFFICIENCY.md').write_text('\n'.join(efficiency)+'\n')
+ if 'rule_cached' in completed:
+  r=completed['rule_cached']
+  with (DOCS/'EFFICIENCY.md').open('a') as f:
+   f.write(f"\n可选历史摘要缓存已通过完整1034帧、2067次原生调用的特征/门控/残差/分数比较；三轮计时的最终 stock 预测指纹也与未缓存 Rule 严格一致。缓存版图像 FPS 为 {r['mean_image_FPS']:.4f}，相对 GMT 为 {r['FPS_ratio_to_GMT']:.4f}，相对未缓存 Rule 为 {r['FPS_ratio_to_uncached_rule']:.4f}。本次计时未观察到加速，未通过95%效率门槛；共享宿主机的串行计时不能单独分离归一化计算与系统负载的因果贡献。缓存等价不会改变既有 Rule 的主要协议身份稳定性失败结论。\n")
  if cost.exists():
   d=read(cost);extra=['','实际64场景帧、127次原生调用的 dense matmul 审计：','','| 原型 | head GFLOPs | 特征余弦 GFLOPs |','|---|---:|---:|']
   for kind,r in d['methods'].items():extra.append(f"| {kind} | {r['head_dense_matmul_FLOPs_total']/1e9:.6f} | {r['feature_cosine_matmul_FLOPs_total']/1e9:.6f} |")
