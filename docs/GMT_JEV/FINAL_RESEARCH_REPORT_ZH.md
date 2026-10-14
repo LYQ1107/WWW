@@ -1,4 +1,4 @@
-# GMT-JEV 中文研究报告（当前证据，效率任务仍以 JSON 终态为准）
+# GMT-JEV 中文研究报告（本轮完整证据）
 
 ## 1. 完整 GMT 基线
 
@@ -35,7 +35,7 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 ## 7. 真实效率
 
-参见 EFFICIENCY.md 与 SPEED_METRICS.json。只报告同一 GPU7 上三次真实完整视频的已完成结果；未完成项 PENDING。计时包含原生最终后处理，场景/图像FPS单位另列。GPU4 的前缀矩阵操作审计单独记录，不用于 FPS。当前未测完，不能声明95%效率门槛通过。
+参见 EFFICIENCY.md 与 SPEED_METRICS.json。只报告同一 GPU7 上三次真实完整视频的已完成结果；未完成项 PENDING。计时包含原生最终后处理，场景/图像FPS单位另列。GPU4 的前缀矩阵操作审计单独记录，不用于 FPS。全部三次计时已完成；各方法95%门槛以 SPEED_METRICS.json 的 efficiency_gate_pass 为准，质量与独立验证仍未通过。
 
 ## 8. WWW 科研资格
 
@@ -49,4 +49,4 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 研究分支 research/gmt-jev-risk-association-20261014；[当前中文报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。每阶段仅推源码、配置和紧凑JSON，权重、视频、图像、预测压缩包留在服务器并记录 SHA。实际发布终态由 runtime/publication/LAST_VERIFIED.json 的 local/remote HEAD 一致证明；报告生成来源 HEAD 与运行时源码 SHA 保存在 JSON。
 
-当前资源快照：{"new_retained_MiB": 267.9247636795044, "home_free_GiB": 50.117835998535156, "GPU_wall_hours_including_live": 4.790291741856684}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
+当前资源快照：{"new_retained_MiB": 270.3219223022461, "home_free_GiB": 50.11231994628906, "GPU_wall_hours_including_live": 5.367059031774601}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
