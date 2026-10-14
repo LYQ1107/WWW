@@ -27,6 +27,7 @@ def main():
                 matrices.append(float(np.max(np.abs(x-y))) if x.size else 0.)
             result['rows'].append(dict(video_id=key[0],frame_id=key[1],original_median_seconds=left['median_two_order_seconds'],fast_median_seconds=right['median_two_order_seconds'],
                   original_over_fast_ratio=left['median_two_order_seconds']/right['median_two_order_seconds'],target_vector_max_abs_difference=max(matrices),
+                  measured_single_call_components={variant:{component:dict(p50=float(np.percentile([call[component] for call in row['measured_single_call_timings']],50)),p95=float(np.percentile([call[component] for call in row['measured_single_call_timings']],95))) for component in ['aggregator_seconds','camera_seconds','transfer_aggregator_roi_camera_cpu_result_seconds']} for variant,row in [('original',left),('fast',right)]},
                   storage_scope='FP16 saved ROI vectors; this comparison does not prove bitwise live feature parity'))
         result.update(status='PASS_MICROBENCHMARK_ONLY',feature_proxy_metrics={variant:run['feature_proxy_metrics'] for variant,run in runs.items()},
                       limitations='five repeated encoder measurements on three TRAIN pairs; changed features require closed-loop tracking evaluation before integration; no long-sequence speed multiplier or full-system FPS claim')

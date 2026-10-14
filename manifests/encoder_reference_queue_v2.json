@@ -1,0 +1,50 @@
+{
+  "id": "encoder_reference_v2",
+  "project_gpu_ids": [
+    "4"
+  ],
+  "queues": {
+    "gpu4": [
+      {
+        "id": "original",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/benchmark_short_pair_encoder.py",
+          "--variant",
+          "original",
+          "--tag",
+          "fast_vggt_short_pair_v2",
+          "--repeats",
+          "5"
+        ]
+      },
+      {
+        "id": "fast",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/benchmark_short_pair_encoder.py",
+          "--variant",
+          "fast",
+          "--tag",
+          "fast_vggt_short_pair_v2",
+          "--repeats",
+          "5"
+        ]
+      },
+      {
+        "id": "compare",
+        "cpu_only": true,
+        "depends_on": [
+          "original",
+          "fast"
+        ],
+        "command": [
+          "geo_tools/compare_short_pair_encoder.py",
+          "--tag",
+          "fast_vggt_short_pair_v2"
+        ]
+      }
+    ]
+  },
+  "scope": "microbenchmark after the existing GPU4 research queue; not a fifth GPU or system speed claim"
+}

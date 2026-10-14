@@ -52,32 +52,42 @@ def main():
         torch.cuda.reset_peak_memory_stats();metric_items=[]
         def encode(images,boxes):
             if args.variant=='fast':model.update_patch_dimensions(images.shape[-1]//14,images.shape[-2]//14)
+            total_start=time.perf_counter()
+            inputs=images[None].cuda();torch.cuda.synchronize()
+            aggregator_start=time.perf_counter()
             report['actual_encoder_calls']+=1
             with torch.autocast('cuda',dtype=torch.float16):
-                tokens,start=model.aggregator(images[None].cuda())
+                tokens,start=model.aggregator(inputs)
+            torch.cuda.synchronize();aggregator_seconds=time.perf_counter()-aggregator_start
             retained={layer:tokens[index] for index,layer in enumerate([4,11,17,23])} if args.variant=='fast' else {layer:tokens[layer] for layer in [4,11,17,23]}
             if any(value is None for value in retained.values()):raise ValueError('missing retained layer')
             vectors=[compress(pool_roi(patch_map(retained[17][0,view],start,images.shape[-2:]),box.cuda(),'roi_align')[0],0).cpu() for view,box in enumerate(boxes)]
             # Same camera-head FP32 path as our actual feature+camera adapter.
+            torch.cuda.synchronize();camera_start=time.perf_counter()
             with torch.autocast('cuda',enabled=False):pose=model.camera_head(tokens)[-1].float().cpu()
+            torch.cuda.synchronize();camera_seconds=time.perf_counter()-camera_start
             if not all(torch.isfinite(v).all() for v in vectors) or not torch.isfinite(pose).all():raise FloatingPointError('nonfinite encoder result')
-            return vectors,pose,dict(output_list_length=len(tokens),patch_start_idx=start,retained_shapes={str(layer):list(value.shape) for layer,value in retained.items()})
+            return vectors,pose,dict(output_list_length=len(tokens),patch_start_idx=start,retained_shapes={str(layer):list(value.shape) for layer,value in retained.items()}),dict(
+                aggregator_seconds=aggregator_seconds,camera_seconds=camera_seconds,transfer_aggregator_roi_camera_cpu_result_seconds=time.perf_counter()-total_start)
         for sample in chosen:
             arrays=np.load(sample['path']);paths=[view['path'] for view in sample['views']]
             boxes=[PadMapping(view['width'],view['height']).boxes(torch.from_numpy(arrays[f'boxes_{index}'])) for index,view in enumerate(sample['views'])]
-            timings=[]
+            timings=[];call_timings=[];read_timings=[]
             for repeat in range(args.repeats+1):
                 torch.cuda.synchronize();started=time.perf_counter()
                 images=load_and_preprocess_images(paths,mode='pad')
-                forward,pose,info=encode(images,boxes)
-                reverse,_,_=encode(images.flip(0),boxes[::-1])
+                read_seconds=time.perf_counter()-started
+                forward,pose,info,forward_timing=encode(images,boxes)
+                reverse,_,_,reverse_timing=encode(images.flip(0),boxes[::-1])
                 vectors=[torch.cat([forward[v],reverse[1-v]],dim=1)/2**.5 for v in range(2)]
                 torch.cuda.synchronize();seconds=time.perf_counter()-started
-                if repeat:timings.append(seconds)
+                if repeat:
+                    timings.append(seconds);call_timings.extend([forward_timing,reverse_timing]);read_timings.append(read_seconds)
             artifact=out/Path(sample['path']).name
             np.savez_compressed(artifact,view0=vectors[0].numpy().astype(np.float16),view1=vectors[1].numpy().astype(np.float16),pose=pose.numpy())
             metric_items.append(dict(score=(vectors[1]@vectors[0].T).numpy(),ids1=arrays['labels_0'],ids2=arrays['labels_1'],base=arrays['gmt_logits']))
             row=dict(video_id=sample['video_id'],frame_id=sample['frame_id'],measured_pair_seconds=timings,
+                     measured_single_call_timings=call_timings,read_preprocess_seconds=read_timings,
                      median_two_order_seconds=float(np.median(timings)),p95_two_order_seconds=float(np.percentile(timings,95)),
                      warmup_two_order_calls=2,measured_two_order_calls=2*args.repeats,read_and_preprocess_included=True,
                      artifact=str(artifact),artifact_sha256=sha256(artifact),**info)
