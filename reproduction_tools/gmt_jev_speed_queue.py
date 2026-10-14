@@ -38,9 +38,16 @@ def job(name,script,gpu=None,args=()):
 
 def main():
  await_original()
+ publish_step('original full-image timing')
  job('P5_original_stock_metrics','gmt_jev_stock_baseline.py')
+ publish_step('matched original stock metrics')
  for kind in ['threshold','rule','confidence','mlp_zero','attention_zero','cic_zero']:
   job('P5_'+kind+'_full_image_GPU7','gmt_jev_speed.py',7,['--kind',kind,'--gpu','7'])
+  publish_step(kind+' full-image timing')
  progress(status='COMPLETE_FINITE_SPEED_QUEUE',next='CONSOLIDATE_ACTUAL_METRICS_AND_PUBLISH')
+
+def publish_step(phase):
+ subprocess.run([PYTHON,str(ROOT/'reproduction_tools/gmt_jev_research_report.py')],cwd=ROOT,check=True)
+ subprocess.run([PYTHON,str(ROOT/'reproduction_tools/gmt_jev_publish.py'),'--message','Record '+phase+' and refresh current GMT-JEV evidence'],cwd=ROOT,check=True)
 
 if __name__=='__main__':main()

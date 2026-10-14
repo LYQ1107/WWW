@@ -1,0 +1,3148 @@
+{
+  "convention": "Two FLOPs per multiply-accumulate; observed nn.Linear input/output sizes plus explicit attention matrix products. Separately counts the two 1024-d cosine matrix products.",
+  "exclusions": [
+    "bias additions",
+    "normalization",
+    "GELU",
+    "softmax",
+    "reductions",
+    "elementwise residual arithmetic",
+    "Python history maintenance",
+    "memory transfers"
+  ],
+  "methods": {
+    "attention": {
+      "events": [
+        {
+          "attention_MACs": 57600,
+          "candidates": 30,
+          "feature_cosine_matmul_FLOPs": 3686400,
+          "head_dense_matmul_FLOPs": 3624960,
+          "linear_MACs": 1754880,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 94080,
+          "candidates": 49,
+          "feature_cosine_matmul_FLOPs": 6021120,
+          "head_dense_matmul_FLOPs": 5891584,
+          "linear_MACs": 2851712,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 97216,
+          "candidates": 49,
+          "feature_cosine_matmul_FLOPs": 6221824,
+          "head_dense_matmul_FLOPs": 6081280,
+          "linear_MACs": 2943424,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 97920,
+          "candidates": 51,
+          "feature_cosine_matmul_FLOPs": 6266880,
+          "head_dense_matmul_FLOPs": 6130176,
+          "linear_MACs": 2967168,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 101184,
+          "candidates": 51,
+          "feature_cosine_matmul_FLOPs": 6475776,
+          "head_dense_matmul_FLOPs": 6327552,
+          "linear_MACs": 3062592,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 101760,
+          "candidates": 53,
+          "feature_cosine_matmul_FLOPs": 6512640,
+          "head_dense_matmul_FLOPs": 6368768,
+          "linear_MACs": 3082624,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 105152,
+          "candidates": 53,
+          "feature_cosine_matmul_FLOPs": 6729728,
+          "head_dense_matmul_FLOPs": 6573824,
+          "linear_MACs": 3181760,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 103680,
+          "candidates": 54,
+          "feature_cosine_matmul_FLOPs": 6635520,
+          "head_dense_matmul_FLOPs": 6488064,
+          "linear_MACs": 3140352,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 107136,
+          "candidates": 54,
+          "feature_cosine_matmul_FLOPs": 6856704,
+          "head_dense_matmul_FLOPs": 6696960,
+          "linear_MACs": 3241344,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 105600,
+          "candidates": 55,
+          "feature_cosine_matmul_FLOPs": 6758400,
+          "head_dense_matmul_FLOPs": 6607360,
+          "linear_MACs": 3198080,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 109120,
+          "candidates": 55,
+          "feature_cosine_matmul_FLOPs": 6983680,
+          "head_dense_matmul_FLOPs": 6820096,
+          "linear_MACs": 3300928,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 107520,
+          "candidates": 56,
+          "feature_cosine_matmul_FLOPs": 6881280,
+          "head_dense_matmul_FLOPs": 6726656,
+          "linear_MACs": 3255808,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 107520,
+          "candidates": 56,
+          "feature_cosine_matmul_FLOPs": 6881280,
+          "head_dense_matmul_FLOPs": 6726656,
+          "linear_MACs": 3255808,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 113088,
+          "candidates": 57,
+          "feature_cosine_matmul_FLOPs": 7237632,
+          "head_dense_matmul_FLOPs": 7066368,
+          "linear_MACs": 3420096,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 111360,
+          "candidates": 58,
+          "feature_cosine_matmul_FLOPs": 7127040,
+          "head_dense_matmul_FLOPs": 6965248,
+          "linear_MACs": 3371264,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 115200,
+          "candidates": 60,
+          "feature_cosine_matmul_FLOPs": 7372800,
+          "head_dense_matmul_FLOPs": 7203840,
+          "linear_MACs": 3486720,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 119040,
+          "candidates": 60,
+          "feature_cosine_matmul_FLOPs": 7618560,
+          "head_dense_matmul_FLOPs": 7435776,
+          "linear_MACs": 3598848,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 120960,
+          "candidates": 63,
+          "feature_cosine_matmul_FLOPs": 7741440,
+          "head_dense_matmul_FLOPs": 7561728,
+          "linear_MACs": 3659904,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 124992,
+          "candidates": 63,
+          "feature_cosine_matmul_FLOPs": 7999488,
+          "head_dense_matmul_FLOPs": 7805184,
+          "linear_MACs": 3777600,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 122880,
+          "candidates": 64,
+          "feature_cosine_matmul_FLOPs": 7864320,
+          "head_dense_matmul_FLOPs": 7681024,
+          "linear_MACs": 3717632,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 126976,
+          "candidates": 64,
+          "feature_cosine_matmul_FLOPs": 8126464,
+          "head_dense_matmul_FLOPs": 7928320,
+          "linear_MACs": 3837184,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 124800,
+          "candidates": 65,
+          "feature_cosine_matmul_FLOPs": 7987200,
+          "head_dense_matmul_FLOPs": 7800320,
+          "linear_MACs": 3775360,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 124800,
+          "candidates": 65,
+          "feature_cosine_matmul_FLOPs": 7987200,
+          "head_dense_matmul_FLOPs": 7800320,
+          "linear_MACs": 3775360,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 126720,
+          "candidates": 66,
+          "feature_cosine_matmul_FLOPs": 8110080,
+          "head_dense_matmul_FLOPs": 7919616,
+          "linear_MACs": 3833088,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 126720,
+          "candidates": 66,
+          "feature_cosine_matmul_FLOPs": 8110080,
+          "head_dense_matmul_FLOPs": 7919616,
+          "linear_MACs": 3833088,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 132928,
+          "candidates": 67,
+          "feature_cosine_matmul_FLOPs": 8507392,
+          "head_dense_matmul_FLOPs": 8297728,
+          "linear_MACs": 4015936,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 130560,
+          "candidates": 68,
+          "feature_cosine_matmul_FLOPs": 8355840,
+          "head_dense_matmul_FLOPs": 8158208,
+          "linear_MACs": 3948544,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 136896,
+          "candidates": 69,
+          "feature_cosine_matmul_FLOPs": 8761344,
+          "head_dense_matmul_FLOPs": 8544000,
+          "linear_MACs": 4135104,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 132480,
+          "candidates": 69,
+          "feature_cosine_matmul_FLOPs": 8478720,
+          "head_dense_matmul_FLOPs": 8277504,
+          "linear_MACs": 4006272,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 138880,
+          "candidates": 70,
+          "feature_cosine_matmul_FLOPs": 8888320,
+          "head_dense_matmul_FLOPs": 8667136,
+          "linear_MACs": 4194688,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 134400,
+          "candidates": 70,
+          "feature_cosine_matmul_FLOPs": 8601600,
+          "head_dense_matmul_FLOPs": 8396800,
+          "linear_MACs": 4064000,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 140864,
+          "candidates": 71,
+          "feature_cosine_matmul_FLOPs": 9015296,
+          "head_dense_matmul_FLOPs": 8790272,
+          "linear_MACs": 4254272,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 136320,
+          "candidates": 71,
+          "feature_cosine_matmul_FLOPs": 8724480,
+          "head_dense_matmul_FLOPs": 8516096,
+          "linear_MACs": 4121728,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 147456,
+          "candidates": 72,
+          "feature_cosine_matmul_FLOPs": 9437184,
+          "head_dense_matmul_FLOPs": 9191424,
+          "linear_MACs": 4448256,
+          "rows": 32
+        },
+        {
+          "attention_MACs": 140160,
+          "candidates": 73,
+          "feature_cosine_matmul_FLOPs": 8970240,
+          "head_dense_matmul_FLOPs": 8754688,
+          "linear_MACs": 4237184,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 151552,
+          "candidates": 74,
+          "feature_cosine_matmul_FLOPs": 9699328,
+          "head_dense_matmul_FLOPs": 9445376,
+          "linear_MACs": 4571136,
+          "rows": 32
+        },
+        {
+          "attention_MACs": 137344,
+          "candidates": 74,
+          "feature_cosine_matmul_FLOPs": 8790016,
+          "head_dense_matmul_FLOPs": 8588288,
+          "linear_MACs": 4156800,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 144000,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 9216000,
+          "head_dense_matmul_FLOPs": 8993280,
+          "linear_MACs": 4352640,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 134400,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 8601600,
+          "head_dense_matmul_FLOPs": 8414208,
+          "linear_MACs": 4072704,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 144000,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 9216000,
+          "head_dense_matmul_FLOPs": 8993280,
+          "linear_MACs": 4352640,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 134400,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 8601600,
+          "head_dense_matmul_FLOPs": 8414208,
+          "linear_MACs": 4072704,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 144000,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 9216000,
+          "head_dense_matmul_FLOPs": 8993280,
+          "linear_MACs": 4352640,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 139200,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 8908800,
+          "head_dense_matmul_FLOPs": 8703744,
+          "linear_MACs": 4212672,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 145920,
+          "candidates": 76,
+          "feature_cosine_matmul_FLOPs": 9338880,
+          "head_dense_matmul_FLOPs": 9112576,
+          "linear_MACs": 4410368,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 141056,
+          "candidates": 76,
+          "feature_cosine_matmul_FLOPs": 9027584,
+          "head_dense_matmul_FLOPs": 8819200,
+          "linear_MACs": 4268544,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 152768,
+          "candidates": 77,
+          "feature_cosine_matmul_FLOPs": 9777152,
+          "head_dense_matmul_FLOPs": 9529088,
+          "linear_MACs": 4611776,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 142912,
+          "candidates": 77,
+          "feature_cosine_matmul_FLOPs": 9146368,
+          "head_dense_matmul_FLOPs": 8934656,
+          "linear_MACs": 4324416,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 149760,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 9584640,
+          "head_dense_matmul_FLOPs": 9351168,
+          "linear_MACs": 4525824,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 139776,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 8945664,
+          "head_dense_matmul_FLOPs": 8749056,
+          "linear_MACs": 4234752,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 149760,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 9584640,
+          "head_dense_matmul_FLOPs": 9351168,
+          "linear_MACs": 4525824,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 144768,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 9265152,
+          "head_dense_matmul_FLOPs": 9050112,
+          "linear_MACs": 4380288,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 156736,
+          "candidates": 79,
+          "feature_cosine_matmul_FLOPs": 10031104,
+          "head_dense_matmul_FLOPs": 9775360,
+          "linear_MACs": 4730944,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 146624,
+          "candidates": 79,
+          "feature_cosine_matmul_FLOPs": 9383936,
+          "head_dense_matmul_FLOPs": 9165568,
+          "linear_MACs": 4436160,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 158720,
+          "candidates": 80,
+          "feature_cosine_matmul_FLOPs": 10158080,
+          "head_dense_matmul_FLOPs": 9898496,
+          "linear_MACs": 4790528,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 145152,
+          "candidates": 81,
+          "feature_cosine_matmul_FLOPs": 9289728,
+          "head_dense_matmul_FLOPs": 9083904,
+          "linear_MACs": 4396800,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 160704,
+          "candidates": 81,
+          "feature_cosine_matmul_FLOPs": 10285056,
+          "head_dense_matmul_FLOPs": 10021632,
+          "linear_MACs": 4850112,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 152192,
+          "candidates": 82,
+          "feature_cosine_matmul_FLOPs": 9740288,
+          "head_dense_matmul_FLOPs": 9511936,
+          "linear_MACs": 4603776,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 169984,
+          "candidates": 83,
+          "feature_cosine_matmul_FLOPs": 10878976,
+          "head_dense_matmul_FLOPs": 10588160,
+          "linear_MACs": 5124096,
+          "rows": 32
+        },
+        {
+          "attention_MACs": 154048,
+          "candidates": 83,
+          "feature_cosine_matmul_FLOPs": 9859072,
+          "head_dense_matmul_FLOPs": 9627392,
+          "linear_MACs": 4659648,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 161280,
+          "candidates": 84,
+          "feature_cosine_matmul_FLOPs": 10321920,
+          "head_dense_matmul_FLOPs": 10066944,
+          "linear_MACs": 4872192,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 155904,
+          "candidates": 84,
+          "feature_cosine_matmul_FLOPs": 9977856,
+          "head_dense_matmul_FLOPs": 9742848,
+          "linear_MACs": 4715520,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 163200,
+          "candidates": 85,
+          "feature_cosine_matmul_FLOPs": 10444800,
+          "head_dense_matmul_FLOPs": 10186240,
+          "linear_MACs": 4929920,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 159616,
+          "candidates": 86,
+          "feature_cosine_matmul_FLOPs": 10215424,
+          "head_dense_matmul_FLOPs": 9973760,
+          "linear_MACs": 4827264,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 167040,
+          "candidates": 87,
+          "feature_cosine_matmul_FLOPs": 10690560,
+          "head_dense_matmul_FLOPs": 10424832,
+          "linear_MACs": 5045376,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 161472,
+          "candidates": 87,
+          "feature_cosine_matmul_FLOPs": 10334208,
+          "head_dense_matmul_FLOPs": 10089216,
+          "linear_MACs": 4883136,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 168960,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10813440,
+          "head_dense_matmul_FLOPs": 10544128,
+          "linear_MACs": 5103104,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 163328,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10452992,
+          "head_dense_matmul_FLOPs": 10204672,
+          "linear_MACs": 4939008,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 170880,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10936320,
+          "head_dense_matmul_FLOPs": 10663424,
+          "linear_MACs": 5160832,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 165184,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10571776,
+          "head_dense_matmul_FLOPs": 10320128,
+          "linear_MACs": 4994880,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 172800,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 11059200,
+          "head_dense_matmul_FLOPs": 10782720,
+          "linear_MACs": 5218560,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 167040,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 10690560,
+          "head_dense_matmul_FLOPs": 10435584,
+          "linear_MACs": 5050752,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 174720,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 10902016,
+          "linear_MACs": 5276288,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 170752,
+          "candidates": 92,
+          "feature_cosine_matmul_FLOPs": 10928128,
+          "head_dense_matmul_FLOPs": 10666496,
+          "linear_MACs": 5162496,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 178560,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11427840,
+          "head_dense_matmul_FLOPs": 11140608,
+          "linear_MACs": 5391744,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 172608,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11046912,
+          "head_dense_matmul_FLOPs": 10781952,
+          "linear_MACs": 5218368,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 186496,
+          "candidates": 94,
+          "feature_cosine_matmul_FLOPs": 11935744,
+          "head_dense_matmul_FLOPs": 11622400,
+          "linear_MACs": 5624704,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 174464,
+          "candidates": 94,
+          "feature_cosine_matmul_FLOPs": 11165696,
+          "head_dense_matmul_FLOPs": 10897408,
+          "linear_MACs": 5274240,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 182400,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11673600,
+          "head_dense_matmul_FLOPs": 11379200,
+          "linear_MACs": 5507200,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 176320,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 11012864,
+          "linear_MACs": 5330112,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 182400,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11673600,
+          "head_dense_matmul_FLOPs": 11379200,
+          "linear_MACs": 5507200,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 176320,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 11012864,
+          "linear_MACs": 5330112,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 184320,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11796480,
+          "head_dense_matmul_FLOPs": 11498496,
+          "linear_MACs": 5564928,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 178176,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11403264,
+          "head_dense_matmul_FLOPs": 11128320,
+          "linear_MACs": 5385984,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 188480,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 12062720,
+          "head_dense_matmul_FLOPs": 11745536,
+          "linear_MACs": 5684288,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 182400,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11673600,
+          "head_dense_matmul_FLOPs": 11379200,
+          "linear_MACs": 5507200,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 190464,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 12189696,
+          "head_dense_matmul_FLOPs": 11868672,
+          "linear_MACs": 5743872,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 178176,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11403264,
+          "head_dense_matmul_FLOPs": 11128320,
+          "linear_MACs": 5385984,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 190464,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 12189696,
+          "head_dense_matmul_FLOPs": 11868672,
+          "linear_MACs": 5743872,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 172032,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11010048,
+          "head_dense_matmul_FLOPs": 10758144,
+          "linear_MACs": 5207040,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 188480,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 12062720,
+          "head_dense_matmul_FLOPs": 11745536,
+          "linear_MACs": 5684288,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 176320,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 11012864,
+          "linear_MACs": 5330112,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 188480,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 12062720,
+          "head_dense_matmul_FLOPs": 11745536,
+          "linear_MACs": 5684288,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 176320,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 11012864,
+          "linear_MACs": 5330112,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 184512,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11808768,
+          "head_dense_matmul_FLOPs": 11499264,
+          "linear_MACs": 5565120,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 172608,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11046912,
+          "head_dense_matmul_FLOPs": 10781952,
+          "linear_MACs": 5218368,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 180544,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11554816,
+          "head_dense_matmul_FLOPs": 11252992,
+          "linear_MACs": 5445952,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 168896,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10809344,
+          "head_dense_matmul_FLOPs": 10551040,
+          "linear_MACs": 5106624,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 180544,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11554816,
+          "head_dense_matmul_FLOPs": 11252992,
+          "linear_MACs": 5445952,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 163072,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10436608,
+          "head_dense_matmul_FLOPs": 10200064,
+          "linear_MACs": 4936960,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 174720,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 10902016,
+          "linear_MACs": 5276288,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 157248,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10063872,
+          "head_dense_matmul_FLOPs": 9849088,
+          "linear_MACs": 4767296,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 174720,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 10902016,
+          "linear_MACs": 5276288,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 157248,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10063872,
+          "head_dense_matmul_FLOPs": 9849088,
+          "linear_MACs": 4767296,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 174720,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 10902016,
+          "linear_MACs": 5276288,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 157248,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10063872,
+          "head_dense_matmul_FLOPs": 9849088,
+          "linear_MACs": 4767296,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 174720,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 10902016,
+          "linear_MACs": 5276288,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 163072,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10436608,
+          "head_dense_matmul_FLOPs": 10200064,
+          "linear_MACs": 4936960,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 172800,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 11059200,
+          "head_dense_matmul_FLOPs": 10782720,
+          "linear_MACs": 5218560,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 161280,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 10321920,
+          "head_dense_matmul_FLOPs": 10088448,
+          "linear_MACs": 4882944,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 170880,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10936320,
+          "head_dense_matmul_FLOPs": 10663424,
+          "linear_MACs": 5160832,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 153792,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 9842688,
+          "head_dense_matmul_FLOPs": 9633536,
+          "linear_MACs": 4662976,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 170880,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10936320,
+          "head_dense_matmul_FLOPs": 10663424,
+          "linear_MACs": 5160832,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 159488,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 9976832,
+          "linear_MACs": 4828928,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 168960,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10813440,
+          "head_dense_matmul_FLOPs": 10544128,
+          "linear_MACs": 5103104,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 157696,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10092544,
+          "head_dense_matmul_FLOPs": 9865216,
+          "linear_MACs": 4774912,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 174592,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 11173888,
+          "head_dense_matmul_FLOPs": 10883584,
+          "linear_MACs": 5267200,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 157696,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10092544,
+          "head_dense_matmul_FLOPs": 9865216,
+          "linear_MACs": 4774912,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 176576,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 11006720,
+          "linear_MACs": 5326784,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 153792,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 9842688,
+          "head_dense_matmul_FLOPs": 9633536,
+          "linear_MACs": 4662976,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 176576,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 11006720,
+          "linear_MACs": 5326784,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 159488,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 9976832,
+          "linear_MACs": 4828928,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 176576,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 11006720,
+          "linear_MACs": 5326784,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 159488,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 9976832,
+          "linear_MACs": 4828928,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 176576,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 11006720,
+          "linear_MACs": 5326784,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 159488,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 9976832,
+          "linear_MACs": 4828928,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 176576,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 11006720,
+          "linear_MACs": 5326784,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 159488,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 9976832,
+          "linear_MACs": 4828928,
+          "rows": 28
+        }
+      ],
+      "feature_cosine_matmul_FLOPs_total": 1236234240,
+      "head_dense_matmul_FLOPs_p50_p95_max": [
+        9865216.0,
+        11499033.6,
+        11868672.0
+      ],
+      "head_dense_matmul_FLOPs_total": 1206416640,
+      "parameters": 4898,
+      "untrained_zero_residual": true
+    },
+    "cic": {
+      "events": [
+        {
+          "attention_MACs": 57600,
+          "candidates": 30,
+          "feature_cosine_matmul_FLOPs": 3686400,
+          "head_dense_matmul_FLOPs": 3624960,
+          "linear_MACs": 1754880,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 94080,
+          "candidates": 49,
+          "feature_cosine_matmul_FLOPs": 6021120,
+          "head_dense_matmul_FLOPs": 5891584,
+          "linear_MACs": 2851712,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 97216,
+          "candidates": 49,
+          "feature_cosine_matmul_FLOPs": 6221824,
+          "head_dense_matmul_FLOPs": 6081280,
+          "linear_MACs": 2943424,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 97920,
+          "candidates": 51,
+          "feature_cosine_matmul_FLOPs": 6266880,
+          "head_dense_matmul_FLOPs": 6130176,
+          "linear_MACs": 2967168,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 101184,
+          "candidates": 51,
+          "feature_cosine_matmul_FLOPs": 6475776,
+          "head_dense_matmul_FLOPs": 6327552,
+          "linear_MACs": 3062592,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 101760,
+          "candidates": 53,
+          "feature_cosine_matmul_FLOPs": 6512640,
+          "head_dense_matmul_FLOPs": 6368768,
+          "linear_MACs": 3082624,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 105152,
+          "candidates": 53,
+          "feature_cosine_matmul_FLOPs": 6729728,
+          "head_dense_matmul_FLOPs": 6573824,
+          "linear_MACs": 3181760,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 103680,
+          "candidates": 54,
+          "feature_cosine_matmul_FLOPs": 6635520,
+          "head_dense_matmul_FLOPs": 6488064,
+          "linear_MACs": 3140352,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 107136,
+          "candidates": 54,
+          "feature_cosine_matmul_FLOPs": 6856704,
+          "head_dense_matmul_FLOPs": 6696960,
+          "linear_MACs": 3241344,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 105600,
+          "candidates": 55,
+          "feature_cosine_matmul_FLOPs": 6758400,
+          "head_dense_matmul_FLOPs": 6607360,
+          "linear_MACs": 3198080,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 109120,
+          "candidates": 55,
+          "feature_cosine_matmul_FLOPs": 6983680,
+          "head_dense_matmul_FLOPs": 6820096,
+          "linear_MACs": 3300928,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 107520,
+          "candidates": 56,
+          "feature_cosine_matmul_FLOPs": 6881280,
+          "head_dense_matmul_FLOPs": 6726656,
+          "linear_MACs": 3255808,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 107520,
+          "candidates": 56,
+          "feature_cosine_matmul_FLOPs": 6881280,
+          "head_dense_matmul_FLOPs": 6726656,
+          "linear_MACs": 3255808,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 113088,
+          "candidates": 57,
+          "feature_cosine_matmul_FLOPs": 7237632,
+          "head_dense_matmul_FLOPs": 7066368,
+          "linear_MACs": 3420096,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 111360,
+          "candidates": 58,
+          "feature_cosine_matmul_FLOPs": 7127040,
+          "head_dense_matmul_FLOPs": 6965248,
+          "linear_MACs": 3371264,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 115200,
+          "candidates": 60,
+          "feature_cosine_matmul_FLOPs": 7372800,
+          "head_dense_matmul_FLOPs": 7203840,
+          "linear_MACs": 3486720,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 119040,
+          "candidates": 60,
+          "feature_cosine_matmul_FLOPs": 7618560,
+          "head_dense_matmul_FLOPs": 7435776,
+          "linear_MACs": 3598848,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 120960,
+          "candidates": 63,
+          "feature_cosine_matmul_FLOPs": 7741440,
+          "head_dense_matmul_FLOPs": 7561728,
+          "linear_MACs": 3659904,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 124992,
+          "candidates": 63,
+          "feature_cosine_matmul_FLOPs": 7999488,
+          "head_dense_matmul_FLOPs": 7805184,
+          "linear_MACs": 3777600,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 122880,
+          "candidates": 64,
+          "feature_cosine_matmul_FLOPs": 7864320,
+          "head_dense_matmul_FLOPs": 7681024,
+          "linear_MACs": 3717632,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 126976,
+          "candidates": 64,
+          "feature_cosine_matmul_FLOPs": 8126464,
+          "head_dense_matmul_FLOPs": 7928320,
+          "linear_MACs": 3837184,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 124800,
+          "candidates": 65,
+          "feature_cosine_matmul_FLOPs": 7987200,
+          "head_dense_matmul_FLOPs": 7800320,
+          "linear_MACs": 3775360,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 124800,
+          "candidates": 65,
+          "feature_cosine_matmul_FLOPs": 7987200,
+          "head_dense_matmul_FLOPs": 7800320,
+          "linear_MACs": 3775360,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 126720,
+          "candidates": 66,
+          "feature_cosine_matmul_FLOPs": 8110080,
+          "head_dense_matmul_FLOPs": 7919616,
+          "linear_MACs": 3833088,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 126720,
+          "candidates": 66,
+          "feature_cosine_matmul_FLOPs": 8110080,
+          "head_dense_matmul_FLOPs": 7919616,
+          "linear_MACs": 3833088,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 132928,
+          "candidates": 67,
+          "feature_cosine_matmul_FLOPs": 8507392,
+          "head_dense_matmul_FLOPs": 8297728,
+          "linear_MACs": 4015936,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 130560,
+          "candidates": 68,
+          "feature_cosine_matmul_FLOPs": 8355840,
+          "head_dense_matmul_FLOPs": 8158208,
+          "linear_MACs": 3948544,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 136896,
+          "candidates": 69,
+          "feature_cosine_matmul_FLOPs": 8761344,
+          "head_dense_matmul_FLOPs": 8544000,
+          "linear_MACs": 4135104,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 132480,
+          "candidates": 69,
+          "feature_cosine_matmul_FLOPs": 8478720,
+          "head_dense_matmul_FLOPs": 8277504,
+          "linear_MACs": 4006272,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 138880,
+          "candidates": 70,
+          "feature_cosine_matmul_FLOPs": 8888320,
+          "head_dense_matmul_FLOPs": 8667136,
+          "linear_MACs": 4194688,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 134400,
+          "candidates": 70,
+          "feature_cosine_matmul_FLOPs": 8601600,
+          "head_dense_matmul_FLOPs": 8396800,
+          "linear_MACs": 4064000,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 140864,
+          "candidates": 71,
+          "feature_cosine_matmul_FLOPs": 9015296,
+          "head_dense_matmul_FLOPs": 8790272,
+          "linear_MACs": 4254272,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 136320,
+          "candidates": 71,
+          "feature_cosine_matmul_FLOPs": 8724480,
+          "head_dense_matmul_FLOPs": 8516096,
+          "linear_MACs": 4121728,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 147456,
+          "candidates": 72,
+          "feature_cosine_matmul_FLOPs": 9437184,
+          "head_dense_matmul_FLOPs": 9191424,
+          "linear_MACs": 4448256,
+          "rows": 32
+        },
+        {
+          "attention_MACs": 140160,
+          "candidates": 73,
+          "feature_cosine_matmul_FLOPs": 8970240,
+          "head_dense_matmul_FLOPs": 8754688,
+          "linear_MACs": 4237184,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 151552,
+          "candidates": 74,
+          "feature_cosine_matmul_FLOPs": 9699328,
+          "head_dense_matmul_FLOPs": 9445376,
+          "linear_MACs": 4571136,
+          "rows": 32
+        },
+        {
+          "attention_MACs": 137344,
+          "candidates": 74,
+          "feature_cosine_matmul_FLOPs": 8790016,
+          "head_dense_matmul_FLOPs": 8588288,
+          "linear_MACs": 4156800,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 144000,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 9216000,
+          "head_dense_matmul_FLOPs": 8993280,
+          "linear_MACs": 4352640,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 134400,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 8601600,
+          "head_dense_matmul_FLOPs": 8414208,
+          "linear_MACs": 4072704,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 144000,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 9216000,
+          "head_dense_matmul_FLOPs": 8993280,
+          "linear_MACs": 4352640,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 134400,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 8601600,
+          "head_dense_matmul_FLOPs": 8414208,
+          "linear_MACs": 4072704,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 144000,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 9216000,
+          "head_dense_matmul_FLOPs": 8993280,
+          "linear_MACs": 4352640,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 139200,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 8908800,
+          "head_dense_matmul_FLOPs": 8703744,
+          "linear_MACs": 4212672,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 145920,
+          "candidates": 76,
+          "feature_cosine_matmul_FLOPs": 9338880,
+          "head_dense_matmul_FLOPs": 9112576,
+          "linear_MACs": 4410368,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 141056,
+          "candidates": 76,
+          "feature_cosine_matmul_FLOPs": 9027584,
+          "head_dense_matmul_FLOPs": 8819200,
+          "linear_MACs": 4268544,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 152768,
+          "candidates": 77,
+          "feature_cosine_matmul_FLOPs": 9777152,
+          "head_dense_matmul_FLOPs": 9529088,
+          "linear_MACs": 4611776,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 142912,
+          "candidates": 77,
+          "feature_cosine_matmul_FLOPs": 9146368,
+          "head_dense_matmul_FLOPs": 8934656,
+          "linear_MACs": 4324416,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 149760,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 9584640,
+          "head_dense_matmul_FLOPs": 9351168,
+          "linear_MACs": 4525824,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 139776,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 8945664,
+          "head_dense_matmul_FLOPs": 8749056,
+          "linear_MACs": 4234752,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 149760,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 9584640,
+          "head_dense_matmul_FLOPs": 9351168,
+          "linear_MACs": 4525824,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 144768,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 9265152,
+          "head_dense_matmul_FLOPs": 9050112,
+          "linear_MACs": 4380288,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 156736,
+          "candidates": 79,
+          "feature_cosine_matmul_FLOPs": 10031104,
+          "head_dense_matmul_FLOPs": 9775360,
+          "linear_MACs": 4730944,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 146624,
+          "candidates": 79,
+          "feature_cosine_matmul_FLOPs": 9383936,
+          "head_dense_matmul_FLOPs": 9165568,
+          "linear_MACs": 4436160,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 158720,
+          "candidates": 80,
+          "feature_cosine_matmul_FLOPs": 10158080,
+          "head_dense_matmul_FLOPs": 9898496,
+          "linear_MACs": 4790528,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 145152,
+          "candidates": 81,
+          "feature_cosine_matmul_FLOPs": 9289728,
+          "head_dense_matmul_FLOPs": 9083904,
+          "linear_MACs": 4396800,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 160704,
+          "candidates": 81,
+          "feature_cosine_matmul_FLOPs": 10285056,
+          "head_dense_matmul_FLOPs": 10021632,
+          "linear_MACs": 4850112,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 152192,
+          "candidates": 82,
+          "feature_cosine_matmul_FLOPs": 9740288,
+          "head_dense_matmul_FLOPs": 9511936,
+          "linear_MACs": 4603776,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 169984,
+          "candidates": 83,
+          "feature_cosine_matmul_FLOPs": 10878976,
+          "head_dense_matmul_FLOPs": 10588160,
+          "linear_MACs": 5124096,
+          "rows": 32
+        },
+        {
+          "attention_MACs": 154048,
+          "candidates": 83,
+          "feature_cosine_matmul_FLOPs": 9859072,
+          "head_dense_matmul_FLOPs": 9627392,
+          "linear_MACs": 4659648,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 161280,
+          "candidates": 84,
+          "feature_cosine_matmul_FLOPs": 10321920,
+          "head_dense_matmul_FLOPs": 10066944,
+          "linear_MACs": 4872192,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 155904,
+          "candidates": 84,
+          "feature_cosine_matmul_FLOPs": 9977856,
+          "head_dense_matmul_FLOPs": 9742848,
+          "linear_MACs": 4715520,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 163200,
+          "candidates": 85,
+          "feature_cosine_matmul_FLOPs": 10444800,
+          "head_dense_matmul_FLOPs": 10186240,
+          "linear_MACs": 4929920,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 159616,
+          "candidates": 86,
+          "feature_cosine_matmul_FLOPs": 10215424,
+          "head_dense_matmul_FLOPs": 9973760,
+          "linear_MACs": 4827264,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 167040,
+          "candidates": 87,
+          "feature_cosine_matmul_FLOPs": 10690560,
+          "head_dense_matmul_FLOPs": 10424832,
+          "linear_MACs": 5045376,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 161472,
+          "candidates": 87,
+          "feature_cosine_matmul_FLOPs": 10334208,
+          "head_dense_matmul_FLOPs": 10089216,
+          "linear_MACs": 4883136,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 168960,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10813440,
+          "head_dense_matmul_FLOPs": 10544128,
+          "linear_MACs": 5103104,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 163328,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10452992,
+          "head_dense_matmul_FLOPs": 10204672,
+          "linear_MACs": 4939008,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 170880,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10936320,
+          "head_dense_matmul_FLOPs": 10663424,
+          "linear_MACs": 5160832,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 165184,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10571776,
+          "head_dense_matmul_FLOPs": 10320128,
+          "linear_MACs": 4994880,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 172800,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 11059200,
+          "head_dense_matmul_FLOPs": 10782720,
+          "linear_MACs": 5218560,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 167040,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 10690560,
+          "head_dense_matmul_FLOPs": 10435584,
+          "linear_MACs": 5050752,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 174720,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 10902016,
+          "linear_MACs": 5276288,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 170752,
+          "candidates": 92,
+          "feature_cosine_matmul_FLOPs": 10928128,
+          "head_dense_matmul_FLOPs": 10666496,
+          "linear_MACs": 5162496,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 178560,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11427840,
+          "head_dense_matmul_FLOPs": 11140608,
+          "linear_MACs": 5391744,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 172608,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11046912,
+          "head_dense_matmul_FLOPs": 10781952,
+          "linear_MACs": 5218368,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 186496,
+          "candidates": 94,
+          "feature_cosine_matmul_FLOPs": 11935744,
+          "head_dense_matmul_FLOPs": 11622400,
+          "linear_MACs": 5624704,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 174464,
+          "candidates": 94,
+          "feature_cosine_matmul_FLOPs": 11165696,
+          "head_dense_matmul_FLOPs": 10897408,
+          "linear_MACs": 5274240,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 182400,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11673600,
+          "head_dense_matmul_FLOPs": 11379200,
+          "linear_MACs": 5507200,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 176320,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 11012864,
+          "linear_MACs": 5330112,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 182400,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11673600,
+          "head_dense_matmul_FLOPs": 11379200,
+          "linear_MACs": 5507200,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 176320,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 11012864,
+          "linear_MACs": 5330112,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 184320,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11796480,
+          "head_dense_matmul_FLOPs": 11498496,
+          "linear_MACs": 5564928,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 178176,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11403264,
+          "head_dense_matmul_FLOPs": 11128320,
+          "linear_MACs": 5385984,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 188480,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 12062720,
+          "head_dense_matmul_FLOPs": 11745536,
+          "linear_MACs": 5684288,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 182400,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11673600,
+          "head_dense_matmul_FLOPs": 11379200,
+          "linear_MACs": 5507200,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 190464,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 12189696,
+          "head_dense_matmul_FLOPs": 11868672,
+          "linear_MACs": 5743872,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 178176,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11403264,
+          "head_dense_matmul_FLOPs": 11128320,
+          "linear_MACs": 5385984,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 190464,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 12189696,
+          "head_dense_matmul_FLOPs": 11868672,
+          "linear_MACs": 5743872,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 172032,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11010048,
+          "head_dense_matmul_FLOPs": 10758144,
+          "linear_MACs": 5207040,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 188480,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 12062720,
+          "head_dense_matmul_FLOPs": 11745536,
+          "linear_MACs": 5684288,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 176320,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 11012864,
+          "linear_MACs": 5330112,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 188480,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 12062720,
+          "head_dense_matmul_FLOPs": 11745536,
+          "linear_MACs": 5684288,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 176320,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 11012864,
+          "linear_MACs": 5330112,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 184512,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11808768,
+          "head_dense_matmul_FLOPs": 11499264,
+          "linear_MACs": 5565120,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 172608,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11046912,
+          "head_dense_matmul_FLOPs": 10781952,
+          "linear_MACs": 5218368,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 180544,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11554816,
+          "head_dense_matmul_FLOPs": 11252992,
+          "linear_MACs": 5445952,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 168896,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10809344,
+          "head_dense_matmul_FLOPs": 10551040,
+          "linear_MACs": 5106624,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 180544,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11554816,
+          "head_dense_matmul_FLOPs": 11252992,
+          "linear_MACs": 5445952,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 163072,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10436608,
+          "head_dense_matmul_FLOPs": 10200064,
+          "linear_MACs": 4936960,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 174720,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 10902016,
+          "linear_MACs": 5276288,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 157248,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10063872,
+          "head_dense_matmul_FLOPs": 9849088,
+          "linear_MACs": 4767296,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 174720,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 10902016,
+          "linear_MACs": 5276288,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 157248,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10063872,
+          "head_dense_matmul_FLOPs": 9849088,
+          "linear_MACs": 4767296,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 174720,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 10902016,
+          "linear_MACs": 5276288,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 157248,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10063872,
+          "head_dense_matmul_FLOPs": 9849088,
+          "linear_MACs": 4767296,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 174720,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 10902016,
+          "linear_MACs": 5276288,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 163072,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10436608,
+          "head_dense_matmul_FLOPs": 10200064,
+          "linear_MACs": 4936960,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 172800,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 11059200,
+          "head_dense_matmul_FLOPs": 10782720,
+          "linear_MACs": 5218560,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 161280,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 10321920,
+          "head_dense_matmul_FLOPs": 10088448,
+          "linear_MACs": 4882944,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 170880,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10936320,
+          "head_dense_matmul_FLOPs": 10663424,
+          "linear_MACs": 5160832,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 153792,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 9842688,
+          "head_dense_matmul_FLOPs": 9633536,
+          "linear_MACs": 4662976,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 170880,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10936320,
+          "head_dense_matmul_FLOPs": 10663424,
+          "linear_MACs": 5160832,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 159488,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 9976832,
+          "linear_MACs": 4828928,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 168960,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10813440,
+          "head_dense_matmul_FLOPs": 10544128,
+          "linear_MACs": 5103104,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 157696,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10092544,
+          "head_dense_matmul_FLOPs": 9865216,
+          "linear_MACs": 4774912,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 174592,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 11173888,
+          "head_dense_matmul_FLOPs": 10883584,
+          "linear_MACs": 5267200,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 157696,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10092544,
+          "head_dense_matmul_FLOPs": 9865216,
+          "linear_MACs": 4774912,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 176576,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 11006720,
+          "linear_MACs": 5326784,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 153792,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 9842688,
+          "head_dense_matmul_FLOPs": 9633536,
+          "linear_MACs": 4662976,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 176576,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 11006720,
+          "linear_MACs": 5326784,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 159488,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 9976832,
+          "linear_MACs": 4828928,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 176576,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 11006720,
+          "linear_MACs": 5326784,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 159488,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 9976832,
+          "linear_MACs": 4828928,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 176576,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 11006720,
+          "linear_MACs": 5326784,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 159488,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 9976832,
+          "linear_MACs": 4828928,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 176576,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 11006720,
+          "linear_MACs": 5326784,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 159488,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 9976832,
+          "linear_MACs": 4828928,
+          "rows": 28
+        }
+      ],
+      "feature_cosine_matmul_FLOPs_total": 1236234240,
+      "head_dense_matmul_FLOPs_p50_p95_max": [
+        9865216.0,
+        11499033.6,
+        11868672.0
+      ],
+      "head_dense_matmul_FLOPs_total": 1206416640,
+      "parameters": 4962,
+      "untrained_zero_residual": true
+    },
+    "mlp": {
+      "events": [
+        {
+          "attention_MACs": 0,
+          "candidates": 30,
+          "feature_cosine_matmul_FLOPs": 3686400,
+          "head_dense_matmul_FLOPs": 9055800,
+          "linear_MACs": 4527900,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 49,
+          "feature_cosine_matmul_FLOPs": 6021120,
+          "head_dense_matmul_FLOPs": 14791140,
+          "linear_MACs": 7395570,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 49,
+          "feature_cosine_matmul_FLOPs": 6221824,
+          "head_dense_matmul_FLOPs": 15284178,
+          "linear_MACs": 7642089,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 51,
+          "feature_cosine_matmul_FLOPs": 6266880,
+          "head_dense_matmul_FLOPs": 15394860,
+          "linear_MACs": 7697430,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 51,
+          "feature_cosine_matmul_FLOPs": 6475776,
+          "head_dense_matmul_FLOPs": 15908022,
+          "linear_MACs": 7954011,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 53,
+          "feature_cosine_matmul_FLOPs": 6512640,
+          "head_dense_matmul_FLOPs": 15998580,
+          "linear_MACs": 7999290,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 53,
+          "feature_cosine_matmul_FLOPs": 6729728,
+          "head_dense_matmul_FLOPs": 16531866,
+          "linear_MACs": 8265933,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 54,
+          "feature_cosine_matmul_FLOPs": 6635520,
+          "head_dense_matmul_FLOPs": 16300440,
+          "linear_MACs": 8150220,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 54,
+          "feature_cosine_matmul_FLOPs": 6856704,
+          "head_dense_matmul_FLOPs": 16843788,
+          "linear_MACs": 8421894,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 55,
+          "feature_cosine_matmul_FLOPs": 6758400,
+          "head_dense_matmul_FLOPs": 16602300,
+          "linear_MACs": 8301150,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 55,
+          "feature_cosine_matmul_FLOPs": 6983680,
+          "head_dense_matmul_FLOPs": 17155710,
+          "linear_MACs": 8577855,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 56,
+          "feature_cosine_matmul_FLOPs": 6881280,
+          "head_dense_matmul_FLOPs": 16904160,
+          "linear_MACs": 8452080,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 56,
+          "feature_cosine_matmul_FLOPs": 6881280,
+          "head_dense_matmul_FLOPs": 16904160,
+          "linear_MACs": 8452080,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 57,
+          "feature_cosine_matmul_FLOPs": 7237632,
+          "head_dense_matmul_FLOPs": 17779554,
+          "linear_MACs": 8889777,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 58,
+          "feature_cosine_matmul_FLOPs": 7127040,
+          "head_dense_matmul_FLOPs": 17507880,
+          "linear_MACs": 8753940,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 60,
+          "feature_cosine_matmul_FLOPs": 7372800,
+          "head_dense_matmul_FLOPs": 18111600,
+          "linear_MACs": 9055800,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 60,
+          "feature_cosine_matmul_FLOPs": 7618560,
+          "head_dense_matmul_FLOPs": 18715320,
+          "linear_MACs": 9357660,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 63,
+          "feature_cosine_matmul_FLOPs": 7741440,
+          "head_dense_matmul_FLOPs": 19017180,
+          "linear_MACs": 9508590,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 63,
+          "feature_cosine_matmul_FLOPs": 7999488,
+          "head_dense_matmul_FLOPs": 19651086,
+          "linear_MACs": 9825543,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 64,
+          "feature_cosine_matmul_FLOPs": 7864320,
+          "head_dense_matmul_FLOPs": 19319040,
+          "linear_MACs": 9659520,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 64,
+          "feature_cosine_matmul_FLOPs": 8126464,
+          "head_dense_matmul_FLOPs": 19963008,
+          "linear_MACs": 9981504,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 65,
+          "feature_cosine_matmul_FLOPs": 7987200,
+          "head_dense_matmul_FLOPs": 19620900,
+          "linear_MACs": 9810450,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 65,
+          "feature_cosine_matmul_FLOPs": 7987200,
+          "head_dense_matmul_FLOPs": 19620900,
+          "linear_MACs": 9810450,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 66,
+          "feature_cosine_matmul_FLOPs": 8110080,
+          "head_dense_matmul_FLOPs": 19922760,
+          "linear_MACs": 9961380,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 66,
+          "feature_cosine_matmul_FLOPs": 8110080,
+          "head_dense_matmul_FLOPs": 19922760,
+          "linear_MACs": 9961380,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 67,
+          "feature_cosine_matmul_FLOPs": 8507392,
+          "head_dense_matmul_FLOPs": 20898774,
+          "linear_MACs": 10449387,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 68,
+          "feature_cosine_matmul_FLOPs": 8355840,
+          "head_dense_matmul_FLOPs": 20526480,
+          "linear_MACs": 10263240,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 69,
+          "feature_cosine_matmul_FLOPs": 8761344,
+          "head_dense_matmul_FLOPs": 21522618,
+          "linear_MACs": 10761309,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 69,
+          "feature_cosine_matmul_FLOPs": 8478720,
+          "head_dense_matmul_FLOPs": 20828340,
+          "linear_MACs": 10414170,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 70,
+          "feature_cosine_matmul_FLOPs": 8888320,
+          "head_dense_matmul_FLOPs": 21834540,
+          "linear_MACs": 10917270,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 70,
+          "feature_cosine_matmul_FLOPs": 8601600,
+          "head_dense_matmul_FLOPs": 21130200,
+          "linear_MACs": 10565100,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 71,
+          "feature_cosine_matmul_FLOPs": 9015296,
+          "head_dense_matmul_FLOPs": 22146462,
+          "linear_MACs": 11073231,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 71,
+          "feature_cosine_matmul_FLOPs": 8724480,
+          "head_dense_matmul_FLOPs": 21432060,
+          "linear_MACs": 10716030,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 72,
+          "feature_cosine_matmul_FLOPs": 9437184,
+          "head_dense_matmul_FLOPs": 23182848,
+          "linear_MACs": 11591424,
+          "rows": 32
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 73,
+          "feature_cosine_matmul_FLOPs": 8970240,
+          "head_dense_matmul_FLOPs": 22035780,
+          "linear_MACs": 11017890,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 74,
+          "feature_cosine_matmul_FLOPs": 9699328,
+          "head_dense_matmul_FLOPs": 23826816,
+          "linear_MACs": 11913408,
+          "rows": 32
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 74,
+          "feature_cosine_matmul_FLOPs": 8790016,
+          "head_dense_matmul_FLOPs": 21593052,
+          "linear_MACs": 10796526,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 9216000,
+          "head_dense_matmul_FLOPs": 22639500,
+          "linear_MACs": 11319750,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 8601600,
+          "head_dense_matmul_FLOPs": 21130200,
+          "linear_MACs": 10565100,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 9216000,
+          "head_dense_matmul_FLOPs": 22639500,
+          "linear_MACs": 11319750,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 8601600,
+          "head_dense_matmul_FLOPs": 21130200,
+          "linear_MACs": 10565100,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 9216000,
+          "head_dense_matmul_FLOPs": 22639500,
+          "linear_MACs": 11319750,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 75,
+          "feature_cosine_matmul_FLOPs": 8908800,
+          "head_dense_matmul_FLOPs": 21884850,
+          "linear_MACs": 10942425,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 76,
+          "feature_cosine_matmul_FLOPs": 9338880,
+          "head_dense_matmul_FLOPs": 22941360,
+          "linear_MACs": 11470680,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 76,
+          "feature_cosine_matmul_FLOPs": 9027584,
+          "head_dense_matmul_FLOPs": 22176648,
+          "linear_MACs": 11088324,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 77,
+          "feature_cosine_matmul_FLOPs": 9777152,
+          "head_dense_matmul_FLOPs": 24017994,
+          "linear_MACs": 12008997,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 77,
+          "feature_cosine_matmul_FLOPs": 9146368,
+          "head_dense_matmul_FLOPs": 22468446,
+          "linear_MACs": 11234223,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 9584640,
+          "head_dense_matmul_FLOPs": 23545080,
+          "linear_MACs": 11772540,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 8945664,
+          "head_dense_matmul_FLOPs": 21975408,
+          "linear_MACs": 10987704,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 9584640,
+          "head_dense_matmul_FLOPs": 23545080,
+          "linear_MACs": 11772540,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 78,
+          "feature_cosine_matmul_FLOPs": 9265152,
+          "head_dense_matmul_FLOPs": 22760244,
+          "linear_MACs": 11380122,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 79,
+          "feature_cosine_matmul_FLOPs": 10031104,
+          "head_dense_matmul_FLOPs": 24641838,
+          "linear_MACs": 12320919,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 79,
+          "feature_cosine_matmul_FLOPs": 9383936,
+          "head_dense_matmul_FLOPs": 23052042,
+          "linear_MACs": 11526021,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 80,
+          "feature_cosine_matmul_FLOPs": 10158080,
+          "head_dense_matmul_FLOPs": 24953760,
+          "linear_MACs": 12476880,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 81,
+          "feature_cosine_matmul_FLOPs": 9289728,
+          "head_dense_matmul_FLOPs": 22820616,
+          "linear_MACs": 11410308,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 81,
+          "feature_cosine_matmul_FLOPs": 10285056,
+          "head_dense_matmul_FLOPs": 25265682,
+          "linear_MACs": 12632841,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 82,
+          "feature_cosine_matmul_FLOPs": 9740288,
+          "head_dense_matmul_FLOPs": 23927436,
+          "linear_MACs": 11963718,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 83,
+          "feature_cosine_matmul_FLOPs": 10878976,
+          "head_dense_matmul_FLOPs": 26724672,
+          "linear_MACs": 13362336,
+          "rows": 32
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 83,
+          "feature_cosine_matmul_FLOPs": 9859072,
+          "head_dense_matmul_FLOPs": 24219234,
+          "linear_MACs": 12109617,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 84,
+          "feature_cosine_matmul_FLOPs": 10321920,
+          "head_dense_matmul_FLOPs": 25356240,
+          "linear_MACs": 12678120,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 84,
+          "feature_cosine_matmul_FLOPs": 9977856,
+          "head_dense_matmul_FLOPs": 24511032,
+          "linear_MACs": 12255516,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 85,
+          "feature_cosine_matmul_FLOPs": 10444800,
+          "head_dense_matmul_FLOPs": 25658100,
+          "linear_MACs": 12829050,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 86,
+          "feature_cosine_matmul_FLOPs": 10215424,
+          "head_dense_matmul_FLOPs": 25094628,
+          "linear_MACs": 12547314,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 87,
+          "feature_cosine_matmul_FLOPs": 10690560,
+          "head_dense_matmul_FLOPs": 26261820,
+          "linear_MACs": 13130910,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 87,
+          "feature_cosine_matmul_FLOPs": 10334208,
+          "head_dense_matmul_FLOPs": 25386426,
+          "linear_MACs": 12693213,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10813440,
+          "head_dense_matmul_FLOPs": 26563680,
+          "linear_MACs": 13281840,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10452992,
+          "head_dense_matmul_FLOPs": 25678224,
+          "linear_MACs": 12839112,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10936320,
+          "head_dense_matmul_FLOPs": 26865540,
+          "linear_MACs": 13432770,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10571776,
+          "head_dense_matmul_FLOPs": 25970022,
+          "linear_MACs": 12985011,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 11059200,
+          "head_dense_matmul_FLOPs": 27167400,
+          "linear_MACs": 13583700,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 10690560,
+          "head_dense_matmul_FLOPs": 26261820,
+          "linear_MACs": 13130910,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 27469260,
+          "linear_MACs": 13734630,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 92,
+          "feature_cosine_matmul_FLOPs": 10928128,
+          "head_dense_matmul_FLOPs": 26845416,
+          "linear_MACs": 13422708,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11427840,
+          "head_dense_matmul_FLOPs": 28072980,
+          "linear_MACs": 14036490,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11046912,
+          "head_dense_matmul_FLOPs": 27137214,
+          "linear_MACs": 13568607,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 94,
+          "feature_cosine_matmul_FLOPs": 11935744,
+          "head_dense_matmul_FLOPs": 29320668,
+          "linear_MACs": 14660334,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 94,
+          "feature_cosine_matmul_FLOPs": 11165696,
+          "head_dense_matmul_FLOPs": 27429012,
+          "linear_MACs": 13714506,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11673600,
+          "head_dense_matmul_FLOPs": 28676700,
+          "linear_MACs": 14338350,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 27720810,
+          "linear_MACs": 13860405,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11673600,
+          "head_dense_matmul_FLOPs": 28676700,
+          "linear_MACs": 14338350,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 27720810,
+          "linear_MACs": 13860405,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11796480,
+          "head_dense_matmul_FLOPs": 28978560,
+          "linear_MACs": 14489280,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11403264,
+          "head_dense_matmul_FLOPs": 28012608,
+          "linear_MACs": 14006304,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 12062720,
+          "head_dense_matmul_FLOPs": 29632590,
+          "linear_MACs": 14816295,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11673600,
+          "head_dense_matmul_FLOPs": 28676700,
+          "linear_MACs": 14338350,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 12189696,
+          "head_dense_matmul_FLOPs": 29944512,
+          "linear_MACs": 14972256,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11403264,
+          "head_dense_matmul_FLOPs": 28012608,
+          "linear_MACs": 14006304,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 12189696,
+          "head_dense_matmul_FLOPs": 29944512,
+          "linear_MACs": 14972256,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 96,
+          "feature_cosine_matmul_FLOPs": 11010048,
+          "head_dense_matmul_FLOPs": 27046656,
+          "linear_MACs": 13523328,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 12062720,
+          "head_dense_matmul_FLOPs": 29632590,
+          "linear_MACs": 14816295,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 27720810,
+          "linear_MACs": 13860405,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 12062720,
+          "head_dense_matmul_FLOPs": 29632590,
+          "linear_MACs": 14816295,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 95,
+          "feature_cosine_matmul_FLOPs": 11284480,
+          "head_dense_matmul_FLOPs": 27720810,
+          "linear_MACs": 13860405,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11808768,
+          "head_dense_matmul_FLOPs": 29008746,
+          "linear_MACs": 14504373,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 93,
+          "feature_cosine_matmul_FLOPs": 11046912,
+          "head_dense_matmul_FLOPs": 27137214,
+          "linear_MACs": 13568607,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11554816,
+          "head_dense_matmul_FLOPs": 28384902,
+          "linear_MACs": 14192451,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10809344,
+          "head_dense_matmul_FLOPs": 26553618,
+          "linear_MACs": 13276809,
+          "rows": 29
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11554816,
+          "head_dense_matmul_FLOPs": 28384902,
+          "linear_MACs": 14192451,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10436608,
+          "head_dense_matmul_FLOPs": 25637976,
+          "linear_MACs": 12818988,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 27469260,
+          "linear_MACs": 13734630,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10063872,
+          "head_dense_matmul_FLOPs": 24722334,
+          "linear_MACs": 12361167,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 27469260,
+          "linear_MACs": 13734630,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10063872,
+          "head_dense_matmul_FLOPs": 24722334,
+          "linear_MACs": 12361167,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 27469260,
+          "linear_MACs": 13734630,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10063872,
+          "head_dense_matmul_FLOPs": 24722334,
+          "linear_MACs": 12361167,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 11182080,
+          "head_dense_matmul_FLOPs": 27469260,
+          "linear_MACs": 13734630,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 91,
+          "feature_cosine_matmul_FLOPs": 10436608,
+          "head_dense_matmul_FLOPs": 25637976,
+          "linear_MACs": 12818988,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 11059200,
+          "head_dense_matmul_FLOPs": 27167400,
+          "linear_MACs": 13583700,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 90,
+          "feature_cosine_matmul_FLOPs": 10321920,
+          "head_dense_matmul_FLOPs": 25356240,
+          "linear_MACs": 12678120,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10936320,
+          "head_dense_matmul_FLOPs": 26865540,
+          "linear_MACs": 13432770,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 9842688,
+          "head_dense_matmul_FLOPs": 24178986,
+          "linear_MACs": 12089493,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10936320,
+          "head_dense_matmul_FLOPs": 26865540,
+          "linear_MACs": 13432770,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 25074504,
+          "linear_MACs": 12537252,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10813440,
+          "head_dense_matmul_FLOPs": 26563680,
+          "linear_MACs": 13281840,
+          "rows": 30
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10092544,
+          "head_dense_matmul_FLOPs": 24792768,
+          "linear_MACs": 12396384,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 11173888,
+          "head_dense_matmul_FLOPs": 27449136,
+          "linear_MACs": 13724568,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 88,
+          "feature_cosine_matmul_FLOPs": 10092544,
+          "head_dense_matmul_FLOPs": 24792768,
+          "linear_MACs": 12396384,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 27761058,
+          "linear_MACs": 13880529,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 9842688,
+          "head_dense_matmul_FLOPs": 24178986,
+          "linear_MACs": 12089493,
+          "rows": 27
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 27761058,
+          "linear_MACs": 13880529,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 25074504,
+          "linear_MACs": 12537252,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 27761058,
+          "linear_MACs": 13880529,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 25074504,
+          "linear_MACs": 12537252,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 27761058,
+          "linear_MACs": 13880529,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 25074504,
+          "linear_MACs": 12537252,
+          "rows": 28
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 11300864,
+          "head_dense_matmul_FLOPs": 27761058,
+          "linear_MACs": 13880529,
+          "rows": 31
+        },
+        {
+          "attention_MACs": 0,
+          "candidates": 89,
+          "feature_cosine_matmul_FLOPs": 10207232,
+          "head_dense_matmul_FLOPs": 25074504,
+          "linear_MACs": 12537252,
+          "rows": 28
+        }
+      ],
+      "feature_cosine_matmul_FLOPs_total": 1236234240,
+      "head_dense_matmul_FLOPs_p50_p95_max": [
+        24792768.0,
+        28999690.2,
+        29944512.0
+      ],
+      "head_dense_matmul_FLOPs_total": 3036862530,
+      "parameters": 5119,
+      "untrained_zero_residual": true
+    }
+  },
+  "no_GT_actor_input": true,
+  "no_gradient_updates": true,
+  "not_FPS": true,
+  "scene_frames": 64,
+  "scope": "Dense matrix operations only, not total extra module FLOPs or whole-video cost. Native candidate sizes/state observed independently for each zero-residual head.",
+  "source": {
+    "CUDA_VISIBLE_DEVICES": "4",
+    "Full24": false,
+    "GMT_checkpoint": {
+      "SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+      "bytes": 638238241,
+      "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
+    },
+    "GT_actor_input": false,
+    "HEAD": "8bb17b45af592c7a6d5ca7d03cee32a3e54fd031",
+    "goal": {
+      "SHA256": "44e805c961acc963f0f210f2fd27488b1c216c9998357901481020204164c0fc",
+      "bytes": 3790,
+      "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/MASTER_GOAL.json"
+    },
+    "official_TEST": false,
+    "sealed20_21_22": true,
+    "source_SHA256": {
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "935bbb74fa581225acc3da010d9972edaf5376263b1b800a33208a30af031b30",
+      "gtr/modeling/roi_heads/gtr_roi_heads.py": "8c7bd0e35269bfe8a20c04b046a5bd4d713a5c0e5581111c4941c2ee20ca463f",
+      "gtr/modeling/roi_heads/transformer.py": "22f4f578eac16948005019f6c6883dcc2abc81cf25b38c1e17be65e90cf3ded0",
+      "reproduction_tools/gmt_jev_baseline.py": "ff88f327e5cf40c81a438813f03df5ce3e5bdfed11e424d1a81a8f2e7b6f21fc",
+      "reproduction_tools/gmt_jev_calibration_probe.py": "8e85e4dd5f8047facc0d87c8766776f0c8aa791cb589f1743e3e4df002a22a15",
+      "reproduction_tools/gmt_jev_common.py": "98851e515ff3643170fe922a8219e79c6e7054153e0490976cce1226ce04902f",
+      "reproduction_tools/gmt_jev_controller.py": "f1efc267b15d640e4cdbb41954c431c791e2b577271b3040a3e1076ffc31f260",
+      "reproduction_tools/gmt_jev_evaluate.py": "1b2a01f75428908c0771a54e1aee46ecc57482a01dc92248d68b7a6012e078d8",
+      "reproduction_tools/gmt_jev_head_cost.py": "c1c0b3d0ed81191451c5728a898c85034ecf773de59e57dcc8fc0cb0aa8df804",
+      "reproduction_tools/gmt_jev_job.py": "20fabf1db8c521a14acff2e68658d08ddda5edfdf548280a6481d719f5f9ed36",
+      "reproduction_tools/gmt_jev_online.py": "328b28f3b043327efec5b1c0349d177c5c9b1479db9677723823cb8e13b3b6d4",
+      "reproduction_tools/gmt_jev_opportunity.py": "869955845644dbeef6e59b3ac0efa2b6dcbc082b9e57500aa4bad8b9e34e35dc",
+      "reproduction_tools/gmt_jev_publish.py": "e0a3b7886e0b35b689d99361465de2d1eba3a413bc1d03382f837e1ad8767c1a",
+      "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3",
+      "reproduction_tools/gmt_jev_speed.py": "3f8b984368899b6d4baa24d1d65f8692098b3f264b2c02390edaf3cc4dbd925f",
+      "reproduction_tools/gmt_jev_speed_queue.py": "873991adaf124676cee8da4a3cbbd0e9dd2cf6407ca04bccba0a1f6947014292",
+      "reproduction_tools/gmt_jev_stock_baseline.py": "8a25859d03efe4c1292dfc837b0e325e33f7e8ca584f56c5a6e48270bc78fc0c",
+      "reproduction_tools/gmt_jev_summarize_online.py": "49bb8d1f57fa513bbfba815ea44eac44b0b5365454ec73eed1a8c204cb1247a4"
+    }
+  },
+  "status": "COMPLETE_REAL_NATIVE_PREFIX_AUDIT",
+  "video": 16
+}

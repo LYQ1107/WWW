@@ -1,0 +1,29 @@
+# 实测效率与参数
+
+以下只使用完成的三次完整视频结果；缺测项仍为 PENDING。
+
+| 方法 | 场景 FPS | 图像 FPS | 相对 GMT | 新增参数 |
+|---|---:|---:|---:|---:|
+| original | PENDING | PENDING | PENDING | PENDING |
+| threshold | PENDING | PENDING | PENDING | PENDING |
+| rule | PENDING | PENDING | PENDING | PENDING |
+| confidence | PENDING | PENDING | PENDING | PENDING |
+| mlp_zero | PENDING | PENDING | PENDING | PENDING |
+| attention_zero | PENDING | PENDING | PENDING | PENDING |
+| cic_zero | PENDING | PENDING | PENDING | PENDING |
+
+每个场景时刻读取两张图像，图像 FPS 为场景 FPS 的两倍，相对效率比值一致。完整计时包含原生 min_track_len=50 和 stock 后处理；不包含模型加载与 8 帧 warmup。每次完整运行重置原生状态、随机状态和额外摘要，不复用 perception cache。GPU 型号为 V100-DGXS-32GB，实际 UUID 及每次 VRAM、Stage2 p50/p95 见 JSON。
+
+原型 MLP/Attention/CIC 均未训练，残差输出为零。这些数据只能说明集成与开销，不能说明训练后的质量、优势或安全性。Rule 没有可学习参数，但仍有跨相机特征和历史维护计算；extra_neural_FLOPs=0 不代表额外模块成本为零。
+
+HEAD_COST_PREFIX.json 若已完成，则使用真实 TRAIN16 前64场景帧的原生候选尺寸，记录 Linear 与 Attention 矩阵乘法，并单列特征余弦矩阵乘法。每个 MAC 算两 FLOPs；排除偏置、归一化、GELU、softmax、reduction、逐元素运算、Python 与数据移动，不能称作总 FLOPs 或完整视频总开销。
+
+计时使用同一 GPU 的串行方法块，宿主机仍有其他卡任务；CUDA 同步剖析开销各方法一致计入。三次原生输出必须逐次严格相同；95% 门槛是预注册开发指标，不等于独立种子验证。
+
+实际64场景帧、127次原生调用的 dense matmul 审计：
+
+| 原型 | head GFLOPs | 特征余弦 GFLOPs |
+|---|---:|---:|
+| attention | 1.206417 | 1.236234 |
+| cic | 1.206417 | 1.236234 |
+| mlp | 3.036863 | 1.236234 |

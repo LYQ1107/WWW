@@ -1,0 +1,102 @@
+{
+  "architecture_ablation": "NOT_RUN_NO_JOINT_POSITIVE_MAIN_METHOD",
+  "bounded_tracking_experiments_complete": true,
+  "current_best_conservative_candidate": "confidence: modest ordinary calibration development signal, not +0.5 or JEV-specific superiority",
+  "development_primary_conclusions": {
+    "confidence": {
+      "delta_HOTA": 0.2610525110118118,
+      "joint_quality_pass": false,
+      "quality_gates": {
+        "AssA": true,
+        "CVIDF1": true,
+        "Frag": true,
+        "HOTA": false,
+        "IDSW": true,
+        "identity_duration": true
+      }
+    },
+    "rule": {
+      "delta_HOTA": 0.5025820280491615,
+      "joint_quality_pass": false,
+      "quality_gates": {
+        "AssA": true,
+        "CVIDF1": true,
+        "Frag": true,
+        "HOTA": true,
+        "IDSW": false,
+        "identity_duration": true
+      }
+    },
+    "threshold": {
+      "delta_HOTA": 0.1351685338590869,
+      "joint_quality_pass": false,
+      "quality_gates": {
+        "AssA": true,
+        "CVIDF1": true,
+        "Frag": true,
+        "HOTA": false,
+        "IDSW": true,
+        "identity_duration": true
+      }
+    }
+  },
+  "efficiency_status": "PENDING_REAL_MEASUREMENTS",
+  "learned_training": "NOT_RUN_FROZEN_TRAIN_SIGNAL_GATE_FAILED",
+  "master_goal_status": "ACTIVE",
+  "prohibited_next_steps": [
+    "Tune on TRAIN16 signs",
+    "Read new DEV/sealed20-22/TEST/Full24",
+    "Replace original GTA",
+    "Blindly train larger JEV"
+  ],
+  "rule_go_no_go": "NO_GO_AS_STABLE_METHOD: HOTA +0.502582 but IDSW +15.44%",
+  "scientific_success": false,
+  "source": {
+    "CUDA_VISIBLE_DEVICES": null,
+    "Full24": false,
+    "GMT_checkpoint": {
+      "SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+      "bytes": 638238241,
+      "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
+    },
+    "GT_actor_input": false,
+    "HEAD": "8bb17b45af592c7a6d5ca7d03cee32a3e54fd031",
+    "goal": {
+      "SHA256": "049cead57802b9d3d481719924a883d847a31d534da9e379fa5c22f2a26a3625",
+      "bytes": 3838,
+      "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/MASTER_GOAL.json"
+    },
+    "official_TEST": false,
+    "sealed20_21_22": true,
+    "source_SHA256": {
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "935bbb74fa581225acc3da010d9972edaf5376263b1b800a33208a30af031b30",
+      "gtr/modeling/roi_heads/gtr_roi_heads.py": "8c7bd0e35269bfe8a20c04b046a5bd4d713a5c0e5581111c4941c2ee20ca463f",
+      "gtr/modeling/roi_heads/transformer.py": "22f4f578eac16948005019f6c6883dcc2abc81cf25b38c1e17be65e90cf3ded0",
+      "reproduction_tools/gmt_jev_baseline.py": "ff88f327e5cf40c81a438813f03df5ce3e5bdfed11e424d1a81a8f2e7b6f21fc",
+      "reproduction_tools/gmt_jev_calibration_probe.py": "8e85e4dd5f8047facc0d87c8766776f0c8aa791cb589f1743e3e4df002a22a15",
+      "reproduction_tools/gmt_jev_common.py": "98851e515ff3643170fe922a8219e79c6e7054153e0490976cce1226ce04902f",
+      "reproduction_tools/gmt_jev_controller.py": "f1efc267b15d640e4cdbb41954c431c791e2b577271b3040a3e1076ffc31f260",
+      "reproduction_tools/gmt_jev_evaluate.py": "1b2a01f75428908c0771a54e1aee46ecc57482a01dc92248d68b7a6012e078d8",
+      "reproduction_tools/gmt_jev_head_cost.py": "c1c0b3d0ed81191451c5728a898c85034ecf773de59e57dcc8fc0cb0aa8df804",
+      "reproduction_tools/gmt_jev_job.py": "20fabf1db8c521a14acff2e68658d08ddda5edfdf548280a6481d719f5f9ed36",
+      "reproduction_tools/gmt_jev_online.py": "328b28f3b043327efec5b1c0349d177c5c9b1479db9677723823cb8e13b3b6d4",
+      "reproduction_tools/gmt_jev_opportunity.py": "869955845644dbeef6e59b3ac0efa2b6dcbc082b9e57500aa4bad8b9e34e35dc",
+      "reproduction_tools/gmt_jev_publish.py": "e0a3b7886e0b35b689d99361465de2d1eba3a413bc1d03382f837e1ad8767c1a",
+      "reproduction_tools/gmt_jev_research_report.py": "d36f83f53034d4078c30a6467fe47917dccdb593557e323d53b8bae238bc6f67",
+      "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3",
+      "reproduction_tools/gmt_jev_speed.py": "3f8b984368899b6d4baa24d1d65f8692098b3f264b2c02390edaf3cc4dbd925f",
+      "reproduction_tools/gmt_jev_speed_queue.py": "f4aca344229457c345ba0817b98e97a469c7d421bbe5b2b1b97f7d520777f0c0",
+      "reproduction_tools/gmt_jev_stock_baseline.py": "8a25859d03efe4c1292dfc837b0e325e33f7e8ca584f56c5a6e48270bc78fc0c",
+      "reproduction_tools/gmt_jev_summarize_online.py": "49bb8d1f57fa513bbfba815ea44eac44b0b5365454ec73eed1a8c204cb1247a4"
+    }
+  },
+  "status": "NOT_ESTABLISHED",
+  "unmet": [
+    "HOTA gain and identity stability jointly satisfied",
+    "Qualified learned MLP/Attention/CIC comparison",
+    "Independent full-video validation",
+    "Necessary seed reproduction",
+    "Completed matched full-image efficiency measurements"
+  ]
+}
