@@ -13,3 +13,11 @@ Train sample acquisition is in-memory on complete native GMT prefixes; no large 
 Main development success: HOTA>=GMT+0.5, AssA/CVIDF1 no decrease, IDSW/Frag/error duration<=1.05x; sameGPU three full-image trial meanFPS>=0.95x. Extra trainable parameters<100k. Missing independent validation remains pending regardless of development signs. Architecture ablations only after a joint positive main result.
 
 Budget: new12 GPU-wall-hours, total new retainedworktree+runtime<=512MiB, home reserve>=30GiB. data1 read-only due its27GiB free. No new dataset/weights download, no GMT gradients, no DEV or sealed/TEST/Full24 access, preserve historical checkpoints/evidence.
+
+## Executable details frozen before P1 outcomes
+
+24 observable features and feature units are defined in gtr/modeling/gmt_jev/correction.py. Risk requires >=2 lawful candidates, top-two normalized GMT margin<=0.10, >=3 committed other-view observations, absolute appearance support conflict>=0.05. Rule delta=0.05*clip((other−same)/0.2,−1,1); fixed calibration delta=−0.02. Residuals multiply the original support count when added to summed native scores; native0.1 overlap and0.4 Bank thresholds remain unchanged. MLP5119/Attention4898/CIC4962 parameters. Every model receives the entire same24-feature candidate matrix; MLP uses ordinary shared/row means, Attention uses shared context attention, CIC additionally uses2 observable conflict-question roles.
+
+Evaluation conventions: primary unfiltered native online predictions expose all fragments and wrong births; stock GMT min_track_len50 plus unchanged native postprocessing is a matched secondary, reported separately for both methods. Neither convention may be selected by its metric sign. Raw and stock metrics are never mixed. Complete image FPS includes the stock final postprocessing. Source-state ORACLE diagnoses are labelled non-deployable and do not count as primary tracking results.
+
+Training coefficients if qualified: native-association CE on unique legal targets, preserve penalty1.0 on normalized residuals for certified already-correct GMT rows, residual penalty0.01 on all normalized residuals; AdamW1e-4/0.01,300 then1000 cumulative, fixed final checkpoint. Native assignment measurements and full closed-loop tracking decide the result, rather than pairwise accuracy.

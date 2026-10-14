@@ -2,7 +2,7 @@
 import argparse,subprocess
 from pathlib import Path
 from current_research_goal import redirect_if_superseded
-if __name__=='__main__' and redirect_if_superseded('reports/JEV_MASTER/MASTER_GOAL.json'):
+if redirect_if_superseded('reports/JEV_MASTER/MASTER_GOAL.json'):
  raise SystemExit(0)
 if (Path(__file__).resolve().parents[1]/'reports/JEV_MASTER/MASTER_COMPLETION_REQUIREMENTS_AUDIT.json').exists():
  from jev_master_audit_common import *

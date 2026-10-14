@@ -5,3 +5,5 @@
 前32帧同图像、同权重、同随机状态的原始源码快照和Adapter OFF完全一致：GTA logits、聚合分数、native IDs、Gallery/Bank状态摘要与tensor内容、完整原生预测。原代码快照从Git精确提取到本轮runtime；比较对象是已有项目冻结源码，包含历史工程兼容修正，不伪称新的官方byte-identical源码复刻。
 
 输入为真实图像，包含Stage2训练的检测/VFCE/RPCE，不复用旧Stage1-only缓存。全视频parity与匹配评测仍待完成；当前科学状态ACTIVE，旧78.110等DEV分数不移植到TRAIN16。带hash诊断的运行时间不是完整FPS。
+
+完整TRAIN16（1034场景帧/双相机）也通过了严格原代码与Adapter OFF等价：全部GTA logits、关联分数、每次离散提交状态和最终原生预测完全相同；前32帧和最后一帧的Gallery/Bank全部tensor内容相同。完整图像FPS与GT指标仍待单独无诊断计时和评测。

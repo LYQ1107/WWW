@@ -7,7 +7,7 @@ def main(message):
  assert not subprocess.check_output(['git','diff',BASE,'--name-only','--',*old],cwd=ROOT,text=True).strip()
  files=[p for r in [DOCS,REPORTS,ROOT/'gtr/modeling/gmt_jev'] if r.exists() for p in r.rglob('*') if p.is_file() and '__pycache__' not in p.parts and p.name!='ARTIFACT_MANIFEST.json']
  files+=list((ROOT/'reproduction_tools').glob('gmt_jev_*.py'))
- files += [ROOT/n for n in ['CURRENT_RESEARCH_GOAL.md','reports/CURRENT_RESEARCH_GOAL.json','reproduction_tools/current_research_goal.py','reproduction_tools/jev_master_goal_controller.py','reproduction_tools/jev_recovery_controller.py','gtr/modeling/meta_arch/gtr_rcnn.py']]
+ files += [ROOT/n for n in ['CURRENT_RESEARCH_GOAL.md','reports/CURRENT_RESEARCH_GOAL.json','reproduction_tools/current_research_goal.py','reproduction_tools/jev_master_goal_controller.py','reproduction_tools/jev_recovery_controller.py','reproduction_tools/jev_fastcheck_job.py','gtr/modeling/meta_arch/gtr_rcnn.py']]
  for p in files:
   assert p.stat().st_size<2**20,p
   if p.suffix=='.py':compile(p.read_text(),str(p),'exec')

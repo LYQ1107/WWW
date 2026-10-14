@@ -1,7 +1,7 @@
 """Finite preregistered job controller; scientific gates never auto-complete MASTER."""
 import argparse,fcntl,signal
 from current_research_goal import redirect_if_superseded
-if __name__=='__main__' and redirect_if_superseded('reports/JEV_RECOVERY/MASTER_GOAL.json'):
+if redirect_if_superseded('reports/JEV_RECOVERY/MASTER_GOAL.json'):
  raise SystemExit(0)
 from jev_recovery_common import *
 

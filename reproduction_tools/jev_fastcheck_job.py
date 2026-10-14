@@ -1,5 +1,8 @@
 """Registered subprocess launcher with bounded elapsed GPU-hours and disk guard."""
 import argparse,fcntl,shutil
+from current_research_goal import redirect_if_superseded
+if redirect_if_superseded('reports/JEV_FASTCHECK/GOAL.json'):
+ raise SystemExit(0)
 from jev_fastcheck_common import *
 def update(name,value):
  REPORTS.mkdir(parents=True,exist_ok=True)
