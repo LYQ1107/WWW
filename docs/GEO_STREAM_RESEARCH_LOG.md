@@ -30,8 +30,16 @@ Residual hook is optional in pre-softmax proposal logits. GTA/Hungarian/detector
 
 ## GT quality protocol and clean screening
 
-Second pushed commit: `624ba2cfcc` (use Git for full SHA). All-TRAIN audit finds conflicting within-frame GT identities in videos 2,3,14,15,16,20,22,23,24. No labels repaired. Split v2 freezes strict development subset by this structural property BEFORE any VGGT model screening results: videos 1,10,11,18,19. All original development videos remain listed, and contaminated videos are evaluated as explicitly separate raw-GT diagnostics. Minimal strict screen uses [1,10,18] and fixed linspace timestamps. Initial [1,14,22] samples are retained as diagnostics and are not used for scalar calibration. Association training samples [5,8,12] belong to separate original-TRAIN scene families and have unique raw GT.
+Second pushed commit: `624ba2cf89bb0443866863b06e19d8422d76c88b`. All-TRAIN audit finds conflicting within-frame GT identities in videos 2,3,14,15,16,20,22,23,24. No labels repaired. Split v2 freezes strict development subset by this structural property BEFORE any VGGT model screening results: videos 1,10,11,18,19. All original development videos remain listed, and contaminated videos are evaluated as explicitly separate raw-GT diagnostics. Minimal strict screen uses [1,10,18] and fixed linspace timestamps. Initial [1,14,22] samples are retained as diagnostics and are not used for scalar calibration. Association training samples [5,8,12] belong to separate original-TRAIN scene families and have unique raw GT.
 
 B0 original full-video runs for [1,14,22] complete, all image frames retained. Fresh clean B0 [10,18] is running. Predeclared reference experiment B6_sift_w05_k10 [14,22], weight 0.5 and interval 10, begins before seeing any enhanced tracking metrics. This is a traditional masked-background reference, not a VGGT DCGA claim. Original memory score path is explicitly neutral. Raw-diagnostic evaluation retry used a separate output directory after strict audit left an empty directory; no completed result overwritten.
 
 VGGT official research weights and independent public DINOv2 ViT-L/14-register weights are downloaded into runtime only. All geometry code and matrices are original small implementations; no StreamVGGT/FastVGGT code copied.
+
+## Frozen VGGT smoke, camera order failure and recovery
+
+VGGT original checkpoint download completes (5,026,874,952 bytes) and strict architecture load succeeds. Two clean garden sample pairs run jointly, reversed and singly. Observed aggregator length24, cached levels4/11/17/23 shape [1,2,1374,2048], patch_start_idx5, patch grid37x37. Warm joint inference about0.98s on this V100, first invocation4.28s; not total pipeline throughput. Target only storage.
+
+Camera order is NOT invariant: observed maximum candidate cosine change0.2075 after reversing views and restoring camera IDs. Consequently raw joint scores are diagnostic only until this is addressed. Added opt-in symmetric representation: concatenate per-target vectors from both joint input orders with 1/sqrt(2) scaling, yielding the mean of the two cosine matrices. This doubles actual VGGT calls and is charged in counters and latency. Scalar calibration must match the same symmetric representation. Full clean screening already underway retains raw, single and symmetric score comparisons; subsequent TRAIN extraction includes both order target vectors for calibration.
+
+No identity gain or SCIENTIFIC_SUCCESS is declared from the tiny smoke.

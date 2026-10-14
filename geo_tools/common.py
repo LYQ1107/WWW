@@ -13,6 +13,12 @@ def sha256(path):
         for block in iter(lambda: f.read(8 << 20), b''): h.update(block)
     return h.hexdigest()
 
+# Snapshot the source at process import, before any long-running experiment.
+SOURCE_HASHES = {str(p.relative_to(ROOT)): sha256(p) for directory in [ROOT/'geo_tools',ROOT/'gtr/geometry',ROOT/'gtr/modeling',ROOT/'gtr/evaluation',ROOT/'gtr/data'] for p in directory.rglob('*.py')}
+SOURCE_HASHES['gtr/config.py'] = sha256(ROOT/'gtr/config.py')
+SOURCE_STATUS = subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True)
+SOURCE_DIFF_SHA256 = hashlib.sha256(subprocess.check_output(['git','diff','HEAD'],cwd=ROOT)).hexdigest()
+
 def save_json(path, value):
     path = Path(path); path.parent.mkdir(parents=True, exist_ok=True)
     tmp = path.with_suffix(path.suffix + '.tmp')
@@ -64,6 +70,7 @@ def provenance(seed=20261014):
     return dict(commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
                 command=sys.argv, seed=seed, python=sys.version, torch=torch.__version__, numpy=numpy.__version__,
                 cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'), used_cache=False,
+                source_hashes=SOURCE_HASHES,source_tree_dirty=bool(SOURCE_STATUS),source_diff_sha256=SOURCE_DIFF_SHA256,
                 checkpoint=str(CHECKPOINT), checkpoint_sha256=sha256(CHECKPOINT),
                 config_sha256=sha256(ROOT/'configs/VISION_test.yaml'),
                 annotation_sha256=sha256(DATA/'annotations/train.json'))

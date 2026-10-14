@@ -15,6 +15,14 @@ class Tests(unittest.TestCase):
         mask=torch.zeros_like(l,dtype=torch.bool);mask[0,1]=True
         result=PairScoreAdapter(True,4,0,.5).apply(l,r,None,mask)
         self.assertTrue(torch.equal(result[~mask],l[~mask]));self.assertLessEqual(float((result-l).abs().max()),.500001)
+    def test_symmetric_feature_order(self):
+        g=torch.Generator().manual_seed(42)
+        a,b,c,d=[torch.nn.functional.normalize(torch.randn(6,8,generator=g),dim=-1) for _ in range(4)]
+        first=torch.cat([a,c],dim=-1)/2**.5;second=torch.cat([b,d],dim=-1)/2**.5
+        score=second@first.T
+        reversed_restored=(torch.cat([d,b],dim=-1)/2**.5)@(torch.cat([c,a],dim=-1)/2**.5).T
+        self.assertTrue(torch.allclose(score,reversed_restored,atol=1e-6))
+
     def test_prefix_and_budget(self):
         def run(n):
             s=SparseScheduler(budget=3,window=20)

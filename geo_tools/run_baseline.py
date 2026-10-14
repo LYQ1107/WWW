@@ -33,7 +33,7 @@ def main():
         report=provenance(); report.update(video_id=vid, frames=len(records), synchronized_groups=len(records)//views,
             full_video=args.max_frames is None, causal_online=False, read_preprocess_seconds=read_seconds,
             inference_seconds=inference_seconds, total_seconds=time.perf_counter()-start, phase_seconds=phase,
-            peak_gpu_bytes=torch.cuda.max_memory_allocated(), prediction=str(path),prediction_sha256=sha256(path),geo_options=geo_opts,geo_calls=model.geo_runtime.calls,geo_failures=model.geo_runtime.failed,geo_seconds=model.geo_runtime.seconds,
+            peak_gpu_bytes=torch.cuda.max_memory_allocated(), prediction=str(path),prediction_sha256=sha256(path),geo_options=geo_opts,geo_calls=model.geo_runtime.calls,vggt_calls=model.geo_runtime.vggt_calls,peak_reserved_gpu_bytes=torch.cuda.max_memory_reserved(),geo_failures=model.geo_runtime.failed,geo_seconds=model.geo_runtime.seconds,
             detection_latency_p50=float(np.percentile(latency,50)), detection_latency_p95=float(np.percentile(latency,95)),
             latency_scope='single-image detector only; NOT end-to-end identity latency')
         report['camera_image_fps']=len(records)/report['total_seconds']; report['synchronized_group_fps']=(len(records)//views)/report['total_seconds']

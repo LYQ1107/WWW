@@ -13,7 +13,7 @@ def main():
     out=RUNTIME/'features'/a.tag
     if out.exists():raise FileExistsError(out)
     out.mkdir(parents=True); seed_all(20261014);adapter=FrozenVGGT(a.weights);matrix_items=collections.defaultdict(list); diagnostics=[]
-    model_sha=sha256(a.weights);source_provenance=provenance(); vgsha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=RUNTIME/'sources/vggt',text=True).strip()
+    model_sha=sha256(a.weights);source_provenance=provenance();source_provenance['used_cache']=True;source_provenance['cache_scope']='fixed GMT detected target boxes, vectors and logits'; vgsha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=RUNTIME/'sources/vggt',text=True).strip()
     for sample in samples:
         arrays=np.load(sample['path']);paths=[v['path'] for v in sample['views']];boxes=[torch.from_numpy(arrays[f'boxes_{v}']) for v in range(2)]
         mapped=[PadMapping(v['width'],v['height']).boxes(b) for v,b in zip(sample['views'],boxes)]
@@ -33,6 +33,7 @@ def main():
             s0,s1=[singles[v][key][0].numpy() for v in range(2)]
             add(f'joint/{key}',v1@v0.T);add(f'single/{key}',s1@s0.T);add(f'symmetric_joint/{key}',(v1@v0.T+r1@r0.T)/2)
             features[f'{key}/0']=v0.astype(np.float16);features[f'{key}/1']=v1.astype(np.float16)
+            features[f'reverse_{key}/0']=r0.astype(np.float16);features[f'reverse_{key}/1']=r1.astype(np.float16)
         for mode in ['mean','center','roi_align']:
             sims=[sample_items[f'joint/layer_{l}/{mode}'] for l in [4,11,17,23]]
             add(f'joint/multilayer/{mode}',np.mean(sims,axis=0))
@@ -41,13 +42,15 @@ def main():
             patch_start_idx=info['patch_start_idx'],layer_shapes=info['layer_shapes'],detections=sum(len(b) for b in boxes),zero_patch_targets=sum(int((v==0).sum()) for v in cov.values()),
             under_one_patch_area=sum(int((((b[:,2]-b[:,0])*(b[:,3]-b[:,1]))<196).sum()) for b in mapped),
             camera_swap_max_score_change=max(float(np.max(np.abs(2*(sample_items[f'symmetric_joint/{k}']-sample_items[f'joint/{k}'])))) if sample_items[f'joint/{k}'].size else 0 for k in result),
-            artifact=str(artifact),artifact_sha256=sha256(artifact),peak_gpu_bytes=torch.cuda.max_memory_allocated())
+            artifact=str(artifact),artifact_sha256=sha256(artifact),peak_gpu_bytes=torch.cuda.max_memory_allocated(),peak_reserved_gpu_bytes=torch.cuda.max_memory_reserved())
         diagnostics.append(row);save_json(out/'diagnostics.json',diagnostics);print(json.dumps(row),flush=True)
     rows=[dict(setting=k,**evaluate_scores(v)) for k,v in matrix_items.items()]
-    with (ROOT/'results/feature_screening.csv').open('w',newline='') as f:
+    report_name='feature_screening' if source['provenance'].get('split','dev')=='dev' else 'feature_training_diagnostics'
+    with (ROOT/f'results/{report_name}.csv').open('w',newline='') as f:
         writer=csv.DictWriter(f,fieldnames=rows[0]);writer.writeheader();writer.writerows(rows)
-    save_json(ROOT/'results/feature_screening_manifest.json',dict(provenance=source_provenance,model_sha256=model_sha,vggt_source_sha=vgsha,sample_manifest_sha256=sha256(a.samples),
+    save_json(ROOT/f'results/{report_name}_manifest.json',dict(provenance=source_provenance,model_sha256=model_sha,vggt_source_sha=vgsha,sample_manifest_sha256=sha256(a.samples),
         dim=a.dim,preprocess='official pad RGB [0,1], 518, internal normalization',parameters=adapter.parameters,cache='target ROI vectors only',
         independent_dinov2_control=False,gmt_baseline='actual first-pair candidate logits on fixed detection candidates',metrics_scope='TRAIN development only; feature retrieval is NOT tracking accuracy',diagnostics=str(out/'diagnostics.json'),rows=len(rows)))
+    save_json(out/'metrics.json',rows)
     print(json.dumps(rows,indent=2))
 if __name__=='__main__':main()

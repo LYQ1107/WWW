@@ -9,19 +9,21 @@ from .geometry_alignment import soft_box_evidence
 
 class GeometryRuntime:
     def __init__(self,cfg):
-        self.cfg=cfg;self.vggt=None;self.geometry={};self.calls=0;self.failed=0;self.seconds=0.;self.calibration=None
+        self.cfg=cfg;self.vggt=None;self.geometry={};self.calls=0;self.vggt_calls=0;self.failed=0;self.seconds=0.;self.calibration=None
         self.score=PairScoreAdapter(cfg.ENABLED,cfg.FEATURE_WEIGHT if cfg.FEATURE_ENABLED else 0.,cfg.GEOMETRY_WEIGHT if cfg.GEOMETRY_ENABLED else 0.,cfg.MAX_RESIDUAL)
         self.active=cfg.ENABLED and (self.score.feature_weight!=0 or self.score.geometry_weight!=0)
         if self.active and self.score.feature_weight:
             if not cfg.CALIBRATION_PATH:raise ValueError('feature residual requires association-TRAIN scalar calibration')
             self.calibration=json.loads(Path(cfg.CALIBRATION_PATH).read_text())
             if self.calibration.get('source_split')!='association_train':raise ValueError('invalid calibration split')
+            if self.calibration.get('symmetric',False)!=cfg.SYMMETRIZE_VIEW_ORDER:raise ValueError('calibration order mode mismatch')
+            if cfg.FEATURE_LAYERS!=[self.calibration['layer']] or cfg.POOLING!=self.calibration['pooling']:raise ValueError('calibration feature mismatch')
 
-    def reset(self):self.geometry={};self.calls=0;self.failed=0;self.seconds=0.
+    def reset(self):self.geometry={};self.calls=0;self.vggt_calls=0;self.failed=0;self.seconds=0.
 
     def observe(self,instances,records,frame):
         if not self.active:return
-        levels=self.cfg.FEATURE_LAYERS;dim=self.cfg.FEATURE_DIM*len(levels)
+        levels=self.cfg.FEATURE_LAYERS;dim=self.cfg.FEATURE_DIM*len(levels)*(2 if self.cfg.SYMMETRIZE_VIEW_ORDER else 1)
         original_boxes=[]
         for v,(inst,r) in enumerate(zip(instances,records)):
             device=inst.reid_features.device;n=len(inst);h,w=inst.image_size
@@ -44,8 +46,16 @@ class GeometryRuntime:
                 images=load_and_preprocess_images([r['file_name'] for r in records],mode='pad')
                 mapped=[PadMapping(r['width'],r['height']).boxes(b) for r,b in zip(records,original_boxes)]
                 result,_,_=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=self.cfg.FEATURE_DIM)
+                self.vggt_calls+=1
+                reverse=None
+                if self.cfg.SYMMETRIZE_VIEW_ORDER:
+                    if len(instances)!=2:raise ValueError('symmetric mode currently supports exactly two cameras')
+                    reverse,_,_=self.vggt.extract(images.flip(0),mapped[::-1],modes=(self.cfg.POOLING,),dim=self.cfg.FEATURE_DIM)
+                    self.vggt_calls+=1
                 for v,inst in enumerate(instances):
-                    inst.geo_vector=torch.cat([result[f'layer_{l}/{self.cfg.POOLING}'][v].to(inst.reid_features.device) for l in levels],dim=-1)/len(levels)**.5
+                    chunks=[result[f'layer_{l}/{self.cfg.POOLING}'][v].to(inst.reid_features.device) for l in levels]
+                    if reverse is not None:chunks += [reverse[f'layer_{l}/{self.cfg.POOLING}'][1-v].to(inst.reid_features.device) for l in levels]
+                    inst.geo_vector=torch.cat(chunks,dim=-1)/len(chunks)**.5
                     inst.geo_valid=torch.isfinite(inst.geo_vector).all(-1)&(inst.geo_vector.norm(dim=-1)>0)
             if self.score.geometry_weight and len(instances)==2:
                 # Fundamental is only used for same-time coordinates. No stale-position projection.
