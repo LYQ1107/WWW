@@ -28,7 +28,8 @@ def signature(run):
     result.update(feature_active=bool(feature),geometry_active=bool(geometry),
                   corrected_camera=run.get('validation_corrected_gmt_camera_index',False),
                   reversed_encoder=run.get('validation_reversed_vggt_order',False),
-                  constant_head_evidence=run.get('validation_constant_head_evidence'))
+                  constant_head_evidence=run.get('validation_constant_head_evidence'),
+                  native_output_prior=run.get('validation_native_output_prior',False))
     if feature or geometry:
         result.update({key:resolved.get(key) for key in ('MAX_RESIDUAL','UPDATE_INTERVAL','MAX_GEOMETRY_AGE','FALLBACK_TO_GMT','ASYNC_WORKER')})
         scheduled=resolved.get('SPARSE_UPDATE_ENABLED',False)

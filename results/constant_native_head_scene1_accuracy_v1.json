@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "baseline": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/online_B0_full_v1_source44_v1",
+  "baseline_manifest_sha256": "3b6721b688617daffd9392b4856761190a04d6a07e8402fe2e13c56968ec3371",
+  "matched_actual_calls": true,
+  "all_runs_without_module_failures": true,
+  "rows": [
+    {
+      "run": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/constant_gmt_evidence_scene1_full_v1",
+      "manifest_sha256": "30febabb302827d29c986bd126d6ee78c5afd24c9f43ac1e753d6fbffcb8ec01",
+      "commit": "1c32a1662f279f3b83517efd7e8385d89d6a8691",
+      "planned_total_cap": -1,
+      "actual_encoder_calls": 0,
+      "failures": 0,
+      "valid_geometry_calls": 0,
+      "exact_baseline_predictions": false,
+      "predictions": 4527,
+      "metrics": {
+        "HOTA": 87.323624110442,
+        "DetA": 87.93225734540148,
+        "AssA": 86.7414505308307,
+        "IDF1": 95.58394978704327,
+        "MOTA": 91.37656427758817,
+        "IDSW": 203,
+        "CVIDF1": 95.58394978704327,
+        "CVMA_sequential": 91.37656427758817,
+        "CVMA": 91.12627986348123
+      },
+      "metric_delta": {
+        "HOTA": 0.7701095383404493,
+        "DetA": 0.0,
+        "AssA": 1.5217559270449073,
+        "IDF1": 0.9190764402600422,
+        "MOTA": 1.7064846416382267,
+        "IDSW": -75,
+        "CVIDF1": 0.9190764402600422,
+        "CVMA_sequential": 1.7064846416382267,
+        "CVMA": 1.7974971558589345
+      },
+      "speed_eligible": false,
+      "actual_dinov2_calls": 0,
+      "validation_flags": {
+        "validation_constant_head_evidence": 1.0,
+        "validation_native_output_prior": null,
+        "validation_corrected_gmt_camera_index": false,
+        "validation_reversed_vggt_order": false
+      },
+      "camera_image_fps": 6.532117606432493,
+      "input_to_identity_p50": 0.29676591604948044,
+      "input_to_identity_p95": 0.36012587547302244
+    }
+  ],
+  "speed_scope": "only rows with speed_eligible true are clean production timings; traced rows are diagnostic cost only; single descriptive measurements on actual V100 hardware, no repeated timing or hardware-normalized Pareto superiority claim"
+}

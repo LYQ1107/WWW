@@ -70,7 +70,7 @@ def matched_detection_rows(base,method,images,ground_truth):
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--baseline-sources',type=Path,required=True);parser.add_argument('--method-sources',type=Path,required=True);parser.add_argument('--tag',required=True);parser.add_argument('--video-ids',type=int,nargs='+');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--baseline-sources',type=Path,required=True);parser.add_argument('--method-sources',type=Path,required=True);parser.add_argument('--tag',required=True);parser.add_argument('--video-ids',type=int,nargs='+');parser.add_argument('--report-output',type=Path);args=parser.parse_args()
     sources=[json.loads(path.read_text())['video_predictions'] for path in [args.baseline_sources,args.method_sources]]
     full_required=set(map(str,json.loads((ROOT/'manifests/geo_split_v1.json').read_text())['strict_development_video_ids']))
     required=set(map(str,args.video_ids)) if args.video_ids else full_required
@@ -80,7 +80,7 @@ def main():
     for scene in sorted(map(int,required)):
         paths=[Path(source[str(scene)]) for source in sources]
         (base,base_info),(method,method_info)=[predictions(path) for path in paths]
-        for field in ['causal_online','checkpoint_sha256','config_sha256']:
+        for field in ['causal_online','checkpoint_sha256','config_sha256','annotation_sha256','seed']:
             if base_info[field]!=method_info[field]:raise ValueError('mixed tracking protocols/checkpoints/configs')
         records=video_records(data,scene);images={record['image_id']:record for record in records}
         scene_name=next(video['file_name'] for video in data['videos'] if video['id']==scene)
@@ -97,7 +97,7 @@ def main():
         rows.append(dict(video_id=scene,baseline_prediction=str(paths[0]),method_prediction=str(paths[1]),prediction_sha256=[sha256(path) for path in paths],
             baseline_detections=len(base),method_detections=len(method),common_detections=len(common),added_detections=len(method.keys()-base.keys()),removed_detections=len(base.keys()-method.keys()),
             all_time_identity_pairs=pair_outcomes(matched),cross_camera_all_time_identity_pairs=pair_outcomes(matched,True)))
-    save_json(ROOT/'results'/f'{args.tag}.json',dict(status='PASS',video_ids=sorted(map(int,required)),full_strict_suite=required==full_required,
+    save_json(args.report_output or ROOT/'results'/f'{args.tag}.json',dict(status='PASS',video_ids=sorted(map(int,required)),full_strict_suite=required==full_required,
         scope='explicit complete video scenes; exact detector-key intersection; independent raw-GT one-to-one IoU>=0.5 matching of common detections; partial scene selection is not a full-suite claim',
         semantics='unordered detection identity-pair classification across all timestamps, with separate cross-camera-only counts; corrections/harms are pair relations, not counts of Hungarian decisions or a replacement for HOTA/CVIDF1',
         limitations='added/removed detections excluded from identity-pair counts and reported separately; long tracks contribute quadratically many pairs; raw GT uncertainty is unchanged',

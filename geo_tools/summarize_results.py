@@ -84,6 +84,13 @@ def main():
     sparse_trace=evidence('causal_dense_vs_cache_scene1_actual_trace_v1.json',['status','groups','first_dense_partition_change','trace_summaries','limitations'])
     anchor_diagnostic=evidence('causal_dense_scene1_scene10_anchor_diagnostic_v1.json',['status','video_ids','full_strict_suite','scope','limitations','unproven_cause_categories'])
     resident_structure=evidence('vggt_resident_parameter_structure_v1.json',['status','full_official_parameters','resident_parameters','parameter_tensor_bytes_default_fp32','scope','limitations'])
+    complete_zero=evidence('ZERO_c214_full_strict_prediction_parity_v1.json',['status','full_strict_suite','scope'])
+    constant_prefix=evidence('cache_gate_and_constant_prefix_audit_v1.json',['status','groups','constant_evidence_exact_dense_identity_prefix','equal_actual_vggt_calls','equal_feature_validity_and_observations','interpretation','limitations'])
+    constant_native=evidence('constant_native_head_scene1_accuracy_v1.json',['status','baseline','rows','speed_scope'])
+    linear_links=evidence('causal_dense_first3_scenes_anchor_output_links_v1.json',['status','video_ids','full_strict_suite','scope','limitations'])
+    if linear_links:
+        data=json.loads(Path(linear_links['path']).read_text())
+        linear_links['per_scene_recent_output_link_counts']=[dict(video_id=row['video_id'],**row['recent_other_camera_output_links']['counts']) for row in data['rows']]
     resource_ledger=evidence('resource_ledger_v1.json',['status','scopes'])
     tiny_path=ROOT/'results/causal_B8_fixed20_total80_strict_suite_v1_metrics.json'
     tiny_audit_path=ROOT/'results/causal_B8_fixed20_total80_identity_pair_audit_v1.json'
@@ -106,6 +113,8 @@ def main():
         scene1_attribution=attribution,camera_encoding_control=camera_control,cached_feature_prefix=cached_prefix,cached_feature_complete_scene=cached_full,resource_ledger=resource_ledger,
         cached_three_backbone_controls=cached_controls,recorded_suite_settings=settings_audit,original_matrix_complete_off=complete_off,
         sparse_failure_trace=sparse_trace,identity_anchor_diagnostic=anchor_diagnostic,vggt_resident_parameter_structure=resident_structure,
+        original_matrix_complete_zero=complete_zero,encoder_matched_constant_prefix=constant_prefix,constant_native_head_control=constant_native,
+        recent_other_camera_output_link_diagnostic=linear_links,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
     save_json(ROOT/'results/final_summary.json',summary)
@@ -128,7 +137,13 @@ def main():
             trace_note=(' Bounded dense/cache traces now preserve their respective production output prefixes; the first split at dataset frame27 has no valid cached feature for the affected query, while dense fusion changes one same-live-history counterfactual assignment. Detailed gate and constant-score controls remain pending.' if sparse_trace and sparse_trace['status']=='PASS' else ' Bounded failure traces remain pending.')
             lines[6:6]=[f"Complete cached-feature scene1 run: {row['actual_encoder_calls']} actual VGGT calls, exact baseline identities and unchanged metrics; no retained dense identity gain. Measured {row['camera_image_fps']:.4f} images/s and P95 {row['input_to_identity_p95']*1000:.2f}ms are one descriptive full-pipeline run, not stable speed superiority."+controls_note+trace_note,'']
     if complete_off and complete_off['status']=='PASS':
-        lines[6:6]=['Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order. Current post-cache/diagnostic-source complete OFF/zero regressions remain queued; earlier-source proof is not promoted to later-source completion.','']
+        zero_note=' Both OFF and zero-weight complete strict5 controls pass.' if complete_zero and complete_zero['status']=='PASS' else ' Complete zero-weight control remains pending.'
+        lines[6:6]=['Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order.'+zero_note+' Current post-cache/diagnostic-source complete OFF/zero regressions remain queued; earlier-source proof is not promoted to later-source completion.','']
+    if constant_native and constant_native['status']=='PASS':
+        row=constant_native['rows'][0]
+        lines[6:6]=[f"Complete scene1 native-head constant-score control improves paired CVIDF1 {row['metric_delta']['CVIDF1']:+.6f} percentage points with IDSW {row['metric_delta']['IDSW']:+d}, exceeding current learned VGGT scene1 identity metrics. It retains frozen native-head encoding for eligibility but replaces learned pair evidence by fixed+1; no VGGT calls. This is a single-scene score ablation with diagnostic tracing, not a production-speed or zero-extra-parameter claim. Head-free equivalence, full strict5 and seed-paired inference controls are prospective.",'']
+    if constant_prefix and constant_prefix['constant_evidence_exact_dense_identity_prefix']:
+        lines[6:6]=['In the actual80-call VGGT40-group prefix, fixed+1 evidence exactly reproduces learned dense identity outputs under identical feature eligibility. Learned score discrimination is unnecessary for that early split; whole-video/DEV attribution is not inferred. Cache gate telemetry exactly reproduces all decisions: all74 rejected reuse observations fail only the fixed native cosine .9 gate; spatial candidate filtering does not change admission. No DEV threshold relaxation is applied.','']
     if tiny:
         base=json.loads((ROOT/'results/causal_B0_strict_suite_v1_metrics.json').read_text())['metrics']
         delta=tiny['metrics']['CVIDF1']-base['CVIDF1']

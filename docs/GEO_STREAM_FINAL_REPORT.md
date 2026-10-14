@@ -6,7 +6,11 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 
 Complete strict B8 fixed20/80-call-per-video CVIDF1 change is only +0.001627 percentage points, with unchanged total IDSW. The common-detection identity audit finds one small scene19 relation correction and no harms. This is an extremely small preliminary full-DEV signal; no stable VGGT/geometry/scheduler contribution is established.
 
-Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order. Current post-cache/diagnostic-source complete OFF/zero regressions remain queued; earlier-source proof is not promoted to later-source completion.
+In the actual80-call VGGT40-group prefix, fixed+1 evidence exactly reproduces learned dense identity outputs under identical feature eligibility. Learned score discrimination is unnecessary for that early split; whole-video/DEV attribution is not inferred. Cache gate telemetry exactly reproduces all decisions: all74 rejected reuse observations fail only the fixed native cosine .9 gate; spatial candidate filtering does not change admission. No DEV threshold relaxation is applied.
+
+Complete scene1 native-head constant-score control improves paired CVIDF1 +0.919076 percentage points with IDSW -75, exceeding current learned VGGT scene1 identity metrics. It retains frozen native-head encoding for eligibility but replaces learned pair evidence by fixed+1; no VGGT calls. This is a single-scene score ablation with diagnostic tracing, not a production-speed or zero-extra-parameter claim. Head-free equivalence, full strict5 and seed-paired inference controls are prospective.
+
+Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order. Both OFF and zero-weight complete strict5 controls pass. Current post-cache/diagnostic-source complete OFF/zero regressions remain queued; earlier-source proof is not promoted to later-source completion.
 
 Complete cached-feature scene1 run: 80 actual VGGT calls, exact baseline identities and unchanged metrics; no retained dense identity gain. Measured 6.0343 images/s and P95 348.67ms are one descriptive full-pipeline run, not stable speed superiority. All three cached backbone controls now complete and exactly equal baseline under the same40 selected observation groups (VGGT80 / DINO40 / GMT0 actual encoder calls; different compute). Bounded dense/cache traces now preserve their respective production output prefixes; the first split at dataset frame27 has no valid cached feature for the affected query, while dense fusion changes one same-live-history counterfactual assignment. Detailed gate and constant-score controls remain pending.
 
@@ -80,6 +84,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_B7_fixed_k1_strict_suite_v1_v1 | 1 | yes | 87.2189 | 86.5336 | 95.4719 | 95.4719 | 214 |
 | causal_B7_fixed_k1_strict_suite_v1_v10 | 10 | yes | 80.9721 | 80.9832 | 98.9221 | 98.9221 | 27 |
 | causal_B7_fixed_k1_strict_suite_v1_v11 | 11 | yes | 83.3236 | 79.2786 | 92.0648 | 92.0648 | 18 |
+| causal_B7_fixed_k1_strict_suite_v1_v18 | 18 | yes | 78.7820 | 81.0483 | 95.9526 | 95.9526 | 27 |
 | causal_B7_fixed_k20_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k20_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B7_fixed_k20_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
@@ -95,15 +100,22 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_B9_joint_total80_strict_suite_v1_v19 | 19 | yes | 77.4614 | 81.0226 | 94.0520 | 94.0520 | 106 |
 | causal_fixed20_offset5_total80_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_fixed20_offset9_total80_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| causal_identity_total80_strict_suite_v1_v1 | 1 | yes | 86.6169 | 85.3440 | 94.7545 | 94.7545 | 270 |
+| causal_identity_total80_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
+| causal_joint_total80_v18_repeat2_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| causal_joint_total80_v18_repeat3_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_motion_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_motion_total80_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_motion_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
+| causal_motion_total80_strict_suite_v1_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| causal_motion_total80_strict_suite_v1_v19 | 19 | yes | 77.4614 | 81.0226 | 94.0520 | 94.0520 | 106 |
 | causal_random_seed20261015_total80_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_random_seed20261016_total80_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_random_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_random_total80_strict_suite_v1_v10 | 10 | yes | 80.9472 | 80.9342 | 98.8793 | 98.8793 | 35 |
 | causal_random_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | causal_random_total80_strict_suite_v1_v19 | 19 | yes | 77.4614 | 81.0226 | 94.0520 | 94.0520 | 106 |
+| constant_gmt_evidence_scene1_full_v1 | 1 | yes | 87.3236 | 86.7415 | 95.5839 | 95.5839 | 203 |
 | online_B0_full_v10_source44_v1 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | online_B0_full_v11_source44_v1 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | online_B0_full_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
@@ -143,10 +155,12 @@ Causal retrieval (local replay, GT only for post-run evaluation; conditional ret
 
 | Method | Cameras | Full video | Queries | Eligible | Recall@1 | MRR | Query P95 (ms) | Complete images/s |
 |---|---:|---|---:|---:|---:|---:|---:|---:|
+| retrieval_dinov2_scoring_diagnostic_v18_full_v1 | 2 | True | 598 | 309 | 0.912621359223301 | 0.9373183989688845 | 2.6357 | diagnostic cost only |
 | retrieval_gmt_10streams_full_v1 | 10 | True | 3080 | 2465 | 0.922920892494929 | 0.946330285529238 | 12.1369 | 6.9847 |
 | retrieval_gmt_10streams_prefix20_v1 | 10 | False | 39 | 28 | 0.8214285714285714 | 0.8898809523809524 | 1.2639 | 7.5250 |
 | retrieval_gmt_10streams_prefix30_v1 | 10 | False | 78 | 57 | 0.8421052631578947 | 0.9064327485380118 | 1.4793 | 7.8980 |
 | retrieval_gmt_4streams_full_v1 | 4 | True | 826 | 494 | 0.9777327935222672 | 0.9863326585695007 | 5.4689 | 6.9697 |
+| retrieval_gmt_scoring_diagnostic_v18_full_v1 | 2 | True | 598 | 309 | 0.9029126213592233 | 0.9230962538001372 | 2.7950 | diagnostic cost only |
 | retrieval_gmt_v18_full_v1 | 2 | True | 598 | 309 | 0.9773462783171522 | 0.9878640776699029 | 2.9661 | 6.6445 |
 | retrieval_gmt_v18_prefix12_v1 | 2 | False | 43 | 24 | 1.0 | 1.0 | 0.3662 | 4.9767 |
 | retrieval_vggt_k10_4streams_full_v1 | 4 | True | 826 | 494 | 0.8947368421052632 | 0.9142615489945207 | 5.6980 | 5.6663 |
@@ -158,6 +172,14 @@ Same-query retrieval scoring diagnostics (identical feature-source observations/
 
 | Method | Scorer | Full video | Positive candidate coverage | Recall@1 | MRR |
 |---|---|---|---:|---:|---:|
+| retrieval_dinov2_scoring_diagnostic_v18_full_v1 | native | True | 1.0 | 0.9773462783171522 | 0.9878640776699029 |
+| retrieval_dinov2_scoring_diagnostic_v18_full_v1 | native_encoded | True | 1.0 | 0.9967637540453075 | 0.9975728155339806 |
+| retrieval_dinov2_scoring_diagnostic_v18_full_v1 | learned_cosine | True | 1.0 | 0.4045307443365696 | 0.5118548196275948 |
+| retrieval_dinov2_scoring_diagnostic_v18_full_v1 | equal_cosine_encoded | True | 1.0 | 0.9644012944983819 | 0.9787818438303875 |
+| retrieval_gmt_scoring_diagnostic_v18_full_v1 | native | True | 1.0 | 0.9773462783171522 | 0.9878640776699029 |
+| retrieval_gmt_scoring_diagnostic_v18_full_v1 | native_encoded | True | 1.0 | 0.9967637540453075 | 0.9975728155339806 |
+| retrieval_gmt_scoring_diagnostic_v18_full_v1 | learned_cosine | True | 1.0 | 0.8187702265372169 | 0.8731444567448543 |
+| retrieval_gmt_scoring_diagnostic_v18_full_v1 | equal_cosine_encoded | True | 1.0 | 0.9741100323624595 | 0.9842502696871629 |
 | retrieval_vggt_k10_scoring_diagnostic_v18_full_v1 | native | True | 1.0 | 0.9773462783171522 | 0.9878640776699029 |
 | retrieval_vggt_k10_scoring_diagnostic_v18_full_v1 | native_encoded | True | 1.0 | 0.9967637540453075 | 0.9975728155339806 |
 | retrieval_vggt_k10_scoring_diagnostic_v18_full_v1 | learned_cosine | True | 1.0 | 0.2686084142394822 | 0.40116202317899574 |

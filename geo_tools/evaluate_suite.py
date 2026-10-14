@@ -13,7 +13,7 @@ def rows_from(path):
 
 def validate_control_flags(runs):
     controls={}
-    for flag in ('causal_online','validation_corrected_gmt_camera_index','validation_reversed_vggt_order','validation_constant_head_evidence','compute_neutral'):
+    for flag in ('causal_online','validation_corrected_gmt_camera_index','validation_reversed_vggt_order','validation_constant_head_evidence','validation_native_output_prior','compute_neutral'):
         default=None if flag=='validation_constant_head_evidence' else False
         values={run.get(flag,default) for run in runs}
         if len(values)!=1:raise ValueError('mixed protocol/validation/neutral flag within one suite: '+flag)
@@ -61,7 +61,7 @@ def main():
         if expected!=sha256(path):raise ValueError('prediction/run hash mismatch')
         runs[str(vid)]=dict(path=str(manifest_path),sha256=sha256(manifest_path),causal_online=run['causal_online'],commit=run['commit'],validation_corrected_gmt_camera_index=run.get('validation_corrected_gmt_camera_index',False),
                           validation_reversed_vggt_order=run.get('validation_reversed_vggt_order',False),
-                          validation_constant_head_evidence=run.get('validation_constant_head_evidence'),compute_neutral=run.get('compute_neutral',False))
+                          validation_constant_head_evidence=run.get('validation_constant_head_evidence'),validation_native_output_prior=run.get('validation_native_output_prior',False),compute_neutral=run.get('compute_neutral',False))
         scene=next(v['file_name'] for v in data['videos'] if v['id']==vid);scenes[scene]=[];byview=collections.defaultdict(list)
         for prediction in json.loads(path.read_text()):
             r=index[prediction['image_id']];byview[r['view_id']].append([r['frame_id'],prediction['track_id'],*prediction['bbox'],prediction['score'],-1,-1,-1])

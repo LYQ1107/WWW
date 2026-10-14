@@ -44,6 +44,45 @@ def add_patch_coverage(rows,images):
         for row,count in zip(items,counts):row['patch_center_coverage']=int(count)
 
 
+def recent_output_links(rows,max_age=20):
+    """One output-implied other-camera link per GT-matched query, no future."""
+    groups=collections.defaultdict(list)
+    for row in rows:groups[row['frame']].append(row)
+    truth_last=collections.defaultdict(dict)
+    histories={key:collections.defaultdict(dict) for key in ('base','new')}
+    matrices={key:collections.Counter() for key in ('positive_opportunity','no_positive_opportunity')}
+    counts=collections.Counter();examples=[]
+    for frame,group in sorted(groups.items()):
+        for row in group:
+            def recent(values):return [ref for camera,ref in values.items() if camera!=row['camera'] and 0<frame-ref['frame']<=max_age]
+            positive=bool(recent(truth_last.get(row['gt'],{})));states={};references={}
+            for key in ('base','new'):
+                refs=recent(histories[key].get(row[key],{}))
+                if not refs:state='missing_link' if positive else 'no_evaluable_link';latest=[]
+                else:
+                    newest=max(ref['frame'] for ref in refs);latest=[ref for ref in refs if ref['frame']==newest]
+                    labels={ref['gt'] for ref in latest}
+                    state='ambiguous_anchor' if len(labels)>1 else 'correct_link' if row['gt'] in labels else 'wrong_link'
+                states[key]=state
+                references[key]=[dict(image_id=ref['image_id'],frame=ref['frame'],camera=ref['camera'],gt=ref['gt']) for ref in latest]
+            cohort='positive_opportunity' if positive else 'no_positive_opportunity'
+            matrices[cohort][states['base']+' -> '+states['new']]+=1
+            good={'correct_link'};bad={'wrong_link','missing_link'}
+            counts['queries']+=1;counts['baseline_correct_method_wrong']+=states['base'] in good and states['new'] in bad
+            counts['baseline_wrong_method_correct']+=states['base'] in bad and states['new'] in good
+            counts['queries_with_positive_opportunity']+=positive
+            counts['unknown_ambiguous_queries']+='ambiguous_anchor' in states.values()
+            if states['base']!=states['new'] and len(examples)<50:examples.append(dict(**row,positive_opportunity=positive,states=states,latest_references=references))
+        # Every physical camera in this synchronized group sees only older anchors.
+        for row in group:
+            truth_last[row['gt']][row['camera']]=row
+            for key in ('base','new'):histories[key][row[key]][row['camera']]=row
+    return dict(max_previous_group_age=max_age,counts=dict(counts),cohort_transition_counts={key:dict(value) for key,value in matrices.items()},
+                examples=examples,
+                scope='one latest-past-other-camera output-implied identity link per current common GT-matched detection;20-group horizon fixed from GEO validity; positive opportunity means that GT was matched in another camera within the horizon; no evaluable link on such a query is missing; correction/harm counts require known positive opportunities',
+                limitations='An observable output-link diagnostic, not the internal Hungarian candidate selected or actual model candidate coverage. The latest GT-matched reference can skip unknown/unmatched detections; absent evaluable links without a known positive are not certified correct rejections; ambiguous simultaneous reference labels remain unknown. Counts repeat over different query frames but are linear in detections, not quadratic all-time pairs.')
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--baseline-sources',type=Path,required=True)
@@ -87,7 +126,8 @@ def main():
                 consistent_to_conflicting=matrix['consistent_past_gt -> conflicting_past_gt'],examples=examples)
         result.append(dict(video_id=scene,common_gt_matched_detections=len(rows),added_detections=len(method.keys()-base.keys()),
                            removed_detections=len(base.keys()-method.keys()),prediction_sha256=list(map(sha256,paths)),
-                           patch_center_coverage=dict(collections.Counter(str(row['patch_center_coverage']) if row['patch_center_coverage']<2 else '2+' for row in rows)),scopes=scopes))
+                           patch_center_coverage=dict(collections.Counter(str(row['patch_center_coverage']) if row['patch_center_coverage']<2 else '2+' for row in rows)),scopes=scopes,
+                           recent_other_camera_output_links=recent_output_links(rows)))
     save_json(ROOT/'results'/f'{args.tag}.json',dict(status='PASS_OBSERVABLE_ANCHOR_DIAGNOSTIC',full_strict_suite=set(args.video_ids)==required,
         video_ids=sorted(args.video_ids),rows=result,raw_gt_sha256=raw_hashes,
         scope='actual complete causal output identity links on common one-to-one IoU>=.5 GT-matched detector outputs; all anchors use strictly previous synchronized groups; raw identities scoped per scene; GT only post-inference',

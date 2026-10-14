@@ -10,7 +10,7 @@ class Tests(unittest.TestCase):
 
     def test_each_mixed_protocol_or_counterfactual_variant_is_rejected(self):
         for flag,value in [('causal_online',False),('validation_corrected_gmt_camera_index',True),
-                           ('validation_reversed_vggt_order',True),('validation_constant_head_evidence',1.),('compute_neutral',True)]:
+                           ('validation_reversed_vggt_order',True),('validation_constant_head_evidence',1.),('validation_native_output_prior',True),('compute_neutral',True)]:
             rows=[dict(causal_online=True) for _ in range(5)];rows[-1][flag]=value
             with self.assertRaisesRegex(ValueError,flag):validate_control_flags(rows)
 

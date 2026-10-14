@@ -18,8 +18,8 @@ def main():
         report = json.loads(manifest_path.read_text())
         if not report['full_video'] or not report['causal_online'] or report['video_id'] != baseline['video_id']:
             raise ValueError('same complete causal video required')
-        if report['checkpoint_sha256'] != baseline['checkpoint_sha256'] or report['config_sha256'] != baseline['config_sha256']:
-            raise ValueError('GMT checkpoint/config mismatch')
+        for field in ('checkpoint_sha256','config_sha256','annotation_sha256','seed'):
+            if report[field]!=baseline[field]:raise ValueError('GMT/data/inference-seed mismatch: '+field)
         predictions = json.loads((run/'predictions.json').read_text())
         if sha256(run/'predictions.json') != report['predictions_sha256']:
             raise ValueError('changed prediction artifact')
@@ -29,11 +29,13 @@ def main():
                          failures=report['geo_failures'], valid_geometry_calls=report['geometry_valid_calls'],
                          exact_baseline_predictions=predictions == baseline_predictions, predictions=len(predictions), metrics=metrics,
                          metric_delta={key:metrics[key]-baseline_metrics[key] for key in metrics},
+                         speed_eligible=report.get('speed_eligible',True),actual_dinov2_calls=report.get('dinov2_calls'),
+                         validation_flags={key:report.get(key) for key in ('validation_constant_head_evidence','validation_native_output_prior','validation_corrected_gmt_camera_index','validation_reversed_vggt_order')},
                          camera_image_fps=report['camera_image_fps'], input_to_identity_p50=report['input_to_identity_p50'], input_to_identity_p95=report['input_to_identity_p95']))
     save_json(ROOT/'results'/f'{args.tag}.json', dict(status='PASS', baseline=str(args.baseline), baseline_manifest_sha256=sha256(args.baseline/'manifest.json'),
               matched_actual_calls=len({row['actual_encoder_calls'] for row in rows}) == 1,
               all_runs_without_module_failures=all(row['failures'] == 0 for row in rows), rows=rows,
-              speed_scope='single descriptive measurements on actual V100 hardware; no repeated timing or hardware-normalized Pareto superiority claim'))
+              speed_scope='only rows with speed_eligible true are clean production timings; traced rows are diagnostic cost only; single descriptive measurements on actual V100 hardware, no repeated timing or hardware-normalized Pareto superiority claim'))
 
 
 if __name__ == '__main__':

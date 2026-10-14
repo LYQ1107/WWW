@@ -1,0 +1,332 @@
+{
+  "id": "native_prior_main_control_v1",
+  "project_gpu_ids": [
+    "6"
+  ],
+  "queues": {
+    "gpu6": [
+      {
+        "id": "native_prior_zero_prefix60_scene1_v1",
+        "command": [
+          "geo_tools/run_native_prior.py",
+          "--video-id",
+          "1",
+          "--tag",
+          "native_prior_zero_prefix60_scene1_v1",
+          "--inference-seed",
+          "20261014",
+          "--backbone",
+          "gmt",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--max-residual",
+          "2",
+          "--interval",
+          "1",
+          "--feature-weight",
+          "0",
+          "--max-frames",
+          "60",
+          "--native-prior"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "native_prior_prefix40_scene1_v1",
+        "command": [
+          "geo_tools/run_native_prior.py",
+          "--video-id",
+          "1",
+          "--tag",
+          "native_prior_prefix40_scene1_v1",
+          "--inference-seed",
+          "20261014",
+          "--backbone",
+          "gmt",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--max-residual",
+          "2",
+          "--interval",
+          "1",
+          "--feature-weight",
+          "2",
+          "--native-prior",
+          "--max-frames",
+          "40",
+          "--trace-association"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "native_prior_prefix_gate_v1",
+        "command": [
+          "geo_tools/audit_native_prior_prefix.py"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "native_prior_zero_prefix60_scene1_v1",
+          "native_prior_prefix40_scene1_v1"
+        ]
+      },
+      {
+        "id": "native_prior_seed20261014_strict_suite_v1_v1",
+        "command": [
+          "geo_tools/run_native_prior.py",
+          "--video-id",
+          "1",
+          "--tag",
+          "native_prior_seed20261014_strict_suite_v1_v1",
+          "--inference-seed",
+          "20261014",
+          "--backbone",
+          "gmt",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--max-residual",
+          "2",
+          "--interval",
+          "1",
+          "--feature-weight",
+          "2",
+          "--native-prior"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "native_prior_prefix_gate_v1"
+        ]
+      },
+      {
+        "id": "eval_native_prior_seed20261014_strict_suite_v1_v1",
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/native_prior_seed20261014_strict_suite_v1_v1/predictions.json",
+          "--video-id",
+          "1",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/native_prior_seed20261014_strict_suite_v1_v1/manifest.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "native_prior_seed20261014_strict_suite_v1_v1"
+        ]
+      },
+      {
+        "id": "native_prior_seed20261014_strict_suite_v1_v10",
+        "command": [
+          "geo_tools/run_native_prior.py",
+          "--video-id",
+          "10",
+          "--tag",
+          "native_prior_seed20261014_strict_suite_v1_v10",
+          "--inference-seed",
+          "20261014",
+          "--backbone",
+          "gmt",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--max-residual",
+          "2",
+          "--interval",
+          "1",
+          "--feature-weight",
+          "2",
+          "--native-prior"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "native_prior_prefix_gate_v1"
+        ]
+      },
+      {
+        "id": "eval_native_prior_seed20261014_strict_suite_v1_v10",
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/native_prior_seed20261014_strict_suite_v1_v10/predictions.json",
+          "--video-id",
+          "10",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/native_prior_seed20261014_strict_suite_v1_v10/manifest.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "native_prior_seed20261014_strict_suite_v1_v10"
+        ]
+      },
+      {
+        "id": "native_prior_seed20261014_strict_suite_v1_v11",
+        "command": [
+          "geo_tools/run_native_prior.py",
+          "--video-id",
+          "11",
+          "--tag",
+          "native_prior_seed20261014_strict_suite_v1_v11",
+          "--inference-seed",
+          "20261014",
+          "--backbone",
+          "gmt",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--max-residual",
+          "2",
+          "--interval",
+          "1",
+          "--feature-weight",
+          "2",
+          "--native-prior"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "native_prior_prefix_gate_v1"
+        ]
+      },
+      {
+        "id": "eval_native_prior_seed20261014_strict_suite_v1_v11",
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/native_prior_seed20261014_strict_suite_v1_v11/predictions.json",
+          "--video-id",
+          "11",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/native_prior_seed20261014_strict_suite_v1_v11/manifest.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "native_prior_seed20261014_strict_suite_v1_v11"
+        ]
+      },
+      {
+        "id": "native_prior_seed20261014_strict_suite_v1_v18",
+        "command": [
+          "geo_tools/run_native_prior.py",
+          "--video-id",
+          "18",
+          "--tag",
+          "native_prior_seed20261014_strict_suite_v1_v18",
+          "--inference-seed",
+          "20261014",
+          "--backbone",
+          "gmt",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--max-residual",
+          "2",
+          "--interval",
+          "1",
+          "--feature-weight",
+          "2",
+          "--native-prior"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "native_prior_prefix_gate_v1"
+        ]
+      },
+      {
+        "id": "eval_native_prior_seed20261014_strict_suite_v1_v18",
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/native_prior_seed20261014_strict_suite_v1_v18/predictions.json",
+          "--video-id",
+          "18",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/native_prior_seed20261014_strict_suite_v1_v18/manifest.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "native_prior_seed20261014_strict_suite_v1_v18"
+        ]
+      },
+      {
+        "id": "native_prior_seed20261014_strict_suite_v1_v19",
+        "command": [
+          "geo_tools/run_native_prior.py",
+          "--video-id",
+          "19",
+          "--tag",
+          "native_prior_seed20261014_strict_suite_v1_v19",
+          "--inference-seed",
+          "20261014",
+          "--backbone",
+          "gmt",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--max-residual",
+          "2",
+          "--interval",
+          "1",
+          "--feature-weight",
+          "2",
+          "--native-prior"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "native_prior_prefix_gate_v1"
+        ]
+      },
+      {
+        "id": "eval_native_prior_seed20261014_strict_suite_v1_v19",
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/native_prior_seed20261014_strict_suite_v1_v19/predictions.json",
+          "--video-id",
+          "19",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/native_prior_seed20261014_strict_suite_v1_v19/manifest.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "native_prior_seed20261014_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "id": "combine_native_prior_seed20261014_strict_suite_v1",
+        "command": [
+          "geo_tools/evaluate_suite.py",
+          "--sources",
+          "manifests/native_prior_seed20261014_strict_suite_v1_sources.json",
+          "--tag",
+          "native_prior_seed20261014_strict_suite_v1",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/native_prior_seed20261014_strict_suite_v1_metrics.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "eval_native_prior_seed20261014_strict_suite_v1_v1",
+          "eval_native_prior_seed20261014_strict_suite_v1_v10",
+          "eval_native_prior_seed20261014_strict_suite_v1_v11",
+          "eval_native_prior_seed20261014_strict_suite_v1_v18",
+          "eval_native_prior_seed20261014_strict_suite_v1_v19"
+        ]
+      }
+    ]
+  },
+  "scope": "prospective strong simple fusion control, fixed+2 pre-activation prior and20-group age; zero new learned parameters; learned VGGT branches remain separate; no DEV parameter search",
+  "inference_seeds": [
+    20261014,
+    20261015,
+    20261016
+  ],
+  "no_test_selection": true
+}
