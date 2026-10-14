@@ -11,6 +11,8 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | B0_minimal_full | 1 | yes | 87.8104 | 88.2262 | 97.7207 | 97.7207 | 1 |
 | B0_minimal_full | 14 | no: raw diagnostic | 79.9871 | 83.1446 | 95.2027 | 95.1967 | 137 |
 | B0_minimal_full | 22 | no: raw diagnostic | 84.5038 | 84.7280 | 97.9279 | 97.9279 | 83 |
+| B0_strict_remaining_v1 | 11 | yes | 83.3649 | 79.3051 | 92.1306 | 92.1306 | 6 |
+| B0_strict_remaining_v1 | 19 | yes | 77.8135 | 81.6011 | 94.6822 | 94.6822 | 29 |
 | B2_l17_sym_w025_full_gpu5 | 1 | yes | 87.8104 | 88.2262 | 97.7207 | 97.7207 | 1 |
 | B2_l17_sym_w025_full_gpu5 | 10 | yes | 80.9659 | 81.0414 | 98.9676 | 98.9676 | 0 |
 | B2_l17_sym_w025_full_gpu5 | 18 | yes | 79.3120 | 81.1202 | 96.6809 | 96.6809 | 5 |
