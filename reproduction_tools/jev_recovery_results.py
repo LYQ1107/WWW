@@ -22,7 +22,7 @@ def refresh():
  save(REPORTS/'TRAINING_RESULTS.json',dict(status='COMPLETED_SNAPSHOT',cases=training,full_histories_in_individual_reports=True))
  inherited=ref(ROOT/'reports/JEV_ONEWEEK/FORMAL_CURRENT_RESULTS.json')
  gates=[read(p) for p in REPORTS.glob('R*_MECHANISM_GATE.json')]
- goal=read(REPORTS/'MASTER_GOAL.json');goal.update(status='ACTIVE_RESEARCH',revision_gates=gates,scientific_success=False,JEV_INDEPENDENT_VALUE='NOT_ESTABLISHED',CROSS_CAMERA='PENDING_NEW_RUN_DIAGNOSTICS',EFFICIENCY='PENDING_NEW_MODELS',independent_validation='INELIGIBLE on old DEV');save(REPORTS/'MASTER_GOAL.json',goal)
+ goal=read(REPORTS/'MASTER_GOAL.json');goal.update(status='ACTIVE_RESEARCH',revision_gates=gates,scientific_success=False,JEV_INDEPENDENT_VALUE='NOT_ESTABLISHED',CROSS_CAMERA='BOUNDED_R2_R3_FORMAL_COMPLETE_JEV_INDEPENDENT_NOT_ESTABLISHED',EFFICIENCY='BOUNDED_PRIMARY_TIMINGS_COMPLETE_MASTER_DEPLOYMENT_NOT_ESTABLISHED',independent_validation='INELIGIBLE on old DEV');save(REPORTS/'MASTER_GOAL.json',goal)
  save(REPORTS/'GO_NO_GO.json',dict(status='ACTIVE_BOUNDED_RESEARCH',MASTER_COMPLETE=False,JEV_INDEPENDENT_VALUE='NOT_ESTABLISHED',completed_route_gates=gates,new_scientific_success=False,inherited_frozen_reference=inherited,strict_success_rule=read(REPORTS/'PREREGISTRATION.json')['success'],independent_validation=False,rule='No claim of JEV architecture value from structural components, coverage gain, or partial/missing seeds'))
  lines=['# JEVTrack 持续研究报告','','MASTER 仍在执行。下表只读取实际已完成官方合并评价，不用旧结果填新方法数字。已有 DEV 不属于独立验证。','','| Track | 方法 | 种子数 | HOTA | AssA | CVIDF1 | IDSW |','| --- | --- | ---: | ---: | ---: | ---: | ---: |']
  for s in summary:
