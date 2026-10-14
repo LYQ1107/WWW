@@ -114,7 +114,7 @@ The zero-change complete results so far use period10 updates. They do not establ
 
 Future run provenance now also records process-start/report UTC timestamps, actual stdout log file and source worktree, in addition to start commit, source hashes, command, seed, model/data/config hashes. Historical immutable manifests are not rewritten merely to add this metadata.
 
-## 2026-10-15 00:34 Asia/Shanghai — complete sparse controls and empty-group contracts
+## 2026-10-15 00:29 Asia/Shanghai — complete sparse controls and empty-group contracts
 
 Preceding stage commit: `d476e0395e6d58380fa8880627dfc9d081e70bc1`. Native row and absolute interval10 runs completed from pinned `22c8bade`; DINO and four-layer runs also cover all five strict development scenes. Four independent native TrackEval suite evaluations give HOTA 81.0547483, AssA 81.8956834, CVIDF1 95.6316643 and IDSW 41, exactly B0. All 20 method/video prediction lists are exactly B0 (`results/sparse_feature_strict_prediction_parity_v1.json`); this is an interval10 result, not a general failure of dense GCIR. Native every-frame controls on 11/19 remain running.
 
@@ -122,10 +122,14 @@ Added an empty-query/history bypass at `get_asso` with its existing return contr
 
 Added opt-in association tracing of real residual logit changes, per-history-frame softmax/GTA effects and Hungarian thresholded counterfactual changes under the same live history. Tracing uses no GT and chooses no decisions; its synchronization overhead is explicitly ineligible for system speed claims. Next: pinned short dense/sparse traces and every-frame full-video evaluation, then geometry recovery and causal scheduling work.
 
-## 2026-10-15 00:43 Asia/Shanghai — dense update first result and native GMT control
+## 2026-10-15 00:35 Asia/Shanghai — dense update first result and native GMT control
 
 Committed/pushed previous stage as `7da81629`. From that immutable source, scene11 first120 groups show 864 modified logit entries at interval10 and 72,000 at interval1 (max absolute delta ~0.474); counterfactual thresholded Hungarian changes are zero for this prefix despite measurable GTA changes. Trace timing is excluded from speed claims (`results/association_activity_trace_v1.json`).
 
 Full scene11 interval1 row-normalized HOTA drops 0.0327065, absolute HOTA rises 0.0041234 and CVIDF1 rises 0.0005206; both have unchanged IDSW6. This is not a substantive identity gain: on 15,085 common retained detections both have zero identity-partition disagreements after optimal global ID renaming; the altered final detection membership (row +2/-4, absolute +6/-4) occurs under original offline short-track filtering. Scene19 still running. Exact numbers/artifact hashes in `results/dense_update_scene11_preliminary_v1.json`.
 
 Added native GMT ReID cosine control at the same bounded residual insertion with the same TRAIN [5,8,12], 229 known pairs /45 positives and fixed balanced scalar logistic fit. It loads no additional encoder and preserves the native ReID fields. A direct runtime test verifies real residual application, unit vectors, unchanged original fields/RNG and zero foundation calls. All20 contracts pass. This is a capacity/source attribution control, not a VGGT claim. Next launch frozen full-video control and continue geometry recovery; no learned head is justified yet by the independent-information gate.
+
+## 2026-10-15T00:39:10.316202+08:00 — learned background correspondence failure-recovery implementation
+
+Previous committed/pushed stage `21257b88`; original log headings corrected against actual commit UTC times (Shanghai +8), without changing scientific records. Native GMT appearance control running all strict scenes on GPU4; dense VGGT controls continue on GPUs5/6. Added a fixed diagnostic using input foreground masking, full patch-footprint foreground/padding exclusion, bidirectional ratio0.8 and mutual nearest neighbors, then symmetric two-order descriptors for embedded DINO and VGGT layer17. F/H candidates fit with explicit original-pixel patch quantization radius, but final independent masked SIFT correspondence gates stay strict: >=20 neural fit inliers, >=20 independent within12px, median<=12px, inlier ratio>=.25 and coverage>=1%. No labels or dense caches. F rank2/H rank3 and zero/nonfinite rejection tested. 23 contract tests pass. This is independent failure recovery, not a validated online method or claim of geometry feasibility. Next run frozen TRAIN15/strict-dev30 pairs and inspect validity before any runtime insertion.

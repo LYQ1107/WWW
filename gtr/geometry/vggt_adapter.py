@@ -21,7 +21,7 @@ class FrozenVGGT:
         self._dino=output['x_norm_patchtokens'] if isinstance(output,dict) else output
 
     @torch.inference_mode()
-    def extract(self, images, boxes_by_view, modes=('mean','center','roi_align'), dim=256, camera=False):
+    def extract(self, images, boxes_by_view, modes=('mean','center','roi_align'), dim=256, camera=False, return_patch_maps=False):
         if images.ndim==4: images=images[None]
         images=images.to(self.device)
         self._dino=None
@@ -47,5 +47,12 @@ class FrozenVGGT:
         if camera:
             # Camera head expects FP32, following official forward.
             with torch.autocast('cuda',enabled=False): pose=self.model.camera_head(tokens)[-1].float().cpu()
+        # Optional transient descriptors for background correspondence diagnosis.
+        # The caller must not serialize these dense maps as an inference cache.
+        background_maps=None
+        if return_patch_maps:
+            background_maps={key:[patch_map(value[0,v],idx,hw) for v in range(views)] for key,(value,idx) in maps.items()}
         self._dino=None
-        return result,coverage,dict(layer_shapes=shapes,patch_start_idx=start,pose=pose)
+        meta=dict(layer_shapes=shapes,patch_start_idx=start,pose=pose)
+        if background_maps is not None:meta['patch_maps']=background_maps
+        return result,coverage,meta
