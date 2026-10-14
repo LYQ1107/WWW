@@ -362,6 +362,13 @@ class GTRRCNN(CustomRCNN):
         N, T = sum(n_t), len(n_t)
         n_k = len(instances[k])
         Np = N - n_k
+        if n_k == 0 or Np == 0:
+            # Attention has no meaningful query/history in these cases. Return
+            # the normal association contract so GTA assigns new IDs or carries
+            # an empty frame without changing any nonempty decision path.
+            pred_boxes, _ = self.roi_heads._get_boxes_time(instances)
+            query_inds = list(range(sum(n_t[:k]), sum(n_t[:k + 1])))
+            return [instances[k].reid_features.new_zeros((n_k, Np))], pred_boxes, n_t, Np, query_inds
         traj_ids=torch.Tensor().cuda()
         for i in range(len(instances)-1):
             traj_ids=torch.cat([traj_ids,instances[i].track_ids])

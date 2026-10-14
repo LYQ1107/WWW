@@ -27,8 +27,12 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | B6_sift_w05_k10 | 22 | no: raw diagnostic | 84.5038 | 84.7280 | 97.9279 | 97.9279 | 83 |
 | online_B0_full_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | B0_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
+| B1_dinov2_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
+| B2_native_absolute_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
+| B2_native_row_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | B2_w05_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
+| B3_multilayer_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 
-Required remaining work: frozen feature screening and independent DINO comparison; calibrated residual paired full-video tests; dynamic VGGT geometry validity; actual causal GMT protocol with separate baseline; matched-call-budget scheduler experiments; repeated stability checks and WWW retrieval evidence.
+Required remaining work: dense-update residual paired full-video tests and counterfactual activity diagnosis; geometry failure recovery; actual adaptive/async causal integration with separate baseline; matched-call-budget scheduler experiments; repeated stability checks and WWW retrieval evidence. Completed sparse feature tests, source/pose diagnostics and causal OFF results are evidence with limited scope, not completion of the requested experiment matrix.
 
 See results/experiment_manifest.json for exact commands, seeds, checkpoint SHA, environment, cache status and external artifact paths. See docs/GEO_STREAM_RESEARCH_LOG.md for commits and failed runs.

@@ -3,7 +3,7 @@ import argparse, time, numpy as np, torch
 from common import *
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--video-ids', type=int, nargs='+', default=[1]); p.add_argument('--max-frames', type=int); p.add_argument('--tag', default='B0'); p.add_argument('--geo-enabled',action='store_true'); p.add_argument('--geometry-weight',type=float,default=0.); p.add_argument('--feature-weight',type=float,default=0.); p.add_argument('--interval',type=int,default=10); p.add_argument('--calibration',default=''); p.add_argument('--layer',type=int,default=23); p.add_argument('--layers',type=int,nargs='+'); p.add_argument('--compute-neutral',action='store_true'); p.add_argument('--backbone',choices=['vggt','dinov2'],default='vggt'); p.add_argument('--pooling',default='roi_align'); p.add_argument('--geometry-method',default='sift'); p.add_argument('--projection-dim',type=int,default=-1); p.add_argument('--stream-read',action='store_true'); args=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument('--video-ids', type=int, nargs='+', default=[1]); p.add_argument('--max-frames', type=int); p.add_argument('--tag', default='B0'); p.add_argument('--geo-enabled',action='store_true'); p.add_argument('--geometry-weight',type=float,default=0.); p.add_argument('--feature-weight',type=float,default=0.); p.add_argument('--interval',type=int,default=10); p.add_argument('--calibration',default=''); p.add_argument('--layer',type=int,default=23); p.add_argument('--layers',type=int,nargs='+'); p.add_argument('--compute-neutral',action='store_true'); p.add_argument('--backbone',choices=['vggt','dinov2'],default='vggt'); p.add_argument('--pooling',default='roi_align'); p.add_argument('--geometry-method',default='sift'); p.add_argument('--projection-dim',type=int,default=-1); p.add_argument('--stream-read',action='store_true'); p.add_argument('--trace-association',action='store_true'); args=p.parse_args()
     out=RUNTIME/'baseline'/args.tag
     if out.exists(): raise FileExistsError(out)
     out.mkdir(parents=True)
@@ -16,6 +16,10 @@ def main():
     from gtr.evaluation.mot_evaluation import align_visiontrack_inputs_to_outputs, custom_instances_to_coco_json
     for vid in args.video_ids:
         seed_all(20261014); torch.cuda.reset_peak_memory_stats(); start=time.perf_counter()
+        trace=None
+        if args.trace_association:
+            from gtr.geometry.association_trace import AssociationTrace
+            trace=AssociationTrace(model);trace.install()
         records=video_records(data,vid,args.max_frames); t=time.perf_counter()
         loader=CurrentGroupLoader(cfg,records) if args.stream_read else None
         batch=records if loader is not None else map_records(cfg,records);read_seconds=time.perf_counter()-t
@@ -45,6 +49,10 @@ def main():
             peak_gpu_bytes=torch.cuda.max_memory_allocated(), prediction=str(path),prediction_sha256=sha256(path),geo_options=geo_opts,compute_neutral=args.compute_neutral,geo_calls=model.geo_runtime.calls,vggt_calls=model.geo_runtime.vggt_calls,dinov2_calls=model.geo_runtime.dinov2_calls,geometry_valid_calls=model.geo_runtime.geometry_valid_calls,geometry_invalid_calls=model.geo_runtime.geometry_invalid_calls,peak_reserved_gpu_bytes=torch.cuda.max_memory_reserved(),geo_failures=model.geo_runtime.failed,geo_seconds=model.geo_runtime.seconds,
             detection_latency_p50=float(np.percentile(latency,50)), detection_latency_p95=float(np.percentile(latency,95)),
             latency_scope=('image inference with current group reading charged on first view; NOT identity output' if args.stream_read else 'single-image detector only; NOT end-to-end identity latency'))
+        if trace is not None:
+            trace.close();trace_path=out/f'video_{vid:02d}_association_trace.json'
+            save_json(trace_path,dict(records=trace.records,scope='same live history before/after residual, per-frame softmax then GTA, no GT, diagnostic timing only'))
+            report.update(association_trace=str(trace_path),association_trace_sha256=sha256(trace_path),speed_eligible=False)
         report['camera_image_fps']=len(records)/report['total_seconds']; report['synchronized_group_fps']=(len(records)//views)/report['total_seconds']
         save_json(out/f'video_{vid:02d}_manifest.json',report); reports.append(report); print(json.dumps(report),flush=True)
     save_json(out/'manifest.json',reports)
