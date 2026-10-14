@@ -64,8 +64,35 @@
     "Replace original GTA",
     "Blindly train larger JEV"
   ],
-  "rule_go_no_go": "NO_GO_AS_STABLE_METHOD: HOTA +0.502582 but IDSW +15.44%",
+  "rule_go_no_go": "PRIMARY_RAW_NO_GO: HOTA +0.502582 but IDSW +15.44%; native stock assessed separately",
   "scientific_success": false,
+  "secondary_stock_development_metric_gates": {
+    "confidence": {
+      "AssA": true,
+      "CVIDF1": true,
+      "Frag": true,
+      "HOTA": false,
+      "IDSW": false,
+      "long_identity_duration": "PENDING_MATCHED_STOCK_DIAGNOSTIC"
+    },
+    "rule": {
+      "AssA": true,
+      "CVIDF1": true,
+      "Frag": true,
+      "HOTA": true,
+      "IDSW": true,
+      "long_identity_duration": "PENDING_MATCHED_STOCK_DIAGNOSTIC"
+    },
+    "threshold": {
+      "AssA": true,
+      "CVIDF1": true,
+      "Frag": true,
+      "HOTA": false,
+      "IDSW": false,
+      "long_identity_duration": "PENDING_MATCHED_STOCK_DIAGNOSTIC"
+    }
+  },
+  "secondary_stock_interpretation": "Rule passes HOTA/AssA/CVIDF1/IDSW/Frag secondary metric gates; matched stock long duration and speed pending. Threshold/confidence fail secondary IDSW. This does not override the preregistered primary raw outcome or establish scientific success.",
   "source": {
     "CUDA_VISIBLE_DEVICES": null,
     "Full24": false,
@@ -75,7 +102,7 @@
       "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
     },
     "GT_actor_input": false,
-    "HEAD": "ea463b8e4045ef982af16d5c772ae9a1410b7f56",
+    "HEAD": "9108868e6260384664a1ee5cf485929a27d4955f",
     "goal": {
       "SHA256": "049cead57802b9d3d481719924a883d847a31d534da9e379fa5c22f2a26a3625",
       "bytes": 3838,
@@ -99,7 +126,7 @@
       "reproduction_tools/gmt_jev_opportunity.py": "869955845644dbeef6e59b3ac0efa2b6dcbc082b9e57500aa4bad8b9e34e35dc",
       "reproduction_tools/gmt_jev_past_anchor_audit.py": "8ea70b5e4a87d61340873a4af9f71ad38b82864b1e264c285bf8538c6b0bb7e8",
       "reproduction_tools/gmt_jev_publish.py": "e0a3b7886e0b35b689d99361465de2d1eba3a413bc1d03382f837e1ad8767c1a",
-      "reproduction_tools/gmt_jev_research_report.py": "8b6498800148937880cc4265ac2807ab4ae2c80f8376daf82ed43c6df6e41976",
+      "reproduction_tools/gmt_jev_research_report.py": "5932b733c46d2f0976513ed4eba6406334fb5212d90b994627b3e48c68de701a",
       "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3",
       "reproduction_tools/gmt_jev_speed.py": "3f8b984368899b6d4baa24d1d65f8692098b3f264b2c02390edaf3cc4dbd925f",
       "reproduction_tools/gmt_jev_speed_queue.py": "f4aca344229457c345ba0817b98e97a469c7d421bbe5b2b1b97f7d520777f0c0",

@@ -39,6 +39,10 @@ def main():
   for kind,r in online['methods'].items():
    s=r['secondary_stock'];r['secondary_stock_delta']={k:s['metrics'][k]-stock['metrics'][k] for k in s['metrics']}
    r['secondary_stock_delta']['CVIDF1']=s['CVIDF1']-stock['CVIDF1']
+   r['secondary_stock_metric_gates']=dict(HOTA=s['metrics']['HOTA']>=stock['metrics']['HOTA']+.5,
+    AssA=s['metrics']['AssA']>=stock['metrics']['AssA'],CVIDF1=s['CVIDF1']>=stock['CVIDF1'],
+    IDSW=s['metrics']['IDSW']<=stock['metrics']['IDSW']*1.05,Frag=s['metrics']['Frag']<=stock['metrics']['Frag']*1.05,
+    long_identity_duration='PENDING_MATCHED_STOCK_DIAGNOSTIC')
   text=(DOCS/'ONLINE_RESULTS.md').read_text().split('\n## 同约定 stock 对照')[0]
   text=text.replace('原生 min_track_len=50 与 stock 后处理的结果保存在每条 ONLINE_*.json 的 secondary_stock；原始 GMT 的同约定基线尚待计时任务保留的输出评测，当前不计算 stock 差值、不混用 raw 基线。','原生 min_track_len=50 与 stock 后处理的匹配基线和对照另列于下表；不与 raw 混用，预注册主要协议仍为 raw。')
   table=['','## 同约定 stock 对照','','| 方法 | HOTA | ΔHOTA | AssA | CVIDF1 | IDSW | Frag |','|---|---:|---:|---:|---:|---:|---:|']
@@ -56,10 +60,13 @@ def main():
   development_primary_conclusions={k:dict(delta_HOTA=r['delta']['HOTA'],quality_gates=r['development_quality_gates'],joint_quality_pass=r['all_quality_gates_pass']) for k,r in online['methods'].items()},
   learned_training='NOT_RUN_FROZEN_TRAIN_SIGNAL_GATE_FAILED',architecture_ablation='NOT_RUN_NO_JOINT_POSITIVE_MAIN_METHOD',
   current_best_conservative_candidate='confidence: modest ordinary calibration development signal, not +0.5 or JEV-specific superiority',
-  rule_go_no_go='NO_GO_AS_STABLE_METHOD: HOTA +0.502582 but IDSW +15.44%',
+  rule_go_no_go='PRIMARY_RAW_NO_GO: HOTA +0.502582 but IDSW +15.44%; native stock assessed separately',
   unmet=['HOTA gain and identity stability jointly satisfied','Qualified learned MLP/Attention/CIC comparison','Independent full-video validation','Necessary seed reproduction'],
   prohibited_next_steps=['Tune on TRAIN16 signs','Read new DEV/sealed20-22/TEST/Full24','Replace original GTA','Blindly train larger JEV'],source=binding())
  if pending:decision['unmet'].append('Completed matched full-image efficiency measurements')
+ if stock is not None:
+  decision['secondary_stock_development_metric_gates']={k:r['secondary_stock_metric_gates'] for k,r in online['methods'].items()}
+  decision['secondary_stock_interpretation']='Rule passes HOTA/AssA/CVIDF1/IDSW/Frag secondary metric gates; matched stock long duration and speed pending. Threshold/confidence fail secondary IDSW. This does not override the preregistered primary raw outcome or establish scientific success.'
  if temporal.exists():
   d=read(temporal);decision['post_hoc_temporal_diagnostics']=dict(report=ref(temporal),
    ratios={k:r['duration_ratio_to_original'] for k,r in d['methods'].items()},
@@ -97,6 +104,8 @@ Confidence 是普通合法候选的分数校准。它改善了当前开发视频
 
 WWW 投稿证据仍缺：联合稳定增益、合格训练后普通控制器对照、独立完整视频、必要种子复现及可支持机制判断的消融。没有独立资格时，不读取封存数据或把开发视频当独立验证。目前为 NOT_ESTABLISHED。
 ''')
+ if stock is not None:
+  with (DOCS/'REVIEWER_ANALYSIS.md').open('a') as f:f.write('\n同约定原生 stock 基线已补齐：GMT HOTA68.389411/IDSW542；Rule HOTA68.966066/IDSW411/Frag608（GMT586）。其次要 HOTA/AssA/CVIDF1/IDSW/Frag 门槛通过，但不覆盖主要 raw 稳定性失败，stock 持续错误及效率仍待完整检查。Threshold 和 Confidence 的 stock IDSW 分别629、637，均超过1.05倍。原生最终短轨过滤与身份状态的交互可能影响结论，不能挑选协议，也不能简单称 Confidence 为全管线最佳。\n')
  resource=dict(new_retained_MiB=retained()/2**20,home_free_GiB=shutil.disk_usage('/home/liuyeqiang').free/2**30,GPU_wall_hours_including_live=spent())
  save(REPORTS/'ROUND_RESOURCE_SNAPSHOT.json',resource)
  report='''# GMT-JEV 中文研究报告（当前证据，效率任务仍以 JSON 终态为准）
@@ -141,6 +150,9 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 研究分支 research/gmt-jev-risk-association-20261014；[当前中文报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。每阶段仅推源码、配置和紧凑JSON，权重、视频、图像、预测压缩包留在服务器并记录 SHA。实际发布终态由 runtime/publication/LAST_VERIFIED.json 的 local/remote HEAD 一致证明；报告生成来源 HEAD 与运行时源码 SHA 保存在 JSON。
 '''
+ if stock is not None:
+  note='\n同约定原生最终输出：GMT HOTA68.389411、IDSW542、Frag586；Threshold HOTA68.541303、IDSW629、Frag582；Rule HOTA68.966066（+0.576655）、AssA69.235313、CVIDF188.912758、IDSW411（−24.17%）、Frag608（+3.75%）；Confidence HOTA68.642726、IDSW637、Frag568。Rule 次要指标出现正向，Threshold/Confidence 次要 IDSW 失败。stock 与 raw 均在结果前预注册，不能按结果换主要协议；stock 长期身份错误与效率待验证。\n'
+  report=report.replace('## 6. 普通方法是否足以解释收益',note+'\n## 6. 普通方法是否足以解释收益')
  if temporal.exists():
   d=read(temporal)
   text='\n新增结果后历史锚审计：仅使用更早场景已有至少3次已知观测、覆盖率>=80%的首个人物锚；屏蔽重复GT人物，未知/间断为右删失。认证错误人物关联持续相机帧'
