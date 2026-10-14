@@ -41,7 +41,7 @@ class ResidualHead(nn.Module):
 
 class IdentityCorrection(nn.Module):
  def __init__(self,kind='observe',enabled=True):
-  super().__init__();assert kind in ['observe','threshold','rule','mlp','attention','cic']
+  super().__init__();assert kind in ['observe','threshold','rule','confidence','mlp','attention','cic']
   self.kind=kind;self.enabled=enabled
   self.head=ResidualHead(kind) if kind in ['mlp','attention','cic'] else None
   self.observer=None;self.reset()
@@ -52,6 +52,7 @@ class IdentityCorrection(nn.Module):
   state['sums'][view]=state['sums'].get(view,torch.zeros_like(vector))+vector
   state['counts'][view]=state['counts'].get(view,0)+1;state['last']=frame
  def committed(self,instance,view,frame):
+  if self.kind=='confidence' and self.observer is None:return
   for identity,feature in zip(instance.track_ids.tolist(),instance.reid_features):self._add(identity,feature,view,frame)
  def features(self,scores,ids,lengths,current,galleries,view,frame,first):
   q,k=scores.shape
@@ -87,6 +88,9 @@ class IdentityCorrection(nn.Module):
   return x,eligible
  def forward(self,scores,ids,lengths,current,galleries,*,view,frame,first):
   if not self.enabled:return scores
+  if self.kind=='confidence' and self.observer is None:
+   average=scores/lengths.clamp_min(1)[None]
+   return scores-(.1-average).clamp(0,.05)*lengths[None]
   x,eligible=self.features(scores,ids,lengths,current,galleries,view,frame,first)
   if self.kind=='observe':new=scores;gate=torch.zeros_like(scores);residual=torch.zeros_like(scores)
   elif self.kind=='threshold':

@@ -1,5 +1,5 @@
 """One bounded TRAIN-only feasibility/initialization diagnostic after sparse P1."""
-import collections,torch
+import collections,torch,math
 from gmt_jev_opportunity import *
 def main():
  assert read(REPORTS/'GMT_ERROR_OPPORTUNITY.json')['learned_training_signal_gate'] is False
@@ -25,7 +25,7 @@ def main():
      stats[name+'_changed_active_assignment_rows']+=1
      target_id=s['refs'][t];old=s['native_ids'][row];new=s['refs'][a] if a>=0 else None
      if a<0:stats[name+'_UNKNOWN_rejection_Bank_outcome']+=1
-     elif new==target_id and old!=target_id:stats[name+'_N01']+=1
+     elif new==target_id and old!=target_id and (old>s['id_count_before'] or (owners.get(old) is not None and owners[old]!=g)):stats[name+'_N01']+=1
      elif old==target_id and owners.get(new) is not None and owners[new]!=g:stats[name+'_N10']+=1
      else:stats[name+'_UNKNOWN_changed_companion']+=1
    for row,y in enumerate(s['targets'].tolist()):
@@ -41,6 +41,4 @@ def main():
   first_contrast_rule='Only observable cosine centered across lawful options, first camera link, low GTA margin and cosine>=.8; average residual bound.05.',
   feasibility_calibration='Subtract min(.05,max(0,.1−GMT_average)) times original support, preserving all already-acceptable edge scores and original solver/threshold/Bank/WRITE.',
   rejected_alternatives_not_claimed_causal_corrections=True,source=binding()))
-if __name__=='__main__':
- import math
- main()
+if __name__=='__main__':main()

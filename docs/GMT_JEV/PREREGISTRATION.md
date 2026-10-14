@@ -27,3 +27,7 @@ Training coefficients if qualified: native-association CE on unique legal target
 ## One bounded Case-B calibration probe after P1 (no learned update)
 
 P1 found25 incorrect certified-active rows, original cross-rule0/0. One new conservative rule diagnostic: residual=−clip(0.1−GMT_average,0,0.05), preserving all already-acceptable edge scores. Analyze first camera link separately with pure observable relative cosine residual0.05*clip((other_cos−rowmean_other_cos)/0.1,−1,1), requiring low GTA margin<=0.10 and cosine>=0.8. Both use identical current native states/candidates and the original Hungarian/thresholds. First-frame GT IoU>=0.8/runner-up<0.3 bridge is offline diagnosis only, not a long-term owner or future-safety label. A positive same-state signal still needs actual native zero-training confirmation before any MLP/CIC gradients. No video16 calibration or hyperparameter search.
+
+## Bounded no-learning continuation
+
+After all TRAIN source-state rules show zero certified accepted correction, do not train MLP/Attention/CIC. Complete fixed full TRAIN16 cold native runs for the preregistered fixed threshold, cross-conflict rule and one confidence-feasibility calibration. Report every sign; no new threshold/seed/video variants. Benchmark original and actual zero-training controls on the same physical GPU with three full-image repetitions. Untrained neural prototype overhead may be explicitly measured as engineering evidence, never trained method quality. Architecture ablations remain NOT_RUN without a main positive model.
