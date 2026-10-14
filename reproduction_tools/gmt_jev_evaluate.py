@@ -1,12 +1,14 @@
 """Frozen TrackEval and official MATLAB; only own reproducible temporaries removed."""
 import argparse,gzip,numpy as np
 from gmt_jev_common import *
-def evaluate(predictions,folder):
+def evaluate(predictions,folder,videos=(16,)):
+ assert videos and all(v in [12,13,14,16] for v in videos)
+ assert list(videos)==sorted(set(videos))
  from run_jev_phase10_closed_loop import metrics
  from jev_oneweek_matlab import prepare
  folder=pathlib.Path(folder);folder.mkdir(parents=True,exist_ok=False)
  scratch=folder/'REGENERABLE_EVAL';scratch.mkdir();p=scratch/'RAW.json';p.write_text(json.dumps(predictions))
- scores,evaluated=metrics(p,[16],scratch/'TrackEval')
+ scores,evaluated=metrics(p,list(videos),scratch/'TrackEval')
  official_metric=folder/'TRACKEVAL_NATIVE.json';official_metric.write_bytes((evaluated/'metrics.json').read_bytes())
  jobs,inputs=prepare(evaluated.parent/'prepared/manifest.json',scratch/'cv_inputs')
  kit=pathlib.Path('/home/liuyeqiang/WWW_jev_phase14/MOTChallengeEvalKit_cv_test/matlab_devkit')
@@ -26,10 +28,11 @@ def evaluate(predictions,folder):
  # Generated annotation copies/MOT text are temporary, never old evidence.
  assert scratch.resolve().is_relative_to(OUT.resolve());shutil.rmtree(scratch)
  return result
-def duration(predictions):
+def duration(predictions,video=16):
+ assert video in [12,13,14,16]
  from jev_phase7_offline import IdentityEvaluator
  import collections
- e=IdentityEvaluator(16);rows=e.align(predictions);mapping,counts=e.mapping(rows);summary=collections.Counter();timelines=collections.defaultdict(dict)
+ e=IdentityEvaluator(video);rows=e.align(predictions);mapping,counts=e.mapping(rows);summary=collections.Counter();timelines=collections.defaultdict(dict)
  ids_by_gt=collections.defaultdict(set);persons_by_id=collections.defaultdict(set)
  for (f,v,r),d in sorted(rows.items()):
   g=d['gt']
