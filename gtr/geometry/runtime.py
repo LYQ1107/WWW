@@ -17,6 +17,9 @@ class GeometryRuntime:
         if self.active and (cfg.ASYNC_WORKER or cfg.SPARSE_UPDATE_ENABLED):
             raise NotImplementedError('adaptive/async policy integration is pending; current runtime supports synchronous fixed intervals')
         if self.active and self.score.feature_weight:
+            if cfg.FEATURE_BACKBONE not in {'gmt','vggt','dinov2'}:raise ValueError('unsupported feature backbone')
+            if cfg.FEATURE_BACKBONE=='gmt' and (cfg.SYMMETRIZE_VIEW_ORDER or cfg.FEATURE_LAYERS!=[-1] or cfg.PROJECTION_DIM!=0 or cfg.POOLING!='reid'):
+                raise ValueError('GMT capacity control requires native ReID, one layer, no view symmetrization')
             if not cfg.CALIBRATION_PATH:raise ValueError('feature residual requires association-TRAIN scalar calibration')
             self.calibration=json.loads(Path(cfg.CALIBRATION_PATH).read_text())
             if self.calibration.get('source_split')!='association_train':raise ValueError('invalid calibration split')
@@ -45,6 +48,7 @@ class GeometryRuntime:
         levels=self.cfg.FEATURE_LAYERS
         projection_dim=self.cfg.FEATURE_DIM if self.cfg.PROJECTION_DIM<0 else self.cfg.PROJECTION_DIM
         per_layer_dim=projection_dim if projection_dim>0 else (1024 if self.cfg.FEATURE_BACKBONE=='dinov2' else 2048)
+        if self.cfg.FEATURE_BACKBONE=='gmt':per_layer_dim=instances[0].reid_features.shape[-1]
         dim=per_layer_dim*len(levels)*(2 if self.cfg.SYMMETRIZE_VIEW_ORDER else 1)
         original_boxes=[]
         for v,(inst,r) in enumerate(zip(instances,records)):
@@ -61,30 +65,36 @@ class GeometryRuntime:
         start=time.perf_counter()
         try:
             if self.score.feature_weight:
-                if self.vggt is None:
-                    device=str(instances[0].reid_features.device)
-                    if self.cfg.FEATURE_BACKBONE=='dinov2':
-                        from .dinov2_adapter import FrozenDINOv2
-                        self.vggt=FrozenDINOv2(self.cfg.DINOV2_CHECKPOINT,device=device)
-                    else:
-                        from .vggt_adapter import FrozenVGGT
-                        self.vggt=FrozenVGGT(self.cfg.VGGT_CHECKPOINT,device=device,layers=levels)
-                from vggt.utils.load_fn import load_and_preprocess_images
-                images=load_and_preprocess_images([r['file_name'] for r in records],mode='pad')
-                mapped=[PadMapping(r['width'],r['height']).boxes(b) for r,b in zip(records,original_boxes)]
-                result,_,_=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=projection_dim)
-                if self.cfg.FEATURE_BACKBONE=='dinov2':self.dinov2_calls+=1
-                else:self.vggt_calls+=1
-                reverse=None
-                if self.cfg.SYMMETRIZE_VIEW_ORDER:
-                    if len(instances)!=2:raise ValueError('symmetric mode currently supports exactly two cameras')
-                    reverse,_,_=self.vggt.extract(images.flip(0),mapped[::-1],modes=(self.cfg.POOLING,),dim=projection_dim)
-                    self.vggt_calls+=1
-                for v,inst in enumerate(instances):
-                    chunks=[result[f'layer_{l}/{self.cfg.POOLING}'][v].to(inst.reid_features.device) for l in levels]
-                    if reverse is not None:chunks += [reverse[f'layer_{l}/{self.cfg.POOLING}'][1-v].to(inst.reid_features.device) for l in levels]
-                    inst.geo_vector=torch.cat(chunks,dim=-1)/len(chunks)**.5
-                    inst.geo_valid=torch.isfinite(inst.geo_vector).all(-1)&(inst.geo_vector.norm(dim=-1)>0)
+                if self.cfg.FEATURE_BACKBONE=='gmt':
+                    for inst in instances:
+                        raw=inst.reid_features.float()
+                        inst.geo_vector=torch.nn.functional.normalize(raw,dim=-1)
+                        inst.geo_valid=torch.isfinite(raw).all(-1)&(raw.norm(dim=-1)>0)
+                else:
+                    if self.vggt is None:
+                        device=str(instances[0].reid_features.device)
+                        if self.cfg.FEATURE_BACKBONE=='dinov2':
+                            from .dinov2_adapter import FrozenDINOv2
+                            self.vggt=FrozenDINOv2(self.cfg.DINOV2_CHECKPOINT,device=device)
+                        else:
+                            from .vggt_adapter import FrozenVGGT
+                            self.vggt=FrozenVGGT(self.cfg.VGGT_CHECKPOINT,device=device,layers=levels)
+                    from vggt.utils.load_fn import load_and_preprocess_images
+                    images=load_and_preprocess_images([r['file_name'] for r in records],mode='pad')
+                    mapped=[PadMapping(r['width'],r['height']).boxes(b) for r,b in zip(records,original_boxes)]
+                    result,_,_=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=projection_dim)
+                    if self.cfg.FEATURE_BACKBONE=='dinov2':self.dinov2_calls+=1
+                    else:self.vggt_calls+=1
+                    reverse=None
+                    if self.cfg.SYMMETRIZE_VIEW_ORDER:
+                        if len(instances)!=2:raise ValueError('symmetric mode currently supports exactly two cameras')
+                        reverse,_,_=self.vggt.extract(images.flip(0),mapped[::-1],modes=(self.cfg.POOLING,),dim=projection_dim)
+                        self.vggt_calls+=1
+                    for v,inst in enumerate(instances):
+                        chunks=[result[f'layer_{l}/{self.cfg.POOLING}'][v].to(inst.reid_features.device) for l in levels]
+                        if reverse is not None:chunks += [reverse[f'layer_{l}/{self.cfg.POOLING}'][1-v].to(inst.reid_features.device) for l in levels]
+                        inst.geo_vector=torch.cat(chunks,dim=-1)/len(chunks)**.5
+                        inst.geo_valid=torch.isfinite(inst.geo_vector).all(-1)&(inst.geo_vector.norm(dim=-1)>0)
             if self.score.geometry_weight and len(instances)==2:
                 # Fundamental is only used for same-time coordinates. No stale-position projection.
                 images=[cv2.imread(r['file_name'],cv2.IMREAD_GRAYSCALE) for r in records]

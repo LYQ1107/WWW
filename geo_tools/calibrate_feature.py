@@ -4,15 +4,19 @@ from common import *
 from sklearn.linear_model import LogisticRegression
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--samples',type=Path,required=True);p.add_argument('--features',type=Path,required=True);p.add_argument('--layer',type=int,default=23);p.add_argument('--layers',type=int,nargs='+');p.add_argument('--pooling',default='roi_align');p.add_argument('--symmetric',action='store_true');p.add_argument('--dim',type=int,default=256);p.add_argument('--row-normalize',action='store_true');p.add_argument('--backbone',choices=['vggt','dinov2'],default='vggt');p.add_argument('--output',type=Path,required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--samples',type=Path,required=True);p.add_argument('--features',type=Path);p.add_argument('--layer',type=int,default=23);p.add_argument('--layers',type=int,nargs='+');p.add_argument('--pooling',default='roi_align');p.add_argument('--symmetric',action='store_true');p.add_argument('--dim',type=int,default=256);p.add_argument('--row-normalize',action='store_true');p.add_argument('--backbone',choices=['vggt','dinov2','gmt'],default='vggt');p.add_argument('--output',type=Path,required=True);a=p.parse_args()
     data=json.loads(a.samples.read_text())
     if data['provenance'].get('split')!='train':raise ValueError('calibration must use association TRAIN')
     split=json.loads((ROOT/'manifests/geo_split_v1.json').read_text());x=[];y=[];layers=a.layers or [a.layer]
     for sample in data['samples']:
         if sample['video_id'] not in split['association_train_video_ids']:raise ValueError('development leakage')
-        arr=np.load(sample['path']);feat=np.load(a.features/Path(sample['path']).name)
+        arr=np.load(sample['path']);feat=np.load(a.features/Path(sample['path']).name) if a.backbone!='gmt' else None
         similarities=[]
         for layer in layers:
+            if a.backbone=='gmt':
+                v0=arr['gmt_0'].astype(float);v1=arr['gmt_1'].astype(float)
+                v0=v0/np.maximum(np.linalg.norm(v0,axis=1,keepdims=True),1e-12);v1=v1/np.maximum(np.linalg.norm(v1,axis=1,keepdims=True),1e-12)
+                similarities.append(v1@v0.T);continue
             key=f'layer_{layer}/{a.pooling}' if a.backbone=='vggt' else a.pooling
             v0=feat[f'{key}/0'].astype(float);v1=feat[f'{key}/1'].astype(float);similarity=v1@v0.T
             if a.symmetric:
@@ -28,7 +32,7 @@ def main():
         labels=(arr['labels_1'][:,None]==arr['labels_0'][None,:]);valid=(arr['labels_1'][:,None]>0)&(arr['labels_0'][None,:]>0)
         x.extend(score[valid]);y.extend(labels[valid])
     model=LogisticRegression(C=1.,class_weight='balanced',max_iter=200,random_state=20261014).fit(np.asarray(x)[:,None],y)
-    report=dict(source_split='association_train',slope=float(model.coef_[0,0]),intercept=float(model.intercept_[0]),backbone=a.backbone,layers=([-1] if a.backbone=='dinov2' else layers),layer=(-1 if a.backbone=='dinov2' else a.layer),pooling=a.pooling,dim=a.dim,symmetric=a.symmetric,normalization=('candidate_row_zscore' if a.row_normalize else 'absolute'),
-        sample_manifest_sha256=sha256(a.samples),source_video_ids=sorted({s['video_id'] for s in data['samples']}),pairs=len(y),positive_pairs=int(np.sum(y)),seed=20261014,mean_train_evidence=float(np.tanh(model.decision_function(np.asarray(x)[:,None])).mean()),weights='equal positive/negative classes, C=1 fixed',feature_artifact_sha256={str(a.features/Path(s['path']).name):sha256(a.features/Path(s['path']).name) for s in data['samples']})
+    report=dict(source_split='association_train',slope=float(model.coef_[0,0]),intercept=float(model.intercept_[0]),backbone=a.backbone,layers=([-1] if a.backbone in {'dinov2','gmt'} else layers),layer=(-1 if a.backbone in {'dinov2','gmt'} else a.layer),pooling=a.pooling,dim=a.dim,symmetric=a.symmetric,normalization=('candidate_row_zscore' if a.row_normalize else 'absolute'),
+        sample_manifest_sha256=sha256(a.samples),source_video_ids=sorted({s['video_id'] for s in data['samples']}),pairs=len(y),positive_pairs=int(np.sum(y)),seed=20261014,mean_train_evidence=float(np.tanh(model.decision_function(np.asarray(x)[:,None])).mean()),weights='equal positive/negative classes, C=1 fixed',feature_artifact_sha256=({str(a.features/Path(s['path']).name):sha256(a.features/Path(s['path']).name) for s in data['samples']} if a.backbone!='gmt' else {s['path']:sha256(s['path']) for s in data['samples']}))
     save_json(a.output,report);print(json.dumps(report,indent=2))
 if __name__=='__main__':main()

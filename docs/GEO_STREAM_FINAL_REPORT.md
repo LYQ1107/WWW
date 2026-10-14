@@ -19,7 +19,9 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | B2_l17_sym_w025_full_gpu5 | 10 | yes | 80.9659 | 81.0414 | 98.9676 | 98.9676 | 0 |
 | B2_l17_sym_w025_full_gpu5 | 18 | yes | 79.3120 | 81.1202 | 96.6809 | 96.6809 | 5 |
 | B2_l17_sym_w05_k10_rng_v2 | 1 | yes | 87.8104 | 88.2262 | 97.7207 | 97.7207 | 1 |
+| B2_native_l17_absolute_w05_everyframe_hard_v1 | 11 | yes | 83.3691 | 79.3061 | 92.1311 | 92.1311 | 6 |
 | B2_native_l17_absolute_w05_k10_pin_v1 | 11 | yes | 83.3649 | 79.3051 | 92.1306 | 92.1306 | 6 |
+| B2_native_l17_row_w05_everyframe_hard_v1 | 11 | yes | 83.3322 | 79.2751 | 92.1102 | 92.1102 | 6 |
 | B2_native_l17_row_w05_k10_pin_v1 | 11 | yes | 83.3649 | 79.3051 | 92.1306 | 92.1306 | 6 |
 | B3_multilayer_sym_w05_k10_pin_v1 | 1 | yes | 87.8104 | 88.2262 | 97.7207 | 97.7207 | 1 |
 | B3_multilayer_sym_w05_k10_pin_v1 | 10 | yes | 80.9659 | 81.0414 | 98.9676 | 98.9676 | 0 |

@@ -3,14 +3,14 @@ import argparse, time, numpy as np, torch
 from common import *
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--video-ids', type=int, nargs='+', default=[1]); p.add_argument('--max-frames', type=int); p.add_argument('--tag', default='B0'); p.add_argument('--geo-enabled',action='store_true'); p.add_argument('--geometry-weight',type=float,default=0.); p.add_argument('--feature-weight',type=float,default=0.); p.add_argument('--interval',type=int,default=10); p.add_argument('--calibration',default=''); p.add_argument('--layer',type=int,default=23); p.add_argument('--layers',type=int,nargs='+'); p.add_argument('--compute-neutral',action='store_true'); p.add_argument('--backbone',choices=['vggt','dinov2'],default='vggt'); p.add_argument('--pooling',default='roi_align'); p.add_argument('--geometry-method',default='sift'); p.add_argument('--projection-dim',type=int,default=-1); p.add_argument('--stream-read',action='store_true'); p.add_argument('--trace-association',action='store_true'); args=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument('--video-ids', type=int, nargs='+', default=[1]); p.add_argument('--max-frames', type=int); p.add_argument('--tag', default='B0'); p.add_argument('--geo-enabled',action='store_true'); p.add_argument('--geometry-weight',type=float,default=0.); p.add_argument('--feature-weight',type=float,default=0.); p.add_argument('--interval',type=int,default=10); p.add_argument('--calibration',default=''); p.add_argument('--layer',type=int,default=23); p.add_argument('--layers',type=int,nargs='+'); p.add_argument('--compute-neutral',action='store_true'); p.add_argument('--backbone',choices=['vggt','dinov2','gmt'],default='vggt'); p.add_argument('--pooling',default='roi_align'); p.add_argument('--geometry-method',default='sift'); p.add_argument('--projection-dim',type=int,default=-1); p.add_argument('--stream-read',action='store_true'); p.add_argument('--trace-association',action='store_true'); args=p.parse_args()
     out=RUNTIME/'baseline'/args.tag
     if out.exists(): raise FileExistsError(out)
     out.mkdir(parents=True)
     sys.path[:0]=[str(RUNTIME/'sources/vggt'),str(RUNTIME/'sources/dinov2')]
     geo_opts=dict(ENABLED=args.geo_enabled,GEOMETRY_ENABLED=True,FEATURE_ENABLED=True,GEOMETRY_WEIGHT=args.geometry_weight,FEATURE_WEIGHT=args.feature_weight,UPDATE_INTERVAL=args.interval,CALIBRATION_PATH=args.calibration,FEATURE_LAYERS=args.layers or [args.layer],VGGT_CHECKPOINT=str(RUNTIME/'weights/vggt_1b.pt'))
     geo_opts.update(PROJECTION_DIM=args.projection_dim,GEOMETRY_METHOD=args.geometry_method,FEATURE_BACKBONE=args.backbone,POOLING=args.pooling,DINOV2_CHECKPOINT=str(RUNTIME/'weights/dinov2_vitl14_reg4.pth'))
-    if args.backbone=='dinov2':geo_opts.update(FEATURE_LAYERS=[-1],SYMMETRIZE_VIEW_ORDER=False)
+    if args.backbone in {'dinov2','gmt'}:geo_opts.update(FEATURE_LAYERS=[-1],SYMMETRIZE_VIEW_ORDER=False)
     cfg, model=load_gmt(geo_opts=geo_opts); data=train_data(); reports=[]
     if args.compute_neutral:model.geo_runtime.score.enabled=False
     from gtr.evaluation.mot_evaluation import align_visiontrack_inputs_to_outputs, custom_instances_to_coco_json
