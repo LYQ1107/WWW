@@ -13,8 +13,10 @@ def main():
   save(OUT/'speed/CACHE_FOLLOWUP.json',dict(status='WAITING_VERIFIED_ORIGINAL_QUEUE',PID=os.getpid(),observed_queue_PID=q['PID']))
   time.sleep(30)
  # Exclusive same-GPU trials stay separate from any new parity workload.
+ save(OUT/'speed/CACHE_FOLLOWUP.json',dict(status='RUNNING_FULL_NATIVE_CACHE_PARITY',PID=os.getpid()))
  job('P5_feature_cache_full_native_parity_GPU7','gmt_jev_cache_parity.py',7)
  publish_step('exact optional feature cache full native parity')
+ save(OUT/'speed/CACHE_FOLLOWUP.json',dict(status='RUNNING_CACHED_RULE_FULL_IMAGE_TIMING',PID=os.getpid()))
  job('P5_rule_cached_full_image_GPU7','gmt_jev_speed.py',7,['--kind','rule_cached','--gpu','7'])
  publish_step('optional cache Rule full-image timing')
  save(OUT/'speed/CACHE_FOLLOWUP.json',dict(status='COMPLETE_FINITE_CACHE_FOLLOWUP',PID=os.getpid()))
