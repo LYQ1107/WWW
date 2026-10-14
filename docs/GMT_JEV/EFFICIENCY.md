@@ -7,7 +7,7 @@
 | original | 1.7049 | 3.4098 | 1.0000 | 0 |
 | threshold | 1.6129 | 3.2258 | 0.9461 | 0 |
 | rule | 1.4970 | 2.9939 | 0.8781 | 0 |
-| confidence | PENDING | PENDING | PENDING | PENDING |
+| confidence | 1.6965 | 3.3930 | 0.9951 | 0 |
 | mlp_zero | PENDING | PENDING | PENDING | PENDING |
 | attention_zero | PENDING | PENDING | PENDING | PENDING |
 | cic_zero | PENDING | PENDING | PENDING | PENDING |
