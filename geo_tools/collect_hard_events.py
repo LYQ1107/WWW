@@ -25,7 +25,9 @@ def main():
         if int(query.audit_frame[0])==1:return result
         logits=result[0][0];ids=torch.cat([x.track_ids for x in refs]);cams=torch.cat([x.audit_camera for x in refs]);frames=torch.cat([x.audit_frame for x in refs])
         unique=ids.unique();ind=(ids[:,None]==unique[None,:]).float()
-        prob=model.roi_heads._activate_asso([logits])[0];score=prob@ind
+        # Original global tracker activates each historical frame block separately.
+        blocks=logits.split([len(x) for x in refs],dim=1)
+        prob=torch.cat(model.roi_heads._activate_asso(blocks),dim=1);score=prob@ind
         if score.shape[1]<2:return result
         top=score.topk(2,dim=1);margins=(top.values[:,0]-top.values[:,1])/(top.values[:,0].abs()+1e-8)
         for qi in range(len(query)):
@@ -43,13 +45,14 @@ def main():
             qcam=int(query.audit_camera[qi]);qframe=int(query.audit_frame[qi]);qrecord=record_index[(qcam,qframe)]
             qbox=qbox*np.array([qrecord['width']/w,qrecord['height']/h]*2)
             allboxes=torch.cat([x.pred_boxes.tensor for x in refs]);sizes=[x.image_size for x in refs for _ in range(len(x))]
-            candidate_rows=[]
+            candidate_rows=[];all_features=torch.cat([x.reid_features for x in refs])
             for ci in columns.tolist():
                 cam,frame=int(cams[ci]),int(frames[ci]);record=record_index[(cam,frame)];hh,ww=sizes[ci]
                 box=allboxes[ci].detach().cpu().numpy()*np.array([record['width']/ww,record['height']/hh]*2)
-                candidate_rows.append(dict(camera_id=cam,frame_id=frame,image_id=record['image_id'],box=box.tolist(),track_id=int(ids[ci]),gmt_logit=float(logits[qi,ci]),gmt_probability=float(prob[qi,ci])))
+                candidate_rows.append(dict(camera_id=cam,frame_id=frame,image_id=record['image_id'],box=box.tolist(),track_id=int(ids[ci]),gmt_logit=float(logits[qi,ci]),gmt_probability=float(prob[qi,ci]),gmt_feature=all_features[ci].detach().cpu().tolist()))
             event=dict(video_id=a.video_id,query_camera=qcam,query_frame=qframe,query_image_id=qrecord['image_id'],query_box=qbox.tolist(),
-                relative_gta_margin=float(margins[qi]),candidate_tracks=unique[selected].cpu().tolist(),candidate_track_scores=top.values[qi].cpu().tolist(),candidates=candidate_rows,
+                query_gmt_feature=query.reid_features[qi].detach().cpu().tolist(),
+                score_semantics='per-frame unmatched softmax followed by original GTA sum',relative_gta_margin=float(margins[qi]),candidate_tracks=unique[selected].cpu().tolist(),candidate_track_scores=top.values[qi].cpu().tolist(),candidates=candidate_rows,
                 sampling='lowest current relative GTA margin with opposite-camera candidates; no GT labels read')
             item=(priority,counter,event)
             if len(heap)<a.limit:heapq.heappush(heap,item)

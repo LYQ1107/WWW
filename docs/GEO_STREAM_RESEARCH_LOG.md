@@ -61,3 +61,15 @@ New geometry computation explicitly preserves Python, NumPy, CPU Torch and activ
 Added `gtr/geometry/online_runner.py` and `geo_tools/run_online.py`: one current synchronized group is read and processed, identities emitted immediately, no short-track deletion or delayed classification using future observations. Tracker uses original initial/GTA/memory functions; box fields are cloned before output postprocess so scaling cannot corrupt mutable history. Offline baseline is preserved. Actual input-to-identity latency includes current reading, preprocessing, inference, and CPU identity serialization; static model setup excluded and stated, cold lazy geometry initialization included. Prefix60 causal OFF runs; prefix80 comparison is underway. Causal enhanced and full-video accuracy remain outstanding.
 
 First complete feature-residual video01 on GPU5 finishes; strict paired evaluation underway. This initial full run predates explicit RNG preservation and must be confirmed before interpreting any improvement.
+
+## 2026-10-14 continuation: full first fusion and causal prefix verified
+
+Previous goal turn is classified as progress: code, actual paired inference, neutral RNG control and causal entry were committed at `e58279095ef1a87f3fa98602e5d0c612f212599c`. Live process audit now confirms the first complete B2 layer17 symmetric weight0.25 / interval10 run has terminated successfully for all [1,10,18]. Fresh strict evaluation shows the same predictions/metrics as B0 on all three videos; this is a verified zero-change result, not a gain. No first-failure stop.
+
+Causal OFF prefix60 versus prefix80: exact equality of the first300 serialized predictions, saved in results/causal_prefix_parity.json. Whole-video causal B0 park18 started; original offline and causal protocols remain separate.
+
+The previous hard-event sampler incorrectly activated all proposal columns together; native global GMT activates each historical-frame block separately before GTA. Those old samples retain exact prediction parity but do not substantiate the claimed native GTA ambiguity. Corrected collection now uses the native per-frame unmatched softmax and keeps only target features for selected events. Full park18 collection under `hard_events_gta_v2` is running. This fixes sampling semantics before using any events for method selection or learning.
+
+Remaining strict B0 scenes11 and19 started under `B0_strict_remaining_v1`. Independent DINOv2 TRAIN feature calibration and its fresh full-video residual control are being implemented; use the same frozen GMT, ROI mapping, training labels and scalar calibration recipe. This completes the tracking-level generic visual control that initial retrieval screening alone cannot substitute for.
+
+Provenance now snapshots process-start commit as well as source file/diff hashes; report-generation commit is recorded separately, so commits made during long experiments cannot relabel their source.

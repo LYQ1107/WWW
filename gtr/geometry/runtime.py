@@ -9,7 +9,7 @@ from .geometry_alignment import soft_box_evidence
 
 class GeometryRuntime:
     def __init__(self,cfg):
-        self.cfg=cfg;self.vggt=None;self.geometry={};self.calls=0;self.vggt_calls=0;self.failed=0;self.seconds=0.;self.calibration=None
+        self.cfg=cfg;self.vggt=None;self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.failed=0;self.seconds=0.;self.calibration=None
         self.score=PairScoreAdapter(cfg.ENABLED,cfg.FEATURE_WEIGHT if cfg.FEATURE_ENABLED else 0.,cfg.GEOMETRY_WEIGHT if cfg.GEOMETRY_ENABLED else 0.,cfg.MAX_RESIDUAL)
         self.active=cfg.ENABLED and (self.score.feature_weight!=0 or self.score.geometry_weight!=0)
         if self.active and self.score.feature_weight:
@@ -18,8 +18,9 @@ class GeometryRuntime:
             if self.calibration.get('source_split')!='association_train':raise ValueError('invalid calibration split')
             if self.calibration.get('symmetric',False)!=cfg.SYMMETRIZE_VIEW_ORDER:raise ValueError('calibration order mode mismatch')
             if cfg.FEATURE_LAYERS!=[self.calibration['layer']] or cfg.POOLING!=self.calibration['pooling']:raise ValueError('calibration feature mismatch')
+            if self.calibration.get('backbone','vggt')!=cfg.FEATURE_BACKBONE:raise ValueError('calibration backbone mismatch')
 
-    def reset(self):self.geometry={};self.calls=0;self.vggt_calls=0;self.failed=0;self.seconds=0.
+    def reset(self):self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.failed=0;self.seconds=0.
 
     def observe(self,instances,records,frame):
         if not self.active:return
@@ -51,13 +52,19 @@ class GeometryRuntime:
         try:
             if self.score.feature_weight:
                 if self.vggt is None:
-                    from .vggt_adapter import FrozenVGGT
-                    self.vggt=FrozenVGGT(self.cfg.VGGT_CHECKPOINT,device=str(instances[0].reid_features.device),layers=levels)
+                    device=str(instances[0].reid_features.device)
+                    if self.cfg.FEATURE_BACKBONE=='dinov2':
+                        from .dinov2_adapter import FrozenDINOv2
+                        self.vggt=FrozenDINOv2(self.cfg.DINOV2_CHECKPOINT,device=device)
+                    else:
+                        from .vggt_adapter import FrozenVGGT
+                        self.vggt=FrozenVGGT(self.cfg.VGGT_CHECKPOINT,device=device,layers=levels)
                 from vggt.utils.load_fn import load_and_preprocess_images
                 images=load_and_preprocess_images([r['file_name'] for r in records],mode='pad')
                 mapped=[PadMapping(r['width'],r['height']).boxes(b) for r,b in zip(records,original_boxes)]
                 result,_,_=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=self.cfg.FEATURE_DIM)
-                self.vggt_calls+=1
+                if self.cfg.FEATURE_BACKBONE=='dinov2':self.dinov2_calls+=1
+                else:self.vggt_calls+=1
                 reverse=None
                 if self.cfg.SYMMETRIZE_VIEW_ORDER:
                     if len(instances)!=2:raise ValueError('symmetric mode currently supports exactly two cameras')

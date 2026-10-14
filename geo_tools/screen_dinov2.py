@@ -31,8 +31,9 @@ def main():
         target=out/Path(sample['path']).name;np.savez_compressed(target,**feature);diagnostics.append(dict(video_id=sample['video_id'],frame_id=sample['frame_id'],inference_seconds=dt,artifact=str(target),sha256=sha256(target)))
         print(json.dumps(diagnostics[-1]),flush=True)
     rows=[dict(setting='independent_dinov2/'+k,**evaluate_scores(v)) for k,v in metrics.items()]
-    with (ROOT/'results/dinov2_screening.csv').open('w',newline='') as f:
+    report_name='dinov2_training_diagnostics' if data['provenance'].get('split')=='train' else 'dinov2_screening'
+    with (ROOT/f'results/{report_name}.csv').open('w',newline='') as f:
         w=csv.DictWriter(f,fieldnames=rows[0]);w.writeheader();w.writerows(rows)
-    save_json(ROOT/'results/dinov2_screening_manifest.json',dict(weights_sha256=sha256(path),sample_manifest_sha256=sha256(a.samples),source_sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=RUNTIME/'sources/dinov2',text=True).strip(),diagnostics=diagnostics,independent_dinov2_control=True,parameters=sum(p.numel() for p in model.parameters()),used_dense_cache=False))
+    save_json(ROOT/f'results/{report_name}_manifest.json',dict(weights_sha256=sha256(path),sample_manifest_sha256=sha256(a.samples),source_sha=subprocess.check_output(['git','rev-parse','HEAD'],cwd=RUNTIME/'sources/dinov2',text=True).strip(),diagnostics=diagnostics,independent_dinov2_control=True,parameters=sum(p.numel() for p in model.parameters()),used_dense_cache=False))
     print(json.dumps(rows,indent=2))
 if __name__=='__main__':main()

@@ -3,12 +3,14 @@ import argparse, time, numpy as np, torch
 from common import *
 
 def main():
-    p=argparse.ArgumentParser(); p.add_argument('--video-ids', type=int, nargs='+', default=[1]); p.add_argument('--max-frames', type=int); p.add_argument('--tag', default='B0'); p.add_argument('--geo-enabled',action='store_true'); p.add_argument('--geometry-weight',type=float,default=0.); p.add_argument('--feature-weight',type=float,default=0.); p.add_argument('--interval',type=int,default=10); p.add_argument('--calibration',default=''); p.add_argument('--layer',type=int,default=23); p.add_argument('--compute-neutral',action='store_true'); args=p.parse_args()
+    p=argparse.ArgumentParser(); p.add_argument('--video-ids', type=int, nargs='+', default=[1]); p.add_argument('--max-frames', type=int); p.add_argument('--tag', default='B0'); p.add_argument('--geo-enabled',action='store_true'); p.add_argument('--geometry-weight',type=float,default=0.); p.add_argument('--feature-weight',type=float,default=0.); p.add_argument('--interval',type=int,default=10); p.add_argument('--calibration',default=''); p.add_argument('--layer',type=int,default=23); p.add_argument('--compute-neutral',action='store_true'); p.add_argument('--backbone',choices=['vggt','dinov2'],default='vggt'); p.add_argument('--pooling',default='roi_align'); args=p.parse_args()
     out=RUNTIME/'baseline'/args.tag
     if out.exists(): raise FileExistsError(out)
     out.mkdir(parents=True)
-    sys.path.insert(0,str(RUNTIME/'sources/vggt'))
+    sys.path[:0]=[str(RUNTIME/'sources/vggt'),str(RUNTIME/'sources/dinov2')]
     geo_opts=dict(ENABLED=args.geo_enabled,GEOMETRY_ENABLED=True,FEATURE_ENABLED=True,GEOMETRY_WEIGHT=args.geometry_weight,FEATURE_WEIGHT=args.feature_weight,UPDATE_INTERVAL=args.interval,CALIBRATION_PATH=args.calibration,FEATURE_LAYERS=[args.layer],VGGT_CHECKPOINT=str(RUNTIME/'weights/vggt_1b.pt'))
+    geo_opts.update(FEATURE_BACKBONE=args.backbone,POOLING=args.pooling,DINOV2_CHECKPOINT=str(RUNTIME/'weights/dinov2_vitl14_reg4.pth'))
+    if args.backbone=='dinov2':geo_opts.update(FEATURE_LAYERS=[-1],SYMMETRIZE_VIEW_ORDER=False)
     cfg, model=load_gmt(geo_opts=geo_opts); data=train_data(); reports=[]
     if args.compute_neutral:model.geo_runtime.score.enabled=False
     from gtr.evaluation.mot_evaluation import align_visiontrack_inputs_to_outputs, custom_instances_to_coco_json
@@ -34,7 +36,7 @@ def main():
         report=provenance(); report.update(video_id=vid, frames=len(records), synchronized_groups=len(records)//views,
             full_video=args.max_frames is None, causal_online=False, read_preprocess_seconds=read_seconds,
             inference_seconds=inference_seconds, total_seconds=time.perf_counter()-start, phase_seconds=phase,
-            peak_gpu_bytes=torch.cuda.max_memory_allocated(), prediction=str(path),prediction_sha256=sha256(path),geo_options=geo_opts,compute_neutral=args.compute_neutral,geo_calls=model.geo_runtime.calls,vggt_calls=model.geo_runtime.vggt_calls,peak_reserved_gpu_bytes=torch.cuda.max_memory_reserved(),geo_failures=model.geo_runtime.failed,geo_seconds=model.geo_runtime.seconds,
+            peak_gpu_bytes=torch.cuda.max_memory_allocated(), prediction=str(path),prediction_sha256=sha256(path),geo_options=geo_opts,compute_neutral=args.compute_neutral,geo_calls=model.geo_runtime.calls,vggt_calls=model.geo_runtime.vggt_calls,dinov2_calls=model.geo_runtime.dinov2_calls,peak_reserved_gpu_bytes=torch.cuda.max_memory_reserved(),geo_failures=model.geo_runtime.failed,geo_seconds=model.geo_runtime.seconds,
             detection_latency_p50=float(np.percentile(latency,50)), detection_latency_p95=float(np.percentile(latency,95)),
             latency_scope='single-image detector only; NOT end-to-end identity latency')
         report['camera_image_fps']=len(records)/report['total_seconds']; report['synchronized_group_fps']=(len(records)//views)/report['total_seconds']
