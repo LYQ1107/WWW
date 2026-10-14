@@ -7,7 +7,7 @@ def main():
     p.add_argument('--geometry-weight',type=float,default=0.);p.add_argument('--geometry-method',default='sift')
     p.add_argument('--backbone',choices=['vggt','dinov2','gmt'],default='vggt');p.add_argument('--layer',type=int,default=17);p.add_argument('--projection-dim',type=int,default=-1);p.add_argument('--calibration',default='');p.add_argument('--pooling',default='roi_align')
     p.add_argument('--interval',type=int,default=10);p.add_argument('--policy',choices=['fixed','every','random','motion','identity','joint'],default='')
-    p.add_argument('--call-budget',type=int,default=20);p.add_argument('--budget-window',type=int,default=100);p.add_argument('--min-interval',type=int,default=2);p.add_argument('--offset',type=int,default=0);p.add_argument('--scheduler-seed',type=int,default=20261014);p.add_argument('--head-path',default='');p.add_argument('--max-residual',type=float,default=1.);p.add_argument('--async-gpu',default='');p.add_argument('--async-timeout',type=float,default=5.);a=p.parse_args()
+    p.add_argument('--call-budget',type=int,default=20);p.add_argument('--budget-window',type=int,default=100);p.add_argument('--min-interval',type=int,default=2);p.add_argument('--offset',type=int,default=0);p.add_argument('--scheduler-seed',type=int,default=20261014);p.add_argument('--head-path',default='');p.add_argument('--max-residual',type=float,default=1.);p.add_argument('--async-gpu',default='');p.add_argument('--async-timeout',type=float,default=5.);p.add_argument('--total-call-budget',type=int,default=-1);a=p.parse_args()
     out=RUNTIME/'online'/a.tag
     if out.exists():raise FileExistsError(out)
     out.mkdir(parents=True);sys.path[:0]=[str(RUNTIME/'sources/vggt'),str(RUNTIME/'sources/dinov2')]
@@ -16,7 +16,7 @@ def main():
         FEATURE_LAYERS=[a.layer] if a.backbone=='vggt' else [-1],FEATURE_BACKBONE=a.backbone,PROJECTION_DIM=a.projection_dim,POOLING=a.pooling,SYMMETRIZE_VIEW_ORDER=a.backbone=='vggt',
         CALIBRATION_PATH=a.calibration or str(ROOT/'manifests'/default_calibration),VGGT_CHECKPOINT=str(RUNTIME/'weights/vggt_1b.pt'),DINOV2_CHECKPOINT=str(RUNTIME/'weights/dinov2_vitl14_reg4.pth'),
         ASYNC_WORKER=bool(a.async_gpu),ASYNC_GPU=a.async_gpu,ASYNC_TIMEOUT=a.async_timeout,VGGT_SOURCE=str(RUNTIME/'sources/vggt'),HEAD_PATH=a.head_path,MAX_RESIDUAL=a.max_residual,GEOMETRY_METHOD=a.geometry_method,UPDATE_INTERVAL=a.interval,UPDATE_OFFSET=a.offset,SPARSE_UPDATE_ENABLED=bool(a.policy),UPDATE_POLICY=a.policy or 'fixed',
-        COMPUTE_BUDGET=a.call_budget,BUDGET_WINDOW=a.budget_window,MIN_UPDATE_INTERVAL=a.min_interval,SCHEDULER_SEED=a.scheduler_seed)
+        COMPUTE_BUDGET=a.call_budget,TOTAL_CALL_BUDGET=a.total_call_budget,BUDGET_WINDOW=a.budget_window,MIN_UPDATE_INTERVAL=a.min_interval,SCHEDULER_SEED=a.scheduler_seed)
     cfg,model=load_gmt(geo_opts=opts)
     from gtr.geometry.online_runner import CausalGMT
     from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json

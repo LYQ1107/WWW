@@ -88,6 +88,19 @@ class Tests(unittest.TestCase):
         self.assertFalse(scheduler.should_update(1))
         with self.assertRaises(ValueError):scheduler.should_update(1)
 
+    def test_fixed_total_budget_random_prefix_without_future_length(self):
+        def run(length):
+            scheduler=SparseScheduler(policy='random',interval=10,min_interval=1,budget=10,window=100,total_budget=40)
+            return [scheduler.should_update(t) for t in range(length)]
+        short,long=run(932),run(1200)
+        self.assertEqual(short,long[:932]);self.assertEqual(sum(short),40);self.assertEqual(sum(long),40)
+        for t in range(len(short)):self.assertLessEqual(sum(short[max(0,t-99):t+1]),10)
+
+    def test_total_quota_cannot_be_silently_ignored(self):
+        cfg=configured_runtime().cfg.clone()
+        cfg.TOTAL_CALL_BUDGET=80;cfg.SPARSE_UPDATE_ENABLED=False
+        with self.assertRaises(ValueError):GeometryRuntime(cfg)
+
     def test_symmetric_encoder_cost_and_integrated_failure_fallback(self):
         cfg=get_cfg();add_gtr_config(cfg);geo=cfg.MODEL.GEO
         geo.ENABLED=True;geo.FEATURE_ENABLED=True;geo.FEATURE_WEIGHT=.5

@@ -14,6 +14,8 @@ class GeometryRuntime:
         self.active=cfg.ENABLED and (self.score.feature_weight!=0 or self.score.geometry_weight!=0)
         self.head=None;self.head_checkpoint=None
         if self.active and cfg.UPDATE_INTERVAL<1:raise ValueError('update interval must be positive')
+        if self.active and cfg.TOTAL_CALL_BUDGET>=0 and not cfg.SPARSE_UPDATE_ENABLED:
+            raise ValueError('total call budget requires an explicit scheduling policy')
         if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD not in {'orb','sift','orb_homography','sift_homography','vggt_camera'}:
             raise ValueError('unsupported online geometry method')
         if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD=='vggt_camera' and cfg.FEATURE_BACKBONE!='vggt' and not cfg.ASYNC_WORKER:
@@ -63,7 +65,8 @@ class GeometryRuntime:
             from .sparse_scheduler import SparseScheduler
             from .update_signals import CausalBackgroundMotion
             self.scheduler=SparseScheduler(policy=self.cfg.UPDATE_POLICY,interval=self.cfg.UPDATE_INTERVAL,min_interval=self.cfg.MIN_UPDATE_INTERVAL,
-                max_age=self.cfg.MAX_GEOMETRY_AGE,budget=self.cfg.COMPUTE_BUDGET//self.update_cost,window=self.cfg.BUDGET_WINDOW,seed=self.cfg.SCHEDULER_SEED,offset=self.cfg.UPDATE_OFFSET)
+                max_age=self.cfg.MAX_GEOMETRY_AGE,budget=self.cfg.COMPUTE_BUDGET//self.update_cost,window=self.cfg.BUDGET_WINDOW,seed=self.cfg.SCHEDULER_SEED,offset=self.cfg.UPDATE_OFFSET,
+                total_budget=None if self.cfg.TOTAL_CALL_BUDGET<0 else self.cfg.TOTAL_CALL_BUDGET//self.update_cost)
             self.motion=CausalBackgroundMotion()
         if self.active and self.cfg.ASYNC_WORKER:
             from .update_signals import CausalBackgroundMotion
@@ -170,6 +173,7 @@ class GeometryRuntime:
             self.schedule_trace.append(dict(frame=frame,chosen=chosen,motion=motion,motion_details=details,previous_identity_margin=self.pending_margin,
                 identity_source_frame=self.identity_source_frame,handoff=self.pending_handoff,last_success_frame=self.last_success_frame,
                 reserved_units_in_window=len(self.scheduler.calls)*self.update_cost,update_cost=self.update_cost,budget_unit=self.budget_unit))
+            self.schedule_trace[-1]['reserved_total_units']=self.scheduler.total_count*self.update_cost
             self.pending_margin=1.;self.pending_handoff=False;self.identity_source_frame=None
         if not chosen:return
         start=time.perf_counter()
