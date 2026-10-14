@@ -30,7 +30,7 @@ def official_cv(result,folder):
  native=read(output);assert native['status']=='COMPLETE'
  identities=[r['Identity'] for r in native['results'] if r['convention']=='sequential'];clear=[r['CLEAR'] for r in native['results'] if r['convention']=='interleaved']
  counts={k:sum(r[k] for r in identities) for k in ['IDTP','IDFP','IDFN','n_gt','n_tr']};errors={k:sum(r[k] for r in clear) for k in ['fn','fp','id_switches','tp']}
- return dict(CVIDF1=200*counts['IDTP']/(counts['n_gt']+counts['n_tr']),CVMA=100*(1-(errors['fn']+errors['fp']+errors['id_switches'])/counts['n_gt']),counts=counts,errors=errors,source=ref(output),converter_inputs=inputs,toolkit_hash_matches_frozen=True)
+ return dict(CVIDF1=200*counts['IDTP']/(counts['n_gt']+counts['n_tr']),CVMA=100*(1-(errors['fn']+errors['fp']+errors['id_switches'])/counts['n_gt']),CV_counts=counts,CV_errors=errors,source=ref(output),converter_inputs=inputs,toolkit_hash_matches_frozen=True)
 def main(tag,steps,mode):
  from jev_oneweek_common import seed_all
  from jev_phase13_runtime import build_tracker,cache_inputs,run
@@ -99,6 +99,7 @@ def main(tag,steps,mode):
   identity_summary={k:v for k,v in identity.items() if k not in ['wrong_ID_episodes','identity_index_query']},
   correct_identity_preservation=counts['correct_identity_retained']/max(1,counts['certified_active_covered']),
   UNKNOWN_change_fraction=counts['UNKNOWN_changed']/max(1,counts['changed']),
+  certified_change_scope='individual changed-row first-past certificate; not fully certified whole-plan causal attribution; changed UNKNOWN counterparts are counted separately',
   certified_first_past_owner_wrong_observations=sum(t['wrong'] for t in trace),
   parameters=parameters,actual_mutated_state=True,GT_actor_inputs=False,full_image_FPS=None,independent_validation=False,binding=binding('Full cold-start gradient-free TRAIN16 validation'),seconds=time.monotonic()-begin)
  cv=official_cv(result,folder);result.update(cv)

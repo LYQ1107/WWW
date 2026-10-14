@@ -1,6 +1,19 @@
 {
   "CVIDF1": 82.57393411994411,
   "CVMA": 85.75840539547929,
+  "CV_counts": {
+    "IDFN": 10844,
+    "IDFP": 9862,
+    "IDTP": 49058,
+    "n_gt": 59902,
+    "n_tr": 58920
+  },
+  "CV_errors": {
+    "fn": 3113,
+    "fp": 2983,
+    "id_switches": 2435,
+    "tp": 55937
+  },
   "GT_actor_inputs": false,
   "UNKNOWN_change_fraction": 0.1201061712010617,
   "actual_mutated_state": true,
@@ -32,6 +45,7 @@
       "reproduction_tools/jev_fastcheck_train.py": "d55f89aaa0cbacf7e21c562ce9115da2f763547492ee67b168dd9081556d512c"
     }
   },
+  "certified_change_scope": "individual changed-row first-past certificate, not whole-plan causal attribution; UNKNOWN changed counterparts reported separately",
   "certified_first_past_owner_wrong_observations": 3582,
   "checkpoint": {
     "SHA256": "8b8e863d9d7d15193321762fa678df16724ba1b6e37f18bfd6d6366ad211db13",
@@ -67,18 +81,22 @@
     }
   ],
   "correct_identity_preservation": 0.9460087425668491,
-  "counts": {
-    "IDFN": 10844,
-    "IDFP": 9862,
-    "IDTP": 49058,
-    "n_gt": 59902,
-    "n_tr": 58920
+  "count_schema_correction": {
+    "log": "/data1/liuyeqiang/WWW_jev_fastcheck_runtime/20261014_v1/jobs/P4_jev_D0_TRAIN16/OUTPUT.log",
+    "log_SHA256": "62aaceed0153d410f4d5c5d824013dd66186062fa4c338a14a7367fc3f002fce",
+    "original_SHA256": "e259102efc87ce4994d125669b6a7a8075f10e2cc20b2546848f355e209c06ab",
+    "prior": "/data1/liuyeqiang/WWW_jev_fastcheck_20261014/reports/JEV_FASTCHECK/schema_snapshots/ONLINE_jev_D0_STEPS1000.json",
+    "reason": "CV summary counts collided with native MATCH counts; restored exact final counters from immutable completion log; all metrics unchanged"
   },
-  "errors": {
-    "fn": 3113,
-    "fp": 2983,
-    "id_switches": 2435,
-    "tp": 55937
+  "counts": {
+    "MATCH_rows": 58890,
+    "N01": 52,
+    "N10": 125,
+    "UNKNOWN_changed": 181,
+    "certified_active_covered": 50786,
+    "changed": 1507,
+    "correct_active_outside_plans": 1164,
+    "correct_identity_retained": 48044
   },
   "frames": 1034,
   "full_image_FPS": null,

@@ -13,6 +13,7 @@ def main(arm):
  from jev_fastcheck_train import data,pools,evaluate
  seed_all(SEED)
  gate=read(REPORTS/'P3_ACTIVATION_GATE.json');assert gate['execute_P3'] is True
+ assert read(REPORTS/'DIRECT_CONTRACT_TESTS.json')['status']=='PASS'
  train,audit,own,sources=data();combined=train+own;oh,normal=pools(train);sh,_=pools(own)
  keys=[sorted(oh),sorted(sh),sorted(normal)];rng=random.Random(SEED);schedule=[]
  # Match the exact four-slot draw order used in P2 D1.

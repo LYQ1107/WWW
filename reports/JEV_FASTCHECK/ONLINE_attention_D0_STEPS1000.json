@@ -1,6 +1,19 @@
 {
   "CVIDF1": 85.78377741495683,
   "CVMA": 87.17238155654236,
+  "CV_counts": {
+    "IDFN": 8937,
+    "IDFP": 7955,
+    "IDTP": 50965,
+    "n_gt": 59902,
+    "n_tr": 58920
+  },
+  "CV_errors": {
+    "fn": 3131,
+    "fp": 3001,
+    "id_switches": 1552,
+    "tp": 55919
+  },
   "GT_actor_inputs": false,
   "UNKNOWN_change_fraction": 0.26443768996960487,
   "actual_mutated_state": true,
@@ -32,6 +45,7 @@
       "reproduction_tools/jev_fastcheck_train.py": "d55f89aaa0cbacf7e21c562ce9115da2f763547492ee67b168dd9081556d512c"
     }
   },
+  "certified_change_scope": "individual changed-row first-past certificate, not whole-plan causal attribution; UNKNOWN changed counterparts reported separately",
   "certified_first_past_owner_wrong_observations": 4169,
   "checkpoint": {
     "SHA256": "512e075713a390e9025a8a50e249a7c21b4169be5c08aa501d310ffdb9fb9d5e",
@@ -67,18 +81,22 @@
     }
   ],
   "correct_identity_preservation": 0.9596391168696965,
-  "counts": {
-    "IDFN": 8937,
-    "IDFP": 7955,
-    "IDTP": 50965,
-    "n_gt": 59902,
-    "n_tr": 58920
+  "count_schema_correction": {
+    "log": "/data1/liuyeqiang/WWW_jev_fastcheck_runtime/20261014_v1/jobs/P4_attention_D0_TRAIN16/OUTPUT.log",
+    "log_SHA256": "8ffcf98e30f2fc2d6b8532d6d78e7604fc36b1a8c7b65db2d1729ebc15e7f524",
+    "original_SHA256": "183080f172108b83f3e2e1638e81217bebe2a8a7d38dc1f34ba8f26cae338ac2",
+    "prior": "/data1/liuyeqiang/WWW_jev_fastcheck_20261014/reports/JEV_FASTCHECK/schema_snapshots/ONLINE_attention_D0_STEPS1000.json",
+    "reason": "CV summary counts collided with native MATCH counts; restored exact final counters from immutable completion log; all metrics unchanged"
   },
-  "errors": {
-    "fn": 3131,
-    "fp": 3001,
-    "id_switches": 1552,
-    "tp": 55919
+  "counts": {
+    "MATCH_rows": 58890,
+    "N01": 40,
+    "N10": 191,
+    "UNKNOWN_changed": 174,
+    "certified_active_covered": 50321,
+    "changed": 658,
+    "correct_active_outside_plans": 902,
+    "correct_identity_retained": 48290
   },
   "frames": 1034,
   "full_image_FPS": null,

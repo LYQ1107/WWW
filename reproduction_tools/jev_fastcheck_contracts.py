@@ -1,14 +1,18 @@
 """Actual native-input regression tests for residuals, options, hooks and masks."""
-import torch
+import argparse,torch
 from jev_fastcheck_common import *
-def main():
+def main(direct=False):
  from jev_fastcheck_distribution import records
  from jev_recovery_learning import batch
  learning=configure_paths();r=list(records(read(REPORTS/'ROLLOUT_self_VIDEO12.json')))[100]
  x,y=batch([r]);assert not any('GT' in k or 'label' in k for k in x)
  results=[]
  for arm in ['jev','attention']:
-  actor,cp=load_policy(arm);old=actor.identity.core.encode_state;ef=actor.evidence.forward
+  if direct:
+   from jev_fastcheck_direct_train import direct_actor
+   actor,cp=direct_actor(arm)
+  else:actor,cp=load_policy(arm)
+  old=actor.identity.core.encode_state;ef=actor.evidence.forward
   hooks=sum(len(m._forward_hooks)+len(m._forward_pre_hooks) for m in actor.modules())
   with torch.no_grad():d=actor.details(x)
   assert actor.identity.core.encode_state==old and actor.evidence.forward==ef
@@ -27,6 +31,9 @@ def main():
   assert len([c for c in choice if c>=0])==len(set(c for c in choice if c>=0))
   assert all(c<0 or bool(x['legal'][0,row,c]) for row,c in enumerate(choice))
   zero,init=learning.initialize(arm,SEED,3,'XIII')
+  if direct:
+   from gtr.modeling.jev_fastcheck.model import DirectAssociation
+   zero.__class__=DirectAssociation;del zero.plan_value
   with torch.no_grad():z=zero.details(x)
   assert torch.equal(z['base_logits'],z['edge_logits'])
   # Throw from the actual frozen scorer after hooks/temporary forwards are installed.
@@ -41,8 +48,9 @@ def main():
   assert actor.identity.core.encode_state==old and actor.evidence.forward==ef
   assert sum(len(m._forward_hooks)+len(m._forward_pre_hooks) for m in actor.modules())==hooks
   results.append(dict(arm=arm,checkpoint=cp,zero_residual_exact=True,permuted_score_max_error=score_max,permuted_native_identity_choice_exact=True,illegal_and_capacity_pass=True,exception_restoration_pass=True))
- save(REPORTS/'CONTRACT_TESTS.json',dict(status='PASS',cases=results,real_TRAIN_state=True,GT_not_actor_inputs=True,
+ save(REPORTS/('DIRECT_CONTRACT_TESTS.json' if direct else 'CONTRACT_TESTS.json'),dict(status='PASS',cases=results,direct=direct,real_TRAIN_state=True,GT_not_actor_inputs=True,
   native_commit_test='six actual teacher/self trajectories enforce unique per-camera IDs and subsequent native state updates; corresponding journals retained',
   UNKNOWN_test='labels remain separate and masked; no fake positive target in actor',source=binding('Actual-input contract tests')))
  print('FASTCHECK_CONTRACTS_PASS',[(v['arm'],v['permuted_score_max_error']) for v in results],flush=True)
-if __name__=='__main__':main()
+if __name__=='__main__':
+ p=argparse.ArgumentParser();p.add_argument('--direct',action='store_true');main(p.parse_args().direct)

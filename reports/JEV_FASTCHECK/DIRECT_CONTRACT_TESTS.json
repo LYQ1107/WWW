@@ -1,0 +1,65 @@
+{
+  "GT_not_actor_inputs": true,
+  "UNKNOWN_test": "labels remain separate and masked; no fake positive target in actor",
+  "cases": [
+    {
+      "arm": "jev",
+      "checkpoint": {
+        "SHA256": "17a074f977c461078f2d45f4d45c90799bdb92e8f11a3a0257c88e168b27f947",
+        "bytes": 2098273,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R3/XIII/jev/seed20261009/pilot/NEW_MODULES.pth"
+      },
+      "exception_restoration_pass": true,
+      "illegal_and_capacity_pass": true,
+      "permuted_native_identity_choice_exact": true,
+      "permuted_score_max_error": 3.814697265625e-06,
+      "zero_residual_exact": true
+    },
+    {
+      "arm": "attention",
+      "checkpoint": {
+        "SHA256": "3a738da99dfa45cf42bf089ea83dd96e4e88b2c5cb9e8f1ab9e2c64cf2e53221",
+        "bytes": 2095577,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R3/XIII/attention/seed20261009/pilot/NEW_MODULES.pth"
+      },
+      "exception_restoration_pass": true,
+      "illegal_and_capacity_pass": true,
+      "permuted_native_identity_choice_exact": true,
+      "permuted_score_max_error": 2.86102294921875e-06,
+      "zero_residual_exact": true
+    }
+  ],
+  "direct": true,
+  "native_commit_test": "six actual teacher/self trajectories enforce unique per-camera IDs and subsequent native state updates; corresponding journals retained",
+  "real_TRAIN_state": true,
+  "source": {
+    "CUDA_VISIBLE_DEVICES": "3",
+    "Full24": false,
+    "GT_actor_inputs": false,
+    "official_TEST": false,
+    "protocol": {
+      "SHA256": "66f55584f1481bd1a5fa332365a5ccbc74250dae765eecb22e0ece84a4955698",
+      "bytes": 3665,
+      "path": "/data1/liuyeqiang/WWW_jev_fastcheck_20261014/reports/JEV_FASTCHECK/PREREGISTRATION.json"
+    },
+    "scope": "Actual-input contract tests",
+    "sealed20_21_22": true,
+    "source_HEAD": "f9d7d63ed796fb022924afb81a6d7babf0fa3ab5",
+    "source_SHA256": {
+      "reproduction_tools/jev_fastcheck_activation.py": "4992a0578c6cc5a832e20528781f153176ccd93230216d28cf4dec1c43025167",
+      "reproduction_tools/jev_fastcheck_common.py": "9cb2c84845bf7b1b9d9db4a95ad351f120ec6e637a8531ce96098bc4a9c63e3e",
+      "reproduction_tools/jev_fastcheck_contracts.py": "5802b4eb826a01b795773aed4a0cbb264c31d75429bc24e1f45d923aaee450a6",
+      "reproduction_tools/jev_fastcheck_direct_train.py": "9d5b486645227021b3136fd5d5923f9a00add15f1f2bd28a37475d48753fc50b",
+      "reproduction_tools/jev_fastcheck_distribution.py": "489e0537c9c6c092cafae9c27ee615cd59cad92bbdf564ee2cbc031498b1cbc5",
+      "reproduction_tools/jev_fastcheck_job.py": "b1757d794172136bf96829c2784347f6c94e6524b9d5792da53f7bc05bc682fc",
+      "reproduction_tools/jev_fastcheck_online.py": "d2b167f859cedd9d0cd88c7989fe640eb72f9757cd0793308502b73bf0ba492b",
+      "reproduction_tools/jev_fastcheck_p0.py": "109cea5eec5475a0c078aba765e888fc983fa9f267caf71d157b19f619666ac1",
+      "reproduction_tools/jev_fastcheck_publish.py": "7f6b6c99144cb7a3140d2a5873324befa9eeaef56beb8f1988586a9a8615fb23",
+      "reproduction_tools/jev_fastcheck_report.py": "8a419b00f66744bcefb502ba305b0ef22cd6b505216d74ffc7a76b41fe730f07",
+      "reproduction_tools/jev_fastcheck_rollout.py": "d1cb9a6324eea630aa5586539103b9fc1c1a6bc044af33cbaee1686e9d1ee696",
+      "reproduction_tools/jev_fastcheck_sample_audit.py": "26834cc9ca5f7c624b5f0d3aee24eddf535de6710e50538cd2f69682ecf3c290",
+      "reproduction_tools/jev_fastcheck_train.py": "d55f89aaa0cbacf7e21c562ce9115da2f763547492ee67b168dd9081556d512c"
+    }
+  },
+  "status": "PASS"
+}
