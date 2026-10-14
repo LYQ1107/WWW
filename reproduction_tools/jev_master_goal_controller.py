@@ -1,6 +1,9 @@
 """Recoverable, evidence-hashed research progression; no implicit training/test unlock."""
 import argparse,subprocess
 from pathlib import Path
+from current_research_goal import redirect_if_superseded
+if __name__=='__main__' and redirect_if_superseded('reports/JEV_MASTER/MASTER_GOAL.json'):
+ raise SystemExit(0)
 if (Path(__file__).resolve().parents[1]/'reports/JEV_MASTER/MASTER_COMPLETION_REQUIREMENTS_AUDIT.json').exists():
  from jev_master_audit_common import *
 elif (Path(__file__).resolve().parents[1]/'reports/JEV_PHASE21/PREREGISTRATION.json').exists():
