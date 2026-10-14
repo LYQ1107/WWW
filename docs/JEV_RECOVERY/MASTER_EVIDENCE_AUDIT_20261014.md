@@ -4,8 +4,8 @@ This is a read-only index of the published Phase XVII–XXI evidence and the cur
 
 - Audit status: `COMPLETE_EVIDENCE_AUDIT_MASTER_NOT_COMPLETE`
 - Current recovery decision: `NO_GO_FOR_JEV_INDEPENDENT_ADVANTAGE`
-- Audited recovery source HEAD: `792b02d4f5ad603db040bd053cb9d2e277f09441`
-- Last independently verified publication HEAD: `792b02d4f5ad603db040bd053cb9d2e277f09441`
+- Audited recovery source HEAD: `2f41d5daff2e27adc6825152d22fc438009570b6`
+- Last independently verified publication HEAD: `2f41d5daff2e27adc6825152d22fc438009570b6`
 - R2/R3 formal three-seed entries: `18`
 - Live jobs: `[]`
 - Unreviewed failures: `[]`
@@ -19,6 +19,7 @@ This is a read-only index of the published Phase XVII–XXI evidence and the cur
 | `qualified_training` | `NOT_QUALIFIED` | independent safety/ownership gates remain below threshold; new lifecycle training remains NOT_RUN |
 | `independent_evaluation` | `NOT_ESTABLISHED` | no official TEST, Full24, or sealed 20/21/22 evaluation is authorized |
 | `r2_r3_monitor_and_formal_routes` | `COMPLETE_BOUNDED_EXECUTION` | See evidence entries |
+| `r2_supplementary_failure_review` | `COMPLETE_REVIEWED_ENGINEERING_FAILURES` | engineering completion does not establish a JEV scientific advantage or independent validation |
 | `frozen_evidence_and_publication` | `VERIFIED` | See evidence entries |
 
 The auditable route is complete as a bounded negative/diagnostic package. Qualified lifecycle training, independent evaluation, native visual deployment, and a unified MATCH/REACT/WRITE scientific contribution remain unestablished. Any continuation requires a new preregistered scope; no sealed data or historical checkpoint is unlocked by this audit.

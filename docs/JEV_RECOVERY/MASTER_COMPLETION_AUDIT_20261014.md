@@ -18,6 +18,7 @@ This is a requirement-by-requirement evidence audit. It does not equate phase co
 | `independent_evaluation` | `NOT_ESTABLISHED_GATE_PRESERVED` | No official TEST, Full24, or sealed 20/21/22 evaluation is authorized. |
 | `frozen_phase_v_xvi_evidence` | `VERIFIED_PRESERVED` | Preservation does not turn prior evidence into a positive JEV result. |
 | `r2_r3_queue_monitor` | `VERIFIED_TERMINAL_NO_SUCCESS_INFERENCE` | Two failed jobs remain failures; terminal execution is not scientific success. |
+| `r2_supplementary_failure_review` | `VERIFIED_REVIEWED_ENGINEERING_FAILURES` | Engineering correction and terminal execution do not establish a JEV scientific advantage or independent validation. |
 | `reproducible_publication` | `VERIFIED` | A published artifact is not evidence that the scientific hypothesis succeeded. |
 | `independent_data_access_gate` | `BLOCKING_GATE_AUTHORIZATION_UNRESOLVED` | No B-stage image/label use, training, or independent evaluation may proceed until legal access is recorded. |
 

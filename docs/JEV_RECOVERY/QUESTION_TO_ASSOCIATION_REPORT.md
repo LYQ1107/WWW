@@ -82,6 +82,8 @@ N01分解：恢复已有active ID 238；private MATCH DEFER 0。合法DEFER是�
 | mlp | COMPLETE | COMPLETE | 9 | COMPLETE |
 | attention | COMPLETE | COMPLETE | 1 | COMPLETE |
 
+Two earlier supplementary attempts remain preserved as engineering failures: the explicit-score identity `v2` entry lacked its parent `RESULT.json`, and the explicit-score Tiny `v1` entry lacked `anchor_visual`. The frozen corrected successors (`identity_v3` and `tiny_v2`) completed; the failed entries are not silently counted as successes. See `R2_FUSION_FAILURE_CLASSIFICATION_20261014.json` and its Markdown report.
+
 ## 冻结干预的实际原生状态验证
 
 H64使用事前固定的真实XV native prefix32/0，五方法起始state/input/candidate校验，全部未来动作与Gallery/Bank状态重新执行；这是配对干预，不是独立全视频。完整TRAIN16冷启动干预另跑，开始状态相同，之后状态自然分叉，不能再声称全程输入相同。

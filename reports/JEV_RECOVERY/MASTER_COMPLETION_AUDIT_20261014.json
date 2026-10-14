@@ -1,6 +1,6 @@
 {
   "status": "MASTER_GOAL_NOT_COMPLETE_REQUIREMENTS_AUDITED",
-  "captured_UTC": "2026-10-14T02:19:18.830880+00:00",
+  "captured_UTC": "2026-10-14T02:29:51.665882+00:00",
   "master_goal_complete": false,
   "scientific_success": false,
   "positive_bounded_requirements_verified": true,
@@ -225,7 +225,7 @@
         {
           "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_R3_QUEUE_TERMINAL_AUDIT_20261014.json",
           "present": true,
-          "SHA256": "6b84f32887a72cb76078eba4e2cf9b3aa084bb7694e837f2b5addbb8c8055d49",
+          "SHA256": "abc2996a2c6d1fd0d5760206882de7a55f96fca8c7572942bdb8e1079fc8c953",
           "status": "COMPLETE_BOUNDED_R2_R3_QUEUE_TERMINAL"
         },
         {
@@ -249,6 +249,39 @@
         "FAILED": 2
       }
     },
+    "r2_supplementary_failure_review": {
+      "status": "VERIFIED_REVIEWED_ENGINEERING_FAILURES",
+      "proof": "The two preserved supplementary-fuser failures are classified from their exact logs, and frozen corrected v2/v3 successors are bound without rewriting the failed entries.",
+      "limitation": "Engineering correction and terminal execution do not establish a JEV scientific advantage or independent validation.",
+      "evidence": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_FUSION_FAILURE_CLASSIFICATION_20261014.json",
+          "present": true,
+          "SHA256": "09ad2e9c19a2a89c8d19594293667d9f57db2526bbf885d984cbd313cf76dc61",
+          "status": "COMPLETE_FAILURE_REVIEW_WITH_NO_RESTART"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/DIAGNOSTIC_FUSION_PREREGISTRATION.json",
+          "present": true,
+          "SHA256": "82bad6fe413eb023038d11cd02904775a358edd7347229398e4e56492ea765d4"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/DIAGNOSTIC_FUSION_RESULT_INDEX.json",
+          "present": true,
+          "SHA256": "cbbbe5749ad50f7f262eb00af49c77689501c9185fdecabb07ae83c6e9a12c70",
+          "status": "COMPLETE_BOUNDED_TRAIN16_DIAGNOSTICS"
+        }
+      ],
+      "failed_attempts": [
+        "R2_FUSION_explicit_scores_identity_v2",
+        "R2_FUSION_explicit_scores_tiny_v1"
+      ],
+      "corrected_successors": [
+        "R2_FUSION_explicit_scores_identity_v3",
+        "R2_FUSION_explicit_scores_tiny_v2"
+      ],
+      "rerun_policy": "NO_RERUN_IN_CURRENT_FROZEN_QUEUE"
+    },
     "reproducible_publication": {
       "status": "VERIFIED",
       "proof": "The publisher manifest and runtime publication marker verify the same local and remote HEAD.",
@@ -257,18 +290,18 @@
         {
           "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/ARTIFACT_SHA_MANIFEST.json",
           "present": true,
-          "SHA256": "ce6864b1012296cf68752b1b1ee1d8c348c0bd3ec7f2dcb4eafef576b0d8ae36",
+          "SHA256": "f0f27d93b15625b0de0887dab0e83866466822962b74d29bfef9792781ba5ae8",
           "status": "VERIFIED_COMPACT_SNAPSHOT"
         },
         {
           "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/publication/LAST_VERIFIED.json",
           "present": true,
-          "SHA256": "344815be3f121f3a6e35a5fa0af150ccf3b5dd8aac5dc9d9eafcd96c1f368e60",
-          "remote_HEAD": "e76019678be596bb5ec98145ecad41c67d316e2c"
+          "SHA256": "36ace1d7ea8b975b6e19d6eac15837c2fae0822ac3e9f736ead54f086ffe596d",
+          "remote_HEAD": "2f41d5daff2e27adc6825152d22fc438009570b6"
         }
       ],
-      "local_HEAD": "e76019678be596bb5ec98145ecad41c67d316e2c",
-      "remote_HEAD": "e76019678be596bb5ec98145ecad41c67d316e2c",
+      "local_HEAD": "2f41d5daff2e27adc6825152d22fc438009570b6",
+      "remote_HEAD": "2f41d5daff2e27adc6825152d22fc438009570b6",
       "local_remote_equal": true
     },
     "independent_data_access_gate": {

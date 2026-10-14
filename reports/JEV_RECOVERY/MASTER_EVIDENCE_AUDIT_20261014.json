@@ -1,17 +1,17 @@
 {
   "status": "COMPLETE_EVIDENCE_AUDIT_MASTER_NOT_COMPLETE",
-  "captured_UTC": "2026-10-14T02:22:47.944886+00:00",
+  "captured_UTC": "2026-10-14T02:29:51.485629+00:00",
   "master_complete": false,
   "scientific_success": false,
   "current_recovery_decision": "NO_GO_FOR_JEV_INDEPENDENT_ADVANTAGE",
-  "audited_source_HEAD": "792b02d4f5ad603db040bd053cb9d2e277f09441",
-  "publication_verified_HEAD": "792b02d4f5ad603db040bd053cb9d2e277f09441",
+  "audited_source_HEAD": "2f41d5daff2e27adc6825152d22fc438009570b6",
+  "publication_verified_HEAD": "2f41d5daff2e27adc6825152d22fc438009570b6",
   "worktrees": {
     "recovery": {
       "path": "/home/liuyeqiang/WWW_jev_recovery_20261012",
-      "HEAD": "792b02d4f5ad603db040bd053cb9d2e277f09441",
+      "HEAD": "2f41d5daff2e27adc6825152d22fc438009570b6",
       "branch": "jev/www-jev-recovery-20261012",
-      "clean": true
+      "clean": false
     },
     "phase21_evidence": {
       "path": "/home/liuyeqiang/WWW_jev_phase21",
@@ -209,7 +209,7 @@
         {
           "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_R3_QUEUE_TERMINAL_AUDIT_20261014.json",
           "present": true,
-          "SHA256": "6b84f32887a72cb76078eba4e2cf9b3aa084bb7694e837f2b5addbb8c8055d49",
+          "SHA256": "abc2996a2c6d1fd0d5760206882de7a55f96fca8c7572942bdb8e1079fc8c953",
           "status": "COMPLETE_BOUNDED_R2_R3_QUEUE_TERMINAL"
         },
         {
@@ -227,13 +227,47 @@
         "FAILED": 2
       }
     },
+    "r2_supplementary_failure_review": {
+      "judgment": "COMPLETE_REVIEWED_ENGINEERING_FAILURES",
+      "required_scope": "preserve failed supplementary-fuser attempts and classify corrected successors",
+      "status": "COMPLETE_FAILURE_REVIEW_WITH_NO_RESTART",
+      "evidence": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_FUSION_FAILURE_CLASSIFICATION_20261014.json",
+          "present": true,
+          "SHA256": "09ad2e9c19a2a89c8d19594293667d9f57db2526bbf885d984cbd313cf76dc61",
+          "status": "COMPLETE_FAILURE_REVIEW_WITH_NO_RESTART"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/DIAGNOSTIC_FUSION_PREREGISTRATION.json",
+          "present": true,
+          "SHA256": "82bad6fe413eb023038d11cd02904775a358edd7347229398e4e56492ea765d4"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/DIAGNOSTIC_FUSION_RESULT_INDEX.json",
+          "present": true,
+          "SHA256": "cbbbe5749ad50f7f262eb00af49c77689501c9185fdecabb07ae83c6e9a12c70",
+          "status": "COMPLETE_BOUNDED_TRAIN16_DIAGNOSTICS"
+        }
+      ],
+      "failed_attempts": [
+        "R2_FUSION_explicit_scores_identity_v2",
+        "R2_FUSION_explicit_scores_tiny_v1"
+      ],
+      "corrected_successors": [
+        "R2_FUSION_explicit_scores_identity_v3",
+        "R2_FUSION_explicit_scores_tiny_v2"
+      ],
+      "rerun_policy": "NO_RERUN_IN_CURRENT_FROZEN_QUEUE",
+      "limit": "engineering completion does not establish a JEV scientific advantage or independent validation"
+    },
     "frozen_evidence_and_publication": {
       "judgment": "VERIFIED",
       "evidence": [
         {
           "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/ARTIFACT_SHA_MANIFEST.json",
           "present": true,
-          "SHA256": "13179b45c604350fdacb810a10867a81a034bad97a88a8bc07875564c27bbf07"
+          "SHA256": "f0f27d93b15625b0de0887dab0e83866466822962b74d29bfef9792781ba5ae8"
         },
         {
           "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/RECOVERY_FINAL_REVIEW_20261014.json",
@@ -243,11 +277,11 @@
         {
           "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/publication/LAST_VERIFIED.json",
           "present": true,
-          "SHA256": "ed6393533f21f3ad584fcabd1b9d0074b9ed614003148c44f6d3f316848a5d24",
-          "status": "792b02d4f5ad603db040bd053cb9d2e277f09441"
+          "SHA256": "36ace1d7ea8b975b6e19d6eac15837c2fae0822ac3e9f736ead54f086ffe596d",
+          "status": "2f41d5daff2e27adc6825152d22fc438009570b6"
         }
       ],
-      "remote_HEAD": "792b02d4f5ad603db040bd053cb9d2e277f09441",
+      "remote_HEAD": "2f41d5daff2e27adc6825152d22fc438009570b6",
       "branch": "jev/www-jev-recovery-20261012",
       "sealed20_21_22": true,
       "official_TEST": false

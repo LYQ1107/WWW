@@ -1,6 +1,6 @@
 {
   "status": "COMPLETE_BOUNDED_R2_R3_QUEUE_TERMINAL",
-  "captured_UTC": "2026-10-14T02:04:51.119107+00:00",
+  "captured_UTC": "2026-10-14T02:29:10.685901+00:00",
   "scope": "R2/R3 bounded recovery queue terminal-state audit",
   "queue_terminal": true,
   "scientific_success_inferred": false,
@@ -43,7 +43,7 @@
   "formal_online_summary": {
     "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/FULL_ONLINE_RESULTS.json",
     "formal_R2_R3_three_seed_entries": 18,
-    "SHA256": "8bf123ed10e26c48622ea97752a7ca215210cd99eaa382db93e3938887ab0ebd"
+    "SHA256": "0d9e285776e86a962b0d8e6a7c45224d7cee88074deefb45b734d1ffe107ee6b"
   },
   "scientific_review": {
     "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/RECOVERY_FINAL_REVIEW_20261014.json",
@@ -51,6 +51,16 @@
     "development_status": "DEVELOPMENT_NOT_ESTABLISHED",
     "SHA256": "94c639eb5953db69e8fc8828d540fc51c6d864a2454d2dc1851ab65a67a63550"
   },
-  "failure_interpretation": "The two FAILED registry entries remain preserved with their logs; they are not silently converted to success and are excluded from the claim that all jobs completed.",
+  "failure_review": {
+    "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/R2_FUSION_FAILURE_CLASSIFICATION_20261014.json",
+    "present": true,
+    "status": "COMPLETE_FAILURE_REVIEW_WITH_NO_RESTART",
+    "failures": [
+      "R2_FUSION_explicit_scores_identity_v2",
+      "R2_FUSION_explicit_scores_tiny_v1"
+    ],
+    "SHA256": "09ad2e9c19a2a89c8d19594293667d9f57db2526bbf885d984cbd313cf76dc61"
+  },
+  "failure_interpretation": "The two FAILED registry entries remain preserved with their logs; they are not silently converted to success and are excluded from the claim that all attempts completed. The separate failure review classifies them as engineering input-contract failures and records the completed v2/v3 successors.",
   "next_action": "Do not restart the bounded queue. Preserve the reviewed NO_GO package; any new policy or independent-data experiment needs a new preregistered scope and valid supervision."
 }

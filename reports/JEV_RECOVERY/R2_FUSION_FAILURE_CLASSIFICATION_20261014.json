@@ -1,0 +1,157 @@
+{
+  "status": "COMPLETE_FAILURE_REVIEW_WITH_NO_RESTART",
+  "captured_UTC": "2026-10-14T02:28:33.421292+00:00",
+  "scope": "Preserved R2 supplementary fuser engineering failures and corrected successors",
+  "queue_terminal": true,
+  "live_jobs": [],
+  "automatic_restart": false,
+  "scientific_success_inferred": false,
+  "registry": {
+    "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/EXPERIMENT_REGISTRY.json",
+    "present": true,
+    "SHA256": "c6a4655bd660d45e9ca5d940275c58333d1056eba7be47a957d819ee0ce85cd6"
+  },
+  "monitor": {
+    "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/live_monitor/STATUS.json",
+    "present": true,
+    "SHA256": "ae375fd524b3faed7440379d0b4b894eb94e06c0450952817187b57b9c020f3b"
+  },
+  "preregistration": {
+    "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/DIAGNOSTIC_FUSION_PREREGISTRATION.json",
+    "present": true,
+    "SHA256": "82bad6fe413eb023038d11cd02904775a358edd7347229398e4e56492ea765d4"
+  },
+  "preregistration_stop_rule": "Engineering failure retained; no automatic retraining or threshold/seed selection; all four registered final fusers are run irrespective of sign",
+  "result_index": {
+    "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/DIAGNOSTIC_FUSION_RESULT_INDEX.json",
+    "present": true,
+    "SHA256": "cbbbe5749ad50f7f262eb00af49c77689501c9185fdecabb07ae83c6e9a12c70",
+    "status": "COMPLETE_BOUNDED_TRAIN16_DIAGNOSTICS",
+    "independent_validation": false,
+    "original_R2_R3_gates_changed": false
+  },
+  "failures": [
+    {
+      "registry_name": "R2_FUSION_explicit_scores_identity_v2",
+      "registry_status": "FAILED",
+      "exit_code": 1,
+      "pid_recorded": 10626,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_jev_recovery_20261012/reproduction_tools/jev_recovery_fusion_experiment.py",
+        "--kind",
+        "explicit_scores",
+        "--mode",
+        "identity"
+      ],
+      "classification": "INPUT_ARTIFACT_MISSING",
+      "cause": "identity helper was pointed at a non-existent parent trajectory output",
+      "details": {
+        "missing_artifact": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/diagnostic_fusion_native_v2/online_v1/pilot/parent/seed20261009/video16/RESULT.json",
+        "exception_line": "FileNotFoundError: [Errno 2] No such file or directory: '/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/diagnostic_fusion_native_v2/online_v1/pilot/parent/seed20261009/video16/RESULT.json'"
+      },
+      "log": {
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/controller_logs/R2_FUSION_explicit_scores_identity_v2.log",
+        "present": true,
+        "SHA256": "ba6a41cf8dac404ff190ef542852937fb5ef5c12471cbb0711eee9be01411c7e"
+      },
+      "successor": {
+        "registry_name": "R2_FUSION_explicit_scores_identity_v3",
+        "status": "COMPLETE",
+        "note": "v3 completed after the frozen identity-source routing correction"
+      },
+      "completed_artifacts_for_kind": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/diagnostic_fusion/explicit_scores_CERTIFIED.json",
+          "present": true,
+          "SHA256": "97aaf8d67cd4275b78c93b01a989739a66c9c136073f04e504ab016eaf8997c6"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/diagnostic_fusion/explicit_scores_pilot.json",
+          "present": true,
+          "SHA256": "4dff3e003a4f6b58b06e26257ccab995414168e5966281604a9592a059c4039c"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/diagnostic_fusion/explicit_scores_tiny.json",
+          "present": true,
+          "SHA256": "5f1f34075fa0355d9dda6022e0dcb1b5cb791e30bbd2525bbe2fedc98b0a6b2d"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/diagnostic_fusion_native/ONLINE_explicit_scores_pilot_SEED20261009_VIDEO16.json",
+          "present": true,
+          "SHA256": "f1ff1f88666807e044689cd7a7ac7e683d8fea66770a8c515238279618b47a62"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/diagnostic_fusion_native/identity_v3/IDENTITY_explicit_scores_pilot_SEED20261009_VIDEO16.json",
+          "present": true,
+          "SHA256": "bc8be1caab3fb6d31e64ecc1e3c085fcd8cb333f0bbc51aae6094700a873009c"
+        }
+      ],
+      "rerun_authorized_in_current_queue": false,
+      "claim_boundary": "This failed attempt is retained as an engineering failure. Its existence does not invalidate completed formal R2/R3 routes, but the failed attempt itself cannot be counted as a successful fuser result."
+    },
+    {
+      "registry_name": "R2_FUSION_explicit_scores_tiny_v1",
+      "registry_status": "FAILED",
+      "exit_code": 1,
+      "pid_recorded": 28585,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_jev_recovery_20261012/reproduction_tools/jev_recovery_fusion_experiment.py",
+        "--kind",
+        "explicit_scores",
+        "--phase",
+        "tiny"
+      ],
+      "classification": "INPUT_SCHEMA_MISMATCH",
+      "cause": "the Tiny fixture lacked the anchor_visual field expected by the diagnostic model",
+      "details": {
+        "missing_field": "anchor_visual",
+        "exception_line": "KeyError: 'anchor_visual'"
+      },
+      "log": {
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/controller_logs/R2_FUSION_explicit_scores_tiny_v1.log",
+        "present": true,
+        "SHA256": "a35381b5de4f9233e4f0bc494203b86da13aea0bff974b6a911716349f9229c9"
+      },
+      "successor": {
+        "registry_name": "R2_FUSION_explicit_scores_tiny_v2",
+        "status": "COMPLETE",
+        "note": "v2 completed using the repaired Tiny fixture/schema"
+      },
+      "completed_artifacts_for_kind": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/diagnostic_fusion/explicit_scores_CERTIFIED.json",
+          "present": true,
+          "SHA256": "97aaf8d67cd4275b78c93b01a989739a66c9c136073f04e504ab016eaf8997c6"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/diagnostic_fusion/explicit_scores_pilot.json",
+          "present": true,
+          "SHA256": "4dff3e003a4f6b58b06e26257ccab995414168e5966281604a9592a059c4039c"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/diagnostic_fusion/explicit_scores_tiny.json",
+          "present": true,
+          "SHA256": "5f1f34075fa0355d9dda6022e0dcb1b5cb791e30bbd2525bbe2fedc98b0a6b2d"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/diagnostic_fusion_native/ONLINE_explicit_scores_pilot_SEED20261009_VIDEO16.json",
+          "present": true,
+          "SHA256": "f1ff1f88666807e044689cd7a7ac7e683d8fea66770a8c515238279618b47a62"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/diagnostic_fusion_native/identity_v3/IDENTITY_explicit_scores_pilot_SEED20261009_VIDEO16.json",
+          "present": true,
+          "SHA256": "bc8be1caab3fb6d31e64ecc1e3c085fcd8cb333f0bbc51aae6094700a873009c"
+        }
+      ],
+      "rerun_authorized_in_current_queue": false,
+      "claim_boundary": "This failed attempt is retained as an engineering failure. Its existence does not invalidate completed formal R2/R3 routes, but the failed attempt itself cannot be counted as a successful fuser result."
+    }
+  ],
+  "formal_routes_affected": false,
+  "supplementary_fuser_claim": "COMPLETED_CORRECTED_ARTIFACTS_WITH_PRESERVED_EARLY_ENGINEERING_FAILURES",
+  "rerun_policy": "NO_RERUN_IN_CURRENT_FROZEN_QUEUE",
+  "conclusion": "The two FAILED entries are input-contract/routing failures, not hidden scientific results. Their corrected v2/v3 successors completed the bounded supplementary diagnostics. Keep the failed entries and logs; do not restart them automatically."
+}

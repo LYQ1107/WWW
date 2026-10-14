@@ -110,6 +110,8 @@ def main() -> None:
     monitor = load_json(runtime / "live_monitor" / "STATUS.json")
     full_online = load_json(reports / "FULL_ONLINE_RESULTS.json")
     queue_audit = load_json(reports / "R2_R3_QUEUE_TERMINAL_AUDIT_20261014.json")
+    failure_review_path = reports / "R2_FUSION_FAILURE_CLASSIFICATION_20261014.json"
+    failure_review = load_json(failure_review_path) if failure_review_path.is_file() else {}
     publication = load_json(runtime / "publication" / "LAST_VERIFIED.json")
 
     formal = [
@@ -202,6 +204,25 @@ def main() -> None:
             "unreviewed_failures": monitor.get("unreviewed_failures"),
             "queue_terminal": queue_audit.get("queue_terminal"),
             "registry_status_counts": queue_audit.get("registry", {}).get("status_counts"),
+        },
+        "r2_supplementary_failure_review": {
+            "judgment": "COMPLETE_REVIEWED_ENGINEERING_FAILURES",
+            "required_scope": "preserve failed supplementary-fuser attempts and classify corrected successors",
+            "status": failure_review.get("status"),
+            "evidence": [
+                evidence(failure_review_path, failure_review.get("status")),
+                evidence(reports / "DIAGNOSTIC_FUSION_PREREGISTRATION.json"),
+                evidence(reports / "DIAGNOSTIC_FUSION_RESULT_INDEX.json", failure_review.get("result_index", {}).get("status")),
+            ],
+            "failed_attempts": [
+                item.get("registry_name") for item in failure_review.get("failures", [])
+            ],
+            "corrected_successors": [
+                item.get("successor", {}).get("registry_name")
+                for item in failure_review.get("failures", [])
+            ],
+            "rerun_policy": failure_review.get("rerun_policy"),
+            "limit": "engineering completion does not establish a JEV scientific advantage or independent validation",
         },
         "frozen_evidence_and_publication": {
             "judgment": "VERIFIED",

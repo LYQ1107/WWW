@@ -12,6 +12,6 @@ This is a read-only process and evidence audit. It does not restart the queue or
 - READY.MASTER_BREAKTHROUGH: `False`
 - Scientific success inferred: `false`
 
-Two failed registry entries are retained with their logs and are explicitly reported; the terminal claim means there are no pending or live jobs and no unreviewed failure, not that every attempt succeeded.
+Two failed registry entries are retained with their logs and are explicitly classified in the separate failure review; the terminal claim means there are no pending or live jobs and no unreviewed failure, not that every attempt succeeded.
 
 The next action is to preserve the reviewed NO_GO package. Any new training or independent evaluation requires a new preregistered scope and valid supervision.

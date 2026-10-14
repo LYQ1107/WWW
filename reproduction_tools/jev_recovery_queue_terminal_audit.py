@@ -58,11 +58,13 @@ def main() -> None:
     ready_path = runtime / "finish" / "READY.json"
     online_path = reports / "FULL_ONLINE_RESULTS.json"
     review_path = reports / "RECOVERY_FINAL_REVIEW_20261014.json"
+    failure_review_path = reports / "R2_FUSION_FAILURE_CLASSIFICATION_20261014.json"
     registry = load(registry_path)
     monitor = load(monitor_path)
     ready = load(ready_path)
     online = load(online_path)
     review = load(review_path)
+    failure_review = load(failure_review_path) if failure_review_path.is_file() else None
 
     jobs = registry.get("jobs", {})
     if not isinstance(jobs, dict):
@@ -155,10 +157,22 @@ def main() -> None:
             "development_status": review.get("development_status"),
             "SHA256": sha256(review_path),
         },
+        "failure_review": {
+            "path": str(failure_review_path),
+            "present": failure_review is not None,
+            "status": failure_review.get("status") if failure_review else None,
+            "failures": [
+                item.get("registry_name")
+                for item in (failure_review or {}).get("failures", [])
+            ],
+            "SHA256": sha256(failure_review_path),
+        },
         "failure_interpretation": (
             "The two FAILED registry entries remain preserved with their logs; "
             "they are not silently converted to success and are excluded from "
-            "the claim that all jobs completed."
+            "the claim that all attempts completed. The separate failure review "
+            "classifies them as engineering input-contract failures and records "
+            "the completed v2/v3 successors."
         ),
         "next_action": (
             "Do not restart the bounded queue. Preserve the reviewed NO_GO package; "
@@ -186,7 +200,7 @@ def main() -> None:
         f"- READY.MASTER_BREAKTHROUGH: `{ready.get('MASTER_BREAKTHROUGH')}`",
         f"- Scientific success inferred: `false`",
         "",
-        "Two failed registry entries are retained with their logs and are explicitly reported; the terminal claim means there are no pending or live jobs and no unreviewed failure, not that every attempt succeeded.",
+        "Two failed registry entries are retained with their logs and are explicitly classified in the separate failure review; the terminal claim means there are no pending or live jobs and no unreviewed failure, not that every attempt succeeded.",
         "",
         "The next action is to preserve the reviewed NO_GO package. Any new training or independent evaluation requires a new preregistered scope and valid supervision.",
     ]

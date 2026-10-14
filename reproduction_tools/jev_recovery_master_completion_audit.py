@@ -99,6 +99,8 @@ def main() -> None:
     review = load(recovery_reports / "RECOVERY_FINAL_REVIEW_20261014.json")
     master_goal = load(recovery_reports / "MASTER_GOAL.json")
     queue = load(recovery_reports / "R2_R3_QUEUE_TERMINAL_AUDIT_20261014.json")
+    failure_review_path = recovery_reports / "R2_FUSION_FAILURE_CLASSIFICATION_20261014.json"
+    failure_review = load(failure_review_path) if failure_review_path.is_file() else {}
     access = load(recovery_reports / "NEXT_SCOPE_ACCESS_AUDIT_20261014.json")
     candidate = load(recovery_reports / "NEXT_SCOPE_CANDIDATE_COPY_AUDIT_20261014.json")
     source_candidates = load(recovery_reports / "NEXT_SCOPE_SOURCE_CANDIDATE_AUDIT_20261014.json")
@@ -214,6 +216,22 @@ def main() -> None:
         live_jobs=monitor.get("live_jobs"),
         unreviewed_failures=monitor.get("unreviewed_failures"),
         registry_status_counts=queue.get("registry", {}).get("status_counts"),
+    )
+    requirements["r2_supplementary_failure_review"] = item(
+        "VERIFIED_REVIEWED_ENGINEERING_FAILURES",
+        "The two preserved supplementary-fuser failures are classified from their exact logs, and frozen corrected v2/v3 successors are bound without rewriting the failed entries.",
+        "Engineering correction and terminal execution do not establish a JEV scientific advantage or independent validation.",
+        [
+            evidence(failure_review_path, status=failure_review.get("status")),
+            evidence(recovery_reports / "DIAGNOSTIC_FUSION_PREREGISTRATION.json"),
+            evidence(recovery_reports / "DIAGNOSTIC_FUSION_RESULT_INDEX.json", status=failure_review.get("result_index", {}).get("status")),
+        ],
+        failed_attempts=[item.get("registry_name") for item in failure_review.get("failures", [])],
+        corrected_successors=[
+            item.get("successor", {}).get("registry_name")
+            for item in failure_review.get("failures", [])
+        ],
+        rerun_policy=failure_review.get("rerun_policy"),
     )
     remote_verified = publication.get("local_HEAD") == publication.get("remote_HEAD")
     requirements["reproducible_publication"] = item(
