@@ -97,6 +97,8 @@ class IdentityCorrection(nn.Module):
    gate=eligible.float();residual=-.02*gate;new=scores+residual*lengths[None]
   elif self.kind=='rule':
    gate=eligible.float();residual=.05*gate*(x[...,13]/.2).clamp(-1,1);new=scores+residual*lengths[None]
+  elif self.kind=='confidence':
+   eligible=x[...,0]<.1;gate=eligible.float();residual=-(.1-x[...,0]).clamp(0,.05);new=scores+residual*lengths[None]
   else:
    gate,delta=self.head(x);gate=gate*eligible.float();residual=.05*gate*delta;new=scores+residual*lengths[None]
   assert torch.isfinite(new).all() and torch.equal(new[~eligible],scores[~eligible])
