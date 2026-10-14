@@ -21,8 +21,14 @@ def main():
     if signal:
         delta=signal['rows'][0]['metric_delta']
         signal_text=f"完整因果scene1每帧B7出现初步身份收益：CVIDF1 {delta['CVIDF1']:+.4f}个百分点、AssA {delta['AssA']:+.4f}、IDSW {delta['IDSW']:+d}；逐项检测完全一致。完整strict5及VGGT/DINO/GMT头和几何独立作用尚待确认，不能外推为稳定VGGT或三模块贡献。"
+    camera_probe=ROOT/'results/inference_camera_encoding_source_probe_v1.json'
+    camera_note=''
+    if camera_probe.exists():
+        probe=json.loads(camera_probe.read_text())
+        if probe['status']=='INFERENCE_CAMERA_COLLAPSE_OBSERVED':
+            camera_note=' 另发现官方单图推理空间/相机MLP输入的相机标量两路都为0（真实ROI方法语义探针，感知/MLP捕获为stub）；显式正确相机索引的实际baseline诊断已排队，锁定生产基线未变。不能在排除此来源前将增益归因于VGGT独有信息。'
     questions=[
-    ('为什么 RPCE 之外需要动态几何？','尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。证据：geometry_validation.csv、vggt_geometry_validation.csv、plane_geometry_validation.csv。'),
+    ('为什么 RPCE 之外需要动态几何？','尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。'+camera_note),
     ('为什么不直接使用 DINOv2/ReID？',f'必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1={pct(baseline)}，高于当前 VGGT 中间层。独立DINO稀疏/逐帧完整严格开发对照以及容量匹配GMT/DINO学习头主种子对照已完成，VGGT学习头未优于它们。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。'),
     ('VGGT 多层是否提供独立身份信息？',f'未证明稳定或VGGT独有增益。第17层 ROI 的256维与原始维度 Recall@1 分别为 {pct(g17)}、{pct(n17)}。另在45个固定TRAIN查询中，原维度VGGT修正1个GMT ReID/提案错误，但破坏20个原正确ReID查询；同一修正也可由独立DINO完成。有限互补允许小头原型验证，不能宣称几何身份信息独占。'),
     ('为什么不简单拼接所有输出？','简单四层平均相似度等价于等权拼接归一化目标向量；B3完整严格开发输出与B0完全一致。B4标量weight2完整对照略低于B0。主种子低秩GCIR同样未建立收益。小头保留32维/两顺序64维目标表示，减少新增向量体积，但原GMT记忆和完整系统成本须分别测量。'),
@@ -33,7 +39,7 @@ def main():
     ('身份触发优于固定周期吗？','未证明。同步联合策略和可选独立进程异步worker已经实际接入因果GMT，具有前缀、真实调用和完成时间验证。scene18固定20与联合策略各80次实际VGGT调用，均与因果B0预测完全一致，联合策略单次实测更慢。随机、运动/身份单一触发、多间隔和重复验证矩阵仍在完成。证据：causal_fixed_joint_total80_full_v18_v1.json。'),
     ('相较 StreamVGGT/FastVGGT 的价值？','不能直接移用长序列加速倍率或流式权重。源码接口和许可证已审计；短双视角速度实测、公平预算对照和真实流式集成仍待完成。'),
     ('完整 FPS/延迟/显存/参数量？','因果B0 scene18完整实测6.64图像/s；优化异步相机路径5.40图像/s且预测完全相同，0有效几何；固定/联合80次调用为4.95/4.26图像/s。实际硬件为V100，不能称A100结果。静态GMT模型初始化排除，新增模型冷启动及worker启动/关闭算入总成本。三个匹配容量头均约31万参数。详见runtime_results.csv和学习头manifest；不以一次计时宣称稳定加速。'),
-    ('提升是否来自不同检测/配置/评测 bug？',signal_text+f' 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA={suite["metrics"]["HOTA"]:.4f}、CVIDF1={suite["metrics"]["CVIDF1"]:.4f}，不能拿离线数值替代因果对照。已有OFF/零系数前缀、真实计算中性与完整采样预测一致性；所有钩子后完整OFF/零系数仍在队列中。'),
+    ('提升是否来自不同检测/配置/评测 bug？',signal_text+f' 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA={suite["metrics"]["HOTA"]:.4f}、CVIDF1={suite["metrics"]["CVIDF1"]:.4f}，不能拿离线数值替代因果对照。已有OFF/零系数前缀、真实计算中性与完整采样预测一致性；所有钩子后完整OFF/零系数仍在队列中。'+camera_note),
     ('三个模块能否分别证明有效？','尚未证明。'+signal_text+' 当前SCIENTIFIC_SUCCESS/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。'),
     ('为什么符合 WWW？','仍有实质适配风险。官方CFP要求明确Web科学问题，仅用数据集或API不充分。'+retrieval_evidence+' 本地数据集回放不等于互联网来源、真实用户查询或Web部署；见WWW_SCOPE_NOTE.md。'),
     ('在线视频关联检索的真实贡献？',retrieval_evidence+' 条件Recall@K、完整MRR、检测覆盖、可检索比例、全部请求成功率和本地查询延迟分别报告。完整读帧/检测/GTA/新增特征/索引/查询成本另计；流数量与关键帧预算对照及实质Web系统贡献仍需完成。')]

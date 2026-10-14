@@ -67,6 +67,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_B7_fixed_k1_strict_suite_v1_v10 | 10 | yes | 80.9721 | 80.9832 | 98.9221 | 98.9221 | 27 |
 | causal_B7_fixed_k20_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k20_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
+| causal_B7_fixed_k20_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | causal_B8_fixed20_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B8_fixed20_total80_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B8_fixed20_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
@@ -112,6 +113,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_B7_fixed_k10_strict_suite_v1 | ALL_STRICT | yes | 80.7443 | 81.4641 | 95.0531 | 95.0531 | 489 |
 | causal_B8_fixed20_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7495 | 81.4748 | 95.0596 | 95.0596 | 482 |
 | causal_B9_joint_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
+| causal_random_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7484 | 81.4726 | 95.0580 | 95.0580 | 482 |
 
 Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):
 

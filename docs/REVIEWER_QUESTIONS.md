@@ -4,7 +4,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q1: 为什么 RPCE 之外需要动态几何？
 
-尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。证据：geometry_validation.csv、vggt_geometry_validation.csv、plane_geometry_validation.csv。
+尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。 另发现官方单图推理空间/相机MLP输入的相机标量两路都为0（真实ROI方法语义探针，感知/MLP捕获为stub）；显式正确相机索引的实际baseline诊断已排队，锁定生产基线未变。不能在排除此来源前将增益归因于VGGT独有信息。
 
 ## Q2: 为什么不直接使用 DINOv2/ReID？
 
@@ -48,7 +48,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q12: 提升是否来自不同检测/配置/评测 bug？
 
-完整因果scene1每帧B7出现初步身份收益：CVIDF1 +0.8070个百分点、AssA +1.3140、IDSW -64；逐项检测完全一致。完整strict5及VGGT/DINO/GMT头和几何独立作用尚待确认，不能外推为稳定VGGT或三模块贡献。 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA=81.0547、CVIDF1=95.6317，不能拿离线数值替代因果对照。已有OFF/零系数前缀、真实计算中性与完整采样预测一致性；所有钩子后完整OFF/零系数仍在队列中。
+完整因果scene1每帧B7出现初步身份收益：CVIDF1 +0.8070个百分点、AssA +1.3140、IDSW -64；逐项检测完全一致。完整strict5及VGGT/DINO/GMT头和几何独立作用尚待确认，不能外推为稳定VGGT或三模块贡献。 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA=81.0547、CVIDF1=95.6317，不能拿离线数值替代因果对照。已有OFF/零系数前缀、真实计算中性与完整采样预测一致性；所有钩子后完整OFF/零系数仍在队列中。 另发现官方单图推理空间/相机MLP输入的相机标量两路都为0（真实ROI方法语义探针，感知/MLP捕获为stub）；显式正确相机索引的实际baseline诊断已排队，锁定生产基线未变。不能在排除此来源前将增益归因于VGGT独有信息。
 
 ## Q13: 三个模块能否分别证明有效？
 
