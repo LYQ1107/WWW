@@ -7,10 +7,20 @@ def main():
     p.add_argument('--geometry-weight',type=float,default=0.);p.add_argument('--geometry-method',default='sift')
     p.add_argument('--backbone',choices=['vggt','dinov2','gmt'],default='vggt');p.add_argument('--layer',type=int,default=17);p.add_argument('--projection-dim',type=int,default=-1);p.add_argument('--calibration',default='');p.add_argument('--pooling',default='roi_align')
     p.add_argument('--interval',type=int,default=10);p.add_argument('--policy',choices=['fixed','every','random','motion','identity','joint'],default='')
-    p.add_argument('--call-budget',type=int,default=20);p.add_argument('--budget-window',type=int,default=100);p.add_argument('--min-interval',type=int,default=2);p.add_argument('--offset',type=int,default=0);p.add_argument('--scheduler-seed',type=int,default=20261014);p.add_argument('--head-path',default='');p.add_argument('--max-residual',type=float,default=1.);p.add_argument('--async-gpu',default='');p.add_argument('--async-timeout',type=float,default=5.);p.add_argument('--total-call-budget',type=int,default=-1);a=p.parse_args()
+    p.add_argument('--call-budget',type=int,default=20);p.add_argument('--budget-window',type=int,default=100);p.add_argument('--min-interval',type=int,default=2);p.add_argument('--offset',type=int,default=0);p.add_argument('--scheduler-seed',type=int,default=20261014);p.add_argument('--head-path',default='');p.add_argument('--max-residual',type=float,default=1.);p.add_argument('--async-gpu',default='');p.add_argument('--async-timeout',type=float,default=5.);p.add_argument('--total-call-budget',type=int,default=-1);p.add_argument('--validate-reversed-vggt-order',action='store_true');a=p.parse_args()
     out=RUNTIME/'online'/a.tag
     if out.exists():raise FileExistsError(out)
     out.mkdir(parents=True);sys.path[:0]=[str(RUNTIME/'sources/vggt'),str(RUNTIME/'sources/dinov2')]
+    if a.validate_reversed_vggt_order:
+        if a.backbone!='vggt' or a.async_gpu:raise ValueError('swap validation requires synchronous VGGT')
+        from gtr.geometry.vggt_adapter import FrozenVGGT
+        from gtr.geometry.view_order_validation import reverse_and_restore
+        original_extract=FrozenVGGT.extract
+        def swapped_extract(self,images,boxes,*args,**kwargs):
+            return reverse_and_restore(lambda x,b,*ar,**kw:original_extract(self,x,b,*ar,**kw),images,boxes,*args,**kwargs)
+        # Local to this validation process; production source/model defaults
+        # and GMT input camera indexing remain unchanged.
+        FrozenVGGT.extract=swapped_extract
     default_calibration={'vggt':'calibration_l17_roi_sym_train_v1.json','dinov2':'calibration_dinov2_roi_train_v1.json','gmt':'calibration_gmt_reid_absolute_train_v1.json'}[a.backbone]
     opts=dict(ENABLED=a.feature_weight!=0 or a.geometry_weight!=0,FEATURE_ENABLED=True,GEOMETRY_ENABLED=True,FEATURE_WEIGHT=a.feature_weight,GEOMETRY_WEIGHT=a.geometry_weight,
         FEATURE_LAYERS=[a.layer] if a.backbone=='vggt' else [-1],FEATURE_BACKBONE=a.backbone,PROJECTION_DIM=a.projection_dim,POOLING=a.pooling,SYMMETRIZE_VIEW_ORDER=a.backbone=='vggt',
@@ -36,6 +46,8 @@ def main():
     async_report=model.geo_runtime.async_report()
     if async_report is not None:save_json(out/'async_trace.json',async_report)
     report=provenance();report.update(causal_online=True,full_video=a.max_frames is None,video_id=a.video_id,synchronized_groups=len(groups),images=len(rows),
+        speed_eligible=not a.validate_reversed_vggt_order,validation_reversed_vggt_order=a.validate_reversed_vggt_order,
+        camera_order_validation_scope='encoder images/ROI inputs reversed before each call; pooled vectors, patch maps and camera pose rows restored to original physical camera IDs; GMT input/association ordering canonical and unchanged',
         protocol='causal GMT initialization/GTA/memory, no future MIN_TRACK_LEN filtering or delay_cls; current/past timestamps only',
         feature_weight=a.feature_weight,seconds=total,camera_image_fps=len(rows)/total,synchronized_group_fps=len(groups)/total,
         input_to_identity_p50=float(np.percentile(latency,50)),input_to_identity_p95=float(np.percentile(latency,95)),latencies_seconds=latency,
