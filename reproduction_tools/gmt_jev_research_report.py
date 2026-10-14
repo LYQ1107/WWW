@@ -13,12 +13,16 @@ def main():
   assert r['physical_GPU']==7 and r['no_GTA_or_RPCE_pruning'] and r['no_perception_cache']
   completed[kind]=dict(report=ref(p),GPU_UUID=r['GPU_UUID'],mean_scene_FPS=r['mean_full_scene_FPS'],
    mean_image_FPS=2*r['mean_full_scene_FPS'],extra_parameters=r['extra_trainable_parameters'],
-   full_system_parameters=r['full_system_parameters'],trials=r['trials'],untrained_prototype=r['untrained_prototype'])
+   full_system_parameters=r['full_system_parameters'],trials=r['trials'],untrained_prototype=r['untrained_prototype'],stock_prediction_SHA=r['stock_prediction_SHA'])
  assert len({r['GPU_UUID'] for r in completed.values()})<=1
  if 'original' in completed:
   base=completed['original']['mean_scene_FPS']
   for kind,r in completed.items():
    r['FPS_ratio_to_GMT']=r['mean_scene_FPS']/base;r['efficiency_gate_pass']=r['FPS_ratio_to_GMT']>=.95
+   assert r['full_system_parameters']==completed['original']['full_system_parameters']+r['extra_parameters']
+   if r['untrained_prototype']:
+    r['full_video_stock_prediction_parity_with_original']=r['stock_prediction_SHA']==completed['original']['stock_prediction_SHA']
+    assert r['full_video_stock_prediction_parity_with_original'],kind+' zero residual changes stock output'
  speed=dict(status='COMPLETE' if not pending else 'PENDING_REAL_MEASUREMENTS',methods=completed,pending=pending,
   conventions=dict(scene='One synchronized two-camera time step',image='Two image inputs per scene; image FPS = 2 * scene FPS',
    stage2='Actual GTA through native commit, with shared CUDA synchronization instrumentation. Per-trial p50/p95, excluding first16 events.',
@@ -44,6 +48,8 @@ def main():
   (DOCS/'ONLINE_RESULTS.md').write_text(text+'\n'.join(table)+'\n')
  for kind,r in online['methods'].items():
   if kind in completed:r['FPS']=completed[kind]
+ temporal=REPORTS/'PAST_ANCHOR_TEMPORAL_AUDIT.json'
+ if temporal.exists():online['post_hoc_past_anchor_temporal_audit']=ref(temporal)
  save(REPORTS/'ONLINE_METRICS.json',online)
  decision=dict(status='NOT_ESTABLISHED',scientific_success=False,bounded_tracking_experiments_complete=True,
   efficiency_status=speed['status'],master_goal_status='ACTIVE',
@@ -54,6 +60,10 @@ def main():
   unmet=['HOTA gain and identity stability jointly satisfied','Qualified learned MLP/Attention/CIC comparison','Independent full-video validation','Necessary seed reproduction'],
   prohibited_next_steps=['Tune on TRAIN16 signs','Read new DEV/sealed20-22/TEST/Full24','Replace original GTA','Blindly train larger JEV'],source=binding())
  if pending:decision['unmet'].append('Completed matched full-image efficiency measurements')
+ if temporal.exists():
+  d=read(temporal);decision['post_hoc_temporal_diagnostics']=dict(report=ref(temporal),
+   ratios={k:r['duration_ratio_to_original'] for k,r in d['methods'].items()},
+   does_not_replace_preregistered_gates=True,not_causal_propagation=True)
  save(REPORTS/'GO_NO_GO.json',decision)
  goal=read(REPORTS/'MASTER_GOAL.json');goal['status']='ACTIVE';goal['scientific_success']=False
  goal['gates']['SPEED']='PENDING_REAL_FULL_IMAGE_TRIALS' if pending else 'COMPLETE_MEASUREMENTS_SEE_PER_METHOD_GATES'
@@ -131,6 +141,12 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 研究分支 research/gmt-jev-risk-association-20261014；[当前中文报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。每阶段仅推源码、配置和紧凑JSON，权重、视频、图像、预测压缩包留在服务器并记录 SHA。实际发布终态由 runtime/publication/LAST_VERIFIED.json 的 local/remote HEAD 一致证明；报告生成来源 HEAD 与运行时源码 SHA 保存在 JSON。
 '''
+ if temporal.exists():
+  d=read(temporal)
+  text='\n新增结果后历史锚审计：仅使用更早场景已有至少3次已知观测、覆盖率>=80%的首个人物锚；屏蔽重复GT人物，未知/间断为右删失。认证错误人物关联持续相机帧'
+  text+='、'.join(f"{k} {r['wrong_person_observed_duration_camera_frames']}" for k,r in d['methods'].items())
+  text+='。Threshold 相比 GMT 增加6.64%，Confidence 减少17.46%；各方法最长区间均778帧。不能用未来整段多数身份映射重写历史归属，也不把此描述量称作干预因果传播时间。参见 PAST_ANCHOR_TEMPORAL_AUDIT_ZH.md；这是结果后补查，未改写预注册门槛。\n'
+  report=report.replace('## 6. 普通方法是否足以解释收益',text+'\n## 6. 普通方法是否足以解释收益')
  if not pending:
   report=report.replace('（当前证据，效率任务仍以 JSON 终态为准）','（本轮完整证据）').replace('当前未测完，不能声明95%效率门槛通过。','全部三次计时已完成；各方法95%门槛以 SPEED_METRICS.json 的 efficiency_gate_pass 为准，质量与独立验证仍未通过。')
  report+='\n当前资源快照：'+json.dumps(resource,ensure_ascii=False)+'。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。\n'

@@ -20,6 +20,9 @@ Threshold HOTA +0.135169，IDSW1898、Frag499；Rule HOTA +0.502582、AssA +0.83
 
 Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检测记录去除 track_id 后逐项一致。身份不一致持续量（回顾性相机帧）GMT5274、Threshold5090、Rule4680、Confidence5071；不能用持续量下降抵消 Rule 的 IDSW 与额外身份恶化。
 
+
+新增结果后历史锚审计：仅使用更早场景已有至少3次已知观测、覆盖率>=80%的首个人物锚；屏蔽重复GT人物，未知/间断为右删失。认证错误人物关联持续相机帧confidence 3346、original 4054、rule 3792、threshold 4323。Threshold 相比 GMT 增加6.64%，Confidence 减少17.46%；各方法最长区间均778帧。不能用未来整段多数身份映射重写历史归属，也不把此描述量称作干预因果传播时间。参见 PAST_ANCHOR_TEMPORAL_AUDIT_ZH.md；这是结果后补查，未改写预注册门槛。
+
 ## 6. 普通方法是否足以解释收益
 
 目前所有正向结果来自未训练的普通控制器；学习式架构独立优势未建立。MLP/Attention/CIC 没有通过冻结 TRAIN 信号前置条件，不进行盲目训练或架构消融。不能把零残差原型的效率测量冒充训练后的公平质量比较。严格认证 N01/N10 为0/1、0/2、0/1，覆盖有限、Bank结果部分 UNKNOWN，不是完整闭环归因。
@@ -40,4 +43,4 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 研究分支 research/gmt-jev-risk-association-20261014；[当前中文报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。每阶段仅推源码、配置和紧凑JSON，权重、视频、图像、预测压缩包留在服务器并记录 SHA。实际发布终态由 runtime/publication/LAST_VERIFIED.json 的 local/remote HEAD 一致证明；报告生成来源 HEAD 与运行时源码 SHA 保存在 JSON。
 
-当前资源快照：{"new_retained_MiB": 255.05234050750732, "home_free_GiB": 50.172271728515625, "GPU_wall_hours_including_live": 1.7619094014064305}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
+当前资源快照：{"new_retained_MiB": 255.26749324798584, "home_free_GiB": 50.168636322021484, "GPU_wall_hours_including_live": 1.9517155160403086}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
