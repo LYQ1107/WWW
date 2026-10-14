@@ -4,7 +4,8 @@ This is a read-only index of the published Phase XVII–XXI evidence and the cur
 
 - Audit status: `COMPLETE_EVIDENCE_AUDIT_MASTER_NOT_COMPLETE`
 - Current recovery decision: `NO_GO_FOR_JEV_INDEPENDENT_ADVANTAGE`
-- Recovery remote HEAD: `7a46d84045aa2c2d1a0f7a52e5f63ab2064bf503`
+- Audited recovery source HEAD: `b3504237c82185373263b8891e325d08cf4fa446`
+- Last independently verified publication HEAD: `b3504237c82185373263b8891e325d08cf4fa446`
 - R2/R3 formal three-seed entries: `18`
 - Live jobs: `[]`
 - Unreviewed failures: `[]`
