@@ -1,0 +1,222 @@
+{
+  "id": "positive_scene_controls_v1",
+  "project_gpu_ids": [
+    "4"
+  ],
+  "queues": {
+    "gpu4": [
+      {
+        "id": "C_gmt_head_dense_causal_v1_v1",
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "1",
+          "--tag",
+          "C_gmt_head_dense_causal_v1_v1",
+          "--backbone",
+          "gmt",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--geometry-weight",
+          "0.0",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--call-budget",
+          "200",
+          "--min-interval",
+          "1",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/gmt_seed20261014.pt"
+        ],
+        "cpu_only": false
+      },
+      {
+        "id": "eval_C_gmt_head_dense_causal_v1_v1",
+        "cpu_only": true,
+        "depends_on": [
+          "C_gmt_head_dense_causal_v1_v1"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_v1_v1/predictions.json",
+          "--video-id",
+          "1",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_v1_v1/manifest.json"
+        ]
+      },
+      {
+        "id": "C_dino_head_dense_causal_v1_v1",
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "1",
+          "--tag",
+          "C_dino_head_dense_causal_v1_v1",
+          "--backbone",
+          "dinov2",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "256",
+          "--pooling",
+          "roi_align",
+          "--geometry-weight",
+          "0.0",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--call-budget",
+          "200",
+          "--min-interval",
+          "1",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/dinov2_seed20261014.pt"
+        ],
+        "cpu_only": false
+      },
+      {
+        "id": "eval_C_dino_head_dense_causal_v1_v1",
+        "cpu_only": true,
+        "depends_on": [
+          "C_dino_head_dense_causal_v1_v1"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_dino_head_dense_causal_v1_v1/predictions.json",
+          "--video-id",
+          "1",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_dino_head_dense_causal_v1_v1/manifest.json"
+        ]
+      },
+      {
+        "id": "B5_vggt_head_dense_causal_v1_v1",
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "1",
+          "--tag",
+          "B5_vggt_head_dense_causal_v1_v1",
+          "--backbone",
+          "vggt",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "roi_align",
+          "--geometry-weight",
+          "0.0",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--call-budget",
+          "200",
+          "--min-interval",
+          "1",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt"
+        ],
+        "cpu_only": false
+      },
+      {
+        "id": "eval_B5_vggt_head_dense_causal_v1_v1",
+        "cpu_only": true,
+        "depends_on": [
+          "B5_vggt_head_dense_causal_v1_v1"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/B5_vggt_head_dense_causal_v1_v1/predictions.json",
+          "--video-id",
+          "1",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/B5_vggt_head_dense_causal_v1_v1/manifest.json"
+        ]
+      },
+      {
+        "id": "B6_vggt_camera_dense_causal_v1_v1",
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "1",
+          "--tag",
+          "B6_vggt_camera_dense_causal_v1_v1",
+          "--backbone",
+          "vggt",
+          "--feature-weight",
+          "0",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "roi_align",
+          "--geometry-weight",
+          "0.5",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--call-budget",
+          "200",
+          "--min-interval",
+          "1"
+        ],
+        "cpu_only": false
+      },
+      {
+        "id": "eval_B6_vggt_camera_dense_causal_v1_v1",
+        "cpu_only": true,
+        "depends_on": [
+          "B6_vggt_camera_dense_causal_v1_v1"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/B6_vggt_camera_dense_causal_v1_v1/predictions.json",
+          "--video-id",
+          "1",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/B6_vggt_camera_dense_causal_v1_v1/manifest.json"
+        ]
+      }
+    ]
+  },
+  "scope": "full causal scene1 independent controls after first complete B7 dense signal; fixed TRAIN seed14 settings; no TEST selection",
+  "limitations": "masked geometry-only input differs from the unmasked shared feature+pose input; feature-only control directly isolates the geometry residual effect under otherwise same features"
+}

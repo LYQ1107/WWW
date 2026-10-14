@@ -52,10 +52,12 @@ def predictions(path):
 
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--baseline-sources',type=Path,required=True);parser.add_argument('--method-sources',type=Path,required=True);parser.add_argument('--tag',required=True);args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--baseline-sources',type=Path,required=True);parser.add_argument('--method-sources',type=Path,required=True);parser.add_argument('--tag',required=True);parser.add_argument('--video-ids',type=int,nargs='+');args=parser.parse_args()
     sources=[json.loads(path.read_text())['video_predictions'] for path in [args.baseline_sources,args.method_sources]]
-    required=set(map(str,json.loads((ROOT/'manifests/geo_split_v1.json').read_text())['strict_development_video_ids']))
-    if any(set(source)!=required for source in sources):raise ValueError('all strict development scenes required')
+    full_required=set(map(str,json.loads((ROOT/'manifests/geo_split_v1.json').read_text())['strict_development_video_ids']))
+    required=set(map(str,args.video_ids)) if args.video_ids else full_required
+    if not required<=full_required or any(not required<=set(source) for source in sources):raise ValueError('requested declared strict scenes missing')
+    if not args.video_ids and any(set(source)!=required for source in sources):raise ValueError('all strict development scenes required by default')
     data=train_data();rows=[];gt_hashes={}
     for scene in sorted(map(int,required)):
         paths=[Path(source[str(scene)]) for source in sources]
@@ -86,7 +88,8 @@ def main():
         rows.append(dict(video_id=scene,baseline_prediction=str(paths[0]),method_prediction=str(paths[1]),prediction_sha256=[sha256(path) for path in paths],
             baseline_detections=len(base),method_detections=len(method),common_detections=len(common),added_detections=len(method.keys()-base.keys()),removed_detections=len(base.keys()-method.keys()),
             all_time_identity_pairs=pair_outcomes(matched),cross_camera_all_time_identity_pairs=pair_outcomes(matched,True)))
-    save_json(ROOT/'results'/f'{args.tag}.json',dict(status='PASS',scope='all strict development scenes; exact detector-key intersection; independent raw-GT one-to-one IoU>=0.5 matching of common detections',
+    save_json(ROOT/'results'/f'{args.tag}.json',dict(status='PASS',video_ids=sorted(map(int,required)),full_strict_suite=required==full_required,
+        scope='explicit complete video scenes; exact detector-key intersection; independent raw-GT one-to-one IoU>=0.5 matching of common detections; partial scene selection is not a full-suite claim',
         semantics='unordered detection identity-pair classification across all timestamps, with separate cross-camera-only counts; corrections/harms are pair relations, not counts of Hungarian decisions or a replacement for HOTA/CVIDF1',
         limitations='added/removed detections excluded from identity-pair counts and reported separately; long tracks contribute quadratically many pairs; raw GT uncertainty is unchanged',
         sources_sha256=[sha256(path) for path in [args.baseline_sources,args.method_sources]],raw_gt_sha256=gt_hashes,rows=rows,provenance=provenance()))
