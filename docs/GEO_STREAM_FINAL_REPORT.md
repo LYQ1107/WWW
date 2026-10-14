@@ -16,6 +16,7 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | B2_l17_sym_w025_full_gpu5 | 18 | yes | 79.3120 | 81.1202 | 96.6809 | 96.6809 | 5 |
 | B6_sift_w05_k10 | 14 | no: raw diagnostic | 79.9871 | 83.1446 | 95.2027 | 95.1967 | 137 |
 | B6_sift_w05_k10 | 22 | no: raw diagnostic | 84.5038 | 84.7280 | 97.9279 | 97.9279 | 83 |
+| online_B0_full_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 
 Required remaining work: frozen feature screening and independent DINO comparison; calibrated residual paired full-video tests; dynamic VGGT geometry validity; actual causal GMT protocol with separate baseline; matched-call-budget scheduler experiments; repeated stability checks and WWW retrieval evidence.
 

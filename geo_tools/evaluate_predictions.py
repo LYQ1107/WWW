@@ -8,7 +8,7 @@ def read_rows(path):
     return [[x.strip() for x in line.split(',')] for line in path.read_text().splitlines() if line.strip()]
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--prediction',type=Path,required=True);p.add_argument('--video-id',type=int,required=True);p.add_argument('--allow-duplicate-gt',action='store_true');args=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--prediction',type=Path,required=True);p.add_argument('--video-id',type=int,required=True);p.add_argument('--allow-duplicate-gt',action='store_true');p.add_argument('--run-manifest',type=Path);args=p.parse_args()
     report_path=args.prediction.with_suffix('.raw_diagnostic.metrics.json' if args.allow_duplicate_gt else '.metrics.json')
     if report_path.exists():raise FileExistsError(report_path)
     data=train_data(); records=video_records(data,args.video_id); index={x['image_id']:x for x in records}
@@ -54,8 +54,10 @@ def main():
         values=evaluate({scene:gtflat},{scene:trflat},{scene:n},convention)
         if convention=='sequential': metrics['CVIDF1']=values['IDF1'];metrics['CVMA_sequential']=values['MOTA']
         else:metrics['CVMA']=values['MOTA']
-    source_manifest=args.prediction.with_name(args.prediction.stem+'_manifest.json')
+    source_manifest=args.run_manifest or args.prediction.with_name(args.prediction.stem+'_manifest.json')
     meta=json.loads(source_manifest.read_text()) if source_manifest.exists() else {}
+    expected=meta.get('prediction_sha256',meta.get('predictions_sha256'))
+    if expected is not None and expected!=sha256(args.prediction):raise ValueError('prediction hash differs from run manifest')
     report=dict(status='PASS',video_id=args.video_id,metrics=metrics,prediction_sha256=sha256(args.prediction),raw_gt_sha256={n:sha256(DATA/'train'/n/'gt/gt.txt') for n in sources},
         duplicate_gt_rows=duplicates,allow_duplicate_gt=args.allow_duplicate_gt,gt_policy='all raw rows retained',causal_online=meta.get('causal_online',False),full_video=meta.get('full_video',False),
         evaluator='TrackEval equations; CVIDF1=Identity on sequential view blocks; CVMA=CLEAR on interleaved views; not official MATLAB',
