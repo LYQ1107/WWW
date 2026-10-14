@@ -1,0 +1,167 @@
+{
+  "status": "NO_AUTHORIZED_SOURCE_B_STAGE_REMAINS_CLOSED",
+  "captured_UTC": "2026-10-14T02:13:52.803831+00:00",
+  "scope": "Phase XX source-candidate documentation and local provenance audit only",
+  "primary_candidate_count": 3,
+  "sources": {
+    "WILDTRACK": {
+      "scope_role": "primary_candidate",
+      "official_url": "https://www.epfl.ch/labs/cvlab/data/data-wildtrack/",
+      "access_status": "PUBLIC_DOWNLOAD_LICENSE_UNRESOLVED",
+      "facts": {
+        "official_page_lists_annotated_archive": true,
+        "archive_head_status": 200,
+        "archive_bytes": "6807496358",
+        "official_page_explicit_license_or_terms_token": false,
+        "annotation_rate_and_frames": "400 frames at 2fps"
+      },
+      "evidence": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_master_audit_runtime/public_source_review_v1/wildtrack_release.html",
+          "present": true,
+          "bytes": 78466,
+          "SHA256": "984148e900c0e8b216e7ff2bba5a68307d8aaca5397dba1f0636743a9ae283aa"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_master_audit_runtime/public_source_review_v1/wildtrack_archive_head.json",
+          "present": true,
+          "bytes": 300,
+          "SHA256": "66b8b9e1cdb206f6943cf894c77627bf3b0f5ab9425a5081d4e2441f392e4f5b"
+        }
+      ],
+      "decision": "Do not treat the historical local copy as authorized until provenance and permitted research use are confirmed."
+    },
+    "MMPTRACK": {
+      "scope_role": "primary_candidate",
+      "official_url": "https://iccv2021-mmp.github.io/subpage/dataset.html",
+      "access_status": "SIGN_TERMS_AND_EMAIL_REQUIRED",
+      "facts": {
+        "requires_signed_terms": true,
+        "requires_email_return": true,
+        "research_only": true
+      },
+      "evidence": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_master_audit_runtime/public_source_review_v1/mmp_release.html",
+          "present": true,
+          "bytes": 10344,
+          "SHA256": "3d5299a0815de03fd102fdeec1602377e6b8ccb15334a43f8455b0c715395608"
+        }
+      ],
+      "decision": "No access request or signed agreement is present; do not download or train."
+    },
+    "SCOUT": {
+      "scope_role": "primary_candidate",
+      "official_url": "https://scout.epfl.ch/",
+      "access_status": "OFFICIAL_SITE_TERMS_REQUIRED_ACCESS_UNRESOLVED",
+      "facts": {
+        "toolkit_defers_to_official_terms": true,
+        "metadata_snapshot_present": true
+      },
+      "evidence": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_master_audit_runtime/public_source_review_v1/cvlab-epfl/scout_toolkit/README.md",
+          "present": true,
+          "bytes": 7806,
+          "SHA256": "99596bee59a01953a43c3b2a074b08cfb35ab7be1be14de6061b149506c6622d"
+        },
+        {
+          "path": "/home/liuyeqiang/WWW_jev_master_audit_runtime/public_source_review_v1/scout_metadata.json",
+          "present": true,
+          "bytes": 421,
+          "SHA256": "d3e18dcd2adea2be4dd0a31be355f164778402f9b040568e9ba83e4c4e3bb770"
+        }
+      ],
+      "decision": "The toolkit is not an authorization record; no approved local copy or completed registration is recorded."
+    },
+    "DIVOTrack": {
+      "scope_role": "secondary_candidate_not_admitted_to_current_three_source_scope",
+      "official_url": "https://github.com/shengyuhao/DIVOTrack",
+      "access_status": "AUTHORITY_AND_LICENSE_SUBMISSION_REQUIRED",
+      "facts": {
+        "download_hosted_on_huggingface": true,
+        "license_submission_before_unzip": true,
+        "authority_or_license_agreement": true
+      },
+      "evidence": [
+        {
+          "path": "/home/liuyeqiang/WWW_jev_master_audit_runtime/alternative_sources_20261012/shengyuhao_DIVOTrack_README.md",
+          "present": true,
+          "bytes": 8081,
+          "SHA256": "a66c35be375090c6016fb0924945b336147a07e113200efdd01f070c6659d275"
+        }
+      ],
+      "decision": "Documented as a secondary option only; it is not added to the three-source preregistered scope."
+    }
+  },
+  "baidu_share_checks": [
+    {
+      "name": "CvMHATB",
+      "url": "https://pan.baidu.com/s/1tw8voHsDp-Fgv0mWim7kgA?pwd=MHAT",
+      "method": "GET_SHARE_PAGE_ONLY",
+      "archive_or_GT_body_read": false,
+      "http_status": 200,
+      "final_url": "https://pan.baidu.com/share/init?surl=tw8voHsDp-Fgv0mWim7kgA&pwd=MHAT",
+      "read_bytes": 16014,
+      "response_content_type": "text/html; charset=utf-8",
+      "titles": [
+        "百度网盘 请输入提取码"
+      ],
+      "download_availability": "NOT_VERIFIED_NO_FILE_LIST_OR_DOWNLOAD",
+      "expired_notice_present": false
+    },
+    {
+      "name": "MVTrackTrans_first_share",
+      "url": "https://pan.baidu.com/s/1pIMExmYV-ttQd8x2Ky3bRA?pwd=1390",
+      "method": "GET_SHARE_PAGE_ONLY",
+      "archive_or_GT_body_read": false,
+      "http_status": 200,
+      "final_url": "https://pan.baidu.com/share/init?surl=pIMExmYV-ttQd8x2Ky3bRA&pwd=1390",
+      "read_bytes": 16018,
+      "response_content_type": "text/html; charset=utf-8",
+      "titles": [
+        "百度网盘 请输入提取码"
+      ],
+      "download_availability": "NOT_VERIFIED_NO_FILE_LIST_OR_DOWNLOAD",
+      "expired_notice_present": false
+    },
+    {
+      "name": "MVCrowdTrack",
+      "url": "https://pan.baidu.com/s/1X168WJ0QqGkFkLiAHQtRmg?pwd=9xbs",
+      "method": "GET_SHARE_PAGE_ONLY",
+      "archive_or_GT_body_read": false,
+      "http_status": 200,
+      "final_url": "https://pan.baidu.com/share/init?surl=X168WJ0QqGkFkLiAHQtRmg&pwd=9xbs",
+      "read_bytes": 16018,
+      "response_content_type": "text/html; charset=utf-8",
+      "titles": [
+        "百度网盘 请输入提取码"
+      ],
+      "download_availability": "NOT_VERIFIED_NO_FILE_LIST_OR_DOWNLOAD",
+      "expired_notice_present": false
+    }
+  ],
+  "historical_local_copy": {
+    "candidate_report": "/home/liuyeqiang/WWW_jev_recovery_20261012/reports/JEV_RECOVERY/NEXT_SCOPE_CANDIDATE_COPY_AUDIT_20261014.json",
+    "path": "/data1/liuyeqiang/WWW_jev_phase14_runtime/20261010_v1/external_wildtrack_v1",
+    "authorization_status": "UNRESOLVED",
+    "authorized_dataset_path_established": false
+  },
+  "actions_not_performed": {
+    "network_download": true,
+    "image_or_label_payload_read": true,
+    "registration_or_license_request": true,
+    "training": true,
+    "native_evaluation": true
+  },
+  "gate": {
+    "A_stage": "SOURCE_DOCUMENTATION_AND_LOCAL_PROVENANCE_AUDIT_COMPLETE",
+    "B_stage": "NOT_AUTHORIZED",
+    "independent_training": "NOT_AUTHORIZED",
+    "official_TEST": false,
+    "Full24": false,
+    "sealed20_21_22": true
+  },
+  "interpretation": "A public download link, toolkit, GitHub repository, or Baidu share page is not by itself proof that this project has permission to use the data. The three-source scope remains frozen until an approved path and permitted TRAIN/VAL use are recorded.",
+  "required_user_action": "Provide a legally approved local path and its permitted scope, or complete the relevant official access process."
+}
