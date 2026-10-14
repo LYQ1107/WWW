@@ -20,6 +20,7 @@ def main(video, kind):
     folder = OUT/'train_matched_quality'/f'video{video:02d}'/kind
     folder.mkdir(parents=True, exist_ok=False)
     reserve()
+    annotation_source = ref(ANNOTATIONS)
     values, frames, images = metadata(video)
     image_hash = hashlib.sha256()
     for image in sorted(images.values(), key=lambda x:x['id']):
@@ -57,7 +58,7 @@ def main(video, kind):
             json.dump(rows,f)
         paths[convention] = ref(path)
     inference = dict(kind=kind,video=video,frames=frames,predictions=paths,
-                     input_images_SHA256=image_hash.hexdigest(),annotation=ref(ANNOTATIONS),
+                     input_images_SHA256=image_hash.hexdigest(),annotation=annotation_source,
                      raw_geometry_and_scores_SHA256=geometry_sha(predictions),
                      effective_config_SHA256=hashlib.sha256(cfg.dump().encode()).hexdigest(),
                      original_snapshot=ref(snapshot) if snapshot else None,
@@ -65,15 +66,18 @@ def main(video, kind):
                      no_GT_actor_inputs=True,no_gradient_updates=True,no_perception_cache=True,
                      full_image_FPS=None,source=source)
     save(folder/'INFERENCE.json',inference)
+    assert sha(ANNOTATIONS) == annotation_source['SHA256'], 'Annotation changed during inference'
+    if kind=='rule':
+        baseline = read(REPORTS/f'TRAIN_MATCHED_original_VIDEO{video:02d}.json')
+        for key in ['input_images_SHA256','effective_config_SHA256','raw_geometry_and_scores_SHA256']:
+            assert inference[key] == baseline['inference'][key],key
+        assert annotation_source['SHA256'] == baseline['inference']['annotation']['SHA256']
     del m,raw,stock,batch,actor
     gc.collect()
     torch.cuda.empty_cache()
     raw_metrics = evaluate(predictions,folder/'raw_metrics',videos=[video])
     stock_metrics = evaluate(stock_predictions,folder/'stock_metrics',videos=[video])
-    if kind=='rule':
-        baseline = read(REPORTS/f'TRAIN_MATCHED_original_VIDEO{video:02d}.json')
-        for key in ['input_images_SHA256','effective_config_SHA256','raw_geometry_and_scores_SHA256']:
-            assert inference[key] == baseline['inference'][key],key
+    assert sha(ANNOTATIONS) == annotation_source['SHA256'], 'Annotation changed during evaluation'
     result = dict(status='COMPLETE_MATCHED_FULL_TRAIN_TRAJECTORY',kind=kind,video=video,
                   inference=inference,primary_raw=raw_metrics,secondary_stock=stock_metrics,
                   primary_identity=duration(predictions,video),secondary_identity=duration(stock_predictions,video),
