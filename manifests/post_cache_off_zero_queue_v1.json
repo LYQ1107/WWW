@@ -1,0 +1,80 @@
+{
+  "id": "post_cache_off_zero_v1",
+  "project_gpu_ids": [
+    "0"
+  ],
+  "queues": {
+    "gpu0": [
+      {
+        "id": "OFF_post_cache_trace_strict_v1",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_baseline.py",
+          "--video-ids",
+          "1",
+          "10",
+          "11",
+          "18",
+          "19",
+          "--tag",
+          "OFF_post_cache_trace_strict_v1",
+          "--stream-read"
+        ]
+      },
+      {
+        "id": "audit_OFF_post_cache_trace_strict_v1",
+        "cpu_only": true,
+        "depends_on": [
+          "OFF_post_cache_trace_strict_v1"
+        ],
+        "command": [
+          "geo_tools/audit_full_prediction_parity.py",
+          "--baseline-sources",
+          "manifests/baseline_strict_dev_sources.json",
+          "--candidate-sources",
+          "manifests/OFF_post_cache_trace_strict_v1_sources.json",
+          "--output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/OFF_post_cache_trace_strict_v1_parity.json"
+        ]
+      },
+      {
+        "id": "ZERO_post_cache_trace_strict_v1",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_baseline.py",
+          "--video-ids",
+          "1",
+          "10",
+          "11",
+          "18",
+          "19",
+          "--tag",
+          "ZERO_post_cache_trace_strict_v1",
+          "--stream-read",
+          "--geo-enabled",
+          "--feature-weight",
+          "0",
+          "--geometry-weight",
+          "0"
+        ]
+      },
+      {
+        "id": "audit_ZERO_post_cache_trace_strict_v1",
+        "cpu_only": true,
+        "depends_on": [
+          "ZERO_post_cache_trace_strict_v1"
+        ],
+        "command": [
+          "geo_tools/audit_full_prediction_parity.py",
+          "--baseline-sources",
+          "manifests/baseline_strict_dev_sources.json",
+          "--candidate-sources",
+          "manifests/ZERO_post_cache_trace_strict_v1_sources.json",
+          "--output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/ZERO_post_cache_trace_strict_v1_parity.json"
+        ]
+      }
+    ]
+  },
+  "scope": "exact full strict5 OFF/zero regression after cache/diagnostic additions; original c214 full OFF checked separately; no metric-only equivalence"
+}
