@@ -38,6 +38,7 @@ def add_gtr_config(cfg):
     _C.MODEL.GEO.FALLBACK_TO_GMT = True
     _C.MODEL.GEO.VGGT_CHECKPOINT = ''
     _C.MODEL.GEO.CALIBRATION_PATH = ''
+    _C.MODEL.GEO.HEAD_PATH = ''
     _C.MODEL.GEO.GEOMETRY_METHOD = 'sift'
 
     # association head

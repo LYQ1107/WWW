@@ -1,0 +1,459 @@
+{
+  "status": "LIMITED_PROTOTYPES_TRAINED_NOT_CLOSED_LOOP_VALIDATED",
+  "provenance": {
+    "process_started_utc": "2026-10-14T18:04:10.790355+00:00",
+    "report_generated_utc": "2026-10-14T18:06:58.464939+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/low_rank_three_backbones_train_v1.log",
+    "source_worktree": "/data1/liuyeqiang/WWW_vggt_geo_runtime/pinned_sources/a86935a6",
+    "commit": "a86935a651fed9a93c144d8fb45ecdf7b3bf8fba",
+    "report_generation_commit": "a86935a651fed9a93c144d8fb45ecdf7b3bf8fba",
+    "command": [
+      "geo_tools/train_lightweight_heads.py",
+      "--tag",
+      "low_rank_three_backbones_train_v1",
+      "--steps",
+      "2000",
+      "--seeds",
+      "20261014",
+      "20261015",
+      "20261016"
+    ],
+    "seed": 20261014,
+    "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+    "torch": "2.0.0+cu118",
+    "numpy": "1.24.1",
+    "cuda_visible_devices": "",
+    "used_cache": false,
+    "source_hashes": {
+      "geo_tools/test_gmt_feature_control.py": "861c2c5fffd3fc91fdfcb56342eb688f18a41bf7f407ef37ba8d7ab22cf902e9",
+      "geo_tools/test_causal_scheduler.py": "fe7965ce81e26bf6aa0098853c9655c62286fe5ba2be4ce7fc6bf213ad25bce2",
+      "geo_tools/summarize_results.py": "cb5b0ff1a8d58f8351a7de0876598bf7a98aa394df25fde843f094b8595d0f4d",
+      "geo_tools/target_labels.py": "8b86d7a0e627b1cbe65a73ccb1d30ed2cd96b8d9225d4529d8800d426500644b",
+      "geo_tools/preflight.py": "0e9cf4710e89c2e7b1dda1e906bdef21e222468a30fad13df059b0b913f174c6",
+      "geo_tools/collect_hard_events.py": "0a403f11136ad4290914854a4990beff4902fb72362283772d2c64471fa41ac6",
+      "geo_tools/validate_vggt_geometry.py": "ca11385fbbab6dfb126dd447d24a2e91e05411ff8b9d2c1f2b0426393ac03bef",
+      "geo_tools/validate_neural_background.py": "0a6de5eef8743bed7a2a49ca307a6ee60184b6b473caf01cf9e42c1d6d40855e",
+      "geo_tools/test_background_patch_matching.py": "1864d7996a8c72b6369c66848fdddcfd21e22de3e4c0cc9f00dd0ce169648e89",
+      "geo_tools/test_plane_geometry.py": "ea51149843a3ce6399758c831bf0e32ad5a77a30e5ace1517f11cf8ae407fcae",
+      "geo_tools/test_candidate_normalization.py": "4e4f4bf6467b084b1f733bc9aa93c343425bf1acecd1feb760d2eb79f39a618f",
+      "geo_tools/audit_train_complementarity.py": "62e50c085203b9cc5628c2844a3f749814c50b5369ba802953691aceef373404",
+      "geo_tools/evaluate_predictions.py": "f08e7edd0df359a612b4e726a2c7c444fa877218acbf522e2d9cdce61330f133",
+      "geo_tools/test_contracts.py": "2188de96144735d6b49d102b6052ac640d235c06694634eb70259193d25599f4",
+      "geo_tools/evaluate_suite.py": "6267601a2879b31ab23c8bb21136b31ed381dc3ef876f400bce3b044f2b108e6",
+      "geo_tools/run_online.py": "c4bff4cd015e68ba8dfa5b2ff2162feac1442f3220f05bf644b8e429ca3670e6",
+      "geo_tools/screen_dinov2.py": "97851369d3ed51c2cdb25f7437a4be46530114ef0560d2b24cafba6b6f699dc9",
+      "geo_tools/check_prediction_parity.py": "1e32f75617d06c494457155b9e2e462da39e27adbcd575c76aaa21171b9b2d34",
+      "geo_tools/validate_plane_reference.py": "059e1388e6349ddb34332a0237764ba588f694f08604554c6a502b811499c1f8",
+      "geo_tools/screen_features.py": "bb4f081db69ece7469ea0c35cc2ba8e7ba40d289690dd529f0274f61d0549bf6",
+      "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
+      "geo_tools/screen_hard_events.py": "7b1ee569d2fe70feca3a8bfc4353ad143e1d9feb3ede1818b710416426e0b987",
+      "geo_tools/feature_metrics.py": "560448689c25421721c2cb542f43f2d5c6d7f374b0d50c62076b83a05bf55973",
+      "geo_tools/test_empty_tracking.py": "b97a6cb158864b0da029cd94f088c9572d9503f20a30010c87da89ecd2f1270f",
+      "geo_tools/common.py": "ba2616c7727b4e15082a5cc7f5709a4c68e831b0be342f6d6e0c32b2222c3e42",
+      "geo_tools/test_lightweight_head.py": "f9c1a30c654ef22e4cebcea1ecea56c7b1e0fdcd725aaedb5180069fb8c998f5",
+      "geo_tools/audit_train_gt.py": "6f5fa5b4ebaa842ac5d29d1ad50831752c45fdba1277bab2e7af79b2303d16e0",
+      "geo_tools/run_baseline.py": "0326bd6140b92cc9d0887b79aefea9d448fd782ae564b81cac886bec77641eca",
+      "geo_tools/test_residual_and_causality.py": "5b599d56620bb04712cf8b7260836063b8261a63a4b5ef2d262e43f3f1f1e2c7",
+      "geo_tools/test_geometry.py": "6e8f586b5b731d68888012a9af5ed38eb6b0bc8f26e88fa458b3b138d3e65b32",
+      "geo_tools/validate_empty_association.py": "bbc231eb659c8603558efa62f63c43587338219e5a96644096926eb431cfd92c",
+      "geo_tools/update_reviewer_questions.py": "4c039dc7ac487d6faff10e3237b2d9f80eabf9bbde1ec90e3d8afc309fc05dbb",
+      "geo_tools/lock_baseline.py": "b43ee7b20d8ee0f5035858f617bf9169825907f25733a13e5290448d2613367d",
+      "geo_tools/train_lightweight_heads.py": "f05a3b40ab9223f79bbb7045c8ba95fdf17d4863522e9d78f27e99fc2ed675dc",
+      "geo_tools/extract_gmt_samples.py": "244b0468df787c65c809d7bd632563097340639f4c4a8a336718689a039c6995",
+      "geo_tools/test_camera_geometry.py": "4657fe920a819a7b88fdbb2cb8c53f5d998467efcfffa385390ec360fc743fb3",
+      "geo_tools/calibrate_feature.py": "b7df3867c8fa8b31803bd63beb1ac370959d0ed7a4d91793b38ca06e79d23227",
+      "geo_tools/test_association_trace.py": "981c01731db95f8e33268a5f83e9c76929b89958a956958df9612686aa717c37",
+      "gtr/geometry/runtime.py": "ce8123944766624619071bdd638268117378284322589fe5f1bcb1c0b27277e0",
+      "gtr/geometry/geometry_state.py": "61a77bbe535ffcb82f4668fb85edcf51a1b6d2c9f894a42dba0969cef92e7f67",
+      "gtr/geometry/roi_feature_extractor.py": "0b8c4aae141804a3e9279d9d94c5117b494379b2da7ed4f04895ae86a2f07885",
+      "gtr/geometry/__init__.py": "1350268c23738a57bdaa243154cb46ae625437dace3391949404c69f3996b775",
+      "gtr/geometry/pair_score_adapter.py": "85ce639e4e381d9381fe980c4b443e839b80f048ae90b1e8d2c9572224de0701",
+      "gtr/geometry/geometry_confidence.py": "e4157764f5f9e6350840933a7aabef56e4710e478d57eb200424d36b55e65076",
+      "gtr/geometry/update_signals.py": "511c5b7d3996e29ff75bcdb2a5081732967108e8d2cb07fd69b1f9a811d1f531",
+      "gtr/geometry/association_trace.py": "ba22090df3ff6ea48bf27b72a016752f6ddc57af17953345cdd758bc968554ae",
+      "gtr/geometry/stream_worker.py": "5b527d4d0b4828affb2804cb9a00b7e49da010803b3c52264c767e3f610c51f0",
+      "gtr/geometry/vggt_adapter.py": "8d47a5d1a4112b28a24f692b684b57c0314fc052c4a0e0f2138608978e4bfb8d",
+      "gtr/geometry/camera_geometry.py": "697bff0cab37b9bccd6393e12af2254f6615eea49cb91970487f14cee43dde5d",
+      "gtr/geometry/geometry_alignment.py": "398d3b9f375f1e0856f9197e44ffa823b97caaf42a6dfbc6de9e5629d49b621a",
+      "gtr/geometry/sparse_scheduler.py": "8cbbeafc59cb6f944375d9c0a81e7dc4d6e2c55c8592ab864b88492908b68b13",
+      "gtr/geometry/background_patch_matcher.py": "d72f07876b3668b631c5766946b7f4b38958c28932b62894cb43071c50582d24",
+      "gtr/geometry/lightweight_head.py": "ca36b76acf69015f9eb9d24531a6c2ac91135faf213af82ad5e909394da0d989",
+      "gtr/geometry/dinov2_adapter.py": "b41b8dde9366bb525dd9de36688fedec1ffc69b2c5111b45aac6b638d4fe88ba",
+      "gtr/geometry/online_runner.py": "88b2b3e5af629c23561f08acbb967e0937bbd436acc95f04a9a9f08a60cfad96",
+      "gtr/modeling/freeze_layers.py": "3f3879950ffef3a5281d1ff58ff7456e59f95708ed2e5abb5af548b68b2b30d3",
+      "gtr/modeling/roi_heads/gtr_roi_heads.py": "3e90b9377368cefad7dd482daa66d875e182e1fe46f54aa1928d920f219794b6",
+      "gtr/modeling/roi_heads/transformer.py": "a4102026135c9ef0ae1d2e7329d62f33ae51f0028fabbc8195463c65529e3c76",
+      "gtr/modeling/roi_heads/association_head.py": "06a5ad5045166b6140403d34ef80a5562b5905ee789481a17b5a513b4936151c",
+      "gtr/modeling/roi_heads/custom_fast_rcnn.py": "358236e50de430eeb6e2e95a9c68bc7e3d709239a537af6cbbfe6f7f00b3a1bf",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "cda0e85e7fdd58a1347beba59d1b6011ad8b696b327ca4b71f1a7c50e6cb64f4",
+      "gtr/modeling/meta_arch/custom_rcnn.py": "db1cd2802a92d5dac552e570b2599734a7c13c3cac39f73cb04c9a42c9f56287",
+      "gtr/evaluation/mot_evaluation.py": "57a77f1dea145deaca88cb23658869acafb068f9fd98cfb3dbadb8441f85fe70",
+      "gtr/data/gtr_dataset_mapper.py": "c9be6b759edfb466bf69b2f16d736eabd316ce8c69f35ef15bfb9dcc7f83c5be",
+      "gtr/data/custom_build_augmentation.py": "c649698cbd43ff1c96376a266a1b4c5b91394027566ec4595783a7441b3baf06",
+      "gtr/data/custom_dataset_dataloader.py": "0a60aa96af43919d2a620e4ffa1c767629917000033c52aab3344fc4ccbeba34",
+      "gtr/data/custom_dataset_mapper.py": "8556e6ece48b5d6de8c277392a78e154849160e14cd661106a2d47e27c46f75c",
+      "gtr/data/gtr_dataset_dataloader.py": "eedfdfdf9217269e873e6a34e14645ad672f5d00f263a7ee1115f9774b5cef2d",
+      "gtr/data/transforms/custom_transform.py": "0cbd89da84a1404f21653ec8eb97f7884ab8bf70822345c4369cc8136f302f38",
+      "gtr/data/transforms/custom_augmentation_impl.py": "98647732fabf7a2d839afd18f42d2598848ab93da8cc35f30ff9b3f4a2ebbb7c",
+      "gtr/data/datasets/mot.py": "a84ae3bb29ff896ced74de7e694267388b35efaa175e90705a0717568644c35f",
+      "gtr/config.py": "f94388139525b261d4bfabffe49b51a3feaf2764567602104e734d4c22e1c814"
+    },
+    "source_tree_dirty": false,
+    "source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+    "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+    "annotation_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85"
+  },
+  "used_cache": true,
+  "cache_scope": "only frozen association-TRAIN target vectors; no inference speed claim",
+  "fit_video_ids": [
+    5,
+    8
+  ],
+  "heldout_video_ids": [
+    12
+  ],
+  "heldout_scope": "association TRAIN, not development; backbone historically trained all original TRAIN",
+  "steps": 2000,
+  "seeds": [
+    20261014,
+    20261015,
+    20261016
+  ],
+  "seconds": 169.15099359303713,
+  "sample_manifest_sha256": "18f05229208b671d3ff956b6e6c352d0c1ca3deda1e435b46d48ed4824e930f6",
+  "input_artifact_sha256": {
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v05_f000001.npz": "489ed938eec1b2efb9677862b2076783431edba0878897f4fca5b7c3e7f98fa8",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v05_f000443.npz": "28736010aaa6c0d329b3c178e8fdf84c84ccb33f3b7eb0b1e9c0a5720eb715c7",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v05_f000885.npz": "c77817daa96046ff1fdb3f4dd9c0bf1fc6f4c71361f8c44246d545e957964bbe",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v05_f001327.npz": "66dd91bcc7ca28b3a9274833d0ae625dfb1a7c19205a5f8c5ee8619d13d727d8",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v05_f001769.npz": "6fb1ee7c76038ec34f4420f53bb644b794aa0c4d57139c1df91a226e6db847e3",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v08_f000001.npz": "13a7160ec1f42dcba1dd491e182f94cbdaf97b554976bcd0d8fbeddff27cee98",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v08_f000131.npz": "79dc40dac4220b5dc9167d3f42362ebed45e108302de325e129b2eda66183774",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v08_f000262.npz": "09bf6794b389c424374e8b5d9dce1c760d77abb9cfea23ad91e9bdd1aaf064e3",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v08_f000392.npz": "e5d7e97bf1d42408e52acd79b3d5fec630fb764182164eddacfc6369b4d0fbc3",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v08_f000523.npz": "a9cb134e8754cf8d07ebf48645681ae3c5f43708f0f79235fdeabcd4cc0b4ad7",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v12_f000001.npz": "a32346794beba40dd8f6cf93e7d76e1a3d55f74b00f8f91bffb8e8699ac59cd1",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v12_f000300.npz": "d4f8ffa83c69ecbdb4e04c12138c0e1e4fc6380550078adff204fd74028fbd64",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v12_f000600.npz": "b31b7916630781f71aa981327646ef726eb13b00c0fe54a6c31c86dc1b8dffdf",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v12_f000900.npz": "2a70916938b90a82e799a67cccdc5987d99257f81976cff859cecab06046cb1c",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/samples/screen_train_v1/v12_f001200.npz": "48c3b41649d9d69b8302c8497f84530fc32973e29a5c64560629a47a8d4ad55a",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v05_f000001.npz": "b660f92552e5c6e243b5f831e4b23913cfea7d3c4a7eb0909a39f22205904c63",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v05_f000443.npz": "30d88bea68e869ae25211d021e93a446d41a91dcad2b008b59e1f36804028dc1",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v05_f000885.npz": "b4ca479b977051407d97db3f1c08c9aab2cb4a326efa6ccbafc7754f9e9d7da0",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v05_f001327.npz": "d99722a355ad18a41628e95921b1e6a67afbe7516e2bffdbe7c842f64dd5104b",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v05_f001769.npz": "2884270231a309393f76aac785f5e53217b9ecad166cd298349815dc53c38674",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v08_f000001.npz": "cc20327f73dcbb755a0290f89d97d1eb68135576943b80c74a8017296fdc090d",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v08_f000131.npz": "ae38ca7f14a0b4ac9c6559e2ab2aaca3d78bed35aa19e82d0e6ca0bf84ec8181",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v08_f000262.npz": "e20b5fff7f34b09567a886808f2346208605e8d27424ee49b33c1c61f10520b6",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v08_f000392.npz": "c3c58afd0e23ea03c4ada12b6a0bd6060e0bef84165af1dfb2a253ce8e08ad3d",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v08_f000523.npz": "adc9a572e35c7320c933052caadc6597f446a4b105e843a3c1588233f1fb54dc",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v12_f000001.npz": "681ceebfd007d5f74fccef3e9ce9e81c21be1a208833eebb606b46a77d99d246",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v12_f000300.npz": "415df3bd67c456fa6d1d60dd3fe494ce04ac11e9a70afc2ac690fabbb3e950af",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v12_f000600.npz": "c82e5ce42bba43292a7d3660ad6ed9be65ba8a1f22b31f4975fb3fdcc1cd7240",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v12_f000900.npz": "1191eddd148a67292c60d1ba1b81f0173190238c09b159cddb1db7ab7e7d35a3",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/dinov2_train_v1/v12_f001200.npz": "ff7f2730665e6a6baf6bea596665ebf257c07d3fee1a00eec7cbf96d8ad3e9eb",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v05_f000001.npz": "e04e3a4af676d31ce33d25f5d1fed9817ecc4c004b7558ca5a6901788a275ba1",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v05_f000443.npz": "cd14d10bd4f77a9ad2f9eaac3738eae5050fbafdb0ee7c81eac108f00fd87987",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v05_f000885.npz": "80ab1728e9d9f1cb8578c69000a091aa8ac4abc29b528cd81221b5fd437ae0f5",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v05_f001327.npz": "5f8c086ea7c4f4e399f22cd99c2b21a5e41c09f40a1db07670898c96bc594fbf",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v05_f001769.npz": "4bb3146d67f7a68de648e5976b535c381defc9773fe83de1cffc4b029453c345",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v08_f000001.npz": "bf732f36cadfe63d76b5bac61c5626bdced925f3309b6c17adcbb9431589acf1",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v08_f000131.npz": "cd1df342221afe46786fcf70a06697426efe30ca9c3937f6362514751d1be685",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v08_f000262.npz": "e097521e0c3eea51ccbf78166718aa18e54d0557cd842c337ec0e0fd0390d962",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v08_f000392.npz": "4a095506a64c5952778500508435022f5b4fd12bd33748836d102333bfb3da26",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v08_f000523.npz": "46e35ded756f8fcdf3e71a0afb5f7f1ad128d2865b7ae242d3193ae097eafeed",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v12_f000001.npz": "c2d292f2ba27dbd8b74dda90456c71db3ba9b76f597955e5a09856c425c66424",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v12_f000300.npz": "2d2bf55c112776913a8a8c59dc64f1ea97e08e2e3656aaf78fea2387bd191acc",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v12_f000600.npz": "4e26fe2ffc122028d8c44ba4839a71f87f96124b929632e636f7ce18e50e5dfd",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v12_f000900.npz": "36ecce20ea62a8493cf4b28860e7b4d9e95916be116ef878d8d6fc8b7cdd70aa",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/features/feature_train_native_v1/v12_f001200.npz": "5118170765cf23ca47e80347b86a2974694b6353a9e22b4b129a0c1b8242ea76"
+  },
+  "weight_rule": "fixed2 to permit correction of TRAIN proposal gap2.1596; bounded residual magnitude2; no DEV/TEST tuning",
+  "head_hyperparameters": "AdamW lr0.001 wd0.0001, gradient norm cap10, train initialization scale1/bias-0.5, positive scale constrained0.01..10; fixed before any DEV head evaluation",
+  "selection_rule": "minimum held-out association-TRAIN video12 loss at every500 updates:500,1000,1500,2000 up to fixed2000 budget; all3 seeds retained; no DEV selection",
+  "supervised_rows": "GT-eligible queries; GT-known gallery for loss; fixed unmatched logit0 when no known positive; labels never encoder inputs",
+  "controls": "same2-layer architecture, output32, trainable scalar calibration; hidden widths give <=0.5% parameter count difference; VGGT shares projection across2 order slots",
+  "scope_limitations": [
+    "tiny15-pair TRAIN sample",
+    "not full historical-frame GTA training",
+    "independent DINO also corrects the single TRAIN GMT error",
+    "no track accuracy or scientific gain established"
+  ],
+  "results": [
+    {
+      "backbone": "gmt",
+      "seed": 20261014,
+      "parameters": 309319,
+      "target_parameters": 310402,
+      "selected_step": 2000,
+      "settings": {
+        "gmt_dim": 1152,
+        "foundation_dim": 0,
+        "hidden_dim": 261,
+        "output_dim": 32,
+        "symmetric": false
+      },
+      "train": {
+        "loss": 0.057516610622406004,
+        "queries": 20,
+        "association_accuracy": 1.0,
+        "shared_queries": 20,
+        "retrieval_recall1": 1.0
+      },
+      "validation": {
+        "loss": 0.06613931874744594,
+        "queries": 31,
+        "association_accuracy": 0.967741935483871,
+        "shared_queries": 25,
+        "retrieval_recall1": 1.0
+      },
+      "checkpoint": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/gmt_seed20261014.pt",
+      "checkpoint_sha256": "d3f315f313df6689af109579021233c7e468564d1e164a0facd5732ca95242c0"
+    },
+    {
+      "backbone": "gmt",
+      "seed": 20261015,
+      "parameters": 309319,
+      "target_parameters": 310402,
+      "selected_step": 2000,
+      "settings": {
+        "gmt_dim": 1152,
+        "foundation_dim": 0,
+        "hidden_dim": 261,
+        "output_dim": 32,
+        "symmetric": false
+      },
+      "train": {
+        "loss": 0.057421863079071045,
+        "queries": 20,
+        "association_accuracy": 1.0,
+        "shared_queries": 20,
+        "retrieval_recall1": 1.0
+      },
+      "validation": {
+        "loss": 0.061529514408903196,
+        "queries": 31,
+        "association_accuracy": 0.967741935483871,
+        "shared_queries": 25,
+        "retrieval_recall1": 1.0
+      },
+      "checkpoint": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/gmt_seed20261015.pt",
+      "checkpoint_sha256": "c1e44ca5cf997d76e1eedd36984fcffdb68c65d86ad4335b20dc9d36edf5d99c"
+    },
+    {
+      "backbone": "gmt",
+      "seed": 20261016,
+      "parameters": 309319,
+      "target_parameters": 310402,
+      "selected_step": 2000,
+      "settings": {
+        "gmt_dim": 1152,
+        "foundation_dim": 0,
+        "hidden_dim": 261,
+        "output_dim": 32,
+        "symmetric": false
+      },
+      "train": {
+        "loss": 0.05765767097473144,
+        "queries": 20,
+        "association_accuracy": 1.0,
+        "shared_queries": 20,
+        "retrieval_recall1": 1.0
+      },
+      "validation": {
+        "loss": 0.07060726941563189,
+        "queries": 31,
+        "association_accuracy": 0.967741935483871,
+        "shared_queries": 25,
+        "retrieval_recall1": 1.0
+      },
+      "checkpoint": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/gmt_seed20261016.pt",
+      "checkpoint_sha256": "d8c0110bf178bfc66b4c3d39797c12478e3e2bfaf86da800c69e4e7569b14dde"
+    },
+    {
+      "backbone": "dinov2",
+      "seed": 20261014,
+      "parameters": 309849,
+      "target_parameters": 310402,
+      "selected_step": 1000,
+      "settings": {
+        "gmt_dim": 1152,
+        "foundation_dim": 256,
+        "hidden_dim": 215,
+        "output_dim": 32,
+        "symmetric": false
+      },
+      "train": {
+        "loss": 0.0646933913230896,
+        "queries": 20,
+        "association_accuracy": 1.0,
+        "shared_queries": 20,
+        "retrieval_recall1": 1.0
+      },
+      "validation": {
+        "loss": 0.08085055628325791,
+        "queries": 31,
+        "association_accuracy": 0.967741935483871,
+        "shared_queries": 25,
+        "retrieval_recall1": 1.0
+      },
+      "checkpoint": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/dinov2_seed20261014.pt",
+      "checkpoint_sha256": "2186602fbab5a19a3d35d74874218d2a78c752ea686ce71debbe8296cbfd926d"
+    },
+    {
+      "backbone": "dinov2",
+      "seed": 20261015,
+      "parameters": 309849,
+      "target_parameters": 310402,
+      "selected_step": 2000,
+      "settings": {
+        "gmt_dim": 1152,
+        "foundation_dim": 256,
+        "hidden_dim": 215,
+        "output_dim": 32,
+        "symmetric": false
+      },
+      "train": {
+        "loss": 0.057399266958236696,
+        "queries": 20,
+        "association_accuracy": 1.0,
+        "shared_queries": 20,
+        "retrieval_recall1": 1.0
+      },
+      "validation": {
+        "loss": 0.08220860240980983,
+        "queries": 31,
+        "association_accuracy": 0.967741935483871,
+        "shared_queries": 25,
+        "retrieval_recall1": 1.0
+      },
+      "checkpoint": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/dinov2_seed20261015.pt",
+      "checkpoint_sha256": "ec2d9605be04464cc48d53ce5a56e2d0b70427216e60bb62856983ab5fc31fb4"
+    },
+    {
+      "backbone": "dinov2",
+      "seed": 20261016,
+      "parameters": 309849,
+      "target_parameters": 310402,
+      "selected_step": 500,
+      "settings": {
+        "gmt_dim": 1152,
+        "foundation_dim": 256,
+        "hidden_dim": 215,
+        "output_dim": 32,
+        "symmetric": false
+      },
+      "train": {
+        "loss": 0.07680699825286866,
+        "queries": 20,
+        "association_accuracy": 1.0,
+        "shared_queries": 20,
+        "retrieval_recall1": 1.0
+      },
+      "validation": {
+        "loss": 0.0853933033067733,
+        "queries": 31,
+        "association_accuracy": 0.967741935483871,
+        "shared_queries": 25,
+        "retrieval_recall1": 1.0
+      },
+      "checkpoint": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/dinov2_seed20261016.pt",
+      "checkpoint_sha256": "1944304095ce05a00358ec6dc7557fabd9401e82783fb4d9000eceabe8e9f41a"
+    },
+    {
+      "backbone": "vggt",
+      "seed": 20261014,
+      "parameters": 310402,
+      "target_parameters": 310402,
+      "selected_step": 2000,
+      "settings": {
+        "gmt_dim": 1152,
+        "foundation_dim": 2048,
+        "hidden_dim": 96,
+        "output_dim": 32,
+        "symmetric": true
+      },
+      "train": {
+        "loss": 0.05759677290916443,
+        "queries": 20,
+        "association_accuracy": 1.0,
+        "shared_queries": 20,
+        "retrieval_recall1": 1.0
+      },
+      "validation": {
+        "loss": 0.07224255673354492,
+        "queries": 31,
+        "association_accuracy": 0.967741935483871,
+        "shared_queries": 25,
+        "retrieval_recall1": 1.0
+      },
+      "checkpoint": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+      "checkpoint_sha256": "ed25a617e7b94742478c17018f0a9d256895d5c888689c56d6c6411e1d214698"
+    },
+    {
+      "backbone": "vggt",
+      "seed": 20261015,
+      "parameters": 310402,
+      "target_parameters": 310402,
+      "selected_step": 1500,
+      "settings": {
+        "gmt_dim": 1152,
+        "foundation_dim": 2048,
+        "hidden_dim": 96,
+        "output_dim": 32,
+        "symmetric": true
+      },
+      "train": {
+        "loss": 0.0594610869884491,
+        "queries": 20,
+        "association_accuracy": 1.0,
+        "shared_queries": 20,
+        "retrieval_recall1": 1.0
+      },
+      "validation": {
+        "loss": 0.08056466073030606,
+        "queries": 31,
+        "association_accuracy": 0.967741935483871,
+        "shared_queries": 25,
+        "retrieval_recall1": 1.0
+      },
+      "checkpoint": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261015.pt",
+      "checkpoint_sha256": "82afeb08a83aa69abfcd4dc7c2fd2460d4f951df3150a98b5e47e34051e67909"
+    },
+    {
+      "backbone": "vggt",
+      "seed": 20261016,
+      "parameters": 310402,
+      "target_parameters": 310402,
+      "selected_step": 2000,
+      "settings": {
+        "gmt_dim": 1152,
+        "foundation_dim": 2048,
+        "hidden_dim": 96,
+        "output_dim": 32,
+        "symmetric": true
+      },
+      "train": {
+        "loss": 0.05754549503326416,
+        "queries": 20,
+        "association_accuracy": 1.0,
+        "shared_queries": 20,
+        "retrieval_recall1": 1.0
+      },
+      "validation": {
+        "loss": 0.0850275021744892,
+        "queries": 31,
+        "association_accuracy": 0.9354838709677419,
+        "shared_queries": 25,
+        "retrieval_recall1": 1.0
+      },
+      "checkpoint": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261016.pt",
+      "checkpoint_sha256": "6510aeef246f10fcce7f883377da21d51cd486fe968334d2edfa1bfbaa9d5f11"
+    }
+  ],
+  "original_training_report": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/manifest.json",
+  "original_training_report_sha256": "24d87a1ddfb15a658ac9fc5a2383d0e08ea23985198dc1078d5659d6b024061b",
+  "metadata_correction": "original prose omitted1500, while actual code/checkpoints/curves include every500 updates; numeric results and selected weights unchanged"
+}

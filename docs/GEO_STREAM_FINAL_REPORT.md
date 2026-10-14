@@ -41,12 +41,16 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | C_gmt_reid_absolute_w05_k1_strict_v1 | 18 | yes | 79.3094 | 81.1175 | 96.6724 | 96.6724 | 7 |
 | C_gmt_reid_absolute_w05_k1_strict_v1 | 19 | yes | 77.8222 | 81.6131 | 94.6915 | 94.6915 | 29 |
 | online_B0_full_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| online_native_l17_joint_full_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | B0_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
+| B1_dinov2_dense_strict_suite_v1 | ALL_STRICT | yes | 81.0570 | 81.8986 | 95.6334 | 95.6334 | 41 |
 | B1_dinov2_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
+| B2_native_absolute_dense_strict_suite_v1 | ALL_STRICT | yes | 81.0257 | 81.9002 | 95.5912 | 95.5912 | 43 |
 | B2_native_absolute_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | B2_native_row_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | B2_w05_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | B3_multilayer_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
+| B6_vggt_camera_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | C_gmt_reid_strict_suite_v1 | ALL_STRICT | yes | 80.9947 | 81.7598 | 95.4944 | 95.4944 | 43 |
 
 Required remaining work: dense-update residual paired full-video tests and counterfactual activity diagnosis; geometry failure recovery; actual adaptive/async causal integration with separate baseline; matched-call-budget scheduler experiments; repeated stability checks and WWW retrieval evidence. Completed sparse feature tests, source/pose diagnostics and causal OFF results are evidence with limited scope, not completion of the requested experiment matrix.

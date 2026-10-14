@@ -108,7 +108,7 @@ def main():
         steps=args.steps,seeds=args.seeds,seconds=time.perf_counter()-start,sample_manifest_sha256=sha256(args.samples),input_artifact_sha256=artifact_hashes,
         weight_rule='fixed2 to permit correction of TRAIN proposal gap2.1596; bounded residual magnitude2; no DEV/TEST tuning',
         head_hyperparameters='AdamW lr0.001 wd0.0001, gradient norm cap10, train initialization scale1/bias-0.5, positive scale constrained0.01..10; fixed before any DEV head evaluation',
-        selection_rule='minimum held-out association-TRAIN video12 loss at500/1000/2000 checkpoints, all3 seeds retained; no DEV selection',
+        selection_rule='minimum held-out association-TRAIN video12 loss at every500 updates (500/1000/1500/2000 up to the fixed budget), all3 seeds retained; no DEV selection',
         supervised_rows='GT-eligible queries; GT-known gallery for loss; fixed unmatched logit0 when no known positive; labels never encoder inputs',
         controls='same2-layer architecture, output32, trainable scalar calibration; hidden widths give <=0.5% parameter count difference; VGGT shares projection across2 order slots',
         scope_limitations=['tiny15-pair TRAIN sample','not full historical-frame GTA training','independent DINO also corrects the single TRAIN GMT error','no track accuracy or scientific gain established'],results=results)

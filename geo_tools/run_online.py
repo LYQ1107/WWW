@@ -7,7 +7,7 @@ def main():
     p.add_argument('--geometry-weight',type=float,default=0.);p.add_argument('--geometry-method',default='sift')
     p.add_argument('--backbone',choices=['vggt','dinov2','gmt'],default='vggt');p.add_argument('--layer',type=int,default=17);p.add_argument('--projection-dim',type=int,default=-1);p.add_argument('--calibration',default='');p.add_argument('--pooling',default='roi_align')
     p.add_argument('--interval',type=int,default=10);p.add_argument('--policy',choices=['fixed','every','random','motion','identity','joint'],default='')
-    p.add_argument('--call-budget',type=int,default=20);p.add_argument('--budget-window',type=int,default=100);p.add_argument('--min-interval',type=int,default=2);p.add_argument('--offset',type=int,default=0);p.add_argument('--scheduler-seed',type=int,default=20261014);a=p.parse_args()
+    p.add_argument('--call-budget',type=int,default=20);p.add_argument('--budget-window',type=int,default=100);p.add_argument('--min-interval',type=int,default=2);p.add_argument('--offset',type=int,default=0);p.add_argument('--scheduler-seed',type=int,default=20261014);p.add_argument('--head-path',default='');p.add_argument('--max-residual',type=float,default=1.);a=p.parse_args()
     out=RUNTIME/'online'/a.tag
     if out.exists():raise FileExistsError(out)
     out.mkdir(parents=True);sys.path[:0]=[str(RUNTIME/'sources/vggt'),str(RUNTIME/'sources/dinov2')]
@@ -15,7 +15,7 @@ def main():
     opts=dict(ENABLED=a.feature_weight!=0 or a.geometry_weight!=0,FEATURE_ENABLED=True,GEOMETRY_ENABLED=True,FEATURE_WEIGHT=a.feature_weight,GEOMETRY_WEIGHT=a.geometry_weight,
         FEATURE_LAYERS=[a.layer] if a.backbone=='vggt' else [-1],FEATURE_BACKBONE=a.backbone,PROJECTION_DIM=a.projection_dim,POOLING=a.pooling,SYMMETRIZE_VIEW_ORDER=a.backbone=='vggt',
         CALIBRATION_PATH=a.calibration or str(ROOT/'manifests'/default_calibration),VGGT_CHECKPOINT=str(RUNTIME/'weights/vggt_1b.pt'),DINOV2_CHECKPOINT=str(RUNTIME/'weights/dinov2_vitl14_reg4.pth'),
-        GEOMETRY_METHOD=a.geometry_method,UPDATE_INTERVAL=a.interval,UPDATE_OFFSET=a.offset,SPARSE_UPDATE_ENABLED=bool(a.policy),UPDATE_POLICY=a.policy or 'fixed',
+        HEAD_PATH=a.head_path,MAX_RESIDUAL=a.max_residual,GEOMETRY_METHOD=a.geometry_method,UPDATE_INTERVAL=a.interval,UPDATE_OFFSET=a.offset,SPARSE_UPDATE_ENABLED=bool(a.policy),UPDATE_POLICY=a.policy or 'fixed',
         COMPUTE_BUDGET=a.call_budget,BUDGET_WINDOW=a.budget_window,MIN_UPDATE_INTERVAL=a.min_interval,SCHEDULER_SEED=a.scheduler_seed)
     cfg,model=load_gmt(geo_opts=opts)
     from gtr.geometry.online_runner import CausalGMT
@@ -41,5 +41,6 @@ def main():
         budget_unit=model.geo_runtime.budget_unit,planned_update_cost=model.geo_runtime.update_cost,schedule_trace=str(schedule_path),schedule_trace_sha256=sha256(schedule_path),
         encoder_call_scope='extract invocations including failed invocations; failed model loading has no forward invocation',
         call_budget_scope='rolling cap on planned work, conservative on failed/empty attempts; actual encoder calls reported separately; equal cap does not guarantee equal realized calls')
+    if a.head_path:report.update(head_checkpoint_sha256=sha256(a.head_path),head_projection_dimensions=model.geo_runtime.head_checkpoint['settings']['output_dim']*(2 if a.backbone=='vggt' else 1))
     save_json(out/'manifest.json',report);print(json.dumps(report,indent=2))
 if __name__=='__main__':main()

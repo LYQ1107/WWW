@@ -12,6 +12,7 @@ class GeometryRuntime:
         self.cfg=cfg;self.vggt=None;self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.geometry_valid_calls=0;self.geometry_invalid_calls=0;self.failed=0;self.seconds=0.;self.calibration=None
         self.score=PairScoreAdapter(cfg.ENABLED,cfg.FEATURE_WEIGHT if cfg.FEATURE_ENABLED else 0.,cfg.GEOMETRY_WEIGHT if cfg.GEOMETRY_ENABLED else 0.,cfg.MAX_RESIDUAL)
         self.active=cfg.ENABLED and (self.score.feature_weight!=0 or self.score.geometry_weight!=0)
+        self.head=None;self.head_checkpoint=None
         if self.active and cfg.UPDATE_INTERVAL<1:raise ValueError('update interval must be positive')
         if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD not in {'orb','sift','orb_homography','sift_homography','vggt_camera'}:
             raise ValueError('unsupported online geometry method')
@@ -23,16 +24,28 @@ class GeometryRuntime:
             if cfg.FEATURE_BACKBONE not in {'gmt','vggt','dinov2'}:raise ValueError('unsupported feature backbone')
             if cfg.FEATURE_BACKBONE=='gmt' and (cfg.SYMMETRIZE_VIEW_ORDER or cfg.FEATURE_LAYERS!=[-1] or cfg.PROJECTION_DIM!=0 or cfg.POOLING!='reid'):
                 raise ValueError('GMT capacity control requires native ReID, one layer, no view symmetrization')
-            if not cfg.CALIBRATION_PATH:raise ValueError('feature residual requires association-TRAIN scalar calibration')
-            self.calibration=json.loads(Path(cfg.CALIBRATION_PATH).read_text())
-            if self.calibration.get('source_split')!='association_train':raise ValueError('invalid calibration split')
-            if self.calibration.get('symmetric',False)!=cfg.SYMMETRIZE_VIEW_ORDER:raise ValueError('calibration order mode mismatch')
-            if cfg.FEATURE_LAYERS!=self.calibration.get('layers',[self.calibration['layer']]) or cfg.POOLING!=self.calibration['pooling']:raise ValueError('calibration feature mismatch')
-            if self.calibration.get('backbone','vggt')!=cfg.FEATURE_BACKBONE:raise ValueError('calibration backbone mismatch')
-            if self.calibration.get('normalization','absolute') not in {'absolute','candidate_row_zscore'}:raise ValueError('unsupported score normalization')
-            projection_dim=cfg.FEATURE_DIM if cfg.PROJECTION_DIM<0 else cfg.PROJECTION_DIM
-            if self.calibration.get('dim',256)!=projection_dim:raise ValueError('calibration projection dimension mismatch')
+            if cfg.HEAD_PATH:
+                self.head_checkpoint=torch.load(cfg.HEAD_PATH,map_location='cpu')
+                h=self.head_checkpoint
+                if h.get('source_split')!='association_train' or h['backbone']!=cfg.FEATURE_BACKBONE:raise ValueError('head source/backbone mismatch')
+                projection_dim=cfg.FEATURE_DIM if cfg.PROJECTION_DIM<0 else cfg.PROJECTION_DIM
+                if h['projection_dim']!=projection_dim or h['layers']!=cfg.FEATURE_LAYERS or h['pooling']!=cfg.POOLING:raise ValueError('head feature configuration mismatch')
+                if h['settings']['symmetric']!=cfg.SYMMETRIZE_VIEW_ORDER:raise ValueError('head view-order mode mismatch')
+                if h['feature_weight']!=cfg.FEATURE_WEIGHT or h['max_residual']!=cfg.MAX_RESIDUAL:raise ValueError('head residual configuration mismatch')
+            else:
+                self._load_scalar_calibration(cfg)
         self.reset()
+
+    def _load_scalar_calibration(self,cfg):
+        if not cfg.CALIBRATION_PATH:raise ValueError('feature residual requires association-TRAIN scalar calibration')
+        self.calibration=json.loads(Path(cfg.CALIBRATION_PATH).read_text())
+        if self.calibration.get('source_split')!='association_train':raise ValueError('invalid calibration split')
+        if self.calibration.get('symmetric',False)!=cfg.SYMMETRIZE_VIEW_ORDER:raise ValueError('calibration order mode mismatch')
+        if cfg.FEATURE_LAYERS!=self.calibration.get('layers',[self.calibration['layer']]) or cfg.POOLING!=self.calibration['pooling']:raise ValueError('calibration feature mismatch')
+        if self.calibration.get('backbone','vggt')!=cfg.FEATURE_BACKBONE:raise ValueError('calibration backbone mismatch')
+        if self.calibration.get('normalization','absolute') not in {'absolute','candidate_row_zscore'}:raise ValueError('unsupported score normalization')
+        projection_dim=cfg.FEATURE_DIM if cfg.PROJECTION_DIM<0 else cfg.PROJECTION_DIM
+        if self.calibration.get('dim',256)!=projection_dim:raise ValueError('calibration projection dimension mismatch')
 
     def reset(self):
         self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.geometry_valid_calls=0;self.geometry_invalid_calls=0;self.failed=0;self.seconds=0.
@@ -72,6 +85,8 @@ class GeometryRuntime:
         per_layer_dim=projection_dim if projection_dim>0 else (1024 if self.cfg.FEATURE_BACKBONE=='dinov2' else 2048)
         if self.cfg.FEATURE_BACKBONE=='gmt':per_layer_dim=instances[0].reid_features.shape[-1]
         dim=per_layer_dim*len(levels)*(2 if self.cfg.SYMMETRIZE_VIEW_ORDER else 1)
+        if self.head_checkpoint is not None:
+            settings=self.head_checkpoint['settings'];dim=settings['output_dim']*(2 if settings['symmetric'] else 1)
         original_boxes=[]
         for v,(inst,r) in enumerate(zip(instances,records)):
             device=inst.reid_features.device;n=len(inst);h,w=inst.image_size
@@ -136,6 +151,17 @@ class GeometryRuntime:
                         if reverse is not None:chunks += [reverse[f'layer_{l}/{self.cfg.POOLING}'][1-v].to(inst.reid_features.device) for l in levels]
                         inst.geo_vector=torch.cat(chunks,dim=-1)/len(chunks)**.5
                         inst.geo_valid=torch.isfinite(inst.geo_vector).all(-1)&(inst.geo_vector.norm(dim=-1)>0)
+                if self.head_checkpoint is not None:
+                    if self.head is None:
+                        from .lightweight_head import LowRankIdentityHead
+                        head=LowRankIdentityHead(**self.head_checkpoint['settings'])
+                        head.load_state_dict(self.head_checkpoint['state_dict'],strict=True)
+                        self.head=head.to(instances[0].reid_features.device).eval().requires_grad_(False)
+                    for inst in instances:
+                        valid=inst.geo_valid
+                        foundation=None if self.cfg.FEATURE_BACKBONE=='gmt' else inst.geo_vector
+                        inst.geo_vector=self.head.encode(inst.reid_features,foundation)
+                        inst.geo_valid=valid&torch.isfinite(inst.geo_vector).all(-1)&(inst.geo_vector.norm(dim=-1)>0)
             if self.score.geometry_weight and len(instances)==2:
                 # Fundamental is only used for same-time coordinates. No stale-position projection.
                 images=[cv2.imread(r['file_name'],cv2.IMREAD_GRAYSCALE) for r in records]
@@ -174,7 +200,8 @@ class GeometryRuntime:
         except (RuntimeError,ValueError,OSError,cv2.error):
             self.failed+=1
             if not self.cfg.FALLBACK_TO_GMT:raise
-            for inst in instances:inst.geo_valid.zero_()
+            for inst in instances:
+                inst.geo_valid.zero_();inst.geo_vector=inst.reid_features.new_zeros((len(inst),dim))
         finally:self.seconds+=time.perf_counter()-start
 
     def adapt(self,outputs,instances,k):
@@ -186,7 +213,9 @@ class GeometryRuntime:
         feature=None;geo=None
         if self.score.feature_weight:
             legal=cross & query.geo_valid[:,None] & valid[None,:] & ((query.geo_frame[:,None]-frames[None,:]).abs()<=self.cfg.MAX_GEOMETRY_AGE)
-            if self.calibration.get('normalization','absolute')=='candidate_row_zscore':
+            if self.head_checkpoint is not None:
+                feature=outputs[0].new_zeros(outputs[0].shape) if self.head is None else self.head.evidence(query.geo_vector,vecs)*legal
+            elif self.calibration.get('normalization','absolute')=='candidate_row_zscore':
                 raw=query.geo_vector.float()@vecs.float().T
                 raw,legal=normalize_candidate_scores(raw,legal)
                 feature=torch.tanh(self.calibration['slope']*raw+self.calibration['intercept'])*legal
