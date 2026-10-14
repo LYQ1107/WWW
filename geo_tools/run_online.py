@@ -7,7 +7,7 @@ def main():
     p.add_argument('--geometry-weight',type=float,default=0.);p.add_argument('--geometry-method',default='sift')
     p.add_argument('--backbone',choices=['vggt','dinov2','gmt'],default='vggt');p.add_argument('--layer',type=int,default=17);p.add_argument('--projection-dim',type=int,default=-1);p.add_argument('--calibration',default='');p.add_argument('--pooling',default='roi_align')
     p.add_argument('--interval',type=int,default=10);p.add_argument('--policy',choices=['fixed','every','random','motion','identity','joint'],default='')
-    p.add_argument('--call-budget',type=int,default=20);p.add_argument('--budget-window',type=int,default=100);p.add_argument('--min-interval',type=int,default=2);p.add_argument('--offset',type=int,default=0);p.add_argument('--scheduler-seed',type=int,default=20261014);p.add_argument('--head-path',default='');p.add_argument('--max-residual',type=float,default=1.);p.add_argument('--async-gpu',default='');p.add_argument('--async-timeout',type=float,default=5.);p.add_argument('--total-call-budget',type=int,default=-1);p.add_argument('--validate-reversed-vggt-order',action='store_true');p.add_argument('--reuse-target-features',action='store_true');a=p.parse_args()
+    p.add_argument('--call-budget',type=int,default=20);p.add_argument('--budget-window',type=int,default=100);p.add_argument('--min-interval',type=int,default=2);p.add_argument('--offset',type=int,default=0);p.add_argument('--scheduler-seed',type=int,default=20261014);p.add_argument('--head-path',default='');p.add_argument('--max-residual',type=float,default=1.);p.add_argument('--async-gpu',default='');p.add_argument('--async-timeout',type=float,default=5.);p.add_argument('--total-call-budget',type=int,default=-1);p.add_argument('--validate-reversed-vggt-order',action='store_true');p.add_argument('--reuse-target-features',action='store_true');p.add_argument('--validate-gmt-camera-index',action='store_true');a=p.parse_args()
     out=RUNTIME/'online'/a.tag
     if out.exists():raise FileExistsError(out)
     out.mkdir(parents=True);sys.path[:0]=[str(RUNTIME/'sources/vggt'),str(RUNTIME/'sources/dinov2')]
@@ -28,6 +28,10 @@ def main():
         ASYNC_WORKER=bool(a.async_gpu),ASYNC_GPU=a.async_gpu,ASYNC_TIMEOUT=a.async_timeout,VGGT_SOURCE=str(RUNTIME/'sources/vggt'),HEAD_PATH=a.head_path,MAX_RESIDUAL=a.max_residual,GEOMETRY_METHOD=a.geometry_method,UPDATE_INTERVAL=a.interval,UPDATE_OFFSET=a.offset,SPARSE_UPDATE_ENABLED=bool(a.policy),UPDATE_POLICY=a.policy or 'fixed',
         COMPUTE_BUDGET=a.call_budget,TOTAL_CALL_BUDGET=a.total_call_budget,BUDGET_WINDOW=a.budget_window,MIN_UPDATE_INTERVAL=a.min_interval,SCHEDULER_SEED=a.scheduler_seed,REUSE_TARGET_FEATURES=a.reuse_target_features)
     cfg,model=load_gmt(geo_opts=opts)
+    camera_hook=None
+    if a.validate_gmt_camera_index:
+        from gtr.geometry.camera_encoding_validation import install_single_image_camera_control
+        camera_hook=install_single_image_camera_control(model)
     from gtr.geometry.online_runner import CausalGMT
     from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
     rows=video_records(train_data(),a.video_id,a.max_frames);groups={}
@@ -46,7 +50,8 @@ def main():
     async_report=model.geo_runtime.async_report()
     if async_report is not None:save_json(out/'async_trace.json',async_report)
     report=provenance();report.update(causal_online=True,full_video=a.max_frames is None,video_id=a.video_id,synchronized_groups=len(groups),images=len(rows),
-        speed_eligible=not a.validate_reversed_vggt_order,validation_reversed_vggt_order=a.validate_reversed_vggt_order,
+        speed_eligible=not (a.validate_reversed_vggt_order or a.validate_gmt_camera_index),validation_reversed_vggt_order=a.validate_reversed_vggt_order,
+        validation_corrected_gmt_camera_index=a.validate_gmt_camera_index,
         camera_order_validation_scope='encoder images/ROI inputs reversed before each call; pooled vectors, patch maps and camera pose rows restored to original physical camera IDs; GMT input/association ordering canonical and unchanged',
         protocol='causal GMT initialization/GTA/memory, no future MIN_TRACK_LEN filtering or delay_cls; current/past timestamps only',
         feature_weight=a.feature_weight,seconds=total,camera_image_fps=len(rows)/total,synchronized_group_fps=len(groups)/total,
