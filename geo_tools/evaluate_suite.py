@@ -34,7 +34,7 @@ def evaluate(gt,trackers,lengths,base):
         IDF1=float(combined['Identity']['IDF1']*100),MOTA=float(combined['CLEAR']['MOTA']*100),IDSW=int(combined['CLEAR']['IDSW']))
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('--sources',type=Path,required=True);p.add_argument('--tag',required=True);a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--sources',type=Path,required=True);p.add_argument('--tag',required=True);p.add_argument('--report-output',type=Path);a=p.parse_args()
     source=json.loads(a.sources.read_text());paths={int(v):Path(path) for v,path in source['video_predictions'].items()}
     split=json.loads((ROOT/'manifests/geo_split_v1.json').read_text())
     if sorted(paths)!=sorted(split['strict_development_video_ids']):raise ValueError('suite must cover every declared strict development video')
@@ -79,5 +79,5 @@ def main():
         causal_online=online.pop(),metrics=metrics,source_manifest_sha256=sha256(a.sources),prediction_sha256={str(p):sha256(p) for p in paths.values()},run_manifests=runs,
         raw_gt_sha256=hashes,combination='native TrackEval combine_sequences; not mean of per-video normalized scores',evaluator='TrackEval, not official MATLAB',
         seconds=time.perf_counter()-start,provenance=provenance())
-    save_json(out/'metrics.json',report);save_json(ROOT/f'results/{a.tag}_metrics.json',report);print(json.dumps(report,indent=2))
+    save_json(out/'metrics.json',report);save_json(a.report_output or ROOT/f'results/{a.tag}_metrics.json',report);print(json.dumps(report,indent=2))
 if __name__=='__main__':main()
