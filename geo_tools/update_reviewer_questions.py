@@ -27,6 +27,11 @@ def main():
         probe=json.loads(camera_probe.read_text())
         if probe['status']=='INFERENCE_CAMERA_COLLAPSE_OBSERVED':
             camera_note=' 另发现官方单图推理空间/相机MLP输入的相机标量两路都为0（真实ROI方法语义探针，感知/MLP捕获为stub）；显式正确相机索引的实际baseline诊断已排队，锁定生产基线未变。不能在排除此来源前将增益归因于VGGT独有信息。'
+            accuracy_path=ROOT/'results/camera_index_corrected_scene1_accuracy_audit_v1.json'
+            if accuracy_path.exists():
+                accuracy=json.loads(accuracy_path.read_text())
+                if accuracy['exact_serialized_predictions']:
+                    camera_note=' 官方单图推理相机MLP输入两路均为0的源码问题已确认；实际scene1正确相机索引对照与原baseline逐条预测完全一致、所有指标差值为0。因此该修正未解释scene1收益，其他完整strict场景仍须验证。锁定生产基线保留，源码问题与准确率影响分别报告。'
     questions=[
     ('为什么 RPCE 之外需要动态几何？','尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。'+camera_note),
     ('为什么不直接使用 DINOv2/ReID？',f'必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1={pct(baseline)}，高于当前 VGGT 中间层。独立DINO稀疏/逐帧完整严格开发对照以及容量匹配GMT/DINO学习头主种子对照已完成，VGGT学习头未优于它们。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。'),

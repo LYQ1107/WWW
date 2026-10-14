@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "groups": 40,
+  "exact_identity_output_prefix": true,
+  "exact_scheduler_prefix": true,
+  "detections": 200,
+  "actual_vggt_calls": 4,
+  "target_cache": {
+    "stats": {
+      "stored_targets": 10,
+      "reused_targets": 116,
+      "queried_targets": 190,
+      "stale_camera_snapshots": 0
+    },
+    "payload_bytes": 24400,
+    "peak_payload_bytes": 24400,
+    "max_targets_per_camera": 128,
+    "max_cameras": 2,
+    "max_age": 20,
+    "min_cosine": 0.9,
+    "min_relative_margin": 0.05,
+    "min_bbox_iou": 0.5,
+    "scope": "one detached source snapshot per physical camera; compressed projected vector plus native matching descriptor and source bbox; no GT/track-ID matching, no geometry propagation"
+  },
+  "retained_tensor_payload_bound_bytes": 1249280,
+  "limitations": "Cache source ages are enforced in implementation and tested separately; these runs did not log per-target source-age traces. Prefix equality checks actual identity outputs and scheduling, not every hidden tensor.",
+  "scope": "two actual synchronous causal cached VGGT runs; exact serialized identity output and scheduler prefix; no GT used",
+  "source_runs": [
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/cache_vggt_prefix40_scene1_v1",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/cache_vggt_prefix60_scene1_v1"
+  ],
+  "manifest_sha256": [
+    "855e675b87570f84b4f7c69942382d7004902c426cd38c0864f038c0e3479ed5",
+    "c56875b1e43d5e5fcd49e7bb238922925c118fc02aa86949f8174779f8eecd72"
+  ],
+  "audit_source_sha256": "59d010f60867ca29502916895b1f567c43266995e0ce5b6c8e08557b2a5c56a5"
+}
