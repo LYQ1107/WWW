@@ -1,5 +1,5 @@
 """Shared provenance and pure-GMT loading; never imports JEV."""
-import hashlib, json, os, random, subprocess, sys
+import hashlib, json, os, random, subprocess, sys, datetime
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = Path(os.environ.get('GEO_RUNTIME', '/data1/liuyeqiang/WWW_vggt_geo_runtime'))
@@ -16,6 +16,12 @@ def sha256(path):
 # Snapshot the source at process import, before any long-running experiment.
 SOURCE_HASHES = {str(p.relative_to(ROOT)): sha256(p) for directory in [ROOT/'geo_tools',ROOT/'gtr/geometry',ROOT/'gtr/modeling',ROOT/'gtr/evaluation',ROOT/'gtr/data'] for p in directory.rglob('*.py')}
 SOURCE_HASHES['gtr/config.py'] = sha256(ROOT/'gtr/config.py')
+PROCESS_STARTED_UTC = datetime.datetime.now(datetime.timezone.utc).isoformat()
+try:
+    STDOUT_TARGET=os.readlink('/proc/self/fd/1')
+except OSError:
+    STDOUT_TARGET=None
+RAW_LOG_PATH=STDOUT_TARGET if STDOUT_TARGET and STDOUT_TARGET.startswith('/') and STDOUT_TARGET!='/dev/null' else None
 SOURCE_COMMIT = subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
 SOURCE_STATUS = subprocess.check_output(['git','status','--porcelain'],cwd=ROOT,text=True)
 SOURCE_DIFF_SHA256 = hashlib.sha256(subprocess.check_output(['git','diff','HEAD'],cwd=ROOT)).hexdigest()
@@ -68,7 +74,7 @@ def map_records(cfg, records):
 
 def provenance(seed=20261014):
     import torch, numpy
-    return dict(commit=SOURCE_COMMIT,report_generation_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+    return dict(process_started_utc=PROCESS_STARTED_UTC,report_generated_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),raw_log_path=RAW_LOG_PATH,source_worktree=str(ROOT),commit=SOURCE_COMMIT,report_generation_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
                 command=sys.argv, seed=seed, python=sys.version, torch=torch.__version__, numpy=numpy.__version__,
                 cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'), used_cache=False,
                 source_hashes=SOURCE_HASHES,source_tree_dirty=bool(SOURCE_STATUS),source_diff_sha256=SOURCE_DIFF_SHA256,
