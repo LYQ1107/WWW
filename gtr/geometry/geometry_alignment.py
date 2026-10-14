@@ -40,3 +40,29 @@ def soft_box_evidence(F,boxes1,boxes2,valid,confidence=1.,tolerance_pixels=12.):
     scale=tolerance_pixels+radius2[:,None]+radius1[None,:]
     score=np.clip(confidence,0,1)*np.tanh((1-distances/scale)/2)
     return np.where(np.isfinite(score),score,0.)
+
+
+def project_points(H,points):
+    values=np.c_[points,np.ones(len(points))]@H.T
+    with np.errstate(divide='ignore',invalid='ignore'):return values[:,:2]/values[:,2:]
+
+def symmetric_transfer_distance(H,points1,points2):
+    forward=project_points(H,points1);backward=project_points(np.linalg.inv(H),points2)
+    return np.sqrt(.5*((forward-points2)**2).sum(-1)+.5*((backward-points1)**2).sum(-1))
+
+def propagate_plane_homography(H_old21,A1_current_from_old,A2_current_from_old):
+    H_new21=A2_current_from_old@H_old21@np.linalg.inv(A1_current_from_old)
+    if not np.isfinite(H_new21).all() or abs(np.linalg.det(H_new21))<1e-12:raise ValueError('invalid plane propagation')
+    return H_new21/np.linalg.norm(H_new21)
+
+def soft_plane_evidence(H,boxes1,boxes2,valid,confidence=1.,tolerance_pixels=12.):
+    """Soft ground-plane footpoint diagnostic; no exact 3D localization claim."""
+    shape=(len(boxes2),len(boxes1))
+    if not valid or H is None or not np.isfinite(H).all() or not boxes1.size or not boxes2.size:return np.zeros(shape)
+    p1=np.c_[(boxes1[:,0]+boxes1[:,2])/2,boxes1[:,3]];p2=np.c_[(boxes2[:,0]+boxes2[:,2])/2,boxes2[:,3]]
+    try:distance=symmetric_transfer_distance(H,np.tile(p1,(len(p2),1)),np.repeat(p2,len(p1),axis=0)).reshape(shape)
+    except np.linalg.LinAlgError:return np.zeros(shape)
+    radius1=np.linalg.norm(boxes1[:,2:]-boxes1[:,:2],axis=1)/2;radius2=np.linalg.norm(boxes2[:,2:]-boxes2[:,:2],axis=1)/2
+    scale=tolerance_pixels+radius2[:,None]+radius1[None,:]
+    value=np.clip(confidence,0,1)*np.tanh((1-distance/scale)/2)
+    return np.where(np.isfinite(value),value,0.)

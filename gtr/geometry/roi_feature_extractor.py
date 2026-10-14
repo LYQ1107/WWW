@@ -63,6 +63,7 @@ def pool_roi(feature_map, boxes, mode='roi_align', patch=14):
 
 def compress(vectors, dim=256, seed=20261014):
     """Fixed random projection. Pool/normalize before projection; no dense-token caching."""
+    if dim==0:return F.normalize(vectors.float(),dim=-1,eps=1e-8)
     generator=torch.Generator(device='cpu').manual_seed(seed)
     projection=torch.randn(vectors.shape[-1],dim,generator=generator,dtype=torch.float32)/dim**.5
     return F.normalize(vectors.float()@projection.to(vectors.device),dim=-1,eps=1e-8)

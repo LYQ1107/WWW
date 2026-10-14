@@ -46,6 +46,7 @@ def main():
         diagnostics.append(row);save_json(out/'diagnostics.json',diagnostics);print(json.dumps(row),flush=True)
     rows=[dict(setting=k,**evaluate_scores(v)) for k,v in matrix_items.items()]
     report_name='feature_screening' if source['provenance'].get('split','dev')=='dev' else 'feature_training_diagnostics'
+    if a.dim==0:report_name += '_native'
     with (ROOT/f'results/{report_name}.csv').open('w',newline='') as f:
         writer=csv.DictWriter(f,fieldnames=rows[0]);writer.writeheader();writer.writerows(rows)
     save_json(ROOT/f'results/{report_name}_manifest.json',dict(provenance=source_provenance,model_sha256=model_sha,vggt_source_sha=vgsha,sample_manifest_sha256=sha256(a.samples),

@@ -1,11 +1,13 @@
 {
   "provenance": {
-    "commit": "78eeeedf2c87e3b1bfce1ebb30f814bdcc05e10f",
-    "report_generation_commit": "78eeeedf2c87e3b1bfce1ebb30f814bdcc05e10f",
+    "commit": "21983b06c4e83cee2c19b16d2c7442b793227a57",
+    "report_generation_commit": "21983b06c4e83cee2c19b16d2c7442b793227a57",
     "command": [
       "geo_tools/screen_hard_events.py",
       "--events",
-      "/data1/liuyeqiang/WWW_vggt_geo_runtime/hard_events/hard_events_gta_v2/events.json"
+      "/data1/liuyeqiang/WWW_vggt_geo_runtime/hard_events/hard_events_gteligible_v3r2/events.json",
+      "--tag",
+      "hard_gta_gteligible_features_v2"
     ],
     "seed": 20261014,
     "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
@@ -14,18 +16,20 @@
     "cuda_visible_devices": "6",
     "used_cache": false,
     "source_hashes": {
-      "geo_tools/summarize_results.py": "45ef389efd94559da1b5b3cdacb09036d66d6fb3661502565c13f76041810264",
+      "geo_tools/summarize_results.py": "fef56f4faf51b29352caef60e6cc75906623ba8591686518f4c9c371e1bbb499",
+      "geo_tools/target_labels.py": "8b86d7a0e627b1cbe65a73ccb1d30ed2cd96b8d9225d4529d8800d426500644b",
       "geo_tools/preflight.py": "0e9cf4710e89c2e7b1dda1e906bdef21e222468a30fad13df059b0b913f174c6",
-      "geo_tools/collect_hard_events.py": "aa5e744d6505d37c2e00697756093270b2cf6ad4e88f37e0f1a52a83044f1fcd",
+      "geo_tools/collect_hard_events.py": "0a403f11136ad4290914854a4990beff4902fb72362283772d2c64471fa41ac6",
       "geo_tools/validate_vggt_geometry.py": "ca11385fbbab6dfb126dd447d24a2e91e05411ff8b9d2c1f2b0426393ac03bef",
-      "geo_tools/evaluate_predictions.py": "4c7fe1b45a28ff8d9de1c2e3d4770f2d3615534d13cea8b541246e73ad7fb04b",
+      "geo_tools/evaluate_predictions.py": "f08e7edd0df359a612b4e726a2c7c444fa877218acbf522e2d9cdce61330f133",
       "geo_tools/test_contracts.py": "2188de96144735d6b49d102b6052ac640d235c06694634eb70259193d25599f4",
+      "geo_tools/evaluate_suite.py": "6267601a2879b31ab23c8bb21136b31ed381dc3ef876f400bce3b044f2b108e6",
       "geo_tools/run_online.py": "38b783425133ba41875c4596015e7ae520c22ed88282cc068ea1879f7e0f086e",
       "geo_tools/screen_dinov2.py": "97851369d3ed51c2cdb25f7437a4be46530114ef0560d2b24cafba6b6f699dc9",
       "geo_tools/check_prediction_parity.py": "1e32f75617d06c494457155b9e2e462da39e27adbcd575c76aaa21171b9b2d34",
       "geo_tools/screen_features.py": "319960784b4ab7f733cc94bc1640a27db34cfb3e4e8d95646a7688af3f20ebb3",
       "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
-      "geo_tools/screen_hard_events.py": "4c5acc76f8fe4e7a8159d4878453114d24cfd98219c472854e80fc91c3ebeb44",
+      "geo_tools/screen_hard_events.py": "24e1883202bd81ca1ca7ec7b08da74ae8e981269710a84bf256c4a071d7c2fa3",
       "geo_tools/feature_metrics.py": "560448689c25421721c2cb542f43f2d5c6d7f374b0d50c62076b83a05bf55973",
       "geo_tools/common.py": "e9884c1e5b06bed8f450f643bab689b3a58bb90773b1e68f31c6bf64c7aca385",
       "geo_tools/audit_train_gt.py": "6f5fa5b4ebaa842ac5d29d1ad50831752c45fdba1277bab2e7af79b2303d16e0",
@@ -71,7 +75,7 @@
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
     "annotation_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85"
   },
-  "events_sha256": "ff4cc4e26f52950c5e9b15d49fc003f651e708f5cb1b129df910254efa93625a",
+  "events_sha256": "f52acf3a2ed8f712603702d5cc3f60ee8017f86cf5e007e75a21ff6151211868",
   "event_count": 12,
   "source_video_ids": [
     18
@@ -80,231 +84,95 @@
   "used_cache": true,
   "cache_scope": "selected frozen GMT target boxes/vectors/logits",
   "validity_labels_only_after_event_selection": true,
-  "source_timestamps": 42,
+  "source_timestamps": 24,
   "diagnostics": [
     {
       "video_id": 18,
-      "frame_id": 434,
-      "targets": 2,
-      "zero_patch_targets": 2,
+      "frame_id": 656,
+      "targets": 4,
+      "zero_patch_targets": 4,
       "vggt_calls": 2,
-      "seconds": 2.523315578699112
+      "seconds": 4.170445568859577
     },
     {
       "video_id": 18,
-      "frame_id": 435,
-      "targets": 2,
-      "zero_patch_targets": 2,
+      "frame_id": 657,
+      "targets": 4,
+      "zero_patch_targets": 4,
       "vggt_calls": 2,
-      "seconds": 0.795547142624855
+      "seconds": 0.914292961359024
     },
     {
       "video_id": 18,
-      "frame_id": 436,
-      "targets": 2,
-      "zero_patch_targets": 2,
+      "frame_id": 658,
+      "targets": 4,
+      "zero_patch_targets": 4,
       "vggt_calls": 2,
-      "seconds": 0.9110600873827934
+      "seconds": 0.8870895579457283
     },
     {
       "video_id": 18,
-      "frame_id": 437,
-      "targets": 2,
-      "zero_patch_targets": 2,
+      "frame_id": 659,
+      "targets": 4,
+      "zero_patch_targets": 4,
       "vggt_calls": 2,
-      "seconds": 0.812838114798069
+      "seconds": 0.8494975715875626
     },
     {
       "video_id": 18,
-      "frame_id": 438,
-      "targets": 1,
-      "zero_patch_targets": 0,
-      "vggt_calls": 2,
-      "seconds": 0.8130944520235062
-    },
-    {
-      "video_id": 18,
-      "frame_id": 577,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.805179052054882
-    },
-    {
-      "video_id": 18,
-      "frame_id": 578,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.8297491148114204
-    },
-    {
-      "video_id": 18,
-      "frame_id": 579,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.780790239572525
-    },
-    {
-      "video_id": 18,
-      "frame_id": 580,
-      "targets": 2,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.8220693320035934
-    },
-    {
-      "video_id": 18,
-      "frame_id": 581,
-      "targets": 2,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.8864589929580688
-    },
-    {
-      "video_id": 18,
-      "frame_id": 582,
-      "targets": 2,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.815065786242485
-    },
-    {
-      "video_id": 18,
-      "frame_id": 641,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.7847374156117439
-    },
-    {
-      "video_id": 18,
-      "frame_id": 642,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.7720738872885704
-    },
-    {
-      "video_id": 18,
-      "frame_id": 643,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.7692340388894081
-    },
-    {
-      "video_id": 18,
-      "frame_id": 644,
+      "frame_id": 660,
       "targets": 3,
       "zero_patch_targets": 2,
       "vggt_calls": 2,
-      "seconds": 0.8007966056466103
+      "seconds": 0.841805711388588
     },
     {
       "video_id": 18,
-      "frame_id": 648,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.7679253667593002
-    },
-    {
-      "video_id": 18,
-      "frame_id": 649,
-      "targets": 2,
-      "zero_patch_targets": 2,
-      "vggt_calls": 2,
-      "seconds": 0.7880450263619423
-    },
-    {
-      "video_id": 18,
-      "frame_id": 650,
-      "targets": 2,
-      "zero_patch_targets": 2,
-      "vggt_calls": 2,
-      "seconds": 0.8169731050729752
-    },
-    {
-      "video_id": 18,
-      "frame_id": 651,
-      "targets": 2,
-      "zero_patch_targets": 2,
-      "vggt_calls": 2,
-      "seconds": 0.7875943928956985
-    },
-    {
-      "video_id": 18,
-      "frame_id": 652,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.7844178527593613
-    },
-    {
-      "video_id": 18,
-      "frame_id": 738,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.7724899053573608
-    },
-    {
-      "video_id": 18,
-      "frame_id": 739,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.7847448959946632
-    },
-    {
-      "video_id": 18,
-      "frame_id": 740,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.7742700204253197
-    },
-    {
-      "video_id": 18,
-      "frame_id": 741,
-      "targets": 2,
-      "zero_patch_targets": 2,
-      "vggt_calls": 2,
-      "seconds": 0.7994208112359047
-    },
-    {
-      "video_id": 18,
-      "frame_id": 953,
-      "targets": 2,
-      "zero_patch_targets": 2,
-      "vggt_calls": 2,
-      "seconds": 0.7723834961652756
-    },
-    {
-      "video_id": 18,
-      "frame_id": 954,
-      "targets": 2,
-      "zero_patch_targets": 2,
-      "vggt_calls": 2,
-      "seconds": 0.8061664178967476
-    },
-    {
-      "video_id": 18,
-      "frame_id": 955,
-      "targets": 2,
-      "zero_patch_targets": 2,
-      "vggt_calls": 2,
-      "seconds": 0.7972076684236526
-    },
-    {
-      "video_id": 18,
-      "frame_id": 956,
+      "frame_id": 661,
       "targets": 3,
-      "zero_patch_targets": 3,
+      "zero_patch_targets": 2,
       "vggt_calls": 2,
-      "seconds": 0.8019262552261353
+      "seconds": 0.8519046232104301
+    },
+    {
+      "video_id": 18,
+      "frame_id": 662,
+      "targets": 3,
+      "zero_patch_targets": 2,
+      "vggt_calls": 2,
+      "seconds": 0.8297686874866486
+    },
+    {
+      "video_id": 18,
+      "frame_id": 663,
+      "targets": 3,
+      "zero_patch_targets": 2,
+      "vggt_calls": 2,
+      "seconds": 0.9161147475242615
+    },
+    {
+      "video_id": 18,
+      "frame_id": 664,
+      "targets": 3,
+      "zero_patch_targets": 2,
+      "vggt_calls": 2,
+      "seconds": 0.8716631755232811
+    },
+    {
+      "video_id": 18,
+      "frame_id": 665,
+      "targets": 3,
+      "zero_patch_targets": 2,
+      "vggt_calls": 2,
+      "seconds": 0.8433180153369904
+    },
+    {
+      "video_id": 18,
+      "frame_id": 666,
+      "targets": 3,
+      "zero_patch_targets": 2,
+      "vggt_calls": 2,
+      "seconds": 0.8313881754875183
     },
     {
       "video_id": 18,
@@ -312,7 +180,7 @@
       "targets": 1,
       "zero_patch_targets": 1,
       "vggt_calls": 2,
-      "seconds": 0.7788655534386635
+      "seconds": 0.8787910714745522
     },
     {
       "video_id": 18,
@@ -320,7 +188,7 @@
       "targets": 1,
       "zero_patch_targets": 1,
       "vggt_calls": 2,
-      "seconds": 0.8781501054763794
+      "seconds": 0.8975631669163704
     },
     {
       "video_id": 18,
@@ -328,7 +196,7 @@
       "targets": 1,
       "zero_patch_targets": 1,
       "vggt_calls": 2,
-      "seconds": 0.8144022598862648
+      "seconds": 0.8183567300438881
     },
     {
       "video_id": 18,
@@ -336,7 +204,23 @@
       "targets": 1,
       "zero_patch_targets": 1,
       "vggt_calls": 2,
-      "seconds": 0.7737566009163857
+      "seconds": 0.8511545062065125
+    },
+    {
+      "video_id": 18,
+      "frame_id": 1000,
+      "targets": 1,
+      "zero_patch_targets": 1,
+      "vggt_calls": 2,
+      "seconds": 0.9273813813924789
+    },
+    {
+      "video_id": 18,
+      "frame_id": 1001,
+      "targets": 1,
+      "zero_patch_targets": 1,
+      "vggt_calls": 2,
+      "seconds": 0.8834966421127319
     },
     {
       "video_id": 18,
@@ -344,84 +228,61 @@
       "targets": 1,
       "zero_patch_targets": 1,
       "vggt_calls": 2,
-      "seconds": 0.7878829389810562
+      "seconds": 0.8183321878314018
     },
     {
       "video_id": 18,
       "frame_id": 1003,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.869004637002945
-    },
-    {
-      "video_id": 18,
-      "frame_id": 1004,
-      "targets": 1,
-      "zero_patch_targets": 1,
-      "vggt_calls": 2,
-      "seconds": 0.7905852943658829
-    },
-    {
-      "video_id": 18,
-      "frame_id": 1005,
       "targets": 2,
       "zero_patch_targets": 2,
       "vggt_calls": 2,
-      "seconds": 0.8205379620194435
+      "seconds": 0.8283003494143486
     },
     {
       "video_id": 18,
-      "frame_id": 1006,
-      "targets": 1,
-      "zero_patch_targets": 1,
+      "frame_id": 1022,
+      "targets": 2,
+      "zero_patch_targets": 0,
       "vggt_calls": 2,
-      "seconds": 0.788058765232563
-    },
-    {
-      "video_id": 18,
-      "frame_id": 1007,
-      "targets": 3,
-      "zero_patch_targets": 3,
-      "vggt_calls": 2,
-      "seconds": 0.8259942010045052
+      "seconds": 0.9280848354101181
     },
     {
       "video_id": 18,
       "frame_id": 1023,
-      "targets": 1,
-      "zero_patch_targets": 1,
+      "targets": 2,
+      "zero_patch_targets": 0,
       "vggt_calls": 2,
-      "seconds": 0.776743695139885
+      "seconds": 0.8683092147111893
     },
     {
       "video_id": 18,
       "frame_id": 1024,
-      "targets": 1,
-      "zero_patch_targets": 1,
+      "targets": 2,
+      "zero_patch_targets": 0,
       "vggt_calls": 2,
-      "seconds": 0.7713924795389175
+      "seconds": 0.8506822660565376
     },
     {
       "video_id": 18,
       "frame_id": 1025,
-      "targets": 1,
-      "zero_patch_targets": 1,
+      "targets": 3,
+      "zero_patch_targets": 0,
       "vggt_calls": 2,
-      "seconds": 0.7958943024277687
+      "seconds": 0.8687265366315842
     },
     {
       "video_id": 18,
       "frame_id": 1026,
-      "targets": 2,
+      "targets": 3,
       "zero_patch_targets": 2,
       "vggt_calls": 2,
-      "seconds": 0.8136047199368477
+      "seconds": 0.8431671783328056
     }
   ],
   "vggt_weights_sha256": "d15bf50a8615c8225ed48b51ea5cac673d82442ec0309036df555a053253afe0",
   "dino_weights_sha256": "36e4deffbaef061a2576705b0c36f93621e2ae20bf6274694821b0b492551b51",
-  "status": "INSUFFICIENT_GT_MATCHED_QUERIES",
-  "evaluable_shared_identity_queries": 0,
-  "reason": "all twelve lowest native-GTA-margin queries have no GT match at IoU0.5"
+  "status": "OFFLINE_GT_ELIGIBLE_DIAGNOSTIC_COMPLETE",
+  "evaluable_shared_identity_queries": 12,
+  "eligibility_uses_gt": true,
+  "selection_is_online_policy": false
 }

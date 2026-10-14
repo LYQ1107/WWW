@@ -9,20 +9,29 @@ def background_mask(image,boxes):
     return mask
 
 def estimate_background(image1,image2,boxes1=(),boxes2=(),method='orb',mask_targets=True):
-    detector=cv2.ORB_create(nfeatures=3000) if method=='orb' else cv2.SIFT_create(nfeatures=3000)
+    detector=cv2.ORB_create(nfeatures=3000) if method.startswith('orb') else cv2.SIFT_create(nfeatures=3000)
     mask1=background_mask(image1,boxes1) if mask_targets else None;mask2=background_mask(image2,boxes2) if mask_targets else None
     k1,d1=detector.detectAndCompute(image1,mask1);k2,d2=detector.detectAndCompute(image2,mask2)
-    result=dict(valid=False,keypoints1=len(k1),keypoints2=len(k2),matches=0,inliers=0,inlier_ratio=0.,median_residual=None,coverage=0.,F=None,H=None,points1=np.empty((0,2)),points2=np.empty((0,2)))
+    result=dict(valid=False,keypoints1=len(k1),keypoints2=len(k2),matches=0,inliers=0,inlier_ratio=0.,median_residual=None,coverage=0.,F=None,H=None,points1=np.empty((0,2)),points2=np.empty((0,2)),H_valid=False,H_inliers=0,H_inlier_ratio=0.,H_median_residual=None,H_coverage=0.)
     if d1 is None or d2 is None or len(d1)<8 or len(d2)<8:return result
-    norm=cv2.NORM_HAMMING if method=='orb' else cv2.NORM_L2
+    norm=cv2.NORM_HAMMING if method.startswith('orb') else cv2.NORM_L2
     matches=cv2.BFMatcher(norm).knnMatch(d1,d2,k=2)
     good=[m for pair in matches if len(pair)==2 for m,n in [pair] if m.distance<.75*n.distance]
     result['matches']=len(good)
     if len(good)<8:return result
     p1=np.float32([k1[m.queryIdx].pt for m in good]);p2=np.float32([k2[m.trainIdx].pt for m in good])
     F,mask=cv2.findFundamentalMat(p1,p2,cv2.FM_RANSAC,3.,.99)
-    H,_=cv2.findHomography(p1,p2,cv2.RANSAC,3.)
+    H,hmask=cv2.findHomography(p1,p2,cv2.RANSAC,3.)
     result.update(H=H,points1=p1,points2=p2)
+    if H is not None and H.shape==(3,3) and hmask is not None and np.isfinite(H).all():
+        inside_h=hmask.ravel().astype(bool);a,b=p1[inside_h],p2[inside_h]
+        from .geometry_alignment import symmetric_transfer_distance
+        try:res_h=symmetric_transfer_distance(H,a,b)
+        except np.linalg.LinAlgError:res_h=np.full(len(a),np.inf)
+        median_h=float(np.median(res_h)) if len(a) and np.isfinite(res_h).all() else None
+        coverage_h=min(cv2.contourArea(cv2.convexHull(a))/(image1.shape[0]*image1.shape[1]),cv2.contourArea(cv2.convexHull(b))/(image2.shape[0]*image2.shape[1])) if len(a)>=3 else 0.
+        valid_h=len(a)>=20 and float(inside_h.mean())>=.25 and median_h is not None and median_h<=3. and coverage_h>=.01
+        result.update(H_valid=bool(valid_h),H_inliers=len(a),H_inlier_ratio=float(inside_h.mean()),H_median_residual=median_h,H_coverage=float(coverage_h))
     if F is None or F.shape!=(3,3) or mask is None or not np.isfinite(F).all():return result
     inside=mask.ravel().astype(bool);p1i=p1[inside];p2i=p2[inside]
     ratio=float(inside.mean());res=symmetric_epipolar_distance(F,p1i,p2i)

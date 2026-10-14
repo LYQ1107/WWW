@@ -5,22 +5,28 @@ import cv2,numpy as np,torch
 from .pair_score_adapter import PairScoreAdapter,calibrated_cosine
 from .roi_feature_extractor import PadMapping
 from .geometry_confidence import estimate_background
-from .geometry_alignment import soft_box_evidence
+from .geometry_alignment import soft_box_evidence,soft_plane_evidence
 
 class GeometryRuntime:
     def __init__(self,cfg):
-        self.cfg=cfg;self.vggt=None;self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.failed=0;self.seconds=0.;self.calibration=None
+        self.cfg=cfg;self.vggt=None;self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.geometry_valid_calls=0;self.geometry_invalid_calls=0;self.failed=0;self.seconds=0.;self.calibration=None
         self.score=PairScoreAdapter(cfg.ENABLED,cfg.FEATURE_WEIGHT if cfg.FEATURE_ENABLED else 0.,cfg.GEOMETRY_WEIGHT if cfg.GEOMETRY_ENABLED else 0.,cfg.MAX_RESIDUAL)
         self.active=cfg.ENABLED and (self.score.feature_weight!=0 or self.score.geometry_weight!=0)
+        if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD not in {'orb','sift','orb_homography','sift_homography'}:
+            raise ValueError('unsupported online geometry method; VGGT camera geometry currently has separate validity diagnostics')
+        if self.active and (cfg.ASYNC_WORKER or cfg.SPARSE_UPDATE_ENABLED):
+            raise NotImplementedError('adaptive/async policy integration is pending; current runtime supports synchronous fixed intervals')
         if self.active and self.score.feature_weight:
             if not cfg.CALIBRATION_PATH:raise ValueError('feature residual requires association-TRAIN scalar calibration')
             self.calibration=json.loads(Path(cfg.CALIBRATION_PATH).read_text())
             if self.calibration.get('source_split')!='association_train':raise ValueError('invalid calibration split')
             if self.calibration.get('symmetric',False)!=cfg.SYMMETRIZE_VIEW_ORDER:raise ValueError('calibration order mode mismatch')
-            if cfg.FEATURE_LAYERS!=[self.calibration['layer']] or cfg.POOLING!=self.calibration['pooling']:raise ValueError('calibration feature mismatch')
+            if cfg.FEATURE_LAYERS!=self.calibration.get('layers',[self.calibration['layer']]) or cfg.POOLING!=self.calibration['pooling']:raise ValueError('calibration feature mismatch')
             if self.calibration.get('backbone','vggt')!=cfg.FEATURE_BACKBONE:raise ValueError('calibration backbone mismatch')
+            projection_dim=cfg.FEATURE_DIM if cfg.PROJECTION_DIM<0 else cfg.PROJECTION_DIM
+            if self.calibration.get('dim',256)!=projection_dim:raise ValueError('calibration projection dimension mismatch')
 
-    def reset(self):self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.failed=0;self.seconds=0.
+    def reset(self):self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.geometry_valid_calls=0;self.geometry_invalid_calls=0;self.failed=0;self.seconds=0.
 
     def observe(self,instances,records,frame):
         if not self.active:return
@@ -35,7 +41,10 @@ class GeometryRuntime:
 
     def _observe_impl(self,instances,records,frame):
         if not self.active:return
-        levels=self.cfg.FEATURE_LAYERS;dim=self.cfg.FEATURE_DIM*len(levels)*(2 if self.cfg.SYMMETRIZE_VIEW_ORDER else 1)
+        levels=self.cfg.FEATURE_LAYERS
+        projection_dim=self.cfg.FEATURE_DIM if self.cfg.PROJECTION_DIM<0 else self.cfg.PROJECTION_DIM
+        per_layer_dim=projection_dim if projection_dim>0 else (1024 if self.cfg.FEATURE_BACKBONE=='dinov2' else 2048)
+        dim=per_layer_dim*len(levels)*(2 if self.cfg.SYMMETRIZE_VIEW_ORDER else 1)
         original_boxes=[]
         for v,(inst,r) in enumerate(zip(instances,records)):
             device=inst.reid_features.device;n=len(inst);h,w=inst.image_size
@@ -62,13 +71,13 @@ class GeometryRuntime:
                 from vggt.utils.load_fn import load_and_preprocess_images
                 images=load_and_preprocess_images([r['file_name'] for r in records],mode='pad')
                 mapped=[PadMapping(r['width'],r['height']).boxes(b) for r,b in zip(records,original_boxes)]
-                result,_,_=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=self.cfg.FEATURE_DIM)
+                result,_,_=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=projection_dim)
                 if self.cfg.FEATURE_BACKBONE=='dinov2':self.dinov2_calls+=1
                 else:self.vggt_calls+=1
                 reverse=None
                 if self.cfg.SYMMETRIZE_VIEW_ORDER:
                     if len(instances)!=2:raise ValueError('symmetric mode currently supports exactly two cameras')
-                    reverse,_,_=self.vggt.extract(images.flip(0),mapped[::-1],modes=(self.cfg.POOLING,),dim=self.cfg.FEATURE_DIM)
+                    reverse,_,_=self.vggt.extract(images.flip(0),mapped[::-1],modes=(self.cfg.POOLING,),dim=projection_dim)
                     self.vggt_calls+=1
                 for v,inst in enumerate(instances):
                     chunks=[result[f'layer_{l}/{self.cfg.POOLING}'][v].to(inst.reid_features.device) for l in levels]
@@ -80,6 +89,9 @@ class GeometryRuntime:
                 images=[cv2.imread(r['file_name'],cv2.IMREAD_GRAYSCALE) for r in records]
                 result=estimate_background(*images,*[b.cpu().numpy() for b in original_boxes],method=self.cfg.GEOMETRY_METHOD,mask_targets=True)
                 result['camera_order']=tuple(int(r.get('view_id',v+1)) for v,r in enumerate(records))
+                valid=result['H_valid'] if self.cfg.GEOMETRY_METHOD.endswith('_homography') else result['valid']
+                if valid:self.geometry_valid_calls+=1
+                else:self.geometry_invalid_calls+=1
                 self.geometry[frame]=result
             self.calls+=1
         except (RuntimeError,ValueError,OSError,cv2.error):
@@ -102,14 +114,18 @@ class GeometryRuntime:
             geo=outputs[0].new_zeros(outputs[0].shape)
             if len(query):
                 t=int(query.geo_frame[0]);result=self.geometry.get(t)
-                if result and result['valid']:
+                if result and (result['H_valid'] if self.cfg.GEOMETRY_METHOD.endswith('_homography') else result['valid']):
                     # F defined input view 1 -> 2; invert for reverse query.
                     same=frames==t
                     for camera in query.geo_camera.unique().tolist():
                         qi=query.geo_camera==camera;ri=same&(cams!=camera)
                         if qi.any() and ri.any():
-                            F=result['F'] if camera==result['camera_order'][1] else result['F'].T
-                            scores=soft_box_evidence(F,boxes[ri].cpu().numpy(),query.geo_xyxy[qi].cpu().numpy(),True,result['inlier_ratio'])
+                            if self.cfg.GEOMETRY_METHOD.endswith('_homography'):
+                                H=result['H'] if camera==result['camera_order'][1] else np.linalg.inv(result['H'])
+                                scores=soft_plane_evidence(H,boxes[ri].cpu().numpy(),query.geo_xyxy[qi].cpu().numpy(),True,result['H_inlier_ratio'])
+                            else:
+                                F=result['F'] if camera==result['camera_order'][1] else result['F'].T
+                                scores=soft_box_evidence(F,boxes[ri].cpu().numpy(),query.geo_xyxy[qi].cpu().numpy(),True,result['inlier_ratio'])
                             rows=qi.nonzero(as_tuple=True)[0];cols=ri.nonzero(as_tuple=True)[0]
                             geo[rows[:,None],cols[None,:]]=torch.as_tensor(scores,device=geo.device,dtype=geo.dtype)
         return [self.score.apply(output,feature,geo,cross) for output in outputs]
