@@ -59,7 +59,7 @@ def native_assignment(scores,lengths,threshold=.1):
    if scores[r,c]>acceptance:out[int(r)]=int(c)
  return out
 
-def collect(video,kind='observe',frames=256,records=True,report=True):
+def collect(video,kind='observe',frames=256,records=True,report=True,diagnostic_sample_observer=None):
  from gtr.modeling.gmt_jev import IdentityCorrection
  values,total,images=metadata(video);frames=min(frames,total);seed();m,cfg,_=model();actor=IdentityCorrection(kind).cuda().eval();m.gmt_identity_correction=actor;seed()
  labeler=OfflineCertificates(video,images);samples=[];stats=collections.Counter();groups=set();pending={};boot=[False];last=[0.];begin=time.monotonic();boundary={};init_map={}
@@ -104,7 +104,7 @@ def collect(video,kind='observe',frames=256,records=True,report=True):
   stats['native_births']+=sum(t>s['id_count_before'] for t in ids)
   stats['native_Bank_restored_rows']+=sum(t<=s['id_count_before'] and t not in s['refs'] for t in ids)
   x=s['features'];eligible=s['eligible'];rule=s['raw_scores']+.05*eligible*(x[...,13]/.2).clamp(-1,1)*s['lengths'][None]
-  alternative=native_assignment(rule,s['lengths'],m.overlap_thresh);s['GMT_current_correct']=torch.zeros(len(ids),dtype=torch.bool)
+  alternative=native_assignment(rule,s['lengths'],m.overlap_thresh);s['rule_accepted_cols']=alternative;s['GMT_current_correct']=torch.zeros(len(ids),dtype=torch.bool)
   for row,(t,target,g,alt) in enumerate(zip(ids,s['targets'].tolist(),s['GT_labels_OFFLINE_ONLY'],alternative)):
    if target<0:continue
    target_id=s['refs'][target];base_correct=t==target_id;s['GMT_current_correct'][row]=base_correct
@@ -125,6 +125,7 @@ def collect(video,kind='observe',frames=256,records=True,report=True):
   oracle_choice=native_assignment(oracle,s['lengths'],m.overlap_thresh)
   stats['ORACLE_correct_unique_rows']+=sum(t>=0 and c==t for t,c in zip(s['targets'].tolist(),oracle_choice))
   stats['risk_edges']+=int(s['eligible'].sum());stats['risk_rows']+=int(s['eligible'].any(-1).sum())
+  if diagnostic_sample_observer is not None:diagnostic_sample_observer(s)
   if records and not s['audit_block']:samples.append(s)
   labeler.update(inst,f,v);actor.committed(inst,v,f)
   if time.monotonic()-last[0]>20:
