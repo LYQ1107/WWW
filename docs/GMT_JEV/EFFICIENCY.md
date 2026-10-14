@@ -4,7 +4,7 @@
 
 | 方法 | 场景 FPS | 图像 FPS | 相对 GMT | 新增参数 |
 |---|---:|---:|---:|---:|
-| original | PENDING | PENDING | PENDING | PENDING |
+| original | 1.7049 | 3.4098 | 1.0000 | 0 |
 | threshold | PENDING | PENDING | PENDING | PENDING |
 | rule | PENDING | PENDING | PENDING | PENDING |
 | confidence | PENDING | PENDING | PENDING | PENDING |

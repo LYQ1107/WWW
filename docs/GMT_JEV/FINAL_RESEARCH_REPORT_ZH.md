@@ -43,4 +43,4 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 研究分支 research/gmt-jev-risk-association-20261014；[当前中文报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。每阶段仅推源码、配置和紧凑JSON，权重、视频、图像、预测压缩包留在服务器并记录 SHA。实际发布终态由 runtime/publication/LAST_VERIFIED.json 的 local/remote HEAD 一致证明；报告生成来源 HEAD 与运行时源码 SHA 保存在 JSON。
 
-当前资源快照：{"new_retained_MiB": 255.26749324798584, "home_free_GiB": 50.168636322021484, "GPU_wall_hours_including_live": 1.9517155160403086}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
+当前资源快照：{"new_retained_MiB": 255.37675285339355, "home_free_GiB": 50.167198181152344, "GPU_wall_hours_including_live": 2.0288683084522683}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
