@@ -78,6 +78,18 @@ def main():
   unmet=['HOTA gain and identity stability jointly satisfied','Qualified learned MLP/Attention/CIC comparison','Independent full-video validation','Necessary seed reproduction'],
   prohibited_next_steps=['Tune on TRAIN16 signs','Read new DEV/sealed20-22/TEST/Full24','Replace original GTA','Blindly train larger JEV'],source=binding())
  if pending:decision['unmet'].append('Completed matched full-image efficiency measurements')
+ coverage_path=REPORTS/'FULL_TRAIN_OPPORTUNITY_AUDIT.json';coverage=None;native_rule=None
+ if coverage_path.exists():
+  import collections
+  coverage=read(coverage_path);train_counts=collections.Counter()
+  for case in coverage['cases']:train_counts.update(case['buckets']['TRAIN_BLOCKS'])
+  positive=train_counts['rule_local_N01']>train_counts['rule_local_N10']
+  decision['full_TRAIN_temporal_coverage']=dict(report=ref(coverage_path),TRAIN_bucket_counts=dict(train_counts),local_TRAIN_signal_positive=positive,prefix_results_preserved=True)
+  decision['learned_training']='NOT_RUN_FULL_TRAIN_LOCAL_POSITIVE_NATIVE_VALIDATION_PENDING' if positive else 'NOT_RUN_FULL_TRAIN_RULE_SIGNAL_GATE_FAILED'
+  native_path=REPORTS/'FULL_TRAIN_NATIVE_RULE_AUDIT.json'
+  if native_path.exists():
+   native_rule=read(native_path);decision['full_TRAIN_native_rule_validation']=dict(report=ref(native_path),native_TRAIN_signal_positive=native_rule['native_TRAIN_signal_positive'])
+   decision['learned_training']='NOT_RUN_NATIVE_TRAIN_POSITIVE_SUPERVISION_AND_FAIR_TRAINING_PROTOCOL_PENDING' if native_rule['native_TRAIN_signal_positive'] else 'NOT_RUN_NATIVE_TRAIN_RULE_SIGNAL_GATE_FAILED'
  if stock is not None:
   decision['secondary_stock_development_metric_gates']={k:r['secondary_stock_metric_gates'] for k,r in online['methods'].items()}
   decision['secondary_stock_interpretation']='Rule passes HOTA/AssA/CVIDF1/IDSW/Frag secondary metric gates; stock temporal diagnostics reported separately and speed remains method-specific. Threshold/confidence fail secondary IDSW. This does not override the preregistered primary raw outcome or establish scientific success.'
@@ -88,6 +100,7 @@ def main():
  save(REPORTS/'GO_NO_GO.json',decision)
  goal=read(REPORTS/'MASTER_GOAL.json');goal['status']='ACTIVE';goal['scientific_success']=False
  goal['gates']['SPEED']='PENDING_REAL_FULL_IMAGE_TRIALS' if pending else 'COMPLETE_MEASUREMENTS_SEE_PER_METHOD_GATES'
+ if coverage is not None:goal['gates']['CORRECTION_OPPORTUNITY']=decision['learned_training']
  goal['gates']['INDEPENDENT_VALIDATION']='PENDING_AUTHORIZED_UNSEEN_SOURCE';save(REPORTS/'MASTER_GOAL.json',goal)
  efficiency=['# 实测效率与参数','', '以下只使用完成的三次完整视频结果；缺测项仍为 PENDING。', '',
   '| 方法 | 场景 FPS | 图像 FPS | 相对 GMT | 新增参数 |', '|---|---:|---:|---:|---:|']
@@ -186,6 +199,10 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
  if not pending:
   report=report.replace('（当前证据，效率任务仍以 JSON 终态为准）','（本轮完整证据）').replace('当前未测完，不能声明95%效率门槛通过。','全部三次计时已完成；各方法95%门槛以 SPEED_METRICS.json 的 efficiency_gate_pass 为准，质量与独立验证仍未通过。')
  report+='\n当前资源快照：'+json.dumps(resource,ensure_ascii=False)+'。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。\n'
+ if coverage is not None:
+  report+=f"\n完整 TRAIN12/13/14 覆盖补查：{coverage['counts']['unique_active_rows']} 条可认证唯一合法候选中，GMT 错误 {coverage['counts']['GMT_wrong_unique_active']} 条。TRAIN 时间桶冻结 Rule 局部 N01/N10={train_counts['rule_local_N01']}/{train_counts['rule_local_N10']}；原前缀报告保持不变，这一补查不代表原生闭环或独立验证。当前训练状态：{decision['learned_training']}。见 FULL_TRAIN_OPPORTUNITY_AUDIT.json 与已冻结 TRAIN_NATIVE_RULE_VALIDATION_PROTOCOL.md。\n"
+  if native_rule is not None:
+   report+='\n完整原生 Rule 提交验证的 TRAIN 时间桶计数：'+json.dumps(native_rule['paired_commit_buckets']['TRAIN_BLOCKS'],ensure_ascii=False)+'。仅与同一当前真实状态的 accepted GMT MATCH 比较；原始拒绝后的 Bank 结果为 UNKNOWN，不作整段因果收益或 HOTA 声称。\n'
  (DOCS/'FINAL_RESEARCH_REPORT_ZH.md').write_text(report)
  print('GMT_RESEARCH_REPORT_BUILT',speed['status'],pending,resource,flush=True)
 
