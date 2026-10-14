@@ -61,4 +61,4 @@ def main(kind,gpu):
   untrained_prototype=kind.endswith('_zero'),extra_neural_FLOPs='NOT_MEASURED_YET' if kind.endswith('_zero') else 0,source=binding())
  save(REPORTS/f'SPEED_{kind}.json',result);print('GMT_SPEED_COMPLETE',kind,result['mean_full_scene_FPS'],flush=True)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--kind',choices=['original','threshold','confidence','mlp_zero','cic_zero'],required=True);p.add_argument('--gpu',type=int,required=True);a=p.parse_args();main(a.kind,a.gpu)
+ p=argparse.ArgumentParser();p.add_argument('--kind',choices=['original','threshold','rule','confidence','mlp_zero','cic_zero'],required=True);p.add_argument('--gpu',type=int,required=True);a=p.parse_args();main(a.kind,a.gpu)
