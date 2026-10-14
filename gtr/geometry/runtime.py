@@ -1,5 +1,5 @@
 """Minimal optional evidence hook; original GTA, assignment and memory stay intact."""
-import json,time
+import json,time,random
 from pathlib import Path
 import cv2,numpy as np,torch
 from .pair_score_adapter import PairScoreAdapter,calibrated_cosine
@@ -22,6 +22,17 @@ class GeometryRuntime:
     def reset(self):self.geometry={};self.calls=0;self.vggt_calls=0;self.failed=0;self.seconds=0.
 
     def observe(self,instances,records,frame):
+        if not self.active:return
+        # Pure GMT also jitters association ROIs at inference. New modules must
+        # preserve Python, NumPy and CPU/CUDA RNG streams for paired validity.
+        py_state=random.getstate();np_state=np.random.get_state()
+        device=instances[0].reid_features.device
+        index=device.index if device.index is not None else torch.cuda.current_device()
+        with torch.random.fork_rng(devices=[index]):
+            try:return self._observe_impl(instances,records,frame)
+            finally:random.setstate(py_state);np.random.set_state(np_state)
+
+    def _observe_impl(self,instances,records,frame):
         if not self.active:return
         levels=self.cfg.FEATURE_LAYERS;dim=self.cfg.FEATURE_DIM*len(levels)*(2 if self.cfg.SYMMETRIZE_VIEW_ORDER else 1)
         original_boxes=[]

@@ -7,9 +7,11 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | Method | Video | Strict GT | HOTA | AssA | IDF1 | CVIDF1 | IDSW |
 |---|---:|---|---:|---:|---:|---:|---:|
 | B0_clean_minimal_full_v2 | 10 | yes | 80.9659 | 81.0414 | 98.9676 | 98.9676 | 0 |
+| B0_clean_minimal_full_v2 | 18 | yes | 79.3120 | 81.1202 | 96.6809 | 96.6809 | 5 |
 | B0_minimal_full | 1 | yes | 87.8104 | 88.2262 | 97.7207 | 97.7207 | 1 |
 | B0_minimal_full | 14 | no: raw diagnostic | 79.9871 | 83.1446 | 95.2027 | 95.1967 | 137 |
 | B0_minimal_full | 22 | no: raw diagnostic | 84.5038 | 84.7280 | 97.9279 | 97.9279 | 83 |
+| B2_l17_sym_w025_full_gpu5 | 1 | yes | 87.8104 | 88.2262 | 97.7207 | 97.7207 | 1 |
 | B6_sift_w05_k10 | 14 | no: raw diagnostic | 79.9871 | 83.1446 | 95.2027 | 95.1967 | 137 |
 | B6_sift_w05_k10 | 22 | no: raw diagnostic | 84.5038 | 84.7280 | 97.9279 | 97.9279 | 83 |
 
