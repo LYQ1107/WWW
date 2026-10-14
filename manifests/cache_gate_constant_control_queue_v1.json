@@ -1,0 +1,142 @@
+{
+  "id": "cache_gate_constant_control_v1",
+  "project_gpu_ids": [
+    "4"
+  ],
+  "queues": {
+    "gpu4": [
+      {
+        "id": "cache_gate_trace40_scene1_v1",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_cache_gate_probe.py",
+          "--video-id",
+          "1",
+          "--tag",
+          "cache_gate_trace40_scene1_v1",
+          "--backbone",
+          "vggt",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "roi_align",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "20",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "20",
+          "--total-call-budget",
+          "80",
+          "--reuse-target-features",
+          "--max-frames",
+          "40",
+          "--trace-association"
+        ]
+      },
+      {
+        "id": "constant_vggt_evidence_trace40_scene1_v1",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_constant_head_control.py",
+          "--video-id",
+          "1",
+          "--tag",
+          "constant_vggt_evidence_trace40_scene1_v1",
+          "--backbone",
+          "vggt",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "roi_align",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200",
+          "--total-call-budget",
+          "-1",
+          "--max-frames",
+          "40",
+          "--trace-association"
+        ]
+      },
+      {
+        "id": "constant_gmt_evidence_scene1_full_v1",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_constant_head_control.py",
+          "--video-id",
+          "1",
+          "--tag",
+          "constant_gmt_evidence_scene1_full_v1",
+          "--backbone",
+          "gmt",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/gmt_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200",
+          "--total-call-budget",
+          "-1",
+          "--trace-association"
+        ]
+      },
+      {
+        "id": "eval_constant_gmt_evidence_scene1_full_v1",
+        "cpu_only": true,
+        "depends_on": [
+          "constant_gmt_evidence_scene1_full_v1"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/constant_gmt_evidence_scene1_full_v1/predictions.json",
+          "--video-id",
+          "1",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/constant_gmt_evidence_scene1_full_v1/manifest.json"
+        ]
+      }
+    ]
+  },
+  "scope": "bounded actual cache gate telemetry, encoder-matched constant+1 evidence40-group validation, and complete native-head constant+1 evidence control; featureweight2 is existing maximum residual2, no threshold search",
+  "speed_scope": "all traces are speed-ineligible; actual foundation calls remain reported; native control has different feature-validity source from VGGT, not an encoder-matched full VGGT ablation",
+  "no_gt_or_test_selection": true
+}

@@ -33,6 +33,14 @@ def main():
         path=ROOT/'results'/name;report=json.loads(path.read_text());sources[str(path)]=sha256(path)
         parameters[key]=dict(total=report['parameters'],trainable=0,
             scope=('complete official model before removing unused depth/point/track heads; resident pruned parameter count not measured by this artifact' if key=='vggt' else 'recorded actual independent frozen DINO model'))
+    resident_path=ROOT/'results/vggt_resident_parameter_structure_v1.json'
+    if resident_path.exists():
+        structure=json.loads(resident_path.read_text());sources[str(resident_path)]=sha256(resident_path)
+        if structure['status']!='PASS_PARAMETER_STRUCTURE' or structure['full_official_parameters']!=parameters['vggt']['total']:
+            raise ValueError('incompatible resident parameter structure')
+        parameters['vggt'].update(resident_parameters=structure['resident_parameters'],
+            resident_parameter_tensor_bytes_default_fp32=structure['parameter_tensor_bytes_default_fp32'],
+            scope='total is original official pre-pruning count; resident_parameters is exact pinned module count after removing point/depth/track heads, structurally verified on meta against prior full loaded-model count; storage estimate is separate from measured CUDA peaks')
     head_path=ROOT/'results/low_rank_three_backbones_train_v1_manifest.json'
     heads=json.loads(head_path.read_text())['results'];sources[str(head_path)]=sha256(head_path)
     parameters['heads']=[dict(backbone=row['backbone'],seed=row['seed'],parameters=row['parameters'],

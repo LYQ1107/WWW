@@ -51,6 +51,24 @@ def predictions(path):
     return result,info
 
 
+def matched_detection_rows(base,method,images,ground_truth):
+    """GT-match common detector outputs once; labels never enter tracking."""
+    by_image=collections.defaultdict(list)
+    for key in sorted(base.keys()&method.keys()):by_image[key[0]].append(key)
+    matched=[]
+    for image_id,keys in by_image.items():
+        image=images[image_id];truth=ground_truth[(image['view_id'],image['frame_id'])]
+        if not truth:continue
+        overlaps=iou_matrix([base[key]['bbox'] for key in keys],[row[1] for row in truth])
+        ri,ci=linear_sum_assignment(np.where(overlaps>=.5,1-overlaps,1e6))
+        for i,j in zip(ri,ci):
+            if overlaps[i,j]>=.5:
+                key=keys[i]
+                matched.append(dict(gt=truth[j][0],camera=image['view_id'],frame=image['frame_id'],image_id=image_id,
+                                    bbox=base[key]['bbox'],base=base[key]['track_id'],new=method[key]['track_id']))
+    return matched
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--baseline-sources',type=Path,required=True);parser.add_argument('--method-sources',type=Path,required=True);parser.add_argument('--tag',required=True);parser.add_argument('--video-ids',type=int,nargs='+');args=parser.parse_args()
     sources=[json.loads(path.read_text())['video_predictions'] for path in [args.baseline_sources,args.method_sources]]
@@ -74,17 +92,8 @@ def main():
                 if (frame,identity) in seen:raise ValueError('duplicate raw GT identity')
                 seen.add((frame,identity))
                 if fields[6]>0 and fields[7]==1:ground_truth[(camera,frame)].append((identity,fields[2:6]))
-        common=base.keys()&method.keys();by_image=collections.defaultdict(list)
-        for key in sorted(common):by_image[key[0]].append(key)
-        matched=[]
-        for image_id,keys in by_image.items():
-            image=images[image_id];truth=ground_truth[(image['view_id'],image['frame_id'])]
-            if not truth:continue
-            overlaps=iou_matrix([base[key]['bbox'] for key in keys],[row[1] for row in truth])
-            ri,ci=linear_sum_assignment(np.where(overlaps>=.5,1-overlaps,1e6))
-            for i,j in zip(ri,ci):
-                if overlaps[i,j]>=.5:
-                    key=keys[i];matched.append(dict(gt=truth[j][0],camera=image['view_id'],base=base[key]['track_id'],new=method[key]['track_id']))
+        common=base.keys()&method.keys()
+        matched=matched_detection_rows(base,method,images,ground_truth)
         rows.append(dict(video_id=scene,baseline_prediction=str(paths[0]),method_prediction=str(paths[1]),prediction_sha256=[sha256(path) for path in paths],
             baseline_detections=len(base),method_detections=len(method),common_detections=len(common),added_detections=len(method.keys()-base.keys()),removed_detections=len(base.keys()-method.keys()),
             all_time_identity_pairs=pair_outcomes(matched),cross_camera_all_time_identity_pairs=pair_outcomes(matched,True)))

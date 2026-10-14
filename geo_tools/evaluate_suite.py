@@ -11,6 +11,15 @@ import trackeval
 def rows_from(path):
     return [[s.strip() for s in r.split(',')] for r in path.read_text().splitlines() if r.strip()]
 
+def validate_control_flags(runs):
+    controls={}
+    for flag in ('causal_online','validation_corrected_gmt_camera_index','validation_reversed_vggt_order','validation_constant_head_evidence','compute_neutral'):
+        default=None if flag=='validation_constant_head_evidence' else False
+        values={run.get(flag,default) for run in runs}
+        if len(values)!=1:raise ValueError('mixed protocol/validation/neutral flag within one suite: '+flag)
+        controls[flag]=values.pop()
+    return controls
+
 def evaluate(gt,trackers,lengths,base):
     gtroot=base/'gt';trroot=base/'trackers'/'GMT'/'data';trroot.mkdir(parents=True)
     for name,values in gt.items():
@@ -50,7 +59,9 @@ def main():
         if run.get('checkpoint_sha256')!='cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8':raise ValueError('checkpoint mismatch')
         expected=run.get('prediction_sha256',run.get('predictions_sha256'))
         if expected!=sha256(path):raise ValueError('prediction/run hash mismatch')
-        runs[str(vid)]=dict(path=str(manifest_path),sha256=sha256(manifest_path),causal_online=run['causal_online'],commit=run['commit'],validation_corrected_gmt_camera_index=run.get('validation_corrected_gmt_camera_index',False))
+        runs[str(vid)]=dict(path=str(manifest_path),sha256=sha256(manifest_path),causal_online=run['causal_online'],commit=run['commit'],validation_corrected_gmt_camera_index=run.get('validation_corrected_gmt_camera_index',False),
+                          validation_reversed_vggt_order=run.get('validation_reversed_vggt_order',False),
+                          validation_constant_head_evidence=run.get('validation_constant_head_evidence'),compute_neutral=run.get('compute_neutral',False))
         scene=next(v['file_name'] for v in data['videos'] if v['id']==vid);scenes[scene]=[];byview=collections.defaultdict(list)
         for prediction in json.loads(path.read_text()):
             r=index[prediction['image_id']];byview[r['view_id']].append([r['frame_id'],prediction['track_id'],*prediction['bbox'],prediction['score'],-1,-1,-1])
@@ -59,10 +70,7 @@ def main():
             counts=collections.Counter((int(float(x[0])),int(float(x[1]))) for x in values)
             if any(n>1 for n in counts.values()):raise ValueError('strict suite has repeated raw GT identities')
             gt[name]=values;trackers[name]=byview[view];lengths[name]=max(r['frame_id'] for r in recordlist if r['view_id']==view);scenes[scene].append(name);hashes[str(gtpath)]=sha256(gtpath)
-    online={r['causal_online'] for r in runs.values()}
-    if len(online)!=1:raise ValueError('mixed causal/offline suite')
-    camera_controls={r['validation_corrected_gmt_camera_index'] for r in runs.values()}
-    if len(camera_controls)!=1:raise ValueError('mixed original/corrected-camera inference within one suite')
+    controls=validate_control_flags(list(runs.values()))
     metrics=evaluate(gt,trackers,lengths,out/'per_view')
     for convention in ['sequential','interleaved']:
         gtflat={};trflat={};flatlengths={}
@@ -78,7 +86,7 @@ def main():
         if convention=='sequential':metrics['CVIDF1']=result['IDF1'];metrics['CVMA_sequential']=result['MOTA']
         else:metrics['CVMA']=result['MOTA']
     report=dict(status='PASS',scope='all declared strict TRAIN development scenes; original raw GT unchanged',video_ids=sorted(paths),images=total_images,full_video=True,
-        causal_online=online.pop(),validation_corrected_gmt_camera_index=camera_controls.pop(),metrics=metrics,source_manifest_sha256=sha256(a.sources),prediction_sha256={str(p):sha256(p) for p in paths.values()},run_manifests=runs,
+        **controls,metrics=metrics,source_manifest_sha256=sha256(a.sources),prediction_sha256={str(p):sha256(p) for p in paths.values()},run_manifests=runs,
         raw_gt_sha256=hashes,combination='native TrackEval combine_sequences; not mean of per-video normalized scores',evaluator='TrackEval, not official MATLAB',
         seconds=time.perf_counter()-start,provenance=provenance())
     save_json(out/'metrics.json',report);save_json(a.report_output or ROOT/f'results/{a.tag}_metrics.json',report);print(json.dumps(report,indent=2))

@@ -73,6 +73,8 @@ def main():
             raise ValueError('partial diagnostic and complete production reference required')
         if traced['head_checkpoint_sha256']!=production['head_checkpoint_sha256']:
             raise ValueError('head mismatch')
+        if traced.get('validation_constant_head_evidence')!=production.get('validation_constant_head_evidence'):
+            raise ValueError('different pair-evidence validation control')
         for field in ('FEATURE_WEIGHT','MAX_RESIDUAL','FEATURE_LAYERS','FEATURE_BACKBONE','PROJECTION_DIM','POOLING',
                       'SYMMETRIZE_VIEW_ORDER','GEOMETRY_WEIGHT','UPDATE_INTERVAL','UPDATE_POLICY','TOTAL_CALL_BUDGET'):
             if traced['geo_options'].get(field)!=production['geo_options'].get(field):

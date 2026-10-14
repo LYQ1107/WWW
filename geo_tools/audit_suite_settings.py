@@ -27,7 +27,8 @@ def signature(run):
     result={key:run[key] for key in ('checkpoint_sha256','config_sha256','annotation_sha256','seed','causal_online')}
     result.update(feature_active=bool(feature),geometry_active=bool(geometry),
                   corrected_camera=run.get('validation_corrected_gmt_camera_index',False),
-                  reversed_encoder=run.get('validation_reversed_vggt_order',False))
+                  reversed_encoder=run.get('validation_reversed_vggt_order',False),
+                  constant_head_evidence=run.get('validation_constant_head_evidence'))
     if feature or geometry:
         result.update({key:resolved.get(key) for key in ('MAX_RESIDUAL','UPDATE_INTERVAL','MAX_GEOMETRY_AGE','FALLBACK_TO_GMT','ASYNC_WORKER')})
         scheduled=resolved.get('SPARSE_UPDATE_ENABLED',False)
