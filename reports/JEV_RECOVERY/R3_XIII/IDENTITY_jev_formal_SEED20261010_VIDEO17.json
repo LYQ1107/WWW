@@ -1,0 +1,1958 @@
+{
+  "N01_N10_scope": "Independent full cold-start mutated-state runs, identical detection rows, each run own immutable owner namespace; not same-state local causal effects",
+  "actual": {
+    "arm": "jev",
+    "counts": {
+      "UNKNOWN_rows": 208,
+      "cross_UNKNOWN_returns": 10729,
+      "cross_camera_queries_with_prior_target": 6802,
+      "cross_empty_or_wrong_ID_queries": 175,
+      "cross_known_correct_returns": 3340364,
+      "cross_known_relevant_prior_observations": 3859231,
+      "cross_known_wrong_returns": 57767,
+      "cross_polluted_native_ID_returns": 1494,
+      "first_owner_correct_ID_preserved_rows": 9552,
+      "immutable_owner_correct": 9963,
+      "immutable_owner_wrong": 700,
+      "known_rows": 10663,
+      "known_rows_with_first_owner_correct_ID_anchor": 10381,
+      "previous_person_new_native_ID_births": 3,
+      "rows": 10871
+    },
+    "cross_past_index_precision": 0.9830003610808412,
+    "cross_past_index_recall": 0.8655517122452634,
+    "duplicate_GT_rows_masked": 0,
+    "duration_definition": "Observed contiguous owner errors, in camera frames; gaps/end right-censored. Not CLEAR IDSW, not fps-converted seconds",
+    "false_merge_definition": "A predicted native ID observed with more than one known GT over this run; posthoc complete-video diagnostic with duplicate GT UNKNOWN, not actor input",
+    "first_owner_correct_ID_preservation_rate": 0.920142568153357,
+    "full_mutated_state_scope": true,
+    "index_definition": "Actual predicted Global ID lookup into already committed other-camera observations; no whole-video GT-selected ID mapping; UNKNOWN retrieved observations excluded from known precision and counted separately",
+    "native_IDs_with_multiple_observed_GT": 7,
+    "observations_in_posthoc_polluted_native_IDs": 6365,
+    "observed_error_duration_camera_frames": 700,
+    "owner_definition": "Immutable first known observed GT per native ID; duplicate GT ids per camera/frame UNKNOWN; not a future-safety certificate",
+    "paired_same_state_causal_interventions": false,
+    "phase": "formal",
+    "preservation_definition": "Fraction of known rows keeping each person first observed owner-correct predicted native ID, including its own anchor row; per-run causal anchor, not cross-run numeric-ID equality or proof of restoring a baseline ID",
+    "right_censored_episodes": 50,
+    "seed": 20261010,
+    "source": {
+      "SHA256": "5a430a6f0030c15b54a676ca37a8a865590c57f44df1d1634d8780a821d0e678",
+      "bytes": 13761,
+      "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/R3_XIII/online_v1/formal/jev/seed20261010/video17/RESULT.json"
+    },
+    "status": "COMPLETE",
+    "video": 17,
+    "wrong_owner_episodes": [
+      {
+        "duration_camera_frames": 6,
+        "end": 34,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 34,
+        "right_censored": false,
+        "start": 29,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 38,
+        "end_reason": "known owner-correct next observation",
+        "gt": 6,
+        "last": 38,
+        "right_censored": false,
+        "start": 38,
+        "view": 1,
+        "wrong_ids": [
+          6
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 55,
+        "end_reason": "known owner-correct next observation",
+        "gt": 6,
+        "last": 55,
+        "right_censored": false,
+        "start": 55,
+        "view": 1,
+        "wrong_ids": [
+          6
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 64,
+        "end_reason": "known owner-correct next observation",
+        "gt": 6,
+        "last": 64,
+        "right_censored": false,
+        "start": 64,
+        "view": 1,
+        "wrong_ids": [
+          6
+        ]
+      },
+      {
+        "duration_camera_frames": 6,
+        "end": 54,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 2,
+        "last": 54,
+        "right_censored": true,
+        "start": 49,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 68,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 68,
+        "right_censored": false,
+        "start": 68,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 84,
+        "end_reason": "known owner-correct next observation",
+        "gt": 6,
+        "last": 84,
+        "right_censored": false,
+        "start": 84,
+        "view": 1,
+        "wrong_ids": [
+          6
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 93,
+        "end_reason": "known owner-correct next observation",
+        "gt": 6,
+        "last": 93,
+        "right_censored": false,
+        "start": 93,
+        "view": 1,
+        "wrong_ids": [
+          6
+        ]
+      },
+      {
+        "duration_camera_frames": 11,
+        "end": 92,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 2,
+        "last": 92,
+        "right_censored": true,
+        "start": 82,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 8,
+        "end": 101,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 101,
+        "right_censored": false,
+        "start": 94,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 103,
+        "end_reason": "known owner-correct next observation",
+        "gt": 6,
+        "last": 103,
+        "right_censored": false,
+        "start": 103,
+        "view": 1,
+        "wrong_ids": [
+          6
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 112,
+        "end_reason": "known owner-correct next observation",
+        "gt": 6,
+        "last": 112,
+        "right_censored": false,
+        "start": 112,
+        "view": 1,
+        "wrong_ids": [
+          6
+        ]
+      },
+      {
+        "duration_camera_frames": 7,
+        "end": 118,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 118,
+        "right_censored": true,
+        "start": 112,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 121,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 6,
+        "last": 121,
+        "right_censored": true,
+        "start": 121,
+        "view": 1,
+        "wrong_ids": [
+          6
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 129,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 129,
+        "right_censored": false,
+        "start": 128,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 130,
+        "end_reason": "known owner-correct next observation",
+        "gt": 6,
+        "last": 130,
+        "right_censored": false,
+        "start": 130,
+        "view": 1,
+        "wrong_ids": [
+          6
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 139,
+        "end_reason": "known owner-correct next observation",
+        "gt": 6,
+        "last": 139,
+        "right_censored": false,
+        "start": 139,
+        "view": 1,
+        "wrong_ids": [
+          6
+        ]
+      },
+      {
+        "duration_camera_frames": 15,
+        "end": 138,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 2,
+        "last": 138,
+        "right_censored": true,
+        "start": 124,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 213,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 213,
+        "right_censored": true,
+        "start": 213,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 24,
+        "end": 215,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 215,
+        "right_censored": false,
+        "start": 192,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 216,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 216,
+        "right_censored": true,
+        "start": 215,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 223,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 223,
+        "right_censored": true,
+        "start": 222,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 225,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 225,
+        "right_censored": true,
+        "start": 225,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 229,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 229,
+        "right_censored": false,
+        "start": 227,
+        "view": 1,
+        "wrong_ids": [
+          4,
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 9,
+        "end": 239,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 239,
+        "right_censored": true,
+        "start": 231,
+        "view": 1,
+        "wrong_ids": [
+          7,
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 9,
+        "end": 304,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 304,
+        "right_censored": false,
+        "start": 296,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 312,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 2,
+        "last": 312,
+        "right_censored": true,
+        "start": 312,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 6,
+        "end": 330,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 330,
+        "right_censored": false,
+        "start": 325,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 332,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 332,
+        "right_censored": false,
+        "start": 332,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 10,
+        "end": 344,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 344,
+        "right_censored": false,
+        "start": 335,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 39,
+        "end": 385,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 385,
+        "right_censored": false,
+        "start": 347,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 7,
+        "end": 392,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 392,
+        "right_censored": true,
+        "start": 386,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 397,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 397,
+        "right_censored": true,
+        "start": 397,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 416,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 416,
+        "right_censored": false,
+        "start": 415,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 429,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 429,
+        "right_censored": false,
+        "start": 428,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 543,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 2,
+        "last": 543,
+        "right_censored": true,
+        "start": 543,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 6,
+        "end": 551,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 551,
+        "right_censored": false,
+        "start": 546,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 553,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 553,
+        "right_censored": true,
+        "start": 552,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 556,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 556,
+        "right_censored": true,
+        "start": 556,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 6,
+        "end": 563,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 563,
+        "right_censored": false,
+        "start": 558,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 566,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 566,
+        "right_censored": false,
+        "start": 566,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 8,
+        "end": 585,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 585,
+        "right_censored": false,
+        "start": 578,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 13,
+        "end": 607,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 607,
+        "right_censored": true,
+        "start": 595,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 626,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 626,
+        "right_censored": true,
+        "start": 624,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 629,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 629,
+        "right_censored": true,
+        "start": 628,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 634,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 634,
+        "right_censored": true,
+        "start": 632,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 5,
+        "end": 628,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 628,
+        "right_censored": true,
+        "start": 624,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 13,
+        "end": 648,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 648,
+        "right_censored": true,
+        "start": 636,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 7,
+        "end": 659,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 659,
+        "right_censored": false,
+        "start": 653,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 16,
+        "end": 667,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 667,
+        "right_censored": true,
+        "start": 652,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 673,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 673,
+        "right_censored": true,
+        "start": 673,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 8,
+        "end": 683,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 683,
+        "right_censored": true,
+        "start": 676,
+        "view": 1,
+        "wrong_ids": [
+          9,
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 5,
+        "end": 700,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 700,
+        "right_censored": true,
+        "start": 696,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 702,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 702,
+        "right_censored": true,
+        "start": 702,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 743,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 743,
+        "right_censored": true,
+        "start": 741,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 9,
+        "end": 759,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 759,
+        "right_censored": true,
+        "start": 751,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 11,
+        "end": 771,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 771,
+        "right_censored": true,
+        "start": 761,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 779,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 779,
+        "right_censored": true,
+        "start": 777,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 7,
+        "end": 796,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 796,
+        "right_censored": true,
+        "start": 790,
+        "view": 1,
+        "wrong_ids": [
+          11
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 788,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 788,
+        "right_censored": true,
+        "start": 787,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 807,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 807,
+        "right_censored": true,
+        "start": 806,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 7,
+        "end": 815,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 815,
+        "right_censored": true,
+        "start": 809,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 10,
+        "end": 839,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 839,
+        "right_censored": false,
+        "start": 830,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 6,
+        "end": 846,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 846,
+        "right_censored": true,
+        "start": 841,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 847,
+        "end_reason": "known owner-correct next observation",
+        "gt": 3,
+        "last": 847,
+        "right_censored": false,
+        "start": 847,
+        "view": 1,
+        "wrong_ids": [
+          1
+        ]
+      },
+      {
+        "duration_camera_frames": 8,
+        "end": 847,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 847,
+        "right_censored": false,
+        "start": 840,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 18,
+        "end": 866,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 866,
+        "right_censored": false,
+        "start": 849,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 867,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 867,
+        "right_censored": false,
+        "start": 867,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 10,
+        "end": 877,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 877,
+        "right_censored": false,
+        "start": 868,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 26,
+        "end": 842,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 842,
+        "right_censored": true,
+        "start": 817,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 898,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 898,
+        "right_censored": false,
+        "start": 898,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 5,
+        "end": 911,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 911,
+        "right_censored": false,
+        "start": 907,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 31,
+        "end": 909,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 909,
+        "right_censored": true,
+        "start": 879,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 117,
+        "end": 914,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 914,
+        "right_censored": true,
+        "start": 798,
+        "view": 1,
+        "wrong_ids": [
+          11,
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 916,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 916,
+        "right_censored": false,
+        "start": 916,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 916,
+        "end_reason": "known owner-correct next observation",
+        "gt": 7,
+        "last": 916,
+        "right_censored": false,
+        "start": 914,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 916,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 916,
+        "right_censored": true,
+        "start": 916,
+        "view": 1,
+        "wrong_ids": [
+          11
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 920,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 920,
+        "right_censored": false,
+        "start": 918,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 4,
+        "end": 982,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 982,
+        "right_censored": true,
+        "start": 979,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 1002,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 1002,
+        "right_censored": false,
+        "start": 1001,
+        "view": 0,
+        "wrong_ids": [
+          12
+        ]
+      },
+      {
+        "duration_camera_frames": 8,
+        "end": 925,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 925,
+        "right_censored": true,
+        "start": 918,
+        "view": 1,
+        "wrong_ids": [
+          9,
+          11
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 1049,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 1049,
+        "right_censored": true,
+        "start": 1047,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 1051,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 1051,
+        "right_censored": true,
+        "start": 1051,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 5,
+        "end": 1060,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 1060,
+        "right_censored": true,
+        "start": 1056,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 1070,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 1070,
+        "right_censored": true,
+        "start": 1068,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 1139,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 1139,
+        "right_censored": false,
+        "start": 1138,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 63,
+        "end": 1143,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 1143,
+        "right_censored": true,
+        "start": 1081,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 1146,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 1146,
+        "right_censored": true,
+        "start": 1146,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 1148,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 8,
+        "last": 1148,
+        "right_censored": true,
+        "start": 1148,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 1151,
+        "end_reason": "known owner-correct next observation",
+        "gt": 7,
+        "last": 1151,
+        "right_censored": false,
+        "start": 1150,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 7,
+        "end": 1156,
+        "end_reason": "known owner-correct next observation",
+        "gt": 8,
+        "last": 1156,
+        "right_censored": false,
+        "start": 1150,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 4,
+        "end": 1181,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 1181,
+        "right_censored": false,
+        "start": 1178,
+        "view": 0,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 6,
+        "end": 1192,
+        "end_reason": "known owner-correct next observation",
+        "gt": 2,
+        "last": 1192,
+        "right_censored": false,
+        "start": 1187,
+        "view": 1,
+        "wrong_ids": [
+          7
+        ]
+      },
+      {
+        "duration_camera_frames": 14,
+        "end": 1172,
+        "end_reason": "video end",
+        "gt": 8,
+        "last": 1172,
+        "right_censored": true,
+        "start": 1159,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      }
+    ]
+  },
+  "baseline": {
+    "arm": "parent",
+    "counts": {
+      "UNKNOWN_rows": 208,
+      "cross_UNKNOWN_returns": 12277,
+      "cross_camera_queries_with_prior_target": 6802,
+      "cross_empty_or_wrong_ID_queries": 44,
+      "cross_known_correct_returns": 3800540,
+      "cross_known_relevant_prior_observations": 3859231,
+      "cross_known_wrong_returns": 39690,
+      "cross_polluted_native_ID_returns": 1678,
+      "first_owner_correct_ID_preserved_rows": 9301,
+      "immutable_owner_correct": 10235,
+      "immutable_owner_wrong": 428,
+      "known_rows": 10663,
+      "known_rows_with_first_owner_correct_ID_anchor": 10269,
+      "previous_person_new_native_ID_births": 2,
+      "rows": 10871
+    },
+    "cross_past_index_precision": 0.9896646815425117,
+    "cross_past_index_recall": 0.984792047949449,
+    "duplicate_GT_rows_masked": 0,
+    "duration_definition": "Observed contiguous owner errors, in camera frames; gaps/end right-censored. Not CLEAR IDSW, not fps-converted seconds",
+    "false_merge_definition": "A predicted native ID observed with more than one known GT over this run; posthoc complete-video diagnostic with duplicate GT UNKNOWN, not actor input",
+    "first_owner_correct_ID_preservation_rate": 0.905735709416691,
+    "full_mutated_state_scope": true,
+    "index_definition": "Actual predicted Global ID lookup into already committed other-camera observations; no whole-video GT-selected ID mapping; UNKNOWN retrieved observations excluded from known precision and counted separately",
+    "native_IDs_with_multiple_observed_GT": 3,
+    "observations_in_posthoc_polluted_native_IDs": 5005,
+    "observed_error_duration_camera_frames": 428,
+    "owner_definition": "Immutable first known observed GT per native ID; duplicate GT ids per camera/frame UNKNOWN; not a future-safety certificate",
+    "paired_same_state_causal_interventions": false,
+    "phase": "formal",
+    "preservation_definition": "Fraction of known rows keeping each person first observed owner-correct predicted native ID, including its own anchor row; per-run causal anchor, not cross-run numeric-ID equality or proof of restoring a baseline ID",
+    "right_censored_episodes": 44,
+    "seed": 20261010,
+    "source": {
+      "SHA256": "2fca57a4459c1d3ce59b590628f2e8cd74f270de08c6f94ff2515365184dd7d6",
+      "bytes": 13761,
+      "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/R3_XIII/online_v1/formal/parent/seed20261010/video17/RESULT.json"
+    },
+    "status": "COMPLETE",
+    "video": 17,
+    "wrong_owner_episodes": [
+      {
+        "duration_camera_frames": 8,
+        "end": 118,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 118,
+        "right_censored": true,
+        "start": 111,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 213,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 213,
+        "right_censored": true,
+        "start": 213,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 216,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 216,
+        "right_censored": true,
+        "start": 215,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 223,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 223,
+        "right_censored": true,
+        "start": 222,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 225,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 225,
+        "right_censored": true,
+        "start": 225,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 227,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 227,
+        "right_censored": false,
+        "start": 227,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 229,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 229,
+        "right_censored": false,
+        "start": 229,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 9,
+        "end": 239,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 239,
+        "right_censored": true,
+        "start": 231,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 13,
+        "end": 607,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 607,
+        "right_censored": true,
+        "start": 595,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 626,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 626,
+        "right_censored": true,
+        "start": 624,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 629,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 629,
+        "right_censored": true,
+        "start": 628,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 634,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 634,
+        "right_censored": true,
+        "start": 632,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 13,
+        "end": 648,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 648,
+        "right_censored": true,
+        "start": 636,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 16,
+        "end": 667,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 667,
+        "right_censored": true,
+        "start": 652,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 673,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 673,
+        "right_censored": true,
+        "start": 673,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 8,
+        "end": 683,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 683,
+        "right_censored": true,
+        "start": 676,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 5,
+        "end": 700,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 700,
+        "right_censored": true,
+        "start": 696,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 702,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 702,
+        "right_censored": true,
+        "start": 702,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 4,
+        "end": 743,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 743,
+        "right_censored": true,
+        "start": 740,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 9,
+        "end": 759,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 759,
+        "right_censored": true,
+        "start": 751,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 11,
+        "end": 771,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 771,
+        "right_censored": true,
+        "start": 761,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 779,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 779,
+        "right_censored": true,
+        "start": 777,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 788,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 788,
+        "right_censored": true,
+        "start": 787,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 807,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 807,
+        "right_censored": true,
+        "start": 806,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 7,
+        "end": 815,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 815,
+        "right_censored": true,
+        "start": 809,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 846,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 846,
+        "right_censored": true,
+        "start": 844,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 847,
+        "end_reason": "known owner-correct next observation",
+        "gt": 3,
+        "last": 847,
+        "right_censored": false,
+        "start": 847,
+        "view": 1,
+        "wrong_ids": [
+          1
+        ]
+      },
+      {
+        "duration_camera_frames": 26,
+        "end": 842,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 842,
+        "right_censored": true,
+        "start": 817,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 31,
+        "end": 909,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 909,
+        "right_censored": true,
+        "start": 879,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 3,
+        "end": 920,
+        "end_reason": "known owner-correct next observation",
+        "gt": 1,
+        "last": 920,
+        "right_censored": false,
+        "start": 918,
+        "view": 0,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 14,
+        "end": 927,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 927,
+        "right_censored": true,
+        "start": 914,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 14,
+        "end": 949,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 949,
+        "right_censored": true,
+        "start": 936,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 953,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 953,
+        "right_censored": true,
+        "start": 953,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 955,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 955,
+        "right_censored": true,
+        "start": 955,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 2,
+        "end": 982,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 1,
+        "last": 982,
+        "right_censored": true,
+        "start": 981,
+        "view": 1,
+        "wrong_ids": [
+          4
+        ]
+      },
+      {
+        "duration_camera_frames": 14,
+        "end": 984,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 984,
+        "right_censored": true,
+        "start": 971,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 13,
+        "end": 999,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 999,
+        "right_censored": true,
+        "start": 987,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 13,
+        "end": 1013,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 1013,
+        "right_censored": true,
+        "start": 1001,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 37,
+        "end": 1051,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 1051,
+        "right_censored": true,
+        "start": 1015,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 8,
+        "end": 1061,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 1061,
+        "right_censored": true,
+        "start": 1054,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 8,
+        "end": 1071,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 1071,
+        "right_censored": true,
+        "start": 1064,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 6,
+        "end": 1081,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 1081,
+        "right_censored": true,
+        "start": 1076,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 5,
+        "end": 1088,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 1088,
+        "right_censored": true,
+        "start": 1084,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 36,
+        "end": 1131,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 1131,
+        "right_censored": true,
+        "start": 1096,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 5,
+        "end": 1137,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 1137,
+        "right_censored": true,
+        "start": 1133,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 1,
+        "end": 1139,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 1139,
+        "right_censored": true,
+        "start": 1139,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 15,
+        "end": 1155,
+        "end_reason": "UNKNOWN/unobserved observation gap",
+        "gt": 7,
+        "last": 1155,
+        "right_censored": true,
+        "start": 1141,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      },
+      {
+        "duration_camera_frames": 43,
+        "end": 1199,
+        "end_reason": "video end",
+        "gt": 7,
+        "last": 1199,
+        "right_censored": true,
+        "start": 1157,
+        "view": 1,
+        "wrong_ids": [
+          9
+        ]
+      }
+    ]
+  },
+  "comparison": {
+    "N00": 197,
+    "N01": 231,
+    "N01_existing_native_ID": 230,
+    "N01_new_native_ID_birth": 1,
+    "N10": 503,
+    "N11": 9732,
+    "UNKNOWN_comparison_rows": 208
+  },
+  "current_owner_correction_not_proof_original_ID_preserved": true,
+  "official_metrics_unmodified": true,
+  "status": "COMPLETE"
+}
