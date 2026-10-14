@@ -6,7 +6,11 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 
 Complete strict B8 fixed20/80-call-per-video CVIDF1 change is only +0.001627 percentage points, with unchanged total IDSW. The common-detection identity audit finds one small scene19 relation correction and no harms. This is an extremely small preliminary full-DEV signal; no stable VGGT/geometry/scheduler contribution is established.
 
-Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6654, AssA +1.3140, CVIDF1 +0.8070 percentage points, IDSW -64. Exact detector-key parity is audited separately. The other scenes and independent GMT/DINO/feature-only/geometry-only attribution controls remain incomplete; this is not full development success.
+Actual cached-feature VGGT40/60-group GPU runs pass exact40-group identity-output and scheduler-prefix equality with active target reuse (4/6 actual VGGT calls). This is a short-prefix correctness result, not a full-video accuracy, speed, or whole-process memory claim. Per-target source-age traces were not recorded.
+
+The inherited single-image camera encoding issue is confirmed in source. Actual corrected-camera GMT-only scene1 predictions exactly equal the locked causal baseline; all metric differences are zero. The repair does not explain this scene1 head gain. Other strict scenes remain pending.
+
+Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6654, AssA +1.3140, CVIDF1 +0.8070 percentage points, IDSW -64. Exact detector-key parity is audited separately. Scene1 attribution is complete: feature-only exactly equals joint; masked geometry-only exactly equals baseline; DINO matches VGGT CVIDF1 with one fewer IDSW; a GMT-only head captures much of the gain. Independent VGGT/geometry credit is unsupported. Complete strict5 and dense stability remain pending; this is not full development success.
 
 | Method | Video | Strict GT | HOTA | AssA | IDF1 | CVIDF1 | IDSW |
 |---|---:|---|---:|---:|---:|---:|---:|
@@ -59,6 +63,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | B6_vggt_camera_dense_causal_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | C_dino_head_dense_causal_v1_v1 | 1 | yes | 87.2226 | 86.5408 | 95.4719 | 95.4719 | 213 |
 | C_gmt_head_dense_causal_v1_v1 | 1 | yes | 87.0230 | 86.1452 | 95.2477 | 95.2477 | 234 |
+| camera_index_corrected_B0_scene1_full_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k10_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k10_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B7_fixed_k10_strict_suite_v1_v11 | 11 | yes | 83.2769 | 79.1899 | 91.9855 | 91.9855 | 41 |
@@ -70,6 +75,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_B7_fixed_k20_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B7_fixed_k20_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | causal_B7_fixed_k20_strict_suite_v1_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| causal_B7_fixed_k20_strict_suite_v1_v19 | 19 | yes | 77.4654 | 81.0309 | 94.0583 | 94.0583 | 106 |
 | causal_B8_fixed20_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B8_fixed20_total80_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B8_fixed20_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
@@ -114,6 +120,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | C_lowrank_gmt_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0566 | 81.8977 | 95.6341 | 95.6341 | 41 |
 | causal_B0_strict_suite_v1 | ALL_STRICT | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
 | causal_B7_fixed_k10_strict_suite_v1 | ALL_STRICT | yes | 80.7443 | 81.4641 | 95.0531 | 95.0531 | 489 |
+| causal_B7_fixed_k20_strict_suite_v1 | ALL_STRICT | yes | 80.7495 | 81.4748 | 95.0596 | 95.0596 | 482 |
 | causal_B8_fixed20_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7495 | 81.4748 | 95.0596 | 95.0596 | 482 |
 | causal_B9_joint_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
 | causal_random_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7484 | 81.4726 | 95.0580 | 95.0580 | 482 |

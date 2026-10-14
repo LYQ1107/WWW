@@ -69,6 +69,15 @@ def main():
     baseline=[r for r in metric_rows if r['method'].startswith('B0') and isinstance(r['video_id'],int) and r['full_video'] and not r['raw_gt_diagnostic']]
     signal_path=ROOT/'results/causal_B7_dense_positive_scene1_v1.json'
     signal=json.loads(signal_path.read_text()) if signal_path.exists() else None
+    def evidence(name,fields):
+        path=ROOT/'results'/name
+        if not path.exists():return None
+        value=json.loads(path.read_text())
+        return dict(path=str(path),sha256=sha256(path),**{key:value[key] for key in fields if key in value})
+    attribution=evidence('causal_dense_scene1_backbone_controls_partial_v1.json',['status','scope'])
+    camera_control=evidence('camera_index_corrected_scene1_accuracy_audit_v1.json',['status','video_id','exact_serialized_predictions','metric_delta','interpretation'])
+    cached_prefix=evidence('target_cache_actual_gpu_prefix40_60_v1.json',['status','groups','exact_identity_output_prefix','exact_scheduler_prefix','actual_vggt_calls','limitations'])
+    resource_ledger=evidence('resource_ledger_v1.json',['status','scopes'])
     tiny_path=ROOT/'results/causal_B8_fixed20_total80_strict_suite_v1_metrics.json'
     tiny_audit_path=ROOT/'results/causal_B8_fixed20_total80_identity_pair_audit_v1.json'
     tiny=None
@@ -84,9 +93,10 @@ def main():
     summary=dict(status='IN_PROGRESS',scientific_success=science_status,engineering_complete=False,paper_ready=False,
         complete_strict_baseline_videos=sorted({r['video_id'] for r in baseline}),metrics=metric_rows,feature_screening_complete=(ROOT/'results/feature_screening_manifest.json').exists(),
         off_zero_parity=json.loads((ROOT/'results/off_zero_parity.json').read_text()) if (ROOT/'results/off_zero_parity.json').exists() else None,
-        limitations=['original GMT offline full-video postprocessing','conflicting raw GT identities in several original TRAIN sequences','B8 has an extremely small audited full-strict numerical identity signal, not stable method improvement; dense causal scene1 pending independent attribution/remaining scenes','WWW application evidence pending'],
+        limitations=['original GMT offline full-video postprocessing','conflicting raw GT identities in several original TRAIN sequences','B8 has an extremely small audited full-strict numerical identity signal, not stable method improvement; scene1 attribution is complete but does not establish independent VGGT/geometry benefit; remaining dense scenes/stability pending','WWW application evidence pending'],
         preliminary_complete_video_signal=signal,
         preliminary_full_dev_signal=tiny,
+        scene1_attribution=attribution,camera_encoding_control=camera_control,cached_feature_prefix=cached_prefix,resource_ledger=resource_ledger,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
     save_json(ROOT/'results/final_summary.json',summary)
@@ -96,7 +106,12 @@ def main():
         '| Method | Video | Strict GT | HOTA | AssA | IDF1 | CVIDF1 | IDSW |','|---|---:|---|---:|---:|---:|---:|---:|']
     if signal:
         row=signal['rows'][0];delta=row['metric_delta']
-        lines[6:6]=['Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA '+f"{delta['HOTA']:+.4f}, AssA {delta['AssA']:+.4f}, CVIDF1 {delta['CVIDF1']:+.4f} percentage points, IDSW {delta['IDSW']:+d}."+' Exact detector-key parity is audited separately. The other scenes and independent GMT/DINO/feature-only/geometry-only attribution controls remain incomplete; this is not full development success.','']
+        attribution_note=(' Scene1 attribution is complete: feature-only exactly equals joint; masked geometry-only exactly equals baseline; DINO matches VGGT CVIDF1 with one fewer IDSW; a GMT-only head captures much of the gain. Independent VGGT/geometry credit is unsupported.' if attribution and attribution['status']=='COMPLETE_SCENE1_ATTRIBUTION_NOT_FULL_DEV' else ' Independent attribution controls are pending.')
+        lines[6:6]=['Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA '+f"{delta['HOTA']:+.4f}, AssA {delta['AssA']:+.4f}, CVIDF1 {delta['CVIDF1']:+.4f} percentage points, IDSW {delta['IDSW']:+d}."+' Exact detector-key parity is audited separately.'+attribution_note+' Complete strict5 and dense stability remain pending; this is not full development success.','']
+    if camera_control and camera_control['exact_serialized_predictions']:
+        lines[6:6]=['The inherited single-image camera encoding issue is confirmed in source. Actual corrected-camera GMT-only scene1 predictions exactly equal the locked causal baseline; all metric differences are zero. The repair does not explain this scene1 head gain. Other strict scenes remain pending.','']
+    if cached_prefix and cached_prefix['status']=='PASS':
+        lines[6:6]=['Actual cached-feature VGGT40/60-group GPU runs pass exact40-group identity-output and scheduler-prefix equality with active target reuse (4/6 actual VGGT calls). This is a short-prefix correctness result, not a full-video accuracy, speed, or whole-process memory claim. Per-target source-age traces were not recorded.','']
     if tiny:
         base=json.loads((ROOT/'results/causal_B0_strict_suite_v1_metrics.json').read_text())['metrics']
         delta=tiny['metrics']['CVIDF1']-base['CVIDF1']

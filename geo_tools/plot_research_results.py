@@ -55,6 +55,33 @@ def main():
     fig.savefig(out/'strict_identity_deltas.png', dpi=180)
     fig.savefig(out/'strict_identity_deltas.pdf')
     plt.close(fig)
+    attribution_path=ROOT/'results/causal_dense_scene1_backbone_controls_partial_v1.json'
+    if attribution_path.exists():
+        attribution=json.loads(attribution_path.read_text())
+        if attribution['status']=='COMPLETE_SCENE1_ATTRIBUTION_NOT_FULL_DEV':
+            source_rows=attribution['rows']
+            by_tag={row['tag']:row for row in source_rows}
+            baseline_scene=by_tag['online_B0_full_v1_source44_v1']['metrics']
+            specs=[('GMT head','C_gmt_head_dense_causal_v1_v1'),
+                   ('DINO head','C_dino_head_dense_causal_v1_v1'),
+                   ('VGGT head','B5_vggt_head_dense_causal_v1_v1'),
+                   ('VGGT camera','B6_vggt_camera_dense_causal_v1_v1'),
+                   ('VGGT head + camera','causal_B7_fixed_k1_strict_suite_v1_v1')]
+            fig,axes=plt.subplots(1,2,figsize=(9,4.5))
+            for axis,metric in zip(axes,['CVIDF1','AssA']):
+                delta=[by_tag[tag]['metrics'][metric]-baseline_scene[metric] for _,tag in specs]
+                axis.barh(range(len(specs)),delta,color=['#687e93','#407c8e','#7d6093','#b18758','#7d6093'])
+                axis.set_yticks(range(len(specs)),[label for label,_ in specs]);axis.invert_yaxis()
+                axis.axvline(0,color='black',linewidth=.8)
+                axis.set_xlabel('Change (percentage points)')
+                axis.set_title(metric);axis.grid(axis='x',alpha=.2)
+            fig.suptitle('Scene1 complete causal ablation: fixed matched-capacity TRAIN heads',fontsize=11)
+            fig.text(.5,.015,'One full scene, one head seed. DINO matches VGGT CVIDF1; geometry has no independent output effect here. Full strict5 pending.',ha='center',fontsize=7.5)
+            fig.tight_layout(rect=(0,.06,1,.94))
+            fig.savefig(out/'causal_scene1_attribution.png',dpi=180)
+            fig.savefig(out/'causal_scene1_attribution.pdf')
+            plt.close(fig)
+            sources[str(attribution_path)]=sha256(attribution_path)
     audit_path = ROOT/'results/causal_fixed_joint_random_total80_full_v18_v1.json'
     if audit_path.exists():
         audit = json.loads(audit_path.read_text())

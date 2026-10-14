@@ -894,6 +894,24 @@
       "sha256": "cb9906ac1d5a84262bd67ee5e370b1b2bc9b191bfd9cd08b78f6923a93c0460c"
     },
     {
+      "method": "camera_index_corrected_B0_scene1_full_v1",
+      "video_id": 1,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 86.55351457210155,
+      "DetA": 87.93225734540148,
+      "AssA": 85.2196946037858,
+      "IDF1": 94.66487334678322,
+      "MOTA": 89.67007963594995,
+      "IDSW": 278,
+      "CVIDF1": 94.66487334678322,
+      "CVMA_sequential": 89.67007963594995,
+      "CVMA": 89.3287827076223,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/camera_index_corrected_B0_scene1_full_v1/predictions.metrics.json",
+      "sha256": "77a6477b8ad21d0eb582169003f0dd4734350b51d016c58e03ac39f030b0b233"
+    },
+    {
       "method": "causal_B7_fixed_k10_strict_suite_v1_v1",
       "video_id": 1,
       "full_video": true,
@@ -1090,6 +1108,24 @@
       "CVMA": 93.21947489166455,
       "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k20_strict_suite_v1_v18/predictions.metrics.json",
       "sha256": "06eb0f9367473e8435bf4966dd8472881ee915d228752603f21e48191b58e93b"
+    },
+    {
+      "method": "causal_B7_fixed_k20_strict_suite_v1_v19",
+      "video_id": 19,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 77.46542847383961,
+      "DetA": 74.51595209234846,
+      "AssA": 81.03092572470868,
+      "IDF1": 94.05826452718492,
+      "MOTA": 90.6355541909733,
+      "IDSW": 106,
+      "CVIDF1": 94.05826452718492,
+      "CVMA_sequential": 90.62941357077065,
+      "CVMA": 90.54344488793367,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k20_strict_suite_v1_v19/predictions.metrics.json",
+      "sha256": "a88f6e5956ba952b409d1a5a9e2d0b9ee6829eee313b0989a5a0765d24239bdf"
     },
     {
       "method": "causal_B8_fixed20_total80_strict_suite_v1_v1",
@@ -1884,6 +1920,24 @@
       "sha256": "593bd319022b3c3dc477fe3ab2154e96c3ff939267bbc5fc022059e0c480c96c"
     },
     {
+      "method": "causal_B7_fixed_k20_strict_suite_v1",
+      "video_id": "ALL_STRICT",
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 80.74951885875092,
+      "DetA": 80.26691001631377,
+      "AssA": 81.47481063475988,
+      "IDF1": 95.05958918039455,
+      "MOTA": 94.72950407729844,
+      "IDSW": 482,
+      "CVIDF1": 95.05958918039455,
+      "CVMA_sequential": 94.72464050062416,
+      "CVMA": 94.671141157207,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B7_fixed_k20_strict_suite_v1_metrics.json",
+      "sha256": "8605dd38467938ddb6db60d463a0a8366b47068943050e4c0af90d3f7f4467b5"
+    },
+    {
       "method": "causal_B8_fixed20_total80_strict_suite_v1",
       "video_id": "ALL_STRICT",
       "full_video": true,
@@ -1962,7 +2016,7 @@
   "limitations": [
     "original GMT offline full-video postprocessing",
     "conflicting raw GT identities in several original TRAIN sequences",
-    "B8 has an extremely small audited full-strict numerical identity signal, not stable method improvement; dense causal scene1 pending independent attribution/remaining scenes",
+    "B8 has an extremely small audited full-strict numerical identity signal, not stable method improvement; scene1 attribution is complete but does not establish independent VGGT/geometry benefit; remaining dense scenes/stability pending",
     "WWW application evidence pending"
   ],
   "preliminary_complete_video_signal": {
@@ -2210,6 +2264,53 @@
       "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
       "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
       "annotation_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85"
+    }
+  },
+  "scene1_attribution": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_dense_scene1_backbone_controls_partial_v1.json",
+    "sha256": "865951d0afed8753fb2cd844c60e3b3b7abf730b963823bc4c8d41a1bc7684b5",
+    "status": "COMPLETE_SCENE1_ATTRIBUTION_NOT_FULL_DEV",
+    "scope": "four complete causal scene1 runs, not full strict5; fixed TRAIN seed14 and matched parameter head controls"
+  },
+  "camera_encoding_control": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/camera_index_corrected_scene1_accuracy_audit_v1.json",
+    "sha256": "9e814150c69b60534bd92a2ad64bf3da5bada73c4039ecf9f6f9627300c6972e",
+    "status": "PASS",
+    "video_id": 1,
+    "exact_serialized_predictions": true,
+    "metric_delta": {
+      "HOTA": 0.0,
+      "DetA": 0.0,
+      "AssA": 0.0,
+      "IDF1": 0.0,
+      "MOTA": 0.0,
+      "IDSW": 0,
+      "CVIDF1": 0.0,
+      "CVMA_sequential": 0.0,
+      "CVMA": 0.0
+    },
+    "interpretation": "No observed effect on this scene; does not disprove the source camera-input issue or establish invariance on other scenes."
+  },
+  "cached_feature_prefix": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/target_cache_actual_gpu_prefix40_60_v1.json",
+    "sha256": "e0c57172a2e41a962856140ac8e17ba4f1761cdf05c08e046e9445b3839f6212",
+    "status": "PASS",
+    "groups": 40,
+    "exact_identity_output_prefix": true,
+    "exact_scheduler_prefix": true,
+    "actual_vggt_calls": 4,
+    "limitations": "Cache source ages are enforced in implementation and tested separately; these runs did not log per-target source-age traces. Prefix equality checks actual identity outputs and scheduling, not every hidden tensor."
+  },
+  "resource_ledger": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/resource_ledger_v1.json",
+    "sha256": "b2ab9834aa489b4280c5ccae025a146668fc3b1b0f8b00f29d3359bd9e7d7ff1",
+    "status": "MEASURED_SCOPE_LEDGER_NOT_FINAL_MATRIX",
+    "scopes": {
+      "cuda": "PyTorch per-process allocator peak, not all processes or complete device occupancy",
+      "host": "process lifetime maximum RSS where recorded, including initialization; not synchronized with CUDA/cache peak",
+      "original_tracker": "deduplicated retained tensor/NumPy storage at final publication, not lifetime peak and not Python object overhead; original GMT history is unchanged and unbounded",
+      "cache": "target vector cache and retrieval index are separate payloads, not total system memory caps",
+      "missing": "null means not measured; never substitute zero; do not add noncoincident peaks"
     }
   },
   "retrieval_experiments": [
@@ -2579,5 +2680,5 @@
     }
   ],
   "retrieval_full_video_evaluation": true,
-  "source_commit": "86e7bd3166c4a9271c8050eeb611d1f0b40c9808"
+  "source_commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a"
 }
