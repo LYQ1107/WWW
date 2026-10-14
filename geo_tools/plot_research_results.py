@@ -82,7 +82,7 @@ def main():
         sources[str(path)] = sha256(path)
         sources[str(manifest_path)] = sha256(manifest_path)
     if retrieval_runs:
-        labels = [f"{manifest['backbone']}, {manifest['camera_streams']} cameras, k{manifest['interval']}" for manifest, _ in retrieval_runs]
+        labels = [f"{manifest['backbone']}, {manifest['camera_streams']} cameras, " + ('every-frame native publication' if manifest['backbone']=='none' else f"k{manifest['interval']} extra features") for manifest, _ in retrieval_runs]
         fig, axes = plt.subplots(1, 3, figsize=(12, 4))
         for axis, metric in zip(axes, ['Recall@1', 'MRR', 'Complete images/s']):
             values = [(report['recall_at_k']['1'] if metric == 'Recall@1' else report['mrr']) if metric != 'Complete images/s' else manifest['camera_image_fps'] for manifest, report in retrieval_runs]

@@ -85,10 +85,22 @@ Causal retrieval (local replay, GT only for post-run evaluation; conditional ret
 |---|---:|---|---:|---:|---:|---:|---:|---:|
 | retrieval_gmt_10streams_prefix20_v1 | 10 | False | 39 | 28 | 0.8214285714285714 | 0.8898809523809524 | 1.2639 | 7.5250 |
 | retrieval_gmt_10streams_prefix30_v1 | 10 | False | 78 | 57 | 0.8421052631578947 | 0.9064327485380118 | 1.4793 | 7.8980 |
+| retrieval_gmt_4streams_full_v1 | 4 | True | 826 | 494 | 0.9777327935222672 | 0.9863326585695007 | 5.4689 | 6.9697 |
 | retrieval_gmt_v18_full_v1 | 2 | True | 598 | 309 | 0.9773462783171522 | 0.9878640776699029 | 2.9661 | 6.6445 |
 | retrieval_gmt_v18_prefix12_v1 | 2 | False | 43 | 24 | 1.0 | 1.0 | 0.3662 | 4.9767 |
+| retrieval_vggt_k10_4streams_full_v1 | 4 | True | 826 | 494 | 0.8947368421052632 | 0.9142615489945207 | 5.6980 | 5.6663 |
+| retrieval_vggt_k10_scoring_diagnostic_v18_full_v1 | 2 | True | 598 | 309 | 0.9029126213592233 | 0.9245815089261689 | 2.9012 | diagnostic cost only |
 | retrieval_vggt_k10_v18_full_v1 | 2 | True | 598 | 309 | 0.9029126213592233 | 0.9245815089261689 | 2.9289 | 5.2250 |
 | retrieval_vggt_v18_prefix12_v1 | 2 | False | 43 | 24 | 1.0 | 1.0 | 0.3884 | 0.8728 |
+
+Same-query retrieval scoring diagnostics (identical feature-source observations/candidates for encoded scorers; full native-gallery denominator retained):
+
+| Method | Scorer | Full video | Positive candidate coverage | Recall@1 | MRR |
+|---|---|---|---:|---:|---:|
+| retrieval_vggt_k10_scoring_diagnostic_v18_full_v1 | native | True | 1.0 | 0.9773462783171522 | 0.9878640776699029 |
+| retrieval_vggt_k10_scoring_diagnostic_v18_full_v1 | native_encoded | True | 1.0 | 0.9967637540453075 | 0.9975728155339806 |
+| retrieval_vggt_k10_scoring_diagnostic_v18_full_v1 | learned_cosine | True | 1.0 | 0.2686084142394822 | 0.40116202317899574 |
+| retrieval_vggt_k10_scoring_diagnostic_v18_full_v1 | equal_cosine_encoded | True | 1.0 | 0.9676375404530745 | 0.9783424468995275 |
 
 Retrieval latency is local scoring and serialization, not Internet transport latency. Full pipeline throughput charges image reads, frozen detection/GTA, feature extraction, publication, queries and query-log I/O. Original GMT history is unchanged; the index payload cap does not imply bounded total system memory. Dataset replay and a functioning query interface do not establish WWW novelty or live Web application evidence.
 

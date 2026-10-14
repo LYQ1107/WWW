@@ -1,0 +1,156 @@
+{
+  "status": "PASS",
+  "scope": "complete causal18 actual image producer, five scorers on same snapshots, no production throughput claim",
+  "run_manifest": "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_vggt_k10_scoring_diagnostic_v18_full_v1/manifest.json",
+  "run_manifest_sha256": "6534525751b9f5cd7a148884c9d47a7c37a92dbc607955882bb85b247aa3c083",
+  "metrics_path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_vggt_k10_scoring_diagnostic_v18_full_v1/retrieval.metrics.json",
+  "metrics_sha256": "4504a25fe4faf7b33f0650c44a2c45f6fd2b32ecc3a142888b86e9e47b5806c0",
+  "exact_causal_baseline_predictions": true,
+  "metrics": {
+    "status": "PASS",
+    "run_manifest_sha256": "6534525751b9f5cd7a148884c9d47a7c37a92dbc607955882bb85b247aa3c083",
+    "raw_gt_sha256": {
+      "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00118park_View1/gt/gt.txt": "8a46927990c20cf7af608984844ad1b9a80f40231e161a4822f97466de8c0169",
+      "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00118park_View2/gt/gt.txt": "527e2f2e0d75940e2dad1da7d0ebe20e850600ea4908cf07aa59d2b7b48dc6e4"
+    },
+    "requests": 598,
+    "gt_matched_queries": 577,
+    "gallery_eligible_queries": 309,
+    "detector_query_precision": 0.9648829431438127,
+    "gt_query_detection_coverage": 0.9713804713804713,
+    "gallery_eligibility_among_matched": 0.5355285961871751,
+    "recall_at_k": {
+      "1": 0.9029126213592233,
+      "5": 0.9385113268608414,
+      "10": 0.9676375404530745
+    },
+    "mrr": 0.9245815089261689,
+    "mrr_at_10": 0.9221592952175476,
+    "success_at_k_all_requests": {
+      "1": 0.4665551839464883,
+      "5": 0.48494983277591974,
+      "10": 0.5
+    },
+    "query_scene": null,
+    "per_scene": {
+      "18": {
+        "requests": 598,
+        "matched": 577,
+        "eligible": 309,
+        "covered": 309,
+        "hits1": 279,
+        "hits5": 290,
+        "hits10": 299,
+        "reciprocal": 285.6956862581862,
+        "recall_at_k": {
+          "1": 0.9029126213592233,
+          "5": 0.9385113268608414,
+          "10": 0.9676375404530745
+        },
+        "mrr": 0.9245815089261689,
+        "candidate_positive_coverage": 1.0,
+        "success_at_k_all_requests": {
+          "1": 0.4665551839464883,
+          "5": 0.48494983277591974,
+          "10": 0.5
+        }
+      }
+    },
+    "scoring_diagnostics": {
+      "native": {
+        "requests": 598,
+        "matched": 577,
+        "eligible": 309,
+        "covered": 309,
+        "hits1": 302,
+        "hits5": 309,
+        "hits10": 309,
+        "reciprocal": 305.25,
+        "recall_at_k": {
+          "1": 0.9773462783171522,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "mrr": 0.9878640776699029,
+        "candidate_positive_coverage": 1.0,
+        "success_at_k_all_requests": {
+          "1": 0.5050167224080268,
+          "5": 0.5167224080267558,
+          "10": 0.5167224080267558
+        }
+      },
+      "native_encoded": {
+        "requests": 598,
+        "matched": 577,
+        "eligible": 309,
+        "covered": 309,
+        "hits1": 308,
+        "hits5": 309,
+        "hits10": 309,
+        "reciprocal": 308.25,
+        "recall_at_k": {
+          "1": 0.9967637540453075,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "mrr": 0.9975728155339806,
+        "candidate_positive_coverage": 1.0,
+        "success_at_k_all_requests": {
+          "1": 0.5150501672240803,
+          "5": 0.5167224080267558,
+          "10": 0.5167224080267558
+        }
+      },
+      "learned_cosine": {
+        "requests": 598,
+        "matched": 577,
+        "eligible": 309,
+        "covered": 309,
+        "hits1": 83,
+        "hits5": 160,
+        "hits10": 223,
+        "reciprocal": 123.95906516230968,
+        "recall_at_k": {
+          "1": 0.2686084142394822,
+          "5": 0.517799352750809,
+          "10": 0.7216828478964401
+        },
+        "mrr": 0.40116202317899574,
+        "candidate_positive_coverage": 1.0,
+        "success_at_k_all_requests": {
+          "1": 0.13879598662207357,
+          "5": 0.26755852842809363,
+          "10": 0.3729096989966555
+        }
+      },
+      "equal_cosine_encoded": {
+        "requests": 598,
+        "matched": 577,
+        "eligible": 309,
+        "covered": 309,
+        "hits1": 299,
+        "hits5": 307,
+        "hits10": 307,
+        "reciprocal": 302.307816091954,
+        "recall_at_k": {
+          "1": 0.9676375404530745,
+          "5": 0.9935275080906149,
+          "10": 0.9935275080906149
+        },
+        "mrr": 0.9783424468995275,
+        "candidate_positive_coverage": 1.0,
+        "success_at_k_all_requests": {
+          "1": 0.5,
+          "5": 0.5133779264214047,
+          "10": 0.5133779264214047
+        }
+      }
+    },
+    "scoring_diagnostic_denominator": "all native-gallery eligible detector queries retained across every scorer, including missing-feature queries and positives without encoded gallery candidates",
+    "metric_protocol": "one-to-one detector/GT IoU>=0.5; identity=(scene,raw_GT_ID); clip positive requires strict GT majority across all its observations; Recall and full MRR conditional on GT-matched query with at least one positive other-camera clip; all candidate ranks retained",
+    "query_selection_uses_gt": false,
+    "ranking_uses_gt": false,
+    "future_gallery_allowed": false,
+    "limitations": "finite local dataset replay, not live Internet feeds; clip identity majority is an evaluation convention"
+  }
+}
