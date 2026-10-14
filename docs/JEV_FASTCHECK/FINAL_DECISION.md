@@ -1,6 +1,6 @@
 # JEV closed-loop fastcheck final decision — 2026-10-14
 
-`JEV_INDEPENDENT_ADVANTAGE_NOT_ESTABLISHED`. All bounded learning/native comparisons are complete; live-image timing is still running.
+`JEV_INDEPENDENT_ADVANTAGE_NOT_ESTABLISHED`. The bounded fastcheck is complete; scientific success and original master completion are not established.
 
 All rows below use the same full1034-frame two-camera TRAIN16, one frozen seed. References are exact frozen prior inputs and are separate from historical DEV17–19 three-seed scores. TRAIN16 is gradient-free for new modules but pre-exposed by initializers, so this is development evidence.
 
@@ -25,10 +25,11 @@ Data benefit is stronger in ordinary Attention; JEV aggregation did not protect 
 | attention_D1 | 1.927 | -29.64% | 156.13/207.81 | 36165044 | 169092 |
 | direct_jev_D1 | 2.652 | -3.17% | 90.17/112.17 | 36165107 | 169155 |
 | parent | 2.739 | +0.00% | 82.43/103.06 | 35995952 | 0 |
+| threshold | 1.962 | -28.35% | 154.88/185.57 | 36126227 | 130275 |
 
 Every reported FPS uses three complete live-image runs on the same physical GPU8, V10032GB, with detector/VFCE/actual Gallery/Bank/assignment and no GT journals/evaluator in the timed loop. Native identity state resets between trials; the loaded model is reused. Common dormant pruning is disclosed and is not a JEV scientific gain. Original instantiated system53515309 parameters; common deployed Fixed35995952; Direct JEV36165107 (net+169155 versus common Fixed); Direct Attention36164979 (net+169027).
 
-GPU budget: 2.641/24 registered GPU-wall hours (includes loading/IO; small manual setup/contract probes are outside this registry, so this is not total active-kernel time). Missing live timings: ['threshold'].
+GPU budget: 3.091/24 registered GPU-wall hours (includes loading/IO; small manual setup/contract probes are outside this registry, so this is not total active-kernel time). Missing live timings: [].
 
 ## A
 
@@ -48,7 +49,7 @@ The sole direct lawful score/choice repair was executed. Against unchanged J1: H
 
 ## E
 
-Best matched TRAIN16 reference: frozen Pair Threshold HOTA70.605/AssA71.106/CVIDF189.825/IDSW1002. Best new P2 model: ordinary Attention D1 HOTA68.892/AssA68.073/CVIDF188.038/IDSW1299. Direct JEV:67.052/64.476/82.406/1093. Same-GPU live-image costs are recorded separately; no cached FPS imputation.
+Best matched TRAIN16 reference: frozen Pair Threshold HOTA70.605/AssA71.106/CVIDF1=89.825/IDSW1002. Best new P2 model: ordinary Attention D1 HOTA68.892/AssA68.073/CVIDF1=88.038/IDSW1299. Direct JEV:67.052/64.476/82.406/1093. Same-GPU live-image costs are recorded separately; no cached FPS imputation. Three complete live-image trial means on the same GPU: Threshold 1.962, Fixed 2.739, Attention D1 1.927, Direct JEV 2.652 scene FPS. Unchanged JEV D1 live FPS was not measured.
 
 ## F
 

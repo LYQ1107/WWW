@@ -27,7 +27,7 @@ def main(final=False):
   'B':'Paired native prefixes had identical initial input/state SHA but diverged at TRAIN12/24/1, TRAIN13/225/0, TRAIN14/6/0. Direction differs by video. Full data intervention helped ordinary control more than JEV. Missing/UNKNOWN/Bank-only support and correlated person histories remain. '+aliases,
   'C':'Keep Strong Fixed and honest frozen JEV evidence. The current new Recovery JEV module lacks support for deployment or continued scale-up. Direct JEV remains an auditable diagnostic, not a successful replacement.',
   'D':'The sole direct lawful score/choice repair was executed. Against unchanged J1: HOTA +0.396, IDSW 1891->1093, but CVIDF1 83.511->82.406 and full-video identity-inconsistency duration 6957->7741 camera-frames. Lower IDSW does not establish stable identity benefit. Comparing repair to M0 also changes loss/readout/solver. Matched direct M1/M2 compares complete typed/untyped variants including reader allocation, not question embeddings alone, and M1 still loses to the stronger existing ordinary Attention.',
-  'E':'Best matched TRAIN16 reference: frozen Pair Threshold HOTA70.605/AssA71.106/CVIDF189.825/IDSW1002. Best new P2 model: ordinary Attention D1 HOTA68.892/AssA68.073/CVIDF188.038/IDSW1299. Direct JEV:67.052/64.476/82.406/1093. Same-GPU live-image costs are recorded separately; no cached FPS imputation.',
+  'E':'Best matched TRAIN16 reference: frozen Pair Threshold HOTA70.605/AssA71.106/CVIDF1=89.825/IDSW1002. Best new P2 model: ordinary Attention D1 HOTA68.892/AssA68.073/CVIDF1=88.038/IDSW1299. Direct JEV:67.052/64.476/82.406/1093. Same-GPU live-image costs are recorded separately; no cached FPS imputation.',
   'F':'No new JEV exceeds Strong Fixed, Threshold or best ordinary Attention. Direct JEV exceeds the matched direct-Attention variant (HOTA63.097) but that variant is weaker than the original/P2 Attention and is not the strongest ordinary baseline.',
   'G':'All new results are seed20261009, reused authorized TRAIN, and pre-exposed TRAIN16. No independent complete video, cross-seed reproduction, new source permission, or future safety qualification was established. DEV/TEST/sealed datasets were not newly used.',
   'H':'Prefer the evidence-supported Strong Fixed/ordinary Threshold baseline and retain the stronger ordinary Attention as research control. Stop adding JEV Questions/Readers. Any next research scope should first resolve lawful action/identity-preservation supervision and independent validation; no new run is authorized by this final decision.'}
@@ -53,6 +53,24 @@ def main(final=False):
  for key,text in answers.items():rows+=['## '+key,'',text,'']
  (DOCS/'FINAL_DECISION.md').write_text('\n'.join(rows).rstrip()+'\n')
  (DOCS/'ONLINE_EVALUATION.md').write_text('\n'.join(rows[:rows.index('## A')])+'\n\nFull metrics, counts, errors, raw source hashes, CV conventions and identity-time diagnostics are in FINAL_RESULTS.json. N01/N10 are individual changed-row certificates; changed UNKNOWN counterparts are separate, so they are not whole-plan causal correctness claims. Direct methods score all legal IDs, and their raw outside_plans count means not selected, not missing from a top8 proposal set.\n')
+ zh=['# 本轮闭环训练与最小架构修复：中文结论','','**当前 JEV 未建立独立优势。** '+('本轮有界验证已完成。' if final else '训练与完整视频比较已完成，最后的效率复测仍在进行。'),'',
+  'A. 换数据有用吗？相对 D0 的同预算微调，普通 Attention 的 HOTA 增加1.467，JEV 仅增加0.132且 IDSW 增加310。两者 D1 都未超过各自原始初始化模型。闭环数据没有解决当前 JEV 的退化。','',
+  'B. 退化证据是什么？相同外生输入、相同初始状态下，JEV 确实改变后续 Gallery、Bank 和候选历史，但不同视频的影响方向不同。当前身份兼容监督也可能把同一人的多个原生 ID 都视为正确；这提示监督与持久身份目标不完全一致，尚未证明它是唯一或主要原因。','',
+  'C. 当前 JEV 是否保留？保留代码、checkpoint 和原始证据用于复核；暂不替换强 Fixed，也不继续堆叠模块。','',
+  'D. 需要改哪里？已执行唯一一次修复：对所有合法 ID 直接评分并提交一个原生 MATCH 求解。对比原 JEV D1，IDSW1891→1093，但 CVIDF1=83.511→82.406，完整视频固定身份映射的不一致时长6957→7741相机帧，未映射碎片观测3118→5700。少切换不等于身份更稳定。','',
+  'E/F. 同范围实际表现如下。全部为完整 TRAIN16、1034场景帧、双相机、固定单种子；冻结参考来自原始完整运行，未重选参数。','',
+  '| 方法 | HOTA | AssA | CVIDF1 | IDSW | 完整图像场景FPS |','|---|---:|---:|---:|---:|---:|']
+ by_cost={c['tag']:c for c in cost}
+ for tag,label in [('parent','冻结 Fixed'),('threshold','冻结 Threshold'),('attention_D1','普通 Attention D1'),('jev_D1','JEV D1'),('direct_jev_D1','直接关联 JEV D1')]:
+  r=metrics.get(tag) or next(r for r in refs['cases'] if r['arm']==tag)
+  m=r.get('metrics',r.get('raw_online_metrics'));fps=f"{by_cost[tag]['mean_full_scene_FPS']:.3f}" if tag in by_cost else '未测'
+  zh.append(f"| {label} | {m['HOTA']:.3f} | {m['AssA']:.3f} | {r['CVIDF1']:.3f} | {m['IDSW']:.0f} | {fps} |")
+ zh+=['','直接 JEV 优于其配对的直接 Attention 变体，但未超过更强的原有普通 Attention、Fixed、Threshold 或 MLP。配对直接读出比较还包含 reader 分配差异，不能单独归因于问题类型嵌入。','',
+  'G. 缺什么验证？TRAIN16 没参与本轮梯度更新，但已有模型曾暴露过；本轮单种子结果属于开发证据。缺独立完整视频、跨种子复现以及独立数据授权，未新增 DEV17–19、封存20–22、TEST 或 Full24 评估。','',
+  'H. 下一步方向：优先保留已有强 Fixed 和证据支持的普通关联控制器。当前停止扩大 JEV；如将来获准继续，先解决合法动作监督与持久身份目标的一致性，再冻结独立验证方案。不能把本轮脚本完成等同于科研成功。','',
+  f'资源：登记的 GPU 墙钟任务累计{hours:.3f}/24小时；包含加载与IO，不包括少量手动环境/接口探测，不代表GPU内核活跃时间。新增留存{result["runtime_retention_bytes"]/2**30:.3f}GiB，data1余量{result["free_data1_GiB"]:.2f}GiB。大型图像、视频、缓存与权重不上传GitHub。','',
+  '完整 A–H、IDF1/MOTA/CVMA、N01/N10、UNKNOWN、覆盖率、两种身份错误时长、参数量及Stage2延迟见 FINAL_DECISION.md、FINAL_RESULTS.json 和 COMPLETION_VERIFICATION.json。原始阶段结果与旧 NO_GO 保留。']
+ (DOCS/'SUMMARY_ZH.md').write_text('\n'.join(zh)+'\n')
  goal=read(REPORTS/'GOAL.json');goal.update(status=result['status'],scientific_success=False,decision=result['decision'],original_Master_complete=False);save(REPORTS/'GOAL.json',goal)
  if final:registry['status']='BOUNDED_FASTCHECK_COMPLETE';registry['scientific_success']=False;save(REPORTS/'EXPERIMENT_REGISTRY.json',registry)
  print('FINAL_REVIEW',result['status'],missing,live,hours,flush=True)

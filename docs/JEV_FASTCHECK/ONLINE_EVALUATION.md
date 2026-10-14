@@ -1,6 +1,6 @@
 # JEV closed-loop fastcheck final decision — 2026-10-14
 
-`JEV_INDEPENDENT_ADVANTAGE_NOT_ESTABLISHED`. All bounded learning/native comparisons are complete; live-image timing is still running.
+`JEV_INDEPENDENT_ADVANTAGE_NOT_ESTABLISHED`. The bounded fastcheck is complete; scientific success and original master completion are not established.
 
 All rows below use the same full1034-frame two-camera TRAIN16, one frozen seed. References are exact frozen prior inputs and are separate from historical DEV17–19 three-seed scores. TRAIN16 is gradient-free for new modules but pre-exposed by initializers, so this is development evidence.
 
@@ -25,10 +25,11 @@ Data benefit is stronger in ordinary Attention; JEV aggregation did not protect 
 | attention_D1 | 1.927 | -29.64% | 156.13/207.81 | 36165044 | 169092 |
 | direct_jev_D1 | 2.652 | -3.17% | 90.17/112.17 | 36165107 | 169155 |
 | parent | 2.739 | +0.00% | 82.43/103.06 | 35995952 | 0 |
+| threshold | 1.962 | -28.35% | 154.88/185.57 | 36126227 | 130275 |
 
 Every reported FPS uses three complete live-image runs on the same physical GPU8, V10032GB, with detector/VFCE/actual Gallery/Bank/assignment and no GT journals/evaluator in the timed loop. Native identity state resets between trials; the loaded model is reused. Common dormant pruning is disclosed and is not a JEV scientific gain. Original instantiated system53515309 parameters; common deployed Fixed35995952; Direct JEV36165107 (net+169155 versus common Fixed); Direct Attention36164979 (net+169027).
 
-GPU budget: 2.641/24 registered GPU-wall hours (includes loading/IO; small manual setup/contract probes are outside this registry, so this is not total active-kernel time). Missing live timings: ['threshold'].
+GPU budget: 3.091/24 registered GPU-wall hours (includes loading/IO; small manual setup/contract probes are outside this registry, so this is not total active-kernel time). Missing live timings: [].
 
 
 Full metrics, counts, errors, raw source hashes, CV conventions and identity-time diagnostics are in FINAL_RESULTS.json. N01/N10 are individual changed-row certificates; changed UNKNOWN counterparts are separate, so they are not whole-plan causal correctness claims. Direct methods score all legal IDs, and their raw outside_plans count means not selected, not missing from a top8 proposal set.
