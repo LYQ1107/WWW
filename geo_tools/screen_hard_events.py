@@ -7,13 +7,8 @@ import argparse,collections,csv,time,numpy as np,torch
 from common import *
 from feature_metrics import evaluate_scores,normalize
 
-def identity(box,annotations):
-    if not annotations:return -1
-    gt=np.asarray([a['bbox'] for a in annotations],dtype=float);gt[:,2:]+=gt[:,:2]
-    b=np.asarray(box);lo=np.maximum(b[:2],gt[:,:2]);hi=np.minimum(b[2:],gt[:,2:]);inter=np.clip(hi-lo,0,None).prod(-1)
-    area=np.clip(b[2:]-b[:2],0,None).prod();ga=np.clip(gt[:,2:]-gt[:,:2],0,None).prod(-1)
-    iou=inter/np.maximum(area+ga-inter,1e-12);j=int(iou.argmax())
-    return int(annotations[j]['instance_id']) if iou[j]>=.5 else -1
+from target_labels import identity
+
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--events',type=Path,required=True);p.add_argument('--tag',default='hard_gta_features_v1');a=p.parse_args()

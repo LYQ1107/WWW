@@ -10,7 +10,7 @@ def main():
     annotations={}
     if a.gt_eligible_offline:
         import collections
-        from screen_hard_events import identity
+        from target_labels import identity
         annotations=collections.defaultdict(list)
         for ann in data['annotations']:annotations[ann['image_id']].append(ann)
         split=json.loads((ROOT/'manifests/geo_split_v1.json').read_text())
