@@ -28,7 +28,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q7: 运动无人机如何保证几何一致性？
 
-不比较不同调用的3D坐标。当前用单次联合调用相对相机关系，独立背景检查，失败即中性。合成相机投影和传播方向测试通过；航拍相机几何的实际有效性尚未通过。
+不比较不同调用的3D坐标。当前用单次联合调用相对相机关系，独立背景检查，失败即中性。合成相机投影和传播方向测试通过；此前稀疏完整对照均未通过门槛，每帧scene1有3次通过独立背景门槛，但没有GT位姿准确性或独立跟踪收益证明。
 
 ## Q8: 少重叠视野是否有效？
 
@@ -48,11 +48,11 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q12: 提升是否来自不同检测/配置/评测 bug？
 
-目前没有提升。基线固定checkpoint/config与映射修复，完整五段严格开发集：HOTA=81.0547、CVIDF1=95.6317。OFF、零系数、真实VGGT计算中性对照与整段采样预测一致性通过；B2前两系数首轮输出与B0一致。
+完整因果scene1每帧B7出现初步身份收益：CVIDF1 +0.8070个百分点、AssA +1.3140、IDSW -64；逐项检测完全一致。完整strict5及VGGT/DINO/GMT头和几何独立作用尚待确认，不能外推为稳定VGGT或三模块贡献。 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA=81.0547、CVIDF1=95.6317，不能拿离线数值替代因果对照。已有OFF/零系数前缀、真实计算中性与完整采样预测一致性；所有钩子后完整OFF/零系数仍在队列中。
 
 ## Q13: 三个模块能否分别证明有效？
 
-尚未证明。当前 SCIENTIFIC_SUCCESS、ENGINEERING_COMPLETE、PAPER_READY 均未达成。B0/B1/B2 和几何诊断不能替代完整 B3–B9 消融、因果速度和重复复核。
+尚未证明。完整因果scene1每帧B7出现初步身份收益：CVIDF1 +0.8070个百分点、AssA +1.3140、IDSW -64；逐项检测完全一致。完整strict5及VGGT/DINO/GMT头和几何独立作用尚待确认，不能外推为稳定VGGT或三模块贡献。 当前SCIENTIFIC_SUCCESS/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。
 
 ## Q14: 为什么符合 WWW？
 

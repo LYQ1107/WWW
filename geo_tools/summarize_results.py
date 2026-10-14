@@ -67,17 +67,40 @@ def main():
     write_csv(ROOT/'results/ablation_results.csv',metric_rows,metrics);write_csv(ROOT/'results/runtime_results.csv',runtime_rows,runtime)
     save_json(ROOT/'results/experiment_manifest.json',dict(status='IN_PROGRESS',experiments=experiments,raw_gt_policy='unchanged, diagnostic and strict protocols separate',split=json.loads((ROOT/'manifests/geo_split_v1.json').read_text())))
     baseline=[r for r in metric_rows if r['method'].startswith('B0') and isinstance(r['video_id'],int) and r['full_video'] and not r['raw_gt_diagnostic']]
-    summary=dict(status='IN_PROGRESS',scientific_success='NOT_ESTABLISHED',engineering_complete=False,paper_ready=False,
+    signal_path=ROOT/'results/causal_B7_dense_positive_scene1_v1.json'
+    signal=json.loads(signal_path.read_text()) if signal_path.exists() else None
+    tiny_path=ROOT/'results/causal_B8_fixed20_total80_strict_suite_v1_metrics.json'
+    tiny_audit_path=ROOT/'results/causal_B8_fixed20_total80_identity_pair_audit_v1.json'
+    tiny=None
+    if tiny_path.exists() and tiny_audit_path.exists():
+        candidate=json.loads(tiny_path.read_text());audit=json.loads(tiny_audit_path.read_text())
+        base=json.loads((ROOT/'results/causal_B0_strict_suite_v1_metrics.json').read_text())['metrics']
+        strict=sorted(json.loads((ROOT/'manifests/geo_split_v1.json').read_text())['strict_development_video_ids'])
+        fixes=sum(row['cross_camera_all_time_identity_pairs'][key] for row in audit['rows'] for key in ['fixes_false_negative_pairs','fixes_false_positive_pairs'])
+        harms=sum(row['cross_camera_all_time_identity_pairs'][key] for row in audit['rows'] for key in ['harms_true_positive_pairs','harms_true_negative_pairs'])
+        if candidate['status']=='PASS' and candidate['full_video'] and candidate['causal_online'] and candidate['video_ids']==strict and audit['status']=='PASS' and audit.get('full_strict_suite') and candidate['metrics']['CVIDF1']>base['CVIDF1'] and fixes>harms and all(row['added_detections']==0 and row['removed_detections']==0 for row in audit['rows']):
+            tiny=candidate
+    science_status='PRELIMINARY_PAIRED_FULL_DEV_GAIN_NOT_STABLE' if tiny else 'NOT_ESTABLISHED'
+    summary=dict(status='IN_PROGRESS',scientific_success=science_status,engineering_complete=False,paper_ready=False,
         complete_strict_baseline_videos=sorted({r['video_id'] for r in baseline}),metrics=metric_rows,feature_screening_complete=(ROOT/'results/feature_screening_manifest.json').exists(),
         off_zero_parity=json.loads((ROOT/'results/off_zero_parity.json').read_text()) if (ROOT/'results/off_zero_parity.json').exists() else None,
-        limitations=['original GMT offline full-video postprocessing','conflicting raw GT identities in several original TRAIN sequences','no paired gain established','WWW application evidence pending'],
+        limitations=['original GMT offline full-video postprocessing','conflicting raw GT identities in several original TRAIN sequences','B8 has an extremely small audited full-strict numerical identity signal, not stable method improvement; dense causal scene1 pending independent attribution/remaining scenes','WWW application evidence pending'],
+        preliminary_complete_video_signal=signal,
+        preliminary_full_dev_signal=tiny,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
     save_json(ROOT/'results/final_summary.json',summary)
     lines=['# VGGT+GMT report (automatically generated; research in progress)','',
-        'SCIENTIFIC_SUCCESS: not established. ENGINEERING_COMPLETE: false. PAPER_READY: false.','',
+        f'SCIENTIFIC_SUCCESS: {science_status}. ENGINEERING_COMPLETE: false. PAPER_READY: false.','',
         'Tables below are read from actual evaluation files. Raw-GT diagnostic rows cannot substitute for strict evaluation. All input frames are retained. Original GMT full-video postprocessing is offline; no real-time identity latency claimed.','',
         '| Method | Video | Strict GT | HOTA | AssA | IDF1 | CVIDF1 | IDSW |','|---|---:|---|---:|---:|---:|---:|---:|']
+    if signal:
+        row=signal['rows'][0];delta=row['metric_delta']
+        lines[6:6]=['Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA '+f"{delta['HOTA']:+.4f}, AssA {delta['AssA']:+.4f}, CVIDF1 {delta['CVIDF1']:+.4f} percentage points, IDSW {delta['IDSW']:+d}."+' Exact detector-key parity is audited separately. The other scenes and independent GMT/DINO/feature-only/geometry-only attribution controls remain incomplete; this is not full development success.','']
+    if tiny:
+        base=json.loads((ROOT/'results/causal_B0_strict_suite_v1_metrics.json').read_text())['metrics']
+        delta=tiny['metrics']['CVIDF1']-base['CVIDF1']
+        lines[6:6]=[f'Complete strict B8 fixed20/80-call-per-video CVIDF1 change is only {delta:+.6f} percentage points, with unchanged total IDSW. The common-detection identity audit finds one small scene19 relation correction and no harms. This is an extremely small preliminary full-DEV signal; no stable VGGT/geometry/scheduler contribution is established.','']
     for row in metric_rows:
         lines.append(f"| {row['method']} | {row['video_id']} | {'no: raw diagnostic' if row['raw_gt_diagnostic'] else 'yes'} | {row['HOTA']:.4f} | {row['AssA']:.4f} | {row['IDF1']:.4f} | {row['CVIDF1']:.4f} | {row['IDSW']} |")
     lines+=['','Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):','',

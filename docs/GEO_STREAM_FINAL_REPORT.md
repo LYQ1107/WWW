@@ -1,8 +1,12 @@
 # VGGT+GMT report (automatically generated; research in progress)
 
-SCIENTIFIC_SUCCESS: not established. ENGINEERING_COMPLETE: false. PAPER_READY: false.
+SCIENTIFIC_SUCCESS: PRELIMINARY_PAIRED_FULL_DEV_GAIN_NOT_STABLE. ENGINEERING_COMPLETE: false. PAPER_READY: false.
 
 Tables below are read from actual evaluation files. Raw-GT diagnostic rows cannot substitute for strict evaluation. All input frames are retained. Original GMT full-video postprocessing is offline; no real-time identity latency claimed.
+
+Complete strict B8 fixed20/80-call-per-video CVIDF1 change is only +0.001627 percentage points, with unchanged total IDSW. The common-detection identity audit finds one small scene19 relation correction and no harms. This is an extremely small preliminary full-DEV signal; no stable VGGT/geometry/scheduler contribution is established.
+
+Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6654, AssA +1.3140, CVIDF1 +0.8070 percentage points, IDSW -64. Exact detector-key parity is audited separately. The other scenes and independent GMT/DINO/feature-only/geometry-only attribution controls remain incomplete; this is not full development success.
 
 | Method | Video | Strict GT | HOTA | AssA | IDF1 | CVIDF1 | IDSW |
 |---|---:|---|---:|---:|---:|---:|---:|
@@ -51,10 +55,23 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | C_lowrank_gmt_seed14_k10_strict_v1 | 11 | yes | 83.3649 | 79.3051 | 92.1306 | 92.1306 | 6 |
 | C_lowrank_gmt_seed14_k10_strict_v1 | 18 | yes | 79.3120 | 81.1202 | 96.6809 | 96.6809 | 5 |
 | C_lowrank_gmt_seed14_k10_strict_v1 | 19 | yes | 77.8202 | 81.6091 | 94.6915 | 94.6915 | 29 |
+| C_gmt_head_dense_causal_v1_v1 | 1 | yes | 87.0230 | 86.1452 | 95.2477 | 95.2477 | 234 |
 | causal_B7_fixed_k10_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
+| causal_B7_fixed_k10_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
+| causal_B7_fixed_k10_strict_suite_v1_v11 | 11 | yes | 83.2769 | 79.1899 | 91.9855 | 91.9855 | 41 |
+| causal_B7_fixed_k10_strict_suite_v1_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| causal_B7_fixed_k10_strict_suite_v1_v19 | 19 | yes | 77.4654 | 81.0309 | 94.0583 | 94.0583 | 106 |
+| causal_B7_fixed_k1_strict_suite_v1_v1 | 1 | yes | 87.2189 | 86.5336 | 95.4719 | 95.4719 | 214 |
 | causal_B8_fixed20_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
+| causal_B8_fixed20_total80_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
+| causal_B8_fixed20_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
+| causal_B8_fixed20_total80_strict_suite_v1_v19 | 19 | yes | 77.4654 | 81.0309 | 94.0583 | 94.0583 | 106 |
 | causal_B9_joint_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B9_joint_total80_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
+| causal_B9_joint_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
+| causal_B9_joint_total80_strict_suite_v1_v19 | 19 | yes | 77.4614 | 81.0226 | 94.0520 | 94.0520 | 106 |
+| causal_fixed20_offset5_total80_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| causal_random_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | online_B0_full_v10_source44_v1 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | online_B0_full_v11_source44_v1 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | online_B0_full_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
@@ -84,6 +101,9 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | C_lowrank_dinov2_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0566 | 81.8977 | 95.6341 | 95.6341 | 41 |
 | C_lowrank_gmt_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0566 | 81.8977 | 95.6341 | 95.6341 | 41 |
 | causal_B0_strict_suite_v1 | ALL_STRICT | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
+| causal_B7_fixed_k10_strict_suite_v1 | ALL_STRICT | yes | 80.7443 | 81.4641 | 95.0531 | 95.0531 | 489 |
+| causal_B8_fixed20_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7495 | 81.4748 | 95.0596 | 95.0596 | 482 |
+| causal_B9_joint_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
 
 Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):
 
