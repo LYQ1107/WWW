@@ -24,7 +24,7 @@ def seed_all(seed):
     torch.backends.cudnn.benchmark = False
     torch.backends.cuda.matmul.allow_tf32 = False
 
-def load_gmt(seed=20261014, geo=False):
+def load_gmt(seed=20261014, geo_opts=None):
     import torch, gtr
     from detectron2.config import get_cfg
     from detectron2.modeling import build_model
@@ -34,6 +34,8 @@ def load_gmt(seed=20261014, geo=False):
     cfg = get_cfg(); add_centernet_config(cfg); add_gtr_config(cfg)
     cfg.merge_from_file(str(ROOT / 'configs/VISION_test.yaml'))
     cfg.MODEL.WEIGHTS = str(CHECKPOINT)
+    if geo_opts:
+        for key, value in geo_opts.items(): setattr(cfg.MODEL.GEO, key, value)
     model = build_model(cfg)
     state = torch.load(CHECKPOINT, map_location='cpu')['model']
     model.load_state_dict(state, strict=True)

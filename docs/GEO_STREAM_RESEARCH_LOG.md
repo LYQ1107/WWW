@@ -17,3 +17,13 @@ Scene-family split manifest generated from original TRAIN before screening. Deve
 Four synthetic correctness tests pass (output order, exact rounded pad mapping/inverse, ROIAlign feature coordinates, special-token removal and subpatch zero coverage). Fresh 60-group two-camera GMT smoke passes. This is truncated offline smoke, not scientific evidence or real-time identity throughput. Manifest records dirty-source origin commit; first clean commit supersedes it and fresh formal runs follow. Full-video paired accuracy and actual OFF equivalence still pending.
 
 Next: complete full minimal-development B0; extract frozen multilevel target features on fixed development pairs; rank identity evidence, compare DINO and GMT errors; integrate only after feature evidence and score calibration.
+
+## Phase 0/1 follow-up
+
+Initial clean commit `8a39a3ec4274866c85fc8f2798e838e6f93c7d22` pushed. Fixed 30 TRAIN development synchronized samples extracted fresh; first extraction failed because postprocess mutated an inference tensor outside InferenceMode. Corrected by no-grad context, retry `screen_v1r2` completes. No failed artifact reused.
+
+Geometry reference: 120 fixed settings (30 pairs x ORB/SIFT x target masking on/off). Masked SIFT valid 17/30, masked ORB 7/30. Validity uses background only, not GT. SIFT can fail or retain confusing candidate scores; no tracking improvement claim.
+
+Full garden video01 baseline: HOTA 87.8104, AssA 88.2262, IDF1/CVIDF1 97.7207, IDSW=1, strict raw-GT TrackEval passes. Full football video14 has 578+4 conflicting GT identity rows; strict TrackEval refuses. All raw rows preserved. Permissive diagnostic evaluation is separately labeled; it cannot be represented as valid strict evaluation. An all-TRAIN GT quality audit precedes method selection.
+
+Residual hook is optional in pre-softmax proposal logits. GTA/Hungarian/detector/default memory untouched. Feature scores require scalar calibration on association TRAIN; unsupported memory receives neutral evidence. Geometry reference uses same-time coordinates only, never applies an old F to unpropagated current points. Defaults and zero weights bypass extraction completely. Fresh OFF and enabled-zero 60-group predictions exactly equal pure-GMT smoke JSON including IDs and ordering. Complete-video parity remains pending. Geometry matrix direction, camera-from-world synthetic projection, degeneracy, sparse scheduler prefix/budget, bounded worker and residual tests pass. These unit checks are not evidence of strict-online GMT execution; original postprocessing remains offline.

@@ -10,6 +10,27 @@ def add_gtr_config(cfg):
     _C.MODEL.ROI_BOX_HEAD.CAT_FREQ_PATH = \
         'datasets/metadata/lvis_v1_train_cat_info.json' # LVIS metadata
 
+    # Separate VGGT evidence namespace, opt-in and zero by default.
+    _C.MODEL.GEO = CN()
+    _C.MODEL.GEO.ENABLED = False
+    _C.MODEL.GEO.FEATURE_ENABLED = False
+    _C.MODEL.GEO.GEOMETRY_ENABLED = False
+    _C.MODEL.GEO.SPARSE_UPDATE_ENABLED = False
+    _C.MODEL.GEO.FEATURE_LAYERS = [23]
+    _C.MODEL.GEO.FEATURE_DIM = 256
+    _C.MODEL.GEO.POOLING = 'roi_align'
+    _C.MODEL.GEO.FEATURE_WEIGHT = 0.0
+    _C.MODEL.GEO.GEOMETRY_WEIGHT = 0.0
+    _C.MODEL.GEO.MAX_RESIDUAL = 1.0
+    _C.MODEL.GEO.UPDATE_INTERVAL = 10
+    _C.MODEL.GEO.COMPUTE_BUDGET = 10
+    _C.MODEL.GEO.MAX_GEOMETRY_AGE = 20
+    _C.MODEL.GEO.ASYNC_WORKER = False
+    _C.MODEL.GEO.FALLBACK_TO_GMT = True
+    _C.MODEL.GEO.VGGT_CHECKPOINT = ''
+    _C.MODEL.GEO.CALIBRATION_PATH = ''
+    _C.MODEL.GEO.GEOMETRY_METHOD = 'sift'
+
     # association head
     _C.MODEL.ASSO_ON = False
     _C.MODEL.ASSO_HEAD = CN() # tracking transformer architecture parameters

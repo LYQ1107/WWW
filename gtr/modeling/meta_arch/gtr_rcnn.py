@@ -38,6 +38,7 @@ class GTRRCNN(CustomRCNN):
     def __init__(self, **kwargs):
         """
         """
+        self._geo_cfg = kwargs.pop('geo_cfg')
         self.test_len = kwargs.pop('test_len')
         self.overlap_thresh = kwargs.pop('overlap_thresh')
         self.min_track_len = kwargs.pop('min_track_len')
@@ -55,6 +56,8 @@ class GTRRCNN(CustomRCNN):
         self.with_bank = kwargs.pop('with_bank')
         self.multi_modal = kwargs.pop('multi_modal')
         super().__init__(**kwargs)
+        from ...geometry.runtime import GeometryRuntime
+        self.geo_runtime = GeometryRuntime(self._geo_cfg)
 
 
     @classmethod
@@ -76,6 +79,7 @@ class GTRRCNN(CustomRCNN):
         ret['bank_size'] = cfg.MODEL.ASSO_HEAD.BANK_SIZE
         ret['with_bank'] = cfg.MODEL.ASSO_HEAD.WITH_BANK
         ret['multi_modal'] = cfg.MULTI_MODAL
+        ret['geo_cfg'] = cfg.MODEL.GEO.clone()
         return ret
 
 
@@ -169,6 +173,7 @@ class GTRRCNN(CustomRCNN):
         return instances
     
     def sliding_inference_GMT(self, batched_inputs,view_num,time):
+        self.geo_runtime.reset()
         poss_ids.poss_ids = set()
         old_ids.old_ids = set()
         old_reids.old_reids = []
@@ -193,6 +198,7 @@ class GTRRCNN(CustomRCNN):
                     view,
                     do_postprocess=False)
                 st += view_frames
+            self.geo_runtime.observe(instances_wo_id, [batched_inputs[v * view_frames + frame_id] for v in range(view_num)], frame_id)
             instances.extend([x for x in instances_wo_id])
             activate_first = True
             activate = True
@@ -351,7 +357,7 @@ class GTRRCNN(CustomRCNN):
         assert len(track_ids) == len(torch.unique(track_ids)), track_ids
         return instances, id_count ,id_count_dict,id_reid_dict
 
-    def get_asso(self,  instances, k,):
+    def get_asso(self,  instances, k, geo_context=True):
         n_t = [len(x) for x in instances]
         N, T = sum(n_t), len(n_t)
         n_k = len(instances[k])
@@ -363,6 +369,8 @@ class GTRRCNN(CustomRCNN):
                 [x.reid_features for x in instances], dim=0)[None]
         asso_output, pred_boxes, _, query_inds,_,_ = self.roi_heads._forward_transformer(
             instances, reid_features,None, k,None,None,traj_ids) # [n_k x N], N x 4
+        if geo_context:
+            asso_output = self.geo_runtime.adapt(asso_output, instances, k)
         return asso_output,pred_boxes,n_t,Np,query_inds
 
     def get_attention(self,instances,view_num,query_inds,id=None):
@@ -535,7 +543,7 @@ class GTRRCNN(CustomRCNN):
         time3 = time.time()
         asso_output,pred_boxes,n_t,Np,query_inds= self.get_asso(
             instances_matching,
-            k= len(instances_matching)-1) # n_k x N       
+            k= len(instances_matching)-1, geo_context=False) # n_k x N       
         time4 = time.time()
         track_ids = self.run_memory_tracker(instances_matching,asso_output,pred_boxes,len(instances_matching)-1,id_count_dict)
         time5 = time.time()
