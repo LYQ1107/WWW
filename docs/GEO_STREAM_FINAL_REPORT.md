@@ -55,6 +55,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | C_lowrank_gmt_seed14_k10_strict_v1 | 11 | yes | 83.3649 | 79.3051 | 92.1306 | 92.1306 | 6 |
 | C_lowrank_gmt_seed14_k10_strict_v1 | 18 | yes | 79.3120 | 81.1202 | 96.6809 | 96.6809 | 5 |
 | C_lowrank_gmt_seed14_k10_strict_v1 | 19 | yes | 77.8202 | 81.6091 | 94.6915 | 94.6915 | 29 |
+| B5_vggt_head_dense_causal_v1_v1 | 1 | yes | 87.2189 | 86.5336 | 95.4719 | 95.4719 | 214 |
 | C_dino_head_dense_causal_v1_v1 | 1 | yes | 87.2226 | 86.5408 | 95.4719 | 95.4719 | 213 |
 | C_gmt_head_dense_causal_v1_v1 | 1 | yes | 87.0230 | 86.1452 | 95.2477 | 95.2477 | 234 |
 | causal_B7_fixed_k10_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
@@ -63,6 +64,9 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_B7_fixed_k10_strict_suite_v1_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_B7_fixed_k10_strict_suite_v1_v19 | 19 | yes | 77.4654 | 81.0309 | 94.0583 | 94.0583 | 106 |
 | causal_B7_fixed_k1_strict_suite_v1_v1 | 1 | yes | 87.2189 | 86.5336 | 95.4719 | 95.4719 | 214 |
+| causal_B7_fixed_k1_strict_suite_v1_v10 | 10 | yes | 80.9721 | 80.9832 | 98.9221 | 98.9221 | 27 |
+| causal_B7_fixed_k20_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
+| causal_B7_fixed_k20_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B8_fixed20_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B8_fixed20_total80_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B8_fixed20_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
@@ -74,6 +78,8 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_fixed20_offset5_total80_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_random_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_random_total80_strict_suite_v1_v10 | 10 | yes | 80.9472 | 80.9342 | 98.8793 | 98.8793 | 35 |
+| causal_random_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
+| causal_random_total80_strict_suite_v1_v19 | 19 | yes | 77.4614 | 81.0226 | 94.0520 | 94.0520 | 106 |
 | online_B0_full_v10_source44_v1 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | online_B0_full_v11_source44_v1 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | online_B0_full_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |

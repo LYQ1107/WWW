@@ -89,12 +89,34 @@
       "reported_geo_updates": 932,
       "camera_image_fps": 4.6248073206978955,
       "reported_geo_failures": 0
+    },
+    {
+      "tag": "B5_vggt_head_dense_causal_v1_v1",
+      "run_manifest": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/B5_vggt_head_dense_causal_v1_v1/manifest.json",
+      "run_manifest_sha256": "c8ce0a4769f4a0ab21dcc2269e9c7a6b622b0c6726073894afc34a7eedfaf430",
+      "metrics_sha256": "6d33f58ed59218cf2206350b66e315e7458047feab8b3a3bf5a3c25e1aaf5029",
+      "metrics": {
+        "HOTA": 87.21894319802762,
+        "DetA": 87.93225734540148,
+        "AssA": 86.53364474783164,
+        "IDF1": 95.47186729432863,
+        "MOTA": 91.12627986348123,
+        "IDSW": 214,
+        "CVIDF1": 95.47186729432863,
+        "CVMA_sequential": 91.12627986348123,
+        "CVMA": 90.92150170648465
+      },
+      "reported_vggt_calls": 1864,
+      "reported_dinov2_calls": 0,
+      "reported_geo_updates": 932,
+      "camera_image_fps": 2.312397106588201,
+      "reported_geo_failures": 0
     }
   ],
   "legacy_missing_count_fields": "null, not synthesized encoder measurements",
   "remaining_controls": [
-    "VGGT feature-only",
     "VGGT masked geometry-only"
   ],
-  "conclusion": "GMT head captures substantial gain; DINO matches VGGT B7 CVIDF1 and has one fewer switch; VGGT-specific or geometry-specific contribution not established"
+  "conclusion": "Dense VGGT feature-only exactly reproduces joint predictions; geometry residual contributes no observed identity change on scene1. DINO matches CVIDF1 and has one fewer switch; VGGT-specific advantage unproven.",
+  "feature_only_exact_joint_predictions": true
 }
