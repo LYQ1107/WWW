@@ -8,15 +8,15 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q2: 为什么不直接使用 DINOv2/ReID？
 
-必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1=100.00%，高于当前 VGGT 中间层；独立 DINO 的跟踪级对照正在补齐。不能用弱 DINO 对照替代现有 GMT 外观表示。证据：hard_feature_screening.csv、dinov2_screening.csv。
+必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1=100.00%，高于当前 VGGT 中间层。独立DINO稀疏/逐帧完整严格开发对照以及容量匹配GMT/DINO学习头主种子对照已完成，VGGT学习头未优于它们。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。
 
 ## Q3: VGGT 多层是否提供独立身份信息？
 
-未证明。第17层 ROI 的256维与原始维度 Recall@1 分别为 50.00%、75.00%，表明随机压缩有明显损失，但 GMT ReID 在这12个查询上仍更好。VGGT修正的提案错误也能被GMT ReID修正，缺少独立互补证据。
+未证明稳定或VGGT独有增益。第17层 ROI 的256维与原始维度 Recall@1 分别为 50.00%、75.00%。另在45个固定TRAIN查询中，原维度VGGT修正1个GMT ReID/提案错误，但破坏20个原正确ReID查询；同一修正也可由独立DINO完成。有限互补允许小头原型验证，不能宣称几何身份信息独占。
 
 ## Q4: 为什么不简单拼接所有输出？
 
-简单四层平均相似度等价于等权拼接归一化目标向量，已完成 TRAIN 标量校准并启动 B3 完整视频对照。该对照未结束，不能声称 GCIR 优于普通组合。
+简单四层平均相似度等价于等权拼接归一化目标向量；B3完整严格开发输出与B0完全一致。B4标量weight2完整对照略低于B0。主种子低秩GCIR同样未建立收益。小头保留32维/两顺序64维目标表示，减少新增向量体积，但原GMT记忆和完整系统成本须分别测量。
 
 ## Q5: 与 VGGT-Det 的差别？
 
@@ -36,7 +36,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q9: 身份触发优于固定周期吗？
 
-未评测完成。独立调度器预算/前缀测试通过，但尚未接入实际同步/异步流水线；配置开启未支持模式会明确报错。纯margin采样选出了12个无GT匹配检测，显示身份需求代理可能浪费预算，需结合可靠性诊断。
+未证明。同步联合策略和可选独立进程异步worker已经实际接入因果GMT，具有前缀、真实调用和完成时间验证。scene18固定20与联合策略各80次实际VGGT调用，均与因果B0预测完全一致，联合策略单次实测更慢。随机、运动/身份单一触发、多间隔和重复验证矩阵仍在完成。证据：causal_fixed_joint_total80_full_v18_v1.json。
 
 ## Q10: 相较 StreamVGGT/FastVGGT 的价值？
 
@@ -44,7 +44,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q11: 完整 FPS/延迟/显存/参数量？
 
-完整因果 B0 park18 实测已记录：当前图像读取到CPU身份输出，包括全部1029帧组；详见 runtime_results.csv 和 online_B0_full_v18 manifest。静态模型初始化排除并明确标识；VGGT冷启动算入输入延迟。完整新方法资源比较及参数量清单仍未完成。
+因果B0 scene18完整实测6.64图像/s；优化异步相机路径5.40图像/s且预测完全相同，0有效几何；固定/联合80次调用为4.95/4.26图像/s。实际硬件为V100，不能称A100结果。静态GMT模型初始化排除，新增模型冷启动及worker启动/关闭算入总成本。三个匹配容量头均约31万参数。详见runtime_results.csv和学习头manifest；不以一次计时宣称稳定加速。
 
 ## Q12: 提升是否来自不同检测/配置/评测 bug？
 
@@ -56,10 +56,8 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q14: 为什么符合 WWW？
 
-仍有实质适配风险。官方CFP要求明确Web科学问题，仅用网络数据集或API不充分。VisionTrack目前提供计算机视觉证据，真实多源内容检索任务和系统比较仍待实施。见 WWW_SCOPE_NOTE.md。
+仍有实质适配风险。官方CFP要求明确Web科学问题，仅用数据集或API不充分。实际在线图像读取、GMT目标查询与轨迹片段索引已实现，已完成6个检索评价，其中2个为完整视频。详见retrieval_results.csv；GT只进入事后评价，不进入查询选择/排序。 本地数据集回放不等于互联网来源、真实用户查询或Web部署；见WWW_SCOPE_NOTE.md。
 
 ## Q15: 在线视频关联检索的真实贡献？
 
-目前仅有离线目标检索诊断，没有可声称的Web系统贡献。真实跨片段查询、Recall@K/MRR、查询延迟、流数量/预算曲线和在线可用性需要继续完成。
-
-Retrieval update for Q11/Q14/Q15: real GPU target-to-clip queries are implemented in `geo_tools/run_live_retrieval.py`, with a separate raw-GT evaluator. Short scene18 prefixes return 43 requests with 24 eligible queries; both native GMT and VGGT attain Recall@1/MRR1.0, so no VGGT retrieval benefit is established. Local query scoring/serialization latency is separated from complete read/detect/GTA/feature/index/query cost. Full retrieval comparisons and genuine Web application/source evidence remain necessary. Fixed20 and joint full causal scene18, each80 VGGT calls, exactly reproduce causal B0; joint superiority is unsupported.
+实际在线图像读取、GMT目标查询与轨迹片段索引已实现，已完成6个检索评价，其中2个为完整视频。详见retrieval_results.csv；GT只进入事后评价，不进入查询选择/排序。 条件Recall@K、完整MRR、检测覆盖、可检索比例、全部请求成功率和本地查询延迟分别报告。完整读帧/检测/GTA/新增特征/索引/查询成本另计；流数量与关键帧预算对照及实质Web系统贡献仍需完成。

@@ -1,0 +1,101 @@
+{
+  "status": "PASS",
+  "scope": "complete causal scene18 two-camera target-to-clip retrieval, fixed frozen TRAIN association-head residual transfer, not intrinsic VGGT identity conclusion",
+  "rows": [
+    {
+      "run": "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_gmt_v18_full_v1",
+      "manifest_sha256": "01ca36df6de0228c897ad0ef2a017de382aa8ec4a3e1c74cd59910e76914877b",
+      "exact_causal_baseline_predictions": true,
+      "metrics": {
+        "status": "PASS",
+        "run_manifest_sha256": "01ca36df6de0228c897ad0ef2a017de382aa8ec4a3e1c74cd59910e76914877b",
+        "raw_gt_sha256": {
+          "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00118park_View1/gt/gt.txt": "8a46927990c20cf7af608984844ad1b9a80f40231e161a4822f97466de8c0169",
+          "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00118park_View2/gt/gt.txt": "527e2f2e0d75940e2dad1da7d0ebe20e850600ea4908cf07aa59d2b7b48dc6e4"
+        },
+        "requests": 598,
+        "gt_matched_queries": 577,
+        "gallery_eligible_queries": 309,
+        "detector_query_precision": 0.9648829431438127,
+        "gt_query_detection_coverage": 0.9713804713804713,
+        "gallery_eligibility_among_matched": 0.5355285961871751,
+        "recall_at_k": {
+          "1": 0.9773462783171522,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "mrr": 0.9878640776699029,
+        "mrr_at_10": 0.9878640776699029,
+        "success_at_k_all_requests": {
+          "1": 0.5050167224080268,
+          "5": 0.5167224080267558,
+          "10": 0.5167224080267558
+        },
+        "per_scene": {
+          "18": {
+            "requests": 598,
+            "matched": 577,
+            "eligible": 309,
+            "hits1": 302
+          }
+        },
+        "metric_protocol": "one-to-one detector/GT IoU>=0.5; identity=(scene,raw_GT_ID); clip positive requires strict GT majority across all its observations; Recall and full MRR conditional on GT-matched query with at least one positive other-camera clip; all candidate ranks retained",
+        "query_selection_uses_gt": false,
+        "ranking_uses_gt": false,
+        "future_gallery_allowed": false,
+        "limitations": "finite local dataset replay, not live Internet feeds; clip identity majority is an evaluation convention"
+      }
+    },
+    {
+      "run": "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_vggt_k10_v18_full_v1",
+      "manifest_sha256": "b23b1e13e4a9a9cd21b5971c524989c2e624d4ba02befcfba497c23e5570407c",
+      "exact_causal_baseline_predictions": true,
+      "metrics": {
+        "status": "PASS",
+        "run_manifest_sha256": "b23b1e13e4a9a9cd21b5971c524989c2e624d4ba02befcfba497c23e5570407c",
+        "raw_gt_sha256": {
+          "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00118park_View1/gt/gt.txt": "8a46927990c20cf7af608984844ad1b9a80f40231e161a4822f97466de8c0169",
+          "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00118park_View2/gt/gt.txt": "527e2f2e0d75940e2dad1da7d0ebe20e850600ea4908cf07aa59d2b7b48dc6e4"
+        },
+        "requests": 598,
+        "gt_matched_queries": 577,
+        "gallery_eligible_queries": 309,
+        "detector_query_precision": 0.9648829431438127,
+        "gt_query_detection_coverage": 0.9713804713804713,
+        "gallery_eligibility_among_matched": 0.5355285961871751,
+        "recall_at_k": {
+          "1": 0.9029126213592233,
+          "5": 0.9385113268608414,
+          "10": 0.9676375404530745
+        },
+        "mrr": 0.9245815089261689,
+        "mrr_at_10": 0.9221592952175476,
+        "success_at_k_all_requests": {
+          "1": 0.4665551839464883,
+          "5": 0.48494983277591974,
+          "10": 0.5
+        },
+        "per_scene": {
+          "18": {
+            "requests": 598,
+            "matched": 577,
+            "eligible": 309,
+            "hits1": 279
+          }
+        },
+        "metric_protocol": "one-to-one detector/GT IoU>=0.5; identity=(scene,raw_GT_ID); clip positive requires strict GT majority across all its observations; Recall and full MRR conditional on GT-matched query with at least one positive other-camera clip; all candidate ranks retained",
+        "query_selection_uses_gt": false,
+        "ranking_uses_gt": false,
+        "future_gallery_allowed": false,
+        "limitations": "finite local dataset replay, not live Internet feeds; clip identity majority is an evaluation convention"
+      }
+    }
+  ],
+  "queries_selected_before_gt": true,
+  "future_gallery_allowed": false,
+  "limitations": [
+    "head residual calibration transferred from association logits to retrieval cosine; fixed before development, not retrieval-specific training",
+    "missing/old extra evidence uses native GMT fallback, potentially causing score-distribution differences across clips",
+    "two cameras only; multi-stream, native/learned capacity controls and keyframe-budget matrix pending"
+  ]
+}

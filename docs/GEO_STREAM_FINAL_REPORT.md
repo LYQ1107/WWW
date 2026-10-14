@@ -61,6 +61,7 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | online_async_camera_full_v18_optimized_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | online_async_camera_full_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | online_native_l17_joint_full_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| online_random_total80_full_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | B0_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | B1_dinov2_dense_strict_suite_v1 | ALL_STRICT | yes | 81.0570 | 81.8986 | 95.6334 | 95.6334 | 41 |
 | B1_dinov2_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
@@ -72,6 +73,7 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | B4_native_scalar_w2_k10_strict_v1_suite | ALL_STRICT | yes | 81.0495 | 81.8909 | 95.6282 | 95.6282 | 41 |
 | B5_lowrank_vggt_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0513 | 81.8930 | 95.6307 | 95.6307 | 41 |
 | B6_vggt_camera_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
+| B7_lowrank_vggt_camera_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0513 | 81.8930 | 95.6307 | 95.6307 | 41 |
 | C_gmt_reid_strict_suite_v1 | ALL_STRICT | yes | 80.9947 | 81.7598 | 95.4944 | 95.4944 | 43 |
 | C_lowrank_dinov2_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0566 | 81.8977 | 95.6341 | 95.6341 | 41 |
 | C_lowrank_gmt_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0566 | 81.8977 | 95.6341 | 95.6341 | 41 |
@@ -81,7 +83,11 @@ Causal retrieval (local replay, GT only for post-run evaluation; conditional ret
 
 | Method | Cameras | Full video | Queries | Eligible | Recall@1 | MRR | Query P95 (ms) | Complete images/s |
 |---|---:|---|---:|---:|---:|---:|---:|---:|
+| retrieval_gmt_10streams_prefix20_v1 | 10 | False | 39 | 28 | 0.8214285714285714 | 0.8898809523809524 | 1.2639 | 7.5250 |
+| retrieval_gmt_10streams_prefix30_v1 | 10 | False | 78 | 57 | 0.8421052631578947 | 0.9064327485380118 | 1.4793 | 7.8980 |
+| retrieval_gmt_v18_full_v1 | 2 | True | 598 | 309 | 0.9773462783171522 | 0.9878640776699029 | 2.9661 | 6.6445 |
 | retrieval_gmt_v18_prefix12_v1 | 2 | False | 43 | 24 | 1.0 | 1.0 | 0.3662 | 4.9767 |
+| retrieval_vggt_k10_v18_full_v1 | 2 | True | 598 | 309 | 0.9029126213592233 | 0.9245815089261689 | 2.9289 | 5.2250 |
 | retrieval_vggt_v18_prefix12_v1 | 2 | False | 43 | 24 | 1.0 | 1.0 | 0.3884 | 0.8728 |
 
 Retrieval latency is local scoring and serialization, not Internet transport latency. Full pipeline throughput charges image reads, frozen detection/GTA, feature extraction, publication, queries and query-log I/O. Original GMT history is unchanged; the index payload cap does not imply bounded total system memory. Dataset replay and a functioning query interface do not establish WWW novelty or live Web application evidence.
