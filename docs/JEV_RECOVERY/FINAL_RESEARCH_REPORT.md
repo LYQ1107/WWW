@@ -23,4 +23,5 @@ MASTER 仍在执行。下表只读取实际已完成官方合并评价，不用�
 | R3_XIII | parent | 3/3 | 75.637 | 77.907 | 91.889 | 105.0 |
 | R3_XIII | threshold | 3/3 | 73.738 | 74.202 | 87.808 | 257.3 |
 
-未完成的同状态干预、强基座正式实验、身份回归及完整 FPS 均仍是验收项。不能以脚本完成或单个负结果结束 MASTER。详见 EXPERIMENT_REGISTRY.json、NEXT_ACTION.json 及本地 PROGRESS。
+当前已完成的有界证据包括：R2_XIV/R3_XIII 各列方法三种子正式合并评价、R3 强 Fixed parent 与同基座控制比较、冻结初始状态的原生干预，以及参数/主路径计时快照。QUESTION 到实际关联的净纠错和补充融合失败归因另见对应报告。
+仍未建立的部分是独立数据授权后的独立评测、资格化生命周期训练、部署级完整场景 FPS/端到端效率，以及 JEV 相对普通控制器的独立科学优势。不能用有界正式完成或单个负结果结束 MASTER；详见 MASTER_GOAL.json、MASTER_COMPLETION_AUDIT_20261014.json、NEXT_ACTION.json。

@@ -36,7 +36,11 @@ def refresh():
  lines=['# JEVTrack 持续研究报告','','MASTER 仍在执行。下表只读取实际已完成官方合并评价，不用旧结果填新方法数字。已有 DEV 不属于独立验证。','','| Track | 方法 | 种子数 | HOTA | AssA | CVIDF1 | IDSW |','| --- | --- | ---: | ---: | ---: | ---: | ---: |']
  for s in summary:
   m=s['metrics'];lines.append(f"| {s['track']} | {s['arm']} | {len(s['completed_seeds'])}/3 | {m['HOTA']['mean']:.3f} | {m['AssA']['mean']:.3f} | {m['CVIDF1']['mean']:.3f} | {m['IDSW']['mean']:.1f} |")
- lines+=['','未完成的同状态干预、强基座正式实验、身份回归及完整 FPS 均仍是验收项。不能以脚本完成或单个负结果结束 MASTER。详见 EXPERIMENT_REGISTRY.json、NEXT_ACTION.json 及本地 PROGRESS。']
+ lines += [
+  '',
+  '当前已完成的有界证据包括：R2_XIV/R3_XIII 各列方法三种子正式合并评价、R3 强 Fixed parent 与同基座控制比较、冻结初始状态的原生干预，以及参数/主路径计时快照。QUESTION 到实际关联的净纠错和补充融合失败归因另见对应报告。',
+  '仍未建立的部分是独立数据授权后的独立评测、资格化生命周期训练、部署级完整场景 FPS/端到端效率，以及 JEV 相对普通控制器的独立科学优势。不能用有界正式完成或单个负结果结束 MASTER；详见 MASTER_GOAL.json、MASTER_COMPLETION_AUDIT_20261014.json、NEXT_ACTION.json。'
+ ]
  (DOCS/'FINAL_RESEARCH_REPORT.md').write_text('\n'.join(lines)+'\n')
  (DOCS/'PHASE13_STRONG_BASE_EXPERIMENT.md').write_text('# 强 Fixed 基座\n\nXIII Fixed 原20k权重只读，新增残差零初始化。真实 TRAIN12 96场景原生提交、状态和预测完全等价后才允许训练。强基座阈值、MLP、Attention 与 JEV 使用同一 Base、数据、候选、标签和4000累计更新。R3 根据 TRAIN 机制门槛只迁移合格部分；旧75.637仅是历史系统参考，不能替代本轮公平实验。\n')
  (DOCS/'REVIEWER_FIVE_QUESTIONS.md').write_text('# 五个审稿人问题\n\nQ1：旧同分数重复 Hungarian 是无变化；新候选生成需单独归因，所有控制获得同一方案。新评分器×求解器分离仍待执行。\n\nQ2：Pair Threshold 是强控制；同合法池及同预算直接比较，不以动态风险口号替代具体身份增量。\n\nQ3：纯 MLP、标准 Attention 与 F1 共享问题 Reader 后的 MLP 融合分别列出，F1只检验融合。相同 TRAIN 批次 SHA 要核验。\n\nQ4：旧3.703FPS只是旧模型参考；新真实图像全场景三次重启、活跃参数和Stage2时间尚待实际测量，不填写新数字。\n\nQ5：共享状态、问题条件读取和合法联合方案是结构功能；是否独立优于普通方法须由新控制和消融证明，目前 NOT_ESTABLISHED。原始独立监督 Gate 保持不变。\n')
