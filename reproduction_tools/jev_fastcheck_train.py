@@ -37,6 +37,9 @@ def evaluate(model,records,limit=128):
    counts['rank_pairs']+=1;counts['rank_pair_correct']+=int(sign*float(detail['plan_scores'][i][a]-detail['plan_scores'][i][b])>0)
   for i,r in enumerate(part):
    k=len(r['refs']);plans=detail['plans'][i];choice=plans[int(detail['plan_scores'][i].argmax())];base=plans[0]
+   if detail.get('direct_readout'):
+    from gtr.modeling.jev_stage2.assignment import lawful_choice
+    q=len(r['rows']);base=lawful_choice(torch.cat([detail['base_logits'][i,:q,:k],detail['base_logits'][i,:q,-1:]],-1),x['legal'][i,:q,:k])
    for row,(old,new) in enumerate(zip(base,choice)):
     a=k if old<0 else old;b=k if new<0 else new;counts['rows']+=1
     counts['known_selected']+=int(r['known_options'][row,b]);counts['correct_selected']+=int(r['positive'][row,b]);counts['UNKNOWN_selected']+=int(not r['known_options'][row,b])

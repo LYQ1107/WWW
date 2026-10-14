@@ -63,7 +63,7 @@ class LabelState:
    positive=positive,known_options=known,targets=target,supervised=positive.any(-1),
    oneweek_labels=dict(cross=cross,stability=stability),audit_block=(frame//64)%5==4,
    GT_labels_OFFLINE_ONLY=gt,groups_OFFLINE_ONLY=groups,eligibility_categories=categories,
-   native_choice=chosen,base_logits=base,plans=plans,corpus_actor='frozen_R3_JEV',
+   native_choice=chosen,base_logits=base,base_choice=lawful_choice(base.to(d['logits'].device),x['legal'][0]),plans=plans,corpus_actor='frozen_R3_JEV',
    availability=torch.where(positive[:,:k].any(-1),1,torch.where(positive[:,-1],0,-1)),
    trust=torch.full((k,),-1,dtype=torch.int8),safety=torch.full((q,k),-1,dtype=torch.int8),uncertainty=torch.full((q,k),-1,dtype=torch.int8),
    commit_positive=positive,commit_kind=torch.zeros(q,dtype=torch.int8))

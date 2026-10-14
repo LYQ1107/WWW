@@ -9,3 +9,5 @@ Same Stage1 indexes, identical first inputs and complete initial native-state fi
 | 14 | 5 | 4 | 123 | 102 | 0.9931 | 0.9931 |
 
 These first256-frame TRAIN prefixes demonstrate differences in visited states, not a causal proof that mismatch explains full-video degeneration. Local groups are dependent by person/history; positive labels mean first-past certified current MATCH preservation, not future safety. P2 tests the data intervention.
+
+The additional TRAIN_SAMPLE_INTERFACE_AUDIT verifies actual chosen active IDs reach native commits, UNKNOWN current labels stay unlabelled, and lawful Bank support is distinguished from prior Bank membership. Its unique-plan counter corrects the interpretation of the early `fully_certified_plans` field, which counts plan-row visits. The initial count snapshot is retained; no labels/trajectories/weights were changed.

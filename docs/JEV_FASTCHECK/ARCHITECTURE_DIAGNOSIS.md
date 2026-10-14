@@ -1,0 +1,7 @@
+# Architecture diagnosis
+
+Current evidence: initial R3 typed JEV is worse than strong Fixed/Threshold; other ordinary new controllers also degraded. Same-state auxiliary head improvements did not establish causal association benefit. P1 actual native state mismatch is measured but its direction is heterogeneous. P2 tests data without architecture changes;300 source-state outcomes are local only.
+
+One conditional P3 diagnostic is frozen before P2 full-online results. It directly optimizes and submits scores for every legal active identity using one Hungarian; joint-plan value is disabled. M1 retains shared state, typed questions and candidate-specific readers. M2 gets the same inputs, labels, schedule, losses, lawful solver and active parameter capacity with an untyped third context Reader. Comparing M1/M2 tests typed structure; comparing either with M0 also changes score-readout/loss/solver and cannot be called pure architecture causality.
+
+Existing hooks, temporary forward substitutions and runtime solver replacement are tested on actual native inputs for restoration after success and injected exceptions, permutation semantics, illegal masks, capacity and zero-residual output. Those tests passed and do not establish a previously undetected engineering cause. Actual submitted active choices and subsequent native state updates also matched journals; UNKNOWN remained masked. No growing family of questions/readers or future-safety training is admitted.

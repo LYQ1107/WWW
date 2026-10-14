@@ -2,6 +2,13 @@
 import argparse,collections,gzip,gc,torch,numpy as np
 from jev_fastcheck_common import *
 def actor_for(tag,steps):
+ if tag.startswith('direct_'):
+  from jev_fastcheck_direct_train import direct_actor
+  arm=tag.split('_')[1];actor,cp=direct_actor(arm);m=read(REPORTS/f'TRAIN_direct_{arm}_D1_STEPS1000.json')
+  assert m['training_signal_eligible'];cp=m['checkpoint'];assert sha(cp['path'])==cp['SHA256']
+  missing,unexpected=actor.load_state_dict(torch.load(cp['path'],map_location='cuda:0')['new_modules'],strict=False)
+  assert not unexpected and all(k.startswith('identity.') for k in missing)
+  return actor.eval(),cp
  if tag in ['parent','threshold','mlp','attention_initial','jev_initial']:
   arm=tag.replace('_initial','');return load_policy('jev',False) if arm=='parent' else load_policy(arm)
  arm,dataset=tag.split('_');actor,cp=load_policy(arm)
@@ -61,7 +68,7 @@ def main(tag,steps,mode):
   if d['task']!=0 or not len(d['logits']):return
   r=state.record(d,actor.runtime_details);pending[key]=r;k=len(r['refs'])
   for row,col in enumerate(r['native_choice']):
-   a=r['plans'][0][row];a=k if a<0 else a;b=k if col<0 else col;counts['MATCH_rows']+=1
+   a=r.get('base_choice',r['plans'][0])[row];a=k if a<0 else a;b=k if col<0 else col;counts['MATCH_rows']+=1
    has=bool(r['positive'][row,:k].any());counts['certified_active_covered']+=has;counts['correct_identity_retained']+=int(has and r['positive'][row,b])
    counts['correct_active_outside_plans']+=int(has and not any(p[row]>=0 and r['positive'][row,p[row]] for p in r['plans']))
    if a!=b:
