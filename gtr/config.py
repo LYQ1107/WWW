@@ -44,6 +44,8 @@ def add_gtr_config(cfg):
     _C.MODEL.GEO.VGGT_CHECKPOINT = ''
     _C.MODEL.GEO.CALIBRATION_PATH = ''
     _C.MODEL.GEO.HEAD_PATH = ''
+    _C.MODEL.GEO.REUSE_TARGET_FEATURES = False
+    _C.MODEL.GEO.TARGET_CACHE_MAX_TARGETS = 128
     _C.MODEL.GEO.GEOMETRY_METHOD = 'sift'
 
     # association head

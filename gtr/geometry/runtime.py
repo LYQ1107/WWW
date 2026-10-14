@@ -37,6 +37,10 @@ class GeometryRuntime:
                 if h['feature_weight']!=cfg.FEATURE_WEIGHT or h['max_residual']!=cfg.MAX_RESIDUAL:raise ValueError('head residual configuration mismatch')
             else:
                 self._load_scalar_calibration(cfg)
+        if self.active and getattr(cfg,'REUSE_TARGET_FEATURES',False):
+            if not self.score.feature_weight or self.head_checkpoint is None:raise ValueError('target feature reuse requires a frozen low-rank feature head')
+            width=self.head_checkpoint['settings']['output_dim']*(2 if self.head_checkpoint['settings']['symmetric'] else 1)
+            if width>128:raise ValueError('target feature reuse requires at most128-dimensional identity vectors')
         self.reset()
 
     def _load_scalar_calibration(self,cfg):
@@ -56,6 +60,10 @@ class GeometryRuntime:
         self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.geometry_valid_calls=0;self.geometry_invalid_calls=0;self.failed=0;self.seconds=0.
         self.scheduler=None;self.motion=None;self.schedule_trace=[];self.motion_failures=0
         self.pending_margin=1.;self.pending_handoff=False;self.identity_source_frame=None;self.last_success_frame=None;self.observed_frame=None
+        self.target_cache=None
+        if self.active and getattr(self.cfg,'REUSE_TARGET_FEATURES',False):
+            from .target_feature_cache import TargetFeatureCache
+            self.target_cache=TargetFeatureCache(max_age=self.cfg.MAX_GEOMETRY_AGE,max_targets=self.cfg.TARGET_CACHE_MAX_TARGETS)
         self.update_cost=2 if self.score.feature_weight and self.cfg.FEATURE_BACKBONE=='vggt' and self.cfg.SYMMETRIZE_VIEW_ORDER else 1
         if self.active and self.cfg.ASYNC_WORKER:
             feature_cost=(2 if self.cfg.SYMMETRIZE_VIEW_ORDER else 1) if self.score.feature_weight and self.cfg.FEATURE_BACKBONE!='gmt' else 0
@@ -121,6 +129,14 @@ class GeometryRuntime:
         self.pending_margin=min(self.pending_margin,margin);self.pending_handoff|=handoff
         self.identity_source_frame=self.observed_frame
 
+    def target_cache_report(self):
+        if self.target_cache is None:return None
+        cache=self.target_cache
+        return dict(stats=dict(cache.stats),payload_bytes=cache.payload_bytes(),peak_payload_bytes=cache.peak_payload_bytes,
+            max_targets_per_camera=cache.max_targets,max_cameras=cache.max_cameras,max_age=cache.max_age,
+            min_cosine=cache.min_cosine,min_relative_margin=cache.min_margin,min_bbox_iou=cache.min_iou,
+            scope='one detached source snapshot per physical camera; compressed projected vector plus native matching descriptor and source bbox; no GT/track-ID matching, no geometry propagation')
+
     def observe(self,instances,records,frame):
         if not self.active:return
         # Pure GMT also jitters association ROIs at inference. New modules must
@@ -152,6 +168,7 @@ class GeometryRuntime:
             inst.geo_camera=torch.full((n,),int(r.get('view_id',v+1)),device=device,dtype=torch.long)
             inst.geo_frame=torch.full((n,),frame,device=device,dtype=torch.long)
             inst.geo_xyxy=boxes
+            if self.target_cache is not None:inst.geo_feature_frame=torch.full((n,),-1,device=device,dtype=torch.long)
         self.geometry={t:x for t,x in self.geometry.items() if frame-t<=self.cfg.MAX_GEOMETRY_AGE}
         self.observed_frame=frame
         motion=0.;details=[]
@@ -176,7 +193,18 @@ class GeometryRuntime:
                 reserved_units_in_window=len(self.scheduler.calls)*self.update_cost,update_cost=self.update_cost,budget_unit=self.budget_unit))
             self.schedule_trace[-1]['reserved_total_units']=self.scheduler.total_count*self.update_cost
             self.pending_margin=1.;self.pending_handoff=False;self.identity_source_frame=None
-        if not chosen:return
+        if not chosen:
+            if self.target_cache is not None:
+                try:
+                    for inst,record in zip(instances,records):
+                        inst.geo_vector,inst.geo_valid,inst.geo_feature_frame=self.target_cache.reuse(int(record['view_id']),frame,inst.reid_features,inst.geo_xyxy,dim)
+                except (RuntimeError,ValueError):
+                    self.failed+=1
+                    if not self.cfg.FALLBACK_TO_GMT:raise
+                    self.target_cache.clear()
+                    for inst in instances:
+                        inst.geo_vector.zero_();inst.geo_valid.zero_();inst.geo_feature_frame.fill_(-1)
+            return
         start=time.perf_counter()
         camera_meta=None
         async_submitted=False
@@ -267,11 +295,17 @@ class GeometryRuntime:
                 if self.cfg.GEOMETRY_METHOD.endswith('_homography'):
                     geometry_valid=self.score.geometry_weight and self.geometry.get(frame,{}).get('H_valid',False)
                 if feature_valid or geometry_valid:self.last_success_frame=frame
+            if self.target_cache is not None:
+                for inst,record in zip(instances,records):
+                    inst.geo_feature_frame[inst.geo_valid]=frame
+                    self.target_cache.store(int(record['view_id']),frame,inst.reid_features,inst.geo_xyxy,inst.geo_vector,inst.geo_valid,inst.scores)
         except (RuntimeError,ValueError,OSError,cv2.error):
             self.failed+=1
             if not self.cfg.FALLBACK_TO_GMT:raise
             for inst in instances:
                 inst.geo_valid.zero_();inst.geo_vector=inst.reid_features.new_zeros((len(inst),dim))
+                if self.target_cache is not None:inst.geo_feature_frame.fill_(-1)
+            if self.target_cache is not None:self.target_cache.clear()
         finally:self.seconds+=time.perf_counter()-start
 
     def adapt(self,outputs,instances,k):
@@ -288,6 +322,14 @@ class GeometryRuntime:
         feature=None;geo=None
         if self.score.feature_weight:
             legal=cross & query.geo_valid[:,None] & valid[None,:] & ((query.geo_frame[:,None]-frames[None,:]).abs()<=self.cfg.MAX_GEOMETRY_AGE)
+            reuse_confidence=None
+            if self.target_cache is not None:
+                sources=torch.cat([inst.geo_feature_frame for inst in refs])
+                query_age=query.geo_frame-query.geo_feature_frame
+                reference_age=query.geo_frame[:,None]-sources[None,:]
+                legal&=(query_age[:,None]>=0)&(query_age[:,None]<=self.cfg.MAX_GEOMETRY_AGE)&(reference_age>=0)&(reference_age<=self.cfg.MAX_GEOMETRY_AGE)
+                age=torch.maximum(query_age[:,None],reference_age).float()
+                reuse_confidence=(1-age/(self.cfg.MAX_GEOMETRY_AGE+1)).clamp(0,1)
             if self.head_checkpoint is not None:
                 feature=outputs[0].new_zeros(outputs[0].shape) if self.head is None else self.head.evidence(query.geo_vector,vecs)*legal
             elif self.calibration.get('normalization','absolute')=='candidate_row_zscore':
@@ -296,6 +338,7 @@ class GeometryRuntime:
                 feature=torch.tanh(self.calibration['slope']*raw+self.calibration['intercept'])*legal
             else:
                 feature=calibrated_cosine(vecs,query.geo_vector,self.calibration['slope'],self.calibration['intercept'])*legal
+            if reuse_confidence is not None:feature=feature*reuse_confidence
         if self.score.geometry_weight:
             geo=outputs[0].new_zeros(outputs[0].shape)
             if len(query):

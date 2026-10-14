@@ -7,7 +7,16 @@ from run_research_queue import process_identity
 
 def main():
     parser=argparse.ArgumentParser();parser.add_argument('--controller-pid',type=int,required=True);parser.add_argument('--controller-match',required=True)
-    parser.add_argument('--plan',type=Path,required=True);parser.add_argument('--gpu',required=True);parser.add_argument('--tag',required=True);args=parser.parse_args()
+    parser.add_argument('--plan',type=Path,required=True);parser.add_argument('--gpu',required=True);parser.add_argument('--tag',required=True)
+    parser.add_argument('--after-pid',type=int);parser.add_argument('--after-command-match',default='');args=parser.parse_args()
+    if args.after_pid:
+        predecessor=process_identity(args.after_pid)
+        if predecessor is not None:
+            if not args.after_command_match or args.after_command_match not in predecessor[1]:raise ValueError('not the named prior project window')
+            while True:
+                current=process_identity(args.after_pid)
+                if current is None or current[0]!=predecessor[0]:break
+                time.sleep(2)
     identity=process_identity(args.controller_pid)
     if identity is None or args.controller_match not in identity[1] or f'--gpu {args.gpu}' not in identity[1]:
         raise ValueError('not the named live project dispatcher on this GPU')
