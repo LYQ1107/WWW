@@ -1,3 +1,3 @@
 # Full native online evaluation
 
-P2 source-state pilots completed. Full cold-start native evaluation is pending fixed-budget1000 checkpoints. No prefix accuracy or cached-perception throughput is reported as full-video identity performance/FPS.
+Completed rows are recorded in FINAL_RESULTS.json; all use full cold-start TRAIN16 and frozen evaluators.
