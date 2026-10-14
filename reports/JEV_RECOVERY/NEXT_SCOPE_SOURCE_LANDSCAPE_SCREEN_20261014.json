@@ -1,0 +1,51 @@
+{
+  "status": "NO_NEW_PRIMARY_SOURCE_ADMITTED",
+  "captured_UTC": "2026-10-14T02:17:55.124467+00:00",
+  "scope": "additional official-source landscape screen; no data access",
+  "screened_sources": {
+    "EPFL_RLC": {
+      "official_url": "https://www.epfl.ch/labs/cvlab/data/data-rlc/",
+      "access_status": "PUBLIC_PAGE_REVIEW_ONLY_NOT_ADMITTED",
+      "documented_facts": [
+        "three synchronized static HD cameras",
+        "4088 balanced manually annotated multi-view examples",
+        "position IDs and occupied/free position labels",
+        "1.1 GB dataset ZIP and 123 KB testing-sequence JSON"
+      ],
+      "reason_not_admitted": "The public description is a position/detection example interface, not verified person-ID lifecycle supervision for the current native controller; explicit project-use terms were not established in this screen."
+    },
+    "SPORTCENTER": {
+      "official_url": "https://www.epfl.ch/labs/cvlab/data/sportcenter-dataset/",
+      "access_status": "RESEARCH_USE_STATED_INTERFACE_NOT_ADMITTED",
+      "documented_facts": [
+        "official page says the data is free for research purposes",
+        "multi-view human-pose sequences from eight fixed synchronized cameras",
+        "player trajectories and a subset of manually annotated poses"
+      ],
+      "reason_not_admitted": "The public description does not establish the required cross-camera person-ID association labels and native two-camera lifecycle interface."
+    },
+    "CROSSTRACK_UAV": {
+      "official_url": "https://github.com/ccs0302/CrossTrack-UAV",
+      "access_status": "SIGNED_LICENSE_REQUIRED_NOT_AUTHORIZED",
+      "documented_facts": [
+        "official repository requests a completed and signed license agreement",
+        "additional data may be available on request"
+      ],
+      "reason_not_admitted": "No signed agreement or approved local copy is present."
+    }
+  },
+  "current_primary_scope_unchanged": [
+    "WILDTRACK",
+    "MMPTRACK",
+    "SCOUT"
+  ],
+  "new_primary_candidate_count": 0,
+  "actions_not_performed": {
+    "downloads": true,
+    "payload_read": true,
+    "registration_or_license_request": true,
+    "training": true,
+    "native_evaluation": true
+  },
+  "decision": "Do not expand the preregistered source scope or run B-stage experiments from this screen. Require a source-specific authorization record and a native identity-label/interface audit first."
+}

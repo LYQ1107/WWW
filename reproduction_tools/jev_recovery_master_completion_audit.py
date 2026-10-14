@@ -102,6 +102,7 @@ def main() -> None:
     access = load(recovery_reports / "NEXT_SCOPE_ACCESS_AUDIT_20261014.json")
     candidate = load(recovery_reports / "NEXT_SCOPE_CANDIDATE_COPY_AUDIT_20261014.json")
     source_candidates = load(recovery_reports / "NEXT_SCOPE_SOURCE_CANDIDATE_AUDIT_20261014.json")
+    landscape = load(recovery_reports / "NEXT_SCOPE_SOURCE_LANDSCAPE_SCREEN_20261014.json")
     monitor = load(runtime / "live_monitor" / "STATUS.json")
     ready = load(runtime / "finish" / "READY.json")
     publication = load(runtime / "publication" / "LAST_VERIFIED.json")
@@ -235,12 +236,14 @@ def main() -> None:
             evidence(recovery_reports / "NEXT_SCOPE_ACCESS_AUDIT_20261014.json", status=access.get("status")),
             evidence(recovery_reports / "NEXT_SCOPE_CANDIDATE_COPY_AUDIT_20261014.json", status=candidate.get("status")),
             evidence(recovery_reports / "NEXT_SCOPE_SOURCE_CANDIDATE_AUDIT_20261014.json", status=source_candidates.get("status")),
+            evidence(recovery_reports / "NEXT_SCOPE_SOURCE_LANDSCAPE_SCREEN_20261014.json", status=landscape.get("status")),
             evidence(p20 / "NEW_DATA_SOURCE_FEASIBILITY.json"),
         ],
         authorized_dataset_path_established=candidate.get("authorized_dataset_path_established"),
         authorization_status=candidate.get("authorization_status"),
         primary_candidate_count=source_candidates.get("primary_candidate_count"),
         source_candidate_status=source_candidates.get("status"),
+        new_primary_candidate_count=landscape.get("new_primary_candidate_count"),
     )
 
     positive_required = {
