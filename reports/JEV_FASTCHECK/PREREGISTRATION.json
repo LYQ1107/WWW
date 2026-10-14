@@ -1,0 +1,90 @@
+{
+  "status": "FROZEN_BEFORE_FASTCHECK_ROLLOUT_AND_NEW_GRADIENTS",
+  "base_commit": "2ab3d47e6ddef7aff9161c1e95dada9918cc01b9",
+  "seed": 20261009,
+  "base": "XIII Strong Fixed",
+  "scope": "ordinary MATCH association only; no learned Bank/REACT/WRITE or future safety",
+  "authorized_TRAIN": [
+    12,
+    13,
+    14,
+    16
+  ],
+  "gradient_videos": [
+    12,
+    13,
+    14
+  ],
+  "audit_only": [
+    16
+  ],
+  "excluded_temporal_blocks": "(frame//64)%5==4",
+  "new_rollout_prefix_frames": 256,
+  "new_rollout_videos": [
+    12,
+    13,
+    14
+  ],
+  "teacher": "XIII fixed seed20261009",
+  "self_policy": "R3_XIII JEV pilot1000 seed20261009 frozen",
+  "D0": "unaltered R3 original qualified state corpus/labels",
+  "D1": "D0 plus eligible frozen self-policy trajectory events",
+  "attention_and_JEV_receive_same_pool": true,
+  "correct_protection_fraction_min": 0.5,
+  "sampling": "two group-balanced normal/correct-protection slots; two hard grouped slots in batch4; D1 hard slots 50% original and 50% self. Shared precomputed schedule per data arm.",
+  "grouping": "video/person/native-ID/camera/64-frame cluster; report connected person components; never claim IID",
+  "training": {
+    "initializer": "existing R3 pilot1000 respective arm; fine-tune no GMT or frozen identity backbone",
+    "optimizer": "AdamW",
+    "lr": 0.0001,
+    "weight_decay": 0.01,
+    "batch_payloads": 4,
+    "initial_steps": 300,
+    "max_steps": 1000,
+    "checkpoint_selection": "last fixed-budget; no DEV selection",
+    "upgrade": "finite gradients and nonzero certified association ranking-head derivative on >=10 distinct local groups; candidate/label/parity contracts pass; no more than 24 GPU-hours cumulative"
+  },
+  "arms": [
+    "A0_attention_D0",
+    "A1_attention_D1",
+    "J0_jev_D0",
+    "J1_jev_D1"
+  ],
+  "P3": {
+    "condition": "P2 fails to recover certified net or native performance; registered maximum one direct-readout repair with capacity-matched ordinary attention control",
+    "training_steps_max": 1000,
+    "all_legal_active_candidates": true,
+    "auxiliary_losses_optional": "fixed coefficient; same targets/budget for ordinary control"
+  },
+  "evaluation": {
+    "primary": "full cold-start TRAIN16 for new-controller diagnostic, pre-exposed initializer; not independent",
+    "DEV17_18_19": "no new fitting, evaluation or model selection",
+    "independent": "not authorized/no claim; new source required",
+    "upgrade_to_full": "only arms with nonzero legal association gradient and pilot contracts; no sign/seed selection"
+  },
+  "success": {
+    "exploratory_HOTA_delta_target": 0.5,
+    "AssA_positive": true,
+    "CVIDF1_no_drop": true,
+    "IDSW_relative_max": 1.05,
+    "wrong_duration_relative_max": 1.05,
+    "JEV_increment_over_ordinary_required": true,
+    "independent_scientific_success_requires_new_videos_and_seeds": true
+  },
+  "gpu_hours_max": 24,
+  "runtime_retention_GiB_max": 2,
+  "reserve_GiB_min": 30,
+  "new_visual_cache": false,
+  "official_TEST": false,
+  "Full24": false,
+  "sealed20_21_22": true,
+  "GT_actor_input": false,
+  "labels": "first-past pure >=3 known/80% coverage immutable native-ID certificate for current MATCH; cross other-view >=3/80% pure; unbound/duplicate current UNKNOWN; mixed history explicitly counted",
+  "unknown": "no target fabrication; no UNKNOWN changed-row ranking; DEFER only with certified absence or compatible certified legal action",
+  "hypotheses": {
+    "H1": "teacher/self native history mismatch; not presumed",
+    "H2": "closed-loop data helps both architectures",
+    "H3": "minimal direct candidate decision necessary only if H2 inadequate"
+  },
+  "new_version_limit": 1
+}

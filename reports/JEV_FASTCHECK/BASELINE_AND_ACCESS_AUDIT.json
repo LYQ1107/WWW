@@ -1,0 +1,161 @@
+{
+  "GPU": "index, name, memory.total [MiB], memory.used [MiB], utilization.gpu [%]\n0, Tesla V100-DGXS-32GB, 32508 MiB, 20436 MiB, 100 %\n1, Tesla V100-DGXS-32GB, 32508 MiB, 12133 MiB, 0 %\n2, Tesla V100-DGXS-32GB, 32508 MiB, 21513 MiB, 100 %\n3, Tesla V100-DGXS-32GB, 32508 MiB, 2 MiB, 0 %\n4, Tesla V100-DGXS-32GB, 32508 MiB, 2 MiB, 0 %\n5, Tesla V100-DGXS-32GB, 32508 MiB, 2 MiB, 0 %\n6, Tesla V100-DGXS-32GB, 32508 MiB, 2 MiB, 0 %\n7, Tesla V100-DGXS-32GB, 32508 MiB, 2 MiB, 0 %\n8, Tesla V100-DGXS-32GB, 32508 MiB, 2 MiB, 0 %\n9, Tesla V100-DGXS-32GB, 32508 MiB, 20485 MiB, 100 %\n",
+  "Stage1": {
+    "SHA256": "143e84deb50bdf5379c8f4463f1b9b237132e9281726b9cff469aff8c9dbe64e",
+    "bytes": 468671078,
+    "path": "/data1/liuyeqiang/WWW/outputs/stage1_single_gpu/model_16000.pth"
+  },
+  "assets": [
+    {
+      "arm": "jev",
+      "checkpoint": {
+        "SHA256": "17a074f977c461078f2d45f4d45c90799bdb92e8f11a3a0257c88e168b27f947",
+        "bytes": 2098273,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R3/XIII/jev/seed20261009/pilot/NEW_MODULES.pth"
+      },
+      "result": {
+        "SHA256": "beb9f526947e8d6ff49829a6c1129a361b8d2f2328119566cde9cdcc87be2c8b",
+        "bytes": 34991,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R3/XIII/jev/seed20261009/pilot/RESULT.json"
+      }
+    },
+    {
+      "arm": "attention",
+      "checkpoint": {
+        "SHA256": "3a738da99dfa45cf42bf089ea83dd96e4e88b2c5cb9e8f1ab9e2c64cf2e53221",
+        "bytes": 2095577,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R3/XIII/attention/seed20261009/pilot/NEW_MODULES.pth"
+      },
+      "result": {
+        "SHA256": "f8409248fec678e54cad496cbd550caec5ebb09a37b59e8e196f745b246282fd",
+        "bytes": 34948,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R3/XIII/attention/seed20261009/pilot/RESULT.json"
+      }
+    },
+    {
+      "arm": "threshold",
+      "checkpoint": {
+        "SHA256": "4b76edb0f0b1d1c40a0e0b22b533aa096e993877b7a606f1fbbbccb19ce23879",
+        "bytes": 1457479,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R3/XIII/threshold/seed20261009/pilot/NEW_MODULES.pth"
+      },
+      "result": {
+        "SHA256": "666980a3718a17394d1ded18933266d47cd80df712d538dcecf0e1fd03aecddd",
+        "bytes": 32979,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R3/XIII/threshold/seed20261009/pilot/RESULT.json"
+      }
+    },
+    {
+      "arm": "mlp",
+      "checkpoint": {
+        "SHA256": "cf729448912e5e1cb4c9ba48299662287c34a09f40477980c1f97afd90577c7d",
+        "bytes": 1947053,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R3/XIII/mlp/seed20261009/pilot/NEW_MODULES.pth"
+      },
+      "result": {
+        "SHA256": "9388e2d815507feda2a618ad89d8b1d1fe5a8eb8fa83807aeee000a014e79040",
+        "bytes": 33319,
+        "path": "/data1/liuyeqiang/WWW_jev_recovery_runtime/20261012_v1/training_R3/XIII/mlp/seed20261009/pilot/RESULT.json"
+      }
+    },
+    {
+      "arm": "StrongFixed",
+      "checkpoint": {
+        "SHA256": "40738997d8d805b5ea66a743fe52a2b538b0211ef7e42eb533d2cfbd0c882558",
+        "bytes": 50953161,
+        "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/formal_training_v1/fixed_question/seed20261009/LAST_FROZEN.pth"
+      }
+    }
+  ],
+  "compute_processes": "pid, gpu_uuid, process_name, used_gpu_memory [MiB]\n22157, GPU-4887936a-1127-862b-7691-0ba879764df1, /home/daiwenwen/anaconda3/envs/mobilenet1/bin/python, 17411 MiB\n34413, GPU-4887936a-1127-862b-7691-0ba879764df1, /home/sunmingjun/anaconda3/envs/FDTA/bin/python, 3019 MiB\n16536, GPU-6bcdf8a3-f609-d699-a3aa-b41b25ca475c, [Not Found], 12131 MiB\n8922, GPU-2121a646-b548-38b5-e6dd-ba913aa3daaf, /home/fengyu/.conda/envs/DETR/bin/python, 21511 MiB\n796, GPU-9914f516-bcdd-bef2-d453-bf5e3719a01f, python, 20483 MiB\n",
+  "data": {
+    "TEST_or_sealed_access": false,
+    "TRAIN_annotation": {
+      "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+      "bytes": 112423855,
+      "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+    },
+    "authority": "inherited user-declared licensed TRAIN scope, expressly reused by current fastcheck task; no new source-use license claimed",
+    "images_root": "/data/DATASETS/TRACKING/JDE/VisionTrack/train",
+    "new_independent_authorization": false,
+    "new_long_term_safety_qualification": false,
+    "ordinary_MATCH": true,
+    "origin": "repository README VisionTrack official OneDrive/Baidu links; existing supplied local TRAIN",
+    "prior_TRAIN_authorized": [
+      12,
+      13,
+      14,
+      16
+    ],
+    "user_permission": {
+      "SHA256": "2ed05ff9faa7ad8fc32563052756fc1eddbb8818ceb1ca0d5b32a280f176f415",
+      "bytes": 33965,
+      "path": "/data1/liuyeqiang/WWW_jev_fastcheck_20261014/docs/JEV_ONEWEEK/USER_TASK_SPEC.md"
+    }
+  },
+  "free_GiB": {
+    "/data1": 33.37255859375,
+    "/home": 50.467777252197266
+  },
+  "new_visual_cache": false,
+  "old_recovery_live_jobs": [],
+  "old_results_modified": false,
+  "perception_caches": [
+    {
+      "frames": 1200,
+      "index": {
+        "SHA256": "d32513c728a98f2420f2087328b35450a1f6be05daa624335a2c105940435646",
+        "bytes": 1913514,
+        "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/stage1_cache_v1/video12/index.jsonl"
+      },
+      "video": 12
+    },
+    {
+      "frames": 1621,
+      "index": {
+        "SHA256": "12a370f57a77ac5a86903a471c670941271632086164e64ca53cb25f1a7d5ebd",
+        "bytes": 2525101,
+        "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/stage1_cache_v1/video13/index.jsonl"
+      },
+      "video": 13
+    },
+    {
+      "frames": 969,
+      "index": {
+        "SHA256": "2e15f0033dba6aafa6c98def7a340479a16f0ef3edb2387873e08fdd22520ff3",
+        "bytes": 2078754,
+        "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/stage1_cache_v1/video14/index.jsonl"
+      },
+      "video": 14
+    },
+    {
+      "frames": 1034,
+      "index": {
+        "SHA256": "aac3030c890faa453533e34efd915249a81e4aab136a18b53791bfabbf7e488b",
+        "bytes": 2826267,
+        "path": "/home/liuyeqiang/WWW_jev_phase13_runtime/20261009_v2/stage1_cache_v1/video16/index.jsonl"
+      },
+      "video": 16
+    }
+  ],
+  "source": {
+    "CUDA_VISIBLE_DEVICES": null,
+    "Full24": false,
+    "GT_actor_inputs": false,
+    "official_TEST": false,
+    "protocol": {
+      "SHA256": "66f55584f1481bd1a5fa332365a5ccbc74250dae765eecb22e0ece84a4955698",
+      "bytes": 3665,
+      "path": "/data1/liuyeqiang/WWW_jev_fastcheck_20261014/reports/JEV_FASTCHECK/PREREGISTRATION.json"
+    },
+    "scope": "P0 assets and MATCH authorization",
+    "sealed20_21_22": true,
+    "source_HEAD": "2ab3d47e6ddef7aff9161c1e95dada9918cc01b9",
+    "source_SHA256": {
+      "reproduction_tools/jev_fastcheck_common.py": "9cb2c84845bf7b1b9d9db4a95ad351f120ec6e637a8531ce96098bc4a9c63e3e",
+      "reproduction_tools/jev_fastcheck_p0.py": "109cea5eec5475a0c078aba765e888fc983fa9f267caf71d157b19f619666ac1",
+      "reproduction_tools/jev_fastcheck_publish.py": "7f6b6c99144cb7a3140d2a5873324befa9eeaef56beb8f1988586a9a8615fb23"
+    }
+  },
+  "status": "PASS_EXISTING_MATCH_SCOPE"
+}
