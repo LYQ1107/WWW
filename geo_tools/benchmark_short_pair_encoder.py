@@ -45,7 +45,7 @@ def main():
         samples_path=RUNTIME/'samples/screen_train_v1/samples.json'
         samples=json.loads(samples_path.read_text())
         if samples['provenance'].get('split')!='train':raise ValueError('TRAIN fixtures required')
-        chosen=[samples['samples'][i] for i in [0,5,10]]
+        chosen=[next(sample for sample in samples['samples'] if sample['video_id']==video and (video!=8 or sample['frame_id']==262)) for video in [5,8,12]]
         if {s['video_id'] for s in chosen}!={5,8,12}:raise ValueError('fixed TRAIN scene fixture changed')
         report['sample_manifest_sha256']=sha256(samples_path)
         report['samples']=[dict(video_id=s['video_id'],frame_id=s['frame_id'],path=s['path'],sha256=sha256(s['path'])) for s in chosen]
