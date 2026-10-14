@@ -109,6 +109,7 @@ def main() -> None:
     ready = load_json(runtime / "finish" / "READY.json")
     monitor = load_json(runtime / "live_monitor" / "STATUS.json")
     full_online = load_json(reports / "FULL_ONLINE_RESULTS.json")
+    queue_audit = load_json(reports / "R2_R3_QUEUE_TERMINAL_AUDIT_20261014.json")
     publication = load_json(runtime / "publication" / "LAST_VERIFIED.json")
 
     formal = [
@@ -191,10 +192,16 @@ def main() -> None:
                 evidence(runtime / "live_monitor" / "STATUS.json", monitor.get("status")),
                 evidence(runtime / "finish" / "READY.json", ready.get("MASTER_BREAKTHROUGH")),
                 evidence(reports / "FULL_ONLINE_RESULTS.json", full_online.get("status")),
+                evidence(
+                    reports / "R2_R3_QUEUE_TERMINAL_AUDIT_20261014.json",
+                    queue_audit.get("status"),
+                ),
                 evidence(reports / "RECOVERY_FINAL_REVIEW_20261014.json", recovery_review.get("status")),
             ],
             "live_jobs": monitor.get("live_jobs"),
             "unreviewed_failures": monitor.get("unreviewed_failures"),
+            "queue_terminal": queue_audit.get("queue_terminal"),
+            "registry_status_counts": queue_audit.get("registry", {}).get("status_counts"),
         },
         "frozen_evidence_and_publication": {
             "judgment": "VERIFIED",
