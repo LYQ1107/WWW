@@ -2,7 +2,7 @@
 import json,time,random
 from pathlib import Path
 import cv2,numpy as np,torch
-from .pair_score_adapter import PairScoreAdapter,calibrated_cosine
+from .pair_score_adapter import PairScoreAdapter,calibrated_cosine,normalize_candidate_scores
 from .roi_feature_extractor import PadMapping
 from .geometry_confidence import estimate_background
 from .geometry_alignment import soft_box_evidence,soft_plane_evidence
@@ -23,6 +23,7 @@ class GeometryRuntime:
             if self.calibration.get('symmetric',False)!=cfg.SYMMETRIZE_VIEW_ORDER:raise ValueError('calibration order mode mismatch')
             if cfg.FEATURE_LAYERS!=self.calibration.get('layers',[self.calibration['layer']]) or cfg.POOLING!=self.calibration['pooling']:raise ValueError('calibration feature mismatch')
             if self.calibration.get('backbone','vggt')!=cfg.FEATURE_BACKBONE:raise ValueError('calibration backbone mismatch')
+            if self.calibration.get('normalization','absolute') not in {'absolute','candidate_row_zscore'}:raise ValueError('unsupported score normalization')
             projection_dim=cfg.FEATURE_DIM if cfg.PROJECTION_DIM<0 else cfg.PROJECTION_DIM
             if self.calibration.get('dim',256)!=projection_dim:raise ValueError('calibration projection dimension mismatch')
 
@@ -108,8 +109,13 @@ class GeometryRuntime:
         cross=query.geo_camera[:,None]!=cams[None,:]
         feature=None;geo=None
         if self.score.feature_weight:
-            feature=calibrated_cosine(vecs,query.geo_vector,self.calibration['slope'],self.calibration['intercept'])
-            feature*=cross & query.geo_valid[:,None] & valid[None,:] & ((query.geo_frame[:,None]-frames[None,:]).abs()<=self.cfg.MAX_GEOMETRY_AGE)
+            legal=cross & query.geo_valid[:,None] & valid[None,:] & ((query.geo_frame[:,None]-frames[None,:]).abs()<=self.cfg.MAX_GEOMETRY_AGE)
+            if self.calibration.get('normalization','absolute')=='candidate_row_zscore':
+                raw=query.geo_vector.float()@vecs.float().T
+                raw,legal=normalize_candidate_scores(raw,legal)
+                feature=torch.tanh(self.calibration['slope']*raw+self.calibration['intercept'])*legal
+            else:
+                feature=calibrated_cosine(vecs,query.geo_vector,self.calibration['slope'],self.calibration['intercept'])*legal
         if self.score.geometry_weight:
             geo=outputs[0].new_zeros(outputs[0].shape)
             if len(query):

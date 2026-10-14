@@ -75,3 +75,20 @@ def provenance(seed=20261014):
                 checkpoint=str(CHECKPOINT), checkpoint_sha256=sha256(CHECKPOINT),
                 config_sha256=sha256(ROOT/'configs/VISION_test.yaml'),
                 annotation_sha256=sha256(DATA/'annotations/train.json'))
+
+class CurrentGroupLoader:
+    """Regenerate the original deterministic test transforms for one current group.
+
+Does not change tracking/postprocessing or provide a causal claim by itself.
+    """
+    def __init__(self,cfg,records):
+        import collections
+        self.cfg=cfg;self.groups=collections.defaultdict(list);self.frame=None;self.cache={};self.seconds=0.
+        for row in records:self.groups[row['frame_id']].append(row)
+    def get(self,record):
+        import time
+        frame=record['frame_id']
+        if frame!=self.frame:
+            t=time.perf_counter();mapped=map_records(self.cfg,self.groups[frame]);self.seconds+=time.perf_counter()-t
+            self.cache={r['image_id']:r for r in mapped};self.frame=frame
+        return self.cache[record['image_id']]
