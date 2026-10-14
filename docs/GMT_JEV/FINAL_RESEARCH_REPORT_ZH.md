@@ -24,6 +24,9 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 同约定原生最终输出：GMT HOTA68.389411、IDSW542、Frag586；Threshold HOTA68.541303、IDSW629、Frag582；Rule HOTA68.966066（+0.576655）、AssA69.235313、CVIDF188.912758、IDSW411（−24.17%）、Frag608（+3.75%）；Confidence HOTA68.642726、IDSW637、Frag568。Rule 次要指标出现正向，Threshold/Confidence 次要 IDSW 失败。stock 与 raw 均在结果前预注册，不能按结果换主要协议；stock 长期身份错误与效率待验证。
 
 
+原生 stock 持续量实测：回顾性 GMT4390、Rule3457（0.7875倍）；历史锚 GMT4046、Rule3768（0.9313倍）。主要 raw 结果仍保留，且全视频长度过滤使最终输出不构成在线因果证明。详细未知覆盖及删失语义见 STOCK_IDENTITY_TEMPORAL_AUDIT_ZH.md。可选归一化缓存保持当前所有控制器默认关闭，待全视频逐项等价审计后另测相同 Rule 的开销，不改变分数公式、权重或求解器。
+
+
 新增结果后历史锚审计：仅使用更早场景已有至少3次已知观测、覆盖率>=80%的首个人物锚；屏蔽重复GT人物，未知/间断为右删失。认证错误人物关联持续相机帧confidence 3346、original 4054、rule 3792、threshold 4323。Threshold 相比 GMT 增加6.64%，Confidence 减少17.46%；各方法最长区间均778帧。不能用未来整段多数身份映射重写历史归属，也不把此描述量称作干预因果传播时间。参见 PAST_ANCHOR_TEMPORAL_AUDIT_ZH.md；这是结果后补查，未改写预注册门槛。
 
 ## 6. 普通方法是否足以解释收益
@@ -46,4 +49,4 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 研究分支 research/gmt-jev-risk-association-20261014；[当前中文报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。每阶段仅推源码、配置和紧凑JSON，权重、视频、图像、预测压缩包留在服务器并记录 SHA。实际发布终态由 runtime/publication/LAST_VERIFIED.json 的 local/remote HEAD 一致证明；报告生成来源 HEAD 与运行时源码 SHA 保存在 JSON。
 
-当前资源快照：{"new_retained_MiB": 257.979660987854, "home_free_GiB": 50.15370178222656, "GPU_wall_hours_including_live": 2.572469448770086}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
+当前资源快照：{"new_retained_MiB": 258.10523891448975, "home_free_GiB": 50.153255462646484, "GPU_wall_hours_including_live": 2.5736454617894355}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。

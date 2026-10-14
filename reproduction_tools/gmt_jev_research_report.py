@@ -6,7 +6,8 @@ KINDS=['original','threshold','rule','confidence','mlp_zero','attention_zero','c
 
 def main():
  online=read(REPORTS/'ONLINE_METRICS.json');completed={};pending=[]
- for kind in KINDS:
+ kinds=KINDS+(['rule_cached'] if (REPORTS/'SPEED_rule_cached.json').exists() else [])
+ for kind in kinds:
   p=REPORTS/f'SPEED_{kind}.json'
   if not p.exists():pending.append(kind);continue
   r=read(p);assert r['status']=='COMPLETE' and len(r['trials'])==3
@@ -34,6 +35,7 @@ def main():
  save(REPORTS/'SPEED_METRICS.json',speed)
  stock_path=REPORTS/'ORIGINAL_GMT_STOCK_METRICS.json'
  stock=None
+ stock_temporal=REPORTS/'STOCK_IDENTITY_TEMPORAL_AUDIT.json'
  if stock_path.exists():
   stock=read(stock_path);online['matched_original_stock_baseline']=dict(report=ref(stock_path),metrics=stock['metrics'],CVIDF1=stock['CVIDF1'])
   for kind,r in online['methods'].items():
@@ -43,6 +45,10 @@ def main():
     AssA=s['metrics']['AssA']>=stock['metrics']['AssA'],CVIDF1=s['CVIDF1']>=stock['CVIDF1'],
     IDSW=s['metrics']['IDSW']<=stock['metrics']['IDSW']*1.05,Frag=s['metrics']['Frag']<=stock['metrics']['Frag']*1.05,
     long_identity_duration='PENDING_MATCHED_STOCK_DIAGNOSTIC')
+   if stock_temporal.exists():
+    r['secondary_stock_identity']=read(stock_temporal)['methods'][kind]
+    r['secondary_stock_metric_gates']['long_identity_duration']=r['secondary_stock_identity']['retrospective_duration_ratio_to_original']<=1.05
+    r['secondary_stock_metric_gates']['past_anchor_post_hoc_duration_ratio']=r['secondary_stock_identity']['past_anchor_duration_ratio_to_original']
   text=(DOCS/'ONLINE_RESULTS.md').read_text().split('\n## 同约定 stock 对照')[0]
   text=text.replace('原生 min_track_len=50 与 stock 后处理的结果保存在每条 ONLINE_*.json 的 secondary_stock；原始 GMT 的同约定基线尚待计时任务保留的输出评测，当前不计算 stock 差值、不混用 raw 基线。','原生 min_track_len=50 与 stock 后处理的匹配基线和对照另列于下表；不与 raw 混用，预注册主要协议仍为 raw。')
   table=['','## 同约定 stock 对照','','| 方法 | HOTA | ΔHOTA | AssA | CVIDF1 | IDSW | Frag |','|---|---:|---:|---:|---:|---:|---:|']
@@ -66,7 +72,7 @@ def main():
  if pending:decision['unmet'].append('Completed matched full-image efficiency measurements')
  if stock is not None:
   decision['secondary_stock_development_metric_gates']={k:r['secondary_stock_metric_gates'] for k,r in online['methods'].items()}
-  decision['secondary_stock_interpretation']='Rule passes HOTA/AssA/CVIDF1/IDSW/Frag secondary metric gates; matched stock long duration and speed pending. Threshold/confidence fail secondary IDSW. This does not override the preregistered primary raw outcome or establish scientific success.'
+  decision['secondary_stock_interpretation']='Rule passes HOTA/AssA/CVIDF1/IDSW/Frag secondary metric gates; stock temporal diagnostics reported separately and speed remains method-specific. Threshold/confidence fail secondary IDSW. This does not override the preregistered primary raw outcome or establish scientific success.'
  if temporal.exists():
   d=read(temporal);decision['post_hoc_temporal_diagnostics']=dict(report=ref(temporal),
    ratios={k:r['duration_ratio_to_original'] for k,r in d['methods'].items()},
@@ -77,7 +83,7 @@ def main():
  goal['gates']['INDEPENDENT_VALIDATION']='PENDING_AUTHORIZED_UNSEEN_SOURCE';save(REPORTS/'MASTER_GOAL.json',goal)
  efficiency=['# 实测效率与参数','', '以下只使用完成的三次完整视频结果；缺测项仍为 PENDING。', '',
   '| 方法 | 场景 FPS | 图像 FPS | 相对 GMT | 新增参数 |', '|---|---:|---:|---:|---:|']
- for kind in KINDS:
+ for kind in kinds:
   if kind not in completed:efficiency.append(f'| {kind} | PENDING | PENDING | PENDING | PENDING |');continue
   r=completed[kind];ratio=r.get('FPS_ratio_to_GMT');ratio_text=f'{ratio:.4f}' if ratio is not None else 'PENDING'
   efficiency.append(f"| {kind} | {r['mean_scene_FPS']:.4f} | {r['mean_image_FPS']:.4f} | {ratio_text} | {r['extra_parameters']} |")
@@ -104,6 +110,8 @@ Confidence 是普通合法候选的分数校准。它改善了当前开发视频
 
 WWW 投稿证据仍缺：联合稳定增益、合格训练后普通控制器对照、独立完整视频、必要种子复现及可支持机制判断的消融。没有独立资格时，不读取封存数据或把开发视频当独立验证。目前为 NOT_ESTABLISHED。
 ''')
+ if stock_temporal.exists():
+  with (DOCS/'REVIEWER_ANALYSIS.md').open('a') as f:f.write('\n原生 stock 的长期身份诊断已补齐：Rule 回顾性持续量为 GMT 的0.7875倍，历史锚错误人物持续量为0.9313倍。最终轨迹长度过滤依赖整段视频，因此这仍不是在线干预的因果传播证明。缓存优化仅改变派生特征计算，先要求全视频逐项分数/特征与原预测严格一致，不能借此改策略或主评测协议。\n')
  if stock is not None:
   with (DOCS/'REVIEWER_ANALYSIS.md').open('a') as f:f.write('\n同约定原生 stock 基线已补齐：GMT HOTA68.389411/IDSW542；Rule HOTA68.966066/IDSW411/Frag608（GMT586）。其次要 HOTA/AssA/CVIDF1/IDSW/Frag 门槛通过，但不覆盖主要 raw 稳定性失败，stock 持续错误及效率仍待完整检查。Threshold 和 Confidence 的 stock IDSW 分别629、637，均超过1.05倍。原生最终短轨过滤与身份状态的交互可能影响结论，不能挑选协议，也不能简单称 Confidence 为全管线最佳。\n')
  resource=dict(new_retained_MiB=retained()/2**20,home_free_GiB=shutil.disk_usage('/home/liuyeqiang').free/2**30,GPU_wall_hours_including_live=spent())
@@ -152,6 +160,9 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 '''
  if stock is not None:
   note='\n同约定原生最终输出：GMT HOTA68.389411、IDSW542、Frag586；Threshold HOTA68.541303、IDSW629、Frag582；Rule HOTA68.966066（+0.576655）、AssA69.235313、CVIDF188.912758、IDSW411（−24.17%）、Frag608（+3.75%）；Confidence HOTA68.642726、IDSW637、Frag568。Rule 次要指标出现正向，Threshold/Confidence 次要 IDSW 失败。stock 与 raw 均在结果前预注册，不能按结果换主要协议；stock 长期身份错误与效率待验证。\n'
+  report=report.replace('## 6. 普通方法是否足以解释收益',note+'\n## 6. 普通方法是否足以解释收益')
+ if stock_temporal.exists():
+  note='\n原生 stock 持续量实测：回顾性 GMT4390、Rule3457（0.7875倍）；历史锚 GMT4046、Rule3768（0.9313倍）。主要 raw 结果仍保留，且全视频长度过滤使最终输出不构成在线因果证明。详细未知覆盖及删失语义见 STOCK_IDENTITY_TEMPORAL_AUDIT_ZH.md。可选归一化缓存保持当前所有控制器默认关闭，待全视频逐项等价审计后另测相同 Rule 的开销，不改变分数公式、权重或求解器。\n'
   report=report.replace('## 6. 普通方法是否足以解释收益',note+'\n## 6. 普通方法是否足以解释收益')
  if temporal.exists():
   d=read(temporal)
