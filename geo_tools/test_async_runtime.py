@@ -45,6 +45,7 @@ class Tests(unittest.TestCase):
                     self.assertEqual(runtime.geometry[1]['source_frame'],0)
                     self.assertTrue(runtime.geometry[1]['valid'])
                 else:self.assertEqual(float(output[0,0]),0.)
+                self.assertEqual(query.geo_vector.shape,(1,0))
         self.assertEqual(runtime.async_trace[0]['frame'],1)
         self.assertLess(runtime.async_trace[0]['completed_at'],runtime.async_trace[0]['observed_at'])
 
@@ -52,5 +53,13 @@ class Tests(unittest.TestCase):
         cfg=get_cfg();add_gtr_config(cfg);g=cfg.MODEL.GEO
         g.ENABLED=True;g.GEOMETRY_ENABLED=True;g.GEOMETRY_WEIGHT=.5;g.ASYNC_WORKER=True
         with self.assertRaises(ValueError):GeometryRuntime(g)
+
+    def test_fixed_policy_does_not_compute_unused_identity_score(self):
+        cfg=get_cfg();add_gtr_config(cfg);g=cfg.MODEL.GEO
+        g.ENABLED=True;g.GEOMETRY_ENABLED=True;g.GEOMETRY_WEIGHT=.5
+        g.SPARSE_UPDATE_ENABLED=True;g.UPDATE_POLICY='fixed'
+        runtime=GeometryRuntime(g)
+        def forbidden(*args):raise AssertionError('fixed policy does not need GTA feedback')
+        runtime.record_identity_feedback(torch.zeros(1,1),[detections(1),detections(1)],1,forbidden)
 
 if __name__=='__main__':unittest.main()

@@ -115,7 +115,7 @@ class GeometryRuntime:
         if candidate['valid']:self.last_success_frame=frame
 
     def record_identity_feedback(self,logits,instances,k,activate):
-        if self.scheduler is None:return
+        if self.scheduler is None or self.cfg.UPDATE_POLICY not in {'identity','joint'}:return
         from .update_signals import identity_update_signal
         margin,handoff=identity_update_signal(logits,instances,k,activate)
         self.pending_margin=min(self.pending_margin,margin);self.pending_handoff|=handoff
@@ -139,6 +139,7 @@ class GeometryRuntime:
         per_layer_dim=projection_dim if projection_dim>0 else (1024 if self.cfg.FEATURE_BACKBONE=='dinov2' else 2048)
         if self.cfg.FEATURE_BACKBONE=='gmt':per_layer_dim=instances[0].reid_features.shape[-1]
         dim=per_layer_dim*len(levels)*(2 if self.cfg.SYMMETRIZE_VIEW_ORDER else 1)
+        if not self.score.feature_weight:dim=0
         if self.head_checkpoint is not None:
             settings=self.head_checkpoint['settings'];dim=settings['output_dim']*(2 if settings['symmetric'] else 1)
         original_boxes=[]
@@ -274,8 +275,13 @@ class GeometryRuntime:
         finally:self.seconds+=time.perf_counter()-start
 
     def adapt(self,outputs,instances,k):
-        if not self.active:return outputs
+        if not self.active or not self.score.enabled:return outputs
         query=instances[k];refs=[x for i,x in enumerate(instances) if i!=k]
+        if not self.score.feature_weight:
+            if not len(query) or not query.has('geo_frame'):return outputs
+            result=self.geometry.get(int(query.geo_frame[0]))
+            key='H_valid' if self.cfg.GEOMETRY_METHOD.endswith('_homography') else 'valid'
+            if result is None or not result.get(key,False):return outputs
         if not query.has('geo_camera') or any(not x.has('geo_camera') for x in refs):return outputs
         cams=torch.cat([x.geo_camera for x in refs]);frames=torch.cat([x.geo_frame for x in refs]);boxes=torch.cat([x.geo_xyxy for x in refs]);vecs=torch.cat([x.geo_vector for x in refs]);valid=torch.cat([x.geo_valid for x in refs])
         cross=query.geo_camera[:,None]!=cams[None,:]
