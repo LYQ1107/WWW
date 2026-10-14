@@ -51,6 +51,10 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | C_lowrank_gmt_seed14_k10_strict_v1 | 11 | yes | 83.3649 | 79.3051 | 92.1306 | 92.1306 | 6 |
 | C_lowrank_gmt_seed14_k10_strict_v1 | 18 | yes | 79.3120 | 81.1202 | 96.6809 | 96.6809 | 5 |
 | C_lowrank_gmt_seed14_k10_strict_v1 | 19 | yes | 77.8202 | 81.6091 | 94.6915 | 94.6915 | 29 |
+| causal_B7_fixed_k10_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
+| causal_B8_fixed20_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
+| causal_B9_joint_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
+| causal_B9_joint_total80_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | online_B0_full_v10_source44_v1 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | online_B0_full_v11_source44_v1 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | online_B0_full_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
@@ -72,6 +76,8 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | B3_multilayer_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | B4_native_scalar_w2_k10_strict_v1_suite | ALL_STRICT | yes | 81.0495 | 81.8909 | 95.6282 | 95.6282 | 41 |
 | B5_lowrank_vggt_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0513 | 81.8930 | 95.6307 | 95.6307 | 41 |
+| B5_lowrank_vggt_seed15_k10_strict_v1_suite | ALL_STRICT | yes | 81.0513 | 81.8930 | 95.6307 | 95.6307 | 41 |
+| B5_lowrank_vggt_seed16_k10_strict_v1_suite | ALL_STRICT | yes | 81.0513 | 81.8930 | 95.6307 | 95.6307 | 41 |
 | B6_vggt_camera_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | B7_lowrank_vggt_camera_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0513 | 81.8930 | 95.6307 | 95.6307 | 41 |
 | C_gmt_reid_strict_suite_v1 | ALL_STRICT | yes | 80.9947 | 81.7598 | 95.4944 | 95.4944 | 43 |
@@ -83,6 +89,7 @@ Causal retrieval (local replay, GT only for post-run evaluation; conditional ret
 
 | Method | Cameras | Full video | Queries | Eligible | Recall@1 | MRR | Query P95 (ms) | Complete images/s |
 |---|---:|---|---:|---:|---:|---:|---:|---:|
+| retrieval_gmt_10streams_full_v1 | 10 | True | 3080 | 2465 | 0.922920892494929 | 0.946330285529238 | 12.1369 | 6.9847 |
 | retrieval_gmt_10streams_prefix20_v1 | 10 | False | 39 | 28 | 0.8214285714285714 | 0.8898809523809524 | 1.2639 | 7.5250 |
 | retrieval_gmt_10streams_prefix30_v1 | 10 | False | 78 | 57 | 0.8421052631578947 | 0.9064327485380118 | 1.4793 | 7.8980 |
 | retrieval_gmt_4streams_full_v1 | 4 | True | 826 | 494 | 0.9777327935222672 | 0.9863326585695007 | 5.4689 | 6.9697 |
