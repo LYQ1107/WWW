@@ -1,0 +1,425 @@
+{
+  "id": "dense_head_controls_remaining_v1",
+  "project_gpu_ids": [
+    "0"
+  ],
+  "queues": {
+    "gpu0": [
+      {
+        "id": "C_gmt_head_dense_causal_strict_suite_v1_v10",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "10",
+          "--tag",
+          "C_gmt_head_dense_causal_strict_suite_v1_v10",
+          "--backbone",
+          "gmt",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/gmt_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ]
+      },
+      {
+        "id": "eval_C_gmt_head_dense_causal_strict_suite_v1_v10",
+        "cpu_only": true,
+        "depends_on": [
+          "C_gmt_head_dense_causal_strict_suite_v1_v10"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_strict_suite_v1_v10/predictions.json",
+          "--video-id",
+          "10",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_strict_suite_v1_v10/manifest.json"
+        ]
+      },
+      {
+        "id": "C_gmt_head_dense_causal_strict_suite_v1_v11",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "11",
+          "--tag",
+          "C_gmt_head_dense_causal_strict_suite_v1_v11",
+          "--backbone",
+          "gmt",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/gmt_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ]
+      },
+      {
+        "id": "eval_C_gmt_head_dense_causal_strict_suite_v1_v11",
+        "cpu_only": true,
+        "depends_on": [
+          "C_gmt_head_dense_causal_strict_suite_v1_v11"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_strict_suite_v1_v11/predictions.json",
+          "--video-id",
+          "11",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_strict_suite_v1_v11/manifest.json"
+        ]
+      },
+      {
+        "id": "C_gmt_head_dense_causal_strict_suite_v1_v18",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "18",
+          "--tag",
+          "C_gmt_head_dense_causal_strict_suite_v1_v18",
+          "--backbone",
+          "gmt",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/gmt_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ]
+      },
+      {
+        "id": "eval_C_gmt_head_dense_causal_strict_suite_v1_v18",
+        "cpu_only": true,
+        "depends_on": [
+          "C_gmt_head_dense_causal_strict_suite_v1_v18"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_strict_suite_v1_v18/predictions.json",
+          "--video-id",
+          "18",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_strict_suite_v1_v18/manifest.json"
+        ]
+      },
+      {
+        "id": "C_gmt_head_dense_causal_strict_suite_v1_v19",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "19",
+          "--tag",
+          "C_gmt_head_dense_causal_strict_suite_v1_v19",
+          "--backbone",
+          "gmt",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--projection-dim",
+          "0",
+          "--pooling",
+          "reid",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/gmt_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ]
+      },
+      {
+        "id": "eval_C_gmt_head_dense_causal_strict_suite_v1_v19",
+        "cpu_only": true,
+        "depends_on": [
+          "C_gmt_head_dense_causal_strict_suite_v1_v19"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_strict_suite_v1_v19/predictions.json",
+          "--video-id",
+          "19",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_strict_suite_v1_v19/manifest.json"
+        ]
+      },
+      {
+        "id": "combine_C_gmt_head_dense_causal_strict_suite_v1",
+        "cpu_only": true,
+        "depends_on": [
+          "eval_C_gmt_head_dense_causal_strict_suite_v1_v10",
+          "eval_C_gmt_head_dense_causal_strict_suite_v1_v11",
+          "eval_C_gmt_head_dense_causal_strict_suite_v1_v18",
+          "eval_C_gmt_head_dense_causal_strict_suite_v1_v19"
+        ],
+        "command": [
+          "geo_tools/evaluate_suite.py",
+          "--sources",
+          "manifests/C_gmt_head_dense_causal_strict_suite_v1_sources.json",
+          "--tag",
+          "C_gmt_head_dense_causal_strict_suite_v1",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/C_gmt_head_dense_causal_strict_suite_v1_metrics.json"
+        ]
+      },
+      {
+        "id": "C_dino_head_dense_causal_strict_suite_v1_v10",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "10",
+          "--tag",
+          "C_dino_head_dense_causal_strict_suite_v1_v10",
+          "--backbone",
+          "dinov2",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--projection-dim",
+          "256",
+          "--pooling",
+          "roi_align",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/dinov2_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ]
+      },
+      {
+        "id": "eval_C_dino_head_dense_causal_strict_suite_v1_v10",
+        "cpu_only": true,
+        "depends_on": [
+          "C_dino_head_dense_causal_strict_suite_v1_v10"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_dino_head_dense_causal_strict_suite_v1_v10/predictions.json",
+          "--video-id",
+          "10",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_dino_head_dense_causal_strict_suite_v1_v10/manifest.json"
+        ]
+      },
+      {
+        "id": "C_dino_head_dense_causal_strict_suite_v1_v11",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "11",
+          "--tag",
+          "C_dino_head_dense_causal_strict_suite_v1_v11",
+          "--backbone",
+          "dinov2",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--projection-dim",
+          "256",
+          "--pooling",
+          "roi_align",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/dinov2_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ]
+      },
+      {
+        "id": "eval_C_dino_head_dense_causal_strict_suite_v1_v11",
+        "cpu_only": true,
+        "depends_on": [
+          "C_dino_head_dense_causal_strict_suite_v1_v11"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_dino_head_dense_causal_strict_suite_v1_v11/predictions.json",
+          "--video-id",
+          "11",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_dino_head_dense_causal_strict_suite_v1_v11/manifest.json"
+        ]
+      },
+      {
+        "id": "C_dino_head_dense_causal_strict_suite_v1_v18",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "18",
+          "--tag",
+          "C_dino_head_dense_causal_strict_suite_v1_v18",
+          "--backbone",
+          "dinov2",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--projection-dim",
+          "256",
+          "--pooling",
+          "roi_align",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/dinov2_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ]
+      },
+      {
+        "id": "eval_C_dino_head_dense_causal_strict_suite_v1_v18",
+        "cpu_only": true,
+        "depends_on": [
+          "C_dino_head_dense_causal_strict_suite_v1_v18"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_dino_head_dense_causal_strict_suite_v1_v18/predictions.json",
+          "--video-id",
+          "18",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_dino_head_dense_causal_strict_suite_v1_v18/manifest.json"
+        ]
+      },
+      {
+        "id": "C_dino_head_dense_causal_strict_suite_v1_v19",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "19",
+          "--tag",
+          "C_dino_head_dense_causal_strict_suite_v1_v19",
+          "--backbone",
+          "dinov2",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--projection-dim",
+          "256",
+          "--pooling",
+          "roi_align",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/dinov2_seed20261014.pt",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ]
+      },
+      {
+        "id": "eval_C_dino_head_dense_causal_strict_suite_v1_v19",
+        "cpu_only": true,
+        "depends_on": [
+          "C_dino_head_dense_causal_strict_suite_v1_v19"
+        ],
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_dino_head_dense_causal_strict_suite_v1_v19/predictions.json",
+          "--video-id",
+          "19",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_dino_head_dense_causal_strict_suite_v1_v19/manifest.json"
+        ]
+      },
+      {
+        "id": "combine_C_dino_head_dense_causal_strict_suite_v1",
+        "cpu_only": true,
+        "depends_on": [
+          "eval_C_dino_head_dense_causal_strict_suite_v1_v10",
+          "eval_C_dino_head_dense_causal_strict_suite_v1_v11",
+          "eval_C_dino_head_dense_causal_strict_suite_v1_v18",
+          "eval_C_dino_head_dense_causal_strict_suite_v1_v19"
+        ],
+        "command": [
+          "geo_tools/evaluate_suite.py",
+          "--sources",
+          "manifests/C_dino_head_dense_causal_strict_suite_v1_sources.json",
+          "--tag",
+          "C_dino_head_dense_causal_strict_suite_v1",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/C_dino_head_dense_causal_strict_suite_v1_metrics.json"
+        ]
+      }
+    ]
+  },
+  "scope": "complete remaining causal strict5 GMT/DINO head controls; reuse actual completed scene1 runs; after existing GPU0 matrix, no extra GPUs"
+}
