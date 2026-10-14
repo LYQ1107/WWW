@@ -814,7 +814,13 @@
         "--mode",
         "live"
       ],
-      "log": "/data1/liuyeqiang/WWW_jev_fastcheck_runtime/20261014_v1/jobs/P4_attention_D1_full_image_FPS/OUTPUT.log",
+      "exit_code": 0,
+      "log": {
+        "SHA256": "9540d995ceef0fa734951f6968345b3f6c7ce539c898b375ec09c82ebd0d0f7d",
+        "bytes": 1250,
+        "path": "/data1/liuyeqiang/WWW_jev_fastcheck_runtime/20261014_v1/jobs/P4_attention_D1_full_image_FPS/OUTPUT.log"
+      },
+      "seconds": 1641.0127716064453,
       "source": {
         "CUDA_VISIBLE_DEVICES": null,
         "Full24": false,
@@ -849,7 +855,7 @@
         }
       },
       "start_epoch": 1791975104.0580897,
-      "status": "RUNNING"
+      "status": "COMPLETE"
     },
     "P4_direct_attention_TRAIN16": {
       "GPU": 4,
@@ -1152,6 +1158,57 @@
       },
       "start_epoch": 1791972181.5317106,
       "status": "COMPLETE"
+    },
+    "P4_threshold_full_image_FPS": {
+      "GPU": 8,
+      "PID": 6291,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/data1/liuyeqiang/WWW_jev_fastcheck_20261014/reproduction_tools/jev_fastcheck_online.py",
+        "--tag",
+        "threshold",
+        "--steps",
+        "0",
+        "--mode",
+        "live"
+      ],
+      "log": "/data1/liuyeqiang/WWW_jev_fastcheck_runtime/20261014_v1/jobs/P4_threshold_full_image_FPS/OUTPUT.log",
+      "source": {
+        "CUDA_VISIBLE_DEVICES": null,
+        "Full24": false,
+        "GT_actor_inputs": false,
+        "official_TEST": false,
+        "protocol": {
+          "SHA256": "66f55584f1481bd1a5fa332365a5ccbc74250dae765eecb22e0ece84a4955698",
+          "bytes": 3665,
+          "path": "/data1/liuyeqiang/WWW_jev_fastcheck_20261014/reports/JEV_FASTCHECK/PREREGISTRATION.json"
+        },
+        "scope": "P4_threshold_full_image_FPS",
+        "sealed20_21_22": true,
+        "source_HEAD": "f1182f85ecc8800c6e2ec021d783bc657b0a4591",
+        "source_SHA256": {
+          "reproduction_tools/jev_fastcheck_activation.py": "4992a0578c6cc5a832e20528781f153176ccd93230216d28cf4dec1c43025167",
+          "reproduction_tools/jev_fastcheck_common.py": "9cb2c84845bf7b1b9d9db4a95ad351f120ec6e637a8531ce96098bc4a9c63e3e",
+          "reproduction_tools/jev_fastcheck_contracts.py": "207648731ccf4b75197ab918f4419f54cb11697da076c55f6cda9abb8037551c",
+          "reproduction_tools/jev_fastcheck_direct_train.py": "47d1ed1d816090fa473e54cd4427c52e5c44be60b40c0124ab154570188740eb",
+          "reproduction_tools/jev_fastcheck_distribution.py": "489e0537c9c6c092cafae9c27ee615cd59cad92bbdf564ee2cbc031498b1cbc5",
+          "reproduction_tools/jev_fastcheck_duration.py": "e5473ffa01adb0422495fd61c9a11a7aa182123e874294761811cf377bbcb69f",
+          "reproduction_tools/jev_fastcheck_finalize.py": "02e2c301ef547dc9c605bbe1038e2dc629ec2609916790e7e9327bcf301ae318",
+          "reproduction_tools/jev_fastcheck_global_duration.py": "3377262711f7e806c1d46facbb0a19d67f86b433cf3a3f8e8f11e26637414880",
+          "reproduction_tools/jev_fastcheck_job.py": "b1757d794172136bf96829c2784347f6c94e6524b9d5792da53f7bc05bc682fc",
+          "reproduction_tools/jev_fastcheck_label_alias_audit.py": "0e64c070c0b4efd8e25b34c1319b7c7cddac9451260ec9b869652b0bd6c6f0ea",
+          "reproduction_tools/jev_fastcheck_online.py": "186ee649e6a02171fc11eaa81a7647c5ee6d1aeffb0010283bb3ac03ab174cbb",
+          "reproduction_tools/jev_fastcheck_p0.py": "109cea5eec5475a0c078aba765e888fc983fa9f267caf71d157b19f619666ac1",
+          "reproduction_tools/jev_fastcheck_publish.py": "7f6b6c99144cb7a3140d2a5873324befa9eeaef56beb8f1988586a9a8615fb23",
+          "reproduction_tools/jev_fastcheck_references.py": "fd6b0696e15ee1289298f040f1423de9783b93da2622f9d58f19a949be1f5d40",
+          "reproduction_tools/jev_fastcheck_report.py": "3f8804e859f042ea38713f18c39ba6b70591fe384855c9bc7141e3e1520e06b1",
+          "reproduction_tools/jev_fastcheck_rollout.py": "d1cb9a6324eea630aa5586539103b9fc1c1a6bc044af33cbaee1686e9d1ee696",
+          "reproduction_tools/jev_fastcheck_sample_audit.py": "26834cc9ca5f7c624b5f0d3aee24eddf535de6710e50538cd2f69682ecf3c290",
+          "reproduction_tools/jev_fastcheck_train.py": "d55f89aaa0cbacf7e21c562ce9115da2f763547492ee67b168dd9081556d512c"
+        }
+      },
+      "start_epoch": 1791976745.1447635,
+      "status": "RUNNING"
     }
   },
   "status": "PREREGISTERED"

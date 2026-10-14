@@ -20,14 +20,15 @@ All rows below use the same full1034-frame two-camera TRAIN16, one frozen seed. 
 
 Data benefit is stronger in ordinary Attention; JEV aggregation did not protect identity stability. Direct JEV lowers switches but increases global-map fragmentation and lowers CVIDF1. Past-certificate duration and complete-video fixed-map duration are separate diagnostics; neither is called a unique physical causal share.
 
-| Live model | Scene FPS | Stage2 trial-mean p50/p95 ms | New trainable parameters |
-|---|---:|---|---:|
-| direct_jev_D1 | 2.652 | 90.17/112.17 | 169155 |
-| parent | 2.739 | 82.43/103.06 | 0 |
+| Live model | Scene FPS | FPS change vs Fixed | Stage2 trial-mean p50/p95 ms | Deployed parameters | New trainable parameters |
+|---|---:|---:|---|---:|---:|
+| attention_D1 | 1.927 | -29.64% | 156.13/207.81 | 36165044 | 169092 |
+| direct_jev_D1 | 2.652 | -3.17% | 90.17/112.17 | 36165107 | 169155 |
+| parent | 2.739 | +0.00% | 82.43/103.06 | 35995952 | 0 |
 
-Every reported FPS uses three complete live-image runs on the same physical GPU8, V10032GB, with detector/VFCE/actual Gallery/Bank/assignment and no GT journals/evaluator in the timed loop. Common dormant pruning is disclosed and is not a JEV scientific gain. Original instantiated system53515309 parameters; common deployed Fixed35995952; Direct JEV36165107 (net+169155 versus common Fixed); Direct Attention36164979 (net+169027).
+Every reported FPS uses three complete live-image runs on the same physical GPU8, V10032GB, with detector/VFCE/actual Gallery/Bank/assignment and no GT journals/evaluator in the timed loop. Native identity state resets between trials; the loaded model is reused. Common dormant pruning is disclosed and is not a JEV scientific gain. Original instantiated system53515309 parameters; common deployed Fixed35995952; Direct JEV36165107 (net+169155 versus common Fixed); Direct Attention36164979 (net+169027).
 
-GPU budget: 2.185/24 registered GPU-wall hours (includes loading/IO). Missing live timings: ['attention_D1', 'threshold'].
+GPU budget: 2.641/24 registered GPU-wall hours (includes loading/IO; small manual setup/contract probes are outside this registry, so this is not total active-kernel time). Missing live timings: ['threshold'].
 
 ## A
 
@@ -43,7 +44,7 @@ Keep Strong Fixed and honest frozen JEV evidence. The current new Recovery JEV m
 
 ## D
 
-The sole direct lawful score/choice repair was executed. Against unchanged J1: HOTA +0.396, IDSW 1891->1093, but CVIDF1 83.511->82.406 and full-video identity-inconsistency duration 6957->7741 camera-frames. Lower IDSW does not establish stable identity benefit. Comparing repair to M0 also changes loss/readout/solver; only the matched direct M1/M2 isolates typed vs untyped variant, and M1 still loses to the stronger existing ordinary Attention.
+The sole direct lawful score/choice repair was executed. Against unchanged J1: HOTA +0.396, IDSW 1891->1093, but CVIDF1 83.511->82.406 and full-video identity-inconsistency duration 6957->7741 camera-frames. Lower IDSW does not establish stable identity benefit. Comparing repair to M0 also changes loss/readout/solver. Matched direct M1/M2 compares complete typed/untyped variants including reader allocation, not question embeddings alone, and M1 still loses to the stronger existing ordinary Attention.
 
 ## E
 

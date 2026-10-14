@@ -4,7 +4,7 @@
     "A": "Data aggregation helped ordinary Attention relative to its D0 fine-tune (+1.467 HOTA); JEV improved only +0.132 HOTA and IDSW rose +310. A1 remains below its original Attention initializer; J1 remains below strong Fixed/Threshold. CLOSED_LOOP_NOT_SUFFICIENT_FOR_CURRENT_JEV; no general claim that DAgger cannot work.",
     "B": "Paired native prefixes had identical initial input/state SHA but diverged at TRAIN12/24/1, TRAIN13/225/0, TRAIN14/6/0. Direction differs by video. Full data intervention helped ordinary control more than JEV. Missing/UNKNOWN/Bank-only support and correlated person histories remain. Current targets certify first-past native-ID/person compatibility. Multiple native IDs can remain compatible with the same person, and neither the certificate nor local WHO correctness is a unique long-term Global ID or future safety guarantee. This is a supervision/decision-alignment limitation, not an established exclusive architecture cause.",
     "C": "Keep Strong Fixed and honest frozen JEV evidence. The current new Recovery JEV module lacks support for deployment or continued scale-up. Direct JEV remains an auditable diagnostic, not a successful replacement.",
-    "D": "The sole direct lawful score/choice repair was executed. Against unchanged J1: HOTA +0.396, IDSW 1891->1093, but CVIDF1 83.511->82.406 and full-video identity-inconsistency duration 6957->7741 camera-frames. Lower IDSW does not establish stable identity benefit. Comparing repair to M0 also changes loss/readout/solver; only the matched direct M1/M2 isolates typed vs untyped variant, and M1 still loses to the stronger existing ordinary Attention.",
+    "D": "The sole direct lawful score/choice repair was executed. Against unchanged J1: HOTA +0.396, IDSW 1891->1093, but CVIDF1 83.511->82.406 and full-video identity-inconsistency duration 6957->7741 camera-frames. Lower IDSW does not establish stable identity benefit. Comparing repair to M0 also changes loss/readout/solver. Matched direct M1/M2 compares complete typed/untyped variants including reader allocation, not question embeddings alone, and M1 still loses to the stronger existing ordinary Attention.",
     "E": "Best matched TRAIN16 reference: frozen Pair Threshold HOTA70.605/AssA71.106/CVIDF189.825/IDSW1002. Best new P2 model: ordinary Attention D1 HOTA68.892/AssA68.073/CVIDF188.038/IDSW1299. Direct JEV:67.052/64.476/82.406/1093. Same-GPU live-image costs are recorded separately; no cached FPS imputation.",
     "F": "No new JEV exceeds Strong Fixed, Threshold or best ordinary Attention. Direct JEV exceeds the matched direct-Attention variant (HOTA63.097) but that variant is weaker than the original/P2 Attention and is not the strongest ordinary baseline.",
     "G": "All new results are seed20261009, reused authorized TRAIN, and pre-exposed TRAIN16. No independent complete video, cross-seed reproduction, new source permission, or future safety qualification was established. DEV/TEST/sealed datasets were not newly used.",
@@ -12,6 +12,39 @@
   },
   "costs": [
     {
+      "FPS_change_percent_vs_same_GPU_Fixed": -29.63887283446557,
+      "GPU_UUID": "GPU-30aaddaf-5be2-2673-3278-e1e33ce55aa1",
+      "Stage2_mean_trial_p50_p95_ms": [
+        156.13225599129996,
+        207.8110252817472
+      ],
+      "artifact": {
+        "SHA256": "1f4ae33af821fd3d2089a0c70c4d98ec153bc024f01e157297821cfe617ef5bb",
+        "bytes": 4568,
+        "path": "/data1/liuyeqiang/WWW_jev_fastcheck_20261014/reports/JEV_FASTCHECK/LIVE_attention_D1_STEPS1000.json"
+      },
+      "mean_full_scene_FPS": 1.9271541616382566,
+      "parameters": {
+        "deployed_with_controller": 36165044,
+        "dormant_pruned": {
+          "actual_allocated_bytes_released": 89661440,
+          "removed_parameters": {
+            "asso_predictor": 0,
+            "s_t_head": 35968,
+            "transformer": 21714048
+          },
+          "removed_total": 21750016,
+          "scope": "after strict original checkpoint load; detector, VFCE pooler and VFCE head remain"
+        },
+        "new_controller": 4399751,
+        "new_controller_trainable": 169092,
+        "original_instantiated_system": 53515309
+      },
+      "tag": "attention_D1",
+      "three_complete_live_image_trials": true
+    },
+    {
+      "FPS_change_percent_vs_same_GPU_Fixed": -3.1656664990432404,
       "GPU_UUID": "GPU-30aaddaf-5be2-2673-3278-e1e33ce55aa1",
       "Stage2_mean_trial_p50_p95_ms": [
         90.16840408245723,
@@ -43,6 +76,7 @@
       "three_complete_live_image_trials": true
     },
     {
+      "FPS_change_percent_vs_same_GPU_Fixed": 0.0,
       "GPU_UUID": "GPU-30aaddaf-5be2-2673-3278-e1e33ce55aa1",
       "Stage2_mean_trial_p50_p95_ms": [
         82.43212103843689,
@@ -628,13 +662,24 @@
     }
   ],
   "failed_jobs": [],
-  "free_data1_GiB": 32.80149459838867,
+  "final_checkpoint_contracts": [
+    {
+      "SHA256": "eae725f9dd997244c7517f08fea287ea073959c1465e62c3d338a26654ba93ce",
+      "bytes": 4168,
+      "path": "/data1/liuyeqiang/WWW_jev_fastcheck_20261014/reports/JEV_FASTCHECK/TRAINED_CONTRACT_TESTS.json"
+    },
+    {
+      "SHA256": "80e7017b65eed46fbf8550dc734add4fa8e35ee2ecaa7c0bc57cda98d11e1ce5",
+      "bytes": 4153,
+      "path": "/data1/liuyeqiang/WWW_jev_fastcheck_20261014/reports/JEV_FASTCHECK/TRAINED_DIRECT_CONTRACT_TESTS.json"
+    }
+  ],
+  "free_data1_GiB": 32.800933837890625,
   "independent_validation": false,
   "live_jobs": [
-    "P4_attention_D1_full_image_FPS"
+    "P4_threshold_full_image_FPS"
   ],
   "missing_live_timing": [
-    "attention_D1",
     "threshold"
   ],
   "models_revisions_added": 1,
@@ -1455,8 +1500,8 @@
     "no_weights_or_labels_changed": true,
     "status": "COMPLETE_EXACT_PRIOR_INPUTS"
   },
-  "registered_GPU_wall_hours": 2.1851003890091345,
-  "runtime_retention_bytes": 609901716,
+  "registered_GPU_wall_hours": 2.6409372700109244,
+  "runtime_retention_bytes": 609907763,
   "scientific_success": false,
   "source": {
     "CUDA_VISIBLE_DEVICES": null,
@@ -1470,15 +1515,15 @@
     },
     "scope": "Bounded closed-loop fastcheck final scientific review",
     "sealed20_21_22": true,
-    "source_HEAD": "af7778d4b5f5a174ed79691e857f8c5891ac7319",
+    "source_HEAD": "f1182f85ecc8800c6e2ec021d783bc657b0a4591",
     "source_SHA256": {
       "reproduction_tools/jev_fastcheck_activation.py": "4992a0578c6cc5a832e20528781f153176ccd93230216d28cf4dec1c43025167",
       "reproduction_tools/jev_fastcheck_common.py": "9cb2c84845bf7b1b9d9db4a95ad351f120ec6e637a8531ce96098bc4a9c63e3e",
-      "reproduction_tools/jev_fastcheck_contracts.py": "5802b4eb826a01b795773aed4a0cbb264c31d75429bc24e1f45d923aaee450a6",
+      "reproduction_tools/jev_fastcheck_contracts.py": "207648731ccf4b75197ab918f4419f54cb11697da076c55f6cda9abb8037551c",
       "reproduction_tools/jev_fastcheck_direct_train.py": "47d1ed1d816090fa473e54cd4427c52e5c44be60b40c0124ab154570188740eb",
       "reproduction_tools/jev_fastcheck_distribution.py": "489e0537c9c6c092cafae9c27ee615cd59cad92bbdf564ee2cbc031498b1cbc5",
       "reproduction_tools/jev_fastcheck_duration.py": "e5473ffa01adb0422495fd61c9a11a7aa182123e874294761811cf377bbcb69f",
-      "reproduction_tools/jev_fastcheck_finalize.py": "02e2c301ef547dc9c605bbe1038e2dc629ec2609916790e7e9327bcf301ae318",
+      "reproduction_tools/jev_fastcheck_finalize.py": "feed442d3c7c3767cf0158ac229841f2ad56571043ee2f2980f67e7e635572b3",
       "reproduction_tools/jev_fastcheck_global_duration.py": "3377262711f7e806c1d46facbb0a19d67f86b433cf3a3f8e8f11e26637414880",
       "reproduction_tools/jev_fastcheck_job.py": "b1757d794172136bf96829c2784347f6c94e6524b9d5792da53f7bc05bc682fc",
       "reproduction_tools/jev_fastcheck_label_alias_audit.py": "0e64c070c0b4efd8e25b34c1319b7c7cddac9451260ec9b869652b0bd6c6f0ea",
@@ -1489,7 +1534,8 @@
       "reproduction_tools/jev_fastcheck_report.py": "3f8804e859f042ea38713f18c39ba6b70591fe384855c9bc7141e3e1520e06b1",
       "reproduction_tools/jev_fastcheck_rollout.py": "d1cb9a6324eea630aa5586539103b9fc1c1a6bc044af33cbaee1686e9d1ee696",
       "reproduction_tools/jev_fastcheck_sample_audit.py": "26834cc9ca5f7c624b5f0d3aee24eddf535de6710e50538cd2f69682ecf3c290",
-      "reproduction_tools/jev_fastcheck_train.py": "d55f89aaa0cbacf7e21c562ce9115da2f763547492ee67b168dd9081556d512c"
+      "reproduction_tools/jev_fastcheck_train.py": "d55f89aaa0cbacf7e21c562ce9115da2f763547492ee67b168dd9081556d512c",
+      "reproduction_tools/jev_fastcheck_verify.py": "102f9991dbbeade47b146ac50c8b98b1d9db4c63c938b5fca6a1153c1721225a"
     }
   },
   "status": "NATIVE_SCIENTIFIC_REVIEW_COMPLETE_LIVE_TIMING_IN_PROGRESS",
