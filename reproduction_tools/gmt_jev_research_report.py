@@ -48,7 +48,7 @@ def main():
    if stock_temporal.exists():
     r['secondary_stock_identity']=read(stock_temporal)['methods'][kind]
     r['secondary_stock_metric_gates']['long_identity_duration']=r['secondary_stock_identity']['retrospective_duration_ratio_to_original']<=1.05
-    r['secondary_stock_metric_gates']['past_anchor_post_hoc_duration_ratio']=r['secondary_stock_identity']['past_anchor_duration_ratio_to_original']
+    r['secondary_stock_post_hoc_past_anchor_duration_ratio']=r['secondary_stock_identity']['past_anchor_duration_ratio_to_original']
   text=(DOCS/'ONLINE_RESULTS.md').read_text().split('\n## 同约定 stock 对照')[0]
   text=text.replace('原生 min_track_len=50 与 stock 后处理的结果保存在每条 ONLINE_*.json 的 secondary_stock；原始 GMT 的同约定基线尚待计时任务保留的输出评测，当前不计算 stock 差值、不混用 raw 基线。','原生 min_track_len=50 与 stock 后处理的匹配基线和对照另列于下表；不与 raw 混用，预注册主要协议仍为 raw。')
   table=['','## 同约定 stock 对照','','| 方法 | HOTA | ΔHOTA | AssA | CVIDF1 | IDSW | Frag |','|---|---:|---:|---:|---:|---:|---:|']
@@ -161,6 +161,7 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
  if stock is not None:
   note='\n同约定原生最终输出：GMT HOTA68.389411、IDSW542、Frag586；Threshold HOTA68.541303、IDSW629、Frag582；Rule HOTA68.966066（+0.576655）、AssA69.235313、CVIDF188.912758、IDSW411（−24.17%）、Frag608（+3.75%）；Confidence HOTA68.642726、IDSW637、Frag568。Rule 次要指标出现正向，Threshold/Confidence 次要 IDSW 失败。stock 与 raw 均在结果前预注册，不能按结果换主要协议；stock 长期身份错误与效率待验证。\n'
   report=report.replace('## 6. 普通方法是否足以解释收益',note+'\n## 6. 普通方法是否足以解释收益')
+  report=report.replace('stock 长期身份错误与效率待验证。','stock 长期身份诊断已补齐，效率仍待验证。')
  if stock_temporal.exists():
   note='\n原生 stock 持续量实测：回顾性 GMT4390、Rule3457（0.7875倍）；历史锚 GMT4046、Rule3768（0.9313倍）。主要 raw 结果仍保留，且全视频长度过滤使最终输出不构成在线因果证明。详细未知覆盖及删失语义见 STOCK_IDENTITY_TEMPORAL_AUDIT_ZH.md。可选归一化缓存保持当前所有控制器默认关闭，待全视频逐项等价审计后另测相同 Rule 的开销，不改变分数公式、权重或求解器。\n'
   report=report.replace('## 6. 普通方法是否足以解释收益',note+'\n## 6. 普通方法是否足以解释收益')

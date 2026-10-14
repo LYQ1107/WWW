@@ -11,7 +11,7 @@ def main():
  result.update(status='COMPLETE_NATIVE_STOCK_ORIGINAL_GMT',predictions=p,
   convention='UNCHANGED_NATIVE_MIN_TRACK_LEN_50_AND_POSTPROCESS',
   identity=duration(pred),source=binding(),independent_validation=False,
-  full_image_FPS=speed['mean_full_scene_FPS'],primary_evaluation=False)
+  full_image_FPS=2*speed['mean_full_scene_FPS'],full_scene_FPS=speed['mean_full_scene_FPS'],primary_evaluation=False)
  save(REPORTS/'ORIGINAL_GMT_STOCK_METRICS.json',result)
  print('GMT_STOCK_BASELINE',result['metrics'],result['CVIDF1'],flush=True)
 
