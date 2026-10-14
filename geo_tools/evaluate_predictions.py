@@ -9,13 +9,13 @@ def read_rows(path):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--prediction',type=Path,required=True);p.add_argument('--video-id',type=int,required=True);p.add_argument('--allow-duplicate-gt',action='store_true');args=p.parse_args()
-    report_path=args.prediction.with_suffix('.metrics.json')
+    report_path=args.prediction.with_suffix('.raw_diagnostic.metrics.json' if args.allow_duplicate_gt else '.metrics.json')
     if report_path.exists():raise FileExistsError(report_path)
     data=train_data(); records=video_records(data,args.video_id); index={x['image_id']:x for x in records}
     pred=json.loads(args.prediction.read_text()); by_view=collections.defaultdict(list)
     for row in pred:
         image=index[row['image_id']]; by_view[image['view_id']].append([image['frame_id'],row['track_id'],*row['bbox'],row['score'],-1,-1,-1])
-    work=args.prediction.with_suffix('.eval'); work.mkdir(); scene=next(v['file_name'] for v in data['videos'] if v['id']==args.video_id)
+    work=args.prediction.with_suffix('.eval_raw_diagnostic' if args.allow_duplicate_gt else '.eval'); work.mkdir(); scene=next(v['file_name'] for v in data['videos'] if v['id']==args.video_id)
     sources={}; trackers={}; lengths={}; duplicates={}
     for view in sorted({x['view_id'] for x in records}):
         name=f'{scene}_View{view}'; path=DATA/'train'/name/'gt/gt.txt'; gt=read_rows(path)

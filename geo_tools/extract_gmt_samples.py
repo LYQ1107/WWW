@@ -15,7 +15,7 @@ def match_gt(boxes, anns):
     return labels
 
 def main():
-    parser=argparse.ArgumentParser();parser.add_argument('--pairs-per-scene',type=int,default=10);parser.add_argument('--tag',default='screen_v1');args=parser.parse_args()
+    parser=argparse.ArgumentParser();parser.add_argument('--pairs-per-scene',type=int,default=10);parser.add_argument('--tag',default='screen_v1');parser.add_argument('--split',choices=['dev','train'],default='dev');args=parser.parse_args()
     out=RUNTIME/'samples'/args.tag
     if out.exists():raise FileExistsError(out)
     out.mkdir(parents=True)
@@ -23,7 +23,10 @@ def main():
     for a in data['annotations']:anns[a['image_id']].append(a)
     split=json.loads((ROOT/'manifests/geo_split_v1.json').read_text()); samples=[]; source=provenance()
     from gtr.modeling.meta_arch.custom_rcnn import CustomRCNN
-    for vid in split['minimal_development_video_ids']:
+    source['split']=args.split
+    source['split_manifest_sha256']=sha256(ROOT/'manifests/geo_split_v1.json')
+    video_ids=split['minimal_development_video_ids'] if args.split=='dev' else [5,8,12]
+    for vid in video_ids:
         records=video_records(data,vid); frames=sorted({x['frame_id'] for x in records})
         chosen=np.linspace(0,len(frames)-1,args.pairs_per_scene,dtype=int)
         for frame in [frames[k] for k in chosen]:

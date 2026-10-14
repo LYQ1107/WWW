@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "seed": 20261014,
   "source": "original TRAIN only",
   "unit": "complete scene family",
@@ -33,10 +33,32 @@
   ],
   "minimal_development_video_ids": [
     1,
-    14,
-    22
+    10,
+    18
   ],
   "backbone_exposure": "GMT checkpoint trained on original TRAIN; development is NOT backbone-unseen",
   "historical_test_exposure": true,
-  "official_test_used_for_this_project": false
+  "official_test_used_for_this_project": false,
+  "diagnostic_initial_minimal_video_ids": [
+    1,
+    14,
+    22
+  ],
+  "strict_development_video_ids": [
+    1,
+    10,
+    11,
+    18,
+    19
+  ],
+  "raw_gt_diagnostic_development_video_ids": [
+    2,
+    3,
+    14,
+    15,
+    16,
+    22,
+    23
+  ],
+  "strict_subset_reason": "GT identity uniqueness only, declared before VGGT feature results or model selection; no frame removed within any evaluated video"
 }
