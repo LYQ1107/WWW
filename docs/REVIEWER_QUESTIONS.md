@@ -36,7 +36,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q9: 身份触发优于固定周期吗？
 
-未证明。同步联合策略和可选独立进程异步worker已经实际接入因果GMT，具有前缀、真实调用和完成时间验证。scene18固定20与联合策略各80次实际VGGT调用，均与因果B0预测完全一致，联合策略单次实测更慢。随机、运动/身份单一触发、多间隔和重复验证矩阵仍在完成。证据：causal_fixed_joint_total80_full_v18_v1.json。
+未证明。完整strict5固定/联合各400次真实VGGT调用：固定仅+.001627 CVIDF1个百分点、IDSW不变，联合与baseline一致；未建立稳定方法收益或联合优越性。固定k20无总量上限调用720次，指标与400次上限相同，没有额外身份收益。运动/身份单一触发、dense间隔和重复矩阵仍在完成。证据：causal_B8_B9_complete_budget_runtime_audit_v1.json、causal_k20_uncapped_vs_cap80_budget_runtime_v1.json。 新增有界目标特征复用的VGGT/DINO/GMT完整scene1对照均与baseline逐条一致，未保留dense收益；三个骨干相同40个观测更新时间，但实际VGGT80/DINO40/GMT0次编码，不能称同等计算。
 
 ## Q10: 相较 StreamVGGT/FastVGGT 的价值？
 
@@ -44,11 +44,11 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q11: 完整 FPS/延迟/显存/参数量？
 
-因果B0 scene18完整实测6.64图像/s；优化异步相机路径5.40图像/s且预测完全相同，0有效几何；固定/联合80次调用为4.95/4.26图像/s。实际硬件为V100，不能称A100结果。静态GMT模型初始化排除，新增模型冷启动及worker启动/关闭算入总成本。三个匹配容量头均约31万参数。详见runtime_results.csv和学习头manifest；不以一次计时宣称稳定加速。
+因果B0 scene18完整实测6.64图像/s；优化异步相机路径5.40图像/s且预测完全相同，0有效几何。实际硬件为V100，不能称A100结果。静态GMT模型初始化排除，新增模型冷启动及worker启动/关闭算入总成本。实际CPU结构/411键严格加载核对GMT注册参数53,515,309，三个匹配头309,319/309,849/310,402。resource_ledger_v1分别记录CUDA allocator、主存RSS、最终原GMT历史和缓存/索引载荷；未测字段为null，不相加非同时峰值。原GMT历史仍不受索引容量上限限制。不以一次计时宣称稳定加速。
 
 ## Q12: 提升是否来自不同检测/配置/评测 bug？
 
-完整因果scene1每帧B7出现初步身份收益：CVIDF1 +0.8070个百分点、AssA +1.3140、IDSW -64；逐项检测完全一致。完整strict5及VGGT/DINO/GMT头和几何独立作用尚待确认，不能外推为稳定VGGT或三模块贡献。 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA=81.0547、CVIDF1=95.6317，不能拿离线数值替代因果对照。已有OFF/零系数前缀、真实计算中性与完整采样预测一致性；所有钩子后完整OFF/零系数仍在队列中。 官方单图推理相机MLP输入两路均为0的源码问题已确认；实际scene1正确相机索引对照与原baseline逐条预测完全一致、所有指标差值为0。因此该修正未解释scene1收益，其他完整strict场景仍须验证。锁定生产基线保留，源码问题与准确率影响分别报告。
+完整因果scene1每帧B7出现初步身份收益：CVIDF1 +0.8070个百分点、AssA +1.3140、IDSW -64；逐项检测完全一致。完整strict5及VGGT/DINO/GMT头和几何独立作用尚待确认，不能外推为稳定VGGT或三模块贡献。 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA=81.0547、CVIDF1=95.6317，不能拿离线数值替代因果对照。原矩阵c214源码完整五场景OFF逐条预测等价通过；缓存/诊断后的当前源码完整OFF/零系数回归已排队，按实际版本分别报告。 官方单图推理相机MLP输入两路均为0的源码问题已确认；实际scene1正确相机索引对照与原baseline逐条预测完全一致、所有指标差值为0。因此该修正未解释scene1收益，其他完整strict场景仍须验证。锁定生产基线保留，源码问题与准确率影响分别报告。
 
 ## Q13: 三个模块能否分别证明有效？
 

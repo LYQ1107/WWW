@@ -22,6 +22,10 @@ def main():
         delta=signal['rows'][0]['metric_delta']
         signal_text=f"完整因果scene1每帧B7出现初步身份收益：CVIDF1 {delta['CVIDF1']:+.4f}个百分点、AssA {delta['AssA']:+.4f}、IDSW {delta['IDSW']:+d}；逐项检测完全一致。完整strict5及VGGT/DINO/GMT头和几何独立作用尚待确认，不能外推为稳定VGGT或三模块贡献。"
     camera_probe=ROOT/'results/inference_camera_encoding_source_probe_v1.json'
+    cached_note=''
+    cached_path=ROOT/'results/target_cache_three_backbone_scene1_controls_v1.json'
+    if cached_path.exists() and json.loads(cached_path.read_text())['all_exact_baseline_predictions']:
+        cached_note=' 新增有界目标特征复用的VGGT/DINO/GMT完整scene1对照均与baseline逐条一致，未保留dense收益；三个骨干相同40个观测更新时间，但实际VGGT80/DINO40/GMT0次编码，不能称同等计算。'
     camera_note=''
     if camera_probe.exists():
         probe=json.loads(camera_probe.read_text())
@@ -41,10 +45,10 @@ def main():
     ('与已有 VGGT+ReID+3D tracking 的差别？','待证明的区别是动态几何有效性、身份表示互补和因果计算分配。已有校准自由室内方法使用VGGT/OsNet/姿态提升和聚类，简单几何+ReID已是先例。三个新增假设尚未取得完整证据。'),
     ('运动无人机如何保证几何一致性？','不比较不同调用的3D坐标。当前用单次联合调用相对相机关系，独立背景检查，失败即中性。合成相机投影和传播方向测试通过；此前稀疏完整对照均未通过门槛，每帧scene1有3次通过独立背景门槛，但没有GT位姿准确性或独立跟踪收益证明。'),
     ('少重叠视野是否有效？','没有此类有效性声明。无纹理、无足够可靠匹配、低覆盖、非有限或过期状态均为中性。ORB/SIFT和平面分支给出了实际低有效率，不强行拒绝身份候选。'),
-    ('身份触发优于固定周期吗？','未证明。同步联合策略和可选独立进程异步worker已经实际接入因果GMT，具有前缀、真实调用和完成时间验证。scene18固定20与联合策略各80次实际VGGT调用，均与因果B0预测完全一致，联合策略单次实测更慢。随机、运动/身份单一触发、多间隔和重复验证矩阵仍在完成。证据：causal_fixed_joint_total80_full_v18_v1.json。'),
+    ('身份触发优于固定周期吗？','未证明。完整strict5固定/联合各400次真实VGGT调用：固定仅+.001627 CVIDF1个百分点、IDSW不变，联合与baseline一致；未建立稳定方法收益或联合优越性。固定k20无总量上限调用720次，指标与400次上限相同，没有额外身份收益。运动/身份单一触发、dense间隔和重复矩阵仍在完成。证据：causal_B8_B9_complete_budget_runtime_audit_v1.json、causal_k20_uncapped_vs_cap80_budget_runtime_v1.json。'+cached_note),
     ('相较 StreamVGGT/FastVGGT 的价值？','不能直接移用长序列加速倍率或流式权重。源码接口和许可证已审计；短双视角速度实测、公平预算对照和真实流式集成仍待完成。'),
-    ('完整 FPS/延迟/显存/参数量？','因果B0 scene18完整实测6.64图像/s；优化异步相机路径5.40图像/s且预测完全相同，0有效几何；固定/联合80次调用为4.95/4.26图像/s。实际硬件为V100，不能称A100结果。静态GMT模型初始化排除，新增模型冷启动及worker启动/关闭算入总成本。三个匹配容量头均约31万参数。详见runtime_results.csv和学习头manifest；不以一次计时宣称稳定加速。'),
-    ('提升是否来自不同检测/配置/评测 bug？',signal_text+f' 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA={suite["metrics"]["HOTA"]:.4f}、CVIDF1={suite["metrics"]["CVIDF1"]:.4f}，不能拿离线数值替代因果对照。已有OFF/零系数前缀、真实计算中性与完整采样预测一致性；所有钩子后完整OFF/零系数仍在队列中。'+camera_note),
+    ('完整 FPS/延迟/显存/参数量？','因果B0 scene18完整实测6.64图像/s；优化异步相机路径5.40图像/s且预测完全相同，0有效几何。实际硬件为V100，不能称A100结果。静态GMT模型初始化排除，新增模型冷启动及worker启动/关闭算入总成本。实际CPU结构/411键严格加载核对GMT注册参数53,515,309，三个匹配头309,319/309,849/310,402。resource_ledger_v1分别记录CUDA allocator、主存RSS、最终原GMT历史和缓存/索引载荷；未测字段为null，不相加非同时峰值。原GMT历史仍不受索引容量上限限制。不以一次计时宣称稳定加速。'),
+    ('提升是否来自不同检测/配置/评测 bug？',signal_text+f' 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA={suite["metrics"]["HOTA"]:.4f}、CVIDF1={suite["metrics"]["CVIDF1"]:.4f}，不能拿离线数值替代因果对照。原矩阵c214源码完整五场景OFF逐条预测等价通过；缓存/诊断后的当前源码完整OFF/零系数回归已排队，按实际版本分别报告。'+camera_note),
     ('三个模块能否分别证明有效？','尚未证明。'+signal_text+' 当前SCIENTIFIC_SUCCESS/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。'),
     ('为什么符合 WWW？','仍有实质适配风险。官方CFP要求明确Web科学问题，仅用数据集或API不充分。'+retrieval_evidence+' 本地数据集回放不等于互联网来源、真实用户查询或Web部署；见WWW_SCOPE_NOTE.md。'),
     ('在线视频关联检索的真实贡献？',retrieval_evidence+' 条件Recall@K、完整MRR、检测覆盖、可检索比例、全部请求成功率和本地查询延迟分别报告。完整读帧/检测/GTA/新增特征/索引/查询成本另计；流数量与关键帧预算对照及实质Web系统贡献仍需完成。')]

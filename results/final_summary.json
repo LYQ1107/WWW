@@ -894,6 +894,42 @@
       "sha256": "cb9906ac1d5a84262bd67ee5e370b1b2bc9b191bfd9cd08b78f6923a93c0460c"
     },
     {
+      "method": "cache_dino_fixed20_total40_scene1_full_v1",
+      "video_id": 1,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 86.55351457210155,
+      "DetA": 87.93225734540148,
+      "AssA": 85.2196946037858,
+      "IDF1": 94.66487334678322,
+      "MOTA": 89.67007963594995,
+      "IDSW": 278,
+      "CVIDF1": 94.66487334678322,
+      "CVMA_sequential": 89.67007963594995,
+      "CVMA": 89.3287827076223,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/cache_dino_fixed20_total40_scene1_full_v1/predictions.metrics.json",
+      "sha256": "77a6477b8ad21d0eb582169003f0dd4734350b51d016c58e03ac39f030b0b233"
+    },
+    {
+      "method": "cache_gmt_fixed20_scene1_full_v1",
+      "video_id": 1,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 86.55351457210155,
+      "DetA": 87.93225734540148,
+      "AssA": 85.2196946037858,
+      "IDF1": 94.66487334678322,
+      "MOTA": 89.67007963594995,
+      "IDSW": 278,
+      "CVIDF1": 94.66487334678322,
+      "CVMA_sequential": 89.67007963594995,
+      "CVMA": 89.3287827076223,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/cache_gmt_fixed20_scene1_full_v1/predictions.metrics.json",
+      "sha256": "77a6477b8ad21d0eb582169003f0dd4734350b51d016c58e03ac39f030b0b233"
+    },
+    {
       "method": "cache_vggt_fixed20_total80_scene1_full_v1",
       "video_id": 1,
       "full_video": true,
@@ -2394,6 +2430,31 @@
       "missing": "null means not measured; never substitute zero; do not add noncoincident peaks"
     }
   },
+  "cached_three_backbone_controls": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/target_cache_three_backbone_scene1_controls_v1.json",
+    "sha256": "14135d718ae422a8c9bbe3761d1ff8996dfff85e7b9fbd97eaa045ba809fb93d",
+    "status": "COMPLETE_SCENE1_CONTROL_NOT_FULL_DEV",
+    "all_exact_baseline_predictions": true,
+    "same_selected_observation_groups": true,
+    "scope": "three complete causal scene1 feature-only bounded-reuse controls, fixed TRAIN seed14 and same40 observed update groups; actual encoder costs are VGGT80 / DINO40 / GMT0, not equal compute",
+    "timing_scope": "single descriptive full-pipeline V100 runs, static GMT initialization excluded, cold extra encoder load charged; no repeated timing superiority claim"
+  },
+  "recorded_suite_settings": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/suite_settings_audit_v1.json",
+    "sha256": "3077e10ad75582a8eda843693d7c9983aa52c2d8df70b2a036503fded0d5e0b9",
+    "status": "IN_PROGRESS_SETTINGS_AUDIT",
+    "inconsistent_suites": 0,
+    "unverified_default_suites": 0,
+    "scope": "complete native strict5 artifacts currently copied into results; exact recorded model/config/head/protocol and active geometry/scheduler settings; inactive geometry options are ignored; historical GEO defaults read from each source commit and checked against recorded source hash when active",
+    "limitations": "Config YAML/default/options consistency is not detection-output equivalence, runtime repeatability or scientific success. Foundation/calibration files without original per-run load hashes can only be checked as current artifacts; no retroactive loaded-weight hash claim. Earlier active runs without a matching recorded config source hash remain explicitly unverified."
+  },
+  "original_matrix_complete_off": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/OFF_c214_full_strict_prediction_parity_v1.json",
+    "sha256": "6ec4ef4360f5fb26ebc42b7be74af80762abfee2fe5c682235e6792126a1093e",
+    "status": "PASS",
+    "full_strict_suite": true,
+    "scope": "exact serialized detector boxes, scores, categories, image IDs, track IDs and output row order on every complete strict development scene; internal candidate order has separate implementation tests; no renaming or mean-metric substitute"
+  },
   "retrieval_experiments": [
     {
       "method": "retrieval_gmt_10streams_full_v1",
@@ -2761,5 +2822,5 @@
     }
   ],
   "retrieval_full_video_evaluation": true,
-  "source_commit": "d4cf1915c141f62b2f8a0326c0ef189a03b1c4e7"
+  "source_commit": "a9f7d1ec0ee5a9e64361126ef473aae9c055a3bf"
 }
