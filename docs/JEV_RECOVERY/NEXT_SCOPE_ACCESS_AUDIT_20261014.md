@@ -2,7 +2,7 @@
 
 This is a read-only A-stage audit. No candidate dataset image, label, video, model, or native branch was read or downloaded.
 
-- Status: `NO_SOURCE_PATH_ESTABLISHED_A_STAGE_NOT_EXECUTED`
+- Status: `NO_AUTHORIZED_SOURCE_PATH_A_STAGE_COMPLETE_B_NOT_AUTHORIZED`
 - Candidate local directories matching MMPTRACK/SCOUT/WILDTRACK: `7`
 - Candidate local copy detected: `true`; authorization: `UNRESOLVED`
 - Authorized dataset path established: `false`

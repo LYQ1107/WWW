@@ -102,7 +102,7 @@ def main() -> None:
     # actual candidate directories/files and leave unrelated names auditable.
     candidate_matches = [m for m in matches if m.get("is_dir")]
     result: Dict[str, Any] = {
-        "status": "NO_SOURCE_PATH_ESTABLISHED_A_STAGE_NOT_EXECUTED",
+        "status": "NO_AUTHORIZED_SOURCE_PATH_A_STAGE_COMPLETE_B_NOT_AUTHORIZED",
         "captured_UTC": datetime.now(timezone.utc).isoformat(),
         "scope": "Phase XX A-stage local-path and official-documentation audit only",
         "downloads": {"images": False, "labels": False, "videos": False, "models": False},
@@ -132,7 +132,7 @@ def main() -> None:
             "phase20_next_required": final_json.get("next_required"),
         },
         "gate": {
-            "A_stage": "NOT_EXECUTED_UNTIL_AUTHORIZED_SOURCE_PATH_EXISTS",
+            "A_stage": "COMPLETE_LOCAL_PATH_SCAN_AUTHORIZATION_UNRESOLVED",
             "B_stage": "NOT_AUTHORIZED",
             "independent_training": "NOT_AUTHORIZED",
             "official_TEST": False,
