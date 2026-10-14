@@ -39,7 +39,7 @@ def job(name,script,gpu=None,args=()):
 def main():
  await_original()
  job('P5_original_stock_metrics','gmt_jev_stock_baseline.py')
- for kind in ['threshold','rule','confidence','mlp_zero','cic_zero']:
+ for kind in ['threshold','rule','confidence','mlp_zero','attention_zero','cic_zero']:
   job('P5_'+kind+'_full_image_GPU7','gmt_jev_speed.py',7,['--kind',kind,'--gpu','7'])
  progress(status='COMPLETE_FINITE_SPEED_QUEUE',next='CONSOLIDATE_ACTUAL_METRICS_AND_PUBLISH')
 
