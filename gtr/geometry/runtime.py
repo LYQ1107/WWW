@@ -12,8 +12,10 @@ class GeometryRuntime:
         self.cfg=cfg;self.vggt=None;self.geometry={};self.calls=0;self.vggt_calls=0;self.dinov2_calls=0;self.geometry_valid_calls=0;self.geometry_invalid_calls=0;self.failed=0;self.seconds=0.;self.calibration=None
         self.score=PairScoreAdapter(cfg.ENABLED,cfg.FEATURE_WEIGHT if cfg.FEATURE_ENABLED else 0.,cfg.GEOMETRY_WEIGHT if cfg.GEOMETRY_ENABLED else 0.,cfg.MAX_RESIDUAL)
         self.active=cfg.ENABLED and (self.score.feature_weight!=0 or self.score.geometry_weight!=0)
-        if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD not in {'orb','sift','orb_homography','sift_homography'}:
-            raise ValueError('unsupported online geometry method; VGGT camera geometry currently has separate validity diagnostics')
+        if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD not in {'orb','sift','orb_homography','sift_homography','vggt_camera'}:
+            raise ValueError('unsupported online geometry method')
+        if self.active and self.score.geometry_weight and cfg.GEOMETRY_METHOD=='vggt_camera' and cfg.FEATURE_BACKBONE!='vggt':
+            raise ValueError('VGGT camera geometry requires the VGGT encoder')
         if self.active and (cfg.ASYNC_WORKER or cfg.SPARSE_UPDATE_ENABLED):
             raise NotImplementedError('adaptive/async policy integration is pending; current runtime supports synchronous fixed intervals')
         if self.active and self.score.feature_weight:
@@ -63,6 +65,7 @@ class GeometryRuntime:
         self.geometry={t:x for t,x in self.geometry.items() if frame-t<=self.cfg.MAX_GEOMETRY_AGE}
         if frame%self.cfg.UPDATE_INTERVAL:return
         start=time.perf_counter()
+        camera_meta=None
         try:
             if self.score.feature_weight:
                 if self.cfg.FEATURE_BACKBONE=='gmt':
@@ -82,7 +85,11 @@ class GeometryRuntime:
                     from vggt.utils.load_fn import load_and_preprocess_images
                     images=load_and_preprocess_images([r['file_name'] for r in records],mode='pad')
                     mapped=[PadMapping(r['width'],r['height']).boxes(b) for r,b in zip(records,original_boxes)]
-                    result,_,_=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=projection_dim)
+                    if self.cfg.FEATURE_BACKBONE=='vggt':
+                        use_camera=self.score.geometry_weight!=0 and self.cfg.GEOMETRY_METHOD=='vggt_camera'
+                        result,_,camera_meta=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=projection_dim,camera=use_camera)
+                    else:
+                        result,_,_=self.vggt.extract(images,mapped,modes=(self.cfg.POOLING,),dim=projection_dim)
                     if self.cfg.FEATURE_BACKBONE=='dinov2':self.dinov2_calls+=1
                     else:self.vggt_calls+=1
                     reverse=None
@@ -98,7 +105,26 @@ class GeometryRuntime:
             if self.score.geometry_weight and len(instances)==2:
                 # Fundamental is only used for same-time coordinates. No stale-position projection.
                 images=[cv2.imread(r['file_name'],cv2.IMREAD_GRAYSCALE) for r in records]
-                result=estimate_background(*images,*[b.cpu().numpy() for b in original_boxes],method=self.cfg.GEOMETRY_METHOD,mask_targets=True)
+                method='sift' if self.cfg.GEOMETRY_METHOD=='vggt_camera' else self.cfg.GEOMETRY_METHOD
+                result=estimate_background(*images,*[b.cpu().numpy() for b in original_boxes],method=method,mask_targets=True)
+                if self.cfg.GEOMETRY_METHOD=='vggt_camera':
+                    if camera_meta is None:
+                        if self.vggt is None:
+                            from .vggt_adapter import FrozenVGGT
+                            self.vggt=FrozenVGGT(self.cfg.VGGT_CHECKPOINT,device=str(instances[0].reid_features.device),layers=levels)
+                        from vggt.utils.load_fn import load_and_preprocess_images
+                        inputs=load_and_preprocess_images([r['file_name'] for r in records],mode='pad')
+                        mapped=[PadMapping(r['width'],r['height']).boxes(b) for r,b in zip(records,original_boxes)]
+                        for v,boxes in enumerate(mapped):
+                            for x1,y1,x2,y2 in boxes.round().int().tolist():
+                                inputs[v,:,max(0,y1):min(518,y2),max(0,x1):min(518,x2)]=1.
+                        _,_,camera_meta=self.vggt.extract(inputs,mapped,modes=(),camera=True)
+                        self.vggt_calls+=1
+                    from vggt.utils.pose_enc import pose_encoding_to_extri_intri
+                    from .camera_geometry import validate_camera_fundamental
+                    E,K=pose_encoding_to_extri_intri(camera_meta['pose'],(518,518))
+                    mappings=[PadMapping(r['width'],r['height']) for r in records]
+                    result=validate_camera_fundamental(E.numpy()[0],K.numpy()[0],mappings,result)
                 result['camera_order']=tuple(int(r.get('view_id',v+1)) for v,r in enumerate(records))
                 valid=result['H_valid'] if self.cfg.GEOMETRY_METHOD.endswith('_homography') else result['valid']
                 if valid:self.geometry_valid_calls+=1
