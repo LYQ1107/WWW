@@ -21,3 +21,5 @@ Budget: new12 GPU-wall-hours, total new retainedworktree+runtime<=512MiB, home r
 Evaluation conventions: primary unfiltered native online predictions expose all fragments and wrong births; stock GMT min_track_len50 plus unchanged native postprocessing is a matched secondary, reported separately for both methods. Neither convention may be selected by its metric sign. Raw and stock metrics are never mixed. Complete image FPS includes the stock final postprocessing. Source-state ORACLE diagnoses are labelled non-deployable and do not count as primary tracking results.
 
 Training coefficients if qualified: native-association CE on unique legal targets, preserve penalty1.0 on normalized residuals for certified already-correct GMT rows, residual penalty0.01 on all normalized residuals; AdamW1e-4/0.01,300 then1000 cumulative, fixed final checkpoint. Native assignment measurements and full closed-loop tracking decide the result, rather than pairwise accuracy.
+
+目标唯一性补充（P1结果前冻结）：其他ID即使尚未达到3次认证，只要已有当前人物的纯净支持且纯度>=80%，也作为可能别名导致UNKNOWN。不能把未认证短ID伪装成错误负例。Bank仅统计原生实际查询和接受的选项，不从陈旧的可能成员表虚构合法候选。

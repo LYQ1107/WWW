@@ -32,15 +32,18 @@ class OfflineCertificates:
   return g if g is not None and self.votes[int(t)][g]/self.total[int(t)]>=.8 else None
  def targets(self,labels,refs):
   compatible=collections.defaultdict(list)
-  for t in self.owner:
-   g=self.clean(t)
-   if g is not None:compatible[g].append(t)
+  for t,votes in self.votes.items():
+   # Even a younger pure ID can be an alias. It cannot become a false negative
+   # merely because its history has not reached the certification minimum.
+   for g,n in votes.items():
+    if n>0 and n/self.total[t]>=.8:compatible[g].append(t)
   targets=[];categories=[]
   for g in labels:
    ids=compatible.get(g,[]) if g is not None else []
    if g is None:category='UNKNOWN_CURRENT';target=-1
    elif len(ids)>1:category='UNKNOWN_ALIASED_NATIVE_IDS';target=-1
    elif not ids:category='NO_CERTIFIED_UNIQUE_ID';target=-1
+   elif self.clean(ids[0])!=g:category='UNKNOWN_SHORT_OR_UNCERTIFIED_HISTORY';target=-1
    elif ids[0] not in refs:category='UNIQUE_ID_NOT_ACTIVE';target=-1
    else:category='CERTIFIED_UNIQUE_ACTIVE';target=refs.index(ids[0])
    targets.append(target);categories.append(category)
@@ -57,8 +60,9 @@ def native_assignment(scores,lengths,threshold=.1):
 def collect(video,kind='observe',frames=256,records=True,report=True):
  from gtr.modeling.gmt_jev import IdentityCorrection
  values,total,images=metadata(video);frames=min(frames,total);seed();m,cfg,_=model();actor=IdentityCorrection(kind).cuda().eval();m.gmt_identity_correction=actor;seed()
- labeler=OfflineCertificates(video,images);samples=[];stats=collections.Counter();groups=set();pending={};boot=[False];last=[0.];begin=time.monotonic()
+ labeler=OfflineCertificates(video,images);samples=[];stats=collections.Counter();groups=set();pending={};boot=[False];last=[0.];begin=time.monotonic();boundary={}
  def before_native(**d):
+  boundary['id_count']=d['id_count']
   if d['first'] and not boot[0]:
    other=1-d['view'];inst=d['instances'][other]
    labeler.update(inst,0,other);actor.committed(inst,other,0);boot[0]=True
@@ -68,12 +72,28 @@ def collect(video,kind='observe',frames=256,records=True,report=True):
   for g in gt:
    if g is not None:stats['known_current_GT']+=1
   sample=dict(key=[video,f,v],features=packet['features'].detach().cpu().clone(),eligible=packet['eligible'].detach().cpu().clone(),raw_scores=packet['base_scores'].detach().cpu().clone(),lengths=packet['lengths'].detach().cpu().clone(),refs=refs,
-   targets=torch.tensor(y),categories=categories,GT_labels_OFFLINE_ONLY=gt,owners={t:labeler.clean(t) for t in refs},audit_block=(f//64)%5==4)
+   targets=torch.tensor(y),categories=categories,GT_labels_OFFLINE_ONLY=gt,owners={t:labeler.clean(t) for t in refs},id_count_before=boundary['id_count'],audit_block=(f//64)%5==4)
   pending[f,v]=sample
  actor.observer=observed;m.jev_native_prefix_observer=before_native
+ bank=m.run_memory_tracker
+ def bank_observed(instances,asso_output,pred_boxes,k,id_count_dict):
+  refs=torch.cat([i.track_ids for i in instances[:-1]]).unique().tolist()
+  stats['actual_Bank_queries']+=1;stats['actual_Bank_candidate_options']+=len(refs)
+  out=bank(instances,asso_output,pred_boxes,k,id_count_dict)
+  labels=labeler.labels(instances[k],m._jev_context['frame'],m._jev_context['view'])
+  for t,g in zip(out.tolist(),labels):
+   if t<0:continue
+   stats['Bank_accepted']+=1;owner=labeler.clean(t)
+   if g is None or owner is None:stats['Bank_UNKNOWN_restore']+=1
+   elif owner==g:stats['Bank_certified_person_correct_restore']+=1
+   else:stats['Bank_certified_wrong_person_restore']+=1
+  return out
+ m.run_memory_tracker=bank_observed
  def after(**d):
   f,v=d['frame'],d['view'];inst=d['instances'][-1];ids=inst.track_ids.tolist();assert len(ids)==len(set(ids))
   s=pending.pop((f,v));s['native_ids']=ids;s['baseline_accepted_cols']=native_assignment(s['raw_scores'],s['lengths'],m.overlap_thresh)
+  stats['native_births']+=sum(t>s['id_count_before'] for t in ids)
+  stats['native_Bank_restored_rows']+=sum(t<=s['id_count_before'] and t not in s['refs'] for t in ids)
   x=s['features'];eligible=s['eligible'];rule=s['raw_scores']+.05*eligible*(x[...,13]/.2).clamp(-1,1)*s['lengths'][None]
   alternative=native_assignment(rule,s['lengths'],m.overlap_thresh);s['GMT_current_correct']=torch.zeros(len(ids),dtype=torch.bool)
   for row,(t,target,g,alt) in enumerate(zip(ids,s['targets'].tolist(),s['GT_labels_OFFLINE_ONLY'],alternative)):
@@ -105,7 +125,8 @@ def collect(video,kind='observe',frames=256,records=True,report=True):
  with torch.no_grad():raw,_=run(m,values,total,frames-1)
  result=dict(status='COMPLETE',video=video,kind=kind,frames=frames,counts=dict(stats),local_error_groups=len(groups),
   residual_units='average GMT trajectory score; raw residual multiplied by original history support',
-  unique_target='first-past>=3 known observations and>=80% coverage; immutable first owner must remain>=80%pure; exactly one clean compatible ID across all native histories, present in active lawful candidates',
+  history_mixed_IDs=sum(len(v)>1 for v in labeler.votes.values()),
+  unique_target='first-past>=3 known observations and>=80% coverage; immutable first owner must remain>=80%pure; exactly one plausible >=80%pure compatible ID across all histories, including younger aliases, certified and present in active lawful candidates',
   no_multi_positive_alias_targets=True,GT_actor_input=False,actual_mutated_state=True,rule_diagnostic='same original-GMT state; accepted active changes only certified; rejected alternatives have UNKNOWN Bank outcome. Not full-loop rule benefit.',
   ORACLE='OFFLINE_SAME_STATE_UNIQUE_TARGET_ASSIGNMENT_BOUND_NOT_DEPLOYABLE_NOT_HOTA_BOUND',seconds=time.monotonic()-begin,source=binding())
  if report:save(REPORTS/f'OPPORTUNITY_{kind}_VIDEO{video:02d}.json',result)
