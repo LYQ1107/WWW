@@ -1,0 +1,96 @@
+{
+  "status": "PASS",
+  "scope": "12 synchronized groups, 43 requests, not full retrieval efficacy",
+  "runs": [
+    {
+      "run": "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_gmt_v18_prefix12_v1",
+      "manifest_sha256": "59f1e7391af19ebb676e1e533dc432b4fb1ff7b95ba671ddefbcb59fdd8ff638",
+      "metrics": {
+        "status": "PASS",
+        "run_manifest_sha256": "59f1e7391af19ebb676e1e533dc432b4fb1ff7b95ba671ddefbcb59fdd8ff638",
+        "raw_gt_sha256": {
+          "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00118park_View1/gt/gt.txt": "8a46927990c20cf7af608984844ad1b9a80f40231e161a4822f97466de8c0169",
+          "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00118park_View2/gt/gt.txt": "527e2f2e0d75940e2dad1da7d0ebe20e850600ea4908cf07aa59d2b7b48dc6e4"
+        },
+        "requests": 43,
+        "gt_matched_queries": 42,
+        "gallery_eligible_queries": 24,
+        "detector_query_precision": 0.9767441860465116,
+        "gt_query_detection_coverage": 1.0,
+        "gallery_eligibility_among_matched": 0.5714285714285714,
+        "recall_at_k": {
+          "1": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "mrr": 1.0,
+        "mrr_at_10": 1.0,
+        "success_at_k_all_requests": {
+          "1": 0.5581395348837209,
+          "5": 0.5581395348837209,
+          "10": 0.5581395348837209
+        },
+        "per_scene": {
+          "18": {
+            "requests": 43,
+            "matched": 42,
+            "eligible": 24,
+            "hits1": 24
+          }
+        },
+        "metric_protocol": "one-to-one detector/GT IoU>=0.5; identity=(scene,raw_GT_ID); clip positive requires strict GT majority across all its observations; Recall and full MRR conditional on GT-matched query with at least one positive other-camera clip; all candidate ranks retained",
+        "query_selection_uses_gt": false,
+        "ranking_uses_gt": false,
+        "future_gallery_allowed": false,
+        "limitations": "finite local dataset replay, not live Internet feeds; clip identity majority is an evaluation convention"
+      },
+      "exact_causal_baseline_prediction_prefix": true
+    },
+    {
+      "run": "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_vggt_v18_prefix12_v1",
+      "manifest_sha256": "be786d415276e3e3c78dae1396c4eb9afd430797006df7223d32f9904b0ab173",
+      "metrics": {
+        "status": "PASS",
+        "run_manifest_sha256": "be786d415276e3e3c78dae1396c4eb9afd430797006df7223d32f9904b0ab173",
+        "raw_gt_sha256": {
+          "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00118park_View1/gt/gt.txt": "8a46927990c20cf7af608984844ad1b9a80f40231e161a4822f97466de8c0169",
+          "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00118park_View2/gt/gt.txt": "527e2f2e0d75940e2dad1da7d0ebe20e850600ea4908cf07aa59d2b7b48dc6e4"
+        },
+        "requests": 43,
+        "gt_matched_queries": 42,
+        "gallery_eligible_queries": 24,
+        "detector_query_precision": 0.9767441860465116,
+        "gt_query_detection_coverage": 1.0,
+        "gallery_eligibility_among_matched": 0.5714285714285714,
+        "recall_at_k": {
+          "1": 1.0,
+          "5": 1.0,
+          "10": 1.0
+        },
+        "mrr": 1.0,
+        "mrr_at_10": 1.0,
+        "success_at_k_all_requests": {
+          "1": 0.5581395348837209,
+          "5": 0.5581395348837209,
+          "10": 0.5581395348837209
+        },
+        "per_scene": {
+          "18": {
+            "requests": 43,
+            "matched": 42,
+            "eligible": 24,
+            "hits1": 24
+          }
+        },
+        "metric_protocol": "one-to-one detector/GT IoU>=0.5; identity=(scene,raw_GT_ID); clip positive requires strict GT majority across all its observations; Recall and full MRR conditional on GT-matched query with at least one positive other-camera clip; all candidate ranks retained",
+        "query_selection_uses_gt": false,
+        "ranking_uses_gt": false,
+        "future_gallery_allowed": false,
+        "limitations": "finite local dataset replay, not live Internet feeds; clip identity majority is an evaluation convention"
+      },
+      "exact_causal_baseline_prediction_prefix": true
+    }
+  ],
+  "unit_test_log": "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/retrieval_unit_v2.log",
+  "unit_test_log_sha256": "eb70817cc439ba39a893c76765fa02f746b9b7f9445230e2dd090f210b092df8"
+}

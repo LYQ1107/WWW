@@ -56,6 +56,9 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | online_B0_full_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | online_B0_full_v19_source44_v1 | 19 | yes | 77.4614 | 81.0226 | 94.0520 | 94.0520 | 106 |
 | online_B0_full_v1_source44_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
+| online_B8_fixed20_total80_full_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| online_B9_joint_total80_full_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
+| online_async_camera_full_v18_optimized_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | online_async_camera_full_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | online_native_l17_joint_full_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | B0_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
@@ -66,6 +69,7 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | B2_native_row_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | B2_w05_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | B3_multilayer_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
+| B4_native_scalar_w2_k10_strict_v1_suite | ALL_STRICT | yes | 81.0495 | 81.8909 | 95.6282 | 95.6282 | 41 |
 | B5_lowrank_vggt_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0513 | 81.8930 | 95.6307 | 95.6307 | 41 |
 | B6_vggt_camera_strict_suite_v1 | ALL_STRICT | yes | 81.0547 | 81.8957 | 95.6317 | 95.6317 | 41 |
 | C_gmt_reid_strict_suite_v1 | ALL_STRICT | yes | 80.9947 | 81.7598 | 95.4944 | 95.4944 | 43 |
@@ -73,6 +77,15 @@ Tables below are read from actual evaluation files. Raw-GT diagnostic rows canno
 | C_lowrank_gmt_seed14_k10_strict_v1_suite | ALL_STRICT | yes | 81.0566 | 81.8977 | 95.6341 | 95.6341 | 41 |
 | causal_B0_strict_suite_v1 | ALL_STRICT | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
 
-Required remaining work: dense-update residual paired full-video tests and counterfactual activity diagnosis; geometry failure recovery; actual adaptive/async causal integration with separate baseline; matched-call-budget scheduler experiments; repeated stability checks and WWW retrieval evidence. Completed sparse feature tests, source/pose diagnostics and causal OFF results are evidence with limited scope, not completion of the requested experiment matrix.
+Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):
+
+| Method | Cameras | Full video | Queries | Eligible | Recall@1 | MRR | Query P95 (ms) | Complete images/s |
+|---|---:|---|---:|---:|---:|---:|---:|---:|
+| retrieval_gmt_v18_prefix12_v1 | 2 | False | 43 | 24 | 1.0 | 1.0 | 0.3662 | 4.9767 |
+| retrieval_vggt_v18_prefix12_v1 | 2 | False | 43 | 24 | 1.0 | 1.0 | 0.3884 | 0.8728 |
+
+Retrieval latency is local scoring and serialization, not Internet transport latency. Full pipeline throughput charges image reads, frozen detection/GTA, feature extraction, publication, queries and query-log I/O. Original GMT history is unchanged; the index payload cap does not imply bounded total system memory. Dataset replay and a functioning query interface do not establish WWW novelty or live Web application evidence.
+
+Required remaining work: finish the declared tracking/scheduler matrix and repeated stability checks; complete retrieval comparisons across stream counts/keyframe budgets; report geometry failure recovery and actual timing without unsupported efficacy or Pareto claims. Completed feature tests, source/pose diagnostics and causal results are evidence with limited scope, not completion of the requested experiment matrix.
 
 See results/experiment_manifest.json for exact commands, seeds, checkpoint SHA, environment, cache status and external artifact paths. See docs/GEO_STREAM_RESEARCH_LOG.md for commits and failed runs.

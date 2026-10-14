@@ -33,6 +33,7 @@ def main():
     from gtr.geometry.isolated_stream import IsolatedCausalStream
     from gtr.geometry.runtime import GeometryRuntime
     from gtr.geometry.retrieval_index import CausalClipIndex
+    from gtr.geometry.memory_audit import retained_payload_bytes
     from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
     cfg, model = load_gmt()
     seed_all(20261014)
@@ -130,7 +131,7 @@ def main():
     def percentiles(values):
         return dict(p50=float(np.percentile(values, 50)), p95=float(np.percentile(values, 95))) if values else None
     report = provenance()
-    report.update(video_ids=args.video_ids, camera_streams=2*len(args.video_ids), causal_online=True, full_video=args.max_frames is None,
+    report.update(video_ids=args.video_ids, camera_streams=2*len(args.video_ids), max_frames=args.max_frames, causal_online=True, full_video=args.max_frames is None,
                   setup_time_included=False, first_foundation_load_included=True, seconds=seconds, images=images, camera_image_fps=images/seconds,
                   synchronized_round_fps=len(round_latencies)/seconds, round_latency_seconds=percentiles(round_latencies), query_latency_seconds=percentiles(query_latencies),
                   requests=requests, augmented_queries=augmented_queries, published_targets=published, used_cache=False,
@@ -143,6 +144,8 @@ def main():
                   index=dict(clip_groups=index.clip_groups, ttl_groups=index.ttl_groups, feature_age=index.feature_age, max_payload_bytes=index.max_bytes,
                              peak_payload_bytes=index.peak_bytes, evictions=index.evictions, entries=len(index.entries)),
                   peak_host_rss_bytes=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss*1024,
+                  retained_tracker_payload_bytes={str(video):retained_payload_bytes([stream.tracker.instances, stream.tracker.reids, stream.state[:3]]) for video, stream in streams.items()},
+                  memory_scope='index cap bounds serialized metadata plus vector payload; original GMT history/memory remains unchanged and is audited separately; RSS and CUDA peaks include weights/allocator, not just cache',
                   peak_gpu_bytes=torch.cuda.max_memory_allocated(), peak_reserved_gpu_bytes=torch.cuda.max_memory_reserved(),
                   extractors={str(video): dict(updates=runtime.calls, vggt_calls=runtime.vggt_calls, dinov2_calls=runtime.dinov2_calls, failures=runtime.failed, seconds=runtime.seconds) for video, runtime in extractors.items()},
                   split_manifest_sha256=sha256(ROOT/'manifests/geo_split_v1.json'), artifacts={path.name:sha256(path) for path in sorted(out.iterdir()) if path.is_file()})

@@ -61,3 +61,5 @@ This file is generated from current artifacts; pending items are not claims of c
 ## Q15: 在线视频关联检索的真实贡献？
 
 目前仅有离线目标检索诊断，没有可声称的Web系统贡献。真实跨片段查询、Recall@K/MRR、查询延迟、流数量/预算曲线和在线可用性需要继续完成。
+
+Retrieval update for Q11/Q14/Q15: real GPU target-to-clip queries are implemented in `geo_tools/run_live_retrieval.py`, with a separate raw-GT evaluator. Short scene18 prefixes return 43 requests with 24 eligible queries; both native GMT and VGGT attain Recall@1/MRR1.0, so no VGGT retrieval benefit is established. Local query scoring/serialization latency is separated from complete read/detect/GTA/feature/index/query cost. Full retrieval comparisons and genuine Web application/source evidence remain necessary. Fixed20 and joint full causal scene18, each80 VGGT calls, exactly reproduce causal B0; joint superiority is unsupported.

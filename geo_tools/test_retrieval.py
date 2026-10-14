@@ -7,12 +7,21 @@ from common import ROOT
 from gtr.geometry.retrieval_index import CausalClipIndex
 from gtr.geometry.isolated_stream import IsolatedCausalStream
 from gtr.geometry.runtime import GeometryRuntime
+from gtr.geometry.memory_audit import retained_payload_bytes
 from detectron2.config import get_cfg
 from gtr.config import add_gtr_config
 from test_empty_tracking import model_stub, detections
 
 
 class Tests(unittest.TestCase):
+    def test_memory_audit_deduplicates_aliases_and_views(self):
+        tensor = torch.zeros(100, dtype=torch.float32)
+        array = np.zeros(100, dtype=np.float32)
+        result = retained_payload_bytes([tensor, tensor[:3], array, array[4:]])
+        self.assertEqual(result['cpu_tensor_bytes'], 400)
+        self.assertEqual(result['numpy_bytes'], 400)
+        self.assertEqual(result['total_bytes'], 800)
+
     def test_other_camera_scene_namespace_and_no_future_backfill(self):
         index = CausalClipIndex(clip_groups=3, ttl_groups=4)
         a = index.publish(1, 1, 1, 0, 1, 1, [0, 0, 10, 10], [1, 0])
