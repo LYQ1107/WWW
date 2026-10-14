@@ -151,6 +151,23 @@ def custom_instances_to_coco_json(instances, img_id):
     
     return results
 
+def align_visiontrack_inputs_to_outputs(dataset_name, inputs, outputs):
+    """GMT input is view-block, its postprocessed output is frame-major."""
+    if dataset_name not in {"VISION_train", "VISION_test"} or len(inputs) <= 1:
+        return inputs
+    if len(inputs) != len(outputs):
+        raise ValueError("VisionTrack input/output length mismatch")
+    views = int(inputs[0].get("view_num", 1))
+    if views <= 1:
+        return inputs
+    if any(int(x.get("view_num", views)) != views for x in inputs):
+        raise ValueError("inconsistent view count")
+    frames, remainder = divmod(len(inputs), views)
+    if remainder:
+        raise ValueError("incomplete synchronized group")
+    return [inputs[v * frames + f] for f in range(frames) for v in range(views)]
+
+
 class MOTEvaluator(COCOEvaluator):
     def __init__(self, dataset_name, cfg, distributed, output_dir=None, *, use_fast_impl=True):
         super().__init__(dataset_name, cfg, distributed, output_dir=output_dir, use_fast_impl=use_fast_impl)
@@ -161,6 +178,7 @@ class MOTEvaluator(COCOEvaluator):
         """
         custom_instances_to_coco_json
         """
+        inputs = align_visiontrack_inputs_to_outputs(self.dataset_name, inputs, outputs)
         for input, output in zip(inputs, outputs):
             prediction = {"image_id": input["image_id"]}
             if "instances" in output:
