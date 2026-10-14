@@ -9,7 +9,7 @@ class OfflineCertificates:
   for a in read(ANNOTATIONS)['annotations']:
    if a['image_id'] in ids and a.get('conf',1)>0 and a.get('category_id',1)==1:self.gt[a['image_id']].append(a)
   self.total=collections.Counter();self.votes=collections.defaultdict(collections.Counter);self.owner={}
- def labels(self,inst,frame,view):
+ def labels(self,inst,frame,view,min_iou=.5,unambiguous=False):
   from audit_jev_phase5_decisions import overlaps,xyxy
   image=self.images[frame,view];gt=self.gt[image['id']];duplicates={g for g,n in collections.Counter(a['instance_id'] for a in gt).items() if n>1}
   h,w=inst.image_size;boxes=inst.pred_boxes.tensor.detach().cpu().numpy().copy();boxes[:,[0,2]]*=image['width']/w;boxes[:,[1,3]]*=image['height']/h
@@ -18,7 +18,8 @@ class OfflineCertificates:
    iou=overlaps(boxes,np.array([xyxy(a['bbox']) for a in gt]));rr,cc=linear_sum_assignment(-((iou>=.5)*1000+iou))
    for r,c in zip(rr,cc):
     g=int(gt[c]['instance_id'])
-    if iou[r,c]>=.5 and g not in duplicates:labels[int(r)]=g
+    others=np.delete(iou[r],c)
+    if iou[r,c]>=min_iou and g not in duplicates and (not unambiguous or not len(others) or others.max()<.3):labels[int(r)]=g
   return labels
  def update(self,inst,frame,view):
   for t,g in zip(inst.track_ids.tolist(),self.labels(inst,frame,view)):
@@ -54,17 +55,19 @@ def native_assignment(scores,lengths,threshold=.1):
  if q and k:
   rr,cc=linear_sum_assignment(-scores.detach().cpu().numpy())
   for r,c in zip(rr,cc):
-   if scores[r,c]>threshold*lengths[c]:out[int(r)]=int(c)
+   acceptance=scores.new_tensor(float(threshold)*float(lengths[c]))
+   if scores[r,c]>acceptance:out[int(r)]=int(c)
  return out
 
 def collect(video,kind='observe',frames=256,records=True,report=True):
  from gtr.modeling.gmt_jev import IdentityCorrection
  values,total,images=metadata(video);frames=min(frames,total);seed();m,cfg,_=model();actor=IdentityCorrection(kind).cuda().eval();m.gmt_identity_correction=actor;seed()
- labeler=OfflineCertificates(video,images);samples=[];stats=collections.Counter();groups=set();pending={};boot=[False];last=[0.];begin=time.monotonic();boundary={}
+ labeler=OfflineCertificates(video,images);samples=[];stats=collections.Counter();groups=set();pending={};boot=[False];last=[0.];begin=time.monotonic();boundary={};init_map={}
  def before_native(**d):
   boundary['id_count']=d['id_count']
   if d['first'] and not boot[0]:
    other=1-d['view'];inst=d['instances'][other]
+   init_map.update({t:g for t,g in zip(inst.track_ids.tolist(),labeler.labels(inst,0,other,.8,True)) if g is not None})
    labeler.update(inst,0,other);actor.committed(inst,other,0);boot[0]=True
  def observed(packet,current,galleries):
   f,v=packet['frame'],packet['view'];gt=labeler.labels(current,f,v);refs=packet['ids'].tolist();y,categories=labeler.targets(gt,refs)
@@ -73,6 +76,12 @@ def collect(video,kind='observe',frames=256,records=True,report=True):
    if g is not None:stats['known_current_GT']+=1
   sample=dict(key=[video,f,v],features=packet['features'].detach().cpu().clone(),eligible=packet['eligible'].detach().cpu().clone(),raw_scores=packet['base_scores'].detach().cpu().clone(),lengths=packet['lengths'].detach().cpu().clone(),refs=refs,
    targets=torch.tensor(y),categories=categories,GT_labels_OFFLINE_ONLY=gt,owners={t:labeler.clean(t) for t in refs},id_count_before=boundary['id_count'],audit_block=(f//64)%5==4)
+  if packet['first']:
+   strong=labeler.labels(current,f,v,.8,True);inverse=collections.defaultdict(list)
+   for t,g in init_map.items():inverse[g].append(t)
+   sample['INIT_GT_bridge_targets_DIAGNOSTIC_ONLY']=[refs.index(inverse[g][0]) if g is not None and len(inverse[g])==1 and inverse[g][0] in refs else -1 for g in strong]
+   sample['INIT_direct_GT_person_by_committed_ID_DIAGNOSTIC_ONLY']=dict(init_map)
+   sample['INIT_current_GT_strong_DIAGNOSTIC_ONLY']=strong
   pending[f,v]=sample
  actor.observer=observed;m.jev_native_prefix_observer=before_native
  bank=m.run_memory_tracker
@@ -103,7 +112,7 @@ def collect(video,kind='observe',frames=256,records=True,report=True):
    if not base_correct:groups.add((video,g,target_id,v,f//64))
    other_support=float(x[row,target,10])>0;stats['wrong_with_other_camera_history']+=not base_correct and other_support
    new=s['refs'][alt] if alt>=0 else None
-   if new!=t:
+   if alt!=s['baseline_accepted_cols'][row]:
     stats['rule_changed_unique_rows']+=1
     if alt<0:stats['rule_reject_transition_UNKNOWN_bank_outcome']+=1
     elif new==target_id and not base_correct:stats['rule_local_N01']+=1

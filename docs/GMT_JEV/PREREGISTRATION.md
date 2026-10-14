@@ -23,3 +23,7 @@ Evaluation conventions: primary unfiltered native online predictions expose all 
 Training coefficients if qualified: native-association CE on unique legal targets, preserve penalty1.0 on normalized residuals for certified already-correct GMT rows, residual penalty0.01 on all normalized residuals; AdamW1e-4/0.01,300 then1000 cumulative, fixed final checkpoint. Native assignment measurements and full closed-loop tracking decide the result, rather than pairwise accuracy.
 
 目标唯一性补充（P1结果前冻结）：其他ID即使尚未达到3次认证，只要已有当前人物的纯净支持且纯度>=80%，也作为可能别名导致UNKNOWN。不能把未认证短ID伪装成错误负例。Bank仅统计原生实际查询和接受的选项，不从陈旧的可能成员表虚构合法候选。
+
+## One bounded Case-B calibration probe after P1 (no learned update)
+
+P1 found25 incorrect certified-active rows, original cross-rule0/0. One new conservative rule diagnostic: residual=−clip(0.1−GMT_average,0,0.05), preserving all already-acceptable edge scores. Analyze first camera link separately with pure observable relative cosine residual0.05*clip((other_cos−rowmean_other_cos)/0.1,−1,1), requiring low GTA margin<=0.10 and cosine>=0.8. Both use identical current native states/candidates and the original Hungarian/thresholds. First-frame GT IoU>=0.8/runner-up<0.3 bridge is offline diagnosis only, not a long-term owner or future-safety label. A positive same-state signal still needs actual native zero-training confirmation before any MLP/CIC gradients. No video16 calibration or hyperparameter search.

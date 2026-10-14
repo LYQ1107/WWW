@@ -1,6 +1,54 @@
 {
   "GPU_wall_hours_cap": 12,
   "jobs": {
+    "P0_GMT_official_metrics": {
+      "GPU": null,
+      "PID": 4770,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_gmt_jev_20261014/reproduction_tools/gmt_jev_evaluate.py"
+      ],
+      "exit_code": 0,
+      "log": {
+        "SHA256": "43f691ff6141aca3592fafd573e097027e4747217372a3697bcca0390d1fcc37",
+        "bytes": 14647,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P0_GMT_official_metrics/OUTPUT.log"
+      },
+      "seconds": 34.10161715745926,
+      "source": {
+        "CUDA_VISIBLE_DEVICES": null,
+        "Full24": false,
+        "GMT_checkpoint": {
+          "SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+          "bytes": 638238241,
+          "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
+        },
+        "GT_actor_input": false,
+        "HEAD": "8f0108294f10dc2e98b194e7a32fbc2b933ca6ba",
+        "goal": {
+          "SHA256": "39443e3757fc5d74cd65c21de40cbec047d1165e72d1f84c3be554229c4aff67",
+          "bytes": 3662,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/MASTER_GOAL.json"
+        },
+        "official_TEST": false,
+        "sealed20_21_22": true,
+        "source_SHA256": {
+          "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "935bbb74fa581225acc3da010d9972edaf5376263b1b800a33208a30af031b30",
+          "gtr/modeling/roi_heads/gtr_roi_heads.py": "8c7bd0e35269bfe8a20c04b046a5bd4d713a5c0e5581111c4941c2ee20ca463f",
+          "gtr/modeling/roi_heads/transformer.py": "22f4f578eac16948005019f6c6883dcc2abc81cf25b38c1e17be65e90cf3ded0",
+          "reproduction_tools/gmt_jev_baseline.py": "e0202f7fcd46dd18b9a87db31404f4103bf8fd90bf54f513fa761f5d3ef6fe2d",
+          "reproduction_tools/gmt_jev_common.py": "98851e515ff3643170fe922a8219e79c6e7054153e0490976cce1226ce04902f",
+          "reproduction_tools/gmt_jev_controller.py": "f1efc267b15d640e4cdbb41954c431c791e2b577271b3040a3e1076ffc31f260",
+          "reproduction_tools/gmt_jev_evaluate.py": "1b2a01f75428908c0771a54e1aee46ecc57482a01dc92248d68b7a6012e078d8",
+          "reproduction_tools/gmt_jev_job.py": "e571d78339a5b52ccd56784d59a9ba73a4c870a62fbd473007f57c77acfd9fae",
+          "reproduction_tools/gmt_jev_opportunity.py": "9362354f108977f87772948a33c8fa61ca7948b535fd98bde18878f3ca9bbe15",
+          "reproduction_tools/gmt_jev_publish.py": "e0a3b7886e0b35b689d99361465de2d1eba3a413bc1d03382f837e1ad8767c1a",
+          "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3"
+        }
+      },
+      "status": "COMPLETE"
+    },
     "P0_original_OFF_full_TRAIN16": {
       "GPU": 0,
       "PID": 8395,
@@ -90,6 +138,57 @@
           "reproduction_tools/gmt_jev_controller.py": "f1efc267b15d640e4cdbb41954c431c791e2b577271b3040a3e1076ffc31f260",
           "reproduction_tools/gmt_jev_job.py": "e571d78339a5b52ccd56784d59a9ba73a4c870a62fbd473007f57c77acfd9fae",
           "reproduction_tools/gmt_jev_publish.py": "fd67426a171b0f3558d37a3fe9f7de69ed8bf869ec5936e6c5fada0c45e84c65",
+          "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3"
+        }
+      },
+      "status": "COMPLETE"
+    },
+    "P1_GMT_opportunity_TRAIN12_13_14": {
+      "GPU": 0,
+      "PID": 14871,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_gmt_jev_20261014/reproduction_tools/gmt_jev_opportunity.py",
+        "--videos",
+        "12",
+        "13",
+        "14"
+      ],
+      "exit_code": 0,
+      "log": {
+        "SHA256": "118dd6f3bcbec651afeeecef7535f758400330714db57ee9d9ab88a9f00ff218",
+        "bytes": 56107,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P1_GMT_opportunity_TRAIN12_13_14/OUTPUT.log"
+      },
+      "seconds": 297.33431888371706,
+      "source": {
+        "CUDA_VISIBLE_DEVICES": null,
+        "Full24": false,
+        "GMT_checkpoint": {
+          "SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+          "bytes": 638238241,
+          "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
+        },
+        "GT_actor_input": false,
+        "HEAD": "8f0108294f10dc2e98b194e7a32fbc2b933ca6ba",
+        "goal": {
+          "SHA256": "39443e3757fc5d74cd65c21de40cbec047d1165e72d1f84c3be554229c4aff67",
+          "bytes": 3662,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/MASTER_GOAL.json"
+        },
+        "official_TEST": false,
+        "sealed20_21_22": true,
+        "source_SHA256": {
+          "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "935bbb74fa581225acc3da010d9972edaf5376263b1b800a33208a30af031b30",
+          "gtr/modeling/roi_heads/gtr_roi_heads.py": "8c7bd0e35269bfe8a20c04b046a5bd4d713a5c0e5581111c4941c2ee20ca463f",
+          "gtr/modeling/roi_heads/transformer.py": "22f4f578eac16948005019f6c6883dcc2abc81cf25b38c1e17be65e90cf3ded0",
+          "reproduction_tools/gmt_jev_baseline.py": "e0202f7fcd46dd18b9a87db31404f4103bf8fd90bf54f513fa761f5d3ef6fe2d",
+          "reproduction_tools/gmt_jev_common.py": "98851e515ff3643170fe922a8219e79c6e7054153e0490976cce1226ce04902f",
+          "reproduction_tools/gmt_jev_controller.py": "f1efc267b15d640e4cdbb41954c431c791e2b577271b3040a3e1076ffc31f260",
+          "reproduction_tools/gmt_jev_job.py": "e571d78339a5b52ccd56784d59a9ba73a4c870a62fbd473007f57c77acfd9fae",
+          "reproduction_tools/gmt_jev_opportunity.py": "9362354f108977f87772948a33c8fa61ca7948b535fd98bde18878f3ca9bbe15",
+          "reproduction_tools/gmt_jev_publish.py": "e0a3b7886e0b35b689d99361465de2d1eba3a413bc1d03382f837e1ad8767c1a",
           "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3"
         }
       },
