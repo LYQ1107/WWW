@@ -1,5 +1,5 @@
 {
-  "status": "PARTIAL_ATTRIBUTION",
+  "status": "COMPLETE_SCENE1_ATTRIBUTION_NOT_FULL_DEV",
   "scope": "four complete causal scene1 runs, not full strict5; fixed TRAIN seed14 and matched parameter head controls",
   "rows": [
     {
@@ -111,12 +111,34 @@
       "reported_geo_updates": 932,
       "camera_image_fps": 2.312397106588201,
       "reported_geo_failures": 0
+    },
+    {
+      "tag": "B6_vggt_camera_dense_causal_v1_v1",
+      "run_manifest": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/B6_vggt_camera_dense_causal_v1_v1/manifest.json",
+      "run_manifest_sha256": "f32b8a227bc1c2094dfce3e4a951dfda7138afb277729b1ddb7c0946bcfa0619",
+      "metrics_sha256": "77a6477b8ad21d0eb582169003f0dd4734350b51d016c58e03ac39f030b0b233",
+      "metrics": {
+        "HOTA": 86.55351457210155,
+        "DetA": 87.93225734540148,
+        "AssA": 85.2196946037858,
+        "IDF1": 94.66487334678322,
+        "MOTA": 89.67007963594995,
+        "IDSW": 278,
+        "CVIDF1": 94.66487334678322,
+        "CVMA_sequential": 89.67007963594995,
+        "CVMA": 89.3287827076223
+      },
+      "reported_vggt_calls": 932,
+      "reported_dinov2_calls": 0,
+      "reported_geo_updates": 932,
+      "camera_image_fps": 1.1832946006390592,
+      "reported_geo_failures": 0,
+      "geometry_gate_passes": 2
     }
   ],
   "legacy_missing_count_fields": "null, not synthesized encoder measurements",
-  "remaining_controls": [
-    "VGGT masked geometry-only"
-  ],
-  "conclusion": "Dense VGGT feature-only exactly reproduces joint predictions; geometry residual contributes no observed identity change on scene1. DINO matches CVIDF1 and has one fewer switch; VGGT-specific advantage unproven.",
-  "feature_only_exact_joint_predictions": true
+  "remaining_controls": [],
+  "conclusion": "Scene1 joint exactly equals feature-only; masked geometry-only exactly equals baseline. DINO matches joint CVIDF1 and has one fewer switch. No independent geometry or unique VGGT identity advantage established; inherited camera-input issue requires explicit control.",
+  "feature_only_exact_joint_predictions": true,
+  "geometry_only_exact_baseline_predictions": true
 }
