@@ -10,13 +10,13 @@ import numpy as np
 import torch
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 
-from test_quick_cv_pil_probe import TestFastProbe
+import test_quick_cv_pil_probe as fixtures
 from quick_cv_pil_native import load_native, native_episodes, fit_model, report
 
 
 class TestNativeScreen(unittest.TestCase):
     def make_native(self,d,video):
-        base=TestFastProbe().make_cache(d,video)
+        base=fixtures.TestFastProbe().make_cache(d,video)
         from quick_cv_pil_probe import read_cache
         item=read_cache(Path(d),video)
         observations=item['meta']
