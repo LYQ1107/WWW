@@ -9083,6 +9083,77 @@
     "gt_used_for_gate_classification": false,
     "limitations": "descriptive diagnostic gate accounting, not error-cause attribution, GT pose validation, full-DEV failure reasons, tracker throughput or general geometry impossibility"
   },
+  "constructed_cpu_geometry_stress": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/constructed_geometry_degeneracy_v1.json",
+    "sha256": "571b047c801ba25c7d5d7fbe18e36c7d1da18530894c5d50a18f5f77b1f6e980",
+    "status": "PASS_CONSTRUCTED_CPU_GEOMETRY_STRESS",
+    "tests_run": 2,
+    "observations": [
+      {
+        "case": "constructed_60_degree_in_plane_rotation",
+        "motion": 0.0,
+        "motion_valid": [
+          false,
+          false
+        ],
+        "old_geometry_usable_without_current_validation": false,
+        "temporal_candidate_returned": false,
+        "temporal_consumer_stats": {
+          "received_valid": 1,
+          "received_invalid": 0,
+          "expired": 0,
+          "missing_warp": 1,
+          "unreliable_warp": 0,
+          "propagated": 0
+        },
+        "motion_only_update_requested": false,
+        "scope": "CPU optical flow and temporal consumer; no VGGT or physical UAV pose claim"
+      },
+      {
+        "case": "textureless",
+        "method": "orb",
+        "valid": false,
+        "matches": 0,
+        "inliers": 0,
+        "exact_original_logits": true,
+        "encoder_calls": 0
+      },
+      {
+        "case": "textureless",
+        "method": "sift",
+        "valid": false,
+        "matches": 0,
+        "inliers": 0,
+        "exact_original_logits": true,
+        "encoder_calls": 0
+      },
+      {
+        "case": "unrelated_procedural_textures",
+        "method": "orb",
+        "valid": false,
+        "matches": 1,
+        "inliers": 0,
+        "exact_original_logits": true,
+        "encoder_calls": 0
+      },
+      {
+        "case": "unrelated_procedural_textures",
+        "method": "sift",
+        "valid": false,
+        "matches": 0,
+        "inliers": 0,
+        "exact_original_logits": true,
+        "encoder_calls": 0
+      }
+    ],
+    "encoder_calls": 0,
+    "model_strict_load_performed": false,
+    "natural_dataset_failure_causes_identified": false,
+    "full_tracker_inference_performed": false,
+    "speed_eligible": false,
+    "scope": "actual CPU OpenCV/background geometry, GeometryRuntime score fallback and temporal consumer on fixed constructed inputs; detector instances and initial past F are synthetic",
+    "limitations": "independent procedural textures are not a calibrated physical camera pair; in-plane rotation is not real UAV pose/rapid-rotation evidence; invalid motion returns0 and can miss the motion-only trigger, not proof of no motion; no VGGT encoder, full GMT or natural-data efficacy claim"
+  },
   "dense_tracking_to_retrieval_prefix_gate": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/vggt_tracking_retrieval_prefix_gate_v2.json",
     "sha256": "a8708b513b499b6f8ac29e3faa43f7c6ec7096b27bf2d43d8a89f66621adc9c3",
@@ -10355,5 +10426,5 @@
     }
   ],
   "retrieval_full_video_evaluation": true,
-  "source_commit": "29bd830c98324b7ebdccc857bfe3a4ce0c778ed0"
+  "source_commit": "d7fef6b31f6e8142831c962d5b4599cddf1b79c4"
 }

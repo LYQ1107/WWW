@@ -33,6 +33,7 @@ The relevant entry points are:
 | `geo_tools/run_live_retrieval.py` | Actual image-to-tracking-to-clip-index/query producer; GT only in later evaluation |
 | `geo_tools/run_decision_trace.py` | Diagnostic actual solver provenance; prediction gate before GT labeling; excluded from speed claims |
 | `geo_tools/validate_physical_camera_input.py` | Explicit physical-ID input contract against retained order-failure fixtures; does not make internal query order invariant |
+| `geo_tools/test_constructed_geometry_degeneracy.py --report-output NEW_PATH` | CPU procedural blank/unrelated-background and60-degree in-plane-rotation checks; synthetic detections/past F, exact invalid-geometry score fallback, temporal rejection and observed motion-trigger response; refuses an existing report |
 | `geo_tools/evaluate_predictions.py` | Native per-scene evaluation using the paired run manifest |
 | `geo_tools/evaluate_suite.py` | Native TrackEval combination over every declared strict scene; does not average normalized per-scene scores |
 

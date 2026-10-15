@@ -28,15 +28,15 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q7: 运动无人机如何保证几何一致性？
 
-不比较不同调用的3D坐标。当前用单次联合调用相对相机关系，独立背景检查，失败即中性。合成相机投影和传播方向测试通过；此前稀疏完整对照均未通过门槛，每帧scene1有3次通过独立背景门槛，但没有GT位姿准确性或独立跟踪收益证明。
+不比较不同调用的3D坐标。当前用单次联合调用相对相机关系，独立背景检查，失败即中性。合成相机投影和传播方向测试通过；此前稀疏完整对照均未通过门槛，每帧scene1有3次通过独立背景门槛，但没有GT位姿准确性或独立跟踪收益证明。 构造CPU退化检查另行通过：空白/独立生成背景的ORB/SIFT均拒绝几何并原样保留分数；60°平面旋转使光流失效、旧几何禁用，但运动单触发未请求更新。因此motion=0可表示估计失败，不代表无运动。这些是合成检测/过去F条件下的代码检查，不是真实UAV视野/旋转或VGGT有效性证据；见constructed_geometry_degeneracy_v1.json。
 
 ## Q8: 少重叠视野是否有效？
 
-没有此类有效性声明。无纹理、无足够可靠匹配、低覆盖、非有限或过期状态均为中性。ORB/SIFT和平面分支给出了实际低有效率，不强行拒绝身份候选。
+没有此类有效性声明。无纹理、无足够可靠匹配、低覆盖、非有限或过期状态均为中性。ORB/SIFT和平面分支给出了实际低有效率，不强行拒绝身份候选。 构造CPU退化检查另行通过：空白/独立生成背景的ORB/SIFT均拒绝几何并原样保留分数；60°平面旋转使光流失效、旧几何禁用，但运动单触发未请求更新。因此motion=0可表示估计失败，不代表无运动。这些是合成检测/过去F条件下的代码检查，不是真实UAV视野/旋转或VGGT有效性证据；见constructed_geometry_degeneracy_v1.json。
 
 ## Q9: 身份触发优于固定周期吗？
 
-未证明。完整strict5固定/联合各400次真实VGGT调用：固定仅+.001627 CVIDF1个百分点、IDSW不变，联合与baseline一致；未建立稳定方法收益或联合优越性。固定k20无总量上限调用720次，指标与400次上限相同，没有额外身份收益。运动单一触发完整strict5已完成：既定阈值下0次选择、0次VGGT调用、预测指标同B0，实际预算不匹配400次固定对照，不能声称调度优势或不存在运动。身份单触发完整strict5也已完成，CVIDF1仅+.006508个百分点、IDSW−8，实际218次调用；不与400次固定/联合构成相同实际预算比较。其他dense间隔和重复矩阵仍在完成。证据：causal_B8_B9_complete_budget_runtime_audit_v1.json、causal_k20_uncapped_vs_cap80_budget_runtime_v1.json。 新增有界目标特征复用的VGGT/DINO/GMT完整scene1对照均与baseline逐条一致，未保留dense收益；三个骨干相同40个观测更新时间，但实际VGGT80/DINO40/GMT0次编码，不能称同等计算。
+未证明。完整strict5固定/联合各400次真实VGGT调用：固定仅+.001627 CVIDF1个百分点、IDSW不变，联合与baseline一致；未建立稳定方法收益或联合优越性。固定k20无总量上限调用720次，指标与400次上限相同，没有额外身份收益。运动单一触发完整strict5已完成：既定阈值下0次选择、0次VGGT调用、预测指标同B0，实际预算不匹配400次固定对照，不能声称调度优势或不存在运动。身份单触发完整strict5也已完成，CVIDF1仅+.006508个百分点、IDSW−8，实际218次调用；不与400次固定/联合构成相同实际预算比较。其他dense间隔和重复矩阵仍在完成。证据：causal_B8_B9_complete_budget_runtime_audit_v1.json、causal_k20_uncapped_vs_cap80_budget_runtime_v1.json。 新增有界目标特征复用的VGGT/DINO/GMT完整scene1对照均与baseline逐条一致，未保留dense收益；三个骨干相同40个观测更新时间，但实际VGGT80/DINO40/GMT0次编码，不能称同等计算。 构造CPU退化检查另行通过：空白/独立生成背景的ORB/SIFT均拒绝几何并原样保留分数；60°平面旋转使光流失效、旧几何禁用，但运动单触发未请求更新。因此motion=0可表示估计失败，不代表无运动。这些是合成检测/过去F条件下的代码检查，不是真实UAV视野/旋转或VGGT有效性证据；见constructed_geometry_degeneracy_v1.json。
 
 ## Q10: 相较 StreamVGGT/FastVGGT 的价值？
 

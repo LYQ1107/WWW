@@ -125,6 +125,13 @@ def main():
     ('三个模块能否分别证明有效？','尚未证明。'+signal_text+constant_note+geometry_note+' 当前稳定科学成功/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。'),
     ('为什么符合 WWW？','仍有实质适配风险。官方CFP要求明确Web科学问题，仅用数据集或API不充分。'+retrieval_evidence+' 本地数据集回放不等于互联网来源、真实用户查询或Web部署；见WWW_SCOPE_NOTE.md。'),
     ('在线视频关联检索的真实贡献？',retrieval_evidence+' 条件Recall@K、完整MRR、检测覆盖、可检索比例、全部请求成功率和本地查询延迟分别报告。完整读帧/检测/GTA/新增特征/索引/查询成本另计；流数量与关键帧预算对照及实质Web系统贡献仍需完成。')]
+    stress_path=ROOT/'results/constructed_geometry_degeneracy_v1.json'
+    if stress_path.exists():
+        stress=json.loads(stress_path.read_text())
+        if stress['status']=='PASS_CONSTRUCTED_CPU_GEOMETRY_STRESS':
+            note=' 构造CPU退化检查另行通过：空白/独立生成背景的ORB/SIFT均拒绝几何并原样保留分数；60°平面旋转使光流失效、旧几何禁用，但运动单触发未请求更新。因此motion=0可表示估计失败，不代表无运动。这些是合成检测/过去F条件下的代码检查，不是真实UAV视野/旋转或VGGT有效性证据；见constructed_geometry_degeneracy_v1.json。'
+            selected={'运动无人机如何保证几何一致性？','少重叠视野是否有效？','身份触发优于固定周期吗？'}
+            questions=[(q,a+note if q in selected else a) for q,a in questions]
     lines=['# Reviewer questions — current evidence','', 'This file is generated from current artifacts; pending items are not claims of completion.','']
     for i,(q,a) in enumerate(questions,1):lines += [f'## Q{i}: {q}','',a,'']
     (ROOT/'docs/REVIEWER_QUESTIONS.md').write_text('\n'.join(lines))

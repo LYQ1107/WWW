@@ -151,6 +151,7 @@ def main():
     retrieval_query_pairs=evidence('retrieval_paired_query_outcomes_v1.json',['status','rows','pending','scope','limitations'])
     readonly_preflight=evidence('preflight_readonly_locked_inputs_v3.json',['status','locked_files_unchanged','raw_gt_files_verified','model_strict_load_performed','new_video_inference_performed','scope'])
     geometry_failures=evidence('geometry_failure_taxonomy_v1.json',['status','summaries','source_rule_snapshots','gt_used_for_gate_classification','limitations'])
+    constructed_stress=evidence('constructed_geometry_degeneracy_v1.json',['status','tests_run','observations','encoder_calls','model_strict_load_performed','natural_dataset_failure_causes_identified','full_tracker_inference_performed','speed_eligible','scope','limitations'])
     dense_retrieval_gate=evidence('vggt_tracking_retrieval_prefix_gate_v2.json',['status','full_video','full_strict_suite','scope','limitations'])
     matched_retrieval_gate=evidence('matched_head_tracking_retrieval_prefix_precheck_v2.json',['status','full_video','full_strict_suite','scope','limitations','rows'])
     order_parity=evidence('complete_causal_vggt_view_order_audit_v2.json',['status','scope','limitations','rows'])
@@ -205,6 +206,7 @@ def main():
         dense_b7_complete_four_camera_retrieval_tracking_parity=dense_full4_retrieval,
         paired_retrieval_query_outcomes=retrieval_query_pairs,readonly_reproduction_preflight=readonly_preflight,
         recorded_geometry_failure_taxonomy=geometry_failures,
+        constructed_cpu_geometry_stress=constructed_stress,
         dense_tracking_to_retrieval_prefix_gate=dense_retrieval_gate,
         matched_head_tracking_to_retrieval_prefix_gate=matched_retrieval_gate,
         complete_encoder_input_order_control=order_parity,
@@ -314,6 +316,8 @@ def main():
         count=sum(row['diagnostic_rows'] for row in geometry_failures['summaries'])
         accepted=sum(row['valid'] for row in geometry_failures['summaries'])
         lines[6:6]=[f"Geometry failure recovery is consolidated across {count} fixed screening rows ({accepted} accepted), separating fit support, logged coverage, measured residual violations and unavailable early-return statistics. Mask/feature variants repeat samples; these counts do not replace the separate complete-run3 numerical gate passes. Captured dirty source-file bytes are matched to Git blobs where available, while original tree dirtiness and weaker legacy provenance remain explicit. See [geometry gate diagnostics](GEO_STREAM_GEOMETRY_FAILURES.md); no physical-overlap, texture, rotation or GT-pose cause is inferred.",'']
+    if constructed_stress and constructed_stress['status']=='PASS_CONSTRUCTED_CPU_GEOMETRY_STRESS':
+        lines[6:6]=['Constructed CPU stress checks separately pass: ORB/SIFT on blank and independently generated backgrounds produce invalid geometry and preserve the exact original score-list object with1px detector boxes. A fixed60-degree in-plane rotation invalidates optical flow in both views and removes the past-geometry candidate. The motion-only scheduler consequently requests no update: a zero returned motion value can represent estimation failure. These tests exercise production geometry/fallback/temporal code with synthetic detections/past F, zero encoder calls and no full tracker or natural UAV failure attribution. They do not augment the420 real screening rows or prove real-world rapid-rotation efficacy.','']
     if dense_full2_retrieval and dense_full2_retrieval['status']=='PASS' and retrieval_query_pairs:
         pair=next((row for row in retrieval_query_pairs['rows'] if row['method']=='VGGT2'),None)
         producer=next((row for row in retrieval_rows if row['method']=='retrieval_vggt_dense_tracking_2streams_full_v1'),None)
