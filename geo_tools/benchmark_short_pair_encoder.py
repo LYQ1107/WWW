@@ -13,6 +13,7 @@ def main():
     parser.add_argument('--variant',choices=['original','fast'],required=True)
     parser.add_argument('--tag',required=True)
     parser.add_argument('--repeats',type=int,default=5)
+    parser.add_argument('--camera-fp32-input',action='store_true')
     args=parser.parse_args()
     if args.repeats<2:raise ValueError('at least two measured repetitions')
     out=RUNTIME/'encoder_microbench'/args.tag/args.variant
@@ -27,6 +28,7 @@ def main():
         source_python_sha256={str(p.relative_to(source)):sha256(p) for directory in [source/'vggt',source/'merging'] if directory.exists() for p in directory.rglob('*.py')},
         source_dirty=bool(subprocess.check_output(['git','status','--porcelain'],cwd=source,text=True)),
         precision='outer FP16 autocast on V100; original unmodified Fast source retains its own hard-coded BF16 conversions',
+        camera_fp32_input=args.camera_fp32_input,
         interface_bridge='enable all heads for strict official checkpoint loading, then disable unused dense/track heads; Fast public patch-dimension setter; map Fast four retained outputs to original indices4/11/17/23',
         weights=str(RUNTIME/'weights/vggt_1b.pt'),weights_sha256=sha256(RUNTIME/'weights/vggt_1b.pt'),rows=[],actual_encoder_calls=0)
     save_json(out/'manifest.json',report)
@@ -64,7 +66,13 @@ def main():
             vectors=[compress(pool_roi(patch_map(retained[17][0,view],start,images.shape[-2:]),box.cuda(),'roi_align')[0],0).cpu() for view,box in enumerate(boxes)]
             # Same camera-head FP32 path as our actual feature+camera adapter.
             torch.cuda.synchronize();camera_start=time.perf_counter()
-            with torch.autocast('cuda',enabled=False):pose=model.camera_head(tokens)[-1].float().cpu()
+            camera_tokens=tokens
+            if args.camera_fp32_input:
+                # CameraHead reads only the final retained tensor. Cast its
+                # input for both variants, charge this transfer in camera time,
+                # and leave official Fast BF16 aggregation/merging unchanged.
+                camera_tokens=list(tokens);camera_tokens[-1]=tokens[-1].float()
+            with torch.autocast('cuda',enabled=False):pose=model.camera_head(camera_tokens)[-1].float().cpu()
             torch.cuda.synchronize();camera_seconds=time.perf_counter()-camera_start
             if not all(torch.isfinite(v).all() for v in vectors) or not torch.isfinite(pose).all():raise FloatingPointError('nonfinite encoder result')
             return vectors,pose,dict(output_list_length=len(tokens),patch_start_idx=start,retained_shapes={str(layer):list(value.shape) for layer,value in retained.items()}),dict(

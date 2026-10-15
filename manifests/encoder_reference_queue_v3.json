@@ -1,0 +1,52 @@
+{
+  "id": "encoder_reference_v3",
+  "project_gpu_ids": [
+    "4"
+  ],
+  "queues": {
+    "gpu4": [
+      {
+        "id": "original",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/benchmark_short_pair_encoder.py",
+          "--variant",
+          "original",
+          "--tag",
+          "fast_vggt_short_pair_v3",
+          "--repeats",
+          "5",
+          "--camera-fp32-input"
+        ]
+      },
+      {
+        "id": "fast",
+        "cpu_only": false,
+        "command": [
+          "geo_tools/benchmark_short_pair_encoder.py",
+          "--variant",
+          "fast",
+          "--tag",
+          "fast_vggt_short_pair_v3",
+          "--repeats",
+          "5",
+          "--camera-fp32-input"
+        ]
+      },
+      {
+        "id": "compare",
+        "cpu_only": true,
+        "depends_on": [
+          "original",
+          "fast"
+        ],
+        "command": [
+          "geo_tools/compare_short_pair_encoder.py",
+          "--tag",
+          "fast_vggt_short_pair_v3"
+        ]
+      }
+    ]
+  },
+  "scope": "after original Fast V100 BF16 LayerNorm failure, cast only camera-head final input to FP32 in BOTH variants; charge cast in camera/total timing; original aggregator/merging/checkpoint/source unchanged; not tracking accuracy or full-system throughput"
+}

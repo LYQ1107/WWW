@@ -102,6 +102,10 @@ def main():
     native_pairs=evidence('native_prior_full_dev_identity_pair_audit_v1.json',['status','full_strict_suite','rows','limitations'])
     native_budget=evidence('native_prior_vs_vggt_full_dev_budget_v1.json',['status','methods','limitations'])
     native_verified=bool(native_full and native_pairs and native_budget and native_full['status']=='PASS' and native_pairs['status']=='PASS' and native_pairs['full_strict_suite'] and all(row['added_detections']==0 and row['removed_detections']==0 for row in native_pairs['rows']))
+    identity_trigger=evidence('causal_identity_total80_strict_suite_v1_metrics.json',['status','video_ids','metrics'])
+    trigger_budget=evidence('causal_trigger_full_dev_realized_budget_v1.json',['status','methods','matched_actual_vggt_calls_for_each_scene','limitations'])
+    retrieval_parity=evidence('retrieval_10streams_full_tracking_output_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
+    encoder_reference=evidence('fast_vggt_short_pair_v2_comparison.json',['status','scope','failures','sources'])
     dense_verified=bool(dense and dense_pairs and dense_budget and dense['status']=='PASS' and dense_pairs['status']=='PASS' and dense_pairs['full_strict_suite'] and all(row['added_detections']==0 and row['removed_detections']==0 for row in dense_pairs['rows']))
     if linear_links:
         data=json.loads(Path(linear_links['path']).read_text())
@@ -135,6 +139,8 @@ def main():
         dense_full_dev_signal=dense if dense_verified else None,dense_full_dev_identity_audit=dense_pairs,dense_full_dev_budget=dense_budget,
         headfree_native_prior_full_dev=native_full if native_verified else None,headfree_native_prior_full_dev_identity_audit=native_pairs,
         headfree_native_prior_full_dev_budget=native_budget,
+        identity_trigger_full_dev=identity_trigger,trigger_realized_budgets=trigger_budget,
+        complete_ten_stream_tracking_parity=retrieval_parity,fast_encoder_original_interface_reference=encoder_reference,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
     save_json(ROOT/'results/final_summary.json',summary)
@@ -180,6 +186,14 @@ def main():
         base=json.loads((ROOT/'results/causal_B0_strict_suite_v1_metrics.json').read_text())['metrics']
         measured=native_budget['methods'][0]
         lines[6:6]=[f"Complete head-free native fixed-prior strict5: CVIDF1 {native_full['metrics']['CVIDF1']:.6f} ({native_full['metrics']['CVIDF1']-base['CVIDF1']:+.6f} percentage points), IDSW {base['IDSW']} to {native_full['metrics']['IDSW']}; exact detector-key sets in all five scenes, with corrections and harms retained separately. No extra learned parameters/encoder/head or target-vector columns. Descriptive cumulative throughput {measured['cumulative_camera_image_fps']:.4f} images/s, zero VGGT calls. This ordinary camera/time logit prior exceeds primary-seed dense VGGT full-dev CVIDF1 and IDSW; current evidence does not establish VGGT-specific identity gain. Paired inference-seed controls remain pending; no stable timing, final candidate selection or three-module success claim.",'']
+    if identity_trigger and trigger_budget:
+        base=json.loads((ROOT/'results/causal_B0_strict_suite_v1_metrics.json').read_text())['metrics']
+        measured=next(row for row in trigger_budget['methods'] if 'causal_identity_' in row['source'])
+        lines[6:6]=[f"Identity-only trigger complete strict5: CVIDF1 {identity_trigger['metrics']['CVIDF1']-base['CVIDF1']:+.6f} percentage points and IDSW {identity_trigger['metrics']['IDSW']-base['IDSW']:+d}; actual VGGT calls {measured['total_actual_vggt_calls']}. Fixed/joint each use400 calls, motion uses0, so this is not an equal-realized-budget identity-trigger superiority result. Its full common-detection audit localizes the identity corrections to scene1; repeated stability and VGGT-specific attribution are unproved.",'']
+    if retrieval_parity and retrieval_parity['status']=='PASS' and retrieval_parity['full_strict_suite']:
+        lines[6:6]=['Both complete ten-camera native and VGGT-feature retrieval producers preserve every standalone causal GMT OFF output across all five scenes, including boxes/scores/classes/image/track IDs and row order. This verifies complete interleaved tracking output isolation for these runs; their retrieval ranking quality and whole-producer runtime remain separate.','']
+    if encoder_reference and encoder_reference['status']=='NO_VALID_SPEED_COMPARISON':
+        lines[6:6]=['The actual original/Fast three-TRAIN-pair microbenchmark v2 cannot support a speed comparison: original passes36 calls; official Fast fails at camera-head LayerNorm on its BF16 output under V100. A separate symmetric FP32 camera-input bridge experiment is planned; no speedup, slowdown or full-system accuracy claim follows from the failed original interface.','']
     for row in metric_rows:
         lines.append(f"| {row['method']} | {row['video_id']} | {'no: raw diagnostic' if row['raw_gt_diagnostic'] else 'yes'} | {row['HOTA']:.4f} | {row['AssA']:.4f} | {row['IDF1']:.4f} | {row['CVIDF1']:.4f} | {row['IDSW']} |")
     lines+=['','Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):','',

@@ -14,6 +14,7 @@ def main():
         result.update(status='NO_VALID_SPEED_COMPARISON',failures={variant:dict(status=run['status'],error_type=run.get('error_type'),error=run.get('error')) for variant,run in runs.items()})
     else:
         if runs['original']['weights_sha256']!=runs['fast']['weights_sha256']:raise ValueError('weight mismatch')
+        if runs['original'].get('camera_fp32_input',False)!=runs['fast'].get('camera_fp32_input',False):raise ValueError('camera precision bridge mismatch')
         original={(r['video_id'],r['frame_id']):r for r in runs['original']['rows']}
         fast={(r['video_id'],r['frame_id']):r for r in runs['fast']['rows']}
         if set(original)!=set(fast):raise ValueError('sample mismatch')
@@ -30,6 +31,7 @@ def main():
                   measured_single_call_components={variant:{component:dict(p50=float(np.percentile([call[component] for call in row['measured_single_call_timings']],50)),p95=float(np.percentile([call[component] for call in row['measured_single_call_timings']],95))) for component in ['aggregator_seconds','camera_seconds','transfer_aggregator_roi_camera_cpu_result_seconds']} for variant,row in [('original',left),('fast',right)]},
                   storage_scope='FP16 saved ROI vectors; this comparison does not prove bitwise live feature parity'))
         result.update(status='PASS_MICROBENCHMARK_ONLY',feature_proxy_metrics={variant:run['feature_proxy_metrics'] for variant,run in runs.items()},
+                      camera_fp32_input=runs['original'].get('camera_fp32_input',False),
                       limitations='five repeated encoder measurements on three TRAIN pairs; changed features require closed-loop tracking evaluation before integration; no long-sequence speed multiplier or full-system FPS claim')
     save_json(RUNTIME/'encoder_microbench'/args.tag/'comparison.json',result)
     save_json(ROOT/'results'/f'{args.tag}_comparison.json',result)

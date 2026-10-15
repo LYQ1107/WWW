@@ -121,8 +121,16 @@ def main():
         plt.close(fig)
         sources[str(audit_path)] = sha256(audit_path)
     retrieval_runs = []
-    for path in sorted((RUNTIME/'retrieval').glob('*/retrieval.metrics.json')):
+    scope_path=ROOT/'results/www_scope_evidence_v1.json'
+    cohort_rows=json.loads(scope_path.read_text())['production_fixed_scene18_rows'] if scope_path.exists() else []
+    if cohort_rows:sources[str(scope_path)]=sha256(scope_path)
+    for cohort in cohort_rows:
+        path=Path(cohort['metrics'])
         manifest_path = path.parent/'manifest.json'
+        if sha256(path)!=cohort['metrics_sha256'] or sha256(manifest_path)!=cohort['manifest_sha256']:
+            raise ValueError('changed fixed-query retrieval artifact')
+        if not cohort['exact_detector_query_cohort'] or not cohort['exact_full_scene18_detector_outputs']:
+            raise ValueError('fixed detector cohort required')
         manifest = json.loads(manifest_path.read_text())
         if not manifest['full_video'] or not manifest.get('speed_eligible',True):
             continue
@@ -130,17 +138,18 @@ def main():
         sources[str(path)] = sha256(path)
         sources[str(manifest_path)] = sha256(manifest_path)
     if retrieval_runs:
-        labels = [f"{manifest['backbone']}, {manifest['camera_streams']} cameras, " + ('every-frame native publication' if manifest['backbone']=='none' else f"k{manifest['interval']} extra features") for manifest, _ in retrieval_runs]
-        fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+        labels = [f"{manifest.get('tracking_method','gmt_off')}; {manifest['backbone']}; {manifest['camera_streams']} cameras; k{manifest['interval']}" for manifest, _ in retrieval_runs]
+        fig, axes = plt.subplots(1, 3, figsize=(15, max(4.5,.4*len(labels))),sharey=True)
         for axis, metric in zip(axes, ['Recall@1', 'MRR', 'Complete images/s']):
             values = [(report['recall_at_k']['1'] if metric == 'Recall@1' else report['mrr']) if metric != 'Complete images/s' else manifest['camera_image_fps'] for manifest, report in retrieval_runs]
-            axis.bar(np.arange(len(values)), values, color='#427aab')
-            axis.set_xticks(np.arange(len(labels)), labels, rotation=20, ha='right', fontsize=8)
+            axis.barh(np.arange(len(values)), values, color='#427aab')
+            axis.set_yticks(np.arange(len(labels)), labels, fontsize=8)
             axis.set_title(metric)
             if metric != 'Complete images/s':
-                axis.set_ylim(0, 1.05)
-        fig.suptitle('Complete causal target-to-clip retrieval: local dataset replay', fontsize=12)
-        fig.text(.5,.01,'GT only for evaluation; quality conditional on matched queries with positive gallery clips. No Web deployment or stable timing claim.',ha='center',fontsize=8)
+                axis.set_xlim(0, 1.05)
+        axes[0].invert_yaxis()
+        fig.suptitle('Complete retrieval: fixed scene18 detector queries across galleries', fontsize=12)
+        fig.text(.5,.01,'Quality conditional on each run\'s eligible gallery; throughput charges the whole producer. Local replay; no stable timing or Web deployment claim.',ha='center',fontsize=8)
         fig.tight_layout(rect=(0,.04,1,.93))
         fig.savefig(out/'causal_retrieval_results.png', dpi=180)
         fig.savefig(out/'causal_retrieval_results.pdf')
