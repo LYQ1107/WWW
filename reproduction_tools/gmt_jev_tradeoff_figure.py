@@ -16,7 +16,7 @@ def main():
   'cic_learned':'CIC','mlp_learned_cached':'MLP + exact cache'}
  offsets={'original':(7,-9),'threshold':(-56,-17),'rule':(3,12),'rule_cached':(-74,-20),
   'confidence':(-65,10),'mlp_learned':(-13,12),'attention_learned':(7,10),
-  'cic_learned':(7,8),'mlp_learned_cached':(7,-19)}
+  'cic_learned':(7,8),'mlp_learned_cached':(7,12)}
  colors={'original':'#666666','threshold':'#56B4E9','rule':'#CC79A7','rule_cached':'#CC79A7',
   'confidence':'#009E73','mlp_learned':'#0072B2','attention_learned':'#D55E00',
   'cic_learned':'#D55E00','mlp_learned_cached':'#0072B2'}
