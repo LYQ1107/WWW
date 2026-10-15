@@ -98,6 +98,11 @@ def main():
  save(REPORTS/'SPEED_METRICS.json',speed)
  with (DOCS/'EFFICIENCY.md').open('a') as f:
   f.write('\n训练后 learned gate 的完整 FPS 另见 LEARNED_GATE_RESULTS_ZH.md；旧零残差原型和旧 conflict 控制器结果保持原语义，不能将其计时当作新 learned gate 的计时。\n')
+  profile=REPORTS/'LEARNED_MLP_COMPONENT_PROFILE.json'
+  if profile.exists():
+   d=read(profile);f.write('\n训练后 MLP 的 GPU8、24场景帧同步边界诊断（非完整FPS，不外推整段）：\n\n| 部分 | p50 ms | p95 ms |\n|---|---:|---:|\n')
+   for name,r in d['component_ms'].items():f.write(f"| {name} | {r['p50_p95_max'][0]:.4f} | {r['p50_p95_max'][1]:.4f} |\n")
+   f.write('\n该前缀中特征构建耗时高于小头计算；同步边界改变执行行为，只用于定位后续效率检查方向。实际效率结论仍只由GPU7完整图像计时给出。\n')
  if updates:
   reviewer=DOCS/'REVIEWER_ANALYSIS.md';review_text=reviewer.read_text()
   review_text=review_text.replace('当前 MLP/Attention/CIC 仅有零残差原型、参数与工程等价/开销证据；没有训练、没有性能显著性，也不能声称优于它们。','早期 conflict 模式 MLP/Attention/CIC 只有零残差原型证据；新 learned gate 的固定300步同预算训练及闭环评测另见 LEARNED_GATE_RESULTS_ZH.md。训练本身不证明性能显著性或独立架构优势。')

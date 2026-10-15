@@ -32,3 +32,13 @@ HEAD_COST_PREFIX.json 若已完成，则使用真实 TRAIN16 前64场景帧的�
 | mlp | 3.036863 | 1.236234 |
 
 训练后 learned gate 的完整 FPS 另见 LEARNED_GATE_RESULTS_ZH.md；旧零残差原型和旧 conflict 控制器结果保持原语义，不能将其计时当作新 learned gate 的计时。
+
+训练后 MLP 的 GPU8、24场景帧同步边界诊断（非完整FPS，不外推整段）：
+
+| 部分 | p50 ms | p95 ms |
+|---|---:|---:|
+| committed | 2.4575 | 3.1389 |
+| features | 9.1604 | 16.0255 |
+| head | 0.5370 | 0.7567 |
+
+该前缀中特征构建耗时高于小头计算；同步边界改变执行行为，只用于定位后续效率检查方向。实际效率结论仍只由GPU7完整图像计时给出。
