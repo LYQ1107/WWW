@@ -1,0 +1,49 @@
+{
+  "estimated_seconds": 2390.7604673817755,
+  "formula": "max(whole default MLP job, whole cached Rule job)*1.10 +10 seconds",
+  "hard_GPU_hour_cap": 12,
+  "model_checkpoint": {
+    "SHA256": "11709cd604a8d83a89c84fc62eeb9b81fb76e008e5f7b92d60dfa3d3778ea186",
+    "bytes": 24055,
+    "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/learned_gate_smoke/mlp_step300.pth"
+  },
+  "no_cached_MLP_timing_observed_before_forecast": true,
+  "observed_full_jobs": [
+    {
+      "job": "P5_mlp_learned_full_GPU7",
+      "log": {
+        "SHA256": "ad5cb0ea8d7f0e7db594f066c50ebbdf88aca2a0bef7c645ad61109bf3997973",
+        "bytes": 198132,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P5_mlp_learned_full_GPU7/OUTPUT.log"
+      },
+      "source_HEAD": "dfc12dcd176a77c1085a1578ceb53513d15a8e20",
+      "whole_job_seconds": 2016.0352325960994
+    },
+    {
+      "job": "P5_rule_cached_full_image_GPU7",
+      "log": {
+        "SHA256": "88333108fd1a3b5cb6355667c95414332b41ac91e7ccc8275c58594cc80576c3",
+        "bytes": 200071,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P5_rule_cached_full_image_GPU7/OUTPUT.log"
+      },
+      "source_HEAD": "d09dfded785d6f22155e8ce663c7da35f99e83a3",
+      "whole_job_seconds": 2164.327697619796
+    }
+  ],
+  "original_queue_unchanged": {
+    "GPU_hours": 11.313505526232635,
+    "PID": 2173,
+    "status": "SKIPPED_CACHE_TIMING_RESOURCE_PREFLIGHT"
+  },
+  "previous_fixed_preflight_hours": 0.7,
+  "remaining_GPU_seconds": 2471.3801055625127,
+  "scientific_success": false,
+  "scope": "Scheduling estimate only; not a scientific hyperparameter change. Same fixed checkpoint, cache policy, video16, GPU7, three repeats and FPS convention. Actual executor terminates before the aggregate cap; partial timing cannot pass a gate.",
+  "status": "APPROVED_WITH_UNCHANGED_HARD_CAP",
+  "strict_parity": {
+    "SHA256": "509ade6ca078420f6ded80693e54ea30d38e6d527369fbd8e370b0d701fe6ceb",
+    "bytes": 7432,
+    "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/LEARNED_MLP_FEATURE_CACHE_PARITY.json"
+  },
+  "used_GPU_hours": 11.313505526232635
+}

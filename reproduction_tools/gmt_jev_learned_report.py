@@ -116,6 +116,11 @@ def main():
  decision['learned_training']='SINGLE_BOUNDED_LEARNED_GATE_REVISION_'+revision_status
  positives=[k for k,r in methods.items() if r['joint_measured_quality_pass']]
  decision['current_measured_quality_positive_candidates']=positives
+ resource_forecast=REPORTS/'CACHE_TIMING_RESOURCE_REASSESSMENT.json'
+ if resource_forecast.exists():
+  decision['cache_timing_resource_reassessment']=ref(resource_forecast)
+  cache_job=read(REPORTS/'EXPERIMENT_REGISTRY.json')['jobs'].get('P5_mlp_learned_cached_full_GPU7')
+  if cache_job:decision['cache_timing_registered_state']=dict(status=cache_job['status'],stop_reason=cache_job.get('stop_reason'))
  if len(methods)==3 and 'mlp' in positives and 'cic' not in positives:
   decision['CIC_architecture_go_no_go']='NO_GO_CURRENT_FIXED300_DEVELOPMENT_SEED; retain ordinary MLP, do not force JEV or claim significance'
   if methods['mlp']['efficiency_gate_pass'] is False:
@@ -148,6 +153,12 @@ def main():
   goal['gates']['MATCHED_DEVELOPMENT_GAIN']='MEASURED_RAW_QUALITY_POSITIVE_'+','.join(positives)+'_SPEED_CAUSAL_SEEDS_INDEPENDENCE_NOT_PROVEN'
   goal['gates']['IDENTITY_STABILITY']='MEASURED_RAW_AND_DESCRIPTIVE_GATES_PASS_'+','.join(positives)+'_CAUSAL_PROPAGATION_NOT_ESTABLISHED'
  goal['gates']['LEARNED_GATE_SUPERVISION']='PASS_NATIVE_ZERO_AND_SUPERVISION_CONTRACT' if pre.exists() else 'PENDING_REAL_SUPERVISION_PRECHECK'
+ if pre.exists():
+  goal['gates']['CORRECTION_OPPORTUNITY']='CERTIFIED_TRAIN_SUPERVISION_PRECHECK_COMPLETE_ONLINE_CORRECTION_CAUSALITY_NOT_ESTABLISHED'
+  goal['correction_opportunity_evidence']=dict(
+   current_supervision=ref(pre),historical_native_rule=ref(REPORTS/'FULL_TRAIN_NATIVE_RULE_AUDIT.json'),
+   interpretation='Certified bounded training witnesses exist; historical native Rule failure is retained. Neither witnesses nor development HOTA establish causal correction or independent scientific success.')
+ goal['budget']['data1']='READ_ONLY: no new study writes; historical low-space observation is not current free-space evidence'
  save(REPORTS/'MASTER_GOAL.json',goal)
  speed=read(REPORTS/'SPEED_METRICS.json');speed['trained_neural_model_quality']='SEE_LEARNED_GATE_RESULTS' if methods else 'PENDING_LEARNED_FIXED_ENDPOINT_ONLINE'
  speed['learned_gate_methods']={k:{key:r[key] for key in ['full_image_FPS','FPS_ratio_to_GMT','efficiency_gate_pass','speed_report']} for k,r in methods.items()}
@@ -155,6 +166,14 @@ def main():
  save(REPORTS/'SPEED_METRICS.json',speed)
  with (DOCS/'EFFICIENCY.md').open('a') as f:
   f.write('\n训练后 learned gate 的完整 FPS 另见 LEARNED_GATE_RESULTS_ZH.md；旧零残差原型和旧 conflict 控制器结果保持原语义，不能将其计时当作新 learned gate 的计时。\n')
+  f.write('\n固定300步训练后的完整视频计时（同GPU7，三轮，单训练种子开发证据）：\n\n| 方法 | 完整图像FPS | 相对GMT | 95%门槛 |\n|---|---:|---:|---|\n')
+  for kind,r in methods.items():
+   if r['full_image_FPS'] is not None:
+    f.write(f"| {kind} | {r['full_image_FPS']:.6f} | {r['FPS_ratio_to_GMT']:.6f} | {r['efficiency_gate_pass']} |\n")
+  if cached:
+   f.write(f"| mlp cached | {cached['full_image_FPS']:.6f} | {cached['FPS_ratio_to_GMT']:.6f} | {cached['efficiency_gate_pass']} |\n")
+  else:
+   f.write('\n缓存MLP尚无已完成的三轮均值；完整原生等价性通过不等于效率通过。\n')
   profile=REPORTS/'LEARNED_MLP_COMPONENT_PROFILE.json'
   if profile.exists():
    d=read(profile);f.write('\n训练后 MLP 的 GPU8、24场景帧同步边界诊断（非完整FPS，不外推整段）：\n\n| 部分 | p50 ms | p95 ms |\n|---|---:|---:|\n')

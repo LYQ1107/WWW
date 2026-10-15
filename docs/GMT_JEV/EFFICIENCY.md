@@ -33,6 +33,16 @@ HEAD_COST_PREFIX.json 若已完成，则使用真实 TRAIN16 前64场景帧的�
 
 训练后 learned gate 的完整 FPS 另见 LEARNED_GATE_RESULTS_ZH.md；旧零残差原型和旧 conflict 控制器结果保持原语义，不能将其计时当作新 learned gate 的计时。
 
+固定300步训练后的完整视频计时（同GPU7，三轮，单训练种子开发证据）：
+
+| 方法 | 完整图像FPS | 相对GMT | 95%门槛 |
+|---|---:|---:|---|
+| mlp | 3.129765 | 0.917882 | False |
+| attention | 3.059589 | 0.897301 | False |
+| cic | 2.396665 | 0.702882 | False |
+
+缓存MLP尚无已完成的三轮均值；完整原生等价性通过不等于效率通过。
+
 训练后 MLP 的 GPU8、24场景帧同步边界诊断（非完整FPS，不外推整段）：
 
 | 部分 | p50 ms | p95 ms |
