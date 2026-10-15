@@ -119,6 +119,8 @@ def main():
  decision['learned_training']='SINGLE_BOUNDED_LEARNED_GATE_REVISION_'+revision_status
  positives=[k for k,r in methods.items() if r['joint_measured_quality_pass']]
  decision['current_measured_quality_positive_candidates']=positives
+ proposal=REPORTS/'TIMING_RECHECK_PROPOSAL.json'
+ if proposal.exists():decision['unapproved_timing_recheck_proposal']=ref(proposal)
  resource_forecast=REPORTS/'CACHE_TIMING_RESOURCE_REASSESSMENT.json'
  if resource_forecast.exists():
   decision['cache_timing_resource_reassessment']=ref(resource_forecast)

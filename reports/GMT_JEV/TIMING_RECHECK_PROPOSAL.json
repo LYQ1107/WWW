@@ -1,0 +1,131 @@
+{
+  "complete_runs": 9,
+  "fixed_order": [
+    [
+      "original",
+      "mlp_learned",
+      "mlp_learned_cached"
+    ],
+    [
+      "mlp_learned",
+      "mlp_learned_cached",
+      "original"
+    ],
+    [
+      "mlp_learned_cached",
+      "original",
+      "mlp_learned"
+    ]
+  ],
+  "fixed_seed": 20261009,
+  "freeze": {
+    "GMT_checkpoint_SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "exact_cache_proof": {
+      "SHA256": "509ade6ca078420f6ded80693e54ea30d38e6d527369fbd8e370b0d701fe6ceb",
+      "bytes": 7432,
+      "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/LEARNED_MLP_FEATURE_CACHE_PARITY.json"
+    },
+    "source": {
+      "gtr/modeling/gmt_jev/correction.py": "60408d76905a1a86211a119211545b7c0d2ac2d26e248f77e5d2c5f173e0bbc2",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "935bbb74fa581225acc3da010d9972edaf5376263b1b800a33208a30af031b30",
+      "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3"
+    },
+    "trained_checkpoint": {
+      "SHA256": "11709cd604a8d83a89c84fc62eeb9b81fb76e008e5f7b92d60dfa3d3778ea186",
+      "bytes": 24055,
+      "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/learned_gate_smoke/mlp_step300.pth"
+    }
+  },
+  "measurement_contract": [
+    "Same single model object; no gradients; reattach only the frozen relevant actor and committed-state observer.",
+    "Before each complete run: reset all native state, actor summaries and seed; same eight-frame warmup excluded from timing.",
+    "Include real image IO/resize, detector, VFCE/RPCE, GTA, native solver, Gallery/Bank and stock final processing; same synchronized Stage2 instrumentation.",
+    "Record timestamps, scene/image FPS, Stage2 p50/p95, peak memory and per-run stock fingerprint; compare each fingerprint exactly to its existing frozen method reference.",
+    "Verify the chosen GPU has no other compute PID before and after each trial. Disclose remaining shared-host variability.",
+    "No omission/retry of slow trials, no stopping for favorable FPS and no selection of repetition counts; retain partial results on failure or resource termination.",
+    "Report all nine runs, within-block ratios and the ratio of three-run arithmetic mean FPS values; preregister 0.95 efficiency target.",
+    "Keep all original block-timed results as primary historical measurements; label new interleaved results a prospective robustness recheck, never silently replace a failed result.",
+    "No HOTA/seed/independence claims from timing. Quality reuse requires exact frozen prediction equality.",
+    "Authorization must arrive before GPU launch; the existing 12h executor guard stays unchanged until then."
+  ],
+  "physical_GPU": 7,
+  "purpose": "Separate contemporaneous full-image efficiency from serial host timing drift; cannot by itself prove scientific success.",
+  "references": [
+    {
+      "job": "P5_original_full_image_GPU7_retry",
+      "kind": "original",
+      "log": {
+        "SHA256": "454c1bc6c62d7984b10c204106bf78d97ec9f878c616132cfe0e85d51ae5654e",
+        "bytes": 198502,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P5_original_full_image_GPU7_retry/OUTPUT.log"
+      },
+      "speed": {
+        "SHA256": "57dc864ac1853542877918a5a91c58e333d3b5f2dfa632e06a3d8f19802ae7d5",
+        "bytes": 4839,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/SPEED_original.json"
+      },
+      "whole_job_seconds": 1856.5338282510638
+    },
+    {
+      "job": "P5_mlp_learned_full_GPU7",
+      "kind": "mlp_learned",
+      "log": {
+        "SHA256": "ad5cb0ea8d7f0e7db594f066c50ebbdf88aca2a0bef7c645ad61109bf3997973",
+        "bytes": 198132,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P5_mlp_learned_full_GPU7/OUTPUT.log"
+      },
+      "speed": {
+        "SHA256": "ad1120de6c6b5f3ff5f54ec07bd2a79957b8823638c1911af37c22edb9132749",
+        "bytes": 8141,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/SPEED_mlp_learned.json"
+      },
+      "whole_job_seconds": 2016.0352325960994
+    },
+    {
+      "job": "P5_mlp_learned_cached_full_GPU7",
+      "kind": "mlp_learned_cached",
+      "log": {
+        "SHA256": "2e7a640773a62ee5e49b95a79da7f5168a843315944d758be5e8cc06abdab9be",
+        "bytes": 198147,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/jobs/P5_mlp_learned_cached_full_GPU7/OUTPUT.log"
+      },
+      "speed": {
+        "SHA256": "c489e406ccde635dea101280d7821e40b3cb72abde6edd96a54f5ed9d0af8110",
+        "bytes": 8532,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/SPEED_mlp_learned_cached.json"
+      },
+      "whole_job_seconds": 2215.9531410336494
+    }
+  ],
+  "resource_forecast": {
+    "current_12h_remaining_seconds": 255.42696452885707,
+    "current_GPU_hours": 11.92904806540865,
+    "current_budget_unchanged": true,
+    "destination_free_GiB_min": 30,
+    "estimated_GPU_hours": 1.8631595616858039,
+    "estimated_seconds": 6707.374422068894,
+    "formula": "sum(three related whole 3-trial jobs)*1.10 +10 seconds",
+    "new_retained_bytes_max": 16777216,
+    "overall_retained_bytes_max": 536870912,
+    "requested_additional_GPU_hours_max": 2,
+    "requested_cumulative_GPU_hours_max": 14
+  },
+  "scientific_success": false,
+  "scope": {
+    "development_only": true,
+    "new_DEV": false,
+    "new_download": false,
+    "new_training": false,
+    "official_TEST": false,
+    "unseal": false,
+    "video": 16
+  },
+  "source_HEAD": "1b249d470e4a4d555ed5e34d49a208d44b4bc9c3",
+  "status": "PROPOSED_NOT_AUTHORIZED_NOT_RUN",
+  "unresolved": [
+    "Efficiency has failed in existing measurements",
+    "MCMT evidence contribution and causal error propagation unproven",
+    "Additional independent training seeds not run",
+    "No qualified independent complete video established within current authorized scope"
+  ]
+}

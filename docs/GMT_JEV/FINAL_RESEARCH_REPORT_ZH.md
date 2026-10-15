@@ -95,13 +95,15 @@ MASTER_GOAL状态 ACTIVE，scientific_success=False。完整基线和工程接�
 数据范围仅TRAIN12/13/14学习、TRAIN16开发；不新增DEV17–19、封存20–22、官方TEST、Full24或新数据下载。TRAIN16不能伪装独立验证，旧阶段NO_GO/checkpoint保留。
 默认计时、完整缓存等价和三轮缓存计时均已完成。本轮不扩大架构/训练步数；效率失败时保留质量候选并报告精度与速度权衡，不能宣布完整目标成功。即使效率满足，仍需必要训练种子和合法合格独立验证。
 最有证据支持的后续路线是冻结普通MLP，而非扩大CIC。若获准下一轮预算，先预注册同卡交错GMT/默认MLP/缓存MLP完整计时，检查串行宿主机时间漂移；原有各组三轮结果保留，不按快慢选取。只有明确可部署的效率方向后，再考虑普通分数校准对照、独立训练种子和MCMT证据消融。该路线尚未启动，本轮剩余预算不足以完成这些完整对照；新独立数据资格也仍需另行落实。
-最近资源快照（并非停止时最终结算）：{"GPU_wall_hours_including_live": 11.92904806540865, "home_free_GiB": 50.01961135864258, "new_retained_MiB": 315.02634716033936}。累计上限12 GPU-wall-hours、新留存512MiB、目标盘至少30GiB余量，重设Goal不清零预算。
+最近资源快照（并非停止时最终结算）：{"GPU_wall_hours_including_live": 11.92904806540865, "home_free_GiB": 50.018531799316406, "new_retained_MiB": 315.24305629730225}。累计上限12 GPU-wall-hours、新留存512MiB、目标盘至少30GiB余量，重设Goal不清零预算。
 
 ## 10. 代码、记录与GitHub
 
 [研究分支当前报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。原始完整GTA checkpoint、视频、图像、预测压缩包和训练权重留服务器，仅推必要源码和紧凑记录；各自SHA已记录。
 运行起点HEAD和源码SHA见 EXPERIMENT_REGISTRY.json，具体结果含source binding。发布是否成功以runtime/publication/LAST_VERIFIED.json的local/remote HEAD一致为准；报告生成HEAD不是未来发布提交号。
 关键证据：BASELINE_PARITY.json、FULL_TRAIN_MATCHED_QUALITY_AUDIT.json、LEARNED_GATE_SUPERVISION_PRECHECK.json、LEARNED_GATE_SMOKE_TRAINING.json、LEARNED_GATE_RESULTS.json、LEARNED_FIRST_DIVERGENCE_NATIVE.json、SPEED_METRICS.json、GO_NO_GO.json。
+
+[后续同卡交错计时提案（未授权、未启动）](TIMING_RECHECK_PROPOSAL_ZH.md)：固定9次完整推理，预算依据、顺序、所有结果保留及停止规则已写明。当前12小时守卫未改变；本提案不解决训练种子或独立数据资格。
 
 缓存计时资源复核（计时前记录）：原固定0.7小时估计的停止记录保留；按相关完整作业实测墙钟耗时×1.10+10秒，估计2390.760秒，复核时剩余2471.380秒，结论APPROVED_WITH_UNCHANGED_HARD_CAP。没有改变12小时硬上限、模型、数据或三轮协议；实际未完成三轮就不能通过效率门槛。见 CACHE_TIMING_RESOURCE_REASSESSMENT.json。
 

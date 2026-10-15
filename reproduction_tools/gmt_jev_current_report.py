@@ -106,6 +106,9 @@ def main():
   '运行起点HEAD和源码SHA见 EXPERIMENT_REGISTRY.json，具体结果含source binding。发布是否成功以runtime/publication/LAST_VERIFIED.json的local/remote HEAD一致为准；报告生成HEAD不是未来发布提交号。',
   '关键证据：BASELINE_PARITY.json、FULL_TRAIN_MATCHED_QUALITY_AUDIT.json、LEARNED_GATE_SUPERVISION_PRECHECK.json、LEARNED_GATE_SMOKE_TRAINING.json、LEARNED_GATE_RESULTS.json、LEARNED_FIRST_DIVERGENCE_NATIVE.json、SPEED_METRICS.json、GO_NO_GO.json。']
  forecast=REPORTS/'CACHE_TIMING_RESOURCE_REASSESSMENT.json'
+ proposal=DOCS/'TIMING_RECHECK_PROPOSAL_ZH.md'
+ if proposal.exists():
+  lines+=['','[后续同卡交错计时提案（未授权、未启动）](TIMING_RECHECK_PROPOSAL_ZH.md)：固定9次完整推理，预算依据、顺序、所有结果保留及停止规则已写明。当前12小时守卫未改变；本提案不解决训练种子或独立数据资格。']
  if forecast.exists():
   f=read(forecast);lines+=['',f"缓存计时资源复核（计时前记录）：原固定0.7小时估计的停止记录保留；按相关完整作业实测墙钟耗时×1.10+10秒，估计{f['estimated_seconds']:.3f}秒，复核时剩余{f['remaining_GPU_seconds']:.3f}秒，结论{f['status']}。没有改变12小时硬上限、模型、数据或三轮协议；实际未完成三轮就不能通过效率门槛。见 CACHE_TIMING_RESOURCE_REASSESSMENT.json。"]
  from gmt_jev_tradeoff_figure import main as plot_tradeoff
