@@ -1,0 +1,115 @@
+{
+  "cache": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_input_index_v1/MANIFEST.json",
+    "sha256": "587c2d3069ca2d4a99863eaa4fba960184cf83e2037824b8fb6258e511cc8a1d"
+  },
+  "admission": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_admission_v1/ADMISSION.json",
+    "sha256": "6815f8d694d7aace041fd5b7ab837af1f50eccae2cf229d191e42148df2e0749"
+  },
+  "common_training_domain": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/EXHAUSTIVE_MARGIN_KEYS.json",
+    "sha256": "e6e81a23f9b13a1d5aa418f667b7d60595dbd1112b60e1a35691596021bff257"
+  },
+  "seed": 20261015,
+  "epoch_order_sha256": {
+    "1": "2da109ee7e797e6ffc992e71bcdedb83aa150d8b373d9f96bc0799f0cda15a08",
+    "2": "bea0ddcd9a7c6ba6dd87021e621e0ce8509ef9ec3956552887ae4c66ee9f69f1",
+    "3": "538dd007b63d68beefa4d6825cf183ed8dc1069440c118bf8fa0dfaf392cc8d3",
+    "4": "d7bbdbe0122aee6c683cf7e728103e09336a39ca90252a1408fefbd62a5c976d",
+    "5": "c2475bb9c0b055614de30defa88462dddcf44d5d8933bb1ac2d3a282b405a7da"
+  },
+  "status": "PREREGISTERED_EXHAUSTIVE_MARGIN_SCOPE_BEFORE_OPTIMIZATION",
+  "fit_scenes": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    13,
+    17,
+    20,
+    21,
+    24
+  ],
+  "horizon_boundaries": [
+    1,
+    2,
+    16
+  ],
+  "epochs": [
+    1,
+    3,
+    5
+  ],
+  "CPU_wall_hours_cap": 4,
+  "GPU_wall_hours": 0,
+  "context": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/native_decision_context_v1/MANIFEST.json",
+    "sha256": "da3136add3e414457e1e252bbd589ce4f2be5ddc0f1ecd7455013f674c9dcdd5"
+  },
+  "arms": [
+    "D1_MLP",
+    "D2_MLP_native_margin"
+  ],
+  "parameters_allocated_and_active_per_arm": 38204,
+  "capacity_comparison": "PIRGA innovation38225 vs ordinary38204,21parameters difference0.055%; ordinary hidden11 with full q/history/pair product inputs vs history-only predictor rank16",
+  "shadow": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/NATIVE_DECISION_REAL_CPU_SHADOW.json",
+    "sha256": "2b741496d89ecca1877cd535d7257f2f3ca9b63eaafdc6e2696987ea86aa3be0"
+  },
+  "optimizer": {
+    "name": "AdamW",
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "clip_per_arm": 1.0
+  },
+  "query_batch_size_per_arm": 1,
+  "per_arm_updates_at5epochs": 567265,
+  "network_input": "Full query1152, causal history mean1152, query*mean1152, same11 candidate conditions, softsign native score/threshold/exact C1 other-row opportunity cost and baseline original acceptance indicator",
+  "native_information_note": "Both ordinary arms receive identical full native information. The history-only Phase2 prediction stage excludes current-query-dependent assignment context by design; no claim of equal neural input shape across architectures.",
+  "bounded_score": "C1+0.5 * count/(count+1) * tanh(MLP); same absolute max score-increment bound as Phase2 forecast arms; exact zero initialized fallback C1",
+  "D1_objective": "same known-only multi-positive rank",
+  "D2_objective": "same rank+0.5*(native threshold acceptance margin+full fixed-other-C1-row assignment margin)+0.1 preserve original-certified-correct accepted edge squared delta",
+  "native_margin": 0.1,
+  "competition": "Scores+opportunity cost reflect complete residual assignment under fixed other C1 rows. Only known pure current-row nonpositive identities are supervised negatives. UNKNOWN other rows remain numeric solver context; not identity negative labels.",
+  "preserve": "Only original certified correct_link with original accepted column in certified positive alias set; GT only TRAIN loss, never inference input",
+  "original_source_decision_input": "Native original Hungarian acceptance indicator, not GT actual_primary_state",
+  "learning_signal_218_prediction_only_queries": "D1 rank data loss exactly zero when all known candidates are positive; D2 legal positive acceptance-margin can remain defined. Equal optimizer visits, no UNKNOWN fake negatives.",
+  "preregistration": "Prepared before Phase2 DEV results; strong ordinary controls are necessary regardless of whether predictive branch has independent value. No complex predictive-reliability combination admitted.",
+  "evaluation": {
+    "scope": "whole sealed exposedDEV12",
+    "endpoints": [
+      1,
+      3,
+      5
+    ],
+    "exact_C0_C1_reference_required": true,
+    "all_actions_before_GT": true,
+    "label": "SAME_STATE_NATIVE_REPLAY_ONLY",
+    "no_auto_online": true
+  },
+  "created_utc": "2026-10-15T21:36:35.663292+00:00",
+  "source_code_sha256": {
+    "geo_tools/pirga_decision_head.py": "bcd9cd1c6917bbe4ee6e918f1cf7da8e8e63bd2a399fb3e4a23267dce23d3aef",
+    "geo_tools/pirga_candidate_state.py": "127e7c5abadbf025c0af94df3ddcd9858a64ed408ba42ef58289dadb79fd50ae",
+    "geo_tools/pirga_training_cache.py": "772bd3cf4da82a5b11be948ba6eef4361b1343b059028c6fece689b9eb291d42",
+    "geo_tools/pirga_fulltrain_dataset.py": "928bf8a10eac49928cf6c168046582a4c2f5d59af98a5148456e63273a23d06b",
+    "geo_tools/cv_pil_native_handoff.py": "eee493422c9133f7692ac5fd9bb97577e8748b1016b5f92a17d36086c5e4e53a",
+    "geo_tools/train_pirga_exhaustive_margin.py": "d88797f80637b56a218eacff151669752d5da0fa564212daaa40b86f5487afda"
+  },
+  "full_common_coverage_per_epoch": 113453,
+  "relationship_to_matched_controls": "Supplement only. Original113415-query common-domain D1/D2 and all prediction fits remain unchanged and complete. New ordinary pair uses113453 pure-positive queries, same architecture/loss/seed/optimizer/endpoints,190extra total optimizer visits over5epochs. Never describe cross-family comparison to this supplement as identical sample/update budget.",
+  "scope_reason": "TRAIN-only objective applicability audit found38 pure-positive queries outside old rank/cross-pred union, including4 ambiguous-reference queries with legal positive same-camera history and34 with no controllable positive history. All38 retain UNKNOWN masks; none added using DEV or rawGT rematching.",
+  "scope_audit": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/NATIVE_MARGIN_SUPERVISION_SCOPE_AUDIT.json",
+    "sha256": "4f14ec69b35a0f1ec085322b2ff469a4a6597c24c072f7e07648d3134e15acb8"
+  },
+  "interpretation": "Same-data causal margin comparison remains D2_vs_D1 within each scope. Extra scope effects are separate, never predictive success. Does not add negative-only identity-rejection objectives or label UNKNOWN candidates negative."
+}

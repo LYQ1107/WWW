@@ -1,0 +1,69 @@
+{
+  "status": "NO_PREDICTION_SPECIFIC_GAIN",
+  "epoch": 3,
+  "comparison_to_C1": {
+    "extra_original_error_repairs": 0,
+    "lost_original_error_repairs": 1,
+    "net_original_error_repairs": -1,
+    "extra_repaired_video_person_groups": 0,
+    "net_positive_original_repair_person_groups": 0,
+    "additional_known_harm_queries": 1,
+    "additional_correct_to_unknown": 0,
+    "avoided_ordinary_model_harms": 0,
+    "by_person": {
+      "3": {
+        "extra_original_repairs": 0,
+        "lost_original_repairs": 1,
+        "additional_known_harms": 0,
+        "avoided_known_harms": 0
+      },
+      "12": {
+        "extra_original_repairs": 0,
+        "lost_original_repairs": 0,
+        "additional_known_harms": 1,
+        "avoided_known_harms": 0
+      }
+    },
+    "extra_fix_keys": [],
+    "lost_fix_keys": [
+      [
+        12,
+        30240,
+        5
+      ]
+    ]
+  },
+  "certification_transitions": {
+    "C3_vs_C1": {
+      "True -> True": 11709,
+      "False -> False": 19,
+      "None -> None": 2823,
+      "False -> None": 1,
+      "True -> False": 2,
+      "None -> False": 3
+    },
+    "C3_vs_C2": {
+      "True -> True": 11702,
+      "True -> False": 2,
+      "False -> False": 20,
+      "None -> None": 2822,
+      "False -> True": 6,
+      "False -> None": 2,
+      "None -> False": 2,
+      "None -> True": 1
+    },
+    "C3_vs_C4": {
+      "True -> True": 11709,
+      "False -> False": 20,
+      "None -> None": 2823,
+      "False -> None": 1,
+      "True -> False": 2,
+      "None -> False": 2
+    }
+  },
+  "old_helper_gate_is_not_PIRGA_admission": true,
+  "original_helper_label_preserved": "CAMERA_CONDITION_VALUE_NOT_ESTABLISHED",
+  "no_online_admission": true,
+  "scientific_success": false,
+  "qualification": "One exposed DEV scene. Raw inherited helper can call C3 vs C2/C4 positive; PIRGA additionally requires extra net native repairs over C1 and strong ordinary models. Never interpret inherited helper label as PIRGA success."
+}
