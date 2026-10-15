@@ -51,12 +51,13 @@ AdamW lr0.001、weight_decay0.0001、FP32、clip1、seed20261009；结构化 ass
 | 完整冷启动 TRAIN16 | HOTA | ΔHOTA | AssA | CVIDF1 | IDSW | Frag | 完整图像FPS |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | mlp | 68.654661 | +0.600573 | 68.098573 | 88.001081 | 1945 | 501 | PENDING |
-| attention | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
+| attention | 67.508007 | -0.546082 | 65.804120 | 85.595046 | 1965 | 497 | PENDING |
 | cic | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
 
 | 头 | 已正确接受式参考 | 保持率 | N01 | N10 | UNKNOWN目标 | UNKNOWN参考Bank/出生 |
 |---|---:|---:|---:|---:|---:|---:|
 | mlp | 30150 | 99.996683% | 0 | 1 | 27705 | 31 |
+| attention | 29925 | 99.993317% | 0 | 2 | 27922 | 32 |
 
 该局部计数只对同一当前真实状态的原始GMT接受式MATCH作参考，原始拒绝后的Bank反事实未知。HOTA正号不代表已证明局部纠错机制，UNKNOWN覆盖及后续状态传播须分开解释。
 

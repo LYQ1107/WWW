@@ -3,6 +3,514 @@
   "all_three_speed_complete": false,
   "independent_validation": false,
   "methods": {
+    "attention": {
+      "FPS_ratio_to_GMT": null,
+      "correct_accepted_reference_preservation_rate": 0.9999331662489557,
+      "delta": {
+        "AssA": -1.260372472323752,
+        "CVIDF1": -0.9495729456192095,
+        "DetA": 0.2086551634802163,
+        "Frag": -6.0,
+        "HOTA": -0.5460816580243772,
+        "IDF1": -0.4833343260975056,
+        "IDSW": 67.0,
+        "MOTA": -0.10851056725985586
+      },
+      "efficiency_gate_pass": null,
+      "full_image_FPS": null,
+      "independent_validation": false,
+      "joint_measured_quality_pass": false,
+      "paired_current_state_counts": {
+        "N10": 2,
+        "N10_new_identity_fragment": 2,
+        "UNKNOWN_reference_Bank_or_birth": 32,
+        "UNKNOWN_reference_owner": 85,
+        "UNKNOWN_target": 27922,
+        "actual_unique_target_commits": 29934,
+        "certified_accepted_reference_rows": 30398,
+        "changed_accepted_reference_commits": 425,
+        "correct_reference_preserved": 29923,
+        "eligible_unique_rows": 30515,
+        "reference_correct": 29925,
+        "reference_wrong_person": 473,
+        "rows": 58437,
+        "unique_active_rows": 30515
+      },
+      "post_hoc_past_anchor_temporal": {
+        "GT_actor_input": false,
+        "annotations": {
+          "SHA256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+          "bytes": 112423855,
+          "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json"
+        },
+        "counts": {
+          "SAME_PERSON_observations": 49702,
+          "UNKNOWN_GT_observations": 3818,
+          "UNKNOWN_UNCERTIFIED_OWNER_observations": 856,
+          "WRONG_PERSON_observations": 4091,
+          "censored_episodes": 152,
+          "certified_historical_anchors": 65,
+          "known_GT_observations": 54649,
+          "observations": 58467,
+          "observed_repaired_episodes": 82,
+          "wrong_person_episodes": 234
+        },
+        "duplicate_GT_observations_masked": 1633,
+        "duration_ratio_to_original": 1.0091267883571782,
+        "episode_p50_p95_max_camera_frames": [
+          2.0,
+          81.69999999999987,
+          778.0
+        ],
+        "kind": "attention",
+        "limitations": [
+          "Only strictly earlier-scene first-certified >=3/80% owner anchors; no future owner relabeling.",
+          "UNKNOWN/newborn/alias coverage and censoring can change between trajectories; consult all counts and IDSW/Frag.",
+          "Camera frames, not seconds. Observed persistence is not an individual-intervention causal propagation effect.",
+          "Post-hoc audit, never used to select head, step, threshold or architecture."
+        ],
+        "longest_20_episodes": [
+          {
+            "certified_ID_changes_inside_episode": 1,
+            "duration_camera_frames": 778,
+            "end": 1033,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 37,
+            "first_wrong_anchor_person": 30,
+            "last_native_ID": 47,
+            "person": 32,
+            "right_censored": true,
+            "start": 256,
+            "termination": "VIDEO_END_CENSORING",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 7,
+            "duration_camera_frames": 263,
+            "end": 1033,
+            "first_anchor_certified_after_scene": 750,
+            "first_native_ID": 1129,
+            "first_wrong_anchor_person": 8,
+            "last_native_ID": 6,
+            "person": 15,
+            "right_censored": true,
+            "start": 771,
+            "termination": "VIDEO_END_CENSORING",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 208,
+            "end": 227,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 47,
+            "first_wrong_anchor_person": 28,
+            "last_native_ID": 47,
+            "person": 32,
+            "right_censored": true,
+            "start": 20,
+            "termination": "GAP_OR_UNKNOWN_GT_CENSORING",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 207,
+            "end": 1025,
+            "first_anchor_certified_after_scene": 1,
+            "first_native_ID": 6,
+            "first_wrong_anchor_person": 13,
+            "last_native_ID": 6,
+            "person": 15,
+            "right_censored": true,
+            "start": 819,
+            "termination": "GAP_OR_UNKNOWN_GT_CENSORING",
+            "view": 1
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 200,
+            "end": 286,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 38,
+            "first_wrong_anchor_person": 12,
+            "last_native_ID": 38,
+            "person": 43,
+            "right_censored": true,
+            "start": 87,
+            "termination": "GAP_OR_UNKNOWN_GT_CENSORING",
+            "view": 1
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 169,
+            "end": 807,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 32,
+            "first_wrong_anchor_person": 16,
+            "last_native_ID": 32,
+            "person": 14,
+            "right_censored": true,
+            "start": 639,
+            "termination": "GAP_OR_UNKNOWN_GT_CENSORING",
+            "view": 1
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 159,
+            "end": 1033,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 48,
+            "first_wrong_anchor_person": 23,
+            "last_native_ID": 48,
+            "person": 22,
+            "right_censored": true,
+            "start": 875,
+            "termination": "VIDEO_END_CENSORING",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 155,
+            "end": 808,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 32,
+            "first_wrong_anchor_person": 16,
+            "last_native_ID": 32,
+            "person": 14,
+            "right_censored": true,
+            "start": 654,
+            "termination": "GAP_OR_UNKNOWN_GT_CENSORING",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 133,
+            "end": 801,
+            "first_anchor_certified_after_scene": 1,
+            "first_native_ID": 6,
+            "first_wrong_anchor_person": 13,
+            "last_native_ID": 6,
+            "person": 15,
+            "right_censored": true,
+            "start": 669,
+            "termination": "GAP_OR_UNKNOWN_GT_CENSORING",
+            "view": 1
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 111,
+            "end": 1033,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 36,
+            "first_wrong_anchor_person": 22,
+            "last_native_ID": 36,
+            "person": 23,
+            "right_censored": true,
+            "start": 923,
+            "termination": "VIDEO_END_CENSORING",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 100,
+            "end": 977,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 42,
+            "first_wrong_anchor_person": 14,
+            "last_native_ID": 42,
+            "person": 13,
+            "right_censored": false,
+            "start": 878,
+            "termination": "OBSERVED_CERTIFIED_SAME_PERSON_REPAIR",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 96,
+            "end": 745,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 42,
+            "first_wrong_anchor_person": 14,
+            "last_native_ID": 42,
+            "person": 16,
+            "right_censored": true,
+            "start": 650,
+            "termination": "GAP_OR_UNKNOWN_GT_CENSORING",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 74,
+            "end": 605,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 32,
+            "first_wrong_anchor_person": 16,
+            "last_native_ID": 32,
+            "person": 14,
+            "right_censored": true,
+            "start": 532,
+            "termination": "UNCERTIFIED_OWNER_CENSORING",
+            "view": 1
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 71,
+            "end": 464,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 32,
+            "first_wrong_anchor_person": 16,
+            "last_native_ID": 32,
+            "person": 14,
+            "right_censored": true,
+            "start": 394,
+            "termination": "GAP_OR_UNKNOWN_GT_CENSORING",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 61,
+            "end": 378,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 32,
+            "first_wrong_anchor_person": 16,
+            "last_native_ID": 32,
+            "person": 14,
+            "right_censored": false,
+            "start": 318,
+            "termination": "OBSERVED_CERTIFIED_SAME_PERSON_REPAIR",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 59,
+            "end": 295,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 32,
+            "first_wrong_anchor_person": 16,
+            "last_native_ID": 32,
+            "person": 14,
+            "right_censored": false,
+            "start": 237,
+            "termination": "OBSERVED_CERTIFIED_SAME_PERSON_REPAIR",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 53,
+            "end": 530,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 32,
+            "first_wrong_anchor_person": 16,
+            "last_native_ID": 32,
+            "person": 14,
+            "right_censored": true,
+            "start": 478,
+            "termination": "UNCERTIFIED_OWNER_CENSORING",
+            "view": 1
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 44,
+            "end": 762,
+            "first_anchor_certified_after_scene": 537,
+            "first_native_ID": 783,
+            "first_wrong_anchor_person": 13,
+            "last_native_ID": 783,
+            "person": 8,
+            "right_censored": false,
+            "start": 719,
+            "termination": "OBSERVED_CERTIFIED_SAME_PERSON_REPAIR",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 41,
+            "end": 791,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 42,
+            "first_wrong_anchor_person": 14,
+            "last_native_ID": 42,
+            "person": 16,
+            "right_censored": true,
+            "start": 751,
+            "termination": "GAP_OR_UNKNOWN_GT_CENSORING",
+            "view": 0
+          },
+          {
+            "certified_ID_changes_inside_episode": 0,
+            "duration_camera_frames": 40,
+            "end": 378,
+            "first_anchor_certified_after_scene": 2,
+            "first_native_ID": 42,
+            "first_wrong_anchor_person": 14,
+            "last_native_ID": 42,
+            "person": 16,
+            "right_censored": true,
+            "start": 339,
+            "termination": "GAP_OR_UNKNOWN_GT_CENSORING",
+            "view": 0
+          }
+        ],
+        "no_gradient_updates": true,
+        "no_new_GMT_run": true,
+        "predictions": {
+          "SHA256": "6c3cd505beb7aa58c291288d93a2e4f7d3b08c450055f39fcd7cb78803ae1b9f",
+          "bytes": 2787803,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/RAW_PREDICTIONS.json.gz"
+        },
+        "scientific_success": false,
+        "status": "COMPLETE_POST_HOC_PAST_ANCHOR_DIAGNOSTIC",
+        "wrong_person_observed_duration_camera_frames": 4091
+      },
+      "primary_raw": {
+        "CVIDF1": 85.59504600021965,
+        "CVMA": 86.4311709124904,
+        "CV_counts": {
+          "IDFN": 9243,
+          "IDFP": 7808,
+          "IDTP": 50659,
+          "n_gt": 59902,
+          "n_tr": 58467
+        },
+        "CV_errors": {
+          "fn": 3625,
+          "fp": 3042,
+          "id_switches": 1461,
+          "tp": 55425
+        },
+        "MATLAB": {
+          "SHA256": "eefe5af65a8bd199aa386afd4ed7a8bb48a7c09f963bd07b9b3aa54b8d830012",
+          "bytes": 2065,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/raw_metrics/MATLAB_NATIVE.json"
+        },
+        "TrackEval": {
+          "SHA256": "f36674a9f7c12fb952af089446f875a536c5ebf4372a8f4351c5dfecc7b0646e",
+          "bytes": 8046,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/raw_metrics/TRACKEVAL_NATIVE.json"
+        },
+        "converter_input_SHA_before_regenerable_cleanup": [
+          {
+            "GT": {
+              "SHA256": "2a867fc26e05f86f94523712817561069cb2a70de0c4a3259af5c987b91053eb",
+              "bytes": 799578,
+              "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/raw_metrics/REGENERABLE_EVAL/TrackEval/tracking_eval_runtime_state/native/prepared/trackeval/gt/00066football_View1/gt/gt.txt"
+            },
+            "prediction": {
+              "SHA256": "bbf7768d6ce865afde9bc3be8b3822d03454cd651ae6c7b1bebe8a567ce17b93",
+              "bytes": 1889300,
+              "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/raw_metrics/REGENERABLE_EVAL/TrackEval/tracking_eval_runtime_state/native/prepared/trackeval/trackers/GMT/data/00066football_View1.txt"
+            },
+            "sequence": "00066football_View1"
+          },
+          {
+            "GT": {
+              "SHA256": "59fbf75813d9ef77e8d6301a26ed6a6065d608fd6a7e6b13d4d5c66e267c1766",
+              "bytes": 826292,
+              "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/raw_metrics/REGENERABLE_EVAL/TrackEval/tracking_eval_runtime_state/native/prepared/trackeval/gt/00066football_View2/gt/gt.txt"
+            },
+            "prediction": {
+              "SHA256": "1d26259974d21373d3242961aa3f2520905cc719a84a3494a0ef9fc11f34f212",
+              "bytes": 2047596,
+              "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/raw_metrics/REGENERABLE_EVAL/TrackEval/tracking_eval_runtime_state/native/prepared/trackeval/trackers/GMT/data/00066football_View2.txt"
+            },
+            "sequence": "00066football_View2"
+          }
+        ],
+        "metrics": {
+          "AssA": 65.80412031240667,
+          "DetA": 69.61966787712743,
+          "Frag": 497.0,
+          "HOTA": 67.50800693730507,
+          "IDF1": 86.69894568445416,
+          "IDSW": 1965.0,
+          "MOTA": 86.89192347500918
+        },
+        "temporary_inputs_regenerable_from_retained_predictions": true,
+        "unchanged_official_toolkit": true
+      },
+      "quality_gates": {
+        "AssA": false,
+        "CVIDF1": false,
+        "Frag": true,
+        "HOTA": false,
+        "IDSW": true,
+        "descriptive_long_error": false,
+        "genuinely_causal_error_propagation": "NOT_ESTABLISHED"
+      },
+      "report": {
+        "SHA256": "2930117015407118e884473d8744982a632573988d2f4ae2c7b4d81a8f85b94c",
+        "bytes": 15620,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/ONLINE_attention_learned.json"
+      },
+      "scientific_success": false,
+      "secondary_stock": {
+        "CVIDF1": 86.75479656396276,
+        "CVMA": 86.21248038462824,
+        "CV_counts": {
+          "IDFN": 9304,
+          "IDFP": 6146,
+          "IDTP": 50598,
+          "n_gt": 59902,
+          "n_tr": 56744
+        },
+        "CV_errors": {
+          "fn": 4603,
+          "fp": 2297,
+          "id_switches": 1359,
+          "tp": 54447
+        },
+        "MATLAB": {
+          "SHA256": "1c84e4e67ee5fe62482d0b9593e55ef066ab32bdf360ddc49576f3766bcbc6b8",
+          "bytes": 2030,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/stock_metrics/MATLAB_NATIVE.json"
+        },
+        "TrackEval": {
+          "SHA256": "f11ba6637211b32c46ab1b8e3a20d0125bf7051f5d3a2fa4a63f816bf220e2aa",
+          "bytes": 8043,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/stock_metrics/TRACKEVAL_NATIVE.json"
+        },
+        "converter_input_SHA_before_regenerable_cleanup": [
+          {
+            "GT": {
+              "SHA256": "2a867fc26e05f86f94523712817561069cb2a70de0c4a3259af5c987b91053eb",
+              "bytes": 799578,
+              "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/stock_metrics/REGENERABLE_EVAL/TrackEval/tracking_eval_runtime_state/native/prepared/trackeval/gt/00066football_View1/gt/gt.txt"
+            },
+            "prediction": {
+              "SHA256": "d2d78b9a4126e19a73dbf6c657168aaf45298c4d840a3a51924a9ea7c87e7229",
+              "bytes": 1862676,
+              "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/stock_metrics/REGENERABLE_EVAL/TrackEval/tracking_eval_runtime_state/native/prepared/trackeval/trackers/GMT/data/00066football_View1.txt"
+            },
+            "sequence": "00066football_View1"
+          },
+          {
+            "GT": {
+              "SHA256": "59fbf75813d9ef77e8d6301a26ed6a6065d608fd6a7e6b13d4d5c66e267c1766",
+              "bytes": 826292,
+              "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/stock_metrics/REGENERABLE_EVAL/TrackEval/tracking_eval_runtime_state/native/prepared/trackeval/gt/00066football_View2/gt/gt.txt"
+            },
+            "prediction": {
+              "SHA256": "2dce41718ae3d164aae134579bb8131c7219d77fcade230dad39f4221d93c9c7",
+              "bytes": 1956758,
+              "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/stock_metrics/REGENERABLE_EVAL/TrackEval/tracking_eval_runtime_state/native/prepared/trackeval/trackers/GMT/data/00066football_View2.txt"
+            },
+            "sequence": "00066football_View2"
+          }
+        ],
+        "metrics": {
+          "AssA": 66.88322763273865,
+          "DetA": 69.19029881636935,
+          "Frag": 554.0,
+          "HOTA": 67.86246503702124,
+          "IDF1": 87.88365545710487,
+          "IDSW": 444.0,
+          "MOTA": 88.87516276585089
+        },
+        "temporary_inputs_regenerable_from_retained_predictions": true,
+        "unchanged_official_toolkit": true
+      },
+      "speed_report": null
+    },
     "mlp": {
       "FPS_ratio_to_GMT": null,
       "correct_accepted_reference_preservation_rate": 0.999966832504146,
