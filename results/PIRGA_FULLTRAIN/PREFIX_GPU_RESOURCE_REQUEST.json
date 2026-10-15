@@ -1,0 +1,32 @@
+{
+  "status": "PROPOSED_NOT_AUTHORIZED",
+  "scope": "PIRGA_FIT_PREFIX_OFF_ON",
+  "scene": 4,
+  "groups": 40,
+  "authorization_source": null,
+  "maximum_process_seconds": 360,
+  "maximum_total_gpu_wall_hours": 0.25,
+  "maximum_output_bytes": 134217728,
+  "minimum_free_bytes": 32212254720,
+  "old_ledgers_reset": false,
+  "authorized_gpu_indices": [
+    2,
+    3,
+    7,
+    8,
+    9
+  ],
+  "one_shot_lock_path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/prefix_gpu_permit_v1.consumed",
+  "sealed_native_audit": "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene4_full_v1",
+  "sealed_native_audit_manifest_sha256": "15a7c75005444af31c0272a79560e5da336923fb4e41b858fabfbe12326b8ae8",
+  "bound_native_source_sha256": {
+    "gtr/geometry/decision_trace.py": "1a929fe455a2c2ee6c39085f02ac622bb1decaf65cdb9c60e1690eab4299ef52",
+    "gtr/geometry/online_runner.py": "88b2b3e5af629c23561f08acbb967e0937bbd436acc95f04a9a9f08a60cfad96",
+    "gtr/modeling/meta_arch/gtr_rcnn.py": "cda0e85e7fdd58a1347beba59d1b6011ad8b696b327ca4b71f1a7c50e6cb64f4",
+    "gtr/modeling/roi_heads/gtr_roi_heads.py": "3e90b9377368cefad7dd482daa66d875e182e1fe46f54aa1928d920f219794b6",
+    "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a"
+  },
+  "rationale": "User PIRGA section11 explicitly says proposed12/4/8 limits are not automatic extra authorization. Prior consumer GPU0, conditional integration1h unused but not a full-train asset allocation; no transferable new-scope reservation found. Other branch quotas remain separate.",
+  "command_template": "OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 /home/liuyeqiang/anaconda3/envs/GMT/bin/python geo_tools/run_pirga_prefix_pair.py --permit AUTHORIZED_PERMIT.json --permit-sha SHA256 --out /data1/liuyeqiang/WWW_pirga_runtime_20261016/fresh_fit40_prefix_pair_v1 --gpu 2 --python /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python",
+  "next_stage": "Use measured fresh scene4 OFF/ON cost plus actual11-scene call census to register full export cap; no full11 automatic launch under this permit."
+}
