@@ -30,7 +30,11 @@ def paired_plan(base,mlp,refs,targets,categories,people,owners):
     elif all(a and b for a,b in rows):category='BOTH_CORRECT_OR_EQUIVALENT';label=None
     elif not any(a or b for a,b in rows):category='BOTH_WRONG';label=None
     else:category='MIXED_PLAN_TRADEOFF_NO_LABEL';label=None
-    return dict(category=category,changed=changed,label=label,people=sorted({people[r] for r in changed if people[r] is not None}),unknown_reasons=dict(reasons))
+    involved={people[r] for r in changed if people[r] is not None}
+    for r in changed:
+        for col in [base[r],mlp[r]]:
+            if col>=0 and owners.get(refs[col]) is not None:involved.add(owners[refs[col]])
+    return dict(category=category,changed=changed,label=label,people=sorted(involved),unknown_reasons=dict(reasons))
 
 def dependency_components(events):
     """Person-connected plans are dependent even across cameras/time buckets."""
