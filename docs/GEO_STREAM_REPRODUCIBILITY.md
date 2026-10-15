@@ -40,9 +40,11 @@ Frozen GMT internals and its sequential camera update order are retained. The or
 
 ## Refresh derived reports after a declared run finishes
 
-Copy only complete native suite metrics into `results/`, retaining their original provenance. The analysis commands below read actual outputs; they do not perform inference or train/select a new model:
+Copy only complete native suite metrics into `results/`, retaining their original provenance. `collect_native_suites.py` verifies the exact source specification, prediction/run-manifest/raw-GT hashes, scene scope and protocol before importing an existing completed report. With `--generate-ready`, it may combine only the two declared root-owned fixed-primary-head inference-RNG suites, after every scene has a successful full-video native metric. Original TRAIN-head queue combination stages retain ownership. Existing result files are preserved; incomplete suite directories or changed artifacts require inspection and are never silently retried. The analysis commands below read actual outputs; they do not perform inference or train/select a new model:
 
 ```bash
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+  /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/collect_native_suites.py --generate-ready
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/audit_suite_settings.py
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
