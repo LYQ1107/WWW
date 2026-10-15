@@ -63,6 +63,9 @@ def main():
     if dense_seed_path.exists():
         factors=json.loads(dense_seed_path.read_text())
         signal_text+=' 密集因果种子复核分开记录：'+'；'.join(f"{group['method']}/{group['factor']}完成{group['completed_trials']}/3" for group in factors['groups'])+'。B7主种子在两类因素间共享，不是独立重复；完整原生strict5、实际推理种子及head哈希逐项核验，见GEO_STREAM_DENSE_SEED_STABILITY.md。'
+        feature=next((group for group in factors['groups'] if group['method']=='B5' and group['factor']=='training_head_seed'),None)
+        if feature and feature['complete']:
+            signal_text+=' 特征单独启用B5的完整strict5三个TRAIN头CVIDF1增量为'+','.join(f"{row['paired_metric_delta']['CVIDF1']:+.6f}" for row in feature['rows'])+'个百分点，第三个为负；固定实际推理种子与检测集合，不能宣称稳定特征改进。B7完整三头和固定主头推理RNG结果仍待齐全。'
         observed=[row for row in factors.get('scene1_training_head_diagnostic',{}).get('rows',[]) if row['method']=='B7']
         if len(observed)==3:
             signal_text+=' 完整scene1的三个TRAIN头在固定推理种子20261014下CVIDF1分别为'+','.join(f"{row['metrics']['CVIDF1']:.6f}" for row in observed)+'，第三头低于同场景基线；检测集合和其他融合设置相同。这是训练头不稳定的单场景证据，不能当作完整DEV三种子结果。'
@@ -132,6 +135,11 @@ def main():
             note=' 构造CPU退化检查另行通过：空白/独立生成背景的ORB/SIFT均拒绝几何并原样保留分数；60°平面旋转使光流失效、旧几何禁用，但运动单触发未请求更新。因此motion=0可表示估计失败，不代表无运动。这些是合成检测/过去F条件下的代码检查，不是真实UAV视野/旋转或VGGT有效性证据；见constructed_geometry_degeneracy_v1.json。'
             selected={'运动无人机如何保证几何一致性？','少重叠视野是否有效？','身份触发优于固定周期吗？'}
             questions=[(q,a+note if q in selected else a) for q,a in questions]
+    process_path=ROOT/'results/process_wall_runtime_v1.json'
+    if process_path.exists():
+        process=json.loads(process_path.read_text())
+        note=f" 另有{len(process['rows'])}个完整进程、{len(process['suites'])}套完整strict5的外层启动到退出观察耗时；{len(process['excluded_held_stages'])}个与调度器暂停窗口关联的条目被排除。进程口径包含Python导入、静态模型准备及导出/溯源，单独GT评价和队列等待不计入；区间差额不是纯模型初始化。缺失不补0，详见GEO_STREAM_PROCESS_WALL_RUNTIME.md。"
+        questions=[(q,a+note if q=='完整 FPS/延迟/显存/参数量？' else a) for q,a in questions]
     lines=['# Reviewer questions — current evidence','', 'This file is generated from current artifacts; pending items are not claims of completion.','']
     for i,(q,a) in enumerate(questions,1):lines += [f'## Q{i}: {q}','',a,'']
     (ROOT/'docs/REVIEWER_QUESTIONS.md').write_text('\n'.join(lines))

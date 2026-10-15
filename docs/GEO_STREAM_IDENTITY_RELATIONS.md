@@ -36,5 +36,6 @@ Offline GMT includes its original full-video postprocessing; causal GMT uses the
 | Native fixed prior / native_prior_seed20261015_strict_suite_v1 | causal | 60080 | 0/0 | 98661 | 60949 | 95.124670 | 379 |
 | B5 dense head seed20261015 / causal_B5_dense_seed20261015_strict_suite_v1 | causal | 60080 | 0/0 | 73800 | 3765 | 95.142567 | 388 |
 | Native fixed prior / native_prior_seed20261016_strict_suite_v1 | causal | 60080 | 0/0 | 95744 | 2574 | 95.267846 | 384 |
+| B5 dense head seed20261016 / causal_B5_dense_seed20261016_strict_suite_v1 | causal | 60080 | 0/0 | 71712 | 11926 | 94.989628 | 392 |
 
-Pending complete suites: causal_B7_dense_seed20261015_strict_suite_v1, causal_B5_dense_seed20261016_strict_suite_v1, causal_B7_dense_seed20261016_strict_suite_v1, causal_B7_primary_head_inference_seed20261015_strict_suite_v1, causal_B7_primary_head_inference_seed20261016_strict_suite_v1.
+Pending complete suites: causal_B7_dense_seed20261015_strict_suite_v1, causal_B7_dense_seed20261016_strict_suite_v1, causal_B7_primary_head_inference_seed20261015_strict_suite_v1, causal_B7_primary_head_inference_seed20261016_strict_suite_v1.

@@ -34,6 +34,8 @@ The relevant entry points are:
 | `geo_tools/run_decision_trace.py` | Diagnostic actual solver provenance; prediction gate before GT labeling; excluded from speed claims |
 | `geo_tools/validate_physical_camera_input.py` | Explicit physical-ID input contract against retained order-failure fixtures; does not make internal query order invariant |
 | `geo_tools/test_constructed_geometry_degeneracy.py --report-output NEW_PATH` | CPU procedural blank/unrelated-background and60-degree in-plane-rotation checks; synthetic detections/past F, exact invalid-geometry score fallback, temporal rejection and observed motion-trigger response; refuses an existing report |
+| `geo_tools/audit_process_wall_runtime.py` | Actual complete queue launch/wait costs, sealed log/run/output hashes; excludes recorded held children and conservative priority-owner overlap; no zero-filled setup estimate |
+| `geo_tools/monitor_project_resources.py` | Passive samples on allocated0/4/5/6 for explicitly named live project controllers/descendants; unique tag, per-PID RSS and NVIDIA process memory, whole-device utilization; exits after those jobs finish |
 | `geo_tools/evaluate_predictions.py` | Native per-scene evaluation using the paired run manifest |
 | `geo_tools/evaluate_suite.py` | Native TrackEval combination over every declared strict scene; does not average normalized per-scene scores |
 
@@ -56,6 +58,8 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/audit_identity_matrix.py --generate-missing
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/audit_dense_seed_stability.py
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+  /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/audit_process_wall_runtime.py
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/update_www_scope.py
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \

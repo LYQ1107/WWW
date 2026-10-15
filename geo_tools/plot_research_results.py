@@ -233,6 +233,25 @@ def main():
         fig.suptitle('Complete causal strict5: attribution against frozen GMT',fontsize=12)
         fig.text(.5,.012,'Primary TRAIN-head seed; inference seed20261014. Feature/joint raw outputs are exact; no stable architecture or speed claim.',ha='center',fontsize=8)
         fig.tight_layout(rect=(0,.05,1,.94));fig.savefig(out/'causal_full_dev_attribution.png',dpi=180);fig.savefig(out/'causal_full_dev_attribution.pdf');plt.close(fig)
+    seed_path=ROOT/'results/causal_dense_seed_stability_v1.json'
+    if seed_path.exists():
+        stability=json.loads(seed_path.read_text())
+        feature=next((group for group in stability['groups'] if group['method']=='B5' and group['factor']=='training_head_seed'),None)
+        if feature and feature['complete']:
+            sources[str(seed_path)]=sha256(seed_path)
+            trials=feature['rows']
+            if len(trials)!=3 or any(row['inference_seed']!=20261014 or not row['exact_detector_membership'] for row in trials):
+                raise ValueError('three paired fixed-inference-seed trials required')
+            fig,axes=plt.subplots(1,3,figsize=(10.5,3.5),sharey=True)
+            for axis,metric in zip(axes,['HOTA','AssA','CVIDF1']):
+                values=[row['paired_metric_delta'][metric] for row in trials]
+                axis.barh(np.arange(3),values,color=['#427aab' if value>=0 else '#a65d50' for value in values])
+                axis.axvline(0,color='black',linewidth=.8);axis.set_title(metric);axis.set_xlabel('Paired change (percentage points)');axis.grid(axis='x',alpha=.2);axis.margins(x=.65)
+                for index,value in enumerate(values):axis.annotate(f'{value:+.6f}',(value,index),xytext=(4 if value>=0 else -4,0),textcoords='offset points',ha='left' if value>=0 else 'right',va='center',fontsize=8)
+            axes[0].set_yticks(np.arange(3),[str(row['training_head_seed']) for row in trials]);axes[0].invert_yaxis()
+            fig.suptitle('Dense feature-only B5: three TRAIN head seeds, complete strict5',fontsize=12)
+            fig.text(.5,.012,'Frozen GMT and inference RNG20261014; exact detector membership. All three heads retained; no confidence interval or stable-effect claim.',ha='center',fontsize=8)
+            fig.tight_layout(rect=(0,.06,1,.94));fig.savefig(out/'causal_B5_training_seed_deltas.png',dpi=180);fig.savefig(out/'causal_B5_training_seed_deltas.pdf');plt.close(fig)
     save_json(out/'manifest.json', dict(status='IN_PROGRESS_FIGURES', source_artifacts=sources,
               outputs={path.name:sha256(path) for path in out.iterdir() if path.suffix in {'.png','.pdf'}},
               provenance=provenance(), limitations='incomplete research matrix; no replicate confidence intervals or accuracy/runtime Pareto superiority inferred'))

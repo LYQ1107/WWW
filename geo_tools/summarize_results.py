@@ -90,7 +90,30 @@ def main():
                     output_pair_matched_detections=relation['matched_detections'])
     metrics=['method','video_id','full_video','causal_online','raw_gt_diagnostic','HOTA','DetA','AssA','IDF1','CVIDF1','CVMA','CVMA_sequential','MOTA','IDSW',
              'output_pair_scope','cross_camera_output_pair_fixes','cross_camera_output_pair_harms','output_pair_matched_detections','source','sha256']
-    runtime=['method','video_id','full_video','causal_online','speed_eligible','camera_image_fps','synchronized_group_fps','total_seconds','inference_seconds','read_preprocess_seconds','peak_gpu_bytes','geo_calls','geo_seconds','detection_p50','detection_p95','end_to_end_p50','end_to_end_p95','latency_note','source']
+    wall_path=ROOT/'results/process_wall_runtime_v1.json'
+    if wall_path.exists():
+        from audit_process_wall_runtime import record_digest
+        wall=json.loads(wall_path.read_text())
+        for source,digest in wall['source_artifacts'].items():
+            if sha256(source)!=digest:raise ValueError('process cost source changed: '+source)
+        queues={}
+        for snapshot in wall['stage_snapshots'].values():
+            path=snapshot['queue']
+            if path not in queues:queues[path]=json.loads(Path(path).read_text())
+            stage=next(row for row in queues[path]['stages'] if row['id']==snapshot['stage']['id'])
+            if record_digest(stage)!=snapshot['stage_record_sha256']:raise ValueError('completed stage record changed')
+        by_manifest={row['manifest']:row for row in wall['rows']}
+        excluded={row['method']:row['reason'] for row in wall['excluded_held_stages']}
+        for row in runtime_rows:
+            cost=by_manifest.get(row['source'])
+            if cost:
+                if row['total_seconds']!=cost['reported_loop_seconds']:raise ValueError('loop/process cost scope differs')
+                row.update(process_wall_seconds=cost['process_wall_seconds'],process_camera_image_fps=cost['process_camera_image_fps'],
+                    outside_reported_loop_seconds=cost['outside_loop_seconds'])
+            elif row['method'] in excluded:row['process_wall_exclusion_reason']=excluded[row['method']]
+    runtime=['method','video_id','full_video','causal_online','speed_eligible','camera_image_fps','synchronized_group_fps','total_seconds',
+        'process_wall_seconds','process_camera_image_fps','outside_reported_loop_seconds','process_wall_exclusion_reason',
+        'inference_seconds','read_preprocess_seconds','peak_gpu_bytes','geo_calls','geo_seconds','detection_p50','detection_p95','end_to_end_p50','end_to_end_p95','latency_note','source']
     write_csv(ROOT/'results/ablation_results.csv',metric_rows,metrics);write_csv(ROOT/'results/runtime_results.csv',runtime_rows,runtime)
     save_json(ROOT/'results/experiment_manifest.json',dict(status='IN_PROGRESS',experiments=experiments,raw_gt_policy='unchanged, diagnostic and strict protocols separate',split=json.loads((ROOT/'manifests/geo_split_v1.json').read_text())))
     baseline=[r for r in metric_rows if r['method'].startswith('B0') and isinstance(r['video_id'],int) and r['full_video'] and not r['raw_gt_diagnostic']]
@@ -152,6 +175,7 @@ def main():
     readonly_preflight=evidence('preflight_readonly_locked_inputs_v3.json',['status','locked_files_unchanged','raw_gt_files_verified','model_strict_load_performed','new_video_inference_performed','scope'])
     geometry_failures=evidence('geometry_failure_taxonomy_v1.json',['status','summaries','source_rule_snapshots','gt_used_for_gate_classification','limitations'])
     constructed_stress=evidence('constructed_geometry_degeneracy_v1.json',['status','tests_run','observations','encoder_calls','model_strict_load_performed','natural_dataset_failure_causes_identified','full_tracker_inference_performed','speed_eligible','scope','limitations'])
+    process_wall_cost=evidence('process_wall_runtime_v1.json',['status','suites','excluded_held_stages','scope','limitations'])
     dense_retrieval_gate=evidence('vggt_tracking_retrieval_prefix_gate_v2.json',['status','full_video','full_strict_suite','scope','limitations'])
     matched_retrieval_gate=evidence('matched_head_tracking_retrieval_prefix_precheck_v2.json',['status','full_video','full_strict_suite','scope','limitations','rows'])
     order_parity=evidence('complete_causal_vggt_view_order_audit_v2.json',['status','scope','limitations','rows'])
@@ -207,6 +231,7 @@ def main():
         paired_retrieval_query_outcomes=retrieval_query_pairs,readonly_reproduction_preflight=readonly_preflight,
         recorded_geometry_failure_taxonomy=geometry_failures,
         constructed_cpu_geometry_stress=constructed_stress,
+        observed_process_wall_runtime=process_wall_cost,
         dense_tracking_to_retrieval_prefix_gate=dense_retrieval_gate,
         matched_head_tracking_to_retrieval_prefix_gate=matched_retrieval_gate,
         complete_encoder_input_order_control=order_parity,
@@ -306,6 +331,10 @@ def main():
         if len(observed)==3:
             values=', '.join(f"{row['training_head_seed']}: {row['metrics']['CVIDF1']:.6f} ({row['paired_metric_delta']['CVIDF1']:+.6f}pp)" for row in observed)
             lines[6:6]=['New bounded stability evidence, complete scene1 only: dense B7 at fixed inference RNG20261014 has TRAIN-head-seed CVIDF1 '+values+'. All retain exact detector membership and1864 actual encoder calls/3 numerical geometry gates/0 module failures. The third head reverses the primary scene1 gain. These scene observations do not complete the pending strict5 suites, establish an inference-RNG effect or select a new head.','']
+        feature=next((group for group in dense_seed_stability['groups'] if group['method']=='B5' and group['factor']=='training_head_seed'),None)
+        if feature and feature['complete']:
+            changes=', '.join(f"{row['training_head_seed']}: {row['paired_metric_delta']['CVIDF1']:+.6f}pp / IDSW {row['candidate_metrics']['IDSW']}" for row in feature['rows'])
+            lines[6:6]=['Complete dense feature-only B5 TRAIN-head stability is now3/3 over all strict5 at fixed actual inference RNG20261014: '+changes+'. Every trial is paired to the same causal baseline and retains exact detector membership. The third head has lower complete-DEV CVIDF1 than baseline despite fewer ID switches; the feature-only effect is not uniformly positive across the declared heads. No head reselection, coefficient change or stable improvement claim follows. Complete B7 head and fixed-primary-head inference-RNG factors remain separate and pending.','']
     if matched_retrieval_gate and matched_retrieval_gate['status']=='PASS':
         lines[6:6]=['Matched GMT/DINO tracking-to-retrieval prefix gates pass exact standalone outputs in both scene18/scene1. The original checker rejected a scene1 GEOMETRY_METHOD difference despite both recorded geometry weights being zero; the corrected read-only check records that inactive difference and still enforces all active options, exact head/seed/model/data, actual encoder counts and serialized outputs. Original failed logs and skipped full stages remain retained. Full matched-head producers have a fixed-source serial recovery plan and remain pending; these40-group prefixes are not retrieval-quality or full-video evidence.','']
     if relation_matrix:
@@ -318,6 +347,11 @@ def main():
         lines[6:6]=[f"Geometry failure recovery is consolidated across {count} fixed screening rows ({accepted} accepted), separating fit support, logged coverage, measured residual violations and unavailable early-return statistics. Mask/feature variants repeat samples; these counts do not replace the separate complete-run3 numerical gate passes. Captured dirty source-file bytes are matched to Git blobs where available, while original tree dirtiness and weaker legacy provenance remain explicit. See [geometry gate diagnostics](GEO_STREAM_GEOMETRY_FAILURES.md); no physical-overlap, texture, rotation or GT-pose cause is inferred.",'']
     if constructed_stress and constructed_stress['status']=='PASS_CONSTRUCTED_CPU_GEOMETRY_STRESS':
         lines[6:6]=['Constructed CPU stress checks separately pass: ORB/SIFT on blank and independently generated backgrounds produce invalid geometry and preserve the exact original score-list object with1px detector boxes. A fixed60-degree in-plane rotation invalidates optical flow in both views and removes the past-geometry candidate. The motion-only scheduler consequently requests no update: a zero returned motion value can represent estimation failure. These tests exercise production geometry/fallback/temporal code with synthetic detections/past F, zero encoder calls and no full tracker or natural UAV failure attribution. They do not augment the420 real screening rows or prove real-world rapid-rotation efficacy.','']
+    if process_wall_cost:
+        count=len(process_wall_cost['suites']);held=len(process_wall_cost['excluded_held_stages'])
+        measured=next((row for row in process_wall_cost['suites'] if row['suite']=='causal_B7_fixed_k1_strict_suite_v1'),None)
+        detail=(f" Primary full-strict dense B7 process throughput is {measured['process_camera_image_fps']:.6f} images/s versus its reported loop {measured['reported_loop_camera_image_fps']:.6f}; observed outside-loop cost totals {measured['outside_loop_seconds']:.3f}s across5 processes." if measured else '')
+        lines[6:6]=[f"Observed complete process cost is separately audited for {count} complete strict5 suites; {held} full stages with recorded dispatcher suspension or conservative priority-window overlap are excluded. Startup/imports, static model setup and export/provenance are charged in process durations, while separate GT evaluation and inter-stage queue waits are excluded. The outside-loop difference is not pure GMT setup."+detail+' See [process cost audit](GEO_STREAM_PROCESS_WALL_RUNTIME.md) and the added runtime_results.csv fields. Missing or excluded costs remain blank; these single replays do not establish stable speed or camera/network latency.','']
     if dense_full2_retrieval and dense_full2_retrieval['status']=='PASS' and retrieval_query_pairs:
         pair=next((row for row in retrieval_query_pairs['rows'] if row['method']=='VGGT2'),None)
         producer=next((row for row in retrieval_rows if row['method']=='retrieval_vggt_dense_tracking_2streams_full_v1'),None)

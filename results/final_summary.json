@@ -1722,6 +1722,42 @@
       "sha256": "62db1938636bf44848f76f52954cd7e4b70fcaba728ac783e663634169952c45"
     },
     {
+      "method": "causal_B5_dense_seed20261016_strict_suite_v1_v18",
+      "video_id": 18,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 78.7750330989779,
+      "DetA": 76.90011892746709,
+      "AssA": 81.03095697506173,
+      "IDF1": 95.96104995766301,
+      "MOTA": 93.26195938482455,
+      "IDSW": 25,
+      "CVIDF1": 95.96104995766301,
+      "CVMA_sequential": 93.25346248619255,
+      "CVMA": 93.25346248619255,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261016_strict_suite_v1_v18/predictions.metrics.json",
+      "sha256": "c565691fd339a993c8b8d8294ef3cf06d52cb19a75f7e5325f8a6113069111a2"
+    },
+    {
+      "method": "causal_B5_dense_seed20261016_strict_suite_v1_v19",
+      "video_id": 19,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 77.50936935562095,
+      "DetA": 74.51777661654586,
+      "AssA": 81.11954328284554,
+      "IDF1": 94.05203302695125,
+      "MOTA": 90.67853853239177,
+      "IDSW": 99,
+      "CVIDF1": 94.05203302695125,
+      "CVMA_sequential": 90.67239791218913,
+      "CVMA": 90.61099171016272,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261016_strict_suite_v1_v19/predictions.metrics.json",
+      "sha256": "4b8cacd488a5782992be19fb8deb400d253677c3141e757a8ee33d1b3f5a2dbf"
+    },
+    {
       "method": "causal_B7_dense_seed20261015_strict_suite_v1_v1",
       "video_id": 1,
       "full_video": true,
@@ -3648,6 +3684,28 @@
       "output_pair_matched_detections": 60080
     },
     {
+      "method": "causal_B5_dense_seed20261016_strict_suite_v1",
+      "video_id": "ALL_STRICT",
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 80.73705062757094,
+      "DetA": 80.26824533614742,
+      "AssA": 81.44745528554317,
+      "IDF1": 94.98962782184257,
+      "MOTA": 94.87541137752703,
+      "IDSW": 392,
+      "CVIDF1": 94.98962782184257,
+      "CVMA_sequential": 94.87054780085275,
+      "CVMA": 94.83974514858227,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B5_dense_seed20261016_strict_suite_v1_metrics.json",
+      "sha256": "10b54731cb4a4b6b1a7586e447ee8bee1f41a50ffffe7ce065f122eed652da9f",
+      "output_pair_scope": "common GT-matched all-time pairs within scenes; not Hungarian decisions",
+      "cross_camera_output_pair_fixes": 71712,
+      "cross_camera_output_pair_harms": 11926,
+      "output_pair_matched_detections": 60080
+    },
+    {
       "method": "causal_B7_fixed_k10_strict_suite_v1",
       "video_id": "ALL_STRICT",
       "full_video": true,
@@ -4268,7 +4326,7 @@
   },
   "resource_ledger": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/resource_ledger_v1.json",
-    "sha256": "580feb6e5d7c6401bef92c1deda95e67e00a56a4fdde4b90d8e994e3bb43f6d1",
+    "sha256": "20a31981e26b8a0e04cfe74cf58fdfb69eb9fbbd3a338aa3a5d19eb1c17fb8e1",
     "status": "MEASURED_SCOPE_LEDGER_NOT_FINAL_MATRIX",
     "scopes": {
       "cuda": "PyTorch per-process allocator peak, not all processes or complete device occupancy",
@@ -4289,7 +4347,7 @@
   },
   "recorded_suite_settings": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/suite_settings_audit_v1.json",
-    "sha256": "c7b27c0d4a99be9878ddff23e78cae2f692ff0b1405288ab2cc4ac0b84570c79",
+    "sha256": "d3a6abd684e3f25dd4318db270ef8300a607813237506f9c5cb2a5a599e5d65f",
     "status": "IN_PROGRESS_SETTINGS_AUDIT",
     "inconsistent_suites": 0,
     "unverified_default_suites": 0,
@@ -7504,7 +7562,7 @@
   },
   "complete_ablation_output_relations": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/identity_relations_matrix_v2.json",
-    "sha256": "82beb20830c0e0070cdd89d37dbab0139292ca1cf6675b8f782983a9f9f47b09",
+    "sha256": "488344a7d6dad900b667da5bb4a9cf8a8fecfb4f605322f0153fdc8fd49e624e",
     "status": "AVAILABLE_COMPLETE_SUITES_WITH_PENDING",
     "pending": [
       {
@@ -7513,14 +7571,6 @@
         "protocol": "causal",
         "baseline_sources": "causal_B0_strict_suite_v1_sources.json",
         "method_sources": "causal_B7_dense_seed20261015_strict_suite_v1_sources.json",
-        "reason": "complete native suite metric not yet available"
-      },
-      {
-        "method": "B5 dense head seed20261016",
-        "suite": "causal_B5_dense_seed20261016_strict_suite_v1",
-        "protocol": "causal",
-        "baseline_sources": "causal_B0_strict_suite_v1_sources.json",
-        "method_sources": "causal_B5_dense_seed20261016_strict_suite_v1_sources.json",
         "reason": "complete native suite metric not yet available"
       },
       {
@@ -7553,15 +7603,15 @@
   },
   "dense_causal_seed_factor_stability": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_dense_seed_stability_v1.json",
-    "sha256": "aa97518e1c2ace437b7244499f4f0b7722fe251884a66ee0f1a4ac57f7abfba4",
+    "sha256": "d6bac7b416a7ea8b97e457d5bd792e1c6d73aed16ff4bf379844191e64da57bc",
     "status": "PARTIAL_DECLARED_SEED_FACTORS",
     "groups": [
       {
         "factor": "training_head_seed",
         "method": "B5",
-        "completed_trials": 2,
+        "completed_trials": 3,
         "required_trials": 3,
-        "complete": false,
+        "complete": true,
         "rows": [
           {
             "suite": "causal_B5_dense_seed20261014_strict_suite_v1",
@@ -7770,18 +7820,115 @@
                 }
               }
             ]
-          }
-        ],
-        "pending": [
+          },
           {
+            "suite": "causal_B5_dense_seed20261016_strict_suite_v1",
             "training_head_seed": 20261016,
             "inference_seed": 20261014,
-            "suite": "causal_B5_dense_seed20261016_strict_suite_v1",
-            "reason": "complete native suite or paired identity audit unavailable"
+            "head_checkpoint_sha256": "6510aeef246f10fcce7f883377da21d51cd486fe968334d2edfa1bfbaa9d5f11",
+            "baseline_metrics": {
+              "HOTA": 80.74846464281809,
+              "DetA": 80.26691001631377,
+              "AssA": 81.47270571932637,
+              "IDF1": 95.05796217205614,
+              "MOTA": 94.72950407729844,
+              "IDSW": 482,
+              "CVIDF1": 95.05796217205614,
+              "CVMA_sequential": 94.72464050062416,
+              "CVMA": 94.671141157207
+            },
+            "candidate_metrics": {
+              "HOTA": 80.73705062757094,
+              "DetA": 80.26824533614742,
+              "AssA": 81.44745528554317,
+              "IDF1": 94.98962782184257,
+              "MOTA": 94.87541137752703,
+              "IDSW": 392,
+              "CVIDF1": 94.98962782184257,
+              "CVMA_sequential": 94.87054780085275,
+              "CVMA": 94.83974514858227
+            },
+            "paired_metric_delta": {
+              "HOTA": -0.011414015247154907,
+              "DetA": 0.0013353198336432115,
+              "AssA": -0.025250433783199355,
+              "IDF1": -0.06833435021356138,
+              "MOTA": 0.14590730022858622,
+              "IDSW": -90,
+              "CVIDF1": -0.06833435021356138,
+              "CVMA_sequential": 0.14590730022858622,
+              "CVMA": 0.16860399137526372
+            },
+            "cross_camera_output_pair_fixes": 71712,
+            "cross_camera_output_pair_harms": 11926,
+            "exact_detector_membership": true,
+            "scenes": [
+              {
+                "video_id": 1,
+                "actual_vggt_calls": 1864,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261016_strict_suite_v1_v1/manifest.json",
+                  "sha256": "a74f76cafaebf49ab621f59b12b220e128a2a140ae1b2265d4686063f4093fb1",
+                  "causal_online": true,
+                  "commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a",
+                  "validation_corrected_gmt_camera_index": false
+                }
+              },
+              {
+                "video_id": 10,
+                "actual_vggt_calls": 4184,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261016_strict_suite_v1_v10/manifest.json",
+                  "sha256": "e373e661cb9e1358f7869e021998581abe3c06afea45259dc4e001cc73737875",
+                  "causal_online": true,
+                  "commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a",
+                  "validation_corrected_gmt_camera_index": false
+                }
+              },
+              {
+                "video_id": 11,
+                "actual_vggt_calls": 4114,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261016_strict_suite_v1_v11/manifest.json",
+                  "sha256": "b48078fe1f7dcb691a77c25ed41a2ee7f2b14ab861912fa7abff4dac92ba41a4",
+                  "causal_online": true,
+                  "commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a",
+                  "validation_corrected_gmt_camera_index": false
+                }
+              },
+              {
+                "video_id": 18,
+                "actual_vggt_calls": 2058,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261016_strict_suite_v1_v18/manifest.json",
+                  "sha256": "83e751e248d769409ad7921c86f720d9425c7df88067f317ef3654c004d99da9",
+                  "causal_online": true,
+                  "commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a",
+                  "validation_corrected_gmt_camera_index": false
+                }
+              },
+              {
+                "video_id": 19,
+                "actual_vggt_calls": 2104,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261016_strict_suite_v1_v19/manifest.json",
+                  "sha256": "122ef3e10cf0452b61986dba2d0401d950363002528c4e3a8844ca6190d7f9e4",
+                  "causal_online": true,
+                  "commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a",
+                  "validation_corrected_gmt_camera_index": false
+                }
+              }
+            ]
           }
         ],
+        "pending": [],
         "observed_paired_cvidf1_delta_range": [
-          0.0846044335977183,
+          -0.06833435021356138,
           0.08948545861296964
         ]
       },
@@ -9154,6 +9301,333 @@
     "scope": "actual CPU OpenCV/background geometry, GeometryRuntime score fallback and temporal consumer on fixed constructed inputs; detector instances and initial past F are synthetic",
     "limitations": "independent procedural textures are not a calibrated physical camera pair; in-plane rotation is not real UAV pose/rapid-rotation evidence; invalid motion returns0 and can miss the motion-only trigger, not proof of no motion; no VGGT encoder, full GMT or natural-data efficacy claim"
   },
+  "observed_process_wall_runtime": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/process_wall_runtime_v1.json",
+    "sha256": "b0983440413c576246f273b7726e49343d124c66bd5309d6d99abea87bd69404",
+    "status": "RECORDED_UNHELD_PROCESS_WALL_COSTS",
+    "suites": [
+      {
+        "suite": "C_dino_head_dense_causal_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 3237.1620222330093,
+        "reported_loop_seconds": 3160.148307926953,
+        "outside_loop_seconds": 77.0137143060565,
+        "process_camera_image_fps": 4.42486347659523,
+        "reported_loop_camera_image_fps": 4.532698659765275,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/C_dino_head_dense_causal_strict_suite_v1_metrics.json",
+        "source_sha256": "cc1013beb3b0d4e1f7a857b1a0d270272f133478af6e69995b6e40ea793ad7d0",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/positive_scene_controls_v1_gpu4/manifest.json::C_dino_head_dense_causal_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_head_controls_remaining_v1_gpu0/manifest.json::C_dino_head_dense_causal_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_head_controls_remaining_v1_gpu0/manifest.json::C_dino_head_dense_causal_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_head_controls_remaining_v1_gpu0/manifest.json::C_dino_head_dense_causal_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_head_controls_remaining_v1_gpu0/manifest.json::C_dino_head_dense_causal_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "C_gmt_head_dense_causal_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 2174.602336756885,
+        "reported_loop_seconds": 2097.622735105455,
+        "outside_loop_seconds": 76.97960165143013,
+        "process_camera_image_fps": 6.586951442976117,
+        "reported_loop_camera_image_fps": 6.828682660745418,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/C_gmt_head_dense_causal_strict_suite_v1_metrics.json",
+        "source_sha256": "09e08996581151c0e2c275778dbd80b2ff2014646a3ac819797f912604fb1b2e",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/positive_scene_controls_v1_gpu4/manifest.json::C_gmt_head_dense_causal_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_head_controls_remaining_v1_gpu0/manifest.json::C_gmt_head_dense_causal_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_head_controls_remaining_v1_gpu0/manifest.json::C_gmt_head_dense_causal_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_head_controls_remaining_v1_gpu0/manifest.json::C_gmt_head_dense_causal_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_head_controls_remaining_v1_gpu0/manifest.json::C_gmt_head_dense_causal_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "causal_B0_seed20261015_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 2097.2772701233625,
+        "reported_loop_seconds": 2019.3434723690152,
+        "outside_loop_seconds": 77.93379775434732,
+        "process_camera_image_fps": 6.829807486140093,
+        "reported_loop_camera_image_fps": 7.093394559171076,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B0_seed20261015_strict_suite_v1_metrics.json",
+        "source_sha256": "bb75a1d57897230668fd4b5b206865dcf6f811a5e61b304891880a5ee41f8da3",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::causal_B0_seed20261015_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::causal_B0_seed20261015_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::causal_B0_seed20261015_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::causal_B0_seed20261015_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::causal_B0_seed20261015_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "causal_B0_seed20261016_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 2168.6446761637926,
+        "reported_loop_seconds": 2084.8842854499817,
+        "outside_loop_seconds": 83.76039071381092,
+        "process_camera_image_fps": 6.605046994299836,
+        "reported_loop_camera_image_fps": 6.870405278587652,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B0_seed20261016_strict_suite_v1_metrics.json",
+        "source_sha256": "896dcb51e463c984c24384ae622a2d588655a8e3ea8af220b127360b937dd4cc",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::causal_B0_seed20261016_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::causal_B0_seed20261016_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::causal_B0_seed20261016_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::causal_B0_seed20261016_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::causal_B0_seed20261016_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "causal_B5_dense_seed20261014_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 6149.935598142445,
+        "reported_loop_seconds": 6067.797938331962,
+        "outside_loop_seconds": 82.13765981048346,
+        "process_camera_image_fps": 2.329130081350199,
+        "reported_loop_camera_image_fps": 2.360658701159332,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B5_dense_seed20261014_strict_suite_v1_metrics.json",
+        "source_sha256": "06c8db9d5e4616fa9c7ef41fbfa33fbf75d244729d2694bc429853f04fe2b09c",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/positive_scene_controls_v1_gpu4/manifest.json::B5_vggt_head_dense_causal_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu5/manifest.json::causal_B5_dense_seed20261014_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu5/manifest.json::causal_B5_dense_seed20261014_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu5/manifest.json::causal_B5_dense_seed20261014_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu5/manifest.json::causal_B5_dense_seed20261014_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "causal_B5_dense_seed20261015_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 6754.552414171398,
+        "reported_loop_seconds": 6653.968785524368,
+        "outside_loop_seconds": 100.5836286470294,
+        "process_camera_image_fps": 2.120643844579178,
+        "reported_loop_camera_image_fps": 2.152700209709684,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B5_dense_seed20261015_strict_suite_v1_metrics.json",
+        "source_sha256": "19f65ff56b1376608aac1814ac0319effee17dc8110aba269f70146d710738ca",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu5/manifest.json::causal_B5_dense_seed20261015_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu5/manifest.json::causal_B5_dense_seed20261015_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu5/manifest.json::causal_B5_dense_seed20261015_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu5/manifest.json::causal_B5_dense_seed20261015_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu5/manifest.json::causal_B5_dense_seed20261015_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "causal_B7_fixed_k10_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 3336.4495680853724,
+        "reported_loop_seconds": 3251.326386012137,
+        "outside_loop_seconds": 85.12318207323551,
+        "process_camera_image_fps": 4.293186426977781,
+        "reported_loop_camera_image_fps": 4.405586612782015,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B7_fixed_k10_strict_suite_v1_metrics.json",
+        "source_sha256": "593bd319022b3c3dc477fe3ab2154e96c3ff939267bbc5fc022059e0c480c96c",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_B7_fixed_k10_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_B7_fixed_k10_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_B7_fixed_k10_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_B7_fixed_k10_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_B7_fixed_k10_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "causal_B7_fixed_k1_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 12798.471364721656,
+        "reported_loop_seconds": 12718.640017040074,
+        "outside_loop_seconds": 79.83134768158197,
+        "process_camera_image_fps": 1.1191961595885105,
+        "reported_loop_camera_image_fps": 1.1262210409925204,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B7_fixed_k1_strict_suite_v1_metrics.json",
+        "source_sha256": "3497fc90ed5e5f709f33e0d5c340cf17d57c1ed18a74d647f78e8746aabc8240",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu5/manifest.json::causal_B7_fixed_k1_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu5/manifest.json::causal_B7_fixed_k1_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu5/manifest.json::causal_B7_fixed_k1_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu5/manifest.json::causal_B7_fixed_k1_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu5/manifest.json::causal_B7_fixed_k1_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "causal_B7_fixed_k20_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 2914.1640740484,
+        "reported_loop_seconds": 2830.9944851249456,
+        "outside_loop_seconds": 83.16958892345428,
+        "process_camera_image_fps": 4.915303200516396,
+        "reported_loop_camera_image_fps": 5.05970607687984,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B7_fixed_k20_strict_suite_v1_metrics.json",
+        "source_sha256": "8605dd38467938ddb6db60d463a0a8366b47068943050e4c0af90d3f7f4467b5",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_B7_fixed_k20_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_B7_fixed_k20_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_B7_fixed_k20_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_B7_fixed_k20_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_B7_fixed_k20_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "causal_B7_fixed_k5_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 4217.560264341533,
+        "reported_loop_seconds": 4141.887649849057,
+        "outside_loop_seconds": 75.67261449247599,
+        "process_camera_image_fps": 3.3962763072068007,
+        "reported_loop_camera_image_fps": 3.458326543580198,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B7_fixed_k5_strict_suite_v1_metrics.json",
+        "source_sha256": "9280e5b7ea1976868d031259e12f09ff0820277261cc514fb19050c469ef9f12",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu5/manifest.json::causal_B7_fixed_k5_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu5/manifest.json::causal_B7_fixed_k5_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu5/manifest.json::causal_B7_fixed_k5_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu5/manifest.json::causal_B7_fixed_k5_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu5/manifest.json::causal_B7_fixed_k5_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "causal_motion_total80_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 2621.3953705132008,
+        "reported_loop_seconds": 2540.3469593822956,
+        "outside_loop_seconds": 81.04841113090515,
+        "process_camera_image_fps": 5.464265391296443,
+        "reported_loop_camera_image_fps": 5.638599856250734,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_motion_total80_strict_suite_v1_metrics.json",
+        "source_sha256": "d36f094e843f904ba58328fe3e07009b98e3a35a85d7d59771fa1aefffe65683",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_motion_total80_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_motion_total80_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_motion_total80_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_motion_total80_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_motion_total80_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "native_prior_seed20261014_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 2121.0262312218547,
+        "reported_loop_seconds": 2048.4172179475427,
+        "outside_loop_seconds": 72.60901327431202,
+        "process_camera_image_fps": 6.753334677878268,
+        "reported_loop_camera_image_fps": 6.992716070973203,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/native_prior_seed20261014_strict_suite_v1_metrics.json",
+        "source_sha256": "729081373d34793090335aa2ebeb7bd4d035a7e40457e370c162e622133466cc",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_main_control_v1_gpu6/manifest.json::native_prior_seed20261014_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_main_control_v1_gpu6/manifest.json::native_prior_seed20261014_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_main_control_v1_gpu6/manifest.json::native_prior_seed20261014_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_main_control_v1_gpu6/manifest.json::native_prior_seed20261014_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_main_control_v1_gpu6/manifest.json::native_prior_seed20261014_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "native_prior_seed20261015_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 2177.745533257723,
+        "reported_loop_seconds": 2094.922879010439,
+        "outside_loop_seconds": 82.82265424728394,
+        "process_camera_image_fps": 6.5774443254499575,
+        "reported_loop_camera_image_fps": 6.837483204520687,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/native_prior_seed20261015_strict_suite_v1_metrics.json",
+        "source_sha256": "cf27a4d6c472d09a53bb26395cfc8d48d2542ec05ec288ef24c78437de949c54",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::native_prior_seed20261015_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::native_prior_seed20261015_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::native_prior_seed20261015_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::native_prior_seed20261015_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::native_prior_seed20261015_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "suite": "native_prior_seed20261016_strict_suite_v1",
+        "images": 14324,
+        "full_strict_suite": true,
+        "process_wall_seconds": 2266.220415599644,
+        "reported_loop_seconds": 2181.645060919225,
+        "outside_loop_seconds": 84.57535468041897,
+        "process_camera_image_fps": 6.320656146860214,
+        "reported_loop_camera_image_fps": 6.565687634800069,
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/native_prior_seed20261016_strict_suite_v1_metrics.json",
+        "source_sha256": "1eafdeecaf4103b272b1730d5794cca37f20d484d8f53398427eefdd3174bade",
+        "stage_keys": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::native_prior_seed20261016_strict_suite_v1_v1",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::native_prior_seed20261016_strict_suite_v1_v10",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::native_prior_seed20261016_strict_suite_v1_v11",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::native_prior_seed20261016_strict_suite_v1_v18",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/native_prior_seed_pairs_v1_gpu6/manifest.json::native_prior_seed20261016_strict_suite_v1_v19"
+        ]
+      }
+    ],
+    "excluded_held_stages": [
+      {
+        "method": "causal_B5_dense_seed20261016_strict_suite_v1_v10",
+        "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu4/manifest.json::causal_B5_dense_seed20261016_strict_suite_v1_v10",
+        "priority_windows": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/physical_camera_contract_v1/manifest.json",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/vggt_tracking_retrieval_resume_v2/manifest.json"
+        ],
+        "reason": "recorded held child or overlap with conservative priority-owner lifetime; queue-observed duration may include suspension"
+      },
+      {
+        "method": "causal_fixed20_offset9_total80_v18_v1",
+        "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu4/manifest.json::causal_fixed20_offset9_total80_v18_v1",
+        "priority_windows": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/positive_scene1_controls_v1/manifest.json",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/target_cache_probe_scene1_v2/manifest.json"
+        ],
+        "reason": "recorded held child or overlap with conservative priority-owner lifetime; queue-observed duration may include suspension"
+      },
+      {
+        "method": "causal_random_seed20261015_total80_v18_v1",
+        "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu4/manifest.json::causal_random_seed20261015_total80_v18_v1",
+        "priority_windows": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/sparse_failure_diagnostic_scene1_v1/manifest.json"
+        ],
+        "reason": "recorded held child or overlap with conservative priority-owner lifetime; queue-observed duration may include suspension"
+      },
+      {
+        "method": "causal_joint_total80_v18_repeat2_v1",
+        "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu4/manifest.json::causal_joint_total80_v18_repeat2_v1",
+        "priority_windows": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/cache_gate_constant_control_scene1_v1/manifest.json"
+        ],
+        "reason": "recorded held child or overlap with conservative priority-owner lifetime; queue-observed duration may include suspension"
+      },
+      {
+        "method": "causal_identity_total80_strict_suite_v1_v11",
+        "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu6/manifest.json::causal_identity_total80_strict_suite_v1_v11",
+        "priority_windows": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/native_prior_main_control_v1/manifest.json"
+        ],
+        "reason": "recorded held child or overlap with conservative priority-owner lifetime; queue-observed duration may include suspension"
+      },
+      {
+        "method": "retrieval_native_prior_4streams_full_v1",
+        "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/tracking_retrieval_control_v1_gpu4/manifest.json::retrieval_native_prior_4streams_full_v1",
+        "priority_windows": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/fast_fp16_reference_v4/manifest.json"
+        ],
+        "reason": "recorded held child or overlap with conservative priority-owner lifetime; queue-observed duration may include suspension"
+      }
+    ],
+    "scope": "actual successful full replay stages: parent monotonic time immediately around launch/wait, including Python startup, model setup, replay and export; excludes inter-stage queue waits and separate GT evaluation",
+    "limitations": "documented held children and conservative priority-owner lifetime overlaps excluded, even if their loop timing is valid; this can also exclude extra predecessor-wait stages; stage snapshots are immutable completed records within mutable queue manifests; outside-loop difference includes imports, setup, export/provenance and normal host scheduling, not pure model setup; cumulative suite FPS is sum(images)/sum(times), not mean FPS, one descriptive run per input, no stable speed or camera/network capture-latency claim"
+  },
   "dense_tracking_to_retrieval_prefix_gate": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/vggt_tracking_retrieval_prefix_gate_v2.json",
     "sha256": "a8708b513b499b6f8ac29e3faa43f7c6ec7096b27bf2d43d8a89f66621adc9c3",
@@ -10426,5 +10900,5 @@
     }
   ],
   "retrieval_full_video_evaluation": true,
-  "source_commit": "d7fef6b31f6e8142831c962d5b4599cddf1b79c4"
+  "source_commit": "1c86bfbafc484def302b2706a418bcdf0ba05ffb"
 }
