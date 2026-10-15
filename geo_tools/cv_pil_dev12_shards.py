@@ -13,7 +13,7 @@ from scipy.optimize import linear_sum_assignment
 
 from cv_pil_dev12_assets import SCHEMA, require, vector, digest_json
 from cv_pil_native_handoff import (sha256, safe_torch_load, FROZEN_STAGE2_SHA256,
-                                   FROZEN_CONFIG_SHA256)
+                                   FROZEN_CONFIG_SHA256, integer, source_key)
 
 
 def rows(path):
@@ -59,6 +59,11 @@ class NativeShardAssets:
             body = safe_torch_load(self._checked(name, m['artifacts'][name]))
             for source, obs in body.items():
                 require(source not in self.observations and list(source) == obs['source'], 'Duplicate/source mismatch')
+                source_key(source)
+                require(obs['image_id'] == source[0] and obs['detection_row'] == source[1] and
+                        integer(obs['frame']) and obs['frame'] >= 1, 'Physical frame/detection order differs')
+                require(not {'GT_person','gt_identity','query_gt_identity','positive_tracks'} & set(obs),
+                        'GT must remain physically separate from observations')
                 require(obs['camera'] in (1, 2) and not isinstance(obs['camera'], bool), 'Physical camera invalid')
                 require(obs['feature'].dtype == torch.float32 and
                         tensor_digest(obs['feature']) == obs['feature_sha256'], 'Native FP32 vector changed')
@@ -107,6 +112,8 @@ class NativeShardAssets:
         return vector(variant['feature'])
 
     def _validate_call(self, c):
+        require(c['stage'] in ('run_global_tracker', 'run_global_tracker_plus', 'run_memory_tracker'),
+                'Unknown native association stage')
         q = c['queries']; refs = c['references']; ids = c['track_ids']; score = c['track_scores']
         require(ids == sorted(set(r['track'] for r in refs)) and
                 score.shape == (len(q), len(ids)) and score.dtype == torch.float32 and
@@ -118,6 +125,8 @@ class NativeShardAssets:
         require(all(c['observed_track_lengths'][str(t)] >= support[t] for t in ids) or
                 c['stage'] == 'run_memory_tracker', 'Native history length inconsistent')
         raw = c['raw_logits']; sizes = c['activation_block_sizes']
+        require(sizes == (c['reference_block_sizes'] if c['stage'] == 'run_global_tracker_plus' else [len(refs)]),
+                'Native activation stage/block semantics differ')
         require(raw.shape == (len(q), len(refs)) and sum(sizes) == len(refs), 'Full native logit layout missing')
         parts = [torch.cat((b, b.new_zeros((len(q), 1))), 1).softmax(1)[:, :-1]
                  for b in raw.split(sizes, dim=1)]
