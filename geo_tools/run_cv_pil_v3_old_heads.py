@@ -14,6 +14,7 @@ from cv_pil_dev12_shards import NativeShardAssets
 from cv_pil_dev12_assets import require
 from cv_pil_native_handoff import sha256, safe_torch_load
 from cv_pil_v2_model import CandidatePredictor, parameter_digest, tensorize, fused_scores
+from cv_pil_v3_call_scoring import call_scores
 
 ARMS = ('C0', 'C1', 'C2', 'C3', 'C4')
 
@@ -101,10 +102,22 @@ def execute(pins, output):
                 '4a5c809ae9f6ff7e7a0b59ec4c748bf0fa37d71b37bd864ac816b3d7e0d97ae7', 'Original V2 evidence required first')
     else:
         require(old['status'] == 'MATCHED_V3_FIT_COMPLETE_NOT_DEVELOPMENT_SUCCESS', 'Registered V3 fit required')
+    executor = pins.get('scoring_executor', 'per_query_original')
+    require(executor in ('per_query_original', 'per_call_exact_projection_reuse'), 'Unknown score executor')
+    if executor == 'per_call_exact_projection_reuse' and generation == 'V3_MATCHED_STEP300':
+        att = pins['scoring_executor_attestation']
+        require(sha256(att['path']) == att['sha256'], 'Executor attestation SHA differs')
+        evidence = json.loads(Path(att['path']).read_text())
+        require(evidence['full_query_output_parity'] is True and
+                evidence['score_executor_source_sha256'] == sha256(Path(__file__).with_name('cv_pil_v3_call_scoring.py')),
+                'Full old-head output parity is required before new-head cached evaluation')
     for arm in ('C2', 'C3', 'C4'):
         t = old['training'][arm]; require(sha256(t['local_checkpoint']) == t['checkpoint_sha256'], 'Old head SHA differs')
         state = safe_torch_load(t['local_checkpoint'])
         require(state['arm'] == arm and state['steps'] == 300 and state['seed'] == 20261015, 'Old head contract differs')
+        require(state['cohort_sha256'] == old['protocol']['cohort_sha256'], 'Head training source differs')
+        if generation == 'V3_MATCHED_STEP300':
+            require(state['protocol_sha256'] == old['protocol_file_sha256'], 'Head registered TRAIN protocol differs')
         model = CandidatePredictor(use_camera=arm != 'C4'); model.load_state_dict(state['state_dict'], strict=True)
         require(parameter_digest(model) == t['final_parameter_sha256'], 'Old head parameters differ')
         models[arm] = model.eval()
@@ -114,14 +127,17 @@ def execute(pins, output):
     with torch.no_grad():
         for cid, call in assets.calls.items():
             if call['stage'] == 'run_memory_tracker': continue
-            matrices = {arm: [] for arm in ARMS}
-            for source in call['queries']:
-                k = (12, *source); batch = tensorize(assets.actor(k))
-                score = dict(C0=batch.native_scores, C1=fused_scores(batch, batch.histories))
-                score.update({arm: model(batch)[0] for arm, model in models.items()})
-                for arm in ARMS: matrices[arm].append(score[arm])
             if not call['queries']: continue
-            matrices = {arm: torch.stack(s) for arm, s in matrices.items()}
+            if executor == 'per_call_exact_projection_reuse':
+                matrices = call_scores(assets, call, models)
+            else:
+                matrices = {arm: [] for arm in ARMS}
+                for source in call['queries']:
+                    k = (12, *source); batch = tensorize(assets.actor(k))
+                    score = dict(C0=batch.native_scores, C1=fused_scores(batch, batch.histories))
+                    score.update({arm: model(batch)[0] for arm, model in models.items()})
+                    for arm in ARMS: matrices[arm].append(score[arm])
+                matrices = {arm: torch.stack(s) for arm, s in matrices.items()}
             actions = {arm: primary_solve(s, call['track_ids'], call['thresholds']) for arm, s in matrices.items()}
             expected = [None if i < 0 else i for i in call['decision']['accepted_track_ids']]
             require(actions['C0'] == expected, 'C0 full original primary replay differs')
@@ -159,6 +175,8 @@ def execute(pins, output):
     else: status = 'OFFLINE_DEVELOPMENT_POSITIVE'
     result.update(status=status, scientific_success=False, candidates='complete original native candidate columns',
                   checkpoint_generation=generation,
+                  scoring_executor=executor,
+                  score_executor_source_sha256=sha256(Path(__file__).with_name('cv_pil_v3_call_scoring.py')),
                   checkpoint_sha256={arm: old['training'][arm]['checkpoint_sha256'] for arm in models},
                   primary_replay='one-step paired full Hungarian under identical original state; not mutated-state online',
                   original_primary_OFF_replay_exact=original_action_exact,
@@ -177,9 +195,16 @@ def execute(pins, output):
                       ['run_cv_pil_v3_old_heads.py','cv_pil_dev12_shards.py','cv_pil_v2_model.py']},
                   wall_seconds=time.monotonic()-started)
     output.mkdir(parents=True)
-    (output/'RESULTS.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n')
     with (output/'QUERY_RESULTS_OFFLINE_ONLY.csv').open('w', newline='') as stream:
         writer = csv.DictWriter(stream, fieldnames=list(records[0]), lineterminator='\n'); writer.writeheader(); writer.writerows(records)
+    if 'parity_reference_csv' in pins:
+        ref = pins['parity_reference_csv']
+        require(sha256(ref['path']) == ref['sha256'] and
+                sha256(output/'QUERY_RESULTS_OFFLINE_ONLY.csv') == ref['sha256'],
+                'Full query ranks/IDs/primary outcomes are not byte-exact under projection reuse')
+        result['full_query_output_parity'] = True
+        result['exact_query_output_sha256'] = ref['sha256']
+    (output/'RESULTS.json').write_text(json.dumps(result, indent=2, allow_nan=False)+'\n')
     (output/'INPUT_PINS.json').write_text(json.dumps(pins, indent=2)+'\n')
     print(json.dumps(dict(status=status, queries=len(records), C3_vs_C2_primary=p32, C3_vs_C4_primary=p34)), flush=True)
 
