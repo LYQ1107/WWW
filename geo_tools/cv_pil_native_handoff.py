@@ -68,7 +68,7 @@ def get_observation(observations: dict, key: tuple):
         raise ValueError("Observation missing native feature")
     if source_key(obs.get("source")) != key or obs.get("image_id") != key[0]:
         raise ValueError("Observation physical source binding differs")
-    if not integer(obs.get("frame")) or obs["frame"] < 0 or obs.get("camera") not in (1, 2):
+    if not integer(obs.get("frame")) or obs["frame"] < 0 or not integer(obs.get("camera")) or obs.get("camera") not in (1, 2):
         raise ValueError("Invalid observation frame/camera")
     feat = obs["feature"]
     if not isinstance(feat, torch.Tensor) or feat.shape != (1152,) or not feat.is_floating_point() or not torch.isfinite(feat).all() or feat.float().norm() == 0:
@@ -174,7 +174,7 @@ def normalize_event(bundle: dict, index: int) -> dict:
     if len(set(call["track_ids"])) != len(call["track_ids"]):
         raise ValueError("Duplicate original Global ID columns")
     raw = call.get("track_scores")
-    if not isinstance(raw, torch.Tensor) or raw.ndim != 2 or raw.shape[0] <= qrow or raw.shape[1] != len(call["track_ids"]):
+    if not isinstance(raw, torch.Tensor) or tuple(raw.shape) != (len(call["queries"]),len(call["track_ids"])):
         raise ValueError("Native score tensor does not match original call")
     for tid, col, val in zip(track_ids, columns, original_scores):
         if not integer(col) or not 0 <= col < len(call["track_ids"]) or call["track_ids"][col] != tid:
