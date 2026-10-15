@@ -15,6 +15,7 @@ def main():
     p.add_argument('--steps',type=int,default=1000);p.add_argument('--batch-size',type=int,default=4);p.add_argument('--ag-init');p.add_argument('--resume');p.add_argument('--device',default='cuda')
     p.add_argument('--native-mlp-capacity',choices=['ag','qd'],default='ag')
     p.add_argument('--cohort',default=None)
+    p.add_argument('--feature-plan',type=Path);p.add_argument('--feature-variant',choices=['full','local','combined'],default='full')
     a=p.parse_args();out=NEW/'models'/a.tag
     if out.exists():raise FileExistsError(out)
     if a.steps not in (150,1000):raise ValueError('prespecified pilot150 or full1000 steps only')
@@ -22,9 +23,15 @@ def main():
     out.mkdir(parents=True);seed_all(a.seed)
     torch.backends.cuda.enable_mem_efficient_sdp(False);torch.backends.cuda.enable_flash_sdp(False);torch.backends.cudnn.deterministic=True
     started=time.perf_counter();data=TrackEventData(a.backbone,a.cohort)
+    if a.feature_plan:
+        from trackvggt_crop_data import CropEventData
+        data=CropEventData(data,a.feature_plan,a.feature_variant)
+    elif a.feature_variant!='full':raise ValueError('crop features require the fixed comparison plan')
     settings=dict(backbone=a.backbone,native_dim=data.native_dim,channels=data.channels,architecture=a.architecture,ag_mode=a.ag_mode,
         qd_mode=a.qd_mode,k=a.k,summary=a.summary,native_mlp_capacity=a.native_mlp_capacity,training_seed=a.seed,actual_native_inference_seed=20261014,
         optimizer='AdamW',lr=1e-4,weight_decay=.01,clip_norm=1.,batch_size=a.batch_size,target_steps=a.steps,soft_relevance_warmup_steps=150)
+    settings.update(feature_variant=a.feature_variant,feature_plan=str(a.feature_plan.resolve()) if a.feature_plan else None,
+        feature_plan_sha256=sha256(a.feature_plan) if a.feature_plan else None)
     model=build_model(settings).to(a.device);optimizer=torch.optim.AdamW(model.parameters(),lr=1e-4,weight_decay=.01)
     if a.ag_init:
         source=torch.load(a.ag_init,map_location='cpu')
@@ -32,6 +39,8 @@ def main():
         for key in ('native_dim','channels','summary'):
             if source['settings'][key]!=settings[key]:raise ValueError('QD source input/query contract mismatch: '+key)
         if source['cohort_sha256']!=sha256(data.cohort_path):raise ValueError('QD source changed locked event cohort')
+        for key in ('feature_variant','feature_plan_sha256'):
+            if source['settings'].get(key,'full' if key=='feature_variant' else None)!=settings[key]:raise ValueError('QD source feature scope mismatch')
         model.query.load_state_dict({k.removeprefix('query.'):v for k,v in source['model'].items() if k.startswith('query.')},strict=True)
         model.sampler.load_state_dict({k.removeprefix('sampler.'):v for k,v in source['model'].items() if k.startswith('sampler.')},strict=True)
     start_step=0
@@ -40,13 +49,15 @@ def main():
         if source['cohort_sha256']!=sha256(data.cohort_path):raise ValueError('resume changed locked event cohort')
         for key in ('backbone','native_dim','channels','architecture','ag_mode','qd_mode','k','summary','native_mlp_capacity','training_seed'):
             if source['settings'][key]!=settings[key]:raise ValueError('resume changed model/seed/setting')
+        for key in ('feature_variant','feature_plan_sha256'):
+            if source['settings'].get(key,'full' if key=='feature_variant' else None)!=settings[key]:raise ValueError('resume changed feature scope')
         model.load_state_dict(source['model'],strict=True);optimizer.load_state_dict(source['optimizer']);start_step=source['completed_steps']
         torch.set_rng_state(source['torch_rng_state']);np.random.set_state(source['numpy_rng_state'])
         if a.device.startswith('cuda'):torch.cuda.set_rng_state_all(source['cuda_rng_states'])
     eligible=[]
     for index in data.fit:
         _,_,event=data.event(index);row=data.rows[tuple(data.items[index]['key'])]
-        feature_valid=bool(event['candidate_tracks']) and (a.architecture=='native_mlp' or a.ag_mode=='roi' or row['raw_patch_centers']>0)
+        feature_valid=bool(event['candidate_tracks']) and (a.architecture=='native_mlp' or a.ag_mode=='roi' or data.effective_patch_count(index)>0)
         if event['loss_eligible'] and feature_valid:eligible.append(index)
     if not eligible:raise ValueError('no legal supervised fit relations; no fabricated samples')
     setup_seconds=time.perf_counter()-started;training_started=time.perf_counter();curve=[]

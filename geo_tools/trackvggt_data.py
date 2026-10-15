@@ -72,6 +72,9 @@ class TrackEventData:
         if event['key']!=item['key']:raise ValueError('event index drift')
         return item,payload,event
 
+    def effective_patch_count(self,index):
+        return self.rows[tuple(self.items[index]['key'])]['raw_patch_centers']
+
     def get(self,index,device='cpu'):
         item,payload,event=self.event(index);row=self.rows[tuple(item['key'])];array=self.arrays(tuple(item['key']))
         query=payload['observations'][tuple(event['query_source'])];call=payload['calls'][event['call_index']]

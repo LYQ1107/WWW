@@ -86,7 +86,12 @@ def main():
         checkpoint=torch.load(a.checkpoint,map_location='cpu');settings=checkpoint['settings'];a.backbone=settings['backbone']
         if a.cohort is None:a.cohort=checkpoint.get('cohort_path')
         model=build_model(settings);model.load_state_dict(checkpoint['model'],strict=True);model.to(a.device)
-    data=TrackEventData(a.backbone,a.cohort);indices=getattr(data,a.split)
+    data=TrackEventData(a.backbone,a.cohort)
+    if settings and settings.get('feature_plan'):
+        from trackvggt_crop_data import CropEventData
+        if sha256(settings['feature_plan'])!=settings['feature_plan_sha256']:raise ValueError('checkpoint crop scope changed')
+        data=CropEventData(data,settings['feature_plan'],settings['feature_variant'])
+    indices=getattr(data,a.split)
     if a.scorer=='learned' and checkpoint['cohort_sha256']!=sha256(data.cohort_path):raise ValueError('evaluated checkpoint/cohort mismatch')
     result=evaluate(model,data,indices,a.device,a.scorer,a.query_shuffle)
     result.update(status='COMPLETE_FIXED_EVENT_RANKING_DIAGNOSTIC',scorer=a.scorer,split=a.split,backbone=a.backbone,query_shuffle=a.query_shuffle,
