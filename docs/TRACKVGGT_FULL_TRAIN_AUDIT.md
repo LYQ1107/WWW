@@ -1,6 +1,6 @@
 # Full association-TRAIN causal identity audit
 
-Status: INCOMPLETE. Complete scenes: [9, 13, 17, 20, 21, 24]. Pending scenes: [4, 5, 6, 7, 8, 12].
+Status: INCOMPLETE. Complete scenes: [4, 5, 6, 7, 8, 9, 13, 17, 20, 21, 24]. Pending scenes: [12].
 
 Each sequence starts at group1 and runs continuously to the actual final group using the frozen GMT checkpoint and seed20261014. DecisionTrace observes the original Hungarian/threshold/memory methods. GT is read only after full inference and independent uninstrumented OFF40 equality. Existing400-prefix collectors must agree. No VGGT/DINO, future or GT tracker features. Detailed examples are bounded1000/scene; complete lightweight query indices retain coverage. Runtime is offline audit cost, not deployment FPS.
 
@@ -8,11 +8,11 @@ Raw GT conflicts in association scenes20/24 are preserved. Entire camera-frames 
 
 |Scene|Groups|Known queries|Known wrong/missed|Pure positive full|Top8 numerator /denominator|Impure histories|Unknown|Status|
 |---|---:|---:|---:|---:|---|---:|---:|---|
-|4|901|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|INCOMPLETE|
-|5|1769|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|INCOMPLETE|
-|6|601|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|INCOMPLETE|
-|7|443|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|INCOMPLETE|
-|8|523|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|INCOMPLETE|
+|4|901|3557|243|3457|3432 /3457|2907|308|COMPLETE|
+|5|1769|6912|52|6879|6879 /6879|1331|91|COMPLETE|
+|6|601|2571|29|2532|2532 /2532|1525|68|COMPLETE|
+|7|443|1693|64|1558|1558 /1558|734|324|COMPLETE|
+|8|523|1969|25|1891|1891 /1891|1322|514|COMPLETE|
 |9|1942|8678|171|8600|8600 /8600|2044|192|COMPLETE|
 |12|1200|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|NOT_MEASURED|INCOMPLETE|
 |13|1621|16795|28|15691|15691 /15691|9445|1430|COMPLETE|

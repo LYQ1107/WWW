@@ -24,6 +24,10 @@ def ratio(n,d):
 def summarize(base,allow_incomplete):
     plan=json.loads((ROOT/'manifests/trackvggt_full_audit_plan_v1.json').read_text());census=json.loads((ROOT/'results/trackvggt_gt_quality_summary_v1.json').read_text())
     sizes_by_scene={r['video_id']:r for r in census['rows']};rows=[];scene_events={};machine=[];artifacts={};inventory=[];identities=collections.defaultdict(set)
+    purity_path=ROOT/'results/trackvggt_reference_purity_supplement_v1.json'
+    purity=json.loads(purity_path.read_text()) if purity_path.exists() else None
+    purity_by={r['scene']:r for r in purity['rows']} if purity else {}
+    if purity:artifacts[str(purity_path)]=sha256(purity_path)
     fit_sizes=collections.defaultdict(collections.Counter);fit_total=collections.Counter();event_types={};full_headroom={};all_keys=set();fit_stats=collections.Counter();identity_errors=collections.Counter();hard_frames=collections.defaultdict(set)
     v2=json.loads((ROOT/'results/trackvggt_expanded_cohort_v2.json').read_text());v2_keys={tuple(r['key']) for r in v2['fit']};v2_seen=set()
     for scene in sorted(FIT+[12]):
@@ -44,7 +48,9 @@ def summarize(base,allow_incomplete):
                  Top8Coverage=summary['rates']['CandidateCoverage@8'],UnknownRate=ratio(count['N_unknown'],count['N_total']),RawGTConflictingGroups=c['conflicting_bbox_groups'],UnreliableGTImageFrames=len(summary['GT_unreliable_frames']),
                  InferenceSeconds=m['inference_seconds'],GPU=m['provenance']['cuda_visible_devices'],PredictionSHA256=m['predictions_sha256'],GitSHA=m['provenance']['commit'],FullVideo=True,
                  RawRankAccuracy=ratio(count.get('N_raw_rank_known_correct',0),count.get('N_raw_rank_known_evaluable',0)),GTARankAccuracy=ratio(count.get('N_GTA_rank_known_correct',0),count.get('N_GTA_rank_known_evaluable',0)),
-                 DetectorUnmatchedGTRows=summary['detector_coverage']['unmatched_GT_target_rows'],FinalOutputIdentityMetric='NOT_MEASURED_BY_QUERY_CENSUS')
+                 DetectorUnmatchedGTRows=summary['detector_coverage']['unmatched_GT_target_rows'],FinalOutputIdentityMetric='NOT_MEASURED_BY_QUERY_CENSUS',
+                 KnownMixedHistory=purity_by[scene]['counts'].get('query_with_known_multi_ID_reference_track',0) if scene in purity_by else 'NOT_MEASURED',
+                 UnknownReferenceObservation=purity_by[scene]['counts'].get('query_with_any_unmatched_or_unreliable_reference_observation',0) if scene in purity_by else 'NOT_MEASURED')
         rows.append(row);machine.append(dict(scene=scene,summary=summary,manifest=str(mp)));event_types[str(scene)]=dict(types=summary['event_types_overlapping'],primary_states=summary['primary_states'],failure_evidence=summary['assignment_failure_evidence_overlapping'])
         full_headroom[str(scene)]=summary['rates']
         queries=[];scene_stat=collections.Counter();state_counts=collections.Counter();patch_counts=collections.Counter()
@@ -78,13 +84,16 @@ def summarize(base,allow_incomplete):
     complete_scenes={r['Scene'] for r in rows if r['Status']=='COMPLETE'};complete=complete_scenes==set(FIT+[12])
     if not complete and not allow_incomplete:raise ValueError('required full scenes INCOMPLETE: '+str(sorted(set(FIT+[12])-complete_scenes)))
     status='COMPLETE_12_ASSOCIATION_TRAIN_FULL_CAUSAL_AUDITS' if complete else 'INCOMPLETE'
+    all12_counts=collections.Counter()
+    for entry in machine:all12_counts.update(entry['summary']['counts'])
     common=dict(status=status,completed_scenes=sorted(complete_scenes),pending_scenes=sorted(set(FIT+[12])-complete_scenes),source_artifacts=artifacts,
         generator=dict(commit=SOURCE_COMMIT,source_tree_dirty=bool(SOURCE_STATUS),script_sha256=sha256(Path(__file__)),command=sys.argv),
         pooled_rate_scope='Completed fit sequences only; excludes scene12 and pending scenes. All-fit claim requires COMPLETE status.',
         scope='All actual primary association queries, excluding initial largest-camera identity initialization; no cross-camera-only selection. Scene12 is separate validation diagnostic.',
         overlaps='A/B/C/D/E/F, pure-positive availability, ranking and actual solver failure counts overlap. Unknown/impure is not a known error. No sum of categories.',
         final_output='Predicted IDs are arbitrary permutations of GT IDs. Reported final-ID anchors are past-output consistency only, not literal GT-ID equality or CVIDF1.')
-    headroom=dict(**common,scene_rates=full_headroom,fit_counts=dict(fit_total),fit_rates={f'CandidateCoverage@{k}':ratio(fit_total[f'N_top{k}'],fit_total['N_pure_positive_full']) for k in [4,8,16]},
+    headroom=dict(**common,scene_rates=full_headroom,all12_counts=dict(all12_counts),all12_counts_scope='Completed association-TRAIN scenes including validation12; diagnostic only, never fit selection.',fit_counts=dict(fit_total),fit_rates={f'CandidateCoverage@{k}':ratio(fit_total[f'N_top{k}'],fit_total['N_pure_positive_full']) for k in [4,8,16]},
+        reference_purity_and_cross_camera_supplement=purity or 'NOT_MEASURED',
         fixed_native_history_GT_assisted_correctable_rate=ratio(fit_total['N_correctable_known_wrong'],fit_total['N_wrong_eligible']),
         no_metric_upper_bound=True,definitions=machine[0]['summary']['definitions'] if machine else 'NOT_MEASURED')
     save_json(ROOT/'results/trackvggt_candidate_headroom_v1.json',headroom)
@@ -110,9 +119,9 @@ def summarize(base,allow_incomplete):
               'Actual raw/GTA ranks, Hungarian pairs, strict thresholds, memory reactivation, new-ID allocation and previous-group output anchors are separate in each sealed summary. Descriptor averages are not assigned GT from source tags. Final output IDs are permutation invariant; query counts cannot establish an end-to-end metric gain.']
     (ROOT/'docs/TRACKVGGT_FULL_TRAIN_AUDIT.md').write_text('\n'.join(lines)+'\n')
     analysis=['# Correctable identity error analysis','',f'Status: {status}. Fit totals exclude validation scene12.','',
-        '|Scene|A ranking|B actual known failure|Threshold rejected (all)|No pure candidate|Impure|Known local NULL|GT not detector-matched|','|---|---:|---:|---:|---:|---:|---:|---:|']
+        '|Scene|A ranking|B actual known failure|Threshold rejected (all)|No pure candidate|Known mixed history|Unknown reference observation|Known local NULL|GT not detector-matched|','|---|---:|---:|---:|---:|---:|---:|---:|---:|']
     for r in rows:
-        analysis.append('|'+ '|'.join(str(v) for v in [r['Scene'],r.get('N_rank_correctable','NOT_MEASURED'),r.get('N_assignment_correctable','NOT_MEASURED'),r.get('N_threshold_rejected','NOT_MEASURED'),r.get('N_missing_candidate','NOT_MEASURED'),r.get('N_impure','NOT_MEASURED'),r.get('N_genuine_NULL_within_legal_candidates','NOT_MEASURED'),r.get('DetectorUnmatchedGTRows','NOT_MEASURED')])+'|')
+        analysis.append('|'+ '|'.join(str(v) for v in [r['Scene'],r.get('N_rank_correctable','NOT_MEASURED'),r.get('N_assignment_correctable','NOT_MEASURED'),r.get('N_threshold_rejected','NOT_MEASURED'),r.get('N_missing_candidate','NOT_MEASURED'),r.get('KnownMixedHistory','NOT_MEASURED'),r.get('UnknownReferenceObservation','NOT_MEASURED'),r.get('N_genuine_NULL_within_legal_candidates','NOT_MEASURED'),r.get('DetectorUnmatchedGTRows','NOT_MEASURED')])+'|')
     analysis += ['', 'These columns are not mutually exclusive. Threshold rejection is an actual solver observation; NULL dominance and multiplicity-boundary evidence are separate overlapping flags, not invented exclusive causes. No pure candidate does not identify a causal detector failure. GT not detector-matched is a separate one-to-one detector coverage statistic and cannot be added to query errors.','',
         '|518 patch centers|Queries|Known wrong/missed|Correctable /known wrong|GTA Recall1 /pure-positive-full|VGGT ROI Recall1|DINO Recall1|','|---|---:|---:|---|---|---|---|']
     for size in ['0','1-3','4-15','16+']:

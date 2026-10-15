@@ -40,6 +40,9 @@ def cohort_statistics(events):
         unique_known_scene_identities=len(known),per_scene=dict(collections.Counter(e['key'][0] for e in events)),
         categories=dict(collections.Counter(category(e) for e in events)),patch_bins=dict(collections.Counter(e['patch_bin'] for e in events)),
         reachable_rank_or_primary_errors=sum(category(e)=='hard' for e in events),known_Top1_errors=sum(e['ranking_state']=='wrong_link' for e in events),
+        pure_positive_in_top8_queries=sum(e['pure_positive_top8'] for e in events),
+        genuine_NULL_within_legal_history_queries=sum(e.get('genuine_NULL_within_legal_candidates',False) for e in events),
+        unknown_current_GT_queries=sum(e['query_gt_identity'] is None for e in events),
         adjacent_group_pairs_same_scene_camera_identity=sum(sum(b-a==1 for a,b in zip(sorted(v),sorted(v)[1:])) for v in frames.values()),
         groups_with_gap_le_3_same_scene_camera_identity=sum(sum(b-a<=3 for a,b in zip(sorted(v),sorted(v)[1:])) for v in frames.values()))
 
@@ -76,6 +79,12 @@ def main():
         operational_gate=dict(min_reachable_errors=260,min_reachable_ranking_errors=38,min_errors_outside_V2=130,min_scenes_with10_new_errors=3),
         validation_original300_unchanged=True,validation_scene12_never_in_fit_pool=True,teacher_network_training_budget_and_validation_metrics='NOT_MEASURED',
         V2_raw_artifacts_and_features_unchanged=True,source_inventory_sha256=sha256(invpath),selection_uses_DEV5_or_TEST=False)
+    purity_path=ROOT/'results/trackvggt_reference_purity_supplement_v1.json'
+    if not purity_path.exists():raise ValueError('mixed-vs-unknown and cross-camera supplement required')
+    purity=json.loads(purity_path.read_text())
+    if purity['status']!='COMPLETE_ALL12_SAVED_TRACE_SUPPLEMENT':raise ValueError('reference purity supplement incomplete')
+    comparison['cross_camera_correctable_query_counts']={str(r['scene']):r['counts'] for r in purity['rows'] if r['scene'] in FIT}
+    comparison['reference_purity_supplement_sha256']=sha256(purity_path)
     if gate:
         used=set(v2keys);frames=collections.defaultdict(set)
         for e in v2events:frames[e['key'][0],e['camera'],e['query_gt_identity']].add(e['frame'])
