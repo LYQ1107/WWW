@@ -48,10 +48,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--run', type=Path, required=True)
     parser.add_argument('--query-scene', type=int)
+    parser.add_argument('--verify-existing',action='store_true',help='recompute and exactly verify an existing metric file without replacing it')
+    parser.add_argument('--outcome-output',type=Path,help='optional separate post-run per-query GT outcome artifact; no inference/reranking')
     args = parser.parse_args()
     report_path = args.run/('retrieval.metrics.json' if args.query_scene is None else f'retrieval.scene_{args.query_scene}.metrics.json')
-    if report_path.exists():
+    if report_path.exists() and not args.verify_existing:
         raise FileExistsError(report_path)
+    if args.verify_existing and not report_path.exists():raise FileNotFoundError(report_path)
+    if args.outcome_output is not None and args.outcome_output.exists():raise FileExistsError(args.outcome_output)
+    retained=json.loads(report_path.read_text()) if args.verify_existing else None
     manifest = json.loads((args.run/'manifest.json').read_text())
     if args.query_scene is not None and args.query_scene not in manifest['video_ids']:
         raise ValueError('query scene is not present in this run')
@@ -121,6 +126,7 @@ def main():
     reciprocal = reciprocal10 = 0.
     per_scene = collections.defaultdict(empty_ranking_stats)
     diagnostic_stats = collections.defaultdict(empty_ranking_stats)
+    outcomes=[]
     for line in (args.run/'queries.jsonl').open():
         row = json.loads(line)
         query, response = row['query'], row['response']
@@ -133,6 +139,12 @@ def main():
         scene['requests'] += 1
         query_images.add(query['image_id'])
         identity = labels.get((query['image_id'], query['track']))
+        outcome=None
+        if args.outcome_output is not None:
+            outcome=dict(query={key:query[key] for key in ('scene','camera','round_id','image_id','frame_id','bbox')},
+                         published_track_id=query['track'],gt_identity=identity,matched=identity is not None,eligible=False,
+                         first_positive_rank=None,positive_gallery_clips=0)
+            outcomes.append(outcome)
         if identity is None:
             continue
         matched += 1
@@ -144,10 +156,12 @@ def main():
         if not positive_ids:
             continue
         eligible += 1
+        if outcome is not None:outcome.update(eligible=True,positive_gallery_clips=len(positive_ids))
         record_ranking(scene, response, positive_ids)
         for mode, diagnostic_response in row.get('diagnostic_responses', {}).items():
             record_ranking(diagnostic_stats[mode], diagnostic_response, positive_ids)
         rank = ranking_outcome(response, positive_ids)
+        if outcome is not None:outcome['first_positive_rank']=rank
         if rank is not None:
             reciprocal += 1/rank
             reciprocal10 += (1/rank if rank <= 10 else 0.)
@@ -166,7 +180,15 @@ def main():
                   metric_protocol='one-to-one detector/GT IoU>=0.5; identity=(scene,raw_GT_ID); clip positive requires strict GT majority across all its observations; Recall and full MRR conditional on GT-matched query with at least one positive other-camera clip; all candidate ranks retained',
                   query_selection_uses_gt=False, ranking_uses_gt=False, future_gallery_allowed=False,
                   limitations='finite local dataset replay, not live Internet feeds; clip identity majority is an evaluation convention')
-    save_json(report_path, report)
+    if args.verify_existing:
+        if json.loads(json.dumps(report))!=retained:raise ValueError('retained metrics do not match exact post-run recomputation')
+    else:save_json(report_path, report)
+    if args.outcome_output is not None:
+        save_json(args.outcome_output,dict(status='MATCHES_RETAINED_METRICS' if args.verify_existing else 'WRITTEN_WITH_METRICS',
+            run=str(args.run),query_scene=args.query_scene,metric=str(report_path),metric_sha256=sha256(report_path),
+            run_manifest_sha256=sha256(args.run/'manifest.json'),raw_gt_sha256=gt_hashes,outcomes=outcomes,
+            speed_eligible=False,analysis_only=True,
+            scope='post-run original ranked responses labelled with GT; all matched, unmatched and ineligible detector queries retained; no query selection, ranking, inference or metric overwrite',provenance=provenance()))
     print(json.dumps(report, indent=2))
 
 
