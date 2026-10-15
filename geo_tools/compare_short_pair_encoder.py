@@ -32,6 +32,8 @@ def main():
                   storage_scope='FP16 saved ROI vectors; this comparison does not prove bitwise live feature parity'))
         result.update(status='PASS_MICROBENCHMARK_ONLY',feature_proxy_metrics={variant:run['feature_proxy_metrics'] for variant,run in runs.items()},
                       camera_fp32_input=runs['original'].get('camera_fp32_input',False),
+                      explicit_bfloat16_constants={variant:run.get('explicit_bfloat16_constants') for variant,run in runs.items()},
+                      source_diff_sha256={variant:run.get('source_diff_sha256') for variant,run in runs.items()},
                       limitations='five repeated encoder measurements on three TRAIN pairs; changed features require closed-loop tracking evaluation before integration; no long-sequence speed multiplier or full-system FPS claim')
     save_json(RUNTIME/'encoder_microbench'/args.tag/'comparison.json',result)
     save_json(ROOT/'results'/f'{args.tag}_comparison.json',result)

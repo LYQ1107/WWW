@@ -14,12 +14,14 @@ def main():
     parser.add_argument('--tag',required=True)
     parser.add_argument('--repeats',type=int,default=5)
     parser.add_argument('--camera-fp32-input',action='store_true')
+    parser.add_argument('--fast-source',type=Path)
     args=parser.parse_args()
     if args.repeats<2:raise ValueError('at least two measured repetitions')
     out=RUNTIME/'encoder_microbench'/args.tag/args.variant
     if out.exists():raise FileExistsError(out)
     out.mkdir(parents=True)
-    source=RUNTIME/'sources'/('vggt' if args.variant=='original' else 'FastVGGT')
+    if args.fast_source and args.variant!='fast':raise ValueError('custom Fast source is only valid for the Fast variant')
+    source=args.fast_source or RUNTIME/'sources'/('vggt' if args.variant=='original' else 'FastVGGT')
     sys.path.insert(0,str(source))
     report=provenance();report.update(variant=args.variant,status='RUNNING',used_cache=True,
         cache_scope='frozen TRAIN detector ROI boxes only; images read and encoder run for every invocation; no dense token cache',
@@ -27,7 +29,9 @@ def main():
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip(),
         source_python_sha256={str(p.relative_to(source)):sha256(p) for directory in [source/'vggt',source/'merging'] if directory.exists() for p in directory.rglob('*.py')},
         source_dirty=bool(subprocess.check_output(['git','status','--porcelain'],cwd=source,text=True)),
-        precision='outer FP16 autocast on V100; original unmodified Fast source retains its own hard-coded BF16 conversions',
+        precision='outer FP16 autocast on V100; internal dtype constants and any source bridge recorded separately',
+        source_diff_sha256=hashlib.sha256(subprocess.check_output(['git','diff','HEAD'],cwd=source)).hexdigest(),
+        explicit_bfloat16_constants={str(p.relative_to(source)):p.read_text().count('torch.bfloat16') for p in [source/'vggt/models/aggregator.py',source/'merging/merge.py'] if p.exists()},
         camera_fp32_input=args.camera_fp32_input,
         interface_bridge='enable all heads for strict official checkpoint loading, then disable unused dense/track heads; Fast public patch-dimension setter; map Fast four retained outputs to original indices4/11/17/23',
         weights=str(RUNTIME/'weights/vggt_1b.pt'),weights_sha256=sha256(RUNTIME/'weights/vggt_1b.pt'),rows=[],actual_encoder_calls=0)
