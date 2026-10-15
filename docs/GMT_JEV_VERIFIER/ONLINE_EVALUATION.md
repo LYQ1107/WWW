@@ -7,4 +7,4 @@
 
 本表均为冻结V1完整TRAIN16原生raw结果，已暴露开发集。新Typed/ordinary verifier在线评测尚未运行；没有新HOTA差值。
 原GMT与MLP第一次分歧ID52/25仍为UNKNOWN；本轮不把它重新认定为纠错，也未执行新的完整视频配对干预。
-P0原GMT完整TRAIN预测复核通过段数：0。该证据不冒充新Verifier OFF全视频部署合同。
+P0原GMT完整TRAIN预测复核通过段数：3。该证据不冒充新Verifier OFF全视频部署合同。
