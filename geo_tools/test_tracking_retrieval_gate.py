@@ -21,6 +21,17 @@ class Tests(unittest.TestCase):
                 with self.assertRaises(ValueError):verify_dense_counters(method,{**stats,**changed},80,40)
         with self.assertRaises(ValueError):verify_dense_counters('dinov2_dense_head',dict(updates=40,failures=0,vggt_calls=0),80,40)
 
+    def test_inactive_geometry_method_only_when_both_weights_exactly_zero(self):
+        reference=dict(commit='old',source_hashes={'gtr/config.py':'digest'},geo_options=dict(GEOMETRY_METHOD='vggt_camera',GEOMETRY_WEIGHT=0.,FEATURE_WEIGHT=2.))
+        info=dict(tracking_options=dict(GEOMETRY_METHOD='sift',GEOMETRY_WEIGHT=0.,FEATURE_WEIGHT=2.))
+        with patch('audit_tracking_retrieval_prefix.geo_defaults',return_value=({},'digest')):
+            verify_tracking_options(info,reference)
+            for weight in (.5,None):
+                changed=dict(reference,geo_options={**reference['geo_options'],'GEOMETRY_WEIGHT':weight})
+                with self.assertRaises(ValueError):verify_tracking_options(info,changed)
+            with self.assertRaises(ValueError):verify_tracking_options(dict(tracking_options={**info['tracking_options'],'FEATURE_WEIGHT':1.}),reference)
+            with self.assertRaises(ValueError):verify_tracking_options(dict(tracking_options={**info['tracking_options'],'GEOMETRY_WEIGHT':.5}),dict(reference,geo_options={**reference['geo_options'],'GEOMETRY_WEIGHT':.5}))
+
     def test_tracking_modes_cannot_be_combined(self):
         import contextlib,io
         import run_live_retrieval

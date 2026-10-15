@@ -13,6 +13,11 @@ def verify_tracking_options(info,reference):
     resolved.setdefault('REUSE_TARGET_FEATURES',False)
     for key,value in info['tracking_options'].items():
         if key=='CALIBRATION_PATH':continue # inactive when a learned head is loaded
+        # Some original scene1 capacity controls recorded vggt_camera, while
+        # later scenes recorded sift. Both paths skip geometry when its weight
+        # is exactly zero (GeometryRuntime.observe); preserve every active flag.
+        if key=='GEOMETRY_METHOD' and info['tracking_options'].get('GEOMETRY_WEIGHT')==0 and resolved.get('GEOMETRY_WEIGHT')==0:
+            continue
         if key not in resolved or resolved[key]!=value:raise ValueError('tracking option mismatch: '+key)
     return digest
 
@@ -70,6 +75,8 @@ def main():
                     raise ValueError('per-scene tracking runtime counter or zero-column field mismatch')
             scene_rows.append(dict(scene=scene,exact_serialized_standalone_prefix=actual==expected,
                 detections=len(actual),prediction_sha256=sha256(prediction),reference_prediction_sha256=sha256(reference),
+                inactive_geometry_method_difference=(dict(producer=info['tracking_options']['GEOMETRY_METHOD'],reference=ref['geo_options']['GEOMETRY_METHOD'],reason='both recorded geometry weights exactly zero; geometry branch not executed')
+                    if method in {'gmt_dense_head','dinov2_dense_head'} and info['tracking_options'].get('GEOMETRY_WEIGHT')==0 and ref['geo_options'].get('GEOMETRY_WEIGHT')==0 and info['tracking_options'].get('GEOMETRY_METHOD')!=ref['geo_options'].get('GEOMETRY_METHOD') else None),
                 reference_manifest_sha256=sha256(reference_manifest)))
         rows.append(dict(run=str(run),manifest_sha256=sha256(manifest),source=str(source),source_sha256=sha256(source),
             tracking_method=method,scenes=scene_rows))
