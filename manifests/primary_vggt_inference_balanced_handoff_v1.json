@@ -1,0 +1,188 @@
+{
+  "id": "primary_vggt_inference_balanced_handoff_v1",
+  "project_gpu_ids": [
+    "0",
+    "4"
+  ],
+  "queues": {
+    "gpu0": [
+      {
+        "id": "eval_causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v10",
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v10/predictions.json",
+          "--video-id",
+          "10",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v10/manifest.json"
+        ],
+        "cpu_only": true,
+        "depends_on": []
+      },
+      {
+        "id": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v1",
+        "command": [
+          "geo_tools/run_seeded_online.py",
+          "--inference-seed",
+          "20261015",
+          "--video-id",
+          "1",
+          "--tag",
+          "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v1",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+          "--geometry-weight",
+          "0.5",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "eval_causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v1",
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v1/predictions.json",
+          "--video-id",
+          "1",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v1/manifest.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v1"
+        ]
+      }
+    ],
+    "gpu4": [
+      {
+        "id": "causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v19",
+        "command": [
+          "geo_tools/run_seeded_online.py",
+          "--inference-seed",
+          "20261016",
+          "--video-id",
+          "19",
+          "--tag",
+          "causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v19",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+          "--geometry-weight",
+          "0.5",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "eval_causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v19",
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v19/predictions.json",
+          "--video-id",
+          "19",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v19/manifest.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v19"
+        ]
+      },
+      {
+        "id": "causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v18",
+        "command": [
+          "geo_tools/run_seeded_online.py",
+          "--inference-seed",
+          "20261016",
+          "--video-id",
+          "18",
+          "--tag",
+          "causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v18",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+          "--geometry-weight",
+          "0.5",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "eval_causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v18",
+        "command": [
+          "geo_tools/evaluate_predictions.py",
+          "--prediction",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v18/predictions.json",
+          "--video-id",
+          "18",
+          "--run-manifest",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v18/manifest.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v18"
+        ]
+      }
+    ]
+  },
+  "original_plan": "manifests/primary_vggt_inference_seed_pairs_v1.json",
+  "original_queue": "gpu0",
+  "existing_stage": "causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v10",
+  "external_dependency_scope": "original passed wrapper prefix gate is retained; gpu0 replacement waits for the original existing child to exit, then evaluates its unchanged outputs; no existing inference is restarted",
+  "scope": "exact remaining original commands, heads, actual inference seeds, tags and data; scheduling-only redistribution of unstarted scenes to freed project GPU4; original GPU0 child completes uninterrupted"
+}
