@@ -93,12 +93,19 @@ def main():
             unlogged_or_unresolved_counts=dict(collections.Counter(reason for row in values for reason in row['unlogged_or_unresolved']))))
     dense=[]
     spec=ROOT/'manifests/causal_B7_fixed_k1_strict_suite_v1_sources.json'
-    for scene,prediction in json.loads(spec.read_text())['video_predictions'].items():
+    sources=json.loads(spec.read_text())['video_predictions']
+    if set(map(int,sources))!=set(split['strict_development_video_ids']):raise ValueError('dense scope is not all strict scenes')
+    artifacts[str(spec)]=sha256(spec)
+    for scene,prediction in sources.items():
         path=Path(prediction).parent/'manifest.json';run=json.loads(path.read_text())
+        if not run['full_video'] or not run['causal_online'] or run['video_id']!=int(scene):raise ValueError('wrong dense runtime scope')
+        if run['geo_options']['GEOMETRY_WEIGHT']!=.5 or run['geo_options']['FEATURE_WEIGHT']!=2 or run['geo_options']['FEATURE_BACKBONE']!='vggt':
+            raise ValueError('not the declared dense joint candidate')
         if sha256(prediction)!=run['predictions_sha256']:raise ValueError('changed dense predictions')
+        artifacts[str(path)]=sha256(path);artifacts[str(prediction)]=sha256(prediction)
         dense.append(dict(video_id=int(scene),synchronized_groups=run['synchronized_groups'],
             numerical_geometry_valid=run['geometry_valid_calls'],numerical_geometry_invalid=run['geometry_invalid_calls'],
-            module_failures=run['geo_failures'],actual_vggt_calls=run['total_vggt_calls'],manifest_sha256=sha256(path)))
+            module_failures=run['geo_failures'],actual_vggt_calls=run['total_vggt_calls'],manifest=str(path),prediction=str(prediction),manifest_sha256=sha256(path)))
     text=['# Geometry recovery: recorded gate diagnostics','',
         'These are logged gate values on fixed screening cases. Repeated mask/feature/geometry variants are not independent samples. GT identity labels and downstream scores do not choose these gates. Threshold violations are not evidence of low physical camera overlap, low texture, rapid rotation or GT pose error. Missing matrix/residual-stage details remain unknown.','',
         '| Profile | Cohort | Rows | Unique scene/frames | Accepted |', '|---|---|---:|---:|---:|']
