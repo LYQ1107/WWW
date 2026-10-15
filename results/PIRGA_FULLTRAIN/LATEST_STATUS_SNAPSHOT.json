@@ -1,0 +1,146 @@
+{
+  "observed_utc": "2026-10-15T22:09:31.044512+00:00",
+  "own_processes": {
+    "run_pirga_uncertainty_gate_queue.py": [
+      8441
+    ],
+    "run_pirga_phase1_eval_queue.py": [
+      17149
+    ],
+    "run_pirga_phase1_budget_correction.py": [
+      19051
+    ],
+    "train_pirga_innovation.py": [
+      21902
+    ],
+    "run_pirga_phase2_eval_queue.py": [
+      23373
+    ],
+    "train_pirga_decision.py": [
+      29662
+    ],
+    "run_pirga_decision_eval_queue.py": [
+      30408
+    ],
+    "train_pirga_exhaustive_margin.py": [
+      36038
+    ],
+    "run_pirga_exhaustive_margin_eval_queue.py": [
+      36692
+    ],
+    "train_pirga_grouped_phase1.py": [
+      40773
+    ]
+  },
+  "target_free_GiB": 237.8513069152832,
+  "statuses": {
+    "phase1_training": {
+      "status": "TRAINING",
+      "device": "cpu",
+      "epoch": 5,
+      "step": 528660,
+      "epoch_visit": 75000,
+      "status_file_age_seconds": 16.168949604034424
+    },
+    "phase1_resources": {
+      "status": "FAILED_RETAIN_EVIDENCE",
+      "pid": 10099,
+      "GPU_wall_hours": 1.310705815412932,
+      "GPU_cap": 1.4,
+      "reason": "RuntimeError('Unexpected trainer terminal state')",
+      "status_file_age_seconds": 1224.6504337787628
+    },
+    "phase1_corrective_resources": {
+      "status": "RUNNING_CPU_CONTINUATION",
+      "pid": 19051,
+      "CPU_pid": 40773,
+      "GPU_wall_hours": 1.310705815412932,
+      "status_file_age_seconds": 1224.3344929218292
+    },
+    "phase1_replay": {
+      "status": "WAITING_REGISTERED_EPOCH",
+      "pid": 17149,
+      "current_epoch": 5,
+      "completed": [
+        1,
+        3
+      ],
+      "GPU_wall_hours": 0,
+      "status_file_age_seconds": 2382.424234867096
+    },
+    "phase2_training": {
+      "status": "TRAINING_CPU",
+      "pid": 21902,
+      "epoch": 2,
+      "step": 200415,
+      "epoch_visit": 87000,
+      "GPU_wall_hours": 0,
+      "CPU_wall_seconds": 4164.485009796917,
+      "status_file_age_seconds": 4.601244688034058
+    },
+    "phase2_replay": {
+      "status": "WAITING_FIXED_EPOCH",
+      "pid": 23373,
+      "epoch": 3,
+      "completed": [
+        1
+      ],
+      "GPU_wall_hours": 0,
+      "status_file_age_seconds": 1229.0266263484955
+    },
+    "ordinary_decision_training": {
+      "status": "TRAINING_CPU",
+      "pid": 29662,
+      "epoch": 5,
+      "step": 484660,
+      "epoch_visit": 31000,
+      "GPU_wall_hours": 0,
+      "CPU_wall_seconds": 2968.201118953526,
+      "status_file_age_seconds": 3.309354066848755
+    },
+    "ordinary_replay": {
+      "status": "WAITING_FIXED_EPOCH",
+      "pid": 30408,
+      "epoch": 5,
+      "completed": [
+        1,
+        3
+      ],
+      "GPU_wall_hours": 0,
+      "status_file_age_seconds": 446.46700954437256
+    },
+    "exhaustive_margin_training": {
+      "status": "TRAINING_CPU",
+      "pid": 36038,
+      "epoch": 3,
+      "step": 283906,
+      "epoch_visit": 57000,
+      "GPU_wall_hours": 0,
+      "CPU_wall_seconds": 1950.2445103898644,
+      "status_file_age_seconds": 5.101500034332275
+    },
+    "exhaustive_margin_replay": {
+      "status": "WAITING_FIXED_EPOCH",
+      "pid": 36692,
+      "epoch": 3,
+      "completed": [
+        1
+      ],
+      "GPU_wall_hours": 0,
+      "status_file_age_seconds": 693.4018061161041
+    },
+    "uncertainty_gate_replay": {
+      "status": "WAITING_FIXED_ENDPOINT",
+      "pid": 8441,
+      "epoch": 3,
+      "completed": [],
+      "GPU_wall_hours": 0,
+      "status_file_age_seconds": 157.02877640724182
+    }
+  },
+  "effective_phase1_GPU_residency_cap_hours": 1.32,
+  "original_GPU_cap_is_historical_if_superseded": true,
+  "joint_context_preparation_complete": true,
+  "fixed_reliability_complete": true,
+  "qualification": "A live PID alone does not prove useful progress. Compare actual step/visit over time; waiting fixed-epoch evaluators are expected. See logs for lengthy admission/context construction. No online performance claim."
+}

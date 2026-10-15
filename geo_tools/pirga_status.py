@@ -9,7 +9,7 @@ def read(path):
 
 def processes(runtime):
     found={}
-    names=['train_pirga_grouped_phase1.py','train_pirga_innovation.py','train_pirga_decision.py','pirga_native_context.py','run_pirga_phase1_eval_queue.py','run_pirga_phase2_eval_queue.py','run_pirga_phase1_budget_correction.py','train_pirga_exhaustive_margin.py','run_pirga_decision_eval_queue.py','run_pirga_exhaustive_margin_eval_queue.py']
+    names=['train_pirga_grouped_phase1.py','train_pirga_innovation.py','train_pirga_decision.py','pirga_native_context.py','run_pirga_phase1_eval_queue.py','run_pirga_phase2_eval_queue.py','run_pirga_phase1_budget_correction.py','train_pirga_exhaustive_margin.py','run_pirga_decision_eval_queue.py','run_pirga_exhaustive_margin_eval_queue.py','run_pirga_uncertainty_gate_queue.py','run_pirga_uncertainty_gate_audit.py']
     for proc in Path('/proc').iterdir():
         if not proc.name.isdigit():continue
         try:
@@ -25,7 +25,7 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--runtime',type=Path,default=Path('/data1/liuyeqiang/WWW_pirga_runtime_20261016'));a=p.parse_args();root=a.runtime
     statusfiles=dict(phase1_training='phase1_grouped_matched_v1/fit/STATUS.json',phase1_resources='phase1_grouped_matched_v1/RESOURCE_LEDGER.json',
         phase1_corrective_resources='phase1_grouped_matched_v1/CORRECTIVE_RESOURCE_LEDGER.json',phase1_replay='phase1_fixed_native_replays_v1/STATUS.json',
-        phase2_training='phase2_innovations_matched_v1/STATUS.json',phase2_replay='phase2_fixed_native_replays_v1/STATUS.json',ordinary_decision_training='ordinary_decision_matched_v1/STATUS.json',ordinary_replay='ordinary_fixed_native_replays_v1/STATUS.json',exhaustive_margin_training='exhaustive_margin_matched_v1/STATUS.json',exhaustive_margin_replay='exhaustive_margin_native_replays_v1/STATUS.json')
+        phase2_training='phase2_innovations_matched_v1/STATUS.json',phase2_replay='phase2_fixed_native_replays_v1/STATUS.json',ordinary_decision_training='ordinary_decision_matched_v1/STATUS.json',ordinary_replay='ordinary_fixed_native_replays_v1/STATUS.json',exhaustive_margin_training='exhaustive_margin_matched_v1/STATUS.json',exhaustive_margin_replay='exhaustive_margin_native_replays_v1/STATUS.json',uncertainty_gate_replay='uncertainty_gate_fixed_audits_v1/STATUS.json')
     result=dict(observed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),own_processes=processes(root),target_free_GiB=shutil.disk_usage(root).free/2**30,statuses={})
     for name,relative in statusfiles.items():
         path=root/relative;value=read(path)
