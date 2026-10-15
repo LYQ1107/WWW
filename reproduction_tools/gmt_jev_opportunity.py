@@ -62,6 +62,8 @@ def native_assignment(scores,lengths,threshold=.1):
 def collect(video,kind='observe',frames=256,records=True,report=True,diagnostic_sample_observer=None):
  from gtr.modeling.gmt_jev import IdentityCorrection
  values,total,images=metadata(video);frames=min(frames,total);seed();m,cfg,_=model();actor=IdentityCorrection(kind).cuda().eval();m.gmt_identity_correction=actor;seed()
+ frozen_parameters=sum(p.numel() for p in m.parameters())
+ assert not any(p.requires_grad for p in m.parameters()), 'Opportunity sampling cannot train GMT'
  labeler=OfflineCertificates(video,images);samples=[];stats=collections.Counter();groups=set();pending={};boot=[False];last=[0.];begin=time.monotonic();boundary={};init_map={}
  def before_native(**d):
   boundary['id_count']=d['id_count']
@@ -133,7 +135,7 @@ def collect(video,kind='observe',frames=256,records=True,report=True,diagnostic_
    print('GMT_OPPORTUNITY_PROGRESS',video,kind,f,frames,dict(stats),flush=True);last[0]=time.monotonic()
  m.jev_candidate_commit_observer=after
  with torch.no_grad():raw,_=run(m,values,total,frames-1)
- result=dict(status='COMPLETE',video=video,kind=kind,frames=frames,counts=dict(stats),local_error_groups=len(groups),
+ result=dict(status='COMPLETE',video=video,kind=kind,frames=frames,counts=dict(stats),local_error_groups=len(groups),frozen_GMT_parameters=frozen_parameters,GMT_requires_grad_parameters=0,
   residual_units='average GMT trajectory score; raw residual multiplied by original history support',
   history_mixed_IDs=sum(len(v)>1 for v in labeler.votes.values()),
   unique_target='first-past>=3 known observations and>=80% coverage; immutable first owner must remain>=80%pure; exactly one plausible >=80%pure compatible ID across all histories, including younger aliases, certified and present in active lawful candidates',
