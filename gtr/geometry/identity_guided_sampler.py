@@ -32,6 +32,7 @@ def greedy_2d(score,xy,inside,context,k=24,diversity=.1,context_cap=12):
     inside=inside.bool();context=context.bool()&~inside
     selected=[];distance=torch.full_like(score,float('inf'))
     available=inside|context
+    universe=available.clone()
     target_inside=min(int(inside.sum()),(k+1)//2)
     for step in range(min(k,int(available.sum()))):
         mask=available.clone()
@@ -39,7 +40,9 @@ def greedy_2d(score,xy,inside,context,k=24,diversity=.1,context_cap=12):
         if sum(bool(context[i]) for i in selected)>=context_cap:mask &= ~context
         if not mask.any():break
         priority=score.clone()
-        if selected:priority=priority+diversity*normalize_attention(distance)
+        if selected:
+            local=distance[universe];low=local.min();span=(local.max()-low).clamp_min(1e-8)
+            priority=priority+diversity*(distance-low)/span
         priority[~mask]=-torch.inf
         index=int(priority.argmax());selected.append(index);available[index]=False
         distance=torch.minimum(distance,torch.linalg.vector_norm(xy-xy[index],dim=-1))
@@ -47,10 +50,11 @@ def greedy_2d(score,xy,inside,context,k=24,diversity=.1,context_cap=12):
 
 
 class IdentityGuidedSampler(nn.Module):
-    def __init__(self,token_dim,query_dim=128):
+    def __init__(self,token_dim,query_dim=128,projection_hidden=None):
         super().__init__()
         self.query=nn.Linear(query_dim,query_dim,bias=False)
-        self.key=nn.Linear(token_dim,query_dim,bias=False)
+        self.key=nn.Linear(token_dim,query_dim,bias=False) if projection_hidden is None else nn.Sequential(
+            nn.Linear(token_dim,projection_hidden,bias=False),nn.GELU(),nn.Linear(projection_hidden,query_dim,bias=False))
         self.mix=nn.Parameter(torch.zeros(3))
 
     def scores(self,tokens,attention,query,inside,mode):

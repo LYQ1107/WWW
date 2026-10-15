@@ -5,13 +5,17 @@ from .track_conditioned_see_query import TrackConditionedSeeQuery
 
 
 class TrackQDTeacher(nn.Module):
-    def __init__(self,channels,hidden=128,mode='track',pair_dim=8):
+    def __init__(self,channels,hidden=128,mode='track',pair_dim=8,projection_hidden=None):
         super().__init__()
         if len(channels)!=4 or mode not in ('last','mean','concat','global','track'):raise ValueError('invalid QD ablation')
         self.mode=mode
-        self.projections=nn.ModuleList(nn.Sequential(nn.Linear(c,hidden),nn.LayerNorm(hidden)) for c in channels)
-        self.see=TrackConditionedSeeQuery(hidden,conditioned=mode=='track')
-        self.concat=nn.Linear(4*hidden,hidden)
+        active_channels=channels[-1:] if mode=='last' else channels
+        self.projections=nn.ModuleList(
+            nn.Sequential(nn.Linear(c,hidden),nn.LayerNorm(hidden)) if projection_hidden is None else
+            nn.Sequential(nn.Linear(c,projection_hidden),nn.GELU(),nn.Linear(projection_hidden,hidden),nn.LayerNorm(hidden))
+            for c in active_channels)
+        self.see=TrackConditionedSeeQuery(hidden,conditioned=mode=='track') if mode in ('global','track') else None
+        self.concat=nn.Linear(4*hidden,hidden) if mode=='concat' else None
         layer=nn.TransformerDecoderLayer(hidden,4,dim_feedforward=256,dropout=.1,batch_first=True)
         self.decoder=nn.TransformerDecoder(layer,2)
         self.score=nn.Sequential(nn.Linear(2*hidden+pair_dim,hidden),nn.GELU(),nn.Linear(hidden,1))
@@ -19,7 +23,8 @@ class TrackQDTeacher(nn.Module):
     def forward(self,query,layers,pair,valid=None):
         if len(layers)!=4 or any(len(x)!=len(layers[0]) for x in layers):raise ValueError('unaligned layer tokens')
         if not len(layers[0]):return query.sum()*0,None
-        projected=torch.stack([proj(x.float()) for proj,x in zip(self.projections,layers)])
+        active_layers=layers[-1:] if self.mode=='last' else layers
+        projected=torch.stack([proj(x.float()) for proj,x in zip(self.projections,active_layers)])
         if self.mode=='last':weights=query.new_tensor([0.,0.,0.,1.]);memory=projected[-1]
         elif self.mode=='mean':weights=query.new_full((4,),.25);memory=projected.mean(0)
         elif self.mode=='concat':weights=None;memory=self.concat(projected.permute(1,0,2).flatten(1))

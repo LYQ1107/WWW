@@ -100,5 +100,21 @@ class Tests(unittest.TestCase):
         layers[0][0,0]=float('nan')
         with self.assertRaises(ValueError):model(torch.randn(128),layers,torch.randn(8))
 
+    def test_qd_ablation_modes_have_finite_scores(self):
+        for mode in ('last','mean','concat','global','track'):
+            model=TrackQDTeacher([32]*4,mode=mode).eval()
+            score,weights=model(torch.randn(128),[torch.randn(3,32) for _ in range(4)],torch.randn(8))
+            self.assertTrue(torch.isfinite(score))
+            if weights is not None:self.assertAlmostEqual(float(weights.sum()),1.,places=6)
+
+    def test_active_capacity_of_primary_dino_global_track_controls(self):
+        def total(channels,bottleneck=None,mode='track'):
+            modules=[TrackQueryEncoder(1152),IdentityGuidedSampler(channels,projection_hidden=bottleneck),TrackQDTeacher([channels]*4,projection_hidden=bottleneck,mode=mode)]
+            return sum(parameter.numel() for module in modules for parameter in module.parameters())
+        self.assertEqual(total(2048),2123016)
+        self.assertEqual(total(1024,228),2126488)
+        self.assertLess(abs(total(2048)-total(1024,228))/total(2048),.002)
+        self.assertEqual(total(2048,mode='global'),total(2048))
+
 
 if __name__=='__main__':unittest.main()
