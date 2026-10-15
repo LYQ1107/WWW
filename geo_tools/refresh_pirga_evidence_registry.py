@@ -89,6 +89,8 @@ def main():
             legacy=master.get('completed_legacy_coverage_replay_endpoints')==['canonical300','epoch1','epoch3','epoch5']),
         next_action='Complete all registered fixed endpoints including canonical300/full legacy coverage control; preserve all negatives. No extra model tuning or online admission from a single endpoint.')
     if 'latest_matched_new_model_status' in master:gate['phase2']=master['latest_matched_new_model_status']
+    if p1complete:gate['phase1']='FIXED1_3_5_COMPLETE_LATEST_'+master['latest_fixed_epoch_PIRGA_status']
+    elif status['P1']['status']=='COMPLETE':gate['phase1']='TRAINING_COMPLETE_PENDING_ALL_FIXED_REPLAYS'
     (root/'GO_NO_GO.json').write_text(json.dumps(gate,indent=2)+'\n')
     online=json.loads((root/'ONLINE_TRACKING_RESULTS.json').read_text())
     online.update(reason='Full11 training input contract passed. Full native online evaluation remains unadmitted because completed predictive replay endpoints have not passed the scientific gate; remaining fixed endpoints continue.',

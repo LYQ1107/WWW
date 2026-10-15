@@ -46,6 +46,7 @@ def main():
     (r/'PHASE1_TRAINING_STATUS_SNAPSHOT.json').write_text(json.dumps(dict(observed_utc=now,resource=live,corrective_resource=corrective,training=status,snapshot_not_live_monitor=True),indent=2)+'\n')
     master=json.loads((r/'MASTER_GOAL.json').read_text());master['phases']['1']='COMPLETE_TRAINING_PENDING_ALL_FIXED_REPLAYS' if status['status']=='COMPLETE' else 'RUNNING_MATCHED_FULL_EPOCH_C2_C3_C4';master['updated_utc']=now
     master['completed_Phase1_replay_epochs']=sorted({v['epoch'] for v in summary});master['latest_fixed_epoch_PIRGA_status']=None if not summary else json.loads((r/'PHASE1_REPLAY'/f'epoch{summary[-1]["epoch"]}'/'PIRGA_ADJUDICATION.json').read_text())['status']
+    if status['status']=='COMPLETE' and master['completed_Phase1_replay_epochs']==[1,3,5]:master['phases']['1']='COMPLETE_FIXED1_3_5_TRAINING_AND_NATIVE_REPLAYS'
     (r/'MASTER_GOAL.json').write_text(json.dumps(master,indent=2)+'\n')
     resource=json.loads((r/'RESOURCE_LEDGER.json').read_text());charged=10*64/3600
     resource.update(status='PHASE1_CPU_CONTINUATION_GPU_COMPLETE' if status.get('device')=='cpu' and status['status']!='COMPLETE' else 'PHASE1_COMPLETE' if status['status']=='COMPLETE' else 'PHASE1_RUNNING_CONSERVATIVE_CUDA_CONTEXT_CORRECTION',updated_utc=now,

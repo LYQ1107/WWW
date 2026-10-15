@@ -1,0 +1,118 @@
+{
+  "status": "NO_PREDICTION_SPECIFIC_GAIN",
+  "epoch": 5,
+  "comparison_to_C1": {
+    "extra_original_error_repairs": 0,
+    "lost_original_error_repairs": 6,
+    "net_original_error_repairs": -6,
+    "extra_repaired_video_person_groups": 0,
+    "net_positive_original_repair_person_groups": 0,
+    "additional_known_harm_queries": 2,
+    "additional_correct_to_unknown": 2,
+    "avoided_ordinary_model_harms": 1,
+    "by_person": {
+      "5": {
+        "extra_original_repairs": 0,
+        "lost_original_repairs": 4,
+        "additional_known_harms": 0,
+        "avoided_known_harms": 0
+      },
+      "8": {
+        "extra_original_repairs": 0,
+        "lost_original_repairs": 1,
+        "additional_known_harms": 1,
+        "avoided_known_harms": 0
+      },
+      "3": {
+        "extra_original_repairs": 0,
+        "lost_original_repairs": 1,
+        "additional_known_harms": 0,
+        "avoided_known_harms": 0
+      },
+      "1": {
+        "extra_original_repairs": 0,
+        "lost_original_repairs": 0,
+        "additional_known_harms": 1,
+        "avoided_known_harms": 0
+      },
+      "11": {
+        "extra_original_repairs": 0,
+        "lost_original_repairs": 0,
+        "additional_known_harms": 0,
+        "avoided_known_harms": 1
+      }
+    },
+    "extra_fix_keys": [],
+    "lost_fix_keys": [
+      [
+        12,
+        29644,
+        2
+      ],
+      [
+        12,
+        29950,
+        1
+      ],
+      [
+        12,
+        30043,
+        4
+      ],
+      [
+        12,
+        30240,
+        5
+      ],
+      [
+        12,
+        30484,
+        3
+      ],
+      [
+        12,
+        30496,
+        2
+      ]
+    ]
+  },
+  "certification_transitions": {
+    "C3_vs_C1": {
+      "True -> True": 11701,
+      "False -> True": 1,
+      "False -> False": 16,
+      "None -> None": 2818,
+      "False -> None": 3,
+      "True -> False": 8,
+      "None -> False": 6,
+      "True -> None": 2,
+      "None -> True": 2
+    },
+    "C3_vs_C2": {
+      "True -> True": 11699,
+      "False -> False": 28,
+      "None -> None": 2820,
+      "False -> True": 4,
+      "False -> None": 2,
+      "True -> None": 1,
+      "None -> False": 2,
+      "None -> True": 1
+    },
+    "C3_vs_C4": {
+      "True -> True": 11700,
+      "False -> True": 2,
+      "False -> False": 20,
+      "None -> None": 2817,
+      "True -> False": 3,
+      "None -> False": 7,
+      "True -> None": 2,
+      "False -> None": 4,
+      "None -> True": 2
+    }
+  },
+  "old_helper_gate_is_not_PIRGA_admission": true,
+  "original_helper_label_preserved": "CAMERA_CONDITION_VALUE_NOT_ESTABLISHED",
+  "no_online_admission": true,
+  "scientific_success": false,
+  "qualification": "One exposed DEV scene. Raw inherited helper can call C3 vs C2/C4 positive; PIRGA additionally requires extra net native repairs over C1 and strong ordinary models. Never interpret inherited helper label as PIRGA success."
+}
