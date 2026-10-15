@@ -56,6 +56,13 @@ def main():
         seeds=json.loads(seed_path.read_text());number=len(seeds['completed_inference_seeds']);limits=seeds['paired_cvidf1_delta_range']
         constant_note=constant_note.replace('配对推理种子未完成',f'配对推理种子已核验{number}/3组')
         constant_note+=f" 实际推理RNG种子配对的CVIDF1增量范围{limits[0]:+.6f}至{limits[1]:+.6f}个百分点；这是冻结同一模型的推理随机性，与三个独立训练head种子不同。未知/破坏关系保留，不能用净增益替代完整纠错与损害统计。"
+    dense_seed_path=ROOT/'results/causal_dense_seed_stability_v1.json'
+    if dense_seed_path.exists():
+        factors=json.loads(dense_seed_path.read_text())
+        signal_text+=' 密集因果种子复核分开记录：'+'；'.join(f"{group['method']}/{group['factor']}完成{group['completed_trials']}/3" for group in factors['groups'])+'。B7主种子在两类因素间共享，不是独立重复；完整原生strict5、实际推理种子及head哈希逐项核验，见GEO_STREAM_DENSE_SEED_STABILITY.md。'
+        observed=[row for row in factors.get('scene1_training_head_diagnostic',{}).get('rows',[]) if row['method']=='B7']
+        if len(observed)==3:
+            signal_text+=' 完整scene1的三个TRAIN头在固定推理种子20261014下CVIDF1分别为'+','.join(f"{row['metrics']['CVIDF1']:.6f}" for row in observed)+'，第三头低于同场景基线；检测集合和其他融合设置相同。这是训练头不稳定的单场景证据，不能当作完整DEV三种子结果。'
     geometry_note='dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。'
     geometry_path=ROOT/'results/causal_dense_geometry_full_strict_attribution_v1.json'
     if geometry_path.exists() and json.loads(geometry_path.read_text())['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':

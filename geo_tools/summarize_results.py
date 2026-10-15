@@ -143,6 +143,7 @@ def main():
     whole_camera_order=evidence('live_whole_gmt_camera_order_v1.json',['status','full_video','max_frames','scope','limitations','rows'])
     physical_camera_contract=evidence('physical_camera_input_contract_v1.json',['status','full_video','full_strict_suite','max_frames','speed_eligible','scope','limitations','rows'])
     native_seed_stability=evidence('native_prior_inference_seed_stability_v1.json',['status','completed_inference_seeds','pending_inference_seeds','paired_cvidf1_delta_range','scope','limitations'])
+    dense_seed_stability=evidence('causal_dense_seed_stability_v1.json',['status','groups','scene1_training_head_diagnostic','scope','limitations'])
     relation_matrix=evidence('identity_relations_matrix_v2.json',['status','pending','scope','limitations'])
     dense_geometry_attribution=evidence('causal_dense_geometry_full_strict_attribution_v1.json',['status','full_strict_suite','scope','conclusion','limitations','rows'])
     dense_full2_retrieval=evidence('vggt_dense_retrieval_full2_tracking_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
@@ -197,6 +198,7 @@ def main():
         actual_camera_index_mlp_hook=camera_live_hook,whole_gmt_camera_order_diagnostic=whole_camera_order,
         explicit_physical_camera_input_contract=physical_camera_contract,
         native_prior_paired_inference_seed_stability=native_seed_stability,complete_ablation_output_relations=relation_matrix,
+        dense_causal_seed_factor_stability=dense_seed_stability,
         complete_primary_dense_geometry_attribution=dense_geometry_attribution,
         dense_b7_complete_two_camera_retrieval_tracking_parity=dense_full2_retrieval,
         dense_b7_complete_four_camera_retrieval_tracking_parity=dense_full4_retrieval,
@@ -292,6 +294,14 @@ def main():
     if native_seed_stability:
         number=len(native_seed_stability['completed_inference_seeds']);limits=native_seed_stability['paired_cvidf1_delta_range']
         lines[6:6]=[f"Head-free fixed-prior paired inference-RNG trials: {number}/3 complete strict5 pairs audited with identical detector membership. Paired CVIDF1 changes range {limits[0]:+.6f} to {limits[1]:+.6f} percentage points. These use fixed weights and vary actual inference RNG, independently of the VGGT TRAIN-head-seed experiment; pending trials are {native_seed_stability['pending_inference_seeds']}. No VGGT attribution, confidence interval or speed advantage follows.",'']
+    if dense_seed_stability:
+        counts='; '.join(f"{g['method']} / {g['factor']}: {g['completed_trials']}/3 complete" for g in dense_seed_stability['groups'])
+        lines[6:6]=['Dense causal seed-factor audit: '+counts+'. TRAIN-head variation fixes the actual inference RNG at20261014; inference-RNG variation fixes the primary TRAIN head at20261014. Primary B7 is shared between factors, not a second independent repetition. Each accepted row verifies complete native strict5 metrics, same-seed baseline, head/content and active options, captured run/prediction/GT hashes and exact detector membership. Incomplete factors remain pending; see [seed-factor audit](GEO_STREAM_DENSE_SEED_STABILITY.md).','']
+        diagnostic=dense_seed_stability.get('scene1_training_head_diagnostic',{})
+        observed=[row for row in diagnostic.get('rows',[]) if row['method']=='B7']
+        if len(observed)==3:
+            values=', '.join(f"{row['training_head_seed']}: {row['metrics']['CVIDF1']:.6f} ({row['paired_metric_delta']['CVIDF1']:+.6f}pp)" for row in observed)
+            lines[6:6]=['New bounded stability evidence, complete scene1 only: dense B7 at fixed inference RNG20261014 has TRAIN-head-seed CVIDF1 '+values+'. All retain exact detector membership and1864 actual encoder calls/3 numerical geometry gates/0 module failures. The third head reverses the primary scene1 gain. These scene observations do not complete the pending strict5 suites, establish an inference-RNG effect or select a new head.','']
     if relation_matrix:
         lines[6:6]=['Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.','']
     if dense_geometry_attribution and dense_geometry_attribution['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':

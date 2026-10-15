@@ -14,6 +14,10 @@ Complete primary-head dense B5/B7 geometry attribution is now audited over all s
 
 Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.
 
+New bounded stability evidence, complete scene1 only: dense B7 at fixed inference RNG20261014 has TRAIN-head-seed CVIDF1 20261014: 95.471867 (+0.806994pp), 20261015: 95.270119 (+0.605245pp), 20261016: 93.387133 (-1.277740pp). All retain exact detector membership and1864 actual encoder calls/3 numerical geometry gates/0 module failures. The third head reverses the primary scene1 gain. These scene observations do not complete the pending strict5 suites, establish an inference-RNG effect or select a new head.
+
+Dense causal seed-factor audit: B5 / training_head_seed: 1/3 complete; B7 / training_head_seed: 1/3 complete; B7 / inference_rng_seed: 1/3 complete. TRAIN-head variation fixes the actual inference RNG at20261014; inference-RNG variation fixes the primary TRAIN head at20261014. Primary B7 is shared between factors, not a second independent repetition. Each accepted row verifies complete native strict5 metrics, same-seed baseline, head/content and active options, captured run/prediction/GT hashes and exact detector membership. Incomplete factors remain pending; see [seed-factor audit](GEO_STREAM_DENSE_SEED_STABILITY.md).
+
 Head-free fixed-prior paired inference-RNG trials: 3/3 complete strict5 pairs audited with identical detector membership. Paired CVIDF1 changes range +0.122026 to +0.128534 percentage points. These use fixed weights and vary actual inference RNG, independently of the VGGT TRAIN-head-seed experiment; pending trials are []. No VGGT attribution, confidence interval or speed advantage follows.
 
 Actual whole-GMT scene1 forty-group reversal changes identity partitions for both OFF and dense B7, even after physical camera IDs/output positions are restored and global ID renaming is allowed. Both canonical variants exactly match their standalone prefixes; detector membership is unchanged; B7 computes80 VGGT calls per variant, with0 valid geometry calls/failures. Thus internal sequential tracker order invariance is contradicted at this scope. The explicit physical-ID input adapter passes all4 real-image OFF/B7 reverse/alternate caller-order variants against the canonical 40-group prefixes, with exact serialized outputs and0 failures. B7 makes80 VGGT calls per variant, with0 valid geometry gates. This bounded interface repair does not establish internal query-order, full-video or valid-pose invariance. Original failure fixtures and the frozen production baseline are retained.
@@ -152,9 +156,11 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | causal_B5_dense_seed20261015_strict_suite_v1_v1 | 1 | causal | complete | yes | 87.0384 | 86.1756 | 95.2701 | 95.2701 | 232 |
 | causal_B5_dense_seed20261015_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9849 | 81.0095 | 98.9435 | 98.9435 | 20 |
 | causal_B5_dense_seed20261015_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.3233 | 79.2781 | 92.0648 | 92.0648 | 17 |
+| causal_B5_dense_seed20261015_strict_suite_v1_v18 | 18 | causal | complete | yes | 78.7720 | 81.0282 | 95.9526 | 95.9526 | 27 |
 | causal_B5_dense_seed20261016_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.1376 | 84.4050 | 93.3871 | 93.3871 | 225 |
 | causal_B5_dense_seed20261016_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9797 | 80.9985 | 98.9364 | 98.9364 | 23 |
 | causal_B7_dense_seed20261015_strict_suite_v1_v1 | 1 | causal | complete | yes | 87.0384 | 86.1756 | 95.2701 | 95.2701 | 232 |
+| causal_B7_dense_seed20261016_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.1376 | 84.4050 | 93.3871 | 93.3871 | 225 |
 | causal_B7_fixed_k10_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k10_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B7_fixed_k10_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.2769 | 79.1899 | 91.9855 | 91.9855 | 41 |

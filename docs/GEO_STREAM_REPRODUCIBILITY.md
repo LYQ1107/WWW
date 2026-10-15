@@ -52,6 +52,8 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/audit_identity_matrix.py --generate-missing
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+  /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/audit_dense_seed_stability.py
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/update_www_scope.py
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/summarize_results.py

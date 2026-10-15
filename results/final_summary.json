@@ -1632,6 +1632,24 @@
       "sha256": "a32720365795b01de90a727f61fef07bac293139ec730424020cd57ade78f9cf"
     },
     {
+      "method": "causal_B5_dense_seed20261015_strict_suite_v1_v18",
+      "video_id": 18,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 78.77204332660334,
+      "DetA": 76.89686448973472,
+      "AssA": 81.02823924454938,
+      "IDF1": 95.95258255715495,
+      "MOTA": 93.24496558756053,
+      "IDSW": 27,
+      "CVIDF1": 95.95258255715495,
+      "CVMA_sequential": 93.23646868892854,
+      "CVMA": 93.23646868892854,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261015_strict_suite_v1_v18/predictions.metrics.json",
+      "sha256": "8e9e99db7b08d420e5280d3ec910b80557818a2a727cef357acbabaec9cfa2a3"
+    },
+    {
       "method": "causal_B5_dense_seed20261016_strict_suite_v1_v1",
       "video_id": 1,
       "full_video": true,
@@ -1684,6 +1702,24 @@
       "CVMA": 90.48919226393629,
       "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_dense_seed20261015_strict_suite_v1_v1/predictions.metrics.json",
       "sha256": "b5d42ea16046fc7bbfafb61ee818a5714f05fe528b3f4585bf142648337bbc50"
+    },
+    {
+      "method": "causal_B7_dense_seed20261016_strict_suite_v1_v1",
+      "video_id": 1,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 86.13763888172001,
+      "DetA": 87.93225734540148,
+      "AssA": 84.4050074573298,
+      "IDF1": 93.38713292983635,
+      "MOTA": 90.87599544937429,
+      "IDSW": 225,
+      "CVIDF1": 93.38713292983635,
+      "CVMA_sequential": 90.87599544937429,
+      "CVMA": 90.62571103526736,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_dense_seed20261016_strict_suite_v1_v1/predictions.metrics.json",
+      "sha256": "53cc200f096c803485ddafedf8b4797eafad617d3f1d56e6493df13629a35e3d"
     },
     {
       "method": "causal_B7_fixed_k10_strict_suite_v1_v1",
@@ -7447,6 +7483,623 @@
     "scope": "Every row is independently paired to its same-protocol locked baseline over all five strict scenes. Counts classify unordered pairs of common, one-to-one IoU\u22650.5 GT-matched detector outputs; pairs never cross scenes. Long tracks contribute quadratically. These are output relations, not numbers of Hungarian decisions. Added/removed and unmatched detections are separately excluded from correctness counts. GT enters only post-run analysis.",
     "limitations": "Offline GMT includes its original full-video postprocessing; causal GMT uses the separate streaming baseline. Values across those protocols are not paired comparisons. Missing complete suites remain pending. Actual pre-bank Hungarian decision recording is a separate scene1 diagnostic."
   },
+  "dense_causal_seed_factor_stability": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_dense_seed_stability_v1.json",
+    "sha256": "b72f9450280df8aceafdef86371babd5e898622f2f18966a420d3b74d2c85fc3",
+    "status": "PARTIAL_DECLARED_SEED_FACTORS",
+    "groups": [
+      {
+        "factor": "training_head_seed",
+        "method": "B5",
+        "completed_trials": 1,
+        "required_trials": 3,
+        "complete": false,
+        "rows": [
+          {
+            "suite": "causal_B5_dense_seed20261014_strict_suite_v1",
+            "training_head_seed": 20261014,
+            "inference_seed": 20261014,
+            "head_checkpoint_sha256": "ed25a617e7b94742478c17018f0a9d256895d5c888689c56d6c6411e1d214698",
+            "baseline_metrics": {
+              "HOTA": 80.74846464281809,
+              "DetA": 80.26691001631377,
+              "AssA": 81.47270571932637,
+              "IDF1": 95.05796217205614,
+              "MOTA": 94.72950407729844,
+              "IDSW": 482,
+              "CVIDF1": 95.05796217205614,
+              "CVMA_sequential": 94.72464050062416,
+              "CVMA": 94.671141157207
+            },
+            "candidate_metrics": {
+              "HOTA": 80.82167638164537,
+              "DetA": 80.26859180594774,
+              "AssA": 81.61953061357492,
+              "IDF1": 95.1474476306691,
+              "MOTA": 94.89324449199941,
+              "IDSW": 381,
+              "CVIDF1": 95.1474476306691,
+              "CVMA_sequential": 94.88675972310037,
+              "CVMA": 94.86082064750417
+            },
+            "paired_metric_delta": {
+              "HOTA": 0.0732117388272826,
+              "DetA": 0.0016817896339631488,
+              "AssA": 0.14682489424855305,
+              "IDF1": 0.08948545861296964,
+              "MOTA": 0.16374041470096756,
+              "IDSW": -101,
+              "CVIDF1": 0.08948545861296964,
+              "CVMA_sequential": 0.16211922247620691,
+              "CVMA": 0.18967949029716635
+            },
+            "cross_camera_output_pair_fixes": 73939,
+            "cross_camera_output_pair_harms": 5645,
+            "exact_detector_membership": true,
+            "scenes": [
+              {
+                "video_id": 1,
+                "actual_vggt_calls": 1864,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/B5_vggt_head_dense_causal_v1_v1/manifest.json",
+                  "sha256": "c8ce0a4769f4a0ab21dcc2269e9c7a6b622b0c6726073894afc34a7eedfaf430",
+                  "causal_online": true,
+                  "commit": "d2ccc0011265b81371be7d3c28504aeb47d95419",
+                  "validation_corrected_gmt_camera_index": false
+                }
+              },
+              {
+                "video_id": 10,
+                "actual_vggt_calls": 4184,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261014_strict_suite_v1_v10/manifest.json",
+                  "sha256": "a0f6e15411ada30930d6c9c04041ce083dad365884d0962370660600dd79b9f0",
+                  "causal_online": true,
+                  "commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a",
+                  "validation_corrected_gmt_camera_index": false
+                }
+              },
+              {
+                "video_id": 11,
+                "actual_vggt_calls": 4114,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261014_strict_suite_v1_v11/manifest.json",
+                  "sha256": "2c926a01db861dd822d13ac2a8451edfe17dd0b0e56357b2c7a1e32d10b3c49e",
+                  "causal_online": true,
+                  "commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a",
+                  "validation_corrected_gmt_camera_index": false
+                }
+              },
+              {
+                "video_id": 18,
+                "actual_vggt_calls": 2058,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261014_strict_suite_v1_v18/manifest.json",
+                  "sha256": "e3e6297d2cbcc0a579c1db2a392d1eca2cfc86238fd6f118b17d295d2727d50f",
+                  "causal_online": true,
+                  "commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a",
+                  "validation_corrected_gmt_camera_index": false
+                }
+              },
+              {
+                "video_id": 19,
+                "actual_vggt_calls": 2104,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261014_strict_suite_v1_v19/manifest.json",
+                  "sha256": "f600cba091bd1bf2374e87a1f5d49bd7ceaa072b952a71cd824ae1629fe8fa18",
+                  "causal_online": true,
+                  "commit": "ac5d940eac6eaf29638b191c022a3f9779c9e07a",
+                  "validation_corrected_gmt_camera_index": false
+                }
+              }
+            ]
+          }
+        ],
+        "pending": [
+          {
+            "training_head_seed": 20261015,
+            "inference_seed": 20261014,
+            "suite": "causal_B5_dense_seed20261015_strict_suite_v1",
+            "reason": "complete native suite or paired identity audit unavailable"
+          },
+          {
+            "training_head_seed": 20261016,
+            "inference_seed": 20261014,
+            "suite": "causal_B5_dense_seed20261016_strict_suite_v1",
+            "reason": "complete native suite or paired identity audit unavailable"
+          }
+        ],
+        "observed_paired_cvidf1_delta_range": [
+          0.08948545861296964,
+          0.08948545861296964
+        ]
+      },
+      {
+        "factor": "training_head_seed",
+        "method": "B7",
+        "completed_trials": 1,
+        "required_trials": 3,
+        "complete": false,
+        "rows": [
+          {
+            "suite": "causal_B7_fixed_k1_strict_suite_v1",
+            "training_head_seed": 20261014,
+            "inference_seed": 20261014,
+            "head_checkpoint_sha256": "ed25a617e7b94742478c17018f0a9d256895d5c888689c56d6c6411e1d214698",
+            "baseline_metrics": {
+              "HOTA": 80.74846464281809,
+              "DetA": 80.26691001631377,
+              "AssA": 81.47270571932637,
+              "IDF1": 95.05796217205614,
+              "MOTA": 94.72950407729844,
+              "IDSW": 482,
+              "CVIDF1": 95.05796217205614,
+              "CVMA_sequential": 94.72464050062416,
+              "CVMA": 94.671141157207
+            },
+            "candidate_metrics": {
+              "HOTA": 80.82167638164537,
+              "DetA": 80.26859180594774,
+              "AssA": 81.61953061357492,
+              "IDF1": 95.1474476306691,
+              "MOTA": 94.89324449199941,
+              "IDSW": 381,
+              "CVIDF1": 95.1474476306691,
+              "CVMA_sequential": 94.88675972310037,
+              "CVMA": 94.86082064750417
+            },
+            "paired_metric_delta": {
+              "HOTA": 0.0732117388272826,
+              "DetA": 0.0016817896339631488,
+              "AssA": 0.14682489424855305,
+              "IDF1": 0.08948545861296964,
+              "MOTA": 0.16374041470096756,
+              "IDSW": -101,
+              "CVIDF1": 0.08948545861296964,
+              "CVMA_sequential": 0.16211922247620691,
+              "CVMA": 0.18967949029716635
+            },
+            "cross_camera_output_pair_fixes": 73939,
+            "cross_camera_output_pair_harms": 5645,
+            "exact_detector_membership": true,
+            "scenes": [
+              {
+                "video_id": 1,
+                "actual_vggt_calls": 1864,
+                "numerical_geometry_gates": 3,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v1/manifest.json",
+                  "sha256": "8d4973a8dc608e16936d93f8cf33cd1e3319a8530501f6a51a89867236402c4c",
+                  "causal_online": true,
+                  "commit": "c2143b18cd4b6c1b799ab5eeacbac17aa49b9068"
+                }
+              },
+              {
+                "video_id": 10,
+                "actual_vggt_calls": 4184,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v10/manifest.json",
+                  "sha256": "add96aeea912559799b69c42b0d70b7e702dafe6928373ee7e01be0f31b591d5",
+                  "causal_online": true,
+                  "commit": "c2143b18cd4b6c1b799ab5eeacbac17aa49b9068"
+                }
+              },
+              {
+                "video_id": 11,
+                "actual_vggt_calls": 4114,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v11/manifest.json",
+                  "sha256": "6ec8cb3258d4738a58c0632f2c1a8a1e7cf0ebf71f642c475211b90a082abc8c",
+                  "causal_online": true,
+                  "commit": "c2143b18cd4b6c1b799ab5eeacbac17aa49b9068"
+                }
+              },
+              {
+                "video_id": 18,
+                "actual_vggt_calls": 2058,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v18/manifest.json",
+                  "sha256": "c9b961b27cb4c40f05df561d9b9b51f9d8d1367028ca14ead6df158857ca3b79",
+                  "causal_online": true,
+                  "commit": "c2143b18cd4b6c1b799ab5eeacbac17aa49b9068"
+                }
+              },
+              {
+                "video_id": 19,
+                "actual_vggt_calls": 2104,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v19/manifest.json",
+                  "sha256": "8e08581945767c31ace9e57b878c7ffb62d5bf05827bb65784b076ea585789d0",
+                  "causal_online": true,
+                  "commit": "c2143b18cd4b6c1b799ab5eeacbac17aa49b9068"
+                }
+              }
+            ]
+          }
+        ],
+        "pending": [
+          {
+            "training_head_seed": 20261015,
+            "inference_seed": 20261014,
+            "suite": "causal_B7_dense_seed20261015_strict_suite_v1",
+            "reason": "complete native suite or paired identity audit unavailable"
+          },
+          {
+            "training_head_seed": 20261016,
+            "inference_seed": 20261014,
+            "suite": "causal_B7_dense_seed20261016_strict_suite_v1",
+            "reason": "complete native suite or paired identity audit unavailable"
+          }
+        ],
+        "observed_paired_cvidf1_delta_range": [
+          0.08948545861296964,
+          0.08948545861296964
+        ]
+      },
+      {
+        "factor": "inference_rng_seed",
+        "method": "B7",
+        "completed_trials": 1,
+        "required_trials": 3,
+        "complete": false,
+        "rows": [
+          {
+            "suite": "causal_B7_fixed_k1_strict_suite_v1",
+            "training_head_seed": 20261014,
+            "inference_seed": 20261014,
+            "head_checkpoint_sha256": "ed25a617e7b94742478c17018f0a9d256895d5c888689c56d6c6411e1d214698",
+            "baseline_metrics": {
+              "HOTA": 80.74846464281809,
+              "DetA": 80.26691001631377,
+              "AssA": 81.47270571932637,
+              "IDF1": 95.05796217205614,
+              "MOTA": 94.72950407729844,
+              "IDSW": 482,
+              "CVIDF1": 95.05796217205614,
+              "CVMA_sequential": 94.72464050062416,
+              "CVMA": 94.671141157207
+            },
+            "candidate_metrics": {
+              "HOTA": 80.82167638164537,
+              "DetA": 80.26859180594774,
+              "AssA": 81.61953061357492,
+              "IDF1": 95.1474476306691,
+              "MOTA": 94.89324449199941,
+              "IDSW": 381,
+              "CVIDF1": 95.1474476306691,
+              "CVMA_sequential": 94.88675972310037,
+              "CVMA": 94.86082064750417
+            },
+            "paired_metric_delta": {
+              "HOTA": 0.0732117388272826,
+              "DetA": 0.0016817896339631488,
+              "AssA": 0.14682489424855305,
+              "IDF1": 0.08948545861296964,
+              "MOTA": 0.16374041470096756,
+              "IDSW": -101,
+              "CVIDF1": 0.08948545861296964,
+              "CVMA_sequential": 0.16211922247620691,
+              "CVMA": 0.18967949029716635
+            },
+            "cross_camera_output_pair_fixes": 73939,
+            "cross_camera_output_pair_harms": 5645,
+            "exact_detector_membership": true,
+            "scenes": [
+              {
+                "video_id": 1,
+                "actual_vggt_calls": 1864,
+                "numerical_geometry_gates": 3,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v1/manifest.json",
+                  "sha256": "8d4973a8dc608e16936d93f8cf33cd1e3319a8530501f6a51a89867236402c4c",
+                  "causal_online": true,
+                  "commit": "c2143b18cd4b6c1b799ab5eeacbac17aa49b9068"
+                }
+              },
+              {
+                "video_id": 10,
+                "actual_vggt_calls": 4184,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v10/manifest.json",
+                  "sha256": "add96aeea912559799b69c42b0d70b7e702dafe6928373ee7e01be0f31b591d5",
+                  "causal_online": true,
+                  "commit": "c2143b18cd4b6c1b799ab5eeacbac17aa49b9068"
+                }
+              },
+              {
+                "video_id": 11,
+                "actual_vggt_calls": 4114,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v11/manifest.json",
+                  "sha256": "6ec8cb3258d4738a58c0632f2c1a8a1e7cf0ebf71f642c475211b90a082abc8c",
+                  "causal_online": true,
+                  "commit": "c2143b18cd4b6c1b799ab5eeacbac17aa49b9068"
+                }
+              },
+              {
+                "video_id": 18,
+                "actual_vggt_calls": 2058,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v18/manifest.json",
+                  "sha256": "c9b961b27cb4c40f05df561d9b9b51f9d8d1367028ca14ead6df158857ca3b79",
+                  "causal_online": true,
+                  "commit": "c2143b18cd4b6c1b799ab5eeacbac17aa49b9068"
+                }
+              },
+              {
+                "video_id": 19,
+                "actual_vggt_calls": 2104,
+                "numerical_geometry_gates": 0,
+                "manifest": {
+                  "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v19/manifest.json",
+                  "sha256": "8e08581945767c31ace9e57b878c7ffb62d5bf05827bb65784b076ea585789d0",
+                  "causal_online": true,
+                  "commit": "c2143b18cd4b6c1b799ab5eeacbac17aa49b9068"
+                }
+              }
+            ]
+          }
+        ],
+        "pending": [
+          {
+            "training_head_seed": 20261014,
+            "inference_seed": 20261015,
+            "suite": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1",
+            "reason": "complete native suite or paired identity audit unavailable"
+          },
+          {
+            "training_head_seed": 20261014,
+            "inference_seed": 20261016,
+            "suite": "causal_B7_primary_head_inference_seed20261016_strict_suite_v1",
+            "reason": "complete native suite or paired identity audit unavailable"
+          }
+        ],
+        "observed_paired_cvidf1_delta_range": [
+          0.08948545861296964,
+          0.08948545861296964
+        ]
+      }
+    ],
+    "scene1_training_head_diagnostic": {
+      "full_strict_suite": false,
+      "video_id": 1,
+      "baseline_metrics": {
+        "HOTA": 86.55351457210155,
+        "DetA": 87.93225734540148,
+        "AssA": 85.2196946037858,
+        "IDF1": 94.66487334678322,
+        "MOTA": 89.67007963594995,
+        "IDSW": 278,
+        "CVIDF1": 94.66487334678322,
+        "CVMA_sequential": 89.67007963594995,
+        "CVMA": 89.3287827076223
+      },
+      "rows": [
+        {
+          "method": "B5",
+          "training_head_seed": 20261014,
+          "inference_seed": 20261014,
+          "metrics": {
+            "HOTA": 87.21894319802762,
+            "DetA": 87.93225734540148,
+            "AssA": 86.53364474783164,
+            "IDF1": 95.47186729432863,
+            "MOTA": 91.12627986348123,
+            "IDSW": 214,
+            "CVIDF1": 95.47186729432863,
+            "CVMA_sequential": 91.12627986348123,
+            "CVMA": 90.92150170648465
+          },
+          "paired_metric_delta": {
+            "HOTA": 0.6654286259260687,
+            "DetA": 0.0,
+            "AssA": 1.3139501440458474,
+            "IDF1": 0.8069939475454078,
+            "MOTA": 1.4562002275312835,
+            "IDSW": -64,
+            "CVIDF1": 0.8069939475454078,
+            "CVMA_sequential": 1.4562002275312835,
+            "CVMA": 1.5927189988623525
+          },
+          "prediction": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/B5_vggt_head_dense_causal_v1_v1/predictions.json",
+          "prediction_sha256": "4dec6696083596753d3add461ebd03d0f6f6589f652d8f20fcf25408fa646e4e",
+          "exact_detector_membership": true,
+          "actual_vggt_calls": 1864,
+          "numerical_geometry_gates": 0
+        },
+        {
+          "method": "B5",
+          "training_head_seed": 20261015,
+          "inference_seed": 20261014,
+          "metrics": {
+            "HOTA": 87.03836218378052,
+            "DetA": 87.93225734540148,
+            "AssA": 86.17560340898993,
+            "IDF1": 95.27011880744227,
+            "MOTA": 90.71672354948805,
+            "IDSW": 232,
+            "CVIDF1": 95.27011880744227,
+            "CVMA_sequential": 90.71672354948805,
+            "CVMA": 90.48919226393629
+          },
+          "paired_metric_delta": {
+            "HOTA": 0.4848476116789726,
+            "DetA": 0.0,
+            "AssA": 0.9559088052041318,
+            "IDF1": 0.6052454606590487,
+            "MOTA": 1.0466439135381052,
+            "IDSW": -46,
+            "CVIDF1": 0.6052454606590487,
+            "CVMA_sequential": 1.0466439135381052,
+            "CVMA": 1.1604095563139936
+          },
+          "prediction": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261015_strict_suite_v1_v1/predictions.json",
+          "prediction_sha256": "7d60344e847012f8e5c84d2362becb2f8b6156d3f5c0d5714f649f0a322f47d0",
+          "exact_detector_membership": true,
+          "actual_vggt_calls": 1864,
+          "numerical_geometry_gates": 0
+        },
+        {
+          "method": "B5",
+          "training_head_seed": 20261016,
+          "inference_seed": 20261014,
+          "metrics": {
+            "HOTA": 86.13763888172001,
+            "DetA": 87.93225734540148,
+            "AssA": 84.4050074573298,
+            "IDF1": 93.38713292983635,
+            "MOTA": 90.87599544937429,
+            "IDSW": 225,
+            "CVIDF1": 93.38713292983635,
+            "CVMA_sequential": 90.87599544937429,
+            "CVMA": 90.62571103526736
+          },
+          "paired_metric_delta": {
+            "HOTA": -0.41587569038154015,
+            "DetA": 0.0,
+            "AssA": -0.814687146455995,
+            "IDF1": -1.2777404169468696,
+            "MOTA": 1.2059158134243404,
+            "IDSW": -53,
+            "CVIDF1": -1.2777404169468696,
+            "CVMA_sequential": 1.2059158134243404,
+            "CVMA": 1.2969283276450625
+          },
+          "prediction": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261016_strict_suite_v1_v1/predictions.json",
+          "prediction_sha256": "672203bfd35edffb5b35b5cf29b71388152272078715b4583d2fffb2a4ccedb4",
+          "exact_detector_membership": true,
+          "actual_vggt_calls": 1864,
+          "numerical_geometry_gates": 0
+        },
+        {
+          "method": "B7",
+          "training_head_seed": 20261014,
+          "inference_seed": 20261014,
+          "metrics": {
+            "HOTA": 87.21894319802762,
+            "DetA": 87.93225734540148,
+            "AssA": 86.53364474783164,
+            "IDF1": 95.47186729432863,
+            "MOTA": 91.12627986348123,
+            "IDSW": 214,
+            "CVIDF1": 95.47186729432863,
+            "CVMA_sequential": 91.12627986348123,
+            "CVMA": 90.92150170648465
+          },
+          "paired_metric_delta": {
+            "HOTA": 0.6654286259260687,
+            "DetA": 0.0,
+            "AssA": 1.3139501440458474,
+            "IDF1": 0.8069939475454078,
+            "MOTA": 1.4562002275312835,
+            "IDSW": -64,
+            "CVIDF1": 0.8069939475454078,
+            "CVMA_sequential": 1.4562002275312835,
+            "CVMA": 1.5927189988623525
+          },
+          "prediction": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v1/predictions.json",
+          "prediction_sha256": "4dec6696083596753d3add461ebd03d0f6f6589f652d8f20fcf25408fa646e4e",
+          "exact_detector_membership": true,
+          "actual_vggt_calls": 1864,
+          "numerical_geometry_gates": 3
+        },
+        {
+          "method": "B7",
+          "training_head_seed": 20261015,
+          "inference_seed": 20261014,
+          "metrics": {
+            "HOTA": 87.03836218378052,
+            "DetA": 87.93225734540148,
+            "AssA": 86.17560340898993,
+            "IDF1": 95.27011880744227,
+            "MOTA": 90.71672354948805,
+            "IDSW": 232,
+            "CVIDF1": 95.27011880744227,
+            "CVMA_sequential": 90.71672354948805,
+            "CVMA": 90.48919226393629
+          },
+          "paired_metric_delta": {
+            "HOTA": 0.4848476116789726,
+            "DetA": 0.0,
+            "AssA": 0.9559088052041318,
+            "IDF1": 0.6052454606590487,
+            "MOTA": 1.0466439135381052,
+            "IDSW": -46,
+            "CVIDF1": 0.6052454606590487,
+            "CVMA_sequential": 1.0466439135381052,
+            "CVMA": 1.1604095563139936
+          },
+          "prediction": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_dense_seed20261015_strict_suite_v1_v1/predictions.json",
+          "prediction_sha256": "7d60344e847012f8e5c84d2362becb2f8b6156d3f5c0d5714f649f0a322f47d0",
+          "exact_detector_membership": true,
+          "actual_vggt_calls": 1864,
+          "numerical_geometry_gates": 3
+        },
+        {
+          "method": "B7",
+          "training_head_seed": 20261016,
+          "inference_seed": 20261014,
+          "metrics": {
+            "HOTA": 86.13763888172001,
+            "DetA": 87.93225734540148,
+            "AssA": 84.4050074573298,
+            "IDF1": 93.38713292983635,
+            "MOTA": 90.87599544937429,
+            "IDSW": 225,
+            "CVIDF1": 93.38713292983635,
+            "CVMA_sequential": 90.87599544937429,
+            "CVMA": 90.62571103526736
+          },
+          "paired_metric_delta": {
+            "HOTA": -0.41587569038154015,
+            "DetA": 0.0,
+            "AssA": -0.814687146455995,
+            "IDF1": -1.2777404169468696,
+            "MOTA": 1.2059158134243404,
+            "IDSW": -53,
+            "CVIDF1": -1.2777404169468696,
+            "CVMA_sequential": 1.2059158134243404,
+            "CVMA": 1.2969283276450625
+          },
+          "prediction": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_dense_seed20261016_strict_suite_v1_v1/predictions.json",
+          "prediction_sha256": "672203bfd35edffb5b35b5cf29b71388152272078715b4583d2fffb2a4ccedb4",
+          "exact_detector_membership": true,
+          "actual_vggt_calls": 1864,
+          "numerical_geometry_gates": 3
+        }
+      ],
+      "pending": [],
+      "feature_joint_prediction_parity": [
+        {
+          "training_head_seed": 20261014,
+          "exact_prediction_file_bytes": true
+        },
+        {
+          "training_head_seed": 20261015,
+          "exact_prediction_file_bytes": true
+        },
+        {
+          "training_head_seed": 20261016,
+          "exact_prediction_file_bytes": true
+        }
+      ],
+      "scope": "fixed scene1 complete-video TRAIN-head observations at inference seed20261014; does not complete any missing five-scene trial"
+    },
+    "scope": "complete strict5 dense B5/B7 TRAIN-head variation at fixed inference RNG20261014, and dense B7 fixed-primary-head20261014 inference RNG variation; paired causal baseline at the same inference seed",
+    "limitations": "primary B7 trial is shared between factors, not an independent replicate; incomplete factors do not prove stability; three trials are descriptive, without confidence intervals, seed selection, stable speed claims, unique VGGT/geometry attribution or internal Hungarian decision counts"
+  },
   "complete_primary_dense_geometry_attribution": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_dense_geometry_full_strict_attribution_v1.json",
     "sha256": "ee46d5d287168910c850a0d9afca08afd97ba7e8fc5b2a94cb71695a6a9abcac",
@@ -9463,5 +10116,5 @@
     }
   ],
   "retrieval_full_video_evaluation": true,
-  "source_commit": "aa3398a1a40827665f4ad584cf76579e1e9ad52b"
+  "source_commit": "10be28125ee2af2cd2d6e293e32eae969818ba28"
 }
