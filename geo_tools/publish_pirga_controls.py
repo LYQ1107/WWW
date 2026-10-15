@@ -62,6 +62,9 @@ def main():
         gate=mechanism_audit(list(combined.values()),arms,controls=controls);gate.update(epoch=epoch,
             qualification='All fixed families on the same complete original-state DEV12 and same fitted epoch; no historical different sequence pooling. Simple-history controls are stronger unbounded aggregate replacements, separately qualified from bounded matched learned-head comparison.',
             phase2_result_sha256=sha(runtime/'phase2_fixed_native_replays_v1'/f'epoch{epoch}'/'RESULTS.json'),ordinary_result_sha256=sha(runtime/'ordinary_fixed_native_replays_v1'/f'epoch{epoch}'/'RESULTS.json'))
+        gate['strong_ordinary_controls_complete_for_this_epoch']=True
+        gate['online_gate_pending']='Native causal integration and online evaluation remain gated; strong ordinary controls are included in this same-epoch decision.'
+        if gate['phase2_mechanism_gate_pass']:gate['status']='NATIVE_REPLAY_POSITIVE_PENDING_NATIVE_INTEGRATION'
         (root/f'MATCHED_ALL_CONTROL_GATE_EPOCH{epoch}.json').write_text(json.dumps(gate,indent=2)+'\n')
     if group_rows:
         with (root/'PER_PERSON_AND_SCENE_RESULTS.csv').open('w') as f:

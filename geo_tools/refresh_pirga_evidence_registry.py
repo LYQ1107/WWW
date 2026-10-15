@@ -81,6 +81,7 @@ def main():
     if all(control.get(f)==[1,3,5] for f in ['ORDINARY_DECISION','EXHAUSTIVE_MARGIN']):
         master['phases']['4']='ORDINARY_FIXED1_3_5_REPLAYS_COMPLETE_PREDICTIVE_COMBINATIONS_CONDITIONAL'
     master['supplementary_exhaustive_margin']='FIXED5EPOCH_FIT_COMPLETE_PENDING_ALL_REPLAYS' if status['exhaustive_margin']['status']=='COMPLETE_FIXED5EPOCHS' else 'RUNNING_CPU113453_QUERIES_SEPARATE_FROM113415_COMMON_DOMAIN'
+    if control.get('EXHAUSTIVE_MARGIN')==[1,3,5] and status['exhaustive_margin']['status']=='COMPLETE_FIXED5EPOCHS':master['supplementary_exhaustive_margin']='COMPLETE_FIXED1_3_5_FIT_AND_REPLAYS_SEPARATE_UPDATE_BUDGET'
     master['goal_turn_audit'].update(this_turn='PROGRESS_CANONICAL_MASKED_COVERAGE_CONTROL_AND_ACTUAL_ENDPOINT_PUBLICATION',live_CPU_training=not (p1complete and p2complete),remaining_blocker=None)
     (root/'MASTER_GOAL.json').write_text(json.dumps(master,indent=2)+'\n')
     gate=json.loads((root/'GO_NO_GO.json').read_text());gate.update(updated_utc=now,
