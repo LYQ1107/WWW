@@ -1,0 +1,68 @@
+{
+  "id": "trackvggt_qd_native_control_v1",
+  "project_gpu_ids": [
+    "0",
+    "4",
+    "5",
+    "6"
+  ],
+  "queues": {
+    "gpu4": [
+      {
+        "id": "native_mlp_qd_capacity_seed20261015_v3_150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--architecture",
+          "native_mlp",
+          "--native-mlp-capacity",
+          "qd",
+          "--backbone",
+          "vggt",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--cohort",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+          "--tag",
+          "native_mlp_qd_capacity_seed20261015_v3_150_v1",
+          "--steps",
+          "150"
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "native_mlp_qd_capacity_seed20261015_v3_1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--architecture",
+          "native_mlp",
+          "--native-mlp-capacity",
+          "qd",
+          "--backbone",
+          "vggt",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--cohort",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+          "--tag",
+          "native_mlp_qd_capacity_seed20261015_v3_1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/native_mlp_qd_capacity_seed20261015_v3_150_v1/checkpoint.pt"
+        ],
+        "depends_on": [
+          "native_mlp_qd_capacity_seed20261015_v3_150_v1"
+        ]
+      }
+    ]
+  },
+  "purpose": "Active native/GMT-only MLP at QD capacity2132697 parameters, V3 and unchanged validation300, seed20261015/pilot150->1000. Strong control before any unique teacher/KD claim."
+}

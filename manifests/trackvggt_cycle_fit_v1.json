@@ -1,0 +1,65 @@
+{
+  "id": "trackvggt_cycle_fit_v1",
+  "project_gpu_ids": [
+    "0",
+    "4",
+    "5",
+    "6"
+  ],
+  "queues": {
+    "gpu6": [
+      {
+        "id": "cycle_vggt_lambda0p0_seed20261015_v3_plus200_v1",
+        "command": [
+          "geo_tools/train_trackvggt_cycle.py",
+          "--source",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/qd_vggt_track_k24_seed20261015_v3_1000_v1/checkpoint.pt",
+          "--lambda-cycle",
+          "0.0",
+          "--tag",
+          "cycle_vggt_lambda0p0_seed20261015_v3_plus200_v1"
+        ]
+      },
+      {
+        "id": "cycle_vggt_lambda0p1_seed20261015_v3_plus200_v1",
+        "command": [
+          "geo_tools/train_trackvggt_cycle.py",
+          "--source",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/qd_vggt_track_k24_seed20261015_v3_1000_v1/checkpoint.pt",
+          "--lambda-cycle",
+          "0.1",
+          "--tag",
+          "cycle_vggt_lambda0p1_seed20261015_v3_plus200_v1"
+        ]
+      }
+    ],
+    "gpu5": [
+      {
+        "id": "cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1",
+        "command": [
+          "geo_tools/train_trackvggt_cycle.py",
+          "--source",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/qd_dinov2_track_k24_seed20261015_v3_1000_v1/checkpoint.pt",
+          "--lambda-cycle",
+          "0.0",
+          "--tag",
+          "cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1"
+        ]
+      },
+      {
+        "id": "cycle_dinov2_lambda0p1_seed20261015_v3_plus200_v1",
+        "command": [
+          "geo_tools/train_trackvggt_cycle.py",
+          "--source",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/qd_dinov2_track_k24_seed20261015_v3_1000_v1/checkpoint.pt",
+          "--lambda-cycle",
+          "0.1",
+          "--tag",
+          "cycle_dinov2_lambda0p1_seed20261015_v3_plus200_v1"
+        ]
+      }
+    ]
+  },
+  "purpose": "Independent temporal hypothesis after fixed no-cycle trackQD1000. Lambda0/.1 both add200 updates, identical restored optimizer/RNG/native minibatches and real cycle forwards. Locked128-cycle scope; no lambda.2 without prior benefit.",
+  "no_KD_or_scientific_claim_from_engineering_gate": true
+}
