@@ -1,0 +1,416 @@
+{
+  "id": "trackvggt_live_baseline_v1",
+  "project_gpu_ids": [
+    "0",
+    "4",
+    "5",
+    "6"
+  ],
+  "queues": {
+    "gpu0": [
+      {
+        "id": "wait_existing_teacher_handles",
+        "command": [
+          "geo_tools/wait_trackvggt_runtime_dependencies.py",
+          "--spec",
+          "manifests/trackvggt_runtime_scope_v1.json"
+        ],
+        "cpu_only": true
+      },
+      {
+        "id": "trackvggt_runtime_off_4streams_prefix40_v1",
+        "command": [
+          "geo_tools/run_trackvggt_live_baseline.py",
+          "--video-ids",
+          "18",
+          "1",
+          "--tag",
+          "trackvggt_runtime_off_4streams_prefix40_v1",
+          "--backbone",
+          "none",
+          "--max-frames",
+          "40"
+        ],
+        "depends_on": [
+          "wait_existing_teacher_handles"
+        ]
+      },
+      {
+        "id": "trackvggt_runtime_prior_4streams_prefix40_v1",
+        "command": [
+          "geo_tools/run_trackvggt_live_baseline.py",
+          "--video-ids",
+          "18",
+          "1",
+          "--tag",
+          "trackvggt_runtime_prior_4streams_prefix40_v1",
+          "--backbone",
+          "none",
+          "--max-frames",
+          "40",
+          "--tracking-native-prior"
+        ],
+        "depends_on": [
+          "wait_existing_teacher_handles"
+        ]
+      },
+      {
+        "id": "native_prefix_gate",
+        "cpu_only": true,
+        "depends_on": [
+          "trackvggt_runtime_off_4streams_prefix40_v1",
+          "trackvggt_runtime_prior_4streams_prefix40_v1"
+        ],
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_off_4streams_prefix40_v1",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_prior_4streams_prefix40_v1",
+          "--reference-sources",
+          "manifests/causal_B0_strict_suite_v1_sources.json",
+          "manifests/native_prior_seed20261014_strict_suite_v1_sources.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prefix_gate_v1.json"
+        ]
+      },
+      {
+        "id": "trackvggt_runtime_off_2streams_full_v1",
+        "command": [
+          "geo_tools/run_trackvggt_live_baseline.py",
+          "--video-ids",
+          "18",
+          "--tag",
+          "trackvggt_runtime_off_2streams_full_v1",
+          "--backbone",
+          "none"
+        ],
+        "depends_on": [
+          "native_prefix_gate"
+        ]
+      },
+      {
+        "id": "parity_off",
+        "cpu_only": true,
+        "depends_on": [
+          "trackvggt_runtime_off_2streams_full_v1"
+        ],
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_off_2streams_full_v1",
+          "--reference-sources",
+          "manifests/causal_B0_strict_suite_v1_sources.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_off_2streams_full_v1_parity.json",
+          "--full-video"
+        ]
+      },
+      {
+        "id": "retrieval_eval_off",
+        "cpu_only": true,
+        "depends_on": [
+          "parity_off"
+        ],
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_off_2streams_full_v1"
+        ]
+      },
+      {
+        "id": "trackvggt_runtime_prior_2streams_full_v1",
+        "command": [
+          "geo_tools/run_trackvggt_live_baseline.py",
+          "--video-ids",
+          "18",
+          "--tag",
+          "trackvggt_runtime_prior_2streams_full_v1",
+          "--backbone",
+          "none",
+          "--tracking-native-prior"
+        ],
+        "depends_on": [
+          "native_prefix_gate"
+        ]
+      },
+      {
+        "id": "parity_prior",
+        "cpu_only": true,
+        "depends_on": [
+          "trackvggt_runtime_prior_2streams_full_v1"
+        ],
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_prior_2streams_full_v1",
+          "--reference-sources",
+          "manifests/native_prior_seed20261014_strict_suite_v1_sources.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prior_2streams_full_v1_parity.json",
+          "--full-video"
+        ]
+      },
+      {
+        "id": "retrieval_eval_prior",
+        "cpu_only": true,
+        "depends_on": [
+          "parity_prior"
+        ],
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_prior_2streams_full_v1"
+        ]
+      }
+    ],
+    "gpu4": [
+      {
+        "id": "wait_actual_passing_prefix",
+        "cpu_only": true,
+        "command": [
+          "geo_tools/wait_trackvggt_runtime_dependencies.py",
+          "--spec",
+          "manifests/trackvggt_runtime_scope_v1.json",
+          "--gate",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prefix_gate_v1.json"
+        ]
+      },
+      {
+        "id": "trackvggt_runtime_off_4streams_full_v1",
+        "command": [
+          "geo_tools/run_trackvggt_live_baseline.py",
+          "--video-ids",
+          "18",
+          "1",
+          "--tag",
+          "trackvggt_runtime_off_4streams_full_v1",
+          "--backbone",
+          "none"
+        ],
+        "depends_on": [
+          "wait_actual_passing_prefix"
+        ]
+      },
+      {
+        "id": "parity_off",
+        "cpu_only": true,
+        "depends_on": [
+          "trackvggt_runtime_off_4streams_full_v1"
+        ],
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_off_4streams_full_v1",
+          "--reference-sources",
+          "manifests/causal_B0_strict_suite_v1_sources.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_off_4streams_full_v1_parity.json",
+          "--full-video"
+        ]
+      },
+      {
+        "id": "retrieval_eval_off",
+        "cpu_only": true,
+        "depends_on": [
+          "parity_off"
+        ],
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_off_4streams_full_v1"
+        ]
+      },
+      {
+        "id": "trackvggt_runtime_prior_4streams_full_v1",
+        "command": [
+          "geo_tools/run_trackvggt_live_baseline.py",
+          "--video-ids",
+          "18",
+          "1",
+          "--tag",
+          "trackvggt_runtime_prior_4streams_full_v1",
+          "--backbone",
+          "none",
+          "--tracking-native-prior"
+        ],
+        "depends_on": [
+          "wait_actual_passing_prefix"
+        ]
+      },
+      {
+        "id": "parity_prior",
+        "cpu_only": true,
+        "depends_on": [
+          "trackvggt_runtime_prior_4streams_full_v1"
+        ],
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_prior_4streams_full_v1",
+          "--reference-sources",
+          "manifests/native_prior_seed20261014_strict_suite_v1_sources.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prior_4streams_full_v1_parity.json",
+          "--full-video"
+        ]
+      },
+      {
+        "id": "retrieval_eval_prior",
+        "cpu_only": true,
+        "depends_on": [
+          "parity_prior"
+        ],
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_prior_4streams_full_v1"
+        ]
+      }
+    ],
+    "gpu6": [
+      {
+        "id": "wait_actual_passing_prefix",
+        "cpu_only": true,
+        "command": [
+          "geo_tools/wait_trackvggt_runtime_dependencies.py",
+          "--spec",
+          "manifests/trackvggt_runtime_scope_v1.json",
+          "--gate",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prefix_gate_v1.json"
+        ]
+      },
+      {
+        "id": "trackvggt_runtime_off_10streams_full_v1",
+        "command": [
+          "geo_tools/run_trackvggt_live_baseline.py",
+          "--video-ids",
+          "18",
+          "1",
+          "10",
+          "11",
+          "19",
+          "--tag",
+          "trackvggt_runtime_off_10streams_full_v1",
+          "--backbone",
+          "none"
+        ],
+        "depends_on": [
+          "wait_actual_passing_prefix"
+        ]
+      },
+      {
+        "id": "parity_off",
+        "cpu_only": true,
+        "depends_on": [
+          "trackvggt_runtime_off_10streams_full_v1"
+        ],
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_off_10streams_full_v1",
+          "--reference-sources",
+          "manifests/causal_B0_strict_suite_v1_sources.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_off_10streams_full_v1_parity.json",
+          "--full-video"
+        ]
+      },
+      {
+        "id": "retrieval_eval_off",
+        "cpu_only": true,
+        "depends_on": [
+          "parity_off"
+        ],
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_off_10streams_full_v1"
+        ]
+      },
+      {
+        "id": "MOT_eval_off",
+        "cpu_only": true,
+        "depends_on": [
+          "parity_off"
+        ],
+        "command": [
+          "geo_tools/evaluate_suite.py",
+          "--sources",
+          "manifests/trackvggt_runtime_off_10streams_full_v1_sources.json",
+          "--tag",
+          "trackvggt_runtime_off_10streams_full_v1_strict5",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_off_10streams_full_v1_MOT_metrics.json"
+        ]
+      },
+      {
+        "id": "trackvggt_runtime_prior_10streams_full_v1",
+        "command": [
+          "geo_tools/run_trackvggt_live_baseline.py",
+          "--video-ids",
+          "18",
+          "1",
+          "10",
+          "11",
+          "19",
+          "--tag",
+          "trackvggt_runtime_prior_10streams_full_v1",
+          "--backbone",
+          "none",
+          "--tracking-native-prior"
+        ],
+        "depends_on": [
+          "wait_actual_passing_prefix"
+        ]
+      },
+      {
+        "id": "parity_prior",
+        "cpu_only": true,
+        "depends_on": [
+          "trackvggt_runtime_prior_10streams_full_v1"
+        ],
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_prior_10streams_full_v1",
+          "--reference-sources",
+          "manifests/native_prior_seed20261014_strict_suite_v1_sources.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prior_10streams_full_v1_parity.json",
+          "--full-video"
+        ]
+      },
+      {
+        "id": "retrieval_eval_prior",
+        "cpu_only": true,
+        "depends_on": [
+          "parity_prior"
+        ],
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_prior_10streams_full_v1"
+        ]
+      },
+      {
+        "id": "MOT_eval_prior",
+        "cpu_only": true,
+        "depends_on": [
+          "parity_prior"
+        ],
+        "command": [
+          "geo_tools/evaluate_suite.py",
+          "--sources",
+          "manifests/trackvggt_runtime_prior_10streams_full_v1_sources.json",
+          "--tag",
+          "trackvggt_runtime_prior_10streams_full_v1_strict5",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prior_10streams_full_v1_MOT_metrics.json"
+        ]
+      }
+    ]
+  },
+  "scope_manifest": "manifests/trackvggt_runtime_scope_v1.json",
+  "source_off_reference": "manifests/causal_B0_strict_suite_v1_sources.json",
+  "source_prior_reference": "manifests/native_prior_seed20261014_strict_suite_v1_sources.json"
+}

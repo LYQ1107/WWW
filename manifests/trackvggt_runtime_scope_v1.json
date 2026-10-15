@@ -1,0 +1,75 @@
+{
+  "status": "FROZEN_NATIVE_SYSTEM_BENCHMARK_SCOPE",
+  "project_gpu_ids": [
+    0,
+    4,
+    5,
+    6
+  ],
+  "benchmark_gpus": [
+    0,
+    4,
+    6
+  ],
+  "teacher_dependencies": [
+    {
+      "pid": 19630,
+      "start_ticks": "6578231064",
+      "command_match": "trackvggt_qd_fit_v1"
+    },
+    {
+      "pid": 26374,
+      "start_ticks": "6578278106",
+      "command_match": "trackvggt_cycle_fit_v1"
+    },
+    {
+      "pid": 26401,
+      "start_ticks": "6578278223",
+      "command_match": "trackvggt_cycle_fit_v1"
+    },
+    {
+      "pid": 23251,
+      "start_ticks": "6578258023",
+      "command_match": "trackvggt_qd_native_control_v1"
+    }
+  ],
+  "logical_streams": [
+    2,
+    4,
+    10
+  ],
+  "fixed_scenes": [
+    [
+      18
+    ],
+    [
+      18,
+      1
+    ],
+    [
+      18,
+      1,
+      10,
+      11,
+      19
+    ]
+  ],
+  "methods": [
+    "gmt_off",
+    "native_fixed_prior"
+  ],
+  "inference_seed": 20261014,
+  "query_interval": 20,
+  "index_payload_cap_MiB": 100,
+  "full_continuous_videos": true,
+  "maximum_total_GPU_wall_hours": 6.0,
+  "maximum_new_output_bytes": 8589934592,
+  "minimum_free_disk_bytes": 42949672960,
+  "scope": "Fresh actual image-to-tracker-to-index-to-query replay, no teacher/student/cache or GT actor input. Distinct strict-development scenes are independent two-camera sequences, not a single physically synchronized10-camera scene.",
+  "timing": "Synchronized per-step profiling charged equally; parent outer process time includes imports/setup/export. Local file replay, not network/Internet request latency. Baseline methods only; conditional student/teacher systems need separate valid relation evidence.",
+  "maximum_full_process_seconds": 3500,
+  "maximum_prefix_process_seconds": 120,
+  "maximum_full_output_bytes": 1342177280,
+  "maximum_prefix_output_bytes": 134217728,
+  "resource_cap_scope": "Six full and two prefix profiled native replay processes, excluding CPU dependency waits/evaluators; each bounded3500/120s and1.25/.125GiB, total below6GPU-wall-hours/8GiB. Queue outer startup/export accounting reported separately."
+}
