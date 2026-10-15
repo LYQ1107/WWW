@@ -36,9 +36,12 @@ def main():
             original=current(x,pos=pos);expected=ref(x,pos=pos,save_vis_attn=True)
         native=ref.last_attn.float().mean((1,2))[:,meta['patch_start_idx']:][None]
         det_check=dict(actual_attention_output_exact=bool(torch.equal(original,expected)),
+            actual_attention_output_max_abs=float((original.float()-expected.float()).abs().max()),
+            actual_attention_output_allclose=bool(torch.allclose(original.float(),expected.float(),rtol=.002,atol=.0001)),
             incoming_attention_max_abs=float((native-attention).abs().max()),
             incoming_attention_allclose=bool(torch.allclose(native,attention,rtol=.003,atol=1e-6)),
             reference_source=str(path),reference_sha256=sha256(path))
+        print(json.dumps(dict(attention_diagnostic=det_check)),flush=True)
         assert det_check['actual_attention_output_exact'] and det_check['incoming_attention_allclose']
         frozen=all(not v.requires_grad for v in encoder.model.parameters());params=sum(v.numel() for v in encoder.model.parameters())
     else:
@@ -47,9 +50,10 @@ def main():
         strict=model.load_state_dict(state,strict=True);del state,full
         model=model.cuda().eval().requires_grad_(False)
         with torch.inference_mode(),torch.autocast('cuda',dtype=torch.float16):
-            values,start=model(images.cuda(),if_norm=True,if_detach=True,if_only_last_layer=False,if_use_atten_sample=True,if_task_query=True)
+            values,start,native_attention=model(images.cuda(),if_norm=True,if_detach=True,if_only_last_layer=False,if_use_atten_sample=True,if_task_query=True)
         layers=explicit_layer_map(values,start,images.shape[-2:],compact_layers=LAYERS)
         attention=model.frame_blocks[0].attn.last_attn.float().mean((1,2))[:,start:][None]
+        assert torch.allclose(attention[0],native_attention.float(),rtol=.003,atol=1e-6)
         meta=dict(patch_start_idx=start,layer_ids=list(LAYERS),image_hw=list(images.shape[-2:]))
         frozen=all(not v.requires_grad for v in model.parameters());params=sum(v.numel() for v in model.parameters())
     torch.cuda.synchronize();seconds=time.perf_counter()-started
