@@ -8,7 +8,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q2: 为什么不直接使用 DINOv2/ReID？
 
-必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1=100.00%，高于当前 VGGT 中间层。独立DINO普通融合的离线稀疏/逐帧完整严格开发对照和匹配容量学习头离线k10对照已完成；因果dense容量对照目前仅scene1完成、其他场景仍在队列中。scene1的DINO匹配VGGT CVIDF1且少1次IDSW。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。 原生GMT-head固定+1配对分数完整scene1对照CVIDF1=95.583950、IDSW=203，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5与配对推理种子状态见下文；scene1不能单独支持全开发结论。 无额外head固定先验完整strict5已完成：CVIDF1=95.181615、IDSW=351，优于当前主种子denseVGGT完整DEV结果；全五场景检测key集合一致。配对推理种子未完成，不能归因于VGGT或声称稳定速度优势。
+必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1=100.00%，高于当前 VGGT 中间层。独立DINO普通融合的离线稀疏/逐帧完整严格开发对照和匹配容量学习头离线k10对照已完成；主种子因果dense匹配容量GMT/DINO完整strict5均已完成；DINO数值上高于当前VGGT联合版本，见对应完整suite指标。scene1的DINO匹配VGGT CVIDF1且少1次IDSW。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。 原生GMT-head固定+1配对分数完整scene1对照CVIDF1=95.583950、IDSW=203，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5与配对推理种子状态见下文；scene1不能单独支持全开发结论。 无额外head固定先验完整strict5已完成：CVIDF1=95.181615、IDSW=351，优于当前主种子denseVGGT完整DEV结果；全五场景检测key集合一致。配对推理种子未完成，不能归因于VGGT或声称稳定速度优势。
 
 ## Q3: VGGT 多层是否提供独立身份信息？
 
@@ -16,7 +16,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q4: 为什么不简单拼接所有输出？
 
-简单四层平均相似度等价于等权拼接归一化目标向量；B3完整严格开发输出与B0完全一致。B4标量weight2完整对照略低于B0。主种子低秩GCIR同样未建立收益。小头保留32维/两顺序64维目标表示，减少新增向量体积，但原GMT记忆和完整系统成本须分别测量。
+简单四层平均相似度等价于等权拼接归一化目标向量；B3完整严格开发输出与B0完全一致。B4标量weight2完整对照略低于B0。原始离线稀疏k10主种子GCIR未建立收益；因果dense有初步收益但固定先验更强。小头保留32维/两顺序64维目标表示，减少新增向量体积，但原GMT记忆和完整系统成本须分别测量。
 
 ## Q5: 与 VGGT-Det 的差别？
 
@@ -36,11 +36,11 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q9: 身份触发优于固定周期吗？
 
-未证明。完整strict5固定/联合各400次真实VGGT调用：固定仅+.001627 CVIDF1个百分点、IDSW不变，联合与baseline一致；未建立稳定方法收益或联合优越性。固定k20无总量上限调用720次，指标与400次上限相同，没有额外身份收益。运动单一触发完整strict5已完成：既定阈值下0次选择、0次VGGT调用、预测指标同B0，实际预算不匹配400次固定对照，不能声称调度优势或不存在运动。身份单一触发、其他dense间隔和重复矩阵仍在完成。证据：causal_B8_B9_complete_budget_runtime_audit_v1.json、causal_k20_uncapped_vs_cap80_budget_runtime_v1.json。 新增有界目标特征复用的VGGT/DINO/GMT完整scene1对照均与baseline逐条一致，未保留dense收益；三个骨干相同40个观测更新时间，但实际VGGT80/DINO40/GMT0次编码，不能称同等计算。
+未证明。完整strict5固定/联合各400次真实VGGT调用：固定仅+.001627 CVIDF1个百分点、IDSW不变，联合与baseline一致；未建立稳定方法收益或联合优越性。固定k20无总量上限调用720次，指标与400次上限相同，没有额外身份收益。运动单一触发完整strict5已完成：既定阈值下0次选择、0次VGGT调用、预测指标同B0，实际预算不匹配400次固定对照，不能声称调度优势或不存在运动。身份单触发完整strict5也已完成，CVIDF1仅+.006508个百分点、IDSW−8，实际218次调用；不与400次固定/联合构成相同实际预算比较。其他dense间隔和重复矩阵仍在完成。证据：causal_B8_B9_complete_budget_runtime_audit_v1.json、causal_k20_uncapped_vs_cap80_budget_runtime_v1.json。 新增有界目标特征复用的VGGT/DINO/GMT完整scene1对照均与baseline逐条一致，未保留dense收益；三个骨干相同40个观测更新时间，但实际VGGT80/DINO40/GMT0次编码，不能称同等计算。
 
 ## Q10: 相较 StreamVGGT/FastVGGT 的价值？
 
-不能直接移用长序列加速倍率或流式权重。源码接口和许可证已审计；短双视角速度实测、公平预算对照和真实流式集成仍待完成。
+不能直接移用长序列加速倍率或流式权重。源码接口和许可证已审计；真实三组TRAIN双视角微基准v2已执行：original36调用通过，Fast在V100的BF16输出进入相机head LayerNorm时失败；NO_VALID_SPEED_COMPARISON，不能把进程退出0当成方法成功。相机输入FP32的v3通过但Fast保留BF16、仍较慢；另在独立源码中仅替换10个dtype常量的完全FP16路径v4也通过各36调用，三组original/Fast比为.465760/.469999/.471315，当前短双视角V100实现仍慢约2.12–2.15倍，且特征改变，因此不接入当前跟踪。未改合并比例/算法或训练权重，不外推长序列/A100/完整系统。
 
 ## Q11: 完整 FPS/延迟/显存/参数量？
 
@@ -56,8 +56,8 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q14: 为什么符合 WWW？
 
-仍有实质适配风险。官方CFP要求明确Web科学问题，仅用数据集或API不充分。实际在线图像读取、GMT目标查询与轨迹片段索引已实现，已完成14个检索评价，其中10个为完整视频。详见retrieval_results.csv；GT只进入事后评价，不进入查询选择/排序。 本地数据集回放不等于互联网来源、真实用户查询或Web部署；见WWW_SCOPE_NOTE.md。
+仍有实质适配风险。官方CFP要求明确Web科学问题，仅用数据集或API不充分。实际在线图像读取、GMT目标查询与轨迹片段索引已实现，已完成17个检索评价，其中13个为完整视频。详见retrieval_results.csv；GT只进入事后评价，不进入查询选择/排序。 本地数据集回放不等于互联网来源、真实用户查询或Web部署；见WWW_SCOPE_NOTE.md。
 
 ## Q15: 在线视频关联检索的真实贡献？
 
-实际在线图像读取、GMT目标查询与轨迹片段索引已实现，已完成14个检索评价，其中10个为完整视频。详见retrieval_results.csv；GT只进入事后评价，不进入查询选择/排序。 条件Recall@K、完整MRR、检测覆盖、可检索比例、全部请求成功率和本地查询延迟分别报告。完整读帧/检测/GTA/新增特征/索引/查询成本另计；流数量与关键帧预算对照及实质Web系统贡献仍需完成。
+实际在线图像读取、GMT目标查询与轨迹片段索引已实现，已完成17个检索评价，其中13个为完整视频。详见retrieval_results.csv；GT只进入事后评价，不进入查询选择/排序。 条件Recall@K、完整MRR、检测覆盖、可检索比例、全部请求成功率和本地查询延迟分别报告。完整读帧/检测/GTA/新增特征/索引/查询成本另计；流数量与关键帧预算对照及实质Web系统贡献仍需完成。

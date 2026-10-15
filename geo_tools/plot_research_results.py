@@ -138,7 +138,9 @@ def main():
         sources[str(path)] = sha256(path)
         sources[str(manifest_path)] = sha256(manifest_path)
     if retrieval_runs:
-        labels = [f"{manifest.get('tracking_method','gmt_off')}; {manifest['backbone']}; {manifest['camera_streams']} cameras; k{manifest['interval']}" for manifest, _ in retrieval_runs]
+        tracking_labels={'gmt_off':'GMT','native_fixed_prior':'Native prior','vggt_dense':'Dense VGGT'}
+        labels = [f"{tracking_labels.get(manifest.get('tracking_method','gmt_off'),manifest.get('tracking_method'))}; rank {'native ReID' if manifest['backbone']=='none' else manifest['backbone']}; {manifest['camera_streams']} cameras"+
+                  (f"; k{manifest['interval']}" if manifest['backbone']!='none' else '') for manifest, _ in retrieval_runs]
         fig, axes = plt.subplots(1, 3, figsize=(15, max(4.5,.4*len(labels))),sharey=True)
         for axis, metric in zip(axes, ['Recall@1', 'MRR', 'Complete images/s']):
             values = [(report['recall_at_k']['1'] if metric == 'Recall@1' else report['mrr']) if metric != 'Complete images/s' else manifest['camera_image_fps'] for manifest, report in retrieval_runs]
@@ -175,6 +177,35 @@ def main():
         fig.tight_layout(rect=(0,.055,1,.94))
         fig.savefig(out/'causal_full_dev_identity_compute.png',dpi=180)
         fig.savefig(out/'causal_full_dev_identity_compute.pdf');plt.close(fig)
+    interval_path=ROOT/'results/causal_complete_interval_identity_budget_v1.json'
+    if interval_path.exists():
+        measured=json.loads(interval_path.read_text());sources[str(interval_path)]=sha256(interval_path)
+        base_path=ROOT/'results/causal_B0_strict_suite_v1_metrics.json';base=json.loads(base_path.read_text())['metrics']['CVIDF1']
+        prior_path=ROOT/'results/native_prior_seed20261014_strict_suite_v1_metrics.json'
+        prior=json.loads(prior_path.read_text())['metrics']['CVIDF1'];sources[str(base_path)]=sha256(base_path);sources[str(prior_path)]=sha256(prior_path)
+        fixed=[];identity=None
+        for method in measured['methods']:
+            name=Path(method['source']).stem.removesuffix('_sources');path=ROOT/'results'/f'{name}_metrics.json'
+            result=json.loads(path.read_text())
+            if result['video_ids']!=[1,10,11,18,19] or not result['causal_online'] or result['images']!=method['total_images']:
+                raise ValueError('complete matched interval curve required')
+            sources[str(path)]=sha256(path)
+            point=dict(calls=method['total_actual_vggt_calls'],fps=method['cumulative_camera_image_fps'],delta=result['metrics']['CVIDF1']-base)
+            if '_fixed_k' in name:point['label']='k'+name.split('_fixed_k')[1].split('_')[0];fixed.append(point)
+            else:point['label']='identity only';identity=point
+        fig,axes=plt.subplots(1,2,figsize=(11,4.7))
+        for axis,key,title in zip(axes,['calls','fps'],['Actual VGGT calls (all five scenes)','Complete camera images/s']):
+            ordered=sorted(fixed,key=lambda row:row[key]);axis.plot([row[key] for row in ordered],[row['delta'] for row in ordered],'o-',color='#6e5d8f',label='Fixed period')
+            for row in ordered:axis.annotate(row['label'],(row[key],row['delta']),xytext=(4,5),textcoords='offset points',fontsize=8)
+            if identity:
+                axis.scatter(identity[key],identity['delta'],marker='^',s=60,color='#c48045',label='Identity only')
+            axis.axhline(0,color='#666666',linestyle=':',label='Causal GMT reference')
+            axis.axhline(prior-base,color='#448b78',linestyle='--',label='Native prior accuracy reference')
+            axis.set_xlabel(title);axis.set_ylabel('CVIDF1 change (percentage points)');axis.grid(alpha=.2)
+        axes[0].set_xscale('log');axes[0].legend(fontsize=7,loc='upper left')
+        fig.suptitle('Complete causal development: keyframe budget and identity quality',fontsize=12)
+        fig.text(.5,.015,'Primary head seed; single V100 timings. Equal CVIDF1 does not imply identical full predictions or stable Pareto superiority.',ha='center',fontsize=8)
+        fig.tight_layout(rect=(0,.055,1,.94));fig.savefig(out/'causal_complete_interval_curve.png',dpi=180);fig.savefig(out/'causal_complete_interval_curve.pdf');plt.close(fig)
     save_json(out/'manifest.json', dict(status='IN_PROGRESS_FIGURES', source_artifacts=sources,
               outputs={path.name:sha256(path) for path in out.iterdir() if path.suffix in {'.png','.pdf'}},
               provenance=provenance(), limitations='incomplete research matrix; no replicate confidence intervals or accuracy/runtime Pareto superiority inferred'))

@@ -46,6 +46,11 @@ def main():
         retrieval_rows.append(dict(method=path.parent.name,tracking_method=value.get('tracking_method','gmt_off'),backbone=value['backbone'],video_ids=','.join(map(str,value['video_ids'])),
             camera_streams=value['camera_streams'],full_video=value['full_video'],interval=value['interval'],used_cache=value['used_cache'],speed_eligible=value.get('speed_eligible',True),
             requests=report['requests'],eligible_queries=report['gallery_eligible_queries'],query_detection_coverage=report['gt_query_detection_coverage'],
+            gt_matched_queries=report['gt_matched_queries'],detector_query_precision=report['detector_query_precision'],
+            gallery_eligibility_among_matched=report['gallery_eligibility_among_matched'],
+            all_requests_Recall1=report.get('success_at_k_all_requests',{}).get('1'),
+            all_requests_Recall5=report.get('success_at_k_all_requests',{}).get('5'),
+            all_requests_Recall10=report.get('success_at_k_all_requests',{}).get('10'),
             Recall1=report['recall_at_k']['1'],Recall5=report['recall_at_k']['5'],Recall10=report['recall_at_k']['10'],MRR=report['mrr'],
             query_p50=value['query_latency_seconds']['p50'],query_p95=value['query_latency_seconds']['p95'],camera_image_fps=value['camera_image_fps'],
             round_p50=value['round_latency_seconds']['p50'],round_p95=value['round_latency_seconds']['p95'],
@@ -62,6 +67,7 @@ def main():
     scoring_fields=['method','mode','backbone','camera_streams','full_video','requests','eligible_queries','candidate_positive_coverage','Recall1','Recall5','Recall10','MRR','query_p50','query_p95','source','sha256']
     write_csv(ROOT/'results/retrieval_scoring_diagnostics.csv',scoring_rows,scoring_fields)
     retrieval_fields=['method','tracking_method','backbone','video_ids','camera_streams','full_video','interval','used_cache','speed_eligible','requests','eligible_queries','query_detection_coverage',
+        'gt_matched_queries','detector_query_precision','gallery_eligibility_among_matched','all_requests_Recall1','all_requests_Recall5','all_requests_Recall10',
         'Recall1','Recall5','Recall10','MRR','query_p50','query_p95','camera_image_fps','round_p50','round_p95','vggt_calls','tracking_vggt_calls','retrieval_vggt_calls','dinov2_calls',
         'peak_index_payload_bytes','peak_host_rss_bytes','peak_gpu_bytes','source','sha256']
     write_csv(ROOT/'results/retrieval_results.csv',retrieval_rows,retrieval_fields)
@@ -106,6 +112,12 @@ def main():
     trigger_budget=evidence('causal_trigger_full_dev_realized_budget_v1.json',['status','methods','matched_actual_vggt_calls_for_each_scene','limitations'])
     retrieval_parity=evidence('retrieval_10streams_full_tracking_output_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
     encoder_reference=evidence('fast_vggt_short_pair_v2_comparison.json',['status','scope','failures','sources'])
+    encoder_bridge=evidence('fast_vggt_short_pair_v3_comparison.json',['status','scope','rows','limitations'])
+    encoder_fp16=evidence('fast_vggt_short_pair_fp16_v4_comparison.json',['status','scope','rows','explicit_bfloat16_constants','source_diff_sha256','limitations'])
+    history_training=evidence('history_rank_train_audit_v1.json',['status','unique_vggt_primary_gate','native_rank_errors','native_error_unique_query_observations','actual_whole_command_seconds','collectors','scope','limitations'])
+    retrieval_prior_gate=evidence('tracking_retrieval_prefix_gate_v1.json',['status','scope','limitations'])
+    prior_retrieval_parity=evidence('native_prior_retrieval_full18_tracking_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
+    order_parity=evidence('complete_causal_vggt_view_order_audit_v2.json',['status','scope','limitations','rows'])
     dense_verified=bool(dense and dense_pairs and dense_budget and dense['status']=='PASS' and dense_pairs['status']=='PASS' and dense_pairs['full_strict_suite'] and all(row['added_detections']==0 and row['removed_detections']==0 for row in dense_pairs['rows']))
     if linear_links:
         data=json.loads(Path(linear_links['path']).read_text())
@@ -141,13 +153,19 @@ def main():
         headfree_native_prior_full_dev_budget=native_budget,
         identity_trigger_full_dev=identity_trigger,trigger_realized_budgets=trigger_budget,
         complete_ten_stream_tracking_parity=retrieval_parity,fast_encoder_original_interface_reference=encoder_reference,
+        fast_encoder_camera_bridge_reference=encoder_bridge,bounded_train_history_recovery=history_training,
+        fast_encoder_fp16_reference=encoder_fp16,
+        tracking_to_retrieval_prior_prefix_gate=retrieval_prior_gate,
+        native_prior_complete_scene_retrieval_tracking_parity=prior_retrieval_parity,
+        complete_encoder_input_order_control=order_parity,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
     save_json(ROOT/'results/final_summary.json',summary)
     lines=['# VGGT+GMT report (automatically generated; research in progress)','',
         f'SCIENTIFIC_SUCCESS: {science_status}. ENGINEERING_COMPLETE: false. PAPER_READY: false.','',
         'Tables below are read from actual evaluation files. Raw-GT diagnostic rows cannot substitute for strict evaluation. All input frames are retained. Original GMT full-video postprocessing is offline; no real-time identity latency claimed. For synchronized two-camera tracking, per-camera delivered stream FPS equals group FPS; aggregate camera-image throughput is twice that value.','',
-        '| Method | Video | Strict GT | HOTA | AssA | IDF1 | CVIDF1 | IDSW |','|---|---:|---|---:|---:|---:|---:|---:|']
+        'All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint was trained on original TRAIN including these development scenes, so this split isolates new-head supervision and is not backbone-unseen generalization. Historical official TEST exposure is disclosed in geo_split_v1.json; this project does not use TEST to select/calibrate its new methods.','',
+        '| Method | Video | Protocol | Extent | Strict GT | HOTA | AssA | IDF1 | CVIDF1 | IDSW |','|---|---:|---|---|---|---:|---:|---:|---:|---:|']
     if signal:
         row=signal['rows'][0];delta=row['metric_delta']
         attribution_note=(' Scene1 attribution is complete: feature-only exactly equals joint; masked geometry-only exactly equals baseline; DINO matches VGGT CVIDF1 with one fewer IDSW; a GMT-only head captures much of the gain. Independent VGGT/geometry credit is unsupported.' if attribution and attribution['status']=='COMPLETE_SCENE1_ATTRIBUTION_NOT_FULL_DEV' else ' Independent attribution controls are pending.')
@@ -193,15 +211,28 @@ def main():
     if retrieval_parity and retrieval_parity['status']=='PASS' and retrieval_parity['full_strict_suite']:
         lines[6:6]=['Both complete ten-camera native and VGGT-feature retrieval producers preserve every standalone causal GMT OFF output across all five scenes, including boxes/scores/classes/image/track IDs and row order. This verifies complete interleaved tracking output isolation for these runs; their retrieval ranking quality and whole-producer runtime remain separate.','']
     if encoder_reference and encoder_reference['status']=='NO_VALID_SPEED_COMPARISON':
-        lines[6:6]=['The actual original/Fast three-TRAIN-pair microbenchmark v2 cannot support a speed comparison: original passes36 calls; official Fast fails at camera-head LayerNorm on its BF16 output under V100. A separate symmetric FP32 camera-input bridge experiment is planned; no speedup, slowdown or full-system accuracy claim follows from the failed original interface.','']
+        lines[6:6]=['The original/Fast three-TRAIN-pair microbenchmark v2 cannot support a speed comparison: original passes36 calls; official Fast fails at camera-head LayerNorm on its BF16 output under V100. The failure remains archived separately from subsequent camera/precision bridge tests.','']
+    if encoder_bridge and encoder_bridge['status']=='PASS_MICROBENCHMARK_ONLY':
+        ratios=[row['original_over_fast_ratio'] for row in encoder_bridge['rows']]
+        lines[6:6]=[f"The FP32 camera-input bridge v3 passes36 calls per variant. Original/Fast timing ratios range {min(ratios):.4f}–{max(ratios):.4f}: the available Fast path is slower on this V100 setup. Fast still forces BF16 internally, so v3 is not a precision-matched architectural speed conclusion; the separate FP16 reference is reported independently.",'']
+    if encoder_fp16 and encoder_fp16['status']=='PASS_MICROBENCHMARK_ONLY':
+        ratios=[row['original_over_fast_ratio'] for row in encoder_fp16['rows']]
+        lines[6:6]=[f"Controlled FP16 original/Fast reference v4 completes36 calls per variant, with only10 Fast dtype constants changed in a separate two-file source worktree and identical FP32 camera-head input policy. Original/Fast ratios {min(ratios):.6f}–{max(ratios):.6f}: the available Fast implementation is about {1/max(ratios):.2f}–{1/min(ratios):.2f} times slower for these short two-view V100 fixtures; saved target features differ. No current production integration follows. This is not a long-sequence, other-hardware or full-system speed claim.",'']
+    if history_training and history_training['status']=='PASS_BOUNDED_TRAIN_DIAGNOSTIC':
+        lines[6:6]=[f"Bounded history-ranking TRAIN recovery completes three fresh sparse200-frame collectors, real neutral OFF40-prefix checks and9 matched heads (3 backbones ×3 seeds). Primary unique-VGGT gate is {history_training['unique_vggt_primary_gate']}; selected heads make no new corrections/harms against native on1,497 reused TRAIN12 reference-frame clauses ({history_training['native_rank_errors']} native errors from {history_training['native_error_unique_query_observations']} query observations). No new DEV tuning follows this failed gate. Whole command cost {history_training['actual_whole_command_seconds']:.2f}s, target/event artifacts about11.5MB; this is offline TRAIN cost, not inference speed or proof all VGGT features lack useful information.",'']
+    if prior_retrieval_parity and prior_retrieval_parity['status']=='PASS':
+        prior_row=next((row for row in retrieval_rows if row['method']=='retrieval_native_prior_2streams_full_v1'),None)
+        if prior_row:
+            lines[6:6]=[f"The first complete improved-tracker publication control now finishes: head-free fixed-prior scene18 retrieval preserves the entire standalone prior tracking output, with {prior_row['requests']} queries/{prior_row['eligible_queries']} eligible, Recall1 {prior_row['Recall1']:.6f}, MRR {prior_row['MRR']:.6f}, descriptive whole-producer {prior_row['camera_image_fps']:.4f} images/s. Recall1 equals the native tracker reference; the MRR difference is small. This is a completed simple-control integration, not VGGT tracking-to-retrieval efficacy; dense B7 and remaining stream counts are still pending.",'']
     for row in metric_rows:
-        lines.append(f"| {row['method']} | {row['video_id']} | {'no: raw diagnostic' if row['raw_gt_diagnostic'] else 'yes'} | {row['HOTA']:.4f} | {row['AssA']:.4f} | {row['IDF1']:.4f} | {row['CVIDF1']:.4f} | {row['IDSW']} |")
+        lines.append(f"| {row['method']} | {row['video_id']} | {'causal' if row['causal_online'] else 'offline'} | {'complete' if row['full_video'] else 'prefix'} | {'no: raw diagnostic' if row['raw_gt_diagnostic'] else 'yes'} | {row['HOTA']:.4f} | {row['AssA']:.4f} | {row['IDF1']:.4f} | {row['CVIDF1']:.4f} | {row['IDSW']} |")
     lines+=['','Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):','',
-        '| Method | Cameras | Full video | Queries | Eligible | Recall@1 | MRR | Query P95 (ms) | Complete images/s |',
-        '|---|---:|---|---:|---:|---:|---:|---:|---:|']
+        '| Method | Cameras | Full video | Queries | Eligible | Conditional Recall@1 | All-request success@1 | MRR | Query P95 (ms) | Complete images/s |',
+        '|---|---:|---|---:|---:|---:|---:|---:|---:|---:|']
     for row in retrieval_rows:
         speed=f"{row['camera_image_fps']:.4f}" if row['speed_eligible'] else 'diagnostic cost only'
-        lines.append(f"| {row['method']} | {row['camera_streams']} | {row['full_video']} | {row['requests']} | {row['eligible_queries']} | {row['Recall1'] if row['Recall1'] is not None else 'NA'} | {row['MRR'] if row['MRR'] is not None else 'NA'} | {row['query_p95']*1000:.4f} | {speed} |")
+        all_requests=f"{row['all_requests_Recall1']:.6f}" if row['all_requests_Recall1'] is not None else 'NA'
+        lines.append(f"| {row['method']} | {row['camera_streams']} | {row['full_video']} | {row['requests']} | {row['eligible_queries']} | {row['Recall1'] if row['Recall1'] is not None else 'NA'} | {all_requests} | {row['MRR'] if row['MRR'] is not None else 'NA'} | {row['query_p95']*1000:.4f} | {speed} |")
     if scoring_rows:
         lines+=['','Same-query retrieval scoring diagnostics (identical feature-source observations/candidates for encoded scorers; full native-gallery denominator retained):','',
             '| Method | Scorer | Full video | Positive candidate coverage | Recall@1 | MRR |', '|---|---|---|---:|---:|---:|']

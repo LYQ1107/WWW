@@ -6,7 +6,7 @@ A submission must explain its Web scientific problem and track fit on the first 
 
 The executable task queries a current detector target against clips from other cameras. Actual image reads, frozen causal GMT, feature publication, bounded index maintenance and query responses run online in sequence; labels enter post-run evaluation only. Separate scenes interleave by replay round and retain independent tracker banks/RNG. Frozen encoder weights are already shared serially across scene extractors; no cross-scene tracking/geometry state is shared.
 
-Completed production tracker modes in this table: gmt_off. Original experiments keep tracking at causal GMT OFF and vary retrieval features/scoring. Optional fixed-prior and dense B7 tracking-to-retrieval controls are separately gated; only completed metric artifacts enter this table. Local replay does not establish Internet-origin streams, live Web deployment, real user-query traffic or an independent Web scientific contribution.
+Completed production tracker modes in this table: gmt_off, native_fixed_prior. Original experiments keep tracking at causal GMT OFF and vary retrieval features/scoring. Optional fixed-prior and dense B7 tracking-to-retrieval controls are separately gated; only completed metric artifacts enter this table. Local replay does not establish Internet-origin streams, live Web deployment, real user-query traffic or an independent Web scientific contribution.
 
 Production retrieval results below use scene18 queries at every stream count. Exact query image/camera/frame/box cohorts and complete scene18 detector outputs are checked against the two-camera native reference. Recall@1/MRR are conditional on matched queries with positive gallery clips; coverage and all-request success remain in the metric artifacts.
 
@@ -15,6 +15,7 @@ Production retrieval results below use scene18 queries at every stream count. Ex
 | retrieval_gmt_10streams_full_v1 | gmt_off | 10 | 598 | 309 | 84.1424% | 0.885244 | True/True |
 | retrieval_gmt_4streams_full_v1 | gmt_off | 4 | 598 | 309 | 97.7346% | 0.987864 | True/True |
 | retrieval_gmt_v18_full_v1 | gmt_off | 2 | 598 | 309 | 97.7346% | 0.987864 | True/True |
+| retrieval_native_prior_2streams_full_v1 | native_fixed_prior | 2 | 598 | 309 | 97.7346% | 0.988673 | True/True |
 | retrieval_vggt_k10_10streams_full_v1 | gmt_off | 10 | 598 | 309 | 70.5502% | 0.769991 | True/True |
 | retrieval_vggt_k10_4streams_full_v1 | gmt_off | 4 | 598 | 309 | 87.0550% | 0.891011 | True/True |
 | retrieval_vggt_k10_v18_full_v1 | gmt_off | 2 | 598 | 309 | 90.2913% | 0.924582 | True/True |
