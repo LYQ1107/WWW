@@ -90,6 +90,17 @@ def main():
   if native_path.exists():
    native_rule=read(native_path);decision['full_TRAIN_native_rule_validation']=dict(report=ref(native_path),native_TRAIN_signal_positive=native_rule['native_TRAIN_signal_positive'])
    decision['learned_training']='NOT_RUN_NATIVE_TRAIN_POSITIVE_SUPERVISION_AND_FAIR_TRAINING_PROTOCOL_PENDING' if native_rule['native_TRAIN_signal_positive'] else 'NOT_RUN_NATIVE_TRAIN_RULE_SIGNAL_GATE_FAILED'
+ oracle_path=REPORTS/'BOUNDED_RESIDUAL_ORACLE_AUDIT.json';bounded_oracle=None
+ if oracle_path.exists():
+  bounded_oracle=read(oracle_path)
+  decision['bounded_residual_oracle']=dict(report=ref(oracle_path),probes=bounded_oracle['probes'],no_deployable_or_optimal_bound_claim=True)
+ train_quality_path=REPORTS/'FULL_TRAIN_MATCHED_QUALITY_AUDIT.json';train_quality=None
+ if train_quality_path.exists():
+  train_quality=read(train_quality_path)
+  decision['full_TRAIN_matched_quality']=dict(report=ref(train_quality_path),primary_pooled_deltas=train_quality['primary_pooled_deltas'],does_not_replace_TRAIN16_or_independent_validation=True)
+ gate_protocol=DOCS/'LEARNED_GATE_SMOKE_PROTOCOL.md'
+ if gate_protocol.exists():
+  decision['single_learned_gate_revision']=dict(protocol=ref(gate_protocol),status='PRECHECK_PENDING_NO_NEW_GRADIENT_UPDATES',old_rule_failures_preserved=True,gate_revision_requires_native_zero_parity_and_supervision_contract=True)
  if stock is not None:
   decision['secondary_stock_development_metric_gates']={k:r['secondary_stock_metric_gates'] for k,r in online['methods'].items()}
   decision['secondary_stock_interpretation']='Rule passes HOTA/AssA/CVIDF1/IDSW/Frag secondary metric gates; stock temporal diagnostics reported separately and speed remains method-specific. Threshold/confidence fail secondary IDSW. This does not override the preregistered primary raw outcome or establish scientific success.'
@@ -203,6 +214,16 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
   report+=f"\n完整 TRAIN12/13/14 覆盖补查：{coverage['counts']['unique_active_rows']} 条可认证唯一合法候选中，GMT 错误 {coverage['counts']['GMT_wrong_unique_active']} 条。TRAIN 时间桶冻结 Rule 局部 N01/N10={train_counts['rule_local_N01']}/{train_counts['rule_local_N10']}；原前缀报告保持不变，这一补查不代表原生闭环或独立验证。当前训练状态：{decision['learned_training']}。见 FULL_TRAIN_OPPORTUNITY_AUDIT.json 与已冻结 TRAIN_NATIVE_RULE_VALIDATION_PROTOCOL.md。\n"
   if native_rule is not None:
    report+='\n完整原生 Rule 提交验证的 TRAIN 时间桶计数：'+json.dumps(native_rule['paired_commit_buckets']['TRAIN_BLOCKS'],ensure_ascii=False)+'。仅与同一当前真实状态的 accepted GMT MATCH 比较；原始拒绝后的 Bank 结果为 UNKNOWN，不作整段因果收益或 HOTA 声称。\n'
+ if train_quality is not None:
+  report+='\n## 完整 TRAIN 轨迹对照补查\n\n输入图像、GT、有效配置、raw几何/置信度 SHA 在每段 Original/Rule 间一致。主要 raw 结果：\n\n| 视频 | GMT HOTA | Rule HOTA | GMT IDSW | Rule IDSW |\n|---|---:|---:|---:|---:|\n'
+  for video in [12,13,14]:
+   a=read(REPORTS/f'TRAIN_MATCHED_original_VIDEO{video:02d}.json')['primary_raw']['metrics'];b=read(REPORTS/f'TRAIN_MATCHED_rule_VIDEO{video:02d}.json')['primary_raw']['metrics']
+   report+=f"| {video} | {a['HOTA']:.6f} | {b['HOTA']:.6f} | {a['IDSW']:.0f} | {b['IDSW']:.0f} |\n"
+  report+='\n合并官方评测主要差值：'+json.dumps(train_quality['primary_pooled_deltas'],ensure_ascii=False)+'。三段 Rule HOTA 均下降，不选择有利序列，不用 TRAIN 替代独立验证；固定 Rule 没有稳定收益，原 TRAIN16 主协议失败仍成立。\n'
+ if bounded_oracle is not None:
+  report+='\n受限 ORACLE 诊断合计：'+json.dumps(bounded_oracle['probes'],ensure_ascii=False)+'。所有 ORACLE 动作均未执行；这是有界合法动作空间见证，不是最优上限、神经网络可表达证明或在线收益。\n'
+ if gate_protocol.exists():
+  report+='\n单次后续修订已在 LEARNED_GATE_SMOKE_PROTOCOL.md 冻结：三个约5k参数小头使用同一 learned risk mode，保留原手工量为输入、保留±0.05残差及原生候选/求解器；先核验原生零残差与≤32MiB临时监督缓冲的契约，再决定是否执行一次同预算300步smoke。当前仍为0真实训练更新，不改变旧 Rule、旧模式或任何成功门槛。\n'
  (DOCS/'FINAL_RESEARCH_REPORT_ZH.md').write_text(report)
  print('GMT_RESEARCH_REPORT_BUILT',speed['status'],pending,resource,flush=True)
 

@@ -1,5 +1,58 @@
 {
   "architecture_ablation": "NOT_RUN_NO_JOINT_POSITIVE_MAIN_METHOD",
+  "bounded_residual_oracle": {
+    "no_deployable_or_optimal_bound_claim": true,
+    "probes": {
+      "ALL_LEGAL_DIAGNOSTIC_ORACLE": {
+        "HELDOUT_TEMPORAL_BLOCKS": {
+          "E1_original_committed_wrong": 30,
+          "E1_target_cannot_pass_active_MATCH_threshold_at_max_FP32_score": 4,
+          "E1_target_edge_allowed": 30,
+          "E1_with_any_allowed_edge": 30,
+          "ORACLE_target_accept_on_E1": 3,
+          "UNKNOWN_reference_Bank_or_birth": 4,
+          "unique_active_rows": 5366
+        },
+        "TRAIN_BLOCKS": {
+          "E1_original_committed_wrong": 97,
+          "E1_target_cannot_pass_active_MATCH_threshold_at_max_FP32_score": 9,
+          "E1_target_edge_allowed": 97,
+          "E1_with_any_allowed_edge": 97,
+          "ORACLE_N01_accepted_reference": 3,
+          "ORACLE_target_accept_on_E1": 17,
+          "UNKNOWN_reference_Bank_or_birth": 19,
+          "UNKNOWN_reference_owner": 3,
+          "unique_active_rows": 26297
+        }
+      },
+      "CURRENT_GATE_ORACLE": {
+        "HELDOUT_TEMPORAL_BLOCKS": {
+          "E1_original_committed_wrong": 30,
+          "E1_target_cannot_pass_active_MATCH_threshold_at_max_FP32_score": 8,
+          "E1_target_edge_allowed": 1,
+          "E1_with_any_allowed_edge": 5,
+          "ORACLE_target_accept_on_E1": 1,
+          "UNKNOWN_reference_Bank_or_birth": 4,
+          "unique_active_rows": 5366
+        },
+        "TRAIN_BLOCKS": {
+          "E1_original_committed_wrong": 97,
+          "E1_target_cannot_pass_active_MATCH_threshold_at_max_FP32_score": 31,
+          "E1_target_edge_allowed": 11,
+          "E1_with_any_allowed_edge": 25,
+          "ORACLE_target_accept_on_E1": 7,
+          "UNKNOWN_reference_Bank_or_birth": 19,
+          "UNKNOWN_reference_owner": 1,
+          "unique_active_rows": 26297
+        }
+      }
+    },
+    "report": {
+      "SHA256": "2c3e0d88d05f320454cbbff5fc16af895dc163e0d4e0ddd709cdd5c7c2e5b791",
+      "bytes": 34237,
+      "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/BOUNDED_RESIDUAL_ORACLE_AUDIT.json"
+    }
+  },
   "bounded_tracking_experiments_complete": true,
   "current_best_conservative_candidate": "confidence: modest ordinary calibration development signal, not +0.5 or JEV-specific superiority",
   "development_primary_conclusions": {
@@ -41,6 +94,24 @@
     }
   },
   "efficiency_status": "COMPLETE",
+  "full_TRAIN_matched_quality": {
+    "does_not_replace_TRAIN16_or_independent_validation": true,
+    "primary_pooled_deltas": {
+      "AssA": -0.013730191752586052,
+      "CVIDF1": -0.025991896643986934,
+      "DetA": -0.004039509721778245,
+      "Frag": -2.0,
+      "HOTA": -0.008858543771893324,
+      "IDF1": -0.027643824676729878,
+      "IDSW": 56.0,
+      "MOTA": -0.07462129691815278
+    },
+    "report": {
+      "SHA256": "db601efbb7b65bb6bcf7db5149cc7a36724b1d43d150ee39d1ce7a60cee042c3",
+      "bytes": 34530,
+      "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/FULL_TRAIN_MATCHED_QUALITY_AUDIT.json"
+    }
+  },
   "full_TRAIN_native_rule_validation": {
     "native_TRAIN_signal_positive": false,
     "report": {
@@ -125,6 +196,16 @@
     }
   },
   "secondary_stock_interpretation": "Rule passes HOTA/AssA/CVIDF1/IDSW/Frag secondary metric gates; stock temporal diagnostics reported separately and speed remains method-specific. Threshold/confidence fail secondary IDSW. This does not override the preregistered primary raw outcome or establish scientific success.",
+  "single_learned_gate_revision": {
+    "gate_revision_requires_native_zero_parity_and_supervision_contract": true,
+    "old_rule_failures_preserved": true,
+    "protocol": {
+      "SHA256": "a7a26069a126351c0cb2a17668b6c84a94291333bb71b3ed7d11d7bac9f43351",
+      "bytes": 2998,
+      "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/docs/GMT_JEV/LEARNED_GATE_SMOKE_PROTOCOL.md"
+    },
+    "status": "PRECHECK_PENDING_NO_NEW_GRADIENT_UPDATES"
+  },
   "source": {
     "CUDA_VISIBLE_DEVICES": null,
     "Full24": false,
@@ -134,7 +215,7 @@
       "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
     },
     "GT_actor_input": false,
-    "HEAD": "f359acbe959aa57e1d955d7edb292e7c7b33b9b6",
+    "HEAD": "64514dfbc9e319fc3078b2a50c362159927d9744",
     "goal": {
       "SHA256": "d2b15ce73b1a82e714aef7437180fd87368d404e062c6cd92e6ab8ffa572e2ef",
       "bytes": 3848,
@@ -145,7 +226,7 @@
     "source_SHA256": {
       "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
       "gtr/modeling/gmt_jev/__init__.py": "d901db850406e16a6dc32037a126c26d48fd98bcd71ed449691a11f4a50f2fa8",
-      "gtr/modeling/gmt_jev/correction.py": "fa816d84b33abbe5eed9e5ca4ac1e0575ca4ad5f2a0a512d687173c8b9620152",
+      "gtr/modeling/gmt_jev/correction.py": "60408d76905a1a86211a119211545b7c0d2ac2d26e248f77e5d2c5f173e0bbc2",
       "gtr/modeling/meta_arch/gtr_rcnn.py": "935bbb74fa581225acc3da010d9972edaf5376263b1b800a33208a30af031b30",
       "gtr/modeling/roi_heads/gtr_roi_heads.py": "8c7bd0e35269bfe8a20c04b046a5bd4d713a5c0e5581111c4941c2ee20ca463f",
       "gtr/modeling/roi_heads/transformer.py": "22f4f578eac16948005019f6c6883dcc2abc81cf25b38c1e17be65e90cf3ded0",
@@ -166,7 +247,7 @@
       "reproduction_tools/gmt_jev_opportunity.py": "6712300b20c373aa8241fcd270c11aeee23ec4b5424e5c2b1aafcaf453abfedd",
       "reproduction_tools/gmt_jev_past_anchor_audit.py": "8ea70b5e4a87d61340873a4af9f71ad38b82864b1e264c285bf8538c6b0bb7e8",
       "reproduction_tools/gmt_jev_publish.py": "e0a3b7886e0b35b689d99361465de2d1eba3a413bc1d03382f837e1ad8767c1a",
-      "reproduction_tools/gmt_jev_research_report.py": "ff160cf8241c3b2369caabd7bcbee48cd0688a2f3ab0c0989efd6920e6f466d2",
+      "reproduction_tools/gmt_jev_research_report.py": "3a335d27d35828dd08285dcc91977d2ee2325ec12af15d66dea470f3ddf3b08c",
       "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3",
       "reproduction_tools/gmt_jev_speed.py": "efb6a7d9b384a0bf6440d010a31fc32a1d8a310e894097ab33c72b4ae017b89c",
       "reproduction_tools/gmt_jev_speed_queue.py": "f4aca344229457c345ba0817b98e97a469c7d421bbe5b2b1b97f7d520777f0c0",

@@ -40,9 +40,12 @@ class ResidualHead(nn.Module):
   return torch.sigmoid(self.gate(h)).squeeze(-1),torch.tanh(self.delta(h)).squeeze(-1)
 
 class IdentityCorrection(nn.Module):
- def __init__(self,kind='observe',enabled=True,cache_features=False):
+ def __init__(self,kind='observe',enabled=True,cache_features=False,risk_mode='conflict'):
   super().__init__();assert kind in ['observe','threshold','rule','confidence','mlp','attention','cic']
+  assert risk_mode in ['conflict','learned']
+  assert risk_mode=='conflict' or kind in ['mlp','attention','cic']
   self.kind=kind;self.enabled=enabled;self.cache_features=cache_features
+  self.risk_mode=risk_mode
   self.head=ResidualHead(kind) if kind in ['mlp','attention','cic'] else None
   self.observer=None;self.reset()
  def reset(self):self.summaries={};self.last=None;self._cached_zero=None
@@ -110,6 +113,7 @@ class IdentityCorrection(nn.Module):
   elif self.kind=='confidence':
    eligible=x[...,0]<.1;gate=eligible.float();residual=-(.1-x[...,0]).clamp(0,.05);new=scores+residual*lengths[None]
   else:
+   if self.risk_mode=='learned':eligible=torch.ones_like(eligible)
    gate,delta=self.head(x);gate=gate*eligible.float();residual=.05*gate*delta;new=scores+residual*lengths[None]
   assert torch.isfinite(new).all() and torch.equal(new[~eligible],scores[~eligible])
   self.last=dict(features=x,eligible=eligible,base_scores=scores,corrected_scores=new,ids=ids,lengths=lengths,gate=gate,residual=residual,view=view,frame=frame,first=first)
