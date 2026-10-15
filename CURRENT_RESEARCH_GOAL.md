@@ -1,9 +1,7 @@
-# Current research goal — 2026-10-14
+# Current research goal — 2026-10-15
 
-**GMT-JEV: Task-Adaptive Cross-Camera Identity Reasoning for Efficient Global Multi-Target Tracking**
+**GMT-JEV: Question-Conditioned Identity Verification for Efficient Multi-Camera Multi-Target Tracking**
 
-状态：ACTIVE；尚无新科学成功。当前权威目标：[FINAL_GOAL](docs/GMT_JEV/FINAL_GOAL.md)，机器入口：[MASTER_GOAL](reports/GMT_JEV/MASTER_GOAL.json) 和 [当前指针](reports/CURRENT_RESEARCH_GOAL.json)。
+V2状态 ACTIVE，科学成功未建立。权威目标：[FINAL_GOAL](docs/GMT_JEV_VERIFIER/FINAL_GOAL.md)，机器入口：[GOAL](reports/GMT_JEV_VERIFIER/GOAL.json)。
 
-保留原始完整 GMT 的检测、VFCE、RPCE、GTA、全局匹配、Gallery、Bank、REACT 和 WRITE，仅在身份分数形成后研究有界轻量校正。Strong Fixed 不再是主要外部基线。
-
-旧 JEV_MASTER、Recovery 和 Fastcheck 目标已被本目标取代，原始结果和 NO_GO 保留不变。不要重新启动旧路线的自动训练队列；旧控制器会指向新目标。单次开发实验完成不等于 MASTER 科学完成。
+完整GMT与原MLP step300冻结。先审计同状态KEEP/APPLY监督，再按预注册准入或失败转向推进。新轮独立4 GPU-hours/128MiB，旧11.929小时账本不重置；旧九次交错计时提案不执行。历史CIC、Recovery、Fastcheck及Strong Fixed证据保留，不启动旧路线。
