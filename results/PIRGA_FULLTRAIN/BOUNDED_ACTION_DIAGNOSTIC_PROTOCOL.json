@@ -1,0 +1,68 @@
+{
+  "release": {
+    "manifest_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/cv_pil_dev12_native_release_v1/manifest.json",
+    "manifest_sha": "a4d2014edcc920f45753e0f76c378bf08f25c22758e3d8770572dc36632c2173",
+    "scope_sha": "45824abd0f27f105e4af28f8fb0ce10790ac5adc9eee1a2c579689786f5bcaf9",
+    "provenance_pins": {
+      "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+      "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+      "annotation_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+      "seed": 20261014,
+      "commit": "f97cf27f0f4299269c3bd1dd885a92e90639f51c"
+    },
+    "roles": {
+      "observations": [
+        "native_observations/observations_0000.pt",
+        "native_observations/observations_0001.pt",
+        "native_observations/observations_0002.pt",
+        "native_observations/observations_0003.pt",
+        "native_observations/observations_0004.pt",
+        "native_observations/observations_0005.pt",
+        "native_observations/observations_0006.pt",
+        "native_observations/observations_0007.pt"
+      ],
+      "calls": [
+        "native_calls/calls_0000.pt",
+        "native_calls/calls_0001.pt",
+        "native_calls/calls_0002.pt",
+        "native_calls/calls_0003.pt",
+        "native_calls/calls_0004.pt",
+        "native_calls/calls_0005.pt",
+        "native_calls/calls_0006.pt",
+        "native_calls/calls_0007.pt",
+        "native_calls/calls_0008.pt",
+        "native_calls/calls_0009.pt",
+        "native_calls/calls_0010.pt",
+        "native_calls/calls_0011.pt"
+      ],
+      "variants": "native_observations/descriptor_variants.pt",
+      "queries": "native_queries.jsonl.gz",
+      "commits": "native_commit_trace.jsonl.gz",
+      "labels": "offline_labels/queries.jsonl.gz"
+    },
+    "seal_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/cv_pil_dev12_native_release_v1/artifact_sha256.json",
+    "seal_sha": "ef7f65d0bccb1e665f7125391f4a3c64a1449b1fe4d204c735371522386421d4"
+  },
+  "reference": {
+    "path": "/data1/liuyeqiang/WWW_pirga_20261016/results/cv_pil_v3_native_validation/P3_MATCHED300_FULL_DEV12/QUERY_RESULTS_OFFLINE_ONLY.csv",
+    "sha256": "3db925d0e10d866dd2d761f061c01a8e25d0747ee21b47d95e6d9aca01a31926"
+  },
+  "status": "PREREGISTERED_BOUNDED_ACTION_DIAGNOSTIC_BEFORE_PHASE2_DEV_RESULTS",
+  "horizon_boundaries": [
+    1,
+    2,
+    16
+  ],
+  "absolute_residual_limit": "0.5 * strict_past_history_count/(strict_past_history_count+1) plus conservative FP32 numerical widening",
+  "purpose": "Distinguish lack of measured predictive benefit from bounded native action opportunity limits; no score-bound revision, threshold tuning, candidate addition or model selection allowed from oracle diagnostics.",
+  "action_space": "Complete actual joint native rows and columns; arbitrary interval score changes are a superset of learned architecture capabilities, not a policy",
+  "source_sha256": {
+    "geo_tools/run_pirga_interval_audit.py": "a864adc09b52b44cef52bf28f7818c0c175c607432c846e2e7833607ebf4d638",
+    "geo_tools/pirga_interval_opportunity.py": "f4183749e193f736b713b6d5a5559d81b3f538180c6b2b0cc0415e683098df64",
+    "geo_tools/pirga_candidate_state.py": "127e7c5abadbf025c0af94df3ddcd9858a64ed408ba42ef58289dadb79fd50ae",
+    "geo_tools/run_pirga_phase1_replay.py": "f92615ad662b9ffaa991a22a508aafccfad84fd4a85edc5711e5df498d16d892"
+  },
+  "created_utc": "2026-10-15T21:26:54.056774+00:00",
+  "GPU_wall_hours": 0,
+  "scientific_success": false
+}
