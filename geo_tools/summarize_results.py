@@ -170,6 +170,9 @@ def main():
     dense_seed_stability=evidence('causal_dense_seed_stability_v1.json',['status','groups','scene1_training_head_diagnostic','scope','limitations'])
     relation_matrix=evidence('identity_relations_matrix_v2.json',['status','pending','scope','limitations'])
     dense_geometry_attribution=evidence('causal_dense_geometry_full_strict_attribution_v1.json',['status','full_strict_suite','scope','conclusion','limitations','rows'])
+    other_head_geometry={str(seed):value for seed in (20261015,20261016)
+        if (value:=evidence(f'causal_dense_geometry_seed{seed}_full_strict_attribution_v1.json',
+            ['status','full_strict_suite','training_head_seed','inference_seed','head_checkpoint_sha256','scope','conclusion','limitations','rows']))}
     dense_full2_retrieval=evidence('vggt_dense_retrieval_full2_tracking_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
     dense_full4_retrieval=evidence('vggt_dense_retrieval_full4_tracking_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
     retrieval_query_pairs=evidence('retrieval_paired_query_outcomes_v1.json',['status','rows','pending','shared_control_corrections','scope','limitations'])
@@ -236,6 +239,7 @@ def main():
         dense_b7_complete_two_camera_retrieval_tracking_parity=dense_full2_retrieval,
         dense_b7_complete_four_camera_retrieval_tracking_parity=dense_full4_retrieval,
         paired_retrieval_query_outcomes=retrieval_query_pairs,readonly_reproduction_preflight=readonly_preflight,
+        additional_training_head_full_geometry_attribution=other_head_geometry,
         recorded_geometry_failure_taxonomy=geometry_failures,
         constructed_cpu_geometry_stress=constructed_stress,
         observed_process_wall_runtime=process_wall_cost,
@@ -352,6 +356,10 @@ def main():
         lines[6:6]=['Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.','']
     if dense_geometry_attribution and dense_geometry_attribution['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
         lines[6:6]=['Complete primary-head dense B5/B7 geometry attribution is now audited over all strict5: every serialized feature-only prediction exactly equals joint B7, with matched encoder calls and all other effective GEO options verified from their captured source defaults (calibration content checked, inactive default-off cache normalized). Joint geometry passes its numerical/background gate3 times, all in scene1; none changes the final outputs. This extends the earlier scene1 result to the complete primary-head suite; remaining head seeds and valid-pose accuracy are separate.','']
+    for seed,value in other_head_geometry.items():
+        if value['full_strict_suite'] and value['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
+            gates=sum(row['joint_valid_geometry_calls'] for row in value['rows'])
+            lines[6:6]=[f"Complete TRAIN-head{seed} geometry ablation at fixed inference RNG{value['inference_seed']} also has exact B5/B7 serialized outputs in all strict5 scenes, with the same trained head, active options and encoder calls. Joint geometry passes its numerical/background gate {gates} times in this replay without changing final outputs. This is a separate head trial on the same scenes, not independent physical geometry evidence or completion of another missing head.",'']
     if geometry_failures:
         count=sum(row['diagnostic_rows'] for row in geometry_failures['summaries'])
         accepted=sum(row['valid'] for row in geometry_failures['summaries'])

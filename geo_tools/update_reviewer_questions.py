@@ -77,7 +77,13 @@ def main():
     geometry_note='dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。'
     geometry_path=ROOT/'results/causal_dense_geometry_full_strict_attribution_v1.json'
     if geometry_path.exists() and json.loads(geometry_path.read_text())['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
-        geometry_note='主种子dense特征单独启用B5与联合B7在完整strict5的每条预测均完全一致；所有共同有效配置、head和编码调用次数已核验。联合几何共3次通过数值/背景门槛，均在scene1，但没有独立输出贡献。其余head种子仍在运行；该结果不证明所有几何无用或GT位姿准确。'
+        geometry_note='主种子dense特征单独启用B5与联合B7在完整strict5的每条预测均完全一致；所有共同有效配置、head和编码调用次数已核验。联合几何共3次通过数值/背景门槛，均在scene1，但没有独立输出贡献。其他head的完整证据分别报告；该结果不证明所有几何无用或GT位姿准确。'
+    for seed in (20261015,20261016):
+        path=ROOT/f'results/causal_dense_geometry_seed{seed}_full_strict_attribution_v1.json'
+        if path.exists():
+            value=json.loads(path.read_text())
+            if value['full_strict_suite'] and value['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
+                geometry_note+=f" TRAIN头{seed}在固定推理RNG{value['inference_seed']}下也通过完整strict5的B5/B7精确输出一致性；本次运行有{sum(row['joint_valid_geometry_calls'] for row in value['rows'])}次几何数值/背景门槛通过，未改变输出。不同head重放相同场景不是独立物理几何样本。"
     failure_path=ROOT/'results/geometry_failure_taxonomy_v1.json'
     if failure_path.exists():
         failure=json.loads(failure_path.read_text());count=sum(row['diagnostic_rows'] for row in failure['summaries'])
