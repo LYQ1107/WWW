@@ -4,17 +4,19 @@ SCIENTIFIC_SUCCESS: PRELIMINARY_PAIRED_FULL_DEV_GAIN_NOT_STABLE. ENGINEERING_COM
 
 Tables below are read from actual evaluation files. Raw-GT diagnostic rows cannot substitute for strict evaluation. All input frames are retained. Original GMT full-video postprocessing is offline; no real-time identity latency claimed. For synchronized two-camera tracking, per-camera delivered stream FPS equals group FPS; aggregate camera-image throughput is twice that value.
 
+Complete dense-B7 two-camera tracking-to-retrieval preserves the standalone B7 tracking outputs. On the exact fixed detector cohort, native ranking has Recall1 0.980583 versus OFF 0.977346: 1 corrected and 0 harmed Recall1 queries among 309 common eligible, with eligibility gained/lost 0/0. Actual cost is 2058 VGGT calls and descriptive 1.061579 camera images/s (static setup excluded). This is a small single-primary-head signal; four-camera publication and matched-head producer controls remain pending. See [paired query audit](GEO_STREAM_RETRIEVAL_QUERY_AUDIT.md); aggregate equality in other controls does not imply query equality.
+
 Complete primary-head dense B5/B7 geometry attribution is now audited over all strict5: every serialized feature-only prediction exactly equals joint B7, with matched encoder calls and all other effective GEO options verified from their captured source defaults (calibration content checked, inactive default-off cache normalized). Joint geometry passes its numerical/background gate3 times, all in scene1; none changes the final outputs. This extends the earlier scene1 result to the complete primary-head suite; remaining head seeds and valid-pose accuracy are separate.
 
 Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.
 
-Head-free fixed-prior paired inference-RNG trials: 2/3 complete strict5 pairs audited with identical detector membership. Paired CVIDF1 changes range +0.122026 to +0.123653 percentage points. These use fixed weights and vary actual inference RNG, independently of the VGGT TRAIN-head-seed experiment; pending trials are [20261016]. No VGGT attribution, confidence interval or speed advantage follows.
+Head-free fixed-prior paired inference-RNG trials: 3/3 complete strict5 pairs audited with identical detector membership. Paired CVIDF1 changes range +0.122026 to +0.128534 percentage points. These use fixed weights and vary actual inference RNG, independently of the VGGT TRAIN-head-seed experiment; pending trials are []. No VGGT attribution, confidence interval or speed advantage follows.
 
 Actual whole-GMT scene1 forty-group reversal changes identity partitions for both OFF and dense B7, even after physical camera IDs/output positions are restored and global ID renaming is allowed. Both canonical variants exactly match their standalone prefixes; detector membership is unchanged; B7 computes80 VGGT calls per variant, with0 valid geometry calls/failures. Thus internal sequential tracker order invariance is contradicted at this scope. An explicit physical-ID canonical input adapter is separately unit-tested and queued for real reverse/alternate caller-order validation; no internal tracker or baseline change is hidden.
 
 Corrected frozen GMT camera-index control completes all strict5 with identical aggregate metrics. Four scenes have exact predictions; scene18 changes 5 track-ID rows with unchanged detector rows, so full prediction parity is not established. The actual checkpoint/image hook probe passes all8 first-four-group calls: camera scalars0/0 become0/.5, other10 columns remain exact, and the second-camera frozen MLP output changes. This verifies the declared inference path at that bounded scope. Whole-GMT input-order diagnostics are reported separately.
 
-Complete fixed-prior four/ten-camera producers now preserve every standalone prior tracking output in their respective scenes; the ten-camera run covers all strict5. Fixed scene18 query/detection cohorts are checked separately in WWW_SCOPE_NOTE.md. Full-suite status on the joint parity report is false because the four-camera run intentionally contains only two scenes; no missing ten-camera scenes are implied. Dense VGGT full producers remain queued.
+Complete fixed-prior four/ten-camera producers preserve every standalone prior tracking output in their respective scenes; the ten-camera run covers all strict5. Fixed scene18 query/detection cohorts are checked separately in WWW_SCOPE_NOTE.md. Full-suite status on the joint parity report is false because the four-camera run intentionally contains only two scenes; no missing ten-camera scenes are implied. Dense VGGT publication completion is reported separately.
 
 The complete head-free fixed-prior scene18 publication control preserves the entire standalone prior tracking output, with 598 queries/309 eligible, Recall1 0.977346, MRR 0.988673, descriptive whole-producer 6.6412 images/s. Recall1 equals the native tracker reference; the MRR difference is small. This simple-control integration does not establish VGGT tracking-to-retrieval efficacy.
 
@@ -42,7 +44,7 @@ In the actual80-call VGGT40-group prefix, fixed+1 evidence exactly reproduces le
 
 Complete scene1 native-head constant-score control improves paired CVIDF1 +0.919076 percentage points with IDSW -75, exceeding current learned VGGT scene1 identity metrics. It retains frozen native-head encoding for eligibility but replaces learned pair evidence by fixed+1; no VGGT calls. This is a single-scene score ablation with diagnostic tracing, not a production-speed or zero-extra-parameter claim. Head-free complete strict5 is reported above; paired inference-seed controls remain pending.
 
-Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order. Both OFF and zero-weight complete strict5 controls pass. Later post-cache source a9f7d1ec also passes complete strict5 OFF raw equality. Its zero-weight full regression remains running/pending. Proof is limited to the explicitly recorded source versions.
+Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order. Both OFF and zero-weight complete strict5 controls pass. Later post-cache source a9f7d1ec also passes complete strict5 OFF raw equality. Its zero-weight full regression also passes. Proof is limited to the explicitly recorded source versions.
 
 Complete cached-feature scene1 run: 80 actual VGGT calls, exact baseline identities and unchanged metrics; no retained dense identity gain. Measured 6.0343 images/s and P95 348.67ms are one descriptive full-pipeline run, not stable speed superiority. All three cached backbone controls now complete and exactly equal baseline under the same40 selected observation groups (VGGT80 / DINO40 / GMT0 actual encoder calls; different compute). Bounded dense/cache traces preserve production output prefixes; the first split at dataset frame27 has no valid cached feature for the affected query, while dense fusion changes one same-live-history counterfactual assignment. Gate telemetry and fixed-score prefix controls are recorded below.
 
@@ -136,11 +138,17 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | causal_B0_seed20261015_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.4831 | 81.0658 | 94.0707 | 94.0707 | 84 |
 | causal_B0_seed20261016_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.3326 | 84.7834 | 94.3735 | 94.3735 | 288 |
 | causal_B0_seed20261016_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9381 | 80.9160 | 98.8864 | 98.8864 | 33 |
+| causal_B0_seed20261016_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.2840 | 79.2034 | 92.0053 | 92.0053 | 39 |
+| causal_B0_seed20261016_strict_suite_v1_v18 | 18 | causal | complete | yes | 79.1013 | 81.6707 | 96.5199 | 96.5199 | 36 |
+| causal_B0_seed20261016_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.4542 | 81.0024 | 94.0209 | 94.0209 | 106 |
 | causal_B5_dense_seed20261014_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9721 | 80.9832 | 98.9221 | 98.9221 | 27 |
 | causal_B5_dense_seed20261014_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.3236 | 79.2786 | 92.0648 | 92.0648 | 18 |
 | causal_B5_dense_seed20261014_strict_suite_v1_v18 | 18 | causal | complete | yes | 78.7820 | 81.0483 | 95.9526 | 95.9526 | 27 |
 | causal_B5_dense_seed20261014_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.5007 | 81.0972 | 94.0770 | 94.0770 | 95 |
+| causal_B5_dense_seed20261015_strict_suite_v1_v1 | 1 | causal | complete | yes | 87.0384 | 86.1756 | 95.2701 | 95.2701 | 232 |
+| causal_B5_dense_seed20261015_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9849 | 81.0095 | 98.9435 | 98.9435 | 20 |
 | causal_B5_dense_seed20261016_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.1376 | 84.4050 | 93.3871 | 93.3871 | 225 |
+| causal_B7_dense_seed20261015_strict_suite_v1_v1 | 1 | causal | complete | yes | 87.0384 | 86.1756 | 95.2701 | 95.2701 | 232 |
 | causal_B7_fixed_k10_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k10_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B7_fixed_k10_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.2769 | 79.1899 | 91.9855 | 91.9855 | 41 |
@@ -200,6 +208,11 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | native_prior_seed20261015_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.3347 | 79.2997 | 92.0714 | 92.0714 | 19 |
 | native_prior_seed20261015_strict_suite_v1_v18 | 18 | causal | complete | yes | 78.7767 | 81.0416 | 95.9865 | 95.9865 | 20 |
 | native_prior_seed20261015_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.3440 | 80.7807 | 93.9835 | 93.9835 | 93 |
+| native_prior_seed20261016_strict_suite_v1_v1 | 1 | causal | complete | yes | 87.1097 | 86.3139 | 95.2925 | 95.2925 | 218 |
+| native_prior_seed20261016_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9908 | 81.0213 | 98.9650 | 98.9650 | 16 |
+| native_prior_seed20261016_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.3152 | 79.2627 | 92.0581 | 92.0581 | 23 |
+| native_prior_seed20261016_strict_suite_v1_v18 | 18 | causal | complete | yes | 79.1716 | 81.8148 | 96.6554 | 96.6554 | 22 |
+| native_prior_seed20261016_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.5033 | 81.0945 | 94.0396 | 94.0396 | 105 |
 | online_B0_full_v10_source44_v1 | 10 | causal | complete | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | online_B0_full_v11_source44_v1 | 11 | causal | complete | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | online_B0_full_v18 | 18 | causal | complete | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
@@ -232,6 +245,7 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | C_lowrank_gmt_seed14_k10_strict_v1_suite | ALL_STRICT | offline | complete | yes | 81.0566 | 81.8977 | 95.6341 | 95.6341 | 41 |
 | camera_index_corrected_B0_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
 | causal_B0_seed20261015_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7038 | 81.3814 | 95.0026 | 95.0026 | 486 |
+| causal_B0_seed20261016_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7868 | 81.5411 | 95.1393 | 95.1393 | 502 |
 | causal_B0_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
 | causal_B5_dense_seed20261014_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.8217 | 81.6195 | 95.1474 | 95.1474 | 381 |
 | causal_B7_fixed_k10_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7443 | 81.4641 | 95.0531 | 95.0531 | 489 |
@@ -245,6 +259,7 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | causal_random_total80_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7484 | 81.4726 | 95.0580 | 95.0580 | 482 |
 | native_prior_seed20261014_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.8406 | 81.6545 | 95.1816 | 95.1816 | 351 |
 | native_prior_seed20261015_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7687 | 81.5150 | 95.1247 | 95.1247 | 379 |
+| native_prior_seed20261016_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.8916 | 81.7505 | 95.2678 | 95.2678 | 384 |
 
 Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):
 
@@ -261,6 +276,7 @@ Causal retrieval (local replay, GT only for post-run evaluation; conditional ret
 | retrieval_native_prior_10streams_full_v1 | 10 | True | 3080 | 2465 | 0.922920892494929 | 0.738636 | 0.9462338227276149 | 12.4819 | 7.0623 |
 | retrieval_native_prior_2streams_full_v1 | 2 | True | 598 | 309 | 0.9773462783171522 | 0.505017 | 0.988673139158576 | 3.0014 | 6.6412 |
 | retrieval_native_prior_4streams_full_v1 | 4 | True | 826 | 494 | 0.9777327935222672 | 0.584746 | 0.9868387314439946 | 4.5112 | 6.9961 |
+| retrieval_vggt_dense_tracking_2streams_full_v1 | 2 | True | 598 | 309 | 0.9805825242718447 | 0.506689 | 0.9897518878101402 | 2.6082 | 1.0616 |
 | retrieval_vggt_k10_10streams_full_v1 | 10 | True | 3080 | 2465 | 0.7241379310344828 | 0.579545 | 0.7719129309723899 | 14.6110 | 5.5616 |
 | retrieval_vggt_k10_4streams_full_v1 | 4 | True | 826 | 494 | 0.8947368421052632 | 0.535109 | 0.9142615489945207 | 5.6980 | 5.6663 |
 | retrieval_vggt_k10_scoring_diagnostic_v18_full_v1 | 2 | True | 598 | 309 | 0.9029126213592233 | 0.466555 | 0.9245815089261689 | 2.9012 | diagnostic cost only |
