@@ -131,7 +131,7 @@
     }
   },
   "unit_tests": 92,
-  "current_free_target_bytes": 255399137280,
+  "current_free_target_bytes": 255158484992,
   "complete_index_codec_peak_process_RSS_bytes": 2037600256,
   "metadata_and_index_CPU_only": true,
   "old_unused_verifier_hours_arithmetic_only": 2.8227869391275777,
@@ -143,7 +143,7 @@
   "inherited_parent_cap": 4,
   "inherited_parent_recorded_usage": 1.1772130608724223,
   "max_parent_usage_if_full_export_exhausted": 3.7008862459369833,
-  "updated_utc": "2026-10-15T21:59:42.666502+00:00",
+  "updated_utc": "2026-10-15T22:51:21.995924+00:00",
   "gpu_hours_completed_before_phase1": 1.3086310044572587,
   "phase1_fit_observed_GPU_wall_hours": 1.310705815412932,
   "phase1_fit_GPU_cap": 1.32,
@@ -156,5 +156,42 @@
   "corrective_allocation": "PHASE1_CORRECTIVE_RESOURCE_ALLOCATION.json",
   "observed_GPU_wall_hours_excluding_incidental_unknown": 2.619336819870191,
   "original_supervisor_error_is_expected_corrective_handoff": true,
-  "gpu_wall_hours_field_includes_conservative_incidental_bound": true
+  "gpu_wall_hours_field_includes_conservative_incidental_bound": true,
+  "CPU_fit_status_snapshot": {
+    "P1": {
+      "status": "TRAINING",
+      "device": "cpu",
+      "step": 551660,
+      "epoch": 5
+    },
+    "P2": {
+      "status": "TRAINING_CPU",
+      "step": 294830,
+      "epoch": 3,
+      "CPU_wall_seconds": 6797.405571162701,
+      "peak_RSS_bytes": 3596025856
+    },
+    "ordinary": {
+      "status": "COMPLETE_FIXED5EPOCHS",
+      "step": 567075,
+      "epoch": 5,
+      "CPU_wall_seconds": 3570.3431279733777,
+      "peak_RSS_bytes": 3607904256
+    },
+    "exhaustive_margin": {
+      "status": "COMPLETE_FIXED5EPOCHS",
+      "step": 567265,
+      "epoch": 5,
+      "CPU_wall_seconds": 3922.764125049114,
+      "peak_RSS_bytes": 3606335488
+    },
+    "legacy_coverage": {
+      "status": "FULL_LEGACY_TRAINING_CPU",
+      "step": 55000,
+      "epoch": 1,
+      "CPU_wall_seconds": 569.814405336976
+    }
+  },
+  "CPU_fit_status_observed_utc": "2026-10-15T22:53:23.785163+00:00",
+  "CPU_snapshot_qualification": "Per-process training wall times overlap in real time. No conversion to GPU hours; no old ledger reset. P1 resumed wall field covers only suffix."
 }

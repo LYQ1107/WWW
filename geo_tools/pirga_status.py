@@ -10,6 +10,7 @@ def read(path):
 def processes(runtime):
     found={}
     names=['train_pirga_grouped_phase1.py','train_pirga_innovation.py','train_pirga_decision.py','pirga_native_context.py','run_pirga_phase1_eval_queue.py','run_pirga_phase2_eval_queue.py','run_pirga_phase1_budget_correction.py','train_pirga_exhaustive_margin.py','run_pirga_decision_eval_queue.py','run_pirga_exhaustive_margin_eval_queue.py','run_pirga_uncertainty_gate_queue.py','run_pirga_uncertainty_gate_audit.py']
+    names += ['train_pirga_legacy_coverage.py','run_pirga_legacy_coverage_eval_queue.py']
     for proc in Path('/proc').iterdir():
         if not proc.name.isdigit():continue
         try:
@@ -26,11 +27,12 @@ def main():
     statusfiles=dict(phase1_training='phase1_grouped_matched_v1/fit/STATUS.json',phase1_resources='phase1_grouped_matched_v1/RESOURCE_LEDGER.json',
         phase1_corrective_resources='phase1_grouped_matched_v1/CORRECTIVE_RESOURCE_LEDGER.json',phase1_replay='phase1_fixed_native_replays_v1/STATUS.json',
         phase2_training='phase2_innovations_matched_v1/STATUS.json',phase2_replay='phase2_fixed_native_replays_v1/STATUS.json',ordinary_decision_training='ordinary_decision_matched_v1/STATUS.json',ordinary_replay='ordinary_fixed_native_replays_v1/STATUS.json',exhaustive_margin_training='exhaustive_margin_matched_v1/STATUS.json',exhaustive_margin_replay='exhaustive_margin_native_replays_v1/STATUS.json',uncertainty_gate_replay='uncertainty_gate_fixed_audits_v1/STATUS.json')
+    statusfiles.update(legacy_coverage_training='legacy_canonical_coverage_fits_v1/STATUS.json',legacy_coverage_replay='legacy_canonical_coverage_replays_v1/STATUS.json')
     result=dict(observed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),own_processes=processes(root),target_free_GiB=shutil.disk_usage(root).free/2**30,statuses={})
     for name,relative in statusfiles.items():
         path=root/relative;value=read(path)
         if value is not None:
-            fields=['status','device','pid','CPU_pid','epoch','step','epoch_visit','current_epoch','completed','GPU_wall_hours','CPU_wall_seconds','GPU_cap','reason']
+            fields=['status','device','pid','CPU_pid','epoch','step','epoch_visit','endpoint','current_epoch','completed','GPU_wall_hours','CPU_wall_seconds','GPU_cap','reason']
             result['statuses'][name]={k:value[k] for k in fields if k in value};result['statuses'][name]['status_file_age_seconds']=time.time()-path.stat().st_mtime
     correction=read(root/'PHASE1_CORRECTIVE_RESOURCE_ALLOCATION.json')
     result['effective_phase1_GPU_residency_cap_hours']=correction['GPU_residency_maximum_hours'] if correction else None
