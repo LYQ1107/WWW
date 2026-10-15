@@ -50,7 +50,7 @@ AdamW lr0.001、weight_decay0.0001、FP32、clip1、seed20261009；结构化 ass
 
 | 完整冷启动 TRAIN16 | HOTA | ΔHOTA | AssA | CVIDF1 | IDSW | Frag | 完整图像FPS |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| mlp | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
+| mlp | 68.654661 | +0.600573 | 68.098573 | 88.001081 | 1945 | 501 | PENDING |
 | attention | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
 | cic | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
 
