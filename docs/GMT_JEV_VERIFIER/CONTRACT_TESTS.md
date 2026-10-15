@@ -1,5 +1,9 @@
 # V2合同检查
 
-CPU标签与整体计划合同已通过，见 CONTRACT_TESTS.json。TRAIN12前64场景的3处实际分歧已通过完整native双分支重放：共享pre-state SHA相同、分数/候选/支持接口严格相同、克隆GMT完整post-state与实际执行一致、正常和故意异常后真实状态/RNG/派生summary严格恢复，前缀raw预测也等于冻结参考。
+已运行的CPU标签/整体计划/出生语义合同通过；源码分别见 gmt_jev_verifier_label_contracts.py 与 gmt_jev_verifier_native_label_contracts.py。
 
-这证明局部原生计划接口，并非训练后的Q1→Q2机制或Verifier OFF全视频合同。3个分歧均仍UNKNOWN，不计认证纠错。完整TRAIN监督审计尚在执行。
+完整TRAIN12/13/14有97处真实MATCH分歧，每处都在同一完整原生pre-state下分别执行GMT与冻结MLP的生产tracker函数，包含原生Bank、出生和Gallery WRITE。克隆GMT提交的ID及完整post-state均与紧接着的实际GMT执行严格一致，原主轨迹最终raw记录也与旧冻结参考逐项一致。正常重放后状态/RNG/派生摘要恢复严格一致。没有手工修改track_ids，没有启用旧JEV。
+
+另有两项64场景真实合同：修改状态前故意异常、完成实际克隆native commit后故意异常，均在finally中严格恢复原始状态、RNG和hooks。测试没有把UNKNOWN重贴为正确。
+
+这些证明局部原生计划接口和异常恢复，不证明新Typed Q1→Q2已训练。因Q2监督未准入，Q1输出干预、问题结构可辨识、学习式Q2控制和新部署Verifier OFF全视频及特殊状态完整合同均NOT_RUN；不能把局部原生接口PASS冒充这些合同通过。

@@ -41,9 +41,13 @@ def main():
     save(REPORTS/'RESOURCE_ACCOUNTING.json',resources)
     goal['gates']['GMT_BASELINE_PRESERVED']='PASS_EXACT_ALL_APPROVED_TRAIN_RAW_RECORDS' if audit else 'FROZEN_FILES_AND_PRIOR_EXACT_PARITY'
     goal['gates']['Q1_SUPERVISION_ELIGIBLE']='SEE_Q1_CLASS_AND_ID_SUPPORT' if audit else 'AUDIT_RUNNING'
+    if q1 and q1['status']=='COMPLETE_Q1_DIAGNOSTIC_ONLY':
+        goal['gates']['Q1_SUPERVISION_ELIGIBLE']='PASS_FOR_Q1_DIAGNOSTIC_ONLY'
+        goal['gates']['Q1_CONSERVATIVE_PROTECTION_SIGNAL']='NOT_ESTABLISHED_NO_NATIVE_DEPLOYMENT'
     goal['gates']['Q2_SUPERVISION_ELIGIBLE']='PASS_MINIMUM_ENGINEERING_GATE' if eligible else 'FAIL_INSUFFICIENT_CERTIFIED_PLAN_SUPPORT' if complete else 'AUDIT_RUNNING'
     if complete and not eligible:
         goal['status']='BLOCKED_INSUFFICIENT_SUPERVISION'
+        goal['bounded_round_execution']='PRE_REGISTERED_STOP_CONDITION_REACHED_NOT_SCIENTIFIC_COMPLETION'
         for key in ['TYPED_DECISION_CONNECTED','NATIVE_ACTION_PARITY','DEVELOPMENT_HOTA_GAIN','IDENTITY_STABILITY','ORDINARY_VERIFIER_COMPARISON','JEV_STRUCTURE_ABLATION','FULL_IMAGE_FPS']:
             goal['gates'][key]='NOT_RUN_Q2_SUPERVISION_GATE_FAILED'
         goal['gates']['NATIVE_ACTION_PARITY']='PASS_LOCAL_NATIVE_TWIN_PLAN_AND_ROLLBACK_CONTRACTS_NOT_DEPLOYED_VERIFIER_OFF'
@@ -68,6 +72,7 @@ def main():
     references=dict(GMT=ref(legacy.REPORTS/'ORIGINAL_GMT_METRICS.json'),frozen_MLP=ref(legacy.REPORTS/'ONLINE_mlp_learned.json'))
     save(REPORTS/'ONLINE_METRICS.json',dict(status='FROZEN_REFERENCES_REUSED_NEW_VERIFIERS_NOT_RUN',references=references,
         Q1_native_decisions_changed=0,typed_verifier=None,ordinary_verifier=None,
+        simple_confidence_plan_verifier=None,
         reason='Q2 prerequisite failed' if complete and not eligible else 'Q2 prerequisite or implementation pending',scientific_success=False))
     save(REPORTS/'SPEED_METRICS.json',dict(status='NO_CURRENT_ROUND_COMPLETE_IMAGE_FPS_MEASUREMENT',
         historical_references={k:ref(legacy.REPORTS/f'SPEED_{k}.json') for k in ['original','mlp_learned','mlp_learned_cached']},
@@ -85,10 +90,10 @@ def main():
         'Certified two-action supervision and real typed native control','Fair trained ordinary verifier comparison',
         'Structural and cross-camera ablations','Measured identity/efficiency improvement beyond frozen MLP',
         'Qualified independent full-video and training-seed replication']))
-    rows=['| 冻结历史参考 | HOTA | AssA | CVIDF1 | MOTA | IDSW | Frag |','|---|---:|---:|---:|---:|---:|---:|']
+    rows=['| 冻结历史参考 | HOTA | AssA | DetA | IDF1 | CVIDF1 | CVMA | MOTA | IDSW | Frag |','|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|']
     for label,result in [('GMT',base),('GMT+MLP',dict(mlp['primary_raw']))]:
-        m=result['metrics'];rows.append(f"| {label} | {m['HOTA']:.6f} | {m['AssA']:.6f} | {result['CVIDF1']:.6f} | {m['MOTA']:.6f} | {m['IDSW']:.0f} | {m['Frag']:.0f} |")
-    q2lines=['| Q2动作（非时间留出） | 认证完整计划 | 人物连接依赖组 | video-person组 | 视频 |','|---|---:|---:|---:|---|']
+        m=result['metrics'];rows.append(f"| {label} | {m['HOTA']:.6f} | {m['AssA']:.6f} | {m['DetA']:.6f} | {m['IDF1']:.6f} | {result['CVIDF1']:.6f} | {result['CVMA']:.6f} | {m['MOTA']:.6f} | {m['IDSW']:.0f} | {m['Frag']:.0f} |")
+    q2lines=['| Q2动作（非时间留出） | 认证完整计划 | 视频内人物连接依赖组 | video-person组 | 视频 |','|---|---:|---:|---:|---|']
     for action,r in support.items():q2lines.append(f"| {action} | {r['plans']} | {r['person_dependency_components']} | {r['unique_video_person_groups']} | {r['videos']} |")
     q1lines=[]
     if audit:
@@ -111,6 +116,9 @@ def main():
         save(REPORTS/'SUPERVISION_ELIGIBILITY.json',dict(Q2_eligible=eligible,Q2_support=support,Q1_support=audit['Q1_unique_native_ID_groups'],
             native_plan_evidence=ref(REPORTS/'NATIVE_PAIRED_PLAN_OPPORTUNITY.json'),preliminary_evidence=ref(REPORTS/'PAIRED_PLAN_OPPORTUNITY.json'),scientific_success=False))
     write('DECISION_SUPERVISION_AUDIT.md',eligibility)
+    if closure:
+        with (DOCS/'DECISION_SUPERVISION_AUDIT.md').open('a') as f:
+            f.write(f"\n完整原生闭包覆盖{nc['plans']}个计划状态，实际重放{nc['actual_paired_native_replays']}处MATCH分歧；认证APPLY {nc.get('plan_APPLY_MLP',0)}、KEEP {nc.get('plan_KEEP_GMT',0)}、UNKNOWN {nc.get('plan_UNKNOWN_NATIVE_PLAN',0)}。97处局部分支不等于97个独立人物。严格过去唯一目标之外的新人物出生/别名未解决状态没有被伪造为KEEP；本结论限于这套冻结认证标准，不宣称其他标注条件下也不存在可学任务。\n")
     if coverage:
         with (DOCS/'DECISION_SUPERVISION_AUDIT.md').open('a') as f:
             f.write(f"\n全部{coverage['rows']}行中，唯一可认证active目标{coverage['unique_active_target_rows']}行（{coverage['unique_active_target_fraction']:.4%}）；别名mask{coverage['alias_masked_rows']}行（{coverage['alias_masked_row_fraction']:.4%}）。已可认证唯一历史目标条件下active覆盖{coverage['active_coverage_among_certified_unique_global_targets']:.4%}，不能外推UNKNOWN目标。定义与各类别互斥计数见 DECISION_COVERAGE_DIAGNOSTICS.json。\n")
@@ -165,20 +173,22 @@ def main():
         'R10：尚无跨视频身份检索/实体链接/视频索引任务及实验。MCMT场景可关联这些Web应用，但当前没有相应证据，不能添加Web-scale字样充当WWW贡献；投稿定位风险仍高。']
     write('REVIEWER_RISK_ANALYSIS.md',reviewer)
     report=['# GMT-JEV V2 中文研究报告','',f'当前科学判断：**{decision}**；SCIENTIFIC_SUCCESS=false。','',
-        'A. 分支 research/gmt-jev-typed-verifier-20261015；当前Goal状态 '+goal['status']+'。准确发布HEAD以runtime/publication/LAST_VERIFIED.json为准；本报告生成HEAD为 '+subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()+'，不冒充未来发布提交。',
+        'A. 分支 research/gmt-jev-typed-verifier-20261015；当前Goal状态 '+goal['status']+'。准确发布HEAD以runtime/publication/LAST_VERIFIED.json为准；本报告生成HEAD为 '+subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()+'，不冒充未来发布提交。','',
         'B. 完整GMT与原MLP step300文件/源码SHA冻结。P0原GMT完整TRAIN记录逐项复核见各case；原MLP旧严格证据复用，未声称运行了新Typed OFF全视频合同。','',
-        'C. Q1使用既有已提交历史，输出RELIABLE/CONFLICTED/UNKNOWN；Q2拟在同状态下选择完整KEEP/APPLY计划。若P0失败，本轮只做Q1诊断，没有Q2训练或新native决策。','',
-        'D. 真实监督支持：',*q2lines,'',*q1lines,'',
+        'C. Q1使用既有已提交历史，输出RELIABLE/CONFLICTED/UNKNOWN；Q2拟在同状态下选择完整KEEP/APPLY计划。P0未准入时只做Q1诊断，没有Q2训练或新部署策略。原生配对克隆各执行一次真实提交用于诊断，主轨迹仍只提交一次；不等于已实现学习式JEV控制。','',
+        'D. 真实监督支持：','',*q2lines,'',*q1lines,'',
         f'UNKNOWN计划比例：全部 {unknown:.4%}；MATCH分歧配对样本中 {changed:.4%}。完整逐行四象限、候选缺失、别名和Q2梯度诊断见机器记录。','',
         'Q1诊断（不参与在线身份提交）：',*q1metrics,'',
-        'E. 同条件冻结历史成绩：',*rows,'',
+        'E. 同条件冻结历史成绩：','',*rows,'',
         'MLP相对GMT：HOTA+0.600573、AssA+1.034080、CVIDF1+1.456462、IDSW+47、Frag−2，MOTA约−0.0718。这些均是旧开发结果，不归给新Q1/Typed。','',
         'F. 相对现有MLP，本轮尚未建立新的在线收益。Q1诊断不改变任何提交；无法给出新HOTA/IDSW改善值。','',
         'G. Typed相对普通验证器的独立贡献NOT_ESTABLISHED；Q2未准入时二者均不训练，没有用弱对照包装胜出。','',
+        '**JEV_VERIFIER_INDEPENDENT_VALUE_NOT_ESTABLISHED**。','',
         'H. 历史完整图像FPS为GMT3.409768、MLP3.129765、缓存MLP2.848982。新Verifier FPS尚未测；不将P0审计或CPU小头速度冒充完整FPS。','',
         'I. TRAIN16已暴露；Q1 TRAIN14诊断也不属于合格独立视频。独立完整视频与必要训练种子仍PENDING。','',
         'J. 现有证据尚不足以支撑双问题Typed-JEV的WWW创新主张；最缺可靠的两动作监督、真实结构/机制增量和独立任务验证。详细R1–R10见 REVIEWER_RISK_ANALYSIS.md。','',
         '本轮资源：'+json.dumps(resources,ensure_ascii=False),'',
+        '原生局部分支证据见 NATIVE_PAIRED_PLAN_OPPORTUNITY.json；图像/标注/配置/权重字节复核见 INPUT_PROVENANCE.json；实际设备与环境见 ENVIRONMENT_PROVENANCE.json。正常、提交前异常及真实提交后异常的状态/RNG恢复记录在 CONTRACT_TESTS.json。','',
         '失败处理：若全部授权TRAIN与既有日志仍无足够KEEP/APPLY监督，按任务书停止本轮结构探索，保留GMT+MLP。不会因还有GPU预算而增加Question、制造标签或改用封存数据。','',
         f'最终路线：**{decision}**。原MLP继续作为最强已测开发参考；科学目标未完成。']
     write('FINAL_RESEARCH_REPORT_ZH.md',report)
