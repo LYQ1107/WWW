@@ -18,9 +18,10 @@ documented held children and conservative priority-owner lifetime overlaps exclu
 | causal_B7_fixed_k1_strict_suite_v1 | 14324 | 1.126221 | 1.119196 | 79.831 |
 | causal_B7_fixed_k20_strict_suite_v1 | 14324 | 5.059706 | 4.915303 | 83.170 |
 | causal_B7_fixed_k5_strict_suite_v1 | 14324 | 3.458327 | 3.396276 | 75.673 |
+| causal_B7_primary_head_inference_seed20261015_strict_suite_v1 | 14324 | 1.025071 | 1.018506 | 90.067 |
 | causal_motion_total80_strict_suite_v1 | 14324 | 5.638600 | 5.464265 | 81.048 |
 | native_prior_seed20261014_strict_suite_v1 | 14324 | 6.992716 | 6.753335 | 72.609 |
 | native_prior_seed20261015_strict_suite_v1 | 14324 | 6.837483 | 6.577444 | 82.823 |
 | native_prior_seed20261016_strict_suite_v1 | 14324 | 6.565688 | 6.320656 | 84.575 |
 
-Recorded full process rows: 124; excluded full held-dispatcher stages: 8. Missing complete suites are not filled with zero setup cost. Sealed stage/log/manifest hashes and separate full retrieval rows remain in the JSON/CSV.
+Recorded full process rows: 127; excluded full held-dispatcher stages: 8. Missing complete suites are not filled with zero setup cost. Sealed stage/log/manifest hashes and separate full retrieval rows remain in the JSON/CSV.

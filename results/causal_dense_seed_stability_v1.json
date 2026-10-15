@@ -1,5 +1,5 @@
 {
-  "status": "PARTIAL_DECLARED_SEED_FACTORS",
+  "status": "COMPLETE_DECLARED_SEED_FACTORS",
   "groups": [
     {
       "factor": "training_head_seed",
@@ -651,9 +651,9 @@
     {
       "factor": "inference_rng_seed",
       "method": "B7",
-      "completed_trials": 1,
+      "completed_trials": 3,
       "required_trials": 3,
-      "complete": false,
+      "complete": true,
       "rows": [
         {
           "suite": "causal_B7_fixed_k1_strict_suite_v1",
@@ -753,32 +753,267 @@
               }
             }
           ]
-        }
-      ],
-      "pending": [
-        {
-          "training_head_seed": 20261014,
-          "inference_seed": 20261015,
-          "suite": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1",
-          "reason": "complete native suite or paired identity audit unavailable"
         },
         {
+          "suite": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1",
+          "training_head_seed": 20261014,
+          "inference_seed": 20261015,
+          "head_checkpoint_sha256": "ed25a617e7b94742478c17018f0a9d256895d5c888689c56d6c6411e1d214698",
+          "baseline_metrics": {
+            "HOTA": 80.70375679504629,
+            "DetA": 80.26717557347737,
+            "AssA": 81.38140676106623,
+            "IDF1": 95.00264388854993,
+            "MOTA": 94.71977692394987,
+            "IDSW": 486,
+            "CVIDF1": 95.00264388854993,
+            "CVMA_sequential": 94.71491334727558,
+            "CVMA": 94.59332393041842
+          },
+          "candidate_metrics": {
+            "HOTA": 80.75359582439712,
+            "DetA": 80.26610309084859,
+            "AssA": 81.4857113833865,
+            "IDF1": 94.89526133821435,
+            "MOTA": 94.87541137752703,
+            "IDSW": 390,
+            "CVIDF1": 94.89526133821435,
+            "CVMA_sequential": 94.87216899307751,
+            "CVMA": 94.82191203410989
+          },
+          "paired_metric_delta": {
+            "HOTA": 0.04983902935083506,
+            "DetA": -0.0010724826287855649,
+            "AssA": 0.10430462232027082,
+            "IDF1": -0.10738255033557209,
+            "MOTA": 0.15563445357716432,
+            "IDSW": -96,
+            "CVIDF1": -0.10738255033557209,
+            "CVMA_sequential": 0.15725564580192497,
+            "CVMA": 0.22858810369146454
+          },
+          "cross_camera_output_pair_fixes": 82242,
+          "cross_camera_output_pair_harms": 11852,
+          "exact_detector_membership": true,
+          "scenes": [
+            {
+              "video_id": 1,
+              "actual_vggt_calls": 1864,
+              "numerical_geometry_gates": 3,
+              "manifest": {
+                "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v1/manifest.json",
+                "sha256": "0dee10dbbbb60ddddaa02aaf81d84448396e0077f12da65a1aebfea619eaffee",
+                "causal_online": true,
+                "commit": "7b1c9da188879d45a8db915f03bb371ba5f77d30",
+                "validation_corrected_gmt_camera_index": false,
+                "validation_reversed_vggt_order": false,
+                "validation_constant_head_evidence": null,
+                "validation_native_output_prior": false,
+                "compute_neutral": false
+              }
+            },
+            {
+              "video_id": 10,
+              "actual_vggt_calls": 4184,
+              "numerical_geometry_gates": 0,
+              "manifest": {
+                "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v10/manifest.json",
+                "sha256": "26d33d435e77ed0593c62b09291122418cd3a518ff7c65d713f237f03fc02226",
+                "causal_online": true,
+                "commit": "7b1c9da188879d45a8db915f03bb371ba5f77d30",
+                "validation_corrected_gmt_camera_index": false,
+                "validation_reversed_vggt_order": false,
+                "validation_constant_head_evidence": null,
+                "validation_native_output_prior": false,
+                "compute_neutral": false
+              }
+            },
+            {
+              "video_id": 11,
+              "actual_vggt_calls": 4114,
+              "numerical_geometry_gates": 0,
+              "manifest": {
+                "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11/manifest.json",
+                "sha256": "0be3a4915b467bf584b78f50cedfbdd2ea5f59bee7458b4c6faad222f5721b55",
+                "causal_online": true,
+                "commit": "7b1c9da188879d45a8db915f03bb371ba5f77d30",
+                "validation_corrected_gmt_camera_index": false,
+                "validation_reversed_vggt_order": false,
+                "validation_constant_head_evidence": null,
+                "validation_native_output_prior": false,
+                "compute_neutral": false
+              }
+            },
+            {
+              "video_id": 18,
+              "actual_vggt_calls": 2058,
+              "numerical_geometry_gates": 0,
+              "manifest": {
+                "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18/manifest.json",
+                "sha256": "a61f7e8a92f8432a831d4beaa3a4a3aacec4072bcffa685ab6a992153ab2bdb0",
+                "causal_online": true,
+                "commit": "7b1c9da188879d45a8db915f03bb371ba5f77d30",
+                "validation_corrected_gmt_camera_index": false,
+                "validation_reversed_vggt_order": false,
+                "validation_constant_head_evidence": null,
+                "validation_native_output_prior": false,
+                "compute_neutral": false
+              }
+            },
+            {
+              "video_id": 19,
+              "actual_vggt_calls": 2104,
+              "numerical_geometry_gates": 0,
+              "manifest": {
+                "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19/manifest.json",
+                "sha256": "64f36dc4c74ac71f6af60aa468ca7b3b36861d38e7cec9c3021dab68903b5373",
+                "causal_online": true,
+                "commit": "7b1c9da188879d45a8db915f03bb371ba5f77d30",
+                "validation_corrected_gmt_camera_index": false,
+                "validation_reversed_vggt_order": false,
+                "validation_constant_head_evidence": null,
+                "validation_native_output_prior": false,
+                "compute_neutral": false
+              }
+            }
+          ]
+        },
+        {
+          "suite": "causal_B7_primary_head_inference_seed20261016_strict_suite_v1",
           "training_head_seed": 20261014,
           "inference_seed": 20261016,
-          "suite": "causal_B7_primary_head_inference_seed20261016_strict_suite_v1",
-          "reason": "complete native suite or paired identity audit unavailable"
+          "head_checkpoint_sha256": "ed25a617e7b94742478c17018f0a9d256895d5c888689c56d6c6411e1d214698",
+          "baseline_metrics": {
+            "HOTA": 80.78675473289232,
+            "DetA": 80.27284742916517,
+            "AssA": 81.54105911178686,
+            "IDF1": 95.13931258897702,
+            "MOTA": 94.70032261725272,
+            "IDSW": 502,
+            "CVIDF1": 95.13931258897702,
+            "CVMA_sequential": 94.69545904057844,
+            "CVMA": 94.61115704489082
+          },
+          "candidate_metrics": {
+            "HOTA": 80.87016301607942,
+            "DetA": 80.27482519508662,
+            "AssA": 81.70719531526892,
+            "IDF1": 95.23530608094366,
+            "MOTA": 94.86406303195369,
+            "IDSW": 401,
+            "CVIDF1": 95.23530608094366,
+            "CVMA_sequential": 94.85919945527941,
+            "CVMA": 94.78624580516511
+          },
+          "paired_metric_delta": {
+            "HOTA": 0.08340828318709725,
+            "DetA": 0.001977765921452601,
+            "AssA": 0.16613620348205416,
+            "IDF1": 0.09599349196663809,
+            "MOTA": 0.16374041470096756,
+            "IDSW": -101,
+            "CVIDF1": 0.09599349196663809,
+            "CVMA_sequential": 0.16374041470096756,
+            "CVMA": 0.1750887602742921
+          },
+          "cross_camera_output_pair_fixes": 78047,
+          "cross_camera_output_pair_harms": 4826,
+          "exact_detector_membership": true,
+          "scenes": [
+            {
+              "video_id": 1,
+              "actual_vggt_calls": 1864,
+              "numerical_geometry_gates": 3,
+              "manifest": {
+                "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v1/manifest.json",
+                "sha256": "be131d184ab8003fef73f62387e80055c707749cef9de68b2165acd55f4444ad",
+                "causal_online": true,
+                "commit": "7b1c9da188879d45a8db915f03bb371ba5f77d30",
+                "validation_corrected_gmt_camera_index": false,
+                "validation_reversed_vggt_order": false,
+                "validation_constant_head_evidence": null,
+                "validation_native_output_prior": false,
+                "compute_neutral": false
+              }
+            },
+            {
+              "video_id": 10,
+              "actual_vggt_calls": 4184,
+              "numerical_geometry_gates": 0,
+              "manifest": {
+                "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v10/manifest.json",
+                "sha256": "1563eebeecf8e09ace7bcd06f218bad0aa6bfd42681016236d150de40fed7952",
+                "causal_online": true,
+                "commit": "7b1c9da188879d45a8db915f03bb371ba5f77d30",
+                "validation_corrected_gmt_camera_index": false,
+                "validation_reversed_vggt_order": false,
+                "validation_constant_head_evidence": null,
+                "validation_native_output_prior": false,
+                "compute_neutral": false
+              }
+            },
+            {
+              "video_id": 11,
+              "actual_vggt_calls": 4114,
+              "numerical_geometry_gates": 0,
+              "manifest": {
+                "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v11/manifest.json",
+                "sha256": "bb033e3a3c2a07bfa2ab6b7bbe2c627cb23d37083db8006afb0d08142105c28a",
+                "causal_online": true,
+                "commit": "7b1c9da188879d45a8db915f03bb371ba5f77d30",
+                "validation_corrected_gmt_camera_index": false,
+                "validation_reversed_vggt_order": false,
+                "validation_constant_head_evidence": null,
+                "validation_native_output_prior": false,
+                "compute_neutral": false
+              }
+            },
+            {
+              "video_id": 18,
+              "actual_vggt_calls": 2058,
+              "numerical_geometry_gates": 0,
+              "manifest": {
+                "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v18/manifest.json",
+                "sha256": "f1577eabd087b179ce957230e9b099d3f9f1b69b7a5f401f3aad18aed8c508ff",
+                "causal_online": true,
+                "commit": "7b1c9da188879d45a8db915f03bb371ba5f77d30",
+                "validation_corrected_gmt_camera_index": false,
+                "validation_reversed_vggt_order": false,
+                "validation_constant_head_evidence": null,
+                "validation_native_output_prior": false,
+                "compute_neutral": false
+              }
+            },
+            {
+              "video_id": 19,
+              "actual_vggt_calls": 2104,
+              "numerical_geometry_gates": 0,
+              "manifest": {
+                "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v19/manifest.json",
+                "sha256": "651c59ddade2549972647bd267d8807ca9ff5e2d082597de6d0517fabce5f8b6",
+                "causal_online": true,
+                "commit": "7b1c9da188879d45a8db915f03bb371ba5f77d30",
+                "validation_corrected_gmt_camera_index": false,
+                "validation_reversed_vggt_order": false,
+                "validation_constant_head_evidence": null,
+                "validation_native_output_prior": false,
+                "compute_neutral": false
+              }
+            }
+          ]
         }
       ],
+      "pending": [],
       "observed_paired_cvidf1_delta_range": [
-        0.08948545861296964,
-        0.08948545861296964
+        -0.10738255033557209,
+        0.09599349196663809
       ]
     }
   ],
   "source_artifacts": {
     "/data1/liuyeqiang/WWW_vggt_geo_20261014/manifests/geo_split_v1.json": "cd77775a69192ed7397ecf83403d6e352d6164d6ec4814c6322305e85987613b",
     "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/low_rank_three_backbones_train_v1_manifest.json": "d53f47404ce360258b00bfc73efa500468c7f8c0ef7c319a83b7b5c2017b7302",
-    "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/identity_relations_matrix_v2.json": "2a234d8773dd34937efd92d366f6a1cd49289b4edefdaf12c3d8862a2940de79",
+    "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/identity_relations_matrix_v2.json": "2b0047d1d7a8b9f82255de548a533c311bcd259cf15a7e5ca516633e8abcb950",
     "/data1/liuyeqiang/WWW_vggt_geo_20261014/manifests/dense_stability_parallel_v2.json": "7c0144347a8efc57a05ff5ea60897322f9107ef5285bdb61380bfa8b19952a65",
     "/data1/liuyeqiang/WWW_vggt_geo_20261014/manifests/primary_vggt_inference_seed_pairs_v1.json": "fd2c1439163d6b179d84bba03caf3b08b0b7c59f8ae9c2cf5d700f94496e280d",
     "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B5_dense_seed20261014_strict_suite_v1_metrics.json": "06c8db9d5e4616fa9c7ef41fbfa33fbf75d244729d2694bc429853f04fe2b09c",
@@ -794,6 +1029,12 @@
     "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/matrix_causal_B7_dense_seed20261015_strict_suite_v1_identity_pair_audit_v2.json": "e08c77bbc8de8c1f258190673bb478d30f7b1588a5b9526e8becfafa9f21c2d1",
     "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B7_dense_seed20261016_strict_suite_v1_metrics.json": "341b7b5bf7c0605bc672a34ae7ecd420fc663f7a6e086c67a9e33492ce8affc6",
     "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/matrix_causal_B7_dense_seed20261016_strict_suite_v1_identity_pair_audit_v2.json": "7fa86fb0b513f1dc80c29958ad22593bc30543e1dd7c36692c7b7769a61b10d0",
+    "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B0_seed20261015_strict_suite_v1_metrics.json": "bb75a1d57897230668fd4b5b206865dcf6f811a5e61b304891880a5ee41f8da3",
+    "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_metrics.json": "21d711d3134efd9b74c8fa6ef9764c7882500f8f9996e5c491249f541eb850b3",
+    "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/matrix_causal_B7_primary_head_inference_seed20261015_strict_suite_v1_identity_pair_audit_v2.json": "a6a24f51a95898c7d5d419bef32cc3717111814889b80a1d3447643945bb3340",
+    "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B0_seed20261016_strict_suite_v1_metrics.json": "896dcb51e463c984c24384ae622a2d588655a8e3ea8af220b127360b937dd4cc",
+    "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_metrics.json": "f8ece0e89185af5f9a1bd2f0683ace3584bd20ca6ed0f25ad950137ea021e1f3",
+    "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/matrix_causal_B7_primary_head_inference_seed20261016_strict_suite_v1_identity_pair_audit_v2.json": "244476d634dc7c53bd8846fa22f03b1693bc04fe5e64f39d11614a56aec21c97",
     "/data1/liuyeqiang/WWW_vggt_geo_20261014/manifests/causal_B5_dense_seed20261014_strict_suite_v1_sources.json": "dfe548372be95900a1dafe671b83ed201dd78640d7e390b1c0ea0817b74d7949",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/B5_vggt_head_dense_causal_v1_v1/predictions.json": "4dec6696083596753d3add461ebd03d0f6f6589f652d8f20fcf25408fa646e4e",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/B5_vggt_head_dense_causal_v1_v1/manifest.json": "c8ce0a4769f4a0ab21dcc2269e9c7a6b622b0c6726073894afc34a7eedfaf430",
@@ -1051,12 +1292,12 @@
   "scope": "complete strict5 dense B5/B7 TRAIN-head variation at fixed inference RNG20261014, and dense B7 fixed-primary-head20261014 inference RNG variation; paired causal baseline at the same inference seed",
   "limitations": "primary B7 trial is shared between factors, not an independent replicate; incomplete factors do not prove stability; three trials are descriptive, without confidence intervals, seed selection, stable speed claims, unique VGGT/geometry attribution or internal Hungarian decision counts",
   "provenance": {
-    "process_started_utc": "2026-10-15T08:29:26.630626+00:00",
-    "report_generated_utc": "2026-10-15T08:29:30.965006+00:00",
-    "raw_log_path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/dense_seed_stability_b7_head16_v8.log",
+    "process_started_utc": "2026-10-15T09:41:29.626488+00:00",
+    "report_generated_utc": "2026-10-15T09:41:33.168377+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/dense_seed_all_declared_v10.log",
     "source_worktree": "/data1/liuyeqiang/WWW_vggt_geo_20261014",
-    "commit": "37461fb88de4ee0e659c1ee6a0a347699dba1dbb",
-    "report_generation_commit": "37461fb88de4ee0e659c1ee6a0a347699dba1dbb",
+    "commit": "8441780ad4bf0f47cee28e79826f66f762a1942e",
+    "report_generation_commit": "8441780ad4bf0f47cee28e79826f66f762a1942e",
     "command": [
       "geo_tools/audit_dense_seed_stability.py"
     ],
@@ -1072,10 +1313,11 @@
       "geo_tools/test_camera_control_audit.py": "3d6014a19141c596c825fa7991f395b5d6ec798c31add2e466145e0770d5f47d",
       "geo_tools/run_decision_trace.py": "5aa6956b473270f5246d04d7d3f156adcea418550cc3c8b90bff58e8b196047d",
       "geo_tools/test_dense_geometry_attribution.py": "f5a9c11e7c8c160ac1319f9dac500036e00958031a74caa58dc2a5ed42693a92",
+      "geo_tools/report_storage_budget.py": "75d65f740807047a0fe6e3c9ad2cb30d7bc054505dfec5795bd787c08dadc03b",
       "geo_tools/update_www_scope.py": "543017cccafa79f8984f39df23321c37ba6349693aa352af746eadaee020991a",
       "geo_tools/test_suite_settings_audit.py": "5f48d177e4c34689fca9c0b1f1887c80f1f8cc1d4ee06ca2aad437423c3c75c4",
       "geo_tools/test_causal_scheduler.py": "6b677d080a7b34376e130274df22f0cb77cf6981cbad77e5705106c95af36b07",
-      "geo_tools/summarize_results.py": "3e86b08a2111924fe24b6c94ef85d50b25fb0a952921d77b420779f2776fa9b2",
+      "geo_tools/summarize_results.py": "92c5fdc04778b7a8ecfdf9cef8471205413175a6d691a12a600e1378480bd9d7",
       "geo_tools/test_history_training.py": "1f59032a4d53f6836bdf2a7c1d2a11157653cb7d63b62e0d286a5e79c6ccf1ee",
       "geo_tools/audit_sparse_failure_trace.py": "8e4b691f8c6dd4d6c3ae4a1861a014be1ec07a0d333f172179dcba06a920f56f",
       "geo_tools/audit_encoder_parameter_structure.py": "c0448022fc23620fc50c758a81f2b6e3776f4ff96a505c3f1e6bd45c7aa3210e",
@@ -1108,7 +1350,7 @@
       "geo_tools/audit_retrieval_outcomes.py": "4119cdb38326853c1c969d6c1b31ec9e6b5ef8e46453eb550e64860037999398",
       "geo_tools/audit_resource_ledger.py": "ddb0ba3dff6eaf23c2c572f16e065fcc923b82a40761fabf867020592fa39289",
       "geo_tools/test_contracts.py": "2188de96144735d6b49d102b6052ac640d235c06694634eb70259193d25599f4",
-      "geo_tools/audit_decision_trace.py": "3e54c5c3474f83baa6d8595c3a6d1976779770c79c8fd8dba954bda42ea17906",
+      "geo_tools/audit_decision_trace.py": "15f2951bb7daa4f200470da7a911984165aceb2c6913787cd415b4a2b7ce65f6",
       "geo_tools/evaluate_suite.py": "804b4d8ff7cfbdef4acc63e66db3dd4fc411bd110292052eddad79c30fb84f07",
       "geo_tools/run_online.py": "e97027d9967482e7e027b8034cc2ecf0d9aa185eb6ec61918dc110469d42e5b6",
       "geo_tools/run_native_prior.py": "798fab5c773baedb2b41a767e65a4cd7091509fcea354aa96ddc1fdde3bee537",
@@ -1121,7 +1363,7 @@
       "geo_tools/test_process_wall_runtime.py": "82eae8fec4640b6004ca5fbb5d80aae338fdc090df09ea1a4c68b618fcb7ae25",
       "geo_tools/validate_physical_camera_input.py": "09c49d9e73f88697e4df146ea971d79d83574158f43b39ff1ac6b279d0518d4e",
       "geo_tools/test_tracking_pair_audit.py": "cc1398004c69fc404385cf6d784c42a71c5eaa3fcdb70109c394463a7e0abe0a",
-      "geo_tools/test_decision_trace.py": "13004822180afb23e1968f99858f12dac9cf6d370d29e9341d349c1978fa5b87",
+      "geo_tools/test_decision_trace.py": "ef543b04a90b54accf35356e898c5a6c39d6f5f563d14d0e098f2a3d134bf587",
       "geo_tools/audit_cache_gate_and_constant_prefix.py": "5e0cce331687a871221bc61be78744e671b6042f5f178b38ab93c0bc4228892a",
       "geo_tools/run_seeded_online.py": "92323c8c899135978814743e2f78d4a4e69ba41004def27d864751180c6b2624",
       "geo_tools/validate_plane_reference.py": "059e1388e6349ddb34332a0237764ba588f694f08604554c6a502b811499c1f8",
@@ -1157,7 +1399,7 @@
       "geo_tools/run_research_queue.py": "97200cca20bab5eb6cfd7353cf72200f9bcacc8895e74779bd9037be0bd0a5cf",
       "geo_tools/probe_live_camera_order.py": "8fbb7f7f96e4ad8e6c6b9d635ee7e5ccea7c1e6dd019a45d294fbd97c86366cf",
       "geo_tools/test_constant_head_control.py": "fd8bfd8a5081e7dfc1053bba56692cd48930914433a202074e45ff5760eec1d2",
-      "geo_tools/summarize_resource_samples.py": "cdb2154fb1d0667a2de1ce1ff6524e68639c1ae8cfb5b6d7c3c94792be0e18f1",
+      "geo_tools/summarize_resource_samples.py": "6a95d938944370eccdf54cc0a7ec004f887abf52dbe914158fe3ca0febf1efc9",
       "geo_tools/test_cache_match_diagnostic.py": "4d9fc94f6fff9a421e8219eb80d5dcfdb4e58d826d752d4934b3ef754667fbeb",
       "geo_tools/common.py": "ba2616c7727b4e15082a5cc7f5709a4c68e831b0be342f6d6e0c32b2222c3e42",
       "geo_tools/test_process_worker.py": "c5a11f3010b9283f2c3d84e192ae67f5ae223a0c90b0d091d4a85e5545a9e050",
@@ -1175,13 +1417,13 @@
       "geo_tools/test_residual_and_causality.py": "5b599d56620bb04712cf8b7260836063b8261a63a4b5ef2d262e43f3f1f1e2c7",
       "geo_tools/audit_native_prior_stability.py": "da4c302ad8de5b15a1d426cbb015aa0c7e813640cccfe56ee1499ecdb9e61937",
       "geo_tools/prepare_positive_scene_controls.py": "6df6dc558ec4fb8ef6ad548441928a24df30f4508352df130796d8a73eab54f6",
-      "geo_tools/plot_research_results.py": "a18e406d40b0fd9a139931e5552ed39de05bba7121b7975b5286698d794c2e69",
+      "geo_tools/plot_research_results.py": "bea419d61af0fcf39c941b99ea36e2a3b703c74c015d91e38546fd54cca0a797",
       "geo_tools/validate_process_worker_gpu.py": "886c032d8055d2c2189a909c6d95ea47d66c3254e90a1b163ab0a2f1221e7ff1",
       "geo_tools/prepare_parallel_dense_stability.py": "95e5f39183ac80e8b48d8ff9770cd555f70c466ed97cb9f3e1c35c2c50ca8c4d",
       "geo_tools/test_geometry.py": "6e8f586b5b731d68888012a9af5ed38eb6b0bc8f26e88fa458b3b138d3e65b32",
       "geo_tools/validate_empty_association.py": "bbc231eb659c8603558efa62f63c43587338219e5a96644096926eb431cfd92c",
       "geo_tools/prepare_history_training.py": "7b7851a6dbc8a29684d7bbd332a448ba3058cc79bc37579eb6f29547ae36d342",
-      "geo_tools/update_reviewer_questions.py": "5b1f36bb8db529ee91fdaaa6787b37edea8e4b64511247ff97f71c1a37ccc419",
+      "geo_tools/update_reviewer_questions.py": "5af319d871324c14606a6247754eb35a854a1775081f357294f4af788ea8f903",
       "geo_tools/lock_baseline.py": "b43ee7b20d8ee0f5035858f617bf9169825907f25733a13e5290448d2613367d",
       "geo_tools/evaluate_live_retrieval.py": "9cd2d987e3c28e3e672ce915d42b1fc3970349923782fefacf9323ac4f5ba3d6",
       "geo_tools/test_seeded_online_driver.py": "e0ada7644886986fdf5b59497d7a7eb7990cb60d0c73957b5f1afb2dbc75b663",
@@ -1252,7 +1494,7 @@
       "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
     },
     "source_tree_dirty": true,
-    "source_diff_sha256": "625f31f92414d9ffb55e920ace95603fb9d2aedb234c23802be5f4313dcc4d70",
+    "source_diff_sha256": "23bed5fa455b1aea79a9f23a481ae797ddceb026704d4531bc9d15ed849e502b",
     "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
     "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",

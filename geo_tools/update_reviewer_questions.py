@@ -2,6 +2,10 @@
 import csv
 from common import *
 
+def replace_all(value,replacements):
+    for old,new in replacements.items():value=value.replace(old,new)
+    return value
+
 def csvmap(path):
     if not path.exists():return {}
     return {r['setting']:r for r in csv.DictReader(path.open())}
@@ -74,6 +78,9 @@ def main():
         joint=next((group for group in factors['groups'] if group['method']=='B7' and group['factor']=='training_head_seed'),None)
         if joint and joint['complete']:
             signal_text+=' 联合B7完整strict5三个TRAIN头也全部完成，CVIDF1增量为'+','.join(f"{row['paired_metric_delta']['CVIDF1']:+.6f}" for row in joint['rows'])+'个百分点；第三头CVIDF1下降但IDSW减少，不能用IDSW单项改善替代身份F1或宣称均匀正向。未重新选择head、系数或评测划分。固定主头推理RNG复核仍单列。'
+        frozen=next((group for group in factors['groups'] if group['factor']=='inference_rng_seed'),None)
+        if frozen and frozen['completed_trials']>=2:
+            signal_text+=f" 固定TRAIN头20261014的实际推理RNG已完成{frozen['completed_trials']}/3组，分别与同推理种子基线配对的CVIDF1增量为"+','.join(f"{row['inference_seed']}:{row['paired_metric_delta']['CVIDF1']:+.6f}" for row in frozen['rows'])+'个百分点；全部保留相同头/有效设置和检测集合，缺失结果不补0，不把这类变化当作重新训练头的独立重复。'
         observed=[row for row in factors.get('scene1_training_head_diagnostic',{}).get('rows',[]) if row['method']=='B7']
         if len(observed)==3:
             signal_text+=' 完整scene1的三个TRAIN头在固定推理种子20261014下CVIDF1分别为'+','.join(f"{row['metrics']['CVIDF1']:.6f}" for row in observed)+'，第三头低于同场景基线；检测集合和其他融合设置相同。这是单场景训练头观察，完整DEV结果另列，不能据此推断固定主头的推理RNG效应。'
@@ -160,6 +167,26 @@ def main():
         note=f" 另有{len(process['rows'])}个完整进程、{len(process['suites'])}套完整strict5的外层启动到退出观察耗时；{len(process['excluded_held_stages'])}个与调度器暂停窗口关联的条目被排除。进程口径包含Python导入、静态模型准备及导出/溯源，单独GT评价和队列等待不计入；区间差额不是纯模型初始化。缺失不补0，详见GEO_STREAM_PROCESS_WALL_RUNTIME.md。"
         questions=[(q,a+note if q=='完整 FPS/延迟/显存/参数量？' else a) for q,a in questions]
     lines=['# Reviewer questions — current evidence','', 'This file is generated from current artifacts; pending items are not claims of completion.','']
+    actual_path=ROOT/'results/actual_decision_full_scene1_cohort_verified_v2.json'
+    if actual_path.exists():
+        actual=json.loads(actual_path.read_text())
+        if actual['status']=='PASS_ACTUAL_SOLVER_DIAGNOSTIC' and actual['full_video']:
+            note=f" 实际scene1完整主分配诊断通过原始输出/配置、物理提议和共同GT查询核验：{actual['common_primary_queries']}共同主查询，条件已知纠正/破坏{actual['baseline_wrong_method_correct']}/{actual['baseline_correct_method_wrong']}，任一侧未知{actual['unknown_either']}，其中correct_link→ambiguous_reference有{actual['transition_counts'].get('correct_link -> ambiguous_reference',0)}条。平均描述子memory分配不计GT正确性，两次运行各有自身历史，不能当作全部strict5或最终轨迹纠错数；见GEO_STREAM_ACTUAL_DECISIONS.md。"
+            questions=[(q,a+note if q=='提升是否来自不同检测/配置/评测 bug？' else a) for q,a in questions]
+    completion_path=ROOT/'results/final_completion_audit_v1.json'
+    if completion_path.exists():
+        completion=json.loads(completion_path.read_text())
+        if completion['status']=='VERIFIED_SCOPED_RESEARCH_DELIVERABLES' and completion['engineering_complete']:
+            for path,digest in completion['source_artifacts'].items():
+                if sha256(path)!=digest:raise ValueError('completion evidence changed: '+path)
+            replacements={
+                '重复密集稳定性未完成，不是稳定VGGT独有贡献。':'完整密集种子复核已完成且增量正负混合，不是稳定VGGT独有贡献。',
+                '原失败/跳过记录保留，完整对照已固定恢复计划，仍未完成；短前缀不是检索收益证据。':'原失败/跳过记录保留，恢复后的完整跟踪/检索对照及逐查询核验均已完成；短前缀本身不是检索收益证据。',
+                '其他dense间隔和重复矩阵仍在完成。':'完整dense间隔、固定偏移、随机种子和联合重复矩阵均已完成，未建立稳定调度增益。',
+                '当前稳定科学成功/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。':'限定范围的ENGINEERING_COMPLETE已通过最终证据审计；全部声明矩阵与种子复核完成。稳定VGGT独有科学成功未达成，PAPER_READY为false。',
+                '流数量与关键帧预算对照及实质Web系统贡献仍需完成。':'声明的流数量与关键帧预算对照均已完成，但实质Web科学贡献和真实Web部署仍未建立。',
+            }
+            questions=[(q,replace_all(a,replacements)) for q,a in questions]
     for i,(q,a) in enumerate(questions,1):lines += [f'## Q{i}: {q}','',a,'']
     (ROOT/'docs/REVIEWER_QUESTIONS.md').write_text('\n'.join(lines))
 if __name__=='__main__':main()

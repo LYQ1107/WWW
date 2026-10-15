@@ -181,6 +181,13 @@ def main():
     constructed_stress=evidence('constructed_geometry_degeneracy_v1.json',['status','tests_run','observations','encoder_calls','model_strict_load_performed','natural_dataset_failure_causes_identified','full_tracker_inference_performed','speed_eligible','scope','limitations'])
     process_wall_cost=evidence('process_wall_runtime_v1.json',['status','suites','excluded_held_stages','scope','limitations'])
     storage_budget=evidence('storage_budget_v1.json',['status','started_utc','finished_utc','total_apparent_bytes','category_apparent_bytes','scope','limitations'])
+    actual_solver=evidence('actual_decision_full_scene1_cohort_verified_v2.json',
+        ['status','video_id','full_video','full_strict_suite','identical_physical_detector_proposal_cohort','identical_common_primary_query_gt_labels',
+         'paired_frozen_gmt_data_and_inference_seed','detector_proposals','common_primary_queries','baseline_only_queries','method_only_queries',
+         'baseline_wrong_method_correct','baseline_correct_method_wrong','unknown_either','transition_counts','runs','scope','limitations'])
+    sampled_resources={key:evidence(name,['status','first_sample_utc','last_sample_utc','sample_groups','observed_span_seconds',
+        'maximum_sample_gap_seconds','requested_interval_seconds','device_rows','process_rows','scope','limitations'])
+        for key,name in [('original','remaining_job_sampled_resources_v1.json'),('balanced','balanced_handoff_sampled_resources_v1.json')]}
     inference_queue_handoff=evidence('primary_vggt_inference_balanced_handoff_v1.json',
         ['status','existing_child_exited_utc','inference_source_unchanged','model_processes_signaled','replacement_controller_pids','plan_sha256','note'])
     dense_retrieval_gate=evidence('vggt_tracking_retrieval_prefix_gate_v2.json',['status','full_video','full_strict_suite','scope','limitations'])
@@ -211,7 +218,7 @@ def main():
     summary=dict(status='IN_PROGRESS',scientific_success=science_status,engineering_complete=False,paper_ready=False,
         complete_strict_baseline_videos=sorted({r['video_id'] for r in baseline}),metrics=metric_rows,feature_screening_complete=(ROOT/'results/feature_screening_manifest.json').exists(),
         off_zero_parity=json.loads((ROOT/'results/off_zero_parity.json').read_text()) if (ROOT/'results/off_zero_parity.json').exists() else None,
-        limitations=['original GMT offline full-video postprocessing','conflicting raw GT identities in several original TRAIN sequences','Dense B7 and sparse B8 have preliminary full-strict numerical identity gains, not stable method improvement; scene1 attribution does not establish independent VGGT/geometry benefit; primary capacity controls complete, dense stability pending','WWW application evidence pending'],
+        limitations=['original GMT offline full-video postprocessing','conflicting raw GT identities in several original TRAIN sequences','Dense B7 and sparse B8 have preliminary numerical gains; complete seed-factor and attribution audits determine their scope, without stable VGGT-specific benefit','Local replay does not establish a live WWW application'],
         preliminary_complete_video_signal=signal,
         preliminary_full_dev_signal=tiny,
         scene1_attribution=attribution,camera_encoding_control=camera_control,cached_feature_prefix=cached_prefix,cached_feature_complete_scene=cached_full,resource_ledger=resource_ledger,
@@ -245,6 +252,7 @@ def main():
         additional_training_head_full_geometry_attribution=other_head_geometry,
         fixed_primary_inference_queue_handoff=inference_queue_handoff,
         measured_storage_budget=storage_budget,
+        actual_primary_solver_diagnostic=actual_solver,completed_passive_resource_probes=sampled_resources,
         recorded_geometry_failure_taxonomy=geometry_failures,
         constructed_cpu_geometry_stress=constructed_stress,
         observed_process_wall_runtime=process_wall_cost,
@@ -359,10 +367,28 @@ def main():
         if joint and joint['complete']:
             changes=', '.join(f"{row['training_head_seed']}: {row['paired_metric_delta']['CVIDF1']:+.6f}pp / IDSW {row['candidate_metrics']['IDSW']}" for row in joint['rows'])
             lines[6:6]=['Complete joint B7 TRAIN-head trials are now3/3 on all strict5 at fixed actual inference RNG20261014: '+changes+'. The third head lowers CVIDF1 despite fewer ID switches, so the observed full-DEV effect is not uniformly positive. Exact detector membership and original trained heads/options are retained, with no reselection. Fixed-primary inference-RNG variation remains a distinct factor. See [complete B5/B7 head comparison](../results/plots/causal_B5_B7_training_head_deltas.png).','']
+        frozen=next((group for group in dense_seed_stability['groups'] if group['factor']=='inference_rng_seed'),None)
+        if frozen and frozen['completed_trials']>=2:
+            changes=', '.join(f"{row['inference_seed']}: {row['paired_metric_delta']['CVIDF1']:+.6f}pp / IDSW {row['candidate_metrics']['IDSW']}" for row in frozen['rows'])
+            lines[6:6]=[f"Fixed-primary TRAIN-head20261014 inference-RNG trials are {frozen['completed_trials']}/3 complete over strict5, each paired with its own same-seed causal baseline: "+changes+'. Every accepted trial retains the original head, active options and exact detector membership. Positive and negative paired changes, if present, remain reported; this factor is distinct from training-head variation and missing trials are not zeros.','']
     if matched_retrieval_gate and matched_retrieval_gate['status']=='PASS':
         lines[6:6]=['Matched GMT/DINO tracking-to-retrieval prefix gates pass exact standalone outputs in both scene18/scene1. The original checker rejected a scene1 GEOMETRY_METHOD difference despite both recorded geometry weights being zero; the corrected read-only check records that inactive difference and still enforces all active options, exact head/seed/model/data, actual encoder counts and serialized outputs. Original failed logs and skipped full stages remain retained. Complete matched-head producers are reported separately; these40-group prefixes are not retrieval-quality or full-video evidence.','']
     if relation_matrix:
         lines[6:6]=['Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.','']
+    if actual_solver and actual_solver['status']=='PASS_ACTUAL_SOLVER_DIAGNOSTIC' and actual_solver['full_video']:
+        ambiguous=actual_solver['transition_counts'].get('correct_link -> ambiguous_reference',0)
+        lines[6:6]=[f"Full scene{actual_solver['video_id']} actual primary-solver diagnostic passes exact standalone output/configuration gates, same frozen GMT/data/seed, all {actual_solver['detector_proposals']} physical detector proposals and common query GT labels. Among {actual_solver['common_primary_queries']} common primary queries, conditional original-wrong/new-correct decisions are {actual_solver['baseline_wrong_method_correct']}, reverse harms {actual_solver['baseline_correct_method_wrong']}, with {actual_solver['unknown_either']} uncertain on either side retained as unknown, including {ambiguous} correct-link to ambiguous-reference transitions. Counts precede memory fallback/new-ID allocation, use known-pure current reference proposals and conditional candidate rejection, and exclude averaged-descriptor memory correctness. The two runs retain their own histories. This is one scene, distinct from full-strict output-pair counts, final tracking correctness and production timing; see [actual decisions](GEO_STREAM_ACTUAL_DECISIONS.md).",'']
+        note=['# Actual primary-solver decisions — complete scene1','',actual_solver['scope']+'.','',actual_solver['limitations']+'.','',
+              f"Both complete prediction/configuration gates and exact physical proposal/common GT-query cohorts pass. Detector proposals: {actual_solver['detector_proposals']}; common primary queries: {actual_solver['common_primary_queries']}; baseline-only/method-only: {actual_solver['baseline_only_queries']}/{actual_solver['method_only_queries']}. Conditional known fixes/harms: {actual_solver['baseline_wrong_method_correct']}/{actual_solver['baseline_correct_method_wrong']}; unknown on either side: {actual_solver['unknown_either']}. These are pre-memory primary decisions, not final tracking correctness.",'',
+              '| Primary state | Baseline | Joint B7 |','|---|---:|---:|']
+        runs=actual_solver['runs']
+        if any(sum(run['counts'].values())!=run['primary_query_assignments'] for run in runs):raise ValueError('incomplete primary-state counters')
+        for state in sorted(set(runs[0]['counts'])|set(runs[1]['counts'])):
+            note.append(f"| {state} | {runs[0]['counts'].get(state,0)} | {runs[1]['counts'].get(state,0)} |")
+        note += ['','| Transition on common query | Count |','|---|---:|']
+        note += [f'| {state} | {count} |' for state,count in sorted(actual_solver['transition_counts'].items())]
+        note += ['',f"Averaged-descriptor memory solver calls excluded from GT correctness: {runs[0]['memory_solver_calls_excluded_from_gt_correctness']}/{runs[1]['memory_solver_calls_excluded_from_gt_correctness']}. Unknown/mixed cases remain visible; fewer missed primary links alone does not prove overall tracking improvement. All raw hashes and the full scope are in actual_decision_full_scene1_cohort_verified_v2.json.",'']
+        (ROOT/'docs/GEO_STREAM_ACTUAL_DECISIONS.md').write_text('\n'.join(note))
     if dense_geometry_attribution and dense_geometry_attribution['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
         lines[6:6]=['Complete primary-head dense B5/B7 geometry attribution is now audited over all strict5: every serialized feature-only prediction exactly equals joint B7, with matched encoder calls and all other effective GEO options verified from their captured source defaults (calibration content checked, inactive default-off cache normalized). Joint geometry passes its numerical/background gate3 times, all in scene1; none changes the final outputs. This extends the earlier scene1 result to the complete primary-head suite; additional TRAIN-head full-suite results are reported separately and GT-pose accuracy remains unverified.','']
     for seed,value in other_head_geometry.items():
@@ -385,6 +411,24 @@ def main():
     if storage_budget and storage_budget['status']=='MEASURED_CURRENT_STORAGE_SNAPSHOT':
         groups=storage_budget['category_apparent_bytes']
         lines[6:6]=[f"Measured runtime storage snapshot: compact target-feature/head/training artifacts {groups['compact_features_heads_and_samples']/(1<<20):.3f}MiB, frozen model weights {groups['frozen_model_weights']/(1<<30):.3f}GiB, immutable sources {groups['source_snapshots']/(1<<30):.3f}GiB; all runtime entries total {storage_budget['total_apparent_bytes']/(1<<30):.3f}GiB apparent bytes. Predictions/retrieval/evaluation artifacts are listed separately. This is a live snapshot, not a lifetime peak or complete external environment/dataset footprint; symlink targets are excluded. See [storage budget](GEO_STREAM_STORAGE_BUDGET.md). No cleanup is performed.",'']
+    available=[(key,value) for key,value in sampled_resources.items() if value and value['status']=='FINISHED_PROBE_SAMPLED_RESOURCES']
+    if available:
+        note=['# Passive sampled resource evidence','',
+            'Each completed finite-root probe is verified against sealed raw CSV hashes. Device utilization is sampled for the whole physical GPU; per-PID RSS is not unique physical RAM. Sample maxima are not lifetime peaks, and sample means are unweighted. Multiple probes overlap and are not independent or additive. Missing final probe artifacts remain pending.','',
+            '| Probe | GPU | Samples | Mean sampled utilization (%) | Sampled device memory maximum (MiB) | Samples with compute outside named roots |',
+            '|---|---:|---:|---:|---:|---:|']
+        fmt=lambda value:'unmeasured' if value is None else f'{value:.3f}'
+        bounds=[]
+        for key,value in available:
+            for row in value['device_rows']:
+                note.append(f"| {key} | {row['gpu']} | {row['samples']} | {fmt(row['gpu_utilization_unweighted_sample_mean_percent'])} | {fmt(row['sampled_device_memory_max_mib'])} | {row['samples_with_unattributed_compute']} |")
+            bounds += ['',f"{key}: {value.get('first_sample_utc','unrecorded')} to {value.get('last_sample_utc','unrecorded')}; {value['sample_groups']} sample groups, observed span {value['observed_span_seconds']:.3f}s; requested interval {value['requested_interval_seconds']}s, maximum observed gap {fmt(value['maximum_sample_gap_seconds'])}s. Process records: {len(value['process_rows'])}. Exact identity/tag/role and per-PID values remain in {Path(value['path']).name}.",'']
+        note+=bounds
+        pending=[key for key,value in sampled_resources.items() if not value or value['status']!='FINISHED_PROBE_SAMPLED_RESOURCES']
+        note += [f"Pending finalized probes: {', '.join(pending) if pending else 'none'}.",'',
+            'Compute outside a named root set does not identify an unrelated user: replacement roots and discovery timing can also produce these counts. Original/new root sets and time windows must be read with the handoff record. Already-running jobs have partial coverage; later appearance does not establish full lifetime coverage. Per-process allocator peaks and cache/index payloads have separate scopes in resource_ledger_v1.json.','']
+        (ROOT/'docs/GEO_STREAM_SAMPLED_RESOURCES.md').write_text('\n'.join(note))
+        lines[6:6]=[f"Finalized passive resource probe reports: {len(available)}/2. Completed root sets do not establish full-matrix completion. Physical-device sample means/maxima, uncertain root attribution and per-process coverage are reported separately in [sampled resources](GEO_STREAM_SAMPLED_RESOURCES.md); overlapping probes and RSS maxima are never summed as physical RAM.",'']
     if dense_full2_retrieval and dense_full2_retrieval['status']=='PASS' and retrieval_query_pairs:
         pair=next((row for row in retrieval_query_pairs['rows'] if row['method']=='VGGT2'),None)
         producer=next((row for row in retrieval_rows if row['method']=='retrieval_vggt_dense_tracking_2streams_full_v1'),None)
@@ -425,5 +469,11 @@ def main():
         'Required remaining work: finish the declared tracking/scheduler matrix and repeated stability checks; complete retrieval comparisons across stream counts/keyframe budgets; report geometry failure recovery and actual timing without unsupported efficacy or Pareto claims. Completed feature tests, source/pose diagnostics and causal results are evidence with limited scope, not completion of the requested experiment matrix.','',
         'See results/experiment_manifest.json for exact commands, seeds, checkpoint SHA, environment, cache status and external artifact paths. See docs/GEO_STREAM_RESEARCH_LOG.md for commits and failed runs.','']
     (ROOT/'docs/GEO_STREAM_FINAL_REPORT.md').write_text('\n'.join(lines))
+    completion_path=ROOT/'results/final_completion_audit_v1.json'
+    if completion_path.exists():
+        from finalize_research import render
+        completion=json.loads(completion_path.read_text())
+        selection=json.loads((ROOT/'results/final_candidate_selection_v1.json').read_text())
+        render(summary,completion,selection)
     print(json.dumps(dict(strict_baseline_videos=summary['complete_strict_baseline_videos'],metric_rows=len(metric_rows),runtime_rows=len(runtime_rows)),indent=2))
 if __name__=='__main__':main()

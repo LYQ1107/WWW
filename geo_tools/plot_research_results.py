@@ -273,6 +273,20 @@ def main():
             fig.suptitle('Complete strict5 TRAIN-head trials: B5 feature-only and B7 joint',fontsize=12)
             fig.text(.5,.012,'Same trained head per B5/B7 pair; inference RNG20261014, same strict5 and detectors. Descriptive repeats; no confidence intervals.',ha='center',fontsize=8)
             fig.tight_layout(rect=(0,.06,1,.94));fig.savefig(out/'causal_B5_B7_training_head_deltas.png',dpi=180);fig.savefig(out/'causal_B5_B7_training_head_deltas.pdf');plt.close(fig)
+        frozen=next((group for group in stability['groups'] if group['factor']=='inference_rng_seed'),None)
+        if frozen and frozen['complete']:
+            trials=frozen['rows'];sources[str(seed_path)]=sha256(seed_path)
+            if len(trials)!=3 or any(row['training_head_seed']!=20261014 or not row['exact_detector_membership'] for row in trials):raise ValueError('three paired fixed-head trials required')
+            fig,axes=plt.subplots(1,2,figsize=(10.5,3.6),sharey=True)
+            for axis,metric in zip(axes,('CVIDF1','IDSW')):
+                values=[row['paired_metric_delta'][metric] for row in trials]
+                axis.barh(np.arange(3),values,color=['#427aab' if value>=0 else '#a65d50' for value in values]);axis.axvline(0,color='black',linewidth=.8);axis.margins(x=.6)
+                axis.set_title(metric);axis.set_xlabel('Paired change (percentage points)' if metric=='CVIDF1' else 'Paired IDSW change')
+                for index,value in enumerate(values):axis.annotate(f'{value:+.6f}' if metric=='CVIDF1' else f'{value:+d}',(value,index),xytext=(4 if value>=0 else -4,0),textcoords='offset points',ha='left' if value>=0 else 'right',va='center',fontsize=8)
+            axes[0].set_yticks(np.arange(3),[str(row['inference_seed']) for row in trials]);axes[0].invert_yaxis()
+            fig.suptitle('Dense B7, fixed TRAIN head20261014: three actual inference RNG seeds',fontsize=12)
+            fig.text(.5,.012,'Same strict5; each trial has its own same-seed causal baseline. Primary B7 shared across factors; no confidence intervals.',ha='center',fontsize=8)
+            fig.tight_layout(rect=(0,.065,1,.94));fig.savefig(out/'causal_B7_fixed_head_inference_deltas.png',dpi=180);fig.savefig(out/'causal_B7_fixed_head_inference_deltas.pdf');plt.close(fig)
     save_json(out/'manifest.json', dict(status='IN_PROGRESS_FIGURES', source_artifacts=sources,
               outputs={path.name:sha256(path) for path in out.iterdir() if path.suffix in {'.png','.pdf'}},
               provenance=provenance(), limitations='incomplete research matrix; no replicate confidence intervals or accuracy/runtime Pareto superiority inferred'))

@@ -13,12 +13,14 @@ primary B7 trial is shared between factors, not an independent replicate; incomp
 | training_head_seed | B7 | 20261015 | 20261014 | +0.084604 | -94 | 73800/3765 |
 | training_head_seed | B7 | 20261016 | 20261014 | -0.068334 | -90 | 71712/11926 |
 | inference_rng_seed | B7 | 20261014 | 20261014 | +0.089485 | -101 | 73939/5645 |
+| inference_rng_seed | B7 | 20261014 | 20261015 | -0.107383 | -96 | 82242/11852 |
+| inference_rng_seed | B7 | 20261014 | 20261016 | +0.095993 | -101 | 78047/4826 |
 
 Missing full trials remain pending; partial scene results are not substituted for native complete-suite evaluation:
 
 - training_head_seed / B5: 3/3 complete; pending .
 - training_head_seed / B7: 3/3 complete; pending .
-- inference_rng_seed / B7: 1/3 complete; pending causal_B7_primary_head_inference_seed20261015_strict_suite_v1, causal_B7_primary_head_inference_seed20261016_strict_suite_v1.
+- inference_rng_seed / B7: 3/3 complete; pending .
 
 Separate fixed scene1 complete-video observations (full strict suite: false):
 

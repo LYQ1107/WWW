@@ -93,6 +93,9 @@ def main():
         with source.open() as stream:
             data[name] = list(csv.DictReader(stream))
     result = summarize(manifest, data['devices.csv'], data['processes.csv'])
+    result.update(first_sample_utc=data['devices.csv'][0]['utc'],last_sample_utc=data['devices.csv'][-1]['utc'],
+        probe_started_utc=manifest['started_utc'],probe_finished_utc=manifest['finished_utc'],
+        monitored_controller_pids=sorted(map(int,manifest['controllers'])))
     result.update(status='FINISHED_PROBE_SAMPLED_RESOURCES', source_artifacts=artifacts,
         scope='passive whole-device and per-process samples for the named existing job controllers and descendants; includes controls/evaluation/workers separately',
         limitations='sampled extrema are not exact lifetime peaks; present at first probe sample indicates possible partial coverage, while later appearance does not prove complete lifetime coverage; sample means are unweighted, not time-weighted utilization; no unique per-method device attribution; per-PID RSS maxima are never summed as physical RAM, and per-device/per-process noncoincident maxima are never summed; overlapping probes are not independent repetitions and must not be summed or interpreted as uniquely attributable user workloads; no throughput or capture/network-latency estimate',
