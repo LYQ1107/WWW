@@ -1,0 +1,36 @@
+{
+  "id": "trackvggt_crop_tokens_v1",
+  "project_gpu_ids": [
+    "0",
+    "4",
+    "5",
+    "6"
+  ],
+  "queues": {
+    "gpu6": [
+      {
+        "id": "vggt_crop224_full",
+        "command": [
+          "geo_tools/extract_trackvggt_crop_tokens.py",
+          "--plan",
+          "manifests/trackvggt_crop_comparison_v1.json",
+          "--backbone",
+          "vggt"
+        ]
+      }
+    ],
+    "gpu4": [
+      {
+        "id": "dinov2_crop224_full",
+        "command": [
+          "geo_tools/extract_trackvggt_crop_tokens.py",
+          "--plan",
+          "manifests/trackvggt_crop_comparison_v1.json",
+          "--backbone",
+          "dinov2"
+        ]
+      }
+    ]
+  },
+  "purpose": "Fixed556 physical native-box crops per backbone, resolution224, <=32 target tokens, original full-image pools reused; shared2GiB NPZ cap; <=1GPU-wall-hour new frozen encoder budget including prechecks."
+}

@@ -1,0 +1,104 @@
+{
+  "status": "PASS_BOTH_REAL_CROP_INTERFACES",
+  "rows": [
+    {
+      "status": "PASS_REAL_LOCAL_CROP_REPEAT",
+      "backbone": "vggt",
+      "plan_sha256": "f121035aae43c33fc3e87489af4371150e5ecaedbe18a1648583148f1200125b",
+      "key": [
+        12,
+        28928,
+        7
+      ],
+      "crop_rect": [
+        1201,
+        942,
+        1346,
+        1080
+      ],
+      "input_hw": [
+        224,
+        224
+      ],
+      "input_observations": 1,
+      "physical_camera_id": 1,
+      "not_an_additional_physical_camera": true,
+      "arrays_bitwise_repeat": true,
+      "counts": {
+        "raw_patch_centers": 110,
+        "patch_bin": "16+",
+        "valid_pool_tokens": 31,
+        "all_selected_inside_content": true
+      },
+      "metadata": {
+        "patch_start_idx": 5,
+        "layer_ids": [
+          4,
+          11,
+          17,
+          23
+        ],
+        "image_hw": [
+          224,
+          224
+        ]
+      },
+      "frozen": true,
+      "checkpoint_sha256": "d15bf50a8615c8225ed48b51ea5cac673d82442ec0309036df555a053253afe0",
+      "setup_seconds": 17.101927429437637,
+      "probe_seconds": 15.790761806070805,
+      "proof_sha256": "2f31b3143521c93ddcecfb4af5082861f5ecbd4ed8b36574a752010c5ef7348d"
+    },
+    {
+      "status": "PASS_REAL_LOCAL_CROP_REPEAT",
+      "backbone": "dinov2",
+      "plan_sha256": "f121035aae43c33fc3e87489af4371150e5ecaedbe18a1648583148f1200125b",
+      "key": [
+        12,
+        28928,
+        7
+      ],
+      "crop_rect": [
+        1201,
+        942,
+        1346,
+        1080
+      ],
+      "input_hw": [
+        224,
+        224
+      ],
+      "input_observations": 1,
+      "physical_camera_id": 1,
+      "not_an_additional_physical_camera": true,
+      "arrays_bitwise_repeat": true,
+      "counts": {
+        "raw_patch_centers": 110,
+        "patch_bin": "16+",
+        "valid_pool_tokens": 31,
+        "all_selected_inside_content": true
+      },
+      "metadata": {
+        "patch_start_idx": 5,
+        "layer_ids": [
+          4,
+          11,
+          17,
+          23
+        ],
+        "attention_layer": 23,
+        "image_hw": [
+          224,
+          224
+        ],
+        "backbone": "independent_DINOv2_L14_reg4",
+        "backend": "math_sdpa_deterministic_cudnn"
+      },
+      "frozen": true,
+      "checkpoint_sha256": "36e4deffbaef061a2576705b0c36f93621e2ae20bf6274694821b0b492551b51",
+      "setup_seconds": 9.09604924917221,
+      "probe_seconds": 4.254752457141876,
+      "proof_sha256": "97c267e706e2445f9af104bd49c869fbf653c44dd556464c8be3650826082598"
+    }
+  ]
+}
