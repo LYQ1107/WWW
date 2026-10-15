@@ -12,9 +12,12 @@ def main(kind,gpu):
  if kind!='original':
   if kind=='rule_cached':
    assert read(REPORTS/'FEATURE_CACHE_PARITY.json')['status']=='PASS_EXACT_FULL_NATIVE_RULE'
-  if kind.endswith('_learned'):
+  if '_learned' in kind:
    from gmt_jev_learned_checkpoint import load_actor
-   actor,checkpoint=load_actor(kind.replace('_learned',''))
+   actor,checkpoint=load_actor(kind.split('_learned')[0])
+   if kind.endswith('_cached'):
+    assert read(REPORTS/'LEARNED_MLP_FEATURE_CACHE_PARITY.json')['status']=='PASS_EXACT_FULL_NATIVE_MLP_LEARNED'
+    actor.cache_features=True
   else:actor=IdentityCorrection(kind.replace('_zero','').replace('_cached',''),cache_features=kind.endswith('_cached')).cuda().eval()
   m.gmt_identity_correction=actor
   def committed(**d):actor.committed(d['instances'][-1],d['view'],d['frame'])
@@ -70,4 +73,4 @@ def main(kind,gpu):
    extra_neural_FLOPs='Same head operators/parameter shapes as measured zero prototypes; full-video FLOPs not measured')
  save(REPORTS/f'SPEED_{kind}.json',result);print('GMT_SPEED_COMPLETE',kind,result['mean_full_scene_FPS'],flush=True)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--kind',choices=['original','threshold','rule','rule_cached','confidence','mlp_zero','attention_zero','cic_zero','mlp_learned','attention_learned','cic_learned'],required=True);p.add_argument('--gpu',type=int,required=True);a=p.parse_args();main(a.kind,a.gpu)
+ p=argparse.ArgumentParser();p.add_argument('--kind',choices=['original','threshold','rule','rule_cached','confidence','mlp_zero','attention_zero','cic_zero','mlp_learned','attention_learned','cic_learned','mlp_learned_cached'],required=True);p.add_argument('--gpu',type=int,required=True);a=p.parse_args();main(a.kind,a.gpu)

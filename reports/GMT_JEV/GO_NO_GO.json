@@ -1,4 +1,5 @@
 {
+  "CIC_architecture_go_no_go": "NO_GO_CURRENT_FIXED300_DEVELOPMENT_SEED; retain ordinary MLP, do not force JEV or claim significance",
   "architecture_ablation": "NOT_RUN_NO_JOINT_POSITIVE_MAIN_METHOD",
   "bounded_residual_oracle": {
     "no_deployable_or_optimal_bound_claim": true,
@@ -54,7 +55,10 @@
     }
   },
   "bounded_tracking_experiments_complete": false,
-  "current_best_conservative_candidate": "confidence: modest ordinary calibration development signal, not +0.5 or JEV-specific superiority",
+  "current_best_conservative_candidate": "Fixed300 MLP passes measured raw quality gates; complete FPS, seed reproduction and independent validation remain pending",
+  "current_measured_quality_positive_candidates": [
+    "mlp"
+  ],
   "development_primary_conclusions": {
     "confidence": {
       "delta_HOTA": 0.2610525110118118,
@@ -94,6 +98,11 @@
     }
   },
   "efficiency_status": "COMPLETE",
+  "first_native_discrepancy_audit": {
+    "SHA256": "ab765dc632fdfa7fab1c46545929a49c80d8bd6ff0bd4448b3340a6918567ed7",
+    "bytes": 21002,
+    "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/LEARNED_FIRST_DIVERGENCE_NATIVE.json"
+  },
   "full_TRAIN_matched_quality": {
     "does_not_replace_TRAIN16_or_independent_validation": true,
     "primary_pooled_deltas": {
@@ -263,10 +272,10 @@
       "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
     },
     "GT_actor_input": false,
-    "HEAD": "ab537acd4853021e3f0229b292701aed26a63f56",
+    "HEAD": "dfc12dcd176a77c1085a1578ceb53513d15a8e20",
     "goal": {
-      "SHA256": "d8bbe197fb6238f946689e7652d1253a2007eaa5d930542ba906275b0b18cb00",
-      "bytes": 4008,
+      "SHA256": "809a366e6de2928a7cfc6bf46efb6865fa11ce2c8b17c22c21d6bcc579cbe2a0",
+      "bytes": 4024,
       "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/MASTER_GOAL.json"
     },
     "official_TEST": false,
@@ -281,20 +290,23 @@
       "reproduction_tools/gmt_jev_baseline.py": "84ecb3c41eca79b34fc004f42d8f41e8b3ac5ca0a816c8deeeb999b87aec2203",
       "reproduction_tools/gmt_jev_bounded_oracle_audit.py": "46105a34f762931d6a48cc063108cdbf3e1c13a86cda6714bc24b7d6a131e40b",
       "reproduction_tools/gmt_jev_cache_followup.py": "76a2fe9ac80670e4df4165d5480ba0b130f31be1ad5f61d747618a4fcc7f5ec4",
-      "reproduction_tools/gmt_jev_cache_parity.py": "bf309689212f0e936dc43ad889112e38ba90c76f9e27d9f78eb69054571b0529",
+      "reproduction_tools/gmt_jev_cache_parity.py": "8f2ae391bb36ade91761673400643f2b42237be8ef1ebf12ab40e0b1619e8a97",
       "reproduction_tools/gmt_jev_calibration_probe.py": "8e85e4dd5f8047facc0d87c8766776f0c8aa791cb589f1743e3e4df002a22a15",
       "reproduction_tools/gmt_jev_common.py": "54d599788f175aa2828021c9d6c7ce0e1c0fce6735d2127e293d090b5b6ad74c",
       "reproduction_tools/gmt_jev_controller.py": "f1efc267b15d640e4cdbb41954c431c791e2b577271b3040a3e1076ffc31f260",
       "reproduction_tools/gmt_jev_evaluate.py": "35dfa318b7f8d16bb554a8b8e0925c560bb59208d631775d051f57c1e2fa390a",
+      "reproduction_tools/gmt_jev_first_divergence_native.py": "7f8c389162a40983de4d861ef0a7465ca3c941e29a930fd58ef195d56951a586",
       "reproduction_tools/gmt_jev_full_train_audit.py": "66e49e57f7695d360ca7f8f5cbed7eb50216934c6c94b5b8ac10e4bd0cb516a4",
       "reproduction_tools/gmt_jev_full_train_followup.py": "5209ce770bb5f7d7adfd7b3b4b446f5d461379ea005c8dc21460cc4b9b4bfeaa",
       "reproduction_tools/gmt_jev_head_cost.py": "c1c0b3d0ed81191451c5728a898c85034ecf773de59e57dcc8fc0cb0aa8df804",
       "reproduction_tools/gmt_jev_independence_audit.py": "5099985a41284cfc671d08b5389e8342e905edc2c7ea9c7a56335dba8205ecc4",
       "reproduction_tools/gmt_jev_job.py": "20fabf1db8c521a14acff2e68658d08ddda5edfdf548280a6481d719f5f9ed36",
+      "reproduction_tools/gmt_jev_learned_cache_followup.py": "166acbe2600e9849f3b57468bf759198783fbdd780f9d5bd7b4d9568aa4d4262",
       "reproduction_tools/gmt_jev_learned_checkpoint.py": "6c0ccf3307a45de7afa28091bbeaf4b834e3ef90d96ca6f1f6191ee3dd2ea971",
+      "reproduction_tools/gmt_jev_learned_divergence.py": "c8f6376e3fc1ed38288e553409fef373e05413d498c54f27959d5eccbeb406a5",
       "reproduction_tools/gmt_jev_learned_gate_smoke.py": "a083ce80124fb911d8b24c9fb7613c67b6fd25ffabe24cba3db4b9dec3dab0cd",
       "reproduction_tools/gmt_jev_learned_profile.py": "acf62feb1c422c2a47deee31a3225d66d98c8fe371c0d32df90fd84c1d615c77",
-      "reproduction_tools/gmt_jev_learned_report.py": "580a83fadfa9d28d17bc553370cea5b3bef03a0f05b77a50bc83af10201b4221",
+      "reproduction_tools/gmt_jev_learned_report.py": "b8a6bc919765fd2e476021f4edd971810af80ef2d97bdeeb761c939efa099129",
       "reproduction_tools/gmt_jev_learned_temporal.py": "68092b4e33a342dda18a7a4be8bcfe9b18c0cbe11f3430588f56a4c3f2888618",
       "reproduction_tools/gmt_jev_learned_validation_queue.py": "b0fcae38a56d684cb9f9ff1d3ce743ddaa5522e27f333dde6c7fad5183ad0395",
       "reproduction_tools/gmt_jev_learned_zero_queue.py": "db87a14c94b9cc2f327547d7e638c1c361332bb59c39922b6916400a14f5d688",
@@ -304,7 +316,7 @@
       "reproduction_tools/gmt_jev_publish.py": "e0a3b7886e0b35b689d99361465de2d1eba3a413bc1d03382f837e1ad8767c1a",
       "reproduction_tools/gmt_jev_research_report.py": "a0b77e79f595507f24bbd68c22ec5cdb9c3860708be65401a47ca08ba0803683",
       "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3",
-      "reproduction_tools/gmt_jev_speed.py": "f9f7763f076f3882af1d2bcc1fd9d161e0b648db69b4113bc485fc306f3aec1b",
+      "reproduction_tools/gmt_jev_speed.py": "76508e2034e4034d1f5e381ae96575d9c638ebc5398a81c5cc2a7514eb46a30d",
       "reproduction_tools/gmt_jev_speed_queue.py": "f4aca344229457c345ba0817b98e97a469c7d421bbe5b2b1b97f7d520777f0c0",
       "reproduction_tools/gmt_jev_stock_baseline.py": "e65ba0f7c48953b4d329f5e17d82b32bc7913ce2cdb91ad90e0d9360b01841dd",
       "reproduction_tools/gmt_jev_stock_identity_audit.py": "58e80a63005554b20d7744ef876c8adc81b3d25df243440b55a4d5eac748fc8d",

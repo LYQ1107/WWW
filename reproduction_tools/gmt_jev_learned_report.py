@@ -63,6 +63,19 @@ def main():
    scientific_success=False,independent_validation=False)
   fps_text=f'{fps:.4f}' if fps is not None else 'PENDING'
   lines.append(f"| {kind} | {m['HOTA']:.6f} | {delta['HOTA']:+.6f} | {m['AssA']:.6f} | {raw['CVIDF1']:.6f} | {m['IDSW']:.0f} | {m['Frag']:.0f} | {fps_text} |")
+ cache_path=REPORTS/'SPEED_mlp_learned_cached.json';cached=None
+ if cache_path.exists():
+  s=read(cache_path);p=read(REPORTS/'LEARNED_MLP_FEATURE_CACHE_PARITY.json');original=read(REPORTS/'SPEED_original.json')
+  assert p['status']=='PASS_EXACT_FULL_NATIVE_MLP_LEARNED' and p['score_feature_pairs']==2067
+  assert len(s['trials'])==3 and s['GPU_UUID']==original['GPU_UUID']
+  assert s['stock_prediction_SHA']==read(REPORTS/'SPEED_mlp_learned.json')['stock_prediction_SHA']
+  assert s['trained_checkpoint']['SHA256']==read(REPORTS/'ONLINE_mlp_learned.json')['trained_checkpoint']['SHA256']
+  ratio=s['mean_full_scene_FPS']/original['mean_full_scene_FPS']
+  cached=dict(report=ref(cache_path),exact_full_native_parity=ref(REPORTS/'LEARNED_MLP_FEATURE_CACHE_PARITY.json'),
+   full_image_FPS=2*s['mean_full_scene_FPS'],FPS_ratio_to_GMT=ratio,efficiency_gate_pass=ratio>=.95,
+   quality_reused_only_because_all_full_raw_predictions_identical=True)
+  methods['mlp']['cached_deployment']=cached
+  lines+=['',f"缓存MLP另报：完整图像FPS {cached['full_image_FPS']:.6f}，相对GMT {ratio:.6f}；95%门槛 {cached['efficiency_gate_pass']}。默认结果保留。完整2067次调用与raw输出严格一致，因此复用同一质量结果，不以改策略换加速。"]
  if methods:
   lines+=['','| 头 | 已正确接受式参考 | 保持率 | N01 | N10 | UNKNOWN目标 | UNKNOWN参考Bank/出生 |','|---|---:|---:|---:|---:|---:|---:|']
   for kind,r in methods.items():
@@ -85,6 +98,24 @@ def main():
  decision['bounded_tracking_experiments_complete']=summary['all_three_quality_complete'] and summary['all_three_speed_complete']
  decision['learned_development_quality']={k:dict(delta_HOTA=r['delta']['HOTA'],joint_measured_quality_pass=r['joint_measured_quality_pass'],quality_gates=r['quality_gates']) for k,r in methods.items()}
  decision['learned_training']='SINGLE_BOUNDED_LEARNED_GATE_REVISION_'+revision_status
+ positives=[k for k,r in methods.items() if r['joint_measured_quality_pass']]
+ decision['current_measured_quality_positive_candidates']=positives
+ if len(methods)==3 and 'mlp' in positives and 'cic' not in positives:
+  decision['CIC_architecture_go_no_go']='NO_GO_CURRENT_FIXED300_DEVELOPMENT_SEED; retain ordinary MLP, do not force JEV or claim significance'
+  decision['current_best_conservative_candidate']='Fixed300 MLP passes measured raw quality gates; complete FPS, seed reproduction and independent validation remain pending'
+ early=REPORTS/'LEARNED_FIRST_DIVERGENCE_NATIVE.json'
+ if early.exists():
+  d=read(early);decision['first_native_discrepancy_audit']=ref(early)
+  lines2=['# 首次输出分歧的原生状态配对核验','',
+   '仅重跑TRAIN16前三个场景，两条轨迹均冷启动；不恢复旧JEV前缀、不启用旧JEV策略、不改变权重。前三场景预测分别与各自已保留完整轨迹严格一致。','',
+   '| 当前关联前的共同输入 | 严格一致 |','|---|---|']
+  for key,passed in d['common_input_checks'].items():lines2.append(f'| {key} | {passed} |')
+  lines2+=['','| 运行 | 离线目标类别 | 原始接受ID | 修正接受ID | 实际提交ID | 新生身份 |','|---|---|---|---|---|---|']
+  for kind,c in d['cases'].items():
+   r=c['inspected_row'];lines2.append(f"| {kind} | {r['category']} | {r['base_accepted_ID']} | {r['modified_accepted_ID']} | {r['actual_native_ID']} | {r['actual_is_newborn']} |")
+  lines2+=['','只有共同输入全部严格一致，才支持局部同状态比较。当前核验包含完整native状态/RNG、派生摘要、GTA原始分数、24维观测、候选及支持长度；记录了真实Bank/出生提交。',
+   '该行GT为UNKNOWN，不能把ID52改成ID25计为已认证N01，也不能说已证明纠正了身份错误。没有执行该事件单独开启/关闭的完整视频干预，不能把HOTA增益归因于此事件或宣称已测真实因果传播时间。']
+  (DOCS/'LEARNED_FIRST_DIVERGENCE_NATIVE.md').write_text('\n'.join(lines2)+'\n')
  save(REPORTS/'GO_NO_GO.json',decision)
  goal=read(REPORTS/'MASTER_GOAL.json');goal['gates']['ORDINARY_CONTROL_ADVANTAGE']='LEARNED_FAIR_COMPARISON_PENDING' if len(methods)<3 else 'SEE_LEARNED_GATE_RESULTS_NOT_SIGNIFICANCE_PROOF'
  positives=[k for k,r in methods.items() if r['joint_measured_quality_pass']]
@@ -95,6 +126,7 @@ def main():
  save(REPORTS/'MASTER_GOAL.json',goal)
  speed=read(REPORTS/'SPEED_METRICS.json');speed['trained_neural_model_quality']='SEE_LEARNED_GATE_RESULTS' if methods else 'PENDING_LEARNED_FIXED_ENDPOINT_ONLINE'
  speed['learned_gate_methods']={k:{key:r[key] for key in ['full_image_FPS','FPS_ratio_to_GMT','efficiency_gate_pass','speed_report']} for k,r in methods.items()}
+ if cached:speed['learned_cached_MLP']=cached
  save(REPORTS/'SPEED_METRICS.json',speed)
  with (DOCS/'EFFICIENCY.md').open('a') as f:
   f.write('\n训练后 learned gate 的完整 FPS 另见 LEARNED_GATE_RESULTS_ZH.md；旧零残差原型和旧 conflict 控制器结果保持原语义，不能将其计时当作新 learned gate 的计时。\n')

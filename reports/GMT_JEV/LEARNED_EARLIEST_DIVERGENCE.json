@@ -1,0 +1,166 @@
+{
+  "GT_labels_used": false,
+  "baseline": {
+    "SHA256": "0d9f882ad3190789e6add5868e25117d0498df51bd9141f0273921db90c82f45",
+    "bytes": 2787399,
+    "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/baseline/video16_frames1034/RAW_PREDICTIONS.json.gz"
+  },
+  "bootstrap_evidence": {
+    "first_association_commit": [
+      16,
+      0,
+      0
+    ],
+    "original_native_trace": {
+      "SHA256": "198cb8d0c8557b04f7c4ecd430d3c4c715ecad01baf84c8fecbedfb8784c0ae0",
+      "bytes": 892447,
+      "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/baseline/video16_frames1034/ORIGINAL.json"
+    },
+    "rule": "Two-camera native bootstrap has no association-commit callback; first retained association commit is the other camera."
+  },
+  "causal_attribution": "NOT_ESTABLISHED: no first-only/no-first paired intervention executed; earliest discrepancy alone does not explain HOTA or actual error propagation.",
+  "first_event_order": "Lexicographic frame/view/row; within-scene order is not an execution-time ordering.",
+  "first_scene_detection_counts_by_view": {
+    "1": 30,
+    "2": 30
+  },
+  "initial_unique_detection_count_assumption_rejected": true,
+  "interpretation": "All runs start cold with the same seed, frontend and native rules. Bootstrap camera is resolved using the original native commit trace even when detection counts tie. Numeric differences at the first affected scene locate a possible intervention. Later numeric IDs can shift with allocation and are never counted as semantic errors here.",
+  "metadata_view_ids_are_one_based": true,
+  "methods": {
+    "attention": {
+      "bootstrap_view_unchanged": true,
+      "earliest_native_numeric_discrepancy": {
+        "frame": 2,
+        "modified_ID": 50,
+        "original_ID": 52,
+        "row": 22,
+        "view": 1
+      },
+      "first_scene_changed_numeric_rows_by_view": {},
+      "first_scene_examples": [],
+      "predictions": {
+        "SHA256": "6c3cd505beb7aa58c291288d93a2e4f7d3b08c450055f39fcd7cb78803ae1b9f",
+        "bytes": 2787803,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/attention_learned/RAW_PREDICTIONS.json.gz"
+      },
+      "trained_checkpoint": {
+        "SHA256": "2afeaacaeffad84db146961ae868fd93395efb5f9234bb9024338b8a8eaf9ca0",
+        "bytes": 25577,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/learned_gate_smoke/attention_step300.pth"
+      }
+    },
+    "cic": {
+      "bootstrap_view_unchanged": true,
+      "earliest_native_numeric_discrepancy": {
+        "frame": 2,
+        "modified_ID": 25,
+        "original_ID": 52,
+        "row": 22,
+        "view": 1
+      },
+      "first_scene_changed_numeric_rows_by_view": {},
+      "first_scene_examples": [],
+      "predictions": {
+        "SHA256": "46927faddea24d2d25d7b463ffb44742d6acd3683326b89f4d3a4b9fab320bf3",
+        "bytes": 2787915,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/cic_learned/RAW_PREDICTIONS.json.gz"
+      },
+      "trained_checkpoint": {
+        "SHA256": "9452b693265a2a9f368bd15cc2797a322cbf464a641d4002330a2b85eb89cf57",
+        "bytes": 26046,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/learned_gate_smoke/cic_step300.pth"
+      }
+    },
+    "mlp": {
+      "bootstrap_view_unchanged": true,
+      "earliest_native_numeric_discrepancy": {
+        "frame": 2,
+        "modified_ID": 25,
+        "original_ID": 52,
+        "row": 22,
+        "view": 1
+      },
+      "first_scene_changed_numeric_rows_by_view": {},
+      "first_scene_examples": [],
+      "predictions": {
+        "SHA256": "843c219c5abc6c8038a1622d57f6ccef376c3def19a6de547a8e451fba720479",
+        "bytes": 2787758,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/online/mlp_learned/RAW_PREDICTIONS.json.gz"
+      },
+      "trained_checkpoint": {
+        "SHA256": "11709cd604a8d83a89c84fc62eeb9b81fb76e008e5f7b92d60dfa3d3778ea186",
+        "bytes": 24055,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261014_v1/learned_gate_smoke/mlp_step300.pth"
+      }
+    }
+  },
+  "native_bootstrap_view": 2,
+  "no_gradient_updates": true,
+  "no_new_GMT_run": true,
+  "reported_event_views_are_zero_based": true,
+  "source": {
+    "CUDA_VISIBLE_DEVICES": null,
+    "Full24": false,
+    "GMT_checkpoint": {
+      "SHA256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+      "bytes": 638238241,
+      "path": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth"
+    },
+    "GT_actor_input": false,
+    "HEAD": "dfc12dcd176a77c1085a1578ceb53513d15a8e20",
+    "goal": {
+      "SHA256": "809a366e6de2928a7cfc6bf46efb6865fa11ce2c8b17c22c21d6bcc579cbe2a0",
+      "bytes": 4024,
+      "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV/MASTER_GOAL.json"
+    },
+    "official_TEST": false,
+    "sealed20_21_22": true,
+    "source_SHA256": {
+      "configs/VISION_test.yaml": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+      "gtr/modeling/gmt_jev/__init__.py": "d901db850406e16a6dc32037a126c26d48fd98bcd71ed449691a11f4a50f2fa8",
+      "gtr/modeling/gmt_jev/correction.py": "60408d76905a1a86211a119211545b7c0d2ac2d26e248f77e5d2c5f173e0bbc2",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "935bbb74fa581225acc3da010d9972edaf5376263b1b800a33208a30af031b30",
+      "gtr/modeling/roi_heads/gtr_roi_heads.py": "8c7bd0e35269bfe8a20c04b046a5bd4d713a5c0e5581111c4941c2ee20ca463f",
+      "gtr/modeling/roi_heads/transformer.py": "22f4f578eac16948005019f6c6883dcc2abc81cf25b38c1e17be65e90cf3ded0",
+      "reproduction_tools/gmt_jev_baseline.py": "84ecb3c41eca79b34fc004f42d8f41e8b3ac5ca0a816c8deeeb999b87aec2203",
+      "reproduction_tools/gmt_jev_bounded_oracle_audit.py": "46105a34f762931d6a48cc063108cdbf3e1c13a86cda6714bc24b7d6a131e40b",
+      "reproduction_tools/gmt_jev_cache_followup.py": "76a2fe9ac80670e4df4165d5480ba0b130f31be1ad5f61d747618a4fcc7f5ec4",
+      "reproduction_tools/gmt_jev_cache_parity.py": "bf309689212f0e936dc43ad889112e38ba90c76f9e27d9f78eb69054571b0529",
+      "reproduction_tools/gmt_jev_calibration_probe.py": "8e85e4dd5f8047facc0d87c8766776f0c8aa791cb589f1743e3e4df002a22a15",
+      "reproduction_tools/gmt_jev_common.py": "54d599788f175aa2828021c9d6c7ce0e1c0fce6735d2127e293d090b5b6ad74c",
+      "reproduction_tools/gmt_jev_controller.py": "f1efc267b15d640e4cdbb41954c431c791e2b577271b3040a3e1076ffc31f260",
+      "reproduction_tools/gmt_jev_evaluate.py": "35dfa318b7f8d16bb554a8b8e0925c560bb59208d631775d051f57c1e2fa390a",
+      "reproduction_tools/gmt_jev_full_train_audit.py": "66e49e57f7695d360ca7f8f5cbed7eb50216934c6c94b5b8ac10e4bd0cb516a4",
+      "reproduction_tools/gmt_jev_full_train_followup.py": "5209ce770bb5f7d7adfd7b3b4b446f5d461379ea005c8dc21460cc4b9b4bfeaa",
+      "reproduction_tools/gmt_jev_head_cost.py": "c1c0b3d0ed81191451c5728a898c85034ecf773de59e57dcc8fc0cb0aa8df804",
+      "reproduction_tools/gmt_jev_independence_audit.py": "5099985a41284cfc671d08b5389e8342e905edc2c7ea9c7a56335dba8205ecc4",
+      "reproduction_tools/gmt_jev_job.py": "20fabf1db8c521a14acff2e68658d08ddda5edfdf548280a6481d719f5f9ed36",
+      "reproduction_tools/gmt_jev_learned_checkpoint.py": "6c0ccf3307a45de7afa28091bbeaf4b834e3ef90d96ca6f1f6191ee3dd2ea971",
+      "reproduction_tools/gmt_jev_learned_divergence.py": "c8f6376e3fc1ed38288e553409fef373e05413d498c54f27959d5eccbeb406a5",
+      "reproduction_tools/gmt_jev_learned_gate_smoke.py": "a083ce80124fb911d8b24c9fb7613c67b6fd25ffabe24cba3db4b9dec3dab0cd",
+      "reproduction_tools/gmt_jev_learned_profile.py": "acf62feb1c422c2a47deee31a3225d66d98c8fe371c0d32df90fd84c1d615c77",
+      "reproduction_tools/gmt_jev_learned_report.py": "580a83fadfa9d28d17bc553370cea5b3bef03a0f05b77a50bc83af10201b4221",
+      "reproduction_tools/gmt_jev_learned_temporal.py": "68092b4e33a342dda18a7a4be8bcfe9b18c0cbe11f3430588f56a4c3f2888618",
+      "reproduction_tools/gmt_jev_learned_validation_queue.py": "b0fcae38a56d684cb9f9ff1d3ce743ddaa5522e27f333dde6c7fad5183ad0395",
+      "reproduction_tools/gmt_jev_learned_zero_queue.py": "db87a14c94b9cc2f327547d7e638c1c361332bb59c39922b6916400a14f5d688",
+      "reproduction_tools/gmt_jev_online.py": "67592286cd76f38341457b2404f9ccac26c2543e56f79e8f7d0d2f169f64ff04",
+      "reproduction_tools/gmt_jev_opportunity.py": "c82f96a9b8c2490733e19ec56220fb19dc9bf91353ede180024a76daac51c415",
+      "reproduction_tools/gmt_jev_past_anchor_audit.py": "8ea70b5e4a87d61340873a4af9f71ad38b82864b1e264c285bf8538c6b0bb7e8",
+      "reproduction_tools/gmt_jev_publish.py": "e0a3b7886e0b35b689d99361465de2d1eba3a413bc1d03382f837e1ad8767c1a",
+      "reproduction_tools/gmt_jev_research_report.py": "a0b77e79f595507f24bbd68c22ec5cdb9c3860708be65401a47ca08ba0803683",
+      "reproduction_tools/gmt_jev_runtime.py": "39c0b133e1b12e7658458de9fa2a463c5f0d31d24e7f48827b8fe8fd33afb1c3",
+      "reproduction_tools/gmt_jev_speed.py": "f9f7763f076f3882af1d2bcc1fd9d161e0b648db69b4113bc485fc306f3aec1b",
+      "reproduction_tools/gmt_jev_speed_queue.py": "f4aca344229457c345ba0817b98e97a469c7d421bbe5b2b1b97f7d520777f0c0",
+      "reproduction_tools/gmt_jev_stock_baseline.py": "e65ba0f7c48953b4d329f5e17d82b32bc7913ce2cdb91ad90e0d9360b01841dd",
+      "reproduction_tools/gmt_jev_stock_identity_audit.py": "58e80a63005554b20d7744ef876c8adc81b3d25df243440b55a4d5eac748fc8d",
+      "reproduction_tools/gmt_jev_summarize_online.py": "49bb8d1f57fa513bbfba815ea44eac44b0b5365454ec73eed1a8c204cb1247a4",
+      "reproduction_tools/gmt_jev_train_matched_quality.py": "454f08bc8d35ca0895d7fcc017bd79db8e70a0d78759a1f6239faf4ed56e4350",
+      "reproduction_tools/gmt_jev_train_matched_quality_queue.py": "d68b058082f4069e76b8412619e20293e63dc7c390b639fad7e93dc178978ca0",
+      "reproduction_tools/gmt_jev_train_native_rule_queue.py": "7d92bf3e30d18a5bce3bcae26edf1384878f63b70ce1ffc70bf0d62c1f62b734",
+      "reproduction_tools/gmt_jev_train_native_rule_validation.py": "6721f2a549eddc981eb45b078eeab443cab4fa8807d33eb32876282e58143b4a"
+    }
+  },
+  "status": "COMPLETE_EARLIEST_NATIVE_OUTPUT_DISCREPANCY_AUDIT",
+  "video": 16
+}
