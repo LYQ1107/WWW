@@ -28,7 +28,11 @@ def main():
         _,frames,images=metadata(video);local=collections.Counter();holder={};before_result=[]
         class CapturedHistory(History):
             def __init__(self,*a,**kw):super().__init__(*a,**kw);holder['history']=self
-        original_class=opportunity.OfflineCertificates;original_run=opportunity.run
+        original_class=opportunity.OfflineCertificates;original_run=opportunity.run;original_model=opportunity.model
+        def captured_model(*a,**kw):
+            out=original_model(*a,**kw);holder['model']=out[0]
+            assert out[0].jev_candidate_policy is None and not out[0].not_mult_thresh
+            return out
         def compare_run(*a,**kw):
             from run_jev_phase10_closed_loop import raw_predictions
             out=original_run(*a,**kw)
@@ -45,11 +49,27 @@ def main():
             with torch.no_grad():
                 gate,delta=actor.head(x);corrected=raw+(.05*gate*delta)*lengths[None]
             base=opportunity.native_assignment(raw,lengths);mlp=opportunity.native_assignment(corrected,lengths)
+            # Exercise the actual native candidate-solver interface on both
+            # immutable pre-commit matrices, then its exact acceptance rule.
+            native=holder['model']
+            for score,expected in [(raw,base),(corrected,mlp)]:
+                rr,cc=native._candidate_initial_pairs(score)
+                actual=[-1]*len(expected)
+                for r,c in zip(rr,cc):
+                    if score[r,c]>score.new_tensor(native.overlap_thresh*float(lengths[c])):actual[int(r)]=int(c)
+                assert actual==expected
             assert base==s['baseline_accepted_cols']
             assert all(s['native_ids'][r]==refs[c] for r,c in enumerate(base) if c>=0)
             plan=paired_plan(base,mlp,refs,s['targets'].tolist(),s['categories'],s['GT_labels_OFFLINE_ONLY'],s['owners'])
             local['plans']+=1;local['plan_'+plan['category']]+=1;local.update({'row_'+k:n for k,n in collections.Counter(s['categories']).items()})
             local['rows']+=len(base);local['changed_rows']+=len(plan['changed']);local.update(plan.get('unknown_reasons',{}))
+            for row,(a,b,target,category) in enumerate(zip(base,mlp,s['targets'].tolist(),s['categories'])):
+                if target<0:local['paired_row_UNKNOWN_TARGET']+=1
+                elif a<0 or b<0:local['paired_row_UNKNOWN_BANK_OR_BIRTH']+=1
+                elif s['owners'].get(refs[a]) is None or s['owners'].get(refs[b]) is None:local['paired_row_UNKNOWN_OWNER']+=1
+                else:
+                    name=('GMT_CORRECT' if a==target else 'GMT_WRONG')+'_'+('MLP_CORRECT' if b==target else 'MLP_WRONG')
+                    local['paired_row_'+name]+=1
             if plan['label'] is not None:
                 event=dict(video=video,frame=f,view=v,heldout=heldout,people=plan['people'],action=plan['category'])
                 events.append(event);local[('HELDOUT_' if heldout else 'TRAIN_')+plan['category']]+=1
@@ -62,7 +82,7 @@ def main():
             for t,votes in history.votes.items():
                 for g,n in votes.items():
                     if n/history.total[t]>=.8:compatible[g]+=1
-            if not refs:return
+            if not refs or s['features'].shape[0]==0:return
             features=s['features'].mean(0)
             for col,t in enumerate(refs):
                 owner=history.owner.get(t);label=history_label(history.total[t],history.votes[t],owner,compatible.get(owner,0))
@@ -90,10 +110,10 @@ def main():
                 assert peak<32*2**20,'Training buffer and grouping metadata exceed 32MiB'
             if f%64==0:
                 save(OUT/'P0_PROGRESS.json',dict(status='PAIRED_GMT_NATIVE_STATE_AUDIT',video=video,frame=f,frames=frames,counts=dict(local),buffer_bytes=peak))
-        opportunity.OfflineCertificates=CapturedHistory;opportunity.run=compare_run
+        opportunity.OfflineCertificates=CapturedHistory;opportunity.run=compare_run;opportunity.model=captured_model
         try:
             samples,result=opportunity.collect(video,frames=frames,records=False,report=False,diagnostic_sample_observer=observe)
-        finally:opportunity.OfflineCertificates=original_class;opportunity.run=original_run
+        finally:opportunity.OfflineCertificates=original_class;opportunity.run=original_run;opportunity.model=original_model
         assert not samples and result['frames']==frames and before_result
         counts.update(local);case=dict(video=video,frames=frames,counts=dict(local),original_prediction_parity=before_result[0],source_result_counts=result['counts'])
         cases.append(case);save(REPORTS/f'PAIRED_PLAN_VIDEO{video:02d}.json',case)

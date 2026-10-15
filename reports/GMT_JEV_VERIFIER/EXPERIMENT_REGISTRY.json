@@ -1,5 +1,69 @@
 {
   "GPU_wall_hours_max": 4,
-  "jobs": {},
+  "jobs": {
+    "V2_P0_FULL_TRAIN_AND_Q1_DIAGNOSTIC_GPU7": {
+      "GPU": 7,
+      "PID": 18227,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "/home/liuyeqiang/WWW_gmt_jev_20261014/reproduction_tools/gmt_jev_verifier_audit.py"
+      ],
+      "exit_code": -15,
+      "log": {
+        "SHA256": "d6b7f68c8298be7e48618227ca25b2eaff57a66c562f1a033aeccfa2c128afec",
+        "bytes": 25830,
+        "path": "/home/liuyeqiang/WWW_gmt_jev_runtime/20261015_verifier_v2/jobs/V2_P0_FULL_TRAIN_AND_Q1_DIAGNOSTIC_GPU7/OUTPUT.log"
+      },
+      "seconds": 168.1626531779766,
+      "source": {
+        "GT_actor_input": false,
+        "HEAD": "89607450e0ca966f9679e15d22ff76bb93829c6c",
+        "goal": {
+          "SHA256": "ed8ece31d0dfade5c26362f6593d69e6861e2caa2b8b1128425ca3f89b90c02b",
+          "bytes": 2454,
+          "path": "/home/liuyeqiang/WWW_gmt_jev_20261014/reports/GMT_JEV_VERIFIER/GOAL.json"
+        },
+        "scope": {
+          "Full24": false,
+          "development_only": [
+            16
+          ],
+          "gradient_TRAIN": [
+            12,
+            13,
+            14
+          ],
+          "new_download": false,
+          "no_new_DEV": [
+            17,
+            18,
+            19
+          ],
+          "official_TEST": false,
+          "sealed": [
+            20,
+            21,
+            22
+          ]
+        },
+        "source_SHA256": {
+          "gtr/modeling/gmt_jev/correction.py": "60408d76905a1a86211a119211545b7c0d2ac2d26e248f77e5d2c5f173e0bbc2",
+          "gtr/modeling/gmt_jev/typed_verifier.py": "efe7d0d8586530b25274ea7c8ecf748990717ce97011535a8c2762c1ebda08ef",
+          "gtr/modeling/meta_arch/gtr_rcnn.py": "935bbb74fa581225acc3da010d9972edaf5376263b1b800a33208a30af031b30",
+          "reproduction_tools/gmt_jev_verifier_audit.py": "20320d43f1f6852444b2d0b2920c97471d1d04d6ad4fd479dd3aedc948da5272",
+          "reproduction_tools/gmt_jev_verifier_common.py": "395225a609255056e22a78140a12d31d842d851a774402b08cdeb062e2fe1ea9",
+          "reproduction_tools/gmt_jev_verifier_job.py": "810b8577fffbce66e162ac0e79e1a5f9d2e349a947c3d6f5ed84c09745e5660b",
+          "reproduction_tools/gmt_jev_verifier_label_contracts.py": "bd151d034985a1ed4a09855ba78d3b266e2c2d67ac0a84fed0eab4c594d889e0",
+          "reproduction_tools/gmt_jev_verifier_labels.py": "43c093ef568f223539980dfcb422880c0ed2d03e1a0de07eb03b8b7fd23dce10",
+          "reproduction_tools/gmt_jev_verifier_publish.py": "68ff2280a6604d3235c9949fb0eb101fb27fe5d808ce27f26d4974fd409bb4fd",
+          "reproduction_tools/gmt_jev_verifier_q1_diagnostic.py": "a2d94f1ff0fc7672b6b5ca75c1679e9170780dab674e8cd5b39d353cd790f2c1"
+        }
+      },
+      "started_wall_time": 1792044608.4201155,
+      "status": "FAILED",
+      "stop_reason": "Own short engineering precheck deliberately stopped to add required row-level certification counters, actual native solver interface verification and zero-row guard; no model/labels/eligibility change",
+      "usable_as_complete_result": false
+    }
+  },
   "round": "GMT_JEV_VERIFIER_V2_20261015"
 }
