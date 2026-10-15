@@ -44,13 +44,33 @@ def finalize_ranking(stats):
                 success_at_k_all_requests={str(k):ratio(stats[f'hits{k}'], stats['requests']) for k in [1,5,10]})
 
 
+def verify_retained_metrics(retained,recomputed,allow_legacy=False):
+    recomputed=json.loads(json.dumps(recomputed))
+    if retained==recomputed:return 'exact'
+    if not allow_legacy:raise ValueError('retained metrics do not match exact post-run recomputation')
+    enrichment={'query_scene','scoring_diagnostics','scoring_diagnostic_denominator'}
+    if set(recomputed)-set(retained)!=enrichment or set(retained)-set(recomputed):raise ValueError('unrecognized legacy metric schema')
+    if recomputed['query_scene'] is not None or recomputed['scoring_diagnostics']:
+        raise ValueError('legacy compatibility only applies to original unfiltered production evaluation')
+    projected={key:value for key,value in recomputed.items() if key not in enrichment}
+    counters={'requests','matched','eligible','hits1'}
+    if set(retained['per_scene'])!=set(recomputed['per_scene']):raise ValueError('legacy scene scope changed')
+    for scene,values in retained['per_scene'].items():
+        if set(values)!=counters:raise ValueError('unknown legacy counters')
+    projected['per_scene']={scene:{key:values[key] for key in counters} for scene,values in recomputed['per_scene'].items()}
+    if projected!=retained:raise ValueError('legacy retained values changed')
+    return 'verified_legacy_counter_enrichment'
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--run', type=Path, required=True)
     parser.add_argument('--query-scene', type=int)
     parser.add_argument('--verify-existing',action='store_true',help='recompute and exactly verify an existing metric file without replacing it')
     parser.add_argument('--outcome-output',type=Path,help='optional separate post-run per-query GT outcome artifact; no inference/reranking')
+    parser.add_argument('--verify-legacy-counter-schema',action='store_true',help='explicitly allow only known old per-scene four-counter schema; every retained value must still match')
     args = parser.parse_args()
+    if args.verify_legacy_counter_schema and not args.verify_existing:parser.error('legacy schema verification requires --verify-existing')
     report_path = args.run/('retrieval.metrics.json' if args.query_scene is None else f'retrieval.scene_{args.query_scene}.metrics.json')
     if report_path.exists() and not args.verify_existing:
         raise FileExistsError(report_path)
@@ -180,13 +200,15 @@ def main():
                   metric_protocol='one-to-one detector/GT IoU>=0.5; identity=(scene,raw_GT_ID); clip positive requires strict GT majority across all its observations; Recall and full MRR conditional on GT-matched query with at least one positive other-camera clip; all candidate ranks retained',
                   query_selection_uses_gt=False, ranking_uses_gt=False, future_gallery_allowed=False,
                   limitations='finite local dataset replay, not live Internet feeds; clip identity majority is an evaluation convention')
+    schema_verification=None
     if args.verify_existing:
-        if json.loads(json.dumps(report))!=retained:raise ValueError('retained metrics do not match exact post-run recomputation')
+        schema_verification=verify_retained_metrics(retained,report,args.verify_legacy_counter_schema)
     else:save_json(report_path, report)
     if args.outcome_output is not None:
         save_json(args.outcome_output,dict(status='MATCHES_RETAINED_METRICS' if args.verify_existing else 'WRITTEN_WITH_METRICS',
             run=str(args.run),query_scene=args.query_scene,metric=str(report_path),metric_sha256=sha256(report_path),
             run_manifest_sha256=sha256(args.run/'manifest.json'),raw_gt_sha256=gt_hashes,outcomes=outcomes,
+            metric_schema_verification=schema_verification,
             speed_eligible=False,analysis_only=True,
             scope='post-run original ranked responses labelled with GT; all matched, unmatched and ineligible detector queries retained; no query selection, ranking, inference or metric overwrite',provenance=provenance()))
     print(json.dumps(report, indent=2))
