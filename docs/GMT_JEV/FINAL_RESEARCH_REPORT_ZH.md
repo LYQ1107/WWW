@@ -12,7 +12,7 @@ TRAIN12/13/14 冻结前缀共14541行；11305唯一认证行中25行不是当前
 
 ## 3. 最小 CIC 输入与网络
 
-post-GTA 24个观测特征：分数竞争、历史支持、年龄、相机内/间余弦、冲突与检测置信度。共享摘要仅来自已提交的 native ID。CIC 使用32维 edge/query/context 和两个观测冲突角色，4962参数；MLP5119、Attention4898。有界归一化残差上限0.05，乘原生 support count 加入 summed score，再由同一原生匹配/阈值处理。GT仅用于离线标签和评测。预注册 CE、preserve 与 residual loss 已定义，但没有执行训练，新增梯度更新为0。
+post-GTA 24个观测特征：分数竞争、历史支持、年龄、相机内/间余弦、冲突与检测置信度。共享摘要仅来自已提交的 native ID。CIC 使用32维 edge/query/context 和两个观测冲突角色，4962参数；MLP5119、Attention4898。有界归一化残差上限0.05，乘原生 support count 加入 summed score，再由同一原生匹配/阈值处理。GT仅用于离线标签和评测。预注册 CE、preserve 与 residual loss 已定义，早期 conflict 原型未训练；新 learned gate 的实际训练及结构化 hinge loss 见下文补查。
 
 ## 4–5. HOTA 与身份指标
 
@@ -31,7 +31,7 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 ## 6. 普通方法是否足以解释收益
 
-目前所有正向结果来自未训练的普通控制器；学习式架构独立优势未建立。MLP/Attention/CIC 没有通过冻结 TRAIN 信号前置条件，不进行盲目训练或架构消融。不能把零残差原型的效率测量冒充训练后的公平质量比较。严格认证 N01/N10 为0/1、0/2、0/1，覆盖有限、Bank结果部分 UNKNOWN，不是完整闭环归因。
+此前 Rule/Threshold/Confidence 的正向结果来自未训练的普通控制器；学习式架构独立优势未建立。旧 conflict 模式未通过冻结 Rule 信号条件；一次经原生零残差与认证监督预检查的 learned gate 修订另列，未扩大架构搜索。不能把零残差原型的效率测量冒充训练后的公平质量比较。严格认证 N01/N10 为0/1、0/2、0/1，覆盖有限、Bank结果部分 UNKNOWN，不是完整闭环归因。
 
 ## 7. 真实效率
 
@@ -49,7 +49,7 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 研究分支 research/gmt-jev-risk-association-20261014；[当前中文报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。每阶段仅推源码、配置和紧凑JSON，权重、视频、图像、预测压缩包留在服务器并记录 SHA。实际发布终态由 runtime/publication/LAST_VERIFIED.json 的 local/remote HEAD 一致证明；报告生成来源 HEAD 与运行时源码 SHA 保存在 JSON。
 
-当前资源快照：{"new_retained_MiB": 287.5967683792114, "home_free_GiB": 50.07275390625, "GPU_wall_hours_including_live": 8.274325695480737}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
+当前资源快照：{"new_retained_MiB": 288.26041412353516, "home_free_GiB": 50.07008743286133, "GPU_wall_hours_including_live": 8.570513444151729}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
 
 完整 TRAIN12/13/14 覆盖补查：31663 条可认证唯一合法候选中，GMT 错误 127 条。TRAIN 时间桶冻结 Rule 局部 N01/N10=1/0；原前缀报告保持不变，这一补查不代表原生闭环或独立验证。当前训练状态：NOT_RUN_NATIVE_TRAIN_RULE_SIGNAL_GATE_FAILED。见 FULL_TRAIN_OPPORTUNITY_AUDIT.json 与已冻结 TRAIN_NATIVE_RULE_VALIDATION_PROTOCOL.md。
 
@@ -73,4 +73,4 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 ## 学习式门控修订的当前证据
 
-阶段 REAL_SUPERVISION_PRECHECK_PENDING_NO_UPDATES；真实 optimizer 更新总数 0。三个头各自的固定终点、监督认证和完整闭环结果见 [LEARNED_GATE_RESULTS_ZH.md](LEARNED_GATE_RESULTS_ZH.md)。旧 Rule 失败结论不变；未证明独立科学成功。
+阶段 COMPLETE；真实 optimizer 更新总数 900。三个头各自的固定终点、监督认证和完整闭环结果见 [LEARNED_GATE_RESULTS_ZH.md](LEARNED_GATE_RESULTS_ZH.md)。旧 Rule 失败结论不变；未证明独立科学成功。
