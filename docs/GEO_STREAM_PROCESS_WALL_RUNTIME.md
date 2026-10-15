@@ -22,4 +22,4 @@ documented held children and conservative priority-owner lifetime overlaps exclu
 | native_prior_seed20261015_strict_suite_v1 | 14324 | 6.837483 | 6.577444 | 82.823 |
 | native_prior_seed20261016_strict_suite_v1 | 14324 | 6.565688 | 6.320656 | 84.575 |
 
-Recorded full process rows: 118; excluded full held-dispatcher stages: 7. Missing complete suites are not filled with zero setup cost. Sealed stage/log/manifest hashes and separate full retrieval rows remain in the JSON/CSV.
+Recorded full process rows: 122; excluded full held-dispatcher stages: 7. Missing complete suites are not filled with zero setup cost. Sealed stage/log/manifest hashes and separate full retrieval rows remain in the JSON/CSV.

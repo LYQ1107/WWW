@@ -75,11 +75,14 @@ def summarize(manifest, devices, processes):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--samples', type=Path, default=RUNTIME/'resource_samples/remaining_declared_jobs_v1')
+    parser.add_argument('--report-output', type=Path, default=ROOT/'results/remaining_job_sampled_resources_v1.json')
     args = parser.parse_args()
     path = args.samples/'manifest.json'
     manifest = json.loads(path.read_text())
     if manifest['status'] != 'FINISHED_EXISTING_JOBS':
         raise ValueError('probe is not finished; no final resource report written')
+    if args.report_output.exists() and str(path) not in json.loads(args.report_output.read_text())['source_artifacts']:
+        raise FileExistsError('different probe requires a separate report output')
     artifacts = {str(path): sha256(path)}
     data = {}
     for name in ('devices.csv', 'processes.csv'):
@@ -92,9 +95,9 @@ def main():
     result = summarize(manifest, data['devices.csv'], data['processes.csv'])
     result.update(status='FINISHED_PROBE_SAMPLED_RESOURCES', source_artifacts=artifacts,
         scope='passive whole-device and per-process samples for the named existing job controllers and descendants; includes controls/evaluation/workers separately',
-        limitations='sampled extrema are not exact lifetime peaks; present at first probe sample indicates possible partial coverage, while later appearance does not prove complete lifetime coverage; sample means are unweighted, not time-weighted utilization; no unique per-method device attribution; per-PID RSS maxima are never summed as physical RAM, and per-device/per-process noncoincident maxima are never summed; no throughput or capture/network-latency estimate',
+        limitations='sampled extrema are not exact lifetime peaks; present at first probe sample indicates possible partial coverage, while later appearance does not prove complete lifetime coverage; sample means are unweighted, not time-weighted utilization; no unique per-method device attribution; per-PID RSS maxima are never summed as physical RAM, and per-device/per-process noncoincident maxima are never summed; overlapping probes are not independent repetitions and must not be summed or interpreted as uniquely attributable user workloads; no throughput or capture/network-latency estimate',
         provenance=provenance())
-    save_json(ROOT/'results/remaining_job_sampled_resources_v1.json', result)
+    save_json(args.report_output, result)
     print(json.dumps(dict(status=result['status'], sample_groups=result['sample_groups'], processes=len(result['process_rows']))))
 
 

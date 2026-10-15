@@ -42,23 +42,33 @@ def affected_windows(controller_pid, stage, windows):
     return found
 
 
+def superseded_child_windows(controller_pid,stage,windows):
+    return [window['path'] for window in windows
+        if stage.get('status')=='RUNNING' and window['controller_pid']==controller_pid
+        and window['observed_status']=='ORIGINAL_DISPATCHER_SUPERSEDED_AFTER_CHILD_EXIT'
+        and str(stage['pid']) in window['existing_children']]
+
+
 def main():
     windows = []
-    for path in sorted((RUNTIME/'priority_windows').glob('*/manifest.json')):
+    for path in sorted([*(RUNTIME/'priority_windows').glob('*/manifest.json'),*(RUNTIME/'handoffs').glob('*/manifest.json')]):
         info = json.loads(path.read_text())
-        completed = info['status'] in {'PRIORITY_COMMANDS_ENDED', 'INTERRUPTED'}
+        completed = info['status'] in {'PRIORITY_COMMANDS_ENDED', 'INTERRUPTED','ORIGINAL_DISPATCHER_SUPERSEDED_AFTER_CHILD_EXIT'}
         windows.append(dict(path=str(path), observed_status=info['status'], controller_pid=info['controller_pid'],
             controller_starttime=info['controller_starttime'], existing_children=info.get('existing_children', {}),
+            completed_manifest_sha256=sha256(path) if completed else None,
             conservative_start_timestamp=datetime.datetime.fromisoformat(info['provenance']['process_started_utc']).timestamp(),
             conservative_end_timestamp=path.stat().st_mtime if completed else datetime.datetime.now(datetime.timezone.utc).timestamp(),
             bound_scope='priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages'))
     rows, excluded, stages, artifacts = [], [], {}, {}
+    artifacts.update({window['path']:window['completed_manifest_sha256'] for window in windows if window['completed_manifest_sha256']})
     for queue in sorted((RUNTIME/'queues').glob('*/manifest.json')):
         info = json.loads(queue.read_text())
         for stage in info.get('stages', []):
             command = stage.get('command', [])
             entry = next((Path(x).name for x in command if Path(x).name in ENTRIES), None)
-            if stage.get('status') != 'PASS' or entry is None or '--tag' not in command:
+            superseded=superseded_child_windows(info['pid'],stage,windows)
+            if (stage.get('status') != 'PASS' and not superseded) or entry is None or '--tag' not in command:
                 continue
             tag = command[command.index('--tag')+1]
             family = 'retrieval' if entry == 'run_live_retrieval.py' else 'online'
@@ -71,6 +81,13 @@ def main():
             key = str(queue)+'::'+stage['id']
             stages[key] = dict(queue=str(queue), controller_pid=info['pid'], stage=stage,
                                stage_record_sha256=record_digest(stage))
+            if superseded:
+                if run.get('raw_log_path')!=stage['log'] or sha256(path.parent/'predictions.json')!=run['predictions_sha256']:
+                    raise ValueError('superseded child output/log identity mismatch')
+                excluded.append(dict(method=tag,stage_key=key,priority_windows=superseded,
+                    reason='original child completed uninterrupted but dispatcher was superseded while held; no parent-observed exit duration exists'))
+                artifacts[str(path)]=sha256(path);artifacts[stage['log']]=sha256(stage['log'])
+                continue
             affected = affected_windows(info['pid'], stage, windows)
             if affected:
                 excluded.append(dict(method=tag, stage_key=key, priority_windows=affected,

@@ -203,6 +203,7 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | causal_B7_dense_seed20261016_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.1376 | 84.4050 | 93.3871 | 93.3871 | 225 |
 | causal_B7_dense_seed20261016_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9797 | 80.9985 | 98.9364 | 98.9364 | 23 |
 | causal_B7_dense_seed20261016_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.2994 | 79.2326 | 92.0449 | 92.0449 | 20 |
+| causal_B7_dense_seed20261016_strict_suite_v1_v18 | 18 | causal | complete | yes | 78.7750 | 81.0310 | 95.9610 | 95.9610 | 25 |
 | causal_B7_fixed_k10_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k10_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B7_fixed_k10_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.2769 | 79.1899 | 91.9855 | 91.9855 | 41 |
@@ -224,6 +225,9 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | causal_B7_fixed_k5_strict_suite_v1_v18 | 18 | causal | complete | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_B7_fixed_k5_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.4689 | 81.0445 | 94.0645 | 94.0645 | 100 |
 | causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9882 | 81.0174 | 98.9507 | 98.9507 | 24 |
+| causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.3215 | 79.2745 | 92.0449 | 92.0449 | 26 |
+| causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18 | 18 | causal | complete | yes | 78.7794 | 81.0470 | 95.9780 | 95.9780 | 22 |
+| causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.2834 | 80.6635 | 93.1298 | 93.1298 | 92 |
 | causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.3122 | 79.2569 | 92.0515 | 92.0515 | 25 |
 | causal_B8_fixed20_total80_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B8_fixed20_total80_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |

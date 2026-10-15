@@ -408,6 +408,20 @@
       "reported_loop_camera_image_fps": 0.9497460447255425
     },
     {
+      "method": "causal_B7_dense_seed20261016_strict_suite_v1_v18",
+      "family": "online",
+      "images": 2058,
+      "video_id": 18,
+      "manifest": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_dense_seed20261016_strict_suite_v1_v18/manifest.json",
+      "manifest_sha256": "b03e0c45248f9f7ba0b83a8af1747b9340b50e7d3db62d7ab10f7aaed14d0171",
+      "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu6/manifest.json::causal_B7_dense_seed20261016_strict_suite_v1_v18",
+      "process_wall_seconds": 2300.8739401474595,
+      "reported_loop_seconds": 2281.092479854822,
+      "outside_loop_seconds": 19.781460292637348,
+      "process_camera_image_fps": 0.8944427437289789,
+      "reported_loop_camera_image_fps": 0.9021992830956943
+    },
+    {
       "method": "retrieval_gmt_dense_head_tracking_2streams_full_v1",
       "family": "retrieval",
       "images": 2058,
@@ -882,6 +896,48 @@
       "outside_loop_seconds": 18.552780605852604,
       "process_camera_image_fps": 1.029290529442322,
       "reported_loop_camera_image_fps": 1.0340098555471502
+    },
+    {
+      "method": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19",
+      "family": "online",
+      "images": 2104,
+      "video_id": 19,
+      "manifest": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19/manifest.json",
+      "manifest_sha256": "64f36dc4c74ac71f6af60aa468ca7b3b36861d38e7cec9c3021dab68903b5373",
+      "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu4/manifest.json::causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19",
+      "process_wall_seconds": 2068.938412517309,
+      "reported_loop_seconds": 2051.508036620915,
+      "outside_loop_seconds": 17.430375896394253,
+      "process_camera_image_fps": 1.0169466559616103,
+      "reported_loop_camera_image_fps": 1.0255870132809939
+    },
+    {
+      "method": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18",
+      "family": "online",
+      "images": 2058,
+      "video_id": 18,
+      "manifest": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18/manifest.json",
+      "manifest_sha256": "a61f7e8a92f8432a831d4beaa3a4a3aacec4072bcffa685ab6a992153ab2bdb0",
+      "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu4/manifest.json::causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18",
+      "process_wall_seconds": 2094.0298831164837,
+      "reported_loop_seconds": 2074.5064923763275,
+      "outside_loop_seconds": 19.523390740156174,
+      "process_camera_image_fps": 0.9827939976372918,
+      "reported_loop_camera_image_fps": 0.9920431715027224
+    },
+    {
+      "method": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11",
+      "family": "online",
+      "images": 4114,
+      "video_id": 11,
+      "manifest": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11/manifest.json",
+      "manifest_sha256": "0be3a4915b467bf584b78f50cedfbdd2ea5f59bee7458b4c6faad222f5721b55",
+      "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu5/manifest.json::causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11",
+      "process_wall_seconds": 4063.957356967032,
+      "reported_loop_seconds": 4046.1858179569244,
+      "outside_loop_seconds": 17.771539010107517,
+      "process_camera_image_fps": 1.0123137716854183,
+      "reported_loop_camera_image_fps": 1.0167600266260923
     },
     {
       "method": "causal_B8_fixed20_total80_strict_suite_v1_v1",
@@ -3336,6 +3392,51 @@
       },
       "stage_record_sha256": "c70bc26414bc15f9c6df5beebc956bc7649e7d66c46f8c017b80906b97295469"
     },
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu6/manifest.json::causal_B7_dense_seed20261016_strict_suite_v1_v18": {
+      "queue": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/dense_stability_parallel_v2_gpu6/manifest.json",
+      "controller_pid": 29388,
+      "stage": {
+        "id": "causal_B7_dense_seed20261016_strict_suite_v1_v18",
+        "command": [
+          "geo_tools/run_online.py",
+          "--video-id",
+          "18",
+          "--tag",
+          "causal_B7_dense_seed20261016_strict_suite_v1_v18",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261016.pt",
+          "--geometry-weight",
+          "0.5",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ],
+        "log": "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/dense_stability_parallel_v2_gpu6_causal_B7_dense_seed20261016_strict_suite_v1_v18.log",
+        "status": "PASS",
+        "started_utc": "2026-10-15T07:13:06.959649+00:00",
+        "pid": 35003,
+        "exit_code": 0,
+        "seconds": 2300.8739401474595,
+        "finished_utc": "2026-10-15T07:51:27.833934+00:00",
+        "log_sha256": "425d7511e31f6315c7066e051f6d7a222862bd54681e758d6f5ce0e1edc4b39b"
+      },
+      "stage_record_sha256": "2fefd2ba74be29033a5b4fb1bd637e46b5cae8dd175d2a5fc8ddbc01d7bad930"
+    },
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/matched_head_tracking_retrieval_resume_v2_gpu5/manifest.json::retrieval_gmt_dense_head_tracking_2streams_full_v1": {
       "queue": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/matched_head_tracking_retrieval_resume_v2_gpu5/manifest.json",
       "controller_pid": 35439,
@@ -4627,6 +4728,100 @@
       },
       "stage_record_sha256": "8a520c52451dc56267c1c5f9f769f92d53d4c46facdeecef5352ab086543bb11"
     },
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu4/manifest.json::causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19": {
+      "queue": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu4/manifest.json",
+      "controller_pid": 24756,
+      "stage": {
+        "id": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19",
+        "command": [
+          "geo_tools/run_seeded_online.py",
+          "--inference-seed",
+          "20261015",
+          "--video-id",
+          "19",
+          "--tag",
+          "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+          "--geometry-weight",
+          "0.5",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ],
+        "log": "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/primary_vggt_inference_seed_pairs_v1_gpu4_causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19.log",
+        "status": "PASS",
+        "started_utc": "2026-10-15T06:53:05.519398+00:00",
+        "pid": 25352,
+        "exit_code": 0,
+        "seconds": 2068.938412517309,
+        "finished_utc": "2026-10-15T07:27:34.458029+00:00",
+        "log_sha256": "721542dc5a95a6fe869e62a64aadc679a5c7fab3ba7b4d421221fd482d3d0363"
+      },
+      "stage_record_sha256": "30a8502b86e5d38517d7399cc81e456cfb15abc5fa2c17bb5d6f6f8524a5eafb"
+    },
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu4/manifest.json::causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18": {
+      "queue": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu4/manifest.json",
+      "controller_pid": 24756,
+      "stage": {
+        "id": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18",
+        "command": [
+          "geo_tools/run_seeded_online.py",
+          "--inference-seed",
+          "20261015",
+          "--video-id",
+          "18",
+          "--tag",
+          "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+          "--geometry-weight",
+          "0.5",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ],
+        "log": "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/primary_vggt_inference_seed_pairs_v1_gpu4_causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18.log",
+        "status": "PASS",
+        "started_utc": "2026-10-15T07:27:46.324869+00:00",
+        "pid": 31132,
+        "exit_code": 0,
+        "seconds": 2094.0298831164837,
+        "finished_utc": "2026-10-15T08:02:40.354895+00:00",
+        "log_sha256": "934c6a5dd08450b3faa4536f2f3a5fee385678960aac6a4f56d3d81f0d885871"
+      },
+      "stage_record_sha256": "8cea4567794bd37862b62d0e1a48f36e53617746619673c25891ce296f9d089e"
+    },
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu5/manifest.json::causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v11": {
       "queue": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu5/manifest.json",
       "controller_pid": 24757,
@@ -4673,6 +4868,53 @@
         "log_sha256": "b4f4b43b11f0587053cb5f98fe2ddb012f071e838f7789400d25ae183893e123"
       },
       "stage_record_sha256": "17015ea39a9515d965e0aabd1e6b7d96f25bbb889eb76cbffd11d5b8df9ae067"
+    },
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu5/manifest.json::causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11": {
+      "queue": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu5/manifest.json",
+      "controller_pid": 24757,
+      "stage": {
+        "id": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11",
+        "command": [
+          "geo_tools/run_seeded_online.py",
+          "--inference-seed",
+          "20261015",
+          "--video-id",
+          "11",
+          "--tag",
+          "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11",
+          "--feature-weight",
+          "2",
+          "--max-residual",
+          "2",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+          "--geometry-weight",
+          "0.5",
+          "--geometry-method",
+          "vggt_camera",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ],
+        "log": "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/primary_vggt_inference_seed_pairs_v1_gpu5_causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11.log",
+        "status": "PASS",
+        "started_utc": "2026-10-15T06:59:58.767578+00:00",
+        "pid": 1993,
+        "exit_code": 0,
+        "seconds": 4063.957356967032,
+        "finished_utc": "2026-10-15T08:07:42.725177+00:00",
+        "log_sha256": "985c137a21c304a9597a185d8c1b9f5fc6ab67eb2b07da2b845b6c56d4906231"
+      },
+      "stage_record_sha256": "afe2f526789b9703345fb86232a7ee4ef6ccff902b54c46e57aa32349f0a64ca"
     },
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu0/manifest.json::causal_B8_fixed20_total80_strict_suite_v1_v1": {
       "queue": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu0/manifest.json",
@@ -7537,6 +7779,19 @@
   },
   "observed_priority_windows": [
     {
+      "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/handoffs/primary_vggt_inference_balanced_handoff_v1/manifest.json",
+      "observed_status": "REPLACEMENT_QUEUES_RUNNING",
+      "controller_pid": 24755,
+      "controller_starttime": "6573580817",
+      "existing_children": {
+        "21841": "6574789581"
+      },
+      "completed_manifest_sha256": null,
+      "conservative_start_timestamp": 1792052238.848208,
+      "conservative_end_timestamp": 1792052440.632744,
+      "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
+    },
+    {
       "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/cache_gate_constant_control_scene1_v1/manifest.json",
       "observed_status": "PRIORITY_COMMANDS_ENDED",
       "controller_pid": 12957,
@@ -7544,6 +7799,7 @@
       "existing_children": {
         "32642": "6571894549"
       },
+      "completed_manifest_sha256": "f7754cab9458d16d24a047d919034d1ab84356e23d12127355708b8ee9bb4aba",
       "conservative_start_timestamp": 1792020257.503512,
       "conservative_end_timestamp": 1792021025.3232746,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7556,6 +7812,7 @@
       "existing_children": {
         "35701": "6572542902"
       },
+      "completed_manifest_sha256": "c151bf8fb6971f150f76263ef206d4624be7b5fe49dce6d8f24e2883ecf8596f",
       "conservative_start_timestamp": 1792026367.590868,
       "conservative_end_timestamp": 1792026703.4523387,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7568,6 +7825,7 @@
       "existing_children": {
         "37670": "6572590577"
       },
+      "completed_manifest_sha256": "f9a3535b5e067d6a6bdc5578bffb89d71de2c02e0ebed4e45824cd8b2700e467",
       "conservative_start_timestamp": 1792027255.797151,
       "conservative_end_timestamp": 1792027743.2426736,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7580,6 +7838,7 @@
       "existing_children": {
         "33129": "6572471260"
       },
+      "completed_manifest_sha256": "eeff49c1695fd6943fddca33edd896554ceae71947f413c1b92f2b4dfc7798ad",
       "conservative_start_timestamp": 1792025841.487881,
       "conservative_end_timestamp": 1792026557.6771328,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7592,6 +7851,7 @@
       "existing_children": {
         "7911": "6573976520"
       },
+      "completed_manifest_sha256": "4d6d5bdef09b45e9185d8997595c0fe567fdfe9baef1421acc7070c1df5b9f6d",
       "conservative_start_timestamp": 1792040915.470787,
       "conservative_end_timestamp": 1792047581.9785872,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7604,6 +7864,7 @@
       "existing_children": {
         "22251": "6572060134"
       },
+      "completed_manifest_sha256": "be727108f5a908631fbe66b04684efa8417dd0beb114354023eb12d6aeda0a36",
       "conservative_start_timestamp": 1792022373.016762,
       "conservative_end_timestamp": 1792024714.3751757,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7616,6 +7877,7 @@
       "existing_children": {
         "18535": "6573741829"
       },
+      "completed_manifest_sha256": "a3c2d391e5dc55f1247cbf3e4ef1862635370ba8fe86cb4794614e15ea0ac25f",
       "conservative_start_timestamp": 1792033257.720798,
       "conservative_end_timestamp": 1792038788.2784975,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7628,6 +7890,7 @@
       "existing_children": {
         "33554": "6571264956"
       },
+      "completed_manifest_sha256": "8bc4658387b77db3165d1fe46bcc6d2b4aefae9ae6a493ccf895a36e407ed68b",
       "conservative_start_timestamp": 1792014055.736033,
       "conservative_end_timestamp": 1792017382.5711212,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7640,6 +7903,7 @@
       "existing_children": {
         "35638": "6571274917"
       },
+      "completed_manifest_sha256": "200cfac4866b156de93b6a74b3f83d34d47a6d9668c814bea9ff9e88b545d165",
       "conservative_start_timestamp": 1792013877.860785,
       "conservative_end_timestamp": 1792013889.1301544,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7652,6 +7916,7 @@
       "existing_children": {
         "3080": "6571524274"
       },
+      "completed_manifest_sha256": "19bfc85828859801887329301cf35f98bf41fef5f91997ca5b5f9aa589a500c2",
       "conservative_start_timestamp": 1792016371.427484,
       "conservative_end_timestamp": 1792016383.4965644,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7664,6 +7929,7 @@
       "existing_children": {
         "6422": "6571758221"
       },
+      "completed_manifest_sha256": "b323e994cdf6b7c6e508820e92c79f105fce33a4cb5a64a4c057567aa56a6b1c",
       "conservative_start_timestamp": 1792018343.814166,
       "conservative_end_timestamp": 1792019625.526901,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7676,6 +7942,7 @@
       "existing_children": {
         "21470": "6571625391"
       },
+      "completed_manifest_sha256": "e58f2d76d8b572df841162f8aa6ae191b2f1e6b4b1978794d9948b049ac7a192",
       "conservative_start_timestamp": 1792017222.927684,
       "conservative_end_timestamp": 1792018710.8718843,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
@@ -7688,12 +7955,26 @@
       "existing_children": {
         "24871": "6572970416"
       },
+      "completed_manifest_sha256": "0098dbf6803d516cece4d041c127a26cc81eaa29adc29b00105e82c0ede66a62",
       "conservative_start_timestamp": 1792031671.282719,
       "conservative_end_timestamp": 1792038546.9518123,
       "bound_scope": "priority owner import time through final report mtime, or observation time while live; can conservatively exclude additional waiting-predecessor stages"
     }
   ],
   "source_artifacts": {
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/cache_gate_constant_control_scene1_v1/manifest.json": "f7754cab9458d16d24a047d919034d1ab84356e23d12127355708b8ee9bb4aba",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/fast_camera_bridge_v3/manifest.json": "c151bf8fb6971f150f76263ef206d4624be7b5fe49dce6d8f24e2883ecf8596f",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/fast_fp16_reference_v4/manifest.json": "f9a3535b5e067d6a6bdc5578bffb89d71de2c02e0ebed4e45824cd8b2700e467",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/history_training_v1/manifest.json": "eeff49c1695fd6943fddca33edd896554ceae71947f413c1b92f2b4dfc7798ad",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/matched_head_tracking_retrieval_resume_v2/manifest.json": "4d6d5bdef09b45e9185d8997595c0fe567fdfe9baef1421acc7070c1df5b9f6d",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/native_prior_main_control_v1/manifest.json": "be727108f5a908631fbe66b04684efa8417dd0beb114354023eb12d6aeda0a36",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/physical_camera_contract_v1/manifest.json": "a3c2d391e5dc55f1247cbf3e4ef1862635370ba8fe86cb4794614e15ea0ac25f",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/positive_scene1_controls_v1/manifest.json": "8bc4658387b77db3165d1fe46bcc6d2b4aefae9ae6a493ccf895a36e407ed68b",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/priority_fixture_4d75eb567f114212a9e5ea32f1591064/manifest.json": "200cfac4866b156de93b6a74b3f83d34d47a6d9668c814bea9ff9e88b545d165",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/priority_fixture_d158dd48becb41d6b3210b826d369822/manifest.json": "19bfc85828859801887329301cf35f98bf41fef5f91997ca5b5f9aa589a500c2",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/sparse_failure_diagnostic_scene1_v1/manifest.json": "b323e994cdf6b7c6e508820e92c79f105fce33a4cb5a64a4c057567aa56a6b1c",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/target_cache_probe_scene1_v2/manifest.json": "e58f2d76d8b572df841162f8aa6ae191b2f1e6b4b1978794d9948b049ac7a192",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/vggt_tracking_retrieval_resume_v2/manifest.json": "0098dbf6803d516cece4d041c127a26cc81eaa29adc29b00105e82c0ede66a62",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_strict_suite_v1_v10/manifest.json": "3b045e0f1790c7ada6b53cc1872c645b600faf01dff8154257321193e1f55035",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/dense_head_controls_remaining_v1_gpu0_C_gmt_head_dense_causal_strict_suite_v1_v10.log": "fa2ede004166382193858b1c4115f92012e257f2fd1273241b4e1ad2a4f41a26",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/C_gmt_head_dense_causal_strict_suite_v1_v11/manifest.json": "767413a66d76379bf5acdcb8aa9a5d797d745a08ee8b6ddad3ac36d3d29a67fe",
@@ -7752,6 +8033,8 @@
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/dense_stability_parallel_v2_gpu6_causal_B7_dense_seed20261016_strict_suite_v1_v10.log": "27b1bcd62acb27f8611a36e131bdeaa9bd4fe1b332504be6d496e05ae5a31b28",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_dense_seed20261016_strict_suite_v1_v11/manifest.json": "9508f759c33d5a2138151c9328d55aca6d7594c728737de1b7337e482deee5aa",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/dense_stability_parallel_v2_gpu6_causal_B7_dense_seed20261016_strict_suite_v1_v11.log": "a1ff21a9a14ee99f4d50e373d0ec5199f9d4aa4c11e25122f97c64ce71a1a4e2",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_dense_seed20261016_strict_suite_v1_v18/manifest.json": "b03e0c45248f9f7ba0b83a8af1747b9340b50e7d3db62d7ab10f7aaed14d0171",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/dense_stability_parallel_v2_gpu6_causal_B7_dense_seed20261016_strict_suite_v1_v18.log": "425d7511e31f6315c7066e051f6d7a222862bd54681e758d6f5ce0e1edc4b39b",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_gmt_dense_head_tracking_2streams_full_v1/manifest.json": "0bc9eaceb4e8580c58d51481899ee7f0753c29a656665b4fa853ecb09bbac170",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/matched_head_tracking_retrieval_resume_v2_gpu5_retrieval_gmt_dense_head_tracking_2streams_full_v1.log": "475efc85640ceed805dc894283596f66942c149609d7f6142a5fb2f6f5840f79",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_gmt_dense_head_tracking_4streams_full_v1/manifest.json": "8dae2d2375ee4840b6a9651062ea59d05708264d837d2661739c1e6301c00277",
@@ -7820,6 +8103,12 @@
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/positive_scene_controls_v1_gpu4_B6_vggt_camera_dense_causal_v1_v1.log": "da3dbe7ef6d4b81f1eb257e6f4e303173bae7c14cae838b7da965e468c48601c",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v10/manifest.json": "26d33d435e77ed0593c62b09291122418cd3a518ff7c65d713f237f03fc02226",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/primary_vggt_inference_seed_pairs_v1_gpu4_causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v10.log": "ad47a0509217424116fab48a6f6f514e9d053750f0f40a8a143ea4a8c6a86f72",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19/manifest.json": "64f36dc4c74ac71f6af60aa468ca7b3b36861d38e7cec9c3021dab68903b5373",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/primary_vggt_inference_seed_pairs_v1_gpu4_causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v19.log": "721542dc5a95a6fe869e62a64aadc679a5c7fab3ba7b4d421221fd482d3d0363",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18/manifest.json": "a61f7e8a92f8432a831d4beaa3a4a3aacec4072bcffa685ab6a992153ab2bdb0",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/primary_vggt_inference_seed_pairs_v1_gpu4_causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v18.log": "934c6a5dd08450b3faa4536f2f3a5fee385678960aac6a4f56d3d81f0d885871",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11/manifest.json": "0be3a4915b467bf584b78f50cedfbdd2ea5f59bee7458b4c6faad222f5721b55",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/primary_vggt_inference_seed_pairs_v1_gpu5_causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v11.log": "985c137a21c304a9597a185d8c1b9f5fc6ab67eb2b07da2b845b6c56d4906231",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B8_fixed20_total80_strict_suite_v1_v1/manifest.json": "6cefff7eb0dd6caaac065dc0e61d45dbb3d67a1e9a29eeaa82e04231f218837b",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/remaining_matrix_v1_gpu0_causal_B8_fixed20_total80_strict_suite_v1_v1.log": "142b0c647b4c620a7d322cb950098199bd413fc9c08b120ec849d6af3e5f3890",
     "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B8_fixed20_total80_strict_suite_v1_v10/manifest.json": "91e654a6435e691bb0c7724f89f6de4917a6602e74b9e03e08caa890030b7a42",
@@ -7949,12 +8238,12 @@
   "scope": "actual successful full replay stages: parent monotonic time immediately around launch/wait, including Python startup, model setup, replay and export; excludes inter-stage queue waits and separate GT evaluation",
   "limitations": "documented held children and conservative priority-owner lifetime overlaps excluded, even if their loop timing is valid; this can also exclude extra predecessor-wait stages; stage snapshots are immutable completed records within mutable queue manifests; outside-loop difference includes imports, setup, export/provenance and normal host scheduling, not pure model setup; cumulative suite FPS is sum(images)/sum(times), not mean FPS, one descriptive run per input, no stable speed or camera/network capture-latency claim",
   "provenance": {
-    "process_started_utc": "2026-10-15T07:21:50.071021+00:00",
-    "report_generated_utc": "2026-10-15T07:21:54.959405+00:00",
-    "raw_log_path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/process_wall_b7_seed15_v6.log",
+    "process_started_utc": "2026-10-15T08:20:40.598337+00:00",
+    "report_generated_utc": "2026-10-15T08:20:47.693415+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/logs/process_wall_balanced_handoff_v7.log",
     "source_worktree": "/data1/liuyeqiang/WWW_vggt_geo_20261014",
-    "commit": "ca2f0341f882a6b423c57421b57187984e29910b",
-    "report_generation_commit": "ca2f0341f882a6b423c57421b57187984e29910b",
+    "commit": "fc31a699e2eae71f44c9a544a4b0a7807b420369",
+    "report_generation_commit": "fc31a699e2eae71f44c9a544a4b0a7807b420369",
     "command": [
       "geo_tools/audit_process_wall_runtime.py"
     ],
@@ -7973,7 +8262,7 @@
       "geo_tools/update_www_scope.py": "543017cccafa79f8984f39df23321c37ba6349693aa352af746eadaee020991a",
       "geo_tools/test_suite_settings_audit.py": "5f48d177e4c34689fca9c0b1f1887c80f1f8cc1d4ee06ca2aad437423c3c75c4",
       "geo_tools/test_causal_scheduler.py": "6b677d080a7b34376e130274df22f0cb77cf6981cbad77e5705106c95af36b07",
-      "geo_tools/summarize_results.py": "d8baf872cc3b370dcb62a0cd4a1d6a434e885dc21041c325f2ea16740a38bc77",
+      "geo_tools/summarize_results.py": "3e86b08a2111924fe24b6c94ef85d50b25fb0a952921d77b420779f2776fa9b2",
       "geo_tools/test_history_training.py": "1f59032a4d53f6836bdf2a7c1d2a11157653cb7d63b62e0d286a5e79c6ccf1ee",
       "geo_tools/audit_sparse_failure_trace.py": "8e4b691f8c6dd4d6c3ae4a1861a014be1ec07a0d333f172179dcba06a920f56f",
       "geo_tools/audit_encoder_parameter_structure.py": "c0448022fc23620fc50c758a81f2b6e3776f4ff96a505c3f1e6bd45c7aa3210e",
@@ -7996,6 +8285,7 @@
       "geo_tools/validate_neural_background.py": "0a6de5eef8743bed7a2a49ca307a6ee60184b6b473caf01cf9e42c1d6d40855e",
       "geo_tools/test_view_order_audit.py": "09151b76da383c696e76741c86a508eddd2061ab9a675e390d195a9d44f0f8fa",
       "geo_tools/test_async_runtime.py": "9e205863ac604f63e2cdf1a2458eaf15f75f9ddc68ede98168f2dec251e7ac9e",
+      "geo_tools/test_balanced_queue_handoff.py": "c6299d0fa2091f6e173a0dbbc7f540d00eb96795d45c0d5bf539ca58eb4054ed",
       "geo_tools/test_background_patch_matching.py": "1864d7996a8c72b6369c66848fdddcfd21e22de3e4c0cc9f00dd0ce169648e89",
       "geo_tools/audit_history_training.py": "9f5e56296507f12101985cd48b80fbce1fd8ba8d80ed021ccb3f5441dbce1714",
       "geo_tools/test_plane_geometry.py": "ea51149843a3ce6399758c831bf0e32ad5a77a30e5ace1517f11cf8ae407fcae",
@@ -8015,7 +8305,7 @@
       "geo_tools/audit_camera_control.py": "090d68bcac0c2b81839dd9aba0105a2d469466bda42db11604e1bae0b8df7e0c",
       "geo_tools/test_sparse_failure_trace_audit.py": "072fabe1b8f9d2bcc46e0135164ecfc1047ac0130769d7572122785139519680",
       "geo_tools/check_prediction_parity.py": "1e32f75617d06c494457155b9e2e462da39e27adbcd575c76aaa21171b9b2d34",
-      "geo_tools/test_process_wall_runtime.py": "8f63360644c6ab97306f79b8c27fbf7323692b1c6c494e6619b96adf51ad0b09",
+      "geo_tools/test_process_wall_runtime.py": "82eae8fec4640b6004ca5fbb5d80aae338fdc090df09ea1a4c68b618fcb7ae25",
       "geo_tools/validate_physical_camera_input.py": "09c49d9e73f88697e4df146ea971d79d83574158f43b39ff1ac6b279d0518d4e",
       "geo_tools/test_tracking_pair_audit.py": "cc1398004c69fc404385cf6d784c42a71c5eaa3fcdb70109c394463a7e0abe0a",
       "geo_tools/test_decision_trace.py": "13004822180afb23e1968f99858f12dac9cf6d370d29e9341d349c1978fa5b87",
@@ -8054,7 +8344,7 @@
       "geo_tools/run_research_queue.py": "97200cca20bab5eb6cfd7353cf72200f9bcacc8895e74779bd9037be0bd0a5cf",
       "geo_tools/probe_live_camera_order.py": "8fbb7f7f96e4ad8e6c6b9d635ee7e5ccea7c1e6dd019a45d294fbd97c86366cf",
       "geo_tools/test_constant_head_control.py": "fd8bfd8a5081e7dfc1053bba56692cd48930914433a202074e45ff5760eec1d2",
-      "geo_tools/summarize_resource_samples.py": "6363d8c209d0b76ae0ce9012028a0db7e3d35aab80a57c0e5b32be0ab174ebc7",
+      "geo_tools/summarize_resource_samples.py": "cdb2154fb1d0667a2de1ce1ff6524e68639c1ae8cfb5b6d7c3c94792be0e18f1",
       "geo_tools/test_cache_match_diagnostic.py": "4d9fc94f6fff9a421e8219eb80d5dcfdb4e58d826d752d4934b3ef754667fbeb",
       "geo_tools/common.py": "ba2616c7727b4e15082a5cc7f5709a4c68e831b0be342f6d6e0c32b2222c3e42",
       "geo_tools/test_process_worker.py": "c5a11f3010b9283f2c3d84e192ae67f5ae223a0c90b0d091d4a85e5545a9e050",
@@ -8078,7 +8368,7 @@
       "geo_tools/test_geometry.py": "6e8f586b5b731d68888012a9af5ed38eb6b0bc8f26e88fa458b3b138d3e65b32",
       "geo_tools/validate_empty_association.py": "bbc231eb659c8603558efa62f63c43587338219e5a96644096926eb431cfd92c",
       "geo_tools/prepare_history_training.py": "7b7851a6dbc8a29684d7bbd332a448ba3058cc79bc37579eb6f29547ae36d342",
-      "geo_tools/update_reviewer_questions.py": "cf1135471222b852299903b8fdb745f67a1f9079ebe70c9d75900bbb78686a30",
+      "geo_tools/update_reviewer_questions.py": "5b1f36bb8db529ee91fdaaa6787b37edea8e4b64511247ff97f71c1a37ccc419",
       "geo_tools/lock_baseline.py": "b43ee7b20d8ee0f5035858f617bf9169825907f25733a13e5290448d2613367d",
       "geo_tools/evaluate_live_retrieval.py": "9cd2d987e3c28e3e672ce915d42b1fc3970349923782fefacf9323ac4f5ba3d6",
       "geo_tools/test_seeded_online_driver.py": "e0ada7644886986fdf5b59497d7a7eb7990cb60d0c73957b5f1afb2dbc75b663",
@@ -8096,8 +8386,9 @@
       "geo_tools/summarize_target_cache_controls.py": "e8bb99e4dc6265e2bdd5ce4b3f571d1f5777f36328e576aae05354fb8c1213ae",
       "geo_tools/audit_causal_suite_budget.py": "03df0f5be87dcfc2871cead7e946e6f0fea89188c323ff9156a784db589a7da4",
       "geo_tools/test_camera_geometry.py": "4657fe920a819a7b88fdbb2cb8c53f5d998467efcfffa385390ec360fc743fb3",
+      "geo_tools/run_balanced_queue_handoff.py": "df772393871408adbf0d0662dba887d3b9d08e7a695a1d5a79d235d8a097b5c8",
       "geo_tools/calibrate_feature.py": "b7df3867c8fa8b31803bd63beb1ac370959d0ed7a4d91793b38ca06e79d23227",
-      "geo_tools/audit_process_wall_runtime.py": "711bc45cae9e3d0d5f67baa1a07547f1fb57a65f085996230d4bd96f39e4d50b",
+      "geo_tools/audit_process_wall_runtime.py": "16a7d2e4bffeb786495c84f138e8d2dfd8c401f4e68b794e95e8ee123b78d865",
       "geo_tools/test_association_trace.py": "ac0dd0a0dfedc926eb563d019c03a7802005d281bf9b520200208365562aba6a",
       "geo_tools/compare_short_pair_encoder.py": "21c65458f4f628d94ec9587d62a262ab87bbf5dcf627de9ff05c0bcc4aacd825",
       "gtr/geometry/native_prior.py": "7cea083f05b251200bca4dbbebcdf318ce4db035436ca1d83496a959b12d8b50",
@@ -8148,7 +8439,7 @@
       "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
     },
     "source_tree_dirty": true,
-    "source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source_diff_sha256": "a5b1a39a70324cc0bd76f4ba0a4aa710977e25490c489356d8648ad86306fa2b",
     "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
     "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
