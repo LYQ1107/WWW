@@ -49,7 +49,7 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 研究分支 research/gmt-jev-risk-association-20261014；[当前中文报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。每阶段仅推源码、配置和紧凑JSON，权重、视频、图像、预测压缩包留在服务器并记录 SHA。实际发布终态由 runtime/publication/LAST_VERIFIED.json 的 local/remote HEAD 一致证明；报告生成来源 HEAD 与运行时源码 SHA 保存在 JSON。
 
-当前资源快照：{"new_retained_MiB": 280.8023900985718, "home_free_GiB": 50.082237243652344, "GPU_wall_hours_including_live": 7.919806892969128}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
+当前资源快照：{"new_retained_MiB": 283.63928604125977, "home_free_GiB": 50.08066177368164, "GPU_wall_hours_including_live": 8.038389320545312}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
 
 完整 TRAIN12/13/14 覆盖补查：31663 条可认证唯一合法候选中，GMT 错误 127 条。TRAIN 时间桶冻结 Rule 局部 N01/N10=1/0；原前缀报告保持不变，这一补查不代表原生闭环或独立验证。当前训练状态：NOT_RUN_NATIVE_TRAIN_RULE_SIGNAL_GATE_FAILED。见 FULL_TRAIN_OPPORTUNITY_AUDIT.json 与已冻结 TRAIN_NATIVE_RULE_VALIDATION_PROTOCOL.md。
 
