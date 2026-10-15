@@ -180,6 +180,7 @@ def main():
     geometry_failures=evidence('geometry_failure_taxonomy_v1.json',['status','summaries','source_rule_snapshots','gt_used_for_gate_classification','limitations'])
     constructed_stress=evidence('constructed_geometry_degeneracy_v1.json',['status','tests_run','observations','encoder_calls','model_strict_load_performed','natural_dataset_failure_causes_identified','full_tracker_inference_performed','speed_eligible','scope','limitations'])
     process_wall_cost=evidence('process_wall_runtime_v1.json',['status','suites','excluded_held_stages','scope','limitations'])
+    storage_budget=evidence('storage_budget_v1.json',['status','started_utc','finished_utc','total_apparent_bytes','category_apparent_bytes','scope','limitations'])
     inference_queue_handoff=evidence('primary_vggt_inference_balanced_handoff_v1.json',
         ['status','existing_child_exited_utc','inference_source_unchanged','model_processes_signaled','replacement_controller_pids','plan_sha256','note'])
     dense_retrieval_gate=evidence('vggt_tracking_retrieval_prefix_gate_v2.json',['status','full_video','full_strict_suite','scope','limitations'])
@@ -243,6 +244,7 @@ def main():
         paired_retrieval_query_outcomes=retrieval_query_pairs,readonly_reproduction_preflight=readonly_preflight,
         additional_training_head_full_geometry_attribution=other_head_geometry,
         fixed_primary_inference_queue_handoff=inference_queue_handoff,
+        measured_storage_budget=storage_budget,
         recorded_geometry_failure_taxonomy=geometry_failures,
         constructed_cpu_geometry_stress=constructed_stress,
         observed_process_wall_runtime=process_wall_cost,
@@ -380,6 +382,9 @@ def main():
         lines[6:6]=[f"Observed complete process cost is separately audited for {count} complete strict5 suites; {held} full stages with recorded dispatcher suspension or conservative priority-window overlap are excluded. Startup/imports, static model setup and export/provenance are charged in process durations, while separate GT evaluation and inter-stage queue waits are excluded. The outside-loop difference is not pure GMT setup."+detail+' See [process cost audit](GEO_STREAM_PROCESS_WALL_RUNTIME.md) and the added runtime_results.csv fields. Missing or excluded costs remain blank; these single replays do not establish stable speed or camera/network latency.','']
     if inference_queue_handoff and inference_queue_handoff['status']=='ORIGINAL_DISPATCHER_SUPERSEDED_AFTER_CHILD_EXIT':
         lines[6:6]=['Remaining fixed-primary inference-RNG scenes use a verified scheduling-only handoff onto freed project GPU4, preserving the original commands, heads, seeds and immutable inference source. The original GPU0 model child exited before its held dispatcher was retired; the original raw queue snapshot is retained as superseded rather than relabeled complete. Its missing parent-observed exit cost is excluded. Two passive probes have distinct roots/time windows and overlapping device samples; they are not independent repetitions or additive physical memory. The handoff itself completes no missing strict5 trial.','']
+    if storage_budget and storage_budget['status']=='MEASURED_CURRENT_STORAGE_SNAPSHOT':
+        groups=storage_budget['category_apparent_bytes']
+        lines[6:6]=[f"Measured runtime storage snapshot: compact target-feature/head/training artifacts {groups['compact_features_heads_and_samples']/(1<<20):.3f}MiB, frozen model weights {groups['frozen_model_weights']/(1<<30):.3f}GiB, immutable sources {groups['source_snapshots']/(1<<30):.3f}GiB; all runtime entries total {storage_budget['total_apparent_bytes']/(1<<30):.3f}GiB apparent bytes. Predictions/retrieval/evaluation artifacts are listed separately. This is a live snapshot, not a lifetime peak or complete external environment/dataset footprint; symlink targets are excluded. See [storage budget](GEO_STREAM_STORAGE_BUDGET.md). No cleanup is performed.",'']
     if dense_full2_retrieval and dense_full2_retrieval['status']=='PASS' and retrieval_query_pairs:
         pair=next((row for row in retrieval_query_pairs['rows'] if row['method']=='VGGT2'),None)
         producer=next((row for row in retrieval_rows if row['method']=='retrieval_vggt_dense_tracking_2streams_full_v1'),None)
