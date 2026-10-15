@@ -18,6 +18,11 @@ class FullAuditTests(unittest.TestCase):
         self.assertEqual(r['types'],['A'])
         self.assertFalse(r['known_wrong'])
 
+    def test_positive_available_but_impure_selected_is_unknown_not_typeB(self):
+        r=annotate_query(10,{1:10,2:None},{1:[10],2:[10,20]},[2,1],2)
+        self.assertEqual(r['types'],['E','F'])
+        self.assertFalse(r['known_wrong']);self.assertFalse(r['correctable_known_wrong'])
+
     def test_reject_pure_positive_is_assignment_failure(self):
         r=annotate_query(10,{1:10,2:20},{1:[10],2:[20]},[1,2],-1)
         self.assertEqual(r['types'],['B'])

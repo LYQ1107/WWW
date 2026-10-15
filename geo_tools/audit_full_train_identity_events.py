@@ -81,7 +81,7 @@ def annotate_query(truth, pure, ref_truth, ranked, selected):
     wrong = state in ('wrong_link','missed_known_positive')
     types = []
     if positives and rank_state=='wrong_link':types.append('A')
-    if positives and selected not in positives:types.append('B')
+    if positives and wrong:types.append('B')
     if positives and not set(positives)&set(ranked[:8]):types.append('C')
     if truth is not None and not positives:types.append('D')
     if any(value is None for value in pure.values()):types.append('E')
@@ -113,7 +113,7 @@ def summarize(out,data,scene,images,max_retained):
     labels,reasons,boxes,detector_stats = label_detectors(out,truth,blocked)
     metadata = {i['image_id']:i for i in images}; counters=collections.Counter(); states=collections.Counter(); subtypes=collections.Counter()
     types=collections.Counter(); sizes=collections.defaultdict(collections.Counter); by_identity=collections.defaultdict(collections.Counter)
-    retained=BoundedExamples(max_retained); events=0; memory=collections.Counter(); ranks=iter(records(out/'rankings.jsonl.gz'))
+    retained=BoundedExamples(max_retained); events=0; memory=collections.Counter(); ranks=iter(records(out/'rankings.jsonl.gz')); pending_memory={}
     # Past-only output anchors: add this group only after all its queries.
     output_history=collections.defaultdict(set); current_frame=None; pending=[]; final_states=collections.Counter()
     def flush_pending():
@@ -124,6 +124,7 @@ def summarize(out,data,scene,images,max_retained):
         for decision in records(out/'actual_decisions.jsonl.gz'):
             if decision['stage']=='run_memory_tracker':
                 memory['solver_calls']+=1;memory['queries']+=len(decision['queries']);memory['accepted']+=sum(t>=0 for t in decision['accepted_track_ids'])
+                pending_memory.update({tuple(q):t for q,t in zip(decision['queries'],decision['accepted_track_ids']) if t>=0})
                 continue # averaged descriptor source tags cannot prove GT purity
             ranking=next(ranks)
             if ranking['queries']!=decision['queries']:raise ValueError('primary rank/solver order mismatch')
@@ -155,6 +156,13 @@ def summarize(out,data,scene,images,max_retained):
                 counter['N_same_camera']+=bool(positive_same);counter['N_both_camera_positive']+=bool(positive_cross and positive_same)
                 counter['N_cross_camera_candidate_available']+=any(c!=q['view_id'] for v in ref_cameras.values() for c in v)
                 counter['N_memory_or_newID_changed_primary']+=final!=selected;counter['N_primary_accepted']+=selected>=0
+                counter['N_memory_reactivated_after_primary_rejection']+=selected<0 and pending_memory.get(key)==final
+                counter['N_newID_after_primary_rejection']+=selected<0 and pending_memory.get(key)!=final
+                if selected>=0:
+                    selected_cameras=ref_cameras[selected]
+                    counter['N_selected_cross_camera_only']+=q['view_id'] not in selected_cameras
+                    counter['N_selected_same_camera_only']+=selected_cameras=={q['view_id']}
+                    counter['N_selected_both_cameras']+=q['view_id'] in selected_cameras and len(selected_cameras)>1
                 counter['N_hungarian_assigned']+=qi in assigned;counter['N_threshold_rejected']+=qi in assigned and not assigned[qi]['accepted']
                 counter['N_hungarian_unassigned']+=qi not in assigned
                 raw=ranking['raw_top_track'][qi]
@@ -167,7 +175,7 @@ def summarize(out,data,scene,images,max_retained):
                     if qi not in assigned:evidence.append('Hungarian_unassigned_row')
                     if qi in assigned and not assigned[qi]['accepted']:evidence.append('selected_pair_below_actual_threshold')
                     if set(positives)&set(ranking['threshold_pass_tracks'][qi]):evidence.append('pure_positive_passes_threshold_but_solver_does_not_accept_it')
-                    if annotation['ranking_state']=='correct_link':evidence.append('pure_positive_row_top1_not_accepted_Hungarian_competition')
+                    if annotation['ranking_state']=='correct_link' and (qi not in assigned or assigned[qi]['track'] not in positives):evidence.append('pure_positive_row_top1_displaced_by_Hungarian')
                     if ranking['null_dominates_all_blocks'][qi]:evidence.append('NULL_logit_dominates_all_reference_logits')
                     pair=assigned.get(qi)
                     if pair and not pair['accepted'] and pair['score']>ranking['base_threshold'] and pair['threshold']>ranking['base_threshold']:evidence.append('multiplicity_threshold_changes_selected_pair_acceptance')
@@ -188,6 +196,7 @@ def summarize(out,data,scene,images,max_retained):
                 # All actual queries get a lightweight index, not just retained examples.
                 stream.write(json.dumps(row,separators=(',',':'),allow_nan=False)+'\n');retained.add(row);events+=1
             primary_index+=1
+            pending_memory.clear()
         try:next(ranks);raise ValueError('unconsumed primary ranking')
         except StopIteration:pass
     expected=['N_total','N_known','N_wrong','N_wrong_eligible','N_rank_correctable','N_assignment_correctable','N_missing_candidate','N_impure','N_unknown','N_pure_positive_full','N_correctable_known_wrong','N_top8_correctable_known_wrong','N_top4','N_top8','N_top16','N_cross_camera','N_same_camera']
