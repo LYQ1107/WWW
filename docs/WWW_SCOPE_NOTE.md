@@ -15,7 +15,9 @@ Production retrieval results below use scene18 queries at every stream count. Ex
 | retrieval_gmt_10streams_full_v1 | gmt_off | 10 | 598 | 309 | 84.1424% | 0.885244 | True/True |
 | retrieval_gmt_4streams_full_v1 | gmt_off | 4 | 598 | 309 | 97.7346% | 0.987864 | True/True |
 | retrieval_gmt_v18_full_v1 | gmt_off | 2 | 598 | 309 | 97.7346% | 0.987864 | True/True |
+| retrieval_native_prior_10streams_full_v1 | native_fixed_prior | 10 | 598 | 309 | 84.1424% | 0.885347 | True/True |
 | retrieval_native_prior_2streams_full_v1 | native_fixed_prior | 2 | 598 | 309 | 97.7346% | 0.988673 | True/True |
+| retrieval_native_prior_4streams_full_v1 | native_fixed_prior | 4 | 598 | 309 | 97.7346% | 0.988673 | True/True |
 | retrieval_vggt_k10_10streams_full_v1 | gmt_off | 10 | 598 | 309 | 70.5502% | 0.769991 | True/True |
 | retrieval_vggt_k10_4streams_full_v1 | gmt_off | 4 | 598 | 309 | 87.0550% | 0.891011 | True/True |
 | retrieval_vggt_k10_v18_full_v1 | gmt_off | 2 | 598 | 309 | 90.2913% | 0.924582 | True/True |
