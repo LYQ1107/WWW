@@ -17,6 +17,15 @@ def verify_tracking_options(info,reference):
     return digest
 
 
+def verify_dense_counters(method,stats,images,groups):
+    if stats['failures'] or stats['updates']!=groups:raise ValueError('dense tracking update/failure counter mismatch')
+    expected_vggt=images if method=='vggt_dense' else 0
+    expected_dino=groups if method=='dinov2_dense_head' else 0
+    if method=='dinov2_dense_head' and 'dinov2_calls' not in stats:raise ValueError('DINO tracking calls missing')
+    if stats['vggt_calls']!=expected_vggt or stats.get('dinov2_calls',0)!=expected_dino:
+        raise ValueError('actual dense tracking encoder budget mismatch')
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--runs',type=Path,nargs='+',required=True)
@@ -34,6 +43,8 @@ def main():
         if info['backbone']=='none' and (info['augmented_queries'] or info['extractors']):
             raise ValueError('tracking metadata leaked into native retrieval features')
         method=info.get('tracking_method','gmt_off');prior=method=='native_fixed_prior'
+        if method not in {'gmt_off','native_fixed_prior','vggt_dense','gmt_dense_head','dinov2_dense_head'}:
+            raise ValueError('unknown tracking method')
         scene_rows=[]
         for scene in info['video_ids']:
             prediction=run/f'video_{scene:02d}.json';reference=Path(spec[str(scene)])
@@ -42,17 +53,15 @@ def main():
                 raise ValueError('changed prediction artifact')
             if not ref['full_video'] or not ref['causal_online'] or bool(ref.get('validation_native_output_prior',False))!=prior:
                 raise ValueError('reference tracking method/protocol mismatch')
-            if method=='vggt_dense':
+            if method in {'vggt_dense','gmt_dense_head','dinov2_dense_head'}:
                 if info['tracking_head_checkpoint_sha256']!=ref['head_checkpoint_sha256']:
                     raise ValueError('tracking head mismatch')
                 verify_tracking_options(info,ref)
             for field in ('seed','checkpoint_sha256','config_sha256','annotation_sha256'):
                 if info[field]!=ref[field]:raise ValueError('unpaired tracking inputs: '+field)
             records=video_records(data,scene,info['max_frames']);ids={r['image_id'] for r in records}
-            if method=='vggt_dense':
-                stats=info['tracking_runtime_stats'][str(scene)]
-                if stats['failures'] or stats['vggt_calls']!=len(records):
-                    raise ValueError('dense symmetric VGGT prefix was not actually computed for every group')
+            if method in {'vggt_dense','gmt_dense_head','dinov2_dense_head'}:
+                verify_dense_counters(method,info['tracking_runtime_stats'][str(scene)],len(records),len({r['frame_id'] for r in records}))
             actual=json.loads(prediction.read_text())
             expected=[row for row in json.loads(reference.read_text()) if row['image_id'] in ids]
             if prior:

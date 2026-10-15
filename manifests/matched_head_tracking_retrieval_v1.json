@@ -1,0 +1,347 @@
+{
+  "id": "matched_head_tracking_retrieval_v1",
+  "project_gpu_ids": [
+    "5"
+  ],
+  "queues": {
+    "gpu5": [
+      {
+        "id": "retrieval_tracking_gmt_dense_head_4streams_prefix40_v1",
+        "command": [
+          "geo_tools/run_live_retrieval.py",
+          "--video-ids",
+          "18",
+          "1",
+          "--tag",
+          "retrieval_tracking_gmt_dense_head_4streams_prefix40_v1",
+          "--backbone",
+          "none",
+          "--tracking-head-backbone",
+          "gmt",
+          "--max-frames",
+          "40"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "gmt_dense_head_retrieval_prefix_gate_v1",
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_tracking_gmt_dense_head_4streams_prefix40_v1",
+          "--reference-sources",
+          "manifests/C_gmt_head_dense_causal_strict_suite_v1_sources.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/gmt_dense_head_retrieval_prefix_gate_v1.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_tracking_gmt_dense_head_4streams_prefix40_v1"
+        ]
+      },
+      {
+        "id": "retrieval_gmt_dense_head_tracking_2streams_full_v1",
+        "command": [
+          "geo_tools/run_live_retrieval.py",
+          "--video-ids",
+          "18",
+          "--tag",
+          "retrieval_gmt_dense_head_tracking_2streams_full_v1",
+          "--backbone",
+          "none",
+          "--tracking-head-backbone",
+          "gmt"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "gmt_dense_head_retrieval_prefix_gate_v1"
+        ]
+      },
+      {
+        "id": "eval_retrieval_gmt_dense_head_tracking_2streams_full_v1",
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_gmt_dense_head_tracking_2streams_full_v1"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_gmt_dense_head_tracking_2streams_full_v1"
+        ]
+      },
+      {
+        "id": "parity_retrieval_gmt_dense_head_tracking_2streams_full_v1",
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_gmt_dense_head_tracking_2streams_full_v1",
+          "--reference-sources",
+          "manifests/C_gmt_head_dense_causal_strict_suite_v1_sources.json",
+          "--full-video",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/retrieval_gmt_dense_head_tracking_2streams_full_v1_standalone_parity.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_gmt_dense_head_tracking_2streams_full_v1"
+        ]
+      },
+      {
+        "id": "retrieval_gmt_dense_head_tracking_4streams_full_v1",
+        "command": [
+          "geo_tools/run_live_retrieval.py",
+          "--video-ids",
+          "18",
+          "1",
+          "--tag",
+          "retrieval_gmt_dense_head_tracking_4streams_full_v1",
+          "--backbone",
+          "none",
+          "--tracking-head-backbone",
+          "gmt"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "gmt_dense_head_retrieval_prefix_gate_v1"
+        ]
+      },
+      {
+        "id": "eval_retrieval_gmt_dense_head_tracking_4streams_full_v1",
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_gmt_dense_head_tracking_4streams_full_v1"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_gmt_dense_head_tracking_4streams_full_v1"
+        ]
+      },
+      {
+        "id": "parity_retrieval_gmt_dense_head_tracking_4streams_full_v1",
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_gmt_dense_head_tracking_4streams_full_v1",
+          "--reference-sources",
+          "manifests/C_gmt_head_dense_causal_strict_suite_v1_sources.json",
+          "--full-video",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/retrieval_gmt_dense_head_tracking_4streams_full_v1_standalone_parity.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_gmt_dense_head_tracking_4streams_full_v1"
+        ]
+      },
+      {
+        "id": "eval_scene18_retrieval_gmt_dense_head_tracking_4streams_full_v1",
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_gmt_dense_head_tracking_4streams_full_v1",
+          "--query-scene",
+          "18"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_gmt_dense_head_tracking_4streams_full_v1"
+        ]
+      },
+      {
+        "id": "eval_scene1_retrieval_gmt_dense_head_tracking_4streams_full_v1",
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_gmt_dense_head_tracking_4streams_full_v1",
+          "--query-scene",
+          "1"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_gmt_dense_head_tracking_4streams_full_v1"
+        ]
+      },
+      {
+        "id": "retrieval_tracking_dinov2_dense_head_4streams_prefix40_v1",
+        "command": [
+          "geo_tools/run_live_retrieval.py",
+          "--video-ids",
+          "18",
+          "1",
+          "--tag",
+          "retrieval_tracking_dinov2_dense_head_4streams_prefix40_v1",
+          "--backbone",
+          "none",
+          "--tracking-head-backbone",
+          "dinov2",
+          "--max-frames",
+          "40"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "dinov2_dense_head_retrieval_prefix_gate_v1",
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_tracking_dinov2_dense_head_4streams_prefix40_v1",
+          "--reference-sources",
+          "manifests/C_dino_head_dense_causal_strict_suite_v1_sources.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/dinov2_dense_head_retrieval_prefix_gate_v1.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_tracking_dinov2_dense_head_4streams_prefix40_v1"
+        ]
+      },
+      {
+        "id": "retrieval_dinov2_dense_head_tracking_2streams_full_v1",
+        "command": [
+          "geo_tools/run_live_retrieval.py",
+          "--video-ids",
+          "18",
+          "--tag",
+          "retrieval_dinov2_dense_head_tracking_2streams_full_v1",
+          "--backbone",
+          "none",
+          "--tracking-head-backbone",
+          "dinov2"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "dinov2_dense_head_retrieval_prefix_gate_v1"
+        ]
+      },
+      {
+        "id": "eval_retrieval_dinov2_dense_head_tracking_2streams_full_v1",
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_dinov2_dense_head_tracking_2streams_full_v1"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_dinov2_dense_head_tracking_2streams_full_v1"
+        ]
+      },
+      {
+        "id": "parity_retrieval_dinov2_dense_head_tracking_2streams_full_v1",
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_dinov2_dense_head_tracking_2streams_full_v1",
+          "--reference-sources",
+          "manifests/C_dino_head_dense_causal_strict_suite_v1_sources.json",
+          "--full-video",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/retrieval_dinov2_dense_head_tracking_2streams_full_v1_standalone_parity.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_dinov2_dense_head_tracking_2streams_full_v1"
+        ]
+      },
+      {
+        "id": "retrieval_dinov2_dense_head_tracking_4streams_full_v1",
+        "command": [
+          "geo_tools/run_live_retrieval.py",
+          "--video-ids",
+          "18",
+          "1",
+          "--tag",
+          "retrieval_dinov2_dense_head_tracking_4streams_full_v1",
+          "--backbone",
+          "none",
+          "--tracking-head-backbone",
+          "dinov2"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "dinov2_dense_head_retrieval_prefix_gate_v1"
+        ]
+      },
+      {
+        "id": "eval_retrieval_dinov2_dense_head_tracking_4streams_full_v1",
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_dinov2_dense_head_tracking_4streams_full_v1"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_dinov2_dense_head_tracking_4streams_full_v1"
+        ]
+      },
+      {
+        "id": "parity_retrieval_dinov2_dense_head_tracking_4streams_full_v1",
+        "command": [
+          "geo_tools/audit_tracking_retrieval_prefix.py",
+          "--runs",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_dinov2_dense_head_tracking_4streams_full_v1",
+          "--reference-sources",
+          "manifests/C_dino_head_dense_causal_strict_suite_v1_sources.json",
+          "--full-video",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/retrieval_dinov2_dense_head_tracking_4streams_full_v1_standalone_parity.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_dinov2_dense_head_tracking_4streams_full_v1"
+        ]
+      },
+      {
+        "id": "eval_scene18_retrieval_dinov2_dense_head_tracking_4streams_full_v1",
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_dinov2_dense_head_tracking_4streams_full_v1",
+          "--query-scene",
+          "18"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_dinov2_dense_head_tracking_4streams_full_v1"
+        ]
+      },
+      {
+        "id": "eval_scene1_retrieval_dinov2_dense_head_tracking_4streams_full_v1",
+        "command": [
+          "geo_tools/evaluate_live_retrieval.py",
+          "--run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_dinov2_dense_head_tracking_4streams_full_v1",
+          "--query-scene",
+          "1"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "retrieval_dinov2_dense_head_tracking_4streams_full_v1"
+        ]
+      }
+    ]
+  },
+  "frozen_references": {
+    "gmt": {
+      "source": "manifests/C_gmt_head_dense_causal_strict_suite_v1_sources.json",
+      "head": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/gmt_seed20261014.pt",
+      "head_sha256": "d3f315f313df6689af109579021233c7e468564d1e164a0facd5732ca95242c0"
+    },
+    "dinov2": {
+      "source": "manifests/C_dino_head_dense_causal_strict_suite_v1_sources.json",
+      "head": "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/dinov2_seed20261014.pt",
+      "head_sha256": "2186602fbab5a19a3d35d74874218d2a78c752ea686ce71debbe8296cbfd926d"
+    }
+  },
+  "scope": "post-result bounded attribution of the observed one-query dense-VGGT tracking-to-retrieval gain: use existing independently trained matched GMT/DINO heads, unchanged native ranker, two/four streams, no new fitting or thresholds",
+  "prospective_scope": "controls selected after observing VGGT full2; all head weights/settings and all four complete runs fixed before their retrieval outcomes; report every control including failures",
+  "gates": "each backbone must reproduce actual interleaved standalone prefixes and exact head/options/actual encoder counts before full runs; full scene outputs checked separately; GT enters only evaluator after image producer ends",
+  "allocation": "serial GPU5 after existing dense stability dispatcher29378 completes; no extra GPU or interruption",
+  "forbidden_claims": [
+    "encoder-cached throughput",
+    "VGGT unique attribution from one query",
+    "stable speed ranking from single replay"
+  ]
+}

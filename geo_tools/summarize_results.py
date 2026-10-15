@@ -43,6 +43,8 @@ def main():
         if report.get('status')!='PASS':continue
         tracking_vggt=sum(v.get('vggt_calls',0) for v in value.get('tracking_runtime_stats',{}).values())
         retrieval_vggt=sum(v['vggt_calls'] for v in value['extractors'].values())
+        tracking_dino=sum(v.get('dinov2_calls',0) for v in value.get('tracking_runtime_stats',{}).values())
+        retrieval_dino=sum(v['dinov2_calls'] for v in value['extractors'].values())
         retrieval_rows.append(dict(method=path.parent.name,tracking_method=value.get('tracking_method','gmt_off'),backbone=value['backbone'],video_ids=','.join(map(str,value['video_ids'])),
             camera_streams=value['camera_streams'],full_video=value['full_video'],interval=value['interval'],used_cache=value['used_cache'],speed_eligible=value.get('speed_eligible',True),
             requests=report['requests'],eligible_queries=report['gallery_eligible_queries'],query_detection_coverage=report['gt_query_detection_coverage'],
@@ -55,7 +57,7 @@ def main():
             query_p50=value['query_latency_seconds']['p50'],query_p95=value['query_latency_seconds']['p95'],camera_image_fps=value['camera_image_fps'],
             round_p50=value['round_latency_seconds']['p50'],round_p95=value['round_latency_seconds']['p95'],
             vggt_calls=tracking_vggt+retrieval_vggt,tracking_vggt_calls=tracking_vggt,retrieval_vggt_calls=retrieval_vggt,
-            dinov2_calls=sum(v['dinov2_calls'] for v in value['extractors'].values()),
+            dinov2_calls=tracking_dino+retrieval_dino,tracking_dinov2_calls=tracking_dino,retrieval_dinov2_calls=retrieval_dino,
             peak_index_payload_bytes=value['index']['peak_payload_bytes'],peak_host_rss_bytes=value['peak_host_rss_bytes'],peak_gpu_bytes=value['peak_gpu_bytes'],
             source=str(metric_path),sha256=sha256(metric_path)))
         for mode,stats in report.get('scoring_diagnostics',{}).items():
@@ -68,7 +70,7 @@ def main():
     write_csv(ROOT/'results/retrieval_scoring_diagnostics.csv',scoring_rows,scoring_fields)
     retrieval_fields=['method','tracking_method','backbone','video_ids','camera_streams','full_video','interval','used_cache','speed_eligible','requests','eligible_queries','query_detection_coverage',
         'gt_matched_queries','detector_query_precision','gallery_eligibility_among_matched','all_requests_Recall1','all_requests_Recall5','all_requests_Recall10',
-        'Recall1','Recall5','Recall10','MRR','query_p50','query_p95','camera_image_fps','round_p50','round_p95','vggt_calls','tracking_vggt_calls','retrieval_vggt_calls','dinov2_calls',
+        'Recall1','Recall5','Recall10','MRR','query_p50','query_p95','camera_image_fps','round_p50','round_p95','vggt_calls','tracking_vggt_calls','retrieval_vggt_calls','dinov2_calls','tracking_dinov2_calls','retrieval_dinov2_calls',
         'peak_index_payload_bytes','peak_host_rss_bytes','peak_gpu_bytes','source','sha256']
     write_csv(ROOT/'results/retrieval_results.csv',retrieval_rows,retrieval_fields)
     relation_path=ROOT/'results/identity_relations_matrix_v2.json'

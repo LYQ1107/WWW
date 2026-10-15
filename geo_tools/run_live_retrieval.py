@@ -24,6 +24,8 @@ def main():
                         help='explicit head-free fixed-prior tracking control; retrieval features remain separately selected')
     tracking_group.add_argument('--tracking-vggt-dense', action='store_true',
                                help='frozen primary-seed dense B7 tracking candidate; retrieval ranking remains separately selected')
+    tracking_group.add_argument('--tracking-head-backbone',choices=['gmt','dinov2'],
+                               help='existing primary dense matched-head tracking control; native retrieval ranking stays separate')
     args = parser.parse_args()
     # Frozen development selection; no TEST and no GT-driven query selection.
     allowed = {1, 10, 11, 18, 19}
@@ -35,6 +37,7 @@ def main():
     if out.exists():
         raise FileExistsError(out)
     out.mkdir(parents=True)
+    setup_started=time.perf_counter()
     sys.path[:0] = [str(RUNTIME/'sources/vggt'), str(RUNTIME/'sources/dinov2')]
     from gtr.geometry.isolated_stream import IsolatedCausalStream
     from gtr.geometry.runtime import GeometryRuntime
@@ -46,7 +49,10 @@ def main():
     tracking_options = None
     tracking_factory = None
     tracking_head_path = None
-    if args.tracking_native_prior or args.tracking_vggt_dense:
+    learned_tracking = args.tracking_vggt_dense or args.tracking_head_backbone is not None
+    tracking_method = ('native_fixed_prior' if args.tracking_native_prior else 'vggt_dense' if args.tracking_vggt_dense else
+                       args.tracking_head_backbone+'_dense_head' if args.tracking_head_backbone else 'gmt_off')
+    if args.tracking_native_prior or learned_tracking:
         tracking_options = dict(ENABLED=True, FEATURE_ENABLED=True, GEOMETRY_ENABLED=False,
             FEATURE_WEIGHT=2., GEOMETRY_WEIGHT=0., FEATURE_BACKBONE='gmt', FEATURE_LAYERS=[-1],
             SYMMETRIZE_VIEW_ORDER=False,
@@ -58,6 +64,15 @@ def main():
             tracking_options.update(GEOMETRY_ENABLED=True,GEOMETRY_WEIGHT=.5,FEATURE_BACKBONE='vggt',
                 FEATURE_LAYERS=[17],POOLING='roi_align',SYMMETRIZE_VIEW_ORDER=True,HEAD_PATH=str(tracking_head_path),
                 VGGT_CHECKPOINT=str(RUNTIME/'weights/vggt_1b.pt'),GEOMETRY_METHOD='vggt_camera',
+                SPARSE_UPDATE_ENABLED=True,UPDATE_POLICY='fixed',UPDATE_INTERVAL=1,MIN_UPDATE_INTERVAL=1,
+                COMPUTE_BUDGET=200,BUDGET_WINDOW=100,TOTAL_CALL_BUDGET=-1)
+        elif args.tracking_head_backbone:
+            backbone=args.tracking_head_backbone
+            tracking_head_path=RUNTIME/'heads/low_rank_three_backbones_train_v1'/f'{backbone}_seed20261014.pt'
+            tracking_options.update(GEOMETRY_ENABLED=True,FEATURE_BACKBONE=backbone,FEATURE_LAYERS=[-1],
+                PROJECTION_DIM=256 if backbone=='dinov2' else 0,POOLING='roi_align' if backbone=='dinov2' else 'reid',
+                SYMMETRIZE_VIEW_ORDER=False,HEAD_PATH=str(tracking_head_path),GEOMETRY_METHOD='sift',
+                VGGT_CHECKPOINT=str(RUNTIME/'weights/vggt_1b.pt'),DINOV2_CHECKPOINT=str(RUNTIME/'weights/dinov2_vitl14_reg4.pth'),
                 SPARSE_UPDATE_ENABLED=True,UPDATE_POLICY='fixed',UPDATE_INTERVAL=1,MIN_UPDATE_INTERVAL=1,
                 COMPUTE_BUDGET=200,BUDGET_WINDOW=100,TOTAL_CALL_BUDGET=-1)
         def tracking_factory(base_geo):
@@ -103,6 +118,7 @@ def main():
     shared_tracking_encoder, shared_tracking_head = None, None
     torch.cuda.reset_peak_memory_stats()
     started = time.perf_counter()
+    setup_seconds_excluded=started-setup_started
     with (out/'queries.jsonl').open('w') as query_file, (out/'gallery_snapshots.jsonl').open('w') as gallery_file:
         for round_id in range(max(map(len, sequences.values()))):
             torch.cuda.synchronize()
@@ -115,10 +131,10 @@ def main():
                 timestamp, records = sequences[video][round_id]
                 current_images.extend(record['image_id'] for record in records)
                 mapped = map_records(cfg, records)
-                if args.tracking_vggt_dense:
+                if learned_tracking:
                     streams[video].runtime.vggt, streams[video].runtime.head = shared_tracking_encoder, shared_tracking_head
                 outputs = streams[video].step(mapped)
-                if args.tracking_vggt_dense:
+                if learned_tracking:
                     shared_tracking_encoder, shared_tracking_head = streams[video].runtime.vggt, streams[video].runtime.head
                 instances = [row['instances'] for row in outputs]
                 if video in extractors:
@@ -184,17 +200,20 @@ def main():
         raise ValueError('head-free tracking control unexpectedly loaded an extra model')
     report.update(video_ids=args.video_ids, camera_streams=2*len(args.video_ids), max_frames=args.max_frames, causal_online=True, full_video=args.max_frames is None,
                   setup_time_included=False, first_foundation_load_included=True, seconds=seconds, images=images, camera_image_fps=images/seconds,
+                  setup_seconds_excluded=setup_seconds_excluded,seconds_including_main_setup=seconds+setup_seconds_excluded,
+                  camera_image_fps_including_main_setup=images/(seconds+setup_seconds_excluded),
+                  setup_scope='inside-main imports, frozen GMT build/load, runtime/head CPU checkpoint and sequence metadata preparation; Python/torch import before main excluded and separately included by queue stage wall time',
                   synchronized_round_fps=len(round_latencies)/seconds, round_latency_seconds=percentiles(round_latencies), query_latency_seconds=percentiles(query_latencies),
                   requests=requests, augmented_queries=augmented_queries, published_targets=published, used_cache=False,
                   speed_eligible=not args.diagnose_scoring,diagnostic_scoring=args.diagnose_scoring,
                   scoring_mode_latency_seconds={mode:percentiles(values) for mode,values in diagnostic_latencies.items()},
                   scoring_diagnostic_scope='same actual query/gallery snapshot; native and learned on identical encoded candidates and identical source observations (native_encoded uses GMT vector saved at the extra-feature observation); no GT candidate selection; absent features count as failed queries on the full-gallery denominator; archived identity vectors describe their past source observations and remain usable until clip TTL, without propagated geometry claims',
                   scoring_timing_scope='when diagnostics enabled, complete producer runs five ranking rules serially; its full throughput is diagnostic cost, not single-ranker production throughput; per-mode scoring/response serialization measured separately',
-                  protocol=('causal GMT with explicit head-free fixed-prior tracking control' if args.tracking_native_prior else 'causal dense B7 primary-seed VGGT tracking candidate' if args.tracking_vggt_dense else 'causal GMT OFF tracking')+'; independent per-scene banks, geometry runtimes and RNG; online optional TRAIN head features used only for retrieval',
-                  tracking_method='native_fixed_prior' if args.tracking_native_prior else 'vggt_dense' if args.tracking_vggt_dense else 'gmt_off',
+                  protocol='causal '+tracking_method+' tracking; independent per-scene banks, geometry runtimes and RNG; optional retrieval-head features remain separately selected',
+                  tracking_method=tracking_method,
                   tracking_options=tracking_options,
                   tracking_head_checkpoint_sha256=sha256(tracking_head_path) if tracking_head_path else None,
-                  tracking_runtime_stats={str(video):dict(updates=stream.runtime.calls,vggt_calls=stream.runtime.vggt_calls,
+                  tracking_runtime_stats={str(video):dict(updates=stream.runtime.calls,vggt_calls=stream.runtime.vggt_calls,dinov2_calls=stream.runtime.dinov2_calls,
                       failures=stream.runtime.failed,valid_geometry_calls=stream.runtime.geometry_valid_calls,
                       seconds=stream.runtime.seconds,**getattr(stream.runtime,'native_prior_stats',{})) for video,stream in streams.items()},
                   temporal_scope='within-scene cameras synchronized by dataset frame_id; unrelated scenes interleaved by ordinal replay round, no physical cross-scene synchronization claim',
