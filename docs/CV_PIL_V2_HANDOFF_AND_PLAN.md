@@ -1,7 +1,7 @@
 
 # CV-PIL V2: separation from all-TRAIN error mining
 
-2026-10-15. Status: P0/P1_COMPLETE; INSUFFICIENT_NATIVE_OPPORTUNITY / NO_UNIQUE_PREDICTIVE_EFFECT on the frozen 1000/300 cohort; P2 WAITING_EXTERNAL_FROZEN_MINER_RELEASE. See [the actual matched-control results](CV_PIL_V2_REAL_RESULTS_20261015_ZH.md). The protocol below remains the inherited research plan; no native tracking success is claimed.
+2026-10-15. Status: P0/P1_COMPLETE; INSUFFICIENT_NATIVE_OPPORTUNITY / NO_UNIQUE_PREDICTIVE_EFFECT on the frozen 1000/300 cohort. P2 consumed the locally SHA-sealed complete miner inventory; exact existing-asset recovery leaves520 feature-complete development queries covering zero certified native errors. Execution is BLOCKED_MISSING_NATIVE_DEVELOPMENT_ASSETS. See [the matched-control results](CV_PIL_V2_REAL_RESULTS_20261015_ZH.md) and [the sealed handoff/gap audit](CV_PIL_V2_SEALED_HANDOFF_AND_ASSET_GAP_ZH.md). The inherited protocol below remains unchanged; no native tracking success is claimed.
 
 ## Division of labor
 
