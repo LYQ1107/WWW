@@ -8,7 +8,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q2: 为什么不直接使用 DINOv2/ReID？
 
-必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1=100.00%，高于当前 VGGT 中间层。独立DINO普通融合的离线稀疏/逐帧完整严格开发对照和匹配容量学习头离线k10对照已完成；因果dense容量对照目前仅scene1完成、其他场景仍在队列中。scene1的DINO匹配VGGT CVIDF1且少1次IDSW。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。 原生GMT-head固定+1配对分数完整scene1对照CVIDF1=95.583950、IDSW=203，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5/配对推理种子仍在运行，不能外推为全开发结论。
+必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1=100.00%，高于当前 VGGT 中间层。独立DINO普通融合的离线稀疏/逐帧完整严格开发对照和匹配容量学习头离线k10对照已完成；因果dense容量对照目前仅scene1完成、其他场景仍在队列中。scene1的DINO匹配VGGT CVIDF1且少1次IDSW。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。 原生GMT-head固定+1配对分数完整scene1对照CVIDF1=95.583950、IDSW=203，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5与配对推理种子状态见下文；scene1不能单独支持全开发结论。 无额外head固定先验完整strict5已完成：CVIDF1=95.181615、IDSW=351，优于当前主种子denseVGGT完整DEV结果；全五场景检测key集合一致。配对推理种子未完成，不能归因于VGGT或声称稳定速度优势。
 
 ## Q3: VGGT 多层是否提供独立身份信息？
 
@@ -52,7 +52,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q13: 三个模块能否分别证明有效？
 
-尚未证明。每帧B7完整strict5单种子CVIDF1=95.147448（相对因果B0 +0.089485个百分点）、IDSW 482→381，五场景检测key集合完全一致。身份关系审计同时记录修正和破坏；完整DEV容量对照及重复稳定性未完成，不是稳定VGGT独有贡献。 原生GMT-head固定+1配对分数完整scene1对照CVIDF1=95.583950、IDSW=203，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5/配对推理种子仍在运行，不能外推为全开发结论。 当前稳定科学成功/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。
+尚未证明。每帧B7完整strict5单种子CVIDF1=95.147448（相对因果B0 +0.089485个百分点）、IDSW 482→381，五场景检测key集合完全一致。身份关系审计同时记录修正和破坏；完整DEV容量对照及重复稳定性未完成，不是稳定VGGT独有贡献。 原生GMT-head固定+1配对分数完整scene1对照CVIDF1=95.583950、IDSW=203，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5与配对推理种子状态见下文；scene1不能单独支持全开发结论。 无额外head固定先验完整strict5已完成：CVIDF1=95.181615、IDSW=351，优于当前主种子denseVGGT完整DEV结果；全五场景检测key集合一致。配对推理种子未完成，不能归因于VGGT或声称稳定速度优势。 当前稳定科学成功/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。
 
 ## Q14: 为什么符合 WWW？
 

@@ -26,9 +26,21 @@ def main():
                 raise ValueError('changed prediction artifact')
             if not ref['full_video'] or not ref['causal_online'] or bool(ref.get('validation_native_output_prior',False))!=prior:
                 raise ValueError('reference tracking method/protocol mismatch')
+            if info['tracking_method']=='vggt_dense':
+                if info['tracking_head_checkpoint_sha256']!=ref['head_checkpoint_sha256']:
+                    raise ValueError('tracking head mismatch')
+                for key,value in info['tracking_options'].items():
+                    # Scalar calibration is inactive when a learned head is
+                    # loaded; every other explicit tracking option must match.
+                    if key!='CALIBRATION_PATH' and ref['geo_options'][key]!=value:
+                        raise ValueError('tracking option mismatch: '+key)
             for field in ('seed','checkpoint_sha256','config_sha256','annotation_sha256'):
                 if info[field]!=ref[field]:raise ValueError('unpaired tracking inputs: '+field)
             records=video_records(data,scene,info['max_frames']);ids={r['image_id'] for r in records}
+            if info['tracking_method']=='vggt_dense':
+                stats=info['tracking_runtime_stats'][str(scene)]
+                if stats['failures'] or stats['vggt_calls']!=len(records):
+                    raise ValueError('dense symmetric VGGT prefix was not actually computed for every group')
             actual=json.loads(prediction.read_text())
             expected=[row for row in json.loads(reference.read_text()) if row['image_id'] in ids]
             if prior:

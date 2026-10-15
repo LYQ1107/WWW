@@ -4,11 +4,13 @@ SCIENTIFIC_SUCCESS: PRELIMINARY_PAIRED_FULL_DEV_GAIN_NOT_STABLE. ENGINEERING_COM
 
 Tables below are read from actual evaluation files. Raw-GT diagnostic rows cannot substitute for strict evaluation. All input frames are retained. Original GMT full-video postprocessing is offline; no real-time identity latency claimed.
 
-Complete causal dense B7 strict5: CVIDF1 95.147448 (+0.089485 percentage points), HOTA +0.073212, AssA +0.146825, IDSW 482 to 381. All five scenes retain exact detector-key sets. Cross-camera all-time identity-pair audits include both corrections and harms; these correlated pair counts are not Hungarian decision counts. Actual VGGT calls 14324, numerical geometry gate passes 3, module failures 0; descriptive cumulative throughput 1.1262 images/s. One seed, incomplete full-dev attribution, and a stronger scene1 native fixed-prior rival prevent a stable or VGGT-specific success claim.
+Complete head-free native fixed-prior strict5: CVIDF1 95.181615 (+0.123653 percentage points), IDSW 482 to 351; exact detector-key sets in all five scenes, with corrections and harms retained separately. No extra learned parameters/encoder/head or target-vector columns. Descriptive cumulative throughput 6.9927 images/s, zero VGGT calls. This ordinary camera/time logit prior exceeds primary-seed dense VGGT full-dev CVIDF1 and IDSW; current evidence does not establish VGGT-specific identity gain. Paired inference-seed controls remain pending; no stable timing, final candidate selection or three-module success claim.
+
+Complete causal dense B7 strict5: CVIDF1 95.147448 (+0.089485 percentage points), HOTA +0.073212, AssA +0.146825, IDSW 482 to 381. All five scenes retain exact detector-key sets. Cross-camera all-time identity-pair audits include both corrections and harms; these correlated pair counts are not Hungarian decision counts. Actual VGGT calls 14324, numerical geometry gate passes 3, module failures 0; descriptive cumulative throughput 1.1262 images/s. One seed, incomplete full-dev attribution, and a stronger full-dev native fixed-prior rival prevent a stable or VGGT-specific success claim.
 
 Complete strict B8 fixed20/80-call-per-video CVIDF1 change is only +0.001627 percentage points, with unchanged total IDSW. The common-detection identity audit finds one small scene19 relation correction and no harms. This is an extremely small preliminary full-DEV signal; no stable VGGT/geometry/scheduler contribution is established.
 
-The head-free fixed-prior implementation now passes actual40-group equality to the measured native-head constant-score control and zero60-group equality to locked causal GMT. No extra encoder/head or learned parameters are loaded, and the extra target-vector width is zero. Complete head-free scene1 now exactly reproduces the constant-head output SHA, with CVIDF1 95.583950, IDSW 203, descriptive throughput 7.0900 images/s and P95 323.72ms. This is one inference seed/scene, not a stable speed or full-DEV result. Complete strict5 and seed-paired inference evaluations remain running/queued. This is a strong ordinary calibration control, not a VGGT-specific contribution.
+The head-free fixed-prior implementation now passes actual40-group equality to the measured native-head constant-score control and zero60-group equality to locked causal GMT. No extra encoder/head or learned parameters are loaded, and the extra target-vector width is zero. Complete head-free scene1 now exactly reproduces the constant-head output SHA, with CVIDF1 95.583950, IDSW 203, descriptive throughput 7.0900 images/s and P95 323.72ms. This is one inference seed/scene, not a stable speed or full-DEV result. Complete seed-paired inference evaluations remain running/queued; full strict5 primary-seed status is reported above. This is a strong ordinary calibration control, not a VGGT-specific contribution.
 
 In the actual80-call VGGT40-group prefix, fixed+1 evidence exactly reproduces learned dense identity outputs under identical feature eligibility. Learned score discrimination is unnecessary for that early split; whole-video/DEV attribution is not inferred. Cache gate telemetry exactly reproduces all decisions: all74 rejected reuse observations fail only the fixed native cosine .9 gate; spatial candidate filtering does not change admission. No DEV threshold relaxation is applied.
 
@@ -81,6 +83,8 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | B5_vggt_head_dense_causal_v1_v1 | 1 | yes | 87.2189 | 86.5336 | 95.4719 | 95.4719 | 214 |
 | B6_vggt_camera_dense_causal_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | C_dino_head_dense_causal_v1_v1 | 1 | yes | 87.2226 | 86.5408 | 95.4719 | 95.4719 | 213 |
+| C_gmt_head_dense_causal_strict_suite_v1_v10 | 10 | yes | 80.9713 | 80.9817 | 98.9293 | 98.9293 | 25 |
+| C_gmt_head_dense_causal_strict_suite_v1_v11 | 11 | yes | 83.3183 | 79.2685 | 92.0383 | 92.0383 | 25 |
 | C_gmt_head_dense_causal_v1_v1 | 1 | yes | 87.0230 | 86.1452 | 95.2477 | 95.2477 | 234 |
 | cache_dino_fixed20_total40_scene1_full_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | cache_gmt_fixed20_scene1_full_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
@@ -102,6 +106,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_B7_fixed_k20_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | causal_B7_fixed_k20_strict_suite_v1_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_B7_fixed_k20_strict_suite_v1_v19 | 19 | yes | 77.4654 | 81.0309 | 94.0583 | 94.0583 | 106 |
+| causal_B7_fixed_k5_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B8_fixed20_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B8_fixed20_total80_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | causal_B8_fixed20_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
@@ -114,6 +119,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_fixed20_offset9_total80_v18_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_identity_total80_strict_suite_v1_v1 | 1 | yes | 86.6169 | 85.3440 | 94.7545 | 94.7545 | 270 |
 | causal_identity_total80_strict_suite_v1_v10 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
+| causal_identity_total80_strict_suite_v1_v11 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | causal_joint_total80_v18_repeat2_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_joint_total80_v18_repeat3_v1 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
 | causal_motion_total80_strict_suite_v1_v1 | 1 | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
@@ -131,6 +137,8 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | native_prior_seed20261014_strict_suite_v1_v1 | 1 | yes | 87.3236 | 86.7415 | 95.5839 | 95.5839 | 203 |
 | native_prior_seed20261014_strict_suite_v1_v10 | 10 | yes | 80.9973 | 81.0337 | 98.9650 | 98.9650 | 15 |
 | native_prior_seed20261014_strict_suite_v1_v11 | 11 | yes | 83.3180 | 79.2678 | 92.0648 | 92.0648 | 18 |
+| native_prior_seed20261014_strict_suite_v1_v18 | 18 | yes | 78.7768 | 81.0353 | 95.9610 | 95.9610 | 25 |
+| native_prior_seed20261014_strict_suite_v1_v19 | 19 | yes | 77.5286 | 81.1437 | 94.1330 | 94.1330 | 90 |
 | online_B0_full_v10_source44_v1 | 10 | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | online_B0_full_v11_source44_v1 | 11 | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | online_B0_full_v18 | 18 | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
@@ -167,6 +175,7 @@ Complete causal scene1 preliminary signal: dense B7 has paired changes HOTA +0.6
 | causal_B9_joint_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
 | causal_motion_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
 | causal_random_total80_strict_suite_v1 | ALL_STRICT | yes | 80.7484 | 81.4726 | 95.0580 | 95.0580 | 482 |
+| native_prior_seed20261014_strict_suite_v1 | ALL_STRICT | yes | 80.8406 | 81.6545 | 95.1816 | 95.1816 | 351 |
 
 Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):
 

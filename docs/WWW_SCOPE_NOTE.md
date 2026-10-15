@@ -6,19 +6,19 @@ A submission must explain its Web scientific problem and track fit on the first 
 
 The executable task queries a current detector target against clips from other cameras. Actual image reads, frozen causal GMT, feature publication, bounded index maintenance and query responses run online in sequence; labels enter post-run evaluation only. Separate scenes interleave by replay round and retain independent tracker banks/RNG. Frozen encoder weights are already shared serially across scene extractors; no cross-scene tracking/geometry state is shared.
 
-Current retrieval experiments keep tracking at causal GMT OFF and vary retrieval features/scoring. They are not yet an end-to-end evaluation of the improved tracking candidates feeding the index. Local replay does not establish Internet-origin streams, live Web deployment, real user-query traffic or an independent Web scientific contribution.
+Completed production tracker modes in this table: gmt_off. Original experiments keep tracking at causal GMT OFF and vary retrieval features/scoring. Optional fixed-prior and dense B7 tracking-to-retrieval controls are separately gated; only completed metric artifacts enter this table. Local replay does not establish Internet-origin streams, live Web deployment, real user-query traffic or an independent Web scientific contribution.
 
 Production retrieval results below use scene18 queries at every stream count. Exact query image/camera/frame/box cohorts and complete scene18 detector outputs are checked against the two-camera native reference. Recall@1/MRR are conditional on matched queries with positive gallery clips; coverage and all-request success remain in the metric artifacts.
 
-| Method | Cameras | Queries | Eligible | Recall@1 | MRR | Exact cohort/detections |
-|---|---:|---:|---:|---:|---:|---|
-| retrieval_gmt_10streams_full_v1 | 10 | 598 | 309 | 84.1424% | 0.885244 | True/True |
-| retrieval_gmt_4streams_full_v1 | 4 | 598 | 309 | 97.7346% | 0.987864 | True/True |
-| retrieval_gmt_v18_full_v1 | 2 | 598 | 309 | 97.7346% | 0.987864 | True/True |
-| retrieval_vggt_k10_4streams_full_v1 | 4 | 598 | 309 | 87.0550% | 0.891011 | True/True |
-| retrieval_vggt_k10_v18_full_v1 | 2 | 598 | 309 | 90.2913% | 0.924582 | True/True |
-| retrieval_vggt_k20_v18_full_v1 | 2 | 598 | 309 | 90.2913% | 0.925637 | True/True |
-| retrieval_vggt_k5_v18_full_v1 | 2 | 598 | 309 | 89.9676% | 0.922593 | True/True |
+| Method | Tracking | Cameras | Queries | Eligible | Recall@1 | MRR | Exact cohort/detections |
+|---|---|---:|---:|---:|---:|---:|---|
+| retrieval_gmt_10streams_full_v1 | gmt_off | 10 | 598 | 309 | 84.1424% | 0.885244 | True/True |
+| retrieval_gmt_4streams_full_v1 | gmt_off | 4 | 598 | 309 | 97.7346% | 0.987864 | True/True |
+| retrieval_gmt_v18_full_v1 | gmt_off | 2 | 598 | 309 | 97.7346% | 0.987864 | True/True |
+| retrieval_vggt_k10_4streams_full_v1 | gmt_off | 4 | 598 | 309 | 87.0550% | 0.891011 | True/True |
+| retrieval_vggt_k10_v18_full_v1 | gmt_off | 2 | 598 | 309 | 90.2913% | 0.924582 | True/True |
+| retrieval_vggt_k20_v18_full_v1 | gmt_off | 2 | 598 | 309 | 90.2913% | 0.925637 | True/True |
+| retrieval_vggt_k5_v18_full_v1 | gmt_off | 2 | 598 | 309 | 89.9676% | 0.922593 | True/True |
 
 Same-gallery diagnostics retain the full native positive-gallery denominator. The sampled-observation native scorer is stronger than transferred association-trained projection/cosine scores in the completed scene18 tests; positive candidate coverage is 100%. These diagnose scoring/representation transfer and do not show all raw foundation features are useless. Their five-ranker producer timings are diagnostic cost, not production throughput. See retrieval_scoring_diagnostics.csv and the source metrics.
 

@@ -27,7 +27,7 @@ def main():
             if sha256(path.parent/name)!=run['artifacts'][name]:raise ValueError('changed retrieval artifact')
         same=cohort(queries)==cohort(original_queries)
         same_det=detector(json.loads((path.parent/'video_18.json').read_text()))==reference_detections
-        rows.append(dict(method=path.parent.name,camera_streams=run['camera_streams'],backbone=run['backbone'],interval=run['interval'],
+        rows.append(dict(method=path.parent.name,tracking_method=run.get('tracking_method','gmt_off'),camera_streams=run['camera_streams'],backbone=run['backbone'],interval=run['interval'],
                          requests=result['requests'],eligible_queries=result['gallery_eligible_queries'],recall1=result['recall_at_k']['1'],mrr=result['mrr'],
                          exact_detector_query_cohort=same,exact_full_scene18_detector_outputs=same_det,metrics=str(metric),metrics_sha256=sha256(metric),manifest_sha256=sha256(path)))
         sources[str(metric)]=sha256(metric);sources[str(path)]=sha256(path)
@@ -35,12 +35,12 @@ def main():
           f"[Official Research Track CFP]({cfp['url']}) verified {cfp['checked_utc'][:10]}: abstract {cfp['abstract_deadline_aoe']} AoE, full paper {cfp['full_paper_deadline_aoe']} AoE. These end at 20:00 Asia/Shanghai on the following calendar day. Target track: {cfp['target_track']}.",'',
           cfp['relevance_summary']+f" [Source]({cfp['url']})",'',
           'The executable task queries a current detector target against clips from other cameras. Actual image reads, frozen causal GMT, feature publication, bounded index maintenance and query responses run online in sequence; labels enter post-run evaluation only. Separate scenes interleave by replay round and retain independent tracker banks/RNG. Frozen encoder weights are already shared serially across scene extractors; no cross-scene tracking/geometry state is shared.', '',
-          'Current retrieval experiments keep tracking at causal GMT OFF and vary retrieval features/scoring. They are not yet an end-to-end evaluation of the improved tracking candidates feeding the index. Local replay does not establish Internet-origin streams, live Web deployment, real user-query traffic or an independent Web scientific contribution.', '',
+          'Completed production tracker modes in this table: '+', '.join(sorted({row['tracking_method'] for row in rows}))+'. Original experiments keep tracking at causal GMT OFF and vary retrieval features/scoring. Optional fixed-prior and dense B7 tracking-to-retrieval controls are separately gated; only completed metric artifacts enter this table. Local replay does not establish Internet-origin streams, live Web deployment, real user-query traffic or an independent Web scientific contribution.', '',
           'Production retrieval results below use scene18 queries at every stream count. Exact query image/camera/frame/box cohorts and complete scene18 detector outputs are checked against the two-camera native reference. Recall@1/MRR are conditional on matched queries with positive gallery clips; coverage and all-request success remain in the metric artifacts.', '',
-          '| Method | Cameras | Queries | Eligible | Recall@1 | MRR | Exact cohort/detections |',
-          '|---|---:|---:|---:|---:|---:|---|']
+          '| Method | Tracking | Cameras | Queries | Eligible | Recall@1 | MRR | Exact cohort/detections |',
+          '|---|---|---:|---:|---:|---:|---:|---|']
     for row in rows:
-        text.append(f"| {row['method']} | {row['camera_streams']} | {row['requests']} | {row['eligible_queries']} | {100*row['recall1']:.4f}% | {row['mrr']:.6f} | {row['exact_detector_query_cohort']}/{row['exact_full_scene18_detector_outputs']} |")
+        text.append(f"| {row['method']} | {row['tracking_method']} | {row['camera_streams']} | {row['requests']} | {row['eligible_queries']} | {100*row['recall1']:.4f}% | {row['mrr']:.6f} | {row['exact_detector_query_cohort']}/{row['exact_full_scene18_detector_outputs']} |")
     text += ['',
         'Same-gallery diagnostics retain the full native positive-gallery denominator. The sampled-observation native scorer is stronger than transferred association-trained projection/cosine scores in the completed scene18 tests; positive candidate coverage is 100%. These diagnose scoring/representation transfer and do not show all raw foundation features are useless. Their five-ranker producer timings are diagnostic cost, not production throughput. See retrieval_scoring_diagnostics.csv and the source metrics.', '',
         'Query latency measures local scoring/response serialization after representations are available. Full replay-round timing separately charges reads, tracking, optional encoder work, publication, queries and log I/O. It is not HTTP/network or camera-capture-to-output latency. Source acquisition timing and a deadline-paced live camera service have not been verified. Index payload caps do not bound original GMT history or total process/GPU memory.', '',

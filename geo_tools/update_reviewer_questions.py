@@ -34,7 +34,12 @@ def main():
     constant_path=ROOT/'results/constant_native_head_scene1_accuracy_v1.json'
     if constant_path.exists():
         constant=json.loads(constant_path.read_text())['rows'][0]
-        constant_note=f" 原生GMT-head固定+1配对分数完整scene1对照CVIDF1={constant['metrics']['CVIDF1']:.6f}、IDSW={constant['metrics']['IDSW']}，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5/配对推理种子仍在运行，不能外推为全开发结论。"
+        constant_note=f" 原生GMT-head固定+1配对分数完整scene1对照CVIDF1={constant['metrics']['CVIDF1']:.6f}、IDSW={constant['metrics']['IDSW']}，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5与配对推理种子状态见下文；scene1不能单独支持全开发结论。"
+    native_full_path=ROOT/'results/native_prior_seed20261014_strict_suite_v1_metrics.json'
+    if native_full_path.exists():
+        native_full=json.loads(native_full_path.read_text())
+        if native_full['status']=='PASS':
+            constant_note+=f" 无额外head固定先验完整strict5已完成：CVIDF1={native_full['metrics']['CVIDF1']:.6f}、IDSW={native_full['metrics']['IDSW']}，优于当前主种子denseVGGT完整DEV结果；全五场景检测key集合一致。配对推理种子未完成，不能归因于VGGT或声称稳定速度优势。"
     cached_path=ROOT/'results/target_cache_three_backbone_scene1_controls_v1.json'
     if cached_path.exists() and json.loads(cached_path.read_text())['all_exact_baseline_predictions']:
         cached_note=' 新增有界目标特征复用的VGGT/DINO/GMT完整scene1对照均与baseline逐条一致，未保留dense收益；三个骨干相同40个观测更新时间，但实际VGGT80/DINO40/GMT0次编码，不能称同等计算。'

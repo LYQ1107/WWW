@@ -82,7 +82,7 @@ def main():
                 axis.set_xlabel('Change (percentage points)')
                 axis.set_title(metric);axis.grid(axis='x',alpha=.2)
             fig.suptitle('Scene1 complete causal feature and calibration controls',fontsize=11)
-            fig.text(.5,.015,'One full scene / inference seed. Native fixed prior exceeds VGGT here; no independent geometry output effect. Full strict5/stability pending.',ha='center',fontsize=7.5)
+            fig.text(.5,.015,'One full scene / inference seed. Native fixed prior exceeds VGGT here; no independent geometry output effect. Full-dev attribution/stability incomplete.',ha='center',fontsize=7.5)
             fig.tight_layout(rect=(0,.06,1,.94))
             fig.savefig(out/'causal_scene1_attribution.png',dpi=180)
             fig.savefig(out/'causal_scene1_attribution.pdf')
