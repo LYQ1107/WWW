@@ -1,0 +1,140 @@
+{
+  "cache": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_input_index_v1/MANIFEST.json",
+    "sha256": "587c2d3069ca2d4a99863eaa4fba960184cf83e2037824b8fb6258e511cc8a1d"
+  },
+  "admission": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_admission_v1/ADMISSION.json",
+    "sha256": "6815f8d694d7aace041fd5b7ab837af1f50eccae2cf229d191e42148df2e0749"
+  },
+  "common_training_domain": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_admission_v1/common_training_keys.json",
+    "sha256": "daa11673f7003e5487796680c9d8129a03348f8fee8cbd0ebe70e0e188504852",
+    "queries": 113415
+  },
+  "seed": 20261015,
+  "epoch_order_sha256": {
+    "1": "6563d4ce3f6aad1042221c80a85130a260cee855a0eef96061fa95117778de16",
+    "2": "071bcaefd79a337f188a365f7d91f18987339bf0db84769bd7562937a7ff8d4d",
+    "3": "da6b84a26d84c00c211d2ab04c27a6ac99dac2b9bbb707701ca0ea0c37325d6c",
+    "4": "aa5f980d4c6d41959252912c63b45d1926aea65cb836feb6a1d356700a0f4361",
+    "5": "1a3dd4a19d836a949abdd3577f0389b2fec83f57af1776ca3d0fb18c7259c932"
+  },
+  "status": "PREREGISTERED_PHASE2_BEFORE_OPTIMIZATION",
+  "fit_scenes": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    13,
+    17,
+    20,
+    21,
+    24
+  ],
+  "horizon_boundaries": [
+    1,
+    2,
+    16
+  ],
+  "epochs": [
+    1,
+    3,
+    5
+  ],
+  "CPU_wall_hours_cap": 6,
+  "GPU_wall_hours": 0,
+  "arms": [
+    "A2_rank",
+    "AC_contrastive",
+    "A4_uncertainty",
+    "A5_no_uncertainty",
+    "A6_no_camera",
+    "A7_no_time",
+    "AS_same_camera"
+  ],
+  "horizons": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/PHASE2_TRAIN_HORIZONS_v3.json",
+    "sha256": "a324f2137d7f384dcc1789b4d83e2a1824be9d0ad6e2cd62593cea14fc0a54c3"
+  },
+  "shadow": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/PHASE2_REAL_CPU_SHADOW_v5.json",
+    "sha256": "d31742a938600ca9195d8c422b760e01d0cebc7ba61018ed8a9c5d1c731e2fb4"
+  },
+  "optimizer": {
+    "name": "AdamW",
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "clip_per_arm": 1.0
+  },
+  "parameters_allocated_per_arm": 38225,
+  "parameters_active": {
+    "A2_rank": 38208,
+    "AC_contrastive": 38208,
+    "A4_uncertainty": 38225,
+    "A5_no_uncertainty": 38208,
+    "A6_no_camera": 38177,
+    "A7_no_time": 38129,
+    "AS_same_camera": 38225
+  },
+  "query_batch_size_per_arm": 1,
+  "per_arm_updates_at5epochs": 567075,
+  "full_common_coverage_per_epoch": 113415,
+  "objectives": {
+    "A2_rank": "known-only multi-positive LSE rank",
+    "AC_contrastive": "rank+0.5 known-only cosine InfoNCE temperature0.1",
+    "A4_uncertainty": "rank+0.5 cross-view-supported candidate-state error/variance+log(variance)",
+    "A5_no_uncertainty": "rank+0.5 cross-view candidate-state cosine error",
+    "A6_no_camera": "A4 with explicit destination onehot and cross fraction zero",
+    "A7_no_time": "A4 with explicit mean age/cross latest lag/horizon zero",
+    "AS_same_camera": "A4 but forecast targets require same-camera support"
+  },
+  "baseline": {
+    "A0": "unchanged native GMT",
+    "A1": "unchanged C1 native+2cos",
+    "A3": "unchanged full-data Phase1 C3 at same fixed epoch; original per-observation architecture38080params, no claim identical optimization trajectory across different architectures",
+    "A8": "no innovation exactly A1; no trainable inference effect"
+  },
+  "predictor": "full1152 normalized causal native history mean +11 native metadata ->rank16 GELU ->bounded residual identity mean+clipped scalar heteroscedastic variance; query NOT input",
+  "variance_clip": [
+    0.05,
+    4
+  ],
+  "forecast_objective_is_not_probabilistic_identity_model": true,
+  "score": "C1+2 * count/(count+1) * exp(-max(logvar,0)) * clip(cos(q,mu)-cos(q,history_mean),-.25,.25); uncertainty gate=1 for rank/contrastive/no-sigma; empty histories have zero increment",
+  "time_unit": "native frame indices, not certified physical seconds",
+  "horizon_scope": "TRAIN-only latest cross-camera lag; fallback latest any-camera lag only for candidates with no cross-view history",
+  "uncertainty_diagnostics": "query-level alias-averaged forecast error/variance correlation, fixed variance bins and actual primary correctness; person groups separate. Variance is not identity probability.",
+  "shared_scene_order_and_seed": true,
+  "DEV_used_for_numerical_protocol": false,
+  "stage2_stop": "If no unique repairs over C1/ordinary models at fixed endpoints, retain negative evidence, do not build complex predictive combinations; still run preregistered low-cost reliability and ordinary native decision controls.",
+  "evaluation": {
+    "fixed_DEV_scene": 12,
+    "endpoints": [
+      1,
+      3,
+      5
+    ],
+    "all_actions_before_GT": true,
+    "label": "SAME_STATE_NATIVE_REPLAY_ONLY",
+    "no_direct_online_admission": true
+  },
+  "memory": "memoized derived state in RAM only, at most30000 native calls; original physical vector files reused, no new disk feature archive",
+  "created_utc": "2026-10-15T20:59:15.096579+00:00",
+  "source_code_sha256": {
+    "geo_tools/pirga_candidate_state.py": "127e7c5abadbf025c0af94df3ddcd9858a64ed408ba42ef58289dadb79fd50ae",
+    "geo_tools/pirga_innovation.py": "2b7a5043879c62b6ff576d29cbc19b3a622a3042dfdebfd254a89dce5e799de8",
+    "geo_tools/pirga_grouped_innovation.py": "df745219b39ba8b1aba292361d93de9ff9c5bbef62067d941c128056a96ad06a",
+    "geo_tools/train_pirga_innovation.py": "cf48847d0a9b976d414e49829f97ddcbf9ab231547765aa33b6d7809e2f7a31c",
+    "geo_tools/pirga_training_cache.py": "772bd3cf4da82a5b11be948ba6eef4361b1343b059028c6fece689b9eb291d42",
+    "geo_tools/pirga_fulltrain_dataset.py": "928bf8a10eac49928cf6c168046582a4c2f5d59af98a5148456e63273a23d06b",
+    "geo_tools/cv_pil_native_handoff.py": "eee493422c9133f7692ac5fd9bb97577e8748b1016b5f92a17d36086c5e4e53a"
+  }
+}
