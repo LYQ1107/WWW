@@ -16,18 +16,26 @@ def run(preparation_path,out):
     start=time.monotonic();torch.set_num_threads(1);ad=json.loads(preparation_path.read_text());cache=LegacyTrainingCache(ad['input_manifest']['path'],ad['input_manifest']['sha256'])
     a=json.loads(Path(ad['full_admission']['path']).read_text());ds=FullTrainDataset(a['stores']);labels=load_supervision(a['supervision']['path'],a['supervision']['sha256'],ds)
     repo=Path(__file__).resolve().parents[1];old_protocol_path=repo/'results/cv_pil_v3_native_validation/P3_MATCHED_FIT_PREREGISTRATION.json';old=json.loads(old_protocol_path.read_text());events,audit=load_fit(**old['fit_source'])
-    tested=0;old_eligible=0;old_cross=0;eligible=set(map(tuple,json.loads(Path(ad['eligibility']['path']).read_text())))
+    tested=0;old_eligible=0;old_cross=0;label_differences=[];training_differences=[];eligible=set(map(tuple,json.loads(Path(ad['eligibility']['path']).read_text())))
     for event in events:
         actor=inference_inputs(event);key=tuple(actor['event_key']);normal=tensorize(actor);fast=cache.batch(key);new=cache.label(key,labels[key]);original=event['OFFLINE_ONLY']
         for field in ('query','histories','owners','age','cross_view','native_scores'):
             if not torch.equal(getattr(normal,field),getattr(fast,field)):raise ValueError('Old input field differs '+str((key,field)))
         if normal.destination_camera!=fast.destination_camera:raise ValueError('Destination camera differs')
-        if list(original['certified_target_indices'])!=new['certified_target_indices'] or list(original['candidate_known_mask'])!=new['candidate_known_mask'] or original['GT_person']!=new['GT_person']:raise ValueError('Old supervision certification differs '+str(key))
-        ok=training_eligible(normal,original)
-        if ok!=(key in eligible):raise ValueError('Old query eligibility differs '+str(key))
+        ok=training_eligible(normal,original);new_ok=key in eligible
+        different=(list(original['certified_target_indices'])!=new['certified_target_indices'] or list(original['candidate_known_mask'])!=new['candidate_known_mask'] or original['GT_person']!=new['GT_person'])
+        if different or ok!=new_ok:
+            detail=dict(key=list(key),old_eligible=ok,new_eligible=new_ok,old=dict(GT_person=original['GT_person'],certified_target_indices=list(original['certified_target_indices']),candidate_known_mask=list(original['candidate_known_mask'])),new=new)
+            label_differences.append(detail)
+            if ok or new_ok:training_differences.append(detail)
         old_eligible+=ok;old_cross+=bool(original['has_strict_past_cross_view_positive']);tested+=1
         if tested%500==0:print(json.dumps(dict(old_TRAIN_queries_verified=tested,DEV_read=False)),flush=True)
     if tested!=3000 or old_eligible!=2592:raise ValueError('Frozen old TRAIN coverage changed')
+    if training_differences:
+        failure=dict(status='FAILED_OLD_TRAIN_OBJECTIVE_CERTIFICATION_PARITY',old_queries_tested=tested,old_ranking_eligible=old_eligible,batch_fields_bitwise_equal=True,
+            all_label_differences=label_differences,training_objective_differences=training_differences,training_updates=0,GPU_wall_hours=0,DEV_read=False,
+            preparation_sha256=sha(preparation_path),source_sha256=sha(__file__),wall_seconds=time.monotonic()-start)
+        out.write_text(json.dumps(failure,indent=2)+'\n');raise ValueError('Old training masks differ; preserve evidence and do not train')
     # Existing model-wise independent-head math already passed real shadow
     # tests. Measure only bounded real TRAIN optimizer throughput here; these
     #22 probe updates per arm are discarded and never used as trained weights.
@@ -39,8 +47,8 @@ def run(preparation_path,out):
         b=cache.batch(key);label=cache.label(key,labels[key]);begin=time.monotonic();score,h=group(b);loss,_,_,_=grouped_losses(score,h,b,label)
         if not torch.isfinite(loss).all():raise ValueError('Nonfinite TRAIN probe loss')
         opt.zero_grad(set_to_none=True);loss.sum().backward();group.clip_per_arm();opt.step();times.append(time.monotonic()-begin)
-    result=dict(status='PASS_ALL3000_OLD_TOP8_LATEST4_BITWISE_INPUT_AND_LABEL_PARITY',old_queries_tested=tested,old_ranking_eligible=old_eligible,full_ranking_eligible=ad['ranking_eligible'],
-        batch_fields_bitwise_equal=True,supervision_masks_and_aliases_equal=True,initialization_and_losses='Unchanged frozen CandidatePredictor and GroupedHeads; original .001 AdamW/.0001 decay,clip1,rank+0.5cross prediction',
+    result=dict(status='PASS_ALL3000_OLD_INPUTS_AND_ALL2592_TRAIN_OBJECTIVES_PARITY',old_queries_tested=tested,old_ranking_eligible=old_eligible,full_ranking_eligible=ad['ranking_eligible'],
+        batch_fields_bitwise_equal=True,all_trained_supervision_masks_and_aliases_equal=True,nontraining_certification_differences=label_differences,initialization_and_losses='Unchanged frozen CandidatePredictor and GroupedHeads; original .001 AdamW/.0001 decay,clip1,rank+0.5cross prediction',
         CPU_joint_step_seconds_median=statistics.median(times),CPU_joint_step_seconds_max=max(times),probe_steps_per_arm=len(selected),all_probe_weights_discarded=True,
         scientific_training_updates=0,GPU_wall_hours=0,DEV_read=False,preparation_sha256=sha(preparation_path),source_sha256=sha(__file__),old_protocol_sha256=sha(old_protocol_path),wall_seconds=time.monotonic()-start)
     out.write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result),flush=True)
