@@ -1,0 +1,22 @@
+{
+  "status": "PREREGISTERED_BEFORE_PHASE2_DEV_RESULTS",
+  "controls": [
+    "C0",
+    "C1",
+    "R_mean",
+    "R_top4_recent",
+    "R_coordinate_median",
+    "R_trim10",
+    "R_latest",
+    "R_decay"
+  ],
+  "data_scope": "same complete sealedDEV12 same original native state; no additional scene or label exposure",
+  "purpose": "Supplement main Phase2 A1/A2/A3 comparisons with all six preregistered simple history rules; do not select one favorable traditional rule or attribute rule-explained repairs to prediction.",
+  "interpretation": "R_latest has one extra original missed-positive repair and one extra original-unknown-to-known-wrong query vsC1. This is not an online/predictive success and no hyperparameter is changed based on it.",
+  "fixed_control_results": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fixed_reliability_replay_v1/RESULTS.json",
+    "sha256": "4ffce2dfdc9f1c8d3ea1ba7fe51632cead464a2f8ea341144a6ef786a8f9136c"
+  },
+  "fairness_note": "Fixed rules replace C1 history aggregate with the same alpha2; their residual relative to C1 can exceed the new learned innovation clamp. This supplementary strong-rule comparison is separate from the matched bounded learned-head comparison.",
+  "scientific_success": false
+}
