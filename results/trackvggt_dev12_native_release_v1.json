@@ -1,0 +1,2177 @@
+{
+  "status": "DEV12_NATIVE_ASSET_HANDOFF_COMPLETE",
+  "interface_version": "cvpil-dev12-native-assets/v1",
+  "release_directory": "/data1/liuyeqiang/WWW_trackvggt_runtime/cv_pil_dev12_native_release_v1",
+  "sealed_manifest_sha256": "a4d2014edcc920f45753e0f76c378bf08f25c22758e3d8770572dc36632c2173",
+  "artifact_sha256_index_sha256": "ef7f65d0bccb1e665f7125391f4a3c64a1449b1fe4d204c735371522386421d4",
+  "scope_sha256": "45824abd0f27f105e4af28f8fb0ce10790ac5adc9eee1a2c579689786f5bcaf9",
+  "groups": 1200,
+  "images": 2400,
+  "queries": 14557,
+  "observations": 14564,
+  "native_calls": 2477,
+  "primary_calls": 2399,
+  "Bank_calls": 78,
+  "commits": 14564,
+  "native_feature_dimension": 1152,
+  "dtype": "torch.float32",
+  "lossy_compression": false,
+  "gpu_wall_hours_including_off_on_prechecks": 0.34016230704676775,
+  "logical_file_bytes": 281762969,
+  "allocated_file_bytes": 281862144,
+  "maximum_gpu_wall_hours": 4,
+  "maximum_output_bytes": 4294967296,
+  "native_capture_source_commit": "f97cf27f0f4299269c3bd1dd885a92e90639f51c",
+  "native_capture_source_worktree": "/data1/liuyeqiang/WWW_trackvggt_runtime/sources/dev12_f97cf27f",
+  "sealed_release_all_artifact_sha256": "ef7f65d0bccb1e665f7125391f4a3c64a1449b1fe4d204c735371522386421d4",
+  "consumer_audit": {
+    "status": "PASS_READ_ONLY_NATIVE_CONSUMER",
+    "interface_version": "cvpil-dev12-native-assets/v1",
+    "queries": 14557,
+    "observations": 14564,
+    "calls": 2477,
+    "bank_calls": 78,
+    "commits": 14564,
+    "descriptor_versions": 16,
+    "native_dtype": "torch.float32",
+    "lossy_compression": false,
+    "every_joint_Hungarian_exact": true,
+    "every_threshold_acceptance_exact": true,
+    "all_query_and_full_reference_features_present": true,
+    "every_final_commit_linked": true,
+    "commit_state_chain_verified": true,
+    "GT_read": false,
+    "images_read": false,
+    "GMT_inference_calls": 0,
+    "cpu_activation_max_abs_error": 2.384185791015625e-07,
+    "cpu_aggregation_max_abs_error": 3.814697265625e-05,
+    "numerical_note": "CPU softmax/matmul verified with disclosed tolerance; the actual FP32 CPU Hungarian input is saved exactly and yields exact assignments.",
+    "offline_label_join_exact": true,
+    "offline_label_queries": 14557,
+    "inputs_constructed_before_labels": true,
+    "original_video_and_GT_files_needed_by_consumer": false
+  },
+  "coverage_audit": {
+    "status": "PASS_ALL_NATIVE_INPUTS_PRESENT",
+    "all_development_queries": 14557,
+    "original_error_events": 26,
+    "errors_matched_to_inputs": 26,
+    "errors_with_full_candidate_and_history_inputs": 26,
+    "errors_with_legal_certified_pure_positive": 23,
+    "errors_with_Top8_pure_positive": 21,
+    "errors_pure_positive_outside_Top8": 2,
+    "errors_no_certified_pure_positive": 3,
+    "errors_with_current_threshold_passing_pure_positive": 6,
+    "wrong_links": 6,
+    "missed_known_positive": 20,
+    "errors_bank_restored": 0,
+    "errors_newborn": 20,
+    "errors_final_track_differs_from_primary": 20,
+    "contributing_gt_identities": [
+      1,
+      3,
+      4,
+      5,
+      7,
+      8,
+      12
+    ],
+    "contributing_identity_count": 7,
+    "errors_by_camera": {
+      "2": 21,
+      "1": 5
+    },
+    "errors_by_100_group_interval": {
+      "1-100": 4,
+      "101-200": 3,
+      "201-300": 6,
+      "301-400": 1,
+      "501-600": 3,
+      "601-700": 1,
+      "801-900": 1,
+      "901-1000": 3,
+      "1001-1100": 3,
+      "1101-1200": 1
+    },
+    "errors_by_identity": {
+      "12": 1,
+      "5": 14,
+      "4": 4,
+      "8": 2,
+      "3": 2,
+      "1": 1,
+      "7": 2
+    },
+    "all_query_label_tags": {
+      "CORRECT_LINK": 11703,
+      "CORRECT_REJECT": 2,
+      "CANDIDATE_MISSING": 1886,
+      "NEWBORN": 89,
+      "WRONG_LINK": 6,
+      "IMPURE_HISTORY": 7143,
+      "AMBIGUOUS_REFERENCE": 2402,
+      "UNKNOWN_CANDIDATE_COVERAGE": 12,
+      "UNKNOWN_QUERY": 412,
+      "MISSED_KNOWN_POSITIVE": 20,
+      "ALIASED_IDENTITY": 4933,
+      "BANK_RESTORED": 1
+    },
+    "error_events": [
+      {
+        "key": [
+          12,
+          29895,
+          6
+        ],
+        "call_id": 4,
+        "query_row": 6,
+        "gt_identity": 12,
+        "primary_state": "WRONG_LINK",
+        "tags": [
+          "WRONG_LINK",
+          "CANDIDATE_MISSING"
+        ],
+        "positive_tracks": [],
+        "ambiguous_tracks": [],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "1": 1,
+          "2": 2,
+          "3": 3,
+          "4": 7,
+          "5": 5,
+          "6": 4,
+          "7": 6,
+          "8": 8,
+          "9": 11
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          9,
+          3,
+          6,
+          5,
+          7,
+          1,
+          4,
+          8
+        ],
+        "pure_positive_in_top8": false,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": 9,
+        "final_track": 9,
+        "bank_solver_called": false,
+        "bank_restored": false,
+        "newborn": false,
+        "final_output_anchor_state": "conflicting_previous_output_identity",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 3,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": false,
+        "top8_reachable": false,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": "NO_CERTIFIED_PURE_POSITIVE_IN_NATIVE_CANDIDATES",
+        "source_audit_primary_index": 4
+      },
+      {
+        "key": [
+          12,
+          29943,
+          1
+        ],
+        "call_id": 100,
+        "query_row": 1,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          5
+        ],
+        "ambiguous_tracks": [
+          10,
+          9,
+          11,
+          12,
+          13
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "1": 1,
+          "5": 5,
+          "2": 2,
+          "3": 3,
+          "7": 6,
+          "6": 4,
+          "4": 7,
+          "10": null,
+          "9": null,
+          "8": 8,
+          "11": null,
+          "12": null,
+          "13": null
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          5,
+          2,
+          1,
+          7,
+          4,
+          10,
+          6,
+          9
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 14,
+        "bank_solver_called": false,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 51,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 100
+      },
+      {
+        "key": [
+          12,
+          29950,
+          1
+        ],
+        "call_id": 114,
+        "query_row": 1,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          5,
+          14
+        ],
+        "ambiguous_tracks": [
+          9,
+          11,
+          12,
+          13
+        ],
+        "impure_tracks": [
+          12
+        ],
+        "pure_track_gt": {
+          "5": 5,
+          "1": 1,
+          "2": 2,
+          "6": 4,
+          "4": 7,
+          "3": 3,
+          "7": 6,
+          "10": 12,
+          "9": null,
+          "8": 8,
+          "11": null,
+          "12": null,
+          "13": null,
+          "14": 5
+        },
+        "aliased_pure_identities": {
+          "5": [
+            5,
+            14
+          ]
+        },
+        "original_top8_tracks": [
+          5,
+          2,
+          1,
+          7,
+          4,
+          10,
+          14,
+          9
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 15,
+        "bank_solver_called": false,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 58,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 114
+      },
+      {
+        "key": [
+          12,
+          28757,
+          4
+        ],
+        "call_id": 127,
+        "query_row": 4,
+        "gt_identity": 4,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          6
+        ],
+        "ambiguous_tracks": [
+          9,
+          11,
+          12,
+          13
+        ],
+        "impure_tracks": [
+          12
+        ],
+        "pure_track_gt": {
+          "3": 3,
+          "1": 1,
+          "2": 2,
+          "6": 4,
+          "4": 7,
+          "7": 6,
+          "5": 5,
+          "8": 8,
+          "10": 12,
+          "9": null,
+          "11": null,
+          "12": null,
+          "13": null,
+          "14": 5,
+          "15": 5
+        },
+        "aliased_pure_identities": {
+          "5": [
+            5,
+            14,
+            15
+          ]
+        },
+        "original_top8_tracks": [
+          6,
+          9,
+          10,
+          3,
+          2,
+          5,
+          4,
+          11
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 16,
+        "bank_solver_called": false,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 65,
+        "camera": 1,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 127
+      },
+      {
+        "key": [
+          12,
+          30025,
+          4
+        ],
+        "call_id": 265,
+        "query_row": 4,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          5
+        ],
+        "ambiguous_tracks": [
+          3,
+          13,
+          18
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "5": 5,
+          "6": 4,
+          "3": null,
+          "7": 6,
+          "1": 1,
+          "2": 2,
+          "4": 7,
+          "8": 8,
+          "12": 13,
+          "9": 11,
+          "13": null,
+          "18": null
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          5,
+          6,
+          2,
+          1,
+          12,
+          3,
+          4,
+          13
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 19,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 133,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 264
+      },
+      {
+        "key": [
+          12,
+          30043,
+          4
+        ],
+        "call_id": 303,
+        "query_row": 4,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          5,
+          19
+        ],
+        "ambiguous_tracks": [
+          3,
+          12,
+          13,
+          18,
+          20
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "2": 2,
+          "4": 7,
+          "3": null,
+          "6": 4,
+          "1": 1,
+          "7": 6,
+          "5": 5,
+          "8": 8,
+          "12": null,
+          "13": null,
+          "18": null,
+          "19": 5,
+          "20": null
+        },
+        "aliased_pure_identities": {
+          "5": [
+            5,
+            19
+          ]
+        },
+        "original_top8_tracks": [
+          5,
+          2,
+          19,
+          20,
+          1,
+          6,
+          3,
+          12
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 21,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 151,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 300
+      },
+      {
+        "key": [
+          12,
+          30080,
+          5
+        ],
+        "call_id": 383,
+        "query_row": 5,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          21
+        ],
+        "ambiguous_tracks": [
+          3,
+          5,
+          6,
+          18,
+          23,
+          25,
+          26,
+          27
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "3": null,
+          "5": null,
+          "1": 1,
+          "6": null,
+          "2": 2,
+          "4": 7,
+          "7": 6,
+          "8": 8,
+          "21": 5,
+          "22": 13,
+          "18": null,
+          "12": 13,
+          "23": null,
+          "24": 3,
+          "25": null,
+          "26": null,
+          "27": null
+        },
+        "aliased_pure_identities": {
+          "13": [
+            22,
+            12
+          ]
+        },
+        "original_top8_tracks": [
+          5,
+          4,
+          18,
+          6,
+          2,
+          1,
+          21,
+          7
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 28,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 188,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 374
+      },
+      {
+        "key": [
+          12,
+          30108,
+          6
+        ],
+        "call_id": 454,
+        "query_row": 6,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          28
+        ],
+        "ambiguous_tracks": [
+          5,
+          27,
+          18,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42
+        ],
+        "impure_tracks": [
+          27
+        ],
+        "pure_track_gt": {
+          "2": 2,
+          "6": 4,
+          "4": 7,
+          "5": null,
+          "3": 3,
+          "7": 6,
+          "1": 1,
+          "8": 8,
+          "27": null,
+          "18": null,
+          "28": 5,
+          "29": null,
+          "30": null,
+          "31": null,
+          "32": null,
+          "33": null,
+          "34": null,
+          "35": null,
+          "36": null,
+          "37": null,
+          "38": null,
+          "39": null,
+          "40": null,
+          "41": null,
+          "42": null
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          5,
+          18,
+          6,
+          4,
+          2,
+          27,
+          1,
+          38
+        ],
+        "pure_positive_in_top8": false,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 43,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 216,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": false,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 430
+      },
+      {
+        "key": [
+          12,
+          28932,
+          0
+        ],
+        "call_id": 504,
+        "query_row": 0,
+        "gt_identity": 4,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          6
+        ],
+        "ambiguous_tracks": [
+          5,
+          32,
+          27,
+          37,
+          38,
+          39,
+          40,
+          18,
+          41,
+          42,
+          44,
+          45
+        ],
+        "impure_tracks": [
+          27
+        ],
+        "pure_track_gt": {
+          "1": 1,
+          "2": 2,
+          "6": 4,
+          "3": 3,
+          "5": null,
+          "4": 7,
+          "7": 6,
+          "8": 8,
+          "32": null,
+          "27": null,
+          "37": null,
+          "38": null,
+          "39": null,
+          "40": null,
+          "18": null,
+          "41": null,
+          "42": null,
+          "43": 5,
+          "44": null,
+          "45": null
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          6,
+          5,
+          1,
+          18,
+          2,
+          7,
+          4,
+          27
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 46,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 240,
+        "camera": 1,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 477
+      },
+      {
+        "key": [
+          12,
+          28937,
+          4
+        ],
+        "call_id": 515,
+        "query_row": 4,
+        "gt_identity": 8,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          8
+        ],
+        "ambiguous_tracks": [
+          5,
+          27,
+          41,
+          18,
+          32,
+          42,
+          44,
+          45
+        ],
+        "impure_tracks": [
+          27
+        ],
+        "pure_track_gt": {
+          "3": 3,
+          "1": 1,
+          "4": 7,
+          "5": null,
+          "6": 4,
+          "2": 2,
+          "7": 6,
+          "8": 8,
+          "27": null,
+          "41": null,
+          "18": null,
+          "32": null,
+          "42": null,
+          "43": 5,
+          "44": null,
+          "45": null,
+          "46": 4
+        },
+        "aliased_pure_identities": {
+          "4": [
+            6,
+            46
+          ]
+        },
+        "original_top8_tracks": [
+          8,
+          45,
+          4,
+          6,
+          5,
+          27,
+          32,
+          1
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 47,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 245,
+        "camera": 1,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 487
+      },
+      {
+        "key": [
+          12,
+          30139,
+          6
+        ],
+        "call_id": 521,
+        "query_row": 6,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          43
+        ],
+        "ambiguous_tracks": [
+          5,
+          27,
+          18,
+          32,
+          42,
+          44,
+          45
+        ],
+        "impure_tracks": [
+          27
+        ],
+        "pure_track_gt": {
+          "5": null,
+          "6": 4,
+          "2": 2,
+          "3": 3,
+          "4": 7,
+          "7": 6,
+          "1": 1,
+          "8": 8,
+          "27": null,
+          "18": null,
+          "32": null,
+          "42": null,
+          "43": 5,
+          "44": null,
+          "45": null,
+          "46": 4,
+          "47": 8
+        },
+        "aliased_pure_identities": {
+          "4": [
+            6,
+            46
+          ],
+          "8": [
+            8,
+            47
+          ]
+        },
+        "original_top8_tracks": [
+          5,
+          18,
+          1,
+          6,
+          27,
+          2,
+          32,
+          4
+        ],
+        "pure_positive_in_top8": false,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 48,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 247,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": false,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 492
+      },
+      {
+        "key": [
+          12,
+          30157,
+          6
+        ],
+        "call_id": 560,
+        "query_row": 6,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          5,
+          48
+        ],
+        "ambiguous_tracks": [
+          27,
+          44,
+          45,
+          49,
+          50
+        ],
+        "impure_tracks": [
+          27
+        ],
+        "pure_track_gt": {
+          "6": 4,
+          "3": 3,
+          "1": 1,
+          "2": 2,
+          "7": 6,
+          "5": 5,
+          "4": 7,
+          "8": 8,
+          "32": 12,
+          "27": null,
+          "44": null,
+          "45": null,
+          "46": 4,
+          "47": 8,
+          "48": 5,
+          "49": null,
+          "50": null
+        },
+        "aliased_pure_identities": {
+          "4": [
+            6,
+            46
+          ],
+          "5": [
+            5,
+            48
+          ],
+          "8": [
+            8,
+            47
+          ]
+        },
+        "original_top8_tracks": [
+          5,
+          6,
+          2,
+          48,
+          1,
+          27,
+          8,
+          32
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 51,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 265,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 528
+      },
+      {
+        "key": [
+          12,
+          30181,
+          7
+        ],
+        "call_id": 612,
+        "query_row": 7,
+        "gt_identity": 4,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          6
+        ],
+        "ambiguous_tracks": [
+          3,
+          27,
+          49,
+          50,
+          52,
+          53,
+          54
+        ],
+        "impure_tracks": [
+          27
+        ],
+        "pure_track_gt": {
+          "3": null,
+          "1": 1,
+          "5": 5,
+          "4": 7,
+          "2": 2,
+          "7": 6,
+          "6": 4,
+          "8": 8,
+          "27": null,
+          "32": 12,
+          "49": null,
+          "50": null,
+          "51": 5,
+          "52": null,
+          "53": null,
+          "54": null
+        },
+        "aliased_pure_identities": {
+          "5": [
+            5,
+            51
+          ]
+        },
+        "original_top8_tracks": [
+          6,
+          3,
+          53,
+          8,
+          5,
+          4,
+          52,
+          50
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [
+          6
+        ],
+        "primary_accepted_track": -1,
+        "final_track": 55,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 289,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": true,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 576
+      },
+      {
+        "key": [
+          12,
+          30240,
+          5
+        ],
+        "call_id": 733,
+        "query_row": 5,
+        "gt_identity": 3,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          3,
+          55
+        ],
+        "ambiguous_tracks": [
+          6,
+          57
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "6": null,
+          "5": 5,
+          "4": 7,
+          "7": 6,
+          "8": 8,
+          "1": 1,
+          "3": 3,
+          "2": 2,
+          "55": 3,
+          "57": null
+        },
+        "aliased_pure_identities": {
+          "3": [
+            3,
+            55
+          ]
+        },
+        "original_top8_tracks": [
+          6,
+          3,
+          55,
+          57,
+          8,
+          2,
+          5,
+          7
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [
+          55
+        ],
+        "primary_accepted_track": -1,
+        "final_track": 58,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 348,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": true,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 694
+      },
+      {
+        "key": [
+          12,
+          30393,
+          4
+        ],
+        "call_id": 1042,
+        "query_row": 4,
+        "gt_identity": 4,
+        "primary_state": "WRONG_LINK",
+        "tags": [
+          "WRONG_LINK"
+        ],
+        "positive_tracks": [
+          6
+        ],
+        "ambiguous_tracks": [],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "8": 8,
+          "7": 6,
+          "5": 5,
+          "1": 1,
+          "4": 7,
+          "3": 3,
+          "6": 4
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          3,
+          6,
+          7,
+          8,
+          5,
+          1,
+          4
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [
+          6
+        ],
+        "primary_accepted_track": 3,
+        "final_track": 3,
+        "bank_solver_called": false,
+        "bank_restored": false,
+        "newborn": false,
+        "final_output_anchor_state": "ambiguous_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 501,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": true,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 1000
+      },
+      {
+        "key": [
+          12,
+          30459,
+          4
+        ],
+        "call_id": 1175,
+        "query_row": 4,
+        "gt_identity": 3,
+        "primary_state": "WRONG_LINK",
+        "tags": [
+          "WRONG_LINK",
+          "CANDIDATE_MISSING"
+        ],
+        "positive_tracks": [],
+        "ambiguous_tracks": [
+          3
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "1": 1,
+          "5": 5,
+          "4": 7,
+          "8": 8,
+          "7": 6,
+          "6": 4,
+          "3": null
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          6,
+          3,
+          5,
+          7,
+          8,
+          1,
+          4
+        ],
+        "pure_positive_in_top8": false,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": 6,
+        "final_track": 6,
+        "bank_solver_called": false,
+        "bank_restored": false,
+        "newborn": false,
+        "final_output_anchor_state": "ambiguous_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 567,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": false,
+        "top8_reachable": false,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": "NO_CERTIFIED_PURE_POSITIVE_IN_NATIVE_CANDIDATES",
+        "source_audit_primary_index": 1132
+      },
+      {
+        "key": [
+          12,
+          30484,
+          3
+        ],
+        "call_id": 1226,
+        "query_row": 3,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          5
+        ],
+        "ambiguous_tracks": [
+          6,
+          3,
+          62
+        ],
+        "impure_tracks": [
+          6,
+          3
+        ],
+        "pure_track_gt": {
+          "8": 8,
+          "5": 5,
+          "7": 6,
+          "1": 1,
+          "4": 7,
+          "6": null,
+          "3": null,
+          "62": null
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          5,
+          6,
+          7,
+          8,
+          3,
+          62,
+          4,
+          1
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 63,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 592,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 1182
+      },
+      {
+        "key": [
+          12,
+          30496,
+          2
+        ],
+        "call_id": 1251,
+        "query_row": 2,
+        "gt_identity": 8,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          8
+        ],
+        "ambiguous_tracks": [
+          6,
+          3,
+          62
+        ],
+        "impure_tracks": [
+          6,
+          3
+        ],
+        "pure_track_gt": {
+          "7": 6,
+          "5": 5,
+          "4": 7,
+          "1": 1,
+          "8": 8,
+          "6": null,
+          "3": null,
+          "62": null,
+          "63": 5
+        },
+        "aliased_pure_identities": {
+          "5": [
+            5,
+            63
+          ]
+        },
+        "original_top8_tracks": [
+          8,
+          4,
+          5,
+          7,
+          1,
+          6,
+          62,
+          3
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 64,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 604,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 1206
+      },
+      {
+        "key": [
+          12,
+          30730,
+          3
+        ],
+        "call_id": 1728,
+        "query_row": 3,
+        "gt_identity": 5,
+        "primary_state": "WRONG_LINK",
+        "tags": [
+          "WRONG_LINK",
+          "CANDIDATE_MISSING"
+        ],
+        "positive_tracks": [],
+        "ambiguous_tracks": [
+          70,
+          67
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "4": 7,
+          "1": 1,
+          "7": 6,
+          "8": 8,
+          "68": 10,
+          "70": null,
+          "67": null
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          7,
+          8,
+          70,
+          1,
+          4,
+          67,
+          68
+        ],
+        "pure_positive_in_top8": false,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": 7,
+        "final_track": 7,
+        "bank_solver_called": false,
+        "bank_restored": false,
+        "newborn": false,
+        "final_output_anchor_state": "conflicting_previous_output_identity",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 838,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": false,
+        "top8_reachable": false,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": "NO_CERTIFIED_PURE_POSITIVE_IN_NATIVE_CANDIDATES",
+        "source_audit_primary_index": 1674
+      },
+      {
+        "key": [
+          12,
+          29642,
+          3
+        ],
+        "call_id": 1955,
+        "query_row": 3,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          5
+        ],
+        "ambiguous_tracks": [
+          8,
+          73,
+          74,
+          75
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "1": 1,
+          "4": 7,
+          "8": null,
+          "5": 5,
+          "7": 6,
+          "68": 10,
+          "73": null,
+          "74": null,
+          "75": null
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          5,
+          7,
+          4,
+          8,
+          1,
+          68,
+          73,
+          75
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 76,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 950,
+        "camera": 1,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 1897
+      },
+      {
+        "key": [
+          12,
+          29644,
+          2
+        ],
+        "call_id": 1960,
+        "query_row": 2,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          5,
+          76
+        ],
+        "ambiguous_tracks": [
+          8,
+          73,
+          74,
+          75
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "1": 1,
+          "4": 7,
+          "8": null,
+          "7": 6,
+          "5": 5,
+          "68": 10,
+          "73": null,
+          "74": null,
+          "75": null,
+          "76": 5
+        },
+        "aliased_pure_identities": {
+          "5": [
+            5,
+            76
+          ]
+        },
+        "original_top8_tracks": [
+          5,
+          7,
+          76,
+          8,
+          4,
+          1,
+          73,
+          68
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 77,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 952,
+        "camera": 1,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 1901
+      },
+      {
+        "key": [
+          12,
+          30879,
+          4
+        ],
+        "call_id": 2032,
+        "query_row": 4,
+        "gt_identity": 5,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          76,
+          77
+        ],
+        "ambiguous_tracks": [
+          5
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "1": 1,
+          "5": null,
+          "7": 6,
+          "4": 7,
+          "8": 8,
+          "68": 10,
+          "76": 5,
+          "77": 5
+        },
+        "aliased_pure_identities": {
+          "5": [
+            76,
+            77
+          ]
+        },
+        "original_top8_tracks": [
+          7,
+          5,
+          4,
+          8,
+          76,
+          77,
+          1,
+          68
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": -1,
+        "final_track": 78,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 987,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 1972
+      },
+      {
+        "key": [
+          12,
+          30939,
+          1
+        ],
+        "call_id": 2157,
+        "query_row": 1,
+        "gt_identity": 1,
+        "primary_state": "WRONG_LINK",
+        "tags": [
+          "WRONG_LINK"
+        ],
+        "positive_tracks": [
+          1
+        ],
+        "ambiguous_tracks": [
+          80,
+          8,
+          81,
+          82
+        ],
+        "impure_tracks": [],
+        "pure_track_gt": {
+          "1": 1,
+          "4": 7,
+          "5": 5,
+          "7": 6,
+          "80": null,
+          "68": 10,
+          "8": null,
+          "81": null,
+          "82": null,
+          "83": 12
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          4,
+          1,
+          5,
+          7,
+          80,
+          8,
+          81,
+          82
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [],
+        "primary_accepted_track": 4,
+        "final_track": 4,
+        "bank_solver_called": false,
+        "bank_restored": false,
+        "newborn": false,
+        "final_output_anchor_state": "conflicting_previous_output_identity",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 1047,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": false,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 2092
+      },
+      {
+        "key": [
+          12,
+          30945,
+          8
+        ],
+        "call_id": 2171,
+        "query_row": 8,
+        "gt_identity": 7,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          84
+        ],
+        "ambiguous_tracks": [
+          4,
+          1,
+          81,
+          82
+        ],
+        "impure_tracks": [
+          4,
+          82
+        ],
+        "pure_track_gt": {
+          "4": null,
+          "1": null,
+          "5": 5,
+          "7": 6,
+          "68": 10,
+          "81": null,
+          "82": null,
+          "83": 12,
+          "84": 7,
+          "85": 14
+        },
+        "aliased_pure_identities": {},
+        "original_top8_tracks": [
+          4,
+          1,
+          84,
+          5,
+          81,
+          68,
+          82,
+          7
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [
+          84
+        ],
+        "primary_accepted_track": -1,
+        "final_track": 86,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 1053,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": true,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 2104
+      },
+      {
+        "key": [
+          12,
+          30946,
+          8
+        ],
+        "call_id": 2174,
+        "query_row": 8,
+        "gt_identity": 7,
+        "primary_state": "MISSED_KNOWN_POSITIVE",
+        "tags": [
+          "MISSED_KNOWN_POSITIVE",
+          "IMPURE_HISTORY",
+          "ALIASED_IDENTITY",
+          "NEWBORN"
+        ],
+        "positive_tracks": [
+          84,
+          86
+        ],
+        "ambiguous_tracks": [
+          4,
+          1,
+          81,
+          82
+        ],
+        "impure_tracks": [
+          4,
+          82
+        ],
+        "pure_track_gt": {
+          "4": null,
+          "5": 5,
+          "1": null,
+          "7": 6,
+          "68": 10,
+          "81": null,
+          "82": null,
+          "83": 12,
+          "84": 7,
+          "85": 14,
+          "86": 7
+        },
+        "aliased_pure_identities": {
+          "7": [
+            84,
+            86
+          ]
+        },
+        "original_top8_tracks": [
+          4,
+          1,
+          84,
+          86,
+          5,
+          81,
+          68,
+          82
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [
+          84,
+          86
+        ],
+        "primary_accepted_track": -1,
+        "final_track": 87,
+        "bank_solver_called": true,
+        "bank_restored": false,
+        "newborn": true,
+        "final_output_anchor_state": "no_previous_group_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 1054,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": true,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 2106
+      },
+      {
+        "key": [
+          12,
+          30996,
+          4
+        ],
+        "call_id": 2278,
+        "query_row": 4,
+        "gt_identity": 5,
+        "primary_state": "WRONG_LINK",
+        "tags": [
+          "WRONG_LINK",
+          "IMPURE_HISTORY",
+          "ALIASED_IDENTITY"
+        ],
+        "positive_tracks": [
+          5
+        ],
+        "ambiguous_tracks": [
+          83,
+          88,
+          85,
+          89
+        ],
+        "impure_tracks": [
+          83
+        ],
+        "pure_track_gt": {
+          "1": 1,
+          "4": 7,
+          "5": 5,
+          "7": 6,
+          "68": 10,
+          "81": 13,
+          "83": null,
+          "82": 14,
+          "88": null,
+          "85": null,
+          "89": null,
+          "90": 1
+        },
+        "aliased_pure_identities": {
+          "1": [
+            1,
+            90
+          ]
+        },
+        "original_top8_tracks": [
+          1,
+          5,
+          4,
+          90,
+          7,
+          82,
+          83,
+          81
+        ],
+        "pure_positive_in_top8": true,
+        "threshold_passing_pure_positive_tracks": [
+          5
+        ],
+        "primary_accepted_track": 4,
+        "final_track": 4,
+        "bank_solver_called": false,
+        "bank_restored": false,
+        "newborn": false,
+        "final_output_anchor_state": "ambiguous_output_anchor",
+        "known_original_wrong": true,
+        "candidate_missing_scope": "no certified pure positive in actual primary candidates; unknown/impure alternatives are not certified negatives",
+        "final_ID_note": "Bank/newborn are actual native actions; numeric Global ID alone does not certify final GT identity correctness",
+        "frame": 1104,
+        "camera": 2,
+        "full_input_complete": true,
+        "all_legal_history_complete": true,
+        "candidate_space_reachable": true,
+        "top8_reachable": true,
+        "current_native_positive_threshold_passes": true,
+        "input_gap_reason": null,
+        "source_audit_primary_index": 2206
+      }
+    ],
+    "labels_origin": "All14557 primary-query certifications reused by exact physical key from sealed audit; only initial-camera non-query births newly matched against unchanged original GT after inference.",
+    "original_query_certification_sha256": "8cff051e9a09db85b33c5e6a196a7e63553c41541c87fdbe978b9852af6f27ef",
+    "raw_gt_sha256": {
+      "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00030path_View1/gt/gt.txt": "dba5ce6a339eaf5a5484484903835390dbe44489f65a9a070c24645098c11b93",
+      "/data/DATASETS/TRACKING/JDE/VisionTrack/train/00030path_View2/gt/gt.txt": "59664a531b5a0cc0e0c5e691b773c08e452c578096ac9175ea08a25984fed211"
+    },
+    "GT_quality_policy": {
+      "1": {
+        "duplicate_frame_count": 0,
+        "invalid_frame_count": 0,
+        "duplicate_frames": [],
+        "invalid_frames": []
+      },
+      "2": {
+        "duplicate_frame_count": 0,
+        "invalid_frame_count": 0,
+        "duplicate_frames": [],
+        "invalid_frames": []
+      }
+    },
+    "initial_births_not_primary_queries": 7,
+    "all_unknown_and_impure_references_preserved": true,
+    "algorithm_corrected_errors": "NOT_MEASURED"
+  },
+  "parity_audit": {
+    "status": "PASS",
+    "scope_sha256": "45824abd0f27f105e4af28f8fb0ce10790ac5adc9eee1a2c579689786f5bcaf9",
+    "full_groups": 1200,
+    "full_images": 2400,
+    "prediction_file_bytes_exact": true,
+    "every_actual_primary_and_Bank_decision_exact": true,
+    "actual_solver_calls": 2477,
+    "full_Hungarian_replay_exact": true,
+    "full_final_commit_linkage_exact": true,
+    "all1152_features_native_FP32": true,
+    "precheck_gate_sha256": "0cf3c93e67dc133849753dc1eaaff46fbe1a70d82823a6d7c30282b6c5f5cf40",
+    "original_audit_manifest": "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/manifest.json",
+    "original_audit_manifest_sha256": "c48fe57c06eb2e02eb2f168d621bb0e66727803466d83d22d9f4d91ccc4168d4",
+    "qualification": "Original audit did not save internal state fingerprints; full parity proves every recorded solver/threshold/Bank/final-ID decision and prediction. Export-off/on internal state fingerprints additionally match on the real40 precheck."
+  },
+  "frozen_V2_cohort_sha256": "2ea0d5a054cd507a66c645c0288189eca3b6dfdaf7640b96b2b6d1def73cf7a1",
+  "disclosure": "Expanded development assets selected by all continuous clock queries. TRAIN12 labels were viewed previously; not an unseen blind evaluation. Native V2/V3 training/validation and old audit remain unchanged.",
+  "VGGT_SCIENTIFIC_SUCCESS": false,
+  "CV_PIL_SCIENTIFIC_SUCCESS": false,
+  "frozen_V3_cohort_sha256": "927965246997778d4efe0ec460ffff8cd6e2c31ee09582cbce8d8c1fed16b6d9",
+  "public_reader_all_queries": {
+    "status": "PASS_ALL_QUERY_SEALED_READER",
+    "queries": 14557,
+    "candidate_histories_materialized": 166439,
+    "history_reference_vectors_materialized": 6972936,
+    "seal_sha256": "ef7f65d0bccb1e665f7125391f4a3c64a1449b1fe4d204c735371522386421d4",
+    "manifest_sha256": "a4d2014edcc920f45753e0f76c378bf08f25c22758e3d8770572dc36632c2173",
+    "source_sha256": "6d6522007c1fec2435558ad45652adff3570bb796ef6d415448273e7066cf047",
+    "every_final_commit_linked": true,
+    "all_artifact_SHAs_verified": true,
+    "GT_labels_loaded": false,
+    "images_read": false,
+    "GMT_inference_calls": 0,
+    "seconds": 39.36111173778772
+  },
+  "public_reader_report_sha256": "9fa464c06eb82986cf795568a6963d81d0ffe36b070cc696c3d3b7e89b9a30b8",
+  "contract_test_log_sha256": "43ce10bf74b59dbd2b19f812ed8eff9473515b12b6dca79f8e419f52f15e0d90"
+}
