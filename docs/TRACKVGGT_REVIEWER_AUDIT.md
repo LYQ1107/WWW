@@ -1,7 +1,8 @@
 # TrackVGGT evidence and remaining requirements
 
-Status: INTERIM_REVIEWER_AUDIT. DINO temporal experiments and fresh
-system measurements are still executing or waiting. This document does not
+Status: INTERIM_REVIEWER_AUDIT. All56 registered teacher experiments are
+complete with NO_UNIQUE_VGGT_TEACHER_EVIDENCE. Fresh full system measurements
+are still executing after their actual prefix gate passed. This document does not
 declare the full research goal complete, a successful teacher, or paper readiness.
 
 The separate TRAIN12 engineering release is complete. Its read-only inputs are
@@ -22,12 +23,12 @@ weight or algorithm enters the TrackVGGT models.
 | Does magnification help? | Matched224 full/local/combined:VGGT .32/.44/.41,DINO .37/.51/.46 | Both improve locally; DINO is higher in each condition. This is resolution evidence, without unique VGGT identity or3D-camera evidence. No result-driven336 escalation. |
 | Are crops matched? | Same256 fit/234 supervised queries, same original300 validation, identical terminal NumPy/CPU/CUDA RNG | Full zero-center samples stay as native fallback/zero learned gradient. Direct per-step crop draw keys were not logged; code/order/seed and endpoint RNG are the available schedule proof. |
 | Is the cycle causal and real? | A(t-1) -> already-processed opposite B(t) -> A(t); real pair features, absorbing NULL, GT-visible loss mask | Locked128 chains,63 visible. B<=4 and A-current is one selected detection+NULL, a bounded native subset rather than a complete scene transport matrix. No future frame or GT query construction. |
-| Does VGGT cycle training help? | Same initial source/AdamW/RNG,200 extra updates,lambda0/.1 R1=.22/.23; actual minibatch/cycle hashes and terminal RNG exact | No certified wrong-ranking repairs between controls. One ambiguous->correct case was already native-correct. Training cycle loss decreases without established novel identity repair. DINO temporal control remains pending. |
+| Does VGGT cycle training help? | Same initial source/AdamW/RNG,200 extra updates,lambda0/.1 R1=.22/.23; actual minibatch/cycle hashes and terminal RNG exact | No certified wrong-ranking repairs between controls. One ambiguous->correct case was already native-correct. Training cycle loss decreases without established novel identity repair. DINO0/.1=.21/.20 with0 known fixes/harms and1 correct->ambiguous transition. Both paired controls pass exact schedules/RNG. |
 | Are training/inference seeds distinct? | Actual teacher seed20261015 versus native inference seed20261014 | Pinned cycle producer generic provenance mistakenly reports14; actual settings/source/RNG prove15. Raw artifacts are retained unchanged; audit/CSV flag the correction. This is not a second trained seed. |
 | Were capacity controls real? | VGGT QD2123016,DINO2126488,nativeQDMLP2132697 active parameters | DINO uses an active nonlinear projection bottleneck, not unused padding parameters. Last-layer mode is smaller; it alone cannot support capacity attribution. Frozen encoder cost is separately different. |
-| Is distillation justified? | No teacher has passed the independent-relation gate in completed evidence | IRGD/KD/three-seed students are unexecuted and conditional. Do not distill poor relations merely to fill a table. Gate disposition stays provisional until remaining independent experiments finish. |
+| Is distillation justified? | No teacher has passed the independent-relation gate in completed evidence | IRGD/KD/three-seed students are unexecuted and conditional. Do not distill poor relations merely to fill a table. All independent teacher hypotheses finish; the relation gate fails. Conditional student nonexecution is explicit and does not close the overall system goal. |
 | Is full tracking verified? | Six inherited native/Prior strict5 references reverified by prediction/config/checkpoint/rawGT hashes | These are original inference-RNG baselines, not new trained teachers/students. No new learned-method final-ID metrics exist. Fresh native system replays have their own mandatory parity gates. |
-| Is speed measured honestly? | Separate frozen2/4/10-stream baseline plan, real prefix gate and full replay queued | No fresh timing exists yet. Complete process wall includes imports/setup/export; synchronized profiling, local files and unequal-length independent scenes limit interpretation. No cached-head FPS or Internet latency substitution. |
+| Is speed measured honestly? | Separate frozen2/4/10-stream baseline plan, real prefix gate and full replay queued | Real OFF/Prior40 prefixes pass exact original-output parity; full2/4/10 cases now run. Complete process wall includes imports/setup/export; synchronized profiling, local files and unequal-length independent scenes limit interpretation. No cached-head FPS or Internet latency substitution. |
 
 The original GT files remain unchanged. Strict DEV5 omits scenes with repeated
 raw GT identities rather than repairing labels. Original GMT pretraining included

@@ -9,6 +9,10 @@ from audit_trackvggt_ag_results import changes
 
 def main():
     runtime=Path('/data1/liuyeqiang/WWW_trackvggt_runtime');rows=[]
+    gate_path=ROOT/'results/trackvggt_teacher_gate_v1.json'
+    gate=json.loads(gate_path.read_text()) if gate_path.exists() else {}
+    closed_negative=gate.get('status')=='NO_UNIQUE_VGGT_TEACHER_EVIDENCE'
+    student_status='CONDITIONAL_NOT_EXECUTED_RELATION_GATE_FAILED' if closed_negative else 'CONDITIONAL_NOT_EXECUTED_RELATION_GATE_NOT_PASSED'
     for path in sorted((runtime/'models').glob('*/manifest.json')):
         value=json.loads(path.read_text())
         temporal=value.get('status')=='COMPLETE_MATCHED_REAL_CYCLE_CONTINUATION'
@@ -37,10 +41,13 @@ def main():
     for pattern in ['trackvggt_qd_fit_v1_gpu*','trackvggt_crop_fit_v1_gpu*','trackvggt_cycle_fit_v1_gpu*','trackvggt_qd_native_control_v1_gpu*','trackvggt_live_baseline_v1_gpu*']:
         for path in sorted((runtime/'queues').glob(pattern+'/manifest.json')):
             value=json.loads(path.read_text());live=process_identity(value['pid'])
+            if live and (f"--plan {value['plan']}" not in live[1] or f"--queue {value['queue']}" not in live[1]):live=None
             queues.append(dict(path=str(path),status=value['status'],pid=value['pid'],live_controller=live is not None,
                 actual_command=live[1] if live else None,last_stage=value['stages'][-1] if value['stages'] else None))
-    snapshot=dict(status='ACTUAL_TEACHER_PROGRESS_SNAPSHOT',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),completed_reports=len(rows),
+    if closed_negative and (len(rows)!=56 or gate['completed_registered_runs']!=56):raise ValueError('closed gate does not match actual teacher inventory')
+    snapshot=dict(status='COMPLETE_REGISTERED_TEACHER_SCREENING' if closed_negative else 'ACTUAL_TEACHER_PROGRESS_SNAPSHOT',utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),completed_reports=len(rows),
         csv_sha256=sha256(target),rows=rows,queues=queues,GT_unknown_not_known_wrong=True,
+        teacher_gate_status=gate.get('status','NOT_AUDITED'),student_disposition=student_status,
         scope='Every number from an actual completed source-bound run.150/1000/1200 rows are distinct budgets. Temporal rows resolve seed15 from actual code/source checkpoint; raw generic default14 is retained and flagged. Pair results do not prove actual Hungarian/final tracking gain.',provenance=provenance())
     save_json(ROOT/'results/trackvggt_teacher_execution_snapshot_v1.json',snapshot)
     paired=[];native_states=None;primary_states=None;reference=None
@@ -84,14 +91,16 @@ def main():
             'trackvggt_cycle_vggt_paired_v1.json','trackvggt_cycle_dinov2_paired_v1.json',
             'trackvggt_system_execution_snapshot_v1.json','identity_correction_audit.json',
             'trackvggt_fit_endpoint_diagnostics_v1.json','trackvggt_queue_stage_costs_v1.json',
-            'trackvggt_inherited_native_reference_v1.json']
+            'trackvggt_inherited_native_reference_v1.json','trackvggt_teacher_gate_v1.json',
+            'trackvggt_frozen_direct_input_hash_recheck_v1.json']
             if (path:=ROOT/'results'/name).exists()},
-        student_status='NOT_EXECUTED_CONDITIONAL_RELATION_GATE_NOT_PASSED',
+        student_status=student_status,
         overall_goal_complete=False,scientific_success=False)
     save_json(index_path,index)
-    student_rows=[dict(variant=variant,planned_training_seed=seed,status='CONDITIONAL_NOT_EXECUTED_RELATION_GATE_NOT_PASSED',
+    student_rows=[dict(variant=variant,planned_training_seed=seed,status=student_status,
         actual_trained_seed='',checkpoint_sha256='',HOTA='',CVIDF1='',IDSW='',complete_process_FPS='',
-        reason='No valid independent teacher/student admission. Remaining teacher hypotheses must finish before final gate disposition; planned seeds are not trained seeds.')
+        reason=('All56 registered teacher runs completed; independent relation gate failed. Planned seeds are not trained seeds.' if closed_negative else
+            'No valid independent teacher/student admission. Remaining teacher hypotheses must finish before final gate disposition; planned seeds are not trained seeds.'))
         for variant in ['GT_only','KD_only','GT_plus_KD','DINO_KD','GMT_teacher'] for seed in [20261015,20261016,20261017]]
     student_path=ROOT/'results/student_ablation.csv'
     if student_path.exists():

@@ -148,3 +148,21 @@ The retained hard-inference fit-endpoint audit is now COMPLETE: all52 registered
 no-cycle150/1000 checkpoints, no pending case. DINO track fit R1=.7167 versus
 validation.31. The ordinary teacher table contains52 no-cycle endpoints plus
 the two completed VGGT temporal endpoints; DINO temporal endpoints remain running.
+
+All56 registered teacher runs now complete (52 no-cycle endpoints,4 matched
+temporal continuations). DINO lambda0/.1 R1=.21/.20, shuffle.38/.38. Initial
+losses, source checkpoint, exact ordinary/cycle schedules and terminal NumPy/CPU/
+CUDA RNG match. No certified known-ranking fixes or harms between DINO controls;
+one correct->ambiguous query[12,30151,7] explains the one-point R1 reduction.
+Average observed cycle loss.064899265->.058840747 is training consistency only.
+Both raw cycle manifests retain the default seed14 reporting defect; actual
+source/settings/RNG seed15 is audited separately, with no artifact rewriting.
+
+The final primary-screening relation gate is NO_UNIQUE_VGGT_TEACHER_EVIDENCE.
+Some individual numerical directions favor VGGT (cycle.23 versusDINO.20 and
+track.25 versusglobal.24); these do not overcome the failed ROI/native/DINO-track
+comparisons, absent useful shuffle degradation, no replicated native-identity
+benefit and the known ranking/solver distinction. No lambda.2 escalation or
+IRGD/conditional students are executed. This closes the registered teacher
+screening only. Fresh full native system/retrieval/strict5 tests and the overall
+requirement audit remain necessary.

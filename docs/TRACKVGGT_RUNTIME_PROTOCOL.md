@@ -1,7 +1,8 @@
 # Fresh native system and retrieval replay
 
-Status: REGISTERED_AND_WAITING_FOR_NAMED_TEACHER_JOBS. No new runtime number is
-claimed by this document. Source/commands are frozen in
+Status: ACTUAL_PREFIX_GATE_PASSED_FULL_REPLAYS_RUNNING. Both real OFF/Prior40
+prefixes on scenes18/1 match the old standalone outputs exactly. Fresh full
+replay timing/metrics are not yet complete. Source/commands are frozen in
 manifests/trackvggt_runtime_scope_v1.json and trackvggt_live_baseline_v1.json.
 
 Actual full image replay will compare frozen causal GMT OFF and the unchanged

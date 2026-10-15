@@ -6,7 +6,7 @@
       "method": "gmt_off",
       "configured_logical_streams": 2,
       "inference_seed": 20261014,
-      "status": "PENDING_REAL_REPLAY_AND_PARITY",
+      "status": "RUNNING",
       "tag": "trackvggt_runtime_off_2streams_full_v1"
     },
     {
@@ -22,7 +22,7 @@
       "method": "gmt_off",
       "configured_logical_streams": 4,
       "inference_seed": 20261014,
-      "status": "PENDING_REAL_REPLAY_AND_PARITY",
+      "status": "RUNNING",
       "tag": "trackvggt_runtime_off_4streams_full_v1"
     },
     {
@@ -38,7 +38,7 @@
       "method": "gmt_off",
       "configured_logical_streams": 10,
       "inference_seed": 20261014,
-      "status": "PENDING_REAL_REPLAY_AND_PARITY",
+      "status": "RUNNING",
       "tag": "trackvggt_runtime_off_10streams_full_v1"
     },
     {
@@ -167,6 +167,11 @@
     }
   ],
   "receipts": [],
+  "prefix_gate": {
+    "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prefix_gate_v1.json",
+    "sha256": "3def356242303c4752c1ae78a82fe7a8ebf1d01110af36af9da6fccbd083b927",
+    "status": "PASS"
+  },
   "pending": [
     "trackvggt_runtime_off_2streams_full_v1",
     "trackvggt_runtime_prior_2streams_full_v1",
@@ -175,16 +180,20 @@
     "trackvggt_runtime_off_10streams_full_v1",
     "trackvggt_runtime_prior_10streams_full_v1"
   ],
+  "pending_tracking_metrics": [
+    "gmt_off",
+    "native_fixed_prior"
+  ],
   "timing_scope": "Complete process FPS uses actual queue outer wall time. Profiled local file replay, unequal-length independent two-camera videos; configured streams are not guaranteed constant active membership. Query response latency excludes network.",
   "learned_system_results": "NOT_RUN_NO_VALID_STUDENT_OR_TEACHER_DEPLOYMENT",
   "scientific_success": false,
   "provenance": {
-    "process_started_utc": "2026-10-15T18:09:07.783002+00:00",
-    "report_generated_utc": "2026-10-15T18:09:09.253516+00:00",
-    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/native_system_snapshot_v1.log",
+    "process_started_utc": "2026-10-15T18:33:43.412907+00:00",
+    "report_generated_utc": "2026-10-15T18:33:44.900916+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/native_system_prefix_pass_snapshot_v2.log",
     "source_worktree": "/data1/liuyeqiang/WWW_trackvggt_20261015",
-    "commit": "4e48edac0bfa2e31487de70f185dc5353ea53c78",
-    "report_generation_commit": "4e48edac0bfa2e31487de70f185dc5353ea53c78",
+    "commit": "e121d2943c041971b807089ab0a1133cdfcf7069",
+    "report_generation_commit": "e121d2943c041971b807089ab0a1133cdfcf7069",
     "command": [
       "geo_tools/summarize_trackvggt_system.py"
     ],
@@ -230,6 +239,7 @@
       "geo_tools/run_constant_head_control.py": "9c8bc80e1e245c1559a845d643388bb1110b7cf0f5f86f46acb192493a1fa705",
       "geo_tools/evaluate_teacher_pairs.py": "92b4b1f09cf2858ea0d5d7239d0b3b414a660959d6dba1c755a7ddb764625a1a",
       "geo_tools/test_trackvggt_relation_contracts.py": "853d04e6d10868883e3aba5d23e16a6a3ae501fecec8ae914fc8c329c6ad558c",
+      "geo_tools/summarize_trackvggt_queue_costs.py": "518d7fca4eb2f9efba488a58eefc3921ed01dca3592a6c78657ded6b897985a9",
       "geo_tools/audit_current_default_source.py": "3c1bc82344b5875059794cc8dbed8f4106bee778fd469355dddee0b9ebc0afc5",
       "geo_tools/collect_hard_events.py": "0a403f11136ad4290914854a4990beff4902fb72362283772d2c64471fa41ac6",
       "geo_tools/seal_trackvggt_full_audit.py": "1965de42970950c3186914fda0212d1aa49b3bc1008ec54ba0f96174c2ae176f",
@@ -255,6 +265,7 @@
       "geo_tools/test_candidate_normalization.py": "4e4f4bf6467b084b1f733bc9aa93c343425bf1acecd1feb760d2eb79f39a618f",
       "geo_tools/prepare_trackvggt_v3_cohort.py": "a5784596e385e17068ce549f41db21dfd3da27899ddd1ee97079b8f028ead46f",
       "geo_tools/trackvggt_cycle_features.py": "abf4baa7603dcb2704b252e76a101f9bfd1570609dc06635b26d0e2905716134",
+      "geo_tools/audit_trackvggt_frozen_input_hashes.py": "3aaf297ddffcfe3644c280bcaebcf5e2b14714df97173aacb541d27280c4ef4e",
       "geo_tools/audit_train_complementarity.py": "62e50c085203b9cc5628c2844a3f749814c50b5369ba802953691aceef373404",
       "geo_tools/evaluate_predictions.py": "f08e7edd0df359a612b4e726a2c7c444fa877218acbf522e2d9cdce61330f133",
       "geo_tools/audit_retrieval_outcomes.py": "4119cdb38326853c1c969d6c1b31ec9e6b5ef8e46453eb550e64860037999398",
@@ -262,7 +273,7 @@
       "geo_tools/test_contracts.py": "2188de96144735d6b49d102b6052ac640d235c06694634eb70259193d25599f4",
       "geo_tools/audit_decision_trace.py": "15f2951bb7daa4f200470da7a911984165aceb2c6913787cd415b4a2b7ce65f6",
       "geo_tools/decide_trackvggt_fit_expansion.py": "aaa6cfc26fb56d3a743553fc41dbb371111d2bd07c88eed0854841d98d63ab3d",
-      "geo_tools/summarize_trackvggt_system.py": "89c52beeb76e44805cc31f74d7237a028c5e89c929e3f19520ee0c6bffaabac6",
+      "geo_tools/summarize_trackvggt_system.py": "f2dd5d779d242916533342763fb6bacdf7dfc8410cec5dda888080d35c33a554",
       "geo_tools/evaluate_suite.py": "804b4d8ff7cfbdef4acc63e66db3dd4fc411bd110292052eddad79c30fb84f07",
       "geo_tools/run_online.py": "e97027d9967482e7e027b8034cc2ecf0d9aa185eb6ec61918dc110469d42e5b6",
       "geo_tools/run_native_prior.py": "798fab5c773baedb2b41a767e65a4cd7091509fcea354aa96ddc1fdde3bee537",
@@ -278,7 +289,7 @@
       "geo_tools/dev12_native_schema.py": "7bd57a23381ecb82451f517572731ff462c05d38f8237677a8fe218c36d350ec",
       "geo_tools/smoke_dev12_native_reader.py": "916d75c000c0fa476b89e20af6ce621358381e8c2c9a4ba8b64325e91310ece6",
       "geo_tools/validate_physical_camera_input.py": "09c49d9e73f88697e4df146ea971d79d83574158f43b39ff1ac6b279d0518d4e",
-      "geo_tools/audit_trackvggt_qd_results.py": "7e4735ff30bc95d971e2a341bc087d946f79575e9b2103a6b235b12d1c9e380e",
+      "geo_tools/audit_trackvggt_qd_results.py": "0196140b1505aac9a688a0d16936351f0706a57355e2cb2b57f23bdbe345572b",
       "geo_tools/test_tracking_pair_audit.py": "cc1398004c69fc404385cf6d784c42a71c5eaa3fcdb70109c394463a7e0abe0a",
       "geo_tools/test_decision_trace.py": "ef543b04a90b54accf35356e898c5a6c39d6f5f563d14d0e098f2a3d134bf587",
       "geo_tools/audit_cache_gate_and_constant_prefix.py": "5e0cce331687a871221bc61be78744e671b6042f5f178b38ab93c0bc4228892a",
@@ -296,13 +307,14 @@
       "geo_tools/test_target_cache_prefix_audit.py": "d2cd9c6a65730c40e9d98c4f63c7afdbbaa6a0e3c151e79bdc458ad1c347e86f",
       "geo_tools/monitor_project_resources.py": "91e447b9154096d6845ce4ee4013503f6ab1d3bd0b7219129c07e6c88546a6f6",
       "geo_tools/probe_trackvggt_backward.py": "58770df3460fe7258439c9a98ee8cf9826fe6e0b0c704db671eb605ed11e59e1",
-      "geo_tools/summarize_trackvggt_teachers.py": "03b4c0ede8d93201691defd065fa27f4e7702dabfd331c46cfb8835a796ef3a8",
+      "geo_tools/summarize_trackvggt_teachers.py": "4235a1a329b30abdf3a3fb179355567d8f717ec577462cb9d0469a80ce4c2fd6",
       "geo_tools/test_resource_samples.py": "ea502b2c7e2575fa9742786334f978f2e07e30a079b8bde294c40f66d65f163a",
       "geo_tools/test_research_queue.py": "f11de3eca1f893c15934a691b58bb2cc1b19971765117660440a736def8cda82",
       "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
       "geo_tools/train_history_heads.py": "d960e283c3a6795d6b0d80198066e005ec4268ff1b2bc924f77e04d6e0505c12",
       "geo_tools/benchmark_short_pair_encoder.py": "5e3cd035dd399b18f98fbbe91a3fde8198a96e549c686486179c3fd6a293a069",
       "geo_tools/test_dense_seed_stability.py": "77b239efd9007959cff1efdef89249378cbb85e591f1023bd6ad0c966ac28b50",
+      "geo_tools/audit_trackvggt_teacher_gate.py": "0d2fb70baf2237d975eb33b7d9de5a3031a3f1b1d855f5232dc333ca9932b6d3",
       "geo_tools/consolidate_camera_control.py": "4d961b2fb8cfbd59bee4414a577541f5b3994bbdd5f892720385289c382e39eb",
       "geo_tools/audit_full_train_identity_events.py": "358f0ac8202ae27ecf2db4bdff674d45696b26757c76923261070dc73a96870e",
       "geo_tools/extract_trackvggt_crop_tokens.py": "ee2a6dc84a1d2d0ac756ab6665433e99c2dd67f776f2f707d345fbec147b40da",
@@ -460,7 +472,7 @@
       "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
     },
     "source_tree_dirty": true,
-    "source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source_diff_sha256": "7ce07ca3cf8ad81de0095799962488a2be60a66ea8cdf18ab935f425a058a5a7",
     "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
     "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",

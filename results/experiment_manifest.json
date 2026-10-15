@@ -36417,7 +36417,7 @@
   "inherited_experiments_scope": "Original experiments array/raw_gt_policy/split retained from the completed predecessor project; not newly executed TrackVGGT results.",
   "trackvggt": {
     "branch": "research/trackvggt-identity-query-www27-20261015",
-    "snapshot_utc": "2026-10-15T18:22:14.703792+00:00",
+    "snapshot_utc": "2026-10-15T18:35:01.364498+00:00",
     "teacher_reports": [
       {
         "tag": "ag_dinov2_C_crop224_combined_k24_seed20261015_1000_v1",
@@ -36802,6 +36802,30 @@
         "seed_reporting_correction_required": false,
         "completed_updates": 150,
         "training_phase": "no_cycle_fit"
+      },
+      {
+        "tag": "cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1",
+        "manifest": "/data1/liuyeqiang/WWW_trackvggt_runtime/models/cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1/manifest.json",
+        "manifest_sha256": "f5c24a97d990fdd5c3e4f5a660d7c5a1b174b89348c5643964f814c086bcfcbf",
+        "checkpoint_sha256": "ed144986fd04d8f04ded4dc7e738f7e771dfb7dc0ac1778abc5bcfb6cd96c348",
+        "actual_training_seed": 20261015,
+        "native_inference_seed": 20261014,
+        "raw_generic_provenance_seed": 20261014,
+        "seed_reporting_correction_required": true,
+        "completed_updates": 1200,
+        "training_phase": "temporal_continuation"
+      },
+      {
+        "tag": "cycle_dinov2_lambda0p1_seed20261015_v3_plus200_v1",
+        "manifest": "/data1/liuyeqiang/WWW_trackvggt_runtime/models/cycle_dinov2_lambda0p1_seed20261015_v3_plus200_v1/manifest.json",
+        "manifest_sha256": "7f01482145d89d04995b8c04affb7b76e17f11c05b51d914fde7d16a74785889",
+        "checkpoint_sha256": "a5d5fcd5ac7960dc10ab776d6aa614f48938b67a269af0b6c6f229cbc300d3d9",
+        "actual_training_seed": 20261015,
+        "native_inference_seed": 20261014,
+        "raw_generic_provenance_seed": 20261014,
+        "seed_reporting_correction_required": true,
+        "completed_updates": 1200,
+        "training_phase": "temporal_continuation"
       },
       {
         "tag": "cycle_vggt_lambda0p0_seed20261015_v3_plus200_v1",
@@ -37306,25 +37330,29 @@
       },
       {
         "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_cycle_fit_v1_gpu5/manifest.json",
-        "status": "RUNNING",
+        "status": "FINISHED",
         "pid": 26401,
-        "live_controller": true,
-        "actual_command": "/data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/run_research_queue.py --plan manifests/trackvggt_cycle_fit_v1.json --queue gpu5 --gpu 5 --after-pid 23312 --after-command-match trackvggt_qd_fit_v1 ",
+        "live_controller": false,
+        "actual_command": null,
         "last_stage": {
-          "id": "cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1",
+          "id": "cycle_dinov2_lambda0p1_seed20261015_v3_plus200_v1",
           "command": [
             "geo_tools/train_trackvggt_cycle.py",
             "--source",
             "/data1/liuyeqiang/WWW_trackvggt_runtime/models/qd_dinov2_track_k24_seed20261015_v3_1000_v1/checkpoint.pt",
             "--lambda-cycle",
-            "0.0",
+            "0.1",
             "--tag",
-            "cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1"
+            "cycle_dinov2_lambda0p1_seed20261015_v3_plus200_v1"
           ],
-          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_cycle_fit_v1_gpu5_cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1.log",
-          "status": "RUNNING",
-          "started_utc": "2026-10-15T18:18:59.086097+00:00",
-          "pid": 33853
+          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_cycle_fit_v1_gpu5_cycle_dinov2_lambda0p1_seed20261015_v3_plus200_v1.log",
+          "status": "PASS",
+          "started_utc": "2026-10-15T18:25:18.687985+00:00",
+          "pid": 37478,
+          "exit_code": 0,
+          "seconds": 351.0039819628,
+          "finished_utc": "2026-10-15T18:31:09.692197+00:00",
+          "log_sha256": "a747a73919143ba5ffdb2e71877b66b0448985392ba237f75163e68fd27f1caa"
         }
       },
       {
@@ -37402,16 +37430,20 @@
         "live_controller": true,
         "actual_command": "/data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/run_research_queue.py --plan manifests/trackvggt_live_baseline_v1.json --queue gpu0 --gpu 0 ",
         "last_stage": {
-          "id": "wait_existing_teacher_handles",
+          "id": "trackvggt_runtime_off_2streams_full_v1",
           "command": [
-            "geo_tools/wait_trackvggt_runtime_dependencies.py",
-            "--spec",
-            "manifests/trackvggt_runtime_scope_v1.json"
+            "geo_tools/run_trackvggt_live_baseline.py",
+            "--video-ids",
+            "18",
+            "--tag",
+            "trackvggt_runtime_off_2streams_full_v1",
+            "--backbone",
+            "none"
           ],
-          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu0_wait_existing_teacher_handles.log",
+          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu0_trackvggt_runtime_off_2streams_full_v1.log",
           "status": "RUNNING",
-          "started_utc": "2026-10-15T17:22:14.272381+00:00",
-          "pid": 39559
+          "started_utc": "2026-10-15T18:32:36.081774+00:00",
+          "pid": 660
         }
       },
       {
@@ -37421,18 +37453,21 @@
         "live_controller": true,
         "actual_command": "/data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/run_research_queue.py --plan manifests/trackvggt_live_baseline_v1.json --queue gpu4 --gpu 4 ",
         "last_stage": {
-          "id": "wait_actual_passing_prefix",
+          "id": "trackvggt_runtime_off_4streams_full_v1",
           "command": [
-            "geo_tools/wait_trackvggt_runtime_dependencies.py",
-            "--spec",
-            "manifests/trackvggt_runtime_scope_v1.json",
-            "--gate",
-            "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prefix_gate_v1.json"
+            "geo_tools/run_trackvggt_live_baseline.py",
+            "--video-ids",
+            "18",
+            "1",
+            "--tag",
+            "trackvggt_runtime_off_4streams_full_v1",
+            "--backbone",
+            "none"
           ],
-          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu4_wait_actual_passing_prefix.log",
+          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu4_trackvggt_runtime_off_4streams_full_v1.log",
           "status": "RUNNING",
-          "started_utc": "2026-10-15T17:22:14.957258+00:00",
-          "pid": 39611
+          "started_utc": "2026-10-15T18:32:39.125117+00:00",
+          "pid": 695
         }
       },
       {
@@ -37442,18 +37477,24 @@
         "live_controller": true,
         "actual_command": "/data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/run_research_queue.py --plan manifests/trackvggt_live_baseline_v1.json --queue gpu6 --gpu 6 ",
         "last_stage": {
-          "id": "wait_actual_passing_prefix",
+          "id": "trackvggt_runtime_off_10streams_full_v1",
           "command": [
-            "geo_tools/wait_trackvggt_runtime_dependencies.py",
-            "--spec",
-            "manifests/trackvggt_runtime_scope_v1.json",
-            "--gate",
-            "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prefix_gate_v1.json"
+            "geo_tools/run_trackvggt_live_baseline.py",
+            "--video-ids",
+            "18",
+            "1",
+            "10",
+            "11",
+            "19",
+            "--tag",
+            "trackvggt_runtime_off_10streams_full_v1",
+            "--backbone",
+            "none"
           ],
-          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu6_wait_actual_passing_prefix.log",
+          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu6_trackvggt_runtime_off_10streams_full_v1.log",
           "status": "RUNNING",
-          "started_utc": "2026-10-15T17:22:15.861910+00:00",
-          "pid": 39628
+          "started_utc": "2026-10-15T18:32:40.103392+00:00",
+          "pid": 726
         }
       }
     ],
@@ -37463,13 +37504,16 @@
       "results/trackvggt_crop_primary_results_v1.json": "0415275f0a7609b6290ee046b4773c95d8da993e6427f889f868249ea3627a08",
       "results/trackvggt_qd_primary_results_v1.json": "bfc8ff9b01246b42ef26be82568e14968a11c44c677b46770ce5ddc940f5c476",
       "results/trackvggt_cycle_vggt_paired_v1.json": "36f4f3237583c3625301cdd2e0a6a1cb5e3151f0205fd193219b63289f142ee9",
-      "results/trackvggt_system_execution_snapshot_v1.json": "f14f6ed5c9c68aec1fc8d75de7ac3880871ce6c6ae8f210da2d0a2d55cbb3cfe",
-      "results/identity_correction_audit.json": "1f2b5d6f0b6b680cd79ca30501153f5cd534b67a4a45b81bb7a8f0859b1b7548",
+      "results/trackvggt_cycle_dinov2_paired_v1.json": "b7822c41a9582cd1faaa9d16df6a6521440c969c52e4303209cc2303e18df1b1",
+      "results/trackvggt_system_execution_snapshot_v1.json": "5003e5dfae621d791af8a05e65c7d73ffc852ad9a6f8e482029deb5353eb930d",
+      "results/identity_correction_audit.json": "e9bb1230f1ad4db1d220214adee03dae4f55ccde7f15d87c611bd4cc4058ee2c",
       "results/trackvggt_fit_endpoint_diagnostics_v1.json": "b2e77ad022022df8b16656290484d9e51d2411cfd999a74ae71a43cba1127452",
-      "results/trackvggt_queue_stage_costs_v1.json": "473a8fa5bee2de64dca4a592077c9e340f0729ec7fd64ebaf835ccbfbc129318",
-      "results/trackvggt_inherited_native_reference_v1.json": "fbc72343a24d02a9fe4ce4e979488767efb0a581899072ab4b34ffcece0cac0d"
+      "results/trackvggt_queue_stage_costs_v1.json": "8ce39fca18c56ca1c3b92048c6df5d93ae97a509a180953a25fc4de12482a6d7",
+      "results/trackvggt_inherited_native_reference_v1.json": "fbc72343a24d02a9fe4ce4e979488767efb0a581899072ab4b34ffcece0cac0d",
+      "results/trackvggt_teacher_gate_v1.json": "8d05c2f31f1a3db228749cbf84d2a2ecc48b06f99fa376972e804acc8d1474e4",
+      "results/trackvggt_frozen_direct_input_hash_recheck_v1.json": "d257b4d494fef94b4c526ff1a1643602f3404c2993c409591f3b0f78c2a4e1fd"
     },
-    "student_status": "NOT_EXECUTED_CONDITIONAL_RELATION_GATE_NOT_PASSED",
+    "student_status": "CONDITIONAL_NOT_EXECUTED_RELATION_GATE_FAILED",
     "overall_goal_complete": false,
     "scientific_success": false
   }

@@ -1,7 +1,9 @@
 # Conditional student status
 
-Status: NOT_EXECUTED_RELATION_GATE_NOT_PASSED_YET. Remaining DINO
-temporal controls are still required before the final gate disposition.
+Status: CONDITIONAL_NOT_EXECUTED_RELATION_GATE_FAILED. All56 registered
+teacher runs and both independently paired temporal controls are complete.
+The actual gate is NO_UNIQUE_VGGT_TEACHER_EVIDENCE; see
+results/trackvggt_teacher_gate_v1.json.
 
 No TrackVGGT student has been trained or deployed. There is no student
 checkpoint, trained-seed result, learned full-video correction, or student FPS.
@@ -18,9 +20,12 @@ inference seeds are not student-training seeds. The fixed temperature is2.0;
 online students accept native GMT evidence only, with zero-initialized residual
 bounded by1.0 and no VGGT/DINO/cache dependency.
 
-Completed evidence does not yet justify this expenditure: primary V3 AG-C is
+Completed evidence does not justify this expenditure: primary V3 AG-C is
 below ROI/native, QD is below the matched nativeMLP, local crops are below
 matched DINO, and the VGGT cycle comparison has no certified new ranking fix.
 No low-quality teacher distribution is manufactured into a successful
-distillation experiment. This status will be revisited after the remaining
-independently registered teacher experiments finish; it does not cancel them.
+distillation experiment. DINO temporal0/.1 also finishes without a certified
+new ranking repair (R1=.21/.20). The conditional student branch is explicitly
+unexecuted under the locked design, not counted as a trained negative student,
+engineering deployment success or three-seed result. Remaining full native
+system tests are independent and still required before overall completion.

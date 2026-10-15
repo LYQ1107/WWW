@@ -1,13 +1,14 @@
 {
   "status": "PARTIAL_ACTUAL_QUEUE_STAGE_COSTS",
-  "completed_stage_rows": 115,
-  "completed_GPU_visible_process_wall_hours": 8.70873041363847,
+  "completed_stage_rows": 123,
+  "completed_GPU_visible_process_wall_hours": 8.931146259274747,
   "by_queue_GPU_visible_process_wall_hours": {
     "trackvggt_crop_fit_v1_gpu4": 0.6899326991393334,
     "trackvggt_crop_fit_v1_gpu5": 0.7077370631363658,
     "trackvggt_crop_prechecks_v1_gpu6": 0.02431278524092502,
     "trackvggt_crop_tokens_v1_gpu4": 0.041457258177300296,
     "trackvggt_crop_tokens_v1_gpu6": 0.07332186420758566,
+    "trackvggt_cycle_fit_v1_gpu5": 0.20294545366532274,
     "trackvggt_cycle_fit_v1_gpu6": 0.2028083286082579,
     "trackvggt_full_audit_v1_tier1_gpu0": 0.2437202148615486,
     "trackvggt_full_audit_v1_tier1_gpu4": 0.21152718612096377,
@@ -18,6 +19,9 @@
     "trackvggt_full_audit_v1_tier2_gpu5": 0.09852257467185457,
     "trackvggt_full_audit_v1_tier2_gpu6": 0.047621913125945464,
     "trackvggt_full_audit_v1_tier3_gpu6": 0.11030860304004617,
+    "trackvggt_live_baseline_v1_gpu0": 0.019470391970955663,
+    "trackvggt_live_baseline_v1_gpu4": 0,
+    "trackvggt_live_baseline_v1_gpu6": 0,
     "trackvggt_phase2_ag_fit_v1_gpu0": 0.300834390492075,
     "trackvggt_phase2_ag_fit_v1_gpu4": 0.22627603207818336,
     "trackvggt_phase2_ag_fit_v1_gpu5": 0.22275341685240468,
@@ -45,28 +49,22 @@
   },
   "pending_or_running": [
     {
-      "queue": "trackvggt_cycle_fit_v1_gpu5",
-      "stage": "cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1",
-      "status": "RUNNING",
-      "pid": 33853
-    },
-    {
       "queue": "trackvggt_live_baseline_v1_gpu0",
-      "stage": "wait_existing_teacher_handles",
+      "stage": "trackvggt_runtime_off_2streams_full_v1",
       "status": "RUNNING",
-      "pid": 39559
+      "pid": 660
     },
     {
       "queue": "trackvggt_live_baseline_v1_gpu4",
-      "stage": "wait_actual_passing_prefix",
+      "stage": "trackvggt_runtime_off_4streams_full_v1",
       "status": "RUNNING",
-      "pid": 39611
+      "pid": 695
     },
     {
       "queue": "trackvggt_live_baseline_v1_gpu6",
-      "stage": "wait_actual_passing_prefix",
+      "stage": "trackvggt_runtime_off_10streams_full_v1",
       "status": "RUNNING",
-      "pid": 39628
+      "pid": 726
     }
   ],
   "queues": [
@@ -102,8 +100,8 @@
     },
     {
       "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_cycle_fit_v1_gpu5/manifest.json",
-      "sha256": "6de5fabd4df844eda09a808fa90376ed54c840488646c18923c90e0230f6c1a0",
-      "status": "RUNNING",
+      "sha256": "af498ec58dbfdf989158678540fd8f2bfaa0cf8e1df9d7414b4d76aa141f06fe",
+      "status": "FINISHED",
       "pid": 26401
     },
     {
@@ -168,19 +166,19 @@
     },
     {
       "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_live_baseline_v1_gpu0/manifest.json",
-      "sha256": "8cc781ce823ef79a0739f4aee9866f9029d23fc1c89f13c907d26b889793f81b",
+      "sha256": "c2ddaddbea3d629ade6f6a40af8dae77b52aee15fd62e1d0cd95bcf9b6a9a715",
       "status": "RUNNING",
       "pid": 39488
     },
     {
       "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_live_baseline_v1_gpu4/manifest.json",
-      "sha256": "12f2f020c9d8100c943d62a56074912082ee4e65dd19015486352ce15c7e2a33",
+      "sha256": "32fa57d3cf43eab551e2e61b7aff1fe70fad7eeac2cf550cc754ee977ed465bb",
       "status": "RUNNING",
       "pid": 39514
     },
     {
       "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_live_baseline_v1_gpu6/manifest.json",
-      "sha256": "411464f5c5a0a0ffdd5ecd2f2315d0663f0f09fa67cafcd882f76ade00f61dc8",
+      "sha256": "8bee5b981c95d56c7e62f815b8fa213fd0fa090c59319f21a3598ccf68c26f8a",
       "status": "RUNNING",
       "pid": 39533
     },
@@ -329,19 +327,19 @@
       "pid": 30793
     }
   ],
-  "csv_sha256": "2388d4b633ea320a51b5b8ee1eb82ce2bd1d8be920507eae6f1c42b8a4c3422b",
-  "completed_CPU_only_stage_seconds_including_waits_not_GPU_wall": 0,
+  "csv_sha256": "c79f3f07fbb2d555b301ddea7ed79447067de93ca853b5e3f3efa2dc9dcaef22",
+  "completed_CPU_only_stage_seconds_including_waits_not_GPU_wall": 12600.110520862043,
   "separate_DEV12_release_GPU_wall_hours": 0.34016230704676775,
   "cost_scope": "Assigned-GPU producer process wall from actual queue monotonic clocks, including setup/hash/export/validation even when GPU idle; not active kernel hours. Explicit cpu_only stages and controller dependency waits excluded. Failed executed stages remain charged. Running/missing durations remain pending, not zero.",
   "exclusions": "Not the total project cost. Manual phase0/numerical/gradient probes, original selected/native initial capture, CPU diagnostics and separate DEV12 release costs are outside these queue-stage rows. Inherited prior-project ledger stays separate. Overlapping passive monitor samples are not summed as experiments.",
   "scientific_success": false,
   "provenance": {
-    "process_started_utc": "2026-10-15T18:21:27.178324+00:00",
-    "report_generated_utc": "2026-10-15T18:21:28.825088+00:00",
-    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/queue_stage_cost_snapshot_qd_complete_v3.log",
+    "process_started_utc": "2026-10-15T18:34:52.482456+00:00",
+    "report_generated_utc": "2026-10-15T18:34:54.045249+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/queue_stage_cost_teacher_complete_v4.log",
     "source_worktree": "/data1/liuyeqiang/WWW_trackvggt_20261015",
-    "commit": "a8b09a6963cd8edf3fee66cd0f53558c43876c8f",
-    "report_generation_commit": "a8b09a6963cd8edf3fee66cd0f53558c43876c8f",
+    "commit": "e121d2943c041971b807089ab0a1133cdfcf7069",
+    "report_generation_commit": "e121d2943c041971b807089ab0a1133cdfcf7069",
     "command": [
       "geo_tools/summarize_trackvggt_queue_costs.py"
     ],
@@ -413,6 +411,7 @@
       "geo_tools/test_candidate_normalization.py": "4e4f4bf6467b084b1f733bc9aa93c343425bf1acecd1feb760d2eb79f39a618f",
       "geo_tools/prepare_trackvggt_v3_cohort.py": "a5784596e385e17068ce549f41db21dfd3da27899ddd1ee97079b8f028ead46f",
       "geo_tools/trackvggt_cycle_features.py": "abf4baa7603dcb2704b252e76a101f9bfd1570609dc06635b26d0e2905716134",
+      "geo_tools/audit_trackvggt_frozen_input_hashes.py": "3aaf297ddffcfe3644c280bcaebcf5e2b14714df97173aacb541d27280c4ef4e",
       "geo_tools/audit_train_complementarity.py": "62e50c085203b9cc5628c2844a3f749814c50b5369ba802953691aceef373404",
       "geo_tools/evaluate_predictions.py": "f08e7edd0df359a612b4e726a2c7c444fa877218acbf522e2d9cdce61330f133",
       "geo_tools/audit_retrieval_outcomes.py": "4119cdb38326853c1c969d6c1b31ec9e6b5ef8e46453eb550e64860037999398",
@@ -420,7 +419,7 @@
       "geo_tools/test_contracts.py": "2188de96144735d6b49d102b6052ac640d235c06694634eb70259193d25599f4",
       "geo_tools/audit_decision_trace.py": "15f2951bb7daa4f200470da7a911984165aceb2c6913787cd415b4a2b7ce65f6",
       "geo_tools/decide_trackvggt_fit_expansion.py": "aaa6cfc26fb56d3a743553fc41dbb371111d2bd07c88eed0854841d98d63ab3d",
-      "geo_tools/summarize_trackvggt_system.py": "89c52beeb76e44805cc31f74d7237a028c5e89c929e3f19520ee0c6bffaabac6",
+      "geo_tools/summarize_trackvggt_system.py": "f2dd5d779d242916533342763fb6bacdf7dfc8410cec5dda888080d35c33a554",
       "geo_tools/evaluate_suite.py": "804b4d8ff7cfbdef4acc63e66db3dd4fc411bd110292052eddad79c30fb84f07",
       "geo_tools/run_online.py": "e97027d9967482e7e027b8034cc2ecf0d9aa185eb6ec61918dc110469d42e5b6",
       "geo_tools/run_native_prior.py": "798fab5c773baedb2b41a767e65a4cd7091509fcea354aa96ddc1fdde3bee537",
@@ -454,13 +453,14 @@
       "geo_tools/test_target_cache_prefix_audit.py": "d2cd9c6a65730c40e9d98c4f63c7afdbbaa6a0e3c151e79bdc458ad1c347e86f",
       "geo_tools/monitor_project_resources.py": "91e447b9154096d6845ce4ee4013503f6ab1d3bd0b7219129c07e6c88546a6f6",
       "geo_tools/probe_trackvggt_backward.py": "58770df3460fe7258439c9a98ee8cf9826fe6e0b0c704db671eb605ed11e59e1",
-      "geo_tools/summarize_trackvggt_teachers.py": "2488c54fdf9a9791f267b5dbd5ed24e1574f9ab7b4b2cc18dff9503ebf3daf7f",
+      "geo_tools/summarize_trackvggt_teachers.py": "4235a1a329b30abdf3a3fb179355567d8f717ec577462cb9d0469a80ce4c2fd6",
       "geo_tools/test_resource_samples.py": "ea502b2c7e2575fa9742786334f978f2e07e30a079b8bde294c40f66d65f163a",
       "geo_tools/test_research_queue.py": "f11de3eca1f893c15934a691b58bb2cc1b19971765117660440a736def8cda82",
       "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
       "geo_tools/train_history_heads.py": "d960e283c3a6795d6b0d80198066e005ec4268ff1b2bc924f77e04d6e0505c12",
       "geo_tools/benchmark_short_pair_encoder.py": "5e3cd035dd399b18f98fbbe91a3fde8198a96e549c686486179c3fd6a293a069",
       "geo_tools/test_dense_seed_stability.py": "77b239efd9007959cff1efdef89249378cbb85e591f1023bd6ad0c966ac28b50",
+      "geo_tools/audit_trackvggt_teacher_gate.py": "0d2fb70baf2237d975eb33b7d9de5a3031a3f1b1d855f5232dc333ca9932b6d3",
       "geo_tools/consolidate_camera_control.py": "4d961b2fb8cfbd59bee4414a577541f5b3994bbdd5f892720385289c382e39eb",
       "geo_tools/audit_full_train_identity_events.py": "358f0ac8202ae27ecf2db4bdff674d45696b26757c76923261070dc73a96870e",
       "geo_tools/extract_trackvggt_crop_tokens.py": "ee2a6dc84a1d2d0ac756ab6665433e99c2dd67f776f2f707d345fbec147b40da",
@@ -618,7 +618,7 @@
       "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
     },
     "source_tree_dirty": true,
-    "source_diff_sha256": "4c309066fb4a15c361aef84e5751c4dfa23778f838741040c5dbe2b6a87cd27c",
+    "source_diff_sha256": "4359f8373113de799dc1b37e32ee53257fc4e8244b213a407623a58216654242",
     "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
     "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",

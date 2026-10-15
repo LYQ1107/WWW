@@ -18,6 +18,14 @@ def write_csv(path, rows):
 def main():
     runtime = Path('/data1/liuyeqiang/WWW_trackvggt_runtime')
     timing, tracking, receipts = [], [], []
+    gate_path=runtime/'matrix_reports/trackvggt_runtime_prefix_gate_v1.json'
+    gate=None
+    if gate_path.exists():
+        value=json.loads(gate_path.read_text())
+        if value['status']!='PASS' or value['full_video'] or len(value['rows'])!=2:
+            raise ValueError('fresh native prefix gate has not passed at its stated scope')
+        gate=dict(path=str(gate_path),sha256=sha256(gate_path),status=value['status'])
+        (ROOT/'results/trackvggt_runtime_prefix_gate_v1.json').write_bytes(gate_path.read_bytes())
     for streams, gpu in [(2, 'gpu0'), (4, 'gpu4'), (10, 'gpu6')]:
         queue_path = runtime/'queues'/f'trackvggt_live_baseline_v1_{gpu}'/'manifest.json'
         queue = json.loads(queue_path.read_text()) if queue_path.exists() else {}
@@ -51,11 +59,14 @@ def main():
             accounting = json.loads((root/'runtime_accounting.json').read_text())
             if accounting['status']!='COMPLETE_PROFILED_NATIVE_REPLAY':
                 raise ValueError('missing complete cost accounting')
+            if not stage['seconds']>=accounting['main_seconds_including_setup_export']>=manifest['seconds']+accounting['setup_seconds']:
+                raise ValueError('complete process/setup/loop timing scopes are inconsistent')
             row.update(status='PASS_FULL_REPLAY_AND_PREDICTION_PARITY', images=manifest['images'],
                 complete_process_seconds=stage['seconds'], complete_process_camera_image_fps=manifest['images']/stage['seconds'],
                 main_setup_export_seconds=accounting['main_seconds_including_setup_export'],
                 replay_loop_seconds=manifest['seconds'], replay_loop_camera_image_fps=manifest['camera_image_fps'],
                 setup_seconds=accounting['setup_seconds'],
+                GPU_device_name=accounting['GPU_device_name'],CUDA_visible_devices=accounting['CUDA_visible_devices'],
                 read_preprocess_seconds=accounting['components']['read_preprocess_mapping']['seconds'],
                 synchronized_tracker_seconds=accounting['components']['synchronized_tracker_step']['seconds'],
                 index_query_compute_seconds=accounting['components'].get('index_query_compute', {}).get('seconds'),
@@ -64,6 +75,10 @@ def main():
                 allocator_peak_bytes_including_setup=accounting['allocator_peak_bytes_including_setup'],
                 host_peak_rss_bytes=accounting['host_peak_rss_bytes'],index_peak_payload_bytes=manifest['index']['peak_payload_bytes'],
                 VGGT_calls=accounting['VGGT_calls'],DINO_calls=accounting['DINO_calls'],manifest_sha256=sha256(manifest_path))
+            components=accounting['components']
+            row['remaining_replay_loop_seconds_including_publication_and_control']=manifest['seconds']-sum(c['seconds'] for c in components.values())
+            row['synchronized_tracker_step_p50_seconds']=components['synchronized_tracker_step']['p50']
+            row['synchronized_tracker_step_p95_seconds']=components['synchronized_tracker_step']['p95']
             metric_path = root/'retrieval.metrics.json'
             if metric_path.exists():
                 metric = json.loads(metric_path.read_text())
@@ -106,8 +121,10 @@ def main():
         tracking.append(row)
     write_csv(ROOT/'results/runtime_comparison.csv',timing)
     write_csv(ROOT/'results/full_tracking_metrics.csv',tracking)
-    summary=dict(status='ACTUAL_NATIVE_SYSTEM_PROGRESS_SNAPSHOT',rows=timing,tracking_rows=tracking,receipts=receipts,
-        pending=[r['tag'] for r in timing if r['status']!='PASS_FULL_REPLAY_AND_PREDICTION_PARITY' or 'retrieval_Recall1' not in r],
+    pending=[r['tag'] for r in timing if r['status']!='PASS_FULL_REPLAY_AND_PREDICTION_PARITY' or 'retrieval_Recall1' not in r]
+    pending_tracking=[r['method'] for r in tracking if r['status']=='PENDING_FRESH_FULL_DEV5_METRICS']
+    summary=dict(status='COMPLETE_FRESH_NATIVE_SYSTEM_EVALUATION' if gate and not pending and not pending_tracking else 'ACTUAL_NATIVE_SYSTEM_PROGRESS_SNAPSHOT',
+        rows=timing,tracking_rows=tracking,receipts=receipts,prefix_gate=gate,pending=pending,pending_tracking_metrics=pending_tracking,
         timing_scope='Complete process FPS uses actual queue outer wall time. Profiled local file replay, unequal-length independent two-camera videos; configured streams are not guaranteed constant active membership. Query response latency excludes network.',
         learned_system_results='NOT_RUN_NO_VALID_STUDENT_OR_TEACHER_DEPLOYMENT',scientific_success=False,provenance=provenance())
     save_json(ROOT/'results/trackvggt_system_execution_snapshot_v1.json',summary)
