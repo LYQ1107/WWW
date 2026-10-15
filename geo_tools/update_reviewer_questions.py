@@ -19,7 +19,10 @@ def main():
     if query_audit.exists():
         paired=json.loads(query_audit.read_text());candidate=next((row for row in paired['rows'] if row['method']=='VGGT2'),None)
         if candidate:
-            retrieval_evidence+=f" 已完成denseB7跟踪接入原生排序的完整两路检索：相同{candidate['common_eligible']}个可检索查询中Recall1修正{candidate['common_eligible_rank1_fixes']}、破坏{candidate['common_eligible_rank1_harms']}，可检索集合变化{candidate['eligible_gained']}/{candidate['eligible_lost']}。这是小型主种子信号，匹配容量GMT/DINO跟踪发布对照及四路VGGT结果仍待完成，不能宣称VGGT独有或稳定收益。逐查询审计另外揭示四路scene1固定先验虽汇总相同，仍有1次R1修正和1次破坏。"
+            retrieval_evidence+=f" 已完成denseB7跟踪接入原生排序的完整两路检索：相同{candidate['common_eligible']}个可检索查询中Recall1修正{candidate['common_eligible_rank1_fixes']}、破坏{candidate['common_eligible_rank1_harms']}，可检索集合变化{candidate['eligible_gained']}/{candidate['eligible_lost']}。这是小型主种子信号，匹配容量GMT/DINO跟踪发布对照及四路VGGT结果仍待完成，不能宣称VGGT独有或稳定收益。"
+        prior_queries=next((row for row in paired['rows'] if row['method']=='Prior4' and row['query_scene']==1),None)
+        if prior_queries:
+            retrieval_evidence+=f" 四路scene1固定先验的逐查询R1修正/破坏为{prior_queries['common_eligible_rank1_fixes']}/{prior_queries['common_eligible_rank1_harms']}；汇总相同不代表查询相同。"
     signal_path=ROOT/'results/causal_B7_dense_positive_scene1_v1.json'
     signal=json.loads(signal_path.read_text()) if signal_path.exists() else None
     signal_text='尚无完整因果视频正向信号。'
