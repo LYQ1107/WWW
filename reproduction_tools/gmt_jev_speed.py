@@ -8,11 +8,15 @@ def main(kind,gpu):
  from run_jev_phase10_closed_loop import raw_predictions
  assert int(os.environ['CUDA_VISIBLE_DEVICES'])==gpu
  folder=OUT/'speed'/kind;folder.mkdir(parents=True,exist_ok=False)
- values,frames,images=metadata(16);seed();m,cfg,_=model();actor=None
+ values,frames,images=metadata(16);seed();m,cfg,_=model();actor=None;checkpoint=None
  if kind!='original':
   if kind=='rule_cached':
    assert read(REPORTS/'FEATURE_CACHE_PARITY.json')['status']=='PASS_EXACT_FULL_NATIVE_RULE'
-  actor=IdentityCorrection(kind.replace('_zero','').replace('_cached',''),cache_features=kind.endswith('_cached')).cuda().eval();m.gmt_identity_correction=actor
+  if kind.endswith('_learned'):
+   from gmt_jev_learned_checkpoint import load_actor
+   actor,checkpoint=load_actor(kind.replace('_learned',''))
+  else:actor=IdentityCorrection(kind.replace('_zero','').replace('_cached',''),cache_features=kind.endswith('_cached')).cuda().eval()
+  m.gmt_identity_correction=actor
   def committed(**d):actor.committed(d['instances'][-1],d['view'],d['frame'])
   m.jev_candidate_commit_observer=committed
  assert m.jev_perception_cache_reader is None
@@ -61,6 +65,9 @@ def main(kind,gpu):
   deployed_parameters=sum(p.numel() for p in m.parameters()),no_GTA_or_RPCE_pruning=True,all_native_states_reset_between_trials=True,model_object_reused=True,
   no_GT_or_eval_in_timed_loop=True,no_perception_cache=True,stock_predictions=ref(folder/'STOCK_PREDICTIONS.json.gz'),stock_prediction_SHA=digests[0],
   untrained_prototype=kind.endswith('_zero'),cache_features=bool(actor and actor.cache_features),extra_neural_FLOPs='NOT_MEASURED_YET' if kind.endswith('_zero') else 0,source=binding())
+ if checkpoint:
+  result.update(trained_checkpoint=checkpoint,risk_mode='learned',training_steps=300,
+   extra_neural_FLOPs='Same head operators/parameter shapes as measured zero prototypes; full-video FLOPs not measured')
  save(REPORTS/f'SPEED_{kind}.json',result);print('GMT_SPEED_COMPLETE',kind,result['mean_full_scene_FPS'],flush=True)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--kind',choices=['original','threshold','rule','rule_cached','confidence','mlp_zero','attention_zero','cic_zero'],required=True);p.add_argument('--gpu',type=int,required=True);a=p.parse_args();main(a.kind,a.gpu)
+ p=argparse.ArgumentParser();p.add_argument('--kind',choices=['original','threshold','rule','rule_cached','confidence','mlp_zero','attention_zero','cic_zero','mlp_learned','attention_learned','cic_learned'],required=True);p.add_argument('--gpu',type=int,required=True);a=p.parse_args();main(a.kind,a.gpu)

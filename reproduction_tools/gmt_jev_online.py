@@ -7,10 +7,16 @@ def main(kind):
  from gtr.modeling.gmt_jev import IdentityCorrection
  from gtr.modeling.meta_arch.custom_rcnn import CustomRCNN
  from run_jev_phase10_closed_loop import raw_predictions
- assert kind in ['threshold','rule','confidence']
+ learned=kind.endswith('_learned');head_kind=kind.replace('_learned','')
+ assert kind in ['threshold','rule','confidence','mlp_learned','attention_learned','cic_learned']
  assert read(REPORTS/'BASELINE_PARITY.json')['status']=='PASS_EXACT'
  folder=OUT/'online'/kind;folder.mkdir(parents=True,exist_ok=False)
- values,frames,images=metadata(16);seed();m,cfg,_=model();actor=IdentityCorrection(kind).cuda().eval();m.gmt_identity_correction=actor;seed()
+ values,frames,images=metadata(16);seed();m,cfg,_=model();checkpoint=None
+ if learned:
+  from gmt_jev_learned_checkpoint import load_actor
+  actor,checkpoint=load_actor(head_kind)
+ else:actor=IdentityCorrection(kind).cuda().eval()
+ m.gmt_identity_correction=actor;seed()
  labeler=OfflineCertificates(16,images);counts=collections.Counter();pending={};boundary={};boot=[False];last=[0.];begin=time.monotonic()
  def before(**d):
   boundary['id_count']=d['id_count']
@@ -50,6 +56,11 @@ def main(kind):
  with torch.no_grad():raw,_=run(m,values,frames)
  predictions=raw_predictions(raw,images);path=folder/'RAW_PREDICTIONS.json.gz'
  with gzip.open(path,'wt') as f:json.dump(predictions,f)
+ if learned:
+  from gmt_jev_train_matched_quality import geometry_sha
+  reference=read(REPORTS/'ORIGINAL_GMT_METRICS.json')['predictions'];assert sha(reference['path'])==reference['SHA256']
+  with gzip.open(reference['path'],'rt') as f:original_predictions=json.load(f)
+  assert geometry_sha(predictions)==geometry_sha(original_predictions),'Learned correction changed frontend predictions'
  # Exact original stock end filtering and postprocessing, separate from raw.
  stock=m._remove_short_track(list(raw)) if m.min_track_len>0 else list(raw)
  if m.roi_heads.delay_cls:stock=m._delay_cls(stock,video_id=16)
@@ -64,6 +75,11 @@ def main(kind):
   native_mutated_state=True,GT_actor_inputs=False,no_new_gradient_updates=True,parameters=parameters,full_image_FPS=None,independent_validation=False,
   row_certificate_scope='Same-current-state raw GMT accepted MATCH reference versus corrected current native commit, with unique first-past targets. Rejected baseline has UNKNOWN original Bank outcome. Not a whole-plan causal or cross-run numeric-ID claim.',
   seconds=time.monotonic()-begin,source=binding())
+ if learned:
+  result.update(trained_checkpoint=checkpoint,risk_mode='learned',training_steps=300,
+   raw_geometry_and_scores_SHA256=geometry_sha(predictions),raw_frontend_prediction_parity=True,
+   effective_config_SHA256=hashlib.sha256(cfg.dump().encode()).hexdigest(),annotations=ref(ANNOTATIONS),
+   selection='All three fixed step300 heads; no selection by development quality')
  save(REPORTS/f'ONLINE_{kind}.json',result);print('GMT_ONLINE_COMPLETE',kind,raw_metric['metrics'],raw_metric['CVIDF1'],flush=True)
 if __name__=='__main__':
- p=argparse.ArgumentParser();p.add_argument('--kind',choices=['threshold','rule','confidence'],required=True);main(p.parse_args().kind)
+ p=argparse.ArgumentParser();p.add_argument('--kind',choices=['threshold','rule','confidence','mlp_learned','attention_learned','cic_learned'],required=True);main(p.parse_args().kind)
