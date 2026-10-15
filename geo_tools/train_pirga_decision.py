@@ -16,7 +16,7 @@ def atomic(path,value):
 
 
 def execute(protocol_path,protocol_sha,out):
-    if sha(protocol_path)!=protocol_sha:raise ValueError('Unpinned innovation protocol')
+    if sha(protocol_path)!=protocol_sha:raise ValueError('Unpinned ordinary decision protocol')
     p=json.loads(protocol_path.read_text());repo=Path(__file__).resolve().parents[1]
     if p['status']!='PREREGISTERED_ORDINARY_NATIVE_DECISION_BEFORE_OPTIMIZATION' or p['epochs']!=[1,3,5] or p['GPU_wall_hours']!=0:raise ValueError('Unregistered schedule/device')
     for name,digest in p['source_code_sha256'].items():
