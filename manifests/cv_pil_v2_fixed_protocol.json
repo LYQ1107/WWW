@@ -1,0 +1,73 @@
+{
+  "schema": "cv_pil_v2_fixed_protocol/v1",
+  "status": "PREREGISTERED_BEFORE_V2_TRAINING",
+  "inherited_commit": "adc3739a39f8a664b488f24d64d1ab3ff012f1e4",
+  "cohort": "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v2/cohort.json",
+  "cohort_sha256": "2ea0d5a054cd507a66c645c0288189eca3b6dfdaf7640b96b2b6d1def73cf7a1",
+  "runtime": "/data1/liuyeqiang/WWW_trackvggt_runtime",
+  "fit_queries": 1000,
+  "development_queries": 300,
+  "fit_scenes": [
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "development_scenes": [
+    12
+  ],
+  "feature_contract": "full_native_reid_1152_opaque_no_slicing",
+  "feature_dim": 1152,
+  "rank": 16,
+  "condition_dim": 3,
+  "residual_scale": 0.25,
+  "fusion_scale": 2.0,
+  "age_denominator": 400,
+  "seed": 20261015,
+  "steps_per_arm": 300,
+  "batch_size": 1,
+  "optimizer": "AdamW",
+  "lr": 0.001,
+  "weight_decay": 0.0001,
+  "grad_clip_norm": 1.0,
+  "prediction_loss_weight": {
+    "C2": 0.0,
+    "C3": 0.5,
+    "C4": 0.5
+  },
+  "explicit_camera": {
+    "C2": true,
+    "C3": true,
+    "C4": false
+  },
+  "sampling": "One fixed uniform-with-replacement schedule of 300 indices from common TRAIN ranking-eligible queries; publish eligible keys and schedule SHA. No DEV in training.",
+  "training_eligibility": "At least one certified pure positive and one certified negative in unchanged Top8, with at least one strictly past history. UNKNOWN candidates masked only in supervised loss; aliases are multi-positive. All 1300 source queries retained in counts/evaluation.",
+  "prediction_target": "Stop-gradient frozen current query feature, only for strictly earlier opposite-camera sources of pure positive TRAIN tracks. No labels/future frame are actor inputs.",
+  "scoring": "native track probability-sum scores + 2*cosine(query, average normalized projected strictly past history). Empty-history candidates receive zero correction. C0=native, C1=identical zero-residual historical cosine.",
+  "metric_denominators": "Top1/MRR on known-query positive-covered records using all legal Top8 including UNKNOWN; unverified predictions separately counted UNKNOWN, never certified errors. Paired fixes/harms require both pure known outcomes. Report all-query coverage and query/person/scene counts.",
+  "native_certification": "Cached labels certify primary-before-memory baseline state only, never counterfactual full native commits. Actual native correction/harm for new heads stays null without online solver/state replay.",
+  "deployment_gate": {
+    "reachable_certified_actual_native_errors_required": true,
+    "C3_over_C2_positive_net_person_groups_min": 2,
+    "C3_over_C4_independent_value_required": true,
+    "no_increased_known_harms": true,
+    "unchanged_candidates_and_history": true
+  },
+  "stop_statuses": [
+    "INSUFFICIENT_NATIVE_OPPORTUNITY",
+    "NO_UNIQUE_PREDICTIVE_EFFECT",
+    "DEVELOPMENT_POSITIVE_PENDING_FULL_NATIVE"
+  ],
+  "no_teacher": true,
+  "no_all_train_mining": true,
+  "no_online_run_without_gate": true,
+  "no_legacy_ledger_changes": true,
+  "resources": {
+    "device": "cpu",
+    "new_gpu_budget_reserved": 0,
+    "conditional_initial_gpu_wall_hours_max": 1,
+    "minimum_free_bytes": 32212254720
+  },
+  "published_utc": "2026-10-15T14:24:59.963319+00:00"
+}
