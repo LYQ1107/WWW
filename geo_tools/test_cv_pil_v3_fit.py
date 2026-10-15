@@ -4,12 +4,19 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from cv_pil_v3_fit import FIT_SCENES, load_fit
+from cv_pil_v3_fit import FIT_SCENES, load_fit, fixed_schedule
 from cv_pil_native_handoff import sha256
 from train_cv_pil_v3_matched import execute
 
 
 class TestV3TrainAdmission(unittest.TestCase):
+    def test_shared_schedule_exact_budget_and_no_empty_stratum_fallback(self):
+        eligible=[0,1,2,3];hard=[0,2]
+        s=fixed_schedule(eligible,hard)
+        self.assertEqual(len(s),300);self.assertEqual(s,fixed_schedule(eligible,hard))
+        self.assertEqual(sum(i in hard for i in s),150)
+        with self.assertRaisesRegex(ValueError,'Both preregistered TRAIN strata'):fixed_schedule(eligible,[])
+
     def test_wrong_cohort_sha_rejected_before_source_access(self):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/'cohort.json';p.write_text('{}')

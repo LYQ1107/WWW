@@ -1,6 +1,7 @@
 """Read-only mapping of already selected V3 TRAIN; no mining or teachers."""
 from pathlib import Path
 import json
+import numpy as np
 
 from cv_pil_dev12_assets import require
 from cv_pil_native_handoff import (sha256, safe_torch_load, normalize_event,
@@ -8,6 +9,14 @@ from cv_pil_native_handoff import (sha256, safe_torch_load, normalize_event,
                                    FROZEN_CONFIG_SHA256)
 
 FIT_SCENES = {4,5,6,7,8,9,13,17,20,21,24}
+
+
+def fixed_schedule(eligible, hard, seed=20261015):
+    """Preregistered50/50 TRAIN-only sampling; no DEV-dependent fallback."""
+    hard=[i for i in eligible if i in set(hard)];ordinary=[i for i in eligible if i not in set(hard)]
+    require(bool(hard) and bool(ordinary), 'Both preregistered TRAIN strata required')
+    rng=np.random.default_rng(seed)
+    return [pool[int(rng.integers(len(pool)))] for _ in range(150) for pool in (hard,ordinary)]
 
 
 def load_fit(cohort_path, expected_sha, runtime, producer_repo):

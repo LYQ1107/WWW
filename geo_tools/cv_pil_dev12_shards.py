@@ -112,7 +112,7 @@ class NativeShardAssets:
         return vector(variant['feature'])
 
     def _validate_call(self, c):
-        require(c['stage'] in ('run_global_tracker', 'run_global_tracker_plus', 'run_memory_tracker'),
+        require(c['stage'] in ('run_first_tracker_plus', 'run_global_tracker_plus', 'run_memory_tracker'),
                 'Unknown native association stage')
         q = c['queries']; refs = c['references']; ids = c['track_ids']; score = c['track_scores']
         require(ids == sorted(set(r['track'] for r in refs)) and

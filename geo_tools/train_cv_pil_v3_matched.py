@@ -12,7 +12,7 @@ import torch
 
 from cv_pil_dev12_assets import require
 from cv_pil_native_handoff import sha256, inference_inputs
-from cv_pil_v3_fit import load_fit
+from cv_pil_v3_fit import load_fit, fixed_schedule
 from cv_pil_v2_model import (CandidatePredictor, tensorize, training_eligible,
                               supervised_losses, parameter_digest)
 from run_cv_pil_v2 import summarize, one_row
@@ -32,6 +32,9 @@ def execute(protocol_path, protocol_sha, out):
     eligible=[i for i,(e,b) in enumerate(zip(events,batches)) if training_eligible(b,e['OFFLINE_ONLY'])]
     require(eligible==p['eligible_source_indices'], 'Frozen common TRAIN eligibility differs')
     schedule=p['schedule_source_indices']; require(len(schedule)==300 and set(schedule)<=set(eligible), 'Invalid shared schedule')
+    hard=[i for i in eligible if events[i]['OFFLINE_ONLY']['actual_primary_state'] in ('wrong_link','missed_known_positive')]
+    require(hard==p['hard_source_indices'] and schedule==fixed_schedule(eligible,hard,p['seed']),
+            'Preregistered TRAIN hard/ordinary sampling differs')
     require([list(events[i]['INPUT_ONLY']['event_key']) for i in schedule]==p['schedule_query_keys'], 'Shared physical sample keys differ')
     out.mkdir(parents=True); training={};initials=set()
     for arm in ('C2','C3','C4'):

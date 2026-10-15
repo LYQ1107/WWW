@@ -89,5 +89,11 @@ class TestV3Replay(unittest.TestCase):
         a.variants['wrong-average']=dict(source=spec['source'],feature=value,feature_sha256=tensor_digest(value))
         with self.assertRaisesRegex(ValueError,'Bank average'):a._validate_call(c)
 
+    def test_actual_first_tracker_uses_single_activation_block(self):
+        a,c=fixture();c['stage']='run_first_tracker_plus'
+        a._validate_call(c)
+        c['stage']='invented_stage'
+        with self.assertRaisesRegex(ValueError,'Unknown native association stage'):a._validate_call(c)
+
 
 if __name__=='__main__':torch.set_num_threads(1);unittest.main()
