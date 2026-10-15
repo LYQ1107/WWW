@@ -14,10 +14,10 @@ import sqlite3
 import numpy as np
 
 DIM=1152
-INTERFACE='pirga-indexed-native/v1'
+INTERFACE='pirga-indexed-native/v2'
 CALL_FIELDS={'scene','call_id','stage','query_keys','query_features','reference_features','reference_tracks',
              'candidate_ids','reference_block_sizes','matrix_shape','matrix_entries','thresholds','accepted_ids',
-             'completed_image_ids'}
+             'completed_image_ids','observed_track_lengths','candidate_support_counts'}
 
 
 def sha(path):
@@ -97,6 +97,11 @@ def validate_call(c,db):
     if c['stage'] not in ('run_first_tracker_plus','run_global_tracker_plus','run_memory_tracker'):raise ValueError('Unknown solver stage')
     ids=c['candidate_ids'];q=c['query_keys'];refs=c['reference_features']
     if ids!=sorted(set(ids)) or len(c['thresholds'])!=len(ids) or len(c['query_features'])!=len(q) or len(c['accepted_ids'])!=len(q):raise ValueError('Joint solver layout changed')
+    support=Counter(c['reference_tracks'])
+    if c['candidate_support_counts']!=[support[t] for t in ids]:raise ValueError('Actual reference support count changed')
+    if (set(c['observed_track_lengths'])!=set(map(str,ids)) or any(type(v)!=int or v<1 for v in c['observed_track_lengths'].values())
+        or c['stage']!='run_memory_tracker' and any(c['observed_track_lengths'][str(t)]<support[t] for t in ids)):
+        raise ValueError('Lifetime observed length missing or confused with current reference support')
     if len(refs)!=len(c['reference_tracks']) or sum(c['reference_block_sizes'])!=len(refs) or set(ids)!=set(c['reference_tracks']):raise ValueError('Missing full reference context')
     a=dense_matrix(c['matrix_shape'],c['matrix_entries'])
     if a.shape!=(len(q),len(ids)) or not np.isfinite(c['thresholds']).all():raise ValueError('Incomplete solver matrix/threshold')

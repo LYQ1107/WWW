@@ -22,7 +22,8 @@ def pack(assets,out,scene,pins):
             query_features=[fid(s) for s in c['query_feature_keys']],reference_features=[fid(s) for s in c['reference_feature_keys']],
             reference_tracks=[r['track'] for r in c['references']],candidate_ids=c['track_ids'],reference_block_sizes=c['reference_block_sizes'],
             matrix_shape=shape,matrix_entries=entries,thresholds=c['thresholds'].tolist(),accepted_ids=c['decision']['accepted_track_ids'],
-            completed_image_ids=c['completed_camera_images_before_call']))
+            completed_image_ids=c['completed_camera_images_before_call'],
+            observed_track_lengths=c['observed_track_lengths'],candidate_support_counts=c['actual_candidate_support_lengths']))
     return writer.close(pins,len(assets.query_index))
 
 

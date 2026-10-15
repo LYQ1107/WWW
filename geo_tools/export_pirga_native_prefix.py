@@ -19,6 +19,11 @@ def validate_permit(path,digest,scene,groups):
     if (p.get('status')!='AUTHORIZED' or not p.get('authorization_source') or p['scope']!='PIRGA_FIT_PREFIX_OFF_ON'
         or scene!=4 or groups!=40 or p['scene']!=4 or p['groups']!=40 or p['maximum_process_seconds']>360
         or not 0<p['maximum_total_gpu_wall_hours']<=.25 or not 0<p['maximum_process_seconds']<=360 or p['old_ledgers_reset'] is not False):raise ValueError('Scope/budget not authorized')
+    root=Path(__file__).resolve().parents[1]
+    expected={'geo_tools/export_pirga_native_prefix.py','geo_tools/run_pirga_prefix_pair.py','geo_tools/pirga_native_trace.py','geo_tools/pirga_trace_primitives.py','geo_tools/pirga_indexed_store.py'}
+    if set(p.get('bound_capture_source_sha256',{}))!=expected:raise ValueError('Capture source set is not frozen')
+    for name,digest in p['bound_capture_source_sha256'].items():
+        if sha(root/name)!=digest:raise ValueError('Capture source changed '+name)
     return p
 
 
@@ -66,7 +71,8 @@ def main():
                     query_features=[self.fid(s) for s in c['query_feature_keys']],reference_features=[self.fid(s) for s in c['reference_feature_keys']],
                     reference_tracks=[r['track'] for r in c['references']],candidate_ids=c['track_ids'],reference_block_sizes=c['reference_block_sizes'],
                     matrix_shape=shape,matrix_entries=entries,thresholds=c['thresholds'].tolist(),accepted_ids=c['decision']['accepted_track_ids'],
-                    completed_image_ids=c['completed_camera_images_before_call']))
+                    completed_image_ids=c['completed_camera_images_before_call'],
+            observed_track_lengths=c['observed_track_lengths'],candidate_support_counts=c['actual_candidate_support_lengths']))
             self.calls=[]
     trace=None;predictions=[];states=[]
     prov=provenance()

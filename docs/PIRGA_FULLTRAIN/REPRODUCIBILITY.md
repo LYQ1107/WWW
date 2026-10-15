@@ -23,3 +23,17 @@ Full training/online stages are not enabled by a prefix PASS.
 commit `f97cf27f0f4299269c3bd1dd885a92e90639f51c`, source SHA in its header. Changes are explicit
 video-ID output binding and local primitive import. Tracker core files retain their exact
 original SHA. Fresh OFF/ON parity remains pending; no untested runtime result is asserted.
+
+Complete stored-native codec and label-metadata coverage (CPU, no training):
+
+```bash
+python geo_tools/probe_pirga_full_native_store.py --pins results/cv_pil_v3_native_validation/P1_SOURCE_PINS.json --out NEW_COMPLETE_ENGINEERING_STORE
+python geo_tools/audit_pirga_metadata_supervision.py --source-manifest results/PIRGA_FULLTRAIN/SOURCE_SHA_MANIFEST.json --runtime /data1/liuyeqiang/WWW_trackvggt_runtime --out NEW_OFFLINE_METADATA_DIRECTORY
+```
+
+The first command reads sealed native matrices/features, hashes the independent seal and never
+calls `supervision()`. Its C1 FP32/FP16 comparison is a label-free quantization diagnostic,
+not a new research arm, fresh image export, trained model or online tracking benchmark.
+The second command reuses existing sealed GT query labels and candidate-positive certificates;
+it never opens raw GT for matching or imputes initialization-source identities. Its files
+explicitly refuse training admission until full features and actual descriptor-version masks pass.
