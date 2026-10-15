@@ -156,6 +156,8 @@ def main():
   text=text.replace('目前所有正向结果来自未训练的普通控制器','此前 Rule/Threshold/Confidence 的正向结果来自未训练的普通控制器')
  text+='\n## 学习式门控修订的当前证据\n\n阶段 '+revision_status+f'；真实 optimizer 更新总数 {updates}。三个头各自的固定终点、监督认证和完整闭环结果见 [LEARNED_GATE_RESULTS_ZH.md](LEARNED_GATE_RESULTS_ZH.md)。旧 Rule 失败结论不变；未证明独立科学成功。\n'
  report.write_text(text)
+ from gmt_jev_current_report import main as current_report
+ current_report()
  print('LEARNED_EVIDENCE_REFRESHED',revision_status,updates,len(methods),flush=True)
 
 if __name__=='__main__':main()
