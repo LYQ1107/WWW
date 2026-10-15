@@ -1,0 +1,213 @@
+{
+  "status": "COMPLETE_OFFLINE_NATIVE_SCREEN",
+  "provenance": {
+    "5": {
+      "manifest": "/data1/liuyeqiang/WWW_vggt_geo_runtime/history_train/history_train_keyframe_v1_v5/manifest.json",
+      "manifest_sha256": "4c0cffa333930aa95984110fd2c705be038913c523b49ae54a6221da7bfcb62b",
+      "targets_sha256": "9ef56fef8d4c6144892a2d78f879dc028a0cc69128c34da33697f1543ae2e03e",
+      "observations_sha256": "13a959e6f8a43f223b32d74cc6c22baf2f4085706b558f960dc4f6eb3f7dd625",
+      "source_split": "association_train",
+      "observations": 160
+    },
+    "8": {
+      "manifest": "/data1/liuyeqiang/WWW_vggt_geo_runtime/history_train/history_train_keyframe_v1_v8/manifest.json",
+      "manifest_sha256": "afe3f951378326f61dd7170f786543238bef31a8fb77fcf9aec86ee5bf53a1b4",
+      "targets_sha256": "3d5d69d58a45ccc95cdda5c4c1b028d9ab43be461d93ac1e8d370a19edca9b9f",
+      "observations_sha256": "5373b40349a34ab84e982f1daaf272b72d0d857fbdc8e8f7a4a4bebb12fbd27f",
+      "source_split": "association_train",
+      "observations": 151
+    },
+    "12": {
+      "manifest": "/data1/liuyeqiang/WWW_vggt_geo_runtime/history_train/history_train_keyframe_v1_v12/manifest.json",
+      "manifest_sha256": "ab7d9455839798dd60b13af0b6dc7844343d61f21446dedcbebc0382d7ca85a3",
+      "targets_sha256": "4bb6a915a269a8f4957495f6f041d01dcb9836f3ec8dad8a15c0077c7b7b03ec",
+      "observations_sha256": "a6312a1897c2eb73479b3d5ad4f173862858d1ee153fe09305edab58b6b81c98",
+      "source_split": "association_train",
+      "observations": 595
+    }
+  },
+  "native_event_sha": {
+    "5": "0df42cfdb35c9e542bb2685dd0906c9ec1bfbaaa07dd7020c663d4c5ea92afec",
+    "8": "dc82646b0330cdb2eac7e01d46b1fc0df60f1abb79d0f26bef7f47a73bd4bbea",
+    "12": "badedd53e23e4483af789f3456f46719456a93130318fbed83a62dc5e74f7f3b"
+  },
+  "training_videos": [
+    5,
+    8
+  ],
+  "diagnostic_video": 12,
+  "native": {
+    "clauses": 2517,
+    "unique_queries": 405,
+    "persons": 6,
+    "recall1": 0.9932459276916965,
+    "mrr": 0.9966229638458483
+  },
+  "native_plus_GMT_cosine": {
+    "clauses": 2517,
+    "unique_queries": 405,
+    "persons": 6,
+    "recall1": 0.9932459276916965,
+    "mrr": 0.9966229638458483
+  },
+  "counts": {
+    "5": 1008,
+    "8": 851,
+    "12": 2517
+  },
+  "methods": {
+    "linear": {
+      "clauses": 2517,
+      "unique_queries": 405,
+      "persons": 6,
+      "recall1": 0.9924513309495431,
+      "mrr": 0.9962256654747715,
+      "fixes_vs_native": 0,
+      "harms_vs_native": 2,
+      "fixes_vs_native_plus_cosine": 0,
+      "harms_vs_native_plus_cosine": 2,
+      "training_log": [
+        {
+          "step": 1,
+          "loss": 3.0278701160568744e-05
+        },
+        {
+          "step": 100,
+          "loss": 0.019084056839346886
+        },
+        {
+          "step": 200,
+          "loss": 0.24818575382232666
+        },
+        {
+          "step": 300,
+          "loss": 0.002875600242987275
+        }
+      ]
+    },
+    "contrastive": {
+      "clauses": 2517,
+      "unique_queries": 405,
+      "persons": 6,
+      "recall1": 0.9928486293206198,
+      "mrr": 0.9964243146603099,
+      "fixes_vs_native": 0,
+      "harms_vs_native": 1,
+      "fixes_vs_native_plus_cosine": 0,
+      "harms_vs_native_plus_cosine": 1,
+      "training_log": [
+        {
+          "step": 1,
+          "loss": 3.0278701160568744e-05
+        },
+        {
+          "step": 100,
+          "loss": 0.020580671727657318
+        },
+        {
+          "step": 200,
+          "loss": 0.23206984996795654
+        },
+        {
+          "step": 300,
+          "loss": 0.002809864701703191
+        }
+      ]
+    },
+    "predictive": {
+      "clauses": 2517,
+      "unique_queries": 405,
+      "persons": 6,
+      "recall1": 0.9936432260627731,
+      "mrr": 0.9968216130313866,
+      "fixes_vs_native": 1,
+      "harms_vs_native": 0,
+      "fixes_vs_native_plus_cosine": 1,
+      "harms_vs_native_plus_cosine": 0,
+      "training_log": [
+        {
+          "step": 1,
+          "loss": 0.0885312557220459
+        },
+        {
+          "step": 100,
+          "loss": 0.19221919775009155
+        },
+        {
+          "step": 200,
+          "loss": 0.40459132194519043
+        },
+        {
+          "step": 300,
+          "loss": 0.15850771963596344
+        }
+      ]
+    },
+    "predictive_no_camera": {
+      "clauses": 2517,
+      "unique_queries": 405,
+      "persons": 6,
+      "recall1": 0.9936432260627731,
+      "mrr": 0.9968216130313866,
+      "fixes_vs_native": 1,
+      "harms_vs_native": 0,
+      "fixes_vs_native_plus_cosine": 1,
+      "harms_vs_native_plus_cosine": 0,
+      "training_log": [
+        {
+          "step": 1,
+          "loss": 0.0885312557220459
+        },
+        {
+          "step": 100,
+          "loss": 0.19237616658210754
+        },
+        {
+          "step": 200,
+          "loss": 0.4286595582962036
+        },
+        {
+          "step": 300,
+          "loss": 0.15092407166957855
+        }
+      ]
+    },
+    "teacher_distill": {
+      "clauses": 2517,
+      "unique_queries": 405,
+      "persons": 6,
+      "recall1": 0.9936432260627731,
+      "mrr": 0.9968216130313866,
+      "fixes_vs_native": 1,
+      "harms_vs_native": 0,
+      "fixes_vs_native_plus_cosine": 1,
+      "harms_vs_native_plus_cosine": 0,
+      "training_log": [
+        {
+          "step": 1,
+          "loss": 0.10313110053539276
+        },
+        {
+          "step": 100,
+          "loss": 0.20093467831611633
+        },
+        {
+          "step": 200,
+          "loss": 0.44288170337677
+        },
+        {
+          "step": 300,
+          "loss": 0.21788263320922852
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Existing native tracker candidate/reference set, but offline single-reference ranking only.",
+    "GT used only for offline labels; no GT inputs to trainable models.",
+    "Same queries can occur in multiple historical frames; dependent samples.",
+    "No native Hungarian/Bank/online HOTA, no independent validation, no full-image FPS."
+  ],
+  "teacher_gate_training_only": true,
+  "gate": "WORTH_NATIVE_CLOSED_LOOP_REVIEW"
+}

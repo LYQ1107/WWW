@@ -1,6 +1,6 @@
 # CV-PIL fast screen — preregistration (2026-10-15)
 
-**Status: REAL_CACHED_TRAIN_EXPERIMENT_PENDING.** No VisionTrack accuracy, HOTA, FPS or architecture gain is claimed until actual cached TRAIN measurements run on the user's server. This branch implements a compact screen and CPU synthetic checks, not a new GMT/JEV Master Goal.
+**Status: REAL_CACHED_TRAIN_SCREEN_COMPLETE — REVIEW ONLY.** The locked 300-step CPU screen ran on the server. Predictive learning corrected one of 2,517 historical clauses relative to native GTA; its no-camera and cached-teacher versions tied it. The numerical gate passes, but this is a small, dependent, previously exposed TRAIN diagnostic. See [the real-data report](CV_PIL_REAL_SCREEN_20261015_ZH.md) and [immutable primary output](../results/cv_pil_native_20261015/native_screen.json). No new online HOTA, FPS or architecture superiority is established. The preregistered methods/gate below remain unchanged.
 
 ## Historical evidence and hypothesis
 
@@ -46,4 +46,4 @@ Native-event screening fixes the original tracker candidate lists and learns onl
 
 If a native screen succeeds, next stage must verify a complete frozen GMT+GTA integration, alongside the existing GMT+MLP and a matched plain learner, on properly authorized full native video. Retain negative VGGT/JEV conclusions. Do not open sealed videos20/21/22, new DEV17–19, official TEST or unauthorized Full24.
 
-**Assistant-side validation performed:** one synthetic CPU end-to-end diagnostic (four 300-step trained arms) and five distinct synthetic unittest cases. Synthetic data have no VisionTrack scientific meaning. The assistant cannot access the user's GPU workstation or private feature cache directly from the connected GitHub source, so REAL TRAIN screening remains NOT_RUN.
+**Validation at branch preparation (before the server run):** one synthetic CPU end-to-end diagnostic (four 300-step trained arms) and five distinct synthetic unittest cases. Synthetic data have no VisionTrack scientific meaning. At that point the assistant could not access the user's workstation or private feature cache, so REAL TRAIN screening was NOT_RUN. The dated server report linked above records the subsequent real execution and does not replace this history.

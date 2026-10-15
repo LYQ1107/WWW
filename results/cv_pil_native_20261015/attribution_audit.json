@@ -1,0 +1,597 @@
+{
+  "status": "PASS_EXACT_FIXED_CONFIGURATION_REPLAY",
+  "source_commit": "9bafa2cce5818eded11f933071c52a3a0f18ce68",
+  "original_result_sha256": "5889796cebb063013e4b220e84d6daa66fc7cdaa8e26c64fc7c6731acc1bae9d",
+  "replay_result_sha256": "5889796cebb063013e4b220e84d6daa66fc7cdaa8e26c64fc7c6731acc1bae9d",
+  "source_sha256": {
+    "quick_cv_pil_native.py": "e1f2fba672ed6b307d4ed59d53c291d8fc14b08e455f26116ef609dee8c514e8",
+    "quick_cv_pil_probe.py": "01525169737e67c90807f4bd6d1428e231c84b8b5f1370c1339677aafc2051b6",
+    "audit_cv_pil_native_screen.py": "3a1dccd42ca6d3fd50bb2ee29654375acec68c15d900679c3a40f033386963e5"
+  },
+  "seed": 20261015,
+  "steps_per_arm": 300,
+  "device": "cpu",
+  "torch": "2.0.0+cu118",
+  "numpy": "1.24.1",
+  "python": "3.10.18",
+  "started_utc": "2026-10-15T13:23:52.540004+00:00",
+  "finished_utc": "2026-10-15T13:24:23.220211+00:00",
+  "replay_and_audit_wall_seconds": 30.68025390803814,
+  "gpu_hours": 0,
+  "parameters_per_head": 33856,
+  "coverage": {
+    "5": {
+      "observations": 160,
+      "clauses": 1008,
+      "events": 79,
+      "unique_queries": 156,
+      "video_person_groups": 2,
+      "candidate_count_histogram": {
+        "2": 1008
+      },
+      "per_person_clause_counts": {
+        "2": 504,
+        "1": 504
+      },
+      "source_frame_min": 0,
+      "query_frame_max": 195,
+      "strictly_past_opposite_camera": true
+    },
+    "8": {
+      "observations": 151,
+      "clauses": 851,
+      "events": 79,
+      "unique_queries": 143,
+      "video_person_groups": 2,
+      "candidate_count_histogram": {
+        "2": 851
+      },
+      "per_person_clause_counts": {
+        "2": 396,
+        "1": 455
+      },
+      "source_frame_min": 0,
+      "query_frame_max": 195,
+      "strictly_past_opposite_camera": true
+    },
+    "12": {
+      "observations": 595,
+      "clauses": 2517,
+      "events": 79,
+      "unique_queries": 405,
+      "video_person_groups": 6,
+      "candidate_count_histogram": {
+        "6": 168,
+        "7": 1581,
+        "8": 217,
+        "9": 287,
+        "10": 126,
+        "5": 132,
+        "4": 6
+      },
+      "per_person_clause_counts": {
+        "3": 392,
+        "4": 504,
+        "7": 504,
+        "5": 488,
+        "6": 504,
+        "2": 125
+      },
+      "source_frame_min": 0,
+      "query_frame_max": 195,
+      "strictly_past_opposite_camera": true
+    }
+  },
+  "fit_video_person_groups": 4,
+  "shared_episode_schedule_sha256": "69832f64bd453d3626a8fc1eb0d1599f3e4db0daa07585909f07476c4c58b29e",
+  "teacher_gate_training_only": {
+    "5": {
+      "native_correct": 1007,
+      "native_plus_dinov2_cosine_correct": 1008,
+      "paired": {
+        "fixes": 1,
+        "harms": 0,
+        "affected_unique_queries": 1,
+        "affected_persons": 1,
+        "fix_clause_indices": [
+          582
+        ],
+        "harm_clause_indices": []
+      }
+    },
+    "8": {
+      "native_correct": 786,
+      "native_plus_dinov2_cosine_correct": 788,
+      "paired": {
+        "fixes": 2,
+        "harms": 0,
+        "affected_unique_queries": 2,
+        "affected_persons": 1,
+        "fix_clause_indices": [
+          510,
+          544
+        ],
+        "harm_clause_indices": []
+      }
+    }
+  },
+  "methods": {
+    "native": {
+      "correct_clauses": 2500,
+      "error_clauses": 17,
+      "error_unique_queries": 9,
+      "query_macro_recall1": 0.9935390946502057
+    },
+    "native_plus_GMT_cosine": {
+      "correct_clauses": 2500,
+      "error_clauses": 17,
+      "error_unique_queries": 9,
+      "query_macro_recall1": 0.9935390946502057
+    },
+    "linear": {
+      "correct_clauses": 2498,
+      "error_clauses": 19,
+      "error_unique_queries": 11,
+      "query_macro_recall1": 0.9928336272780717
+    },
+    "contrastive": {
+      "correct_clauses": 2499,
+      "error_clauses": 18,
+      "error_unique_queries": 10,
+      "query_macro_recall1": 0.9931863609641388
+    },
+    "predictive": {
+      "correct_clauses": 2501,
+      "error_clauses": 16,
+      "error_unique_queries": 8,
+      "query_macro_recall1": 0.9938918283362727
+    },
+    "predictive_no_camera": {
+      "correct_clauses": 2501,
+      "error_clauses": 16,
+      "error_unique_queries": 8,
+      "query_macro_recall1": 0.9938918283362727
+    },
+    "teacher_distill": {
+      "correct_clauses": 2501,
+      "error_clauses": 16,
+      "error_unique_queries": 8,
+      "query_macro_recall1": 0.9938918283362727
+    }
+  },
+  "paired_comparisons": {
+    "native_plus_GMT_cosine_vs_native": {
+      "fixes": 0,
+      "harms": 0,
+      "affected_unique_queries": 0,
+      "affected_persons": 0,
+      "fix_clause_indices": [],
+      "harm_clause_indices": []
+    },
+    "linear_vs_native": {
+      "fixes": 0,
+      "harms": 2,
+      "affected_unique_queries": 2,
+      "affected_persons": 1,
+      "fix_clause_indices": [],
+      "harm_clause_indices": [
+        1018,
+        1520
+      ]
+    },
+    "contrastive_vs_native": {
+      "fixes": 0,
+      "harms": 1,
+      "affected_unique_queries": 1,
+      "affected_persons": 1,
+      "fix_clause_indices": [],
+      "harm_clause_indices": [
+        1018
+      ]
+    },
+    "predictive_vs_native": {
+      "fixes": 1,
+      "harms": 0,
+      "affected_unique_queries": 1,
+      "affected_persons": 1,
+      "fix_clause_indices": [
+        385
+      ],
+      "harm_clause_indices": []
+    },
+    "predictive_no_camera_vs_native": {
+      "fixes": 1,
+      "harms": 0,
+      "affected_unique_queries": 1,
+      "affected_persons": 1,
+      "fix_clause_indices": [
+        385
+      ],
+      "harm_clause_indices": []
+    },
+    "teacher_distill_vs_native": {
+      "fixes": 1,
+      "harms": 0,
+      "affected_unique_queries": 1,
+      "affected_persons": 1,
+      "fix_clause_indices": [
+        385
+      ],
+      "harm_clause_indices": []
+    },
+    "predictive_vs_contrastive": {
+      "fixes": 2,
+      "harms": 0,
+      "affected_unique_queries": 2,
+      "affected_persons": 1,
+      "fix_clause_indices": [
+        385,
+        1018
+      ],
+      "harm_clause_indices": []
+    },
+    "predictive_vs_predictive_no_camera": {
+      "fixes": 0,
+      "harms": 0,
+      "affected_unique_queries": 0,
+      "affected_persons": 0,
+      "fix_clause_indices": [],
+      "harm_clause_indices": []
+    },
+    "predictive_vs_teacher_distill": {
+      "fixes": 0,
+      "harms": 0,
+      "affected_unique_queries": 0,
+      "affected_persons": 0,
+      "fix_clause_indices": [],
+      "harm_clause_indices": []
+    }
+  },
+  "changed_clauses": [
+    {
+      "clause_index": 385,
+      "query": 136,
+      "frame": 40,
+      "camera": 2,
+      "person": 3,
+      "source_frame": 15,
+      "source_camera": 1,
+      "target_index": 5,
+      "reference_observations": [
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ],
+      "reference_gt_labels": [
+        2,
+        1,
+        5,
+        4,
+        6,
+        3,
+        7
+      ],
+      "scores": {
+        "native": [
+          -9.584436416625977,
+          -3.6491265296936035,
+          -5.8112473487854,
+          2.888960838317871,
+          -7.207704544067383,
+          2.862548828125,
+          -11.316596984863281
+        ],
+        "native_plus_GMT_cosine": [
+          -8.845956802368164,
+          -2.860433340072632,
+          -5.110530376434326,
+          4.1872076988220215,
+          -6.612508296966553,
+          4.18068790435791,
+          -10.73802375793457
+        ],
+        "linear": [
+          -9.1380615234375,
+          -3.2391092777252197,
+          -5.1653008460998535,
+          4.13033390045166,
+          -6.969242095947266,
+          4.041008472442627,
+          -10.724555969238281
+        ],
+        "contrastive": [
+          -9.13031005859375,
+          -3.205430030822754,
+          -5.239345550537109,
+          4.080681800842285,
+          -6.965328216552734,
+          4.033299446105957,
+          -10.83279037475586
+        ],
+        "predictive": [
+          -8.689277648925781,
+          -2.7389962673187256,
+          -4.934999942779541,
+          4.198048114776611,
+          -6.441471576690674,
+          4.211766242980957,
+          -10.50381851196289
+        ],
+        "predictive_no_camera": [
+          -8.684904098510742,
+          -2.7381253242492676,
+          -4.933959007263184,
+          4.194037437438965,
+          -6.449286460876465,
+          4.210301399230957,
+          -10.529236793518066
+        ],
+        "teacher_distill": [
+          -8.648862838745117,
+          -2.7060813903808594,
+          -4.906526565551758,
+          4.161460876464844,
+          -6.36801290512085,
+          4.17974853515625,
+          -10.497085571289062
+        ]
+      },
+      "predicted_indices": {
+        "native": 3,
+        "native_plus_GMT_cosine": 3,
+        "linear": 3,
+        "contrastive": 3,
+        "predictive": 5,
+        "predictive_no_camera": 5,
+        "teacher_distill": 5
+      }
+    },
+    {
+      "clause_index": 1018,
+      "query": 270,
+      "frame": 80,
+      "camera": 2,
+      "person": 3,
+      "source_frame": 45,
+      "source_camera": 1,
+      "target_index": 6,
+      "reference_observations": [
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146
+      ],
+      "reference_gt_labels": [
+        1,
+        4,
+        2,
+        5,
+        7,
+        6,
+        3
+      ],
+      "scores": {
+        "native": [
+          -8.308440208435059,
+          7.073312759399414,
+          -6.584643840789795,
+          -10.148569107055664,
+          -11.58864688873291,
+          -10.711788177490234,
+          7.092702865600586
+        ],
+        "native_plus_GMT_cosine": [
+          -7.580872058868408,
+          8.540213584899902,
+          -5.66400146484375,
+          -9.475143432617188,
+          -11.00304126739502,
+          -10.142377853393555,
+          8.64832592010498
+        ],
+        "linear": [
+          -7.923223972320557,
+          8.463268280029297,
+          -5.892610549926758,
+          -9.442543029785156,
+          -10.99392032623291,
+          -10.471659660339355,
+          8.402135848999023
+        ],
+        "contrastive": [
+          -7.917253017425537,
+          8.415058135986328,
+          -5.912064075469971,
+          -9.524188995361328,
+          -11.10781478881836,
+          -10.470373153686523,
+          8.401138305664062
+        ],
+        "predictive": [
+          -7.433755397796631,
+          8.49584674835205,
+          -5.55676794052124,
+          -9.243741035461426,
+          -10.773855209350586,
+          -9.934882164001465,
+          8.559625625610352
+        ],
+        "predictive_no_camera": [
+          -7.420098304748535,
+          8.509568214416504,
+          -5.539958477020264,
+          -9.236641883850098,
+          -10.779546737670898,
+          -9.92238712310791,
+          8.57574462890625
+        ],
+        "teacher_distill": [
+          -7.379247188568115,
+          8.470487594604492,
+          -5.514537811279297,
+          -9.21221923828125,
+          -10.75252914428711,
+          -9.854276657104492,
+          8.52249526977539
+        ]
+      },
+      "predicted_indices": {
+        "native": 6,
+        "native_plus_GMT_cosine": 6,
+        "linear": 1,
+        "contrastive": 1,
+        "predictive": 6,
+        "predictive_no_camera": 6,
+        "teacher_distill": 6
+      }
+    },
+    {
+      "clause_index": 1520,
+      "query": 374,
+      "frame": 115,
+      "camera": 2,
+      "person": 3,
+      "source_frame": 90,
+      "source_camera": 1,
+      "target_index": 1,
+      "reference_observations": [
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294
+      ],
+      "reference_gt_labels": [
+        2,
+        3,
+        4,
+        6,
+        1,
+        5,
+        7
+      ],
+      "scores": {
+        "native": [
+          -6.4295806884765625,
+          2.0725064277648926,
+          2.0058608055114746,
+          -9.594473838806152,
+          -9.520236015319824,
+          -8.321795463562012,
+          -12.176088333129883
+        ],
+        "native_plus_GMT_cosine": [
+          -5.59657621383667,
+          3.447002410888672,
+          3.2937631607055664,
+          -8.999857902526855,
+          -8.915948867797852,
+          -7.5655364990234375,
+          -11.618432998657227
+        ],
+        "linear": [
+          -5.918191909790039,
+          3.175021171569824,
+          3.1964917182922363,
+          -9.380365371704102,
+          -9.059403419494629,
+          -7.553035259246826,
+          -11.58583927154541
+        ],
+        "contrastive": [
+          -5.946085453033447,
+          3.1757619380950928,
+          3.13724422454834,
+          -9.384371757507324,
+          -9.12771987915039,
+          -7.6387104988098145,
+          -11.708333015441895
+        ],
+        "predictive": [
+          -5.491621494293213,
+          3.4310407638549805,
+          3.2954535484313965,
+          -8.808835983276367,
+          -8.708462715148926,
+          -7.383458137512207,
+          -11.388752937316895
+        ],
+        "predictive_no_camera": [
+          -5.471119403839111,
+          3.446303367614746,
+          3.306692123413086,
+          -8.790657997131348,
+          -8.69405746459961,
+          -7.37247896194458,
+          -11.397953987121582
+        ],
+        "teacher_distill": [
+          -5.452010631561279,
+          3.407625675201416,
+          3.2740509510040283,
+          -8.730213165283203,
+          -8.66472053527832,
+          -7.361700534820557,
+          -11.361502647399902
+        ]
+      },
+      "predicted_indices": {
+        "native": 1,
+        "native_plus_GMT_cosine": 1,
+        "linear": 2,
+        "contrastive": 1,
+        "predictive": 1,
+        "predictive_no_camera": 1,
+        "teacher_distill": 1
+      }
+    }
+  ],
+  "local_checkpoints": {
+    "linear": {
+      "path": "/home/liuyeqiang/WWW_cvpil_native_20261015/attribution/linear.pth",
+      "sha256": "ee9f7ba3f5e9d7fa37bcfe40ed66285f4bddc82668422a1b4bd0494c117200b8",
+      "bytes": 136857
+    },
+    "contrastive": {
+      "path": "/home/liuyeqiang/WWW_cvpil_native_20261015/attribution/contrastive.pth",
+      "sha256": "9ab4c041b0ec30934f8a097bcaa7f17929defd64578c519fbc39bdcb3582d58b",
+      "bytes": 137143
+    },
+    "predictive": {
+      "path": "/home/liuyeqiang/WWW_cvpil_native_20261015/attribution/predictive.pth",
+      "sha256": "0d20e6c124abe552f2b35dca59b7d4e8ae6c32ef61335aa7efc68903dd24b0a4",
+      "bytes": 137137
+    },
+    "predictive_no_camera": {
+      "path": "/home/liuyeqiang/WWW_cvpil_native_20261015/attribution/predictive_no_camera.pth",
+      "sha256": "c64635206475e4138e95a6fc9264813e08eb2d541866a513469a73dba3fb49d7",
+      "bytes": 137261
+    },
+    "teacher_distill": {
+      "path": "/home/liuyeqiang/WWW_cvpil_native_20261015/attribution/teacher_distill.pth",
+      "sha256": "07c08f077b0118540a86f1370326c5bbcd6447f51c982c15a28b70aadcf9bd59",
+      "bytes": 137167
+    }
+  },
+  "raw_gate": "WORTH_NATIVE_CLOSED_LOOP_REVIEW",
+  "decision": "REVIEW_ONLY_NO_AUTOMATIC_FULL_VIDEO_RUN",
+  "limitations": [
+    "One fixed seed repeated deterministically; this is not an independent trial.",
+    "Video12 is previously exposed; repeated clauses are dependent; only six people.",
+    "Candidate eligibility uses offline known GT positives/negatives; not full deployment candidates.",
+    "Teacher trigger measures native+DINO cosine, while KL target uses pure DINO cosine.",
+    "N2 has a linear bottleneck but tanh and normalization; not strictly linear end-to-end.",
+    "N3 uses native-fused ranking cross-entropy; not a full standard contrastive pretraining study.",
+    "No-camera retains time; with two cameras destination is inferable from source view.",
+    "No new HOTA/IDSW/FPS, no encoder runs, no sealed videos or TEST accessed."
+  ]
+}

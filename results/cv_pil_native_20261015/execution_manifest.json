@@ -1,0 +1,70 @@
+{
+  "status": "COMPLETE_BOUNDED_CPU_SCREEN_AND_REVIEW",
+  "written_utc": "2026-10-15T13:28:00.100940+00:00",
+  "source_branch": "research/cv-pil-fast-screen-20261015",
+  "training_source_commit": "9bafa2cce5818eded11f933071c52a3a0f18ce68",
+  "runtime": "/home/liuyeqiang/WWW_cvpil_native_20261015",
+  "raw_result_preserved": true,
+  "training_scripts_unchanged": true,
+  "primary_command": [
+    "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+    "/home/liuyeqiang/cvpil_quick_20261015/quick_cv_pil_native.py",
+    "--runtime",
+    "/data1/liuyeqiang/WWW_vggt_geo_runtime",
+    "--out",
+    "/home/liuyeqiang/WWW_cvpil_native_20261015",
+    "--steps",
+    "300",
+    "--device",
+    "cpu"
+  ],
+  "primary_exit_code": 0,
+  "primary_wall_seconds": null,
+  "primary_wall_note": "Not measured by a dedicated timer; no invented wall-time or FPS estimate.",
+  "fixed_seed": 20261015,
+  "fixed_steps_per_arm": 300,
+  "trained_arms": 5,
+  "independent_seeds": 1,
+  "deterministic_replay_is_independent_trial": false,
+  "training_data_groups": 4,
+  "diagnostic_persons": 6,
+  "gpu_hours": 0,
+  "new_encoder_calls": 0,
+  "new_video_downloads": 0,
+  "no_online_tracking_run": true,
+  "full_video_hota": null,
+  "full_image_fps": null,
+  "baseline_collection_shared_provenance": {
+    "seed": 20261014,
+    "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+    "annotation_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85"
+  },
+  "tests": {
+    "self_test": "PASS",
+    "synthetic_unit_tests": 5,
+    "synthetic_unit_result": "PASS",
+    "unit_log_sha256": "a622896b3a308ea6b5aa73a249f8f2173abc324963a5638ee1d947fc491f5ccd",
+    "audit_compile": "PASS",
+    "exact_replay": "PASS",
+    "saved_head_metric_parity": "PASS",
+    "strict_past_reference_checks": "PASS",
+    "cache_sha_recheck": "PASS"
+  },
+  "result_sha256": {
+    "native_screen.json": "5889796cebb063013e4b220e84d6daa66fc7cdaa8e26c64fc7c6731acc1bae9d",
+    "attribution_audit.json": "ed82bd237055c35a8978fbeb844a21525113539b74efc9de05ec4e25e490fe1a",
+    "age_controls.json": "193c7c2d0b17ba31e9aa584da50ed53605facaef88d084e6dcfcf1c861026ad7"
+  },
+  "source_sha256": {
+    "quick_cv_pil_native.py": "e1f2fba672ed6b307d4ed59d53c291d8fc14b08e455f26116ef609dee8c514e8",
+    "quick_cv_pil_probe.py": "01525169737e67c90807f4bd6d1428e231c84b8b5f1370c1339677aafc2051b6",
+    "audit_cv_pil_native_screen.py": "3a1dccd42ca6d3fd50bb2ee29654375acec68c15d900679c3a40f033386963e5",
+    "audit_cv_pil_age_controls.py": "1734b7fd25953d9683c086b6719b9be2a677600b126a4d49305606a8998aabb2"
+  },
+  "local_result_retained_bytes": 723955,
+  "local_head_bytes": 685565,
+  "upload_policy": "Only compact JSON, audit source and documentation; no checkpoints, feature caches or videos.",
+  "decision": "NUMERICAL_GATE_PASSED_REVIEW_ONLY_NO_AUTOMATIC_SCALE_UP",
+  "interpretation": "One correction on one person; no extra camera-conditioning or teacher rank accuracy; not tracking success."
+}
