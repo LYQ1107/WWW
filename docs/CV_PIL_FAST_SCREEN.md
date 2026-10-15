@@ -15,7 +15,7 @@
 Run in a worktree of this GitHub research branch:
 
     /home/liuyeqiang/anaconda3/envs/GMT/bin/python geo_tools/quick_cv_pil_probe.py --self-test
-    /home/liuyeqiang/anaconda3/envs/GMT/bin/python -m unittest geo_tools/test_quick_cv_pil_probe.py
+    /home/liuyeqiang/anaconda3/envs/GMT/bin/python -m unittest geo_tools/test_quick_cv_pil_probe.py geo_tools/test_quick_cv_pil_native.py
     /home/liuyeqiang/anaconda3/envs/GMT/bin/python geo_tools/quick_cv_pil_native.py --runtime /data1/liuyeqiang/WWW_vggt_geo_runtime --out /home/liuyeqiang/WWW_cvpil_native_20261015 --steps 300 --device auto
 
 The output path must not exist. Refuse to regenerate missing caches, verify manifest and SHA, preserve >30GiB free disk on the destination, and leave data/checkpoints untouched. Actual branch/commit/retained metrics must be recorded after running.
@@ -46,4 +46,4 @@ Native-event screening fixes the original tracker candidate lists and learns onl
 
 If a native screen succeeds, next stage must verify a complete frozen GMT+GTA integration, alongside the existing GMT+MLP and a matched plain learner, on properly authorized full native video. Retain negative VGGT/JEV conclusions. Do not open sealed videos20/21/22, new DEV17–19, official TEST or unauthorized Full24.
 
-**Assistant-side validation performed:** one synthetic CPU end-to-end diagnostic (four 300-step trained arms) and three synthetic unittest cases. Synthetic data have no VisionTrack scientific meaning. The assistant cannot access the user's GPU workstation or private feature cache directly from the connected GitHub source, so REAL TRAIN screening remains NOT_RUN.
+**Assistant-side validation performed:** one synthetic CPU end-to-end diagnostic (four 300-step trained arms) and five distinct synthetic unittest cases. Synthetic data have no VisionTrack scientific meaning. The assistant cannot access the user's GPU workstation or private feature cache directly from the connected GitHub source, so REAL TRAIN screening remains NOT_RUN.
