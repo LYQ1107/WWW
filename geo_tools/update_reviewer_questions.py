@@ -58,6 +58,12 @@ def main():
         full_camera=json.loads(full_camera_path.read_text())
         changed=sum(row['changed_track_id_rows'] or 0 for row in full_camera['rows'])
         camera_note=f' 正确相机索引对照已完成strict5：四场景逐条预测完全一致，scene18有{changed}条track ID变化，检测行不变，全部汇总指标不变。不能称完整输出等价。完整GT匹配身份关系审计修正/破坏均为0，但该条件结果不抹去原始ID变化；锁定生产基线保留。实际MLP输入与整个GMT相机换序的短序列探针独立排队。'
+    later_regression='缓存/诊断后的源码完整OFF/零系数回归已排队，按实际版本分别报告。'
+    off_path=ROOT/'results/OFF_post_cache_trace_strict_v1_parity.json'
+    zero_path=ROOT/'results/ZERO_post_cache_trace_strict_v1_parity.json'
+    if off_path.exists() and json.loads(off_path.read_text())['status']=='PASS':
+        later_regression='后续a9f7d1ec源码完整strict5 OFF逐条等价也已通过。'
+        later_regression+=('同版本零系数完整回归也通过。' if zero_path.exists() and json.loads(zero_path.read_text())['status']=='PASS' else '同版本零系数完整回归仍在运行，尚未通过；不将旧版证据外推为当前全部源码验证。')
     questions=[
     ('为什么 RPCE 之外需要动态几何？','尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。'+camera_note),
     ('为什么不直接使用 DINOv2/ReID？',f'必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1={pct(baseline)}，高于当前 VGGT 中间层。独立DINO普通融合的离线稀疏/逐帧完整严格开发对照和匹配容量学习头离线k10对照已完成；主种子因果dense匹配容量GMT/DINO完整strict5均已完成；DINO数值上高于当前VGGT联合版本，见对应完整suite指标。scene1的DINO匹配VGGT CVIDF1且少1次IDSW。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。'+constant_note),
@@ -70,7 +76,7 @@ def main():
     ('身份触发优于固定周期吗？','未证明。完整strict5固定/联合各400次真实VGGT调用：固定仅+.001627 CVIDF1个百分点、IDSW不变，联合与baseline一致；未建立稳定方法收益或联合优越性。固定k20无总量上限调用720次，指标与400次上限相同，没有额外身份收益。运动单一触发完整strict5已完成：既定阈值下0次选择、0次VGGT调用、预测指标同B0，实际预算不匹配400次固定对照，不能声称调度优势或不存在运动。身份单触发完整strict5也已完成，CVIDF1仅+.006508个百分点、IDSW−8，实际218次调用；不与400次固定/联合构成相同实际预算比较。其他dense间隔和重复矩阵仍在完成。证据：causal_B8_B9_complete_budget_runtime_audit_v1.json、causal_k20_uncapped_vs_cap80_budget_runtime_v1.json。'+cached_note),
     ('相较 StreamVGGT/FastVGGT 的价值？','不能直接移用长序列加速倍率或流式权重。源码接口和许可证已审计；真实三组TRAIN双视角微基准v2已执行：original36调用通过，Fast在V100的BF16输出进入相机head LayerNorm时失败；NO_VALID_SPEED_COMPARISON，不能把进程退出0当成方法成功。相机输入FP32的v3通过但Fast保留BF16、仍较慢；另在独立源码中仅替换10个dtype常量的完全FP16路径v4也通过各36调用，三组original/Fast比为.465760/.469999/.471315，当前短双视角V100实现仍慢约2.12–2.15倍，且特征改变，因此不接入当前跟踪。未改合并比例/算法或训练权重，不外推长序列/A100/完整系统。'),
     ('完整 FPS/延迟/显存/参数量？','因果B0 scene18完整实测6.64图像/s；优化异步相机路径5.40图像/s且预测完全相同，0有效几何。实际硬件为V100，不能称A100结果。静态GMT模型初始化排除，新增模型冷启动及worker启动/关闭算入总成本。实际CPU结构/411键严格加载核对GMT注册参数53,515,309，三个匹配头309,319/309,849/310,402。resource_ledger_v1分别记录CUDA allocator、主存RSS、最终原GMT历史和缓存/索引载荷；未测字段为null，不相加非同时峰值。原GMT历史仍不受索引容量上限限制。不以一次计时宣称稳定加速。'),
-    ('提升是否来自不同检测/配置/评测 bug？',signal_text+f' 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA={suite["metrics"]["HOTA"]:.4f}、CVIDF1={suite["metrics"]["CVIDF1"]:.4f}，不能拿离线数值替代因果对照。原矩阵c214源码完整五场景OFF与零系数逐条预测等价均通过；缓存/诊断后的当前源码完整OFF/零系数回归已排队，按实际版本分别报告。'+camera_note),
+    ('提升是否来自不同检测/配置/评测 bug？',signal_text+f' 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA={suite["metrics"]["HOTA"]:.4f}、CVIDF1={suite["metrics"]["CVIDF1"]:.4f}，不能拿离线数值替代因果对照。原矩阵c214源码完整五场景OFF与零系数逐条预测等价均通过；'+later_regression+camera_note),
     ('三个模块能否分别证明有效？','尚未证明。'+signal_text+constant_note+' 当前稳定科学成功/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。'),
     ('为什么符合 WWW？','仍有实质适配风险。官方CFP要求明确Web科学问题，仅用数据集或API不充分。'+retrieval_evidence+' 本地数据集回放不等于互联网来源、真实用户查询或Web部署；见WWW_SCOPE_NOTE.md。'),
     ('在线视频关联检索的真实贡献？',retrieval_evidence+' 条件Recall@K、完整MRR、检测覆盖、可检索比例、全部请求成功率和本地查询延迟分别报告。完整读帧/检测/GTA/新增特征/索引/查询成本另计；流数量与关键帧预算对照及实质Web系统贡献仍需完成。')]

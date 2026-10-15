@@ -34,7 +34,7 @@ In the actual80-call VGGT40-group prefix, fixed+1 evidence exactly reproduces le
 
 Complete scene1 native-head constant-score control improves paired CVIDF1 +0.919076 percentage points with IDSW -75, exceeding current learned VGGT scene1 identity metrics. It retains frozen native-head encoding for eligibility but replaces learned pair evidence by fixed+1; no VGGT calls. This is a single-scene score ablation with diagnostic tracing, not a production-speed or zero-extra-parameter claim. Head-free complete strict5 is reported above; paired inference-seed controls remain pending.
 
-Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order. Both OFF and zero-weight complete strict5 controls pass. Current post-cache/diagnostic-source complete OFF/zero regressions remain queued; earlier-source proof is not promoted to later-source completion.
+Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order. Both OFF and zero-weight complete strict5 controls pass. Later post-cache source a9f7d1ec also passes complete strict5 OFF raw equality. Its zero-weight full regression remains running/pending. Proof is limited to the explicitly recorded source versions.
 
 Complete cached-feature scene1 run: 80 actual VGGT calls, exact baseline identities and unchanged metrics; no retained dense identity gain. Measured 6.0343 images/s and P95 348.67ms are one descriptive full-pipeline run, not stable speed superiority. All three cached backbone controls now complete and exactly equal baseline under the same40 selected observation groups (VGGT80 / DINO40 / GMT0 actual encoder calls; different compute). Bounded dense/cache traces preserve production output prefixes; the first split at dataset frame27 has no valid cached feature for the affected query, while dense fusion changes one same-live-history counterfactual assignment. Gate telemetry and fixed-score prefix controls are recorded below.
 
@@ -185,6 +185,8 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | native_prior_seed20261014_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.5286 | 81.1437 | 94.1330 | 94.1330 | 90 |
 | native_prior_seed20261015_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.9602 | 86.0265 | 95.2477 | 95.2477 | 228 |
 | native_prior_seed20261015_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9971 | 81.0353 | 98.9650 | 98.9650 | 19 |
+| native_prior_seed20261015_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.3347 | 79.2997 | 92.0714 | 92.0714 | 19 |
+| native_prior_seed20261015_strict_suite_v1_v18 | 18 | causal | complete | yes | 78.7767 | 81.0416 | 95.9865 | 95.9865 | 20 |
 | online_B0_full_v10_source44_v1 | 10 | causal | complete | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | online_B0_full_v11_source44_v1 | 11 | causal | complete | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | online_B0_full_v18 | 18 | causal | complete | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |

@@ -94,6 +94,8 @@ def main():
     anchor_diagnostic=evidence('causal_dense_scene1_scene10_anchor_diagnostic_v1.json',['status','video_ids','full_strict_suite','scope','limitations','unproven_cause_categories'])
     resident_structure=evidence('vggt_resident_parameter_structure_v1.json',['status','full_official_parameters','resident_parameters','parameter_tensor_bytes_default_fp32','scope','limitations'])
     complete_zero=evidence('ZERO_c214_full_strict_prediction_parity_v1.json',['status','full_strict_suite','scope'])
+    post_cache_off=evidence('OFF_post_cache_trace_strict_v1_parity.json',['status','full_strict_suite','scope','rows'])
+    post_cache_zero=evidence('ZERO_post_cache_trace_strict_v1_parity.json',['status','full_strict_suite','scope','rows'])
     constant_prefix=evidence('cache_gate_and_constant_prefix_audit_v1.json',['status','groups','constant_evidence_exact_dense_identity_prefix','equal_actual_vggt_calls','equal_feature_validity_and_observations','interpretation','limitations'])
     constant_native=evidence('constant_native_head_scene1_accuracy_v1.json',['status','baseline','rows','speed_scope'])
     link_name='causal_dense_full_dev_anchor_output_links_v1.json' if (ROOT/'results/causal_dense_full_dev_anchor_output_links_v1.json').exists() else 'causal_dense_first3_scenes_anchor_output_links_v1.json'
@@ -148,6 +150,7 @@ def main():
         cached_three_backbone_controls=cached_controls,recorded_suite_settings=settings_audit,original_matrix_complete_off=complete_off,
         sparse_failure_trace=sparse_trace,identity_anchor_diagnostic=anchor_diagnostic,vggt_resident_parameter_structure=resident_structure,
         original_matrix_complete_zero=complete_zero,encoder_matched_constant_prefix=constant_prefix,constant_native_head_control=constant_native,
+        post_cache_source_complete_off=post_cache_off,post_cache_source_complete_zero=post_cache_zero,
         recent_other_camera_output_link_diagnostic=linear_links,
         headfree_native_prior_prefix=headfree_prefix,motion_fixed_realized_budget_audit=motion_budget,
         headfree_native_prior_complete_scene=headfree_scene,
@@ -188,7 +191,12 @@ def main():
             lines[6:6]=[f"Complete cached-feature scene1 run: {row['actual_encoder_calls']} actual VGGT calls, exact baseline identities and unchanged metrics; no retained dense identity gain. Measured {row['camera_image_fps']:.4f} images/s and P95 {row['input_to_identity_p95']*1000:.2f}ms are one descriptive full-pipeline run, not stable speed superiority."+controls_note+trace_note,'']
     if complete_off and complete_off['status']=='PASS':
         zero_note=' Both OFF and zero-weight complete strict5 controls pass.' if complete_zero and complete_zero['status']=='PASS' else ' Complete zero-weight control remains pending.'
-        lines[6:6]=['Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order.'+zero_note+' Current post-cache/diagnostic-source complete OFF/zero regressions remain queued; earlier-source proof is not promoted to later-source completion.','']
+        later_note=' Post-cache/diagnostic-source complete OFF/zero regressions remain pending.'
+        if post_cache_off and post_cache_off['status']=='PASS':
+            sources=sorted({row['source_commits'][1][:8] for row in post_cache_off['rows']})
+            later_note=' Later post-cache source '+','.join(sources)+' also passes complete strict5 OFF raw equality.'
+            later_note+=(' Its zero-weight full regression also passes.' if post_cache_zero and post_cache_zero['status']=='PASS' else ' Its zero-weight full regression remains running/pending.')
+        lines[6:6]=['Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order.'+zero_note+later_note+' Proof is limited to the explicitly recorded source versions.','']
     if constant_native and constant_native['status']=='PASS':
         row=constant_native['rows'][0]
         lines[6:6]=[f"Complete scene1 native-head constant-score control improves paired CVIDF1 {row['metric_delta']['CVIDF1']:+.6f} percentage points with IDSW {row['metric_delta']['IDSW']:+d}, exceeding current learned VGGT scene1 identity metrics. It retains frozen native-head encoding for eligibility but replaces learned pair evidence by fixed+1; no VGGT calls. This is a single-scene score ablation with diagnostic tracing, not a production-speed or zero-extra-parameter claim. Head-free complete strict5 is reported above; paired inference-seed controls remain pending.",'']
