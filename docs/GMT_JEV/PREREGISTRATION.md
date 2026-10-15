@@ -1,5 +1,7 @@
 # Preregistration — frozen before baseline interventions and new gradients
 
+> 结果后协议索引：以下最初协议正文保留为历史，不将未执行方案改写成已执行方案。其CE/AdamW1e-4/0.01、300后1000升级条款没有执行。本次实际新增梯度来自另行冻结的单次门控修订 LEARNED_GATE_SMOKE_PROTOCOL.md：相同24维输入和原生solver、learned risk mode、结构化assignment/threshold hinge、AdamW0.001/0.0001、固定300步，不扩大到1000。训练前的注册起点、实际源码SHA和终点checkpoint见 EXPERIMENT_REGISTRY.json 与 LEARNED_GATE_SMOKE_TRAINING.json；该索引只澄清沿革，不回写旧冻结条款。缓存检查另见 LEARNED_MLP_CACHE_PROTOCOL.md，不能用结果替换主要raw协议。
+
 2026-10-14; seed20261009; source04324354e9e9971eec6d937b961590a0cdbf13a9. Main control is full Original GMT using local frozen Stage2 checkpoint, official VISION_test configuration and its actual weight-compatible RPCE/GTA dimensions, without identity-backbone substitution or dormant GTA pruning. Any necessary loading correction is recorded before primary comparisons.
 
 Order: baseline source/checkpoint audit; short exact unmodified-vs-adapter-OFF parity; complete TRAIN16 exact prediction/state parity and matched official metrics; baseline current-state opportunities on TRAIN12/13/14 first256 frames; zero-training threshold/rule controls; only if certified rule netN01−N10>0 with no known-row capacity errors, matched MLP/Attention/CIC300 updates, upgrade all finite nonzero-gradient qualified arms to fixed cumulative1000 updates. No metric-sign/DEV/step selection.
