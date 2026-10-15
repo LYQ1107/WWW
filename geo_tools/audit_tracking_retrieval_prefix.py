@@ -1,6 +1,20 @@
 """Gate tracking-to-retrieval integration against complete standalone outputs."""
 import argparse
 from common import *
+from audit_suite_settings import geo_defaults
+
+
+def verify_tracking_options(info,reference):
+    defaults,digest=geo_defaults(reference['commit'])
+    if reference['source_hashes']['gtr/config.py']!=digest:raise ValueError('unverified historical config defaults')
+    resolved={**defaults,**reference['geo_options']}
+    # The older source predates the optional target-cache implementation.
+    # Absence there means no reuse; never default an unknown active option.
+    resolved.setdefault('REUSE_TARGET_FEATURES',False)
+    for key,value in info['tracking_options'].items():
+        if key=='CALIBRATION_PATH':continue # inactive when a learned head is loaded
+        if key not in resolved or resolved[key]!=value:raise ValueError('tracking option mismatch: '+key)
+    return digest
 
 
 def main():
@@ -31,11 +45,7 @@ def main():
             if method=='vggt_dense':
                 if info['tracking_head_checkpoint_sha256']!=ref['head_checkpoint_sha256']:
                     raise ValueError('tracking head mismatch')
-                for key,value in info['tracking_options'].items():
-                    # Scalar calibration is inactive when a learned head is
-                    # loaded; every other explicit tracking option must match.
-                    if key!='CALIBRATION_PATH' and ref['geo_options'][key]!=value:
-                        raise ValueError('tracking option mismatch: '+key)
+                verify_tracking_options(info,ref)
             for field in ('seed','checkpoint_sha256','config_sha256','annotation_sha256'):
                 if info[field]!=ref[field]:raise ValueError('unpaired tracking inputs: '+field)
             records=video_records(data,scene,info['max_frames']);ids={r['image_id'] for r in records}
