@@ -71,7 +71,23 @@ def main():
         'Recall1','Recall5','Recall10','MRR','query_p50','query_p95','camera_image_fps','round_p50','round_p95','vggt_calls','tracking_vggt_calls','retrieval_vggt_calls','dinov2_calls',
         'peak_index_payload_bytes','peak_host_rss_bytes','peak_gpu_bytes','source','sha256']
     write_csv(ROOT/'results/retrieval_results.csv',retrieval_rows,retrieval_fields)
-    metrics=['method','video_id','full_video','causal_online','raw_gt_diagnostic','HOTA','DetA','AssA','IDF1','CVIDF1','CVMA','CVMA_sequential','MOTA','IDSW','source','sha256']
+    relation_path=ROOT/'results/identity_relations_matrix_v2.json'
+    if relation_path.exists():
+        relation_report=json.loads(relation_path.read_text())
+        for path,digest in relation_report['source_artifacts'].items():
+            if sha256(path)!=digest:raise ValueError('identity relation source changed; refresh audit: '+path)
+        by_suite={row['suite']:row for row in relation_report['rows']}
+        for row in metric_rows:
+            relation=by_suite.get(row['method']) if row['video_id']=='ALL_STRICT' else None
+            if relation:
+                if bool(row['causal_online'])!=(relation['protocol']=='causal'):raise ValueError('relation/metric protocol mismatch')
+                if row['CVIDF1']!=relation['CVIDF1'] or row['IDSW']!=relation['IDSW']:raise ValueError('relation/metric result mismatch')
+                row.update(output_pair_scope='common GT-matched all-time pairs within scenes; not Hungarian decisions',
+                    cross_camera_output_pair_fixes=relation['cross_camera_baseline_wrong_method_correct'],
+                    cross_camera_output_pair_harms=relation['cross_camera_baseline_correct_method_wrong'],
+                    output_pair_matched_detections=relation['matched_detections'])
+    metrics=['method','video_id','full_video','causal_online','raw_gt_diagnostic','HOTA','DetA','AssA','IDF1','CVIDF1','CVMA','CVMA_sequential','MOTA','IDSW',
+             'output_pair_scope','cross_camera_output_pair_fixes','cross_camera_output_pair_harms','output_pair_matched_detections','source','sha256']
     runtime=['method','video_id','full_video','causal_online','speed_eligible','camera_image_fps','synchronized_group_fps','total_seconds','inference_seconds','read_preprocess_seconds','peak_gpu_bytes','geo_calls','geo_seconds','detection_p50','detection_p95','end_to_end_p50','end_to_end_p95','latency_note','source']
     write_csv(ROOT/'results/ablation_results.csv',metric_rows,metrics);write_csv(ROOT/'results/runtime_results.csv',runtime_rows,runtime)
     save_json(ROOT/'results/experiment_manifest.json',dict(status='IN_PROGRESS',experiments=experiments,raw_gt_policy='unchanged, diagnostic and strict protocols separate',split=json.loads((ROOT/'manifests/geo_split_v1.json').read_text())))
@@ -123,6 +139,9 @@ def main():
     camera_full_control=evidence('camera_index_corrected_full_strict_audit_v2.json',['status','full_strict_suite','rows','scope','limitations'])
     camera_live_hook=evidence('live_camera_index_hook_probe_v1.json',['status','scope','observations'])
     whole_camera_order=evidence('live_whole_gmt_camera_order_v1.json',['status','full_video','max_frames','scope','limitations','rows'])
+    native_seed_stability=evidence('native_prior_inference_seed_stability_v1.json',['status','completed_inference_seeds','pending_inference_seeds','paired_cvidf1_delta_range','scope','limitations'])
+    relation_matrix=evidence('identity_relations_matrix_v2.json',['status','pending','scope','limitations'])
+    dense_geometry_attribution=evidence('causal_dense_geometry_full_strict_attribution_v1.json',['status','full_strict_suite','scope','conclusion','limitations','rows'])
     dense_retrieval_gate=evidence('vggt_tracking_retrieval_prefix_gate_v2.json',['status','full_video','full_strict_suite','scope','limitations'])
     order_parity=evidence('complete_causal_vggt_view_order_audit_v2.json',['status','scope','limitations','rows'])
     dense_verified=bool(dense and dense_pairs and dense_budget and dense['status']=='PASS' and dense_pairs['status']=='PASS' and dense_pairs['full_strict_suite'] and all(row['added_detections']==0 and row['removed_detections']==0 for row in dense_pairs['rows']))
@@ -168,6 +187,8 @@ def main():
         native_prior_complete_multistream_retrieval_tracking_parity=prior_multistream_parity,
         corrected_camera_complete_strict_control=camera_full_control,
         actual_camera_index_mlp_hook=camera_live_hook,whole_gmt_camera_order_diagnostic=whole_camera_order,
+        native_prior_paired_inference_seed_stability=native_seed_stability,complete_ablation_output_relations=relation_matrix,
+        complete_primary_dense_geometry_attribution=dense_geometry_attribution,
         dense_tracking_to_retrieval_prefix_gate=dense_retrieval_gate,
         complete_encoder_input_order_control=order_parity,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
@@ -251,6 +272,13 @@ def main():
         lines[6:6]=[f"Corrected frozen GMT camera-index control completes all strict5 with identical aggregate metrics. Four scenes have exact predictions; scene18 changes {changed} track-ID rows with unchanged detector rows, so full prediction parity is not established."+live_note+' Whole-GMT input-order diagnostics are reported separately.','']
     if whole_camera_order:
         lines[6:6]=['Actual whole-GMT scene1 forty-group reversal changes identity partitions for both OFF and dense B7, even after physical camera IDs/output positions are restored and global ID renaming is allowed. Both canonical variants exactly match their standalone prefixes; detector membership is unchanged; B7 computes80 VGGT calls per variant, with0 valid geometry calls/failures. Thus internal sequential tracker order invariance is contradicted at this scope. An explicit physical-ID canonical input adapter is separately unit-tested and queued for real reverse/alternate caller-order validation; no internal tracker or baseline change is hidden.','']
+    if native_seed_stability:
+        number=len(native_seed_stability['completed_inference_seeds']);limits=native_seed_stability['paired_cvidf1_delta_range']
+        lines[6:6]=[f"Head-free fixed-prior paired inference-RNG trials: {number}/3 complete strict5 pairs audited with identical detector membership. Paired CVIDF1 changes range {limits[0]:+.6f} to {limits[1]:+.6f} percentage points. These use fixed weights and vary actual inference RNG, independently of the VGGT TRAIN-head-seed experiment; pending trials are {native_seed_stability['pending_inference_seeds']}. No VGGT attribution, confidence interval or speed advantage follows.",'']
+    if relation_matrix:
+        lines[6:6]=['Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.','']
+    if dense_geometry_attribution and dense_geometry_attribution['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
+        lines[6:6]=['Complete primary-head dense B5/B7 geometry attribution is now audited over all strict5: every serialized feature-only prediction exactly equals joint B7, with matched encoder calls and all other effective GEO options verified from their captured source defaults (calibration content checked, inactive default-off cache normalized). Joint geometry passes its numerical/background gate3 times, all in scene1; none changes the final outputs. This extends the earlier scene1 result to the complete primary-head suite; remaining head seeds and valid-pose accuracy are separate.','']
     for row in metric_rows:
         lines.append(f"| {row['method']} | {row['video_id']} | {'causal' if row['causal_online'] else 'offline'} | {'complete' if row['full_video'] else 'prefix'} | {'no: raw diagnostic' if row['raw_gt_diagnostic'] else 'yes'} | {row['HOTA']:.4f} | {row['AssA']:.4f} | {row['IDF1']:.4f} | {row['CVIDF1']:.4f} | {row['IDSW']} |")
     lines+=['','Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):','',

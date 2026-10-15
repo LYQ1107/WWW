@@ -40,6 +40,15 @@ def main():
         native_full=json.loads(native_full_path.read_text())
         if native_full['status']=='PASS':
             constant_note+=f" 无额外head固定先验完整strict5已完成：CVIDF1={native_full['metrics']['CVIDF1']:.6f}、IDSW={native_full['metrics']['IDSW']}，优于当前主种子denseVGGT完整DEV结果；全五场景检测key集合一致。配对推理种子未完成，不能归因于VGGT或声称稳定速度优势。"
+    seed_path=ROOT/'results/native_prior_inference_seed_stability_v1.json'
+    if seed_path.exists():
+        seeds=json.loads(seed_path.read_text());number=len(seeds['completed_inference_seeds']);limits=seeds['paired_cvidf1_delta_range']
+        constant_note=constant_note.replace('配对推理种子未完成',f'配对推理种子已核验{number}/3组')
+        constant_note+=f" 实际推理RNG种子配对的CVIDF1增量范围{limits[0]:+.6f}至{limits[1]:+.6f}个百分点；这是冻结同一模型的推理随机性，与三个独立训练head种子不同。未知/破坏关系保留，不能用净增益替代完整纠错与损害统计。"
+    geometry_note='dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。'
+    geometry_path=ROOT/'results/causal_dense_geometry_full_strict_attribution_v1.json'
+    if geometry_path.exists() and json.loads(geometry_path.read_text())['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
+        geometry_note='主种子dense特征单独启用B5与联合B7在完整strict5的每条预测均完全一致；所有共同有效配置、head和编码调用次数已核验。联合几何共3次通过数值/背景门槛，均在scene1，但没有独立输出贡献。其余head种子仍在运行；该结果不证明所有几何无用或GT位姿准确。'
     cached_path=ROOT/'results/target_cache_three_backbone_scene1_controls_v1.json'
     if cached_path.exists() and json.loads(cached_path.read_text())['all_exact_baseline_predictions']:
         cached_note=' 新增有界目标特征复用的VGGT/DINO/GMT完整scene1对照均与baseline逐条一致，未保留dense收益；三个骨干相同40个观测更新时间，但实际VGGT80/DINO40/GMT0次编码，不能称同等计算。'
@@ -71,7 +80,7 @@ def main():
         later_regression='后续a9f7d1ec源码完整strict5 OFF逐条等价也已通过。'
         later_regression+=('同版本零系数完整回归也通过。' if zero_path.exists() and json.loads(zero_path.read_text())['status']=='PASS' else '同版本零系数完整回归仍在运行，尚未通过；不将旧版证据外推为当前全部源码验证。')
     questions=[
-    ('为什么 RPCE 之外需要动态几何？','尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。'+camera_note),
+    ('为什么 RPCE 之外需要动态几何？','尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。'+geometry_note+camera_note),
     ('为什么不直接使用 DINOv2/ReID？',f'必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1={pct(baseline)}，高于当前 VGGT 中间层。独立DINO普通融合的离线稀疏/逐帧完整严格开发对照和匹配容量学习头离线k10对照已完成；主种子因果dense匹配容量GMT/DINO完整strict5均已完成；DINO数值上高于当前VGGT联合版本，见对应完整suite指标。scene1的DINO匹配VGGT CVIDF1且少1次IDSW。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。'+constant_note),
     ('VGGT 多层是否提供独立身份信息？',f'未证明稳定或VGGT独有增益。第17层 ROI 的256维与原始维度 Recall@1 分别为 {pct(g17)}、{pct(n17)}。另在45个固定TRAIN查询中，原维度VGGT修正1个GMT ReID/提案错误，但破坏20个原正确ReID查询；同一修正也可由独立DINO完成。有限互补允许小头原型验证，不能宣称几何身份信息独占。'),
     ('为什么不简单拼接所有输出？','简单四层平均相似度等价于等权拼接归一化目标向量；B3完整严格开发输出与B0完全一致。B4标量weight2完整对照略低于B0。原始离线稀疏k10主种子GCIR未建立收益；因果dense有初步收益但固定先验更强。小头保留32维/两顺序64维目标表示，减少新增向量体积，但原GMT记忆和完整系统成本须分别测量。'),
@@ -83,7 +92,7 @@ def main():
     ('相较 StreamVGGT/FastVGGT 的价值？','不能直接移用长序列加速倍率或流式权重。源码接口和许可证已审计；真实三组TRAIN双视角微基准v2已执行：original36调用通过，Fast在V100的BF16输出进入相机head LayerNorm时失败；NO_VALID_SPEED_COMPARISON，不能把进程退出0当成方法成功。相机输入FP32的v3通过但Fast保留BF16、仍较慢；另在独立源码中仅替换10个dtype常量的完全FP16路径v4也通过各36调用，三组original/Fast比为.465760/.469999/.471315，当前短双视角V100实现仍慢约2.12–2.15倍，且特征改变，因此不接入当前跟踪。未改合并比例/算法或训练权重，不外推长序列/A100/完整系统。'),
     ('完整 FPS/延迟/显存/参数量？','因果B0 scene18完整实测6.64图像/s；优化异步相机路径5.40图像/s且预测完全相同，0有效几何。实际硬件为V100，不能称A100结果。静态GMT模型初始化排除，新增模型冷启动及worker启动/关闭算入总成本。实际CPU结构/411键严格加载核对GMT注册参数53,515,309，三个匹配头309,319/309,849/310,402。resource_ledger_v1分别记录CUDA allocator、主存RSS、最终原GMT历史和缓存/索引载荷；未测字段为null，不相加非同时峰值。原GMT历史仍不受索引容量上限限制。不以一次计时宣称稳定加速。'),
     ('提升是否来自不同检测/配置/评测 bug？',signal_text+f' 固定checkpoint/config与映射修复。完整离线五段严格基线HOTA={suite["metrics"]["HOTA"]:.4f}、CVIDF1={suite["metrics"]["CVIDF1"]:.4f}，不能拿离线数值替代因果对照。原矩阵c214源码完整五场景OFF与零系数逐条预测等价均通过；'+later_regression+camera_note),
-    ('三个模块能否分别证明有效？','尚未证明。'+signal_text+constant_note+' 当前稳定科学成功/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。'),
+    ('三个模块能否分别证明有效？','尚未证明。'+signal_text+constant_note+geometry_note+' 当前稳定科学成功/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。'),
     ('为什么符合 WWW？','仍有实质适配风险。官方CFP要求明确Web科学问题，仅用数据集或API不充分。'+retrieval_evidence+' 本地数据集回放不等于互联网来源、真实用户查询或Web部署；见WWW_SCOPE_NOTE.md。'),
     ('在线视频关联检索的真实贡献？',retrieval_evidence+' 条件Recall@K、完整MRR、检测覆盖、可检索比例、全部请求成功率和本地查询延迟分别报告。完整读帧/检测/GTA/新增特征/索引/查询成本另计；流数量与关键帧预算对照及实质Web系统贡献仍需完成。')]
     lines=['# Reviewer questions — current evidence','', 'This file is generated from current artifacts; pending items are not claims of completion.','']
