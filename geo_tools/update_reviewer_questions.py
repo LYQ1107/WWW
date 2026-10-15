@@ -58,6 +58,12 @@ def main():
         full_camera=json.loads(full_camera_path.read_text())
         changed=sum(row['changed_track_id_rows'] or 0 for row in full_camera['rows'])
         camera_note=f' 正确相机索引对照已完成strict5：四场景逐条预测完全一致，scene18有{changed}条track ID变化，检测行不变，全部汇总指标不变。不能称完整输出等价。完整GT匹配身份关系审计修正/破坏均为0，但该条件结果不抹去原始ID变化；锁定生产基线保留。实际MLP输入与整个GMT相机换序的短序列探针独立排队。'
+    hook_path=ROOT/'results/live_camera_index_hook_probe_v1.json'
+    if hook_path.exists() and json.loads(hook_path.read_text())['status']=='PASS':
+        camera_note=camera_note.replace('实际MLP输入与整个GMT相机换序的短序列探针独立排队。','真实checkpoint/图像前四组的8次MLP输入探针已通过：相机列0/0变为0/.5，其他十列逐项不变，第二路MLP输出确实改变。整个GMT换序另行诊断，不能用编码器换序代替。')
+    whole_order_path=ROOT/'results/live_whole_gmt_camera_order_v1.json'
+    if whole_order_path.exists():
+        camera_note+=' 整个GMT实际scene1前40组换序检查发现OFF与B7均有身份划分变化，恢复物理ID并允许全局重编号后仍不同；不能宣称内部处理顺序无关。规范顺序逐条复现独立参考，检测集合相同，B7每版本80次VGGT调用、几何通过0。物理相机ID输入适配器会固定内部顺序并恢复调用方输出位置，CPU测试通过、实际反序/交替顺序验证待完成；既有负例保留。'
     later_regression='缓存/诊断后的源码完整OFF/零系数回归已排队，按实际版本分别报告。'
     off_path=ROOT/'results/OFF_post_cache_trace_strict_v1_parity.json'
     zero_path=ROOT/'results/ZERO_post_cache_trace_strict_v1_parity.json'

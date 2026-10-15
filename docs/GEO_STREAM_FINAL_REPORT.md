@@ -4,7 +4,9 @@ SCIENTIFIC_SUCCESS: PRELIMINARY_PAIRED_FULL_DEV_GAIN_NOT_STABLE. ENGINEERING_COM
 
 Tables below are read from actual evaluation files. Raw-GT diagnostic rows cannot substitute for strict evaluation. All input frames are retained. Original GMT full-video postprocessing is offline; no real-time identity latency claimed. For synchronized two-camera tracking, per-camera delivered stream FPS equals group FPS; aggregate camera-image throughput is twice that value.
 
-Corrected frozen GMT camera-index control completes all strict5 with identical aggregate metrics. Four scenes have exact predictions; scene18 changes 5 track-ID rows with unchanged detector rows, so full prediction parity is not established. Its live spatial-MLP hook and whole-GMT input-order diagnostics are separate bounded checks.
+Actual whole-GMT scene1 forty-group reversal changes identity partitions for both OFF and dense B7, even after physical camera IDs/output positions are restored and global ID renaming is allowed. Both canonical variants exactly match their standalone prefixes; detector membership is unchanged; B7 computes80 VGGT calls per variant, with0 valid geometry calls/failures. Thus internal sequential tracker order invariance is contradicted at this scope. An explicit physical-ID canonical input adapter is separately unit-tested and queued for real reverse/alternate caller-order validation; no internal tracker or baseline change is hidden.
+
+Corrected frozen GMT camera-index control completes all strict5 with identical aggregate metrics. Four scenes have exact predictions; scene18 changes 5 track-ID rows with unchanged detector rows, so full prediction parity is not established. The actual checkpoint/image hook probe passes all8 first-four-group calls: camera scalars0/0 become0/.5, other10 columns remain exact, and the second-camera frozen MLP output changes. This verifies the declared inference path at that bounded scope. Whole-GMT input-order diagnostics are reported separately.
 
 Complete fixed-prior four/ten-camera producers now preserve every standalone prior tracking output in their respective scenes; the ten-camera run covers all strict5. Fixed scene18 query/detection cohorts are checked separately in WWW_SCOPE_NOTE.md. Full-suite status on the joint parity report is false because the four-camera run intentionally contains only two scenes; no missing ten-camera scenes are implied. Dense VGGT full producers remain queued.
 
@@ -128,6 +130,7 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | causal_B0_seed20261015_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.4831 | 81.0658 | 94.0707 | 94.0707 | 84 |
 | causal_B5_dense_seed20261014_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9721 | 80.9832 | 98.9221 | 98.9221 | 27 |
 | causal_B5_dense_seed20261014_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.3236 | 79.2786 | 92.0648 | 92.0648 | 18 |
+| causal_B5_dense_seed20261014_strict_suite_v1_v18 | 18 | causal | complete | yes | 78.7820 | 81.0483 | 95.9526 | 95.9526 | 27 |
 | causal_B5_dense_seed20261016_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.1376 | 84.4050 | 93.3871 | 93.3871 | 225 |
 | causal_B7_fixed_k10_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k10_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
@@ -187,6 +190,7 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | native_prior_seed20261015_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9971 | 81.0353 | 98.9650 | 98.9650 | 19 |
 | native_prior_seed20261015_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.3347 | 79.2997 | 92.0714 | 92.0714 | 19 |
 | native_prior_seed20261015_strict_suite_v1_v18 | 18 | causal | complete | yes | 78.7767 | 81.0416 | 95.9865 | 95.9865 | 20 |
+| native_prior_seed20261015_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.3440 | 80.7807 | 93.9835 | 93.9835 | 93 |
 | online_B0_full_v10_source44_v1 | 10 | causal | complete | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
 | online_B0_full_v11_source44_v1 | 11 | causal | complete | yes | 83.2983 | 79.2306 | 92.0119 | 92.0119 | 34 |
 | online_B0_full_v18 | 18 | causal | complete | yes | 78.7789 | 81.0427 | 95.9441 | 95.9441 | 29 |
