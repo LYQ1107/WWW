@@ -1,6 +1,6 @@
 # Conditional student status
 
-Status: NOT_EXECUTED_RELATION_GATE_NOT_PASSED_YET. Remaining DINO track-QD and
+Status: NOT_EXECUTED_RELATION_GATE_NOT_PASSED_YET. Remaining DINO
 temporal controls are still required before the final gate disposition.
 
 No TrackVGGT student has been trained or deployed. There is no student

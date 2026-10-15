@@ -121,3 +121,30 @@ versus VGGT global=.24. Both share the same one known native-ranking fix
 poor absolute ranking performance, not a validated VGGT benefit. The QD audit
 now contains6 completed cases and1 pending DINO track-QD case; the matched
 DINO temporal control is still pending. No missing result is imputed.
+
+Retained-endpoint diagnostics have advanced to51 completed/1 pending checkpoint
+by reusing the original saved artifacts and evaluating only newly finished cases.
+DINO global-QD fit R1=.7124 versus validation.19 and VGGT concat fit=.6824 versus
+validation.23. The remaining endpoint is DINO track-QD1000. This adds no training,
+model selection, second seed or reconstructed intermediate curve.
+
+All seven QD full1000 settings are now complete. DINO global/track give
+R1=.19/.31 (shuffle.42/.31), versus VGGT global/track .24/.25
+(shuffle.36/.39) and native .66. DINO track has1 known native-ranking fix
+and2 harms; VGGT track has1 fix and6 harms. Their corresponding track-QD
+fix keys differ: VGGT [12,30266,7], DINO [12,29963,6]. Thus the VGGT fix is
+not reproduced by that particular matched track-QD control; it is reproduced
+by DINO global-QD and the independently matched V3 DINO AG-C. We do not claim
+zero distinct fixes against every individual DINO configuration. This does
+not establish a beneficial VGGT teacher: absolute ranks and harm counts favor
+DINO track, ROI/native remain much stronger, and actual original primary errors
+are absent in the fixed300. DINO track layer weights respond to history shuffle
+(candidate-aligned L1=.657034807) while its R1 stays.31. Source/native input,
+validation label/order and all control artifacts pass the completed QD audit.
+DINO lambda0/.1 temporal continuations have started automatically from this
+fixed no-cycle DINO track checkpoint.
+
+The retained hard-inference fit-endpoint audit is now COMPLETE: all52 registered
+no-cycle150/1000 checkpoints, no pending case. DINO track fit R1=.7167 versus
+validation.31. The ordinary teacher table contains52 no-cycle endpoints plus
+the two completed VGGT temporal endpoints; DINO temporal endpoints remain running.

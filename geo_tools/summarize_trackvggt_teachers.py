@@ -82,11 +82,24 @@ def main():
             'trackvggt_dev12_native_release_v1.json','trackvggt_ag_v2_v3_primary_results_v1.json',
             'trackvggt_crop_primary_results_v1.json','trackvggt_qd_primary_results_v1.json',
             'trackvggt_cycle_vggt_paired_v1.json','trackvggt_cycle_dinov2_paired_v1.json',
-            'trackvggt_system_execution_snapshot_v1.json','identity_correction_audit.json']
+            'trackvggt_system_execution_snapshot_v1.json','identity_correction_audit.json',
+            'trackvggt_fit_endpoint_diagnostics_v1.json','trackvggt_queue_stage_costs_v1.json',
+            'trackvggt_inherited_native_reference_v1.json']
             if (path:=ROOT/'results'/name).exists()},
         student_status='NOT_EXECUTED_CONDITIONAL_RELATION_GATE_NOT_PASSED',
         overall_goal_complete=False,scientific_success=False)
     save_json(index_path,index)
+    student_rows=[dict(variant=variant,planned_training_seed=seed,status='CONDITIONAL_NOT_EXECUTED_RELATION_GATE_NOT_PASSED',
+        actual_trained_seed='',checkpoint_sha256='',HOTA='',CVIDF1='',IDSW='',complete_process_FPS='',
+        reason='No valid independent teacher/student admission. Remaining teacher hypotheses must finish before final gate disposition; planned seeds are not trained seeds.')
+        for variant in ['GT_only','KD_only','GT_plus_KD','DINO_KD','GMT_teacher'] for seed in [20261015,20261016,20261017]]
+    student_path=ROOT/'results/student_ablation.csv'
+    if student_path.exists():
+        with student_path.open(newline='') as stream:
+            if any(r.get('checkpoint_sha256') or r.get('actual_trained_seed') for r in csv.DictReader(stream)):
+                raise ValueError('actual student results need their own reporter; do not replace them with conditional rows')
+    with student_path.open('w',newline='') as stream:
+        writer=csv.DictWriter(stream,list(student_rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(student_rows)
     print(json.dumps(dict(status=snapshot['status'],completed_reports=len(rows),csv_sha256=sha256(target))))
 
 

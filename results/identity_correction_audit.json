@@ -4444,6 +4444,247 @@
       "actual_learned_solver_or_final_identity_repairs": null
     },
     {
+      "tag": "qd_dinov2_track_k24_seed20261015_v3_1000_v1",
+      "completed_updates": 1000,
+      "backbone": "dinov2",
+      "training_phase": "no_cycle_fit",
+      "feature_variant": "full",
+      "ranking_changes_vs_native": {
+        "known_ranking_fixes": 1,
+        "known_ranking_harms": 2,
+        "native_correct_to_uncertified": 41,
+        "fix_keys": [
+          [
+            12,
+            29963,
+            6
+          ]
+        ],
+        "harm_keys": [
+          [
+            12,
+            29974,
+            5
+          ],
+          [
+            12,
+            29979,
+            5
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30257,
+            4
+          ],
+          [
+            12,
+            29962,
+            6
+          ],
+          [
+            12,
+            29979,
+            4
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            29971,
+            8
+          ],
+          [
+            12,
+            30115,
+            1
+          ],
+          [
+            12,
+            29981,
+            7
+          ],
+          [
+            12,
+            29974,
+            6
+          ],
+          [
+            12,
+            29969,
+            7
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            29980,
+            7
+          ],
+          [
+            12,
+            30266,
+            3
+          ],
+          [
+            12,
+            29978,
+            4
+          ],
+          [
+            12,
+            30260,
+            5
+          ],
+          [
+            12,
+            30261,
+            5
+          ],
+          [
+            12,
+            29985,
+            7
+          ],
+          [
+            12,
+            30264,
+            3
+          ],
+          [
+            12,
+            29983,
+            5
+          ],
+          [
+            12,
+            30262,
+            5
+          ],
+          [
+            12,
+            30263,
+            5
+          ],
+          [
+            12,
+            30259,
+            5
+          ],
+          [
+            12,
+            30258,
+            4
+          ],
+          [
+            12,
+            30116,
+            1
+          ],
+          [
+            12,
+            29977,
+            4
+          ],
+          [
+            12,
+            29956,
+            5
+          ],
+          [
+            12,
+            30267,
+            3
+          ],
+          [
+            12,
+            30265,
+            3
+          ],
+          [
+            12,
+            29982,
+            7
+          ],
+          [
+            12,
+            29984,
+            7
+          ],
+          [
+            12,
+            30268,
+            3
+          ],
+          [
+            12,
+            30269,
+            2
+          ],
+          [
+            12,
+            30270,
+            2
+          ],
+          [
+            12,
+            30271,
+            2
+          ],
+          [
+            12,
+            29964,
+            9
+          ],
+          [
+            12,
+            29976,
+            5
+          ],
+          [
+            12,
+            30272,
+            3
+          ],
+          [
+            12,
+            29966,
+            6
+          ],
+          [
+            12,
+            28932,
+            7
+          ],
+          [
+            12,
+            30228,
+            4
+          ],
+          [
+            12,
+            30118,
+            2
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "validation_sha256": "6818f28e9b269331209d5352a62bf44e33b7a76e4168e3ac1745bd803f0ace58",
+      "actual_learned_solver_or_final_identity_repairs": null
+    },
+    {
       "tag": "qd_vggt_concat_k24_seed20261015_v3_1000_v1",
       "completed_updates": 1000,
       "backbone": "vggt",
@@ -5684,12 +5925,12 @@
   "interpretation": "Per-query rank changes on fixed actual native candidates. Unknown/ambiguous transitions remain uncertified. The original300 cohort has native row-ranking errors but zero certified actual primary errors. Do not turn these ranking fixes into Hungarian/Bank/final-ID repairs or sum overlapping fixes across teachers.",
   "DEV12_engineering_release": "Separate complete14557-query asset covers26 actual native errors; neither its expanded inputs nor its labels are used here for model selection, fitting or a new VGGT repair claim.",
   "provenance": {
-    "process_started_utc": "2026-10-15T18:13:18.451767+00:00",
-    "report_generated_utc": "2026-10-15T18:13:23.642470+00:00",
-    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/teacher_snapshot_active_manifest_v1.log",
+    "process_started_utc": "2026-10-15T18:22:12.055944+00:00",
+    "report_generated_utc": "2026-10-15T18:22:17.200866+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/teacher_snapshot_qd_complete_v6_student_disposition.log",
     "source_worktree": "/data1/liuyeqiang/WWW_trackvggt_20261015",
-    "commit": "4e48edac0bfa2e31487de70f185dc5353ea53c78",
-    "report_generation_commit": "4e48edac0bfa2e31487de70f185dc5353ea53c78",
+    "commit": "a8b09a6963cd8edf3fee66cd0f53558c43876c8f",
+    "report_generation_commit": "a8b09a6963cd8edf3fee66cd0f53558c43876c8f",
     "command": [
       "geo_tools/summarize_trackvggt_teachers.py"
     ],
@@ -5735,6 +5976,7 @@
       "geo_tools/run_constant_head_control.py": "9c8bc80e1e245c1559a845d643388bb1110b7cf0f5f86f46acb192493a1fa705",
       "geo_tools/evaluate_teacher_pairs.py": "92b4b1f09cf2858ea0d5d7239d0b3b414a660959d6dba1c755a7ddb764625a1a",
       "geo_tools/test_trackvggt_relation_contracts.py": "853d04e6d10868883e3aba5d23e16a6a3ae501fecec8ae914fc8c329c6ad558c",
+      "geo_tools/summarize_trackvggt_queue_costs.py": "518d7fca4eb2f9efba488a58eefc3921ed01dca3592a6c78657ded6b897985a9",
       "geo_tools/audit_current_default_source.py": "3c1bc82344b5875059794cc8dbed8f4106bee778fd469355dddee0b9ebc0afc5",
       "geo_tools/collect_hard_events.py": "0a403f11136ad4290914854a4990beff4902fb72362283772d2c64471fa41ac6",
       "geo_tools/seal_trackvggt_full_audit.py": "1965de42970950c3186914fda0212d1aa49b3bc1008ec54ba0f96174c2ae176f",
@@ -5801,7 +6043,7 @@
       "geo_tools/test_target_cache_prefix_audit.py": "d2cd9c6a65730c40e9d98c4f63c7afdbbaa6a0e3c151e79bdc458ad1c347e86f",
       "geo_tools/monitor_project_resources.py": "91e447b9154096d6845ce4ee4013503f6ab1d3bd0b7219129c07e6c88546a6f6",
       "geo_tools/probe_trackvggt_backward.py": "58770df3460fe7258439c9a98ee8cf9826fe6e0b0c704db671eb605ed11e59e1",
-      "geo_tools/summarize_trackvggt_teachers.py": "6d7faca22a6ee88e40166ebafa7bf465ae5ba2d167530d407f31c1a7a0d200f2",
+      "geo_tools/summarize_trackvggt_teachers.py": "3ef7202cac3c655f7dcec9c3765094a21c794c768af8fb00efff1540b4cd131a",
       "geo_tools/test_resource_samples.py": "ea502b2c7e2575fa9742786334f978f2e07e30a079b8bde294c40f66d65f163a",
       "geo_tools/test_research_queue.py": "f11de3eca1f893c15934a691b58bb2cc1b19971765117660440a736def8cda82",
       "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
@@ -5965,7 +6207,7 @@
       "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
     },
     "source_tree_dirty": true,
-    "source_diff_sha256": "240eb54e7ef2f448aa40aeaff97fbb084d577612e6687703574afa63f0952052",
+    "source_diff_sha256": "8437f24c74f615609e408a2cf1c2e46bf11744c88a977f8603def672fabffcf1",
     "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
     "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",

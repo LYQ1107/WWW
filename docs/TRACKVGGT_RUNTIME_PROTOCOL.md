@@ -52,3 +52,12 @@ explicitly inherited baseline references, not new TrackVGGT teacher/student or
 new timing experiments. Fresh replays and conditional student deployment remain
 separate evidence. No deployed student or online VGGT-teacher FPS is manufactured
 when there is no validated relation/student checkpoint.
+
+The separate trackvggt_queue_stage_costs_v1 CSV/JSON records actual completed
+queue producer wall time, including failed executed stages if any. Explicit
+CPU-only evaluators/waits are excluded from GPU wall time, and running stages
+remain pending. This is assigned-GPU process wall including startup, validation,
+hashing and export, not active kernel time or a total-project ledger. Manual
+probes, initial selected capture, CPU diagnostics, inherited work and the separate
+DEV12 release ledger are disclosed exclusions. Passive monitor extrema and
+overlapping observation windows are never summed as extra experiment runs.

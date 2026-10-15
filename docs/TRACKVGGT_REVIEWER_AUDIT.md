@@ -1,6 +1,6 @@
 # TrackVGGT evidence and remaining requirements
 
-Status: INTERIM_REVIEWER_AUDIT. DINO track-QD/temporal experiments and fresh
+Status: INTERIM_REVIEWER_AUDIT. DINO temporal experiments and fresh
 system measurements are still executing or waiting. This document does not
 declare the full research goal complete, a successful teacher, or paper readiness.
 
@@ -17,7 +17,7 @@ weight or algorithm enters the TrackVGGT models.
 | Were train data expanded legally? | V2 1000 fit -> V3 3000 fit across11 scenes; same original300 validation | Old1000 inputs and validation controls remain identical. Many targets/frames/persons are correlated; query count is not independent-person count. |
 | Does identity AG beat ROI? | V3 AG-C R1=.54 versus matched ROI=.66 and native=.66 | Gate fails at primary seed. V2 AG-A/B/C/EMA and their fit curves remain archived; V2/V3 training populations are not interchangeable capacity controls. |
 | Is AG learning active? | Finite real gradients, soft-training/hard-inference schedule, fitted endpoint diagnostics | A functioning gradient or fit R1 is not held-out identity utility. Retrospective150/1000 endpoint ranks do not reconstruct missing online Recall curves. |
-| Does track-QD beat global-QD? | VGGT .25 versus.24; matched QD-capacity nativeMLP=.67 | One extra positive rank at a single seed does not establish useful conditioning or beat native. DINO track-QD and full paired overlap remain pending. |
+| Does track-QD beat global-QD? | VGGT .25 versus.24; matched QD-capacity nativeMLP=.67 | One extra positive rank at a single seed does not establish useful conditioning or beat native. DINO track=.31 with2 known harms versus VGGT track=.25 with6 harms; full paired overlap is audited. |
 | Is query conditioning responsive? | Actual per-candidate track-layer weight L1 change=.511537671 under fixed history permutation; exact permutation alignment | Aggregate means/std are invariant under permutation of the same queries. Whole-history shuffle also changes AG/decoder; it is not an isolated See-Query intervention. Track R1 improves to.39 after shuffle, failing the useful-identity test. |
 | Does magnification help? | Matched224 full/local/combined:VGGT .32/.44/.41,DINO .37/.51/.46 | Both improve locally; DINO is higher in each condition. This is resolution evidence, without unique VGGT identity or3D-camera evidence. No result-driven336 escalation. |
 | Are crops matched? | Same256 fit/234 supervised queries, same original300 validation, identical terminal NumPy/CPU/CUDA RNG | Full zero-center samples stay as native fallback/zero learned gradient. Direct per-step crop draw keys were not logged; code/order/seed and endpoint RNG are the available schedule proof. |
@@ -48,3 +48,14 @@ The crop, QD and paired-cycle audit JSON files preserve exact known fixes, harms
 unknown transitions and checkpoint hashes. The system snapshot keeps pending
 cases explicit and separates inherited full MOT references from fresh timing.
 Large tokens/weights/matrices remain on the server; Git contains compact evidence.
+
+For the remaining novelty questions: the current teachers consume frozen visual
+tokens and attention; these experiments do not isolate a positive3D geometric
+mechanism. Crop magnification is not a new physical camera. No result establishes
+that particular layers represent viewpoint, occlusion or identity semantics.
+There is no evidence to replace the stronger lightweight Native Prior with the
+current teacher. Student superiority over ordinary GT-supervised MLP is untested
+because the relation gate has not passed. Multiple fit scenes do not substitute
+for multiple held-out evaluation scenes. Fresh local cross-camera clip retrieval
+can provide an executable multi-source systems evaluation, but native-only
+retrieval cannot establish TrackVGGT novelty or WWW paper readiness.

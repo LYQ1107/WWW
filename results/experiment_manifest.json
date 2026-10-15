@@ -36417,7 +36417,7 @@
   "inherited_experiments_scope": "Original experiments array/raw_gt_policy/split retained from the completed predecessor project; not newly executed TrackVGGT results.",
   "trackvggt": {
     "branch": "research/trackvggt-identity-query-www27-20261015",
-    "snapshot_utc": "2026-10-15T18:13:21.189965+00:00",
+    "snapshot_utc": "2026-10-15T18:22:14.703792+00:00",
     "teacher_reports": [
       {
         "tag": "ag_dinov2_C_crop224_combined_k24_seed20261015_1000_v1",
@@ -36924,6 +36924,18 @@
         "training_phase": "no_cycle_fit"
       },
       {
+        "tag": "qd_dinov2_track_k24_seed20261015_v3_1000_v1",
+        "manifest": "/data1/liuyeqiang/WWW_trackvggt_runtime/models/qd_dinov2_track_k24_seed20261015_v3_1000_v1/manifest.json",
+        "manifest_sha256": "90808a93c53423d6df8e4c6473a6f4a6493aa0ea14b74ab26c713f442e00e849",
+        "checkpoint_sha256": "84ffec36088af95c55dde87528a583362b43508d2665787c478a539ef9f2c9c3",
+        "actual_training_seed": 20261015,
+        "native_inference_seed": 20261014,
+        "raw_generic_provenance_seed": 20261015,
+        "seed_reporting_correction_required": false,
+        "completed_updates": 1000,
+        "training_phase": "no_cycle_fit"
+      },
+      {
         "tag": "qd_dinov2_track_k24_seed20261015_v3_150_v1",
         "manifest": "/data1/liuyeqiang/WWW_trackvggt_runtime/models/qd_dinov2_track_k24_seed20261015_v3_150_v1/manifest.json",
         "manifest_sha256": "ca35df323524e6753a3429f9de204465d0a8b88d3ff095eff692358a07f02778",
@@ -37106,10 +37118,10 @@
       },
       {
         "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_qd_fit_v1_gpu5/manifest.json",
-        "status": "RUNNING",
+        "status": "FINISHED",
         "pid": 23312,
-        "live_controller": true,
-        "actual_command": "/data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/run_research_queue.py --plan manifests/trackvggt_qd_fit_v1.json --queue gpu5 --gpu 5 --after-pid 19695 --after-command-match trackvggt_crop_fit_v1 ",
+        "live_controller": false,
+        "actual_command": null,
         "last_stage": {
           "id": "qd_dinov2_track_k24_seed20261015_v3_1000_v1",
           "command": [
@@ -37142,9 +37154,13 @@
             "/data1/liuyeqiang/WWW_trackvggt_runtime/models/qd_dinov2_track_k24_seed20261015_v3_150_v1/checkpoint.pt"
           ],
           "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_qd_fit_v1_gpu5_qd_dinov2_track_k24_seed20261015_v3_1000_v1.log",
-          "status": "RUNNING",
+          "status": "PASS",
           "started_utc": "2026-10-15T18:03:43.753512+00:00",
-          "pid": 26147
+          "pid": 26147,
+          "exit_code": 0,
+          "seconds": 908.2501056566834,
+          "finished_utc": "2026-10-15T18:18:52.003875+00:00",
+          "log_sha256": "0840fad8cde30313b2c2c588c19110ce4d43a738b3a7a0093f7f051d71d99feb"
         }
       },
       {
@@ -37294,7 +37310,22 @@
         "pid": 26401,
         "live_controller": true,
         "actual_command": "/data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/run_research_queue.py --plan manifests/trackvggt_cycle_fit_v1.json --queue gpu5 --gpu 5 --after-pid 23312 --after-command-match trackvggt_qd_fit_v1 ",
-        "last_stage": null
+        "last_stage": {
+          "id": "cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1",
+          "command": [
+            "geo_tools/train_trackvggt_cycle.py",
+            "--source",
+            "/data1/liuyeqiang/WWW_trackvggt_runtime/models/qd_dinov2_track_k24_seed20261015_v3_1000_v1/checkpoint.pt",
+            "--lambda-cycle",
+            "0.0",
+            "--tag",
+            "cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1"
+          ],
+          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_cycle_fit_v1_gpu5_cycle_dinov2_lambda0p0_seed20261015_v3_plus200_v1.log",
+          "status": "RUNNING",
+          "started_utc": "2026-10-15T18:18:59.086097+00:00",
+          "pid": 33853
+        }
       },
       {
         "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_cycle_fit_v1_gpu6/manifest.json",
@@ -37430,10 +37461,13 @@
       "results/trackvggt_dev12_native_release_v1.json": "74afcb603922405493cfb2ab89b02cafd2c6d7a274db96a2eb57bbf40ead8727",
       "results/trackvggt_ag_v2_v3_primary_results_v1.json": "1c9580d9a5ecc833bb25cf04a09a6ad625dc74109a2bc0aa74f902bf17e02a0c",
       "results/trackvggt_crop_primary_results_v1.json": "0415275f0a7609b6290ee046b4773c95d8da993e6427f889f868249ea3627a08",
-      "results/trackvggt_qd_primary_results_v1.json": "f0721c9bdff70454d88a1bee434555d4e2d6da9b34a919427cab0c57f88c28cf",
+      "results/trackvggt_qd_primary_results_v1.json": "bfc8ff9b01246b42ef26be82568e14968a11c44c677b46770ce5ddc940f5c476",
       "results/trackvggt_cycle_vggt_paired_v1.json": "36f4f3237583c3625301cdd2e0a6a1cb5e3151f0205fd193219b63289f142ee9",
       "results/trackvggt_system_execution_snapshot_v1.json": "f14f6ed5c9c68aec1fc8d75de7ac3880871ce6c6ae8f210da2d0a2d55cbb3cfe",
-      "results/identity_correction_audit.json": "5eac9a72e783fc9f0c6608d3dba66afd224d2979971f2d4ddeca8e014401397d"
+      "results/identity_correction_audit.json": "1f2b5d6f0b6b680cd79ca30501153f5cd534b67a4a45b81bb7a8f0859b1b7548",
+      "results/trackvggt_fit_endpoint_diagnostics_v1.json": "b2e77ad022022df8b16656290484d9e51d2411cfd999a74ae71a43cba1127452",
+      "results/trackvggt_queue_stage_costs_v1.json": "473a8fa5bee2de64dca4a592077c9e340f0729ec7fd64ebaf835ccbfbc129318",
+      "results/trackvggt_inherited_native_reference_v1.json": "fbc72343a24d02a9fe4ce4e979488767efb0a581899072ab4b34ffcece0cac0d"
     },
     "student_status": "NOT_EXECUTED_CONDITIONAL_RELATION_GATE_NOT_PASSED",
     "overall_goal_complete": false,

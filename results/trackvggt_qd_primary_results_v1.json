@@ -1,5 +1,5 @@
 {
-  "status": "PARTIAL_MATCHED_QD_PRIMARY_COMPARISON",
+  "status": "COMPLETE_MATCHED_QD_PRIMARY_COMPARISON",
   "rows": [
     {
       "tag": "qd_vggt_last_k24_seed20261015_v3_1000_v1",
@@ -3682,11 +3682,606 @@
       "queries_without_layer_weights": 171,
       "checkpoint_sha256": "ed97a53aec7ea1c9fb13a59a500d1316766a6f704c72c0ba72c3e06a86466720",
       "manifest_sha256": "84747e6baebce1a9c421ffe0cfcac61aa4de31749aaebd0da289f5d8fec88482"
+    },
+    {
+      "tag": "qd_dinov2_track_k24_seed20261015_v3_1000_v1",
+      "backbone": "dinov2",
+      "QD": "track",
+      "parameters": 2126488,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.31,
+        "Recall5": 0.88,
+        "MRR": 0.5427619047619049,
+        "matched_candidate_Recall1_excluding_null": 0.31,
+        "all_request_known_positive_success1": 0.10333333333333333,
+        "pair_auc": 0.9072250839865622,
+        "pair_ap": 0.5205198234735453,
+        "supervised_loss": 0.6851500266907262,
+        "states": {
+          "ambiguous_reference": 168,
+          "unknown_query": 82,
+          "correct_link": 31,
+          "wrong_link": 19
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": [
+          0.44596525002270937,
+          0.26943363624357786,
+          0.15260266038849082,
+          0.13199845355007683
+        ],
+        "layer_weight_std": [
+          0.3017070428420684,
+          0.12184972811098119,
+          0.1172745953556665,
+          0.11977099909364741
+        ]
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.31,
+        "Recall5": 0.8,
+        "MRR": 0.5308015873015874,
+        "matched_candidate_Recall1_excluding_null": 0.31,
+        "all_request_known_positive_success1": 0.10333333333333333,
+        "pair_auc": 0.8013169092945129,
+        "pair_ap": 0.3232444777716644,
+        "supervised_loss": 2.4495363369876264,
+        "states": {
+          "ambiguous_reference": 145,
+          "unknown_query": 82,
+          "correct_link": 31,
+          "wrong_link": 42
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": [
+          0.44596525002270937,
+          0.26943363624357786,
+          0.15260266038849082,
+          0.13199845355007683
+        ],
+        "layer_weight_std": [
+          0.30170704284206845,
+          0.12184972811098119,
+          0.11727459535566649,
+          0.11977099909364741
+        ]
+      },
+      "paired_changes_vs_native": {
+        "known_ranking_fixes": 1,
+        "known_ranking_harms": 2,
+        "native_correct_to_uncertified": 41,
+        "fix_keys": [
+          [
+            12,
+            29963,
+            6
+          ]
+        ],
+        "harm_keys": [
+          [
+            12,
+            29974,
+            5
+          ],
+          [
+            12,
+            29979,
+            5
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30257,
+            4
+          ],
+          [
+            12,
+            29962,
+            6
+          ],
+          [
+            12,
+            29979,
+            4
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            29971,
+            8
+          ],
+          [
+            12,
+            30115,
+            1
+          ],
+          [
+            12,
+            29981,
+            7
+          ],
+          [
+            12,
+            29974,
+            6
+          ],
+          [
+            12,
+            29969,
+            7
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            29980,
+            7
+          ],
+          [
+            12,
+            30266,
+            3
+          ],
+          [
+            12,
+            29978,
+            4
+          ],
+          [
+            12,
+            30260,
+            5
+          ],
+          [
+            12,
+            30261,
+            5
+          ],
+          [
+            12,
+            29985,
+            7
+          ],
+          [
+            12,
+            30264,
+            3
+          ],
+          [
+            12,
+            29983,
+            5
+          ],
+          [
+            12,
+            30262,
+            5
+          ],
+          [
+            12,
+            30263,
+            5
+          ],
+          [
+            12,
+            30259,
+            5
+          ],
+          [
+            12,
+            30258,
+            4
+          ],
+          [
+            12,
+            30116,
+            1
+          ],
+          [
+            12,
+            29977,
+            4
+          ],
+          [
+            12,
+            29956,
+            5
+          ],
+          [
+            12,
+            30267,
+            3
+          ],
+          [
+            12,
+            30265,
+            3
+          ],
+          [
+            12,
+            29982,
+            7
+          ],
+          [
+            12,
+            29984,
+            7
+          ],
+          [
+            12,
+            30268,
+            3
+          ],
+          [
+            12,
+            30269,
+            2
+          ],
+          [
+            12,
+            30270,
+            2
+          ],
+          [
+            12,
+            30271,
+            2
+          ],
+          [
+            12,
+            29964,
+            9
+          ],
+          [
+            12,
+            29976,
+            5
+          ],
+          [
+            12,
+            30272,
+            3
+          ],
+          [
+            12,
+            29966,
+            6
+          ],
+          [
+            12,
+            28932,
+            7
+          ],
+          [
+            12,
+            30228,
+            4
+          ],
+          [
+            12,
+            30118,
+            2
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "original_size_bins": {
+        "0": {
+          "requests": 171,
+          "matched_positive_queries": 18,
+          "Recall1": 0.16666666666666666,
+          "paired_changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "matched_positive_queries": 80,
+          "Recall1": 0.35,
+          "paired_changes": {
+            "known_ranking_fixes": 1,
+            "known_ranking_harms": 2,
+            "native_correct_to_uncertified": 40,
+            "fix_keys": [
+              [
+                12,
+                29963,
+                6
+              ]
+            ],
+            "harm_keys": [
+              [
+                12,
+                29974,
+                5
+              ],
+              [
+                12,
+                29979,
+                5
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                30257,
+                4
+              ],
+              [
+                12,
+                29962,
+                6
+              ],
+              [
+                12,
+                29979,
+                4
+              ],
+              [
+                12,
+                29973,
+                6
+              ],
+              [
+                12,
+                29971,
+                8
+              ],
+              [
+                12,
+                30115,
+                1
+              ],
+              [
+                12,
+                29981,
+                7
+              ],
+              [
+                12,
+                29974,
+                6
+              ],
+              [
+                12,
+                29969,
+                7
+              ],
+              [
+                12,
+                29975,
+                5
+              ],
+              [
+                12,
+                29980,
+                7
+              ],
+              [
+                12,
+                30266,
+                3
+              ],
+              [
+                12,
+                29978,
+                4
+              ],
+              [
+                12,
+                30260,
+                5
+              ],
+              [
+                12,
+                30261,
+                5
+              ],
+              [
+                12,
+                29985,
+                7
+              ],
+              [
+                12,
+                30264,
+                3
+              ],
+              [
+                12,
+                29983,
+                5
+              ],
+              [
+                12,
+                30262,
+                5
+              ],
+              [
+                12,
+                30263,
+                5
+              ],
+              [
+                12,
+                30259,
+                5
+              ],
+              [
+                12,
+                30258,
+                4
+              ],
+              [
+                12,
+                30116,
+                1
+              ],
+              [
+                12,
+                29977,
+                4
+              ],
+              [
+                12,
+                29956,
+                5
+              ],
+              [
+                12,
+                30267,
+                3
+              ],
+              [
+                12,
+                30265,
+                3
+              ],
+              [
+                12,
+                29982,
+                7
+              ],
+              [
+                12,
+                29984,
+                7
+              ],
+              [
+                12,
+                30268,
+                3
+              ],
+              [
+                12,
+                30269,
+                2
+              ],
+              [
+                12,
+                30270,
+                2
+              ],
+              [
+                12,
+                30271,
+                2
+              ],
+              [
+                12,
+                29964,
+                9
+              ],
+              [
+                12,
+                29976,
+                5
+              ],
+              [
+                12,
+                30272,
+                3
+              ],
+              [
+                12,
+                29966,
+                6
+              ],
+              [
+                12,
+                30228,
+                4
+              ],
+              [
+                12,
+                30118,
+                2
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "matched_positive_queries": 2,
+          "Recall1": 0.0,
+          "paired_changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 1,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "matched_positive_queries": 0,
+          "Recall1": null,
+          "paired_changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "candidate_aligned_layer_weight_shuffle_L1_mean": 0.6570348065425895,
+      "history_permutation_weight_alignment_exact_within_tolerance": true,
+      "fixed_candidate_pairs": 299,
+      "permuted_candidate_pairs": 2100,
+      "queries_without_layer_weights": 171,
+      "checkpoint_sha256": "84ffec36088af95c55dde87528a583362b43508d2665787c478a539ef9f2c9c3",
+      "manifest_sha256": "90808a93c53423d6df8e4c6473a6f4a6493aa0ea14b74ab26c713f442e00e849"
     }
   ],
-  "pending": [
-    "qd_dinov2_track_k24_seed20261015_v3_1000_v1"
-  ],
+  "pending": [],
   "native_QD_capacity_control": {
     "parameters": 2132697,
     "validation": {
@@ -3759,6 +4354,30 @@
         ]
       ],
       "VGGT_fix_keys_not_reproduced_by_matched_DINO": []
+    },
+    {
+      "QD": "track",
+      "VGGTranking_fix_keys": [
+        [
+          12,
+          30266,
+          7
+        ]
+      ],
+      "DINOranking_fix_keys": [
+        [
+          12,
+          29963,
+          6
+        ]
+      ],
+      "VGGT_fix_keys_not_reproduced_by_matched_DINO": [
+        [
+          12,
+          30266,
+          7
+        ]
+      ]
     }
   ],
   "weights_interpretation": "Mean/std over all candidate queries is invariant to permuting that same query multiset. Candidate-aligned changes and exact permutation alignment test actual query conditioning; a change alone does not establish useful identity information.",
@@ -3767,12 +4386,12 @@
   "scientific_success": false,
   "full_tracking_success": false,
   "provenance": {
-    "process_started_utc": "2026-10-15T18:11:15.199880+00:00",
-    "report_generated_utc": "2026-10-15T18:11:17.417757+00:00",
-    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/qd_primary_snapshot_v3_size_and_overlap.log",
+    "process_started_utc": "2026-10-15T18:19:44.846743+00:00",
+    "report_generated_utc": "2026-10-15T18:19:47.354125+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/qd_complete_primary_audit_v1.log",
     "source_worktree": "/data1/liuyeqiang/WWW_trackvggt_20261015",
-    "commit": "4e48edac0bfa2e31487de70f185dc5353ea53c78",
-    "report_generation_commit": "4e48edac0bfa2e31487de70f185dc5353ea53c78",
+    "commit": "a8b09a6963cd8edf3fee66cd0f53558c43876c8f",
+    "report_generation_commit": "a8b09a6963cd8edf3fee66cd0f53558c43876c8f",
     "command": [
       "geo_tools/audit_trackvggt_qd_results.py"
     ],
@@ -3818,6 +4437,7 @@
       "geo_tools/run_constant_head_control.py": "9c8bc80e1e245c1559a845d643388bb1110b7cf0f5f86f46acb192493a1fa705",
       "geo_tools/evaluate_teacher_pairs.py": "92b4b1f09cf2858ea0d5d7239d0b3b414a660959d6dba1c755a7ddb764625a1a",
       "geo_tools/test_trackvggt_relation_contracts.py": "853d04e6d10868883e3aba5d23e16a6a3ae501fecec8ae914fc8c329c6ad558c",
+      "geo_tools/summarize_trackvggt_queue_costs.py": "518d7fca4eb2f9efba488a58eefc3921ed01dca3592a6c78657ded6b897985a9",
       "geo_tools/audit_current_default_source.py": "3c1bc82344b5875059794cc8dbed8f4106bee778fd469355dddee0b9ebc0afc5",
       "geo_tools/collect_hard_events.py": "0a403f11136ad4290914854a4990beff4902fb72362283772d2c64471fa41ac6",
       "geo_tools/seal_trackvggt_full_audit.py": "1965de42970950c3186914fda0212d1aa49b3bc1008ec54ba0f96174c2ae176f",
@@ -3884,7 +4504,7 @@
       "geo_tools/test_target_cache_prefix_audit.py": "d2cd9c6a65730c40e9d98c4f63c7afdbbaa6a0e3c151e79bdc458ad1c347e86f",
       "geo_tools/monitor_project_resources.py": "91e447b9154096d6845ce4ee4013503f6ab1d3bd0b7219129c07e6c88546a6f6",
       "geo_tools/probe_trackvggt_backward.py": "58770df3460fe7258439c9a98ee8cf9826fe6e0b0c704db671eb605ed11e59e1",
-      "geo_tools/summarize_trackvggt_teachers.py": "03b4c0ede8d93201691defd065fa27f4e7702dabfd331c46cfb8835a796ef3a8",
+      "geo_tools/summarize_trackvggt_teachers.py": "2488c54fdf9a9791f267b5dbd5ed24e1574f9ab7b4b2cc18dff9503ebf3daf7f",
       "geo_tools/test_resource_samples.py": "ea502b2c7e2575fa9742786334f978f2e07e30a079b8bde294c40f66d65f163a",
       "geo_tools/test_research_queue.py": "f11de3eca1f893c15934a691b58bb2cc1b19971765117660440a736def8cda82",
       "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
@@ -4048,7 +4668,7 @@
       "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
     },
     "source_tree_dirty": true,
-    "source_diff_sha256": "1b474bfaefb2f2e4b16075150839334713ee8595ae3076fe48e0e17d31a6d56e",
+    "source_diff_sha256": "a2d42c67b9cded891ea6d5be23dcea6b86fdc2f369010276e38934a061c89527",
     "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
     "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
