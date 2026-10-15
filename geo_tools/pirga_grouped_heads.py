@@ -29,8 +29,11 @@ class GroupedHeads(nn.Module):
         z=F.gelu(torch.bmm(x,self.down_weight.transpose(1,2))+self.down_bias[:,None,:])
         residual=torch.bmm(z,self.up_weight.transpose(1,2))+self.up_bias[:,None,:]
         predicted=F.normalize(h[None,:,:]+.25*torch.tanh(residual),dim=-1)
-        n=len(b.native_scores);owner=(b.owners[None,:]+torch.arange(3,device=h.device)[:,None]*n).reshape(-1)
-        proto=h.new_zeros((3*n,1152)).index_add(0,owner,predicted.reshape(-1,1152)).reshape(3,n,1152)
+        n=len(b.native_scores);incidence=h.new_zeros((n,len(h)))
+        incidence[b.owners,torch.arange(len(h),device=h.device)]=1.
+        # Fixed one-hot ownership is the same native sum, implemented by
+        # deterministic GEMM to avoid repeated CUDA scatter synchronization.
+        proto=torch.matmul(incidence[None,:,:],predicted)
         scores=b.native_scores[None,:]+2*(F.normalize(proto,dim=-1)@b.query)
         return scores,predicted
 

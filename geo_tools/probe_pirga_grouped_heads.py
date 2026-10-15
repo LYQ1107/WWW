@@ -15,7 +15,9 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--cache',type=Path,required=True);p.add_argument('--cache-sha',required=True);p.add_argument('--admission',type=Path,required=True);p.add_argument('--source-probe',type=Path,required=True);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
     torch.set_num_threads(1);torch.use_deterministic_algorithms(True);torch.backends.cuda.matmul.allow_tf32=False;started=time.monotonic()
     ad=json.loads(a.admission.read_text());ds=FullTrainDataset(ad['stores']);labels=load_supervision(ad['supervision']['path'],ad['supervision']['sha256'],ds)
-    source=json.loads(a.source_probe.read_text());keys=list(dict.fromkeys(tuple(v['key']) for v in source['measurements']))[:20]
+    source=json.loads(a.source_probe.read_text());measure={tuple(v['key']):v for v in source['measurements']};keys=[]
+    for scene in sorted({k[0] for k in measure}):keys.append(max((k for k in measure if k[0]==scene),key=lambda k:measure[k]['histories']))
+    keys+= [k for k in sorted(measure,key=lambda k:-measure[k]['histories']) if k not in keys][:20-len(keys)]
     cache=NativeTrainingCache(a.cache,a.cache_sha,device='cuda');states=[]
     cps=['134e6ff366e14f51c0c6648a4d4996d87d6e6dce3f4d1840d588d4719aa77c47','76e66718cde4ebd73d55b06fbecd3bff21c0205335e6dc4c45ef650ac920208c','13b27d180135538834092ff67dde3877ce69e2b6796f834782a8ebab2474574c']
     for arm,digest in zip(['C2','C3','C4'],cps):
@@ -45,7 +47,7 @@ def main():
     times=[]
     for key in keys:
         b=cache.batch(key);torch.cuda.synchronize();t=time.monotonic();s,h=group(b);loss,_,_,_=grouped_losses(s,h,b,labels[key]);gopt.zero_grad(set_to_none=True);loss.sum().backward();group.clip_per_arm();gopt.step();torch.cuda.synchronize();times.append(dict(key=list(key),histories=len(b.histories),seconds=time.monotonic()-t))
-    result=dict(status='PASS_REAL_TRAIN_GROUPED_INDEPENDENT_HEAD_SHADOW',shadow_steps_per_arm=len(keys),discarded_shadow_weights=True,formal_research_training=False,DEV_read=False,
+    result=dict(status='PASS_REAL_TRAIN_GROUPED_INDEPENDENT_HEAD_SHADOW',shadow_comparison_steps_per_arm=len(keys),shadow_timing_steps_per_arm=len(keys),total_discarded_grouped_steps_per_arm=2*len(keys),discarded_shadow_weights=True,formal_research_training=False,DEV_read=False,
         max_score_absolute_difference=maximum_score,max_loss_absolute_difference=maximum_loss,max_parameter_absolute_difference=maximum_parameter,FP32_preregistered_shadow_tolerance=.0005,bitwise_equivalence_claim=False,
         C2_gradients_unchanged_when_C3_loss_removed=True,per_arm_gradient_clipping=True,per_arm_query_batch_size=1,models_independent=True,
         grouped_optimizer_step_seconds=times,wall_seconds=time.monotonic()-started,peak_GPU_allocated_bytes=torch.cuda.max_memory_allocated())
