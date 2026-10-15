@@ -37,9 +37,10 @@ def incoming_attention(module, x, pos=None, chunk=128):
     if module.rope is not None:
         q, k = module.rope(q,pos), module.rope(k,pos)
     total = torch.zeros((b,n),device=x.device,dtype=torch.float32)
-    for first in range(0,n,chunk):
-        logits = (q[:,:,first:first+chunk].float() @ k.float().transpose(-2,-1)) * module.scale
-        total += logits.softmax(-1).sum((1,2))
+    with torch.autocast(x.device.type,enabled=False):
+        for first in range(0,n,chunk):
+            logits = (q[:,:,first:first+chunk].float() @ k.float().transpose(-2,-1)) * module.scale
+            total += logits.softmax(-1).sum((1,2))
     return total / (module.num_heads*n)
 
 

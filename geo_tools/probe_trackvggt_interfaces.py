@@ -42,7 +42,13 @@ def main():
             incoming_attention_allclose=bool(torch.allclose(native,attention,rtol=.003,atol=1e-6)),
             reference_source=str(path),reference_sha256=sha256(path))
         print(json.dumps(dict(attention_diagnostic=det_check)),flush=True)
-        assert det_check['actual_attention_output_exact'] and det_check['incoming_attention_allclose']
+        assert det_check['actual_attention_output_allclose'] and det_check['incoming_attention_allclose']
+        encoder.hook.remove()
+        with torch.inference_mode(),torch.autocast('cuda',dtype=encoder.dtype):
+            unchanged,unchanged_start=encoder.model(images.cuda())
+        unchanged=explicit_layer_map(unchanged,unchanged_start,images.shape[-2:])
+        det_check['official_hook_all_four_layers_exact']=all(torch.equal(layers[layer],unchanged[layer]) for layer in LAYERS)
+        assert det_check['official_hook_all_four_layers_exact']
         frozen=all(not v.requires_grad for v in encoder.model.parameters());params=sum(v.numel() for v in encoder.model.parameters())
     else:
         from vggt.models.aggregator import Aggregator
