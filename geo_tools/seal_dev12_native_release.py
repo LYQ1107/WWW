@@ -161,9 +161,11 @@ def main():
     if total>scopevalue['maximum_output_bytes'] or ledger['total_gpu_wall_hours']>4:raise ValueError('independent release budget exceeded')
     manifest.update(status='SEALED_ASSET_READY',engineering_status='DEV12_NATIVE_ASSET_HANDOFF_COMPLETE',
         research_status='NO_VGGT_OR_CV_PIL_SCIENTIFIC_SUCCESS_CLAIM',offline_labels_separate=True,read_only_consumer_passed=True,
+        actor_GT_read=False,offline_GT_read=True,GT_label_files_present=True,
         independent_gpu_wall_hours=ledger['total_gpu_wall_hours'],artifact_bytes_before_final_seal=total,
         sealed_utc=datetime.datetime.now(datetime.timezone.utc).isoformat(),
         artifacts={str(f.relative_to(root)):sha256(f) for f in root.rglob('*') if f.is_file() and f.name not in ('manifest.json','artifact_sha256.json')})
+    manifest.pop('GT_read',None)
     save_json(root/'manifest.json',manifest)
     hashes={str(f.relative_to(root)):sha256(f) for f in root.rglob('*') if f.is_file() and f.name!='artifact_sha256.json'}
     save_json(root/'artifact_sha256.json',dict(interface_version=INTERFACE,status='SEALED_ASSET_READY',artifacts=hashes,

@@ -71,7 +71,9 @@ def validate(root, verify_artifacts=True):
                 for track,spec in call['bank_descriptor_support'].items():
                     if spec is None:raise ValueError('missing actual Bank averaging provenance')
                     total=0
-                    for key in spec['sources']:total=total+vector(key)
+                    for key in spec['sources']:
+                        total=total+vector(key)
+                        for source in q:validate_past(observations[tuple(source)],observations[tuple(key['source'])],set(call['completed_camera_images_before_call']))
                     total=total/spec['denominator']
                     for ref,key in zip(refs,call['reference_feature_keys']):
                         if ref['track']==int(track) and not torch.allclose(vector(key),total,atol=2e-6,rtol=2e-6):raise ValueError('actual Bank descriptor support mismatch')
@@ -86,13 +88,15 @@ def validate(root, verify_artifacts=True):
         key=tuple(row['key']);cid,qi=queries[key];call=calls[cid]
         if (cid,qi)!=(row['call_id'],row['query_row']):raise ValueError('query row linkage')
         if row['final_track']!=call['decision']['final_track_ids'][qi] or row['primary_accepted_track']!=call['decision']['accepted_track_ids'][qi]:raise ValueError('final native submission linkage')
-    previous=None;commits=0;last_state_by_call={};commit_keys={}
+    previous=None;commits=0;last_state_by_call={};commit_keys={};running_counts={}
     for row in rows(root/'native_commit_trace.jsonl.gz'):
         if row['index']!=commits or row['previous_commit_sha256']!=previous:raise ValueError('commit chain changed')
         if digest_json(row['state'])!=row['state_sha256']:raise ValueError('actual state fingerprint')
         value=dict(row);current=value.pop('commit_sha256')
         if digest_json(value)!=current:raise ValueError('commit record fingerprint')
         if row['state']['reid_digests'][str(row['track'])]!=row['reid_digest']:raise ValueError('commit descriptor state mismatch')
+        running_counts[str(row['track'])]=running_counts.get(str(row['track']),0)+1
+        if running_counts!=row['state']['counts']:raise ValueError('actual per-commit support-count update cannot be reconstructed')
         key=tuple(row['source'])
         if key in commit_keys:raise ValueError('duplicate physical commit')
         commit_keys[key]=row['track'];previous=current;commits+=1
