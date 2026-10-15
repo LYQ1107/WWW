@@ -70,10 +70,13 @@ def main():
         signal_text+=' 密集因果种子复核分开记录：'+'；'.join(f"{group['method']}/{group['factor']}完成{group['completed_trials']}/3" for group in factors['groups'])+'。B7主种子在两类因素间共享，不是独立重复；完整原生strict5、实际推理种子及head哈希逐项核验，见GEO_STREAM_DENSE_SEED_STABILITY.md。'
         feature=next((group for group in factors['groups'] if group['method']=='B5' and group['factor']=='training_head_seed'),None)
         if feature and feature['complete']:
-            signal_text+=' 特征单独启用B5的完整strict5三个TRAIN头CVIDF1增量为'+','.join(f"{row['paired_metric_delta']['CVIDF1']:+.6f}" for row in feature['rows'])+'个百分点，第三个为负；固定实际推理种子与检测集合，不能宣称稳定特征改进。B7完整三头和固定主头推理RNG结果仍待齐全。'
+            signal_text+=' 特征单独启用B5的完整strict5三个TRAIN头CVIDF1增量为'+','.join(f"{row['paired_metric_delta']['CVIDF1']:+.6f}" for row in feature['rows'])+'个百分点，第三个为负；固定实际推理种子与检测集合，不能宣称稳定特征改进。B7训练头及固定主头推理RNG的完成状态分别见种子审计。'
+        joint=next((group for group in factors['groups'] if group['method']=='B7' and group['factor']=='training_head_seed'),None)
+        if joint and joint['complete']:
+            signal_text+=' 联合B7完整strict5三个TRAIN头也全部完成，CVIDF1增量为'+','.join(f"{row['paired_metric_delta']['CVIDF1']:+.6f}" for row in joint['rows'])+'个百分点；第三头CVIDF1下降但IDSW减少，不能用IDSW单项改善替代身份F1或宣称均匀正向。未重新选择head、系数或评测划分。固定主头推理RNG复核仍单列。'
         observed=[row for row in factors.get('scene1_training_head_diagnostic',{}).get('rows',[]) if row['method']=='B7']
         if len(observed)==3:
-            signal_text+=' 完整scene1的三个TRAIN头在固定推理种子20261014下CVIDF1分别为'+','.join(f"{row['metrics']['CVIDF1']:.6f}" for row in observed)+'，第三头低于同场景基线；检测集合和其他融合设置相同。这是训练头不稳定的单场景证据，不能当作完整DEV三种子结果。'
+            signal_text+=' 完整scene1的三个TRAIN头在固定推理种子20261014下CVIDF1分别为'+','.join(f"{row['metrics']['CVIDF1']:.6f}" for row in observed)+'，第三头低于同场景基线；检测集合和其他融合设置相同。这是单场景训练头观察，完整DEV结果另列，不能据此推断固定主头的推理RNG效应。'
     geometry_note='dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。'
     geometry_path=ROOT/'results/causal_dense_geometry_full_strict_attribution_v1.json'
     if geometry_path.exists() and json.loads(geometry_path.read_text())['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':

@@ -253,6 +253,26 @@ def main():
             fig.suptitle('Dense feature-only B5: three TRAIN head seeds, complete strict5',fontsize=12)
             fig.text(.5,.012,'Frozen GMT and inference RNG20261014; exact detector membership. All three heads retained; no confidence interval or stable-effect claim.',ha='center',fontsize=8)
             fig.tight_layout(rect=(0,.06,1,.94));fig.savefig(out/'causal_B5_training_seed_deltas.png',dpi=180);fig.savefig(out/'causal_B5_training_seed_deltas.pdf');plt.close(fig)
+        training={group['method']:group for group in stability['groups'] if group['factor']=='training_head_seed'}
+        if all(method in training and training[method]['complete'] for method in ('B5','B7')):
+            sources[str(seed_path)]=sha256(seed_path)
+            seeds=[20261014,20261015,20261016]
+            fig,axes=plt.subplots(1,2,figsize=(11,4))
+            for method,offset,color in [('B5',-.18,'#427aab'),('B7',.18,'#bd7e46')]:
+                trials=training[method]['rows']
+                if [row['training_head_seed'] for row in trials]!=seeds or any(row['inference_seed']!=20261014 or not row['exact_detector_membership'] for row in trials):
+                    raise ValueError('complete paired TRAIN-head comparison required')
+                for axis,metric in zip(axes,('CVIDF1','IDSW')):
+                    values=[row['paired_metric_delta'][metric] for row in trials]
+                    bars=axis.bar(np.arange(3)+offset,values,width=.34,color=color,label=method)
+                    axis.bar_label(bars,labels=[f'{value:+.6f}' if metric=='CVIDF1' else f'{value:+d}' for value in values],padding=3,fontsize=7)
+                    axis.set_xticks(np.arange(3),list(map(str,seeds)),fontsize=8)
+                    axis.set_xlabel('TRAIN head seed');axis.set_ylabel('CVIDF1 change (percentage points)' if metric=='CVIDF1' else 'IDSW change')
+                    axis.axhline(0,color='black',linewidth=.8);axis.margins(y=.3);axis.grid(axis='y',alpha=.15)
+            axes[0].legend(loc='upper right');axes[1].legend(loc='lower right')
+            fig.suptitle('Complete strict5 TRAIN-head trials: B5 feature-only and B7 joint',fontsize=12)
+            fig.text(.5,.012,'Same trained head per B5/B7 pair; inference RNG20261014, same strict5 and detectors. Descriptive repeats; no confidence intervals.',ha='center',fontsize=8)
+            fig.tight_layout(rect=(0,.06,1,.94));fig.savefig(out/'causal_B5_B7_training_head_deltas.png',dpi=180);fig.savefig(out/'causal_B5_B7_training_head_deltas.pdf');plt.close(fig)
     save_json(out/'manifest.json', dict(status='IN_PROGRESS_FIGURES', source_artifacts=sources,
               outputs={path.name:sha256(path) for path in out.iterdir() if path.suffix in {'.png','.pdf'}},
               provenance=provenance(), limitations='incomplete research matrix; no replicate confidence intervals or accuracy/runtime Pareto superiority inferred'))
