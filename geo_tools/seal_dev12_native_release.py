@@ -118,6 +118,9 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--release',type=Path,required=True);a=p.parse_args();root=a.release
     manifest=json.loads((root/'manifest.json').read_text())
     if manifest['status']!='CAPTURE_COMPLETE_PARITY_PASS_UNLABELED' or manifest['groups']!=1200:raise ValueError('full unsealed native capture required')
+    save_json(root/'capture_manifest.json',manifest)
+    save_json(root/'precheck_gate.json',json.loads((BASE/'dev12_native_precheck_v1/gate.json').read_text()))
+    save_json(root/'hardware_snapshot_during_capture.json',json.loads((BASE/'dev12_native_precheck_v1/hardware_snapshot_during_capture_v1.json').read_text()))
     audit=json.loads((AUDIT/'manifest.json').read_text())
     for name,digest in audit['artifacts'].items():
         if sha256(AUDIT/name)!=digest:raise ValueError('original audit changed')
