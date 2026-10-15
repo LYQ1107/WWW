@@ -112,6 +112,9 @@ def main():
   new_gradient_updates=updates,evidence=ref(REPORTS/'LEARNED_GATE_RESULTS.json'))
  decision['historical_rule_control_experiments_complete']=True
  decision['bounded_tracking_experiments_complete']=summary['all_three_quality_complete'] and summary['all_three_speed_complete']
+ jobs=read(REPORTS/'EXPERIMENT_REGISTRY.json')['jobs']
+ decision['registered_GPU_jobs_remaining']=[name for name,j in jobs.items() if j.get('GPU') is not None and j['status']=='RUNNING']
+ decision['all_registered_GPU_jobs_terminal']=not decision['registered_GPU_jobs_remaining']
  decision['learned_development_quality']={k:dict(delta_HOTA=r['delta']['HOTA'],joint_measured_quality_pass=r['joint_measured_quality_pass'],quality_gates=r['quality_gates']) for k,r in methods.items()}
  decision['learned_training']='SINGLE_BOUNDED_LEARNED_GATE_REVISION_'+revision_status
  positives=[k for k,r in methods.items() if r['joint_measured_quality_pass']]
@@ -131,6 +134,7 @@ def main():
    decision['current_best_conservative_candidate']='Fixed300 MLP passes measured raw quality gates; full-image FPS, seed reproduction and independent validation pending'
   if cached:
    decision['cached_MLP_efficiency_gate_pass']=cached['efficiency_gate_pass']
+   decision['cached_MLP_joint_measured_quality_and_efficiency_pass']=methods['mlp']['joint_measured_quality_pass'] and cached['efficiency_gate_pass']
  early=REPORTS/'LEARNED_FIRST_DIVERGENCE_NATIVE.json'
  if early.exists():
   d=read(early);decision['first_native_discrepancy_audit']=ref(early)

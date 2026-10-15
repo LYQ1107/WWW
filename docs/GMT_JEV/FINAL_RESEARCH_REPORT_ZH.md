@@ -69,10 +69,11 @@ N01/N10只与同一当前变异状态下原始GMT的接受式MATCH比较，原�
 | MLP | 3.129765 | 0.917882 | COMPLETE | False |
 | Attention | 3.059589 | 0.897301 | COMPLETE | False |
 | CIC | 2.396665 | 0.702882 | COMPLETE | False |
+| MLP缓存（单列） | 2.848982 | 0.835535 | COMPLETE | False |
 
 同一GPU7/V100-DGXS-32GB，每次重置原生状态、派生摘要和seed。包含真实图像读取/resize、检测、VFCE/RPCE、GTA、原生匹配/Gallery/Bank及最终stock处理；不含模型加载、8帧warmup和GT评测。图像FPS=2×场景FPS。Stage2 p50/p95和峰值显存见各 SPEED_*.json。共享宿主机其他卡负载存在变化，串行块不能独立分离系统负载、状态轨迹和模块开销的因果贡献。
 MLP默认平均完整图像FPS为3.129765、相对GMT0.917882，未通过95%，不能把质量正向称为完整目标成功。24场景GPU8组件诊断只有定位意义，不外推全视频FPS。
-单次缓存检查条件及严格核验要求见 LEARNED_MLP_CACHE_PROTOCOL.md：等待默认计时结束；预算足够时先核验完整2067次features/gate/residual/score及raw预测严格一致，再单列三轮缓存计时。旧Rule缓存没有观察到加速，其结果不改写。不通过等价性就不测缓存速度。
+缓存工程核验：PASS_EXACT_FULL_NATIVE_MLP_LEARNED；计时注册状态：COMPLETE。完整1034场景、2067次features/gate/residual/score及raw预测严格一致，三轮stock指纹与默认MLP相同，复用同一质量成绩。三轮缓存速度门槛为False；默认未缓存结果仍单独保留。协议见 LEARNED_MLP_CACHE_PROTOCOL.md；旧Rule缓存负向结果保留。
 
 ## 8. 同约定stock次要结果
 
@@ -92,8 +93,8 @@ stock不是主要协议。最终轨迹长度过滤依赖整段视频，不能用
 
 MASTER_GOAL状态 ACTIVE，scientific_success=False。完整基线和工程接入已证；MLP已测质量正向，默认效率失败；必要种子、MCMT特征/机制贡献和合格独立完整视频尚未证明。应用Goal不能据此标为科学完成。
 数据范围仅TRAIN12/13/14学习、TRAIN16开发；不新增DEV17–19、封存20–22、官方TEST、Full24或新数据下载。TRAIN16不能伪装独立验证，旧阶段NO_GO/checkpoint保留。
-先完成已注册默认计时和条件缓存工程检查，不扩大架构/训练步数。即使缓存满足速度，仍需必要种子和合法合格独立验证；若预算内未通过，报告NOT_ESTABLISHED及具体缺口，不因GPU尚空闲盲目训练。
-最近资源快照（并非停止时最终结算）：{"GPU_wall_hours_including_live": 11.4183582675933, "home_free_GiB": 50.02680969238281, "new_retained_MiB": 312.34131050109863}。累计上限12 GPU-wall-hours、新留存512MiB、目标盘至少30GiB余量，重设Goal不清零预算。
+默认计时、完整缓存等价和三轮缓存计时均已完成。本轮不扩大架构/训练步数；效率失败时保留质量候选并报告精度与速度权衡，不能宣布完整目标成功。即使效率满足，仍需必要训练种子和合法合格独立验证。
+最近资源快照（并非停止时最终结算）：{"GPU_wall_hours_including_live": 11.92904806540865, "home_free_GiB": 50.02032470703125, "new_retained_MiB": 314.76679611206055}。累计上限12 GPU-wall-hours、新留存512MiB、目标盘至少30GiB余量，重设Goal不清零预算。
 
 ## 10. 代码、记录与GitHub
 

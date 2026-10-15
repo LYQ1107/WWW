@@ -40,8 +40,7 @@ HEAD_COST_PREFIX.json 若已完成，则使用真实 TRAIN16 前64场景帧的�
 | mlp | 3.129765 | 0.917882 | False |
 | attention | 3.059589 | 0.897301 | False |
 | cic | 2.396665 | 0.702882 | False |
-
-缓存MLP尚无已完成的三轮均值；完整原生等价性通过不等于效率通过。
+| mlp cached | 2.848982 | 0.835535 | False |
 
 训练后 MLP 的 GPU8、24场景帧同步边界诊断（非完整FPS，不外推整段）：
 
