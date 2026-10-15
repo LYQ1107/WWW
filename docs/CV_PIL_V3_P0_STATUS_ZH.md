@@ -1,5 +1,8 @@
 # CV-PIL V3：冻结证据与完整原生上下文接收准备
 
+后续完整DEV资产接收、旧权重与一次匹配训练评价均已完成，最终状态见
+[V3最终研究报告](CV_PIL_V3_FINAL_RESEARCH_REPORT_ZH.md)。以下保留P0时点记录。
+
 本轮已执行P0的CPU工程工作，未重新训练模型或运行视频。
 目前执行状态是 `BLOCKED_MISSING_NATIVE_ASSETS`；已实现的接收接口尚未
 在新的真实完整DEV12资产上验收。旧结果保持 `NO_UNIQUE_PREDICTIVE_EFFECT`，

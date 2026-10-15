@@ -1,0 +1,226 @@
+{
+  "status": "PASS_REQUIRED_PROTOCOL_COMPLETE_CONDITIONAL_NATIVE_GATE_CLOSED",
+  "written_utc": "2026-10-15T17:32:02.555635+00:00",
+  "scientific_success": false,
+  "unconditional_required_work_remaining": [],
+  "conditional_skips_are_explicit_not_success_claims": true,
+  "requirements": [
+    {
+      "id": "P0_FREEZE",
+      "status": "PASS",
+      "scope": "Frozen V1/V2, full GMT/MLP and historical JEV/VGGT evidence unchanged.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/FROZEN_PRIOR_EVIDENCE.json",
+          "sha256": "a377dd24b5b72b6dbdecdf45641d9262e477421cdea9a858aca9f0b5a2600663"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/FINAL_OLD_EVIDENCE_VERIFICATION.json",
+          "sha256": "2800ca4fb536533e217b5135254e1bffcd3d0dc6e89c48787b3a594b6ae86beb"
+        }
+      ]
+    },
+    {
+      "id": "P0_INTERFACE_AND_GT_ISOLATION",
+      "status": "PASS",
+      "scope": "Canonical and actual native-shard consumers implemented; full1152, SHA, cameras, aliases, UNKNOWN and full call context validated.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/P0_FINAL_ENGINEERING_VALIDATION.json",
+          "sha256": "a120829896ef53d3a2bcfc3a07ad65a6528ad8cd087696d4596e8f7474662873"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P0_REAL_PREFIX40_MAPPING.json",
+          "sha256": "c9c898be5beb35adfb905d71ab2b9ab355c35df8b61ae7f0f3b5a4f66b5bfbfc"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P1_NATIVE_ADMISSION.json",
+          "sha256": "ef3afa18abb022e17188b24853ecf29a069e1e19ce34cdd0c4dbb6c48619130f"
+        }
+      ]
+    },
+    {
+      "id": "P0_OFF_SCOPE",
+      "status": "PASS_UNIT_DESIGN_AND_PREFIX_ENGINEERING_FULL_CONTROLLER_TEST_CONDITIONAL",
+      "scope": "OFF boundary tests pass; real40 export OFF/ON predictions/states match; original1200 predictions and recorded actions match. No claim of complete new-controller OFF, which is deferred by mandatory P4 gate.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/P0_REAL_OFF_PREFIX40_PARITY.json",
+          "sha256": "4ae9ca8fc9cfdfabbe2b448c76471811590139b48bf89aee55cde17bfdb7c7fe"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P1_PRODUCER_PARITY_SNAPSHOT.json",
+          "sha256": "9edd67afcf8924b19062d1f10f1f3a7228954b135d54aee300cdec9a4453e75c"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/FINAL_NATIVE_GATE_DECISION.json",
+          "sha256": "abcdc54d1d05b48e2f67ccee4cbf3c1ed326933f1530e9594f746dddad300a06"
+        }
+      ]
+    },
+    {
+      "id": "P1_SCOPE_AND_SOURCE",
+      "status": "PASS",
+      "scope": "SHA-sealed full1200groups/14557queries, sources pinned independently, physical GT separation and label-free complete DEV selection.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/P1_SOURCE_PINS.json",
+          "sha256": "a8fdcd94bf9c8ed3bd2b233a6ee2a495537d1f9738fc92e5e00f43f4112609b7"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P1_ARTIFACT_INDEX_SNAPSHOT.json",
+          "sha256": "ef7f65d0bccb1e665f7125391f4a3c64a1449b1fe4d204c735371522386421d4"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P1_NATIVE_ADMISSION.json",
+          "sha256": "ef3afa18abb022e17188b24853ecf29a069e1e19ce34cdd0c4dbb6c48619130f"
+        }
+      ]
+    },
+    {
+      "id": "P2_OLD_HEADS_FIRST",
+      "status": "PASS",
+      "scope": "Original frozen step300 heads evaluated before one new fit; same full original state, all candidates, scores and solver thresholds.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/P2_FROZEN300_FULL_DEV12/RESULTS.json",
+          "sha256": "6cdf6e944ae123d02cdd497057066e1a19ea42fa452f1d886936c489dcee0821"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P2_FROZEN300_FULL_DEV12/ORIGINAL_ERROR_MECHANISM_AUDIT.json",
+          "sha256": "036ad8528f424c881e87c17b6140fefab0cccffe66eafc8c3f30cd74296c7c95"
+        }
+      ]
+    },
+    {
+      "id": "P3_ONCE_MATCHED_TRAINING",
+      "status": "PASS",
+      "scope": "Exactly300updates per38080parameter arm, seed20261015, one frozen150hard/150ordinary schedule; no DEV loaded by trainer.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/P3_MATCHED_FIT_PREREGISTRATION.json",
+          "sha256": "27e2405685fe1026f32ae158e4e82dff4dd41d34fd8a5f66ac6ba59207866834"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P3_TRAIN_INPUT_AUDIT.json",
+          "sha256": "3bb5301d91e1a76bdb57c9d3694339d17b9be36fd74b5d1020d24a5136ab8316"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P3_MATCHED_TRAINING/RESULTS.json",
+          "sha256": "c010fec9c998685e4665dfb58b7342e256204f4d56bbfa09bebd8109f8e84f72"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P3_MATCHED_TRAINING/VERIFICATION.json",
+          "sha256": "af7a0aa826936168da7d1936b522ba1d99b5bfcc728411297ad658139105c168"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P3_SAMPLING_DEPENDENCE_AUDIT.json",
+          "sha256": "539758b405b880ef9370a6f030aa497094c79123693be1f96d74ef67ab05159e"
+        }
+      ]
+    },
+    {
+      "id": "P3_FULL_DISTRIBUTION_EVALUATION",
+      "status": "PASS",
+      "scope": "All14557DEV queries scored. No error-only selection; selected TRAIN distribution and full natural DEV distribution explicitly separated.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/P3_MATCHED300_FULL_DEV12/RESULTS.json",
+          "sha256": "cf8d6f2fbf2b767bb5ba0b0c0fa607440c37fc64331de2854aa43d094e9e3e04"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P3_MATCHED300_FULL_DEV12/GROUP_METHOD_METRICS_OFFLINE_ONLY.csv",
+          "sha256": "9dfafe6ac22fbe7a07ea30f974975c11412049cf56520c0e7a84cd9c01356773"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/DATA_REPRESENTATION_LIMITS.json",
+          "sha256": "91e0dd5b6462dac9b9597d6c37968892312fa3a6d03232d084ec2da61d775f80"
+        }
+      ]
+    },
+    {
+      "id": "METRICS_DEPENDENCE_UNKNOWN",
+      "status": "PASS",
+      "scope": "Top1/MRR, certified fixes/harms, coverage/UNKNOWN and person/camera/time groups retained; complete3x3 UNKNOWN transitions, no UNKNOWN-as-negative claim.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/P3_MATCHED300_FULL_DEV12/GROUP_PAIR_METRICS_OFFLINE_ONLY.csv",
+          "sha256": "40f79bbd9880cacdbe43976dba29dd146865049fc60fbcd3e83874b5fa8806b7"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/UNKNOWN_TRANSITION_AUDIT.json",
+          "sha256": "92db1a1b126f542ab9958efb2e332498b27102afbf691c74480b9f1f40e036c8"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P3_MATCHED300_FULL_DEV12/ORIGINAL_ERROR_MECHANISM_AUDIT.json",
+          "sha256": "a5cb98c3f871e010aeb9b04063d8f10dc319327d8b0cd6c8df95523309fb63aa"
+        }
+      ]
+    },
+    {
+      "id": "EXACT_CPU_EXECUTOR",
+      "status": "PASS",
+      "scope": "All14557old-head reported output rows byte-identical before reuse; C0/C1 baselines unchanged across P2/P3.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/P2_CACHED_EXECUTOR_FULL_PARITY.json",
+          "sha256": "d848d1a8599aea6e7e02a5788a384c3db0d6349e49731686bedf865d2c43f8ee"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P2_P3_BASELINE_PARITY.json",
+          "sha256": "07f1a924f47119839a289990307faefd33973ad5f8a909a583dcc1d8eda7c0f1"
+        }
+      ]
+    },
+    {
+      "id": "P4_NATIVE_ONLINE",
+      "status": "CONDITIONAL_NOT_ADMITTED",
+      "scope": "Required C3 benefit beyond C4 failed. Full GMT/GMT+MLP/C2/C3/C4 closed-loop, raw/stock metrics and full native OFF not run; nulls retained, no old-video metrics pooled.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/FINAL_NATIVE_GATE_DECISION.json",
+          "sha256": "abcdc54d1d05b48e2f67ccee4cbf3c1ed326933f1530e9594f746dddad300a06"
+        }
+      ]
+    },
+    {
+      "id": "BUDGET_AND_FAILURES",
+      "status": "PASS",
+      "scope": "CPU only, GPU0, no old ledger reset, no live consumer model jobs, no weight/feature/video uploads. Both interface rejection and corrected audit preserved.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/RESOURCE_LEDGER.json",
+          "sha256": "ceb0673b85dab57fc7cf429dd37f9e4edf92d6f922d2c0f8b9ae2623ca512994"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P1_VALIDATION_AND_FAILURE_RECORD.json",
+          "sha256": "d9fa1a37dd1b524c772c469fd385c78a8a7559bde27aeaf2ad0ebc2326318b38"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P2_FROZEN300_FULL_DEV12/AUDIT_CORRECTION_RECORD.json",
+          "sha256": "eaefe7b366bcd6072cd4da3d157b0b2475881299c1e3fdbd8c8a3c0ad441bdca"
+        }
+      ]
+    },
+    {
+      "id": "FINAL_RESEARCH_ANSWER",
+      "status": "PASS_NEGATIVE_NOVELTY_WITH_PARTIAL_POSITIVE_RETAINED",
+      "scope": "C3 adds4original primary repairs/2people over C2; adds0 over C1 and0 over C4. Camera-conditioned novelty unsupported; no online/scientific success claim.",
+      "evidence": [
+        {
+          "path": "results/cv_pil_v3_native_validation/FINAL_NATIVE_GATE_DECISION.json",
+          "sha256": "abcdc54d1d05b48e2f67ccee4cbf3c1ed326933f1530e9594f746dddad300a06"
+        },
+        {
+          "path": "results/cv_pil_v3_native_validation/P3_MATCHED300_FULL_DEV12/ORIGINAL_ERROR_MECHANISM_AUDIT.json",
+          "sha256": "a5cb98c3f871e010aeb9b04063d8f10dc319327d8b0cd6c8df95523309fb63aa"
+        }
+      ]
+    }
+  ],
+  "final_report": {
+    "path": "docs/CV_PIL_V3_FINAL_RESEARCH_REPORT_ZH.md",
+    "sha256": "82850bff61b91c242873f4c68a35e1275b14744b84ec714965d69fb77a5d883a"
+  },
+  "publication_status": "PENDING_FINAL_COMMIT_PUSH_AND_REMOTE_VERIFICATION"
+}
