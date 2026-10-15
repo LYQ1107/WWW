@@ -67,21 +67,42 @@ def main():
                    ('VGGT head','B5_vggt_head_dense_causal_v1_v1'),
                    ('VGGT camera','B6_vggt_camera_dense_causal_v1_v1'),
                    ('VGGT head + camera','causal_B7_fixed_k1_strict_suite_v1_v1')]
+            for label,name in [('Native-head constant score','constant_native_head_scene1_accuracy_v1.json'),('Head-free fixed prior','native_prior_scene1_accuracy_v1.json')]:
+                path=ROOT/'results'/name
+                if path.exists():
+                    evidence=json.loads(path.read_text());row=evidence['rows'][0];tag=Path(row['run']).name
+                    by_tag[tag]=dict(tag=tag,metrics=row['metrics'],camera_image_fps=row['camera_image_fps'],speed_eligible=row.get('speed_eligible',True))
+                    specs.append((label,tag));sources[str(path)]=sha256(path)
             fig,axes=plt.subplots(1,2,figsize=(9,4.5))
             for axis,metric in zip(axes,['CVIDF1','AssA']):
                 delta=[by_tag[tag]['metrics'][metric]-baseline_scene[metric] for _,tag in specs]
-                axis.barh(range(len(specs)),delta,color=['#687e93','#407c8e','#7d6093','#b18758','#7d6093'])
+                axis.barh(range(len(specs)),delta,color=['#687e93','#407c8e','#7d6093','#b18758','#7d6093','#4a785d','#4a785d'][:len(specs)])
                 axis.set_yticks(range(len(specs)),[label for label,_ in specs]);axis.invert_yaxis()
                 axis.axvline(0,color='black',linewidth=.8)
                 axis.set_xlabel('Change (percentage points)')
                 axis.set_title(metric);axis.grid(axis='x',alpha=.2)
-            fig.suptitle('Scene1 complete causal ablation: fixed matched-capacity TRAIN heads',fontsize=11)
-            fig.text(.5,.015,'One full scene, one head seed. DINO matches VGGT CVIDF1; geometry has no independent output effect here. Full strict5 pending.',ha='center',fontsize=7.5)
+            fig.suptitle('Scene1 complete causal feature and calibration controls',fontsize=11)
+            fig.text(.5,.015,'One full scene / inference seed. Native fixed prior exceeds VGGT here; no independent geometry output effect. Full strict5/stability pending.',ha='center',fontsize=7.5)
             fig.tight_layout(rect=(0,.06,1,.94))
             fig.savefig(out/'causal_scene1_attribution.png',dpi=180)
             fig.savefig(out/'causal_scene1_attribution.pdf')
             plt.close(fig)
             sources[str(attribution_path)]=sha256(attribution_path)
+            fig,axis=plt.subplots(figsize=(8,4.5))
+            runtime_specs=[('GMT baseline','online_B0_full_v1_source44_v1'),*specs]
+            for label,tag in runtime_specs:
+                row=by_tag[tag]
+                if row.get('speed_eligible',True):
+                    axis.scatter(row['camera_image_fps'],row['metrics']['CVIDF1'],s=40)
+                    offset=(4,22) if label=='VGGT head + camera' else (4,6)
+                    axis.annotate(label,(row['camera_image_fps'],row['metrics']['CVIDF1']),xytext=offset,textcoords='offset points',fontsize=8)
+            axis.set_xlabel('Complete camera images/s');axis.set_ylabel('CVIDF1 (%)');axis.grid(alpha=.2)
+            axis.margins(x=.18,y=.2)
+            fig.suptitle('Scene1 causal identity and runtime: descriptive measurements',fontsize=11)
+            fig.text(.5,.015,'Single V100 runs; no repeated timing or Pareto claim. Static GMT setup excluded; extra encoder cold cost charged.',ha='center',fontsize=8)
+            fig.tight_layout(rect=(0,.06,1,.94))
+            fig.savefig(out/'causal_scene1_identity_runtime.png',dpi=180);fig.savefig(out/'causal_scene1_identity_runtime.pdf')
+            plt.close(fig)
     audit_path = ROOT/'results/causal_fixed_joint_random_total80_full_v18_v1.json'
     if audit_path.exists():
         audit = json.loads(audit_path.read_text())

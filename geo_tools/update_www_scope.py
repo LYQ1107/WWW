@@ -1,0 +1,54 @@
+"""Generate the scope note from verified CFP facts and actual retrieval runs."""
+from common import *
+
+
+def lines(path):
+    return [json.loads(line) for line in path.read_text().splitlines() if line]
+
+
+def main():
+    cfp_path=ROOT/'manifests/www_cfp_verified_v1.json';cfp=json.loads(cfp_path.read_text())
+    reference=RUNTIME/'retrieval/retrieval_gmt_v18_full_v1'
+    original_queries=[row['query'] for row in lines(reference/'queries.jsonl') if row['query']['scene']==18]
+    fields=('scene','camera','round_id','image_id','frame_id','bbox')
+    def cohort(rows):return [{key:row[key] for key in fields} for row in rows]
+    def detector(rows):return [{key:value for key,value in row.items() if key!='track_id'} for row in rows]
+    reference_detections=detector(json.loads((reference/'video_18.json').read_text()))
+    sources={str(cfp_path):sha256(cfp_path)};rows=[]
+    for path in sorted((RUNTIME/'retrieval').glob('*/manifest.json')):
+        run=json.loads(path.read_text())
+        if not run.get('full_video') or 18 not in run['video_ids'] or not run.get('speed_eligible',True):continue
+        metric=path.parent/('retrieval.scene_18.metrics.json' if len(run['video_ids'])>1 else 'retrieval.metrics.json')
+        if not metric.exists():continue
+        result=json.loads(metric.read_text())
+        queries=[row['query'] for row in lines(path.parent/'queries.jsonl') if row['query']['scene']==18]
+        if len(queries)!=result['requests']:raise ValueError('scene18 query/metric scope mismatch')
+        for name in ('queries.jsonl','video_18.json'):
+            if sha256(path.parent/name)!=run['artifacts'][name]:raise ValueError('changed retrieval artifact')
+        same=cohort(queries)==cohort(original_queries)
+        same_det=detector(json.loads((path.parent/'video_18.json').read_text()))==reference_detections
+        rows.append(dict(method=path.parent.name,camera_streams=run['camera_streams'],backbone=run['backbone'],interval=run['interval'],
+                         requests=result['requests'],eligible_queries=result['gallery_eligible_queries'],recall1=result['recall_at_k']['1'],mrr=result['mrr'],
+                         exact_detector_query_cohort=same,exact_full_scene18_detector_outputs=same_det,metrics=str(metric),metrics_sha256=sha256(metric),manifest_sha256=sha256(path)))
+        sources[str(metric)]=sha256(metric);sources[str(path)]=sha256(path)
+    text=['# WWW scope and deadlines','',
+          f"[Official Research Track CFP]({cfp['url']}) verified {cfp['checked_utc'][:10]}: abstract {cfp['abstract_deadline_aoe']} AoE, full paper {cfp['full_paper_deadline_aoe']} AoE. These end at 20:00 Asia/Shanghai on the following calendar day. Target track: {cfp['target_track']}.",'',
+          cfp['relevance_summary']+f" [Source]({cfp['url']})",'',
+          'The executable task queries a current detector target against clips from other cameras. Actual image reads, frozen causal GMT, feature publication, bounded index maintenance and query responses run online in sequence; labels enter post-run evaluation only. Separate scenes interleave by replay round and retain independent tracker banks/RNG. Frozen encoder weights are already shared serially across scene extractors; no cross-scene tracking/geometry state is shared.', '',
+          'Current retrieval experiments keep tracking at causal GMT OFF and vary retrieval features/scoring. They are not yet an end-to-end evaluation of the improved tracking candidates feeding the index. Local replay does not establish Internet-origin streams, live Web deployment, real user-query traffic or an independent Web scientific contribution.', '',
+          'Production retrieval results below use scene18 queries at every stream count. Exact query image/camera/frame/box cohorts and complete scene18 detector outputs are checked against the two-camera native reference. Recall@1/MRR are conditional on matched queries with positive gallery clips; coverage and all-request success remain in the metric artifacts.', '',
+          '| Method | Cameras | Queries | Eligible | Recall@1 | MRR | Exact cohort/detections |',
+          '|---|---:|---:|---:|---:|---:|---|']
+    for row in rows:
+        text.append(f"| {row['method']} | {row['camera_streams']} | {row['requests']} | {row['eligible_queries']} | {100*row['recall1']:.4f}% | {row['mrr']:.6f} | {row['exact_detector_query_cohort']}/{row['exact_full_scene18_detector_outputs']} |")
+    text += ['',
+        'Same-gallery diagnostics retain the full native positive-gallery denominator. The sampled-observation native scorer is stronger than transferred association-trained projection/cosine scores in the completed scene18 tests; positive candidate coverage is 100%. These diagnose scoring/representation transfer and do not show all raw foundation features are useless. Their five-ranker producer timings are diagnostic cost, not production throughput. See retrieval_scoring_diagnostics.csv and the source metrics.', '',
+        'Query latency measures local scoring/response serialization after representations are available. Full replay-round timing separately charges reads, tracking, optional encoder work, publication, queries and log I/O. It is not HTTP/network or camera-capture-to-output latency. Source acquisition timing and a deadline-paced live camera service have not been verified. Index payload caps do not bound original GMT history or total process/GPU memory.', '',
+        'Remaining scope evidence: complete the planned stream/keyframe matrix and candidate tracking-to-retrieval evaluation, preserve fixed-query comparisons, and establish an actual Web scientific problem/application rather than changing a tracking title. Current evidence does not justify PAPER_READY; this fit risk does not stop the technical research.', '']
+    (ROOT/'docs/WWW_SCOPE_NOTE.md').write_text('\n'.join(text))
+    save_json(ROOT/'results/www_scope_evidence_v1.json',dict(status='IN_PROGRESS_SCOPE_EVIDENCE',production_fixed_scene18_rows=rows,
+        all_query_cohorts_exact=all(row['exact_detector_query_cohort'] for row in rows),all_scene18_detector_outputs_exact=all(row['exact_full_scene18_detector_outputs'] for row in rows),
+        source_artifacts=sources,paper_ready=False,provenance=provenance()))
+
+
+if __name__=='__main__':main()
