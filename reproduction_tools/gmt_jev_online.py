@@ -17,7 +17,10 @@ def main(kind):
   actor,checkpoint=load_actor(head_kind)
  else:actor=IdentityCorrection(kind).cuda().eval()
  m.gmt_identity_correction=actor;seed()
- labeler=OfflineCertificates(16,images);counts=collections.Counter();pending={};boundary={};boot=[False];last=[0.];begin=time.monotonic()
+ labeler=OfflineCertificates(16,images);counts=collections.Counter();paired=collections.Counter();pending={};boundary={};boot=[False];last=[0.];begin=time.monotonic()
+ annotation_before=ref(ANNOTATIONS)
+ config_sha=hashlib.sha256(cfg.dump().encode()).hexdigest()
+ assert config_sha==read(REPORTS/'BASELINE_PARITY.json')['config_SHA']
  def before(**d):
   boundary['id_count']=d['id_count']
   if d['first'] and not boot[0]:
@@ -27,6 +30,7 @@ def main(kind):
   base=native_assignment(packet['base_scores'],packet['lengths'],m.overlap_thresh)
   changed=native_assignment(packet['corrected_scores'],packet['lengths'],m.overlap_thresh)
   pending[f,v]=dict(refs=refs,target=target,gt=gt,owners={t:labeler.clean(t) for t in refs},base=base,changed=changed,id_count=boundary['id_count'])
+  if learned:pending[f,v]['eligible']=packet['eligible'].detach().cpu()
   counts.update(categories);counts['MATCH_rows']+=len(gt)
   counts['intervened_edges']+=int((packet['residual']!=0).sum());counts['eligible_edges']+=int(packet['eligible'].sum())
   for risk in ['low','medium','high']:counts['risk_'+risk+'_changed_rows']+=0
@@ -38,6 +42,11 @@ def main(kind):
  def after(**d):
   f,v=d['frame'],d['view'];inst=d['instances'][-1];ids=inst.track_ids.tolist();assert len(ids)==len(set(ids))
   s=pending.pop((f,v));counts['commits']+=1;counts['native_births']+=sum(t>s['id_count'] for t in ids)
+  if learned:
+   from gmt_jev_train_native_rule_validation import paired_commit_counts
+   paired.update(paired_commit_counts(dict(native_ids=ids,targets=torch.tensor(s['target']),
+    GT_labels_OFFLINE_ONLY=s['gt'],baseline_accepted_cols=s['base'],refs=s['refs'],
+    owners=s['owners'],eligible=s['eligible'],id_count_before=s['id_count'])))
   counts['native_Bank_restore_rows']+=sum(t<=s['id_count'] and t not in s['refs'] for t in ids)
   for row,(actual,y,g,b,c) in enumerate(zip(ids,s['target'],s['gt'],s['base'],s['changed'])):
    if y>=0:counts['unique_certified_correct_active_rows']+=1;counts['unique_certified_correct_preserved']+=actual==s['refs'][y]
@@ -71,6 +80,7 @@ def main(kind):
  parameters=dict(full_system_instantiated=sum(p.numel() for p in m.parameters()),extra_trainable=sum(p.numel() for p in actor.parameters()),deployed=sum(p.numel() for p in m.parameters()))
  del m,raw,stock;torch.cuda.empty_cache()
  raw_metric=evaluate(predictions,folder/'raw_metrics');stock_metric=evaluate(stock_pred,folder/'stock_metrics')
+ assert sha(ANNOTATIONS)==annotation_before['SHA256'],'Annotation changed during inference/evaluation'
  result=dict(status='COMPLETE',kind=kind,frames=frames,video=16,primary_raw=raw_metric,secondary_stock=stock_metric,raw_predictions=ref(path),stock_predictions=ref(stockpath),counts=dict(counts),identity=duration(predictions),
   native_mutated_state=True,GT_actor_inputs=False,no_new_gradient_updates=True,parameters=parameters,full_image_FPS=None,independent_validation=False,
   row_certificate_scope='Same-current-state raw GMT accepted MATCH reference versus corrected current native commit, with unique first-past targets. Rejected baseline has UNKNOWN original Bank outcome. Not a whole-plan causal or cross-run numeric-ID claim.',
@@ -78,7 +88,9 @@ def main(kind):
  if learned:
   result.update(trained_checkpoint=checkpoint,risk_mode='learned',training_steps=300,
    raw_geometry_and_scores_SHA256=geometry_sha(predictions),raw_frontend_prediction_parity=True,
-   effective_config_SHA256=hashlib.sha256(cfg.dump().encode()).hexdigest(),annotations=ref(ANNOTATIONS),
+   effective_config_SHA256=config_sha,annotations=annotation_before,
+   paired_commit_counts=dict(paired),correct_accepted_reference_preservation_rate=paired['correct_reference_preserved']/paired['reference_correct'] if paired['reference_correct'] else None,
+   legacy_count_interpretation='unique_certified_correct_active_rows includes all uniquely certified targets, including initially wrong references; it is not a correct-reference preservation denominator. Use paired_commit_counts/reference_correct.',
    selection='All three fixed step300 heads; no selection by development quality')
  save(REPORTS/f'ONLINE_{kind}.json',result);print('GMT_ONLINE_COMPLETE',kind,raw_metric['metrics'],raw_metric['CVIDF1'],flush=True)
 if __name__=='__main__':

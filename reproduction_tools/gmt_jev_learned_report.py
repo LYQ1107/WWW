@@ -39,6 +39,8 @@ def main():
   path=REPORTS/f'ONLINE_{kind}_learned.json'
   if not path.exists():lines.append(f'| {kind} | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |');continue
   result=read(path);assert result['status']=='COMPLETE' and result['raw_frontend_prediction_parity']
+  from gmt_jev_learned_temporal import evaluate_temporal
+  temporal=evaluate_temporal(kind)
   raw=result['primary_raw'];m=raw['metrics'];b=baseline['metrics'];speed_path=REPORTS/f'SPEED_{kind}_learned.json'
   delta={k:m[k]-b[k] for k in m};delta['CVIDF1']=raw['CVIDF1']-baseline['CVIDF1']
   gates=dict(HOTA=m['HOTA']>=b['HOTA']+.5,AssA=m['AssA']>=b['AssA'],CVIDF1=raw['CVIDF1']>=baseline['CVIDF1'],
@@ -54,7 +56,9 @@ def main():
   methods[kind]=dict(report=ref(path),primary_raw=raw,secondary_stock=result['secondary_stock'],delta=delta,
    quality_gates=gates,joint_measured_quality_pass=all(v for k,v in gates.items() if k!='genuinely_causal_error_propagation'),
    full_image_FPS=fps,FPS_ratio_to_GMT=ratio,efficiency_gate_pass=ratio>=.95 if ratio is not None else None,
-   speed_report=ref(speed_path) if speed_path.exists() else None,paired_current_state_counts=result['counts'],
+   speed_report=ref(speed_path) if speed_path.exists() else None,paired_current_state_counts=result['paired_commit_counts'],
+   correct_accepted_reference_preservation_rate=result['correct_accepted_reference_preservation_rate'],
+   post_hoc_past_anchor_temporal=temporal,
    scientific_success=False,independent_validation=False)
   fps_text=f'{fps:.4f}' if fps is not None else 'PENDING'
   lines.append(f"| {kind} | {m['HOTA']:.6f} | {delta['HOTA']:+.6f} | {m['AssA']:.6f} | {raw['CVIDF1']:.6f} | {m['IDSW']:.0f} | {m['Frag']:.0f} | {fps_text} |")
