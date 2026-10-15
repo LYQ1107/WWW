@@ -8,33 +8,63 @@ NEW=Path('/data1/liuyeqiang/WWW_trackvggt_runtime')
 
 
 class TrackEventData:
-    def __init__(self,backbone,cohort_path=None):
+    def __init__(self,backbone,cohort_path=None,cycle_overlay=None):
         self.backbone=backbone;self.cohort_path=Path(cohort_path or NEW/'cohorts/hard_events_expanded_v2/cohort.json')
         self.cohort=json.loads(self.cohort_path.read_text())
         if self.cohort['status']!='LOCKED_SCENE_DISJOINT_REAL_EVENT_COHORT':raise ValueError('unlocked cohort')
+        if self.cohort.get('interface_probe'):raise ValueError('interface probe is not a formal training cohort')
         self.items=self.cohort['fit']+self.cohort['validation'];self.fit=list(range(len(self.cohort['fit'])));self.validation=list(range(len(self.cohort['fit']),len(self.items)))
-        self.payloads={};self.rows={};self.source_artifacts={str(self.cohort_path):sha256(self.cohort_path)}
+        self.payloads={};self.rows={};self.target_rows={};self.cycle_lookup={};self.cycle_overlay=Path(cycle_overlay) if cycle_overlay else None
+        self.source_artifacts={str(self.cohort_path):sha256(self.cohort_path)}
         for path,digest in self.cohort['source_artifacts'].items():
             if sha256(path)!=digest:raise ValueError('locked raw event source changed: '+path)
             self.source_artifacts[path]=digest
-        for scene in self.cohort['fit_scene_ids']+self.cohort['validation_scene_ids']:
-            path=NEW/'tokens'/f'{backbone}_scene{scene}_full_v2'/'manifest.json';manifest=json.loads(path.read_text())
-            if manifest['status']!='COMPLETE_BOUNDED_REAL_TARGET_TOKEN_POOL' or manifest['limited_probe'] or manifest['scene']!=scene:raise ValueError('full target pool missing')
+        main_keys={tuple(item['key']) for item in self.items}
+        manifests=self.cohort.get('feature_manifest_paths',{}).get(backbone)
+        if manifests is None:manifests=[str(NEW/'tokens'/f'{backbone}_scene{scene}_full_v2'/'manifest.json') for scene in self.cohort['fit_scene_ids']+self.cohort['validation_scene_ids']]
+        allowed=main_keys|{tuple(row['key']) for row in self.cohort.get('auxiliary_target_index',[])}
+        overlays=[self.cohort]
+        if self.cycle_overlay:
+            overlay=json.loads(self.cycle_overlay.read_text())
+            if overlay['status']!='LOCKED_SCENE_DISJOINT_REAL_EVENT_COHORT':raise ValueError('unlocked cycle overlay')
+            if overlay['validation']!=self.cohort['validation']:raise ValueError('cycle overlay changed validation300')
+            manifests=list(manifests)+overlay['feature_manifest_paths'][backbone];overlays.append(overlay)
+            allowed.update(tuple(row['key']) for row in overlay['fit']+overlay['validation']+overlay.get('auxiliary_target_index',[]))
+            self.source_artifacts[str(self.cycle_overlay)]=sha256(self.cycle_overlay)
+            for name,digest in overlay['source_artifacts'].items():
+                if sha256(name)!=digest:raise ValueError('changed cycle source')
+                self.source_artifacts[name]=digest
+        checkpoint_hashes=set()
+        for filename in dict.fromkeys(manifests):
+            path=Path(filename);manifest=json.loads(path.read_text())
+            if manifest['status']!='COMPLETE_BOUNDED_REAL_TARGET_TOKEN_POOL' or manifest['limited_probe']:raise ValueError('full target pool missing')
             if manifest['backbone']!=backbone or not manifest['frozen'] or not manifest['no_dense_maps_or_full_attention_saved']:raise ValueError('invalid frozen feature scope')
+            checkpoint_hashes.add(manifest['backbone_checkpoint_sha256'])
             self.source_artifacts[str(path)]=sha256(path)
             for row in manifest['rows']:
                 key=tuple(row['key'])
-                if key in self.rows:raise ValueError('duplicate physical feature query')
+                if key not in allowed:raise ValueError('undeclared main/auxiliary feature query')
+                if key in self.target_rows:raise ValueError('duplicate physical target feature; use declared alias reuse')
                 if sha256(row['file'])!=row['sha256']:raise ValueError('target features changed')
-                self.rows[key]=row;self.source_artifacts[row['file']]=row['sha256']
-        if set(self.rows)!={tuple(item['key']) for item in self.items}:raise ValueError('teacher event memberships differ from locked cohort')
+                self.target_rows[key]=row;self.source_artifacts[row['file']]=row['sha256']
+        if len(checkpoint_hashes)!=1:raise ValueError('mixed frozen backbone weights')
+        if set(self.target_rows)!=allowed:raise ValueError('main/auxiliary target feature membership mismatch')
+        self.rows={key:self.target_rows[key] for key in main_keys}
         for path in sorted({item['event_file'] for item in self.items}):
             self.payloads[path]=torch.load(path,map_location='cpu');self.source_artifacts[path]=sha256(path)
+        for overlay in overlays:
+            for path in overlay.get('cycle_payloads',[]):
+                if path not in self.payloads:self.payloads[path]=torch.load(path,map_location='cpu')
+                self.source_artifacts[path]=sha256(path)
+                payload=self.payloads[path]
+                for event_index,event in enumerate(payload['events']):
+                    key=tuple(event['key'])
+                    if event.get('cycle') is not None:self.cycle_lookup[key]=(path,event_index)
         self.native_dim=self.cohort['native_feature_dim'];self.channels=2048 if backbone=='vggt' else 1024
 
     @functools.lru_cache(maxsize=128)
     def arrays(self,key):
-        row=self.rows[key]
+        row=self.target_rows[key]
         with np.load(row['file']) as data:return {name:data[name].copy() for name in data.files}
 
     def event(self,index):
@@ -63,7 +93,7 @@ class TrackEventData:
                 native_scores.new_tensor(float(snapshot['observed_length'])).log1p(),native_scores.new_tensor(event['relative_margin']),
                 (cameras!=query['camera']).float().mean())))
             histories.append(dict(features=values,times=times,cameras=cameras,observed_length=snapshot['observed_length']))
-        features=dict(current=query['feature'].float().clone().to(device),histories=histories,pair=torch.stack(pairs),
+        features=dict(current=query['feature'].float().clone().to(device),histories=histories,pair=torch.stack(pairs) if pairs else torch.empty((0,8),device=device),
             time=query['frame'],camera=query['camera'],native_scores=native_scores,
             layers=[torch.from_numpy(array['layer_'+str(layer)]).float().to(device) for layer in (4,11,17,23)],
             attention=torch.from_numpy(array['attention']).float().to(device),xy=torch.from_numpy(array['xy']).float().to(device),
@@ -81,9 +111,11 @@ class TrackEventData:
 
     def native_prior_scores(self,index):
         _,payload,event=self.event(index);query=payload['observations'][tuple(event['query_source'])];call=payload['calls'][event['call_index']]
+        if not event['candidate_tracks']:return torch.zeros(1)
         logits=call['logits'][event['query_row']].float().clone()
         camera=torch.tensor(call['reference_cameras']);time=torch.tensor(call['reference_times']);finite=torch.tensor(call['reference_finite'])
-        legal=(camera!=query['camera'])&((time-query['frame']).abs()<=20)&finite
+        age=query['frame']-time
+        legal=(camera!=query['camera'])&(age>=0)&(age<=20)&finite
         logits+=legal.float()*2.
         pieces=[];first=0
         for count in call['reference_block_sizes']:

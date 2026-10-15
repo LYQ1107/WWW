@@ -78,14 +78,16 @@ def build_model(settings):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--checkpoint');p.add_argument('--scorer',choices=['learned','native','prior'],default='learned')
     p.add_argument('--backbone',choices=['vggt','dinov2'],default='vggt');p.add_argument('--split',choices=['fit','validation'],default='validation')
-    p.add_argument('--output',required=True);p.add_argument('--query-shuffle',action='store_true');p.add_argument('--device',default='cpu');a=p.parse_args()
+    p.add_argument('--output',required=True);p.add_argument('--query-shuffle',action='store_true');p.add_argument('--device',default='cpu');p.add_argument('--cohort');a=p.parse_args()
     path=Path(a.output)
     if path.exists():raise FileExistsError(path)
     model=None;settings=None
     if a.scorer=='learned':
         checkpoint=torch.load(a.checkpoint,map_location='cpu');settings=checkpoint['settings'];a.backbone=settings['backbone']
+        if a.cohort is None:a.cohort=checkpoint.get('cohort_path')
         model=build_model(settings);model.load_state_dict(checkpoint['model'],strict=True);model.to(a.device)
-    data=TrackEventData(a.backbone);indices=getattr(data,a.split)
+    data=TrackEventData(a.backbone,a.cohort);indices=getattr(data,a.split)
+    if a.scorer=='learned' and checkpoint['cohort_sha256']!=sha256(data.cohort_path):raise ValueError('evaluated checkpoint/cohort mismatch')
     result=evaluate(model,data,indices,a.device,a.scorer,a.query_shuffle)
     result.update(status='COMPLETE_FIXED_EVENT_RANKING_DIAGNOSTIC',scorer=a.scorer,split=a.split,backbone=a.backbone,query_shuffle=a.query_shuffle,
         model_settings=settings,checkpoint=a.checkpoint,checkpoint_sha256=sha256(a.checkpoint) if a.checkpoint else None,

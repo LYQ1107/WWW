@@ -14,13 +14,14 @@ def main():
     p.add_argument('--summary',choices=['mean','ema'],default='mean');p.add_argument('--seed',type=int,default=20261015)
     p.add_argument('--steps',type=int,default=1000);p.add_argument('--batch-size',type=int,default=4);p.add_argument('--ag-init');p.add_argument('--resume');p.add_argument('--device',default='cuda')
     p.add_argument('--native-mlp-capacity',choices=['ag','qd'],default='ag')
+    p.add_argument('--cohort',default=None)
     a=p.parse_args();out=NEW/'models'/a.tag
     if out.exists():raise FileExistsError(out)
     if a.steps not in (150,1000):raise ValueError('prespecified pilot150 or full1000 steps only')
     if a.architecture=='qd' and not a.ag_init:raise ValueError('formal QD requires the separately fitted AG source, no simultaneous Phase2 shortcut')
     out.mkdir(parents=True);seed_all(a.seed)
     torch.backends.cuda.enable_mem_efficient_sdp(False);torch.backends.cuda.enable_flash_sdp(False);torch.backends.cudnn.deterministic=True
-    started=time.perf_counter();data=TrackEventData(a.backbone)
+    started=time.perf_counter();data=TrackEventData(a.backbone,a.cohort)
     settings=dict(backbone=a.backbone,native_dim=data.native_dim,channels=data.channels,architecture=a.architecture,ag_mode=a.ag_mode,
         qd_mode=a.qd_mode,k=a.k,summary=a.summary,native_mlp_capacity=a.native_mlp_capacity,training_seed=a.seed,actual_native_inference_seed=20261014,
         optimizer='AdamW',lr=1e-4,weight_decay=.01,clip_norm=1.,batch_size=a.batch_size,target_steps=a.steps,soft_relevance_warmup_steps=150)
@@ -45,7 +46,7 @@ def main():
     eligible=[]
     for index in data.fit:
         _,_,event=data.event(index);row=data.rows[tuple(data.items[index]['key'])]
-        feature_valid=a.architecture=='native_mlp' or a.ag_mode=='roi' or row['raw_patch_centers']>0
+        feature_valid=bool(event['candidate_tracks']) and (a.architecture=='native_mlp' or a.ag_mode=='roi' or row['raw_patch_centers']>0)
         if event['loss_eligible'] and feature_valid:eligible.append(index)
     if not eligible:raise ValueError('no legal supervised fit relations; no fabricated samples')
     setup_seconds=time.perf_counter()-started;training_started=time.perf_counter();curve=[]
@@ -70,18 +71,19 @@ def main():
     if a.device.startswith('cuda'):torch.cuda.synchronize()
     training_seconds=time.perf_counter()-training_started
     checkpoint=dict(model={k:v.detach().cpu() for k,v in model.state_dict().items()},optimizer=optimizer.state_dict(),settings=settings,completed_steps=a.steps,
-        cohort_sha256=sha256(data.cohort_path),source_artifacts=data.source_artifacts,torch_rng_state=torch.get_rng_state(),numpy_rng_state=np.random.get_state(),
+        cohort_path=str(data.cohort_path),cohort_sha256=sha256(data.cohort_path),source_artifacts=data.source_artifacts,torch_rng_state=torch.get_rng_state(),numpy_rng_state=np.random.get_state(),
         cuda_rng_states=torch.cuda.get_rng_state_all() if a.device.startswith('cuda') else [],provenance=provenance(a.seed))
     torch.save(checkpoint,out/'checkpoint.pt');save_json(out/'loss_curve.json',curve)
     validation=evaluate(model,data,data.validation,a.device)
     save_json(out/'validation.json',validation)
-    shuffled=evaluate(model,data,data.validation,a.device,shuffle=True,seed=a.seed)
+    shuffled=evaluate(model,data,data.validation,a.device,shuffle=True,seed=20261015)
     save_json(out/'validation_query_shuffle.json',shuffled)
     report=dict(status='COMPLETE_FINITE_TEACHER_FIT_AND_FIXED_VALIDATION',settings=settings,completed_steps=a.steps,starting_step=start_step,
         supervised_fit_queries=len(eligible),all_fit_queries=len(data.fit),validation_queries=len(data.validation),
         trainable_parameters=sum(parameter.numel() for parameter in model.parameters()),setup_seconds=setup_seconds,training_seconds=training_seconds,
         peak_cuda_allocated_bytes=torch.cuda.max_memory_allocated() if a.device.startswith('cuda') else None,
         validation_metrics=validation['metrics'],query_shuffle_metrics=shuffled['metrics'],
+        query_shuffle_seed=20261015,empty_candidate_queries_excluded_from_gradient_fit=sum(not data.event(i)[2]['candidate_tracks'] for i in data.fit),
         learned_ag_score_weights=model.sampler.mix.detach().softmax(0).cpu().tolist() if hasattr(model,'sampler') else None,
         ag_init=a.ag_init,ag_init_sha256=sha256(a.ag_init) if a.ag_init else None,resume=a.resume,resume_sha256=sha256(a.resume) if a.resume else None,
         checkpoint=str(out/'checkpoint.pt'),checkpoint_sha256=sha256(out/'checkpoint.pt'),source_artifacts=data.source_artifacts,
