@@ -35,11 +35,22 @@ def main():
     with output.open('w',newline='') as stream:
         writer=csv.DictWriter(stream,list(rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(rows)
     release=json.loads((ROOT/'results/trackvggt_dev12_native_release_v1.json').read_text())
+    native_rows=[r for r in rows if r['queue'].startswith('trackvggt_live_baseline_v1_') and r['allocation']=='GPU_VISIBLE_PROCESS_WALL']
+    scope=json.loads((ROOT/'manifests/trackvggt_runtime_scope_v1.json').read_text())
+    system_roots=sorted((runtime/'retrieval').glob('trackvggt_runtime_*streams_*_v1'))
+    native_hours=sum(r['GPU_visible_process_wall_hours'] for r in native_rows)
+    native_bytes=sum(p.stat().st_size for root in system_roots for p in root.rglob('*') if p.is_file())
+    if native_hours>scope['maximum_total_GPU_wall_hours'] or native_bytes>scope['maximum_new_output_bytes']:
+        raise ValueError('registered fresh native system resource cap exceeded')
     proof=dict(status='PARTIAL_ACTUAL_QUEUE_STAGE_COSTS' if pending or any(q['status']=='RUNNING' for q in queues) else 'COMPLETE_ACTUAL_QUEUE_STAGE_COSTS',
         completed_stage_rows=len(rows),completed_GPU_visible_process_wall_hours=sum(totals.values()),
         by_queue_GPU_visible_process_wall_hours=totals,pending_or_running=pending,queues=queues,csv_sha256=sha256(output),
         completed_CPU_only_stage_seconds_including_waits_not_GPU_wall=sum(r['process_seconds'] for r in rows if r['allocation']=='CPU_ONLY'),
         separate_DEV12_release_GPU_wall_hours=release['gpu_wall_hours_including_off_on_prechecks'],
+        native_system_completed_GPU_visible_process_wall_hours=native_hours,
+        native_system_completed_producer_processes=len(native_rows),native_system_producer_directories=len(system_roots),
+        native_system_current_logical_output_bytes=native_bytes,native_system_GPU_wall_hour_cap=scope['maximum_total_GPU_wall_hours'],
+        native_system_output_byte_cap=scope['maximum_new_output_bytes'],
         cost_scope='Assigned-GPU producer process wall from actual queue monotonic clocks, including setup/hash/export/validation even when GPU idle; not active kernel hours. Explicit cpu_only stages and controller dependency waits excluded. Failed executed stages remain charged. Running/missing durations remain pending, not zero.',
         exclusions='Not the total project cost. Manual phase0/numerical/gradient probes, original selected/native initial capture, CPU diagnostics and separate DEV12 release costs are outside these queue-stage rows. Inherited prior-project ledger stays separate. Overlapping passive monitor samples are not summed as experiments.',
         scientific_success=False,provenance=provenance())

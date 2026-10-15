@@ -27,5 +27,6 @@ No low-quality teacher distribution is manufactured into a successful
 distillation experiment. DINO temporal0/.1 also finishes without a certified
 new ranking repair (R1=.21/.20). The conditional student branch is explicitly
 unexecuted under the locked design, not counted as a trained negative student,
-engineering deployment success or three-seed result. Remaining full native
-system tests are independent and still required before overall completion.
+engineering deployment success or three-seed result. All fresh full native system tests have now completed independently; their
+baseline metrics do not become trained-student results or satisfy a student
+success claim.

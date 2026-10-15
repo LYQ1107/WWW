@@ -1,9 +1,11 @@
 # Fresh native system and retrieval replay
 
-Status: ACTUAL_PREFIX_GATE_PASSED_FULL_REPLAYS_RUNNING. Both real OFF/Prior40
-prefixes on scenes18/1 match the old standalone outputs exactly. Fresh full
-replay timing/metrics are not yet complete. Source/commands are frozen in
-manifests/trackvggt_runtime_scope_v1.json and trackvggt_live_baseline_v1.json.
+Status: COMPLETE_FRESH_NATIVE_SYSTEM_EVALUATION. Both real OFF/Prior40
+prefixes on scenes18/1 and all six full2/4/10-stream replays pass exact original
+standalone-output checks. Fresh retrieval, exact paired detector/query cohorts,
+both strict5 TrackEval evaluations and resource collection are complete.
+Source/commands remain frozen in manifests/trackvggt_runtime_scope_v1.json and
+trackvggt_live_baseline_v1.json. Actual numbers are in TRACKVGGT_SYSTEM_RESULTS.md.
 
 Actual full image replay will compare frozen causal GMT OFF and the unchanged
 head-free Native Prior at2/4/10 configured logical streams, using1/2/5 distinct
@@ -62,3 +64,10 @@ hashing and export, not active kernel time or a total-project ledger. Manual
 probes, initial selected capture, CPU diagnostics, inherited work and the separate
 DEV12 release ledger are disclosed exclusions. Passive monitor extrema and
 overlapping observation windows are never summed as extra experiment runs.
+
+The completed native_system_replay_v1 probe has3650 sample groups and31
+processes. Its whole-device statistics include CPU dependency waits and earlier
+unattributed teacher activity onGPU5; they are not native-method utilization.
+Per-producer process/tag data, exact allocator/RSS values and queue wall times
+remain distinct. All three original queues finish naturally with all planned
+stages PASS; no actor was restarted or source edited during execution.

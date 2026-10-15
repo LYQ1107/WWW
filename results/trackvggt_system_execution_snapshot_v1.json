@@ -1,5 +1,5 @@
 {
-  "status": "ACTUAL_NATIVE_SYSTEM_PROGRESS_SNAPSHOT",
+  "status": "COMPLETE_FRESH_NATIVE_SYSTEM_EVALUATION",
   "rows": [
     {
       "origin": "FRESH_PROFILED_NATIVE_SYSTEM_REPLAY",
@@ -226,8 +226,44 @@
       "method": "native_fixed_prior",
       "configured_logical_streams": 10,
       "inference_seed": 20261014,
-      "status": "RUNNING",
-      "tag": "trackvggt_runtime_prior_10streams_full_v1"
+      "status": "PASS_FULL_REPLAY_AND_PREDICTION_PARITY",
+      "tag": "trackvggt_runtime_prior_10streams_full_v1",
+      "images": 14324,
+      "complete_process_seconds": 1945.3311571776867,
+      "complete_process_camera_image_fps": 7.363270745522555,
+      "main_setup_export_seconds": 1942.0783959031105,
+      "replay_loop_seconds": 1929.1238098219037,
+      "replay_loop_camera_image_fps": 7.425132553478975,
+      "setup_seconds": 7.783684223890305,
+      "GPU_device_name": "Tesla V100-DGXS-32GB",
+      "CUDA_visible_devices": "6",
+      "read_preprocess_seconds": 752.711874358356,
+      "synchronized_tracker_seconds": 1113.4987520128489,
+      "index_query_compute_seconds": 21.48760361224413,
+      "round_p50_seconds": 0.8260722383856773,
+      "round_p95_seconds": 1.393964447453618,
+      "query_response_p50_seconds": 0.00839162990450859,
+      "query_response_p95_seconds": 0.010917381197214127,
+      "allocator_peak_bytes_including_setup": 1290900992,
+      "host_peak_rss_bytes": 3944570880,
+      "index_peak_payload_bytes": 3545538,
+      "VGGT_calls": 0,
+      "DINO_calls": 0,
+      "manifest_sha256": "a2756007a651f28fdb7abac273161a79ac08d2b701edd3428296e30e3f200ae2",
+      "remaining_replay_loop_seconds_including_publication_and_control": 41.42557983845472,
+      "synchronized_tracker_step_p50_seconds": 0.1527974009513855,
+      "synchronized_tracker_step_p95_seconds": 0.17715455666184426,
+      "retrieval_requests": 3080,
+      "GT_matched_queries": 3016,
+      "gallery_eligible_queries": 2465,
+      "detector_query_precision": 0.9792207792207792,
+      "GT_query_detection_coverage": 0.9744749596122778,
+      "retrieval_Recall1": 0.922920892494929,
+      "retrieval_Recall5": 0.9784989858012171,
+      "retrieval_Recall10": 0.9963488843813387,
+      "retrieval_MRR": 0.9462338227276149,
+      "retrieval_success1_all_requests": 0.7386363636363636,
+      "retrieval_metric_sha256": "b4ff19f24a261d435cfea2a5964859834611ff525bb2438544a3877555056288"
     }
   ],
   "tracking_rows": [
@@ -375,7 +411,21 @@
       "origin": "FRESH_PROFILED_NATIVE_SYSTEM_REPLAY",
       "method": "native_fixed_prior",
       "inference_seed": 20261014,
-      "status": "PENDING_FRESH_FULL_DEV5_METRICS"
+      "status": "PASS_FRESH_FULL_DEV5",
+      "images": 14324,
+      "HOTA": 80.84063250307725,
+      "DetA": 80.27197673438698,
+      "AssA": 81.65446490224045,
+      "IDF1": 95.18161480577588,
+      "MOTA": 94.94188025874229,
+      "IDSW": 351,
+      "CVIDF1": 95.18161480577588,
+      "CVMA_sequential": 94.93701668206799,
+      "CVMA": 94.89972926089847,
+      "Frag": 212,
+      "Frag_origin": "FRESH_PROFILED_NATIVE_REPLAY_RAW_CLEAR",
+      "metric_sha256": "5bf663c424fe357043fd2c52f2f71000df41f121f6d6193e11da27b9628a0542",
+      "raw_combined_metric_sha256": "f50b460d925abf6919974aa0aac87f5b448d5571322c7316546ef736e52ea3a3"
     }
   ],
   "receipts": [
@@ -422,7 +472,16 @@
       "parity": "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_off_10streams_full_v1_parity.json",
       "parity_sha256": "64a451df169e89e7d0d6625a233cd46ba4ee22bffeb4f4aed2319ed589e2b5d9",
       "queue": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_live_baseline_v1_gpu6/manifest.json",
-      "queue_sha256": "b62ff833a7cbd53ff8d352d4291114861d302889d2237af98b7483bb57fb6af9"
+      "queue_sha256": "e0e7e40c0629acc4292dd80715cf11a7c207ec0e0d53dc712d395c8787225e3f"
+    },
+    {
+      "tag": "trackvggt_runtime_prior_10streams_full_v1",
+      "manifest": "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_prior_10streams_full_v1/manifest.json",
+      "sha256": "a2756007a651f28fdb7abac273161a79ac08d2b701edd3428296e30e3f200ae2",
+      "parity": "/data1/liuyeqiang/WWW_trackvggt_runtime/matrix_reports/trackvggt_runtime_prior_10streams_full_v1_parity.json",
+      "parity_sha256": "8025811639ece78492eeba5ca4352287fb5841ae6cd7917535fc6d67479e56c6",
+      "queue": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_live_baseline_v1_gpu6/manifest.json",
+      "queue_sha256": "e0e7e40c0629acc4292dd80715cf11a7c207ec0e0d53dc712d395c8787225e3f"
     }
   ],
   "prefix_gate": {
@@ -430,22 +489,18 @@
     "sha256": "3def356242303c4752c1ae78a82fe7a8ebf1d01110af36af9da6fccbd083b927",
     "status": "PASS"
   },
-  "pending": [
-    "trackvggt_runtime_prior_10streams_full_v1"
-  ],
-  "pending_tracking_metrics": [
-    "native_fixed_prior"
-  ],
+  "pending": [],
+  "pending_tracking_metrics": [],
   "timing_scope": "Complete process FPS uses actual queue outer wall time. Profiled local file replay, unequal-length independent two-camera videos; configured streams are not guaranteed constant active membership. Query response latency excludes network.",
   "learned_system_results": "NOT_RUN_NO_VALID_STUDENT_OR_TEACHER_DEPLOYMENT",
   "scientific_success": false,
   "provenance": {
-    "process_started_utc": "2026-10-15T19:06:45.615925+00:00",
-    "report_generated_utc": "2026-10-15T19:06:47.847731+00:00",
-    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/native_system_five_full_and_native_DEV5_v10.log",
+    "process_started_utc": "2026-10-15T19:39:51.929718+00:00",
+    "report_generated_utc": "2026-10-15T19:39:54.666930+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/native_system_all_six_complete_v11.log",
     "source_worktree": "/data1/liuyeqiang/WWW_trackvggt_20261015",
-    "commit": "4e1d57c820127f8bcd317831658ab67a21149a24",
-    "report_generation_commit": "4e1d57c820127f8bcd317831658ab67a21149a24",
+    "commit": "0c7e349162924f3becf26b8a4b948a7d3bf0005a",
+    "report_generation_commit": "0c7e349162924f3becf26b8a4b948a7d3bf0005a",
     "command": [
       "geo_tools/summarize_trackvggt_system.py"
     ],
@@ -559,14 +614,14 @@
       "geo_tools/test_target_cache_prefix_audit.py": "d2cd9c6a65730c40e9d98c4f63c7afdbbaa6a0e3c151e79bdc458ad1c347e86f",
       "geo_tools/monitor_project_resources.py": "91e447b9154096d6845ce4ee4013503f6ab1d3bd0b7219129c07e6c88546a6f6",
       "geo_tools/probe_trackvggt_backward.py": "58770df3460fe7258439c9a98ee8cf9826fe6e0b0c704db671eb605ed11e59e1",
-      "geo_tools/summarize_trackvggt_teachers.py": "348cba72ba4364511133c79f8abf4847cc40335fa44378e70a0580ff941350a5",
+      "geo_tools/summarize_trackvggt_teachers.py": "f3c64a00ba2672eb2cf7864d5b90ef70d15c0759bc3b93f484f1cc87f2e51e91",
       "geo_tools/test_resource_samples.py": "ea502b2c7e2575fa9742786334f978f2e07e30a079b8bde294c40f66d65f163a",
       "geo_tools/test_research_queue.py": "f11de3eca1f893c15934a691b58bb2cc1b19971765117660440a736def8cda82",
       "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
       "geo_tools/train_history_heads.py": "d960e283c3a6795d6b0d80198066e005ec4268ff1b2bc924f77e04d6e0505c12",
       "geo_tools/benchmark_short_pair_encoder.py": "5e3cd035dd399b18f98fbbe91a3fde8198a96e549c686486179c3fd6a293a069",
       "geo_tools/test_dense_seed_stability.py": "77b239efd9007959cff1efdef89249378cbb85e591f1023bd6ad0c966ac28b50",
-      "geo_tools/audit_trackvggt_teacher_gate.py": "0d2fb70baf2237d975eb33b7d9de5a3031a3f1b1d855f5232dc333ca9932b6d3",
+      "geo_tools/audit_trackvggt_teacher_gate.py": "3ec902a8653005407e918bab956bb9cf15f45818778da1f314712c8fb1bb720a",
       "geo_tools/consolidate_camera_control.py": "4d961b2fb8cfbd59bee4414a577541f5b3994bbdd5f892720385289c382e39eb",
       "geo_tools/audit_full_train_identity_events.py": "358f0ac8202ae27ecf2db4bdff674d45696b26757c76923261070dc73a96870e",
       "geo_tools/extract_trackvggt_crop_tokens.py": "ee2a6dc84a1d2d0ac756ab6665433e99c2dd67f776f2f707d345fbec147b40da",
@@ -624,13 +679,14 @@
       "geo_tools/plot_research_results.py": "134a14fdf47c200bc72d8d40b3af41c6ad444a272fbe3003c2258f2372cceaec",
       "geo_tools/validate_process_worker_gpu.py": "886c032d8055d2c2189a909c6d95ea47d66c3254e90a1b163ab0a2f1221e7ff1",
       "geo_tools/prepare_parallel_dense_stability.py": "95e5f39183ac80e8b48d8ff9770cd555f70c466ed97cb9f3e1c35c2c50ca8c4d",
-      "geo_tools/audit_trackvggt_requirements.py": "028901a87061a5037ee4554105341ffcf7c7b331af79bd40ee692ab1ee4321dc",
+      "geo_tools/audit_trackvggt_requirements.py": "80b525587e982907826fc69e8e7784093f9c95379d11ac3c9aa6300b9974daf4",
       "geo_tools/test_geometry.py": "6e8f586b5b731d68888012a9af5ed38eb6b0bc8f26e88fa458b3b138d3e65b32",
       "geo_tools/validate_empty_association.py": "bbc231eb659c8603558efa62f63c43587338219e5a96644096926eb431cfd92c",
       "geo_tools/prepare_history_training.py": "7b7851a6dbc8a29684d7bbd332a448ba3058cc79bc37579eb6f29547ae36d342",
       "geo_tools/update_reviewer_questions.py": "e67f31e4ceaaa94945026b60e965238e4a542b96c71f65d824ba3217ca8d3bb3",
       "geo_tools/finalize_research.py": "961b94667ca96348822fc9346bb4e5469c403354ef8a934572cecc0c7758b8e2",
       "geo_tools/test_trackvggt_cycle_data.py": "20acc55ae162d7887eabb68fbe018aec33cf1b76b070d934215dc7204ff87b7f",
+      "geo_tools/audit_trackvggt_fit_populations.py": "25a1280f5e3e16710d19e2f8ce54b788a302569a532cb5365337014f3f922de3",
       "geo_tools/lock_baseline.py": "b43ee7b20d8ee0f5035858f617bf9169825907f25733a13e5290448d2613367d",
       "geo_tools/test_dev12_native_assets.py": "2e5c77e720ee43ba6f35a71e4cf4ad8c93f487f939fb968f9ddda974fc68f284",
       "geo_tools/evaluate_live_retrieval.py": "9cd2d987e3c28e3e672ce915d42b1fc3970349923782fefacf9323ac4f5ba3d6",
@@ -726,7 +782,7 @@
       "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
     },
     "source_tree_dirty": true,
-    "source_diff_sha256": "0c11ae9ea1d3530f4d4c2fcec05d6c2575ef3a67c50757539ea40ad12a92f580",
+    "source_diff_sha256": "152b52584df4740b1cf41dd81254a215b10fcd6a6b42273fd84baa847812113c",
     "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
     "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",

@@ -1,6 +1,7 @@
 """Snapshot only actual completed teacher reports; never impute missing scores."""
 import csv
 import collections
+import argparse
 import torch
 from common import *
 from run_research_queue import process_identity
@@ -8,10 +9,24 @@ from audit_trackvggt_ag_results import changes
 
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--final-negative-report',action='store_true',help='close the report index only after actual full-system results and final documents are complete; never admits a student or changes the goal state')
+    args=parser.parse_args()
     runtime=Path('/data1/liuyeqiang/WWW_trackvggt_runtime');rows=[]
     gate_path=ROOT/'results/trackvggt_teacher_gate_v1.json'
     gate=json.loads(gate_path.read_text()) if gate_path.exists() else {}
     closed_negative=gate.get('status')=='NO_UNIQUE_VGGT_TEACHER_EVIDENCE'
+    if args.final_negative_report:
+        if not closed_negative:raise ValueError('a completed negative teacher gate is required')
+        for name,status in [('trackvggt_system_execution_snapshot_v1.json','COMPLETE_FRESH_NATIVE_SYSTEM_EVALUATION'),
+            ('trackvggt_system_query_pairs_v1.json','COMPLETE_ACTUAL_NATIVE_QUERY_PAIRS'),
+            ('trackvggt_queue_stage_costs_v1.json','COMPLETE_ACTUAL_QUEUE_STAGE_COSTS')]:
+            if json.loads((ROOT/'results'/name).read_text())['status']!=status:
+                raise ValueError('final report cannot close before actual complete evidence: '+name)
+        for name,marker in [('TRACKVGGT_FINAL_REPORT.md','状态：NEGATIVE_RESULT_COMPLETE'),
+            ('TRACKVGGT_REVIEWER_AUDIT.md','FINAL_REVIEWER_AUDIT_NEGATIVE_SCOPE'),
+            ('TRACKVGGT_REQUIREMENT_AUDIT.md','最终需求验收（完成）')]:
+            if marker not in (ROOT/'docs'/name).read_text():raise ValueError('final document closure is still missing: '+name)
     student_status='CONDITIONAL_NOT_EXECUTED_RELATION_GATE_FAILED' if closed_negative else 'CONDITIONAL_NOT_EXECUTED_RELATION_GATE_NOT_PASSED'
     for path in sorted((runtime/'models').glob('*/manifest.json')):
         value=json.loads(path.read_text())
@@ -77,7 +92,7 @@ def main():
     index_path=ROOT/'results/experiment_manifest.json'
     index=json.loads(index_path.read_text())
     index.setdefault('inherited_geo_stream_status',index['status'])
-    index['status']='TRACKVGGT_RESEARCH_ACTIVE_SNAPSHOT'
+    index['status']='TRACKVGGT_BOUNDED_NEGATIVE_REPORTS_COMPLETE' if args.final_negative_report else 'TRACKVGGT_RESEARCH_ACTIVE_SNAPSHOT'
     index['inherited_experiments_scope']='Original experiments array/raw_gt_policy/split retained from the completed predecessor project; not newly executed TrackVGGT results.'
     index['trackvggt']=dict(branch='research/trackvggt-identity-query-www27-20261015',
         snapshot_utc=snapshot['utc'],teacher_reports=[dict(tag=r['tag'],manifest=r['manifest'],manifest_sha256=r['manifest_sha256'],
@@ -97,6 +112,10 @@ def main():
             if (path:=ROOT/'results'/name).exists()},
         student_status=student_status,
         overall_goal_complete=False,scientific_success=False)
+    if args.final_negative_report:
+        index['trackvggt'].pop('overall_goal_complete')
+        index['trackvggt'].update(negative_report_scope_complete=True,
+            goal_completion_scope='Final goal completion additionally requires manual requirement review and verification that the final revision is committed/pushed. This reporter does not change the goal state.')
     save_json(index_path,index)
     student_rows=[dict(variant=variant,planned_training_seed=seed,status=student_status,
         actual_trained_seed='',checkpoint_sha256='',HOTA='',CVIDF1='',IDSW='',complete_process_FPS='',

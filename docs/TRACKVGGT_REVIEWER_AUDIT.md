@@ -1,9 +1,10 @@
 # TrackVGGT evidence and remaining requirements
 
-Status: INTERIM_REVIEWER_AUDIT. All56 registered teacher experiments are
-complete with NO_UNIQUE_VGGT_TEACHER_EVIDENCE. Fresh full system measurements
-are still executing after their actual prefix gate passed. This document does not
-declare the full research goal complete, a successful teacher, or paper readiness.
+Status: FINAL_REVIEWER_AUDIT_NEGATIVE_SCOPE. All56 registered teacher runs,
+six fresh full native system cases, two fresh strict5 evaluations, all three
+paired retrieval comparisons and resource collection are complete. The result
+is a bounded negative teacher study, not teacher/student/scientific success or
+paper readiness. Conditional students remain explicitly unexecuted.
 
 The separate TRAIN12 engineering release is complete. Its read-only inputs are
 not added to the frozen teacher fit/validation cohorts. No CV-PIL/JEV decision,
@@ -27,8 +28,8 @@ weight or algorithm enters the TrackVGGT models.
 | Are training/inference seeds distinct? | Actual teacher seed20261015 versus native inference seed20261014 | Pinned cycle producer generic provenance mistakenly reports14; actual settings/source/RNG prove15. Raw artifacts are retained unchanged; audit/CSV flag the correction. This is not a second trained seed. |
 | Were capacity controls real? | VGGT QD2123016,DINO2126488,nativeQDMLP2132697 active parameters | DINO uses an active nonlinear projection bottleneck, not unused padding parameters. Last-layer mode is smaller; it alone cannot support capacity attribution. Frozen encoder cost is separately different. Full visual/native gradient populations and reused AG pretraining differ; matching is qualified in CAPACITY_CONTROL and fit_population_disclosure, with exact DINO/crop controls separate. |
 | Is distillation justified? | No teacher has passed the independent-relation gate in completed evidence | IRGD/KD/three-seed students are unexecuted and conditional. Do not distill poor relations merely to fill a table. All independent teacher hypotheses finish; the relation gate fails. Conditional student nonexecution is explicit and does not close the overall system goal. |
-| Is full tracking verified? | Six inherited native/Prior strict5 references reverified by prediction/config/checkpoint/rawGT hashes | These are original inference-RNG baselines, not new trained teachers/students. No new learned-method final-ID metrics exist. Fresh native system replays have their own mandatory parity gates. |
-| Is speed measured honestly? | Separate frozen2/4/10-stream baseline plan, real prefix gate and full replay queued | Real OFF/Prior40 prefixes pass exact original-output parity; all2/4 and native10 cases complete; Prior10 still runs. Complete process wall includes imports/setup/export; synchronized profiling, local files and unequal-length independent scenes limit interpretation. No cached-head FPS or Internet latency substitution. |
+| Is full tracking verified? | Six inherited native/Prior strict5 references plus two fresh strict5 results; full prediction/config/checkpoint/rawGT verification | These are original inference-RNG baselines, not new trained teachers/students. No new learned-method final-ID metrics exist. All six fresh system runs also pass their full-output parity gates; both fresh strict5 metrics reproduce their original references. |
+| Is speed measured honestly? | Completed frozen2/4/10-stream baseline plan, two real prefix gates and six full replays | Real OFF/Prior40 prefixes pass exact original-output parity; all six full cases, post-run retrieval and both fresh strict5 results complete. Complete process wall includes imports/setup/export; synchronized profiling, local files and unequal-length independent scenes limit interpretation. No cached-head FPS or Internet latency substitution. |
 
 The original GT files remain unchanged. Strict DEV5 omits scenes with repeated
 raw GT identities rather than repairing labels. Original GMT pretraining included
@@ -46,8 +47,9 @@ or a scientific-success claim.
 
 Results are traceable through teacher_ablation.csv and source-bound raw manifests.
 The crop, QD and paired-cycle audit JSON files preserve exact known fixes, harms,
-unknown transitions and checkpoint hashes. The system snapshot keeps pending
-cases explicit and separates inherited full MOT references from fresh timing.
+unknown transitions and checkpoint hashes. The completed system snapshot has no pending cases and separates inherited
+full MOT references from fresh timing. Paired query analysis verifies all
+detector requests, eligibility members and common-query fixes/harms.
 Large tokens/weights/matrices remain on the server; Git contains compact evidence.
 
 For the remaining novelty questions: the current teachers consume frozen visual

@@ -1,6 +1,6 @@
 # Fresh native system results
 
-Status: ACTUAL_NATIVE_SYSTEM_PROGRESS_SNAPSHOT. Pending full cases: 1; pending fresh strict5 metrics: 1.
+Status: COMPLETE_FRESH_NATIVE_SYSTEM_EVALUATION. Pending full cases: 0; pending fresh strict5 metrics: 0.
 
 Actual fresh full image replay only. OFF/Prior prefixes and completed full outputs are checked against their own original standalone references. No TrackVGGT teacher/student is loaded.
 
@@ -11,7 +11,7 @@ Actual fresh full image replay only. OFF/Prior prefixes and completed full outpu
 | gmt_off | 4 | 3922 | 539.50 | 7.270 | 593.87 | 4.701 |
 | native_fixed_prior | 4 | 3922 | 534.62 | 7.336 | 573.23 | 4.179 |
 | gmt_off | 10 | 14324 | 1926.61 | 7.435 | 1402.00 | 10.597 |
-| native_fixed_prior | 10 | PENDING | PENDING | PENDING | PENDING | PENDING |
+| native_fixed_prior | 10 | 14324 | 1945.33 | 7.363 | 1393.96 | 10.917 |
 
 | Method | Streams | Requests | GT matched | Gallery eligible | Conditional R1 | Conditional R5 | Full MRR | R1 success /all requests |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -20,7 +20,7 @@ Actual fresh full image replay only. OFF/Prior prefixes and completed full outpu
 | gmt_off | 4 | 826 | 798 | 494 | 0.9777 | 0.9960 | 0.9863 | 0.5847 |
 | native_fixed_prior | 4 | 826 | 798 | 494 | 0.9777 | 0.9960 | 0.9868 | 0.5847 |
 | gmt_off | 10 | 3080 | 3016 | 2465 | 0.9229 | 0.9785 | 0.9463 | 0.7386 |
-| native_fixed_prior | 10 | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
+| native_fixed_prior | 10 | 3080 | 3016 | 2465 | 0.9229 | 0.9785 | 0.9462 | 0.7386 |
 
 Conditional Recall/MRR denominator: GT-matched detector queries with a positive other-camera clip in the original full native gallery. All-request success retains unmatched and ineligible detector queries. An identical count does not prove identical eligible members; the separate system_query_pairs audit verifies physical query/GT cohorts, gains/losses and common-query fixes/harms.
 
@@ -31,7 +31,7 @@ Conditional Recall/MRR denominator: GT-matched detector queries with a positive 
 | gmt_off | 4 | 818240000 | 3951095808 | 1615405 |
 | native_fixed_prior | 4 | 829643264 | 3915886592 | 1582858 |
 | gmt_off | 10 | 1259291648 | 4025229312 | 3581241 |
-| native_fixed_prior | 10 | PENDING | PENDING | PENDING |
+| native_fixed_prior | 10 | 1290900992 | 3944570880 | 3545538 |
 
 Each run uses one actual V100-DGXS32GB. Configured2/4/10 streams are1/2/5 separate two-camera scenes, interleaved by replay round. Active membership decreases as unequal-length scenes finish; no constant10-active-stream or Internet-deployment claim. Scene/target mix also changes across stream counts, so this is not an isolated scaling curve with a fixed workload. Concurrent producers share a host, CPU and file storage, so one observed timing per case is not a repeated isolated speed comparison.
 

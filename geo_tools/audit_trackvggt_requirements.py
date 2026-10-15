@@ -109,7 +109,12 @@ def main():
         lambda v:len(v['rows'])==3 and not v['pending'] and v['verified_complete_outcome_runs']==6 and len(v['all_detector_request_retention'])==6)
     receipt('trackvggt_queue_stage_costs_v1.json','COMPLETE_ACTUAL_QUEUE_STAGE_COSTS','actual_queue_costs',
         'Complete actual GPU-visible process wall; CPU waits excluded, separate manual/DEV12/inherited exclusions.',
-        lambda v:not v['pending_or_running'])
+        lambda v:not v['pending_or_running'] and v['native_system_completed_producer_processes']==8
+            and v['native_system_completed_GPU_visible_process_wall_hours']<=v['native_system_GPU_wall_hour_cap']
+            and v['native_system_current_logical_output_bytes']<=v['native_system_output_byte_cap'])
+    receipt('trackvggt_native_system_sampled_resources_v1.json','FINISHED_PROBE_SAMPLED_RESOURCES','sealed_passive_native_resources',
+        'Finished3650-group/31-observed-process passive probe. Whole-device samples include waits/unattributed activity; not per-method kernel utilization or lifetime allocation peaks.',
+        lambda v:v['sample_groups']==3650 and len(v['process_rows'])==31)
     rows.append(dict(id='historical_monitoring_limits',status='NOT_CAPTURED_DISCLOSED_LIMITATION',
         scope='Periodic training Recall/margin curves and direct per-step crop draw keys were not recorded. Retained endpoints, loss/gradient logs and terminal RNG do not recreate them. This prevents claims of full historical monitoring and does not establish positive efficacy.'))
     docs=['TRACKVGGT_FINAL_GOAL','TRACKVGGT_SOURCE_AUDIT','TRACKVGGT_ARCHITECTURE','TRACKVGGT_EXPERIMENT_PLAN',

@@ -1,7 +1,7 @@
 {
-  "status": "PARTIAL_ACTUAL_QUEUE_STAGE_COSTS",
-  "completed_stage_rows": 139,
-  "completed_GPU_visible_process_wall_hours": 9.941000155816889,
+  "status": "COMPLETE_ACTUAL_QUEUE_STAGE_COSTS",
+  "completed_stage_rows": 143,
+  "completed_GPU_visible_process_wall_hours": 10.48136992169958,
   "by_queue_GPU_visible_process_wall_hours": {
     "trackvggt_crop_fit_v1_gpu4": 0.6899326991393334,
     "trackvggt_crop_fit_v1_gpu5": 0.7077370631363658,
@@ -21,7 +21,7 @@
     "trackvggt_full_audit_v1_tier3_gpu6": 0.11030860304004617,
     "trackvggt_live_baseline_v1_gpu0": 0.19578886257691516,
     "trackvggt_live_baseline_v1_gpu4": 0.29836564405510824,
-    "trackvggt_live_baseline_v1_gpu6": 0.5351697818810741,
+    "trackvggt_live_baseline_v1_gpu6": 1.0755395477637648,
     "trackvggt_phase2_ag_fit_v1_gpu0": 0.300834390492075,
     "trackvggt_phase2_ag_fit_v1_gpu4": 0.22627603207818336,
     "trackvggt_phase2_ag_fit_v1_gpu5": 0.22275341685240468,
@@ -47,14 +47,7 @@
     "trackvggt_v3_tokens_v1_gpu5": 0.1086054981003205,
     "trackvggt_v3_tokens_v1_gpu6": 0.1250389215350151
   },
-  "pending_or_running": [
-    {
-      "queue": "trackvggt_live_baseline_v1_gpu6",
-      "stage": "trackvggt_runtime_prior_10streams_full_v1",
-      "status": "RUNNING",
-      "pid": 16639
-    }
-  ],
+  "pending_or_running": [],
   "queues": [
     {
       "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_crop_fit_v1_gpu4/manifest.json",
@@ -166,8 +159,8 @@
     },
     {
       "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_live_baseline_v1_gpu6/manifest.json",
-      "sha256": "b62ff833a7cbd53ff8d352d4291114861d302889d2237af98b7483bb57fb6af9",
-      "status": "RUNNING",
+      "sha256": "e0e7e40c0629acc4292dd80715cf11a7c207ec0e0d53dc712d395c8787225e3f",
+      "status": "FINISHED",
       "pid": 39533
     },
     {
@@ -315,19 +308,25 @@
       "pid": 30793
     }
   ],
-  "csv_sha256": "7c3ef15ff86abe6509a0be549e3ccbbfbf806c322f49dfc8db25b077a8a4b25d",
-  "completed_CPU_only_stage_seconds_including_waits_not_GPU_wall": 12709.397709734738,
+  "csv_sha256": "f8c5b4585f382ba350b883c5293206f549e5af184f6fe30251078d4983a6609a",
+  "completed_CPU_only_stage_seconds_including_waits_not_GPU_wall": 12771.416137620807,
   "separate_DEV12_release_GPU_wall_hours": 0.34016230704676775,
+  "native_system_completed_GPU_visible_process_wall_hours": 1.5696940543957882,
+  "native_system_completed_producer_processes": 8,
+  "native_system_producer_directories": 8,
+  "native_system_current_logical_output_bytes": 310122364,
+  "native_system_GPU_wall_hour_cap": 6.0,
+  "native_system_output_byte_cap": 8589934592,
   "cost_scope": "Assigned-GPU producer process wall from actual queue monotonic clocks, including setup/hash/export/validation even when GPU idle; not active kernel hours. Explicit cpu_only stages and controller dependency waits excluded. Failed executed stages remain charged. Running/missing durations remain pending, not zero.",
   "exclusions": "Not the total project cost. Manual phase0/numerical/gradient probes, original selected/native initial capture, CPU diagnostics and separate DEV12 release costs are outside these queue-stage rows. Inherited prior-project ledger stays separate. Overlapping passive monitor samples are not summed as experiments.",
   "scientific_success": false,
   "provenance": {
-    "process_started_utc": "2026-10-15T19:25:41.415432+00:00",
-    "report_generated_utc": "2026-10-15T19:25:43.062453+00:00",
-    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/queue_stage_cost_five_systems_v7.log",
+    "process_started_utc": "2026-10-15T19:43:09.322547+00:00",
+    "report_generated_utc": "2026-10-15T19:43:10.814683+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/queue_stage_cost_complete_v9_system_budget.log",
     "source_worktree": "/data1/liuyeqiang/WWW_trackvggt_20261015",
-    "commit": "4e1d57c820127f8bcd317831658ab67a21149a24",
-    "report_generation_commit": "4e1d57c820127f8bcd317831658ab67a21149a24",
+    "commit": "0c7e349162924f3becf26b8a4b948a7d3bf0005a",
+    "report_generation_commit": "0c7e349162924f3becf26b8a4b948a7d3bf0005a",
     "command": [
       "geo_tools/summarize_trackvggt_queue_costs.py"
     ],
@@ -373,7 +372,7 @@
       "geo_tools/run_constant_head_control.py": "9c8bc80e1e245c1559a845d643388bb1110b7cf0f5f86f46acb192493a1fa705",
       "geo_tools/evaluate_teacher_pairs.py": "92b4b1f09cf2858ea0d5d7239d0b3b414a660959d6dba1c755a7ddb764625a1a",
       "geo_tools/test_trackvggt_relation_contracts.py": "853d04e6d10868883e3aba5d23e16a6a3ae501fecec8ae914fc8c329c6ad558c",
-      "geo_tools/summarize_trackvggt_queue_costs.py": "518d7fca4eb2f9efba488a58eefc3921ed01dca3592a6c78657ded6b897985a9",
+      "geo_tools/summarize_trackvggt_queue_costs.py": "ced1fc557a080f1b244d4c8d843234a3ae1c2196571ded47b36d749be13a8263",
       "geo_tools/audit_current_default_source.py": "3c1bc82344b5875059794cc8dbed8f4106bee778fd469355dddee0b9ebc0afc5",
       "geo_tools/collect_hard_events.py": "0a403f11136ad4290914854a4990beff4902fb72362283772d2c64471fa41ac6",
       "geo_tools/seal_trackvggt_full_audit.py": "1965de42970950c3186914fda0212d1aa49b3bc1008ec54ba0f96174c2ae176f",
@@ -441,7 +440,7 @@
       "geo_tools/test_target_cache_prefix_audit.py": "d2cd9c6a65730c40e9d98c4f63c7afdbbaa6a0e3c151e79bdc458ad1c347e86f",
       "geo_tools/monitor_project_resources.py": "91e447b9154096d6845ce4ee4013503f6ab1d3bd0b7219129c07e6c88546a6f6",
       "geo_tools/probe_trackvggt_backward.py": "58770df3460fe7258439c9a98ee8cf9826fe6e0b0c704db671eb605ed11e59e1",
-      "geo_tools/summarize_trackvggt_teachers.py": "caeeddc734a928480c9182c855c817d73027b5ce6b3ade9985307e44d198a1e5",
+      "geo_tools/summarize_trackvggt_teachers.py": "f3c64a00ba2672eb2cf7864d5b90ef70d15c0759bc3b93f484f1cc87f2e51e91",
       "geo_tools/test_resource_samples.py": "ea502b2c7e2575fa9742786334f978f2e07e30a079b8bde294c40f66d65f163a",
       "geo_tools/test_research_queue.py": "f11de3eca1f893c15934a691b58bb2cc1b19971765117660440a736def8cda82",
       "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
@@ -609,7 +608,7 @@
       "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
     },
     "source_tree_dirty": true,
-    "source_diff_sha256": "8fc638be611bdfc8f93b3bcdc1ee6a0552e8722642bff08fe30b16c0ff1b2e7f",
+    "source_diff_sha256": "3e25c40ae7011b163b3a092d0c38f90cf3eb509391dfd0ef0ed7cd526992b2d1",
     "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
     "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",

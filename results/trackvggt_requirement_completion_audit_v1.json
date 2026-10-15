@@ -1,5 +1,5 @@
 {
-  "status": "INCOMPLETE_REQUIREMENT_AUDIT",
+  "status": "READY_FOR_FINAL_MANUAL_NEGATIVE_SCOPE_REVIEW",
   "rows": [
     {
       "id": "source_and_actual_interfaces",
@@ -189,27 +189,35 @@
     },
     {
       "id": "fresh_full_system_retrieval_DEV5",
-      "status": "INCOMPLETE",
+      "status": "VERIFIED_AT_STATED_SCOPE",
       "path": "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_system_execution_snapshot_v1.json",
-      "sha256": "7d586c8a957669621c3bcef64ea65dbb01586ceece5f0ec267e49c5ec0370e9d",
-      "observed_status": "ACTUAL_NATIVE_SYSTEM_PROGRESS_SNAPSHOT",
+      "sha256": "61d4fc9cd1901697cb92d9a093dd34e843c138e645380b4ef7d36091f044615c",
+      "observed_status": "COMPLETE_FRESH_NATIVE_SYSTEM_EVALUATION",
       "scope": "Six actual full profiled native/Prior2/4/10 cases plus two new complete DEV5 TrackEval results."
     },
     {
       "id": "full_detector_and_retrieval_pairing",
-      "status": "INCOMPLETE",
+      "status": "VERIFIED_AT_STATED_SCOPE",
       "path": "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_system_query_pairs_v1.json",
-      "sha256": "081584f622e723710473c9f6c2412ffd143a1891d0a115a8217b2d8839e876f7",
-      "observed_status": "PARTIAL_ACTUAL_NATIVE_QUERY_PAIRS",
+      "sha256": "1591ed446e6c35ec44706acf22c3d8cdf57f06abdaf3d5d91096241bd0bd73fa",
+      "observed_status": "COMPLETE_ACTUAL_NATIVE_QUERY_PAIRS",
       "scope": "Actual OFF/Prior full detector boxes/scores/order and query GT labels paired; eligibility drift and common-query fixes/harms separate."
     },
     {
       "id": "actual_queue_costs",
-      "status": "INCOMPLETE",
+      "status": "VERIFIED_AT_STATED_SCOPE",
       "path": "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_queue_stage_costs_v1.json",
-      "sha256": "978db48304f9b9d70af5f367682012602e9621c22df424c7a158173370029cb9",
-      "observed_status": "PARTIAL_ACTUAL_QUEUE_STAGE_COSTS",
+      "sha256": "948b43540f879ca6de8deac1c27646b3aa1d499e903bd42cdb7f86483805dda1",
+      "observed_status": "COMPLETE_ACTUAL_QUEUE_STAGE_COSTS",
       "scope": "Complete actual GPU-visible process wall; CPU waits excluded, separate manual/DEV12/inherited exclusions."
+    },
+    {
+      "id": "sealed_passive_native_resources",
+      "status": "VERIFIED_AT_STATED_SCOPE",
+      "path": "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_native_system_sampled_resources_v1.json",
+      "sha256": "2a9b714c5d859e9cdb753b581b2824653f7f7db588759dc88fffb0fe5b326c6b",
+      "observed_status": "FINISHED_PROBE_SAMPLED_RESOURCES",
+      "scope": "Finished3650-group/31-observed-process passive probe. Whole-device samples include waits/unattributed activity; not per-method kernel utilization or lifetime allocation peaks."
     },
     {
       "id": "historical_monitoring_limits",
@@ -220,25 +228,9 @@
       "id": "all_named_artifacts_present",
       "status": "VERIFIED_PRESENCE_AND_HASH_ONLY",
       "scope": "Content acceptance is separate from existence."
-    },
-    {
-      "id": "final_document_closure",
-      "status": "INCOMPLETE",
-      "markers": {
-        "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_FINAL_REPORT.md": "\u72b6\u6001\uff1aIN_PROGRESS",
-        "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_REVIEWER_AUDIT.md": "INTERIM_REVIEWER_AUDIT",
-        "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_RUNTIME_PROTOCOL.md": "ACTUAL_PREFIX_GATE_PASSED_FULL_REPLAYS_RUNNING",
-        "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_SYSTEM_RESULTS.md": "ACTUAL_NATIVE_SYSTEM_PROGRESS_SNAPSHOT",
-        "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_REQUIREMENT_AUDIT.md": "\u6700\u7ec8\u9700\u6c42\u9a8c\u6536\uff08\u8fdb\u884c\u4e2d\uff09"
-      }
     }
   ],
-  "pending_requirements": [
-    "fresh_full_system_retrieval_DEV5",
-    "full_detector_and_retrieval_pairing",
-    "actual_queue_costs",
-    "final_document_closure"
-  ],
+  "pending_requirements": [],
   "original_request_sha256": "d1b80277b5cc9ab9bda9bc31c3cd6490495cf7f08bc8cc612b72427639032e87",
   "named_artifact_receipts": {
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_FINAL_GOAL.md": "d1b80277b5cc9ab9bda9bc31c3cd6490495cf7f08bc8cc612b72427639032e87",
@@ -247,9 +239,9 @@
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_EXPERIMENT_PLAN.md": "843364f0e8aac3eb39c283a4dfb6f5d320d56cb62b0ead9a6f9739a333d2a2e1",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_HARD_EVENTS.md": "ce2d8557066a85a69d04981e125af18be47b4a8af1fbf7ba5cdd247357deb4cc",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_TEACHER_RESULTS.md": "2cfd951c4bb8d212c6193e9a0f3e16fa3bc9ff7c0ad7514d77eed6eab4dd96f0",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_STUDENT_RESULTS.md": "c9e828c9ff99999e98bbafe2919b02be3c2a3dcc09ccfe329374f9ab5461fe79",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_REVIEWER_AUDIT.md": "5ca8b25e1dda80f03e989f9d3c97ff93de2db63d27d376ed23846d68018b69af",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_FINAL_REPORT.md": "388a4a4ea7b755cb31058cda36e045caad31722043cd96625d4066c4ada1282d",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_STUDENT_RESULTS.md": "3e132aa4f82a78e69e14c82ba34a1ee954a103ba3026f3476eb23d43cc411747",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_REVIEWER_AUDIT.md": "0b7e093f3c31bc7ece17bd4c3aedd44acb168fbc221d50957f53ee82e8a965e3",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_FINAL_REPORT.md": "101c59bc7f20f7502af192465261fdf6455e0107c1820a3374a780177936fb82",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/PHASE0_SOURCE_AND_INTERFACE_AUDIT.md": "05512f3348ce2af5b4f542f6498ca1f999c649979289cc4a33fb6323b1e72a1b",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_FULL_TRAIN_AUDIT.md": "723f232b6dd6561fa8b64b7a1b74513bc7c208aa51b80b0b5dda606fc1b2a86f",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_DATASET_DIFFICULTY_AUDIT.md": "c524c6fba4e93d61d536d993832aa5dac3bbf6e1e8fae362948afc8e82f01f74",
@@ -257,16 +249,16 @@
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_FIT_DATA_EXPANSION_DECISION.md": "e86782ed3133190302eb0b57710d6c7c2398e290b457f5ec7317d2b73c706b92",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_DEV12_NATIVE_ASSET_HANDOFF.md": "32b8ad9097006a954385aecce654bf16d7d0a1f7158a70069a345cd5cd49bf56",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_DEV12_NATIVE_ASSET_SCHEMA.md": "46ad8a575dade9f3c021c4f4d021e4b8d50840f0d7fdbe17bd81b451c63669d0",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_REQUIREMENT_AUDIT.md": "65e31559443ef44dfa6aa925395ece1482c3711bd6bc5a6e623a158da25df1f5",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_RUNTIME_PROTOCOL.md": "283cb0c9f71cb31dc091382daba769f11860ca401dac7fe5516c382174f6ca7e",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_SYSTEM_RESULTS.md": "82edd299b969cdd762e62f5ba55088276fed544707ff8d5ac6ecd7dd106adc6b",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_REQUIREMENT_AUDIT.md": "81cfb793897774e80efbf3b44ddeb98da6758047dcf9847d7e4c20cc0e678a9c",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_RUNTIME_PROTOCOL.md": "e7566e12c5d15796c985cc31d734d11dbd616c897b2b68a154d2a78907c00a6b",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_SYSTEM_RESULTS.md": "e378737c0bcc23e4d1b03c5164cfb8f159c5efef9ac85c36e7193eb43335689c",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/docs/TRACKVGGT_CAPACITY_CONTROL.md": "69be3e0428286e60e357a9025deaf0e3a477697d686065ff5cf198610c858db7",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/results/teacher_ablation.csv": "05e36336d2885b7d00b519c18d6d3afa574a1d0fe9acf823c7090b9dc4c1d532",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/results/student_ablation.csv": "ea50e318125b91d9e6a5c1db4c204461b40bcee520caf9da7f13932176bfd7b9",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/full_tracking_metrics.csv": "2f2d409ab2ecb20e588b320b87ee2db71722c7a3652a2b098b0f16fa4b9e38b6",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/runtime_comparison.csv": "603efdddb9ff4e9a1a71227bb30404f0cba46f0f467ea53468f1bb85d27b3549",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/identity_correction_audit.json": "8f7f94db267fd2b7e405074625933b5675242e803f514bda4ab3464cf17da029",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/experiment_manifest.json": "931ba6bfe2c3c2f0443fe7ea311d48cdc2d2d7ee14c2742f4c6ba9ecedd3a6ac",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/full_tracking_metrics.csv": "66139458d7e61e8330acf377ad5560be921f681897130652201fb93489343cbe",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/runtime_comparison.csv": "d663e6d34825d33fcd1a69ebe09d158909755defc0afd38f0e38bdcf78618e38",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/identity_correction_audit.json": "4cb20db19dae4fae198eb4db7c2dfcfb988f596d50627741bb20c81e7a9fcb30",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/experiment_manifest.json": "06f1be345e9180e4854fa8ac878c5ee2fbab50d3dc1140ec13558fec1d203c3e",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_all24_dataset_census_v1.csv": "8f46b36193cc1f580de0e247e750552adbe5c6ba5c7b1d86ee6dba3f6d348441",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_full_train_error_census_v1.csv": "90db5bd20e8f23d96cec9096d16a72f2d30166ff809fb277a4fe217de7a81a05",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_candidate_headroom_v1.json": "9f428e5efac59971607dcaf0236e616259552d447c2056649921a4c3082b4e9a",
@@ -300,9 +292,10 @@
     "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_inherited_native_reference_v1.json": "fbc72343a24d02a9fe4ce4e979488767efb0a581899072ab4b34ffcece0cac0d",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_dev12_native_release_v1.json": "74afcb603922405493cfb2ab89b02cafd2c6d7a274db96a2eb57bbf40ead8727",
     "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_frozen_direct_input_hash_recheck_v1.json": "d257b4d494fef94b4c526ff1a1643602f3404c2993c409591f3b0f78c2a4e1fd",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_system_execution_snapshot_v1.json": "7d586c8a957669621c3bcef64ea65dbb01586ceece5f0ec267e49c5ec0370e9d",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_system_query_pairs_v1.json": "081584f622e723710473c9f6c2412ffd143a1891d0a115a8217b2d8839e876f7",
-    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_queue_stage_costs_v1.json": "978db48304f9b9d70af5f367682012602e9621c22df424c7a158173370029cb9"
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_system_execution_snapshot_v1.json": "61d4fc9cd1901697cb92d9a093dd34e843c138e645380b4ef7d36091f044615c",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_system_query_pairs_v1.json": "1591ed446e6c35ec44706acf22c3d8cdf57f06abdaf3d5d91096241bd0bd73fa",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_queue_stage_costs_v1.json": "948b43540f879ca6de8deac1c27646b3aa1d499e903bd42cdb7f86483805dda1",
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_native_system_sampled_resources_v1.json": "2a9b714c5d859e9cdb753b581b2824653f7f7db588759dc88fffb0fe5b326c6b"
   },
   "conditional_nonexecution_is_not_a_trained_result": true,
   "overall_goal_complete": false,
@@ -312,12 +305,12 @@
   "student_success": false,
   "paper_ready": false,
   "provenance": {
-    "process_started_utc": "2026-10-15T19:25:55.908997+00:00",
-    "report_generated_utc": "2026-10-15T19:26:00.248756+00:00",
-    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/requirements_interim_audit_v7_population_limits.log",
+    "process_started_utc": "2026-10-15T19:50:44.518659+00:00",
+    "report_generated_utc": "2026-10-15T19:50:48.422235+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/requirements_final_audit_v9_manual_scope_closed.log",
     "source_worktree": "/data1/liuyeqiang/WWW_trackvggt_20261015",
-    "commit": "4e1d57c820127f8bcd317831658ab67a21149a24",
-    "report_generation_commit": "4e1d57c820127f8bcd317831658ab67a21149a24",
+    "commit": "0c7e349162924f3becf26b8a4b948a7d3bf0005a",
+    "report_generation_commit": "0c7e349162924f3becf26b8a4b948a7d3bf0005a",
     "command": [
       "geo_tools/audit_trackvggt_requirements.py"
     ],
@@ -363,7 +356,7 @@
       "geo_tools/run_constant_head_control.py": "9c8bc80e1e245c1559a845d643388bb1110b7cf0f5f86f46acb192493a1fa705",
       "geo_tools/evaluate_teacher_pairs.py": "92b4b1f09cf2858ea0d5d7239d0b3b414a660959d6dba1c755a7ddb764625a1a",
       "geo_tools/test_trackvggt_relation_contracts.py": "853d04e6d10868883e3aba5d23e16a6a3ae501fecec8ae914fc8c329c6ad558c",
-      "geo_tools/summarize_trackvggt_queue_costs.py": "518d7fca4eb2f9efba488a58eefc3921ed01dca3592a6c78657ded6b897985a9",
+      "geo_tools/summarize_trackvggt_queue_costs.py": "ced1fc557a080f1b244d4c8d843234a3ae1c2196571ded47b36d749be13a8263",
       "geo_tools/audit_current_default_source.py": "3c1bc82344b5875059794cc8dbed8f4106bee778fd469355dddee0b9ebc0afc5",
       "geo_tools/collect_hard_events.py": "0a403f11136ad4290914854a4990beff4902fb72362283772d2c64471fa41ac6",
       "geo_tools/seal_trackvggt_full_audit.py": "1965de42970950c3186914fda0212d1aa49b3bc1008ec54ba0f96174c2ae176f",
@@ -431,7 +424,7 @@
       "geo_tools/test_target_cache_prefix_audit.py": "d2cd9c6a65730c40e9d98c4f63c7afdbbaa6a0e3c151e79bdc458ad1c347e86f",
       "geo_tools/monitor_project_resources.py": "91e447b9154096d6845ce4ee4013503f6ab1d3bd0b7219129c07e6c88546a6f6",
       "geo_tools/probe_trackvggt_backward.py": "58770df3460fe7258439c9a98ee8cf9826fe6e0b0c704db671eb605ed11e59e1",
-      "geo_tools/summarize_trackvggt_teachers.py": "caeeddc734a928480c9182c855c817d73027b5ce6b3ade9985307e44d198a1e5",
+      "geo_tools/summarize_trackvggt_teachers.py": "f3c64a00ba2672eb2cf7864d5b90ef70d15c0759bc3b93f484f1cc87f2e51e91",
       "geo_tools/test_resource_samples.py": "ea502b2c7e2575fa9742786334f978f2e07e30a079b8bde294c40f66d65f163a",
       "geo_tools/test_research_queue.py": "f11de3eca1f893c15934a691b58bb2cc1b19971765117660440a736def8cda82",
       "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
@@ -496,7 +489,7 @@
       "geo_tools/plot_research_results.py": "134a14fdf47c200bc72d8d40b3af41c6ad444a272fbe3003c2258f2372cceaec",
       "geo_tools/validate_process_worker_gpu.py": "886c032d8055d2c2189a909c6d95ea47d66c3254e90a1b163ab0a2f1221e7ff1",
       "geo_tools/prepare_parallel_dense_stability.py": "95e5f39183ac80e8b48d8ff9770cd555f70c466ed97cb9f3e1c35c2c50ca8c4d",
-      "geo_tools/audit_trackvggt_requirements.py": "80b525587e982907826fc69e8e7784093f9c95379d11ac3c9aa6300b9974daf4",
+      "geo_tools/audit_trackvggt_requirements.py": "44d896b32719915a7637504e7e1d46b6f0c06a4b82ec5f7dbcb3553659cbec3d",
       "geo_tools/test_geometry.py": "6e8f586b5b731d68888012a9af5ed38eb6b0bc8f26e88fa458b3b138d3e65b32",
       "geo_tools/validate_empty_association.py": "bbc231eb659c8603558efa62f63c43587338219e5a96644096926eb431cfd92c",
       "geo_tools/prepare_history_training.py": "7b7851a6dbc8a29684d7bbd332a448ba3058cc79bc37579eb6f29547ae36d342",
@@ -599,7 +592,7 @@
       "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
     },
     "source_tree_dirty": true,
-    "source_diff_sha256": "d9d9ed8d89c89b5361adae4feb64308407669cab8614dd256aeba35194e218ab",
+    "source_diff_sha256": "374cfe6b8f5ff10bdd8cff0a53c4736c0e979e1b9ffdcba3c4fc8a002ff66975",
     "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
     "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
