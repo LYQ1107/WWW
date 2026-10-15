@@ -93,7 +93,7 @@ stock不是主要协议。最终轨迹长度过滤依赖整段视频，不能用
 MASTER_GOAL状态 ACTIVE，scientific_success=False。完整基线和工程接入已证；MLP已测质量正向，默认效率失败；必要种子、MCMT特征/机制贡献和合格独立完整视频尚未证明。应用Goal不能据此标为科学完成。
 数据范围仅TRAIN12/13/14学习、TRAIN16开发；不新增DEV17–19、封存20–22、官方TEST、Full24或新数据下载。TRAIN16不能伪装独立验证，旧阶段NO_GO/checkpoint保留。
 先完成已注册默认计时和条件缓存工程检查，不扩大架构/训练步数。即使缓存满足速度，仍需必要种子和合法合格独立验证；若预算内未通过，报告NOT_ESTABLISHED及具体缺口，不因GPU尚空闲盲目训练。
-最近资源快照（并非停止时最终结算）：{"GPU_wall_hours_including_live": 11.07713697756744, "home_free_GiB": 50.029972076416016, "new_retained_MiB": 311.61866188049316}。累计上限12 GPU-wall-hours、新留存512MiB、目标盘至少30GiB余量，重设Goal不清零预算。
+最近资源快照（并非停止时最终结算）：{"GPU_wall_hours_including_live": 11.07713697756744, "home_free_GiB": 50.02982711791992, "new_retained_MiB": 311.70238971710205}。累计上限12 GPU-wall-hours、新留存512MiB、目标盘至少30GiB余量，重设Goal不清零预算。
 
 ## 10. 代码、记录与GitHub
 
