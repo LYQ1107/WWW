@@ -84,7 +84,7 @@ class Tests(unittest.TestCase):
         self.assertGreater(index.evictions, 0)
 
     def test_interleaving_preserves_each_stream_rng_and_track_output(self):
-        def run(interleaved):
+        def run(interleaved, native_prior=False):
             random.seed(42);np.random.seed(42);torch.manual_seed(42)
             model = model_stub()
             cfg = get_cfg();add_gtr_config(cfg)
@@ -102,15 +102,31 @@ class Tests(unittest.TestCase):
                 boxes, _ = model.roi_heads._get_boxes_time(instances)
                 return [logits], boxes, None, None, None, None
             model.roi_heads._forward_transformer = transformer
-            streams = [IsolatedCausalStream(model) for _ in range(2)]
+            original_runtime = model.geo_runtime
+            def factory(base_geo):
+                from gtr.geometry.native_prior import install
+                geo=base_geo.clone()
+                options=dict(ENABLED=True,FEATURE_ENABLED=True,FEATURE_WEIGHT=2.,GEOMETRY_WEIGHT=0.,
+                    FEATURE_BACKBONE='gmt',FEATURE_LAYERS=[-1],SYMMETRIZE_VIEW_ORDER=False,
+                    PROJECTION_DIM=0,POOLING='reid',MAX_RESIDUAL=2.,
+                    CALIBRATION_PATH=str(ROOT/'manifests/calibration_gmt_reid_absolute_train_v1.json'))
+                for key,value in options.items():setattr(geo,key,value)
+                runtime=GeometryRuntime(geo);install(runtime);return runtime
+            streams = [IsolatedCausalStream(model,runtime_factory=factory if native_prior else None) for _ in range(2)]
+            self.assertIsNot(streams[0].runtime,streams[1].runtime)
             output = [[], []]
             order = [(s, t) for t in range(1, 5) for s in range(2)] if interleaved else [(s, t) for s in range(2) for t in range(1, 5)]
             for s, t in order:
                 records = [dict(frame_id=t, view_id=v, height=100, width=100) for v in [1, 2]]
                 rows = streams[s].step(records)
+                self.assertIs(model.geo_runtime,original_runtime)
                 output[s].append([(r['instances'].track_ids.tolist(), r['instances'].reid_features.tolist()) for r in rows])
+            if native_prior:
+                self.assertEqual([stream.runtime.native_prior_stats['observed_groups'] for stream in streams],[4,4])
+                self.assertEqual([stream.runtime.native_prior_stats['maximum_extra_vector_columns'] for stream in streams],[0,0])
             return output
         self.assertEqual(run(False), run(True))
+        self.assertEqual(run(False,True),run(True,True))
 
 
 if __name__ == '__main__':

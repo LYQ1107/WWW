@@ -23,13 +23,13 @@ def restore(state):
 
 
 class IsolatedCausalStream:
-    def __init__(self, model):
+    def __init__(self, model, runtime_factory=None):
         if model.geo_runtime.active:
             raise ValueError('shared tracking model must use GEO OFF; retrieval extraction is separate')
         self.model = model
         outer, runtime = capture(), model.geo_runtime
         try:
-            self.runtime = GeometryRuntime(runtime.cfg)
+            self.runtime = (runtime_factory or GeometryRuntime)(runtime.cfg)
             model.geo_runtime = self.runtime
             self.tracker = CausalGMT(model)
             self.state = capture()

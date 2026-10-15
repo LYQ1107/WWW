@@ -19,6 +19,8 @@ def main():
     parser.add_argument('--query-interval', type=int, default=20)
     parser.add_argument('--index-mib', type=int, default=100)
     parser.add_argument('--diagnose-scoring', action='store_true')
+    parser.add_argument('--tracking-native-prior', action='store_true',
+                        help='explicit head-free fixed-prior tracking control; retrieval features remain separately selected')
     args = parser.parse_args()
     # Frozen development selection; no TEST and no GT-driven query selection.
     allowed = {1, 10, 11, 18, 19}
@@ -38,7 +40,24 @@ def main():
     from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
     cfg, model = load_gmt()
     seed_all(20261014)
-    streams = {video: IsolatedCausalStream(model) for video in args.video_ids}
+    tracking_options = None
+    tracking_factory = None
+    if args.tracking_native_prior:
+        from gtr.geometry.native_prior import install
+        tracking_options = dict(ENABLED=True, FEATURE_ENABLED=True, GEOMETRY_ENABLED=False,
+            FEATURE_WEIGHT=2., GEOMETRY_WEIGHT=0., FEATURE_BACKBONE='gmt', FEATURE_LAYERS=[-1],
+            SYMMETRIZE_VIEW_ORDER=False,
+            PROJECTION_DIM=0, POOLING='reid', HEAD_PATH='', MAX_RESIDUAL=2.,
+            SPARSE_UPDATE_ENABLED=False, ASYNC_WORKER=False, REUSE_TARGET_FEATURES=False,
+            CALIBRATION_PATH=str(ROOT/'manifests/calibration_gmt_reid_absolute_train_v1.json'))
+        def tracking_factory(base_geo):
+            geo = base_geo.clone()
+            for key, value in tracking_options.items():
+                setattr(geo, key, value)
+            runtime = GeometryRuntime(geo)
+            install(runtime)
+            return runtime
+    streams = {video: IsolatedCausalStream(model, runtime_factory=tracking_factory) for video in args.video_ids}
     # Read image metadata only here. Annotation identities/boxes are never read
     # by inference, publication, query selection or ranking.
     data = train_data()
@@ -96,7 +115,10 @@ def main():
                     boxes = cpu.pred_boxes.tensor.numpy()
                     gmt = cpu.reid_features.numpy()
                     for position in range(len(cpu)):
-                        extra = cpu.geo_vector[position].numpy() if cpu.has('geo_valid') and bool(cpu.geo_valid[position]) else None
+                        # Tracking metadata can contain a zero-column prior
+                        # field. Only the separate retrieval extractor supplies
+                        # ranking vectors; native ranking must ignore it.
+                        extra = cpu.geo_vector[position].numpy() if video in extractors and cpu.has('geo_valid') and bool(cpu.geo_valid[position]) else None
                         target = dict(scene=video, camera=int(record['view_id']), track=int(cpu.track_ids[position]), round_id=round_id,
                                       image_id=int(record['image_id']), frame_id=int(timestamp), bbox=boxes[position].tolist(),
                                       gmt=gmt[position], extra=extra)
@@ -141,6 +163,8 @@ def main():
     def percentiles(values):
         return dict(p50=float(np.percentile(values, 50)), p95=float(np.percentile(values, 95))) if values else None
     report = provenance()
+    if args.tracking_native_prior and any(stream.runtime.vggt is not None or stream.runtime.head is not None for stream in streams.values()):
+        raise ValueError('head-free tracking control unexpectedly loaded an extra model')
     report.update(video_ids=args.video_ids, camera_streams=2*len(args.video_ids), max_frames=args.max_frames, causal_online=True, full_video=args.max_frames is None,
                   setup_time_included=False, first_foundation_load_included=True, seconds=seconds, images=images, camera_image_fps=images/seconds,
                   synchronized_round_fps=len(round_latencies)/seconds, round_latency_seconds=percentiles(round_latencies), query_latency_seconds=percentiles(query_latencies),
@@ -149,7 +173,10 @@ def main():
                   scoring_mode_latency_seconds={mode:percentiles(values) for mode,values in diagnostic_latencies.items()},
                   scoring_diagnostic_scope='same actual query/gallery snapshot; native and learned on identical encoded candidates and identical source observations (native_encoded uses GMT vector saved at the extra-feature observation); no GT candidate selection; absent features count as failed queries on the full-gallery denominator; archived identity vectors describe their past source observations and remain usable until clip TTL, without propagated geometry claims',
                   scoring_timing_scope='when diagnostics enabled, complete producer runs five ranking rules serially; its full throughput is diagnostic cost, not single-ranker production throughput; per-mode scoring/response serialization measured separately',
-                  protocol='causal GMT OFF tracking; independent per-scene banks and RNG; online optional TRAIN head features used only for retrieval',
+                  protocol=('causal GMT with explicit head-free fixed-prior tracking control' if args.tracking_native_prior else 'causal GMT OFF tracking')+'; independent per-scene banks, geometry runtimes and RNG; online optional TRAIN head features used only for retrieval',
+                  tracking_method='native_fixed_prior' if args.tracking_native_prior else 'gmt_off',
+                  tracking_options=tracking_options,
+                  tracking_runtime_stats={str(video):dict(stream.runtime.native_prior_stats) for video,stream in streams.items()} if args.tracking_native_prior else {},
                   temporal_scope='within-scene cameras synchronized by dataset frame_id; unrelated scenes interleaved by ordinal replay round, no physical cross-scene synchronization claim',
                   query_scope='every current detector target at fixed query interval; all other camera clips including unrelated scene distractors; no GT selection',
                   latency_scope='local in-process query scoring and response serialization; no HTTP/network latency claim; full rounds charge reads, detector, GTA, extraction, CPU publication, queries and log I/O',
