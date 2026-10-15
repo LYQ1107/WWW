@@ -143,7 +143,8 @@ is authorized by the data-delivery result.
 The research queue details above describe the actual handoff-time snapshot.
 All56 registered TrackVGGT teacher runs have since completed independently,
 with NO_UNIQUE_VGGT_TEACHER_EVIDENCE and no conditional student fitting. Fresh
-native/Prior system tests are separate ongoing work. This does not alter the
+native/Prior system tests and the final bounded negative audit are also complete
+as separate baseline evidence. This does not alter the
 sealed DEV12 version, files, trust anchor, native-equivalence/consumer proofs
 or its independent usage boundary; no release inputs/labels were added to
 VGGT fitting or model selection.

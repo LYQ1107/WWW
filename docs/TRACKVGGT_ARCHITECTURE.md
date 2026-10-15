@@ -13,5 +13,6 @@ that time. Actual causal native data, all56 registered AG/QD/crop/temporal
 fits and independent paired audits have since completed. The screening gate
 is NO_UNIQUE_VGGT_TEACHER_EVIDENCE; IRGD/conditional trained students and
 learned full-video deployment are unexecuted. Fresh native system work and
-final audit remain separate; see the current teacher/system/final reports.
+final audit are complete as separate baseline/negative evidence; see the current
+teacher/system/final reports.
 Implementation contracts are not a scientific-success or learned deployment claim.
