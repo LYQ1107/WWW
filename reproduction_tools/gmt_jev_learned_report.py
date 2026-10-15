@@ -1,4 +1,5 @@
 """Current learned-gate evidence, preserving historical negative decisions."""
+import gzip
 from gmt_jev_common import *
 
 KINDS=['mlp','attention','cic']
@@ -48,16 +49,31 @@ def main():
    IDSW=m['IDSW']<=1.05*b['IDSW'],Frag=m['Frag']<=1.05*b['Frag'],
    descriptive_long_error=result['identity']['identity_inconsistency_duration_camera_frames']<=1.05*baseline['identity']['identity_inconsistency_duration_camera_frames'],
    genuinely_causal_error_propagation='NOT_ESTABLISHED')
-  fps=None;ratio=None
+  fps=None;ratio=None;speed_reference=None;parity_reference=None
   if speed_path.exists():
    s=read(speed_path);assert s['physical_GPU']==7 and len(s['trials'])==3
    original=read(REPORTS/'SPEED_original.json');assert s['GPU_UUID']==original['GPU_UUID']
    assert s['trained_checkpoint']['SHA256']==result['trained_checkpoint']['SHA256']
+   parity_path=REPORTS/f'LEARNED_STOCK_TIMING_PARITY_{kind}.json'
+   references=dict(quality=result['stock_predictions'],timing=s['stock_predictions'])
+   for reference in references.values():assert sha(reference['path'])==reference['SHA256']
+   if parity_path.exists():
+    proof=read(parity_path);assert proof['references']==references and proof['status']=='PASS_EXACT_RECORDS'
+   else:
+    with gzip.open(references['quality']['path'],'rt') as f:quality_records=json.load(f)
+    with gzip.open(references['timing']['path'],'rt') as f:timing_records=json.load(f)
+    assert quality_records==timing_records,'Timed learned deployment differs from evaluated policy: '+kind
+    save(parity_path,dict(status='PASS_EXACT_RECORDS',kind=kind,references=references,
+     records=len(quality_records),checkpoint=s['trained_checkpoint'],no_new_GMT_run=True,
+     scope='All retained image/box/score/class/native-ID records after identical stock processing. Gzip file SHA may differ because container metadata differs. Three timed internal stock fingerprints are separately required identical.'))
+    del quality_records,timing_records
+   speed_reference=ref(speed_path);parity_reference=ref(parity_path)
    fps=2*s['mean_full_scene_FPS'];ratio=s['mean_full_scene_FPS']/original['mean_full_scene_FPS']
   methods[kind]=dict(report=ref(path),primary_raw=raw,secondary_stock=result['secondary_stock'],delta=delta,
    quality_gates=gates,joint_measured_quality_pass=all(v for k,v in gates.items() if k!='genuinely_causal_error_propagation'),
    full_image_FPS=fps,FPS_ratio_to_GMT=ratio,efficiency_gate_pass=ratio>=.95 if ratio is not None else None,
-   speed_report=ref(speed_path) if speed_path.exists() else None,paired_current_state_counts=result['paired_commit_counts'],
+   speed_report=speed_reference,paired_current_state_counts=result['paired_commit_counts'],
+   timing_prediction_parity=parity_reference,
    correct_accepted_reference_preservation_rate=result['correct_accepted_reference_preservation_rate'],
    post_hoc_past_anchor_temporal=temporal,
    scientific_success=False,independent_validation=False)
