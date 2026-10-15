@@ -145,6 +145,27 @@ def main():
         fig.savefig(out/'causal_retrieval_results.png', dpi=180)
         fig.savefig(out/'causal_retrieval_results.pdf')
         plt.close(fig)
+    budget_path=ROOT/'results/native_prior_vs_vggt_full_dev_budget_v1.json'
+    if budget_path.exists():
+        budget=json.loads(budget_path.read_text());sources[str(budget_path)]=sha256(budget_path)
+        labels=['Head-free fixed prior','Dense VGGT','Sparse VGGT, k20/cap80']
+        fig,axes=plt.subplots(1,2,figsize=(10,4.5))
+        for method,label,color in zip(budget['methods'],labels,['#448b78','#986799','#b98549']):
+            name=Path(method['source']).stem.removesuffix('_sources')
+            metric_path=ROOT/'results'/f'{name}_metrics.json';metric=json.loads(metric_path.read_text())
+            if metric['video_ids']!=[1,10,11,18,19] or not metric['causal_online'] or metric['images']!=method['total_images']:
+                raise ValueError('matched complete strict5 causal figure required')
+            sources[str(metric_path)]=sha256(metric_path)
+            for axis,x in zip(axes,[method['cumulative_camera_image_fps'],method['total_actual_vggt_calls']]):
+                axis.scatter(x,metric['metrics']['CVIDF1'],s=55,color=color,label=label)
+                axis.grid(alpha=.2);axis.set_ylabel('CVIDF1 (%)')
+        axes[0].set_xlabel('Complete camera images/s');axes[1].set_xlabel('Actual VGGT calls (all five scenes)')
+        axes[0].legend(loc='lower right',fontsize=8)
+        fig.suptitle('Complete strict development: identity and compute',fontsize=12)
+        fig.text(.5,.015,'Single V100 measurements; repeated stability/attribution incomplete; no Pareto or real-time claim.',ha='center',fontsize=8)
+        fig.tight_layout(rect=(0,.055,1,.94))
+        fig.savefig(out/'causal_full_dev_identity_compute.png',dpi=180)
+        fig.savefig(out/'causal_full_dev_identity_compute.pdf');plt.close(fig)
     save_json(out/'manifest.json', dict(status='IN_PROGRESS_FIGURES', source_artifacts=sources,
               outputs={path.name:sha256(path) for path in out.iterdir() if path.suffix in {'.png','.pdf'}},
               provenance=provenance(), limitations='incomplete research matrix; no replicate confidence intervals or accuracy/runtime Pareto superiority inferred'))
