@@ -15,6 +15,7 @@ from common import *
 from audit_decision_trace import records
 from audit_full_train_identity_events import original_truth, label_detectors
 from collect_track_hard_events import pure_reference_identity
+from trackvggt_cycle_data import observable_cycle,label_cycle
 
 NEW=Path('/data1/liuyeqiang/WWW_trackvggt_runtime')
 
@@ -75,21 +76,21 @@ def main():
     v3path=ROOT/'manifests/trackvggt_expanded_training_v3.json';v3=json.loads(v3path.read_text());v2path=ROOT/'results/trackvggt_expanded_cohort_v2.json'
     if v3['status']!='LOCKED_TRAIN_EVENT_INDEX_REQUIRES_SELECTED_FEATURE_CAPTURE':raise ValueError('unlocked index')
     v2=json.loads(v2path.read_text());probe_payloads={};probe_events={}
-    if a.mode=='precheck-v2':
+    if a.mode in ('precheck-v2','full'):
         for item in v2['fit']:
             if item['scene']!=a.video_id:continue
             path=item['event_file']
             if path not in probe_payloads:probe_payloads[path]=torch.load(path,map_location='cpu')
             payload=probe_payloads[path];e=payload['events'][item['event_index']];q=payload['observations'][tuple(e['query_source'])]
-            if q['frame']<=40:probe_events[tuple(e['key'])]=(payload,e)
-        wanted={key[1:] for key in probe_events}
-    else:
-        wanted={tuple(r['key'][1:]) for r in v3['additional_fit'] if r['scene']==a.video_id and (a.mode=='full' or r['frame']<=40)}
+            if a.mode=='full' or q['frame']<=40:probe_events[tuple(e['key'])]=(payload,e)
+    wanted_new={tuple(r['key'][1:]) for r in v3['additional_fit'] if r['scene']==a.video_id and (a.mode=='full' or r['frame']<=40)}
+    wanted={key[1:] for key in probe_events} if a.mode=='precheck-v2' else wanted_new|({key[1:] for key in probe_events} if a.mode=='full' else set())
     if not wanted:raise ValueError('no locked requested query')
     if a.output.exists():raise FileExistsError(a.output)
     out=a.output;out.mkdir(parents=True);data=train_data();full_images=video_records(data,a.video_id)
     images=full_images if a.mode=='full' else video_records(data,a.video_id,40);by_image={i['image_id']:i for i in images};groups=collections.defaultdict(list)
     for image in images:groups[image['frame_id']].append(image)
+    wanted_frames={by_image[key[0]]['frame_id'] for key in wanted}
     prov=provenance()
     for key in ['checkpoint_sha256','config_sha256','annotation_sha256','seed']:
         if prov[key]!=bm['provenance'][key]:raise ValueError('frozen source signature differs: '+key)
@@ -102,7 +103,7 @@ def main():
     from gtr.geometry.decision_trace import DecisionTrace
     from gtr.geometry.online_runner import CausalGMT
     from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
-    cfg,model=load_gmt();window=ObservationWindow();pending_detectors={};kept={};calls={};captured=[];primary_counter=0;dimensions=set()
+    cfg,model=load_gmt();window=ObservationWindow();pending_detectors={};kept={};calls={};captured=[];primary_counter=0;dimensions=set();earlier_evidence={};active_frame=None
     trace=DecisionTrace(model,out);write_original=trace.write
     def write(stream,record):
         if stream is trace.detectors:
@@ -123,7 +124,8 @@ def main():
         result=asso_original(instances,k,**kwargs)
         if kwargs.get('geo_context',True) is False:return result
         index=primary_counter;primary_counter+=1;query=instances[k];queries=[tuple(q) for q in query.decision_trace_source.cpu().tolist()]
-        if not any(q in wanted for q in queries):return result
+        requested=any(q in wanted for q in queries)
+        if not requested and active_frame not in wanted_frames:return result
         refs=[x for j,x in enumerate(instances) if j!=k];logits=result[0][0]
         sources=[tuple(s) for x in refs for s in x.decision_trace_source.cpu().tolist()]
         ids=torch.cat([x.track_ids for x in refs]);tracks=ids.unique(sorted=True)
@@ -131,16 +133,24 @@ def main():
         probabilities=torch.cat(model.roi_heads._activate_asso(logits.split([len(x) for x in refs],dim=1)),dim=1)
         scores=probabilities@(ids[:,None]==tracks[None,:]).float()
         call,events=selected_call(scores,logits,queries,sources,ids,tracks,[len(x) for x in refs],window,tracker.counts,wanted)
-        if not events:return result
-        calls[index]=call
+        if events:calls[index]=call
         for event in events:
             event.update(key=[a.video_id,*event['query_source']],call_index=index)
             retain_observations(window,call,event,kept)
+            graph,extra=observable_cycle(call,event,window.values,earlier_evidence)
+            event['cycle']=graph
+            event['requested_role']='new_V3_fit' if tuple(event['query_source']) in wanted_new else 'reused_V2_cycle_auxiliary_and_parity_control'
+            for key in extra:kept[key]=window.values[key]
             captured.append(event)
+        # Current-group evidence only: an earlier-camera B(t) call can support
+        # a later-camera A(t), never the reverse or a future group.
+        score_cpu=scores.detach().float().cpu();track_list=tracks.cpu().tolist();count_snapshot={int(t):int(tracker.counts[t]) for t in track_list}
+        for qi,source in enumerate(queries):earlier_evidence[source]=dict(track_ids=track_list,scores=score_cpu[qi],counts=count_snapshot)
         return result
     model.inference=infer;model.get_asso=association;seed_all(20261014);tracker=CausalGMT(model);predictions=[];started=time.perf_counter()
     try:
         for frame,group in sorted(groups.items()):
+            active_frame=frame;earlier_evidence.clear()
             outputs=tracker.step(map_records(cfg,group))
             for record,output in zip(group,outputs):predictions.extend(custom_instances_to_coco_json(output['instances'].to('cpu'),record['image_id']))
             window.evict(frame-model.test_len)
@@ -167,6 +177,7 @@ def main():
     truth,blocked,gt_hashes,gt_diagnostics=original_truth(data,a.video_id,full_images)
     labels,_,_,_=label_detectors(baseline,truth,blocked)
     audited={tuple(e['key']):e for e in records(baseline/'events.jsonl.gz') if tuple(e['key'][1:]) in wanted}
+    cycle_targets={}
     for event in captured:
         call=calls[event['call_index']];target=audited[tuple(event['key'])];identity=labels[tuple(event['query_source'])];values=collections.defaultdict(list)
         for ref in call['references']:values[ref['track']].append(labels[tuple(ref['source'])])
@@ -180,6 +191,7 @@ def main():
             observed_positive_tracks_including_impure=target['observed_positive_including_impure'],loss_eligible=bool(positive) or local_null,
             known_unmatched_within_all_recorded_history=local_null,actual_primary_state=target['actual_primary_state'],actual_solver_scope='sealed unchanged actual primary solver before memory',
             selection_scope='locked V3 TRAIN physical query index; no new mining or validation resampling')
+        if event['cycle'] is not None:cycle_targets[tuple(event['key'])]=label_cycle(event['cycle'],call,identity,labels,by_image)
     probe_count=0
     for event in captured:
         if tuple(event['key']) not in probe_events:continue
@@ -191,13 +203,15 @@ def main():
         needed={tuple(event['query_source'])}|{tuple(s) for t in event['candidate_tracks'] for s in call['histories'][t]['sources']}
         for key in needed:assert torch.equal(kept[key]['feature'],old['observations'][key]['feature']) and kept[key]['box']==old['observations'][key]['box']
         probe_count+=1
-    captured.sort(key=lambda e:e['key']);torch.save(dict(events=captured,observations=kept,calls=calls,feature_dim=1152),out/'events.pt')
+    captured.sort(key=lambda e:e['key']);torch.save(dict(events=captured,observations=kept,calls=calls,feature_dim=1152,cycle_targets=cycle_targets),out/'events.pt')
     save_json(out/'event_index.json',captured)
     initial.update(status='COMPLETE_LOCKED_V3_SELECTED_NATIVE_FEATURES' if a.mode=='full' else 'PASS_SELECTED_FEATURE_PRECHECK',groups=len(groups),images=len(images),
         predictions_equal_sealed_native=True,full_prediction_file_bytes_exact=sha256(out/'predictions.json')==bm['predictions_sha256'] if a.mode=='full' else 'PREFIX_ONLY',
         selected_actual_decision_calls=selected_decisions,selected_actual_decisions_exact=True,selected_events=len(captured),native_feature_dim=1152,retained_observations=len(kept),
         extra_observation_window_peak=window.peak,extra_window_horizon_groups_after_group=model.test_len+1,extra_window_transient_horizon_groups_at_most=model.test_len+2,full_native_vector_archive=False,only_selected_query_rows_of_matrices=True,
         gt_labels_after_prediction_and_solver_parity=True,raw_gt_sha256=gt_hashes,GT_unreliable_frame_policy=gt_diagnostics,v2_control_events_exact=probe_count,
+        selected_new_V3_events=sum(e['requested_role']=='new_V3_fit' for e in captured),reused_V2_events_for_new_cycle_auxiliary=sum(e['requested_role']!='new_V3_fit' for e in captured),
+        observable_cycle_queries=len(cycle_targets),visible_cycle_queries=sum(any(v['visible_A_rows']) for v in cycle_targets.values()),cycle_GT_not_used_for_observation_construction=True,
         future_history=False,GT_query_features=False,collection_seconds=seconds,speed_eligible=False,
         artifacts={p.name:sha256(p) for p in out.iterdir() if p.is_file() and p.name!='manifest.json'})
     save_json(out/'manifest.json',initial)
