@@ -1,6 +1,6 @@
 {
   "id": "trackvggt_full_audit_v1",
-  "status": "REAL_PRECHECKS_PASSED_FULL_SCANS_PLANNED",
+  "status": "TIER1_COMPLETE_TIER2_RUNNING_VALIDATION_PENDING",
   "reference_commit": "0c4a3a94a9a51ea8f6d05b9756b70133182ebfdc",
   "request_sha256": "830ceb0fa3863d97aed1c6fa45a65d43a5f4c1136df8f93c64b5e03bb3383f88",
   "project_gpu_ids": [
@@ -176,5 +176,22 @@
   "validation": "Original300 unchanged; scene12 full audit is separate retrospective diagnostic, never fit selection.",
   "v3": "Only after full inventory. If justified, bounded2000\u20134000 unique scene-rotating events, unchanged validation300. A later selected-event capture may need continuous GMT replay because the audit intentionally retains no native feature archive; this is feature construction, not a second statistical scan.",
   "teacher_training_priority": "Prepared AG code is unexecuted; pause launch pending this prerequisite audit.",
-  "prechecks_report": "results/trackvggt_full_audit_prechecks_v1.json"
+  "prechecks_report": "results/trackvggt_full_audit_prechecks_v1.json",
+  "completed_full_video_ids": [
+    9,
+    13,
+    17,
+    20,
+    21,
+    24
+  ],
+  "expansion_decision_rule": {
+    "established": "after tier1 TRAIN audit, before any teacher fitting or comparative results",
+    "min_reachable_rank_or_primary_errors": 260,
+    "min_reachable_known_ranking_errors": 38,
+    "min_new_errors_outside_V2": 130,
+    "min_scenes_with10_new_errors": 3,
+    "interpretation": "finite operational support rule, not a significance test or teacher benefit claim",
+    "conditional_V3": "preserve V2 1000 plus up to2000 new unique events; scene-rotating known errors/ambiguity/moderate/easy/missing,3-group per-identity-camera spacing for added known queries; unknown/missing masks explicit"
+  }
 }
