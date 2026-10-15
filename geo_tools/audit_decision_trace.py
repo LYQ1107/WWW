@@ -14,6 +14,24 @@ def records(path):
         for line in stream:yield json.loads(line)
 
 
+def verify_detector_cohort(left,right):
+    def cohort(rows):
+        values={}
+        for row in rows:
+            key=tuple(row['source'])
+            if key in values:raise ValueError('duplicate physical proposal source')
+            values[key]=row['detection']
+        return values
+    baseline,method=cohort(left),cohort(right)
+    if baseline!=method:raise ValueError('physical detector proposal cohorts differ')
+    return len(baseline)
+
+
+def verify_query_truth(left,right,common):
+    if any(left[key]['gt_identity']!=right[key]['gt_identity'] for key in common):
+        raise ValueError('common primary queries have different GT labels')
+
+
 def verify_run(run,reference):
     manifest=json.loads((run/'manifest.json').read_text());trace=json.loads((run/'decision_trace_manifest.json').read_text())
     ref=json.loads((reference.parent/'manifest.json').read_text())
@@ -23,7 +41,10 @@ def verify_run(run,reference):
         if sha256(run/name)!=digest:raise ValueError('trace artifact changed')
     if sha256(run/'predictions.json')!=manifest['predictions_sha256'] or sha256(reference)!=ref['predictions_sha256']:
         raise ValueError('prediction changed')
-    if signature(manifest)[0]!=signature(ref)[0]:raise ValueError('tracking configuration changed')
+    settings=[signature(value) for value in (manifest,ref)]
+    if not all(value[1] for value in settings):raise ValueError('unverified captured configuration defaults')
+    if settings[0][0]!=settings[1][0]:raise ValueError('tracking configuration changed')
+    if sha256(DATA/'annotations/train.json')!=manifest['annotation_sha256']:raise ValueError('annotation input changed')
     if manifest['geo_failures']:raise ValueError('enhancement failed during trace')
     actual=json.loads((run/'predictions.json').read_text());ids=set(trace['image_ids'])
     # Include empty images in the gate via detector inference provenance count.
@@ -89,7 +110,7 @@ def label_run(run,manifest,images):
             if key in outcomes:raise ValueError('proposal assigned twice by primary tracker')
             state=decision_state(labels.get(key),references,selected);counts[state]+=1
             accepted+=selected>=0
-            outcomes[key]=dict(state=state,accepted=selected>=0,final_equals_primary=final==selected,stage=record['stage'])
+            outcomes[key]=dict(state=state,gt_identity=labels.get(key),accepted=selected>=0,final_equals_primary=final==selected,stage=record['stage'])
     return outcomes,dict(counts= dict(counts),primary_query_assignments=len(outcomes),accepted_primary_assignments=accepted,
                          memory_solver_calls_excluded_from_gt_correctness=bank_calls,raw_gt_sha256=hashes)
 
@@ -100,15 +121,25 @@ def main():
     runs=[a.baseline_run,a.method_run];references=[a.baseline_reference,a.method_reference]
     verified=[verify_run(run,ref) for run,ref in zip(runs,references)]
     if [image['image_id'] for image in verified[0][1]]!=[image['image_id'] for image in verified[1][1]]:raise ValueError('different image scopes')
+    for key in ('video_id','seed','checkpoint_sha256','config_sha256','annotation_sha256','images'):
+        if verified[0][0][key]!=verified[1][0][key]:raise ValueError('unpaired frozen model/data/seed: '+key)
+    proposals=verify_detector_cohort(*(records(run/'detector_provenance.jsonl.gz') for run in runs))
     # Only after both standalone output/configuration gates: read raw GT.
     labelled=[label_run(run,*pair) for run,pair in zip(runs,verified)]
+    if labelled[0][1]['raw_gt_sha256']!=labelled[1][1]['raw_gt_sha256']:raise ValueError('raw GT inputs differ')
     left,right=[pair[0] for pair in labelled];common=left.keys()&right.keys();transitions=collections.Counter()
+    verify_query_truth(left,right,common)
     good={'correct_link','correct_reject_within_recorded_candidates'};bad={'wrong_link','missed_known_positive'};fixes=harms=unknown=0
     for key in common:
         b,m=left[key]['state'],right[key]['state'];transitions[b+' -> '+m]+=1
         fixes+=b in bad and m in good;harms+=b in good and m in bad
         unknown+=b not in good|bad or m not in good|bad
+    artifacts={str(path):sha256(path) for run in runs for path in (run/'manifest.json',run/'decision_trace_manifest.json',run/'predictions.json',run/'actual_decisions.jsonl.gz',run/'detector_provenance.jsonl.gz')}
+    artifacts.update({str(path):sha256(path) for ref in references for path in (ref,ref.parent/'manifest.json')})
+    artifacts.update(labelled[0][1]['raw_gt_sha256']);artifacts[str(DATA/'annotations/train.json')]=verified[0][0]['annotation_sha256']
     save_json(a.report_output,dict(status='PASS_ACTUAL_SOLVER_DIAGNOSTIC',video_id=verified[0][0]['video_id'],full_video=all(pair[0]['full_video'] for pair in verified),full_strict_suite=False,
+        identical_physical_detector_proposal_cohort=True,detector_proposals=proposals,identical_common_primary_query_gt_labels=True,
+        paired_frozen_gmt_data_and_inference_seed=True,source_artifacts=artifacts,
         runs=[dict(run=str(run),**labelled[i][1],manifest_sha256=sha256(run/'manifest.json'),trace_manifest_sha256=sha256(run/'decision_trace_manifest.json')) for i,run in enumerate(runs)],
         common_primary_queries=len(common),baseline_only_queries=len(left.keys()-right.keys()),method_only_queries=len(right.keys()-left.keys()),
         baseline_wrong_method_correct=fixes,baseline_correct_method_wrong=harms,unknown_either=unknown,transition_counts=dict(transitions),

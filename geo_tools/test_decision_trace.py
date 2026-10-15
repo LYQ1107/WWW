@@ -8,10 +8,23 @@ from types import SimpleNamespace,MethodType
 import torch
 from scipy.optimize import linear_sum_assignment
 from gtr.geometry.decision_trace import solver_record,DecisionTrace
-from audit_decision_trace import decision_state
+from audit_decision_trace import decision_state,verify_detector_cohort,verify_query_truth
 
 
 class Tests(unittest.TestCase):
+    def test_equal_proposal_counts_do_not_prove_same_physical_queries(self):
+        rows=[dict(source=[1,0],detection=dict(bbox=[0,0,1,1])),dict(source=[1,1],detection=dict(bbox=[4,0,1,1]))]
+        self.assertEqual(verify_detector_cohort(rows,list(reversed(rows))),2)
+        changed=[dict(source=rows[0]['source'],detection=rows[1]['detection']),dict(source=rows[1]['source'],detection=rows[0]['detection'])]
+        with self.assertRaises(ValueError):verify_detector_cohort(rows,changed)
+        with self.assertRaises(ValueError):verify_detector_cohort(rows,rows+[rows[0]])
+
+    def test_identical_correctness_categories_do_not_prove_same_query_gt(self):
+        left={(1,0):dict(state='correct_link',gt_identity=3)}
+        right={(1,0):dict(state='correct_link',gt_identity=4)}
+        with self.assertRaises(ValueError):verify_query_truth(left,right,left.keys())
+        verify_query_truth(left,left,left.keys())
+
     def test_actual_solver_assignment_and_track_aggregation_threshold(self):
         context=dict(stage='global',queries=[[2,0],[2,1]],references=[dict(source=[1,0],track=4),dict(source=[1,1],track=4),dict(source=[1,2],track=9)])
         cost=-torch.tensor([[.8,.1],[.2,.6]])
