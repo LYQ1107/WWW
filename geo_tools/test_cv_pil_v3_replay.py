@@ -1,5 +1,4 @@
 """CV-PIL consumer tests for actual shard semantics and one-step replay."""
-import copy
 import unittest
 import torch
 
@@ -72,6 +71,23 @@ class TestV3Replay(unittest.TestCase):
         p=paired(r,'C2','C3','primary')
         self.assertEqual(p['certified_fixes'],5);self.assertEqual(p['unique_fix_person_groups'],1)
         self.assertEqual(p['unknown_to_correct'],1)
+
+    def test_earlier_camera_same_frame_is_native_legal_but_not_old_head_history(self):
+        a,c=fixture();a.observations[(100,0)]['frame']=10
+        c['completed_camera_images_before_call']=[100]
+        a._validate_call(c)
+        self.assertEqual(a.actor((12,200,0))['past_histories'][0],[])
+        self.assertEqual(len(c['references']),9)
+
+    def test_bank_descriptor_must_equal_actual_supported_native_average(self):
+        a,c=fixture();c['stage']='run_memory_tracker'
+        c['bank_descriptor_support']={str(t):dict(sources=[dict(spec)],denominator=1)
+                                     for t,spec in zip(c['track_ids'],c['reference_feature_keys'])}
+        a._validate_call(c)
+        spec=c['reference_feature_keys'][0];spec['variant']='wrong-average'
+        value=torch.full((1152,),2.)
+        a.variants['wrong-average']=dict(source=spec['source'],feature=value,feature_sha256=tensor_digest(value))
+        with self.assertRaisesRegex(ValueError,'Bank average'):a._validate_call(c)
 
 
 if __name__=='__main__':torch.set_num_threads(1);unittest.main()

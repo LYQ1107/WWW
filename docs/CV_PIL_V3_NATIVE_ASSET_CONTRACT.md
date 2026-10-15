@@ -102,3 +102,33 @@ Run CPU tests:
 ```bash
 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 /home/liuyeqiang/anaconda3/envs/GMT/bin/python -m unittest discover -s geo_tools -p 'test_cv_pil_*.py' -v
 ```
+
+## Actual producer shard mapping and frozen-head runner
+
+`cv_pil_dev12_shards.py` now maps the actual producer layout, with role paths
+supplied explicitly rather than mandatory filenames. It imports no producer
+research code. Full consumption requires both independently pinned manifest
+and final artifact-index SHA, the already-frozen scope SHA and original source
+bindings. Every bound file, complete score matrix, original threshold action,
+physical query/commit link and commit-state hash chain is checked.
+
+Native Bank can mutate a descriptor while retaining its original physical
+source tag. The mapper preserves the actual SHA-bound descriptor version;
+it never substitutes the raw ROI vector or creates an average. The original
+Bank descriptor is additionally checked against its recorded ordered native
+support/denominator. Offline pure/impure/alias annotations remain separate.
+
+The independently frozen real40 prefix was accepted **for engineering only**:
+626 queries/79 calls, every full actor tensorized, no GT read, no head evaluated.
+This path explicitly refuses `supervision()`. Raw matrix Hungarian actions are
+exact; maximum CPU aggregation difference was1.52587890625e-5, disclosed rather
+than treated as a bitwise GPU softmax match.
+
+`run_cv_pil_v3_old_heads.py` is prepared for P2 after full sealed admission.
+It scores all rows/candidates before opening labels, loads only old step300
+weights, and compares full joint primary assignments with the same recorded
+thresholds and starting state. This is one-step causal primary replay, not
+mutated-state online tracking. Changed Bank/birth and final committed errors
+remain unmeasured; original post-actions cannot be reused as counterfactual
+post-state. HOTA and full-image FPS stay null. Grouping includes person,
+person/camera and fixed50-frame intervals, never independent candidate edges.

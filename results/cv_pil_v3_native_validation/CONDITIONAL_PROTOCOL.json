@@ -62,7 +62,7 @@
       "C4": 0.5
     },
     "shared_sampling": "Publish exact common eligible keys, hard/ordinary ratios and300source indices before fitting; do not use DEV labels",
-    "ratio": "PENDING_TRAIN_ONLY_ELIGIBILITY_AUDIT_NOT_AUTHORIZED_TO_FIT",
+    "ratio": "50percent hard fixed before new DEV evaluation; exact TRAIN eligibility and300indices remain to be sealed",
     "original_distribution_evaluation_required": true,
     "longer_training": "Only TRAIN convergence/gradient evidence plus separate prior registration; never DEV endpoint selection",
     "no_teacher": true,
@@ -71,7 +71,10 @@
       "GTA",
       "Detector",
       "GMT+MLP"
-    ]
+    ],
+    "hard_fraction": 0.5,
+    "hard_definition": "Common ranking-eligible TRAIN queries whose original actual primary is wrong_link or missed_known_positive; known legal positive, known negative, nonempty strict history. No DEV labels.",
+    "sampler": "150hard and150ordinary in alternating order, with replacement, seed20261015; source order frozen; empty stratum stops before training"
   },
   "P4": {
     "status": "NOT_ADMITTED",

@@ -94,6 +94,13 @@ def execute(pins, output):
     require(not assets.engineering_only, 'No model evaluation on prefix engineering assets')
     old = json.loads(Path(pins['frozen_v2_results']).read_text()); models = {}
     require(sha256(pins['frozen_v2_results']) == pins['frozen_v2_results_sha256'], 'V2 result SHA differs')
+    generation = pins.get('checkpoint_generation', 'V2_FROZEN_STEP300')
+    require(generation in ('V2_FROZEN_STEP300', 'V3_MATCHED_STEP300'), 'Unknown checkpoint generation')
+    if generation == 'V2_FROZEN_STEP300':
+        require(pins['frozen_v2_results_sha256'] ==
+                '4a5c809ae9f6ff7e7a0b59ec4c748bf0fa37d71b37bd864ac816b3d7e0d97ae7', 'Original V2 evidence required first')
+    else:
+        require(old['status'] == 'MATCHED_V3_FIT_COMPLETE_NOT_DEVELOPMENT_SUCCESS', 'Registered V3 fit required')
     for arm in ('C2', 'C3', 'C4'):
         t = old['training'][arm]; require(sha256(t['local_checkpoint']) == t['checkpoint_sha256'], 'Old head SHA differs')
         state = safe_torch_load(t['local_checkpoint'])
@@ -151,7 +158,8 @@ def execute(pins, output):
     elif p34['certified_fixes'] <= p34['certified_harms']: status = 'CAMERA_CONDITION_VALUE_NOT_ESTABLISHED'
     else: status = 'OFFLINE_DEVELOPMENT_POSITIVE'
     result.update(status=status, scientific_success=False, candidates='complete original native candidate columns',
-                  frozen_old_checkpoint_sha256={arm: old['training'][arm]['checkpoint_sha256'] for arm in models},
+                  checkpoint_generation=generation,
+                  checkpoint_sha256={arm: old['training'][arm]['checkpoint_sha256'] for arm in models},
                   primary_replay='one-step paired full Hungarian under identical original state; not mutated-state online',
                   original_primary_OFF_replay_exact=original_action_exact,
                   counterfactual_Bank_and_birth='NOT_REPLAYED; original actions retained only as source semantics',
