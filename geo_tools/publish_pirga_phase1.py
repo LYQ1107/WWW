@@ -48,13 +48,17 @@ def main():
     master['completed_Phase1_replay_epochs']=sorted({v['epoch'] for v in summary});master['latest_fixed_epoch_PIRGA_status']=None if not summary else json.loads((r/'PHASE1_REPLAY'/f'epoch{summary[-1]["epoch"]}'/'PIRGA_ADJUDICATION.json').read_text())['status']
     (r/'MASTER_GOAL.json').write_text(json.dumps(master,indent=2)+'\n')
     resource=json.loads((r/'RESOURCE_LEDGER.json').read_text());charged=10*64/3600
-    resource.update(status='PHASE1_RUNNING_CONSERVATIVE_CUDA_CONTEXT_CORRECTION',updated_utc=now,
+    resource.update(status='PHASE1_CPU_CONTINUATION_GPU_COMPLETE' if status.get('device')=='cpu' and status['status']!='COMPLETE' else 'PHASE1_COMPLETE' if status['status']=='COMPLETE' else 'PHASE1_RUNNING_CONSERVATIVE_CUDA_CONTEXT_CORRECTION',updated_utc=now,
         gpu_wall_hours=1.3086310044572587+live['GPU_wall_hours']+charged,
+        observed_GPU_wall_hours_excluding_incidental_unknown=1.3086310044572587+live['GPU_wall_hours'],
+        parent_aggregate_observed_GPU_hours=1.1772130608724223+1.3086310044572587+live['GPU_wall_hours'],
         incidental_context_conservative_GPU_hours=charged,incidental_context_is_upper_bound_not_measured_utilization=True,
         phase1_fit_observed_GPU_wall_hours=live['GPU_wall_hours'],phase1_fit_GPU_cap=1.32,
         parent_aggregate_observed_plus_conservative_bound_GPU_hours=1.1772130608724223+1.3086310044572587+live['GPU_wall_hours']+charged,
         remaining_existing_parent_hours=4-1.1772130608724223-1.3086310044572587-live['GPU_wall_hours']-charged,
-        current_free_target_bytes=shutil.disk_usage('/data1').free,corrective_allocation='PHASE1_CORRECTIVE_RESOURCE_ALLOCATION.json',resource_snapshot_is_not_terminal=status['status']!='COMPLETE')
+        current_free_target_bytes=shutil.disk_usage('/data1').free,live_runtime_ledger=str(fit.parent/'CORRECTIVE_RESOURCE_LEDGER.json') if corrective else str(fit.parent/'RESOURCE_LEDGER.json'),
+        original_supervisor_error_is_expected_corrective_handoff=bool(corrective and corrective.get('original_supervisor_error_is_expected_corrective_handoff')),
+        gpu_wall_hours_field_includes_conservative_incidental_bound=True,corrective_allocation='PHASE1_CORRECTIVE_RESOURCE_ALLOCATION.json',resource_snapshot_is_not_terminal=status['status']!='COMPLETE')
     (r/'RESOURCE_LEDGER.json').write_text(json.dumps(resource,indent=2)+'\n')
     print(json.dumps(dict(published_epochs=master['completed_Phase1_replay_epochs'],training_status=status,latest_adjudication=master['latest_fixed_epoch_PIRGA_status'])))
 

@@ -1,8 +1,8 @@
 {
-  "observed_utc": "2026-10-15T21:43:05.606527+00:00",
+  "observed_utc": "2026-10-15T21:59:42.666502+00:00",
   "resource": {
-    "status": "RUNNING_GPU",
-    "GPU_wall_hours": 1.2100140557479526,
+    "status": "FAILED_RETAIN_EVIDENCE",
+    "GPU_wall_hours": 1.310705815412932,
     "GPU_cap": 1.4,
     "physical_gpu": 2,
     "command": [
@@ -19,32 +19,39 @@
       "cuda"
     ],
     "old_ledgers_reset": false,
-    "pid": 10099
+    "pid": 10099,
+    "GPU_exit_code": 0,
+    "reason": "RuntimeError('Unexpected trainer terminal state')"
   },
   "corrective_resource": {
-    "status": "WATCHING_OWN_GPU_RESIDENCY",
+    "status": "RUNNING_CPU_CONTINUATION",
     "pid": 19051,
     "allocation_sha256": "8142fe8e86ec30af667c0c0c812aa630dcbe780b0568f25bb871a468753f8cde",
     "old_ledger_reset": false,
     "additional_GPU_grant": false,
     "scientific_schedule_changed": false,
-    "observed_utc": "2026-10-15T21:43:04.250924+00:00",
-    "original_GPU_wall_hours": 1.2100140557479526
+    "observed_utc": "2026-10-15T21:49:06.752135+00:00",
+    "original_GPU_wall_hours": 1.3101494282670318,
+    "GPU_pid": 10099,
+    "GPU_wall_hours": 1.310705815412932,
+    "resume_sha256": "22f7a46410d9179327b81a102acfff46c52d623d6d4ee221539dce774164b2e2",
+    "original_supervisor_error_is_expected_corrective_handoff": true,
+    "CPU_pid": 40773
   },
   "training": {
     "status": "TRAINING",
-    "device": "cuda",
+    "device": "cpu",
     "protocol_sha256": "b9667b304852a6e4135f59104d618b2ed6108111ede3a26cd54dd9dc1d93d619",
     "DEV_read": false,
-    "source_commit_at_start": "6d61dc7c493bda3a8de561bc9f94a7a02f089dda",
+    "source_commit_at_start": "02d90200e8ff10090deffff804b9d8a6d02fef4a",
     "epoch": 5,
-    "step": 459660,
-    "epoch_visit": 6000,
-    "wall_seconds": 4348.689507335424,
+    "step": 509660,
+    "epoch_visit": 56000,
+    "wall_seconds": 625.2406730651855,
     "last_loss": [
       0.0,
-      0.051755599677562714,
-      0.053476616740226746
+      0.0,
+      0.0
     ]
   },
   "snapshot_not_live_monitor": true

@@ -1,9 +1,37 @@
 {
-  "status": "CPU_INDEX_ENGINEERING_ONLY",
+  "status": "ONLINE_SPEED_AND_MEMORY_NOT_RUN",
   "full_image_FPS": null,
-  "relative_FPS": null,
-  "inference_latency_p50": null,
-  "inference_latency_p95": null,
-  "peak_GPU_bytes": null,
-  "source": "INDEXED_STORE_REAL_PREFIX_PROBE.json"
+  "relative_original_GMT_FPS": null,
+  "inference_added_latency_p50_ms": null,
+  "inference_added_latency_p95_ms": null,
+  "qualification": "Training RSS and head CPU probes are not complete-image online FPS. No new full online native run admitted.",
+  "training_observed_utc": "2026-10-15T21:53:40.661465+00:00",
+  "training_processes": {
+    "P1": {
+      "status": "TRAINING",
+      "step": 502660,
+      "epoch": 5
+    },
+    "P2": {
+      "status": "TRAINING_CPU",
+      "step": 161415,
+      "epoch": 2,
+      "CPU_wall_seconds": 3207.3499124348164,
+      "peak_RSS_bytes": 3530682368
+    },
+    "ordinary": {
+      "status": "TRAINING_CPU",
+      "step": 332830,
+      "epoch": 3,
+      "CPU_wall_seconds": 2020.5812174454331,
+      "peak_RSS_bytes": 3607904256
+    },
+    "exhaustive_margin": {
+      "status": "TRAINING_CPU",
+      "step": 147453,
+      "epoch": 2,
+      "CPU_wall_seconds": 999.3972803577781,
+      "peak_RSS_bytes": 3605848064
+    }
+  }
 }

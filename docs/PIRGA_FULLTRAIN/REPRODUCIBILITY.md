@@ -1,39 +1,43 @@
-# PIRGA Phase 0 reproduction
+# PIRGA reproduction and evidence boundaries
 
-Worktree `/data1/liuyeqiang/WWW_pirga_20261016`; runtime
-`/data1/liuyeqiang/WWW_pirga_runtime_20261016`; Python
-`/home/liuyeqiang/anaconda3/envs/GMT/bin/python`. Use `OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1`.
-Existing result directories refuse overwrite. Replace output suffix only for an authorized repeat.
+Worktree: `/data1/liuyeqiang/WWW_pirga_20261016`; runtime: `/data1/liuyeqiang/WWW_pirga_runtime_20261016`; Python: `/home/liuyeqiang/anaconda3/envs/GMT/bin/python`.
 
-```bash
-python geo_tools/audit_pirga_fulltrain.py --producer /data1/liuyeqiang/WWW_trackvggt_20261015 --runtime /data1/liuyeqiang/WWW_trackvggt_runtime --out NEW_AUDIT_DIRECTORY
-python geo_tools/check_pirga_real_epoch_order.py --source-manifest results/PIRGA_FULLTRAIN/SOURCE_SHA_MANIFEST.json --runtime /data1/liuyeqiang/WWW_trackvggt_runtime --out NEW_DRY_RUN_DIRECTORY
-python geo_tools/probe_pirga_indexed_store.py --pins results/cv_pil_v3_native_validation/P0_REAL_PREFIX40_MAPPING.json --root /data1/liuyeqiang/WWW_trackvggt_runtime/dev12_native_precheck_v1/on40_v1 --out NEW_CPU_REPACK_DIRECTORY
-python -m unittest discover -s geo_tools -p 'test_pirga_*.py' -v
-python -m unittest discover -s geo_tools -p 'test_cv_pil_*.py' -v
-```
+Phase0 is complete: all11 captures and independent admission passed. The historical resource request files describe earlier plans; actual allocations, consumption and the later conservative correction govern resources. Existing GPU permits are consumed, not reusable grants. Do not restart exports or GPU fitting from these instructions.
 
-Fresh image prefix export is not part of these CPU commands. Its concrete one-shot command and
-pending resource fields are in `results/PIRGA_FULLTRAIN/PREFIX_GPU_RESOURCE_REQUEST.json`.
-It refuses a proposed permit. Do not edit that file to simulate approval. The separate actual
-permit must preserve the authorization reply and old ledger references, then be SHA-pinned.
-Full training/online stages are not enabled by a prefix PASS.
-
-`pirga_native_trace.py` reuses original-repository passive trace code from frozen producer
-commit `f97cf27f0f4299269c3bd1dd885a92e90639f51c`, source SHA in its header. Changes are explicit
-video-ID output binding and local primitive import. Tracker core files retain their exact
-original SHA. Fresh OFF/ON parity remains pending; no untested runtime result is asserted.
-
-Complete stored-native codec and label-metadata coverage (CPU, no training):
+For current state, use:
 
 ```bash
-python geo_tools/probe_pirga_full_native_store.py --pins results/cv_pil_v3_native_validation/P1_SOURCE_PINS.json --out NEW_COMPLETE_ENGINEERING_STORE
-python geo_tools/audit_pirga_metadata_supervision.py --source-manifest results/PIRGA_FULLTRAIN/SOURCE_SHA_MANIFEST.json --runtime /data1/liuyeqiang/WWW_trackvggt_runtime --out NEW_OFFLINE_METADATA_DIRECTORY
+cd /data1/liuyeqiang/WWW_pirga_20261016
+CUDA_VISIBLE_DEVICES='' /home/liuyeqiang/anaconda3/envs/GMT/bin/python geo_tools/pirga_status.py
 ```
 
-The first command reads sealed native matrices/features, hashes the independent seal and never
-calls `supervision()`. Its C1 FP32/FP16 comparison is a label-free quantization diagnostic,
-not a new research arm, fresh image export, trained model or online tracking benchmark.
-The second command reuses existing sealed GT query labels and candidate-positive certificates;
-it never opens raw GT for matching or imputes initialization-source identities. Its files
-explicitly refuse training admission until full features and actual descriptor-version masks pass.
+Frozen scientific protocols, source-code hashes, data paths and input SHA are in `results/PIRGA_FULLTRAIN/PHASE1_MATCHED_PROTOCOL.json`, `PHASE2_MATCHED_PROTOCOL.json`, `ORDINARY_DECISION_MATCHED_PROTOCOL.json`, and `EXHAUSTIVE_MARGIN_PROTOCOL.json`. Every fit verifies its source hashes before updates. Never edit their dependency modules while fits or fixed evaluation queues are active.
+
+All common comparisons use113415 unique queries per epoch, fixed seed20261015, no replacement, endpoints1/3/5. The exhaustive-margin supplement uses113453 and567265 updates at5epochs rather than567075; it is explicitly separate. Native perception capture seed20261014 is distinct from head initialization seed20261015. No officialTEST or24-sceneCV run is part of these results.
+
+A new-output CPU reproduction is allowed by the protocol; for example:
+
+```bash
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+/home/liuyeqiang/anaconda3/envs/GMT/bin/python geo_tools/train_pirga_innovation.py \
+ --protocol /data1/liuyeqiang/WWW_pirga_runtime_20261016/PHASE2_MATCHED_PROTOCOL.json \
+ --protocol-sha 17ffe01425aa3da9e321c2b96d55eb30d82dccecfebdfadbff724f4563a552c6 \
+ --out NEW_UNIQUE_CPU_REPRO_DIRECTORY
+```
+
+Do not overwrite existing outputs. Full CPU fitting is real work, not a lightweight validation command. Weights remain on the server with SHA in each CHECKPOINTS.json; GitHub contains only code, protocols and derived results. `--pins` on the replay executors requires an actual complete fixed-epoch checkpoint with matching source, seed, step and admission; engineering prefixes and fake step300 metadata are refused.
+
+Phase1 used model-wise independent heads onGPU, then an exact completed-step joint AdamW checkpoint onCPU when the corrected existing quota bound was reached. All three arms move together. Floating-point execution betweenGPU andCPU or independent/grouped GEMM is not claimed bitwise identical; real TRAIN shadow tolerances are recorded. The original1.4h supervisor reports an expected terminal-state error because the correcting supervisor initiated an earlier stop; actual CPU progress is in `fit/STATUS.json` and `CORRECTIVE_RESOURCE_LEDGER.json`.
+
+The GPU-stop resume was rolling and was consumed before later CPU snapshots replaced it. Its historical SHA is recorded, but an immutable copy of those original stop bytes was not retained. An immutable joint CPU checkpoint atstep500000, including AdamW and exact counters, is archived separately in `PHASE1_IMMUTABLE_CPU_RESUME.json`. Do not present that later archive as the original GPU-stop artifact. Fixed epoch1/3/5 model weights are retained separately. A resumed epoch's raw `epoch_wall_seconds` measures its resumed suffix; aggregate process wall time is in resource ledgers, not inferred by summing that field.
+
+Current contract commands:
+
+```bash
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+/home/liuyeqiang/anaconda3/envs/GMT/bin/python -m unittest discover -s geo_tools -p 'test_pirga_*.py' -v
+```
+
+Train applicability can be independently reproduced without video or rawGT rematching using `audit_pirga_native_margin_scope.py --protocol .../ORDINARY_DECISION_MATCHED_PROTOCOL.json --out NEW_SCOPE_AUDIT.json`; it must reproduce38 extra pure-positive queries,4 with controllable strict-past positive support. It does not modify the frozen common fits.
+
+All reported development results are complete exposedTRAIN12 original-state primary Hungarian replays. Bank/Gallery/birth counterfactuals and full-imageFPS require separate admitted native online runs. GT is joined only after scores/actions for reporting; arbitrary interval witnesses use GT offline and are not learned repairs. The uncertainty inference-gate ablation is a same-checkpoint diagnostic, not another trained model: epoch1 is explicitly posthoc, with the audit fixed before later3/5results. No threshold, bound, horizon or model endpoint may be tuned from these diagnostics.
