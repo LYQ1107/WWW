@@ -57,6 +57,10 @@ def main():
     geometry_path=ROOT/'results/causal_dense_geometry_full_strict_attribution_v1.json'
     if geometry_path.exists() and json.loads(geometry_path.read_text())['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
         geometry_note='主种子dense特征单独启用B5与联合B7在完整strict5的每条预测均完全一致；所有共同有效配置、head和编码调用次数已核验。联合几何共3次通过数值/背景门槛，均在scene1，但没有独立输出贡献。其余head种子仍在运行；该结果不证明所有几何无用或GT位姿准确。'
+    failure_path=ROOT/'results/geometry_failure_taxonomy_v1.json'
+    if failure_path.exists():
+        failure=json.loads(failure_path.read_text());count=sum(row['diagnostic_rows'] for row in failure['summaries'])
+        geometry_note+=f' 已整理{count}条固定几何筛选记录的实际门槛失败与未记录字段；重复遮罩/特征分支不是独立样本。内点不足或残差大不证明低重叠、低纹理或快速旋转；原始dirty源码与可恢复文件SHA分别保留，见GEO_STREAM_GEOMETRY_FAILURES.md。'
     cached_path=ROOT/'results/target_cache_three_backbone_scene1_controls_v1.json'
     if cached_path.exists() and json.loads(cached_path.read_text())['all_exact_baseline_predictions']:
         cached_note=' 新增有界目标特征复用的VGGT/DINO/GMT完整scene1对照均与baseline逐条一致，未保留dense收益；三个骨干相同40个观测更新时间，但实际VGGT80/DINO40/GMT0次编码，不能称同等计算。'

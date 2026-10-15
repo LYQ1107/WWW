@@ -147,6 +147,7 @@ def main():
     dense_full2_retrieval=evidence('vggt_dense_retrieval_full2_tracking_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
     retrieval_query_pairs=evidence('retrieval_paired_query_outcomes_v1.json',['status','rows','pending','scope','limitations'])
     readonly_preflight=evidence('preflight_readonly_locked_inputs_v3.json',['status','locked_files_unchanged','raw_gt_files_verified','model_strict_load_performed','new_video_inference_performed','scope'])
+    geometry_failures=evidence('geometry_failure_taxonomy_v1.json',['status','summaries','source_rule_snapshots','gt_used_for_gate_classification','limitations'])
     dense_retrieval_gate=evidence('vggt_tracking_retrieval_prefix_gate_v2.json',['status','full_video','full_strict_suite','scope','limitations'])
     order_parity=evidence('complete_causal_vggt_view_order_audit_v2.json',['status','scope','limitations','rows'])
     dense_verified=bool(dense and dense_pairs and dense_budget and dense['status']=='PASS' and dense_pairs['status']=='PASS' and dense_pairs['full_strict_suite'] and all(row['added_detections']==0 and row['removed_detections']==0 for row in dense_pairs['rows']))
@@ -196,6 +197,7 @@ def main():
         complete_primary_dense_geometry_attribution=dense_geometry_attribution,
         dense_b7_complete_two_camera_retrieval_tracking_parity=dense_full2_retrieval,
         paired_retrieval_query_outcomes=retrieval_query_pairs,readonly_reproduction_preflight=readonly_preflight,
+        recorded_geometry_failure_taxonomy=geometry_failures,
         dense_tracking_to_retrieval_prefix_gate=dense_retrieval_gate,
         complete_encoder_input_order_control=order_parity,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
@@ -286,6 +288,10 @@ def main():
         lines[6:6]=['Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.','']
     if dense_geometry_attribution and dense_geometry_attribution['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
         lines[6:6]=['Complete primary-head dense B5/B7 geometry attribution is now audited over all strict5: every serialized feature-only prediction exactly equals joint B7, with matched encoder calls and all other effective GEO options verified from their captured source defaults (calibration content checked, inactive default-off cache normalized). Joint geometry passes its numerical/background gate3 times, all in scene1; none changes the final outputs. This extends the earlier scene1 result to the complete primary-head suite; remaining head seeds and valid-pose accuracy are separate.','']
+    if geometry_failures:
+        count=sum(row['diagnostic_rows'] for row in geometry_failures['summaries'])
+        accepted=sum(row['valid'] for row in geometry_failures['summaries'])
+        lines[6:6]=[f"Geometry failure recovery is consolidated across {count} fixed screening rows ({accepted} accepted), separating fit support, logged coverage, measured residual violations and unavailable early-return statistics. Mask/feature variants repeat samples; these counts do not replace the separate complete-run3 numerical gate passes. Captured dirty source-file bytes are matched to Git blobs where available, while original tree dirtiness and weaker legacy provenance remain explicit. See [geometry gate diagnostics](GEO_STREAM_GEOMETRY_FAILURES.md); no physical-overlap, texture, rotation or GT-pose cause is inferred.",'']
     if dense_full2_retrieval and dense_full2_retrieval['status']=='PASS' and retrieval_query_pairs:
         pair=next((row for row in retrieval_query_pairs['rows'] if row['method']=='VGGT2'),None)
         producer=next((row for row in retrieval_rows if row['method']=='retrieval_vggt_dense_tracking_2streams_full_v1'),None)
