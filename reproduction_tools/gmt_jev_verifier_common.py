@@ -24,6 +24,8 @@ def binding():
     paths=list((ROOT/'reproduction_tools').glob('gmt_jev_verifier*.py'))+[ROOT/'gtr/modeling/gmt_jev/correction.py',ROOT/'gtr/modeling/meta_arch/gtr_rcnn.py']
     typed=ROOT/'gtr/modeling/gmt_jev/typed_verifier.py'
     if typed.exists():paths.append(typed)
+    native_replay=ROOT/'gtr/modeling/gmt_jev/native_plan_replay.py'
+    if native_replay.exists():paths.append(native_replay)
     return dict(HEAD=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
       source_SHA256={str(p.relative_to(ROOT)):sha(p) for p in paths},goal=ref(REPORTS/'GOAL.json'),
       GT_actor_input=False,scope=read(REPORTS/'GOAL.json')['scope'])

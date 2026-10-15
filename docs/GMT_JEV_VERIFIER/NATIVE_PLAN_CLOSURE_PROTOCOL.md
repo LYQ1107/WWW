@@ -1,0 +1,11 @@
+# 原生Bank/出生计划闭包合同（新增接口审计，执行前冻结）
+
+MATCH层两个accepted向量只覆盖关联前半段。预审计把所有改变的拒绝行保守留为UNKNOWN，不能据此断言完整原生计划必然不可认证。新增这项同状态接口核验，保持原模型、标签资格、人物依赖组、8计划/8组/2视频训练门槛和总4小时预算不变，不新增DEV或数据。
+
+先在TRAIN12前64场景验证；若无实际分歧，最多扩到256。未通过真实克隆与异常恢复合同，不运行全段。合同通过后，TRAIN12/13/14完整原GMT轨迹上，只在GMT/MLP合法MATCH分歧时，内存clone同一个原生tracker调用参数、Gallery/Bank全局容器与RNG；使用原生产run_first_tracker_plus/run_global_tracker_plus分别执行GMT原分数和冻结MLP分数，实际完成Bank、出生、Gallery WRITE。禁止手工设定track_ids、启用旧JEV或使用要求旧JEV开启的旧restore_state。
+
+克隆时单次deepcopy参数和全局Bank，保留对象别名关系；禁用收集用GT/统计observer与Bank wrapper。模型方法、correction模块、observer、Bank集合、上下文和Python/NumPy/Torch/CUDA RNG在finally中原样恢复。原真实pre-state和派生summary内容SHA在正常及故意异常后必须严格一致。克隆GMT的最终ID和整个原生post-state必须等于紧接着的真实GMT执行；完整原轨迹raw预测也须与冻结参考严格一致。
+
+离线认证在两条实际完成的同状态计划之间进行：历史唯一clean目标可位于active或Bank；它必须基于当前提交前的first-past≥3/80%及全历史别名检查。只有已有唯一可认证身份时，创建新ID才可记为身份碎片错误；未知新人物不伪造目标。已知不同owner的既有ID才可认定错误人物；未知历史/别名仍UNKNOWN。两个计划中新生ID数字不跨分支比较，均按NEW类型处理；已有ID从同一pre-state出发可直接比较。所有语义不同的行必须可认证，才标完整KEEP/APPLY；混合权衡不造最优标签。
+
+本项只证明当前原生状态的两条真实局部分支，不声称整视频某事件的因果传播时间。原accepted-only记录保留；以新增NATIVE_PAIRED_PLAN_OPPORTUNITY.json回答完整计划监督资格。Q1诊断若已运行，仍只算诊断，不作为该闭包的决策输入或新标签来源。后续只有双类依赖组准入合格才可训练Q2。
