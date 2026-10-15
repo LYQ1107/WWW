@@ -1,0 +1,254 @@
+{
+  "id": "trackvggt_v3_ag_fit_v1",
+  "project_gpu_ids": [
+    "0",
+    "4",
+    "5",
+    "6"
+  ],
+  "queues": {
+    "gpu0": [
+      {
+        "id": "ag_vggt_C_mean_k24_seed20261015_v3_150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--cohort",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+          "--tag",
+          "ag_vggt_C_mean_k24_seed20261015_v3_150_v1",
+          "--steps",
+          "150"
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "ag_vggt_C_mean_k24_seed20261015_v3_1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--cohort",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+          "--tag",
+          "ag_vggt_C_mean_k24_seed20261015_v3_1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/ag_vggt_C_mean_k24_seed20261015_v3_150_v1/checkpoint.pt"
+        ],
+        "depends_on": [
+          "ag_vggt_C_mean_k24_seed20261015_v3_150_v1"
+        ]
+      }
+    ],
+    "gpu4": [
+      {
+        "id": "ag_vggt_roi_mean_k24_seed20261015_v3_150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "roi",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--cohort",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+          "--tag",
+          "ag_vggt_roi_mean_k24_seed20261015_v3_150_v1",
+          "--steps",
+          "150"
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "ag_vggt_roi_mean_k24_seed20261015_v3_1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "roi",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--cohort",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+          "--tag",
+          "ag_vggt_roi_mean_k24_seed20261015_v3_1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/ag_vggt_roi_mean_k24_seed20261015_v3_150_v1/checkpoint.pt"
+        ],
+        "depends_on": [
+          "ag_vggt_roi_mean_k24_seed20261015_v3_150_v1"
+        ]
+      }
+    ],
+    "gpu5": [
+      {
+        "id": "ag_dinov2_C_mean_k24_seed20261015_v3_150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "dinov2",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--cohort",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+          "--tag",
+          "ag_dinov2_C_mean_k24_seed20261015_v3_150_v1",
+          "--steps",
+          "150"
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "ag_dinov2_C_mean_k24_seed20261015_v3_1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "dinov2",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--cohort",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+          "--tag",
+          "ag_dinov2_C_mean_k24_seed20261015_v3_1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/ag_dinov2_C_mean_k24_seed20261015_v3_150_v1/checkpoint.pt"
+        ],
+        "depends_on": [
+          "ag_dinov2_C_mean_k24_seed20261015_v3_150_v1"
+        ]
+      }
+    ],
+    "gpu6": [
+      {
+        "id": "native_mlp_vggt_C_mean_k24_seed20261015_v3_150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "native_mlp",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--cohort",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+          "--tag",
+          "native_mlp_vggt_C_mean_k24_seed20261015_v3_150_v1",
+          "--steps",
+          "150"
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "native_mlp_vggt_C_mean_k24_seed20261015_v3_1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "native_mlp",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--cohort",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+          "--tag",
+          "native_mlp_vggt_C_mean_k24_seed20261015_v3_1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/native_mlp_vggt_C_mean_k24_seed20261015_v3_150_v1/checkpoint.pt"
+        ],
+        "depends_on": [
+          "native_mlp_vggt_C_mean_k24_seed20261015_v3_150_v1"
+        ]
+      }
+    ]
+  },
+  "purpose": "Prespecified V2/V3 comparison; same original300 validation, model/optimizer/1000 total updates, seed20261015. No new DEV12 release input or label.",
+  "cohort": "/data1/liuyeqiang/WWW_trackvggt_runtime/cohorts/hard_events_expanded_v3/cohort.json",
+  "scope": "AG-C/ROI/DINO/nativeMLP primary comparison; original V2 queue unchanged; independent QD/cycle/crop gates remain required."
+}
