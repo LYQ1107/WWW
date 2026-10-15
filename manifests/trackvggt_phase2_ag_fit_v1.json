@@ -1,0 +1,476 @@
+{
+  "id": "trackvggt_phase2_ag_fit_v1",
+  "project_gpu_ids": [
+    "0",
+    "4",
+    "5",
+    "6"
+  ],
+  "queues": {
+    "gpu0": [
+      {
+        "id": "ag_vggt_C_mean_k24_seed20261015_pilot150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_vggt_C_mean_k24_seed20261015_pilot150_v1",
+          "--steps",
+          "150"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "ag_vggt_C_mean_k24_seed20261015_full1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_vggt_C_mean_k24_seed20261015_full1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/ag_vggt_C_mean_k24_seed20261015_pilot150_v1/checkpoint.pt"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "ag_vggt_C_mean_k24_seed20261015_pilot150_v1"
+        ]
+      },
+      {
+        "id": "ag_vggt_C_ema_k24_seed20261015_pilot150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "ema",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_vggt_C_ema_k24_seed20261015_pilot150_v1",
+          "--steps",
+          "150"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "ag_vggt_C_ema_k24_seed20261015_full1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "ema",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_vggt_C_ema_k24_seed20261015_full1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/ag_vggt_C_ema_k24_seed20261015_pilot150_v1/checkpoint.pt"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "ag_vggt_C_ema_k24_seed20261015_pilot150_v1"
+        ]
+      }
+    ],
+    "gpu4": [
+      {
+        "id": "ag_vggt_A_mean_k24_seed20261015_pilot150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "A",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_vggt_A_mean_k24_seed20261015_pilot150_v1",
+          "--steps",
+          "150"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "ag_vggt_A_mean_k24_seed20261015_full1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "A",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_vggt_A_mean_k24_seed20261015_full1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/ag_vggt_A_mean_k24_seed20261015_pilot150_v1/checkpoint.pt"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "ag_vggt_A_mean_k24_seed20261015_pilot150_v1"
+        ]
+      },
+      {
+        "id": "ag_vggt_B_mean_k24_seed20261015_pilot150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "B",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_vggt_B_mean_k24_seed20261015_pilot150_v1",
+          "--steps",
+          "150"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "ag_vggt_B_mean_k24_seed20261015_full1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "B",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_vggt_B_mean_k24_seed20261015_full1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/ag_vggt_B_mean_k24_seed20261015_pilot150_v1/checkpoint.pt"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "ag_vggt_B_mean_k24_seed20261015_pilot150_v1"
+        ]
+      }
+    ],
+    "gpu5": [
+      {
+        "id": "ag_dinov2_C_mean_k24_seed20261015_pilot150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "dinov2",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_dinov2_C_mean_k24_seed20261015_pilot150_v1",
+          "--steps",
+          "150"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "ag_dinov2_C_mean_k24_seed20261015_full1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "dinov2",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_dinov2_C_mean_k24_seed20261015_full1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/ag_dinov2_C_mean_k24_seed20261015_pilot150_v1/checkpoint.pt"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "ag_dinov2_C_mean_k24_seed20261015_pilot150_v1"
+        ]
+      },
+      {
+        "id": "ag_dinov2_roi_mean_k24_seed20261015_pilot150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "dinov2",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "roi",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_dinov2_roi_mean_k24_seed20261015_pilot150_v1",
+          "--steps",
+          "150"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "ag_dinov2_roi_mean_k24_seed20261015_full1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "dinov2",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "roi",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_dinov2_roi_mean_k24_seed20261015_full1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/ag_dinov2_roi_mean_k24_seed20261015_pilot150_v1/checkpoint.pt"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "ag_dinov2_roi_mean_k24_seed20261015_pilot150_v1"
+        ]
+      }
+    ],
+    "gpu6": [
+      {
+        "id": "ag_vggt_roi_mean_k24_seed20261015_pilot150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "roi",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_vggt_roi_mean_k24_seed20261015_pilot150_v1",
+          "--steps",
+          "150"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "ag_vggt_roi_mean_k24_seed20261015_full1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "ag",
+          "--ag-mode",
+          "roi",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "ag_vggt_roi_mean_k24_seed20261015_full1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/ag_vggt_roi_mean_k24_seed20261015_pilot150_v1/checkpoint.pt"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "ag_vggt_roi_mean_k24_seed20261015_pilot150_v1"
+        ]
+      },
+      {
+        "id": "native_mlp_vggt_C_mean_k24_seed20261015_pilot150_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "native_mlp",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "native_mlp_vggt_C_mean_k24_seed20261015_pilot150_v1",
+          "--steps",
+          "150"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "native_mlp_vggt_C_mean_k24_seed20261015_full1000_v1",
+        "command": [
+          "geo_tools/train_trackvggt_teacher.py",
+          "--backbone",
+          "vggt",
+          "--architecture",
+          "native_mlp",
+          "--ag-mode",
+          "C",
+          "--summary",
+          "mean",
+          "--seed",
+          "20261015",
+          "--k",
+          "24",
+          "--batch-size",
+          "4",
+          "--tag",
+          "native_mlp_vggt_C_mean_k24_seed20261015_full1000_v1",
+          "--steps",
+          "1000",
+          "--resume",
+          "/data1/liuyeqiang/WWW_trackvggt_runtime/models/native_mlp_vggt_C_mean_k24_seed20261015_pilot150_v1/checkpoint.pt"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "native_mlp_vggt_C_mean_k24_seed20261015_pilot150_v1"
+        ]
+      }
+    ]
+  },
+  "scope": "AG/ROI/native-MLP only; no QD, cycle or KD training. Each150-step finite pilot precedes RNG/optimizer-preserving continuation to1000 total updates. Eight prespecified settings, primary seed20261015; native histories from actual inference20261014.",
+  "evaluation": "fixed300 held-out association TRAIN12 queries plus query-shuffle. Unknowns, NULL and zero-patch native fallbacks retained; no full tracking or unique VGGT claim from pair scores.",
+  "training": {
+    "AdamW_lr": 0.0001,
+    "weight_decay": 0.01,
+    "clip_norm": 1.0,
+    "association_plus_rank_weight": 0.25,
+    "soft_relevance_warmup": 150
+  }
+}
