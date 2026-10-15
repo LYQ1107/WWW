@@ -71,7 +71,7 @@ def main():
         print(entry['suite'],'verified',flush=True)
     fields=list(rows[0]) if rows else []
     with (ROOT/'results/identity_relations_matrix_v2.csv').open('w',newline='') as stream:
-        writer=csv.DictWriter(stream,fieldnames=fields);writer.writeheader();writer.writerows(rows)
+        writer=csv.DictWriter(stream,fieldnames=fields,lineterminator='\n');writer.writeheader();writer.writerows(rows)
     text=['# Observable identity relations across complete ablations','',
         'Every row is independently paired to its same-protocol locked baseline over all five strict scenes. Counts classify unordered pairs of common, one-to-one IoU≥0.5 GT-matched detector outputs; pairs never cross scenes. Long tracks contribute quadratically. These are output relations, not numbers of Hungarian decisions. Added/removed and unmatched detections are separately excluded from correctness counts. GT enters only post-run analysis.','',
         'Offline GMT includes its original full-video postprocessing; causal GMT uses the separate streaming baseline. Values across those protocols are not paired comparisons. Missing complete suites remain pending. Actual pre-bank Hungarian decision recording is a separate scene1 diagnostic.','',
