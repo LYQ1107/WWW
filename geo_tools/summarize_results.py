@@ -152,6 +152,7 @@ def main():
     readonly_preflight=evidence('preflight_readonly_locked_inputs_v3.json',['status','locked_files_unchanged','raw_gt_files_verified','model_strict_load_performed','new_video_inference_performed','scope'])
     geometry_failures=evidence('geometry_failure_taxonomy_v1.json',['status','summaries','source_rule_snapshots','gt_used_for_gate_classification','limitations'])
     dense_retrieval_gate=evidence('vggt_tracking_retrieval_prefix_gate_v2.json',['status','full_video','full_strict_suite','scope','limitations'])
+    matched_retrieval_gate=evidence('matched_head_tracking_retrieval_prefix_precheck_v2.json',['status','full_video','full_strict_suite','scope','limitations','rows'])
     order_parity=evidence('complete_causal_vggt_view_order_audit_v2.json',['status','scope','limitations','rows'])
     dense_verified=bool(dense and dense_pairs and dense_budget and dense['status']=='PASS' and dense_pairs['status']=='PASS' and dense_pairs['full_strict_suite'] and all(row['added_detections']==0 and row['removed_detections']==0 for row in dense_pairs['rows']))
     if linear_links:
@@ -205,6 +206,7 @@ def main():
         paired_retrieval_query_outcomes=retrieval_query_pairs,readonly_reproduction_preflight=readonly_preflight,
         recorded_geometry_failure_taxonomy=geometry_failures,
         dense_tracking_to_retrieval_prefix_gate=dense_retrieval_gate,
+        matched_head_tracking_to_retrieval_prefix_gate=matched_retrieval_gate,
         complete_encoder_input_order_control=order_parity,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
@@ -302,6 +304,8 @@ def main():
         if len(observed)==3:
             values=', '.join(f"{row['training_head_seed']}: {row['metrics']['CVIDF1']:.6f} ({row['paired_metric_delta']['CVIDF1']:+.6f}pp)" for row in observed)
             lines[6:6]=['New bounded stability evidence, complete scene1 only: dense B7 at fixed inference RNG20261014 has TRAIN-head-seed CVIDF1 '+values+'. All retain exact detector membership and1864 actual encoder calls/3 numerical geometry gates/0 module failures. The third head reverses the primary scene1 gain. These scene observations do not complete the pending strict5 suites, establish an inference-RNG effect or select a new head.','']
+    if matched_retrieval_gate and matched_retrieval_gate['status']=='PASS':
+        lines[6:6]=['Matched GMT/DINO tracking-to-retrieval prefix gates pass exact standalone outputs in both scene18/scene1. The original checker rejected a scene1 GEOMETRY_METHOD difference despite both recorded geometry weights being zero; the corrected read-only check records that inactive difference and still enforces all active options, exact head/seed/model/data, actual encoder counts and serialized outputs. Original failed logs and skipped full stages remain retained. Full matched-head producers have a fixed-source serial recovery plan and remain pending; these40-group prefixes are not retrieval-quality or full-video evidence.','']
     if relation_matrix:
         lines[6:6]=['Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.','']
     if dense_geometry_attribution and dense_geometry_attribution['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':

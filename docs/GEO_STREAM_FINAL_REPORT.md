@@ -14,9 +14,11 @@ Complete primary-head dense B5/B7 geometry attribution is now audited over all s
 
 Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.
 
+Matched GMT/DINO tracking-to-retrieval prefix gates pass exact standalone outputs in both scene18/scene1. The original checker rejected a scene1 GEOMETRY_METHOD difference despite both recorded geometry weights being zero; the corrected read-only check records that inactive difference and still enforces all active options, exact head/seed/model/data, actual encoder counts and serialized outputs. Original failed logs and skipped full stages remain retained. Full matched-head producers have a fixed-source serial recovery plan and remain pending; these40-group prefixes are not retrieval-quality or full-video evidence.
+
 New bounded stability evidence, complete scene1 only: dense B7 at fixed inference RNG20261014 has TRAIN-head-seed CVIDF1 20261014: 95.471867 (+0.806994pp), 20261015: 95.270119 (+0.605245pp), 20261016: 93.387133 (-1.277740pp). All retain exact detector membership and1864 actual encoder calls/3 numerical geometry gates/0 module failures. The third head reverses the primary scene1 gain. These scene observations do not complete the pending strict5 suites, establish an inference-RNG effect or select a new head.
 
-Dense causal seed-factor audit: B5 / training_head_seed: 1/3 complete; B7 / training_head_seed: 1/3 complete; B7 / inference_rng_seed: 1/3 complete. TRAIN-head variation fixes the actual inference RNG at20261014; inference-RNG variation fixes the primary TRAIN head at20261014. Primary B7 is shared between factors, not a second independent repetition. Each accepted row verifies complete native strict5 metrics, same-seed baseline, head/content and active options, captured run/prediction/GT hashes and exact detector membership. Incomplete factors remain pending; see [seed-factor audit](GEO_STREAM_DENSE_SEED_STABILITY.md).
+Dense causal seed-factor audit: B5 / training_head_seed: 2/3 complete; B7 / training_head_seed: 1/3 complete; B7 / inference_rng_seed: 1/3 complete. TRAIN-head variation fixes the actual inference RNG at20261014; inference-RNG variation fixes the primary TRAIN head at20261014. Primary B7 is shared between factors, not a second independent repetition. Each accepted row verifies complete native strict5 metrics, same-seed baseline, head/content and active options, captured run/prediction/GT hashes and exact detector membership. Incomplete factors remain pending; see [seed-factor audit](GEO_STREAM_DENSE_SEED_STABILITY.md).
 
 Head-free fixed-prior paired inference-RNG trials: 3/3 complete strict5 pairs audited with identical detector membership. Paired CVIDF1 changes range +0.122026 to +0.128534 percentage points. These use fixed weights and vary actual inference RNG, independently of the VGGT TRAIN-head-seed experiment; pending trials are []. No VGGT attribution, confidence interval or speed advantage follows.
 
@@ -157,9 +159,12 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | causal_B5_dense_seed20261015_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9849 | 81.0095 | 98.9435 | 98.9435 | 20 |
 | causal_B5_dense_seed20261015_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.3233 | 79.2781 | 92.0648 | 92.0648 | 17 |
 | causal_B5_dense_seed20261015_strict_suite_v1_v18 | 18 | causal | complete | yes | 78.7720 | 81.0282 | 95.9526 | 95.9526 | 27 |
+| causal_B5_dense_seed20261015_strict_suite_v1_v19 | 19 | causal | complete | yes | 77.5075 | 81.1107 | 94.0957 | 94.0957 | 92 |
 | causal_B5_dense_seed20261016_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.1376 | 84.4050 | 93.3871 | 93.3871 | 225 |
 | causal_B5_dense_seed20261016_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9797 | 80.9985 | 98.9364 | 98.9364 | 23 |
+| causal_B5_dense_seed20261016_strict_suite_v1_v11 | 11 | causal | complete | yes | 83.2994 | 79.2326 | 92.0449 | 92.0449 | 20 |
 | causal_B7_dense_seed20261015_strict_suite_v1_v1 | 1 | causal | complete | yes | 87.0384 | 86.1756 | 95.2701 | 95.2701 | 232 |
+| causal_B7_dense_seed20261015_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9849 | 81.0095 | 98.9435 | 98.9435 | 20 |
 | causal_B7_dense_seed20261016_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.1376 | 84.4050 | 93.3871 | 93.3871 | 225 |
 | causal_B7_fixed_k10_strict_suite_v1_v1 | 1 | causal | complete | yes | 86.5535 | 85.2197 | 94.6649 | 94.6649 | 278 |
 | causal_B7_fixed_k10_strict_suite_v1_v10 | 10 | causal | complete | yes | 80.9475 | 80.9347 | 98.8793 | 98.8793 | 35 |
@@ -260,6 +265,7 @@ All new fitting/selection uses original TRAIN scenes. The frozen GMT checkpoint 
 | causal_B0_seed20261016_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7868 | 81.5411 | 95.1393 | 95.1393 | 502 |
 | causal_B0_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7485 | 81.4727 | 95.0580 | 95.0580 | 482 |
 | causal_B5_dense_seed20261014_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.8217 | 81.6195 | 95.1474 | 95.1474 | 381 |
+| causal_B5_dense_seed20261015_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.8104 | 81.5956 | 95.1426 | 95.1426 | 388 |
 | causal_B7_fixed_k10_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7443 | 81.4641 | 95.0531 | 95.0531 | 489 |
 | causal_B7_fixed_k1_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.8217 | 81.6195 | 95.1474 | 95.1474 | 381 |
 | causal_B7_fixed_k20_strict_suite_v1 | ALL_STRICT | causal | complete | yes | 80.7495 | 81.4748 | 95.0596 | 95.0596 | 482 |

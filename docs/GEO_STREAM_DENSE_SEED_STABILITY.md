@@ -7,12 +7,13 @@ primary B7 trial is shared between factors, not an independent replicate; incomp
 | Factor | Method | TRAIN head seed | Actual inference seed | Paired CVIDF1 delta (pp) | IDSW delta | Cross-camera output-pair fixes/harms |
 |---|---|---:|---:|---:|---:|---:|
 | training_head_seed | B5 | 20261014 | 20261014 | +0.089485 | -101 | 73939/5645 |
+| training_head_seed | B5 | 20261015 | 20261014 | +0.084604 | -94 | 73800/3765 |
 | training_head_seed | B7 | 20261014 | 20261014 | +0.089485 | -101 | 73939/5645 |
 | inference_rng_seed | B7 | 20261014 | 20261014 | +0.089485 | -101 | 73939/5645 |
 
 Missing full trials remain pending; partial scene results are not substituted for native complete-suite evaluation:
 
-- training_head_seed / B5: 1/3 complete; pending causal_B5_dense_seed20261015_strict_suite_v1, causal_B5_dense_seed20261016_strict_suite_v1.
+- training_head_seed / B5: 2/3 complete; pending causal_B5_dense_seed20261016_strict_suite_v1.
 - training_head_seed / B7: 1/3 complete; pending causal_B7_dense_seed20261015_strict_suite_v1, causal_B7_dense_seed20261016_strict_suite_v1.
 - inference_rng_seed / B7: 1/3 complete; pending causal_B7_primary_head_inference_seed20261015_strict_suite_v1, causal_B7_primary_head_inference_seed20261016_strict_suite_v1.
 

@@ -26,6 +26,9 @@ def main():
         prior_queries=next((row for row in paired['rows'] if row['method']=='Prior4' and row['query_scene']==1),None)
         if prior_queries:
             retrieval_evidence+=f" 四路scene1固定先验的逐查询R1修正/破坏为{prior_queries['common_eligible_rank1_fixes']}/{prior_queries['common_eligible_rank1_harms']}；汇总相同不代表查询相同。"
+    matched_gate=ROOT/'results/matched_head_tracking_retrieval_prefix_precheck_v2.json'
+    if matched_gate.exists() and json.loads(matched_gate.read_text())['status']=='PASS':
+        retrieval_evidence+=' GMT/DINO匹配跟踪头的真实40组交错前缀已在两个场景逐条复现独立参考。原核验器因两边权重均为0时未执行的几何方法字段差异而失败；只读v2显式记录该差异，仍核验全部生效配置、实际编码次数和精确输出。原失败/跳过记录保留，完整对照已固定恢复计划，仍未完成；短前缀不是检索收益证据。'
     signal_path=ROOT/'results/causal_B7_dense_positive_scene1_v1.json'
     signal=json.loads(signal_path.read_text()) if signal_path.exists() else None
     signal_text='尚无完整因果视频正向信号。'
