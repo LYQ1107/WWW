@@ -41,6 +41,12 @@ def main():
           '|---|---|---:|---:|---:|---:|---:|---|']
     for row in rows:
         text.append(f"| {row['method']} | {row['tracking_method']} | {row['camera_streams']} | {row['requests']} | {row['eligible_queries']} | {100*row['recall1']:.4f}% | {row['mrr']:.6f} | {row['exact_detector_query_cohort']}/{row['exact_full_scene18_detector_outputs']} |")
+    outcome_path=ROOT/'results/retrieval_paired_query_outcomes_v1.json'
+    if outcome_path.exists():
+        outcomes=json.loads(outcome_path.read_text());sources[str(outcome_path)]=sha256(outcome_path)
+        candidate=next((row for row in outcomes['rows'] if row['method']=='VGGT2'),None)
+        if candidate:
+            text+=['',f"The completed dense-B7 two-camera tracker feeding the native ranker has {candidate['common_eligible_rank1_fixes']} Recall1 query corrections and {candidate['common_eligible_rank1_harms']} harms on {candidate['common_eligible']} common eligible scene18 queries, with eligible gained/lost {candidate['eligible_gained']}/{candidate['eligible_lost']}. Same detector query cohort and GT identities are independently verified. This is a small primary-head replay signal; matched GMT/DINO tracking publication controls and the full four-camera candidate remain pending. See GEO_STREAM_RETRIEVAL_QUERY_AUDIT.md; no unique VGGT or stable speed claim follows.",'']
     text += ['',
         'Same-gallery diagnostics retain the full native positive-gallery denominator. The sampled-observation native scorer is stronger than transferred association-trained projection/cosine scores in the completed scene18 tests; positive candidate coverage is 100%. These diagnose scoring/representation transfer and do not show all raw foundation features are useless. Their five-ranker producer timings are diagnostic cost, not production throughput. See retrieval_scoring_diagnostics.csv and the source metrics.', '',
         'Query latency measures local scoring/response serialization after representations are available. Full replay-round timing separately charges reads, tracking, optional encoder work, publication, queries and log I/O. It is not HTTP/network or camera-capture-to-output latency. Source acquisition timing and a deadline-paced live camera service have not been verified. Index payload caps do not bound original GMT history or total process/GPU memory.', '',

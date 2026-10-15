@@ -144,6 +144,9 @@ def main():
     native_seed_stability=evidence('native_prior_inference_seed_stability_v1.json',['status','completed_inference_seeds','pending_inference_seeds','paired_cvidf1_delta_range','scope','limitations'])
     relation_matrix=evidence('identity_relations_matrix_v2.json',['status','pending','scope','limitations'])
     dense_geometry_attribution=evidence('causal_dense_geometry_full_strict_attribution_v1.json',['status','full_strict_suite','scope','conclusion','limitations','rows'])
+    dense_full2_retrieval=evidence('vggt_dense_retrieval_full2_tracking_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
+    retrieval_query_pairs=evidence('retrieval_paired_query_outcomes_v1.json',['status','rows','pending','scope','limitations'])
+    readonly_preflight=evidence('preflight_readonly_locked_inputs_v3.json',['status','locked_files_unchanged','raw_gt_files_verified','model_strict_load_performed','new_video_inference_performed','scope'])
     dense_retrieval_gate=evidence('vggt_tracking_retrieval_prefix_gate_v2.json',['status','full_video','full_strict_suite','scope','limitations'])
     order_parity=evidence('complete_causal_vggt_view_order_audit_v2.json',['status','scope','limitations','rows'])
     dense_verified=bool(dense and dense_pairs and dense_budget and dense['status']=='PASS' and dense_pairs['status']=='PASS' and dense_pairs['full_strict_suite'] and all(row['added_detections']==0 and row['removed_detections']==0 for row in dense_pairs['rows']))
@@ -191,6 +194,8 @@ def main():
         actual_camera_index_mlp_hook=camera_live_hook,whole_gmt_camera_order_diagnostic=whole_camera_order,
         native_prior_paired_inference_seed_stability=native_seed_stability,complete_ablation_output_relations=relation_matrix,
         complete_primary_dense_geometry_attribution=dense_geometry_attribution,
+        dense_b7_complete_two_camera_retrieval_tracking_parity=dense_full2_retrieval,
+        paired_retrieval_query_outcomes=retrieval_query_pairs,readonly_reproduction_preflight=readonly_preflight,
         dense_tracking_to_retrieval_prefix_gate=dense_retrieval_gate,
         complete_encoder_input_order_control=order_parity,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
@@ -265,7 +270,7 @@ def main():
         if prior_row:
             lines[6:6]=[f"The complete head-free fixed-prior scene18 publication control preserves the entire standalone prior tracking output, with {prior_row['requests']} queries/{prior_row['eligible_queries']} eligible, Recall1 {prior_row['Recall1']:.6f}, MRR {prior_row['MRR']:.6f}, descriptive whole-producer {prior_row['camera_image_fps']:.4f} images/s. Recall1 equals the native tracker reference; the MRR difference is small. This simple-control integration does not establish VGGT tracking-to-retrieval efficacy.",'']
     if prior_multistream_parity and prior_multistream_parity['status']=='PASS':
-        lines[6:6]=['Complete fixed-prior four/ten-camera producers now preserve every standalone prior tracking output in their respective scenes; the ten-camera run covers all strict5. Fixed scene18 query/detection cohorts are checked separately in WWW_SCOPE_NOTE.md. Full-suite status on the joint parity report is false because the four-camera run intentionally contains only two scenes; no missing ten-camera scenes are implied. Dense VGGT full producers remain queued.','']
+        lines[6:6]=['Complete fixed-prior four/ten-camera producers preserve every standalone prior tracking output in their respective scenes; the ten-camera run covers all strict5. Fixed scene18 query/detection cohorts are checked separately in WWW_SCOPE_NOTE.md. Full-suite status on the joint parity report is false because the four-camera run intentionally contains only two scenes; no missing ten-camera scenes are implied. Dense VGGT publication completion is reported separately.','']
     if camera_full_control:
         changed=sum(row.get('changed_track_id_rows') or 0 for row in camera_full_control['rows'])
         live_note=' Its live spatial-MLP hook remains a separate bounded check.'
@@ -281,6 +286,11 @@ def main():
         lines[6:6]=['Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.','']
     if dense_geometry_attribution and dense_geometry_attribution['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
         lines[6:6]=['Complete primary-head dense B5/B7 geometry attribution is now audited over all strict5: every serialized feature-only prediction exactly equals joint B7, with matched encoder calls and all other effective GEO options verified from their captured source defaults (calibration content checked, inactive default-off cache normalized). Joint geometry passes its numerical/background gate3 times, all in scene1; none changes the final outputs. This extends the earlier scene1 result to the complete primary-head suite; remaining head seeds and valid-pose accuracy are separate.','']
+    if dense_full2_retrieval and dense_full2_retrieval['status']=='PASS' and retrieval_query_pairs:
+        pair=next((row for row in retrieval_query_pairs['rows'] if row['method']=='VGGT2'),None)
+        producer=next((row for row in retrieval_rows if row['method']=='retrieval_vggt_dense_tracking_2streams_full_v1'),None)
+        if pair and producer:
+            lines[6:6]=[f"Complete dense-B7 two-camera tracking-to-retrieval preserves the standalone B7 tracking outputs. On the exact fixed detector cohort, native ranking has Recall1 {pair['method_conditional_recall1']:.6f} versus OFF {pair['baseline_conditional_recall1']:.6f}: {pair['common_eligible_rank1_fixes']} corrected and {pair['common_eligible_rank1_harms']} harmed Recall1 queries among {pair['common_eligible']} common eligible, with eligibility gained/lost {pair['eligible_gained']}/{pair['eligible_lost']}. Actual cost is {producer['vggt_calls']} VGGT calls and descriptive {producer['camera_image_fps']:.6f} camera images/s (static setup excluded). This is a small single-primary-head signal; four-camera publication and matched-head producer controls remain pending. See [paired query audit](GEO_STREAM_RETRIEVAL_QUERY_AUDIT.md); aggregate equality in other controls does not imply query equality.",'']
     for row in metric_rows:
         lines.append(f"| {row['method']} | {row['video_id']} | {'causal' if row['causal_online'] else 'offline'} | {'complete' if row['full_video'] else 'prefix'} | {'no: raw diagnostic' if row['raw_gt_diagnostic'] else 'yes'} | {row['HOTA']:.4f} | {row['AssA']:.4f} | {row['IDF1']:.4f} | {row['CVIDF1']:.4f} | {row['IDSW']} |")
     lines+=['','Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):','',

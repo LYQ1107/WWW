@@ -69,6 +69,16 @@ def main():
         source_artifacts=artifacts,
         scope='exact same physical detector query cohort and matched GT identities; common eligible queries retain both corrections and harms; eligibility drift and all-request effects separate',
         limitations='GT post-run labels and original ranked responses only; no reranking, cached throughput, causal attribution to raw foundation vectors, stable seed effect or WWW deployment claim; query/eligible counts alone do not prove identical cohorts',provenance=provenance()))
+    text=['# Paired detector-query retrieval outcomes','',
+        'Each completed row verifies the exact physical query cohort and matched GT identities. Conditional Recall alone can hide corrections and harms or changed eligibility. Outcomes are recomputed from the retained original ranked responses after inference; old metric files are preserved. The recognized early four-counter schema is allowed only with explicit verification of every retained value.','',
+        '| Method | Query scene | Requests | Common eligible | R1 fixes | R1 harms | Eligible gained/lost | Native R1 | Method R1 |',
+        '|---|---:|---:|---:|---:|---:|---:|---:|---:|']
+    number=lambda value:'missing' if value is None else f'{value:.6f}'
+    for row in rows:
+        text.append(f"| {row['method']} | {row['query_scene']} | {row['requests']} | {row['common_eligible']} | {row['common_eligible_rank1_fixes']} | {row['common_eligible_rank1_harms']} | {row['eligible_gained']}/{row['eligible_lost']} | {number(row['baseline_conditional_recall1'])} | {number(row['method_conditional_recall1'])} |")
+    text+=['',f'Pending comparison artifacts: {len(pending)}. Their missing values are not zero. Full examples, cohort/metric hashes and MRR changes are in results/retrieval_paired_query_outcomes_v1.json.','',
+        'These are query-rank changes, distinct from all-time tracking identity pairs or internal Hungarian decisions. A single primary-head local replay cannot establish stable VGGT-specific benefit, a speed advantage or WWW deployment.','']
+    (ROOT/'docs/GEO_STREAM_RETRIEVAL_QUERY_AUDIT.md').write_text('\n'.join(text))
     print(json.dumps([dict(method=row['method'],scene=row['query_scene'],same_eligibility=row['identical_eligible_query_set'],fixes=row['common_eligible_rank1_fixes'],harms=row['common_eligible_rank1_harms'],eligible_gained=row['eligible_gained'],eligible_lost=row['eligible_lost']) for row in rows]))
 
 
