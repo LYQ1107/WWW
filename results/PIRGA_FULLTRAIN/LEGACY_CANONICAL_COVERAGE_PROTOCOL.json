@@ -1,0 +1,75 @@
+{
+  "status": "PREREGISTERED_LEGACY_CANONICAL_COVERAGE_CONTROL",
+  "seed": 20261015,
+  "epochs": [
+    1,
+    3,
+    5
+  ],
+  "queries_per_epoch": 106800,
+  "prediction_queries_per_epoch": 70667,
+  "input_manifest": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/legacy_preprocessing_full11_v1/indexed_inputs/MANIFEST.json",
+    "sha256": "8925fc2e84190476fe7e509eee3d8fb9219916fc1e5b32da40092f32f5efcfee"
+  },
+  "eligibility": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/legacy_preprocessing_full11_v1/offline_supervision/ranking_eligible_keys.json",
+    "sha256": "e2250d0a46005ab82121f0b31eea30788a0319a5b77d0418b068e377c7d24053"
+  },
+  "full_admission": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_admission_v1/ADMISSION.json",
+    "sha256": "6815f8d694d7aace041fd5b7ab837af1f50eccae2cf229d191e42148df2e0749"
+  },
+  "paired_admission": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/legacy_preprocessing_full11_v1/CANONICAL_PAIRED_ADMISSION.json",
+    "sha256": "eb8ddb83ab3d5981fb5a0f6d7f0ab3c923ef855d15c8f041d34267b702df0b14"
+  },
+  "input_parity": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/legacy_preprocessing_full11_v1/OLD3000_CANONICAL_PAIRED_PARITY_V3.json",
+    "sha256": "960d971df80eb46a05140de35ccbf20f5f21d4eba0d6abf6aaac612d15961b65"
+  },
+  "old300_protocol": {
+    "path": "/data1/liuyeqiang/WWW_pirga_20261016/results/cv_pil_v3_native_validation/P3_MATCHED_FIT_PREREGISTRATION.json",
+    "sha256": "27e2405685fe1026f32ae158e4e82dff4dd41d34fd8a5f66ac6ba59207866834"
+  },
+  "initial_parameter_sha256": "540ab9300d10b2865c9458c1b0a591c9005b56e6471672d8d4dc96aff14df4cf",
+  "epochs_definition": "All106800 rank-eligible physical queries under old Top8/latest4 and conservative canonical masks, each exactly once/epoch. All154911 inputs reconstructed and included in eligibility census.",
+  "paired_control": "Refit original frozen300 query schedule with current canonical masks and unchanged independent CandidatePredictor optimizer. Only2 scheduled queries have reduced negative masks. Original old300 weights/results preserved.",
+  "compared_factors": "S0 old300 retained; S1 canonical300 with same old input/schedule; L1 canonical full106800 with same old input; L2 existing full-native113415. Never attribute differences in evidence scope or label certification solely to sample count.",
+  "samplers": "S1 original preregistered50/50 hard/ordinary300 schedule unchanged. Full no-replacement scene permutations required by master task. The full-coverage contrast changes sample coverage/update schedule, not just a scalar sample-count intervention.",
+  "hyperparameters": {
+    "parameters_per_arm": 38080,
+    "query_batch_size": 1,
+    "optimizer": "AdamW",
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "clip_per_arm": 1.0,
+    "cross_prediction_coefficient": 0.5,
+    "age_denominator": 400,
+    "score_native_plus_projected_cosine_alpha": 2.0
+  },
+  "full_per_arm_updates": 534000,
+  "CPU_wall_hours_cap": 4,
+  "GPU_wall_hours": 0,
+  "DEV_fitting_used": false,
+  "epoch_order_sha256": {
+    "1": "93b6fd348f274055f8253c2000201857839f5bc4cd13d1b9c85ec93a07ac86b2",
+    "2": "7565127359ae52688716b4b0b694b9da682b0e41e87c4352534c1cd02e5bdb69",
+    "3": "3f3cfdd8a5eaa51c71d7d625eb888c7607448b32762c667201a60c16bda4617f",
+    "4": "2912d15e697e239913f9817d45754302244e3021d431b119ccb9f14d97c8c579",
+    "5": "b322e9a2110fd9fa888d2d6a1cab29b8d19046470b1fcf690df927869714bb85"
+  },
+  "source_code_sha256": {
+    "geo_tools/train_pirga_legacy_coverage.py": "d586c36367b262e632cd21bfe55fcd061ac81479d5480ecbf73db39f8e178ada",
+    "geo_tools/pirga_legacy_preprocessing.py": "9968cbf3eb0e0fd7ab28669bb82036105006477b223fb6efb0e01e41b2b53629",
+    "geo_tools/verify_pirga_legacy_preprocessing.py": "326a0f6305f24188138a22eafdd1ae8db03d4530e5dc1728c836d8d11940a90d",
+    "geo_tools/pirga_grouped_heads.py": "9305b1a08b372866cee0919b9f0e6c4607b924d1dd7a18e469c5aa3d30bd6448",
+    "geo_tools/cv_pil_v2_model.py": "317b5da62cea8057661a9a66611d47037ec71e1e7909cd9197bda3040030e9f6",
+    "geo_tools/pirga_fulltrain_dataset.py": "928bf8a10eac49928cf6c168046582a4c2f5d59af98a5148456e63273a23d06b",
+    "geo_tools/pirga_training_cache.py": "772bd3cf4da82a5b11be948ba6eef4361b1343b059028c6fece689b9eb291d42",
+    "geo_tools/cv_pil_native_handoff.py": "eee493422c9133f7692ac5fd9bb97577e8748b1016b5f92a17d36086c5e4e53a"
+  },
+  "evaluation": "All canonical300 and fixed1/3/5 legacy-full heads on unchanged complete sealedDEV12, original state full Hungarian, frozenC0/C1 exact reference; no stage selection based on favorable endpoint.",
+  "qualification": "Necessary Phase1 coverage attribution supplement discovered during requirement audit; registered after existing development results, not a retroactive confirmatory preregistration. No new thresholds, architectures, data selection or officialTEST. Negative old/current results retained.",
+  "created_utc": "2026-10-15T22:43:29.408468+00:00"
+}
