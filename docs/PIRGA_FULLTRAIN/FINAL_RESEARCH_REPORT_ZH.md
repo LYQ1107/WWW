@@ -1,3 +1,5 @@
+> 最新进展（2026-10-15T20:46:08.032196+00:00）：Phase 0 已通过 FULLTRAIN_DATA_CONTRACT_PASS。Phase 1 三个独立同容量模型正在 GPU 2 按共同 113,415 查询/轮、固定 1/3/5 轮训练；无开发集读取。运行状态见 PHASE1_TRAINING_STATUS_SNAPSHOT.json（定时截取，非实时监视器）；正式评价尚未完成。既有 4 GPU-hour 账本内登记本阶段 1.4 小时上限，达到上限精确断点转 CPU，旧账本没有重置。下文带日期的早期状态保留为过程记录。
+
 # PIRGA 研究进度报告（研究未完成）
 
 最新工程状态为 **FULLTRAIN_READY**，Goal保持ACTIVE。完整现状见[Phase 0资产报告](PHASE0_ASSET_REPORT_ZH.md)。以下早期DATA_INCOMPLETE及预算等待为保留的历史记录；既有余额已核查并使用，真实采集和独立准入已通过。

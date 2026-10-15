@@ -5,12 +5,34 @@ import csv,json,subprocess,time
 from pathlib import Path
 import torch
 from cv_pil_dev12_shards import NativeShardAssets
-from cv_pil_v2_model import CandidatePredictor,parameter_digest
+from cv_pil_v2_model import CandidatePredictor
 from cv_pil_native_handoff import safe_torch_load
 from pirga_indexed_store import sha
 from cv_pil_v3_call_scoring import call_scores
 from run_cv_pil_v3_old_heads import primary_solve,classify,retrieval,summarize,ARMS
 from audit_cv_pil_v3_outcomes import targeted_audit
+
+
+def load_epoch_heads(pins, protocol):
+    """Fail closed on incomplete epochs, wrong arms, altered sources or weights."""
+    epoch=pins['epoch'];models={}
+    if epoch not in (1,3,5):raise ValueError('No unregistered DEV endpoint')
+    for arm in ('C2','C3','C4'):
+        spec=pins['heads'][arm]
+        if sha(spec['path'])!=spec['sha256']:raise ValueError('Head checkpoint changed')
+        state=safe_torch_load(spec['path'])
+        if state['arm']!=arm or state['epoch']!=epoch or state['step']!=113415*epoch or state['seed']!=20261015 or state['protocol_sha256']!=pins['training_protocol']['sha256'] or state['admission_sha256']!=protocol['admission']['sha256']:raise ValueError('Full-epoch head source/budget differs')
+        model=CandidatePredictor(use_camera=arm!='C4');model.load_state_dict(state['state_dict'],strict=True)
+        if sum(v.numel() for v in model.parameters())!=38080 or any(not torch.isfinite(v).all() for v in model.parameters()):raise ValueError('Head parameter contract failed')
+        models[arm]=model.eval()
+    return models
+
+
+def certified_outcomes(scores, ids, identity, label):
+    prediction,rr,outcome=retrieval(scores,ids,label)
+    primary=classify(identity,label,ids)
+    if label['GT_person'] is None:return prediction,None,None,None
+    return prediction,rr,outcome,primary
 
 
 def execute(pins,out):
@@ -20,14 +42,8 @@ def execute(pins,out):
     protocol=pins['training_protocol']
     if sha(protocol['path'])!=protocol['sha256']:raise ValueError('Training protocol changed')
     p=json.loads(Path(protocol['path']).read_text());assets=NativeShardAssets(**pins['release']);models={}
-    for arm in ('C2','C3','C4'):
-        spec=pins['heads'][arm]
-        if sha(spec['path'])!=spec['sha256']:raise ValueError('Head checkpoint changed')
-        state=safe_torch_load(spec['path'])
-        if state['arm']!=arm or state['epoch']!=epoch or state['step']!=113415*epoch or state['seed']!=20261015 or state['protocol_sha256']!=protocol['sha256'] or state['admission_sha256']!=p['admission']['sha256']:raise ValueError('Full-epoch head source/budget differs')
-        model=CandidatePredictor(use_camera=arm!='C4');model.load_state_dict(state['state_dict'],strict=True)
-        if sum(v.numel() for v in model.parameters())!=38080 or any(not torch.isfinite(v).all() for v in model.parameters()):raise ValueError('Head parameter contract failed')
-        models[arm]=model.eval()
+    if assets.engineering_only:raise ValueError('Engineering prefix is not development evaluation')
+    models=load_epoch_heads(pins,p)
     scored={}
     with torch.no_grad():
         for cid,c in assets.calls.items():
@@ -45,9 +61,7 @@ def execute(pins,out):
             positive_covered=bool(label['certified_target_indices']),source_primary_state=label['actual_primary_state'],
             original_bank_restored=label['source_label']['bank_restored'],original_newborn=label['source_label']['newborn'])
         for arm in ARMS:
-            pred,rr,outcome=retrieval(s['scores'][arm],ids,label)
-            primary=classify(s['actions'][arm],label,ids)
-            if label['GT_person'] is None:outcome=primary=None
+            pred,rr,outcome,primary=certified_outcomes(s['scores'][arm],ids,s['actions'][arm],label)
             r.update({arm+'_rank_id':pred,arm+'_rr':rr,arm+'_rank':outcome,arm+'_accepted_id':s['actions'][arm],arm+'_primary':primary})
         records.append(r)
     # Strong untrained controls must remain exactly the prior full same-range
