@@ -2,7 +2,7 @@
 
 SCIENTIFIC_SUCCESS: PRELIMINARY_PAIRED_FULL_DEV_GAIN_NOT_STABLE. ENGINEERING_COMPLETE: false. PAPER_READY: false.
 
-Tables below are read from actual evaluation files. Raw-GT diagnostic rows cannot substitute for strict evaluation. All input frames are retained. Original GMT full-video postprocessing is offline; no real-time identity latency claimed.
+Tables below are read from actual evaluation files. Raw-GT diagnostic rows cannot substitute for strict evaluation. All input frames are retained. Original GMT full-video postprocessing is offline; no real-time identity latency claimed. For synchronized two-camera tracking, per-camera delivered stream FPS equals group FPS; aggregate camera-image throughput is twice that value.
 
 Complete head-free native fixed-prior strict5: CVIDF1 95.181615 (+0.123653 percentage points), IDSW 482 to 351; exact detector-key sets in all five scenes, with corrections and harms retained separately. No extra learned parameters/encoder/head or target-vector columns. Descriptive cumulative throughput 6.9927 images/s, zero VGGT calls. This ordinary camera/time logit prior exceeds primary-seed dense VGGT full-dev CVIDF1 and IDSW; current evidence does not establish VGGT-specific identity gain. Paired inference-seed controls remain pending; no stable timing, final candidate selection or three-module success claim.
 
@@ -14,7 +14,7 @@ The head-free fixed-prior implementation now passes actual40-group equality to t
 
 In the actual80-call VGGT40-group prefix, fixed+1 evidence exactly reproduces learned dense identity outputs under identical feature eligibility. Learned score discrimination is unnecessary for that early split; whole-video/DEV attribution is not inferred. Cache gate telemetry exactly reproduces all decisions: all74 rejected reuse observations fail only the fixed native cosine .9 gate; spatial candidate filtering does not change admission. No DEV threshold relaxation is applied.
 
-Complete scene1 native-head constant-score control improves paired CVIDF1 +0.919076 percentage points with IDSW -75, exceeding current learned VGGT scene1 identity metrics. It retains frozen native-head encoding for eligibility but replaces learned pair evidence by fixed+1; no VGGT calls. This is a single-scene score ablation with diagnostic tracing, not a production-speed or zero-extra-parameter claim. Head-free equivalence is verified below; full strict5 and seed-paired inference controls remain pending.
+Complete scene1 native-head constant-score control improves paired CVIDF1 +0.919076 percentage points with IDSW -75, exceeding current learned VGGT scene1 identity metrics. It retains frozen native-head encoding for eligibility but replaces learned pair evidence by fixed+1; no VGGT calls. This is a single-scene score ablation with diagnostic tracing, not a production-speed or zero-extra-parameter claim. Head-free complete strict5 is reported above; paired inference-seed controls remain pending.
 
 Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order. Both OFF and zero-weight complete strict5 controls pass. Current post-cache/diagnostic-source complete OFF/zero regressions remain queued; earlier-source proof is not promoted to later-source completion.
 

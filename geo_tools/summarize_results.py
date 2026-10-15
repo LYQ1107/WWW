@@ -140,7 +140,7 @@ def main():
     save_json(ROOT/'results/final_summary.json',summary)
     lines=['# VGGT+GMT report (automatically generated; research in progress)','',
         f'SCIENTIFIC_SUCCESS: {science_status}. ENGINEERING_COMPLETE: false. PAPER_READY: false.','',
-        'Tables below are read from actual evaluation files. Raw-GT diagnostic rows cannot substitute for strict evaluation. All input frames are retained. Original GMT full-video postprocessing is offline; no real-time identity latency claimed.','',
+        'Tables below are read from actual evaluation files. Raw-GT diagnostic rows cannot substitute for strict evaluation. All input frames are retained. Original GMT full-video postprocessing is offline; no real-time identity latency claimed. For synchronized two-camera tracking, per-camera delivered stream FPS equals group FPS; aggregate camera-image throughput is twice that value.','',
         '| Method | Video | Strict GT | HOTA | AssA | IDF1 | CVIDF1 | IDSW |','|---|---:|---|---:|---:|---:|---:|---:|']
     if signal:
         row=signal['rows'][0];delta=row['metric_delta']
@@ -161,7 +161,7 @@ def main():
         lines[6:6]=['Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order.'+zero_note+' Current post-cache/diagnostic-source complete OFF/zero regressions remain queued; earlier-source proof is not promoted to later-source completion.','']
     if constant_native and constant_native['status']=='PASS':
         row=constant_native['rows'][0]
-        lines[6:6]=[f"Complete scene1 native-head constant-score control improves paired CVIDF1 {row['metric_delta']['CVIDF1']:+.6f} percentage points with IDSW {row['metric_delta']['IDSW']:+d}, exceeding current learned VGGT scene1 identity metrics. It retains frozen native-head encoding for eligibility but replaces learned pair evidence by fixed+1; no VGGT calls. This is a single-scene score ablation with diagnostic tracing, not a production-speed or zero-extra-parameter claim. Head-free equivalence is verified below; full strict5 and seed-paired inference controls remain pending.",'']
+        lines[6:6]=[f"Complete scene1 native-head constant-score control improves paired CVIDF1 {row['metric_delta']['CVIDF1']:+.6f} percentage points with IDSW {row['metric_delta']['IDSW']:+d}, exceeding current learned VGGT scene1 identity metrics. It retains frozen native-head encoding for eligibility but replaces learned pair evidence by fixed+1; no VGGT calls. This is a single-scene score ablation with diagnostic tracing, not a production-speed or zero-extra-parameter claim. Head-free complete strict5 is reported above; paired inference-seed controls remain pending.",'']
     if constant_prefix and constant_prefix['constant_evidence_exact_dense_identity_prefix']:
         lines[6:6]=['In the actual80-call VGGT40-group prefix, fixed+1 evidence exactly reproduces learned dense identity outputs under identical feature eligibility. Learned score discrimination is unnecessary for that early split; whole-video/DEV attribution is not inferred. Cache gate telemetry exactly reproduces all decisions: all74 rejected reuse observations fail only the fixed native cosine .9 gate; spatial candidate filtering does not change admission. No DEV threshold relaxation is applied.','']
     if headfree_prefix and headfree_prefix['status']=='PASS':
