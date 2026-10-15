@@ -15,6 +15,11 @@ def main():
     retrieval=list((RUNTIME/'retrieval').glob('*/retrieval.metrics.json'))
     full_retrieval=[path for path in retrieval if json.loads((path.parent/'manifest.json').read_text()).get('full_video')]
     retrieval_evidence=f'实际在线图像读取、GMT目标查询与轨迹片段索引已实现，已完成{len(retrieval)}个检索评价，其中{len(full_retrieval)}个为完整视频。详见retrieval_results.csv；GT只进入事后评价，不进入查询选择/排序。'
+    query_audit=ROOT/'results/retrieval_paired_query_outcomes_v1.json'
+    if query_audit.exists():
+        paired=json.loads(query_audit.read_text());candidate=next((row for row in paired['rows'] if row['method']=='VGGT2'),None)
+        if candidate:
+            retrieval_evidence+=f" 已完成denseB7跟踪接入原生排序的完整两路检索：相同{candidate['common_eligible']}个可检索查询中Recall1修正{candidate['common_eligible_rank1_fixes']}、破坏{candidate['common_eligible_rank1_harms']}，可检索集合变化{candidate['eligible_gained']}/{candidate['eligible_lost']}。这是小型主种子信号，匹配容量GMT/DINO跟踪发布对照及四路VGGT结果仍待完成，不能宣称VGGT独有或稳定收益。逐查询审计另外揭示四路scene1固定先验虽汇总相同，仍有1次R1修正和1次破坏。"
     signal_path=ROOT/'results/causal_B7_dense_positive_scene1_v1.json'
     signal=json.loads(signal_path.read_text()) if signal_path.exists() else None
     signal_text='尚无完整因果视频正向信号。'
