@@ -92,6 +92,10 @@ def main():
   '[研究分支当前报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。原始完整GTA checkpoint、视频、图像、预测压缩包和训练权重留服务器，仅推必要源码和紧凑记录；各自SHA已记录。',
   '运行起点HEAD和源码SHA见 EXPERIMENT_REGISTRY.json，具体结果含source binding。发布是否成功以runtime/publication/LAST_VERIFIED.json的local/remote HEAD一致为准；报告生成HEAD不是未来发布提交号。',
   '关键证据：BASELINE_PARITY.json、FULL_TRAIN_MATCHED_QUALITY_AUDIT.json、LEARNED_GATE_SUPERVISION_PRECHECK.json、LEARNED_GATE_SMOKE_TRAINING.json、LEARNED_GATE_RESULTS.json、LEARNED_FIRST_DIVERGENCE_NATIVE.json、SPEED_METRICS.json、GO_NO_GO.json。']
+ from gmt_jev_tradeoff_figure import main as plot_tradeoff
+ plot_tradeoff()
+ lines+=['','![已完成测量的开发精度与效率](GMT_JEV_ACCURACY_EFFICIENCY.png)',
+  '图只列已完成三轮计时的方法，保留旧Rule缓存负向结果。横误差线为实测三轮范围，不是置信区间；阴影仅表示HOTA/FPS数值目标，不能替代身份、机制、种子和独立资格。PDF和源数据见同目录及 ACCURACY_EFFICIENCY_FIGURE.json。']
  (DOCS/'FINAL_RESEARCH_REPORT_ZH.md').write_text('\n'.join(lines)+'\n')
  print('CURRENT_CHINESE_REPORT_REBUILT',len(cases),'methods',flush=True)
 
