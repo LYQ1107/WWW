@@ -37,7 +37,7 @@ def main():
     if summary:
         with (r/'PHASE1_ENDPOINT_SUMMARY.csv').open('w') as f:
             w=csv.DictWriter(f,fieldnames=list(summary[0]),lineterminator='\n');w.writeheader();w.writerows(summary)
-    for name in ('TRAINING_EPOCH_COVERAGE.json','CHECKPOINTS.json'):
+    for name in ('TRAINING_EPOCH_COVERAGE.json','CHECKPOINTS.json','RESULTS.json'):
         if (fit/name).exists():shutil.copyfile(fit/name,r/('PHASE1_'+name))
     if (fit/'TRAINING_EPOCH_COVERAGE.json').exists():shutil.copyfile(fit/'TRAINING_EPOCH_COVERAGE.json',r/'TRAINING_EPOCH_COVERAGE.json')
     raw=(fit/'TRAINING_CURVES.csv').read_text();(r/'TRAINING_CURVES.csv').write_text(raw[:raw.rfind('\n')+1])

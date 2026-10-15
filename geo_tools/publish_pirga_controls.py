@@ -77,7 +77,20 @@ def main():
     diagnostic=runtime/'bounded_action_diagnostic_v1'
     if (diagnostic/'RESULTS.json').exists():
         for name in ['RESULTS.json','INPUT_PINS.json']:shutil.copyfile(diagnostic/name,root/('BOUNDED_ACTION_DIAGNOSTIC_'+name))
-    master=json.loads((root/'MASTER_GOAL.json').read_text());master['completed_new_control_replay_epochs']=completed;master['updated_utc']=now;(root/'MASTER_GOAL.json').write_text(json.dumps(master,indent=2)+'\n')
+    uncertainty_epochs=[]
+    for epoch in [1,3,5]:
+        source=runtime/('uncertainty_gate_audit_epoch1_v1' if epoch==1 else f'uncertainty_gate_fixed_audits_v1/epoch{epoch}')
+        if not (source/'INPUT_PINS.json').exists() or not (source/'RESULTS.json').exists():continue
+        result=json.loads((source/'RESULTS.json').read_text())
+        if result['epoch']!=epoch or result['queries']!=14557 or not result['weights_unchanged'] or result['training_updates']!=0 or not result['original_ON_actions_exact_full_scope']:raise ValueError('Uncertainty audit scope/checkpoint drift')
+        dest=root/'UNCERTAINTY_GATE'/f'epoch{epoch}';dest.mkdir(parents=True,exist_ok=True)
+        for name in ['RESULTS.json','INPUT_PINS.json']:
+            target=dest/name
+            if target.exists() and sha(target)!=sha(source/name):raise ValueError('Refuse to replace published gate diagnostic')
+            if not target.exists():shutil.copyfile(source/name,target)
+        uncertainty_epochs.append(epoch)
+    master=json.loads((root/'MASTER_GOAL.json').read_text());master['completed_new_control_replay_epochs']=completed;master['updated_utc']=now
+    master['completed_uncertainty_gate_diagnostic_epochs']=uncertainty_epochs;(root/'MASTER_GOAL.json').write_text(json.dumps(master,indent=2)+'\n')
     print(json.dumps(dict(completed_control_replay_epochs=completed,observed_utc=now)))
 
 if __name__=='__main__':main()
