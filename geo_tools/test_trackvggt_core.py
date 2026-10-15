@@ -66,6 +66,14 @@ class Tests(unittest.TestCase):
         self.assertGreater(float(model.key.weight.grad.abs().sum()),0)
         self.assertGreater(float(query.grad.abs().sum()),0)
 
+    def test_roi_only_selection_does_not_depend_on_attention_or_history(self):
+        sampler=IdentityGuidedSampler(8);tokens=torch.randn(40,8);inside=torch.arange(40)<30;context=~inside
+        xy=torch.stack((torch.arange(40),torch.zeros(40)),-1).float()
+        _,first,_=sampler(tokens,torch.rand(40),torch.randn(128),xy,inside,context,16,mode='A')
+        _,second,_=sampler(tokens,torch.rand(40),torch.randn(128),xy,inside,context,16,mode='A')
+        self.assertTrue(torch.equal(first,second));self.assertEqual(len(first),16)
+        self.assertEqual(int(first[0]),0);self.assertEqual(int(first[-1]),29)
+
     def test_history_no_padding_future_or_id_ordinal(self):
         for summary in ('mean','ema'):
             model=TrackQueryEncoder(19,summary=summary)

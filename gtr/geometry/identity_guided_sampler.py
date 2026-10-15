@@ -77,5 +77,9 @@ class IdentityGuidedSampler(nn.Module):
             # as identity evidence in the reported learned AG-C experiments.
             weights=score.masked_fill(~legal,-torch.inf).softmax(0)
             return (weights[:,None]*tokens.float()).sum(0,keepdim=True),torch.where(legal)[0],score
+        if mode=='A':
+            selected=torch.where(inside)[0]
+            if len(selected)>k:selected=selected[torch.linspace(0,len(selected)-1,k,device=tokens.device).round().long()]
+            return tokens[selected],selected,score
         selected=greedy_2d(score,xy,inside,context&legal,k,diversity=0 if mode=='A' else .1,context_cap=0 if mode=='A' else k//2)
         return tokens[selected],selected,score

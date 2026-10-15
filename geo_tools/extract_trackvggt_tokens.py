@@ -37,6 +37,7 @@ def main():
     from gtr.geometry.track_dinov2_features import FrozenTrackDINO
     from gtr.geometry.roi_feature_extractor import PadMapping,patch_map,pool_roi
     from gtr.geometry.identity_guided_sampler import patch_regions,greedy_2d,normalize_attention
+    seed_all(20261014)
     checkpoint=OLD/'weights'/('vggt_1b.pt' if a.backbone=='vggt' else 'dinov2_vitl14_reg4.pth')
     started=time.perf_counter();encoder=(FrozenTrackVGGT if a.backbone=='vggt' else FrozenTrackDINO)(checkpoint)
     torch.cuda.synchronize();setup_seconds=time.perf_counter()-started
@@ -66,7 +67,9 @@ def main():
             saliency=attention[0,view].float()
             normalized=torch.zeros_like(saliency);region=inside|context
             normalized[region]=normalize_attention(saliency[region])
-            pool=greedy_2d(normalized+inside.float(),xy,inside,context,64,context_cap=32)
+            guided=greedy_2d(normalized+inside.float(),xy,inside,context,64,context_cap=32)
+            roi_only=greedy_2d(inside.float(),xy,inside,torch.zeros_like(context),64,context_cap=0)
+            pool=torch.cat((guided,roi_only)).unique(sorted=True)
             pool_inside=inside[pool];original_box=torch.tensor([query['box']],device=device)
             roi=[]
             for layer in LAYERS:
@@ -93,7 +96,7 @@ def main():
         teacher_head_checkpoint_sha256=None,teacher_head_scope='pre-training frozen token pool, no teacher head yet; later relation targets must bind trained head SHA',
         ag_qd_version={str(path.relative_to(ROOT)):sha256(path) for path in [ROOT/'gtr/geometry/identity_guided_sampler.py',ROOT/'gtr/geometry/track_query_encoder.py',ROOT/'gtr/geometry/track_qd_teacher.py',ROOT/'gtr/geometry/track_conditioned_see_query.py']},
         preprocessing='official RGB pad518, rounded patch14 shorter side, WHITE padding, normalization once inside corresponding frozen backbone; pad centers excluded',
-        prepool='at most64 deterministic attention/spatial box-context patches, context cap32; AG16/24/32 learned selection occurs after TRAIN relevance fitting',
+        prepool='at most128 shared patches: union of pure-box spatial64 and attention/spatial64(context cap32), sorted by original patch index; prevents implicit attention ordering in AG-A; AG16/24/32 learned selection follows TRAIN relevance fitting',
         no_dense_maps_or_full_attention_saved=True,setup_seconds=setup_seconds,extraction_seconds=seconds,
         timing_scope='offline actual frozen encoder/read/preprocessing/selected-token export; not online deployment FPS; VGGT/DINO encoder load separately charged',
         peak_cuda_allocated_bytes=torch.cuda.max_memory_allocated(),source_artifacts=sources,
