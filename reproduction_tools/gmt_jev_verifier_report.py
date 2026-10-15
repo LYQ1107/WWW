@@ -14,6 +14,22 @@ def main():
     decision='BLOCKED_INSUFFICIENT_SUPERVISION' if complete and not eligible else 'CONTINUE_TYPED_JEV'
     if not complete:decision='P0_NATIVE_CLOSURE_RUNNING' if audit else 'P0_RUNNING'
     counts=audit['counts'] if audit else {};support=closure['Q2_support'] if closure else audit['Q2_support'] if audit else {}
+    coverage={}
+    if audit:
+        categories={k:v for k,v in counts.items() if k.startswith('row_')}
+        assert sum(categories.values())==counts['rows']
+        active=counts.get('row_CERTIFIED_UNIQUE_ACTIVE',0);inactive=counts.get('row_UNIQUE_ID_NOT_ACTIVE',0)
+        q1total=sum(counts.get('Q1_'+k,0) for k in ['RELIABLE','CONFLICTED','UNKNOWN'])
+        coverage=dict(rows=counts['rows'],unique_active_target_rows=active,
+            unique_active_target_fraction=active/counts['rows'],
+            active_coverage_among_certified_unique_global_targets=active/(active+inactive) if active+inactive else None,
+            alias_masked_rows=counts.get('row_UNKNOWN_ALIASED_NATIVE_IDS',0),
+            alias_masked_row_fraction=counts.get('row_UNKNOWN_ALIASED_NATIVE_IDS',0)/counts['rows'],
+            current_GT_unknown_fraction=counts.get('row_UNKNOWN_CURRENT',0)/counts['rows'],
+            Q1_unknown_encounter_fraction=counts.get('Q1_UNKNOWN',0)/q1total if q1total else None,
+            categories=categories,source=ref(REPORTS/'PAIRED_PLAN_OPPORTUNITY.json'),
+            caveat='Fractions use all approved frames including diagnostic time buckets. Conditional active coverage excludes uncertified/aliased targets, and does not describe unknown-target coverage.')
+        save(REPORTS/'DECISION_COVERAGE_DIAGNOSTICS.json',coverage)
     base=legacy.read(legacy.REPORTS/'ORIGINAL_GMT_METRICS.json')
     mlp=legacy.read(legacy.REPORTS/'ONLINE_mlp_learned.json')
     annotation=ref(ANNOTATIONS)
@@ -61,6 +77,7 @@ def main():
         scope='Offline audit instrumentation and state cloning costs are not deployed verifier costs.',scientific_success=False))
     save(REPORTS/'GO_NO_GO.json',dict(status=goal['status'],decision=decision,scientific_success=False,
         JEV_VERIFIER_INDEPENDENT_VALUE='NOT_ESTABLISHED',Q2_eligible=eligible,Q2_support=support,
+        verifier_value_status='JEV_VERIFIER_INDEPENDENT_VALUE_NOT_ESTABLISHED',
         preliminary_accepted_MATCH_only_support=audit['Q2_support'] if audit else None,
         complete_native_plan_evidence=ref(REPORTS/'NATIVE_PAIRED_PLAN_OPPORTUNITY.json') if closure else None,
         Q1_diagnostic_only=q1,KEEP_GMT_MLP=True,evidence=ref(REPORTS/'PAIRED_PLAN_OPPORTUNITY.json') if complete else None,
@@ -82,7 +99,7 @@ def main():
     unknown=nc.get('plan_UNKNOWN_NATIVE_PLAN',0)/max(1,nc.get('plans',0)) if closure else counts.get('plan_UNKNOWN_PLAN',0)/max(1,counts.get('plans',0))
     changed=nc.get('plan_UNKNOWN_NATIVE_PLAN',0)/max(1,nc.get('actual_paired_native_replays',0)) if closure else counts.get('plan_UNKNOWN_PLAN',0)/max(1,counts.get('plans',0)-counts.get('plan_EQUIVALENT_NO_CHOICE',0))
     eligibility=['# 同状态决策监督审计','',f'阶段：{decision}。完整TRAIN12/13/14全部审计：{complete}。',*q2lines,'',*q1lines,'',
-        f'UNKNOWN占全部计划 {unknown:.4%}，占实际有分歧计划 {changed:.4%}。各行双方对错、合法候选覆盖/缺失与别名计数见 PAIRED_PLAN_OPPORTUNITY.json。',
+        f'UNKNOWN占全部计划 {unknown:.4%}，占MATCH分歧配对样本 {changed:.4%}。各行双方对错、合法候选覆盖/缺失与别名计数见 PAIRED_PLAN_OPPORTUNITY.json。',
         '认证单位为完整计划。MATCH层先把改变的拒绝行保留UNKNOWN；新增原生闭包实际重放Bank/出生/WRITE，只有两条真实执行结果及严格过去唯一目标均可认证才解除UNKNOWN。两层记录分别保留。人物连接组包含当前GT人物与两方案候选owner，不把持续多帧事件当独立正例。',
         '原始时间留出桶不用于Q2训练计数；过去GT认证跨桶连续，不是严格标签隔离。样本与分组元数据合计≤32MiB，不保存新完整训练库。',
         '已有Rule/ORACLE事件不能改成Frozen-MLP的APPLY标签；历史重审计见 HISTORICAL_EVENT_REAUDIT.json。',
@@ -94,6 +111,9 @@ def main():
         save(REPORTS/'SUPERVISION_ELIGIBILITY.json',dict(Q2_eligible=eligible,Q2_support=support,Q1_support=audit['Q1_unique_native_ID_groups'],
             native_plan_evidence=ref(REPORTS/'NATIVE_PAIRED_PLAN_OPPORTUNITY.json'),preliminary_evidence=ref(REPORTS/'PAIRED_PLAN_OPPORTUNITY.json'),scientific_success=False))
     write('DECISION_SUPERVISION_AUDIT.md',eligibility)
+    if coverage:
+        with (DOCS/'DECISION_SUPERVISION_AUDIT.md').open('a') as f:
+            f.write(f"\n全部{coverage['rows']}行中，唯一可认证active目标{coverage['unique_active_target_rows']}行（{coverage['unique_active_target_fraction']:.4%}）；别名mask{coverage['alias_masked_rows']}行（{coverage['alias_masked_row_fraction']:.4%}）。已可认证唯一历史目标条件下active覆盖{coverage['active_coverage_among_certified_unique_global_targets']:.4%}，不能外推UNKNOWN目标。定义与各类别互斥计数见 DECISION_COVERAGE_DIAGNOSTICS.json。\n")
     architecture=['# 架构与条件准入','',
         '完整GMT和5119参数冻结MLP保留；P0仅在相同原始轨迹的pre-commit分数/候选/历史包上离线比较，不在推理中使用GT。',
         'Q1问题是过去身份历史是否可靠；Q2问题是保留完整GMT计划还是完整MLP计划。完整双问题架构只有监督合格后才允许训练、接入native提交。',
@@ -149,7 +169,7 @@ def main():
         'B. 完整GMT与原MLP step300文件/源码SHA冻结。P0原GMT完整TRAIN记录逐项复核见各case；原MLP旧严格证据复用，未声称运行了新Typed OFF全视频合同。','',
         'C. Q1使用既有已提交历史，输出RELIABLE/CONFLICTED/UNKNOWN；Q2拟在同状态下选择完整KEEP/APPLY计划。若P0失败，本轮只做Q1诊断，没有Q2训练或新native决策。','',
         'D. 真实监督支持：',*q2lines,'',*q1lines,'',
-        f'UNKNOWN计划比例：全部 {unknown:.4%}；实际分歧中 {changed:.4%}。完整逐行四象限、候选缺失、别名和Q2梯度诊断见机器记录。','',
+        f'UNKNOWN计划比例：全部 {unknown:.4%}；MATCH分歧配对样本中 {changed:.4%}。完整逐行四象限、候选缺失、别名和Q2梯度诊断见机器记录。','',
         'Q1诊断（不参与在线身份提交）：',*q1metrics,'',
         'E. 同条件冻结历史成绩：',*rows,'',
         'MLP相对GMT：HOTA+0.600573、AssA+1.034080、CVIDF1+1.456462、IDSW+47、Frag−2，MOTA约−0.0718。这些均是旧开发结果，不归给新Q1/Typed。','',
