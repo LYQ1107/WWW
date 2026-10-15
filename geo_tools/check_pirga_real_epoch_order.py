@@ -21,13 +21,13 @@ def main():
                 if people[k] is not None:person_counts[(scene,people[k])]+=1
     allkeys=sum(by.values(),[]);reports=[]
     for epoch in range(1,6):
-        order=list(epoch_order(by,20261016,epoch));report=coverage(allkeys,order)
+        order=list(epoch_order(by,20261015,epoch));report=coverage(allkeys,order)
         if not report['full_epoch_pass']:raise ValueError('Schedule coverage failed')
         report.update(epoch=epoch,order_sha256=hashlib.sha256(json.dumps(order,separators=(',',':')).encode()).hexdigest(),query_metadata_only=True,actual_gradient_updates=0,ranking_eligibility_evaluated=False,
                       scene_person_groups=len(person_counts),states=dict(Counter(states[k] for k in order)))
         reports.append(report)
     if a.out.exists():raise FileExistsError(a.out)
-    a.out.mkdir();(a.out/'TRAINING_EPOCH_COVERAGE.json').write_text(json.dumps(dict(status='PASS_ENGINEERING_ALL_QUERY_SCHEDULE_ONLY',seed=20261016,
+    a.out.mkdir();(a.out/'TRAINING_EPOCH_COVERAGE.json').write_text(json.dumps(dict(status='PASS_ENGINEERING_ALL_QUERY_SCHEDULE_ONLY',seed=20261015,
         epochs=reports,supervision_eligible_count=None,actual_trained_queries=0,actual_gradient_updates=0,
         note='All154911 real physical query keys exercise scheduler. Not an epoch of training: complete native inputs and eligibility still missing.',wall_seconds=time.monotonic()-started),indent=2)+'\n')
     import csv

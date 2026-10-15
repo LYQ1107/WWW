@@ -85,6 +85,22 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(sup[(4,11,1)]['candidate_known_mask'],[True,False])
         self.assertFalse(training_eligible(tensorize(ds.actor([4,11,1])),sup[(4,11,1)]))
         self.assertTrue((ds.actor([4,11,0])['query_feature']==before).all())
+    def test_partial_engineering_store_cannot_start_full_training(self):
+        from pirga_fulltrain_dataset import NativeQueryDataset,eligible_epoch
+        self.w.add_call(self.c);self.w.close({},2);ds=NativeQueryDataset(self.root,sha(self.root/'manifest.json'))
+        p=Path(self.tmp.name)/'admission.json';p.write_text(json.dumps(dict(status='ENGINEERING_ONLY')))
+        with self.assertRaises(ValueError):list(eligible_epoch(ds,{},1,1,p,sha(p)))
+    def test_native_version_tag_is_not_person_certificate(self):
+        from pirga_fulltrain_dataset import NativeQueryDataset,load_supervision
+        v=self.w.add_feature(4,[10,0],1,1,self.x+.1,variant='actual_Bank_average_version')
+        self.c['reference_features'][0]=v;self.w.add_call(self.c);self.w.close({},2)
+        ds=NativeQueryDataset(self.root,sha(self.root/'manifest.json'))
+        self.assertEqual(ds.uncertified_variant_columns([4,11,0]),{0})
+        import gzip
+        p=Path(self.tmp.name)/'offline.jsonl.gz'
+        with gzip.open(p,'wt') as f:
+            f.write(json.dumps(dict(event_key=[4,11,0],GT_person=7,candidate_persons=[7,8],actual_primary_state='correct_link'))+'\n')
+        with self.assertRaisesRegex(ValueError,'support certificate'):load_supervision(p,sha(p),ds)
     def test_unapproved_resource_permit_rejected_before_model_import(self):
         from export_pirga_native_prefix import validate_permit
         p=Path(self.tmp.name)/'permit.json';p.write_text(json.dumps(dict(status='PROPOSED_NOT_AUTHORIZED')))

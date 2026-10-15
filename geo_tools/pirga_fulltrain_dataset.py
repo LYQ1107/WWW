@@ -18,7 +18,7 @@ LABEL_FIELDS={'event_key','GT_person','candidate_persons','actual_primary_state'
 class NativeQueryDataset:
     def __init__(self,root,manifest_sha,call_cache_size=8):
         if call_cache_size<1:raise ValueError('Positive bounded cache required')
-        self.store=StoreReader(root,manifest_sha);self.cache=OrderedDict();self.cache_size=call_cache_size
+        self.store=StoreReader(root,manifest_sha);self.manifest_bindings={str(Path(root).resolve()):manifest_sha};self.cache=OrderedDict();self.cache_size=call_cache_size
     def _call(self,scene,cid):
         key=(scene,cid)
         if key not in self.cache:
@@ -41,6 +41,13 @@ class NativeQueryDataset:
             if lag>0:hist[owners[track]].append(dict(camera=ro[4],lag=lag,feature=torch.from_numpy(self.store.feature(fid)),cross_view=ro[4]!=qo[4]))
         return dict(event_key=key,video=scene,frame=qo[3],camera=qo[4],query_feature=torch.from_numpy(self.store.feature(c['query_features'][qi])),
                     native_candidate_ids=list(c['candidate_ids']),native_scores=torch.from_numpy(dense_matrix(c['matrix_shape'],c['matrix_entries'])[qi].copy()),past_histories=hist)
+    def uncertified_variant_columns(self,event_key):
+        row=self.store.db.execute('SELECT scene,call_id,row_id FROM queries WHERE source=?',(json.dumps(list(event_key),separators=(',',':')),)).fetchone()
+        c=self._call(row[0],row[1]);bad=set()
+        for fid,track in zip(c['reference_features'],c['reference_tracks']):
+            variant=self.store.db.execute('SELECT variant FROM features WHERE id=?',(fid,)).fetchone()[0]
+            if variant is not None:bad.add(c['candidate_ids'].index(track))
+        return bad
     def keys(self):
         for (key,) in self.store.db.execute('SELECT source FROM queries ORDER BY scene,call_id,row_id'):yield tuple(json.loads(key))
 
@@ -60,15 +67,23 @@ def load_supervision(path,expected_sha,dataset):
             actor=dataset.actor(key);people=label['candidate_persons'];person=label['GT_person']
             if len(people)!=len(actor['native_candidate_ids']):raise ValueError('Label-created candidate')
             if any(p is not None and (type(p)!=int or p<0) for p in people+[person]):raise ValueError('Invalid certified identity')
+            if any(people[i] is not None for i in dataset.uncertified_variant_columns(key)):
+                raise ValueError('Native averaged/version descriptor lacks separate support certificate; mask identity offline, retain inference candidate')
             positives=[i for i,p in enumerate(people) if person is not None and p==person]
             result[key]=dict(GT_person=person,certified_target_indices=positives,candidate_known_mask=[p is not None for p in people],actual_primary_state=label['actual_primary_state'])
     if set(result)!=set(dataset.keys()):raise ValueError('Full TRAIN label/query coverage incomplete')
     return result
 
 
-def eligible_epoch(dataset,supervision,seed,epoch):
+def eligible_epoch(dataset,supervision,seed,epoch,admission_path,admission_sha):
     """Coverage over actually eligible supervision, never a with-replacement schedule."""
     from cv_pil_v2_model import tensorize,training_eligible
+    if sha(admission_path)!=admission_sha:raise ValueError('Unpinned full training admission')
+    admission=json.loads(Path(admission_path).read_text())
+    if (admission.get('status')!='FULLTRAIN_DATA_CONTRACT_PASS' or set(admission['fit_scenes'])!=FIT
+        or admission['source_store_manifests']!=dataset.manifest_bindings
+        or set(k[0] for k in dataset.keys())!=FIT or len(supervision)!=154911):
+        raise ValueError('Partial/engineering source cannot launch full training')
     by_scene={}
     for key,label in supervision.items():
         if training_eligible(tensorize(dataset.actor(key)),label):by_scene.setdefault(key[0],[]).append(key)
