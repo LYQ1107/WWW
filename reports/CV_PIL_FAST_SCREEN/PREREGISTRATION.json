@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "created_date": "2026-10-15",
+  "status": "IMPLEMENTED_CPU_SYNTHETIC_VALIDATION_ONLY_REAL_TRAIN_PENDING",
+  "scope": "existing original-TRAIN small feature and native GTA event caches; no new dataset, no encoder and no native online run",
+  "source_base_branch": "research/vggt-geo-stream-mcmt-www27-20261014",
+  "fit_videos": [
+    5,
+    8
+  ],
+  "development_video": 12,
+  "seed": 20261015,
+  "steps_per_trainable_arm": 300,
+  "model": "Frozen GMT VFCE1024 + rank16 camera/time conditional projection, head only",
+  "primary_experiment": "geo_tools/quick_cv_pil_native.py",
+  "secondary_oracle_gallery_diagnostic": "geo_tools/quick_cv_pil_probe.py",
+  "teacher_eligibility": "DINOv2 distillation only when teacher outranks native on fit videos 5/8; not selected on video12",
+  "primary_controls": [
+    "native GTA",
+    "native+GMT cosine",
+    "linear camera condition",
+    "plain contrastive",
+    "camera-conditioned predictive",
+    "no-camera predictive",
+    "conditional DINOv2 distillation"
+  ],
+  "metrics": [
+    "native-candidate Recall@1",
+    "MRR",
+    "fixes",
+    "harms",
+    "unique_queries",
+    "source hashes"
+  ],
+  "screens_gate": "Predictive/allowed distill must exceed native, native+cosine, linear and contrastive on the fixed TRAIN12 cohort, with fixes_vs_native > harms_vs_native",
+  "missing": [
+    "actual server cached TRAIN native screening",
+    "original/native inference integration",
+    "full online HOTA/AssA/CVIDF1/IDSW",
+    "full image FPS",
+    "independent and multi-seed verification"
+  ],
+  "synthetic_tests": "PASS: 3 CPU unittests + synthetic training screen; no real data scientific effect",
+  "real_dataset_gain_claim": false,
+  "scientific_success": false,
+  "GOAL_CHANGE": false,
+  "independent_validation": false,
+  "data_access": "No sealed20/21/22, no official TEST or Full24"
+}
