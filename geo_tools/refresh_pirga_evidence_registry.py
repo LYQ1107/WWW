@@ -1,5 +1,5 @@
 """Refresh derived registries from real published endpoints, never synthesize metrics."""
-import datetime,json
+import csv,datetime,json
 from pathlib import Path
 from pirga_indexed_store import sha
 
@@ -43,6 +43,26 @@ def main():
             legacy=master.get('completed_legacy_coverage_replay_endpoints')==['canonical300','epoch1','epoch3','epoch5']),
         next_action='Complete all registered fixed endpoints including canonical300/full legacy coverage control; preserve all negatives. No extra model tuning or online admission from a single endpoint.')
     (root/'GO_NO_GO.json').write_text(json.dumps(gate,indent=2)+'\n')
+    online=json.loads((root/'ONLINE_TRACKING_RESULTS.json').read_text())
+    online.update(reason='Full11 training input contract passed. Full native online evaluation remains unadmitted because completed predictive replay endpoints have not passed the scientific gate; remaining fixed endpoints continue.',
+        input_contract_status='FULLTRAIN_DATA_CONTRACT_PASS',input_admission_sha256=sha(root/'FULLTRAIN_ADMISSION.json'),updated_utc=now)
+    (root/'ONLINE_TRACKING_RESULTS.json').write_text(json.dumps(online,indent=2)+'\n')
+    objectives=[]
+    armsets=dict(P1=['C2','C3','C4'],P2=['A2_rank','AC_contrastive','A4_uncertainty','A5_no_uncertainty','A6_no_camera','A7_no_time','AS_same_camera'],
+        ordinary=['D1_MLP','D2_MLP_native_margin'],exhaustive_margin=['D1_MLP','D2_MLP_native_margin'],legacy_coverage=['C2','C3','C4'])
+    for family,path in fits.items():
+        coverage=runtime/path/('full/TRAINING_EPOCH_COVERAGE.json' if family=='legacy_coverage' else 'TRAINING_EPOCH_COVERAGE.json')
+        if not coverage.exists():continue
+        for epoch in json.loads(coverage.read_text())['epochs']:
+            loss=epoch.get('per_arm_mean_total_loss',epoch.get('mean_total_loss_per_arm'))
+            if len(loss)!=len(armsets[family]):raise ValueError('Loss arm axes differ')
+            for i,arm in enumerate(armsets[family]):
+                objectives.append(dict(family=family,epoch=epoch['epoch'],arm=arm,unique_query_visits=epoch['coverage']['unique_visited'],
+                    mean_total_training_objective=loss[i],preupdate_train_top1=epoch['train_preupdate_top1'][i] if 'train_preupdate_top1' in epoch else None,
+                    qualification='Mixed changing checkpoints during optimization; loss definitions differ across arms; not a heldout or cross-objective quality estimate'))
+    if objectives:
+        with (root/'TRAINING_OBJECTIVE_SUMMARY.csv').open('w') as f:
+            w=csv.DictWriter(f,fieldnames=list(objectives[0]),lineterminator='\n');w.writeheader();w.writerows(objectives)
     print(json.dumps(dict(published_evidence_entries=len(entries),fixed_endpoints_complete=gate['fixed_endpoints_complete'],observed_utc=now)))
 
 

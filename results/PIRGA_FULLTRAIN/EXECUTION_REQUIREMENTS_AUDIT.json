@@ -1,0 +1,400 @@
+{
+  "observed_utc": "2026-10-15T22:59:40.976381+00:00",
+  "status": "INCOMPLETE_UNTIL_ALL_REQUIRED_EVIDENCE",
+  "sufficient_to_mark_goal_complete": false,
+  "scientific_success": false,
+  "fixed_families": {
+    "PHASE1": {
+      "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
+      "protocol_sha256": "b9667b304852a6e4135f59104d618b2ed6108111ede3a26cd54dd9dc1d93d619",
+      "source_checks": {
+        "geo_tools/train_pirga_grouped_phase1.py": true,
+        "geo_tools/run_pirga_phase1_guarded.py": true,
+        "geo_tools/pirga_grouped_heads.py": true,
+        "geo_tools/pirga_training_cache.py": true,
+        "geo_tools/pirga_fulltrain_dataset.py": true,
+        "geo_tools/cv_pil_v2_model.py": true,
+        "geo_tools/cv_pil_native_handoff.py": true
+      },
+      "completed_full_epochs": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "expected_queries_per_epoch": 113415,
+      "checked_checkpoint_endpoints": [
+        [
+          "C2",
+          1
+        ],
+        [
+          "C3",
+          1
+        ],
+        [
+          "C4",
+          1
+        ],
+        [
+          "C2",
+          3
+        ],
+        [
+          "C3",
+          3
+        ],
+        [
+          "C4",
+          3
+        ]
+      ],
+      "completed_full_DEV12_replays": [
+        1,
+        3
+      ],
+      "expected_per_arm_total_updates": 567075,
+      "actual_checkpoint_bytes_verified": true,
+      "engineering_step300_checkpoints_excluded": [
+        "C2",
+        "C3",
+        "C4"
+      ],
+      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true
+    },
+    "PHASE2": {
+      "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
+      "protocol_sha256": "17ffe01425aa3da9e321c2b96d55eb30d82dccecfebdfadbff724f4563a552c6",
+      "source_checks": {
+        "geo_tools/pirga_candidate_state.py": true,
+        "geo_tools/pirga_innovation.py": true,
+        "geo_tools/pirga_grouped_innovation.py": true,
+        "geo_tools/train_pirga_innovation.py": true,
+        "geo_tools/pirga_training_cache.py": true,
+        "geo_tools/pirga_fulltrain_dataset.py": true,
+        "geo_tools/cv_pil_native_handoff.py": true
+      },
+      "completed_full_epochs": [
+        1,
+        2
+      ],
+      "expected_queries_per_epoch": 113415,
+      "checked_checkpoint_endpoints": [
+        [
+          "A2_rank",
+          1
+        ],
+        [
+          "AC_contrastive",
+          1
+        ],
+        [
+          "A4_uncertainty",
+          1
+        ],
+        [
+          "A5_no_uncertainty",
+          1
+        ],
+        [
+          "A6_no_camera",
+          1
+        ],
+        [
+          "A7_no_time",
+          1
+        ],
+        [
+          "AS_same_camera",
+          1
+        ]
+      ],
+      "completed_full_DEV12_replays": [
+        1
+      ],
+      "expected_per_arm_total_updates": 567075,
+      "actual_checkpoint_bytes_verified": true,
+      "engineering_step300_checkpoints_excluded": [],
+      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true
+    },
+    "ORDINARY": {
+      "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
+      "protocol_sha256": "893e26a0a096d97d087e53608aa54a03dc0ec43062d96d207a59f6a8c0cedf48",
+      "source_checks": {
+        "geo_tools/train_pirga_decision.py": true,
+        "geo_tools/pirga_decision_head.py": true,
+        "geo_tools/pirga_candidate_state.py": true,
+        "geo_tools/pirga_training_cache.py": true,
+        "geo_tools/pirga_fulltrain_dataset.py": true,
+        "geo_tools/cv_pil_native_handoff.py": true
+      },
+      "completed_full_epochs": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "expected_queries_per_epoch": 113415,
+      "checked_checkpoint_endpoints": [
+        [
+          "D1_MLP",
+          1
+        ],
+        [
+          "D2_MLP_native_margin",
+          1
+        ],
+        [
+          "D1_MLP",
+          3
+        ],
+        [
+          "D2_MLP_native_margin",
+          3
+        ],
+        [
+          "D1_MLP",
+          5
+        ],
+        [
+          "D2_MLP_native_margin",
+          5
+        ]
+      ],
+      "completed_full_DEV12_replays": [
+        1,
+        3
+      ],
+      "expected_per_arm_total_updates": 567075,
+      "actual_checkpoint_bytes_verified": true,
+      "engineering_step300_checkpoints_excluded": [],
+      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true
+    },
+    "EXHAUSTIVE": {
+      "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
+      "protocol_sha256": "a28142cae79c0f6422add4d3a7483881701022105f3db3c61969edd49c984332",
+      "source_checks": {
+        "geo_tools/pirga_decision_head.py": true,
+        "geo_tools/pirga_candidate_state.py": true,
+        "geo_tools/pirga_training_cache.py": true,
+        "geo_tools/pirga_fulltrain_dataset.py": true,
+        "geo_tools/cv_pil_native_handoff.py": true,
+        "geo_tools/train_pirga_exhaustive_margin.py": true
+      },
+      "completed_full_epochs": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "expected_queries_per_epoch": 113453,
+      "checked_checkpoint_endpoints": [
+        [
+          "D1_MLP",
+          1
+        ],
+        [
+          "D2_MLP_native_margin",
+          1
+        ],
+        [
+          "D1_MLP",
+          3
+        ],
+        [
+          "D2_MLP_native_margin",
+          3
+        ],
+        [
+          "D1_MLP",
+          5
+        ],
+        [
+          "D2_MLP_native_margin",
+          5
+        ]
+      ],
+      "completed_full_DEV12_replays": [
+        1,
+        3
+      ],
+      "expected_per_arm_total_updates": 567265,
+      "actual_checkpoint_bytes_verified": true,
+      "engineering_step300_checkpoints_excluded": [],
+      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true
+    },
+    "LEGACY": {
+      "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
+      "protocol_sha256": "227456e663624c7170bc0464e0fe99bb0ec9aa025b377471f43aad976fbe7638",
+      "source_checks": {
+        "geo_tools/train_pirga_legacy_coverage.py": true,
+        "geo_tools/pirga_legacy_preprocessing.py": true,
+        "geo_tools/verify_pirga_legacy_preprocessing.py": true,
+        "geo_tools/pirga_grouped_heads.py": true,
+        "geo_tools/cv_pil_v2_model.py": true,
+        "geo_tools/pirga_fulltrain_dataset.py": true,
+        "geo_tools/pirga_training_cache.py": true,
+        "geo_tools/cv_pil_native_handoff.py": true
+      },
+      "completed_full_epochs": [],
+      "expected_queries_per_epoch": 106800,
+      "checked_checkpoint_endpoints": [],
+      "completed_full_DEV12_replays": [],
+      "expected_per_arm_total_updates": 534000,
+      "actual_checkpoint_bytes_verified": true,
+      "engineering_step300_checkpoints_excluded": [],
+      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true
+    }
+  },
+  "deliverables": {
+    "MASTER_GOAL.json": {
+      "exists": true,
+      "sha256": "6cc0615fc3f8ba7fbe2713fc086cab55a894a9080bf03929dd7834a5096aff55",
+      "existence_alone_proves_content_complete": false
+    },
+    "DATA_SCOPE_AUDIT.json": {
+      "exists": true,
+      "sha256": "d5a92e94afbfe8b74d422db93a557b8bf5e3d73b53f13708c0e493359a218054",
+      "existence_alone_proves_content_complete": false
+    },
+    "FULLTRAIN_ASSET_MANIFEST.json": {
+      "exists": true,
+      "sha256": "c3a757b3cd1bb853ee3f16db4785ed827dc0f7311889a081b9c1a912885aca8e",
+      "existence_alone_proves_content_complete": false
+    },
+    "SUPERVISION_COVERAGE.json": {
+      "exists": true,
+      "sha256": "e9c072453a2938df26600e66b6a4aa11aafe8785d48e6ca825f9b2e8bb5468c1",
+      "existence_alone_proves_content_complete": false
+    },
+    "TRAINING_PROTOCOL.json": {
+      "exists": true,
+      "sha256": "4fe5629331f0d93b1d5760cf832353c8d2a11b030c0b9aa4f3331037f116229e",
+      "existence_alone_proves_content_complete": false
+    },
+    "TRAINING_CURVES.csv": {
+      "exists": true,
+      "sha256": "2d153aa9b5ac7f298e1f64bab35f666b442398775775f7166dc301e52321ba48",
+      "existence_alone_proves_content_complete": false
+    },
+    "TRAINING_EPOCH_COVERAGE.json": {
+      "exists": true,
+      "sha256": "afb674fe160683b8eb1f63622af240f9a72a205b4177c69f4027a8585b09fd65",
+      "existence_alone_proves_content_complete": false
+    },
+    "PREDICTION_ABLATIONS.csv": {
+      "exists": true,
+      "sha256": "e89bb52f694ca0de520b618af1cdfff9add83b2ac1623c78c61c6e52f3110e63",
+      "existence_alone_proves_content_complete": false
+    },
+    "RELIABILITY_ABLATIONS.csv": {
+      "exists": true,
+      "sha256": "12e7e6963d595e89144b826c074ae59a71511eb69c7fa4553dfae02826ee7f48",
+      "existence_alone_proves_content_complete": false
+    },
+    "NATIVE_DECISION_ABLATIONS.csv": {
+      "exists": true,
+      "sha256": "85a6283b36735da1a7a5c703b4b2e0ffb8f0cfbe9283919b25b5eab395625c76",
+      "existence_alone_proves_content_complete": false
+    },
+    "ORIGINAL_ERROR_REPAIRS.json": {
+      "exists": true,
+      "sha256": "3be4a253290e9399d0885a5afba583db2b278173798d7c666b02452114099f47",
+      "existence_alone_proves_content_complete": false
+    },
+    "PER_PERSON_AND_SCENE_RESULTS.csv": {
+      "exists": true,
+      "sha256": "f541821d11f77646bc65e70dca441d4f2ed286b67a0eb86d12045ee1bed58eee",
+      "existence_alone_proves_content_complete": false
+    },
+    "ONLINE_TRACKING_RESULTS.json": {
+      "exists": true,
+      "sha256": "98c0ca5b853d1b67fdb2dc863a7b7ee899239ab49855ddbabaff135b5c4f628f",
+      "existence_alone_proves_content_complete": false
+    },
+    "SPEED_AND_MEMORY.json": {
+      "exists": true,
+      "sha256": "f215594e13bb3884e4e5e4d88af8fbd789eec716d66792f077516f03a6e08e88",
+      "existence_alone_proves_content_complete": false
+    },
+    "RESOURCE_LEDGER.json": {
+      "exists": true,
+      "sha256": "18d444f095e035a234f98e3fce5fcfd2242a4a2bdff5641f700189a35520b6d0",
+      "existence_alone_proves_content_complete": false
+    },
+    "GO_NO_GO.json": {
+      "exists": true,
+      "sha256": "e38093cadfc6bbc119f4c1e8cd858d67a7472171c97c784001564468beb137bd",
+      "existence_alone_proves_content_complete": false
+    },
+    "FINAL_RESEARCH_REPORT_ZH.md": {
+      "exists": true,
+      "sha256": "94fa594ef6d890a14e51c28d85b504b1038ccf4454d650151805d0a71ae12a7f",
+      "existence_alone_proves_content_complete": false
+    },
+    "REVIEWER_QUESTIONS.md": {
+      "exists": true,
+      "sha256": "8c82dba74a88211dc1c1ff9d36fe1a9c0b4e53962287298130e54537d3f88cca",
+      "existence_alone_proves_content_complete": false
+    }
+  },
+  "conditional_obligations": {
+    "learned_reliability": "PENDING_FINAL_PHASE2_GATE",
+    "predictive_margin_and_full_PIRGA": "PENDING_FINAL_PHASE2_GATE",
+    "full_native_online": "NOT_ADMITTED_AT_COMPLETED_ENDPOINTS",
+    "full24_OOF": "NOT_RUN_SCOPE_AND_SEPARATE_RESOURCE_REVIEW_REQUIRED",
+    "full24_final_fit": "NOT_RUN_REQUIRES_LOCKED_METHOD_AND_VALIDATION_PLAN",
+    "second_seed": "NOT_RUN_NO_INDEPENDENT_GENERALIZATION_CLAIM"
+  },
+  "canonical300_control": {
+    "verified_checkpoint_arms": [
+      "C2",
+      "C3",
+      "C4"
+    ],
+    "full_DEV_replay_complete": true
+  },
+  "variance_gate_same_checkpoint_diagnostics": {
+    "1": {
+      "complete": true,
+      "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/uncertainty_gate_audit_epoch1_v1/RESULTS.json",
+      "sha256": "c5a20d4df46396befc40faf9ab4907b20bb300a6d2fa34b9045e18f925cee852"
+    },
+    "3": {
+      "complete": false,
+      "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/uncertainty_gate_fixed_audits_v1/epoch3/RESULTS.json",
+      "sha256": null
+    },
+    "5": {
+      "complete": false,
+      "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/uncertainty_gate_fixed_audits_v1/epoch5/RESULTS.json",
+      "sha256": null
+    }
+  },
+  "asset_admission": {
+    "status": "FULLTRAIN_DATA_CONTRACT_PASS",
+    "actual_queries": 154911,
+    "fit_scenes": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      13,
+      17,
+      20,
+      21,
+      24
+    ],
+    "sha256": "6815f8d694d7aace041fd5b7ab837af1f50eccae2cf229d191e42148df2e0749",
+    "official_TEST_in_scope": false
+  },
+  "limitations": [
+    "Checkpoint/coverage integrity and complete replay scope do not themselves certify scientific value.",
+    "Final audit must inspect objectives, supervision contract, old evidence preservation, GT separation, gate and report content.",
+    "Conditional phases require explicit gate decisions after all fixed endpoints. No goal completion or online metrics inferred here."
+  ]
+}

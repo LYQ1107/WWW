@@ -41,6 +41,15 @@ def main():
                 primary_unknown=metrics['primary_unknown'],stage='SAME_STATE_NATIVE_REPLAY_ONLY',scientific_success=False))
     old=repo/'results/cv_pil_v3_native_validation/P3_MATCHED300_FULL_DEV12/QUERY_RESULTS_OFFLINE_ONLY.csv'
     canonical=evaluation/'canonical300/QUERY_RESULTS_OFFLINE_ONLY.csv'
+    if canonical.exists():
+        paired=project(canonical,'S1');merge(paired,project(old,'S0'))
+        arms=['C0','C1']+[prefix+'_'+arm for prefix in ['S0','S1'] for arm in ['C2','C3','C4']]
+        impact=mechanism_audit(list(paired.values()),arms,forecast='S1_C3',controls=('C1','S0_C3','S1_C2','S1_C4'))
+        impact.update(control='SAME_OLD300_SCHEDULE_CANONICAL_MASK_VS_FROZEN_HISTORICAL_MASK',
+            primary_action_changes_by_arm={arm:sum(row['S0_'+arm+'_accepted_id']!=row['S1_'+arm+'_accepted_id'] for row in paired.values()) for arm in ['C2','C3','C4']},
+            original_csv_sha256=sha(old),canonical_csv_sha256=sha(canonical),online_admitted=False,scientific_success=False,
+            qualification='Complete identical exposedDEV12; canonical mask changes onlyTRAIN supervision. Action equivalence does not mean equal learned tensors or prove masks irrelevant under full training. Historical original outputs remain immutable.')
+        (root/'LEGACY_CANONICAL300_MASK_IMPACT.json').write_text(json.dumps(impact,indent=2)+'\n')
     for epoch in [1,3,5]:
         full=evaluation/f'epoch{epoch}/QUERY_RESULTS_OFFLINE_ONLY.csv'
         if not canonical.exists() or not full.exists():continue
