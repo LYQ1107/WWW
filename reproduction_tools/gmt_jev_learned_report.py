@@ -63,6 +63,13 @@ def main():
    scientific_success=False,independent_validation=False)
   fps_text=f'{fps:.4f}' if fps is not None else 'PENDING'
   lines.append(f"| {kind} | {m['HOTA']:.6f} | {delta['HOTA']:+.6f} | {m['AssA']:.6f} | {raw['CVIDF1']:.6f} | {m['IDSW']:.0f} | {m['Frag']:.0f} | {fps_text} |")
+ if methods:
+  lines+=['','| 头 | 已正确接受式参考 | 保持率 | N01 | N10 | UNKNOWN目标 | UNKNOWN参考Bank/出生 |','|---|---:|---:|---:|---:|---:|---:|']
+  for kind,r in methods.items():
+   c=r['paired_current_state_counts'];rate=r['correct_accepted_reference_preservation_rate']
+   rate_text=f'{100*rate:.6f}%' if rate is not None else 'UNDEFINED'
+   lines.append(f"| {kind} | {c.get('reference_correct',0)} | {rate_text} | {c.get('N01',0)} | {c.get('N10',0)} | {c.get('UNKNOWN_target',0)} | {c.get('UNKNOWN_reference_Bank_or_birth',0)} |")
+  lines+=['','该局部计数只对同一当前真实状态的原始GMT接受式MATCH作参考，原始拒绝后的Bank反事实未知。HOTA正号不代表已证明局部纠错机制，UNKNOWN覆盖及后续状态传播须分开解释。']
  lines+=['','主要协议是完整native raw；原min50/stock另报，不按结果换协议。TRAIN16是开发集，普通MLP/Attention结果一并保留。单种子差值、训练loss和ORACLE均不能证明显著性或独立结构优势。',
   '长期错误统计目前是回顾性描述量，accepted-reference N01/N10是在同一当前状态的局部比较，不能冒充整段干预因果传播。完整FPS来自GPU7三次真实图像推理，包括前端/关联/提交/最终stock；共享宿主机串行块存在时间负载差异。',
   '完整目标仍待联合质量/效率、普通控制器优势、必要种子和合法合格独立视频。SCIENTIFIC_SUCCESS=false。']
@@ -74,9 +81,16 @@ def main():
  save(REPORTS/'LEARNED_GATE_RESULTS.json',summary)
  decision=read(REPORTS/'GO_NO_GO.json');decision['single_learned_gate_revision'].update(status=revision_status,
   new_gradient_updates=updates,evidence=ref(REPORTS/'LEARNED_GATE_RESULTS.json'))
+ decision['historical_rule_control_experiments_complete']=True
+ decision['bounded_tracking_experiments_complete']=summary['all_three_quality_complete'] and summary['all_three_speed_complete']
+ decision['learned_development_quality']={k:dict(delta_HOTA=r['delta']['HOTA'],joint_measured_quality_pass=r['joint_measured_quality_pass'],quality_gates=r['quality_gates']) for k,r in methods.items()}
  decision['learned_training']='SINGLE_BOUNDED_LEARNED_GATE_REVISION_'+revision_status
  save(REPORTS/'GO_NO_GO.json',decision)
  goal=read(REPORTS/'MASTER_GOAL.json');goal['gates']['ORDINARY_CONTROL_ADVANTAGE']='LEARNED_FAIR_COMPARISON_PENDING' if len(methods)<3 else 'SEE_LEARNED_GATE_RESULTS_NOT_SIGNIFICANCE_PROOF'
+ positives=[k for k,r in methods.items() if r['joint_measured_quality_pass']]
+ if positives:
+  goal['gates']['MATCHED_DEVELOPMENT_GAIN']='MEASURED_RAW_QUALITY_POSITIVE_'+','.join(positives)+'_SPEED_CAUSAL_SEEDS_INDEPENDENCE_NOT_PROVEN'
+  goal['gates']['IDENTITY_STABILITY']='MEASURED_RAW_AND_DESCRIPTIVE_GATES_PASS_'+','.join(positives)+'_CAUSAL_PROPAGATION_NOT_ESTABLISHED'
  goal['gates']['LEARNED_GATE_SUPERVISION']='PASS_NATIVE_ZERO_AND_SUPERVISION_CONTRACT' if pre.exists() else 'PENDING_REAL_SUPERVISION_PRECHECK'
  save(REPORTS/'MASTER_GOAL.json',goal)
  speed=read(REPORTS/'SPEED_METRICS.json');speed['trained_neural_model_quality']='SEE_LEARNED_GATE_RESULTS' if methods else 'PENDING_LEARNED_FIXED_ENDPOINT_ONLINE'

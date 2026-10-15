@@ -54,6 +54,12 @@ AdamW lr0.001、weight_decay0.0001、FP32、clip1、seed20261009；结构化 ass
 | attention | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
 | cic | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING | PENDING |
 
+| 头 | 已正确接受式参考 | 保持率 | N01 | N10 | UNKNOWN目标 | UNKNOWN参考Bank/出生 |
+|---|---:|---:|---:|---:|---:|---:|
+| mlp | 30150 | 99.996683% | 0 | 1 | 27705 | 31 |
+
+该局部计数只对同一当前真实状态的原始GMT接受式MATCH作参考，原始拒绝后的Bank反事实未知。HOTA正号不代表已证明局部纠错机制，UNKNOWN覆盖及后续状态传播须分开解释。
+
 主要协议是完整native raw；原min50/stock另报，不按结果换协议。TRAIN16是开发集，普通MLP/Attention结果一并保留。单种子差值、训练loss和ORACLE均不能证明显著性或独立结构优势。
 长期错误统计目前是回顾性描述量，accepted-reference N01/N10是在同一当前状态的局部比较，不能冒充整段干预因果传播。完整FPS来自GPU7三次真实图像推理，包括前端/关联/提交/最终stock；共享宿主机串行块存在时间负载差异。
 完整目标仍待联合质量/效率、普通控制器优势、必要种子和合法合格独立视频。SCIENTIFIC_SUCCESS=false。
