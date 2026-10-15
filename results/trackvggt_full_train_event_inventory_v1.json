@@ -1,5 +1,5 @@
 {
-  "status": "INCOMPLETE",
+  "status": "COMPLETE_12_ASSOCIATION_TRAIN_FULL_CAUSAL_AUDITS",
   "completed_scenes": [
     4,
     5,
@@ -7,16 +7,16 @@
     7,
     8,
     9,
+    12,
     13,
     17,
     20,
     21,
     24
   ],
-  "pending_scenes": [
-    12
-  ],
+  "pending_scenes": [],
   "source_artifacts": {
+    "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_reference_purity_supplement_v1.json": "d15fd8b373627e1e78066a4b05bcf7c9092dc29a93188a79061fb4e1bf337570",
     "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene4_full_v1/actual_decisions.jsonl.gz": "2c1e95e06b5329eaee8d070d6ec611b15ca34c51506b8d884ba98d670cc8cd80",
     "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene4_full_v1/retained_examples.json": "20cbe7b9d009b500b955711c3768b46e0a6a2418bd90eecb1e84b1280ae12829",
     "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene4_full_v1/predictions.json": "7e523d747929e07d974333a9849ed8fdd6dc85ae2364d9117915b32067fe885b",
@@ -65,6 +65,14 @@
     "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene9_full_v1/events.jsonl.gz": "441fb1d2a07522a0e470d251ce55f0be44d2eddf5929dfca458f8b8babaac61c",
     "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene9_full_v1/detector_provenance.jsonl.gz": "3bb0ff3538875a2b5b48e8c9d8dde2e65a893c0bc1fc33f5a5d2abbe3eb7c399",
     "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene9_full_v1/manifest.json": "cc48357050af7ff02e5d59d76a40f95473eeb45732d47c301f1d72301e3e4135",
+    "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/actual_decisions.jsonl.gz": "9cc2a141e40706a52aba23fa535c08c1769316d795e15b8a353f32658ce953e9",
+    "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/retained_examples.json": "9a56c8c3a62054889cd3330d9cc97688212fbb9688829ab1cdd827e420db36d9",
+    "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/predictions.json": "3a2d4898c04ae30ffbeab1848477d2934ef6cc6abb6f36937542b91acbf4c033",
+    "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/rankings.jsonl.gz": "3ad68923d6bce49ce71d8f3bbfe48a4285015c94fa6ddde3976b7454c57ef59d",
+    "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/summary.json": "9adeb4b3d2da39f3f2c2ccda14d48dbdad5ebd6b885c98fb3adc09757890c1ca",
+    "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/events.jsonl.gz": "8cff051e9a09db85b33c5e6a196a7e63553c41541c87fdbe978b9852af6f27ef",
+    "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/detector_provenance.jsonl.gz": "ae25136ebb5d71c46d5a0224ed0918add741127c90f79b8d7b9393f05c719b83",
+    "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/manifest.json": "c48fe57c06eb2e02eb2f168d621bb0e66727803466d83d22d9f4d91ccc4168d4",
     "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene13_full_v1/actual_decisions.jsonl.gz": "0780ba99c1e4059fefc0ab3e7a3f921a182e74186798a4be1226322e884d0aa9",
     "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene13_full_v1/retained_examples.json": "df60a951a70738c0661a8bcc35d83b38297ec493247c830bb7dad4015153c279",
     "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene13_full_v1/predictions.json": "c0d42692486e5fa0104121902e34ecacb6dcc8faf399c008558f37f8c8a0af93",
@@ -107,12 +115,11 @@
     "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene24_full_v1/manifest.json": "7a553f46289b4ce806c52e2437f6098df6506026b65544a516359e34078ad6fa"
   },
   "generator": {
-    "commit": "dbd06ec7b34b9feb8f61d1620f4cb531ccc2ec34",
+    "commit": "9e4e274e7854d232ca05fc8378bd756472cecfcd",
     "source_tree_dirty": true,
-    "script_sha256": "8cd89fa6dbeceef7bba9490170c4048f653961acb9eb15d4c41a0d4155de86d7",
+    "script_sha256": "e6d8dbbacf5d8712428243b4cf6072e53b6129b4210db32c9fd218dc1275dac1",
     "command": [
-      "geo_tools/summarize_full_train_identity_audit.py",
-      "--allow-incomplete"
+      "geo_tools/summarize_full_train_identity_audit.py"
     ]
   },
   "pooled_rate_scope": "Completed fit sequences only; excludes scene12 and pending scenes. All-fit claim requires COMPLETE status.",
@@ -325,6 +332,42 @@
       "GT_labels_are_offline_only": true
     },
     {
+      "scene": 12,
+      "role": "validation_diagnostic",
+      "events": "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/events.jsonl.gz",
+      "events_sha256": "8cff051e9a09db85b33c5e6a196a7e63553c41541c87fdbe978b9852af6f27ef",
+      "full_legal_query_index": true,
+      "counts": {
+        "queries": 14557,
+        "reachable_rank_or_primary_failure": 37,
+        "known_Top1_errors": 78,
+        "reachable_ranking_errors": 20,
+        "known_primary_wrong_or_missed": 26,
+        "genuine_local_NULL": 3,
+        "unknown_query": 412
+      },
+      "known_GT_identities": 15,
+      "patch_bins": {
+        "1-3": 8401,
+        "4-15": 2888,
+        "0": 3229,
+        "16+": 39
+      },
+      "primary_states": {
+        "correct_link": 11703,
+        "correct_reject_within_recorded_candidates": 2,
+        "wrong_link": 6,
+        "ambiguous_reference": 2402,
+        "unknown_candidate_coverage": 12,
+        "unknown_query": 412,
+        "missed_known_positive": 20
+      },
+      "retained_examples": "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene12_full_v1/retained_examples.json",
+      "retained_count": 343,
+      "features_saved": false,
+      "GT_labels_are_offline_only": true
+    },
+    {
       "scene": 13,
       "role": "fit",
       "events": "/data1/liuyeqiang/WWW_trackvggt_runtime/full_train_audit_v1/scene13_full_v1/events.jsonl.gz",
@@ -505,7 +548,10 @@
   "fit_pool_statistics": {
     "reachable_rank_or_primary_failure": 1619,
     "reachable_ranking_errors": 514,
-    "reachable_errors_outside_V2": 1489
+    "reachable_errors_outside_V2": 1489,
+    "correctable_primary_error_positive_in_top4": 1092,
+    "correctable_primary_error_positive_in_top8": 1312,
+    "correctable_primary_error_positive_in_top16": 1419
   },
   "fit_unique_known_scene_identities": 145,
   "fit_reachable_error_scene_identities": 101,

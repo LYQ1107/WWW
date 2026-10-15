@@ -48,6 +48,8 @@ def cohort_statistics(events):
 
 
 def main():
+    import argparse
+    parser=argparse.ArgumentParser();parser.add_argument('--rare-null-revision',action='store_true');args=parser.parse_args()
     invpath=ROOT/'results/trackvggt_full_train_event_inventory_v1.json';inv=json.loads(invpath.read_text())
     if inv['status']!='COMPLETE_12_ASSOCIATION_TRAIN_FULL_CAUSAL_AUDITS':raise ValueError('all12 full scans must finish before deciding')
     original=json.loads((ROOT/'results/trackvggt_expanded_cohort_v2.json').read_text());v2keys={tuple(r['key']) for r in original['fit']}
@@ -89,7 +91,11 @@ def main():
         used=set(v2keys);frames=collections.defaultdict(set)
         for e in v2events:frames[e['key'][0],e['camera'],e['query_gt_identity']].add(e['frame'])
         selected=[];quotas=dict(hard=1000,ambiguous=350,moderate=300,easy=200,missing_or_unknown=150)
-        for group,quota in quotas.items():selected+=scene_rotating_select(pools[group],quota,used,frames)
+        # Preserve rare real NULL before abundant missing/impure observations.
+        # Otherwise the explicit unmatched quota could contain no real NULL.
+        genuine_null={scene:[e for e in events if e.get('genuine_NULL_within_legal_candidates',False)] for scene,events in pools['missing_or_unknown'].items()}
+        null_selected=scene_rotating_select(genuine_null,50,used,frames);selected+=null_selected
+        for group,quota in quotas.items():selected+=scene_rotating_select(pools[group],quota-(len(null_selected) if group=='missing_or_unknown' else 0),used,frames)
         # Fill unused quota only from legal known-positive categories, never
         # duplicate queries or inflate unknown/missing samples to reach a cap.
         remaining=collections.defaultdict(list)
@@ -99,7 +105,16 @@ def main():
         if len(selected)<1000:raise ValueError('V3 gate passed but unique spaced training support insufficient')
         combined=v2events+selected;new_stats=cohort_statistics(combined)
         manifest_path=ROOT/'manifests/trackvggt_expanded_training_v3.json'
-        if manifest_path.exists():raise FileExistsError('do not overwrite locked V3')
+        previous_revision=None
+        if manifest_path.exists():
+            if not args.rare_null_revision:raise FileExistsError('do not overwrite locked V3')
+            old_manifest=json.loads(manifest_path.read_text())
+            if old_manifest['feature_status']!='NOT_CAPTURED' or old_manifest['statistics']['genuine_NULL_within_legal_history_queries']!=0:raise ValueError('revision only allowed for unexecuted initial index with missing rare real-NULL stratum')
+            archive=manifest_path.with_name('trackvggt_expanded_training_v3_initial_index_v1.json')
+            if archive.exists():raise FileExistsError('single bounded revision only')
+            archive.write_bytes(manifest_path.read_bytes());previous_revision=dict(path=str(archive),sha256=sha256(archive),reason='Initial missing/unknown quota selected no rare genuine NULL. Reserve up to50 actual legal-history NULL first, then unchanged category quotas/rotation/spacing. No features or training existed; original index retained.')
+            old_comparison=ROOT/'results/trackvggt_cohort_v2_v3_comparison.json'
+            (ROOT/'results/trackvggt_cohort_v2_v3_initial_comparison_v1.json').write_bytes(old_comparison.read_bytes())
         selected_index=[]
         for event in selected:
             positive=event['pure_positive_top8'];local_NULL=event['genuine_NULL_within_legal_candidates']
@@ -108,17 +123,17 @@ def main():
                 positive_in_top8=positive,genuine_NULL_within_full_legal_history=local_NULL,
                 supervised_assignment_eligible=positive or local_NULL,missing_or_impure_mask=not positive and not local_NULL,
                 source_events=next(s['events'] for s in inv['scenes'] if s['scene']==event['key'][0])))
-        manifest=dict(status='LOCKED_TRAIN_EVENT_INDEX_REQUIRES_SELECTED_FEATURE_CAPTURE',version=3,
+        manifest=dict(status='LOCKED_TRAIN_EVENT_INDEX_REQUIRES_SELECTED_FEATURE_CAPTURE',version=3,index_revision=2 if previous_revision else 1,previous_revision=previous_revision,
             base_cohort='Cohort-V2',base_cohort_sha256=sha256(ROOT/'results/trackvggt_expanded_cohort_v2.json'),preserved_V2_fit_rows=original['fit'],additional_fit=selected_index,
             validation_rows=original['validation'],total_fit_queries=len(combined),total_validation_queries=300,statistics=new_stats,
-            selection='Fixed TRAIN-only category quotas, scene round robin, stable physical-key hash order; new queries spaced at least3 groups within scene/camera/known identity including V2. Unused quotas fill from known-positive categories; no duplicate events.',
-            added_quotas=quotas,selected_new_statistics=cohort_statistics(selected),independent_events_are_queries_not_independent_error_episodes=True,
+            selection='Reserve up to50 rare genuine legal-history NULL queries first within missing quota, then fixed TRAIN-only category quotas, scene round robin, stable physical-key hash order; new queries spaced at least3 groups within scene/camera/known identity including V2. Unused quotas fill from known-positive categories; no duplicate events.',
+            added_quotas=quotas,rare_genuine_NULL_selected=len(null_selected),selected_new_statistics=cohort_statistics(selected),independent_events_are_queries_not_independent_error_episodes=True,
             GT_used_only_for_postrun_TRAIN_fit_selection=True,DEV5_or_TEST_used=False,heldout_validation_GT_error_resampling=False,
             feature_status='NOT_CAPTURED',max_combined_teacher_cache_bytes=2147483648,
             feature_plan='Reuse exact-hash V2 pools. Capture native summaries and matching VGGT/DINO target tokens only for newly locked selected events; no foundation encoder during statistical scans. Continuous GMT replay, if necessary, constructs missing selected features and must reproduce the sealed scan predictions/history.',
             training_comparison='Same AG/QD architecture,1000 optimizer updates,batch4,seeds and fixed validation300 for V2/V3; no fitted comparison exists yet.',
             full_scene12_diagnostic_has_been_viewed=True,validation_is_not_blind_external_test=True,inventory_sha256=sha256(invpath))
-        save_json(manifest_path,manifest);comparison['V3']=new_stats;comparison['V3_manifest_sha256']=sha256(manifest_path);comparison['added_queries']=len(selected)
+        save_json(manifest_path,manifest);comparison['V3']=new_stats;comparison['V3_manifest_sha256']=sha256(manifest_path);comparison['added_queries']=len(selected);comparison['index_revision']=manifest['index_revision'];comparison['previous_revision']=previous_revision
     save_json(ROOT/'results/trackvggt_cohort_v2_v3_comparison.json',comparison)
     doc=['# Fit data expansion decision','',f'Decision: {decision}. This is a data sufficiency decision; teacher benefit is NOT_MEASURED.','',
         f"The complete11-scene fit pool contains {stats['reachable_rank_or_primary_failure']} Top8-reachable known ranking or primary wrong/missed queries, including {stats['reachable_ranking_errors']} reachable known ranking errors. {new_hard} reachable events are outside V2. New errors span {len(hard_scenes)} scenes with at least10 events each. Counts can repeat along an identity; scene/identity and adjacent-group statistics accompany the inventory.", '',

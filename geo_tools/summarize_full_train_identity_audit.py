@@ -12,7 +12,7 @@ FIT=[4,5,6,7,8,9,13,17,20,21,24]
 
 def write_csv(path,rows):
     fields=list(dict.fromkeys(key for row in rows for key in row))
-    stream=io.StringIO();writer=csv.DictWriter(stream,fieldnames=fields);writer.writeheader()
+    stream=io.StringIO();writer=csv.DictWriter(stream,fieldnames=fields,lineterminator='\n');writer.writeheader()
     for row in rows:writer.writerow({k:json.dumps(v,separators=(',',':')) if isinstance(v,(list,dict)) else v for k,v in row.items()})
     Path(path).write_text(stream.getvalue())
 
@@ -70,6 +70,8 @@ def summarize(base,allow_incomplete):
                 fit_stats['reachable_rank_or_primary_failure']+=reachable
                 fit_stats['reachable_ranking_errors']+=event['pure_positive_top8'] and event['ranking_state']=='wrong_link'
                 fit_stats['reachable_errors_outside_V2']+=reachable and key not in v2_keys
+                if event['correctable_known_wrong']:
+                    for k in [4,8,16]:fit_stats[f'correctable_primary_error_positive_in_top{k}']+=bool(set(event['positive_tracks'])&set(event[f'top{k}_tracks']))
                 if reachable:
                     identity_errors[scene,event['query_gt_identity']]+=1;hard_frames[scene,event['camera'],event['query_gt_identity']].add(event['frame'])
             scene_stat['unknown_query']+=not known
@@ -93,8 +95,11 @@ def summarize(base,allow_incomplete):
         overlaps='A/B/C/D/E/F, pure-positive availability, ranking and actual solver failure counts overlap. Unknown/impure is not a known error. No sum of categories.',
         final_output='Predicted IDs are arbitrary permutations of GT IDs. Reported final-ID anchors are past-output consistency only, not literal GT-ID equality or CVIDF1.')
     headroom=dict(**common,scene_rates=full_headroom,all12_counts=dict(all12_counts),all12_counts_scope='Completed association-TRAIN scenes including validation12; diagnostic only, never fit selection.',fit_counts=dict(fit_total),fit_rates={f'CandidateCoverage@{k}':ratio(fit_total[f'N_top{k}'],fit_total['N_pure_positive_full']) for k in [4,8,16]},
+        all12_rates={f'CandidateCoverage@{k}':ratio(all12_counts[f'N_top{k}'],all12_counts['N_pure_positive_full']) for k in [4,8,16]},
+        all12_correctable_error_rate=ratio(all12_counts['N_correctable_known_wrong'],all12_counts['N_wrong_eligible']),
         reference_purity_and_cross_camera_supplement=purity or 'NOT_MEASURED',
         fixed_native_history_GT_assisted_correctable_rate=ratio(fit_total['N_correctable_known_wrong'],fit_total['N_wrong_eligible']),
+        positive_retention_among_known_correctable_primary_errors={f'Top{k}':ratio(fit_stats[f'correctable_primary_error_positive_in_top{k}'],fit_total['N_correctable_known_wrong']) for k in [4,8,16]},
         no_metric_upper_bound=True,definitions=machine[0]['summary']['definitions'] if machine else 'NOT_MEASURED')
     save_json(ROOT/'results/trackvggt_candidate_headroom_v1.json',headroom)
     save_json(ROOT/'results/trackvggt_event_type_distribution_v1.json',dict(**common,by_scene=event_types,fit_patch_bins={k:dict(v) for k,v in fit_sizes.items()},VGGT_ROI_and_DINO_same_batch_recall='NOT_MEASURED'))
@@ -116,6 +121,7 @@ def summarize(base,allow_incomplete):
         cov=r.get('Top8Coverage',{});cv=f"{cov['numerator']} /{cov['denominator']}" if isinstance(cov,dict) and 'numerator' in cov else 'NOT_MEASURED'
         lines.append(f"|{r['Scene']}|{r['Frames']}|{r.get('N_known','NOT_MEASURED')}|{r.get('N_wrong','NOT_MEASURED')}|{r.get('N_pure_positive_full','NOT_MEASURED')}|{cv}|{r.get('N_impure','NOT_MEASURED')}|{r.get('N_unknown','NOT_MEASURED')}|{r['Status']}|")
     lines += ['', 'Counts overlap and describe the frozen native history. Known wrong includes pure known wrong links and rejected queries with a pure positive, not unknown selections. A ranking error can already be corrected by Hungarian. Missing pure positive can coexist with an impure track containing a correct observation. Candidate coverage divides by known queries with a pure full-history positive. Correctable error rate divides by reliably known primary wrong/missed queries. Neither is a HOTA/CVIDF1 upper bound.','',
+              f"All12 diagnostic total: {all12_counts['N_total']} actual primary queries, {all12_counts['N_known']} current-GT-known, {all12_counts['N_wrong']} reliably known primary wrong/missed, {all12_counts['N_correctable_known_wrong']} with a pure legal-history positive. CandidateCoverage@4/8/16 numerators are {all12_counts['N_top4']}/{all12_counts['N_top8']}/{all12_counts['N_top16']}, each divided by {all12_counts['N_pure_positive_full']}. Validation12 is included here only for diagnostic totals; all fit decisions exclude it.", '',
               'Actual raw/GTA ranks, Hungarian pairs, strict thresholds, memory reactivation, new-ID allocation and previous-group output anchors are separate in each sealed summary. Descriptor averages are not assigned GT from source tags. Final output IDs are permutation invariant; query counts cannot establish an end-to-end metric gain.']
     (ROOT/'docs/TRACKVGGT_FULL_TRAIN_AUDIT.md').write_text('\n'.join(lines)+'\n')
     analysis=['# Correctable identity error analysis','',f'Status: {status}. Fit totals exclude validation scene12.','',
@@ -123,6 +129,7 @@ def summarize(base,allow_incomplete):
     for r in rows:
         analysis.append('|'+ '|'.join(str(v) for v in [r['Scene'],r.get('N_rank_correctable','NOT_MEASURED'),r.get('N_assignment_correctable','NOT_MEASURED'),r.get('N_threshold_rejected','NOT_MEASURED'),r.get('N_missing_candidate','NOT_MEASURED'),r.get('KnownMixedHistory','NOT_MEASURED'),r.get('UnknownReferenceObservation','NOT_MEASURED'),r.get('N_genuine_NULL_within_legal_candidates','NOT_MEASURED'),r.get('DetectorUnmatchedGTRows','NOT_MEASURED')])+'|')
     analysis += ['', 'These columns are not mutually exclusive. Threshold rejection is an actual solver observation; NULL dominance and multiplicity-boundary evidence are separate overlapping flags, not invented exclusive causes. No pure candidate does not identify a causal detector failure. GT not detector-matched is a separate one-to-one detector coverage statistic and cannot be added to query errors.','',
+        f"Among known fit primary errors with a full pure positive, Top8 retains {fit_total['N_top8_correctable_known_wrong']} /{fit_total['N_correctable_known_wrong']}; this differs from overall candidate coverage dominated by easy queries. A known correct observation inside an impure or partially unlabelled reference track cannot certify a pure candidate. The unlabelled-history policy can remove otherwise correct real identities from this conservative supervised denominator, so missing-pure counts are not all proven retrieval failures.", '',
         '|518 patch centers|Queries|Known wrong/missed|Correctable /known wrong|GTA Recall1 /pure-positive-full|VGGT ROI Recall1|DINO Recall1|','|---|---:|---:|---|---|---|---|']
     for size in ['0','1-3','4-15','16+']:
         s=fit_sizes[size];analysis.append(f"|{size}|{s['queries']}|{s['known_wrong']}|{s['correctable_known_wrong']} /{s['known_wrong']}|{s['GTA_top1_correct']} /{s['pure_positive_full']}|NOT_MEASURED|NOT_MEASURED|")
