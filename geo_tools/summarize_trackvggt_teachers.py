@@ -1,8 +1,10 @@
 """Snapshot only actual completed teacher reports; never impute missing scores."""
 import csv
+import collections
 import torch
 from common import *
 from run_research_queue import process_identity
+from audit_trackvggt_ag_results import changes
 
 
 def main():
@@ -41,6 +43,50 @@ def main():
         csv_sha256=sha256(target),rows=rows,queues=queues,GT_unknown_not_known_wrong=True,
         scope='Every number from an actual completed source-bound run.150/1000/1200 rows are distinct budgets. Temporal rows resolve seed15 from actual code/source checkpoint; raw generic default14 is retained and flagged. Pair results do not prove actual Hungarian/final tracking gain.',provenance=provenance())
     save_json(ROOT/'results/trackvggt_teacher_execution_snapshot_v1.json',snapshot)
+    paired=[];native_states=None;primary_states=None;reference=None
+    for row in rows:
+        if row['completed_updates']<1000:continue
+        validation_path=Path(row['manifest']).parent/'validation.json'
+        values=json.loads(validation_path.read_text())['rows']
+        signature=[[v[k] for k in ('key','query_gt_known','top8_positive','known_unmatched','original_native_top1_state','actual_frozen_gmt_primary_state')] for v in values]
+        if reference is None:
+            reference=signature
+            native_states=dict(collections.Counter(v['original_native_top1_state'] for v in values))
+            primary_states=dict(collections.Counter(v['actual_frozen_gmt_primary_state'] for v in values))
+        if signature!=reference or len(values)!=300:raise ValueError('teacher correction comparison uses different validation keys/labels')
+        paired.append(dict(tag=row['tag'],completed_updates=row['completed_updates'],backbone=row['backbone'],
+            training_phase=row['training_phase'],feature_variant=row['feature_variant'],
+            ranking_changes_vs_native=changes(values),validation_sha256=sha256(validation_path),
+            actual_learned_solver_or_final_identity_repairs=None))
+    corrections=dict(status='ACTUAL_COMPLETED_TEACHER_RANKING_AUDIT_NOT_SOLVER_REPAIRS',
+        original_validation_queries=300,native_row_top1_states=native_states,actual_native_primary_states=primary_states,
+        original_validation_actual_primary_known_error_queries=sum(primary_states.get(k,0) for k in ('wrong_link','missed_known_positive')),
+        rows=paired,teacher_results_not_additive=True,
+        actual_learned_primary_or_final_ID_audit='NOT_EXECUTED_NO_VALID_TEACHER_OR_STUDENT_ADMISSION',
+        interpretation='Per-query rank changes on fixed actual native candidates. Unknown/ambiguous transitions remain uncertified. The original300 cohort has native row-ranking errors but zero certified actual primary errors. Do not turn these ranking fixes into Hungarian/Bank/final-ID repairs or sum overlapping fixes across teachers.',
+        DEV12_engineering_release='Separate complete14557-query asset covers26 actual native errors; neither its expanded inputs nor its labels are used here for model selection, fitting or a new VGGT repair claim.',
+        provenance=provenance())
+    save_json(ROOT/'results/identity_correction_audit.json',corrections)
+    index_path=ROOT/'results/experiment_manifest.json'
+    index=json.loads(index_path.read_text())
+    index.setdefault('inherited_geo_stream_status',index['status'])
+    index['status']='TRACKVGGT_RESEARCH_ACTIVE_SNAPSHOT'
+    index['inherited_experiments_scope']='Original experiments array/raw_gt_policy/split retained from the completed predecessor project; not newly executed TrackVGGT results.'
+    index['trackvggt']=dict(branch='research/trackvggt-identity-query-www27-20261015',
+        snapshot_utc=snapshot['utc'],teacher_reports=[dict(tag=r['tag'],manifest=r['manifest'],manifest_sha256=r['manifest_sha256'],
+            checkpoint_sha256=r['checkpoint_sha256'],actual_training_seed=r['training_seed'],native_inference_seed=r['native_inference_seed'],
+            raw_generic_provenance_seed=r['raw_generic_provenance_seed'],seed_reporting_correction_required=r['seed_reporting_correction_required'],
+            completed_updates=r['completed_updates'],training_phase=r['training_phase']) for r in rows],
+        live_queue_snapshot=queues,
+        current_evidence={str(path.relative_to(ROOT)):sha256(path) for name in [
+            'trackvggt_dev12_native_release_v1.json','trackvggt_ag_v2_v3_primary_results_v1.json',
+            'trackvggt_crop_primary_results_v1.json','trackvggt_qd_primary_results_v1.json',
+            'trackvggt_cycle_vggt_paired_v1.json','trackvggt_cycle_dinov2_paired_v1.json',
+            'trackvggt_system_execution_snapshot_v1.json','identity_correction_audit.json']
+            if (path:=ROOT/'results'/name).exists()},
+        student_status='NOT_EXECUTED_CONDITIONAL_RELATION_GATE_NOT_PASSED',
+        overall_goal_complete=False,scientific_success=False)
+    save_json(index_path,index)
     print(json.dumps(dict(status=snapshot['status'],completed_reports=len(rows),csv_sha256=sha256(target))))
 
 
