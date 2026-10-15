@@ -34,3 +34,90 @@ Actual cycle relation materialization and fitted-AG gradient checks pass on the 
 Completed report snapshots are generated from actual manifests into results/teacher_ablation.csv;150/1000 entries are different budgets, never interchangeable or best-iteration selection. Live QD/crop/control/cycle queue states are recorded with actual process identities in results/trackvggt_teacher_execution_snapshot_v1.json.
 
 Status: primary AG has not demonstrated independent VGGT teacher benefit. Crop/QD/temporal hypotheses are still executing or waiting for their named dependencies. IRGD, student success, scientific success and paper readiness remain unproven.
+
+## Completed fixed224 repair
+
+All six same256-fit/300-validation comparisons now finish1000 updates:
+
+|Backbone|Full|Local224|Full+local|
+|---|---:|---:|---:|
+|VGGT|0.32|0.44|0.41|
+|Matched DINO|0.37|0.51|0.46|
+
+These use234 common candidate-backed, GT-eligible training queries; all256 remain
+in fit evaluation. The terminal NumPy draw state and CPU/CUDA Torch RNG states
+match exactly across all three variants within each backbone. Full-image native
+fallbacks contribute350 neutral draws during the850-step continuation; local and
+combined have valid native-box tokens. Raw checkpoints are unchanged. The actual
+query-order/eligibility code and terminal RNG agreement verify the matched draw
+schedule; individual batch keys were not separately logged in these crop fits.
+The completed audit includes all per-query known fixes/harms, ambiguous changes,
+original size bins and matched DINO overlap. All300 requests are retained; all
+Recall@1 values above have100 certified pure-positive ranking queries as their
+denominator. All remain below native/.66; magnification helps both backbones and
+does not establish unique VGGT identity information.
+
+![Actual grid support](../results/plots/trackvggt_crop_support_v1.png)
+
+This coordinate-only example is the first original validation key with an observed
+zero-center full-image ROI. It copies no image and reads no GT. The local crop has
+40 valid native-box centers,28 retained positions; the original full pool is empty.
+The detector's native1152 feature remains available and is used for the original
+neutral fallback; the interpolated ROIAlign control also remains defined. A denser
+sampling grid is not evidence of correct identity association.
+
+## Completed VGGT QD primary fits and temporal pair
+
+The five no-cycle VGGT QD variants finish1000 updates: last=.25, fixed mean=.24,
+concat=.23, global See-Query=.24, track-conditioned See-Query=.25. Active capacity
+is1284996/2072580/2138244/2123016/2123016 respectively. The matched native-only
+QD-capacity MLP has2132697 parameters and Recall@1=.67. Matched DINO global/track
+and DINO cycle controls remain pending at this snapshot; they are not inferred.
+
+Track-conditioned QD's candidate-aligned layer-weight change under history
+permutation has mean L1=.511537671; global See-Query is exactly zero. The shuffled
+weights match the corresponding actually permuted query weights. Means/stds over
+that same candidate-query multiset are permutation invariant, so their aggregate
+agreement is not evidence of an inactive conditioning module. The whole query is
+permuted for AG/decoder/See-Query, while image and native pair evidence remain fixed;
+this does not isolate the See-Query performance effect from the other query paths.
+The track model's Recall@1 improves from.25 to.39 when history is shuffled, which
+contradicts useful identity conditioning in this tested setting.
+
+From that fixed trackQD1000 checkpoint, lambda0 and.1 each perform200 additional
+updates with identical source weights/optimizer/RNG, native batch draw hashes,
+cycle-key schedules and final NumPy/Torch/dropout RNG states. Initial association
+and cycle losses match exactly.128 fixed cycles yield106 visible draws across200
+updates. The final Recall@1 is.22/.23. The sole extra certified success at
+[12,30269,2] replaces an ambiguous reference from the no-cycle continuation; native
+GMT already ranks that query correctly. There are zero certified wrong-link fixes
+and zero certified known harms between these two continuations. Mean observed
+cycle loss falls.03238→.03082, but this is not independent identity/solver benefit.
+No lambda.2 expansion is justified by this weak, unreplicated ambiguity transition;
+there is no IRGD/student admission.
+
+A reporting defect is retained and corrected explicitly: pinned0eb9af7f's cycle
+fitter called generic provenance() with default native inference seed20261014,
+while executed seed_all(settings.training_seed) and restored checkpoint/RNG use
+training seed20261015. The raw checkpoint settings and actual source/RNG evidence
+resolve15; the native inference seed remains14. The raw files/logs/checkpoint SHAs
+are untouched. The paired audit and teacher CSV retain the original generic seed,
+flag the correction and report the actual training seed separately. Pending DINO
+continuations stay on the same pinned source and will receive the same explicit
+seed-resolution audit. Future main-branch fitter metadata uses the training seed.
+
+Saved150/1000 endpoints have also been evaluated retrospectively on at most256
+scene/hash-selected original fit queries. This is not a reconstructed online
+training Recall curve and does not select a best iteration. Examples: V2 AG-C
+fit R1=.8257 vs retained validation.07; V3 AG-C fit=.7253 vs.54; local-crop VGGT
+fit=.8541 vs.44. Original native fit values on those respective subsets are
+.7844/.6652/.6652. Fit populations differ between protocols, and low loss or good
+fit ranking does not establish held-out identity utility. The endpoint snapshot
+marks uncompleted cases pending and preserves their exact checkpoint hashes.
+
+The next completed DINO global-QD control gives R1=.19 (query shuffle=.42),
+versus VGGT global=.24. Both share the same one known native-ranking fix
+[12,30266,7], with12/6 known harms respectively. This is a single seed and
+poor absolute ranking performance, not a validated VGGT benefit. The QD audit
+now contains6 completed cases and1 pending DINO track-QD case; the matched
+DINO temporal control is still pending. No missing result is imputed.

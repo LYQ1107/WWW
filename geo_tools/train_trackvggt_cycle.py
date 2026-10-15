@@ -51,7 +51,7 @@ def main():
     checkpoint=dict(model={k:v.detach().cpu() for k,v in model.state_dict().items()},optimizer=optimizer.state_dict(),settings=dict(settings,lambda_cycle=a.lambda_cycle),
         completed_steps=1200,cycle_additional_steps=200,cohort_path=str(data.cohort_path),cohort_sha256=sha256(data.cohort_path),
         source_checkpoint=str(a.source),source_checkpoint_sha256=sha256(a.source),source_artifacts=data.source_artifacts,
-        torch_rng_state=torch.get_rng_state(),numpy_rng_state=np.random.get_state(),cuda_rng_states=torch.cuda.get_rng_state_all(),provenance=provenance())
+        torch_rng_state=torch.get_rng_state(),numpy_rng_state=np.random.get_state(),cuda_rng_states=torch.cuda.get_rng_state_all(),provenance=provenance(settings['training_seed']))
     torch.save(checkpoint,out/'checkpoint.pt');save_json(out/'loss_curve.json',curve)
     validation=evaluate(model,data,data.validation,'cuda');shuffled=evaluate(model,data,data.validation,'cuda',shuffle=True)
     save_json(out/'validation.json',validation);save_json(out/'validation_query_shuffle.json',shuffled)
@@ -62,7 +62,8 @@ def main():
         supervised_fit_queries=len(eligible),validation_metrics=validation['metrics'],query_shuffle_metrics=shuffled['metrics'],
         setup_seconds=setup,training_seconds=seconds,peak_cuda_allocated_bytes=torch.cuda.max_memory_allocated(),
         checkpoint_sha256=sha256(out/'checkpoint.pt'),artifacts={p.name:sha256(p) for p in out.iterdir() if p.is_file()},
-        no_new_DEV12_release_or_future_inputs=True,scientific_success=False,provenance=provenance())
+        training_seed=settings['training_seed'],actual_native_inference_seed=settings['actual_native_inference_seed'],
+        no_new_DEV12_release_or_future_inputs=True,scientific_success=False,provenance=provenance(settings['training_seed']))
     save_json(out/'manifest.json',proof);print(json.dumps({k:v for k,v in proof.items() if k not in ('artifacts','provenance')}))
 
 
