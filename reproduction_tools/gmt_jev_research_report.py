@@ -225,6 +225,9 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
  if gate_protocol.exists():
   report+='\n单次后续修订已在 LEARNED_GATE_SMOKE_PROTOCOL.md 冻结：三个约5k参数小头使用同一 learned risk mode，保留原手工量为输入、保留±0.05残差及原生候选/求解器；先核验原生零残差与≤32MiB临时监督缓冲的契约，再决定是否执行一次同预算300步smoke。当前仍为0真实训练更新，不改变旧 Rule、旧模式或任何成功门槛。\n'
  (DOCS/'FINAL_RESEARCH_REPORT_ZH.md').write_text(report)
+ if gate_protocol.exists():
+  from gmt_jev_learned_report import main as learned_evidence
+  learned_evidence()
  print('GMT_RESEARCH_REPORT_BUILT',speed['status'],pending,resource,flush=True)
 
 if __name__=='__main__':main()

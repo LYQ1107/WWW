@@ -49,7 +49,7 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 研究分支 research/gmt-jev-risk-association-20261014；[当前中文报告](https://github.com/LYQ1107/WWW/blob/research/gmt-jev-risk-association-20261014/docs/GMT_JEV/FINAL_RESEARCH_REPORT_ZH.md)。每阶段仅推源码、配置和紧凑JSON，权重、视频、图像、预测压缩包留在服务器并记录 SHA。实际发布终态由 runtime/publication/LAST_VERIFIED.json 的 local/remote HEAD 一致证明；报告生成来源 HEAD 与运行时源码 SHA 保存在 JSON。
 
-当前资源快照：{"new_retained_MiB": 286.68444633483887, "home_free_GiB": 50.07233810424805, "GPU_wall_hours_including_live": 8.159367032243559}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
+当前资源快照：{"new_retained_MiB": 287.5967683792114, "home_free_GiB": 50.07275390625, "GPU_wall_hours_including_live": 8.274325695480737}。只新增 home 文件，data1 读取历史资源；旧 NO_GO 与 checkpoint 未改写。
 
 完整 TRAIN12/13/14 覆盖补查：31663 条可认证唯一合法候选中，GMT 错误 127 条。TRAIN 时间桶冻结 Rule 局部 N01/N10=1/0；原前缀报告保持不变，这一补查不代表原生闭环或独立验证。当前训练状态：NOT_RUN_NATIVE_TRAIN_RULE_SIGNAL_GATE_FAILED。见 FULL_TRAIN_OPPORTUNITY_AUDIT.json 与已冻结 TRAIN_NATIVE_RULE_VALIDATION_PROTOCOL.md。
 
@@ -69,4 +69,8 @@ Rule 未通过稳定性门槛；Confidence 尚未达到 +0.5。所有原始检�
 
 受限 ORACLE 诊断合计：{"ALL_LEGAL_DIAGNOSTIC_ORACLE": {"HELDOUT_TEMPORAL_BLOCKS": {"E1_original_committed_wrong": 30, "E1_target_cannot_pass_active_MATCH_threshold_at_max_FP32_score": 4, "E1_target_edge_allowed": 30, "E1_with_any_allowed_edge": 30, "ORACLE_target_accept_on_E1": 3, "UNKNOWN_reference_Bank_or_birth": 4, "unique_active_rows": 5366}, "TRAIN_BLOCKS": {"E1_original_committed_wrong": 97, "E1_target_cannot_pass_active_MATCH_threshold_at_max_FP32_score": 9, "E1_target_edge_allowed": 97, "E1_with_any_allowed_edge": 97, "ORACLE_N01_accepted_reference": 3, "ORACLE_target_accept_on_E1": 17, "UNKNOWN_reference_Bank_or_birth": 19, "UNKNOWN_reference_owner": 3, "unique_active_rows": 26297}}, "CURRENT_GATE_ORACLE": {"HELDOUT_TEMPORAL_BLOCKS": {"E1_original_committed_wrong": 30, "E1_target_cannot_pass_active_MATCH_threshold_at_max_FP32_score": 8, "E1_target_edge_allowed": 1, "E1_with_any_allowed_edge": 5, "ORACLE_target_accept_on_E1": 1, "UNKNOWN_reference_Bank_or_birth": 4, "unique_active_rows": 5366}, "TRAIN_BLOCKS": {"E1_original_committed_wrong": 97, "E1_target_cannot_pass_active_MATCH_threshold_at_max_FP32_score": 31, "E1_target_edge_allowed": 11, "E1_with_any_allowed_edge": 25, "ORACLE_target_accept_on_E1": 7, "UNKNOWN_reference_Bank_or_birth": 19, "UNKNOWN_reference_owner": 1, "unique_active_rows": 26297}}}。所有 ORACLE 动作均未执行；这是有界合法动作空间见证，不是最优上限、神经网络可表达证明或在线收益。
 
-单次后续修订已在 LEARNED_GATE_SMOKE_PROTOCOL.md 冻结：三个约5k参数小头使用同一 learned risk mode，保留原手工量为输入、保留±0.05残差及原生候选/求解器；先核验原生零残差与≤32MiB临时监督缓冲的契约，再决定是否执行一次同预算300步smoke。当前仍为0真实训练更新，不改变旧 Rule、旧模式或任何成功门槛。
+单次后续修订已在 LEARNED_GATE_SMOKE_PROTOCOL.md 冻结：三个约5k参数小头使用同一 learned risk mode，保留原手工量为输入、保留±0.05残差及原生候选/求解器；先核验原生零残差与≤32MiB临时监督缓冲的契约，再决定是否执行一次同预算300步smoke。该修订真实训练更新总数以 TRAINING_METRICS.json 为准，不改变旧 Rule、旧模式或任何成功门槛。
+
+## 学习式门控修订的当前证据
+
+阶段 REAL_SUPERVISION_PRECHECK_PENDING_NO_UPDATES；真实 optimizer 更新总数 0。三个头各自的固定终点、监督认证和完整闭环结果见 [LEARNED_GATE_RESULTS_ZH.md](LEARNED_GATE_RESULTS_ZH.md)。旧 Rule 失败结论不变；未证明独立科学成功。

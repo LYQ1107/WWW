@@ -30,3 +30,5 @@ HEAD_COST_PREFIX.json 若已完成，则使用真实 TRAIN16 前64场景帧的�
 | attention | 1.206417 | 1.236234 |
 | cic | 1.206417 | 1.236234 |
 | mlp | 3.036863 | 1.236234 |
+
+训练后 learned gate 的完整 FPS 另见 LEARNED_GATE_RESULTS_ZH.md；旧零残差原型和旧 conflict 控制器结果保持原语义，不能将其计时当作新 learned gate 的计时。
