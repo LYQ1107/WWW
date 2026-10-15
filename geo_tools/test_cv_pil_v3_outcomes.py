@@ -38,5 +38,12 @@ class TestOriginalErrorAttribution(unittest.TestCase):
         a=targeted_audit(rs);self.assertTrue(a['algorithm_gate_pass'])
         self.assertFalse(a['native_online_run_admitted']);self.assertFalse(a['scientific_success'])
 
+    def test_original_correct_rejection_to_wrong_acceptance_is_a_harm(self):
+        r=row(1,3,'correct_reject',covered=False)
+        for arm in ('C0','C1','C2','C3','C4'):r[arm+'_primary']=True;r[arm+'_accepted_id']=None
+        r['C3_primary']=False;r['C3_accepted_id']=99
+        a=targeted_audit([r,row(2,4)])
+        self.assertEqual(a['methods']['C3']['originally_correct_primary_known_harms'],1)
+
 
 if __name__=='__main__':unittest.main()

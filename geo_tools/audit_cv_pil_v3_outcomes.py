@@ -29,7 +29,7 @@ def read_rows(path):
 def targeted_audit(rows):
     require(len({tuple(r['key']) for r in rows})==len(rows), 'Repeated physical query')
     errors=[r for r in rows if r['source_primary_state'] in ('wrong_link','missed_known_positive')]
-    correct=[r for r in rows if r['source_primary_state']=='correct_link']
+    correct=[r for r in rows if r['source_primary_state'] in ('correct_link','correct_reject')]
     require(all(r['C0_primary'] is False for r in errors) and
             all(r['C0_primary'] is True for r in correct), 'Source primary certification conflicts with C0 replay')
     reachable=[r for r in errors if r['positive_covered']]
