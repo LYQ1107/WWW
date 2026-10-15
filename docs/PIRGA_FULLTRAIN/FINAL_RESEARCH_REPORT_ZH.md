@@ -1,6 +1,8 @@
-# PIRGA Phase 0 进度报告（研究未完成）
+# PIRGA 研究进度报告（研究未完成）
 
-当前是 **DATA_INCOMPLETE**，Goal保持ACTIVE。没有训练新PIRGA模型，没有新在线结果，
+最新工程状态为 **FULLTRAIN_READY**，Goal保持ACTIVE。完整现状见[Phase 0资产报告](PHASE0_ASSET_REPORT_ZH.md)。以下早期DATA_INCOMPLETE及预算等待为保留的历史记录；既有余额已核查并使用，真实采集和独立准入已通过。
+
+最初CPU阶段是 **DATA_INCOMPLETE**。没有训练新PIRGA模型，没有新在线结果，
 没有把先前CV-PIL的负向归因结论改写成成功。首次CPU资产阶段已执行；完整资产契约尚未通过。
 
 研究从远程核验的`560b43d5567ac8d4a73075450157766bc63d261d`开始，隔离到
