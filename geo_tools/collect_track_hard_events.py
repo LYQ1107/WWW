@@ -22,7 +22,7 @@ def pure_reference_identity(values):
 def choose_events(events,limit,fit):
     def order(event):
         # TRAIN fit may use error labels; held-out selection never does.
-        error=event['top8_positive'] and not event['native_top1_correct']
+        error=fit and event['top8_positive'] and not event['native_top1_correct']
         return (0 if fit and error else 1,event['relative_margin'],event['key'])
     return sorted(events,key=order)[:limit]
 
@@ -103,7 +103,10 @@ def main():
             recent=sorted(all_sources,key=lambda key:(observations[key]['frame'],observations[key]['camera'],key))[-4:]
             histories[track]=dict(sources=[list(key) for key in recent],observed_length=int(tracker.counts.get(track,len(all_sources))))
         calls.append(dict(queries=[list(key) for key in queries],references=[dict(source=list(key),track=int(identity)) for key,identity in zip(sources,id_list)],
-            track_ids=track_list,track_scores=scores.detach().float().cpu(),logits=logits.detach().float().cpu(),histories=histories))
+            reference_cameras=[observations[key]['camera'] for key in sources],reference_times=[observations[key]['frame'] for key in sources],
+            reference_finite=[bool(torch.isfinite(observations[key]['feature']).all() and observations[key]['feature'].float().norm()>0) for key in sources],
+            track_ids=track_list,track_scores=scores.detach().float().cpu(),logits=logits.detach().float().cpu(),histories=histories,
+            reference_block_sizes=[len(instance) for instance in refs]))
         return result
     model.inference=inference;model.get_asso=association
     seed_all(spec['inference_seed']);tracker=CausalGMT(model);predictions=[];started=time.perf_counter()
@@ -140,6 +143,7 @@ def main():
             coverage['queries_total']+=1
             if not cross:coverage['no_cross_camera_top8_history']+=1;continue
             all_positive=[track for track,value in pure.items() if truth is not None and value==truth]
+            observed_positive=[track for track,values in ref_truth.items() if truth is not None and truth in values]
             positives=[track for track in selected if track in all_positive]
             unknown=[track for track in selected if pure[track] is None]
             known_query=truth is not None;has_all=bool(all_positive);has_top=bool(positives)
@@ -147,12 +151,15 @@ def main():
             margin=float((score[order[0]]-score[order[1]])/(score[order[0]].abs()+1e-8)) if len(order)>1 else 1.
             coverage['cross_camera_queries']+=1;coverage['known_query']+=known_query;coverage['correct_candidate_anywhere']+=has_all
             coverage['correct_candidate_in_top8']+=has_top;coverage['positive_excluded_by_top8']+=has_all and not has_top
+            coverage['correct_observation_in_history_including_impure_tracks']+=bool(observed_positive)
+            coverage['correct_observation_in_top8_including_impure_tracks']+=any(track in observed_positive for track in selected)
             coverage['top8_correctable_native_top1_errors']+=has_top and not correct
             coverage['unknown_query']+=not known_query;coverage['query_with_ambiguous_top8_track']+=bool(unknown)
             coverage['known_query_no_known_positive_in_history']+=known_query and not has_all
             candidates.append(dict(key=[a.video_id,*key],call_index=call_index,query_row=row,query_source=qsource,
                 candidate_tracks=selected,candidate_track_indices=top,native_track_scores=score[top].tolist(),relative_margin=margin,
                 query_gt_identity=truth,positive_tracks=positives,all_history_positive_tracks=all_positive,ambiguous_tracks=unknown,
+                observed_positive_tracks_including_impure=observed_positive,
                 top8_positive=has_top,all_history_positive=has_all,native_top1_correct=bool(correct),
                 loss_eligible=known_query and (has_top or (not has_all and not any(value is None for value in pure.values()))),
                 known_unmatched_within_all_recorded_history=known_query and not has_all and not any(value is None for value in pure.values()),

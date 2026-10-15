@@ -75,8 +75,13 @@ class FrozenTrackVGGT:
         if not torch.isfinite(images).all() or images.min()<0 or images.max()>1:
             raise ValueError('official RGB [0,1] required; normalization occurs once inside aggregator')
         self.attention = None
-        with torch.autocast('cuda',dtype=self.dtype):
-            outputs,start = self.model(images.to(self.device))
+        # The bounded real-image repeat test found default FP16 forwards vary
+        # even without hooks on this V100/Torch2 stack. This explicit backend
+        # produces exact four-layer repeats and matches the pinned Det probe.
+        # Scope the choice to the teacher encoder, never the GMT detector.
+        with torch.backends.cuda.sdp_kernel(enable_flash=False,enable_math=True,enable_mem_efficient=False),torch.backends.cudnn.flags(deterministic=True,benchmark=False):
+            with torch.autocast('cuda',dtype=self.dtype):
+                outputs,start = self.model(images.to(self.device))
         layers = explicit_layer_map(outputs,start,images.shape[-2:])
         attention = self.attention[:,start:].reshape(1,images.shape[1],-1)
         if attention.shape[-1] != layers[4].shape[-2] or not torch.isfinite(attention).all():
