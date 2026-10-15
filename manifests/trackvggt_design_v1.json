@@ -1,0 +1,78 @@
+{
+  "status": "LOCKED_BEFORE_NEW_MODEL_RESULTS",
+  "base_commit": "861c8710fc76935b1af49c9aa1c7df135a8a2ce8",
+  "branch": "research/trackvggt-identity-query-www27-20261015",
+  "request_sha256": "d1b80277b5cc9ab9bda9bc31c3cd6490495cf7f08bc8cc612b72427639032e87",
+  "runtime": "/data1/liuyeqiang/WWW_trackvggt_runtime",
+  "dependency_runtime": "/data1/liuyeqiang/WWW_vggt_geo_runtime",
+  "allocation": [
+    0,
+    4,
+    5,
+    6
+  ],
+  "max_concurrent_gpus": 4,
+  "inference_seed": 20261014,
+  "training_seeds": [
+    20261015,
+    20261016,
+    20261017
+  ],
+  "strict_dev5": [
+    1,
+    10,
+    11,
+    18,
+    19
+  ],
+  "association_fit": [
+    5,
+    8
+  ],
+  "association_validation": [
+    12
+  ],
+  "bounded_expansion_train": [
+    4,
+    6,
+    7,
+    9,
+    13,
+    17,
+    20,
+    21,
+    24
+  ],
+  "initial_max_fit_events": 1000,
+  "initial_max_validation_events": 300,
+  "max_candidates": 8,
+  "history_observations": 4,
+  "token_budgets": [
+    16,
+    24,
+    32
+  ],
+  "main_token_budget": 24,
+  "teacher_steps": 1000,
+  "pilot_steps": 150,
+  "lr": 0.0001,
+  "weight_decay": 0.01,
+  "gradient_clip": 1.0,
+  "cycle_lambdas": [
+    0,
+    0.1
+  ],
+  "conditional_cycle_lambda": 0.2,
+  "student_relation_temperature": 2.0,
+  "max_teacher_cache_bytes": 2147483648,
+  "dev_selection": "fixed observation-only native margin ranking without GT; labels post-run",
+  "distillation_gate": "Require reproducible valid teacher relation evidence, no GT/DEV acceptance gating; conditional branch may remain explicitly unexecuted if teacher gate fails",
+  "prohibited": [
+    "JEV decisions/weights/cache",
+    "GMT Stage1/2 retraining",
+    "TEST tuning",
+    "GT repair",
+    "future/GT identity query",
+    "VGGT pose constraint revival"
+  ]
+}

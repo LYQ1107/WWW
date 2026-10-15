@@ -1,0 +1,5 @@
+# TrackVGGT research log
+
+2026-10-15 (Asia/Shanghai): remote inherited branch and clean worktree both861c8710fc76935b1af49c9aa1c7df135a8a2ce8; no remote/local target branch. New isolated branch research/trackvggt-identity-query-www27-20261015 at WWW_trackvggt_20261015. Old worktree untouched. Read all seven requested prior reports; the inherited mixed seeds/no independent pose output/no stable sparsity gain/DINO and Native controls remain constraints. No old JEV decision/weight/cache integration. Real VisionTrack/checkpoint/venv/pinned sources exist. Hardware10xV100-DGXS32GB, driver470.141.03; occupied GPUs1/2 left alone, allocation0/4/5/6 subject to recheck.
+
+Pinned reference commits remotely reconfirmed: VGGT-Det73ea4cf94a05fa50279ee0b6095fb06f6d042dac and official VGGTa288dd0f14786c93483e45524328726ab7b1b4ce. Read AG/QD and aggregator/attention source, including block0 frame incoming-attention mean and compact-layer indexing. Minimal modules and8 CPU mechanism tests pass (phase0_core_v1.log,0.236s). No formal training started; real two-view source-interface probes and original tracker parity still required before Phase0 completion.
