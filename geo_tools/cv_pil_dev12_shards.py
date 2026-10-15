@@ -30,7 +30,7 @@ def tensor_digest(t):
 
 class NativeShardAssets:
     def __init__(self, manifest_path, manifest_sha, scope_sha, provenance_pins, roles,
-                 seal_path=None, seal_sha=None, prefix_engineering_only=False):
+                 seal_path=None, seal_sha=None, prefix_engineering_only=False, progress=True):
         self.root = Path(manifest_path).resolve().parent
         require(sha256(manifest_path) == manifest_sha, 'Manifest SHA mismatch')
         self.manifest = json.loads(Path(manifest_path).read_text()); m = self.manifest
@@ -77,6 +77,9 @@ class NativeShardAssets:
                     for row, source in enumerate(call['queries']):
                         k = (12, *source); require(k not in self.query_index, 'Duplicate physical query')
                         self.query_index[k] = (cid, row)
+                if progress and len(self.calls) % 250 == 0:
+                    print(json.dumps(dict(phase='validating_native_calls', calls=len(self.calls),
+                                          primary_queries=len(self.query_index))), flush=True)
         stream = list(rows(self._role('queries')))
         require(len(stream) == len(self.query_index) == m['native_queries'], 'Missing complete query rows')
         seen = set()
@@ -90,6 +93,9 @@ class NativeShardAssets:
         require(len(self.calls) == m['total_calls'] and len(self.observations) == m['native_observations'],
                 'Native manifest coverage mismatch')
         self._validate_commits()
+        if progress:
+            print(json.dumps(dict(phase='native_inputs_and_commit_chain_verified',
+                                  calls=len(self.calls), queries=len(self.query_index))), flush=True)
 
     def _checked(self, name, digest):
         p = (self.root / name).resolve()
