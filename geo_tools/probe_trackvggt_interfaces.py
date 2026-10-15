@@ -48,6 +48,13 @@ def main():
             unchanged,unchanged_start=encoder.model(images.cuda())
         unchanged=explicit_layer_map(unchanged,unchanged_start,images.shape[-2:])
         det_check['official_hook_all_four_layers_exact']=all(torch.equal(layers[layer],unchanged[layer]) for layer in LAYERS)
+        det_check['official_hook_layer_differences']={str(layer):dict(max_abs=float((layers[layer].float()-unchanged[layer].float()).abs().max()),allclose=bool(torch.allclose(layers[layer].float(),unchanged[layer].float(),rtol=.002,atol=.0001))) for layer in LAYERS}
+        with torch.inference_mode(),torch.autocast('cuda',dtype=encoder.dtype):
+            repeated,repeated_start=encoder.model(images.cuda())
+        repeated=explicit_layer_map(repeated,repeated_start,images.shape[-2:])
+        det_check['official_no_hook_repeat_differences']={str(layer):dict(exact=bool(torch.equal(repeated[layer],unchanged[layer])),max_abs=float((repeated[layer].float()-unchanged[layer].float()).abs().max())) for layer in LAYERS}
+        save_json(out/'numerical_diagnostic.json',det_check)
+        print(json.dumps(dict(backbone_diagnostic=det_check)),flush=True)
         assert det_check['official_hook_all_four_layers_exact']
         frozen=all(not v.requires_grad for v in encoder.model.parameters());params=sum(v.numel() for v in encoder.model.parameters())
     else:
