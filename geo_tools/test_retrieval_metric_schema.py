@@ -1,5 +1,8 @@
 import copy
 import unittest
+import contextlib,io,tempfile
+from pathlib import Path
+from unittest.mock import patch
 from evaluate_live_retrieval import verify_retained_metrics
 
 
@@ -24,6 +27,18 @@ class Tests(unittest.TestCase):
             elif change=='unknown_field':old['per_scene']['18']['unrecognized']=0
             else:new['query_scene']=18
             with self.assertRaises(ValueError):verify_retained_metrics(old,new,True)
+
+    def test_outcomes_cannot_replace_new_or_existing_metric_path(self):
+        import evaluate_live_retrieval
+        with tempfile.TemporaryDirectory() as directory:
+            path=Path(directory)/'retrieval.metrics.json'
+            for exists in (False,True):
+                if exists:path.write_text('retained bytes')
+                with patch('sys.argv',['evaluate_live_retrieval.py','--run',directory,'--outcome-output',str(path)]),contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit) as error:evaluate_live_retrieval.main()
+                    self.assertEqual(error.exception.code,2)
+                if exists:self.assertEqual(path.read_text(),'retained bytes')
+                else:self.assertFalse(path.exists())
 
 
 if __name__=='__main__':unittest.main()

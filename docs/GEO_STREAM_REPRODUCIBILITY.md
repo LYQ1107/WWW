@@ -28,6 +28,7 @@ The relevant entry points are:
 |---|---|
 | `geo_tools/run_baseline.py` | Original offline GMT and explicitly selected offline ablations; full-video postprocessing retained |
 | `geo_tools/run_online.py` | Separate causal GMT baseline/ablations, current/past input and externally available identities |
+| `geo_tools/run_seeded_online.py` | Explicit actual model/stream inference RNG; fixed trained head, separately from TRAIN-head seed |
 | `geo_tools/run_native_prior.py` | Fixed head-free control; inference seed is independent of TRAIN-head seed |
 | `geo_tools/run_live_retrieval.py` | Actual image-to-tracking-to-clip-index/query producer; GT only in later evaluation |
 | `geo_tools/run_decision_trace.py` | Diagnostic actual solver provenance; prediction gate before GT labeling; excluded from speed claims |
@@ -65,3 +66,5 @@ These derived report files are deliberately refreshed. Locked inputs and raw inf
 `results/experiment_manifest.json` indexes retained run manifests and their SHA values; each original manifest contains its recorded command, commit, environment, model/data hashes, cache and causal scope. `results/suite_settings_audit_v1.json` checks complete-suite active settings against their captured Git defaults. `results/plots/manifest.json` hashes every figure input and output. Missing historical per-run loaded foundation-weight/calibration hashes are a recorded provenance limit; current files are not silently presented as hashes captured by old runs.
 
 Use `GEO_STREAM_REQUIREMENT_AUDIT.md`, the current raw queue/process state and all explicitly pending reports before deciding completion. Filename existence, a queue exit, a metadata check or a local replay API does not establish scientific stability, real-time operation, Web deployment or paper readiness.
+
+Per-query outcomes can be written separately with `evaluate_live_retrieval.py --verify-existing --outcome-output NEW_PATH`; old metrics are recomputed and compared without replacement. Only the recognized early four-counter schema permits `--verify-legacy-counter-schema`, which still compares every retained number and rejects unknown legacy fields. Use `audit_retrieval_outcomes.py` to retain query corrections, harms, eligibility drift and common-cohort MRR; equal query/eligible counts or aggregate scores are insufficient. Sidecars are offline GT analysis and have no throughput meaning.

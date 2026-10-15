@@ -72,6 +72,8 @@ def main():
     args = parser.parse_args()
     if args.verify_legacy_counter_schema and not args.verify_existing:parser.error('legacy schema verification requires --verify-existing')
     report_path = args.run/('retrieval.metrics.json' if args.query_scene is None else f'retrieval.scene_{args.query_scene}.metrics.json')
+    if args.outcome_output is not None and args.outcome_output.resolve()==report_path.resolve():
+        parser.error('outcomes must use a separate path from the retained metric')
     if report_path.exists() and not args.verify_existing:
         raise FileExistsError(report_path)
     if args.verify_existing and not report_path.exists():raise FileNotFoundError(report_path)
