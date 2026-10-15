@@ -102,7 +102,14 @@ def main():
  decision['current_measured_quality_positive_candidates']=positives
  if len(methods)==3 and 'mlp' in positives and 'cic' not in positives:
   decision['CIC_architecture_go_no_go']='NO_GO_CURRENT_FIXED300_DEVELOPMENT_SEED; retain ordinary MLP, do not force JEV or claim significance'
-  decision['current_best_conservative_candidate']='Fixed300 MLP passes measured raw quality gates; complete FPS, seed reproduction and independent validation remain pending'
+  if methods['mlp']['efficiency_gate_pass'] is False:
+   decision['current_best_conservative_candidate']='Fixed300 MLP passes measured raw quality gates but default full-image FPS fails 95%; exact-cache deployment check is separate; seed and independent validation pending'
+  elif methods['mlp']['efficiency_gate_pass'] is True:
+   decision['current_best_conservative_candidate']='Fixed300 MLP passes measured raw quality and default full-image speed; seed, causal mechanism and independent validation pending'
+  else:
+   decision['current_best_conservative_candidate']='Fixed300 MLP passes measured raw quality gates; full-image FPS, seed reproduction and independent validation pending'
+  if cached:
+   decision['cached_MLP_efficiency_gate_pass']=cached['efficiency_gate_pass']
  early=REPORTS/'LEARNED_FIRST_DIVERGENCE_NATIVE.json'
  if early.exists():
   d=read(early);decision['first_native_discrepancy_audit']=ref(early)
@@ -118,6 +125,8 @@ def main():
   (DOCS/'LEARNED_FIRST_DIVERGENCE_NATIVE.md').write_text('\n'.join(lines2)+'\n')
  save(REPORTS/'GO_NO_GO.json',decision)
  goal=read(REPORTS/'MASTER_GOAL.json');goal['gates']['ORDINARY_CONTROL_ADVANTAGE']='LEARNED_FAIR_COMPARISON_PENDING' if len(methods)<3 else 'SEE_LEARNED_GATE_RESULTS_NOT_SIGNIFICANCE_PROOF'
+ goal['gates']['SPEED']='DEFAULT_LEARNED_TIMING_IN_PROGRESS' if not summary['all_three_speed_complete'] else 'COMPLETE_DEFAULT_LEARNED_TIMINGS_SEE_PER_METHOD_GATES'
+ if cached:goal['gates']['CACHED_MLP_SPEED']='PASS_MEASURED' if cached['efficiency_gate_pass'] else 'FAIL_MEASURED'
  positives=[k for k,r in methods.items() if r['joint_measured_quality_pass']]
  if positives:
   goal['gates']['MATCHED_DEVELOPMENT_GAIN']='MEASURED_RAW_QUALITY_POSITIVE_'+','.join(positives)+'_SPEED_CAUSAL_SEEDS_INDEPENDENCE_NOT_PROVEN'
