@@ -20,6 +20,9 @@ def main():
     if out.exists():raise FileExistsError(out)
     if a.steps not in (150,1000):raise ValueError('prespecified pilot150 or full1000 steps only')
     if a.architecture=='qd' and not a.ag_init:raise ValueError('formal QD requires the separately fitted AG source, no simultaneous Phase2 shortcut')
+    if a.feature_plan:
+        gate=json.loads((ROOT/'results/trackvggt_crop_inputs_complete_v1.json').read_text())
+        if gate['status']!='PASS_ALL_FIXED_CROP_INPUTS' or gate['plan_sha256']!=sha256(a.feature_plan):raise ValueError('real all-query crop input gate required before fitting')
     out.mkdir(parents=True);seed_all(a.seed)
     torch.backends.cuda.enable_mem_efficient_sdp(False);torch.backends.cuda.enable_flash_sdp(False);torch.backends.cudnn.deterministic=True
     started=time.perf_counter();data=TrackEventData(a.backbone,a.cohort)
