@@ -10,7 +10,8 @@
       "proposed_Recall1": 0.54,
       "control_Recall1": 0.66,
       "strictly_higher_primary_seed_Recall1": false,
-      "scope": "Numerical direction only, single trained seed,100 matched-positive ranks; not independent significance, replication or actual final-ID repair."
+      "scope": "Numerical direction only, single trained seed,100 matched-positive ranks; not independent significance, replication or actual final-ID repair.",
+      "training_match_limit": "Same frozen3000 task/validation, but native/ROI uses2733 effective supervised queries versus2201 for visual AG/QD. QD also reuses1000-update AG initialization; nativeMLP has no upstream AG fit."
     },
     {
       "question": "Track versus global See-Query",
@@ -37,7 +38,8 @@
       "proposed_Recall1": 0.25,
       "control_Recall1": 0.67,
       "strictly_higher_primary_seed_Recall1": false,
-      "scope": "Numerical direction only, single trained seed,100 matched-positive ranks; not independent significance, replication or actual final-ID repair."
+      "scope": "Numerical direction only, single trained seed,100 matched-positive ranks; not independent significance, replication or actual final-ID repair.",
+      "training_match_limit": "Same frozen3000 task/validation, but native/ROI uses2733 effective supervised queries versus2201 for visual AG/QD. QD also reuses1000-update AG initialization; nativeMLP has no upstream AG fit."
     },
     {
       "question": "Equal-update temporal consistency",
@@ -85,6 +87,10 @@
       "scope": "Same256 fit and original300 validation. Separate from full3000-fit QD/AG."
     }
   ],
+  "fit_population_disclosure": {
+    "path": "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_fit_population_disclosure_v1.json",
+    "sha256": "745e75c28abde5cb9c8af8d8e05bdcd2fcd5bc741b70f3bce87c37b5fe6e437f"
+  },
   "paired_temporal_evidence": {
     "vggt": {
       "path": "/data1/liuyeqiang/WWW_trackvggt_20261015/results/trackvggt_cycle_vggt_paired_v1.json",
@@ -132,6 +138,7 @@
     "Single held-out association scene, not multi-scene replication.",
     "Original300 includes0 certified actual primary solver errors; row-ranking fixes do not prove Hungarian/Bank/final-ID repairs.",
     "Some VGGT ranking fixes differ from a particular matched DINO mode; overlaps and harms must be read per-control, not asserted universally.",
+    "Full native/ROI controls do not have identical gradient-eligible populations or total upstream optimization to visual QD. Exact VGGT/DINO visual populations and the matched234-query crop controls remain separate evidence; native/ROI differences cannot establish capacity-only or intrinsic-feature causality.",
     "Raw cycle generic seed14 is preserved; actual training seed15 is resolved in paired audits. Native inference seed14 is distinct.",
     "Historical periodic training Recall/margin curves were not recorded; only actual retained150/1000 fit endpoints and logged loss/gradient curves are available."
   ],
@@ -367,12 +374,12 @@
   "overall_goal_complete": false,
   "remaining_overall_work": "Complete fresh full native/Prior system/retrieval/strict5 audit and final requirement/limitation reports. A negative teacher gate does not complete the overall goal.",
   "provenance": {
-    "process_started_utc": "2026-10-15T18:32:01.874293+00:00",
-    "report_generated_utc": "2026-10-15T18:32:06.314359+00:00",
-    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/teacher_complete_gate_v2.log",
+    "process_started_utc": "2026-10-15T19:25:33.707395+00:00",
+    "report_generated_utc": "2026-10-15T19:25:38.492944+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/teacher_complete_gate_v3_population_qualified.log",
     "source_worktree": "/data1/liuyeqiang/WWW_trackvggt_20261015",
-    "commit": "e121d2943c041971b807089ab0a1133cdfcf7069",
-    "report_generation_commit": "e121d2943c041971b807089ab0a1133cdfcf7069",
+    "commit": "4e1d57c820127f8bcd317831658ab67a21149a24",
+    "report_generation_commit": "4e1d57c820127f8bcd317831658ab67a21149a24",
     "command": [
       "geo_tools/audit_trackvggt_teacher_gate.py"
     ],
@@ -452,7 +459,7 @@
       "geo_tools/test_contracts.py": "2188de96144735d6b49d102b6052ac640d235c06694634eb70259193d25599f4",
       "geo_tools/audit_decision_trace.py": "15f2951bb7daa4f200470da7a911984165aceb2c6913787cd415b4a2b7ce65f6",
       "geo_tools/decide_trackvggt_fit_expansion.py": "aaa6cfc26fb56d3a743553fc41dbb371111d2bd07c88eed0854841d98d63ab3d",
-      "geo_tools/summarize_trackvggt_system.py": "89c52beeb76e44805cc31f74d7237a028c5e89c929e3f19520ee0c6bffaabac6",
+      "geo_tools/summarize_trackvggt_system.py": "3675c8b1b2ccaa554d06eceb4bb33f593497f46bc61ad65175b4fb0fbcf99f2e",
       "geo_tools/evaluate_suite.py": "804b4d8ff7cfbdef4acc63e66db3dd4fc411bd110292052eddad79c30fb84f07",
       "geo_tools/run_online.py": "e97027d9967482e7e027b8034cc2ecf0d9aa185eb6ec61918dc110469d42e5b6",
       "geo_tools/run_native_prior.py": "798fab5c773baedb2b41a767e65a4cd7091509fcea354aa96ddc1fdde3bee537",
@@ -486,14 +493,14 @@
       "geo_tools/test_target_cache_prefix_audit.py": "d2cd9c6a65730c40e9d98c4f63c7afdbbaa6a0e3c151e79bdc458ad1c347e86f",
       "geo_tools/monitor_project_resources.py": "91e447b9154096d6845ce4ee4013503f6ab1d3bd0b7219129c07e6c88546a6f6",
       "geo_tools/probe_trackvggt_backward.py": "58770df3460fe7258439c9a98ee8cf9826fe6e0b0c704db671eb605ed11e59e1",
-      "geo_tools/summarize_trackvggt_teachers.py": "3ef7202cac3c655f7dcec9c3765094a21c794c768af8fb00efff1540b4cd131a",
+      "geo_tools/summarize_trackvggt_teachers.py": "caeeddc734a928480c9182c855c817d73027b5ce6b3ade9985307e44d198a1e5",
       "geo_tools/test_resource_samples.py": "ea502b2c7e2575fa9742786334f978f2e07e30a079b8bde294c40f66d65f163a",
       "geo_tools/test_research_queue.py": "f11de3eca1f893c15934a691b58bb2cc1b19971765117660440a736def8cda82",
       "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
       "geo_tools/train_history_heads.py": "d960e283c3a6795d6b0d80198066e005ec4268ff1b2bc924f77e04d6e0505c12",
       "geo_tools/benchmark_short_pair_encoder.py": "5e3cd035dd399b18f98fbbe91a3fde8198a96e549c686486179c3fd6a293a069",
       "geo_tools/test_dense_seed_stability.py": "77b239efd9007959cff1efdef89249378cbb85e591f1023bd6ad0c966ac28b50",
-      "geo_tools/audit_trackvggt_teacher_gate.py": "0d2fb70baf2237d975eb33b7d9de5a3031a3f1b1d855f5232dc333ca9932b6d3",
+      "geo_tools/audit_trackvggt_teacher_gate.py": "3ec902a8653005407e918bab956bb9cf15f45818778da1f314712c8fb1bb720a",
       "geo_tools/consolidate_camera_control.py": "4d961b2fb8cfbd59bee4414a577541f5b3994bbdd5f892720385289c382e39eb",
       "geo_tools/audit_full_train_identity_events.py": "358f0ac8202ae27ecf2db4bdff674d45696b26757c76923261070dc73a96870e",
       "geo_tools/extract_trackvggt_crop_tokens.py": "ee2a6dc84a1d2d0ac756ab6665433e99c2dd67f776f2f707d345fbec147b40da",
@@ -532,6 +539,7 @@
       "geo_tools/test_process_worker.py": "c5a11f3010b9283f2c3d84e192ae67f5ae223a0c90b0d091d4a85e5545a9e050",
       "geo_tools/audit_dense_geometry_ablation.py": "018ee30488674cab92dde4f77befd7d0a135d7efe9aeb600af2376b27acf857f",
       "geo_tools/audit_suite_settings.py": "a21fd849218f9061823eabcb67e91c7345532dd4f66e4fc8e954c7d39fe2a2d3",
+      "geo_tools/audit_trackvggt_system_pairs.py": "2a18698579711e125a80ccff37fe3f5670ce9696ccbeb6185a13432ae190a234",
       "geo_tools/test_lightweight_head.py": "f9c1a30c654ef22e4cebcea1ecea56c7b1e0fdcd725aaedb5180069fb8c998f5",
       "geo_tools/prepare_target_cache_probe.py": "7cf1cd7ee8450cf9d47d0609a69fb288dd30124487f8f2ced8f0e6c480cc2cd0",
       "geo_tools/test_native_prior_driver.py": "63fba8cb30ee91d98ffd853225184427f766866542b11d6f73ca90707815bac2",
@@ -550,12 +558,14 @@
       "geo_tools/plot_research_results.py": "134a14fdf47c200bc72d8d40b3af41c6ad444a272fbe3003c2258f2372cceaec",
       "geo_tools/validate_process_worker_gpu.py": "886c032d8055d2c2189a909c6d95ea47d66c3254e90a1b163ab0a2f1221e7ff1",
       "geo_tools/prepare_parallel_dense_stability.py": "95e5f39183ac80e8b48d8ff9770cd555f70c466ed97cb9f3e1c35c2c50ca8c4d",
+      "geo_tools/audit_trackvggt_requirements.py": "80b525587e982907826fc69e8e7784093f9c95379d11ac3c9aa6300b9974daf4",
       "geo_tools/test_geometry.py": "6e8f586b5b731d68888012a9af5ed38eb6b0bc8f26e88fa458b3b138d3e65b32",
       "geo_tools/validate_empty_association.py": "bbc231eb659c8603558efa62f63c43587338219e5a96644096926eb431cfd92c",
       "geo_tools/prepare_history_training.py": "7b7851a6dbc8a29684d7bbd332a448ba3058cc79bc37579eb6f29547ae36d342",
       "geo_tools/update_reviewer_questions.py": "e67f31e4ceaaa94945026b60e965238e4a542b96c71f65d824ba3217ca8d3bb3",
       "geo_tools/finalize_research.py": "961b94667ca96348822fc9346bb4e5469c403354ef8a934572cecc0c7758b8e2",
       "geo_tools/test_trackvggt_cycle_data.py": "20acc55ae162d7887eabb68fbe018aec33cf1b76b070d934215dc7204ff87b7f",
+      "geo_tools/audit_trackvggt_fit_populations.py": "25a1280f5e3e16710d19e2f8ce54b788a302569a532cb5365337014f3f922de3",
       "geo_tools/lock_baseline.py": "b43ee7b20d8ee0f5035858f617bf9169825907f25733a13e5290448d2613367d",
       "geo_tools/test_dev12_native_assets.py": "2e5c77e720ee43ba6f35a71e4cf4ad8c93f487f939fb968f9ddda974fc68f284",
       "geo_tools/evaluate_live_retrieval.py": "9cd2d987e3c28e3e672ce915d42b1fc3970349923782fefacf9323ac4f5ba3d6",
@@ -651,7 +661,7 @@
       "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
     },
     "source_tree_dirty": true,
-    "source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source_diff_sha256": "c1f697ed4ee4a1599e210b14df614c555ed4782fca84bc7ea541bdb4f797d5d9",
     "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
     "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
     "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",

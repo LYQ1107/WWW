@@ -92,7 +92,8 @@ def main():
             'trackvggt_system_execution_snapshot_v1.json','identity_correction_audit.json',
             'trackvggt_fit_endpoint_diagnostics_v1.json','trackvggt_queue_stage_costs_v1.json',
             'trackvggt_inherited_native_reference_v1.json','trackvggt_teacher_gate_v1.json',
-            'trackvggt_frozen_direct_input_hash_recheck_v1.json']
+            'trackvggt_frozen_direct_input_hash_recheck_v1.json','trackvggt_system_query_pairs_v1.json',
+            'trackvggt_fit_population_disclosure_v1.json']
             if (path:=ROOT/'results'/name).exists()},
         student_status=student_status,
         overall_goal_complete=False,scientific_success=False)

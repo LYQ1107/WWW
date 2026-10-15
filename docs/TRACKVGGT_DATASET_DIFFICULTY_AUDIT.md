@@ -32,3 +32,12 @@ CPU-only census of all24 original TRAIN sequences. All48 raw GT hashes match the
 Patch coverage uses the actual518 pad mapping and14-pixel centers. A zero-center box may still support ROIAlign. GT size statistics cannot establish detector failures, appearance discriminability, or candidate headroom; those require the causal audit. Missing annotation count is NOT_MEASURED. Empty labeled frames are reported separately.
 
 Locked Cohort-V2 verification: 1000 fit /300 validation, all raw artifacts and2600 token files hash-verified; 502195973 bytes. Four extraction queues finished with all stages PASS. No teacher training has started.
+
+## Later research status
+
+The data conclusions above are retained from the pre-feature/pre-training audit
+phase. Their NOT_MEASURED/pending teacher fields describe that snapshot. Current
+TrackVGGT research has completed all56 registered teacher runs, the V2/V3
+comparison, crop/QD/temporal controls and the negative relation gate. See
+TRACKVGGT_TEACHER_RESULTS.md and TRACKVGGT_FINAL_REPORT.md; no frozen audit
+statistics, raw inputs or original result JSON is rewritten by this note.

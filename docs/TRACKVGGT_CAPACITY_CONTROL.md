@@ -24,3 +24,25 @@ concat/See-Query modules are instantiated only when used. Last-layer-only has on
 projection and therefore fewer parameters; it is a simple feature-depth control,
 not the sole capacity attribution test. Four-layer global versus track and the
 matched DINO/ordinary MLP/GMT controls carry the novelty attribution burden.
+
+## Actual executed population and upstream budget
+
+The parameter matching above does not imply identical effective gradient
+populations. The frozen V3 task has3000 queries, but full-image visual AG/QD
+trains on2201 eligible queries (2194 positive,7 genuineNULL); ROI/nativeMLP uses
+2733 (2721 positive,12 genuineNULL). The267 masked queries are not negatives.
+Among supervised queries,532 have no raw patch center and are excluded from
+full visual gradient fitting; this is distinct from the565 zero-center queries
+in the complete fit index. Both VGGT and DINO visual eligible-key order hashes
+match exactly. Native/ROI are strong same-task controls, not strict identical-
+gradient-population controls. The crop comparisons separately preserve the same
+234 supervised queries/256 fit across every variant, with full-image fallback
+draws retained. See trackvggt_fit_population_disclosure_v1.json.
+
+Every formal no-cycle phase totals1000 updates (150 pilot plus850 resumed),
+but QD additionally reuses a1000-update AG query/sampler initialization for
+both VGGT and DINO. NativeMLP has no upstream AG pretraining. No equal-total-
+upstream-optimization claim is made against nativeMLP, and shared pretraining
+cost is not counted repeatedly as new GPU work. These differences limit
+capacity-only/intrinsic-feature attribution; they do not alter completed fits
+or the independently matched DINO/crop/cycle evidence.

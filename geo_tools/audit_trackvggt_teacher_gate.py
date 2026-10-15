@@ -53,6 +53,8 @@ def main():
         row.update(proposed_Recall1=metric(row['proposed']),control_Recall1=metric(row['control']))
         row['strictly_higher_primary_seed_Recall1']=row['proposed_Recall1']>row['control_Recall1']
         row['scope']='Numerical direction only, single trained seed,100 matched-positive ranks; not independent significance, replication or actual final-ID repair.'
+        if row['control'] in [ag('vggt','roi'),'native_mlp_qd_capacity_seed20261015_v3_1000_v1']:
+            row['training_match_limit']='Same frozen3000 task/validation, but native/ROI uses2733 effective supervised queries versus2201 for visual AG/QD. QD also reuses1000-update AG initialization; nativeMLP has no upstream AG fit.'
     for mode in ['full','local','combined']:
         vggt=f'ag_vggt_C_crop224_{mode}_k24_seed20261015_1000_v1'
         dino=f'ag_dinov2_C_crop224_{mode}_k24_seed20261015_1000_v1'
@@ -72,7 +74,10 @@ def main():
     # These are explicit user requirements, not a new fitted validation threshold.
     necessary=all(r['strictly_higher_primary_seed_Recall1'] for r in comparisons[:6]) and shuffle['track']['history_shuffle_reduces_Recall1']
     status='NEEDS_REPLICATION_AND_MANUAL_GATE_REVIEW' if necessary else 'NO_UNIQUE_VGGT_TEACHER_EVIDENCE'
+    population_path=ROOT/'results/trackvggt_fit_population_disclosure_v1.json';population=json.loads(population_path.read_text())
+    if population['status']!='COMPLETE_ACTUAL_FIT_POPULATION_DISCLOSURE':raise ValueError('actual training-population qualification is missing')
     proof=dict(status=status,completed_registered_runs=len(runs),pending=[],comparisons=comparisons,
+        fit_population_disclosure=dict(path=str(population_path),sha256=sha256(population_path)),
         paired_temporal_evidence=paired,query_shuffle=shuffle,native_Recall1=.66,
         original_validation_queries=300,matched_positive_ranking_queries=100,trained_seeds_actually_executed=[20261015],
         teacher_admitted=False,student_disposition='CONDITIONAL_NOT_EXECUTED_RELATION_GATE_FAILED' if not necessary else 'NOT_ADMITTED_PENDING_REPLICATION_AND_VALID_IDENTITY_EVIDENCE',
@@ -80,6 +85,7 @@ def main():
         evidence_limits=['Single held-out association scene, not multi-scene replication.',
             'Original300 includes0 certified actual primary solver errors; row-ranking fixes do not prove Hungarian/Bank/final-ID repairs.',
             'Some VGGT ranking fixes differ from a particular matched DINO mode; overlaps and harms must be read per-control, not asserted universally.',
+            'Full native/ROI controls do not have identical gradient-eligible populations or total upstream optimization to visual QD. Exact VGGT/DINO visual populations and the matched234-query crop controls remain separate evidence; native/ROI differences cannot establish capacity-only or intrinsic-feature causality.',
             'Raw cycle generic seed14 is preserved; actual training seed15 is resolved in paired audits. Native inference seed14 is distinct.',
             'Historical periodic training Recall/margin curves were not recorded; only actual retained150/1000 fit endpoints and logged loss/gradient curves are available.'],
         runs={tag:{k:v for k,v in item.items() if k!='value'} for tag,item in runs.items()},

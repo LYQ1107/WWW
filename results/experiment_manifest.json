@@ -36417,7 +36417,7 @@
   "inherited_experiments_scope": "Original experiments array/raw_gt_policy/split retained from the completed predecessor project; not newly executed TrackVGGT results.",
   "trackvggt": {
     "branch": "research/trackvggt-identity-query-www27-20261015",
-    "snapshot_utc": "2026-10-15T18:35:01.364498+00:00",
+    "snapshot_utc": "2026-10-15T19:25:50.479700+00:00",
     "teacher_reports": [
       {
         "tag": "ag_dinov2_C_crop224_combined_k24_seed20261015_1000_v1",
@@ -37425,49 +37425,48 @@
       },
       {
         "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_live_baseline_v1_gpu0/manifest.json",
-        "status": "RUNNING",
+        "status": "FINISHED",
         "pid": 39488,
-        "live_controller": true,
-        "actual_command": "/data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/run_research_queue.py --plan manifests/trackvggt_live_baseline_v1.json --queue gpu0 --gpu 0 ",
+        "live_controller": false,
+        "actual_command": null,
         "last_stage": {
-          "id": "trackvggt_runtime_off_2streams_full_v1",
+          "id": "retrieval_eval_prior",
           "command": [
-            "geo_tools/run_trackvggt_live_baseline.py",
-            "--video-ids",
-            "18",
-            "--tag",
-            "trackvggt_runtime_off_2streams_full_v1",
-            "--backbone",
-            "none"
+            "geo_tools/evaluate_live_retrieval.py",
+            "--run",
+            "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_prior_2streams_full_v1"
           ],
-          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu0_trackvggt_runtime_off_2streams_full_v1.log",
-          "status": "RUNNING",
-          "started_utc": "2026-10-15T18:32:36.081774+00:00",
-          "pid": 660
+          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu0_retrieval_eval_prior.log",
+          "status": "PASS",
+          "started_utc": "2026-10-15T18:43:29.958627+00:00",
+          "pid": 6190,
+          "exit_code": 0,
+          "seconds": 4.171163998544216,
+          "finished_utc": "2026-10-15T18:43:34.130090+00:00",
+          "log_sha256": "c9f885f797a25ba61c3ee554bdbe5f86048e1293e761aafcd7e63f31ef9f8a83"
         }
       },
       {
         "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_live_baseline_v1_gpu4/manifest.json",
-        "status": "RUNNING",
+        "status": "FINISHED",
         "pid": 39514,
-        "live_controller": true,
-        "actual_command": "/data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/run_research_queue.py --plan manifests/trackvggt_live_baseline_v1.json --queue gpu4 --gpu 4 ",
+        "live_controller": false,
+        "actual_command": null,
         "last_stage": {
-          "id": "trackvggt_runtime_off_4streams_full_v1",
+          "id": "retrieval_eval_prior",
           "command": [
-            "geo_tools/run_trackvggt_live_baseline.py",
-            "--video-ids",
-            "18",
-            "1",
-            "--tag",
-            "trackvggt_runtime_off_4streams_full_v1",
-            "--backbone",
-            "none"
+            "geo_tools/evaluate_live_retrieval.py",
+            "--run",
+            "/data1/liuyeqiang/WWW_trackvggt_runtime/retrieval/trackvggt_runtime_prior_4streams_full_v1"
           ],
-          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu4_trackvggt_runtime_off_4streams_full_v1.log",
-          "status": "RUNNING",
-          "started_utc": "2026-10-15T18:32:39.125117+00:00",
-          "pid": 695
+          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu4_retrieval_eval_prior.log",
+          "status": "PASS",
+          "started_utc": "2026-10-15T18:50:53.654601+00:00",
+          "pid": 9572,
+          "exit_code": 0,
+          "seconds": 4.529833078384399,
+          "finished_utc": "2026-10-15T18:50:58.184720+00:00",
+          "log_sha256": "b3d7c3a2f3a14dfb75022bcee1fb11bd1a398bdea4d8e4c0c1ee095833c2c2b7"
         }
       },
       {
@@ -37477,7 +37476,7 @@
         "live_controller": true,
         "actual_command": "/data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/run_research_queue.py --plan manifests/trackvggt_live_baseline_v1.json --queue gpu6 --gpu 6 ",
         "last_stage": {
-          "id": "trackvggt_runtime_off_10streams_full_v1",
+          "id": "trackvggt_runtime_prior_10streams_full_v1",
           "command": [
             "geo_tools/run_trackvggt_live_baseline.py",
             "--video-ids",
@@ -37487,14 +37486,15 @@
             "11",
             "19",
             "--tag",
-            "trackvggt_runtime_off_10streams_full_v1",
+            "trackvggt_runtime_prior_10streams_full_v1",
             "--backbone",
-            "none"
+            "none",
+            "--tracking-native-prior"
           ],
-          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu6_trackvggt_runtime_off_10streams_full_v1.log",
+          "log": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/trackvggt_live_baseline_v1_gpu6_trackvggt_runtime_prior_10streams_full_v1.log",
           "status": "RUNNING",
-          "started_utc": "2026-10-15T18:32:40.103392+00:00",
-          "pid": 726
+          "started_utc": "2026-10-15T19:05:47.793311+00:00",
+          "pid": 16639
         }
       }
     ],
@@ -37505,13 +37505,15 @@
       "results/trackvggt_qd_primary_results_v1.json": "bfc8ff9b01246b42ef26be82568e14968a11c44c677b46770ce5ddc940f5c476",
       "results/trackvggt_cycle_vggt_paired_v1.json": "36f4f3237583c3625301cdd2e0a6a1cb5e3151f0205fd193219b63289f142ee9",
       "results/trackvggt_cycle_dinov2_paired_v1.json": "b7822c41a9582cd1faaa9d16df6a6521440c969c52e4303209cc2303e18df1b1",
-      "results/trackvggt_system_execution_snapshot_v1.json": "5003e5dfae621d791af8a05e65c7d73ffc852ad9a6f8e482029deb5353eb930d",
-      "results/identity_correction_audit.json": "e9bb1230f1ad4db1d220214adee03dae4f55ccde7f15d87c611bd4cc4058ee2c",
+      "results/trackvggt_system_execution_snapshot_v1.json": "7d586c8a957669621c3bcef64ea65dbb01586ceece5f0ec267e49c5ec0370e9d",
+      "results/identity_correction_audit.json": "8f7f94db267fd2b7e405074625933b5675242e803f514bda4ab3464cf17da029",
       "results/trackvggt_fit_endpoint_diagnostics_v1.json": "b2e77ad022022df8b16656290484d9e51d2411cfd999a74ae71a43cba1127452",
-      "results/trackvggt_queue_stage_costs_v1.json": "8ce39fca18c56ca1c3b92048c6df5d93ae97a509a180953a25fc4de12482a6d7",
+      "results/trackvggt_queue_stage_costs_v1.json": "978db48304f9b9d70af5f367682012602e9621c22df424c7a158173370029cb9",
       "results/trackvggt_inherited_native_reference_v1.json": "fbc72343a24d02a9fe4ce4e979488767efb0a581899072ab4b34ffcece0cac0d",
-      "results/trackvggt_teacher_gate_v1.json": "8d05c2f31f1a3db228749cbf84d2a2ecc48b06f99fa376972e804acc8d1474e4",
-      "results/trackvggt_frozen_direct_input_hash_recheck_v1.json": "d257b4d494fef94b4c526ff1a1643602f3404c2993c409591f3b0f78c2a4e1fd"
+      "results/trackvggt_teacher_gate_v1.json": "463cbbe3242f4bd7f97276168ea87309f93e1885d63448714cc4a80d632d76b1",
+      "results/trackvggt_frozen_direct_input_hash_recheck_v1.json": "d257b4d494fef94b4c526ff1a1643602f3404c2993c409591f3b0f78c2a4e1fd",
+      "results/trackvggt_system_query_pairs_v1.json": "081584f622e723710473c9f6c2412ffd143a1891d0a115a8217b2d8839e876f7",
+      "results/trackvggt_fit_population_disclosure_v1.json": "745e75c28abde5cb9c8af8d8e05bdcd2fcd5bc741b70f3bce87c37b5fe6e437f"
     },
     "student_status": "CONDITIONAL_NOT_EXECUTED_RELATION_GATE_FAILED",
     "overall_goal_complete": false,

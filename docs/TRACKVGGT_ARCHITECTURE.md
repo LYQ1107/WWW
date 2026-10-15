@@ -5,3 +5,13 @@ Frozen GMT detections/association remain unchanged. Real causal history -> Track
 VGGT itself stays identity-unconditioned and frozen. AG/QD are credited to VGGT-Det; proposed differences are the history identity conditioning, temporal relation supervision and relation distillation. No efficacy or geometric semantics are assumed. A current detection query never receives its GT ID. Multi-proposal tracks must be aggregated without duplicate positive/length weighting. Physical camera IDs use equality and explicit maps, not ordinal arithmetic. Empty/invalid evidence must stay neutral.
 
 Phase0 implements the minimal query/sampler/frozen attention/See-Query/QD interfaces and tests their shapes/gradients. Actual tracker event snapshots, temporal cycle and runtime adapter are subsequent gated steps; they are not complete because these classes exist.
+
+## Subsequent executed scope
+
+The Phase0 interface/architecture paragraphs above describe prerequisites at
+that time. Actual causal native data, all56 registered AG/QD/crop/temporal
+fits and independent paired audits have since completed. The screening gate
+is NO_UNIQUE_VGGT_TEACHER_EVIDENCE; IRGD/conditional trained students and
+learned full-video deployment are unexecuted. Fresh native system work and
+final audit remain separate; see the current teacher/system/final reports.
+Implementation contracts are not a scientific-success or learned deployment claim.

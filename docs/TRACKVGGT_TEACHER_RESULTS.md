@@ -166,3 +166,16 @@ benefit and the known ranking/solver distinction. No lambda.2 escalation or
 IRGD/conditional students are executed. This closes the registered teacher
 screening only. Fresh full native system/retrieval/strict5 tests and the overall
 requirement audit remain necessary.
+
+A final source-based eligibility audit qualifies the control matching. The full
+V3 cohort is shared, but visual AG/QD uses2201 effective supervised queries
+(2194 positive+7NULL), native/ROI uses2733 (2721+12);532 supervised zero-center
+queries have no visual gradient and267 other queries remain masked. Exact
+VGGT/DINO visual eligible-key order hashes agree. QD also reuses its separately
+fitted1000-update AG initialization; nativeMLP has no such upstream training.
+Thus native/ROI results are same-task/capacity controls, not identical-gradient-
+population or identical-total-upstream-budget controls. The strict234-query
+crop comparison and matched DINO/temporal evidence are separately preserved.
+Do not infer an intrinsic visual-feature failure from native/ROI differences
+alone or retrofit completed datasets to conceal them. All eligibility counts
+remain explicit in the raw manifests/teacher CSV; no additional model update.

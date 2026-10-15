@@ -15,8 +15,20 @@ def write_csv(path, rows):
         writer.writerows(rows)
 
 
+def verified_frag(path, metrics):
+    raw=json.loads(path.read_text());hota=raw['HOTA']['HOTA']
+    if abs(100*sum(hota)/len(hota)-metrics['HOTA'])>1e-8 or int(raw['CLEAR']['IDSW'])!=metrics['IDSW']:
+        raise ValueError('retained raw CLEAR metrics do not belong to the reported full suite')
+    if abs(100*raw['Identity']['IDF1']-metrics['IDF1'])>1e-8:
+        raise ValueError('retained raw Identity metric differs from full suite')
+    frag=raw['CLEAR']['Frag']
+    if frag!=int(frag):raise ValueError('Frag count is not an integer')
+    return int(frag)
+
+
 def main():
     runtime = Path('/data1/liuyeqiang/WWW_trackvggt_runtime')
+    plan_path=ROOT/'manifests/trackvggt_live_baseline_v1.json';plan=json.loads(plan_path.read_text())
     timing, tracking, receipts = [], [], []
     gate_path=runtime/'matrix_reports/trackvggt_runtime_prefix_gate_v1.json'
     gate=None
@@ -29,6 +41,7 @@ def main():
     for streams, gpu in [(2, 'gpu0'), (4, 'gpu4'), (10, 'gpu6')]:
         queue_path = runtime/'queues'/f'trackvggt_live_baseline_v1_{gpu}'/'manifest.json'
         queue = json.loads(queue_path.read_text()) if queue_path.exists() else {}
+        if queue and queue['plan_sha256']!=sha256(plan_path):raise ValueError('fresh runtime queue uses another registered plan')
         for short, method in [('off', 'gmt_off'), ('prior', 'native_fixed_prior')]:
             tag = f'trackvggt_runtime_{short}_{streams}streams_full_v1'
             root = runtime/'retrieval'/tag
@@ -45,6 +58,9 @@ def main():
                 continue
             manifest = json.loads(manifest_path.read_text())
             parity = json.loads(parity_path.read_text())
+            expected=next(s['command'] for s in plan['queues'][gpu] if s['id']==tag)
+            if stage['command']!=expected or manifest['command']!=expected:
+                raise ValueError('actual full replay command differs from its registered scope')
             if parity['status']!='PASS' or not manifest['full_video']:
                 raise ValueError('completed system replay lacks valid full parity')
             if manifest['tracking_method']!=method or manifest['camera_streams']!=streams:
@@ -100,8 +116,12 @@ def main():
     for row in inherited['rows']:
         path=Path(row['metric_file'])
         if sha256(path)!=row['metric_sha256']:raise ValueError('inherited metric receipt changed')
+        tag=path.name.removesuffix('_metrics.json')
+        raw=Path('/data1/liuyeqiang/WWW_vggt_geo_runtime/suites')/tag/'per_view/combined_raw_metrics.json'
+        frag=verified_frag(raw,row['metrics'])
         tracking.append(dict(origin=row['origin'],method=row['method'],inference_seed=row['inference_seed'],
-            status='VERIFIED_INHERITED_FULL_DEV5',images=row['images'],**row['metrics'],metric_sha256=row['metric_sha256']))
+            status='VERIFIED_INHERITED_FULL_DEV5',images=row['images'],**row['metrics'],Frag=frag,
+            Frag_origin='EXTRACTED_RETAINED_RAW_CLEAR_NOT_NEW_RUN',raw_combined_metric_sha256=sha256(raw),metric_sha256=row['metric_sha256']))
     for short,method in [('off','gmt_off'),('prior','native_fixed_prior')]:
         tag=f'trackvggt_runtime_{short}_10streams_full_v1'
         path=runtime/'matrix_reports'/(tag+'_MOT_metrics.json')
@@ -115,9 +135,9 @@ def main():
             for truth,digest in metrics['raw_gt_sha256'].items():
                 if sha256(truth)!=digest:raise ValueError('fresh MOT GT changed')
             raw=runtime/'suites'/(tag+'_strict5')/'per_view/combined_raw_metrics.json'
-            clear=json.loads(raw.read_text())['CLEAR']
             row.update(status='PASS_FRESH_FULL_DEV5',images=metrics['images'],**metrics['metrics'],
-                Frag=int(clear['Frag']),metric_sha256=sha256(path),raw_combined_metric_sha256=sha256(raw))
+                Frag=verified_frag(raw,metrics['metrics']),Frag_origin='FRESH_PROFILED_NATIVE_REPLAY_RAW_CLEAR',
+                metric_sha256=sha256(path),raw_combined_metric_sha256=sha256(raw))
         tracking.append(row)
     write_csv(ROOT/'results/runtime_comparison.csv',timing)
     write_csv(ROOT/'results/full_tracking_metrics.csv',tracking)
@@ -128,6 +148,27 @@ def main():
         timing_scope='Complete process FPS uses actual queue outer wall time. Profiled local file replay, unequal-length independent two-camera videos; configured streams are not guaranteed constant active membership. Query response latency excludes network.',
         learned_system_results='NOT_RUN_NO_VALID_STUDENT_OR_TEACHER_DEPLOYMENT',scientific_success=False,provenance=provenance())
     save_json(ROOT/'results/trackvggt_system_execution_snapshot_v1.json',summary)
+    def number(value,digits=4):return 'PENDING' if value is None else f'{value:.{digits}f}'
+    text=['# Fresh native system results','',f"Status: {summary['status']}. Pending full cases: {len(pending)}; pending fresh strict5 metrics: {len(pending_tracking)}.",
+        '', 'Actual fresh full image replay only. OFF/Prior prefixes and completed full outputs are checked against their own original standalone references. No TrackVGGT teacher/student is loaded.', '',
+        '| Method | Configured streams | Images | Whole process seconds | Whole process image FPS | Round P95 ms | Query response P95 ms |',
+        '|---|---:|---:|---:|---:|---:|---:|']
+    for row in timing:
+        text.append(f"| {row['method']} | {row['configured_logical_streams']} | {row.get('images','PENDING')} | {number(row.get('complete_process_seconds'),2)} | {number(row.get('complete_process_camera_image_fps'),3)} | {number(row['round_p95_seconds']*1000 if 'round_p95_seconds' in row else None,2)} | {number(row['query_response_p95_seconds']*1000 if 'query_response_p95_seconds' in row else None,3)} |")
+    text+=['','| Method | Streams | Requests | GT matched | Gallery eligible | Conditional R1 | Conditional R5 | Full MRR | R1 success /all requests |',
+        '|---|---:|---:|---:|---:|---:|---:|---:|---:|']
+    for row in timing:
+        text.append(f"| {row['method']} | {row['configured_logical_streams']} | {row.get('retrieval_requests','PENDING')} | {row.get('GT_matched_queries','PENDING')} | {row.get('gallery_eligible_queries','PENDING')} | {number(row.get('retrieval_Recall1'))} | {number(row.get('retrieval_Recall5'))} | {number(row.get('retrieval_MRR'))} | {number(row.get('retrieval_success1_all_requests'))} |")
+    text+=['','Conditional Recall/MRR denominator: GT-matched detector queries with a positive other-camera clip in the original full native gallery. All-request success retains unmatched and ineligible detector queries. An identical count does not prove identical eligible members; the separate system_query_pairs audit verifies physical query/GT cohorts, gains/losses and common-query fixes/harms.',
+        '', '| Method | Streams | CUDA allocator peak incl. setup, bytes | Host peak RSS, bytes | Index peak payload, bytes |',
+        '|---|---:|---:|---:|---:|']
+    for row in timing:
+        text.append(f"| {row['method']} | {row['configured_logical_streams']} | {row.get('allocator_peak_bytes_including_setup','PENDING')} | {row.get('host_peak_rss_bytes','PENDING')} | {row.get('index_peak_payload_bytes','PENDING')} |")
+    text+=['','Each run uses one actual V100-DGXS32GB. Configured2/4/10 streams are1/2/5 separate two-camera scenes, interleaved by replay round. Active membership decreases as unequal-length scenes finish; no constant10-active-stream or Internet-deployment claim. Scene/target mix also changes across stream counts, so this is not an isolated scaling curve with a fixed workload. Concurrent producers share a host, CPU and file storage, so one observed timing per case is not a repeated isolated speed comparison.',
+        '', 'Whole process wall includes Python/import/setup/replay/export; post-run GT evaluators are separate. Identical synchronization profiling is charged to both methods. Read/preprocess, tracker and query compute are timed separately; remaining loop time combines publication, serialization and control and is not an isolated publication benchmark. Query response latency excludes network.',
+        '', 'Full strict5 metrics are in full_tracking_metrics.csv, with inherited native/Prior inference seeds explicitly separate from fresh runs. Frag for inherited rows is extracted from retained raw CLEAR after checking its HOTA/IDF1/IDSW association; it is not a new tracking execution. Fresh Frag comes from the new raw combined evaluator output.',
+        '', 'Raw run, parity, metric, process log and queue hashes are bound in the JSON/CSV results. The native-only systems evidence does not establish a TrackVGGT method benefit, student deployment, scientific success or WWW paper readiness.','']
+    (ROOT/'docs/TRACKVGGT_SYSTEM_RESULTS.md').write_text('\n'.join(text))
     print(json.dumps(dict(status=summary['status'],pending=len(summary['pending']))))
 
 

@@ -27,3 +27,13 @@ VGGT-Det repository root LICENSE is MIT (copyright2024 yangcaoai); upstream-deri
 ## Remaining gates
 
 Actual hard-event collection, all adapter edge cases, AG ranking/size/crop experiments, QD/query-shuffle, temporal cycles, conditional KD and complete deployment remain required. Phase0 success is not TEACHER_SUCCESS/STUDENT_SUCCESS/SCIENTIFIC_SUCCESS/PAPER_READY.
+
+## Subsequent executed scope
+
+The Phase0 interface/architecture paragraphs above describe prerequisites at
+that time. Actual causal native data, all56 registered AG/QD/crop/temporal
+fits and independent paired audits have since completed. The screening gate
+is NO_UNIQUE_VGGT_TEACHER_EVIDENCE; IRGD/conditional trained students and
+learned full-video deployment are unexecuted. Fresh native system work and
+final audit remain separate; see the current teacher/system/final reports.
+Implementation contracts are not a scientific-success or learned deployment claim.

@@ -76,6 +76,16 @@ release.
 
 Example from this repository with its existing Python environment:
 
+Start Python with the producer library on its import path (this also works
+from another branch or working directory):
+
+```bash
+PYTHONPATH=/data1/liuyeqiang/WWW_trackvggt_20261015/geo_tools CUDA_VISIBLE_DEVICES='' /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python
+```
+
+Then use the following Python API. It needs PyTorch and the three portable reader,
+validator and schema modules; it does not import GMT or open original images/GT.
+
 ```python
 from read_dev12_native_release import NativeRelease
 
@@ -127,3 +137,13 @@ negative and are preserved in
 `results/trackvggt_teacher_progress_at_dev12_handoff_v1.json`; remaining
 DINO/summary settings continue. No student distillation or scientific success
 is authorized by the data-delivery result.
+
+## Research status after the handoff
+
+The research queue details above describe the actual handoff-time snapshot.
+All56 registered TrackVGGT teacher runs have since completed independently,
+with NO_UNIQUE_VGGT_TEACHER_EVIDENCE and no conditional student fitting. Fresh
+native/Prior system tests are separate ongoing work. This does not alter the
+sealed DEV12 version, files, trust anchor, native-equivalence/consumer proofs
+or its independent usage boundary; no release inputs/labels were added to
+VGGT fitting or model selection.

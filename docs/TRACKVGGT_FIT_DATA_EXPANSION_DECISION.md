@@ -26,3 +26,12 @@ Of 27597 fit queries without a pure positive, 27470 still contain the correct GT
 V3 includes 2721 pure-Top8-positive queries and 12 genuine legal-history NULL queries; the other 267 queries retain supervision masks. Zero-center queries: 565/3000; crop/ROI controls remain necessary.
 
 A single pre-feature/pre-training index correction reserved rare genuine NULL before the abundant missing/unknown pool. The first V3 index and comparison remain archived by exact hash in /data1/liuyeqiang/WWW_trackvggt_20261015/manifests/trackvggt_expanded_training_v3_initial_index_v1.json. The final revision adds no duplicate query and all added known queries respect the3-group spacing from both V2 and each other. Original V2 is unchanged. Teacher V2/V3 benefit is NOT_MEASURED.
+
+## Later research status
+
+The data conclusions above are retained from the pre-feature/pre-training audit
+phase. Their NOT_MEASURED/pending teacher fields describe that snapshot. Current
+TrackVGGT research has completed all56 registered teacher runs, the V2/V3
+comparison, crop/QD/temporal controls and the negative relation gate. See
+TRACKVGGT_TEACHER_RESULTS.md and TRACKVGGT_FINAL_REPORT.md; no frozen audit
+statistics, raw inputs or original result JSON is rewritten by this note.
