@@ -57,10 +57,10 @@ def main():
     eligible=[]
     for index in data.fit:
         _,_,event=data.event(index);row=data.rows[tuple(data.items[index]['key'])]
-        feature_valid=bool(event['candidate_tracks']) and (a.architecture=='native_mlp' or a.ag_mode=='roi' or data.effective_patch_count(index)>0)
+        feature_valid=bool(event['candidate_tracks']) and (bool(a.feature_plan) or a.architecture=='native_mlp' or a.ag_mode=='roi' or data.effective_patch_count(index)>0)
         if event['loss_eligible'] and feature_valid:eligible.append(index)
     if not eligible:raise ValueError('no legal supervised fit relations; no fabricated samples')
-    setup_seconds=time.perf_counter()-started;training_started=time.perf_counter();curve=[]
+    setup_seconds=time.perf_counter()-started;training_started=time.perf_counter();curve=[];neutral_fit_forwards=0;zero_gradient_batches=0
     if a.device.startswith('cuda'):torch.cuda.reset_peak_memory_stats()
     for step in range(start_step,a.steps):
         model.train();optimizer.zero_grad(set_to_none=True);losses=[];parts=[]
@@ -69,10 +69,16 @@ def main():
             features,target=data.get(index,a.device)
             logits,aux=model(features,soft=a.ag_mode=='C' and a.architecture!='native_mlp' and not a.ag_init and step<150)
             value=association_losses(logits,target)
-            if value is None or aux['neutral']:raise ValueError('supervised event selection/model validity mismatch')
+            if value is None or (aux['neutral'] and not a.feature_plan):raise ValueError('supervised event selection/model validity mismatch')
+            neutral_fit_forwards+=int(aux['neutral'])
             losses.append(value[0]);parts.append([float(value[1].detach()),float(value[2].detach())])
         loss=torch.stack(losses).mean()
         if not torch.isfinite(loss):raise ValueError('nonfinite training loss')
+        if not loss.requires_grad:
+            # Matched crop variants draw the same actual queries, including
+            # full-image zero-center native fallbacks. A constant batch has
+            # exactly zero learned gradient; no fabricated token/history path.
+            loss=loss+sum(parameter.sum()*0 for parameter in model.parameters());zero_gradient_batches+=1
         loss.backward();norm=torch.nn.utils.clip_grad_norm_(model.parameters(),1.)
         if not torch.isfinite(norm) or any(not torch.isfinite(parameter.grad).all() for parameter in model.parameters() if parameter.grad is not None):raise ValueError('nonfinite gradient')
         optimizer.step()
@@ -91,6 +97,7 @@ def main():
     save_json(out/'validation_query_shuffle.json',shuffled)
     report=dict(status='COMPLETE_FINITE_TEACHER_FIT_AND_FIXED_VALIDATION',settings=settings,completed_steps=a.steps,starting_step=start_step,
         supervised_fit_queries=len(eligible),all_fit_queries=len(data.fit),validation_queries=len(data.validation),
+        neutral_fit_query_forwards=neutral_fit_forwards,zero_gradient_batches=zero_gradient_batches,
         trainable_parameters=sum(parameter.numel() for parameter in model.parameters()),setup_seconds=setup_seconds,training_seconds=training_seconds,
         peak_cuda_allocated_bytes=torch.cuda.max_memory_allocated() if a.device.startswith('cuda') else None,
         validation_metrics=validation['metrics'],query_shuffle_metrics=shuffled['metrics'],
