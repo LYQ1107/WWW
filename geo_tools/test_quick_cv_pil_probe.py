@@ -3,7 +3,9 @@ import hashlib
 import json
 import tempfile
 import unittest
+import sys
 from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np
 import torch
 from quick_cv_pil_probe import (LowRankPredictor, build_episodes, read_cache,
