@@ -8,7 +8,7 @@ import torch
 from pirga_indexed_store import sha
 from pirga_training_cache import NativeTrainingCache
 from pirga_fulltrain_dataset import FullTrainDataset,load_supervision
-from cv_pil_v2_model import CandidatePredictor,supervised_losses as original_losses
+from cv_pil_v2_model import CandidatePredictor,parameter_digest
 from pirga_device_losses import supervised_losses
 from cv_pil_native_handoff import safe_torch_load
 
@@ -21,7 +21,7 @@ def main():
     cache=NativeTrainingCache(a.cache,a.cache_sha,device='cuda');model=CandidatePredictor().cuda()
     cp=Path('/data1/liuyeqiang/WWW_cvpil_v3_runtime_20261015/p3_matched_step300_seed20261015_v1/C3_step300.pth')
     if sha(cp)!='76e66718cde4ebd73d55b06fbecd3bff21c0205335e6dc4c45ef650ac920208c':raise ValueError('Frozen head changed')
-    model.load_state_dict(safe_torch_load(cp)['state_dict']);times=[]
+    model.load_state_dict(safe_torch_load(cp)['state_dict']);initial=parameter_digest(model);times=[]
     for key in keys:
         b=cache.batch(key);label=labels[key]
         for repeat in range(3):
@@ -29,7 +29,8 @@ def main():
             model.zero_grad(set_to_none=True);loss.backward();torch.nn.utils.clip_grad_norm_(model.parameters(),1.);torch.cuda.synchronize()
             if not torch.isfinite(loss):raise ValueError('Nonfinite device probe')
             if repeat:times.append(dict(key=list(key),histories=len(b.histories),seconds=time.monotonic()-t))
-    r=dict(status='PASS_TRAIN_ONLY_CUDA_DETERMINISTIC_GRADIENT_PROBE',queries=len(keys),repeats=2,optimizer_updates=0,training=False,DEV_read=False,
+    if parameter_digest(model)!=initial:raise ValueError('Timing probe changed model parameters')
+    r=dict(parameters_unchanged=True,status='PASS_TRAIN_ONLY_CUDA_DETERMINISTIC_GRADIENT_PROBE',queries=len(keys),repeats=2,optimizer_updates=0,training=False,DEV_read=False,
            deterministic_algorithms=True,device_name=torch.cuda.get_device_name(),median_step_seconds=statistics.median(v['seconds'] for v in times),
            measurements=times,wall_seconds=time.monotonic()-started,peak_GPU_allocated_bytes=torch.cuda.max_memory_allocated(),
            timing_note='Actual rank+prediction forward/backward+clip, no optimizer step; full process wall additionally charged by parent. Not imageFPS or a trained result.')
