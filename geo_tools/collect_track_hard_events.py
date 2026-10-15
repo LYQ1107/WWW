@@ -22,7 +22,7 @@ def pure_reference_identity(values):
 def choose_events(events,limit,fit):
     def order(event):
         # TRAIN fit may use error labels; held-out selection never does.
-        error=fit and event['top8_positive'] and not event['native_top1_correct']
+        error=fit and event['top8_positive'] and (event['native_top1_state']=='wrong_link' or event['actual_primary_state'] in ('wrong_link','missed_known_positive'))
         return (0 if fit and error else 1,event['relative_margin'],event['key'])
     return sorted(events,key=order)[:limit]
 
@@ -148,12 +148,14 @@ def main():
             unknown=[track for track in selected if pure[track] is None]
             known_query=truth is not None;has_all=bool(all_positive);has_top=bool(positives)
             first=selected[0];correct=known_query and pure[first]==truth
+            first_state='unknown_query' if not known_query else 'ambiguous_reference' if pure[first] is None else 'correct_link' if correct else 'wrong_link'
             margin=float((score[order[0]]-score[order[1]])/(score[order[0]].abs()+1e-8)) if len(order)>1 else 1.
             coverage['cross_camera_queries']+=1;coverage['known_query']+=known_query;coverage['correct_candidate_anywhere']+=has_all
             coverage['correct_candidate_in_top8']+=has_top;coverage['positive_excluded_by_top8']+=has_all and not has_top
             coverage['correct_observation_in_history_including_impure_tracks']+=bool(observed_positive)
             coverage['correct_observation_in_top8_including_impure_tracks']+=any(track in observed_positive for track in selected)
-            coverage['top8_correctable_native_top1_errors']+=has_top and not correct
+            coverage['top8_correctable_native_top1_known_errors']+=has_top and first_state=='wrong_link'
+            coverage['top8_positive_native_top1_ambiguous']+=has_top and first_state=='ambiguous_reference'
             coverage['unknown_query']+=not known_query;coverage['query_with_ambiguous_top8_track']+=bool(unknown)
             coverage['known_query_no_known_positive_in_history']+=known_query and not has_all
             candidates.append(dict(key=[a.video_id,*key],call_index=call_index,query_row=row,query_source=qsource,
@@ -161,10 +163,11 @@ def main():
                 query_gt_identity=truth,positive_tracks=positives,all_history_positive_tracks=all_positive,ambiguous_tracks=unknown,
                 observed_positive_tracks_including_impure=observed_positive,
                 top8_positive=has_top,all_history_positive=has_all,native_top1_correct=bool(correct),
+                native_top1_state=first_state,
                 loss_eligible=known_query and (has_top or (not has_all and not any(value is None for value in pure.values()))),
                 known_unmatched_within_all_recorded_history=known_query and not has_all and not any(value is None for value in pure.values()),
                 actual_primary_state=outcomes[key]['state'],actual_solver_scope='primary before memory; own frozen OFF history',
-                selection_scope='GT-labeled hard errors first then native margin' if a.scope=='fit' else 'native margin only; no GT selection'))
+                selection_scope='reachable known wrong/missed native identity first, then native margin; unknown is not wrong' if a.scope=='fit' else 'native margin only; no GT selection'))
     selected=choose_events(candidates,a.limit,a.scope=='fit')
     selected_calls={row['call_index'] for row in selected};needed=set()
     for event in selected:
@@ -178,7 +181,7 @@ def main():
         full_video=len(images)==len(video_records(data,a.video_id)),inference_seed=spec['inference_seed'],images=len(images),groups=len(groups),
         native_reid_dim=next(iter(dims)),all_candidate_coverage=dict(coverage),selected_events=len(selected),
         selected_known_query=sum(row['query_gt_identity'] is not None for row in selected),selected_top8_positive=sum(row['top8_positive'] for row in selected),
-        selected_native_top1_errors_with_top8_positive=sum(row['top8_positive'] and not row['native_top1_correct'] for row in selected),
+        selected_native_top1_known_errors_with_top8_positive=sum(row['top8_positive'] and row['native_top1_state']=='wrong_link' for row in selected),
         selected_loss_eligible=sum(row['loss_eligible'] for row in selected),selected_actual_primary_states=dict(collections.Counter(row['actual_primary_state'] for row in selected)),
         solver_decision_counts=solver_stats,prefix40_raw_prediction_exact=exact,raw_gt_sha256=gt_hashes,collection_seconds=collection_seconds,
         vggt_calls=0,dinov2_calls=0,speed_eligible=False,gt_query_features=False,future_query_features=False,train_validation_scene_separation=True,

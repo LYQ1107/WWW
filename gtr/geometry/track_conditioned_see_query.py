@@ -12,5 +12,7 @@ class TrackConditionedSeeQuery(nn.Module):
         self.task_head=nn.Sequential(nn.Linear(hidden,hidden),nn.GELU(),nn.Linear(hidden,4))
 
     def forward(self,query):
-        token=self.base+(self.condition(query) if self.conditioned else torch.zeros_like(query))
+        # Same active MLP capacity in the global control: condition a learned
+        # global token instead of history. Only the source of conditioning differs.
+        token=self.base+self.condition(query if self.conditioned else self.base.expand_as(query))
         return self.task_head(self.norm(token)).softmax(-1)

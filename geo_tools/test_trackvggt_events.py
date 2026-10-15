@@ -11,7 +11,7 @@ class Tests(unittest.TestCase):
         self.assertEqual([row['key'] for row in choose_events(labeled,2,False)],[row['key'] for row in selected])
 
     def test_fit_native_errors_with_reachable_correct_candidate_first(self):
-        rows=[dict(key=[5,i,0],relative_margin=margin,top8_positive=positive,native_top1_correct=correct)
+        rows=[dict(key=[5,i,0],relative_margin=margin,top8_positive=positive,native_top1_correct=correct,native_top1_state='correct_link' if correct else 'wrong_link',actual_primary_state='correct_link' if correct else 'wrong_link')
               for i,margin,positive,correct in [(1,.01,True,True),(2,.8,True,False),(3,.9,False,False)]]
         self.assertEqual(choose_events(rows,1,True)[0]['key'],[5,2,0])
 

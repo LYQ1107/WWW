@@ -1,0 +1,16 @@
+{
+  "status": "FIXED_BEFORE_TEACHER_RESULTS",
+  "reason": "Initial fit5/8 selected events contain only6 known native Top1 ranking errors, all in scene8; ambiguous references are not known errors. Expand legal original association TRAIN scene coverage before model training.",
+  "initial_fit_scenes": [5, 8],
+  "additional_fit_scenes": [4, 6, 7],
+  "heldout_association_train_scenes": [12],
+  "additional_collection_groups": 400,
+  "additional_candidate_events_per_scene": 500,
+  "aggregate_training_event_cap": 1000,
+  "aggregate_training_selection": "Include at most500 reachable known Top1-wrong or actual primary wrong/missed events in scene-round-robin order, stable source key within scene. Fill up to1000 from per-scene ascending native margin in scene-round-robin order; no duplicate physical query keys. GT labels may choose TRAIN fit errors only. Initial raw cohort and its results retained.",
+  "validation_selection": "unchanged initial300 native-margin-selected TRAIN12 events; no GT-based resampling",
+  "original_gt_uniqueness_precheck": "All six original GT files for scenes4/6/7 have zero duplicate frame+identity keys; no repair.",
+  "teacher_model_results_seen": false,
+  "revisions": "New collectors separate native known-wrong, ambiguous, unknown and missed states explicitly. Original v1 collector broad field is retained and corrected by trackvggt_hard_events_audit_v1.json.",
+  "cache_cap_bytes": 2147483648
+}
