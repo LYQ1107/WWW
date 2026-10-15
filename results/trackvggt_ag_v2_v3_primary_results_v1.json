@@ -1,0 +1,6642 @@
+{
+  "status": "COMPLETE_PRIMARY_V2_V3_AG_COMPARISON",
+  "completed_full_settings": 12,
+  "queues": [
+    {
+      "plan": "trackvggt_phase2_ag_fit_v1",
+      "gpu": 0,
+      "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_phase2_ag_fit_v1_gpu0/manifest.json",
+      "sha256": "af52bbd2b1940ba21c68f2297d72b0f2232c78d38cd4ba1f9affef010fe3de3e",
+      "outer_seconds": 1083.00380577147
+    },
+    {
+      "plan": "trackvggt_phase2_ag_fit_v1",
+      "gpu": 4,
+      "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_phase2_ag_fit_v1_gpu4/manifest.json",
+      "sha256": "e680269833c2af092125fef6124321c91a8fb2f1af0ea3d7d76776a3b14b9458",
+      "outer_seconds": 814.5937154814601
+    },
+    {
+      "plan": "trackvggt_phase2_ag_fit_v1",
+      "gpu": 5,
+      "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_phase2_ag_fit_v1_gpu5/manifest.json",
+      "sha256": "01db98ea660aa46beba6df88206705604f637551ca561eb8a33aada8c109c68a",
+      "outer_seconds": 801.9123006686568
+    },
+    {
+      "plan": "trackvggt_phase2_ag_fit_v1",
+      "gpu": 6,
+      "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_phase2_ag_fit_v1_gpu6/manifest.json",
+      "sha256": "f7ba5067e10b6e80b4455cf31294744cdea1a40b678ddc02ad11f1686a0fe29d",
+      "outer_seconds": 393.6096518263221
+    },
+    {
+      "plan": "trackvggt_v3_ag_fit_v1",
+      "gpu": 0,
+      "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_v3_ag_fit_v1_gpu0/manifest.json",
+      "sha256": "99ff7107232bd7c6da84f76c04e2bdc565e866ba0e00ec4db955937ab869afbe",
+      "outer_seconds": 583.5054348111153
+    },
+    {
+      "plan": "trackvggt_v3_ag_fit_v1",
+      "gpu": 4,
+      "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_v3_ag_fit_v1_gpu4/manifest.json",
+      "sha256": "5d1a19e810a965bb934e20ec79cbb4beb14c2559984dc4484e49110d28b4b29b",
+      "outer_seconds": 294.0480657592416
+    },
+    {
+      "plan": "trackvggt_v3_ag_fit_v1",
+      "gpu": 5,
+      "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_v3_ag_fit_v1_gpu5/manifest.json",
+      "sha256": "f0776c727d6c8b116b95d48e8782541f834f5f71194f540ebfe82c9090143473",
+      "outer_seconds": 608.7881407439709
+    },
+    {
+      "plan": "trackvggt_v3_ag_fit_v1",
+      "gpu": 6,
+      "path": "/data1/liuyeqiang/WWW_trackvggt_runtime/queues/trackvggt_v3_ag_fit_v1_gpu6/manifest.json",
+      "sha256": "9e4d8d2433185bc898c89a50b1181b608654a68c150fbeb9637f69caa1714b63",
+      "outer_seconds": 206.63968001306057
+    }
+  ],
+  "rows": [
+    {
+      "tag": "ag_vggt_C_mean_k24_seed20261015_full1000_v1",
+      "settings": {
+        "backbone": "vggt",
+        "native_dim": 1152,
+        "channels": 2048,
+        "architecture": "ag",
+        "ag_mode": "C",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 1000,
+      "supervised_fit_queries": 860,
+      "parameters": 624900,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.07,
+        "Recall5": 0.95,
+        "MRR": 0.45594047619047623,
+        "matched_candidate_Recall1_excluding_null": 0.07,
+        "all_request_known_positive_success1": 0.023333333333333334,
+        "pair_auc": 0.7857917133258678,
+        "pair_ap": 0.2704043565035986,
+        "supervised_loss": 1.3860725322190453,
+        "states": {
+          "ambiguous_reference": 131,
+          "unknown_query": 82,
+          "wrong_link": 80,
+          "correct_link": 7
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.34,
+        "Recall5": 0.97,
+        "MRR": 0.6172619047619048,
+        "matched_candidate_Recall1_excluding_null": 0.34,
+        "all_request_known_positive_success1": 0.11333333333333333,
+        "pair_auc": 0.8524703247480404,
+        "pair_ap": 0.4304469407304663,
+        "supervised_loss": 0.8326209497218039,
+        "states": {
+          "ambiguous_reference": 142,
+          "unknown_query": 82,
+          "wrong_link": 42,
+          "correct_link": 34
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 0,
+        "known_ranking_harms": 56,
+        "native_correct_to_uncertified": 3,
+        "fix_keys": [],
+        "harm_keys": [
+          [
+            12,
+            29967,
+            7
+          ],
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30246,
+            5
+          ],
+          [
+            12,
+            29962,
+            6
+          ],
+          [
+            12,
+            29965,
+            6
+          ],
+          [
+            12,
+            29979,
+            4
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            29971,
+            8
+          ],
+          [
+            12,
+            30115,
+            1
+          ],
+          [
+            12,
+            29968,
+            7
+          ],
+          [
+            12,
+            30251,
+            5
+          ],
+          [
+            12,
+            30250,
+            5
+          ],
+          [
+            12,
+            29974,
+            6
+          ],
+          [
+            12,
+            29969,
+            7
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            29980,
+            7
+          ],
+          [
+            12,
+            30256,
+            6
+          ],
+          [
+            12,
+            30266,
+            3
+          ],
+          [
+            12,
+            29978,
+            4
+          ],
+          [
+            12,
+            30260,
+            5
+          ],
+          [
+            12,
+            30261,
+            5
+          ],
+          [
+            12,
+            29985,
+            7
+          ],
+          [
+            12,
+            29970,
+            7
+          ],
+          [
+            12,
+            30264,
+            3
+          ],
+          [
+            12,
+            29983,
+            5
+          ],
+          [
+            12,
+            29964,
+            6
+          ],
+          [
+            12,
+            29966,
+            7
+          ],
+          [
+            12,
+            30262,
+            5
+          ],
+          [
+            12,
+            30263,
+            5
+          ],
+          [
+            12,
+            30259,
+            5
+          ],
+          [
+            12,
+            29954,
+            8
+          ],
+          [
+            12,
+            30258,
+            4
+          ],
+          [
+            12,
+            29977,
+            4
+          ],
+          [
+            12,
+            30267,
+            3
+          ],
+          [
+            12,
+            30249,
+            5
+          ],
+          [
+            12,
+            30252,
+            5
+          ],
+          [
+            12,
+            30265,
+            3
+          ],
+          [
+            12,
+            29982,
+            7
+          ],
+          [
+            12,
+            30268,
+            3
+          ],
+          [
+            12,
+            29974,
+            5
+          ],
+          [
+            12,
+            30269,
+            2
+          ],
+          [
+            12,
+            30270,
+            2
+          ],
+          [
+            12,
+            30248,
+            5
+          ],
+          [
+            12,
+            30271,
+            2
+          ],
+          [
+            12,
+            29964,
+            9
+          ],
+          [
+            12,
+            30247,
+            5
+          ],
+          [
+            12,
+            29976,
+            5
+          ],
+          [
+            12,
+            30272,
+            3
+          ],
+          [
+            12,
+            29966,
+            6
+          ],
+          [
+            12,
+            29953,
+            6
+          ],
+          [
+            12,
+            29955,
+            8
+          ],
+          [
+            12,
+            28932,
+            7
+          ],
+          [
+            12,
+            29979,
+            5
+          ],
+          [
+            12,
+            29965,
+            7
+          ],
+          [
+            12,
+            30228,
+            4
+          ],
+          [
+            12,
+            30118,
+            2
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            30255,
+            5
+          ],
+          [
+            12,
+            30257,
+            4
+          ],
+          [
+            12,
+            30253,
+            5
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.16666666666666666,
+          "predicted_states": {
+            "ambiguous_reference": 113,
+            "unknown_query": 42,
+            "wrong_link": 13,
+            "correct_link": 3
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.05,
+          "predicted_states": {
+            "unknown_query": 40,
+            "wrong_link": 66,
+            "ambiguous_reference": 17,
+            "correct_link": 4
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 55,
+            "native_correct_to_uncertified": 3,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                29967,
+                7
+              ],
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                30246,
+                5
+              ],
+              [
+                12,
+                29962,
+                6
+              ],
+              [
+                12,
+                29965,
+                6
+              ],
+              [
+                12,
+                29979,
+                4
+              ],
+              [
+                12,
+                29973,
+                6
+              ],
+              [
+                12,
+                29971,
+                8
+              ],
+              [
+                12,
+                30115,
+                1
+              ],
+              [
+                12,
+                29968,
+                7
+              ],
+              [
+                12,
+                30251,
+                5
+              ],
+              [
+                12,
+                30250,
+                5
+              ],
+              [
+                12,
+                29974,
+                6
+              ],
+              [
+                12,
+                29969,
+                7
+              ],
+              [
+                12,
+                29975,
+                5
+              ],
+              [
+                12,
+                29980,
+                7
+              ],
+              [
+                12,
+                30256,
+                6
+              ],
+              [
+                12,
+                30266,
+                3
+              ],
+              [
+                12,
+                29978,
+                4
+              ],
+              [
+                12,
+                30260,
+                5
+              ],
+              [
+                12,
+                30261,
+                5
+              ],
+              [
+                12,
+                29985,
+                7
+              ],
+              [
+                12,
+                29970,
+                7
+              ],
+              [
+                12,
+                30264,
+                3
+              ],
+              [
+                12,
+                29983,
+                5
+              ],
+              [
+                12,
+                29964,
+                6
+              ],
+              [
+                12,
+                29966,
+                7
+              ],
+              [
+                12,
+                30262,
+                5
+              ],
+              [
+                12,
+                30263,
+                5
+              ],
+              [
+                12,
+                30259,
+                5
+              ],
+              [
+                12,
+                29954,
+                8
+              ],
+              [
+                12,
+                30258,
+                4
+              ],
+              [
+                12,
+                29977,
+                4
+              ],
+              [
+                12,
+                30267,
+                3
+              ],
+              [
+                12,
+                30249,
+                5
+              ],
+              [
+                12,
+                30252,
+                5
+              ],
+              [
+                12,
+                30265,
+                3
+              ],
+              [
+                12,
+                29982,
+                7
+              ],
+              [
+                12,
+                30268,
+                3
+              ],
+              [
+                12,
+                29974,
+                5
+              ],
+              [
+                12,
+                30269,
+                2
+              ],
+              [
+                12,
+                30270,
+                2
+              ],
+              [
+                12,
+                30248,
+                5
+              ],
+              [
+                12,
+                30271,
+                2
+              ],
+              [
+                12,
+                29964,
+                9
+              ],
+              [
+                12,
+                30247,
+                5
+              ],
+              [
+                12,
+                29976,
+                5
+              ],
+              [
+                12,
+                30272,
+                3
+              ],
+              [
+                12,
+                29966,
+                6
+              ],
+              [
+                12,
+                29953,
+                6
+              ],
+              [
+                12,
+                29955,
+                8
+              ],
+              [
+                12,
+                29979,
+                5
+              ],
+              [
+                12,
+                29965,
+                7
+              ],
+              [
+                12,
+                30228,
+                4
+              ],
+              [
+                12,
+                30118,
+                2
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                30255,
+                5
+              ],
+              [
+                12,
+                30257,
+                4
+              ],
+              [
+                12,
+                30253,
+                5
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 1,
+            "wrong_link": 1
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 1,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "e441a5d061855c837c1c7748831c6c4b0ead2a7e15fa0127349756910d9e1752",
+      "checkpoint_sha256": "f6251c5e31274ed39754d90f14c6bc0213403b4e36159a59bfd4b68ba5407e4c"
+    },
+    {
+      "tag": "ag_vggt_C_ema_k24_seed20261015_full1000_v1",
+      "settings": {
+        "backbone": "vggt",
+        "native_dim": 1152,
+        "channels": 2048,
+        "architecture": "ag",
+        "ag_mode": "C",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "ema",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 1000,
+      "supervised_fit_queries": 860,
+      "parameters": 624900,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.14,
+        "Recall5": 0.96,
+        "MRR": 0.49617857142857147,
+        "matched_candidate_Recall1_excluding_null": 0.14,
+        "all_request_known_positive_success1": 0.04666666666666667,
+        "pair_auc": 0.7910862262038074,
+        "pair_ap": 0.29299257402498474,
+        "supervised_loss": 1.2711356738034416,
+        "states": {
+          "ambiguous_reference": 144,
+          "unknown_query": 82,
+          "wrong_link": 60,
+          "correct_link": 14
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.46,
+        "Recall5": 0.97,
+        "MRR": 0.6864285714285717,
+        "matched_candidate_Recall1_excluding_null": 0.46,
+        "all_request_known_positive_success1": 0.15333333333333332,
+        "pair_auc": 0.8556774916013439,
+        "pair_ap": 0.45562846290401543,
+        "supervised_loss": 0.7686148046278486,
+        "states": {
+          "ambiguous_reference": 140,
+          "unknown_query": 82,
+          "wrong_link": 32,
+          "correct_link": 46
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 0,
+        "known_ranking_harms": 39,
+        "native_correct_to_uncertified": 13,
+        "fix_keys": [],
+        "harm_keys": [
+          [
+            12,
+            29967,
+            7
+          ],
+          [
+            12,
+            29962,
+            6
+          ],
+          [
+            12,
+            29965,
+            6
+          ],
+          [
+            12,
+            29979,
+            4
+          ],
+          [
+            12,
+            30115,
+            1
+          ],
+          [
+            12,
+            29968,
+            7
+          ],
+          [
+            12,
+            29969,
+            7
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            29980,
+            7
+          ],
+          [
+            12,
+            30266,
+            3
+          ],
+          [
+            12,
+            29978,
+            4
+          ],
+          [
+            12,
+            30260,
+            5
+          ],
+          [
+            12,
+            30261,
+            5
+          ],
+          [
+            12,
+            29985,
+            7
+          ],
+          [
+            12,
+            29970,
+            7
+          ],
+          [
+            12,
+            30264,
+            3
+          ],
+          [
+            12,
+            29983,
+            5
+          ],
+          [
+            12,
+            29966,
+            7
+          ],
+          [
+            12,
+            30262,
+            5
+          ],
+          [
+            12,
+            30263,
+            5
+          ],
+          [
+            12,
+            30259,
+            5
+          ],
+          [
+            12,
+            29954,
+            8
+          ],
+          [
+            12,
+            30258,
+            4
+          ],
+          [
+            12,
+            29977,
+            4
+          ],
+          [
+            12,
+            29956,
+            5
+          ],
+          [
+            12,
+            30267,
+            3
+          ],
+          [
+            12,
+            30265,
+            3
+          ],
+          [
+            12,
+            29982,
+            7
+          ],
+          [
+            12,
+            30268,
+            3
+          ],
+          [
+            12,
+            29974,
+            5
+          ],
+          [
+            12,
+            30269,
+            2
+          ],
+          [
+            12,
+            30270,
+            2
+          ],
+          [
+            12,
+            30271,
+            2
+          ],
+          [
+            12,
+            29964,
+            9
+          ],
+          [
+            12,
+            29976,
+            5
+          ],
+          [
+            12,
+            30272,
+            3
+          ],
+          [
+            12,
+            29953,
+            6
+          ],
+          [
+            12,
+            29955,
+            8
+          ],
+          [
+            12,
+            29979,
+            5
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30255,
+            5
+          ],
+          [
+            12,
+            30257,
+            4
+          ],
+          [
+            12,
+            30253,
+            5
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            29971,
+            8
+          ],
+          [
+            12,
+            30251,
+            5
+          ],
+          [
+            12,
+            30250,
+            5
+          ],
+          [
+            12,
+            30256,
+            6
+          ],
+          [
+            12,
+            30249,
+            5
+          ],
+          [
+            12,
+            30252,
+            5
+          ],
+          [
+            12,
+            30248,
+            5
+          ],
+          [
+            12,
+            28932,
+            7
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.16666666666666666,
+          "predicted_states": {
+            "ambiguous_reference": 113,
+            "unknown_query": 42,
+            "wrong_link": 13,
+            "correct_link": 3
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.1375,
+          "predicted_states": {
+            "unknown_query": 40,
+            "wrong_link": 47,
+            "ambiguous_reference": 29,
+            "correct_link": 11
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 39,
+            "native_correct_to_uncertified": 12,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                29967,
+                7
+              ],
+              [
+                12,
+                29962,
+                6
+              ],
+              [
+                12,
+                29965,
+                6
+              ],
+              [
+                12,
+                29979,
+                4
+              ],
+              [
+                12,
+                30115,
+                1
+              ],
+              [
+                12,
+                29968,
+                7
+              ],
+              [
+                12,
+                29969,
+                7
+              ],
+              [
+                12,
+                29975,
+                5
+              ],
+              [
+                12,
+                29980,
+                7
+              ],
+              [
+                12,
+                30266,
+                3
+              ],
+              [
+                12,
+                29978,
+                4
+              ],
+              [
+                12,
+                30260,
+                5
+              ],
+              [
+                12,
+                30261,
+                5
+              ],
+              [
+                12,
+                29985,
+                7
+              ],
+              [
+                12,
+                29970,
+                7
+              ],
+              [
+                12,
+                30264,
+                3
+              ],
+              [
+                12,
+                29983,
+                5
+              ],
+              [
+                12,
+                29966,
+                7
+              ],
+              [
+                12,
+                30262,
+                5
+              ],
+              [
+                12,
+                30263,
+                5
+              ],
+              [
+                12,
+                30259,
+                5
+              ],
+              [
+                12,
+                29954,
+                8
+              ],
+              [
+                12,
+                30258,
+                4
+              ],
+              [
+                12,
+                29977,
+                4
+              ],
+              [
+                12,
+                29956,
+                5
+              ],
+              [
+                12,
+                30267,
+                3
+              ],
+              [
+                12,
+                30265,
+                3
+              ],
+              [
+                12,
+                29982,
+                7
+              ],
+              [
+                12,
+                30268,
+                3
+              ],
+              [
+                12,
+                29974,
+                5
+              ],
+              [
+                12,
+                30269,
+                2
+              ],
+              [
+                12,
+                30270,
+                2
+              ],
+              [
+                12,
+                30271,
+                2
+              ],
+              [
+                12,
+                29964,
+                9
+              ],
+              [
+                12,
+                29976,
+                5
+              ],
+              [
+                12,
+                30272,
+                3
+              ],
+              [
+                12,
+                29953,
+                6
+              ],
+              [
+                12,
+                29955,
+                8
+              ],
+              [
+                12,
+                29979,
+                5
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                30255,
+                5
+              ],
+              [
+                12,
+                30257,
+                4
+              ],
+              [
+                12,
+                30253,
+                5
+              ],
+              [
+                12,
+                29973,
+                6
+              ],
+              [
+                12,
+                29971,
+                8
+              ],
+              [
+                12,
+                30251,
+                5
+              ],
+              [
+                12,
+                30250,
+                5
+              ],
+              [
+                12,
+                30256,
+                6
+              ],
+              [
+                12,
+                30249,
+                5
+              ],
+              [
+                12,
+                30252,
+                5
+              ],
+              [
+                12,
+                30248,
+                5
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 2
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 1,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "2a254e13cae533e825c19a2a92d7f5fb1386ccfba8e4183b1371323e8b1e5d8b",
+      "checkpoint_sha256": "384d91b105bf08001f61cc6a27fb7b239f65229d757eb26ef0447bbffa245862"
+    },
+    {
+      "tag": "ag_vggt_A_mean_k24_seed20261015_full1000_v1",
+      "settings": {
+        "backbone": "vggt",
+        "native_dim": 1152,
+        "channels": 2048,
+        "architecture": "ag",
+        "ag_mode": "A",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 1000,
+      "supervised_fit_queries": 860,
+      "parameters": 624900,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.07,
+        "Recall5": 0.95,
+        "MRR": 0.4548690476190477,
+        "matched_candidate_Recall1_excluding_null": 0.07,
+        "all_request_known_positive_success1": 0.023333333333333334,
+        "pair_auc": 0.7851019036954087,
+        "pair_ap": 0.27086008339267176,
+        "supervised_loss": 1.3813764786019045,
+        "states": {
+          "ambiguous_reference": 134,
+          "unknown_query": 82,
+          "wrong_link": 77,
+          "correct_link": 7
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.33,
+        "Recall5": 0.97,
+        "MRR": 0.6147619047619048,
+        "matched_candidate_Recall1_excluding_null": 0.33,
+        "all_request_known_positive_success1": 0.11,
+        "pair_auc": 0.852622620380739,
+        "pair_ap": 0.43350399566366915,
+        "supervised_loss": 0.8311357293643203,
+        "states": {
+          "ambiguous_reference": 143,
+          "unknown_query": 82,
+          "wrong_link": 42,
+          "correct_link": 33
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 0,
+        "known_ranking_harms": 55,
+        "native_correct_to_uncertified": 4,
+        "fix_keys": [],
+        "harm_keys": [
+          [
+            12,
+            29967,
+            7
+          ],
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30246,
+            5
+          ],
+          [
+            12,
+            29962,
+            6
+          ],
+          [
+            12,
+            29965,
+            6
+          ],
+          [
+            12,
+            29979,
+            4
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            29971,
+            8
+          ],
+          [
+            12,
+            30115,
+            1
+          ],
+          [
+            12,
+            29968,
+            7
+          ],
+          [
+            12,
+            30250,
+            5
+          ],
+          [
+            12,
+            29974,
+            6
+          ],
+          [
+            12,
+            29969,
+            7
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            29980,
+            7
+          ],
+          [
+            12,
+            30256,
+            6
+          ],
+          [
+            12,
+            30266,
+            3
+          ],
+          [
+            12,
+            29978,
+            4
+          ],
+          [
+            12,
+            30260,
+            5
+          ],
+          [
+            12,
+            30261,
+            5
+          ],
+          [
+            12,
+            29985,
+            7
+          ],
+          [
+            12,
+            29970,
+            7
+          ],
+          [
+            12,
+            30264,
+            3
+          ],
+          [
+            12,
+            29983,
+            5
+          ],
+          [
+            12,
+            29964,
+            6
+          ],
+          [
+            12,
+            29966,
+            7
+          ],
+          [
+            12,
+            30262,
+            5
+          ],
+          [
+            12,
+            30263,
+            5
+          ],
+          [
+            12,
+            30259,
+            5
+          ],
+          [
+            12,
+            29954,
+            8
+          ],
+          [
+            12,
+            30258,
+            4
+          ],
+          [
+            12,
+            29977,
+            4
+          ],
+          [
+            12,
+            29956,
+            5
+          ],
+          [
+            12,
+            30267,
+            3
+          ],
+          [
+            12,
+            30249,
+            5
+          ],
+          [
+            12,
+            30252,
+            5
+          ],
+          [
+            12,
+            30265,
+            3
+          ],
+          [
+            12,
+            29982,
+            7
+          ],
+          [
+            12,
+            30268,
+            3
+          ],
+          [
+            12,
+            29974,
+            5
+          ],
+          [
+            12,
+            30269,
+            2
+          ],
+          [
+            12,
+            30270,
+            2
+          ],
+          [
+            12,
+            30248,
+            5
+          ],
+          [
+            12,
+            30271,
+            2
+          ],
+          [
+            12,
+            29964,
+            9
+          ],
+          [
+            12,
+            30247,
+            5
+          ],
+          [
+            12,
+            29976,
+            5
+          ],
+          [
+            12,
+            30272,
+            3
+          ],
+          [
+            12,
+            29966,
+            6
+          ],
+          [
+            12,
+            29953,
+            6
+          ],
+          [
+            12,
+            29955,
+            8
+          ],
+          [
+            12,
+            28932,
+            7
+          ],
+          [
+            12,
+            29979,
+            5
+          ],
+          [
+            12,
+            29965,
+            7
+          ],
+          [
+            12,
+            30118,
+            2
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            30255,
+            5
+          ],
+          [
+            12,
+            30257,
+            4
+          ],
+          [
+            12,
+            30253,
+            5
+          ],
+          [
+            12,
+            30251,
+            5
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.16666666666666666,
+          "predicted_states": {
+            "ambiguous_reference": 113,
+            "unknown_query": 42,
+            "wrong_link": 13,
+            "correct_link": 3
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.05,
+          "predicted_states": {
+            "unknown_query": 40,
+            "wrong_link": 63,
+            "ambiguous_reference": 20,
+            "correct_link": 4
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 54,
+            "native_correct_to_uncertified": 4,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                29967,
+                7
+              ],
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                30246,
+                5
+              ],
+              [
+                12,
+                29962,
+                6
+              ],
+              [
+                12,
+                29965,
+                6
+              ],
+              [
+                12,
+                29979,
+                4
+              ],
+              [
+                12,
+                29973,
+                6
+              ],
+              [
+                12,
+                29971,
+                8
+              ],
+              [
+                12,
+                30115,
+                1
+              ],
+              [
+                12,
+                29968,
+                7
+              ],
+              [
+                12,
+                30250,
+                5
+              ],
+              [
+                12,
+                29974,
+                6
+              ],
+              [
+                12,
+                29969,
+                7
+              ],
+              [
+                12,
+                29975,
+                5
+              ],
+              [
+                12,
+                29980,
+                7
+              ],
+              [
+                12,
+                30256,
+                6
+              ],
+              [
+                12,
+                30266,
+                3
+              ],
+              [
+                12,
+                29978,
+                4
+              ],
+              [
+                12,
+                30260,
+                5
+              ],
+              [
+                12,
+                30261,
+                5
+              ],
+              [
+                12,
+                29985,
+                7
+              ],
+              [
+                12,
+                29970,
+                7
+              ],
+              [
+                12,
+                30264,
+                3
+              ],
+              [
+                12,
+                29983,
+                5
+              ],
+              [
+                12,
+                29964,
+                6
+              ],
+              [
+                12,
+                29966,
+                7
+              ],
+              [
+                12,
+                30262,
+                5
+              ],
+              [
+                12,
+                30263,
+                5
+              ],
+              [
+                12,
+                30259,
+                5
+              ],
+              [
+                12,
+                29954,
+                8
+              ],
+              [
+                12,
+                30258,
+                4
+              ],
+              [
+                12,
+                29977,
+                4
+              ],
+              [
+                12,
+                29956,
+                5
+              ],
+              [
+                12,
+                30267,
+                3
+              ],
+              [
+                12,
+                30249,
+                5
+              ],
+              [
+                12,
+                30252,
+                5
+              ],
+              [
+                12,
+                30265,
+                3
+              ],
+              [
+                12,
+                29982,
+                7
+              ],
+              [
+                12,
+                30268,
+                3
+              ],
+              [
+                12,
+                29974,
+                5
+              ],
+              [
+                12,
+                30269,
+                2
+              ],
+              [
+                12,
+                30270,
+                2
+              ],
+              [
+                12,
+                30248,
+                5
+              ],
+              [
+                12,
+                30271,
+                2
+              ],
+              [
+                12,
+                29964,
+                9
+              ],
+              [
+                12,
+                30247,
+                5
+              ],
+              [
+                12,
+                29976,
+                5
+              ],
+              [
+                12,
+                30272,
+                3
+              ],
+              [
+                12,
+                29966,
+                6
+              ],
+              [
+                12,
+                29953,
+                6
+              ],
+              [
+                12,
+                29955,
+                8
+              ],
+              [
+                12,
+                29979,
+                5
+              ],
+              [
+                12,
+                29965,
+                7
+              ],
+              [
+                12,
+                30118,
+                2
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                30255,
+                5
+              ],
+              [
+                12,
+                30257,
+                4
+              ],
+              [
+                12,
+                30253,
+                5
+              ],
+              [
+                12,
+                30251,
+                5
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 1,
+            "wrong_link": 1
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 1,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "f7ccc36b23437bceceb85362721118eca8d5da76e7af0fdf29d76867cab57050",
+      "checkpoint_sha256": "c91eceee044dc81a415cfa74be63af03f6c9ba728b854a79a429a63123d93f53"
+    },
+    {
+      "tag": "ag_vggt_B_mean_k24_seed20261015_full1000_v1",
+      "settings": {
+        "backbone": "vggt",
+        "native_dim": 1152,
+        "channels": 2048,
+        "architecture": "ag",
+        "ag_mode": "B",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 1000,
+      "supervised_fit_queries": 860,
+      "parameters": 624900,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.08,
+        "Recall5": 0.95,
+        "MRR": 0.4695357142857143,
+        "matched_candidate_Recall1_excluding_null": 0.08,
+        "all_request_known_positive_success1": 0.02666666666666667,
+        "pair_auc": 0.7879148936170213,
+        "pair_ap": 0.27471178316413003,
+        "supervised_loss": 1.347669715390486,
+        "states": {
+          "ambiguous_reference": 132,
+          "unknown_query": 82,
+          "wrong_link": 78,
+          "correct_link": 8
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.34,
+        "Recall5": 0.97,
+        "MRR": 0.6214285714285714,
+        "matched_candidate_Recall1_excluding_null": 0.34,
+        "all_request_known_positive_success1": 0.11333333333333333,
+        "pair_auc": 0.8529809630459126,
+        "pair_ap": 0.43404912017116204,
+        "supervised_loss": 0.8165953083365571,
+        "states": {
+          "ambiguous_reference": 143,
+          "unknown_query": 82,
+          "wrong_link": 41,
+          "correct_link": 34
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 0,
+        "known_ranking_harms": 55,
+        "native_correct_to_uncertified": 3,
+        "fix_keys": [],
+        "harm_keys": [
+          [
+            12,
+            29967,
+            7
+          ],
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30246,
+            5
+          ],
+          [
+            12,
+            29962,
+            6
+          ],
+          [
+            12,
+            29965,
+            6
+          ],
+          [
+            12,
+            29979,
+            4
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            29971,
+            8
+          ],
+          [
+            12,
+            30115,
+            1
+          ],
+          [
+            12,
+            29968,
+            7
+          ],
+          [
+            12,
+            30251,
+            5
+          ],
+          [
+            12,
+            30250,
+            5
+          ],
+          [
+            12,
+            29974,
+            6
+          ],
+          [
+            12,
+            29969,
+            7
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            29980,
+            7
+          ],
+          [
+            12,
+            30256,
+            6
+          ],
+          [
+            12,
+            30266,
+            3
+          ],
+          [
+            12,
+            29978,
+            4
+          ],
+          [
+            12,
+            30260,
+            5
+          ],
+          [
+            12,
+            30261,
+            5
+          ],
+          [
+            12,
+            29985,
+            7
+          ],
+          [
+            12,
+            29970,
+            7
+          ],
+          [
+            12,
+            30264,
+            3
+          ],
+          [
+            12,
+            29983,
+            5
+          ],
+          [
+            12,
+            29964,
+            6
+          ],
+          [
+            12,
+            29966,
+            7
+          ],
+          [
+            12,
+            30262,
+            5
+          ],
+          [
+            12,
+            30263,
+            5
+          ],
+          [
+            12,
+            30259,
+            5
+          ],
+          [
+            12,
+            29954,
+            8
+          ],
+          [
+            12,
+            30258,
+            4
+          ],
+          [
+            12,
+            29977,
+            4
+          ],
+          [
+            12,
+            30267,
+            3
+          ],
+          [
+            12,
+            30249,
+            5
+          ],
+          [
+            12,
+            30252,
+            5
+          ],
+          [
+            12,
+            30265,
+            3
+          ],
+          [
+            12,
+            29982,
+            7
+          ],
+          [
+            12,
+            30268,
+            3
+          ],
+          [
+            12,
+            29974,
+            5
+          ],
+          [
+            12,
+            30269,
+            2
+          ],
+          [
+            12,
+            30270,
+            2
+          ],
+          [
+            12,
+            30248,
+            5
+          ],
+          [
+            12,
+            30271,
+            2
+          ],
+          [
+            12,
+            29964,
+            9
+          ],
+          [
+            12,
+            30247,
+            5
+          ],
+          [
+            12,
+            29976,
+            5
+          ],
+          [
+            12,
+            30272,
+            3
+          ],
+          [
+            12,
+            29966,
+            6
+          ],
+          [
+            12,
+            29953,
+            6
+          ],
+          [
+            12,
+            29955,
+            8
+          ],
+          [
+            12,
+            28932,
+            7
+          ],
+          [
+            12,
+            29979,
+            5
+          ],
+          [
+            12,
+            29965,
+            7
+          ],
+          [
+            12,
+            30228,
+            4
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            30255,
+            5
+          ],
+          [
+            12,
+            30257,
+            4
+          ],
+          [
+            12,
+            30253,
+            5
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.16666666666666666,
+          "predicted_states": {
+            "ambiguous_reference": 113,
+            "unknown_query": 42,
+            "wrong_link": 13,
+            "correct_link": 3
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.0625,
+          "predicted_states": {
+            "unknown_query": 40,
+            "wrong_link": 64,
+            "ambiguous_reference": 18,
+            "correct_link": 5
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 54,
+            "native_correct_to_uncertified": 3,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                29967,
+                7
+              ],
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                30246,
+                5
+              ],
+              [
+                12,
+                29962,
+                6
+              ],
+              [
+                12,
+                29965,
+                6
+              ],
+              [
+                12,
+                29979,
+                4
+              ],
+              [
+                12,
+                29973,
+                6
+              ],
+              [
+                12,
+                29971,
+                8
+              ],
+              [
+                12,
+                30115,
+                1
+              ],
+              [
+                12,
+                29968,
+                7
+              ],
+              [
+                12,
+                30251,
+                5
+              ],
+              [
+                12,
+                30250,
+                5
+              ],
+              [
+                12,
+                29974,
+                6
+              ],
+              [
+                12,
+                29969,
+                7
+              ],
+              [
+                12,
+                29975,
+                5
+              ],
+              [
+                12,
+                29980,
+                7
+              ],
+              [
+                12,
+                30256,
+                6
+              ],
+              [
+                12,
+                30266,
+                3
+              ],
+              [
+                12,
+                29978,
+                4
+              ],
+              [
+                12,
+                30260,
+                5
+              ],
+              [
+                12,
+                30261,
+                5
+              ],
+              [
+                12,
+                29985,
+                7
+              ],
+              [
+                12,
+                29970,
+                7
+              ],
+              [
+                12,
+                30264,
+                3
+              ],
+              [
+                12,
+                29983,
+                5
+              ],
+              [
+                12,
+                29964,
+                6
+              ],
+              [
+                12,
+                29966,
+                7
+              ],
+              [
+                12,
+                30262,
+                5
+              ],
+              [
+                12,
+                30263,
+                5
+              ],
+              [
+                12,
+                30259,
+                5
+              ],
+              [
+                12,
+                29954,
+                8
+              ],
+              [
+                12,
+                30258,
+                4
+              ],
+              [
+                12,
+                29977,
+                4
+              ],
+              [
+                12,
+                30267,
+                3
+              ],
+              [
+                12,
+                30249,
+                5
+              ],
+              [
+                12,
+                30252,
+                5
+              ],
+              [
+                12,
+                30265,
+                3
+              ],
+              [
+                12,
+                29982,
+                7
+              ],
+              [
+                12,
+                30268,
+                3
+              ],
+              [
+                12,
+                29974,
+                5
+              ],
+              [
+                12,
+                30269,
+                2
+              ],
+              [
+                12,
+                30270,
+                2
+              ],
+              [
+                12,
+                30248,
+                5
+              ],
+              [
+                12,
+                30271,
+                2
+              ],
+              [
+                12,
+                29964,
+                9
+              ],
+              [
+                12,
+                30247,
+                5
+              ],
+              [
+                12,
+                29976,
+                5
+              ],
+              [
+                12,
+                30272,
+                3
+              ],
+              [
+                12,
+                29966,
+                6
+              ],
+              [
+                12,
+                29953,
+                6
+              ],
+              [
+                12,
+                29955,
+                8
+              ],
+              [
+                12,
+                29979,
+                5
+              ],
+              [
+                12,
+                29965,
+                7
+              ],
+              [
+                12,
+                30228,
+                4
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                30255,
+                5
+              ],
+              [
+                12,
+                30257,
+                4
+              ],
+              [
+                12,
+                30253,
+                5
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 1,
+            "wrong_link": 1
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 1,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "679f59357570df7d4c876335a04ed76045016e190adac35385dbc0ab97307a71",
+      "checkpoint_sha256": "de95ce7704a94eefd3a3dce30756392cd8e6475d88b70772b10844dcbd6618f6"
+    },
+    {
+      "tag": "ag_dinov2_C_mean_k24_seed20261015_full1000_v1",
+      "settings": {
+        "backbone": "dinov2",
+        "native_dim": 1152,
+        "channels": 1024,
+        "architecture": "ag",
+        "ag_mode": "C",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 1000,
+      "supervised_fit_queries": 860,
+      "parameters": 625412,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.24,
+        "Recall5": 0.9,
+        "MRR": 0.5209523809523811,
+        "matched_candidate_Recall1_excluding_null": 0.24,
+        "all_request_known_positive_success1": 0.08,
+        "pair_auc": 0.7840358342665174,
+        "pair_ap": 0.32719103044783243,
+        "supervised_loss": 1.2332497566354041,
+        "states": {
+          "ambiguous_reference": 155,
+          "unknown_query": 82,
+          "wrong_link": 39,
+          "correct_link": 24
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.44,
+        "Recall5": 0.94,
+        "MRR": 0.6677142857142858,
+        "matched_candidate_Recall1_excluding_null": 0.44,
+        "all_request_known_positive_success1": 0.14666666666666667,
+        "pair_auc": 0.8518521836506159,
+        "pair_ap": 0.46546291476460167,
+        "supervised_loss": 0.8155398830479267,
+        "states": {
+          "ambiguous_reference": 143,
+          "unknown_query": 82,
+          "wrong_link": 31,
+          "correct_link": 44
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 0,
+        "known_ranking_harms": 20,
+        "native_correct_to_uncertified": 22,
+        "fix_keys": [],
+        "harm_keys": [
+          [
+            12,
+            29967,
+            7
+          ],
+          [
+            12,
+            29962,
+            6
+          ],
+          [
+            12,
+            29965,
+            6
+          ],
+          [
+            12,
+            30115,
+            1
+          ],
+          [
+            12,
+            30260,
+            5
+          ],
+          [
+            12,
+            30261,
+            5
+          ],
+          [
+            12,
+            30264,
+            3
+          ],
+          [
+            12,
+            29964,
+            6
+          ],
+          [
+            12,
+            29966,
+            7
+          ],
+          [
+            12,
+            30263,
+            5
+          ],
+          [
+            12,
+            30259,
+            5
+          ],
+          [
+            12,
+            29954,
+            8
+          ],
+          [
+            12,
+            30267,
+            3
+          ],
+          [
+            12,
+            30268,
+            3
+          ],
+          [
+            12,
+            30269,
+            2
+          ],
+          [
+            12,
+            30270,
+            2
+          ],
+          [
+            12,
+            30271,
+            2
+          ],
+          [
+            12,
+            30272,
+            3
+          ],
+          [
+            12,
+            29955,
+            8
+          ],
+          [
+            12,
+            29979,
+            5
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30255,
+            5
+          ],
+          [
+            12,
+            30257,
+            4
+          ],
+          [
+            12,
+            30253,
+            5
+          ],
+          [
+            12,
+            29979,
+            4
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            29971,
+            8
+          ],
+          [
+            12,
+            29968,
+            7
+          ],
+          [
+            12,
+            30251,
+            5
+          ],
+          [
+            12,
+            29981,
+            7
+          ],
+          [
+            12,
+            30250,
+            5
+          ],
+          [
+            12,
+            29969,
+            7
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            29980,
+            7
+          ],
+          [
+            12,
+            30256,
+            6
+          ],
+          [
+            12,
+            29978,
+            4
+          ],
+          [
+            12,
+            29970,
+            7
+          ],
+          [
+            12,
+            29977,
+            4
+          ],
+          [
+            12,
+            30249,
+            5
+          ],
+          [
+            12,
+            30252,
+            5
+          ],
+          [
+            12,
+            30248,
+            5
+          ],
+          [
+            12,
+            28932,
+            7
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.16666666666666666,
+          "predicted_states": {
+            "ambiguous_reference": 113,
+            "unknown_query": 42,
+            "wrong_link": 13,
+            "correct_link": 3
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.2625,
+          "predicted_states": {
+            "unknown_query": 40,
+            "wrong_link": 26,
+            "ambiguous_reference": 40,
+            "correct_link": 21
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 20,
+            "native_correct_to_uncertified": 21,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                29967,
+                7
+              ],
+              [
+                12,
+                29962,
+                6
+              ],
+              [
+                12,
+                29965,
+                6
+              ],
+              [
+                12,
+                30115,
+                1
+              ],
+              [
+                12,
+                30260,
+                5
+              ],
+              [
+                12,
+                30261,
+                5
+              ],
+              [
+                12,
+                30264,
+                3
+              ],
+              [
+                12,
+                29964,
+                6
+              ],
+              [
+                12,
+                29966,
+                7
+              ],
+              [
+                12,
+                30263,
+                5
+              ],
+              [
+                12,
+                30259,
+                5
+              ],
+              [
+                12,
+                29954,
+                8
+              ],
+              [
+                12,
+                30267,
+                3
+              ],
+              [
+                12,
+                30268,
+                3
+              ],
+              [
+                12,
+                30269,
+                2
+              ],
+              [
+                12,
+                30270,
+                2
+              ],
+              [
+                12,
+                30271,
+                2
+              ],
+              [
+                12,
+                30272,
+                3
+              ],
+              [
+                12,
+                29955,
+                8
+              ],
+              [
+                12,
+                29979,
+                5
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                30255,
+                5
+              ],
+              [
+                12,
+                30257,
+                4
+              ],
+              [
+                12,
+                30253,
+                5
+              ],
+              [
+                12,
+                29979,
+                4
+              ],
+              [
+                12,
+                29973,
+                6
+              ],
+              [
+                12,
+                29971,
+                8
+              ],
+              [
+                12,
+                29968,
+                7
+              ],
+              [
+                12,
+                30251,
+                5
+              ],
+              [
+                12,
+                29981,
+                7
+              ],
+              [
+                12,
+                30250,
+                5
+              ],
+              [
+                12,
+                29969,
+                7
+              ],
+              [
+                12,
+                29975,
+                5
+              ],
+              [
+                12,
+                29980,
+                7
+              ],
+              [
+                12,
+                30256,
+                6
+              ],
+              [
+                12,
+                29978,
+                4
+              ],
+              [
+                12,
+                29970,
+                7
+              ],
+              [
+                12,
+                29977,
+                4
+              ],
+              [
+                12,
+                30249,
+                5
+              ],
+              [
+                12,
+                30252,
+                5
+              ],
+              [
+                12,
+                30248,
+                5
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 2
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 1,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "d8bbf8200cdeb738aea55e0ce00a34cbdecf02364ecc106f53e736cafd657444",
+      "checkpoint_sha256": "777af2ccb6a328e160c661417f21cebe056a963df0fddcaf2f4e5a6e15e1d089"
+    },
+    {
+      "tag": "ag_dinov2_roi_mean_k24_seed20261015_full1000_v1",
+      "settings": {
+        "backbone": "dinov2",
+        "native_dim": 1152,
+        "channels": 1024,
+        "architecture": "ag",
+        "ag_mode": "roi",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 1000,
+      "supervised_fit_queries": 871,
+      "parameters": 625412,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.18,
+        "Recall5": 0.74,
+        "MRR": 0.36846428571428574,
+        "matched_candidate_Recall1_excluding_null": 0.18,
+        "all_request_known_positive_success1": 0.06,
+        "pair_auc": 0.3406674132138858,
+        "pair_ap": 0.12824495360217794,
+        "supervised_loss": 2.424965786583283,
+        "states": {
+          "wrong_link": 124,
+          "unknown_query": 82,
+          "ambiguous_reference": 76,
+          "correct_link": 18
+        },
+        "neutral_small_target_queries": 0,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.45,
+        "Recall5": 0.91,
+        "MRR": 0.6240357142857145,
+        "matched_candidate_Recall1_excluding_null": 0.45,
+        "all_request_known_positive_success1": 0.15,
+        "pair_auc": 0.7259574468085106,
+        "pair_ap": 0.41278222262375786,
+        "supervised_loss": 1.3549264844726114,
+        "states": {
+          "ambiguous_reference": 131,
+          "unknown_query": 82,
+          "wrong_link": 42,
+          "correct_link": 45
+        },
+        "neutral_small_target_queries": 0,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 0,
+        "known_ranking_harms": 38,
+        "native_correct_to_uncertified": 10,
+        "fix_keys": [],
+        "harm_keys": [
+          [
+            12,
+            29967,
+            7
+          ],
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            29962,
+            6
+          ],
+          [
+            12,
+            29965,
+            6
+          ],
+          [
+            12,
+            29979,
+            4
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            29971,
+            8
+          ],
+          [
+            12,
+            29968,
+            7
+          ],
+          [
+            12,
+            29981,
+            7
+          ],
+          [
+            12,
+            29974,
+            6
+          ],
+          [
+            12,
+            29969,
+            7
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            29980,
+            7
+          ],
+          [
+            12,
+            29978,
+            4
+          ],
+          [
+            12,
+            29985,
+            7
+          ],
+          [
+            12,
+            29970,
+            7
+          ],
+          [
+            12,
+            29983,
+            5
+          ],
+          [
+            12,
+            29964,
+            6
+          ],
+          [
+            12,
+            29966,
+            7
+          ],
+          [
+            12,
+            29954,
+            8
+          ],
+          [
+            12,
+            29977,
+            4
+          ],
+          [
+            12,
+            29987,
+            7
+          ],
+          [
+            12,
+            29986,
+            7
+          ],
+          [
+            12,
+            29982,
+            7
+          ],
+          [
+            12,
+            29984,
+            7
+          ],
+          [
+            12,
+            30268,
+            3
+          ],
+          [
+            12,
+            29974,
+            5
+          ],
+          [
+            12,
+            30269,
+            2
+          ],
+          [
+            12,
+            30270,
+            2
+          ],
+          [
+            12,
+            30271,
+            2
+          ],
+          [
+            12,
+            29964,
+            9
+          ],
+          [
+            12,
+            29976,
+            5
+          ],
+          [
+            12,
+            30272,
+            3
+          ],
+          [
+            12,
+            29966,
+            6
+          ],
+          [
+            12,
+            29953,
+            6
+          ],
+          [
+            12,
+            29955,
+            8
+          ],
+          [
+            12,
+            29979,
+            5
+          ],
+          [
+            12,
+            29965,
+            7
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            30255,
+            5
+          ],
+          [
+            12,
+            30257,
+            4
+          ],
+          [
+            12,
+            30253,
+            5
+          ],
+          [
+            12,
+            30251,
+            5
+          ],
+          [
+            12,
+            30250,
+            5
+          ],
+          [
+            12,
+            30256,
+            6
+          ],
+          [
+            12,
+            30249,
+            5
+          ],
+          [
+            12,
+            30252,
+            5
+          ],
+          [
+            12,
+            30248,
+            5
+          ],
+          [
+            12,
+            28932,
+            7
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.05555555555555555,
+          "predicted_states": {
+            "wrong_link": 72,
+            "unknown_query": 42,
+            "ambiguous_reference": 56,
+            "correct_link": 1
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 2,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                29987,
+                7
+              ],
+              [
+                12,
+                29986,
+                7
+              ]
+            ],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.2125,
+          "predicted_states": {
+            "unknown_query": 40,
+            "wrong_link": 52,
+            "correct_link": 17,
+            "ambiguous_reference": 18
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 36,
+            "native_correct_to_uncertified": 9,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                29967,
+                7
+              ],
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                29962,
+                6
+              ],
+              [
+                12,
+                29965,
+                6
+              ],
+              [
+                12,
+                29979,
+                4
+              ],
+              [
+                12,
+                29973,
+                6
+              ],
+              [
+                12,
+                29971,
+                8
+              ],
+              [
+                12,
+                29968,
+                7
+              ],
+              [
+                12,
+                29981,
+                7
+              ],
+              [
+                12,
+                29974,
+                6
+              ],
+              [
+                12,
+                29969,
+                7
+              ],
+              [
+                12,
+                29975,
+                5
+              ],
+              [
+                12,
+                29980,
+                7
+              ],
+              [
+                12,
+                29978,
+                4
+              ],
+              [
+                12,
+                29985,
+                7
+              ],
+              [
+                12,
+                29970,
+                7
+              ],
+              [
+                12,
+                29983,
+                5
+              ],
+              [
+                12,
+                29964,
+                6
+              ],
+              [
+                12,
+                29966,
+                7
+              ],
+              [
+                12,
+                29954,
+                8
+              ],
+              [
+                12,
+                29977,
+                4
+              ],
+              [
+                12,
+                29982,
+                7
+              ],
+              [
+                12,
+                29984,
+                7
+              ],
+              [
+                12,
+                30268,
+                3
+              ],
+              [
+                12,
+                29974,
+                5
+              ],
+              [
+                12,
+                30269,
+                2
+              ],
+              [
+                12,
+                30270,
+                2
+              ],
+              [
+                12,
+                30271,
+                2
+              ],
+              [
+                12,
+                29964,
+                9
+              ],
+              [
+                12,
+                29976,
+                5
+              ],
+              [
+                12,
+                30272,
+                3
+              ],
+              [
+                12,
+                29966,
+                6
+              ],
+              [
+                12,
+                29953,
+                6
+              ],
+              [
+                12,
+                29955,
+                8
+              ],
+              [
+                12,
+                29979,
+                5
+              ],
+              [
+                12,
+                29965,
+                7
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                30255,
+                5
+              ],
+              [
+                12,
+                30257,
+                4
+              ],
+              [
+                12,
+                30253,
+                5
+              ],
+              [
+                12,
+                30251,
+                5
+              ],
+              [
+                12,
+                30250,
+                5
+              ],
+              [
+                12,
+                30256,
+                6
+              ],
+              [
+                12,
+                30249,
+                5
+              ],
+              [
+                12,
+                30252,
+                5
+              ],
+              [
+                12,
+                30248,
+                5
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 2
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 1,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "956763c86e675253e8a3a9bc04bc2276eafb2a506ec5c7259032801eefa4d5b1",
+      "checkpoint_sha256": "ae71e20f592c12ce36e3121b8eaff2ca097be91a0e59e18ec5e4b00c33edc56f"
+    },
+    {
+      "tag": "ag_vggt_roi_mean_k24_seed20261015_full1000_v1",
+      "settings": {
+        "backbone": "vggt",
+        "native_dim": 1152,
+        "channels": 2048,
+        "architecture": "ag",
+        "ag_mode": "roi",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 1000,
+      "supervised_fit_queries": 871,
+      "parameters": 624900,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.07,
+        "Recall5": 0.84,
+        "MRR": 0.365595238095238,
+        "matched_candidate_Recall1_excluding_null": 0.07,
+        "all_request_known_positive_success1": 0.023333333333333334,
+        "pair_auc": 0.4123896976483763,
+        "pair_ap": 0.09817487680360212,
+        "supervised_loss": 2.3761123962262096,
+        "states": {
+          "wrong_link": 149,
+          "unknown_query": 82,
+          "ambiguous_reference": 62,
+          "correct_link": 7
+        },
+        "neutral_small_target_queries": 0,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.39,
+        "Recall5": 0.96,
+        "MRR": 0.6064404761904765,
+        "matched_candidate_Recall1_excluding_null": 0.39,
+        "all_request_known_positive_success1": 0.13,
+        "pair_auc": 0.7294871220604704,
+        "pair_ap": 0.35834777816820346,
+        "supervised_loss": 1.2868256475411208,
+        "states": {
+          "ambiguous_reference": 115,
+          "unknown_query": 82,
+          "wrong_link": 64,
+          "correct_link": 39
+        },
+        "neutral_small_target_queries": 0,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 0,
+        "known_ranking_harms": 56,
+        "native_correct_to_uncertified": 3,
+        "fix_keys": [],
+        "harm_keys": [
+          [
+            12,
+            29967,
+            7
+          ],
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30246,
+            5
+          ],
+          [
+            12,
+            30257,
+            4
+          ],
+          [
+            12,
+            29962,
+            6
+          ],
+          [
+            12,
+            29965,
+            6
+          ],
+          [
+            12,
+            29979,
+            4
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            29971,
+            8
+          ],
+          [
+            12,
+            29968,
+            7
+          ],
+          [
+            12,
+            30251,
+            5
+          ],
+          [
+            12,
+            30250,
+            5
+          ],
+          [
+            12,
+            29974,
+            6
+          ],
+          [
+            12,
+            29969,
+            7
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            29980,
+            7
+          ],
+          [
+            12,
+            30256,
+            6
+          ],
+          [
+            12,
+            30266,
+            3
+          ],
+          [
+            12,
+            29978,
+            4
+          ],
+          [
+            12,
+            30260,
+            5
+          ],
+          [
+            12,
+            30261,
+            5
+          ],
+          [
+            12,
+            29985,
+            7
+          ],
+          [
+            12,
+            29970,
+            7
+          ],
+          [
+            12,
+            30264,
+            3
+          ],
+          [
+            12,
+            29983,
+            5
+          ],
+          [
+            12,
+            29964,
+            6
+          ],
+          [
+            12,
+            29966,
+            7
+          ],
+          [
+            12,
+            30262,
+            5
+          ],
+          [
+            12,
+            30263,
+            5
+          ],
+          [
+            12,
+            30259,
+            5
+          ],
+          [
+            12,
+            29954,
+            8
+          ],
+          [
+            12,
+            30258,
+            4
+          ],
+          [
+            12,
+            29977,
+            4
+          ],
+          [
+            12,
+            29956,
+            5
+          ],
+          [
+            12,
+            30267,
+            3
+          ],
+          [
+            12,
+            30249,
+            5
+          ],
+          [
+            12,
+            30252,
+            5
+          ],
+          [
+            12,
+            30265,
+            3
+          ],
+          [
+            12,
+            29982,
+            7
+          ],
+          [
+            12,
+            30268,
+            3
+          ],
+          [
+            12,
+            29974,
+            5
+          ],
+          [
+            12,
+            30269,
+            2
+          ],
+          [
+            12,
+            30270,
+            2
+          ],
+          [
+            12,
+            30248,
+            5
+          ],
+          [
+            12,
+            30271,
+            2
+          ],
+          [
+            12,
+            29964,
+            9
+          ],
+          [
+            12,
+            30247,
+            5
+          ],
+          [
+            12,
+            29976,
+            5
+          ],
+          [
+            12,
+            30272,
+            3
+          ],
+          [
+            12,
+            29906,
+            3
+          ],
+          [
+            12,
+            29966,
+            6
+          ],
+          [
+            12,
+            29953,
+            6
+          ],
+          [
+            12,
+            29955,
+            8
+          ],
+          [
+            12,
+            29979,
+            5
+          ],
+          [
+            12,
+            29965,
+            7
+          ],
+          [
+            12,
+            30228,
+            4
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            30255,
+            5
+          ],
+          [
+            12,
+            30253,
+            5
+          ],
+          [
+            12,
+            28932,
+            7
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.1111111111111111,
+          "predicted_states": {
+            "wrong_link": 76,
+            "unknown_query": 42,
+            "ambiguous_reference": 51,
+            "correct_link": 2
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 1,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                29906,
+                3
+              ]
+            ],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.0625,
+          "predicted_states": {
+            "unknown_query": 40,
+            "wrong_link": 73,
+            "ambiguous_reference": 9,
+            "correct_link": 5
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 55,
+            "native_correct_to_uncertified": 2,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                29967,
+                7
+              ],
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                30246,
+                5
+              ],
+              [
+                12,
+                30257,
+                4
+              ],
+              [
+                12,
+                29962,
+                6
+              ],
+              [
+                12,
+                29965,
+                6
+              ],
+              [
+                12,
+                29979,
+                4
+              ],
+              [
+                12,
+                29973,
+                6
+              ],
+              [
+                12,
+                29971,
+                8
+              ],
+              [
+                12,
+                29968,
+                7
+              ],
+              [
+                12,
+                30251,
+                5
+              ],
+              [
+                12,
+                30250,
+                5
+              ],
+              [
+                12,
+                29974,
+                6
+              ],
+              [
+                12,
+                29969,
+                7
+              ],
+              [
+                12,
+                29975,
+                5
+              ],
+              [
+                12,
+                29980,
+                7
+              ],
+              [
+                12,
+                30256,
+                6
+              ],
+              [
+                12,
+                30266,
+                3
+              ],
+              [
+                12,
+                29978,
+                4
+              ],
+              [
+                12,
+                30260,
+                5
+              ],
+              [
+                12,
+                30261,
+                5
+              ],
+              [
+                12,
+                29985,
+                7
+              ],
+              [
+                12,
+                29970,
+                7
+              ],
+              [
+                12,
+                30264,
+                3
+              ],
+              [
+                12,
+                29983,
+                5
+              ],
+              [
+                12,
+                29964,
+                6
+              ],
+              [
+                12,
+                29966,
+                7
+              ],
+              [
+                12,
+                30262,
+                5
+              ],
+              [
+                12,
+                30263,
+                5
+              ],
+              [
+                12,
+                30259,
+                5
+              ],
+              [
+                12,
+                29954,
+                8
+              ],
+              [
+                12,
+                30258,
+                4
+              ],
+              [
+                12,
+                29977,
+                4
+              ],
+              [
+                12,
+                29956,
+                5
+              ],
+              [
+                12,
+                30267,
+                3
+              ],
+              [
+                12,
+                30249,
+                5
+              ],
+              [
+                12,
+                30252,
+                5
+              ],
+              [
+                12,
+                30265,
+                3
+              ],
+              [
+                12,
+                29982,
+                7
+              ],
+              [
+                12,
+                30268,
+                3
+              ],
+              [
+                12,
+                29974,
+                5
+              ],
+              [
+                12,
+                30269,
+                2
+              ],
+              [
+                12,
+                30270,
+                2
+              ],
+              [
+                12,
+                30248,
+                5
+              ],
+              [
+                12,
+                30271,
+                2
+              ],
+              [
+                12,
+                29964,
+                9
+              ],
+              [
+                12,
+                30247,
+                5
+              ],
+              [
+                12,
+                29976,
+                5
+              ],
+              [
+                12,
+                30272,
+                3
+              ],
+              [
+                12,
+                29966,
+                6
+              ],
+              [
+                12,
+                29953,
+                6
+              ],
+              [
+                12,
+                29955,
+                8
+              ],
+              [
+                12,
+                29979,
+                5
+              ],
+              [
+                12,
+                29965,
+                7
+              ],
+              [
+                12,
+                30228,
+                4
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                30255,
+                5
+              ],
+              [
+                12,
+                30253,
+                5
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 2
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 1,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "ff0150e85520545225fcabd01bad355d93a3e6906618694da2aa6a6b861499ef",
+      "checkpoint_sha256": "61183251693e923587f73d6bac854ae6ea5c3347f12ad4cad2d32be45e0edfb6"
+    },
+    {
+      "tag": "native_mlp_vggt_C_mean_k24_seed20261015_full1000_v1",
+      "settings": {
+        "backbone": "vggt",
+        "native_dim": 1152,
+        "channels": 2048,
+        "architecture": "native_mlp",
+        "ag_mode": "C",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 1000,
+      "supervised_fit_queries": 871,
+      "parameters": 621233,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.63,
+        "Recall5": 0.99,
+        "MRR": 0.7949285714285714,
+        "matched_candidate_Recall1_excluding_null": 0.63,
+        "all_request_known_positive_success1": 0.21,
+        "pair_auc": 0.8510011198208286,
+        "pair_ap": 0.6947570422853507,
+        "supervised_loss": 0.3244876621984968,
+        "states": {
+          "ambiguous_reference": 135,
+          "unknown_query": 82,
+          "wrong_link": 20,
+          "correct_link": 63
+        },
+        "neutral_small_target_queries": 0,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.65,
+        "Recall5": 0.98,
+        "MRR": 0.8041785714285714,
+        "matched_candidate_Recall1_excluding_null": 0.65,
+        "all_request_known_positive_success1": 0.21666666666666667,
+        "pair_auc": 0.864394176931691,
+        "pair_ap": 0.7324429926932599,
+        "supervised_loss": 0.31608477702327803,
+        "states": {
+          "ambiguous_reference": 137,
+          "unknown_query": 82,
+          "wrong_link": 16,
+          "correct_link": 65
+        },
+        "neutral_small_target_queries": 0,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 0,
+        "known_ranking_harms": 2,
+        "native_correct_to_uncertified": 1,
+        "fix_keys": [],
+        "harm_keys": [
+          [
+            12,
+            29967,
+            7
+          ],
+          [
+            12,
+            29962,
+            6
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            30253,
+            5
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.16666666666666666,
+          "predicted_states": {
+            "ambiguous_reference": 114,
+            "unknown_query": 42,
+            "wrong_link": 12,
+            "correct_link": 3
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.7375,
+          "predicted_states": {
+            "unknown_query": 40,
+            "wrong_link": 8,
+            "correct_link": 59,
+            "ambiguous_reference": 20
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 2,
+            "native_correct_to_uncertified": 1,
+            "fix_keys": [],
+            "harm_keys": [
+              [
+                12,
+                29967,
+                7
+              ],
+              [
+                12,
+                29962,
+                6
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                30253,
+                5
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.5,
+          "predicted_states": {
+            "ambiguous_reference": 1,
+            "correct_link": 1
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "b73a38186bde5ce73a28da0209bef864ac24fed5404d7a73582dd648b0daee27",
+      "checkpoint_sha256": "b9cca6e8ca670d8d3689425c1c56170c28ad4999b1ae9b9e6bd22ba34c8046f6"
+    },
+    {
+      "tag": "ag_vggt_C_mean_k24_seed20261015_v3_1000_v1",
+      "settings": {
+        "backbone": "vggt",
+        "native_dim": 1152,
+        "channels": 2048,
+        "architecture": "ag",
+        "ag_mode": "C",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 3000,
+      "supervised_fit_queries": 2201,
+      "parameters": 624900,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.54,
+        "Recall5": 0.98,
+        "MRR": 0.7406666666666666,
+        "matched_candidate_Recall1_excluding_null": 0.54,
+        "all_request_known_positive_success1": 0.18,
+        "pair_auc": 0.91905039193729,
+        "pair_ap": 0.5941542508174779,
+        "supervised_loss": 0.31506189119582084,
+        "states": {
+          "ambiguous_reference": 142,
+          "unknown_query": 82,
+          "correct_link": 54,
+          "wrong_link": 22
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.47,
+        "Recall5": 0.89,
+        "MRR": 0.6579523809523811,
+        "matched_candidate_Recall1_excluding_null": 0.47,
+        "all_request_known_positive_success1": 0.15666666666666668,
+        "pair_auc": 0.8677625979843225,
+        "pair_ap": 0.48617113865989403,
+        "supervised_loss": 0.7444515134774002,
+        "states": {
+          "ambiguous_reference": 147,
+          "unknown_query": 82,
+          "correct_link": 47,
+          "wrong_link": 24
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 1,
+        "known_ranking_harms": 3,
+        "native_correct_to_uncertified": 11,
+        "fix_keys": [
+          [
+            12,
+            30266,
+            7
+          ]
+        ],
+        "harm_keys": [
+          [
+            12,
+            29956,
+            5
+          ],
+          [
+            12,
+            29974,
+            5
+          ],
+          [
+            12,
+            29979,
+            5
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30246,
+            5
+          ],
+          [
+            12,
+            30253,
+            5
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            30115,
+            1
+          ],
+          [
+            12,
+            30251,
+            5
+          ],
+          [
+            12,
+            30250,
+            5
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            30116,
+            1
+          ],
+          [
+            12,
+            28932,
+            7
+          ],
+          [
+            12,
+            30118,
+            2
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.16666666666666666,
+          "predicted_states": {
+            "ambiguous_reference": 113,
+            "unknown_query": 42,
+            "wrong_link": 13,
+            "correct_link": 3
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.6375,
+          "predicted_states": {
+            "unknown_query": 40,
+            "correct_link": 51,
+            "wrong_link": 9,
+            "ambiguous_reference": 27
+          },
+          "changes": {
+            "known_ranking_fixes": 1,
+            "known_ranking_harms": 3,
+            "native_correct_to_uncertified": 10,
+            "fix_keys": [
+              [
+                12,
+                30266,
+                7
+              ]
+            ],
+            "harm_keys": [
+              [
+                12,
+                29956,
+                5
+              ],
+              [
+                12,
+                29974,
+                5
+              ],
+              [
+                12,
+                29979,
+                5
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                30246,
+                5
+              ],
+              [
+                12,
+                30253,
+                5
+              ],
+              [
+                12,
+                29973,
+                6
+              ],
+              [
+                12,
+                30115,
+                1
+              ],
+              [
+                12,
+                30251,
+                5
+              ],
+              [
+                12,
+                30250,
+                5
+              ],
+              [
+                12,
+                29975,
+                5
+              ],
+              [
+                12,
+                30116,
+                1
+              ],
+              [
+                12,
+                30118,
+                2
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 2
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 1,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "9b06212515c04f86668470b760fbdec6cde543a359c26da492b5b56554ad279a",
+      "checkpoint_sha256": "7c455050b5ea532636bfd9420c813f27f03921306708db24348e2263c9713e9a"
+    },
+    {
+      "tag": "ag_vggt_roi_mean_k24_seed20261015_v3_1000_v1",
+      "settings": {
+        "backbone": "vggt",
+        "native_dim": 1152,
+        "channels": 2048,
+        "architecture": "ag",
+        "ag_mode": "roi",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 3000,
+      "supervised_fit_queries": 2733,
+      "parameters": 624900,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.66,
+        "Recall5": 0.98,
+        "MRR": 0.8053333333333331,
+        "matched_candidate_Recall1_excluding_null": 0.66,
+        "all_request_known_positive_success1": 0.22,
+        "pair_auc": 0.9698544232922732,
+        "pair_ap": 0.7642068150712096,
+        "supervised_loss": 0.34279390935804327,
+        "states": {
+          "ambiguous_reference": 132,
+          "unknown_query": 82,
+          "correct_link": 66,
+          "wrong_link": 20
+        },
+        "neutral_small_target_queries": 0,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.56,
+        "Recall5": 0.96,
+        "MRR": 0.7240952380952383,
+        "matched_candidate_Recall1_excluding_null": 0.56,
+        "all_request_known_positive_success1": 0.18666666666666668,
+        "pair_auc": 0.8566002239641657,
+        "pair_ap": 0.6061226165999524,
+        "supervised_loss": 0.7714331255239599,
+        "states": {
+          "ambiguous_reference": 136,
+          "unknown_query": 82,
+          "correct_link": 56,
+          "wrong_link": 26
+        },
+        "neutral_small_target_queries": 0,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 2,
+        "known_ranking_harms": 1,
+        "native_correct_to_uncertified": 5,
+        "fix_keys": [
+          [
+            12,
+            29959,
+            5
+          ],
+          [
+            12,
+            29963,
+            6
+          ]
+        ],
+        "harm_keys": [
+          [
+            12,
+            29979,
+            5
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30115,
+            1
+          ],
+          [
+            12,
+            30116,
+            1
+          ],
+          [
+            12,
+            28932,
+            7
+          ],
+          [
+            12,
+            30118,
+            2
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.3333333333333333,
+          "predicted_states": {
+            "ambiguous_reference": 109,
+            "unknown_query": 42,
+            "wrong_link": 14,
+            "correct_link": 6
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.75,
+          "predicted_states": {
+            "unknown_query": 40,
+            "correct_link": 60,
+            "ambiguous_reference": 21,
+            "wrong_link": 6
+          },
+          "changes": {
+            "known_ranking_fixes": 2,
+            "known_ranking_harms": 1,
+            "native_correct_to_uncertified": 4,
+            "fix_keys": [
+              [
+                12,
+                29959,
+                5
+              ],
+              [
+                12,
+                29963,
+                6
+              ]
+            ],
+            "harm_keys": [
+              [
+                12,
+                29979,
+                5
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                30115,
+                1
+              ],
+              [
+                12,
+                30116,
+                1
+              ],
+              [
+                12,
+                30118,
+                2
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 2
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 1,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "b377e797d705baef5fc9b8326317545d870f64bff683c7add6272905c91879b9",
+      "checkpoint_sha256": "47068d4c8b520e67de1ba168a932f676c10e143d0e70d5692cc0111f5db3ebc4"
+    },
+    {
+      "tag": "ag_dinov2_C_mean_k24_seed20261015_v3_1000_v1",
+      "settings": {
+        "backbone": "dinov2",
+        "native_dim": 1152,
+        "channels": 1024,
+        "architecture": "ag",
+        "ag_mode": "C",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 3000,
+      "supervised_fit_queries": 2201,
+      "parameters": 625412,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.46,
+        "Recall5": 0.93,
+        "MRR": 0.6906666666666668,
+        "matched_candidate_Recall1_excluding_null": 0.46,
+        "all_request_known_positive_success1": 0.15333333333333332,
+        "pair_auc": 0.9168107502799552,
+        "pair_ap": 0.5770222763816402,
+        "supervised_loss": 0.3638970203259412,
+        "states": {
+          "ambiguous_reference": 148,
+          "unknown_query": 82,
+          "correct_link": 46,
+          "wrong_link": 24
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.48,
+        "Recall5": 0.86,
+        "MRR": 0.6523928571428573,
+        "matched_candidate_Recall1_excluding_null": 0.48,
+        "all_request_known_positive_success1": 0.16,
+        "pair_auc": 0.8567614781634938,
+        "pair_ap": 0.46985838613772607,
+        "supervised_loss": 0.8723993792253382,
+        "states": {
+          "ambiguous_reference": 145,
+          "unknown_query": 82,
+          "correct_link": 48,
+          "wrong_link": 25
+        },
+        "neutral_small_target_queries": 171,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 1,
+        "known_ranking_harms": 4,
+        "native_correct_to_uncertified": 18,
+        "fix_keys": [
+          [
+            12,
+            30266,
+            7
+          ]
+        ],
+        "harm_keys": [
+          [
+            12,
+            29962,
+            6
+          ],
+          [
+            12,
+            29956,
+            5
+          ],
+          [
+            12,
+            29974,
+            5
+          ],
+          [
+            12,
+            29979,
+            5
+          ]
+        ],
+        "uncertified_keys": [
+          [
+            12,
+            29972,
+            8
+          ],
+          [
+            12,
+            30246,
+            5
+          ],
+          [
+            12,
+            30253,
+            5
+          ],
+          [
+            12,
+            29979,
+            4
+          ],
+          [
+            12,
+            29973,
+            6
+          ],
+          [
+            12,
+            30115,
+            1
+          ],
+          [
+            12,
+            30251,
+            5
+          ],
+          [
+            12,
+            29981,
+            7
+          ],
+          [
+            12,
+            29974,
+            6
+          ],
+          [
+            12,
+            29975,
+            5
+          ],
+          [
+            12,
+            29980,
+            7
+          ],
+          [
+            12,
+            29978,
+            4
+          ],
+          [
+            12,
+            30116,
+            1
+          ],
+          [
+            12,
+            29977,
+            4
+          ],
+          [
+            12,
+            29976,
+            5
+          ],
+          [
+            12,
+            30272,
+            3
+          ],
+          [
+            12,
+            28932,
+            7
+          ],
+          [
+            12,
+            30118,
+            2
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.16666666666666666,
+          "predicted_states": {
+            "ambiguous_reference": 113,
+            "unknown_query": 42,
+            "wrong_link": 13,
+            "correct_link": 3
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.5375,
+          "predicted_states": {
+            "unknown_query": 40,
+            "correct_link": 43,
+            "wrong_link": 11,
+            "ambiguous_reference": 33
+          },
+          "changes": {
+            "known_ranking_fixes": 1,
+            "known_ranking_harms": 4,
+            "native_correct_to_uncertified": 17,
+            "fix_keys": [
+              [
+                12,
+                30266,
+                7
+              ]
+            ],
+            "harm_keys": [
+              [
+                12,
+                29962,
+                6
+              ],
+              [
+                12,
+                29956,
+                5
+              ],
+              [
+                12,
+                29974,
+                5
+              ],
+              [
+                12,
+                29979,
+                5
+              ]
+            ],
+            "uncertified_keys": [
+              [
+                12,
+                29972,
+                8
+              ],
+              [
+                12,
+                30246,
+                5
+              ],
+              [
+                12,
+                30253,
+                5
+              ],
+              [
+                12,
+                29979,
+                4
+              ],
+              [
+                12,
+                29973,
+                6
+              ],
+              [
+                12,
+                30115,
+                1
+              ],
+              [
+                12,
+                30251,
+                5
+              ],
+              [
+                12,
+                29981,
+                7
+              ],
+              [
+                12,
+                29974,
+                6
+              ],
+              [
+                12,
+                29975,
+                5
+              ],
+              [
+                12,
+                29980,
+                7
+              ],
+              [
+                12,
+                29978,
+                4
+              ],
+              [
+                12,
+                30116,
+                1
+              ],
+              [
+                12,
+                29977,
+                4
+              ],
+              [
+                12,
+                29976,
+                5
+              ],
+              [
+                12,
+                30272,
+                3
+              ],
+              [
+                12,
+                30118,
+                2
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 2
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 1,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "ec6495e5c88d4db30e3c1ab5ca7824d696c597599d136f3b1b0af0776e022157",
+      "checkpoint_sha256": "b42f70d8b6883fb2c07a38fc8d53fbfad314cd49d46d515658ca22524fe34f88"
+    },
+    {
+      "tag": "native_mlp_vggt_C_mean_k24_seed20261015_v3_1000_v1",
+      "settings": {
+        "backbone": "vggt",
+        "native_dim": 1152,
+        "channels": 2048,
+        "architecture": "native_mlp",
+        "ag_mode": "C",
+        "qd_mode": "track",
+        "k": 24,
+        "summary": "mean",
+        "native_mlp_capacity": "ag",
+        "training_seed": 20261015,
+        "actual_native_inference_seed": 20261014,
+        "optimizer": "AdamW",
+        "lr": 0.0001,
+        "weight_decay": 0.01,
+        "clip_norm": 1.0,
+        "batch_size": 4,
+        "target_steps": 1000,
+        "soft_relevance_warmup_steps": 150
+      },
+      "completed_updates": 1000,
+      "fit_queries": 3000,
+      "supervised_fit_queries": 2733,
+      "parameters": 621233,
+      "validation": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.66,
+        "Recall5": 1.0,
+        "MRR": 0.8191666666666667,
+        "matched_candidate_Recall1_excluding_null": 0.66,
+        "all_request_known_positive_success1": 0.22,
+        "pair_auc": 0.9736886898096304,
+        "pair_ap": 0.831994333847924,
+        "supervised_loss": 0.214206257871553,
+        "states": {
+          "ambiguous_reference": 136,
+          "unknown_query": 82,
+          "correct_link": 66,
+          "wrong_link": 16
+        },
+        "neutral_small_target_queries": 0,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "query_shuffle": {
+        "requests": 300,
+        "known_queries": 218,
+        "matched_eligible": 100,
+        "correct_identity_any_history": 100,
+        "positive_lost_by_top8": 0,
+        "matched_query_coverage": 0.3333333333333333,
+        "Recall1": 0.66,
+        "Recall5": 1.0,
+        "MRR": 0.8166666666666665,
+        "matched_candidate_Recall1_excluding_null": 0.66,
+        "all_request_known_positive_success1": 0.22,
+        "pair_auc": 0.9743784994400896,
+        "pair_ap": 0.8318718156654444,
+        "supervised_loss": 0.20893999934196472,
+        "states": {
+          "ambiguous_reference": 138,
+          "unknown_query": 82,
+          "wrong_link": 14,
+          "correct_link": 66
+        },
+        "neutral_small_target_queries": 0,
+        "layer_weight_mean": null,
+        "layer_weight_std": null
+      },
+      "paired_changes": {
+        "known_ranking_fixes": 1,
+        "known_ranking_harms": 0,
+        "native_correct_to_uncertified": 1,
+        "fix_keys": [
+          [
+            12,
+            29959,
+            5
+          ]
+        ],
+        "harm_keys": [],
+        "uncertified_keys": [
+          [
+            12,
+            28932,
+            7
+          ]
+        ],
+        "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+      },
+      "bins": {
+        "0": {
+          "requests": 171,
+          "pure_positive_queries": 18,
+          "pure_positive_Recall1": 0.16666666666666666,
+          "predicted_states": {
+            "ambiguous_reference": 114,
+            "unknown_query": 42,
+            "wrong_link": 12,
+            "correct_link": 3
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "1-3": {
+          "requests": 127,
+          "pure_positive_queries": 80,
+          "pure_positive_Recall1": 0.7875,
+          "predicted_states": {
+            "unknown_query": 40,
+            "correct_link": 63,
+            "wrong_link": 4,
+            "ambiguous_reference": 20
+          },
+          "changes": {
+            "known_ranking_fixes": 1,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [
+              [
+                12,
+                29959,
+                5
+              ]
+            ],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "4-15": {
+          "requests": 2,
+          "pure_positive_queries": 2,
+          "pure_positive_Recall1": 0.0,
+          "predicted_states": {
+            "ambiguous_reference": 2
+          },
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 1,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [
+              [
+                12,
+                28932,
+                7
+              ]
+            ],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        },
+        "16+": {
+          "requests": 0,
+          "pure_positive_queries": 0,
+          "pure_positive_Recall1": null,
+          "predicted_states": {},
+          "changes": {
+            "known_ranking_fixes": 0,
+            "known_ranking_harms": 0,
+            "native_correct_to_uncertified": 0,
+            "fix_keys": [],
+            "harm_keys": [],
+            "uncertified_keys": [],
+            "scope": "Original native Top1 vs learned Top1 ranking, not actual joint Hungarian/Bank/final tracking corrections. Unknown/ambiguous are never known wrong."
+          }
+        }
+      },
+      "model_manifest_sha256": "24ac8d1de45fd04e9e97d5358a6dd8fc06fe3af30acb1e5b2620134a17a0fe30",
+      "checkpoint_sha256": "c8235f8feb16f0708f43a1665a06fc0c0fbe3eb6415dc3d5d2bf7be41881f43e"
+    }
+  ],
+  "original_validation_queries": 300,
+  "original_positive_ranking_denominator": 100,
+  "native_Recall1": 0.66,
+  "NativePrior_Recall1": 0.66,
+  "every_candidate_GT_unknown_preserved": true,
+  "teacher_unique_benefit": false,
+  "scope": "Primary seed20261015, fitted1000 updates, frozen target pool and native history. V2/V3 compare same architecture/update budget. Crops/QD/cycle are separate uncompleted hypotheses.",
+  "provenance": {
+    "process_started_utc": "2026-10-15T17:02:57.202714+00:00",
+    "report_generated_utc": "2026-10-15T17:02:59.245166+00:00",
+    "raw_log_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/logs/ag_v2_v3_primary_audit_v1.log",
+    "source_worktree": "/data1/liuyeqiang/WWW_trackvggt_20261015",
+    "commit": "0eb9af7fdca37b3b3667eb19e8318062551f952f",
+    "report_generation_commit": "0eb9af7fdca37b3b3667eb19e8318062551f952f",
+    "command": [
+      "geo_tools/audit_trackvggt_ag_results.py"
+    ],
+    "seed": 20261014,
+    "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+    "torch": "2.0.0+cu118",
+    "numpy": "1.24.1",
+    "cuda_visible_devices": "",
+    "used_cache": false,
+    "source_hashes": {
+      "geo_tools/test_gmt_feature_control.py": "861c2c5fffd3fc91fdfcb56342eb688f18a41bf7f407ef37ba8d7ab22cf902e9",
+      "geo_tools/audit_trackvggt_phase0.py": "9a47564aa11f55b3c24e40b4aeb8d1979369d23759b8ce398097c3c36d0e70bc",
+      "geo_tools/audit_full_reference_purity.py": "685c7a267b4bfe4fdf06e977fdadcfdc049e810e7622d3a3c0933d8bf7a1bd47",
+      "geo_tools/test_physical_camera_input.py": "c5f87300f497b94890e7e3e3a57e7319e261f37ee4e4c4f7b5402dbce779257b",
+      "geo_tools/trackvggt_crop_data.py": "4a8dd2f9134b049c041ac7dc0b62245a41a1e413bffd23ce625aa18dea2407e2",
+      "geo_tools/test_camera_control_audit.py": "3d6014a19141c596c825fa7991f395b5d6ec798c31add2e466145e0770d5f47d",
+      "geo_tools/read_dev12_native_release.py": "6d6522007c1fec2435558ad45652adff3570bb796ef6d415448273e7066cf047",
+      "geo_tools/run_decision_trace.py": "5aa6956b473270f5246d04d7d3f156adcea418550cc3c8b90bff58e8b196047d",
+      "geo_tools/test_dense_geometry_attribution.py": "f5a9c11e7c8c160ac1319f9dac500036e00958031a74caa58dc2a5ed42693a92",
+      "geo_tools/report_storage_budget.py": "75d65f740807047a0fe6e3c9ad2cb30d7bc054505dfec5795bd787c08dadc03b",
+      "geo_tools/update_www_scope.py": "543017cccafa79f8984f39df23321c37ba6349693aa352af746eadaee020991a",
+      "geo_tools/test_suite_settings_audit.py": "5f48d177e4c34689fca9c0b1f1887c80f1f8cc1d4ee06ca2aad437423c3c75c4",
+      "geo_tools/test_causal_scheduler.py": "6b677d080a7b34376e130274df22f0cb77cf6981cbad77e5705106c95af36b07",
+      "geo_tools/summarize_results.py": "650f08b305ef139675c36e6112825709f2fd702ae82c17ed78cba03d53281821",
+      "geo_tools/test_trackvggt_cycle_features.py": "0be93dd94cc699e41d38efc33cf8ebe2b6a63f59386a1b72c7cab7f5102c3fc8",
+      "geo_tools/test_history_training.py": "1f59032a4d53f6836bdf2a7c1d2a11157653cb7d63b62e0d286a5e79c6ccf1ee",
+      "geo_tools/audit_sparse_failure_trace.py": "8e4b691f8c6dd4d6c3ae4a1861a014be1ec07a0d333f172179dcba06a920f56f",
+      "geo_tools/gate_dev12_native_precheck.py": "62460250ef6f68a361985666048140d84620fb1bab9c81117a594cb8f66f1478",
+      "geo_tools/audit_trackvggt_v3_tokens_complete.py": "db47db090bc785936540f2242f15bd56145e0f0915b7621c2d1180193db0a803",
+      "geo_tools/census_trackvggt_train.py": "a4dc871a65b1336a2147c60f0b5c69346f26a541929e95aa96f4fa52d48ab4fc",
+      "geo_tools/audit_encoder_parameter_structure.py": "c0448022fc23620fc50c758a81f2b6e3776f4ff96a505c3f1e6bd45c7aa3210e",
+      "geo_tools/run_relation_student_online.py": "e416361abcd1921cbd4d9dde011e4cd853ab71f82dbc90fe1513d75f5f9c00f4",
+      "geo_tools/test_native_suite_collection.py": "b5932f2ebd5cc1af8a4fea1711347737ea02338a632f0a865e9bf9f1b84d2c61",
+      "geo_tools/probe_v3_target_pool_parity.py": "315f8e37720a045ba449f38ec4c09b430f88dd9eea3f09a4c88eb5b1639229df",
+      "geo_tools/target_labels.py": "8b86d7a0e627b1cbe65a73ccb1d30ed2cd96b8d9225d4529d8800d426500644b",
+      "geo_tools/audit_trackvggt_crop_inputs.py": "69d96acc3d5754c84fbf443e33472aefe0883145e1bd927a598a42426004c9e6",
+      "geo_tools/preflight.py": "ddaec9e3cbc3f59d09ed90edb548f7925bfe89a1a615255cfec67310ebc05c2d",
+      "geo_tools/test_camera_encoding_validation.py": "614befd19143ffa2a3d0c379adcbdc844004721dec7594b7e467e9bc1dd003ca",
+      "geo_tools/test_retrieval.py": "70f6fb6043bb9b0309ffe771693488f1986295dd921434ef98b3b3a6625a7577",
+      "geo_tools/trackvggt_cycle_data.py": "428a490c9b778db6f047806a8a69e5e5c70d84f45e84ae927d19f1bf5994cee8",
+      "geo_tools/audit_tracking_anchor_errors.py": "448ed584a548a2cdcf8e69b50654b02bc3e6aeb1c68d687a495e6d4b9c25f445",
+      "geo_tools/run_constant_head_control.py": "9c8bc80e1e245c1559a845d643388bb1110b7cf0f5f86f46acb192493a1fa705",
+      "geo_tools/evaluate_teacher_pairs.py": "92b4b1f09cf2858ea0d5d7239d0b3b414a660959d6dba1c755a7ddb764625a1a",
+      "geo_tools/test_trackvggt_relation_contracts.py": "853d04e6d10868883e3aba5d23e16a6a3ae501fecec8ae914fc8c329c6ad558c",
+      "geo_tools/audit_current_default_source.py": "3c1bc82344b5875059794cc8dbed8f4106bee778fd469355dddee0b9ebc0afc5",
+      "geo_tools/collect_hard_events.py": "0a403f11136ad4290914854a4990beff4902fb72362283772d2c64471fa41ac6",
+      "geo_tools/seal_trackvggt_full_audit.py": "1965de42970950c3186914fda0212d1aa49b3bc1008ec54ba0f96174c2ae176f",
+      "geo_tools/audit_target_cache_prefix.py": "59d010f60867ca29502916895b1f567c43266995e0ce5b6c8e08557b2a5c56a5",
+      "geo_tools/test_constructed_geometry_degeneracy.py": "fd303ab768a6a54f46993fcc620c778f33cd1a727117406892ffcc8c69d978bf",
+      "geo_tools/collect_native_suites.py": "de4ecdd2775041bf7023951d052eccba0e9876a7f86dc9571d74744a65286ca9",
+      "geo_tools/check_full_train_audit_completion.py": "605322f7a3582f87eb7ef2af61dff2d6db0601d2731757f4b9aaefc80f608b6b",
+      "geo_tools/audit_tracking_retrieval_prefix.py": "301fd4bf013594ee4b57182fa3a1b563c18bb99b51332bcdc6d23c9a09a75173",
+      "geo_tools/audit_online_budget.py": "c0a5e3397ce0763fbbe84ce74cbfdd42cfbec7927648a57f98ba042027bead80",
+      "geo_tools/validate_vggt_geometry.py": "ca11385fbbab6dfb126dd447d24a2e91e05411ff8b9d2c1f2b0426393ac03bef",
+      "geo_tools/test_native_prior.py": "4e16e13ce77a595f924933b15bce461bb7a5531ee06b7f4bfc505f8784d98880",
+      "geo_tools/validate_neural_background.py": "0a6de5eef8743bed7a2a49ca307a6ee60184b6b473caf01cf9e42c1d6d40855e",
+      "geo_tools/test_view_order_audit.py": "09151b76da383c696e76741c86a508eddd2061ab9a675e390d195a9d44f0f8fa",
+      "geo_tools/train_trackvggt_cycle.py": "b586864eed078f8fcd1d847ff76b315a62d971c1268df3f4d972a6984860e1c0",
+      "geo_tools/test_async_runtime.py": "9e205863ac604f63e2cdf1a2458eaf15f75f9ddc68ede98168f2dec251e7ac9e",
+      "geo_tools/test_balanced_queue_handoff.py": "c6299d0fa2091f6e173a0dbbc7f540d00eb96795d45c0d5bf539ca58eb4054ed",
+      "geo_tools/test_background_patch_matching.py": "1864d7996a8c72b6369c66848fdddcfd21e22de3e4c0cc9f00dd0ce169648e89",
+      "geo_tools/extract_trackvggt_tokens.py": "f34a99afec8dcc5aed0e1bce6d8d035095e8b455d6bf3d6296e6ebda61df346a",
+      "geo_tools/audit_history_training.py": "9f5e56296507f12101985cd48b80fbce1fd8ba8d80ed021ccb3f5441dbce1714",
+      "geo_tools/probe_trackvggt_interfaces.py": "40b8b2210263aef46510f67f2da1b704fe3196e4591b9d096b56e7047396c7bc",
+      "geo_tools/test_plane_geometry.py": "ea51149843a3ce6399758c831bf0e32ad5a77a30e5ace1517f11cf8ae407fcae",
+      "geo_tools/test_trackvggt_teacher_training.py": "10432c84f4647fd291a1febcbbd4d1b14181b52a6e8d1e30949a6bf1355a7698",
+      "geo_tools/test_candidate_normalization.py": "4e4f4bf6467b084b1f733bc9aa93c343425bf1acecd1feb760d2eb79f39a618f",
+      "geo_tools/prepare_trackvggt_v3_cohort.py": "a5784596e385e17068ce549f41db21dfd3da27899ddd1ee97079b8f028ead46f",
+      "geo_tools/trackvggt_cycle_features.py": "abf4baa7603dcb2704b252e76a101f9bfd1570609dc06635b26d0e2905716134",
+      "geo_tools/audit_train_complementarity.py": "62e50c085203b9cc5628c2844a3f749814c50b5369ba802953691aceef373404",
+      "geo_tools/evaluate_predictions.py": "f08e7edd0df359a612b4e726a2c7c444fa877218acbf522e2d9cdce61330f133",
+      "geo_tools/audit_retrieval_outcomes.py": "4119cdb38326853c1c969d6c1b31ec9e6b5ef8e46453eb550e64860037999398",
+      "geo_tools/audit_resource_ledger.py": "ddb0ba3dff6eaf23c2c572f16e065fcc923b82a40761fabf867020592fa39289",
+      "geo_tools/test_contracts.py": "2188de96144735d6b49d102b6052ac640d235c06694634eb70259193d25599f4",
+      "geo_tools/audit_decision_trace.py": "15f2951bb7daa4f200470da7a911984165aceb2c6913787cd415b4a2b7ce65f6",
+      "geo_tools/decide_trackvggt_fit_expansion.py": "aaa6cfc26fb56d3a743553fc41dbb371111d2bd07c88eed0854841d98d63ab3d",
+      "geo_tools/evaluate_suite.py": "804b4d8ff7cfbdef4acc63e66db3dd4fc411bd110292052eddad79c30fb84f07",
+      "geo_tools/run_online.py": "e97027d9967482e7e027b8034cc2ecf0d9aa185eb6ec61918dc110469d42e5b6",
+      "geo_tools/run_native_prior.py": "798fab5c773baedb2b41a767e65a4cd7091509fcea354aa96ddc1fdde3bee537",
+      "geo_tools/audit_view_order_runs.py": "a26a5ebb1cc811317a3b12177ebb92884bde944e3fb73c2239aca0a1b8a629a3",
+      "geo_tools/test_temporal_geometry.py": "c3ea81309ece8badd6e07548aed188b55e0066ccdc757696f05040217bcb0ac5",
+      "geo_tools/screen_dinov2.py": "97851369d3ed51c2cdb25f7437a4be46530114ef0560d2b24cafba6b6f699dc9",
+      "geo_tools/test_finalization_guards.py": "85fbca3136dd0ad9022e761fcc71b475b0ad22120dd7f51a9462c7f111aa305e",
+      "geo_tools/test_trackvggt_events.py": "d2b11ac56b8180c989fb86e716128e185a1768d43feb8bd0523fc49c57689440",
+      "geo_tools/audit_camera_control.py": "090d68bcac0c2b81839dd9aba0105a2d469466bda42db11604e1bae0b8df7e0c",
+      "geo_tools/test_sparse_failure_trace_audit.py": "072fabe1b8f9d2bcc46e0135164ecfc1047ac0130769d7572122785139519680",
+      "geo_tools/check_prediction_parity.py": "1e32f75617d06c494457155b9e2e462da39e27adbcd575c76aaa21171b9b2d34",
+      "geo_tools/test_process_wall_runtime.py": "82eae8fec4640b6004ca5fbb5d80aae338fdc090df09ea1a4c68b618fcb7ae25",
+      "geo_tools/dev12_native_schema.py": "7bd57a23381ecb82451f517572731ff462c05d38f8237677a8fe218c36d350ec",
+      "geo_tools/smoke_dev12_native_reader.py": "916d75c000c0fa476b89e20af6ce621358381e8c2c9a4ba8b64325e91310ece6",
+      "geo_tools/validate_physical_camera_input.py": "09c49d9e73f88697e4df146ea971d79d83574158f43b39ff1ac6b279d0518d4e",
+      "geo_tools/test_tracking_pair_audit.py": "cc1398004c69fc404385cf6d784c42a71c5eaa3fcdb70109c394463a7e0abe0a",
+      "geo_tools/test_decision_trace.py": "ef543b04a90b54accf35356e898c5a6c39d6f5f563d14d0e098f2a3d134bf587",
+      "geo_tools/audit_cache_gate_and_constant_prefix.py": "5e0cce331687a871221bc61be78744e671b6042f5f178b38ab93c0bc4228892a",
+      "geo_tools/extract_trackvggt_v3_tokens.py": "df68007f6ce3c5d16d28f179666f409e97905b6f7c15de79034b450d9c0b7e8c",
+      "geo_tools/run_seeded_online.py": "92323c8c899135978814743e2f78d4a4e69ba41004def27d864751180c6b2624",
+      "geo_tools/validate_plane_reference.py": "059e1388e6349ddb34332a0237764ba588f694f08604554c6a502b811499c1f8",
+      "geo_tools/test_suite_control_flags.py": "7d47187bba864a5c3fb56eb0496a1453fa11e71f9def83650f3ba1cc46ed50af",
+      "geo_tools/screen_features.py": "bb4f081db69ece7469ea0c35cc2ba8e7ba40d289690dd529f0274f61d0549bf6",
+      "geo_tools/run_live_retrieval.py": "83538b4c470a32304fd89baeefb490a83490a688550fc6a380fe81a3afe1c557",
+      "geo_tools/prepare_dense_stability.py": "6460f4cda393defb9e645e7d9c0d376d322127db914f6e2809498a7b2d79b841",
+      "geo_tools/run_priority_window.py": "0ceaae268ee70f569037e2a38bd8a6b663e972eccbe33c3201d30f3a5e0cbe9f",
+      "geo_tools/validate_dev12_native_inputs.py": "1167206702a3bb93fa7cda79a34bc61faccde2352d5fce2ebd5d0c62807b3803",
+      "geo_tools/test_retrieval_metric_schema.py": "a94a5869c092f48c048d61d72083582b08be090abbec1076f654b6444c12d561",
+      "geo_tools/test_target_cache_prefix_audit.py": "d2cd9c6a65730c40e9d98c4f63c7afdbbaa6a0e3c151e79bdc458ad1c347e86f",
+      "geo_tools/monitor_project_resources.py": "91e447b9154096d6845ce4ee4013503f6ab1d3bd0b7219129c07e6c88546a6f6",
+      "geo_tools/probe_trackvggt_backward.py": "58770df3460fe7258439c9a98ee8cf9826fe6e0b0c704db671eb605ed11e59e1",
+      "geo_tools/test_resource_samples.py": "ea502b2c7e2575fa9742786334f978f2e07e30a079b8bde294c40f66d65f163a",
+      "geo_tools/test_research_queue.py": "f11de3eca1f893c15934a691b58bb2cc1b19971765117660440a736def8cda82",
+      "geo_tools/run_geometry_reference.py": "19c5075f04062e76bc445a600bef1c49d1e26c4f42d42716c324960f9debf0f8",
+      "geo_tools/train_history_heads.py": "d960e283c3a6795d6b0d80198066e005ec4268ff1b2bc924f77e04d6e0505c12",
+      "geo_tools/benchmark_short_pair_encoder.py": "5e3cd035dd399b18f98fbbe91a3fde8198a96e549c686486179c3fd6a293a069",
+      "geo_tools/test_dense_seed_stability.py": "77b239efd9007959cff1efdef89249378cbb85e591f1023bd6ad0c966ac28b50",
+      "geo_tools/consolidate_camera_control.py": "4d961b2fb8cfbd59bee4414a577541f5b3994bbdd5f892720385289c382e39eb",
+      "geo_tools/audit_full_train_identity_events.py": "358f0ac8202ae27ecf2db4bdff674d45696b26757c76923261070dc73a96870e",
+      "geo_tools/extract_trackvggt_crop_tokens.py": "ee2a6dc84a1d2d0ac756ab6665433e99c2dd67f776f2f707d345fbec147b40da",
+      "geo_tools/audit_identity_matrix.py": "3e59d0c71e88853d917c7e175bdbb47fb8d22f699f99ab217a23fec7a637a811",
+      "geo_tools/trackvggt_data.py": "592f017d6863567a32899a810064ecd348b9a7dc5f05164965efd264e8201836",
+      "geo_tools/test_target_feature_cache.py": "7bdf1c52293c3c0b46c51496b7f8b0d454ae35b338a8e6f841211aea28aa06e8",
+      "geo_tools/screen_hard_events.py": "7b1ee569d2fe70feca3a8bfc4353ad143e1d9feb3ede1818b710416426e0b987",
+      "geo_tools/prepare_trackvggt_crop_comparison.py": "d80f0ae93cd68cc7f83034fdb8c0d95141ad676991d119e5b3708ab6115699fe",
+      "geo_tools/prepare_tracking_retrieval_control.py": "89c3270172997935c0a47463052198b91bf6e257da929bb6300eca67a800cc3c",
+      "geo_tools/feature_metrics.py": "560448689c25421721c2cb542f43f2d5c6d7f374b0d50c62076b83a05bf55973",
+      "geo_tools/test_empty_tracking.py": "b97a6cb158864b0da029cd94f088c9572d9503f20a30010c87da89ecd2f1270f",
+      "geo_tools/prepare_remaining_matrix.py": "1cddd9dae1c96a3e3e3872b0309e98b80d4fd28b4a480178ed1c28a4d690bcee",
+      "geo_tools/audit_trackvggt_ag_results.py": "0c06a983bf9ce588a0d47ebea2468fb64d39304cf3d019aeae30d445dfa4e950",
+      "geo_tools/collect_history_train.py": "e6af52179c2b48a869be093c3b9fdbf4c7a53cc08d9d552d2e01120633ef6ee1",
+      "geo_tools/run_cache_gate_probe.py": "ed83c896cf0bbc378f4cf5bc3e4e42c72ca9282588b5cde52cc278363a3d1254",
+      "geo_tools/test_head_runtime.py": "22b0df1fa6dde3f5b1d25f21fd4e07bc38e67203e87386f403d89b08791ba9aa",
+      "geo_tools/run_dev12_native_stage.py": "49d073f22640909c198a5a8487e173c82c0b429bac12d213e0f407e87c06ae1c",
+      "geo_tools/test_tracking_retrieval_gate.py": "643c20e482e74855235eafd3d60a1298b753875b64f9d9654a9baa27802da7c0",
+      "geo_tools/audit_dense_seed_stability.py": "f17fb5df716343415224302794e5988b28dfaf55a6023e39ed53ad67e85cab39",
+      "geo_tools/test_retrieval_outcome_pairs.py": "65dd2f7648ee1d6381f8dc9069181841b65ac27483efff233608d2dcb2f134b4",
+      "geo_tools/prepare_vggt_tracking_retrieval.py": "d3f451bdd24b1e9e263fd59c32839ff44e7bcc491346f9c4b4779ce9cb65c94b",
+      "geo_tools/run_research_queue.py": "97200cca20bab5eb6cfd7353cf72200f9bcacc8895e74779bd9037be0bd0a5cf",
+      "geo_tools/seal_dev12_native_release.py": "659577d19e4dea5b6defda8832ce5e249e4366ec2d93d5bbee55693bac6d98f6",
+      "geo_tools/prepare_dev12_native_scope.py": "4ebe9b3b5f297dba822b0cb62dea2922a847e5c42486ab1187632a8379fb6493",
+      "geo_tools/probe_live_camera_order.py": "8fbb7f7f96e4ad8e6c6b9d635ee7e5ccea7c1e6dd019a45d294fbd97c86366cf",
+      "geo_tools/summarize_full_train_identity_audit.py": "e6d8dbbacf5d8712428243b4cf6072e53b6129b4210db32c9fd218dc1275dac1",
+      "geo_tools/test_constant_head_control.py": "fd8bfd8a5081e7dfc1053bba56692cd48930914433a202074e45ff5760eec1d2",
+      "geo_tools/test_trackvggt_crop_data.py": "d00b7598892169d8b65e5c2ace6ba6a0392c0395e41b7988b08ff9849535a0e0",
+      "geo_tools/summarize_resource_samples.py": "6a95d938944370eccdf54cc0a7ec004f887abf52dbe914158fe3ca0febf1efc9",
+      "geo_tools/test_cache_match_diagnostic.py": "4d9fc94f6fff9a421e8219eb80d5dcfdb4e58d826d752d4934b3ef754667fbeb",
+      "geo_tools/test_trackvggt_v3_data.py": "f7c7022ca2eb5f768b9f55100fc4b00031cdf7ddab8143d16631f5d96be12f42",
+      "geo_tools/common.py": "ba2616c7727b4e15082a5cc7f5709a4c68e831b0be342f6d6e0c32b2222c3e42",
+      "geo_tools/test_process_worker.py": "c5a11f3010b9283f2c3d84e192ae67f5ae223a0c90b0d091d4a85e5545a9e050",
+      "geo_tools/audit_dense_geometry_ablation.py": "018ee30488674cab92dde4f77befd7d0a135d7efe9aeb600af2376b27acf857f",
+      "geo_tools/audit_suite_settings.py": "a21fd849218f9061823eabcb67e91c7345532dd4f66e4fc8e954c7d39fe2a2d3",
+      "geo_tools/test_lightweight_head.py": "f9c1a30c654ef22e4cebcea1ecea56c7b1e0fdcd725aaedb5180069fb8c998f5",
+      "geo_tools/prepare_target_cache_probe.py": "7cf1cd7ee8450cf9d47d0609a69fb288dd30124487f8f2ced8f0e6c480cc2cd0",
+      "geo_tools/test_native_prior_driver.py": "63fba8cb30ee91d98ffd853225184427f766866542b11d6f73ca90707815bac2",
+      "geo_tools/summarize_geometry_failures.py": "a8008950f3937442142e9a645f8d1fddb8b329923ee50c0d1e074fcb47af9cbb",
+      "geo_tools/audit_train_gt.py": "6f5fa5b4ebaa842ac5d29d1ad50831752c45fdba1277bab2e7af79b2303d16e0",
+      "geo_tools/audit_tracking_identity_pairs.py": "605141cb0a10cfc3d50796b4758c90c2d8c1a49d180e3e6846a7bc11e7bf718d",
+      "geo_tools/test_selected_v3_capture.py": "c8322731be7835efd678ab3ec7d15f5a2e10e5649b82d9dbcb6d0c3bed7f4835",
+      "geo_tools/run_baseline.py": "ee78b728fb1d97eac848d12792cd2620f21f2ceab58afda577cc6dd1322aece2",
+      "geo_tools/collect_track_hard_events.py": "df4c5976e737b6dc84abb6d00726ac96ef2e91d86c845210d33bb818df608d4f",
+      "geo_tools/audit_native_prior_prefix.py": "f7bb46213a60605aec9f3f6dcaa771ee7f20112ca01603cba455647fc6c3ea53",
+      "geo_tools/test_geometry_failure_taxonomy.py": "77e15ee604e2e5bf2c6710d12a2583329a044b915ca0f7ab058d69332b75fd75",
+      "geo_tools/test_residual_and_causality.py": "5b599d56620bb04712cf8b7260836063b8261a63a4b5ef2d262e43f3f1f1e2c7",
+      "geo_tools/audit_native_prior_stability.py": "da4c302ad8de5b15a1d426cbb015aa0c7e813640cccfe56ee1499ecdb9e61937",
+      "geo_tools/prepare_positive_scene_controls.py": "6df6dc558ec4fb8ef6ad548441928a24df30f4508352df130796d8a73eab54f6",
+      "geo_tools/plot_research_results.py": "134a14fdf47c200bc72d8d40b3af41c6ad444a272fbe3003c2258f2372cceaec",
+      "geo_tools/validate_process_worker_gpu.py": "886c032d8055d2c2189a909c6d95ea47d66c3254e90a1b163ab0a2f1221e7ff1",
+      "geo_tools/prepare_parallel_dense_stability.py": "95e5f39183ac80e8b48d8ff9770cd555f70c466ed97cb9f3e1c35c2c50ca8c4d",
+      "geo_tools/test_geometry.py": "6e8f586b5b731d68888012a9af5ed38eb6b0bc8f26e88fa458b3b138d3e65b32",
+      "geo_tools/validate_empty_association.py": "bbc231eb659c8603558efa62f63c43587338219e5a96644096926eb431cfd92c",
+      "geo_tools/prepare_history_training.py": "7b7851a6dbc8a29684d7bbd332a448ba3058cc79bc37579eb6f29547ae36d342",
+      "geo_tools/update_reviewer_questions.py": "e67f31e4ceaaa94945026b60e965238e4a542b96c71f65d824ba3217ca8d3bb3",
+      "geo_tools/finalize_research.py": "961b94667ca96348822fc9346bb4e5469c403354ef8a934572cecc0c7758b8e2",
+      "geo_tools/test_trackvggt_cycle_data.py": "20acc55ae162d7887eabb68fbe018aec33cf1b76b070d934215dc7204ff87b7f",
+      "geo_tools/lock_baseline.py": "b43ee7b20d8ee0f5035858f617bf9169825907f25733a13e5290448d2613367d",
+      "geo_tools/test_dev12_native_assets.py": "2e5c77e720ee43ba6f35a71e4cf4ad8c93f487f939fb968f9ddda974fc68f284",
+      "geo_tools/evaluate_live_retrieval.py": "9cd2d987e3c28e3e672ce915d42b1fc3970349923782fefacf9323ac4f5ba3d6",
+      "geo_tools/probe_trackvggt_k_ablation.py": "3d1ba0b1b06c5467bdc8b3074f2f40b3fab5e4c51931346e47960e7fc6aee594",
+      "geo_tools/test_seeded_online_driver.py": "e0ada7644886986fdf5b59497d7a7eb7990cb60d0c73957b5f1afb2dbc75b663",
+      "geo_tools/audit_full_prediction_parity.py": "961896b5888d4b541218ce65550425c062899ed33a80e0a27d2521443c478745",
+      "geo_tools/train_trackvggt_teacher.py": "71c9f7152dd708056b261f2d9e723bdaa006b3a319e634a909bae823211692b3",
+      "geo_tools/test_priority_window.py": "e98700eca6f944bb85782a6b46b93f05b015657fa72a95f876dd640e092ad93d",
+      "geo_tools/audit_seeded_tracking_prefix.py": "7ce5ffa261ceb42f6f65a707d30f149d421b2f230a2378b1a2b58750777e6c1b",
+      "geo_tools/test_view_order_validation.py": "0e210969b7af48018ddb5370bb9f47202527f310b9be4728bb53d9f4af67feb4",
+      "geo_tools/test_target_cache_runtime.py": "43158d335f24923e2a3dbbbc32de3f1647ddc32fcaf75b131e2c8578bb668230",
+      "geo_tools/train_lightweight_heads.py": "6d0837005ee0e93481f240a2dc6583a393efba6d8f84c595b5f6fd18b43a7270",
+      "geo_tools/test_camera_order_partition.py": "d89951c81251f661880e960cd99c8adb9e4954fff10cd14988d27cb6e20c4436",
+      "geo_tools/extract_gmt_samples.py": "244b0468df787c65c809d7bd632563097340639f4c4a8a336718689a039c6995",
+      "geo_tools/probe_trackvggt_real_cycle_features.py": "bde4319ece5fc8b21f214fc8cb268d68771f0c04ffd74b64a8ea7280e2deb322",
+      "geo_tools/audit_inference_camera_encoding.py": "2caf9ce83a87af9e82fcdc85c840b368baf11ced6c15692df7cc42df3840bc7c",
+      "geo_tools/test_tracking_anchor_errors.py": "231f07c128ecdae1ebf7e52c8a47957b33093ac6eb02e0e99b3adc89075532a8",
+      "geo_tools/test_readonly_preflight.py": "c7161e996d36bed4c9505dd7d0d80ed367835f5a821a72b3bc08e073b541b76e",
+      "geo_tools/summarize_target_cache_controls.py": "e8bb99e4dc6265e2bdd5ce4b3f571d1f5777f36328e576aae05354fb8c1213ae",
+      "geo_tools/audit_causal_suite_budget.py": "03df0f5be87dcfc2871cead7e946e6f0fea89188c323ff9156a784db589a7da4",
+      "geo_tools/test_full_train_identity_audit.py": "130f89335f11cd1c9fb97f4d80b569138dc25df881791784122115b110cb1479",
+      "geo_tools/audit_track_events.py": "7bb86890cf8cbdc57c54391915519a17fa355bc4baf1150855ba880aa6b3b706",
+      "geo_tools/retrospect_trackvggt_dev5.py": "6ea653bb9fa2ec00db770fb676d23766003ae6d1a81acac60b31d7de4b6cae30",
+      "geo_tools/capture_trackvggt_selected_v3.py": "567173d070ab6033c24da274397dd99015edd7c403fff449ea84b4e13eb5577f",
+      "geo_tools/test_camera_geometry.py": "4657fe920a819a7b88fdbb2cb8c53f5d998467efcfffa385390ec360fc743fb3",
+      "geo_tools/run_balanced_queue_handoff.py": "df772393871408adbf0d0662dba887d3b9d08e7a695a1d5a79d235d8a097b5c8",
+      "geo_tools/test_trackvggt_core.py": "d90425f95a4cf8b670372f4e35d3e8e05f8d540b543f76e6a05d51f58f7ce750",
+      "geo_tools/calibrate_feature.py": "b7df3867c8fa8b31803bd63beb1ac370959d0ed7a4d91793b38ca06e79d23227",
+      "geo_tools/audit_process_wall_runtime.py": "16a7d2e4bffeb786495c84f138e8d2dfd8c401f4e68b794e95e8ee123b78d865",
+      "geo_tools/prepare_trackvggt_cohort.py": "356c57bc9e00871f46612200e070a26eddc5311f97c5cac22dbec3252ac5eeda",
+      "geo_tools/test_association_trace.py": "ac0dd0a0dfedc926eb563d019c03a7802005d281bf9b520200208365562aba6a",
+      "geo_tools/compare_short_pair_encoder.py": "21c65458f4f628d94ec9587d62a262ab87bbf5dcf627de9ff05c0bcc4aacd825",
+      "geo_tools/test_trackvggt_fit_expansion.py": "610e2176fcfa08ddc226e475e67ad68a6f160b6599441a4472cb811b17981f7a",
+      "geo_tools/export_gmt_dev12_native_assets.py": "d6747d7f8ea017fa9438e98855e3291b0c12de155328f2e08a3a7667ddbd7514",
+      "geo_tools/trackvggt_token_pool.py": "4aa296be999f61fbe8ab45b8916cea8a6d6dc211ee937dbdaa7f72c56f0217d9",
+      "gtr/geometry/native_prior.py": "7cea083f05b251200bca4dbbebcdf318ce4db035436ca1d83496a959b12d8b50",
+      "gtr/geometry/track_dinov2_features.py": "ae490fa73bcf5af5912dabf4bb88cd5e8f290f200f13c6f84ae7d88309875c4b",
+      "gtr/geometry/runtime.py": "91bed1b4371cddacc942435ae30b9747cabc74154c6426e4cc0db8016e1eee2a",
+      "gtr/geometry/track_ag_teacher.py": "1521f7ab1f2222e593d7c3e4b10dd3beb3ea198370e7194bf8e19d3ffa8de102",
+      "gtr/geometry/geometry_state.py": "61a77bbe535ffcb82f4668fb85edcf51a1b6d2c9f894a42dba0969cef92e7f67",
+      "gtr/geometry/identity_relation_adapter.py": "f674829481f8aa715f0c2779186e8821ca0e7d2f109260be272455d55326f913",
+      "gtr/geometry/view_order_validation.py": "f37edbee97bb45956c8c912d8533c2c225690c354c254ceece9ea63ff1b1e9ad",
+      "gtr/geometry/temporal_geometry.py": "d5c6af024db0017e9ac4759dffb391d3c29467218fba2ff6fd920716820d290b",
+      "gtr/geometry/temporal_identity_cycle.py": "9138a03328f68bbdfba9532f89f9213f6b35132749b7a7461eddd235c01a9a1d",
+      "gtr/geometry/roi_feature_extractor.py": "0b8c4aae141804a3e9279d9d94c5117b494379b2da7ed4f04895ae86a2f07885",
+      "gtr/geometry/memory_audit.py": "c87d7ea245db51af7d3381ed3f7c436361f0946163f3cd3602f0d390cc0312bc",
+      "gtr/geometry/__init__.py": "1350268c23738a57bdaa243154cb46ae625437dace3391949404c69f3996b775",
+      "gtr/geometry/pair_score_adapter.py": "85ce639e4e381d9381fe980c4b443e839b80f048ae90b1e8d2c9572224de0701",
+      "gtr/geometry/geometry_confidence.py": "e4157764f5f9e6350840933a7aabef56e4710e478d57eb200424d36b55e65076",
+      "gtr/geometry/track_conditioned_see_query.py": "2890349ab81580c2e5b2cffdb6e7775912071680d5dce10419b4bfa1b862ca94",
+      "gtr/geometry/update_signals.py": "53890be32939d5f8650bee4d8910442b1a8fdb6273afd78809d249a362634a67",
+      "gtr/geometry/identity_relation_student.py": "620c12a489b6883d3c6b635979fcae79211fedad63b7294922d276fff32dafcd",
+      "gtr/geometry/physical_camera_input.py": "2b8e8d0223dc555e01e1edded799509c761d53632c1b49b8884e259b5b54ac71",
+      "gtr/geometry/camera_encoding_validation.py": "f79cc86964e5152d449c4b4fd649c930ce130ba94ea44c33ff1d2dcc991699a6",
+      "gtr/geometry/association_trace.py": "066eba3b7a577cb283351878f9f868ef24bb4e8739d06868ef59c0dc769324cb",
+      "gtr/geometry/identity_guided_sampler.py": "d18b5221649c991740f69432f05619adc712e41e20426a8ac38eea152635b6ba",
+      "gtr/geometry/stream_worker.py": "5b527d4d0b4828affb2804cb9a00b7e49da010803b3c52264c767e3f610c51f0",
+      "gtr/geometry/process_worker.py": "5700d53ef72bc54d83b9ab1d88773964410962d11567a3e67a5c34d4fdcdffd8",
+      "gtr/geometry/track_query_encoder.py": "9ea87464fdfacb6bcc8390cbb072c08e6bdcdbc5a1619a2eb4a46c9a979a33d3",
+      "gtr/geometry/vggt_adapter.py": "8d47a5d1a4112b28a24f692b684b57c0314fc052c4a0e0f2138608978e4bfb8d",
+      "gtr/geometry/camera_geometry.py": "697bff0cab37b9bccd6393e12af2254f6615eea49cb91970487f14cee43dde5d",
+      "gtr/geometry/target_feature_cache.py": "d18dbf60e2a6a4d0044975548d7e30fdb136646702ecd52cb70bd9dd65b47d08",
+      "gtr/geometry/isolated_stream.py": "38578826cc767ca9d1a9f2d178d277124aa03784f27c5fd01ae5426962588c2d",
+      "gtr/geometry/trackvggt_features.py": "3f92dd679545d935c3687e5a10d7adad63a7c62220ea53fba0e6ec303fbcc109",
+      "gtr/geometry/geometry_alignment.py": "398d3b9f375f1e0856f9197e44ffa823b97caaf42a6dfbc6de9e5629d49b621a",
+      "gtr/geometry/sparse_scheduler.py": "3a20e6c2539b9aae8f360359a7ecadfa1378e2f48d75263900401c581e3779f8",
+      "gtr/geometry/background_patch_matcher.py": "d72f07876b3668b631c5766946b7f4b38958c28932b62894cb43071c50582d24",
+      "gtr/geometry/lightweight_head.py": "ca36b76acf69015f9eb9d24531a6c2ac91135faf213af82ad5e909394da0d989",
+      "gtr/geometry/decision_trace.py": "1a929fe455a2c2ee6c39085f02ac622bb1decaf65cdb9c60e1690eab4299ef52",
+      "gtr/geometry/dinov2_adapter.py": "b41b8dde9366bb525dd9de36688fedec1ffc69b2c5111b45aac6b638d4fe88ba",
+      "gtr/geometry/cache_match_diagnostic.py": "2285f0a975dd2993ea2bc6866be28b47ed7db813019962807fa40aeeb2b1b14b",
+      "gtr/geometry/retrieval_index.py": "459883fa85c824bb6c03322f71912383b9f2ff1bbe44cbdcb2f5175dd87ff326",
+      "gtr/geometry/online_runner.py": "88b2b3e5af629c23561f08acbb967e0937bbd436acc95f04a9a9f08a60cfad96",
+      "gtr/geometry/track_qd_teacher.py": "739ed2412cd2804ee4394e05ad035f26d04425f7c36b802e918f06106ff50b90",
+      "gtr/modeling/freeze_layers.py": "3f3879950ffef3a5281d1ff58ff7456e59f95708ed2e5abb5af548b68b2b30d3",
+      "gtr/modeling/roi_heads/gtr_roi_heads.py": "3e90b9377368cefad7dd482daa66d875e182e1fe46f54aa1928d920f219794b6",
+      "gtr/modeling/roi_heads/transformer.py": "a4102026135c9ef0ae1d2e7329d62f33ae51f0028fabbc8195463c65529e3c76",
+      "gtr/modeling/roi_heads/association_head.py": "06a5ad5045166b6140403d34ef80a5562b5905ee789481a17b5a513b4936151c",
+      "gtr/modeling/roi_heads/custom_fast_rcnn.py": "358236e50de430eeb6e2e95a9c68bc7e3d709239a537af6cbbfe6f7f00b3a1bf",
+      "gtr/modeling/meta_arch/gtr_rcnn.py": "cda0e85e7fdd58a1347beba59d1b6011ad8b696b327ca4b71f1a7c50e6cb64f4",
+      "gtr/modeling/meta_arch/custom_rcnn.py": "db1cd2802a92d5dac552e570b2599734a7c13c3cac39f73cb04c9a42c9f56287",
+      "gtr/evaluation/mot_evaluation.py": "57a77f1dea145deaca88cb23658869acafb068f9fd98cfb3dbadb8441f85fe70",
+      "gtr/data/gtr_dataset_mapper.py": "c9be6b759edfb466bf69b2f16d736eabd316ce8c69f35ef15bfb9dcc7f83c5be",
+      "gtr/data/custom_build_augmentation.py": "c649698cbd43ff1c96376a266a1b4c5b91394027566ec4595783a7441b3baf06",
+      "gtr/data/custom_dataset_dataloader.py": "0a60aa96af43919d2a620e4ffa1c767629917000033c52aab3344fc4ccbeba34",
+      "gtr/data/custom_dataset_mapper.py": "8556e6ece48b5d6de8c277392a78e154849160e14cd661106a2d47e27c46f75c",
+      "gtr/data/gtr_dataset_dataloader.py": "eedfdfdf9217269e873e6a34e14645ad672f5d00f263a7ee1115f9774b5cef2d",
+      "gtr/data/transforms/custom_transform.py": "0cbd89da84a1404f21653ec8eb97f7884ab8bf70822345c4369cc8136f302f38",
+      "gtr/data/transforms/custom_augmentation_impl.py": "98647732fabf7a2d839afd18f42d2598848ab93da8cc35f30ff9b3f4a2ebbb7c",
+      "gtr/data/datasets/mot.py": "a84ae3bb29ff896ced74de7e694267388b35efaa175e90705a0717568644c35f",
+      "gtr/config.py": "a50b328f8ee3613c680feff19e2477fe477f3d7685c0d25d5dc1ef26e93aade1"
+    },
+    "source_tree_dirty": true,
+    "source_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+    "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+    "annotation_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85"
+  }
+}
