@@ -19,10 +19,15 @@ def main():
     if query_audit.exists():
         paired=json.loads(query_audit.read_text());candidate=next((row for row in paired['rows'] if row['method']=='VGGT2'),None)
         if candidate:
-            retrieval_evidence+=f" 已完成denseB7跟踪接入原生排序的完整两路检索：相同{candidate['common_eligible']}个可检索查询中Recall1修正{candidate['common_eligible_rank1_fixes']}、破坏{candidate['common_eligible_rank1_harms']}，可检索集合变化{candidate['eligible_gained']}/{candidate['eligible_lost']}。这是小型主种子信号，匹配容量GMT/DINO跟踪发布对照仍待完成，不能宣称VGGT独有或稳定收益。"
+            retrieval_evidence+=f" 已完成denseB7跟踪接入原生排序的完整两路检索：相同{candidate['common_eligible']}个可检索查询中Recall1修正{candidate['common_eligible_rank1_fixes']}、破坏{candidate['common_eligible_rank1_harms']}，可检索集合变化{candidate['eligible_gained']}/{candidate['eligible_lost']}。这是小型主种子信号，匹配容量跟踪发布对照按完成情况分别报告，剩余对照仍待完成，不能宣称VGGT独有或稳定收益。"
         for row in paired['rows']:
+            if row['method'].startswith(('GMT-head','DINO-head')):
+                retrieval_evidence+=f" 已完成{row['method']}的scene{row['query_scene']}：{row['common_eligible']}共同可检索/{row['requests']}请求，R1修正/破坏{row['common_eligible_rank1_fixes']}/{row['common_eligible_rank1_harms']}，MRR变化{row['common_eligible_mrr_delta']:+.6f}，首个正样本排名/可检索集合变化查询数{row['changed_rank_or_eligibility_queries']}；这不证明完整排名列表逐项相同。"
             if row['method']=='VGGT4':
                 retrieval_evidence+=f" 四路VGGT完整回放scene{row['query_scene']}：{row['common_eligible']}个共同可检索查询，R1修正/破坏{row['common_eligible_rank1_fixes']}/{row['common_eligible_rank1_harms']}，MRR变化{row['common_eligible_mrr_delta']:+.6f}，可检索集合变化{row['eligible_gained']}/{row['eligible_lost']}。scene18修正的是两路实验中的同一查询，不是独立重复证据。"
+        for row in paired.get('shared_control_corrections',[]):
+            if row['vggt_rank1_fixes']:
+                retrieval_evidence+=f" 同一有序查询核验：{row['vggt_method']}/{row['control_method']}在scene{row['query_scene']}分别修正{row['vggt_rank1_fixes']}/{row['control_rank1_fixes']}条，共同修正{row['shared_rank1_fixes']}条；VGGT有{row['vggt_fixes_not_reproduced_by_this_control']}条未被此对照复现。聚合提升相同不等于纠正同一查询，单次不同查询纠正也不证明稳定独有信息。"
         prior_queries=next((row for row in paired['rows'] if row['method']=='Prior4' and row['query_scene']==1),None)
         if prior_queries:
             retrieval_evidence+=f" 四路scene1固定先验的逐查询R1修正/破坏为{prior_queries['common_eligible_rank1_fixes']}/{prior_queries['common_eligible_rank1_harms']}；汇总相同不代表查询相同。"
@@ -112,6 +117,11 @@ def main():
     if off_path.exists() and json.loads(off_path.read_text())['status']=='PASS':
         later_regression='后续a9f7d1ec源码完整strict5 OFF逐条等价也已通过。'
         later_regression+=('同版本零系数完整回归也通过。' if zero_path.exists() and json.loads(zero_path.read_text())['status']=='PASS' else '同版本零系数完整回归仍在运行，尚未通过；不将旧版证据外推为当前全部源码验证。')
+    source_check=ROOT/'results/current_default_source_consistency_v1.json'
+    if source_check.exists():
+        checked=json.loads(source_check.read_text())
+        if checked['status']=='RECORDED_DEFAULT_SOURCE_MATCHES':
+            later_regression+=f" 当前源码一致性核验保留{checked['controls_verified']}个完整OFF/零系数场景的原始预测和清单，每场景记录的{','.join(map(str,checked['matching_source_file_counts']))}个GTR/默认驱动文件与当前一致，checkpoint/YAML/TRAIN注释哈希相同。唯一改变的isolated_stream为检索专用；这不是新增推理，原始离线协议和未验证的可选检索范围保持明确，见current_default_source_consistency_v1.json。"
     questions=[
     ('为什么 RPCE 之外需要动态几何？','尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。'+geometry_note+camera_note),
     ('为什么不直接使用 DINOv2/ReID？',f'必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1={pct(baseline)}，高于当前 VGGT 中间层。独立DINO普通融合的离线稀疏/逐帧完整严格开发对照和匹配容量学习头离线k10对照已完成；主种子因果dense匹配容量GMT/DINO完整strict5均已完成；DINO数值上高于当前VGGT联合版本，见对应完整suite指标。scene1的DINO匹配VGGT CVIDF1且少1次IDSW。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。'+constant_note),

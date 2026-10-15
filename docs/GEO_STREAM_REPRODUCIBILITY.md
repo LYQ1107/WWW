@@ -49,6 +49,8 @@ Copy only complete native suite metrics into `results/`, retaining their origina
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/collect_native_suites.py --generate-ready
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+  /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/audit_current_default_source.py
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/audit_suite_settings.py
 CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
   /data1/liuyeqiang/WWW_vggt_geo_runtime/venv/bin/python geo_tools/audit_dense_geometry_ablation.py

@@ -138,20 +138,21 @@ def main():
         sources[str(path)] = sha256(path)
         sources[str(manifest_path)] = sha256(manifest_path)
     if retrieval_runs:
-        tracking_labels={'gmt_off':'GMT','native_fixed_prior':'Native prior','vggt_dense':'Dense VGGT'}
+        tracking_labels={'gmt_off':'GMT','native_fixed_prior':'Native prior','vggt_dense':'Dense VGGT',
+                         'gmt_dense_head':'GMT learned head','dinov2_dense_head':'DINO learned head'}
         labels = [f"{tracking_labels.get(manifest.get('tracking_method','gmt_off'),manifest.get('tracking_method'))}; rank {'native ReID' if manifest['backbone']=='none' else manifest['backbone']}; {manifest['camera_streams']} cameras"+
                   (f"; k{manifest['interval']}" if manifest['backbone']!='none' else '') for manifest, _ in retrieval_runs]
         fig, axes = plt.subplots(1, 3, figsize=(15, max(4.5,.4*len(labels))),sharey=True)
-        for axis, metric in zip(axes, ['Recall@1', 'MRR', 'Complete images/s']):
-            values = [(report['recall_at_k']['1'] if metric == 'Recall@1' else report['mrr']) if metric != 'Complete images/s' else manifest['camera_image_fps'] for manifest, report in retrieval_runs]
+        for axis, metric in zip(axes, ['Recall@1', 'MRR', 'Replay body images/s']):
+            values = [(report['recall_at_k']['1'] if metric == 'Recall@1' else report['mrr']) if metric != 'Replay body images/s' else manifest['camera_image_fps'] for manifest, report in retrieval_runs]
             axis.barh(np.arange(len(values)), values, color='#427aab')
             axis.set_yticks(np.arange(len(labels)), labels, fontsize=8)
             axis.set_title(metric)
-            if metric != 'Complete images/s':
+            if metric != 'Replay body images/s':
                 axis.set_xlim(0, 1.05)
         axes[0].invert_yaxis()
         fig.suptitle('Complete retrieval: fixed scene18 detector queries across galleries', fontsize=12)
-        fig.text(.5,.01,'Quality conditional on each run\'s eligible gallery; throughput charges the whole producer. Local replay; no stable timing or Web deployment claim.',ha='center',fontsize=8)
+        fig.text(.5,.01,'Conditional quality; body timing charges reads/tracking/publication/queries, excludes static setup/imports. Local replay; no stable speed or Web deployment claim.',ha='center',fontsize=8)
         fig.tight_layout(rect=(0,.04,1,.93))
         fig.savefig(out/'causal_retrieval_results.png', dpi=180)
         fig.savefig(out/'causal_retrieval_results.pdf')

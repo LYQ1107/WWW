@@ -137,6 +137,7 @@ def main():
     complete_zero=evidence('ZERO_c214_full_strict_prediction_parity_v1.json',['status','full_strict_suite','scope'])
     post_cache_off=evidence('OFF_post_cache_trace_strict_v1_parity.json',['status','full_strict_suite','scope','rows'])
     post_cache_zero=evidence('ZERO_post_cache_trace_strict_v1_parity.json',['status','full_strict_suite','scope','rows'])
+    current_default_source=evidence('current_default_source_consistency_v1.json',['status','controls_verified','matching_source_file_counts','changed_retrieval_only_files','new_model_load_performed','new_video_inference_performed','scope','limitations'])
     constant_prefix=evidence('cache_gate_and_constant_prefix_audit_v1.json',['status','groups','constant_evidence_exact_dense_identity_prefix','equal_actual_vggt_calls','equal_feature_validity_and_observations','interpretation','limitations'])
     constant_native=evidence('constant_native_head_scene1_accuracy_v1.json',['status','baseline','rows','speed_scope'])
     link_name='causal_dense_full_dev_anchor_output_links_v1.json' if (ROOT/'results/causal_dense_full_dev_anchor_output_links_v1.json').exists() else 'causal_dense_first3_scenes_anchor_output_links_v1.json'
@@ -171,13 +172,18 @@ def main():
     dense_geometry_attribution=evidence('causal_dense_geometry_full_strict_attribution_v1.json',['status','full_strict_suite','scope','conclusion','limitations','rows'])
     dense_full2_retrieval=evidence('vggt_dense_retrieval_full2_tracking_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
     dense_full4_retrieval=evidence('vggt_dense_retrieval_full4_tracking_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
-    retrieval_query_pairs=evidence('retrieval_paired_query_outcomes_v1.json',['status','rows','pending','scope','limitations'])
+    retrieval_query_pairs=evidence('retrieval_paired_query_outcomes_v1.json',['status','rows','pending','shared_control_corrections','scope','limitations'])
     readonly_preflight=evidence('preflight_readonly_locked_inputs_v3.json',['status','locked_files_unchanged','raw_gt_files_verified','model_strict_load_performed','new_video_inference_performed','scope'])
     geometry_failures=evidence('geometry_failure_taxonomy_v1.json',['status','summaries','source_rule_snapshots','gt_used_for_gate_classification','limitations'])
     constructed_stress=evidence('constructed_geometry_degeneracy_v1.json',['status','tests_run','observations','encoder_calls','model_strict_load_performed','natural_dataset_failure_causes_identified','full_tracker_inference_performed','speed_eligible','scope','limitations'])
     process_wall_cost=evidence('process_wall_runtime_v1.json',['status','suites','excluded_held_stages','scope','limitations'])
     dense_retrieval_gate=evidence('vggt_tracking_retrieval_prefix_gate_v2.json',['status','full_video','full_strict_suite','scope','limitations'])
     matched_retrieval_gate=evidence('matched_head_tracking_retrieval_prefix_precheck_v2.json',['status','full_video','full_strict_suite','scope','limitations','rows'])
+    matched_full_retrieval={}
+    for backbone in ('gmt','dinov2'):
+        for streams in (2,4):
+            item=evidence(f'{backbone}_dense_head_retrieval_full{streams}_tracking_parity_v1.json',['status','full_video','full_strict_suite','scope','limitations'])
+            if item:matched_full_retrieval[f'{backbone}{streams}']=item
     order_parity=evidence('complete_causal_vggt_view_order_audit_v2.json',['status','scope','limitations','rows'])
     dense_verified=bool(dense and dense_pairs and dense_budget and dense['status']=='PASS' and dense_pairs['status']=='PASS' and dense_pairs['full_strict_suite'] and all(row['added_detections']==0 and row['removed_detections']==0 for row in dense_pairs['rows']))
     if linear_links:
@@ -207,6 +213,7 @@ def main():
         sparse_failure_trace=sparse_trace,identity_anchor_diagnostic=anchor_diagnostic,vggt_resident_parameter_structure=resident_structure,
         original_matrix_complete_zero=complete_zero,encoder_matched_constant_prefix=constant_prefix,constant_native_head_control=constant_native,
         post_cache_source_complete_off=post_cache_off,post_cache_source_complete_zero=post_cache_zero,
+        current_default_source_consistency=current_default_source,
         recent_other_camera_output_link_diagnostic=linear_links,
         headfree_native_prior_prefix=headfree_prefix,motion_fixed_realized_budget_audit=motion_budget,
         headfree_native_prior_complete_scene=headfree_scene,
@@ -234,6 +241,7 @@ def main():
         observed_process_wall_runtime=process_wall_cost,
         dense_tracking_to_retrieval_prefix_gate=dense_retrieval_gate,
         matched_head_tracking_to_retrieval_prefix_gate=matched_retrieval_gate,
+        matched_head_complete_retrieval_tracking_parity=matched_full_retrieval,
         complete_encoder_input_order_control=order_parity,
         retrieval_experiments=retrieval_rows,retrieval_scoring_diagnostics=scoring_rows,retrieval_full_video_evaluation=any(row['full_video'] for row in retrieval_rows),
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip())
@@ -265,6 +273,9 @@ def main():
             later_note=' Later post-cache source '+','.join(sources)+' also passes complete strict5 OFF raw equality.'
             later_note+=(' Its zero-weight full regression also passes.' if post_cache_zero and post_cache_zero['status']=='PASS' else ' Its zero-weight full regression remains running/pending.')
         lines[6:6]=['Exact complete strict5 OFF prediction parity passes for the original immutable c214 source, including every serialized box/score/category/image/track ID and row order.'+zero_note+later_note+' Proof is limited to the explicitly recorded source versions.','']
+    if current_default_source and current_default_source['status']=='RECORDED_DEFAULT_SOURCE_MATCHES':
+        counts=','.join(map(str,current_default_source['matching_source_file_counts']))
+        lines[6:6]=[f"Current recorded-source consistency checks retain all{current_default_source['controls_verified']} complete OFF/zero scene artifacts and original manifests, with {counts} matching recorded GTR/default model/data/driver files per scene and unchanged locked checkpoint/YAML/TRAIN annotation. The changed isolated_stream file is retrieval-specific and has no direct import in the compared unchanged files. This is a source/input consistency check, with no new model load or video inference; original raw parity retains its original offline protocol. Library binaries, exhaustive dynamic dependencies and new optional retrieval modes are outside this check.",'']
     native_seed_note=(f" Paired inference-RNG controls have {len(native_seed_stability['completed_inference_seeds'])}/3 audited strict5 pairs; their detailed scope is reported separately." if native_seed_stability else ' Paired inference-RNG controls remain pending.')
     if constant_native and constant_native['status']=='PASS':
         row=constant_native['rows'][0]
@@ -336,7 +347,7 @@ def main():
             changes=', '.join(f"{row['training_head_seed']}: {row['paired_metric_delta']['CVIDF1']:+.6f}pp / IDSW {row['candidate_metrics']['IDSW']}" for row in feature['rows'])
             lines[6:6]=['Complete dense feature-only B5 TRAIN-head stability is now3/3 over all strict5 at fixed actual inference RNG20261014: '+changes+'. Every trial is paired to the same causal baseline and retains exact detector membership. The third head has lower complete-DEV CVIDF1 than baseline despite fewer ID switches; the feature-only effect is not uniformly positive across the declared heads. No head reselection, coefficient change or stable improvement claim follows. Complete B7 head and fixed-primary-head inference-RNG factors remain separate and pending.','']
     if matched_retrieval_gate and matched_retrieval_gate['status']=='PASS':
-        lines[6:6]=['Matched GMT/DINO tracking-to-retrieval prefix gates pass exact standalone outputs in both scene18/scene1. The original checker rejected a scene1 GEOMETRY_METHOD difference despite both recorded geometry weights being zero; the corrected read-only check records that inactive difference and still enforces all active options, exact head/seed/model/data, actual encoder counts and serialized outputs. Original failed logs and skipped full stages remain retained. Full matched-head producers have a fixed-source serial recovery plan and remain pending; these40-group prefixes are not retrieval-quality or full-video evidence.','']
+        lines[6:6]=['Matched GMT/DINO tracking-to-retrieval prefix gates pass exact standalone outputs in both scene18/scene1. The original checker rejected a scene1 GEOMETRY_METHOD difference despite both recorded geometry weights being zero; the corrected read-only check records that inactive difference and still enforces all active options, exact head/seed/model/data, actual encoder counts and serialized outputs. Original failed logs and skipped full stages remain retained. Complete matched-head producers and remaining recovery stages are reported separately; these40-group prefixes are not retrieval-quality or full-video evidence.','']
     if relation_matrix:
         lines[6:6]=['Complete available primary ablation suites now include independently verified cross-camera output-pair fixes/harms in ablation_results.csv; detailed protocol-separated counts and pending suites are in [GEO_STREAM_IDENTITY_RELATIONS.md](GEO_STREAM_IDENTITY_RELATIONS.md). These conditional unordered GT-matched identity relations can scale quadratically with track length and are not internal Hungarian decision counts.','']
     if dense_geometry_attribution and dense_geometry_attribution['status']=='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS':
@@ -356,13 +367,24 @@ def main():
         pair=next((row for row in retrieval_query_pairs['rows'] if row['method']=='VGGT2'),None)
         producer=next((row for row in retrieval_rows if row['method']=='retrieval_vggt_dense_tracking_2streams_full_v1'),None)
         if pair and producer:
-            lines[6:6]=[f"Complete dense-B7 two-camera tracking-to-retrieval preserves the standalone B7 tracking outputs. On the exact fixed detector cohort, native ranking has Recall1 {pair['method_conditional_recall1']:.6f} versus OFF {pair['baseline_conditional_recall1']:.6f}: {pair['common_eligible_rank1_fixes']} corrected and {pair['common_eligible_rank1_harms']} harmed Recall1 queries among {pair['common_eligible']} common eligible, with eligibility gained/lost {pair['eligible_gained']}/{pair['eligible_lost']}. Actual cost is {producer['vggt_calls']} VGGT calls and descriptive {producer['camera_image_fps']:.6f} camera images/s (static setup excluded). This is a small single-primary-head signal; four-camera publication is reported separately and matched-head producer controls remain pending. See [paired query audit](GEO_STREAM_RETRIEVAL_QUERY_AUDIT.md); aggregate equality in other controls does not imply query equality.",'']
+            lines[6:6]=[f"Complete dense-B7 two-camera tracking-to-retrieval preserves the standalone B7 tracking outputs. On the exact fixed detector cohort, native ranking has Recall1 {pair['method_conditional_recall1']:.6f} versus OFF {pair['baseline_conditional_recall1']:.6f}: {pair['common_eligible_rank1_fixes']} corrected and {pair['common_eligible_rank1_harms']} harmed Recall1 queries among {pair['common_eligible']} common eligible, with eligibility gained/lost {pair['eligible_gained']}/{pair['eligible_lost']}. Actual cost is {producer['vggt_calls']} VGGT calls and descriptive {producer['camera_image_fps']:.6f} camera images/s (static setup excluded). This is a small single-primary-head signal; four-camera publication and completed matched-head producer controls are reported separately, with remaining comparisons pending. See [paired query audit](GEO_STREAM_RETRIEVAL_QUERY_AUDIT.md); aggregate equality in other controls does not imply query equality.",'']
     if dense_full4_retrieval and dense_full4_retrieval['status']=='PASS' and retrieval_query_pairs:
         pairs=[row for row in retrieval_query_pairs['rows'] if row['method']=='VGGT4']
         producer=next((row for row in retrieval_rows if row['method']=='retrieval_vggt_dense_tracking_4streams_full_v1'),None)
         if producer and len(pairs)==2:
             details='; '.join(f"scene{row['query_scene']}: {row['common_eligible']} common eligible/{row['requests']} requests, R1 fixes/harms {row['common_eligible_rank1_fixes']}/{row['common_eligible_rank1_harms']}, MRR delta {row['common_eligible_mrr_delta']:+.6f}, eligibility gained/lost {row['eligible_gained']}/{row['eligible_lost']}" for row in pairs)
             lines[6:6]=[f"Complete dense-B7 four-camera production exactly reproduces standalone B7 tracking in both represented scenes. Verified per-query comparisons against matching OFF production: {details}. Actual cost is {producer['vggt_calls']} VGGT calls and descriptive {producer['camera_image_fps']:.6f} images/s, static setup excluded. The scene18 corrected query is shared with the two-camera experiment, not an independent replication; scene1 has no R1 corrections. The four-camera replay covers two scenes, not all strict5, and establishes no stable or unique VGGT benefit.",'']
+    if retrieval_query_pairs:
+        for overlap in retrieval_query_pairs.get('shared_control_corrections',[]):
+            if not overlap['vggt_rank1_fixes']:continue
+            lines[6:6]=[f"Same ordered-query correction audit: {overlap['vggt_method']} versus {overlap['control_method']}, scene{overlap['query_scene']}, has VGGT/control R1 fixes {overlap['vggt_rank1_fixes']}/{overlap['control_rank1_fixes']}, shared {overlap['shared_rank1_fixes']}, and VGGT fixes not reproduced by this control {overlap['vggt_fixes_not_reproduced_by_this_control']}. Equal aggregate gains alone do not show the same correction. Different corrected queries in one replay do not establish stable unique VGGT information, and shared corrections would only refute uniqueness for those queries.",'']
+        methods={'GMT-head2':('gmt',2),'GMT-head4':('gmt',4),'DINO-head2':('dinov2',2),'DINO-head4':('dinov2',4)}
+        for pair in retrieval_query_pairs['rows']:
+            if pair['method'] not in methods:continue
+            backbone,streams=methods[pair['method']];parity=matched_full_retrieval.get(f'{backbone}{streams}')
+            producer=next((row for row in retrieval_rows if row['method']==f'retrieval_{backbone}_dense_head_tracking_{streams}streams_full_v1'),None)
+            if not parity or parity['status']!='PASS' or not producer:continue
+            lines[6:6]=[f"Complete {pair['method']} tracking-to-retrieval reproduces its standalone matched-head tracking outputs. Fixed scene{pair['query_scene']}: {pair['requests']} exact detector queries/{pair['common_eligible']} common eligible, R1 fixes/harms {pair['common_eligible_rank1_fixes']}/{pair['common_eligible_rank1_harms']}, MRR delta {pair['common_eligible_mrr_delta']:+.6f}, eligibility gained/lost {pair['eligible_gained']}/{pair['eligible_lost']}. First-positive rank/eligibility changes: {pair['changed_rank_or_eligibility_queries']}; this is not an equality claim for every ranked gallery entry or all tracking IDs. Actual producer encoder calls VGGT/DINO {producer['vggt_calls']}/{producer['dinov2_calls']}; descriptive {producer['camera_image_fps']:.6f} images/s excluding setup. Other matched-head comparisons and stability remain separately pending; no unique VGGT or stable speed claim follows.",'']
     for row in metric_rows:
         lines.append(f"| {row['method']} | {row['video_id']} | {'causal' if row['causal_online'] else 'offline'} | {'complete' if row['full_video'] else 'prefix'} | {'no: raw diagnostic' if row['raw_gt_diagnostic'] else 'yes'} | {row['HOTA']:.4f} | {row['AssA']:.4f} | {row['IDF1']:.4f} | {row['CVIDF1']:.4f} | {row['IDSW']} |")
     lines+=['','Causal retrieval (local replay, GT only for post-run evaluation; conditional retrieval quality and coverage reported separately):','',

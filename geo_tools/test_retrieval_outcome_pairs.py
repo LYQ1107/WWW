@@ -1,5 +1,5 @@
 import unittest
-from audit_retrieval_outcomes import compare
+from audit_retrieval_outcomes import compare,shared_rank1_fixes
 
 
 def rows(values):
@@ -24,6 +24,20 @@ class Tests(unittest.TestCase):
         with self.assertRaises(ValueError):compare(baseline,changed)
         changed=rows([(True,1)]);changed[0]['gt_identity']=[18,99]
         with self.assertRaises(ValueError):compare(baseline,changed)
+
+    def test_same_aggregate_gain_is_not_a_shared_query_correction(self):
+        baseline=rows([(True,2),(True,2)]);vggt=rows([(True,1),(True,2)]);control=rows([(True,2),(True,1)])
+        # Even duplicate physical query dictionaries retain distinct ordered
+        # occurrences; a set of serialized boxes would incorrectly merge them.
+        for values in (baseline,vggt,control):values[1]['query']=dict(values[0]['query'])
+        result=shared_rank1_fixes(baseline,vggt,control)
+        self.assertEqual(result['vggt_rank1_fixes'],1);self.assertEqual(result['control_rank1_fixes'],1)
+        self.assertEqual(result['shared_rank1_fixes'],0);self.assertEqual(result['vggt_fixes_not_reproduced_by_this_control'],1)
+
+    def test_same_query_fix_is_retained_even_when_other_rank_changes_differ(self):
+        result=shared_rank1_fixes(rows([(True,2),(True,4)]),rows([(True,1),(True,3)]),rows([(True,1),(True,2)]))
+        self.assertEqual(result['shared_rank1_fixes'],1);self.assertEqual(result['vggt_fixes_not_reproduced_by_this_control'],0)
+        self.assertEqual(result['shared_fix_examples'][0]['query_ordinal'],0)
 
 
 if __name__=='__main__':unittest.main()
