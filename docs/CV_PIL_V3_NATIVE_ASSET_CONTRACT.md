@@ -132,3 +132,24 @@ mutated-state online tracking. Changed Bank/birth and final committed errors
 remain unmeasured; original post-actions cannot be reused as counterfactual
 post-state. HOTA and full-image FPS stay null. Grouping includes person,
 person/camera and fixed50-frame intervals, never independent candidate edges.
+
+The original-error audit is frozen before the first expanded-DEV summary is
+available. `audit_cv_pil_v3_outcomes.py` counts accepted pure-positive repairs
+of the original certified wrong/missed primary decisions separately from
+avoiding damage introduced by C2, rank improvements, UNKNOWN transitions and
+rejection when no legal pure-positive ID exists. The latter is not a reuse
+repair. It reports both new harm cases and aggregate harm counts, requiring
+no increase in known harm counts for admission. Net repairs must also be
+positive over original GMT and involve at least two person groups; doing
+better than a damaging ordinary model alone is not evidence of useful recovery.
+An algorithm gate never self-certifies legal native integration or online FPS.
+
+`cv_pil_v3_call_scoring.py` offers temporary per-call reuse of historical
+projections when every query shares the same physical image/time/camera. The
+projector never consumes the current query, so only the final dot product
+varies by row. Mixed calls use the original implementation. Synthetic tests
+with nonzero heads and the first chronological real call with past history
+match all five score matrices bit-for-bit. This is CPU engineering evidence,
+not complete-video FPS. The already-running P2 worker is left unchanged;
+using this executor later requires recording the executor and verifying
+prediction/action parity, not claiming a different algorithm.
