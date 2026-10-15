@@ -10,9 +10,15 @@ NEW=Path('/data1/liuyeqiang/WWW_trackvggt_runtime')
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--backend',choices=['official','det'],required=True);p.add_argument('--tag',required=True)
+    p.add_argument('--deterministic-math',action='store_true')
     a=p.parse_args();out=NEW/'interfaces'/a.tag
     if out.exists():raise FileExistsError(out)
     out.mkdir(parents=True)
+    if a.deterministic_math:
+        torch.backends.cuda.enable_mem_efficient_sdp(False)
+        torch.backends.cuda.enable_flash_sdp(False)
+        torch.backends.cuda.enable_math_sdp(True)
+        torch.backends.cudnn.deterministic=True
     source=OLD/'sources'/('vggt' if a.backend=='official' else 'VGGT-Det')
     sys.path.insert(0,str(source))
     from vggt.utils.load_fn import load_and_preprocess_images
@@ -74,7 +80,7 @@ def main():
     # a full attention matrix. This is interface validation, not AG selection.
     indices=torch.linspace(0,layers[4].shape[-2]-1,32).long().to(layers[4].device)
     np.savez_compressed(out/'probe_positions.npz',**{str(k):v[0,:,indices].float().cpu().numpy() for k,v in layers.items()},attention=attention.cpu().numpy())
-    report=dict(status='PASS_REAL_TWO_VIEW_INTERFACE',backend=a.backend,source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip(),
+    report=dict(status='PASS_REAL_TWO_VIEW_INTERFACE',backend=a.backend,deterministic_math=a.deterministic_math,source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=source,text=True).strip(),
         source_sha256={str(path):sha256(path) for path in [source/'vggt/models/aggregator.py',source/'vggt/layers/attention.py',source/'vggt/layers/block.py']},
         checkpoint=str(checkpoint),checkpoint_sha256=sha256(checkpoint),input_shape=list(images.shape),input_range=[float(images.min()),float(images.max())],
         image_ids=[row['image_id'] for row in records],input_paths=[row['file_name'] for row in records],
