@@ -48,6 +48,8 @@ def main():
     suite=json.loads(suite_path.read_text())
     if suite['status']!='PASS' or suite['causal_online'] or not suite['full_video'] or suite['video_ids']!=strict:
         raise ValueError('locked original offline suite scope changed')
+    for path,digest in suite['raw_gt_sha256'].items():
+        if sha256(path)!=digest:raise ValueError('locked raw GT changed: '+path)
     for scene,record in lock['strict_video_runs'].items():
         if sha256(record['run_manifest'])!=record['manifest_sha256'] or sha256(record['prediction'])!=record['prediction_sha256']:
             raise ValueError('locked inference artifact changed: '+scene)
@@ -60,6 +62,7 @@ def main():
     if any(sha256(path)!=digest for path,digest in original_hashes.items()):raise ValueError('lock changed during verification')
     report=dict(status='LOCKED_INPUTS_AND_STRICT_MODEL_LOAD_VERIFIED' if args.build_model else 'LOCKED_INPUTS_VERIFIED_MODEL_LOAD_NOT_RUN',
         locked_files_unchanged=True,locked_file_sha256=original_hashes,strict_video_ids=strict,
+        raw_gt_files_verified=len(suite['raw_gt_sha256']),
         locked_suite_sha256=sha256(suite_path),model_strict_load_performed=args.build_model,loaded_state_keys=loaded_keys,
         new_video_inference_performed=False,source_checkpoint_sha256=lock['checkpoint_sha256'],
         scope='current model/config/annotation/split and retained original offline baseline artifacts only; preserves all lock bytes; does not replace causal baseline, inference regressions or final completion audit',provenance=provenance())
