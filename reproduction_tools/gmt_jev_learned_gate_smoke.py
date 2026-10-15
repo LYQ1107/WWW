@@ -81,7 +81,8 @@ class BoundedBuffer:
    retained_keys={k:[list(x[2]['key']) for x in p] for k,p in self.parts.items()})
 
 def loss(head,item):
- x=item['features'].cuda();base=item['raw_scores'].cuda();lengths=item['lengths'].cuda();y=item['targets'].cuda();correct=item['correct'].cuda()
+ device=next(head.parameters()).device
+ x=item['features'].to(device);base=item['raw_scores'].to(device);lengths=item['lengths'].to(device);y=item['targets'].to(device);correct=item['correct'].to(device)
  gate,delta=head(x);residual=CAP*gate*delta;new=base+residual*lengths[None]
  assert torch.isfinite(new).all() and (residual.abs()<=CAP).all()
  known=torch.where(y>=0)[0];assert len(known)

@@ -61,9 +61,10 @@ def native_assignment(scores,lengths,threshold=.1):
 
 def collect(video,kind='observe',frames=256,records=True,report=True,diagnostic_sample_observer=None):
  from gtr.modeling.gmt_jev import IdentityCorrection
- values,total,images=metadata(video);frames=min(frames,total);seed();m,cfg,_=model();actor=IdentityCorrection(kind).cuda().eval();m.gmt_identity_correction=actor;seed()
+ values,total,images=metadata(video);frames=min(frames,total);seed();m,cfg,_=model()
  frozen_parameters=sum(p.numel() for p in m.parameters())
  assert not any(p.requires_grad for p in m.parameters()), 'Opportunity sampling cannot train GMT'
+ actor=IdentityCorrection(kind).cuda().eval();m.gmt_identity_correction=actor;seed()
  labeler=OfflineCertificates(video,images);samples=[];stats=collections.Counter();groups=set();pending={};boot=[False];last=[0.];begin=time.monotonic();boundary={};init_map={}
  def before_native(**d):
   boundary['id_count']=d['id_count']
