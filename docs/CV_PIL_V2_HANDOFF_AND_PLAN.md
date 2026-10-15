@@ -1,7 +1,7 @@
 
 # CV-PIL V2: separation from all-TRAIN error mining
 
-2026-10-15. Status: DESIGN_AND_HANDOFF_PENDING. This is a research plan, NOT new model performance.
+2026-10-15. Status: P0/P1_COMPLETE; INSUFFICIENT_NATIVE_OPPORTUNITY / NO_UNIQUE_PREDICTIVE_EFFECT on the frozen 1000/300 cohort; P2 WAITING_EXTERNAL_FROZEN_MINER_RELEASE. See [the actual matched-control results](CV_PIL_V2_REAL_RESULTS_20261015_ZH.md). The protocol below remains the inherited research plan; no native tracking success is claimed.
 
 ## Division of labor
 
