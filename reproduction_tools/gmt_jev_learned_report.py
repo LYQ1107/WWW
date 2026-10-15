@@ -26,7 +26,8 @@ def main():
  if pre.exists():
   p=read(pre);lines+=['',f"认证监督前置检查：{p['status']}；临时缓冲峰值 {p['buffer']['peak_accounted_buffer_bytes']/2**20:.3f} MiB。",
    'TRAIN与时间留出桶计数：', '', '```json',json.dumps(p['counts'],ensure_ascii=False,indent=2),'```',
-   '时间留出桶不参与训练；GT只作离线认证，UNKNOWN、不唯一、阈值不可达及无联合有界纠错见证的错误行被mask。原生完整矩阵仍参与训练求解，UNKNOWN候选竞争不能忽略。']
+   '时间留出桶的矩阵不参与梯度更新；GT只作离线认证，UNKNOWN、不唯一、阈值不可达及无联合有界纠错见证的错误行被mask。原生完整矩阵仍参与训练求解，UNKNOWN候选竞争不能忽略。',
+   '时间桶并非严格标签隔离：原生轨迹与离线历史认证跨桶连续，较早留出桶的历史GT可参与随后TRAIN目标的历史认证。该桶仅用于诊断，不报告为独立或严格标签隔离验证；当前完整闭环仅在已暴露TRAIN16开发视频上评测。']
  if trained:
   lines+=['','| 头 | 固定终点 | 新增参数 | 训练样本顺序 SHA |','|---|---:|---:|---|']
   for kind,case in trained['cases'].items():
