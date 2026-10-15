@@ -30,7 +30,7 @@ def merge(base,other):
 
 def main():
     repo=Path(__file__).resolve().parents[1];runtime=Path('/data1/liuyeqiang/WWW_pirga_runtime_20261016');root=repo/'results/PIRGA_FULLTRAIN';now=datetime.datetime.now(datetime.timezone.utc).isoformat()
-    families={'PHASE2':('phase2_fixed_native_replays_v1','PREDICTION_ABLATIONS.csv'),'ORDINARY_DECISION':('ordinary_fixed_native_replays_v1','NATIVE_DECISION_ABLATIONS.csv')};completed={};group_rows=[]
+    families={'PHASE2':('phase2_fixed_native_replays_v1','PREDICTION_ABLATIONS.csv'),'ORDINARY_DECISION':('ordinary_fixed_native_replays_v1','NATIVE_DECISION_ABLATIONS.csv'),'EXHAUSTIVE_MARGIN':('exhaustive_margin_native_replays_v1','EXHAUSTIVE_MARGIN_ABLATIONS.csv')};completed={};group_rows=[]
     for family,(local,table) in families.items():
         summary=[];completed[family]=[]
         for epoch in [1,3,5]:
@@ -44,7 +44,7 @@ def main():
             result=json.loads((source/'RESULTS.json').read_text());completed[family].append(epoch)
             for arm,m in result['methods'].items():
                 native=result['mechanism']['methods'][arm]
-                summary.append(dict(family=family,epoch=epoch,method=arm,top1=m['top1'],mrr=m['mrr'],original_error_repairs=native['original_error_repairs'],
+                summary.append(dict(family=family,epoch=epoch,training_queries_per_epoch=113453 if family=='EXHAUSTIVE_MARGIN' else 113415,matched_Phase2_update_budget=family!='EXHAUSTIVE_MARGIN',method=arm,top1=m['top1'],mrr=m['mrr'],original_error_repairs=native['original_error_repairs'],
                     harms_to_original_correct=native['known_harms_to_original_correct'],original_correct_to_unknown=native['original_correct_to_unknown'],
                     original_unknown_to_known_wrong=native['original_unknown_to_known_wrong'],repair_person_groups=native['repair_person_scene_groups'],
                     primary_unknown=m['primary_unknown'],stage='SAME_STATE_NATIVE_REPLAY_ONLY',scientific_success=False))
@@ -66,7 +66,7 @@ def main():
     if group_rows:
         with (root/'PER_PERSON_AND_SCENE_RESULTS.csv').open('w') as f:
             writer=csv.DictWriter(f,fieldnames=list(group_rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(group_rows)
-    for family,local in [('PHASE2','phase2_innovations_matched_v1'),('ORDINARY_DECISION','ordinary_decision_matched_v1')]:
+    for family,local in [('PHASE2','phase2_innovations_matched_v1'),('ORDINARY_DECISION','ordinary_decision_matched_v1'),('EXHAUSTIVE_MARGIN','exhaustive_margin_matched_v1')]:
         fit=runtime/local
         if (fit/'STATUS.json').exists():(root/(family+'_TRAINING_STATUS_SNAPSHOT.json')).write_text(json.dumps(dict(observed_utc=now,training=json.loads((fit/'STATUS.json').read_text()),snapshot_not_live_monitor=True),indent=2)+'\n')
         for name in ['CHECKPOINTS.json','TRAINING_EPOCH_COVERAGE.json','RESULTS.json','TRAINING_CURVES.csv']:
