@@ -206,6 +206,33 @@ def main():
         fig.suptitle('Complete causal development: keyframe budget and identity quality',fontsize=12)
         fig.text(.5,.015,'Primary head seed; single V100 timings. Equal CVIDF1 does not imply identical full predictions or stable Pareto superiority.',ha='center',fontsize=8)
         fig.tight_layout(rect=(0,.055,1,.94));fig.savefig(out/'causal_complete_interval_curve.png',dpi=180);fig.savefig(out/'causal_complete_interval_curve.pdf');plt.close(fig)
+    attribution_path=ROOT/'results/causal_dense_geometry_full_strict_attribution_v1.json'
+    if attribution_path.exists():
+        attribution=json.loads(attribution_path.read_text())
+        if attribution['status']!='EXACT_FEATURE_JOINT_FULL_STRICT_OUTPUTS' or not attribution['full_strict_suite']:
+            raise ValueError('full feature/joint attribution required for current figure')
+        sources[str(attribution_path)]=sha256(attribution_path)
+        base_path=ROOT/'results/causal_B0_strict_suite_v1_metrics.json';base=json.loads(base_path.read_text())['metrics'];sources[str(base_path)]=sha256(base_path)
+        cases=[('GMT learned head','C_gmt_head_dense_causal_strict_suite_v1'),('DINO learned head','C_dino_head_dense_causal_strict_suite_v1'),
+            ('VGGT feature only','causal_B5_dense_seed20261014_strict_suite_v1'),('VGGT + geometry','causal_B7_fixed_k1_strict_suite_v1'),
+            ('Head-free fixed prior','native_prior_seed20261014_strict_suite_v1')]
+        labels=[];values=[]
+        for label,name in cases:
+            path=ROOT/'results'/f'{name}_metrics.json';result=json.loads(path.read_text())
+            if result['status']!='PASS' or result['video_ids']!=[1,10,11,18,19] or not result['causal_online'] or not result['full_video']:
+                raise ValueError('complete matched causal attribution suite required')
+            sources[str(path)]=sha256(path);labels.append(label);values.append(result['metrics'])
+        colors=['#777777','#bd8a45','#806399','#806399','#448b78']
+        fig,axes=plt.subplots(1,2,figsize=(10.5,4.5),sharey=True)
+        for axis,delta,title in [(axes[0],[value['CVIDF1']-base['CVIDF1'] for value in values],'CVIDF1 change (percentage points)'),
+                                  (axes[1],[base['IDSW']-value['IDSW'] for value in values],'ID switches avoided')]:
+            axis.barh(np.arange(len(labels)),delta,color=colors);axis.axvline(0,color='black',linewidth=.8);axis.grid(axis='x',alpha=.2);axis.set_xlabel(title)
+            axis.margins(x=.2)
+            for index,value in enumerate(delta):axis.annotate(f'{value:+.6f}' if axis is axes[0] else str(value),(value,index),xytext=(4,0),textcoords='offset points',va='center',fontsize=8)
+        axes[0].set_yticks(np.arange(len(labels)),labels);axes[0].invert_yaxis()
+        fig.suptitle('Complete causal strict5: attribution against frozen GMT',fontsize=12)
+        fig.text(.5,.012,'Primary TRAIN-head seed; inference seed20261014. Feature/joint raw outputs are exact; no stable architecture or speed claim.',ha='center',fontsize=8)
+        fig.tight_layout(rect=(0,.05,1,.94));fig.savefig(out/'causal_full_dev_attribution.png',dpi=180);fig.savefig(out/'causal_full_dev_attribution.pdf');plt.close(fig)
     save_json(out/'manifest.json', dict(status='IN_PROGRESS_FIGURES', source_artifacts=sources,
               outputs={path.name:sha256(path) for path in out.iterdir() if path.suffix in {'.png','.pdf'}},
               provenance=provenance(), limitations='incomplete research matrix; no replicate confidence intervals or accuracy/runtime Pareto superiority inferred'))
