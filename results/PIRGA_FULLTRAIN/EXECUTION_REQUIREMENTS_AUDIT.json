@@ -1,5 +1,5 @@
 {
-  "observed_utc": "2026-10-15T22:59:40.976381+00:00",
+  "observed_utc": "2026-10-15T23:01:28.473488+00:00",
   "status": "INCOMPLETE_UNTIL_ALL_REQUIRED_EVIDENCE",
   "sufficient_to_mark_goal_complete": false,
   "scientific_success": false,
@@ -60,7 +60,11 @@
         "C3",
         "C4"
       ],
-      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true
+      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true,
+      "gradient_health": {
+        "status": "PENDING_FINAL_FIT_RESULT"
+      },
+      "checkpoint_weights_finite": true
     },
     "PHASE2": {
       "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
@@ -115,7 +119,11 @@
       "expected_per_arm_total_updates": 567075,
       "actual_checkpoint_bytes_verified": true,
       "engineering_step300_checkpoints_excluded": [],
-      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true
+      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true,
+      "gradient_health": {
+        "status": "PENDING_FINAL_FIT_RESULT"
+      },
+      "checkpoint_weights_finite": true
     },
     "ORDINARY": {
       "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
@@ -169,7 +177,21 @@
       "expected_per_arm_total_updates": 567075,
       "actual_checkpoint_bytes_verified": true,
       "engineering_step300_checkpoints_excluded": [],
-      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true
+      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true,
+      "gradient_health": {
+        "status": "PASS_REAL_FINAL_COUNTERS",
+        "zero_gradient_updates": [
+          333599,
+          1926
+        ],
+        "nonzero_gradient_updates": [
+          233476,
+          565149
+        ],
+        "actual_per_arm_optimizer_steps": 567075,
+        "qualification": "Zero-gradient visits are preserved explicitly; visits are not independent effective gradients. No claim of global optimization convergence."
+      },
+      "checkpoint_weights_finite": true
     },
     "EXHAUSTIVE": {
       "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
@@ -223,7 +245,21 @@
       "expected_per_arm_total_updates": 567265,
       "actual_checkpoint_bytes_verified": true,
       "engineering_step300_checkpoints_excluded": [],
-      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true
+      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true,
+      "gradient_health": {
+        "status": "PASS_REAL_FINAL_COUNTERS",
+        "zero_gradient_updates": [
+          337641,
+          2404
+        ],
+        "nonzero_gradient_updates": [
+          229624,
+          564861
+        ],
+        "actual_per_arm_optimizer_steps": 567265,
+        "qualification": "Zero-gradient visits are preserved explicitly; visits are not independent effective gradients. No claim of global optimization convergence."
+      },
+      "checkpoint_weights_finite": true
     },
     "LEGACY": {
       "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
@@ -245,7 +281,11 @@
       "expected_per_arm_total_updates": 534000,
       "actual_checkpoint_bytes_verified": true,
       "engineering_step300_checkpoints_excluded": [],
-      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true
+      "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true,
+      "gradient_health": {
+        "status": "PENDING_FINAL_FIT_RESULT"
+      },
+      "checkpoint_weights_finite": true
     }
   },
   "deliverables": {

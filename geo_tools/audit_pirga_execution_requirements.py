@@ -1,6 +1,7 @@
 """Evidence audit of fixed scientific obligations; never marks the Goal achieved."""
 import csv,datetime,json
 from pathlib import Path
+import torch
 from pirga_indexed_store import sha
 from cv_pil_native_handoff import safe_torch_load
 
@@ -32,6 +33,7 @@ def main():
             for spec in json.loads(records.read_text())['checkpoints']:
                 if sha(spec['path'])!=spec['sha256']:raise ValueError('Checkpoint mutated '+name)
                 state=safe_torch_load(spec['path']);arm=spec['arm'];epoch=spec['epoch']
+                if not all(torch.isfinite(value).all() for value in state['state_dict'].values()):raise ValueError('Nonfinite checkpoint weights '+name)
                 if name=='PHASE1' and spec.get('kind')=='step300_diagnostic':
                     if epoch is not None or state['epoch'] is not None or arm not in arms or state['arm']!=arm or state['step']!=300 or state['seed']!=20261015 or state['protocol_sha256']!=digest:raise ValueError('Wrong diagnostic checkpoint')
                     diagnostics.append(arm);continue
@@ -51,11 +53,17 @@ def main():
                 for field in ['person','positive_covered','source_primary_state']+[arm+'_'+suffix for arm in ['C0','C1'] for suffix in ['rank_id','rr','rank','accepted_id','primary']]:
                     if row[field]!=old[key][field]:raise ValueError('Frozen control/supervision drift '+str((name,epoch,key,field)))
             replays.append(epoch)
-        full=epochs==[1,2,3,4,5] and len(checked)==len(arms)*3 and replays==[1,3,5]
+        terminal=runtime/fit/'RESULTS.json';health=dict(status='PENDING_FINAL_FIT_RESULT')
+        if terminal.exists():
+            final=json.loads(terminal.read_text());steps=final['per_arm_optimizer_steps'];zeros=final['zero_gradient_updates'];nonzeros=final['nonzero_gradient_updates']
+            if steps!=n*5 or len(zeros)!=len(arms) or len(nonzeros)!=len(arms) or any(z<0 or g<=0 or z+g!=steps for z,g in zip(zeros,nonzeros)):raise ValueError('Optimizer/gradient coverage breach '+name)
+            health=dict(status='PASS_REAL_FINAL_COUNTERS',zero_gradient_updates=zeros,nonzero_gradient_updates=nonzeros,
+                actual_per_arm_optimizer_steps=steps,qualification='Zero-gradient visits are preserved explicitly; visits are not independent effective gradients. No claim of global optimization convergence.')
+        full=epochs==[1,2,3,4,5] and len(checked)==len(arms)*3 and replays==[1,3,5] and health['status']=='PASS_REAL_FINAL_COUNTERS'
         output['fixed_families'][name]=dict(status='PASS_FIXED_FIT_AND_REPLAYS' if full else 'PENDING_REGISTERED_FIXED_ENDPOINTS',protocol_sha256=digest,
             source_checks=source_checks,completed_full_epochs=epochs,expected_queries_per_epoch=n,checked_checkpoint_endpoints=checked,
             completed_full_DEV12_replays=replays,expected_per_arm_total_updates=n*5,actual_checkpoint_bytes_verified=True,engineering_step300_checkpoints_excluded=diagnostics,
-            completed_replay_C0_C1_and_supervision_exact_frozen_reference=True)
+            completed_replay_C0_C1_and_supervision_exact_frozen_reference=True,gradient_health=health,checkpoint_weights_finite=True)
     records=runtime/'legacy_canonical_coverage_fits_v1/canonical300/CHECKPOINTS.json';small=[]
     if records.exists():
         digest=sha(runtime/'LEGACY_CANONICAL_COVERAGE_PROTOCOL.json')
