@@ -1614,6 +1614,24 @@
       "sha256": "3aabf35ca2f63e514040615d39429177746708b0b3a58f7b4e57cd936460d62e"
     },
     {
+      "method": "causal_B5_dense_seed20261015_strict_suite_v1_v11",
+      "video_id": 11,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 83.32333355471356,
+      "DetA": 87.57778817743619,
+      "AssA": 79.27806612447998,
+      "IDF1": 92.06475057813016,
+      "MOTA": 99.01598203671907,
+      "IDSW": 17,
+      "CVIDF1": 92.06475057813016,
+      "CVMA_sequential": 99.0093778893145,
+      "CVMA": 99.01598203671907,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261015_strict_suite_v1_v11/predictions.metrics.json",
+      "sha256": "a32720365795b01de90a727f61fef07bac293139ec730424020cd57ade78f9cf"
+    },
+    {
       "method": "causal_B5_dense_seed20261016_strict_suite_v1_v1",
       "video_id": 1,
       "full_video": true,
@@ -1630,6 +1648,24 @@
       "CVMA": 90.62571103526736,
       "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261016_strict_suite_v1_v1/predictions.metrics.json",
       "sha256": "53cc200f096c803485ddafedf8b4797eafad617d3f1d56e6493df13629a35e3d"
+    },
+    {
+      "method": "causal_B5_dense_seed20261016_strict_suite_v1_v10",
+      "video_id": 10,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 80.97974631023924,
+      "DetA": 80.96227208325173,
+      "AssA": 80.99851606117629,
+      "IDF1": 98.93639802983796,
+      "MOTA": 97.89242123190462,
+      "IDSW": 23,
+      "CVIDF1": 98.93639802983796,
+      "CVMA_sequential": 97.89242123190462,
+      "CVMA": 97.89242123190462,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B5_dense_seed20261016_strict_suite_v1_v10/predictions.metrics.json",
+      "sha256": "2fcf1b747900f9ba189e5822f3714b3ece945a14dccab95ab0acac8387c34b02"
     },
     {
       "method": "causal_B7_dense_seed20261015_strict_suite_v1_v1",
@@ -4120,7 +4156,7 @@
   },
   "resource_ledger": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/resource_ledger_v1.json",
-    "sha256": "e199519cf0bcab39e596a2f60236bb81b783cea1b4686d5129b0cd3dadf84afe",
+    "sha256": "1e875dad7169c91638974edf257cfcf78878eec708dce4e1445f0d2633b06973",
     "status": "MEASURED_SCOPE_LEDGER_NOT_FINAL_MATRIX",
     "scopes": {
       "cuda": "PyTorch per-process allocator peak, not all processes or complete device occupancy",
@@ -7276,6 +7312,67 @@
       }
     ]
   },
+  "explicit_physical_camera_input_contract": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/physical_camera_input_contract_v1.json",
+    "sha256": "075a8ff617499ca3b68e862ae7c967240ec854cfff8d1478d59ec14fc421faaf",
+    "status": "PASS_EXPLICIT_CAMERA_INPUT_CONTRACT",
+    "full_video": false,
+    "full_strict_suite": false,
+    "max_frames": 40,
+    "speed_eligible": false,
+    "scope": "explicit physical-ID input adapter with frozen original tracker; reverse/alternate caller order, restore outputs to caller positions, then exact canonical physical-order serialization against original real scene1 prefix",
+    "limitations": "does not make internal GTA/Hungarian or stochastic query order invariant; original negative-order fixtures retained; no full-video order, valid-pose parity or speed claim; existing production inputs already use canonical physical camera order",
+    "rows": [
+      {
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/pinned_sources/7b86df1c/manifests/causal_B0_strict_suite_v1_sources.json",
+        "variant": "reverse_every_group",
+        "exact_restored_predictions": true,
+        "actual_vggt_calls": 0,
+        "geometry_valid_calls": 0,
+        "failures": 0,
+        "predictions": "/data1/liuyeqiang/WWW_vggt_geo_runtime/camera_order/physical_camera_contract_v1/causal_B0_strict_suite_v1_sources_reverse_every_group.json",
+        "predictions_sha256": "91de482aef4d0d888ab18ca90ae54992868d1844febfbc56c5c1c768e1e4be04",
+        "canonical_fixture_sha256": "91de482aef4d0d888ab18ca90ae54992868d1844febfbc56c5c1c768e1e4be04",
+        "standalone_manifest_sha256": "3b6721b688617daffd9392b4856761190a04d6a07e8402fe2e13c56968ec3371"
+      },
+      {
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/pinned_sources/7b86df1c/manifests/causal_B0_strict_suite_v1_sources.json",
+        "variant": "alternate_group_order",
+        "exact_restored_predictions": true,
+        "actual_vggt_calls": 0,
+        "geometry_valid_calls": 0,
+        "failures": 0,
+        "predictions": "/data1/liuyeqiang/WWW_vggt_geo_runtime/camera_order/physical_camera_contract_v1/causal_B0_strict_suite_v1_sources_alternate_group_order.json",
+        "predictions_sha256": "91de482aef4d0d888ab18ca90ae54992868d1844febfbc56c5c1c768e1e4be04",
+        "canonical_fixture_sha256": "91de482aef4d0d888ab18ca90ae54992868d1844febfbc56c5c1c768e1e4be04",
+        "standalone_manifest_sha256": "3b6721b688617daffd9392b4856761190a04d6a07e8402fe2e13c56968ec3371"
+      },
+      {
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/pinned_sources/7b86df1c/manifests/causal_B7_fixed_k1_strict_suite_v1_sources.json",
+        "variant": "reverse_every_group",
+        "exact_restored_predictions": true,
+        "actual_vggt_calls": 80,
+        "geometry_valid_calls": 0,
+        "failures": 0,
+        "predictions": "/data1/liuyeqiang/WWW_vggt_geo_runtime/camera_order/physical_camera_contract_v1/causal_B7_fixed_k1_strict_suite_v1_sources_reverse_every_group.json",
+        "predictions_sha256": "a228f576bdb78ab90a06eccbaa178ae268c8c5b973af1632ffdf77388df31ead",
+        "canonical_fixture_sha256": "a228f576bdb78ab90a06eccbaa178ae268c8c5b973af1632ffdf77388df31ead",
+        "standalone_manifest_sha256": "8d4973a8dc608e16936d93f8cf33cd1e3319a8530501f6a51a89867236402c4c"
+      },
+      {
+        "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/pinned_sources/7b86df1c/manifests/causal_B7_fixed_k1_strict_suite_v1_sources.json",
+        "variant": "alternate_group_order",
+        "exact_restored_predictions": true,
+        "actual_vggt_calls": 80,
+        "geometry_valid_calls": 0,
+        "failures": 0,
+        "predictions": "/data1/liuyeqiang/WWW_vggt_geo_runtime/camera_order/physical_camera_contract_v1/causal_B7_fixed_k1_strict_suite_v1_sources_alternate_group_order.json",
+        "predictions_sha256": "a228f576bdb78ab90a06eccbaa178ae268c8c5b973af1632ffdf77388df31ead",
+        "canonical_fixture_sha256": "a228f576bdb78ab90a06eccbaa178ae268c8c5b973af1632ffdf77388df31ead",
+        "standalone_manifest_sha256": "8d4973a8dc608e16936d93f8cf33cd1e3319a8530501f6a51a89867236402c4c"
+      }
+    ]
+  },
   "native_prior_paired_inference_seed_stability": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/native_prior_inference_seed_stability_v1.json",
     "sha256": "399bfb342cdfb1efa6eae2702ac0f7314df6913ef4ef1c08d088b84bb1f4f8a6",
@@ -7485,9 +7582,18 @@
     "scope": "complete scene outputs against complete standalone references; exact boxes/scores/classes/image/track IDs and row order; native retrieval receives no added tracking vectors",
     "limitations": "output equivalence at the stated scope; not retrieval quality, hidden-state equality, runtime repeatability or a substitute for future-prefix causality tests"
   },
+  "dense_b7_complete_four_camera_retrieval_tracking_parity": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/vggt_dense_retrieval_full4_tracking_parity_v1.json",
+    "sha256": "3c012085f184841593d952d5469d1fafafb8ebd05e8462667cf3054504e440a1",
+    "status": "PASS",
+    "full_video": true,
+    "full_strict_suite": false,
+    "scope": "complete scene outputs against complete standalone references; exact boxes/scores/classes/image/track IDs and row order; native retrieval receives no added tracking vectors",
+    "limitations": "output equivalence at the stated scope; not retrieval quality, hidden-state equality, runtime repeatability or a substitute for future-prefix causality tests"
+  },
   "paired_retrieval_query_outcomes": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/retrieval_paired_query_outcomes_v1.json",
-    "sha256": "5e107b41538bec5da2d416d219a455b687c9a5956e28c1079cbd8ceed9282d21",
+    "sha256": "a627e43d7e09a419319f3acd34fb0047b994a7420fe6e4833fb06d7501b2bdaa",
     "status": "PARTIAL_VERIFIED_COMPARISONS",
     "rows": [
       {
@@ -7734,6 +7840,87 @@
         "method_conditional_recall1": 0.9783783783783784
       },
       {
+        "method": "VGGT4",
+        "query_scene": 1,
+        "reference": "retrieval_gmt_4streams_full_v1_scene1_v1.json",
+        "candidate": "retrieval_vggt_dense_tracking_4streams_full_v1_scene1_v1.json",
+        "requests": 228,
+        "identical_detector_query_cohort": true,
+        "identical_query_gt_labels": true,
+        "baseline_eligible": 185,
+        "method_eligible": 185,
+        "common_eligible": 185,
+        "identical_eligible_query_set": true,
+        "eligible_gained": 0,
+        "eligible_lost": 0,
+        "common_eligible_rank1_fixes": 0,
+        "common_eligible_rank1_harms": 0,
+        "common_eligible_rank1_delta": 0.0,
+        "common_eligible_mrr_delta": 0.0008925848925848927,
+        "all_request_rank1_hit_delta": 0,
+        "all_request_rank1_success_delta": 0.0,
+        "changed_rank_or_eligibility_queries": 2,
+        "examples": [
+          {
+            "query": {
+              "scene": 1,
+              "camera": 2,
+              "round_id": 100,
+              "image_id": 1033,
+              "frame_id": 101,
+              "bbox": [
+                1281.6168212890625,
+                494.1288757324219,
+                1617.288330078125,
+                1060.087646484375
+              ]
+            },
+            "baseline": {
+              "eligible": true,
+              "first_positive_rank": 3,
+              "positive_gallery_clips": 4,
+              "published_track_id": 6
+            },
+            "method": {
+              "eligible": true,
+              "first_positive_rank": 2,
+              "positive_gallery_clips": 4,
+              "published_track_id": 4
+            }
+          },
+          {
+            "query": {
+              "scene": 1,
+              "camera": 2,
+              "round_id": 220,
+              "image_id": 1153,
+              "frame_id": 221,
+              "bbox": [
+                953.8343505859375,
+                462.5153503417969,
+                1290.458251953125,
+                1083.4775390625
+              ]
+            },
+            "baseline": {
+              "eligible": true,
+              "first_positive_rank": 25,
+              "positive_gallery_clips": 7,
+              "published_track_id": 51
+            },
+            "method": {
+              "eligible": true,
+              "first_positive_rank": 26,
+              "positive_gallery_clips": 7,
+              "published_track_id": 48
+            }
+          }
+        ],
+        "examples_limit": 50,
+        "baseline_conditional_recall1": 0.9783783783783784,
+        "method_conditional_recall1": 0.9783783783783784
+      },
+      {
         "method": "Prior4",
         "query_scene": 18,
         "reference": "retrieval_gmt_4streams_full_v1_scene18_v1.json",
@@ -7786,6 +7973,87 @@
         "examples_limit": 50,
         "baseline_conditional_recall1": 0.9773462783171522,
         "method_conditional_recall1": 0.9773462783171522
+      },
+      {
+        "method": "VGGT4",
+        "query_scene": 18,
+        "reference": "retrieval_gmt_4streams_full_v1_scene18_v1.json",
+        "candidate": "retrieval_vggt_dense_tracking_4streams_full_v1_scene18_v1.json",
+        "requests": 598,
+        "identical_detector_query_cohort": true,
+        "identical_query_gt_labels": true,
+        "baseline_eligible": 309,
+        "method_eligible": 309,
+        "common_eligible": 309,
+        "identical_eligible_query_set": true,
+        "eligible_gained": 0,
+        "eligible_lost": 0,
+        "common_eligible_rank1_fixes": 1,
+        "common_eligible_rank1_harms": 0,
+        "common_eligible_rank1_delta": 0.003236245954692557,
+        "common_eligible_mrr_delta": 0.0018878101402373245,
+        "all_request_rank1_hit_delta": 1,
+        "all_request_rank1_success_delta": 0.0016722408026755853,
+        "changed_rank_or_eligibility_queries": 2,
+        "examples": [
+          {
+            "query": {
+              "scene": 18,
+              "camera": 2,
+              "round_id": 600,
+              "image_id": 44466,
+              "frame_id": 601,
+              "bbox": [
+                1598.0068359375,
+                552.6897583007812,
+                1618.1890869140625,
+                588.4749145507812
+              ]
+            },
+            "baseline": {
+              "eligible": true,
+              "first_positive_rank": 4,
+              "positive_gallery_clips": 7,
+              "published_track_id": 4
+            },
+            "method": {
+              "eligible": true,
+              "first_positive_rank": 3,
+              "positive_gallery_clips": 7,
+              "published_track_id": 4
+            }
+          },
+          {
+            "query": {
+              "scene": 18,
+              "camera": 1,
+              "round_id": 1000,
+              "image_id": 43837,
+              "frame_id": 1001,
+              "bbox": [
+                509.864013671875,
+                467.2038269042969,
+                530.7645263671875,
+                500.93304443359375
+              ]
+            },
+            "baseline": {
+              "eligible": true,
+              "first_positive_rank": 2,
+              "positive_gallery_clips": 8,
+              "published_track_id": 4
+            },
+            "method": {
+              "eligible": true,
+              "first_positive_rank": 1,
+              "positive_gallery_clips": 9,
+              "published_track_id": 4
+            }
+          }
+        ],
+        "examples_limit": 50,
+        "baseline_conditional_recall1": 0.9773462783171522,
+        "method_conditional_recall1": 0.9805825242718447
       }
     ],
     "pending": [
@@ -7802,12 +8070,6 @@
         "candidate": "retrieval_dinov2_dense_head_tracking_2streams_full_v1_scene18_v1.json"
       },
       {
-        "method": "VGGT4",
-        "query_scene": 1,
-        "reference": "retrieval_gmt_4streams_full_v1_scene1_v1.json",
-        "candidate": "retrieval_vggt_dense_tracking_4streams_full_v1_scene1_v1.json"
-      },
-      {
         "method": "GMT-head4",
         "query_scene": 1,
         "reference": "retrieval_gmt_4streams_full_v1_scene1_v1.json",
@@ -7818,12 +8080,6 @@
         "query_scene": 1,
         "reference": "retrieval_gmt_4streams_full_v1_scene1_v1.json",
         "candidate": "retrieval_dinov2_dense_head_tracking_4streams_full_v1_scene1_v1.json"
-      },
-      {
-        "method": "VGGT4",
-        "query_scene": 18,
-        "reference": "retrieval_gmt_4streams_full_v1_scene18_v1.json",
-        "candidate": "retrieval_vggt_dense_tracking_4streams_full_v1_scene18_v1.json"
       },
       {
         "method": "GMT-head4",
@@ -7850,6 +8106,163 @@
     "model_strict_load_performed": false,
     "new_video_inference_performed": false,
     "scope": "current model/config/annotation/split and retained original offline baseline artifacts only; preserves all lock bytes; does not replace causal baseline, inference regressions or final completion audit"
+  },
+  "recorded_geometry_failure_taxonomy": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/geometry_failure_taxonomy_v1.json",
+    "sha256": "372cabde13f346f988b2665f5b0d9f5776b4a26dd53e6c7fd021a175b2da9041",
+    "status": "RECORDED_GATE_DIAGNOSTICS_CONSOLIDATED",
+    "summaries": [
+      {
+        "family": "neural_F_H",
+        "cohort": "association_train",
+        "diagnostic_rows": 60,
+        "valid": 0,
+        "video_ids": [
+          5,
+          8,
+          12
+        ],
+        "unique_scene_frames": 15,
+        "gate_violation_counts": {
+          "logged_footprint_below1percent": 53,
+          "neural_candidate_inliers_below20": 53,
+          "required_residual_statistic_unavailable": 48,
+          "independent_reference_points_below20": 28,
+          "measured_median_above12_original_px": 12,
+          "measured_ratio_below0.25_at12px": 8
+        },
+        "unlogged_or_unresolved_counts": {
+          "independent_pixel_inlier_count_not_separately_logged": 60,
+          "residual_ratio_unavailable_after_early_return": 48,
+          "matrix_shape_finiteness_rank_not_logged": 60
+        }
+      },
+      {
+        "family": "neural_F_H",
+        "cohort": "strict_dev",
+        "diagnostic_rows": 120,
+        "valid": 0,
+        "video_ids": [
+          1,
+          10,
+          18
+        ],
+        "unique_scene_frames": 30,
+        "gate_violation_counts": {
+          "logged_footprint_below1percent": 120,
+          "neural_candidate_inliers_below20": 120,
+          "required_residual_statistic_unavailable": 120,
+          "independent_reference_points_below20": 80
+        },
+        "unlogged_or_unresolved_counts": {
+          "independent_pixel_inlier_count_not_separately_logged": 120,
+          "residual_ratio_unavailable_after_early_return": 120,
+          "matrix_shape_finiteness_rank_not_logged": 120
+        }
+      },
+      {
+        "family": "plane_H",
+        "cohort": "strict_dev",
+        "diagnostic_rows": 60,
+        "valid": 0,
+        "video_ids": [
+          1,
+          10,
+          18
+        ],
+        "unique_scene_frames": 30,
+        "gate_violation_counts": {
+          "fit_inliers_below20": 60,
+          "logged_median_above3_original_px": 10,
+          "logged_fit_ratio_below0.25": 12,
+          "logged_footprint_below1percent": 16,
+          "required_residual_statistic_unavailable": 3
+        },
+        "unlogged_or_unresolved_counts": {}
+      },
+      {
+        "family": "traditional_F",
+        "cohort": "strict_dev",
+        "diagnostic_rows": 120,
+        "valid": 0,
+        "video_ids": [
+          1,
+          10,
+          18
+        ],
+        "unique_scene_frames": 30,
+        "gate_violation_counts": {
+          "fit_inliers_below20": 120,
+          "logged_fit_ratio_below0.25": 7,
+          "logged_footprint_below1percent": 6,
+          "required_residual_statistic_unavailable": 5
+        },
+        "unlogged_or_unresolved_counts": {}
+      },
+      {
+        "family": "vggt_pose",
+        "cohort": "strict_dev",
+        "diagnostic_rows": 60,
+        "valid": 0,
+        "video_ids": [
+          1,
+          10,
+          18
+        ],
+        "unique_scene_frames": 30,
+        "gate_violation_counts": {
+          "measured_ratio_below0.25_at12px": 18,
+          "measured_median_above12_original_px": 20,
+          "tentative_background_matches_below20": 40,
+          "required_residual_statistic_unavailable": 40
+        },
+        "unlogged_or_unresolved_counts": {
+          "residual_point_count_not_separately_logged": 60,
+          "matrix_shape_finiteness_rank_not_logged": 60,
+          "residual_ratio_unavailable_after_early_return": 40
+        }
+      }
+    ],
+    "source_rule_snapshots": {
+      "traditional_F": {
+        "file": "gtr/geometry/geometry_confidence.py",
+        "declared_commit": "624ba2cf89bb0443866863b06e19d8422d76c88b",
+        "captured_file_sha256": null,
+        "matching_git_commit": "624ba2cf89bb0443866863b06e19d8422d76c88b",
+        "resolved_file_sha256": "ed42d7c5fcbde1d4eab1f0d2b35e4379071e9bfcaaa9e0c2690b4ba5309c4b95",
+        "original_tree_dirty": null,
+        "verification": "DECLARED_GIT_SOURCE_ONLY_NO_CAPTURED_FILE_HASH"
+      },
+      "plane_H": {
+        "file": "gtr/geometry/geometry_confidence.py",
+        "declared_commit": "21983b06c4e83cee2c19b16d2c7442b793227a57",
+        "captured_file_sha256": "e4157764f5f9e6350840933a7aabef56e4710e478d57eb200424d36b55e65076",
+        "matching_git_commit": "a48c2fa1f1184d9a0f1672dfc62086b96d11024e",
+        "resolved_file_sha256": "e4157764f5f9e6350840933a7aabef56e4710e478d57eb200424d36b55e65076",
+        "original_tree_dirty": true,
+        "verification": "CAPTURED_FILE_BYTES_MATCH_GIT_BLOB"
+      },
+      "vggt_pose": {
+        "file": "geo_tools/validate_vggt_geometry.py",
+        "declared_commit": "3b5e6da3f17cb9d94c81e1b4a4d032dccb7bf9ad",
+        "captured_file_sha256": "ca11385fbbab6dfb126dd447d24a2e91e05411ff8b9d2c1f2b0426393ac03bef",
+        "matching_git_commit": "3b5e6da3f17cb9d94c81e1b4a4d032dccb7bf9ad",
+        "resolved_file_sha256": "ca11385fbbab6dfb126dd447d24a2e91e05411ff8b9d2c1f2b0426393ac03bef",
+        "original_tree_dirty": true,
+        "verification": "CAPTURED_FILE_BYTES_MATCH_GIT_BLOB"
+      },
+      "neural_F_H": {
+        "file": "gtr/geometry/background_patch_matcher.py",
+        "declared_commit": "fb9c34783819168edd550163ef589e18b8ee8b99",
+        "captured_file_sha256": "d72f07876b3668b631c5766946b7f4b38958c28932b62894cb43071c50582d24",
+        "matching_git_commit": "fb9c34783819168edd550163ef589e18b8ee8b99",
+        "resolved_file_sha256": "d72f07876b3668b631c5766946b7f4b38958c28932b62894cb43071c50582d24",
+        "original_tree_dirty": false,
+        "verification": "CAPTURED_FILE_BYTES_MATCH_GIT_BLOB"
+      }
+    },
+    "gt_used_for_gate_classification": false,
+    "limitations": "descriptive diagnostic gate accounting, not error-cause attribution, GT pose validation, full-DEV failure reasons, tracker throughput or general geometry impossibility"
   },
   "dense_tracking_to_retrieval_prefix_gate": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/vggt_tracking_retrieval_prefix_gate_v2.json",
@@ -8511,6 +8924,46 @@
       "sha256": "33444c34f474df98869098fbd3874d0e7ecefda37b409d993b16d5a2cfe4b417"
     },
     {
+      "method": "retrieval_vggt_dense_tracking_4streams_full_v1",
+      "tracking_method": "vggt_dense",
+      "backbone": "none",
+      "video_ids": "18,1",
+      "camera_streams": 4,
+      "full_video": true,
+      "interval": 10,
+      "used_cache": false,
+      "speed_eligible": true,
+      "requests": 826,
+      "eligible_queries": 494,
+      "query_detection_coverage": 0.9743589743589743,
+      "gt_matched_queries": 798,
+      "detector_query_precision": 0.9661016949152542,
+      "gallery_eligibility_among_matched": 0.6190476190476191,
+      "all_requests_Recall1": 0.585956416464891,
+      "all_requests_Recall5": 0.5956416464891041,
+      "all_requests_Recall10": 0.5968523002421308,
+      "Recall1": 0.979757085020243,
+      "Recall5": 0.9959514170040485,
+      "Recall10": 0.9979757085020243,
+      "MRR": 0.9878477628983703,
+      "query_p50": 0.003325343132019043,
+      "query_p95": 0.005305679515004158,
+      "camera_image_fps": 1.0809500751180061,
+      "round_p50": 3.6322001218795776,
+      "round_p95": 3.9017343536019324,
+      "vggt_calls": 3922,
+      "tracking_vggt_calls": 3922,
+      "retrieval_vggt_calls": 0,
+      "dinov2_calls": 0,
+      "tracking_dinov2_calls": 0,
+      "retrieval_dinov2_calls": 0,
+      "peak_index_payload_bytes": 1564098,
+      "peak_host_rss_bytes": 13774311424,
+      "peak_gpu_bytes": 5344107520,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_vggt_dense_tracking_4streams_full_v1/retrieval.metrics.json",
+      "sha256": "0fc3c5fdf83b4d6d91e7cbfc894a93ff8d9205a3dcc5f05a0d60d6a9edfee62a"
+    },
+    {
       "method": "retrieval_vggt_k10_10streams_full_v1",
       "tracking_method": "gmt_off",
       "backbone": "vggt",
@@ -9010,5 +9463,5 @@
     }
   ],
   "retrieval_full_video_evaluation": true,
-  "source_commit": "38e1b075458ae8f21fd51e6c4e74171bf47357d4"
+  "source_commit": "aa3398a1a40827665f4ad584cf76579e1e9ad52b"
 }

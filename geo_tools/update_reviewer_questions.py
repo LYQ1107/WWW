@@ -19,7 +19,10 @@ def main():
     if query_audit.exists():
         paired=json.loads(query_audit.read_text());candidate=next((row for row in paired['rows'] if row['method']=='VGGT2'),None)
         if candidate:
-            retrieval_evidence+=f" 已完成denseB7跟踪接入原生排序的完整两路检索：相同{candidate['common_eligible']}个可检索查询中Recall1修正{candidate['common_eligible_rank1_fixes']}、破坏{candidate['common_eligible_rank1_harms']}，可检索集合变化{candidate['eligible_gained']}/{candidate['eligible_lost']}。这是小型主种子信号，匹配容量GMT/DINO跟踪发布对照及四路VGGT结果仍待完成，不能宣称VGGT独有或稳定收益。"
+            retrieval_evidence+=f" 已完成denseB7跟踪接入原生排序的完整两路检索：相同{candidate['common_eligible']}个可检索查询中Recall1修正{candidate['common_eligible_rank1_fixes']}、破坏{candidate['common_eligible_rank1_harms']}，可检索集合变化{candidate['eligible_gained']}/{candidate['eligible_lost']}。这是小型主种子信号，匹配容量GMT/DINO跟踪发布对照仍待完成，不能宣称VGGT独有或稳定收益。"
+        for row in paired['rows']:
+            if row['method']=='VGGT4':
+                retrieval_evidence+=f" 四路VGGT完整回放scene{row['query_scene']}：{row['common_eligible']}个共同可检索查询，R1修正/破坏{row['common_eligible_rank1_fixes']}/{row['common_eligible_rank1_harms']}，MRR变化{row['common_eligible_mrr_delta']:+.6f}，可检索集合变化{row['eligible_gained']}/{row['eligible_lost']}。scene18修正的是两路实验中的同一查询，不是独立重复证据。"
         prior_queries=next((row for row in paired['rows'] if row['method']=='Prior4' and row['query_scene']==1),None)
         if prior_queries:
             retrieval_evidence+=f" 四路scene1固定先验的逐查询R1修正/破坏为{prior_queries['common_eligible_rank1_fixes']}/{prior_queries['common_eligible_rank1_harms']}；汇总相同不代表查询相同。"
@@ -84,7 +87,12 @@ def main():
         camera_note=camera_note.replace('实际MLP输入与整个GMT相机换序的短序列探针独立排队。','真实checkpoint/图像前四组的8次MLP输入探针已通过：相机列0/0变为0/.5，其他十列逐项不变，第二路MLP输出确实改变。整个GMT换序另行诊断，不能用编码器换序代替。')
     whole_order_path=ROOT/'results/live_whole_gmt_camera_order_v1.json'
     if whole_order_path.exists():
-        camera_note+=' 整个GMT实际scene1前40组换序检查发现OFF与B7均有身份划分变化，恢复物理ID并允许全局重编号后仍不同；不能宣称内部处理顺序无关。规范顺序逐条复现独立参考，检测集合相同，B7每版本80次VGGT调用、几何通过0。物理相机ID输入适配器会固定内部顺序并恢复调用方输出位置，CPU测试通过、实际反序/交替顺序验证待完成；既有负例保留。'
+        camera_note+=' 整个GMT实际scene1前40组换序检查发现OFF与B7均有身份划分变化，恢复物理ID并允许全局重编号后仍不同；不能宣称内部处理顺序无关。规范顺序逐条复现独立参考，检测集合相同，B7每版本80次VGGT调用、几何通过0。既有负例保留；物理相机输入适配器的独立验证见下文。'
+    physical_path=ROOT/'results/physical_camera_input_contract_v1.json'
+    if physical_path.exists():
+        physical=json.loads(physical_path.read_text())
+        if physical['status']=='PASS_EXPLICIT_CAMERA_INPUT_CONTRACT':
+            camera_note+=f" 物理相机ID输入适配器的{len(physical['rows'])}项真实OFF/B7反序/交替顺序检查均通过，前{physical['max_frames']}组恢复后输出逐条等于规范参考，失败0。B7每版本80次VGGT调用、几何通过0；不证明内部顺序、完整视频或有效位姿不变性。"
     later_regression='缓存/诊断后的源码完整OFF/零系数回归已排队，按实际版本分别报告。'
     off_path=ROOT/'results/OFF_post_cache_trace_strict_v1_parity.json'
     zero_path=ROOT/'results/ZERO_post_cache_trace_strict_v1_parity.json'

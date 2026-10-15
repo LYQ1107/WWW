@@ -19,13 +19,18 @@ Production retrieval results below use scene18 queries at every stream count. Ex
 | retrieval_native_prior_2streams_full_v1 | native_fixed_prior | 2 | 598 | 309 | 97.7346% | 0.988673 | True/True |
 | retrieval_native_prior_4streams_full_v1 | native_fixed_prior | 4 | 598 | 309 | 97.7346% | 0.988673 | True/True |
 | retrieval_vggt_dense_tracking_2streams_full_v1 | vggt_dense | 2 | 598 | 309 | 98.0583% | 0.989752 | True/True |
+| retrieval_vggt_dense_tracking_4streams_full_v1 | vggt_dense | 4 | 598 | 309 | 98.0583% | 0.989752 | True/True |
 | retrieval_vggt_k10_10streams_full_v1 | gmt_off | 10 | 598 | 309 | 70.5502% | 0.769991 | True/True |
 | retrieval_vggt_k10_4streams_full_v1 | gmt_off | 4 | 598 | 309 | 87.0550% | 0.891011 | True/True |
 | retrieval_vggt_k10_v18_full_v1 | gmt_off | 2 | 598 | 309 | 90.2913% | 0.924582 | True/True |
 | retrieval_vggt_k20_v18_full_v1 | gmt_off | 2 | 598 | 309 | 90.2913% | 0.925637 | True/True |
 | retrieval_vggt_k5_v18_full_v1 | gmt_off | 2 | 598 | 309 | 89.9676% | 0.922593 | True/True |
 
-The completed dense-B7 two-camera tracker feeding the native ranker has 1 Recall1 query corrections and 0 harms on 309 common eligible scene18 queries, with eligible gained/lost 0/0. Same detector query cohort and GT identities are independently verified. This is a small primary-head replay signal; matched GMT/DINO tracking publication controls and the full four-camera candidate remain pending. See GEO_STREAM_RETRIEVAL_QUERY_AUDIT.md; no unique VGGT or stable speed claim follows.
+The completed dense-B7 two-camera tracker feeding the native ranker has 1 Recall1 query corrections and 0 harms on 309 common eligible scene18 queries, with eligible gained/lost 0/0. Same detector query cohort and GT identities are independently verified. This is a small primary-head replay signal; matched GMT/DINO tracking publication controls remain pending. See GEO_STREAM_RETRIEVAL_QUERY_AUDIT.md; no unique VGGT or stable speed claim follows.
+
+The complete four-camera dense-B7 replay, fixed scene1: 228 exact detector queries/185 common eligible, R1 corrections/harms 0/0, eligibility gained/lost 0/0, MRR delta +0.000893. Scene18 shares the two-camera corrected query; it is not an independent query replication. Per-scene cohorts are kept separate.
+
+The complete four-camera dense-B7 replay, fixed scene18: 598 exact detector queries/309 common eligible, R1 corrections/harms 1/0, eligibility gained/lost 0/0, MRR delta +0.001888. Scene18 shares the two-camera corrected query; it is not an independent query replication. Per-scene cohorts are kept separate.
 
 
 Same-gallery diagnostics retain the full native positive-gallery denominator. The sampled-observation native scorer is stronger than transferred association-trained projection/cosine scores in the completed scene18 tests; positive candidate coverage is 100%. These diagnose scoring/representation transfer and do not show all raw foundation features are useless. Their five-ranker producer timings are diagnostic cost, not production throughput. See retrieval_scoring_diagnostics.csv and the source metrics.
