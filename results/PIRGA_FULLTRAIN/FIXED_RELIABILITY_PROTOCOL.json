@@ -1,0 +1,79 @@
+{
+  "status": "PREREGISTERED_FIXED_RELIABILITY_BEFORE_REPLAY",
+  "methods": [
+    "R_mean",
+    "R_top4_recent",
+    "R_coordinate_median",
+    "R_trim10",
+    "R_latest",
+    "R_decay"
+  ],
+  "scope": "whole sealed DEV12",
+  "release": {
+    "manifest_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/cv_pil_dev12_native_release_v1/manifest.json",
+    "manifest_sha": "a4d2014edcc920f45753e0f76c378bf08f25c22758e3d8770572dc36632c2173",
+    "scope_sha": "45824abd0f27f105e4af28f8fb0ce10790ac5adc9eee1a2c579689786f5bcaf9",
+    "provenance_pins": {
+      "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+      "config_sha256": "bdaeca71d875e8824c3eaf825967a7ba032514297642a6aabe7ad10a740be94a",
+      "annotation_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+      "seed": 20261014,
+      "commit": "f97cf27f0f4299269c3bd1dd885a92e90639f51c"
+    },
+    "roles": {
+      "observations": [
+        "native_observations/observations_0000.pt",
+        "native_observations/observations_0001.pt",
+        "native_observations/observations_0002.pt",
+        "native_observations/observations_0003.pt",
+        "native_observations/observations_0004.pt",
+        "native_observations/observations_0005.pt",
+        "native_observations/observations_0006.pt",
+        "native_observations/observations_0007.pt"
+      ],
+      "calls": [
+        "native_calls/calls_0000.pt",
+        "native_calls/calls_0001.pt",
+        "native_calls/calls_0002.pt",
+        "native_calls/calls_0003.pt",
+        "native_calls/calls_0004.pt",
+        "native_calls/calls_0005.pt",
+        "native_calls/calls_0006.pt",
+        "native_calls/calls_0007.pt",
+        "native_calls/calls_0008.pt",
+        "native_calls/calls_0009.pt",
+        "native_calls/calls_0010.pt",
+        "native_calls/calls_0011.pt"
+      ],
+      "variants": "native_observations/descriptor_variants.pt",
+      "queries": "native_queries.jsonl.gz",
+      "commits": "native_commit_trace.jsonl.gz",
+      "labels": "offline_labels/queries.jsonl.gz"
+    },
+    "seal_path": "/data1/liuyeqiang/WWW_trackvggt_runtime/cv_pil_dev12_native_release_v1/artifact_sha256.json",
+    "seal_sha": "ef7f65d0bccb1e665f7125391f4a3c64a1449b1fe4d204c735371522386421d4"
+  },
+  "reference": {
+    "path": "/data1/liuyeqiang/WWW_pirga_20261016/results/cv_pil_v3_native_validation/P3_MATCHED300_FULL_DEV12/QUERY_RESULTS_OFFLINE_ONLY.csv",
+    "sha256": "3db925d0e10d866dd2d761f061c01a8e25d0747ee21b47d95e6d9aca01a31926"
+  },
+  "decay_tau_frames": 16,
+  "decay_selection": "TRAIN-only empirical75percentile latest cross-camera lag=16frames; not selected using DEV",
+  "top4_selection": "4 most recent strict-past histories, stable native order for equal lag",
+  "median": "per-coordinate torch lower median on normalized full1152 vectors",
+  "trim": "per-coordinate drop floor(10%*count) smallest/largest values, then sum and cosine normalize",
+  "latest": "minimum strictly-positive lag, first in native candidate-major source order on ties",
+  "candidate_sets": "complete native candidate columns, no addition/removal/GT ideal gallery",
+  "parameters": 0,
+  "GPU_wall_hours": 0,
+  "justification": "Preregistered low-cost historical reliability controls remain required even if Phase2 prediction is negative; these fixed rules do not create a complex predictive combination.",
+  "online_admitted": false,
+  "scientific_success": false,
+  "source_sha256": {
+    "geo_tools/pirga_fixed_reliability.py": "c57b66b5470d53e8d56089e34b3d4bd2e2d59b6b82b5717e9f0cd52934702e1c",
+    "geo_tools/run_pirga_fixed_reliability.py": "9fc04fd78113662103e5dac2e8181d5bdf593c6eefb10ce242de491e234c83a1",
+    "geo_tools/pirga_replay_reporting.py": "35ca52481dd7ac0ff08b007bf414eda8aca0e4581fad69b295055bbde589eb0c",
+    "geo_tools/run_pirga_phase1_replay.py": "f92615ad662b9ffaa991a22a508aafccfad84fd4a85edc5711e5df498d16d892"
+  },
+  "created_utc": "2026-10-15T21:05:52.522846+00:00"
+}
