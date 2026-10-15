@@ -27,7 +27,7 @@ def main():
         dense=json.loads(dense_path.read_text());pairs=json.loads(pair_path.read_text())
         base=json.loads((ROOT/'results/causal_B0_strict_suite_v1_metrics.json').read_text())['metrics']
         if dense['status']=='PASS' and pairs['full_strict_suite'] and all(row['added_detections']==0 and row['removed_detections']==0 for row in pairs['rows']):
-            signal_text=f"每帧B7完整strict5单种子CVIDF1={dense['metrics']['CVIDF1']:.6f}（相对因果B0 {dense['metrics']['CVIDF1']-base['CVIDF1']:+.6f}个百分点）、IDSW {base['IDSW']}→{dense['metrics']['IDSW']}，五场景检测key集合完全一致。身份关系审计同时记录修正和破坏；完整DEV容量对照及重复稳定性未完成，不是稳定VGGT独有贡献。"
+            signal_text=f"每帧B7完整strict5单种子CVIDF1={dense['metrics']['CVIDF1']:.6f}（相对因果B0 {dense['metrics']['CVIDF1']-base['CVIDF1']:+.6f}个百分点）、IDSW {base['IDSW']}→{dense['metrics']['IDSW']}，五场景检测key集合完全一致。身份关系审计同时记录修正和破坏；主种子完整DEV容量对照已完成，DINO数值上更高；重复密集稳定性未完成，不是稳定VGGT独有贡献。"
     camera_probe=ROOT/'results/inference_camera_encoding_source_probe_v1.json'
     cached_note=''
     constant_note=''
@@ -53,6 +53,11 @@ def main():
                 accuracy=json.loads(accuracy_path.read_text())
                 if accuracy['exact_serialized_predictions']:
                     camera_note=' 官方单图推理相机MLP输入两路均为0的源码问题已确认；实际scene1正确相机索引对照与原baseline逐条预测完全一致、所有指标差值为0。因此该修正未解释scene1收益，其他完整strict场景仍须验证。锁定生产基线保留，源码问题与准确率影响分别报告。'
+    full_camera_path=ROOT/'results/camera_index_corrected_full_strict_audit_v2.json'
+    if full_camera_path.exists():
+        full_camera=json.loads(full_camera_path.read_text())
+        changed=sum(row['changed_track_id_rows'] or 0 for row in full_camera['rows'])
+        camera_note=f' 正确相机索引对照已完成strict5：四场景逐条预测完全一致，scene18有{changed}条track ID变化，检测行不变，全部汇总指标不变。不能称完整输出等价。完整GT匹配身份关系审计修正/破坏均为0，但该条件结果不抹去原始ID变化；锁定生产基线保留。实际MLP输入与整个GMT相机换序的短序列探针独立排队。'
     questions=[
     ('为什么 RPCE 之外需要动态几何？','尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。'+camera_note),
     ('为什么不直接使用 DINOv2/ReID？',f'必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1={pct(baseline)}，高于当前 VGGT 中间层。独立DINO普通融合的离线稀疏/逐帧完整严格开发对照和匹配容量学习头离线k10对照已完成；主种子因果dense匹配容量GMT/DINO完整strict5均已完成；DINO数值上高于当前VGGT联合版本，见对应完整suite指标。scene1的DINO匹配VGGT CVIDF1且少1次IDSW。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。'+constant_note),

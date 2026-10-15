@@ -1,0 +1,156 @@
+{
+  "id": "actual_decision_scene1_v1",
+  "project_gpu_ids": [
+    "6"
+  ],
+  "queues": {
+    "gpu6": [
+      {
+        "id": "baseline_actual_decision_prefix60_scene1_v1",
+        "command": [
+          "geo_tools/run_decision_trace.py",
+          "--tag",
+          "baseline_actual_decision_prefix60_scene1_v1",
+          "--video-id",
+          "1",
+          "--max-frames",
+          "60"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "vggt_actual_decision_prefix60_scene1_v1",
+        "command": [
+          "geo_tools/run_decision_trace.py",
+          "--tag",
+          "vggt_actual_decision_prefix60_scene1_v1",
+          "--video-id",
+          "1",
+          "--feature-weight",
+          "2",
+          "--geometry-weight",
+          "0.5",
+          "--geometry-method",
+          "vggt_camera",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+          "--max-residual",
+          "2",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200",
+          "--max-frames",
+          "60"
+        ],
+        "cpu_only": false,
+        "depends_on": []
+      },
+      {
+        "id": "actual_decision_prefix60_gate_v1",
+        "command": [
+          "geo_tools/audit_decision_trace.py",
+          "--baseline-run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/baseline_actual_decision_prefix60_scene1_v1",
+          "--method-run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/vggt_actual_decision_prefix60_scene1_v1",
+          "--baseline-reference",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/online_B0_full_v1_source44_v1/predictions.json",
+          "--method-reference",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v1/predictions.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/actual_decision_prefix60_scene1_v1.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "baseline_actual_decision_prefix60_scene1_v1",
+          "vggt_actual_decision_prefix60_scene1_v1"
+        ]
+      },
+      {
+        "id": "baseline_actual_decision_full_scene1_v1",
+        "command": [
+          "geo_tools/run_decision_trace.py",
+          "--tag",
+          "baseline_actual_decision_full_scene1_v1",
+          "--video-id",
+          "1"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "actual_decision_prefix60_gate_v1"
+        ]
+      },
+      {
+        "id": "vggt_actual_decision_full_scene1_v1",
+        "command": [
+          "geo_tools/run_decision_trace.py",
+          "--tag",
+          "vggt_actual_decision_full_scene1_v1",
+          "--video-id",
+          "1",
+          "--feature-weight",
+          "2",
+          "--geometry-weight",
+          "0.5",
+          "--geometry-method",
+          "vggt_camera",
+          "--layer",
+          "17",
+          "--projection-dim",
+          "0",
+          "--head-path",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/heads/low_rank_three_backbones_train_v1/vggt_seed20261014.pt",
+          "--max-residual",
+          "2",
+          "--policy",
+          "fixed",
+          "--interval",
+          "1",
+          "--min-interval",
+          "1",
+          "--call-budget",
+          "200"
+        ],
+        "cpu_only": false,
+        "depends_on": [
+          "actual_decision_prefix60_gate_v1"
+        ]
+      },
+      {
+        "id": "actual_decision_full_gate_v1",
+        "command": [
+          "geo_tools/audit_decision_trace.py",
+          "--baseline-run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/baseline_actual_decision_full_scene1_v1",
+          "--method-run",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/vggt_actual_decision_full_scene1_v1",
+          "--baseline-reference",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/online_B0_full_v1_source44_v1/predictions.json",
+          "--method-reference",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_fixed_k1_strict_suite_v1_v1/predictions.json",
+          "--report-output",
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/matrix_reports/actual_decision_full_scene1_v1.json"
+        ],
+        "cpu_only": true,
+        "depends_on": [
+          "baseline_actual_decision_full_scene1_v1",
+          "vggt_actual_decision_full_scene1_v1"
+        ]
+      }
+    ]
+  },
+  "scope": "bounded mechanism diagnostic: first60 groups then full scene1, largest observed primary dense gain; diagnostic selection disclosed; no new fitting, model selection, threshold tuning or speed claims",
+  "gates": "each trace preserves standalone configuration and raw output exactly before reading GT; full pair depends on both actual prefix runs and their gate",
+  "limitations": "one scene, not full strict internal-decision statistics; pre-bank Hungarian decisions conditional on exact recorded candidate references; memory averages and unknown labels remain separate",
+  "allocation": "serial after existing GPU6 dense stability dispatcher completes, never overlaps or interrupts required primary runs"
+}
