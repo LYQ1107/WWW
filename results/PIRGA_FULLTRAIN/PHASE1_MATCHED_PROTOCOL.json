@@ -1,0 +1,92 @@
+{
+  "status": "PREREGISTERED_BEFORE_FULLTRAIN_UPDATE",
+  "seed": 20261015,
+  "epochs": [
+    1,
+    3,
+    5
+  ],
+  "primary_formal_epoch": 3,
+  "sufficiency_epoch": 5,
+  "allowed_devices": [
+    "cuda",
+    "cpu"
+  ],
+  "initial_device": "cuda",
+  "CPU_resume_threads": 8,
+  "admission": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_admission_v1/ADMISSION.json",
+    "sha256": "6815f8d694d7aace041fd5b7ab837af1f50eccae2cf229d191e42148df2e0749"
+  },
+  "cache": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_input_index_v1/MANIFEST.json",
+    "sha256": "587c2d3069ca2d4a99863eaa4fba960184cf83e2037824b8fb6258e511cc8a1d"
+  },
+  "common_training_domain": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_admission_v1/common_training_keys.json",
+    "sha256": "daa11673f7003e5487796680c9d8129a03348f8fee8cbd0ebe70e0e188504852",
+    "queries": 113415
+  },
+  "input_executor_parity": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_input_index_v1/REAL_PARITY_AND_CPU_PROBE.json",
+    "sha256": "8a1a4d25a6450e730a9fe15d13b913e151912947157870be116df8ec511bd6c5"
+  },
+  "grouped_math_shadow": {
+    "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/fulltrain_input_index_v1/GROUPED_SHADOW_PROBE.json",
+    "sha256": "7797009125838678ab63751d5f0fd98426355877fad233fff664c4c6c0c534af"
+  },
+  "expected_initial_parameter_sha256": "540ab9300d10b2865c9458c1b0a591c9005b56e6471672d8d4dc96aff14df4cf",
+  "epoch_order_sha256": {
+    "1": "6563d4ce3f6aad1042221c80a85130a260cee855a0eef96061fa95117778de16",
+    "2": "071bcaefd79a337f188a365f7d91f18987339bf0db84769bd7562937a7ff8d4d",
+    "3": "da6b84a26d84c00c211d2ab04c27a6ac99dac2b9bbb707701ca0ea0c37325d6c",
+    "4": "aa5f980d4c6d41959252912c63b45d1926aea65cb836feb6a1d356700a0f4361",
+    "5": "1a3dd4a19d836a949abdd3577f0389b2fec83f57af1776ca3d0fb18c7259c932"
+  },
+  "parameters_per_arm": 38080,
+  "active_parameters_C4": 38048,
+  "per_arm_query_batch_size": 1,
+  "per_arm_steps_at5epochs": 567075,
+  "optimizer": {
+    "name": "AdamW",
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "clip_per_arm": 1.0
+  },
+  "objective": {
+    "C2": "multi-positive known-only ranking",
+    "C3": "same rank+0.5 cross-view stop-gradient prediction",
+    "C4": "C3 with explicit destination-camera channels zero"
+  },
+  "visit_semantics": "Identical union of113197 rank and73715 prediction queries;218 prediction-only visits have exactly zero C2 ranking data loss. All arms have identical optimizer-call budget; no fabricated UNKNOWN negatives.",
+  "causal_preprocessing": "Same inherited strictly scene-past histories for all arms. Full native candidates/scores/joint rows retained, full1152 features; originalGMT and originalMLP frozen.",
+  "evaluation": {
+    "development": [
+      12
+    ],
+    "fixed_original_state_replay_epochs": [
+      1,
+      3,
+      5
+    ],
+    "no_DEV_selection": true,
+    "full_online_admission": false
+  },
+  "CPU_fallback": "Only if assigned-GPU wall cap reached; exact completed-step joint weights and AdamW state continue on CPU for all arms together, unchanged query permutation/epoch endpoints.",
+  "source_code_sha256": {
+    "geo_tools/train_pirga_grouped_phase1.py": "a0d9d9b5c1b9824b6fb0542798612be87271173f71db6b3bc630e429105197b6",
+    "geo_tools/run_pirga_phase1_guarded.py": "e243c6a5deae545b27090ab6c3c79b160ecf039a92d8248a7ced48c6f3d2b8d4",
+    "geo_tools/pirga_grouped_heads.py": "9305b1a08b372866cee0919b9f0e6c4607b924d1dd7a18e469c5aa3d30bd6448",
+    "geo_tools/pirga_training_cache.py": "772bd3cf4da82a5b11be948ba6eef4361b1343b059028c6fece689b9eb291d42",
+    "geo_tools/pirga_fulltrain_dataset.py": "928bf8a10eac49928cf6c168046582a4c2f5d59af98a5148456e63273a23d06b",
+    "geo_tools/cv_pil_v2_model.py": "317b5da62cea8057661a9a66611d47037ec71e1e7909cd9197bda3040030e9f6",
+    "geo_tools/cv_pil_native_handoff.py": "eee493422c9133f7692ac5fd9bb97577e8748b1016b5f92a17d36086c5e4e53a"
+  },
+  "source_cache_execution_note": "Model-wise vectorization, mathematically identical independent heads; FP32 shadow differences recorded, no claim of bitwise optimizer equivalence.",
+  "created_utc": "2026-10-15T20:28:44.462908+00:00"
+}
