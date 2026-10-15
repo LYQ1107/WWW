@@ -4,11 +4,11 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q1: 为什么 RPCE 之外需要动态几何？
 
-尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。dense场景1特征单独启用与联合预测完全相同，三个几何通过门槛事件并无独立身份贡献。 正确相机索引对照已完成strict5：四场景逐条预测完全一致，scene18有5条track ID变化，检测行不变，全部汇总指标不变。不能称完整输出等价。完整GT匹配身份关系审计修正/破坏均为0，但该条件结果不抹去原始ID变化；锁定生产基线保留。真实checkpoint/图像前四组的8次MLP输入探针已通过：相机列0/0变为0/.5，其他十列逐项不变，第二路MLP输出确实改变。整个GMT换序另行诊断，不能用编码器换序代替。 整个GMT实际scene1前40组换序检查发现OFF与B7均有身份划分变化，恢复物理ID并允许全局重编号后仍不同；不能宣称内部处理顺序无关。规范顺序逐条复现独立参考，检测集合相同，B7每版本80次VGGT调用、几何通过0。物理相机ID输入适配器会固定内部顺序并恢复调用方输出位置，CPU测试通过、实际反序/交替顺序验证待完成；既有负例保留。
+尚未证明需要。冻结相机几何在最小开发样本上未通过背景有效性门槛；传统几何对照和软平面分支已运行，不能据此声称新增动态几何有效。主种子dense特征单独启用B5与联合B7在完整strict5的每条预测均完全一致；所有共同有效配置、head和编码调用次数已核验。联合几何共3次通过数值/背景门槛，均在scene1，但没有独立输出贡献。其余head种子仍在运行；该结果不证明所有几何无用或GT位姿准确。 正确相机索引对照已完成strict5：四场景逐条预测完全一致，scene18有5条track ID变化，检测行不变，全部汇总指标不变。不能称完整输出等价。完整GT匹配身份关系审计修正/破坏均为0，但该条件结果不抹去原始ID变化；锁定生产基线保留。真实checkpoint/图像前四组的8次MLP输入探针已通过：相机列0/0变为0/.5，其他十列逐项不变，第二路MLP输出确实改变。整个GMT换序另行诊断，不能用编码器换序代替。 整个GMT实际scene1前40组换序检查发现OFF与B7均有身份划分变化，恢复物理ID并允许全局重编号后仍不同；不能宣称内部处理顺序无关。规范顺序逐条复现独立参考，检测集合相同，B7每版本80次VGGT调用、几何通过0。物理相机ID输入适配器会固定内部顺序并恢复调用方输出位置，CPU测试通过、实际反序/交替顺序验证待完成；既有负例保留。
 
 ## Q2: 为什么不直接使用 DINOv2/ReID？
 
-必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1=100.00%，高于当前 VGGT 中间层。独立DINO普通融合的离线稀疏/逐帧完整严格开发对照和匹配容量学习头离线k10对照已完成；主种子因果dense匹配容量GMT/DINO完整strict5均已完成；DINO数值上高于当前VGGT联合版本，见对应完整suite指标。scene1的DINO匹配VGGT CVIDF1且少1次IDSW。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。 原生GMT-head固定+1配对分数完整scene1对照CVIDF1=95.583950、IDSW=203，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5与配对推理种子状态见下文；scene1不能单独支持全开发结论。 无额外head固定先验完整strict5已完成：CVIDF1=95.181615、IDSW=351，优于当前主种子denseVGGT完整DEV结果；全五场景检测key集合一致。配对推理种子未完成，不能归因于VGGT或声称稳定速度优势。
+必须保留强对照。12 个离线 GT 匹配困难查询上，GMT ReID Recall@1=100.00%，高于当前 VGGT 中间层。独立DINO普通融合的离线稀疏/逐帧完整严格开发对照和匹配容量学习头离线k10对照已完成；主种子因果dense匹配容量GMT/DINO完整strict5均已完成；DINO数值上高于当前VGGT联合版本，见对应完整suite指标。scene1的DINO匹配VGGT CVIDF1且少1次IDSW。证据：B1_dinov2_dense_strict_suite_v1_metrics.json、C_lowrank_gmt_seed14_k10_strict_v1_suite_metrics.json、C_lowrank_dinov2_seed14_k10_strict_v1_suite_metrics.json。 原生GMT-head固定+1配对分数完整scene1对照CVIDF1=95.583950、IDSW=203，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5与配对推理种子状态见下文；scene1不能单独支持全开发结论。 无额外head固定先验完整strict5已完成：CVIDF1=95.181615、IDSW=351，优于当前主种子denseVGGT完整DEV结果；全五场景检测key集合一致。配对推理种子已核验2/3组，不能归因于VGGT或声称稳定速度优势。 实际推理RNG种子配对的CVIDF1增量范围+0.122026至+0.123653个百分点；这是冻结同一模型的推理随机性，与三个独立训练head种子不同。未知/破坏关系保留，不能用净增益替代完整纠错与损害统计。
 
 ## Q3: VGGT 多层是否提供独立身份信息？
 
@@ -52,7 +52,7 @@ This file is generated from current artifacts; pending items are not claims of c
 
 ## Q13: 三个模块能否分别证明有效？
 
-尚未证明。每帧B7完整strict5单种子CVIDF1=95.147448（相对因果B0 +0.089485个百分点）、IDSW 482→381，五场景检测key集合完全一致。身份关系审计同时记录修正和破坏；主种子完整DEV容量对照已完成，DINO数值上更高；重复密集稳定性未完成，不是稳定VGGT独有贡献。 原生GMT-head固定+1配对分数完整scene1对照CVIDF1=95.583950、IDSW=203，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5与配对推理种子状态见下文；scene1不能单独支持全开发结论。 无额外head固定先验完整strict5已完成：CVIDF1=95.181615、IDSW=351，优于当前主种子denseVGGT完整DEV结果；全五场景检测key集合一致。配对推理种子未完成，不能归因于VGGT或声称稳定速度优势。 当前稳定科学成功/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。
+尚未证明。每帧B7完整strict5单种子CVIDF1=95.147448（相对因果B0 +0.089485个百分点）、IDSW 482→381，五场景检测key集合完全一致。身份关系审计同时记录修正和破坏；主种子完整DEV容量对照已完成，DINO数值上更高；重复密集稳定性未完成，不是稳定VGGT独有贡献。 原生GMT-head固定+1配对分数完整scene1对照CVIDF1=95.583950、IDSW=203，强于当前VGGT/DINO学习头scene1结果；该对照保留head编码用于有效性、丢弃学习配对分数，且traced速度无效。无额外head的等价实现已通过真实短前缀/零系数检查并完整复现scene1预测SHA；完整strict5与配对推理种子状态见下文；scene1不能单独支持全开发结论。 无额外head固定先验完整strict5已完成：CVIDF1=95.181615、IDSW=351，优于当前主种子denseVGGT完整DEV结果；全五场景检测key集合一致。配对推理种子已核验2/3组，不能归因于VGGT或声称稳定速度优势。 实际推理RNG种子配对的CVIDF1增量范围+0.122026至+0.123653个百分点；这是冻结同一模型的推理随机性，与三个独立训练head种子不同。未知/破坏关系保留，不能用净增益替代完整纠错与损害统计。主种子dense特征单独启用B5与联合B7在完整strict5的每条预测均完全一致；所有共同有效配置、head和编码调用次数已核验。联合几何共3次通过数值/背景门槛，均在scene1，但没有独立输出贡献。其余head种子仍在运行；该结果不证明所有几何无用或GT位姿准确。 当前稳定科学成功/ENGINEERING_COMPLETE/PAPER_READY均未达成，完整消融、因果速度和重复复核仍须完成。
 
 ## Q14: 为什么符合 WWW？
 
