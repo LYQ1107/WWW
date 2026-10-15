@@ -13,6 +13,7 @@ Production retrieval results below use scene18 queries at every stream count. Ex
 | Method | Tracking | Cameras | Queries | Eligible | Recall@1 | MRR | Exact cohort/detections |
 |---|---|---:|---:|---:|---:|---:|---|
 | retrieval_dinov2_dense_head_tracking_2streams_full_v1 | dinov2_dense_head | 2 | 598 | 309 | 98.0583% | 0.990291 | True/True |
+| retrieval_dinov2_dense_head_tracking_4streams_full_v1 | dinov2_dense_head | 4 | 598 | 309 | 98.0583% | 0.990291 | True/True |
 | retrieval_gmt_10streams_full_v1 | gmt_off | 10 | 598 | 309 | 84.1424% | 0.885244 | True/True |
 | retrieval_gmt_4streams_full_v1 | gmt_off | 4 | 598 | 309 | 97.7346% | 0.987864 | True/True |
 | retrieval_gmt_dense_head_tracking_2streams_full_v1 | gmt_dense_head | 2 | 598 | 309 | 97.7346% | 0.987864 | True/True |
@@ -29,7 +30,7 @@ Production retrieval results below use scene18 queries at every stream count. Ex
 | retrieval_vggt_k20_v18_full_v1 | gmt_off | 2 | 598 | 309 | 90.2913% | 0.925637 | True/True |
 | retrieval_vggt_k5_v18_full_v1 | gmt_off | 2 | 598 | 309 | 89.9676% | 0.922593 | True/True |
 
-The completed dense-B7 two-camera tracker feeding the native ranker has 1 Recall1 query corrections and 0 harms on 309 common eligible scene18 queries, with eligible gained/lost 0/0. Same detector query cohort and GT identities are independently verified. This is a small primary-head replay signal; completed matched-head controls are reported individually below and remaining comparisons stay pending. See GEO_STREAM_RETRIEVAL_QUERY_AUDIT.md; no unique VGGT or stable speed claim follows.
+The completed dense-B7 two-camera tracker feeding the native ranker has 1 Recall1 query corrections and 0 harms on 309 common eligible scene18 queries, with eligible gained/lost 0/0. Same detector query cohort and GT identities are independently verified. This is a small primary-head replay signal; completed matched-head controls are reported individually below, with declared-comparison status in the query audit. See GEO_STREAM_RETRIEVAL_QUERY_AUDIT.md; no unique VGGT or stable speed claim follows.
 
 Completed matched publication control GMT-head2, fixed scene18: 598 exact detector queries/309 common eligible; R1 corrections/harms 0/0, eligibility gained/lost 0/0, MRR delta +0.000000, first-positive rank or eligibility changes 0. This is one primary-head local replay, not a completed stability or unique-foundation attribution result.
 
@@ -39,9 +40,13 @@ The complete four-camera dense-B7 replay, fixed scene1: 228 exact detector queri
 
 Completed matched publication control GMT-head4, fixed scene1: 228 exact detector queries/185 common eligible; R1 corrections/harms 0/0, eligibility gained/lost 0/0, MRR delta -0.000016, first-positive rank or eligibility changes 1. This is one primary-head local replay, not a completed stability or unique-foundation attribution result.
 
+Completed matched publication control DINO-head4, fixed scene1: 228 exact detector queries/185 common eligible; R1 corrections/harms 1/1, eligibility gained/lost 0/0, MRR delta -0.000976, first-positive rank or eligibility changes 3. This is one primary-head local replay, not a completed stability or unique-foundation attribution result.
+
 The complete four-camera dense-B7 replay, fixed scene18: 598 exact detector queries/309 common eligible, R1 corrections/harms 1/0, eligibility gained/lost 0/0, MRR delta +0.001888. Scene18 shares the two-camera corrected query; it is not an independent query replication. Per-scene cohorts are kept separate.
 
 Completed matched publication control GMT-head4, fixed scene18: 598 exact detector queries/309 common eligible; R1 corrections/harms 0/0, eligibility gained/lost 0/0, MRR delta +0.000000, first-positive rank or eligibility changes 0. This is one primary-head local replay, not a completed stability or unique-foundation attribution result.
+
+Completed matched publication control DINO-head4, fixed scene18: 598 exact detector queries/309 common eligible; R1 corrections/harms 1/0, eligibility gained/lost 0/0, MRR delta +0.002427, first-positive rank or eligibility changes 2. This is one primary-head local replay, not a completed stability or unique-foundation attribution result.
 
 Same ordered-query audit of VGGT2 versus GMT-head2, scene18: VGGT/control R1 fixes 1/0, shared fixes 0, VGGT fixes not reproduced by this control 1. Equal aggregate gains are insufficient to infer the same corrected query; different corrections in a single replay do not establish stable unique VGGT benefit.
 
@@ -49,9 +54,11 @@ Same ordered-query audit of VGGT2 versus DINO-head2, scene18: VGGT/control R1 fi
 
 Same ordered-query audit of VGGT4 versus GMT-head4, scene18: VGGT/control R1 fixes 1/0, shared fixes 0, VGGT fixes not reproduced by this control 1. Equal aggregate gains are insufficient to infer the same corrected query; different corrections in a single replay do not establish stable unique VGGT benefit.
 
+Same ordered-query audit of VGGT4 versus DINO-head4, scene18: VGGT/control R1 fixes 1/1, shared fixes 0, VGGT fixes not reproduced by this control 1. Equal aggregate gains are insufficient to infer the same corrected query; different corrections in a single replay do not establish stable unique VGGT benefit.
+
 
 Same-gallery diagnostics retain the full native positive-gallery denominator. The sampled-observation native scorer is stronger than transferred association-trained projection/cosine scores in the completed scene18 tests; positive candidate coverage is 100%. These diagnose scoring/representation transfer and do not show all raw foundation features are useless. Their five-ranker producer timings are diagnostic cost, not production throughput. See retrieval_scoring_diagnostics.csv and the source metrics.
 
 Query latency measures local scoring/response serialization after representations are available. Full replay-round timing separately charges reads, tracking, optional encoder work, publication, queries and log I/O. It is not HTTP/network or camera-capture-to-output latency. Source acquisition timing and a deadline-paced live camera service have not been verified. Index payload caps do not bound original GMT history or total process/GPU memory.
 
-Remaining scope evidence: complete the planned stream/keyframe matrix and candidate tracking-to-retrieval evaluation, preserve fixed-query comparisons, and establish an actual Web scientific problem/application rather than changing a tracking title. Current evidence does not justify PAPER_READY; this fit risk does not stop the technical research.
+Remaining scope evidence: consolidate the measured stream/keyframe matrix and matched tracking-to-retrieval comparisons with the remaining stability/system evidence, preserve fixed-query comparisons, and establish an actual Web scientific problem/application. Current evidence does not justify PAPER_READY; this fit risk does not stop the technical research.

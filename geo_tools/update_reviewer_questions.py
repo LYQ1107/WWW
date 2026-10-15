@@ -19,7 +19,7 @@ def main():
     if query_audit.exists():
         paired=json.loads(query_audit.read_text());candidate=next((row for row in paired['rows'] if row['method']=='VGGT2'),None)
         if candidate:
-            retrieval_evidence+=f" 已完成denseB7跟踪接入原生排序的完整两路检索：相同{candidate['common_eligible']}个可检索查询中Recall1修正{candidate['common_eligible_rank1_fixes']}、破坏{candidate['common_eligible_rank1_harms']}，可检索集合变化{candidate['eligible_gained']}/{candidate['eligible_lost']}。这是小型主种子信号，匹配容量跟踪发布对照按完成情况分别报告，剩余对照仍待完成，不能宣称VGGT独有或稳定收益。"
+            retrieval_evidence+=f" 已完成denseB7跟踪接入原生排序的完整两路检索：相同{candidate['common_eligible']}个可检索查询中Recall1修正{candidate['common_eligible_rank1_fixes']}、破坏{candidate['common_eligible_rank1_harms']}，可检索集合变化{candidate['eligible_gained']}/{candidate['eligible_lost']}。这是小型主种子信号，匹配容量跟踪发布对照分别报告，已声明逐查询对照是否完成见审计状态，不能宣称VGGT独有或稳定收益。"
         for row in paired['rows']:
             if row['method'].startswith(('GMT-head','DINO-head')):
                 retrieval_evidence+=f" 已完成{row['method']}的scene{row['query_scene']}：{row['common_eligible']}共同可检索/{row['requests']}请求，R1修正/破坏{row['common_eligible_rank1_fixes']}/{row['common_eligible_rank1_harms']}，MRR变化{row['common_eligible_mrr_delta']:+.6f}，首个正样本排名/可检索集合变化查询数{row['changed_rank_or_eligibility_queries']}；这不证明完整排名列表逐项相同。"

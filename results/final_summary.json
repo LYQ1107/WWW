@@ -2226,6 +2226,42 @@
       "sha256": "6d1ba5deceeb6c5ab90072ec122e02efcb4bbd5fa31882ca63798943807efdd6"
     },
     {
+      "method": "causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v10",
+      "video_id": 10,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 80.9882311665223,
+      "DetA": 80.96032475403898,
+      "AssA": 81.01743128053135,
+      "IDF1": 98.9506745663502,
+      "MOTA": 97.87113255747943,
+      "IDSW": 24,
+      "CVIDF1": 98.9506745663502,
+      "CVMA_sequential": 97.87113255747943,
+      "CVMA": 97.91370990632984,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261015_strict_suite_v1_v10/predictions.metrics.json",
+      "sha256": "a2c15632538a2c6fe4e9b12dd1db72ea081e12cee554d208bc78d038763402be"
+    },
+    {
+      "method": "causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v11",
+      "video_id": 11,
+      "full_video": true,
+      "causal_online": true,
+      "raw_gt_diagnostic": false,
+      "HOTA": 83.31216053067239,
+      "DetA": 87.57778817743619,
+      "AssA": 79.2568764390036,
+      "IDF1": 92.05153617443013,
+      "MOTA": 98.9631488574825,
+      "IDSW": 25,
+      "CVIDF1": 92.05153617443013,
+      "CVMA_sequential": 98.95654471007794,
+      "CVMA": 98.96975300488707,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/online/causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v11/predictions.metrics.json",
+      "sha256": "adc31ad788a1a521f769796f9357b54a1cbb9d492fee3e6706c0de8f5c39cea9"
+    },
+    {
       "method": "causal_B8_fixed20_total80_strict_suite_v1_v1",
       "video_id": 1,
       "full_video": true,
@@ -4380,7 +4416,7 @@
   },
   "resource_ledger": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/resource_ledger_v1.json",
-    "sha256": "4803753181e33801510d859ff144d565470c7356e21e40ba7e2e17ec5162bd9f",
+    "sha256": "d0806db28c0f7ad997e506d6432934406caf003b45fc5205b62f1b582f8841b1",
     "status": "MEASURED_SCOPE_LEDGER_NOT_FINAL_MATRIX",
     "scopes": {
       "cuda": "PyTorch per-process allocator peak, not all processes or complete device occupancy",
@@ -8629,8 +8665,8 @@
   },
   "paired_retrieval_query_outcomes": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/retrieval_paired_query_outcomes_v1.json",
-    "sha256": "f4cfa93e54b84d20458e8c13997a7fdd71bf387cd622f8e7f03dbe8e2857da5c",
-    "status": "PARTIAL_VERIFIED_COMPARISONS",
+    "sha256": "24ab23a068bc509eaa9fe17a367aff49def636d52b3a8914b6d86ca1999dda4e",
+    "status": "COMPLETE_DECLARED_COMPARISONS",
     "rows": [
       {
         "method": "Prior2",
@@ -9118,6 +9154,114 @@
         "method_conditional_recall1": 0.9783783783783784
       },
       {
+        "method": "DINO-head4",
+        "query_scene": 1,
+        "reference": "retrieval_gmt_4streams_full_v1_scene1_v1.json",
+        "candidate": "retrieval_dinov2_dense_head_tracking_4streams_full_v1_scene1_v1.json",
+        "requests": 228,
+        "identical_detector_query_cohort": true,
+        "identical_query_gt_labels": true,
+        "baseline_eligible": 185,
+        "method_eligible": 185,
+        "common_eligible": 185,
+        "identical_eligible_query_set": true,
+        "eligible_gained": 0,
+        "eligible_lost": 0,
+        "common_eligible_rank1_fixes": 1,
+        "common_eligible_rank1_harms": 1,
+        "common_eligible_rank1_delta": 0.0,
+        "common_eligible_mrr_delta": -0.0009759759759759762,
+        "all_request_rank1_hit_delta": 0,
+        "all_request_rank1_success_delta": 0.0,
+        "changed_rank_or_eligibility_queries": 3,
+        "examples": [
+          {
+            "query": {
+              "scene": 1,
+              "camera": 2,
+              "round_id": 340,
+              "image_id": 1273,
+              "frame_id": 341,
+              "bbox": [
+                886.5755004882812,
+                184.36622619628906,
+                1089.293212890625,
+                669.3111572265625
+              ]
+            },
+            "baseline": {
+              "eligible": true,
+              "first_positive_rank": 8,
+              "positive_gallery_clips": 7,
+              "published_track_id": 73
+            },
+            "method": {
+              "eligible": true,
+              "first_positive_rank": 9,
+              "positive_gallery_clips": 7,
+              "published_track_id": 68
+            }
+          },
+          {
+            "query": {
+              "scene": 1,
+              "camera": 2,
+              "round_id": 620,
+              "image_id": 1553,
+              "frame_id": 621,
+              "bbox": [
+                909.4776000976562,
+                442.88330078125,
+                1211.7889404296875,
+                1068.826904296875
+              ]
+            },
+            "baseline": {
+              "eligible": true,
+              "first_positive_rank": 1,
+              "positive_gallery_clips": 8,
+              "published_track_id": 135
+            },
+            "method": {
+              "eligible": true,
+              "first_positive_rank": 3,
+              "positive_gallery_clips": 7,
+              "published_track_id": 122
+            }
+          },
+          {
+            "query": {
+              "scene": 1,
+              "camera": 2,
+              "round_id": 620,
+              "image_id": 1553,
+              "frame_id": 621,
+              "bbox": [
+                1093.16015625,
+                221.4034881591797,
+                1307.1195068359375,
+                758.5436401367188
+              ]
+            },
+            "baseline": {
+              "eligible": true,
+              "first_positive_rank": 2,
+              "positive_gallery_clips": 7,
+              "published_track_id": 136
+            },
+            "method": {
+              "eligible": true,
+              "first_positive_rank": 1,
+              "positive_gallery_clips": 7,
+              "published_track_id": 123
+            }
+          }
+        ],
+        "examples_limit": 50,
+        "baseline_conditional_recall1": 0.9783783783783784,
+        "method_conditional_recall1": 0.9783783783783784
+      },
+      {
         "method": "Prior4",
         "query_scene": 18,
         "reference": "retrieval_gmt_4streams_full_v1_scene18_v1.json",
@@ -9277,22 +9421,90 @@
         "examples_limit": 50,
         "baseline_conditional_recall1": 0.9773462783171522,
         "method_conditional_recall1": 0.9773462783171522
-      }
-    ],
-    "pending": [
-      {
-        "method": "DINO-head4",
-        "query_scene": 1,
-        "reference": "retrieval_gmt_4streams_full_v1_scene1_v1.json",
-        "candidate": "retrieval_dinov2_dense_head_tracking_4streams_full_v1_scene1_v1.json"
       },
       {
         "method": "DINO-head4",
         "query_scene": 18,
         "reference": "retrieval_gmt_4streams_full_v1_scene18_v1.json",
-        "candidate": "retrieval_dinov2_dense_head_tracking_4streams_full_v1_scene18_v1.json"
+        "candidate": "retrieval_dinov2_dense_head_tracking_4streams_full_v1_scene18_v1.json",
+        "requests": 598,
+        "identical_detector_query_cohort": true,
+        "identical_query_gt_labels": true,
+        "baseline_eligible": 309,
+        "method_eligible": 309,
+        "common_eligible": 309,
+        "identical_eligible_query_set": true,
+        "eligible_gained": 0,
+        "eligible_lost": 0,
+        "common_eligible_rank1_fixes": 1,
+        "common_eligible_rank1_harms": 0,
+        "common_eligible_rank1_delta": 0.003236245954692557,
+        "common_eligible_mrr_delta": 0.0024271844660194173,
+        "all_request_rank1_hit_delta": 1,
+        "all_request_rank1_success_delta": 0.0016722408026755853,
+        "changed_rank_or_eligibility_queries": 2,
+        "examples": [
+          {
+            "query": {
+              "scene": 18,
+              "camera": 2,
+              "round_id": 600,
+              "image_id": 44466,
+              "frame_id": 601,
+              "bbox": [
+                1598.0068359375,
+                552.6897583007812,
+                1618.1890869140625,
+                588.4749145507812
+              ]
+            },
+            "baseline": {
+              "eligible": true,
+              "first_positive_rank": 4,
+              "positive_gallery_clips": 7,
+              "published_track_id": 4
+            },
+            "method": {
+              "eligible": true,
+              "first_positive_rank": 2,
+              "positive_gallery_clips": 7,
+              "published_track_id": 4
+            }
+          },
+          {
+            "query": {
+              "scene": 18,
+              "camera": 1,
+              "round_id": 960,
+              "image_id": 43797,
+              "frame_id": 961,
+              "bbox": [
+                509.6815185546875,
+                469.97479248046875,
+                530.3577880859375,
+                502.8097839355469
+              ]
+            },
+            "baseline": {
+              "eligible": true,
+              "first_positive_rank": 2,
+              "positive_gallery_clips": 8,
+              "published_track_id": 4
+            },
+            "method": {
+              "eligible": true,
+              "first_positive_rank": 1,
+              "positive_gallery_clips": 8,
+              "published_track_id": 4
+            }
+          }
+        ],
+        "examples_limit": 50,
+        "baseline_conditional_recall1": 0.9773462783171522,
+        "method_conditional_recall1": 0.9805825242718447
       }
     ],
+    "pending": [],
     "shared_control_corrections": [
       {
         "vggt_method": "VGGT2",
@@ -9329,10 +9541,32 @@
       },
       {
         "vggt_method": "VGGT4",
+        "control_method": "DINO-head4",
+        "query_scene": 1,
+        "vggt_rank1_fixes": 0,
+        "control_rank1_fixes": 1,
+        "shared_rank1_fixes": 0,
+        "vggt_fixes_not_reproduced_by_this_control": 0,
+        "shared_fix_examples": [],
+        "scope": "same ordered query occurrence, GT label, native baseline and stream-count comparison; identical aggregate gains alone do not establish shared corrections"
+      },
+      {
+        "vggt_method": "VGGT4",
         "control_method": "GMT-head4",
         "query_scene": 18,
         "vggt_rank1_fixes": 1,
         "control_rank1_fixes": 0,
+        "shared_rank1_fixes": 0,
+        "vggt_fixes_not_reproduced_by_this_control": 1,
+        "shared_fix_examples": [],
+        "scope": "same ordered query occurrence, GT label, native baseline and stream-count comparison; identical aggregate gains alone do not establish shared corrections"
+      },
+      {
+        "vggt_method": "VGGT4",
+        "control_method": "DINO-head4",
+        "query_scene": 18,
+        "vggt_rank1_fixes": 1,
+        "control_rank1_fixes": 1,
         "shared_rank1_fixes": 0,
         "vggt_fixes_not_reproduced_by_this_control": 1,
         "shared_fix_examples": [],
@@ -9582,7 +9816,7 @@
   },
   "observed_process_wall_runtime": {
     "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/process_wall_runtime_v1.json",
-    "sha256": "f92d416330e917305058eefd36680d56df7b2d8fe58c0e188de35802a460caff",
+    "sha256": "28226693dd2f5c1c50877b13446c4e1a141c8a31a0f60120d42c608a88b34aa5",
     "status": "RECORDED_UNHELD_PROCESS_WALL_COSTS",
     "suites": [
       {
@@ -9863,6 +10097,14 @@
         "reason": "recorded held child or overlap with conservative priority-owner lifetime; queue-observed duration may include suspension"
       },
       {
+        "method": "causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v11",
+        "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/primary_vggt_inference_seed_pairs_v1_gpu5/manifest.json::causal_B7_primary_head_inference_seed20261016_strict_suite_v1_v11",
+        "priority_windows": [
+          "/data1/liuyeqiang/WWW_vggt_geo_runtime/priority_windows/matched_head_tracking_retrieval_resume_v2/manifest.json"
+        ],
+        "reason": "recorded held child or overlap with conservative priority-owner lifetime; queue-observed duration may include suspension"
+      },
+      {
         "method": "causal_fixed20_offset9_total80_v18_v1",
         "stage_key": "/data1/liuyeqiang/WWW_vggt_geo_runtime/queues/remaining_matrix_v1_gpu4/manifest.json::causal_fixed20_offset9_total80_v18_v1",
         "priority_windows": [
@@ -10011,6 +10253,15 @@
     "dinov22": {
       "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/dinov2_dense_head_retrieval_full2_tracking_parity_v1.json",
       "sha256": "44c19cd70377e9250e33fa137a5178f540c1738d6cbdc2f70fb5c23cfef05369",
+      "status": "PASS",
+      "full_video": true,
+      "full_strict_suite": false,
+      "scope": "complete scene outputs against complete standalone references; exact boxes/scores/classes/image/track IDs and row order; native retrieval receives no added tracking vectors",
+      "limitations": "output equivalence at the stated scope; not retrieval quality, hidden-state equality, runtime repeatability or a substitute for future-prefix causality tests"
+    },
+    "dinov24": {
+      "path": "/data1/liuyeqiang/WWW_vggt_geo_20261014/results/dinov2_dense_head_retrieval_full4_tracking_parity_v1.json",
+      "sha256": "5ba49fb7323baeb866e0fa788461ff8f1ee9a7b78f1e21c7f96e8211d471fb87",
       "status": "PASS",
       "full_video": true,
       "full_strict_suite": false,
@@ -10227,6 +10478,46 @@
       "peak_gpu_bytes": 2004189696,
       "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_dinov2_dense_head_tracking_2streams_full_v1/retrieval.metrics.json",
       "sha256": "1b26e1defaca7183b39b16329c53363ba97c2d338614ffbf014161aed4844a0a"
+    },
+    {
+      "method": "retrieval_dinov2_dense_head_tracking_4streams_full_v1",
+      "tracking_method": "dinov2_dense_head",
+      "backbone": "none",
+      "video_ids": "18,1",
+      "camera_streams": 4,
+      "full_video": true,
+      "interval": 10,
+      "used_cache": false,
+      "speed_eligible": true,
+      "requests": 826,
+      "eligible_queries": 494,
+      "query_detection_coverage": 0.9743589743589743,
+      "gt_matched_queries": 798,
+      "detector_query_precision": 0.9661016949152542,
+      "gallery_eligibility_among_matched": 0.6190476190476191,
+      "all_requests_Recall1": 0.585956416464891,
+      "all_requests_Recall5": 0.5956416464891041,
+      "all_requests_Recall10": 0.5968523002421308,
+      "Recall1": 0.979757085020243,
+      "Recall5": 0.9959514170040485,
+      "Recall10": 0.9979757085020243,
+      "MRR": 0.9874853801169591,
+      "query_p50": 0.003025628626346588,
+      "query_p95": 0.005966762080788612,
+      "camera_image_fps": 4.143850317193139,
+      "round_p50": 0.9382698610424995,
+      "round_p95": 1.066661934554577,
+      "vggt_calls": 0,
+      "tracking_vggt_calls": 0,
+      "retrieval_vggt_calls": 0,
+      "dinov2_calls": 1961,
+      "tracking_dinov2_calls": 1961,
+      "retrieval_dinov2_calls": 0,
+      "peak_index_payload_bytes": 1563819,
+      "peak_host_rss_bytes": 6170587136,
+      "peak_gpu_bytes": 2057842176,
+      "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/retrieval/retrieval_dinov2_dense_head_tracking_4streams_full_v1/retrieval.metrics.json",
+      "sha256": "da99575054e7b8b2b0185741d38c8147ac8a948897cc47145a15a6f916106511"
     },
     {
       "method": "retrieval_dinov2_scoring_diagnostic_v18_full_v1",
@@ -11328,5 +11619,5 @@
     }
   ],
   "retrieval_full_video_evaluation": true,
-  "source_commit": "828a5dacae9826e0116b615da03b3dfffc37ed69"
+  "source_commit": "c5d002c20762c72b28e354831d21cefdb5396fb6"
 }
