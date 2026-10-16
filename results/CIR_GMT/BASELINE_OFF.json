@@ -1,5 +1,5 @@
 {
-  "status": "PASS_NATIVE_OFF_ENGINEERING_METRICS_PENDING",
+  "status": "PASS_P0_STATE_PARITY_AND_P1_FORMAL_OFF04_METRICS",
   "video": 4,
   "full_video": true,
   "images": 1802,
@@ -13,16 +13,48 @@
   "exact_RNG": true,
   "exact_joint_scores_and_decisions": true,
   "raw": {
-    "HOTA": null,
-    "AssA": null,
-    "CVIDF1": null,
-    "IDF1": null,
-    "IDSW": null,
-    "DetA": null,
-    "MOTA": null,
-    "Frag": null,
-    "FPS": null
+    "HOTA": 74.73686927526626,
+    "AssA": 71.504150036567,
+    "CVIDF1": 88.50836120401338,
+    "IDF1": 88.50836120401337,
+    "IDSW": 355,
+    "DetA": 78.20058016892885,
+    "MOTA": 81.45833333333333,
+    "Frag": 40,
+    "FPS": 7.767969493339806
   },
-  "null_reason": "Profiling includes heavy audit hashes; formal complete-image evaluation driver not yet run. No historical scores substituted.",
-  "source_result_sha256": "bc424b395c2df678a21b050563d60ecd93a79909562a73374dd1c03aa4fd810a"
+  "null_reason": null,
+  "source_result_sha256": "bc424b395c2df678a21b050563d60ecd93a79909562a73374dd1c03aa4fd810a",
+  "prior_profiled_engineering_status": {
+    "status": "PASS_NATIVE_OFF_ENGINEERING_METRICS_PENDING",
+    "null_reason": "Profiling includes heavy audit hashes; formal complete-image evaluation driver not yet run. No historical scores substituted."
+  },
+  "stock": {
+    "HOTA": 75.57556745318347,
+    "AssA": 76.55218405147805,
+    "CVIDF1": 92.5055928411633,
+    "IDF1": 92.5055928411633,
+    "IDSW": 4,
+    "DetA": 74.64311139450477,
+    "MOTA": 86.09375,
+    "Frag": 71,
+    "FPS": 7.767969493339806
+  },
+  "formal_metrics_scope": "Complete TRAIN04 formal P1 OFF output equals same-image Original used for evaluation; actual OFF FPS separately measured. P0 heavy hashing parity timing is not this FPS.",
+  "formal_off_source_commit": "74aa2c541d355f7b670a9e327b001b06db7b800c",
+  "new_P2_core_full_OFF": "RUNNING_SEPARATE_PROOF_NOT_YET_ADMITTED",
+  "formal_sources": [
+    {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_testnet_off_full04_v1/video4/manifest.json",
+      "sha256": "03783962689689664eb564426807c9c2572ca7952e625b15ecf5065f3ecec219"
+    },
+    {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_original_full04_v1/manifest.json",
+      "sha256": "68ab37786fe3f6713b1e7aa1867267f54a0bb5e9246b2d796ac0efda3a702b17"
+    },
+    {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_engineering04_original_eval_v1/RESULT.json",
+      "sha256": "889992e0b0f5ad480eb055abb8c5a0f832079fec5a84c547d735c64054d664f3"
+    }
+  ]
 }

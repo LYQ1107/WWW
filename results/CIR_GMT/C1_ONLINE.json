@@ -1,5 +1,5 @@
 {
-  "status": "ENGINEERING_SCENE_POSITIVE_PENDING_REGISTERED_DEV_AND_TEST",
+  "status": "COMPLETE_DEV12_MIXED_UNSAFE_NOT_FINAL_QUALIFIED",
   "scope": "TRAIN04 complete901 groups/1802 actual images; FIT engineering only, not development selection",
   "comparisons": {
     "raw": {
@@ -94,8 +94,164 @@
   "training_videos_this_round": 0,
   "final24_fit_complete": false,
   "complete_DEVELOPMENT": {
-    "status": "RUNNING_REGISTERED_ALL12",
-    "metrics": null
+    "status": "COMPLETE_DEV12_MIXED_UNSAFE_FOR_FINAL_SELECTION",
+    "actual_inference_video_ids": [
+      1,
+      2,
+      3,
+      10,
+      11,
+      14,
+      15,
+      16,
+      18,
+      19,
+      22,
+      23
+    ],
+    "strict_metric_video_ids": [
+      1,
+      10,
+      11,
+      18,
+      19
+    ],
+    "raw_GT_invalid_videos": [
+      2,
+      3,
+      14,
+      15,
+      16,
+      22,
+      23
+    ],
+    "metrics": {
+      "Original GMT": {
+        "all12_image_FPS": 6.236043021375462,
+        "metrics": {
+          "raw": {
+            "HOTA": 80.7487570792218,
+            "AssA": 81.4726003319329,
+            "DetA": 80.26755852102676,
+            "IDF1": 95.05796217205614,
+            "MOTA": 94.72950407729844,
+            "IDSW": 482,
+            "Frag": 211,
+            "CVIDF1": 95.05796217205614,
+            "CVMA": 94.78624580516511,
+            "FPS": 7.278460845535743,
+            "actual_evaluation_video_ids": [
+              1,
+              10,
+              11,
+              18,
+              19
+            ]
+          },
+          "stock": {
+            "HOTA": 81.05507217499988,
+            "AssA": 81.89549511179817,
+            "DetA": 80.45999971703776,
+            "IDF1": 95.63166429168099,
+            "MOTA": 95.7022194121557,
+            "IDSW": 41,
+            "Frag": 346,
+            "CVIDF1": 95.631664291681,
+            "CVMA": 95.70384060438046,
+            "FPS": 7.278460845535743,
+            "actual_evaluation_video_ids": [
+              1,
+              10,
+              11,
+              18,
+              19
+            ]
+          }
+        }
+      },
+      "C1": {
+        "all12_image_FPS": 6.167110639191567,
+        "metrics": {
+          "raw": {
+            "HOTA": 80.82212728384077,
+            "AssA": 81.6255522119274,
+            "DetA": 80.26184085205304,
+            "IDF1": 95.25157616432784,
+            "MOTA": 94.91269879869655,
+            "IDSW": 371,
+            "Frag": 211,
+            "CVIDF1": 95.25157616432784,
+            "CVMA": 94.83488157190799,
+            "FPS": 7.131073954875044,
+            "actual_evaluation_video_ids": [
+              1,
+              10,
+              11,
+              18,
+              19
+            ]
+          },
+          "stock": {
+            "HOTA": 81.0362738857522,
+            "AssA": 81.98884984817336,
+            "DetA": 80.32872912618501,
+            "IDF1": 95.6618446768667,
+            "MOTA": 95.51091872963377,
+            "IDSW": 48,
+            "Frag": 314,
+            "CVIDF1": 95.66184467686672,
+            "CVMA": 95.50119157628521,
+            "FPS": 7.131073954875044,
+            "actual_evaluation_video_ids": [
+              1,
+              10,
+              11,
+              18,
+              19
+            ]
+          }
+        }
+      }
+    },
+    "delta_C1_minus_original": {
+      "raw": {
+        "HOTA": 0.0733702046189677,
+        "AssA": 0.15295187999450377,
+        "CVIDF1": 0.1936139922717075,
+        "IDF1": 0.1936139922717075,
+        "IDSW": -111,
+        "DetA": -0.005717668973716172,
+        "MOTA": 0.18319472139810955,
+        "Frag": 0,
+        "CVMA": 0.048635766742876285,
+        "FPS": -0.147386890660699
+      },
+      "stock": {
+        "HOTA": -0.018798289247683897,
+        "AssA": 0.09335473637518987,
+        "CVIDF1": 0.030180385185715863,
+        "IDF1": 0.030180385185715863,
+        "IDSW": 7,
+        "DetA": -0.1312705908527505,
+        "MOTA": -0.191300682521927,
+        "Frag": -32,
+        "CVMA": -0.20264902809525154,
+        "FPS": -0.147386890660699
+      }
+    },
+    "owner_diagnostic": {
+      "certified_wrong_to_correct": 3377,
+      "certified_correct_to_wrong": 5985,
+      "repair_scene_person_groups": 46,
+      "harmed_scene_person_groups": 56,
+      "unit": "dependent observations, not independent repairs",
+      "video19": "wrong owner observations1->1785; longest observed wrong camera-frame streak1->595"
+    },
+    "source": {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_20261016/results/CIR_GMT/DEV_ONLINE_RESULTS.json",
+      "sha256": "f1d378c80f295c5876350166ecff19cac9866fd4bf118cceb146ddc6044640e6"
+    },
+    "final_qualified": false
   },
   "official_TEST": {
     "status": "NOT_STARTED",
@@ -119,5 +275,6 @@
       "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_testnet_c1_full04_v1/video4/manifest.json",
       "sha256": "ebbdbd2c19b7bdbc12162396f101df9866b2368443da644783d4757ed31d980a"
     }
-  ]
+  ],
+  "engineering_comparison_scope": "Existing root comparisons/CIR_stats remain complete TRAIN04 FIT engineering evidence, not developer aggregate."
 }
