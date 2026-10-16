@@ -1,0 +1,15 @@
+{
+  "status": "FIXED_BEFORE_GPU_PREFLIGHT",
+  "pair": "first frozen cohort pair",
+  "full_official_baseline_calls": 2,
+  "hooked_joint_calls": 1,
+  "true_independent_singleton_calls": 2,
+  "layers": [
+    4,
+    11,
+    17,
+    23
+  ],
+  "rule": "elementwise abs(hooked-baseline)<=3*abs(repeat-baseline)+1e-5+1e-4*max(abs(baseline),abs(hooked)); report bitwise too; same FP16 backend and no claim that numerical fluctuation is signal",
+  "no_new_F_scan": true
+}

@@ -1,0 +1,31 @@
+{
+  "status": "SOURCE_AND_ASSET_AUDIT_COMPLETE_NO_TOKEN_RESULTS_YET",
+  "remote_reference_HEAD": "594d9d3237966f1a4d73a3f689eec48e585f0e58",
+  "official_commit": "48b23c8ce72c9a8fcf987f0d7f43d8e4870759f6",
+  "official_source_hashes": {
+    "vggt_omega/models/aggregator.py": "85c1b54ecaa50315f4592983182daae187a2084f72b94dafb3913cab79ed4924",
+    "vggt_omega/models/vggt_omega.py": "190b92a37bd1ce27459a8ca92ac5fee4257f37c5b081316dbf685bee06c1f8e7",
+    "vggt_omega/models/heads/camera_head.py": "ff12f931f12df8cd2a65e58f13c2fed01e648747c9e06b0b966df283b600fd47",
+    "vggt_omega/models/heads/dense_head.py": "40261c8ae7f12aca04f1ae0ff1dc6e2ae10d09daf2c6ecd781bbd3e2aad123d8"
+  },
+  "prior_saved_patch_features": "ABSENT",
+  "prior_correspondence_npz_count": 96,
+  "prior_npz_keys": [
+    "eval_points_A",
+    "eval_points_B",
+    "fit_points_A",
+    "fit_points_B"
+  ],
+  "reextraction_reason": "Previous96 retained only cameras/correspondences, not legal intermediate patch tokens. New token extraction necessary; no repeated F sweep.",
+  "true_feature_semantics": "2048 concat current frame-attention1024 and inter-frame1024; frame-half contains prior cross-view interaction. F3 independently executes singleton inputs. Layers indexed zero-based4/11/17/23; exclude17 special tokens.",
+  "single_slot_caveat": "Independent singleton always uses first-frame camera/register embedding. N1 duplicated-partner controls retain corresponding original first/second slot to help separate partner content from slot effects.",
+  "old_reports_unchanged": true,
+  "official416": "BLOCKED_WEIGHT_ACCESS",
+  "dependency_overlay": "Only scipy1.13.1 installed under dedicated Omega-Corr deps, original Omega and GMT environments unchanged.",
+  "weight_hash_recheck": {
+    "omega512": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+    "GMT": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "DINO": "36e4deffbaef061a2576705b0c36f93621e2ae20bf6274694821b0b492551b51"
+  },
+  "pre_feature_index_correction": "Initial uncommitted localcrop selection lacked per-person round robin; archived in runtime/cohort_prefreeze_initial and corrected to registered rule before any Omega token outputs. Primary160 pair membership unchanged."
+}
