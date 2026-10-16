@@ -133,6 +133,8 @@ def main():
         CUDA_allocator_peak_bytes=torch.cuda.max_memory_allocated(),CUDA_reserved_peak_bytes=torch.cuda.max_memory_reserved(),
         forward_seconds_P50=float(np.quantile(inference_times,.5)),forward_seconds_P95=float(np.quantile(inference_times,.95)),
         no_GT_labels_input=True,no_new_F_or_pose_scan=True,no_training=True,no_dense_video_feature_cache=True,
-        control_source_commit=getattr(encoder,'source_commit',None),weight_sha256=getattr(encoder,'weight_sha256',None)))
+        torch=torch.__version__,numpy=np.__version__,state_keys=encoder.state_keys,all_model_parameters_frozen=all(not p.requires_grad for p in encoder.model.parameters()),
+        GPU=torch.cuda.get_device_name(),capability=list(torch.cuda.get_device_capability()),
+        control_source_commit=getattr(encoder,'source_commit','48b23c8ce72c9a8fcf987f0d7f43d8e4870759f6'),weight_sha256=getattr(encoder,'weight_sha256','c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934')))
 
 if __name__=='__main__':main()
