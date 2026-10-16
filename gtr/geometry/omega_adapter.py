@@ -140,6 +140,8 @@ class OmegaAdapter:
         if resolution not in OFFICIAL_WEIGHTS:
             raise ValueError('unregistered checkpoint configuration')
         self.source, self.resolution, self.device = source, resolution, device
+        self.calls_attempted = 0
+        self.calls_completed = 0
         self.load_started = time.perf_counter()
         if file_sha(checkpoint) != OFFICIAL_WEIGHTS[resolution][1]:
             raise ValueError('weight bytes do not match the official Hugging Face LFS SHA256')
@@ -162,14 +164,19 @@ class OmegaAdapter:
         try:
             images, mappings = preprocess_pair(self.source, image_paths, self.resolution)
             with torch.inference_mode():
+                self.calls_attempted += 1
                 predictions = self.model(images.to(self.device))
                 extrinsics, intrinsics = self.decode(predictions['pose_enc'], predictions['images'].shape[-2:])
             torch.cuda.synchronize(self.device)
+            self.calls_completed += 1
             expected_shapes = {'pose_enc': (1, 2, 9), 'images': (1, 2, *images.shape[1:]),
                                'depth': (1, 2, *images.shape[-2:], 1), 'depth_conf': (1, 2, *images.shape[-2:])}
             for name, shape in expected_shapes.items():
                 if tuple(predictions[name].shape) != shape or not torch.isfinite(predictions[name]).all().item():
                     raise ValueError(f'invalid {name} shape or nonfinite values')
+            for name, value in predictions.items():
+                if not torch.isfinite(value).all().item():
+                    raise ValueError(f'nonfinite output: {name}')
             if tuple(extrinsics.shape) != (1, 2, 3, 4) or tuple(intrinsics.shape) != (1, 2, 3, 3):
                 raise ValueError('invalid decoded camera shapes')
             if not torch.isfinite(extrinsics).all().item() or not torch.isfinite(intrinsics).all().item():

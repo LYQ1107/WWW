@@ -140,6 +140,15 @@ class Tests(unittest.TestCase):
         self.assertFalse(result['valid'])
         self.assertEqual(result['inlier_ratio'], 'NOT_MEASURED')
 
+    def test_unverified_weights_cannot_reach_model_construction(self):
+        with tempfile.TemporaryDirectory() as directory:
+            checkpoint = Path(directory)/'unverified.pt'
+            checkpoint.write_bytes(b'not a checkpoint')
+            with self.assertRaisesRegex(ValueError, 'official Hugging Face LFS SHA256'):
+                adapter.OmegaAdapter(SOURCE, checkpoint)
+        with self.assertRaisesRegex(ValueError, 'exactly two'):
+            adapter.preprocess_pair(SOURCE, [])
+
 
 if __name__ == '__main__':
     unittest.main()
