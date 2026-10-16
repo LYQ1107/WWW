@@ -81,10 +81,13 @@ def main():
                         patch_cache[variant,layer,key,mode]=tensor.index_select(0,ids).float().cpu().numpy()
                     h,w=images.shape[-2]//patch,images.shape[-1]//patch
                     grid=tensor.T.reshape(1,tensor.shape[-1],h,w).float()
+                    valid_grid=objects.patch_lattice(maps[view],patch)['valid'].reshape(h,w)
+                    grid=grid*grid.new_tensor(valid_grid)[None,None]
                     bbox=torch.tensor(region['network_bbox'],device=tensor.device,dtype=torch.float32)[None]
                     bbox[:,0::2].clamp_(maps[view].pad_left,maps[view].pad_left+maps[view].resize_width)
                     bbox[:,1::2].clamp_(maps[view].pad_top,maps[view].pad_top+maps[view].resize_height)
-                    pooled=roi_align(grid,[bbox],output_size=(3,3),spatial_scale=1/patch,sampling_ratio=2,aligned=True).mean((-1,-2))[0].cpu().numpy()
+                    if bbox[0,2]<=bbox[0,0] or bbox[0,3]<=bbox[0,1]:pooled=np.zeros(tensor.shape[-1],dtype=np.float32)
+                    else:pooled=roi_align(grid,[bbox],output_size=(3,3),spatial_scale=1/patch,sampling_ratio=2,aligned=True).mean((-1,-2))[0].cpu().numpy()
                     roi_cache[variant,layer,key]=pooled
             pair_records=0
             for query in grouped[pair['pair_id']]:
