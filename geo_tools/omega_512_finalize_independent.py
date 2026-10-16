@@ -50,7 +50,8 @@ def main():
         '|---|---:|---:|---:|---:|---|---|']
     for r in identity['summary']:
         lines.append(f"|{r['arm']}|{r['weight']}|{r['primary_corrections']}/{r['primary_harms']}|{r['known_final_corrections']}/{r['known_final_harms']}|{r['final_ID_changes']}|{len(r['corrected_scene_qualified_people'])}/{len(r['corrected_scenes'])}|{r['passes_online_admission']}|")
-    lines+=['', '完整结果同时区分原始候选argmax、激活后轨迹排序、实际primary分配、Bank调用/接受、最终提交ID，以及未知比较。排序改变不计作纠错。已知计数为实测；未知或混合历史保留为未知，不用新ID数值对齐GT。新轨迹仅在存在已认证的历史纯正例和合法纯正例时判为已知碎片化。','',
+    lines+=['', 'G5仅在当前合法对侧候选内旋转几何分数；只有一个候选的行保持不变，单例与多候选行计数均保留，不能视作这些行上的强安慰剂。NativePrior采用已有20组年龄规则，几何仅作用同步候选，适用范围差异单独保留。','',
+        '完整结果同时区分原始候选argmax、激活后轨迹排序、实际primary分配、Bank调用/接受、最终提交ID，以及未知比较。排序改变不计作纠错。已知计数为实测；未知或混合历史保留为未知，不用新ID数值对齐GT。新轨迹仅在存在已认证的历史纯正例和合法纯正例时判为已知碎片化。','',
         'GT仅在事后认证中使用封存标签；初始参考标签只可从原封存“纯正例”证书恢复，不进行新GT匹配。细化认证规则300be79d在推理启动后、查看求解结果之前固定；本研究是已接触TRAIN标签的开发诊断，不能称完整盲预注册验证。','',
         f"独立数值检查重算24组240项、72组1080项背景指标；又核验{verification['primary_calls']}次真实primary调用的null-softmax/轨迹聚合、Hungarian和严格阈值，{verification['queries']}条查询，观察{verification['memory_calls_observed']}次原生Bank求解。原始小矩阵、来源、分支输出和失败/未知案例均发布。",'',
         f"本轮新增GPU可见完整子进程wall合计{identity['combined_new_GPU_visible_process_wall_seconds']:.3f}秒，即{identity['combined_new_GPU_visible_process_wall_seconds']/3600:.6f}小时，低于.5小时上限；这包括相机模型新增各144次前向及GMT反事实前缀/分支。原24组历史GPU诊断成本另计，不重复计作新增。新增研究缓存{cache_bytes}字节，低于2GiB（环境和权重单独核算）。",'',

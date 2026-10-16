@@ -122,6 +122,10 @@ def main():
             raw=torch.tensor(m['raw_logits'],dtype=torch.float32);delta=torch.tensor(m['delta'],dtype=torch.float32)
             if raw.numel():assert torch.isfinite(raw).all() and torch.isfinite(delta).all() and float(delta.abs().max())<=1.
             matrix_changes+=int(bool(delta.numel()) and bool(torch.any(delta!=0)))
+            if case['arm']=='G5_shuffled_gated':
+                legal=np.array(m['legal'],dtype=bool).reshape(len(m['queries']),len(m['references']))
+                summaries[case['arm'],case['weight']]['shuffled_singleton_rows_unchanged']+=int(np.sum(legal.sum(1)==1))
+                summaries[case['arm'],case['weight']]['shuffled_multi_candidate_rows']+=int(np.sum(legal.sum(1)>=2))
             if raw.numel():
                 summaries[case['arm'],case['weight']]['raw_argmax_reference_changes']+=int(torch.sum(raw.argmax(1)!=(raw+delta).argmax(1)))
             before_scores=np.array(m['before_track_scores']);after_scores=np.array(m['after_track_scores'])
