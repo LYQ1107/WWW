@@ -135,6 +135,8 @@ L1固定第3轮也已完成：C2为3修复/2已认证反改错/0原始正确→U
 
 没有重置旧账本。一次 CPU 预检未限定随机状态保存设备，可能初始化 CUDA RNG；未执行 GPU 模型训练，但因缺乏当时逐卡轨迹，保守按 10 卡各 64 秒计入 0.177778 GPU-hour 上界。随后代码限定 `devices=[]` 且所有新 CPU 任务设置空 CUDA_VISIBLE_DEVICES。正式 Phase 1 GPU 驻留上限由 1.4 下调到 1.32 小时，剩余更新从精确断点转 CPU，最坏父账本用量仍小于原有 4 小时。旧分配、原账本和纠正过程全部保留。
 
+2026-10-16 UTC的只读旧证据复核已通过：原封存2,976个文件（含10个检查点）、参考提交560b43d的1,243个Git文件内容、原输入清单121项，以及V3独立保留的3个300步权重均与既有哈希一致。分项范围存在重叠，不相加为独立文件数；SHA256核验去重后为3,109个路径、约1.068GB字节。此为保全与来源核验，不是性能结果；详见`OLD_EVIDENCE_PRESERVATION_RECHECK.json`。未封存的早期滚动resume不在此项保证范围。
+
 后续门槛仍要求真实可达错误、至少两个不同人物组的净修复、超越 C1 和强普通 MLP、没有 UNKNOWN 转换虚增及明显身份破坏、预测移除不能解释收益。只有通过后才考虑真实图像闭环在线评价。24 场景 OOF 和最终全量拟合尚未执行，须在核心科学证据和单独资源登记通过后进行。官方 TEST 保持未读取。
 
 状态、协议及结果见 `results/PIRGA_FULLTRAIN/MASTER_GOAL.json`、`PHASE1_ENDPOINT_SUMMARY.csv`、`PHASE1_REPLAY/`、`FIXED_RELIABILITY/` 和 `PHASE2_MATCHED_PROTOCOL.json`。服务器可运行 `geo_tools/pirga_status.py` 查看实际进程、访问步数与等待评价状态；一次静态 GitHub 快照不等于实时监控。
