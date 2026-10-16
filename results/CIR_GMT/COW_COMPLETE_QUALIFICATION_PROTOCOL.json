@@ -1,0 +1,22 @@
+{
+  "status": "REGISTERED_BEFORE_COMPLETE_COW_REPLAY",
+  "scene": 1,
+  "methods": [
+    "guard",
+    "margin"
+  ],
+  "reason": "Fixed first registered DEV scene, both sealed full-snapshot outputs already complete; no GT or metric based selection. Margin exercises frequent veto path that timed out on scene2.",
+  "reference_source": "6f3659cce7472c0fd165967d101ad6a4e9d50bb1",
+  "new_backend": "cow_engineering",
+  "default_backend_remains": "full",
+  "maximum_GPU_wall_hours": 1,
+  "maximum_GPUs": 1,
+  "start_condition": "Only after current P4 admission stage terminal and chosen card idle",
+  "success": "Exact raw/stock predictions, all images, VETO/solve/abort counts, no failures or missing evidence in both complete cold starts. Previous actual fault/RNG/storage proof remains separately pinned.",
+  "failure": "Retain mismatch, no formal COW admission or automatic retry.",
+  "not_claimed": [
+    "Full24 or TEST",
+    "Uniform speedup",
+    "Learned method benefit"
+  ]
+}
