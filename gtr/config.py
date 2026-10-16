@@ -10,6 +10,21 @@ def add_gtr_config(cfg):
     _C.MODEL.ROI_BOX_HEAD.CAT_FREQ_PATH = \
         'datasets/metadata/lvis_v1_train_cat_info.json' # LVIS metadata
 
+    # CIR is independent of GEO and defaults to exact native behavior.
+    _C.MODEL.CIR = CN()
+    _C.MODEL.CIR.ENABLED = False
+    _C.MODEL.CIR.MODE = 'off'
+    _C.MODEL.CIR.MODEL_PATH = ''
+    _C.MODEL.CIR.MAX_HISTORY = 16
+    _C.MODEL.CIR.MAX_FRAGMENTS_PER_ID = 32
+    _C.MODEL.CIR.REVISION_WINDOW = 0
+    _C.MODEL.CIR.MAX_SCORE_RESIDUAL = 0.5
+    _C.MODEL.CIR.RISK_MODE = 'conservative'
+    _C.MODEL.CIR.ENABLE_PROVISIONAL = False
+    _C.MODEL.CIR.ENABLE_REVISION = False
+    _C.MODEL.CIR.ENABLE_RELINK = False
+    _C.MODEL.CIR.AUDIT_ONLY = False
+
     # Separate VGGT evidence namespace, opt-in and zero by default.
     _C.MODEL.GEO = CN()
     _C.MODEL.GEO.ENABLED = False

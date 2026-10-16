@@ -39,6 +39,7 @@ class GTRRCNN(CustomRCNN):
     def __init__(self, **kwargs):
         """
         """
+        self._cir_cfg = kwargs.pop('cir_cfg')
         self._geo_cfg = kwargs.pop('geo_cfg')
         self.test_len = kwargs.pop('test_len')
         self.overlap_thresh = kwargs.pop('overlap_thresh')
@@ -59,6 +60,8 @@ class GTRRCNN(CustomRCNN):
         super().__init__(**kwargs)
         from ...geometry.runtime import GeometryRuntime
         self.geo_runtime = GeometryRuntime(self._geo_cfg)
+        from ..identity_revision.controller import IdentityRevisionController
+        self.cir_controller = IdentityRevisionController(self._cir_cfg)
 
 
     @classmethod
@@ -81,6 +84,7 @@ class GTRRCNN(CustomRCNN):
         ret['with_bank'] = cfg.MODEL.ASSO_HEAD.WITH_BANK
         ret['multi_modal'] = cfg.MULTI_MODAL
         ret['geo_cfg'] = cfg.MODEL.GEO.clone()
+        ret['cir_cfg'] = cfg.MODEL.CIR.clone()
         return ret
 
 
@@ -175,6 +179,7 @@ class GTRRCNN(CustomRCNN):
     
     def sliding_inference_GMT(self, batched_inputs,view_num,time):
         self.geo_runtime.reset()
+        self.cir_controller.reset()
         poss_ids.poss_ids = set()
         old_ids.old_ids = set()
         old_reids.old_reids = []
@@ -440,7 +445,7 @@ class GTRRCNN(CustomRCNN):
                 start += n_t[id[i]]
         return    self.roi_heads._forward_transformer_attention(self.roi_heads.s_t_head(s_t_feature),query_inds)
                 
-    def run_global_tracker_plus(self, view_num,instances,asso_output,pred_boxes,k,id_count,id_count_dict,id_reid_dict,instances_old,view):
+    def compute_native_track_scores(self, view_num, instances, asso_output, k):
         n_t = [len(x) for x in instances]
         N, T = sum(n_t), len(n_t)
         #view_num = 3 #这部分代码要把3替换调
@@ -473,6 +478,10 @@ class GTRRCNN(CustomRCNN):
 
         traj_score = torch.mm(asso_nonk, id_inds) # n_k x M
 
+        return ids, unique_ids, id_inds, traj_score
+
+    def solve_native_assignment(self, ids, unique_ids, id_inds, traj_score):
+        n_k = traj_score.shape[0]
         match_i, match_j = linear_sum_assignment((- traj_score).cpu()) #
         track_ids = ids.new_full((n_k,), -1)
         for i, j in zip(match_i, match_j):
@@ -480,6 +489,16 @@ class GTRRCNN(CustomRCNN):
                 if not (self.not_mult_thresh) else self.overlap_thresh
             if traj_score[i, j] > thresh:
                 track_ids[i] = unique_ids[j]
+        return track_ids
+
+    def propose_identity_revision(self, traj_score):
+        if not self.cir_controller.enabled:
+            return traj_score
+        return self.cir_controller.propose(traj_score)
+
+    def resolve_bank_fallback(self, instances, k, track_ids, unique_ids,
+                              id_count_dict, id_reid_dict, instances_old, view):
+        n_k = len(instances[k])
         if self.with_bank:
             flag = False
             #a = Instances(instances[0].image_size)
@@ -500,7 +519,11 @@ class GTRRCNN(CustomRCNN):
                             print('id',track_id_memory[count],'view',view)
                             print(run_time)
                         count += 1
-        #poss_ids.poss_ids = set()
+        return track_ids
+
+    def commit_native_identity_state(self, instances, k, track_ids,
+                                     id_count, id_count_dict, id_reid_dict):
+        n_k = len(instances[k])
         for i in range(n_k):
             id = track_ids[i].item()
             if track_ids[i] < 0:
@@ -520,8 +543,18 @@ class GTRRCNN(CustomRCNN):
         instances[k].track_ids = track_ids
 
         assert len(track_ids) == len(torch.unique(track_ids)), track_ids
-        return instances, id_count,id_count_dict
- 
+        return instances, id_count, id_count_dict
+
+    def run_global_tracker_plus(self, view_num,instances,asso_output,pred_boxes,k,id_count,id_count_dict,id_reid_dict,instances_old,view):
+        ids, unique_ids, id_inds, traj_score = self.compute_native_track_scores(
+            view_num, instances, asso_output, k)
+        traj_score = self.propose_identity_revision(traj_score)
+        track_ids = self.solve_native_assignment(ids, unique_ids, id_inds, traj_score)
+        track_ids = self.resolve_bank_fallback(instances, k, track_ids, unique_ids,
+                                               id_count_dict, id_reid_dict, instances_old, view)
+        return self.commit_native_identity_state(instances, k, track_ids,
+                                                 id_count, id_count_dict, id_reid_dict)
+
     def memory_bank(self,id_count_dict,id_reid_dict,unique_ids,instances_old,instances_no_match):
         time1 = time.time()
         if len(instances_old)==0 or len(instances_no_match[0])==0:

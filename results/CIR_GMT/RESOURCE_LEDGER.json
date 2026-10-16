@@ -1,0 +1,87 @@
+{
+  "namespace": "CIR_GMT_NEW_20261016",
+  "historical_ledgers_modified": false,
+  "maximum_concurrent_GPUs": 4,
+  "initial_allocation_GPU_wall_hours": 1.0,
+  "measured_GPU_wall_hours": 0.03995060902502802,
+  "stages": [
+    {
+      "stage": "P0_CPU_AND_REAL_PREFIX",
+      "status": "FAILED_EVIDENCE_RETAINED",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 900,
+      "expected_seconds": 180,
+      "scope": "TRAIN04 first40 synchronized groups x original/OFF/KEEP, actual rollback step",
+      "measurement": "conservatively charge full supervised process wall to one GPU; no cache FPS claim",
+      "wall_seconds": 14.202065482735634,
+      "exit_code": 1,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/phase0_real_prefix_v1.log"
+    },
+    {
+      "stage": "P0_PREFIX_V2",
+      "status": "FAILED_EVIDENCE_RETAINED",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 900,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/verify_cir_off_parity.py",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/phase0_prefix_v2"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/phase0_real_prefix_v2.log",
+      "start_UTC": "2026-10-16T11:13:10.878653+00:00",
+      "supervisor_pid": 13756,
+      "child_pid": 13762,
+      "elapsed_seconds": 15.000723831355572,
+      "exit_code": 1,
+      "wall_seconds": 25.644588612020016,
+      "conservative_GPU_wall_hours": 0.007123496836672226
+    },
+    {
+      "stage": "P0_PREFIX_V3",
+      "status": "COMPLETE",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 900,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/verify_cir_off_parity.py",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/phase0_prefix_v3"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/phase0_real_prefix_v3.log",
+      "start_UTC": "2026-10-16T11:13:54.634622+00:00",
+      "supervisor_pid": 14988,
+      "child_pid": 14995,
+      "elapsed_seconds": 45.0030559822917,
+      "exit_code": 0,
+      "wall_seconds": 46.57195311784744,
+      "conservative_GPU_wall_hours": 0.012936653643846512
+    },
+    {
+      "stage": "P0_OFFICIAL_PREFIX_V1",
+      "status": "COMPLETE",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 900,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/verify_cir_official_parity.py",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/phase0_official_prefix_v1"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/phase0_official_prefix_v1.log",
+      "start_UTC": "2026-10-16T11:15:21.497308+00:00",
+      "supervisor_pid": 15953,
+      "child_pid": 15959,
+      "elapsed_seconds": 45.00304351747036,
+      "exit_code": 0,
+      "wall_seconds": 57.40358527749777,
+      "conservative_GPU_wall_hours": 0.01594544035486049
+    }
+  ],
+  "storage_reserve_bytes": 32212254720,
+  "storage_initial_free_bytes": 242337579008,
+  "large_assets_location": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016"
+}

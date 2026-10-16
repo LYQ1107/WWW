@@ -20,7 +20,7 @@ class CausalGMT:
     def __init__(self,model):
         self.model=model;self.instances=[];self.id_count=0;self.counts={};self.reids={};self.frame=0;self.first_timestamp=None;self.last_timestamp=None;self.views=None
         if model.roi_heads.delay_cls:raise ValueError('causal protocol does not support full-video delayed classification')
-        poss_ids.poss_ids=set();old_ids.old_ids=set();old_reids.old_reids=[];model.geo_runtime.reset()
+        poss_ids.poss_ids=set();old_ids.old_ids=set();old_reids.old_reids=[];model.geo_runtime.reset();model.cir_controller.reset()
 
     @torch.inference_mode()
     def step(self,records):
