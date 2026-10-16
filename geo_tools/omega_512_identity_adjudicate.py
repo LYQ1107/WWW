@@ -5,7 +5,7 @@ import gzip
 import json
 from pathlib import Path
 import numpy as np
-from omega_common import ROOT,RUNTIME,NATIVE,sha256,save_new
+from omega_common import ROOT,RUNTIME,NATIVE,sha256,save_new,provenance
 from omega_modules import geometry_module
 
 
@@ -52,6 +52,7 @@ def classify(decisions,labels,prior):
 
 
 def main():
+    posthoc_source=provenance();assert not posthoc_source['source_status'].strip()
     run=RUNTIME/'omega512_independent_v1/solver_forks'
     manifest=json.loads((run/'manifest.json').read_text());assert manifest['status']=='FINITE_SOLVER_FORKS_COMPLETE'
     assert len(manifest['parity'])==15 and all(all(r[k] for k in ['native_predictions_exact','zero_predictions_exact','zero_solver_and_Bank_exact']) for r in manifest['parity'])
@@ -118,6 +119,11 @@ def main():
             raw=torch.tensor(m['raw_logits'],dtype=torch.float32);delta=torch.tensor(m['delta'],dtype=torch.float32)
             if raw.numel():assert torch.isfinite(raw).all() and torch.isfinite(delta).all() and float(delta.abs().max())<=1.
             matrix_changes+=int(bool(delta.numel()) and bool(torch.any(delta!=0)))
+            if raw.numel():
+                summaries[case['arm'],case['weight']]['raw_argmax_reference_changes']+=int(torch.sum(raw.argmax(1)!=(raw+delta).argmax(1)))
+            before_scores=np.array(m['before_track_scores']);after_scores=np.array(m['after_track_scores'])
+            if before_scores.size:
+                summaries[case['arm'],case['weight']]['activated_track_row_rank_changes']+=int(np.any(np.argsort(-before_scores,axis=1,kind='stable')!=np.argsort(-after_scores,axis=1,kind='stable'),axis=1).sum())
         key=(case['arm'],case['weight']);summary=summaries[key]
         summary['cases']+=1;summary['proposal_matrix_calls']+=len(case['matrices']);summary['nonzero_delta_calls']+=matrix_changes
         for source,b in baseline.items():
@@ -131,6 +137,9 @@ def main():
             summary['primary_corrections']+=primary_correction;summary['primary_harms']+=primary_harm
             summary['known_final_corrections']+=correction;summary['known_final_harms']+=harm
             summary['final_ID_changes']+=final_changed
+            summary['primary_accepted_assignment_changes']+=b['accepted_primary_track']!=a['accepted_primary_track']
+            summary['Bank_invocation_changes']+=(b['memory_accepted_track'] is None)!=(a['memory_accepted_track'] is None)
+            summary['Bank_accepted_assignment_changes']+=(b['memory_accepted_track'] if b['memory_accepted_track'] is not None else -1)!=(a['memory_accepted_track'] if a['memory_accepted_track'] is not None else -1)
             summary['unknown_final_comparisons']+=('unknown' in a['final_state'] or 'unknown' in b['final_state'] or a['final_state']=='new_track_unscored' or b['final_state']=='new_track_unscored')
             row=dict(pair_id=case['pair_id'],scene=scene,group=group,arm=case['arm'],weight=case['weight'],source=list(source),
                      baseline=b,branch=a,primary_correction=primary_correction,primary_harm=primary_harm,
@@ -144,7 +153,7 @@ def main():
         summary_rows.append(dict(arm=arm,weight=weight,**s,corrected_scene_qualified_people=people,corrected_scenes=scenes,passes_online_admission=passes))
     passed=any(s['passes_online_admission'] for s in summary_rows)
     result=dict(schema='omega512-native-identity-counterfactual/v1',status='IDENTITY_GATE_PASSED' if passed else 'NO_CERTIFIED_MULTISCENE_NET_FINAL_IDENTITY_GAIN',
-        role='INDEPENDENT_512_NOT_416',cases=15,variants_per_case=11,scope='fixed development currentgroup counterfactual, no futurebranch propagation or fullvideo claim',
+        posthoc_source=posthoc_source,role='INDEPENDENT_512_NOT_416',cases=15,variants_per_case=11,scope='fixed development currentgroup counterfactual, no futurebranch propagation or fullvideo claim',
         recovered_source_labels_by_existing_pure_positive_certification=certified_recovered,sealed_label_receipts=receipts,
         no_new_GT_matching=True,inference_GT_input=False,summary=summary_rows,changed_events=changed,all_queries=rows,
         producer_manifest=manifest,process_clock=receipt,combined_new_GPU_visible_process_wall_seconds=new_gpu_seconds,
