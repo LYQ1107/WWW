@@ -6,7 +6,7 @@ import hashlib
 import json
 import zlib
 import numpy as np
-from omega_corr_common import ROOT,RUNTIME,sha256,save_new,provenance
+from omega_corr_common import ROOT,RUNTIME,sha256,save_new,provenance,role
 from omega_modules import geometry_module
 
 
@@ -28,11 +28,11 @@ def main():
         cid='|'.join(map(str,[route,backend,variant,layer,mode,kind,side]))
         configurations.setdefault(cid,dict(backend=backend,variant=variant,layer=layer,mode=mode,score_kind=kind,route=route,crop_side=side))
         return cid
-    def accumulate(cid,row,value):
+    def accumulate(cid,row,value,available_A):
         key=tuple(row['query']);native_q=query_map[key];certificate=truth[key]
         rank={t:i for i,t in enumerate(native_q['original_native_ranked_tracks'])}
         identity=row['reference_track'];status=certificate['track_status'].get(str(identity),'UNKNOWN_REFERENCE_HISTORY')
-        state=states.setdefault((cid,key),dict(best_score=None,best_track=None,valid_candidates=0,positive_best=None,negative_best=None,unknown_candidates=0))
+        state=states.setdefault((cid,key),dict(best_score=None,best_track=None,valid_candidates=0,positive_best=None,negative_best=None,unknown_candidates=0,query_selected_token_count=row['metric']['valid_tokens_A'],query_available_token_count=available_A))
         if value is None:return
         assert np.isfinite(value)
         state['valid_candidates']+=1;state['unknown_candidates']+=status not in ['CORRECT','WRONG']
@@ -47,6 +47,10 @@ def main():
         inputs.append(dict(route=route,backend=backend,manifest_sha256=sha256(manifest_path),raw=dict(path=raw_path,sha256=sha256(raw_path))))
         maps={r['pair_id']:r['mappings'] for r in manifest['pair_receipts']} if route=='FULL_IMAGE_MULTIVIEW' else {}
         geometry_cache={};count=0
+        if route=='FULL_IMAGE_MULTIVIEW':
+            expected_records=sum(expected[p['pair_id']]*3*(1 if backend=='dino' else (4 if i<16 else 3))*(6 if backend=='omega' else 1) for i,p in enumerate(cohort['pairs']))
+        else:expected_records=2*3*(3 if backend=='omega' else 1)*sum(expected[p] for p in cohort['local_crop_pair_ids'])
+        assert manifest['records']==expected_records,('candidate coverage incomplete',backend,route)
         with gzip.open(raw_path,'rt') as stream:
             for line in stream:
                 row=json.loads(line);count+=1;all_records+=1
@@ -79,17 +83,27 @@ def main():
                     checked+=1
                 cid_base=(backend,row['variant'],row['layer'],mode)
                 scores={'primary':metric.get('primary_score'),'cycle':metric.get('cycle_weighted_score')}
-                if mode=='M0':scores.update(ROI_mean=metric.get('ROI_cosine'),ROI_align=metric.get('roi_align_cosine'))
+                if mode=='M0':
+                    scores['ROI_mean']=metric.get('ROI_cosine')
+                    if 'roi_align_cosine' in metric:scores['ROI_align']=metric.get('roi_align_cosine')
                 if min(m,n)>=2:
                     seed=zlib.crc32(json.dumps([row['pair_id'],row['query'],row['reference']],separators=(',',':')).encode())+20261016
                     rng=np.random.default_rng(seed);k=min(m,n);ia=rng.permutation(m)[:k];ib=rng.permutation(n)[:k]
                     scores['random_local_assignment']=float(C[ia,ib].mean())*min(k/m,k/n)
                 else:scores['random_local_assignment']=None
-                for kind,value in scores.items():accumulate(config(*cid_base,kind,route,side),row,value)
+                for kind,value in scores.items():accumulate(config(*cid_base,kind,route,side),row,value,available_A)
                 for status in [truth[key]['track_status'].get(str(row['reference_track']),'UNKNOWN_REFERENCE_HISTORY')]:
-                    g=aggregate[(route,backend,row['variant'],row['layer'],mode,side,status)]
+                    g=aggregate[(route,backend,row['variant'],row['layer'],mode,side,status,row['scene'])]
                     g['candidate_pairs']+=1;g['selected_tokens_A']+=m;g['selected_tokens_B']+=n;g['available_tokens_A']+=available_A;g['available_tokens_B']+=available_B
                     g['mutual_pairs']+=metric['mutual_count'];g['point_available_pairs']+=min(m,n)>=2
+                    qbox=np.array(proposals[':'.join(map(str,row['query']))]['bbox_xyxy']);rsource=row.get('mapped_region_source',row['reference']);rbox=np.array(proposals[':'.join(map(str,rsource))]['bbox_xyxy'])
+                    qc=np.array(row['original_centers_A']).reshape(-1,2)+.5;rc=np.array(row['original_centers_B']).reshape(-1,2)+.5
+                    qa=np.all(qc>=qbox[:2],axis=1)&np.all(qc<qbox[2:],axis=1);rb=np.all(rc>=rbox[:2],axis=1)&np.all(rc<rbox[2:],axis=1)
+                    if mode=='M0':assert qa.all() and rb.all()
+                    if mode=='M2':assert not qa.any() and not rb.any()
+                    if min(m,n)>=2:
+                        g['mutual_object_to_object']+=int(np.sum(qa[ii]&rb[jj]))
+                        g['mutual_involving_background']+=int(np.sum(~(qa[ii]&rb[jj])))
                     if metric['mean_mutual_similarity'] is not None:g['mutual_similarity_sum']+=metric['mean_mutual_similarity']
                     if metric['soft_cycle_A'] is not None:g['soft_cycle_A_sum']+=metric['soft_cycle_A'];g['soft_cycle_B_sum']+=metric['soft_cycle_B']
                 if route=='FULL_IMAGE_MULTIVIEW' and row['variant'] in ['F2','old_vggt','dino'] and mode=='M0':
@@ -98,7 +112,7 @@ def main():
     csv_file.close()
     result=dict(status='ALL_FROZEN_CONFIGURATIONS_REDUCED',source=source,inputs=inputs,raw_records=all_records,independent_mutual_matrix_checks=checked,
         configurations=configurations,rows=[dict(config_id=cid,query=list(q),**v) for (cid,q),v in states.items()],
-        aggregate=[dict(route=k[0],backend=k[1],variant=k[2],layer=k[3],mode=k[4],crop_side=k[5],candidate_status=k[6],**v) for k,v in aggregate.items()],
+        aggregate=[dict(route=k[0],backend=k[1],variant=k[2],layer=k[3],mode=k[4],crop_side=k[5],candidate_status=k[6],scene=k[7],role=role(k[7]),**v) for k,v in aggregate.items()],
         full_query_count=len(native['queries']),all_available_patch_denominators_retained=True)
     save_new(RUNTIME/'reduced_scores_v1.json',result)
     save_new(ROOT/'results/omega_corr_reduction_audit_v1.json',dict(status='PASS',raw_records=all_records,independent_mutual_checks=checked,
