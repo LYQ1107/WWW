@@ -8,8 +8,10 @@ def background_mask(image,boxes):
         x1,y1,x2,y2=np.round(box).astype(int);cv2.rectangle(mask,(max(0,x1-4),max(0,y1-4)),(min(mask.shape[1]-1,x2+4),min(mask.shape[0]-1,y2+4)),0,-1)
     return mask
 
-def estimate_background(image1,image2,boxes1=(),boxes2=(),method='orb',mask_targets=True):
-    detector=cv2.ORB_create(nfeatures=3000) if method.startswith('orb') else cv2.SIFT_create(nfeatures=3000)
+def estimate_background(image1,image2,boxes1=(),boxes2=(),method='orb',mask_targets=True,nfeatures=3000,mutual=False):
+    # Optional registered diagnostics; existing callers retain identical defaults.
+    if not isinstance(nfeatures,int) or nfeatures<=0:raise ValueError('positive feature budget required')
+    detector=cv2.ORB_create(nfeatures=nfeatures) if method.startswith('orb') else cv2.SIFT_create(nfeatures=nfeatures)
     mask1=background_mask(image1,boxes1) if mask_targets else None;mask2=background_mask(image2,boxes2) if mask_targets else None
     k1,d1=detector.detectAndCompute(image1,mask1);k2,d2=detector.detectAndCompute(image2,mask2)
     result=dict(valid=False,keypoints1=len(k1),keypoints2=len(k2),matches=0,inliers=0,inlier_ratio=0.,median_residual=None,coverage=0.,F=None,H=None,points1=np.empty((0,2)),points2=np.empty((0,2)),H_valid=False,H_inliers=0,H_inlier_ratio=0.,H_median_residual=None,H_coverage=0.)
@@ -17,6 +19,10 @@ def estimate_background(image1,image2,boxes1=(),boxes2=(),method='orb',mask_targ
     norm=cv2.NORM_HAMMING if method.startswith('orb') else cv2.NORM_L2
     matches=cv2.BFMatcher(norm).knnMatch(d1,d2,k=2)
     good=[m for pair in matches if len(pair)==2 for m,n in [pair] if m.distance<.75*n.distance]
+    if mutual:
+        reverse=cv2.BFMatcher(norm).knnMatch(d2,d1,k=2)
+        accepted={(m.queryIdx,m.trainIdx) for pair in reverse if len(pair)==2 for m,n in [pair] if m.distance<.75*n.distance}
+        good=[m for m in good if (m.trainIdx,m.queryIdx) in accepted]
     result['matches']=len(good)
     if len(good)<8:return result
     p1=np.float32([k1[m.queryIdx].pt for m in good]);p2=np.float32([k2[m.trainIdx].pt for m in good])
