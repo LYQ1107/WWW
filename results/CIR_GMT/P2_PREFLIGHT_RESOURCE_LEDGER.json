@@ -1,0 +1,45 @@
+{
+  "initial_allocation_GPU_wall_hours": 0.5,
+  "allocated_total_GPU_wall_hours": 0.5,
+  "measured_GPU_wall_hours": 0.1305535783080591,
+  "stages": [
+    {
+      "stage": "P2_FINITE_FULL_ONLINE_PREFLIGHT_V1",
+      "status": "COMPLETE",
+      "device_physical_index": 7,
+      "maximum_process_seconds": 1200,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/run_cir_p2_preflight.py",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_finite_full_online_preflight_v1",
+        "--original-full",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_original_full04_v1/manifest.json",
+        "--guard-prefix",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_paired_scope_guard_prefix_v1/RESULT.json"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p2_finite_full_online_preflight_v1.log",
+      "start_UTC": "2026-10-16T14:09:19.428014+00:00",
+      "supervisor_pid": 27097,
+      "source_worktree": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/p2_full_controls_v1",
+      "source_commit": "e6baeaa6fe7d1e8a8ece1ac580664e95f5fbd4ee",
+      "child_pid": 27108,
+      "elapsed_seconds": 465.02920304983854,
+      "exit_code": 0,
+      "wall_seconds": 469.9928819090128,
+      "conservative_GPU_wall_hours": 0.1305535783080591
+    }
+  ],
+  "parent_root": "/data1/liuyeqiang/WWW_cir_gmt_20261016/results/CIR_GMT/RESOURCE_LEDGER.json",
+  "parent_existing_credit_only": true,
+  "new_GPU_credit": 0,
+  "reservation": {
+    "settled_root_GPU_hours": 3.733918787269956,
+    "other_live_stage_reserved_GPU_hours": 4.0,
+    "parent_total_GPU_hours": 10.0,
+    "reserved_GPU_hours": 0.5
+  },
+  "merge_rule": "After both writers terminal, retain this file and pin/import its stages and actual cost once into parent. Never reset historic costs.",
+  "scope": "single owned GPU finite preflight; together with root remaining one live job below max4; root batch has no pending jobs"
+}

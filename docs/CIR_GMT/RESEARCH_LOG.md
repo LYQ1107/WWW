@@ -39,3 +39,7 @@ Frozen source `3b974f95` runs every sealed FIT SUSPECT source across scenes12/20
 
 Read-only progress: `python geo_tools/cir_status.py` reports live process membership, source-prefix frame, completed cases and heartbeat age. Its `/proc` check distinguishes an active process from a stale manifest. Large state/tensor/trajectory artifacts remain on the server; GitHub receives code, source pins, compact metrics and reports.
 
+# P2 full-video engineering admission complete
+
+Frozen source `e6baeaa6fe7d1e8a8ece1ac580664e95f5fbd4ee` passed fresh OFF/KEEP/rollback, margin/threshold/bias2 shared-core prefixes, genuine guarded commit fault/future recovery, and complete official-entry OFF04 equality against the same-image Original raw/stock outputs. No GT or metric was read by admission. The four-control/full12 gate is pinned in `P2_FULL_OFF_CONTROLS_QUALIFICATION.json`; 48 exact jobs prepared, not yet running. 75 CPU contracts pass. Preflight actual cost0.1305535783GPUh is retained in its separate cost record, using existing CIR credit; merge only after the remaining paired batch writer terminates. No historical cost reset or extra credit was introduced by preflight.
+
