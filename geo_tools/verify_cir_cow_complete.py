@@ -17,10 +17,11 @@ from verify_cir_off_parity import SOURCE_AT_IMPORT
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--reference-root',type=Path,required=True)
-    p.add_argument('--out',type=Path,required=True);a=p.parse_args()
+    p.add_argument('--out',type=Path,required=True)
+    p.add_argument('--modes',nargs='+',choices=('guard','margin'),default=['guard','margin']);a=p.parse_args()
     if a.out.exists():raise FileExistsError(a.out)
     references={}
-    for mode in ('guard','margin'):
+    for mode in a.modes:
         path=a.reference_root/mode/'scene1/video1/manifest.json';r=json.loads(path.read_text())
         if r['status']!='COMPLETE' or not r['full_video'] or r['video_id']!=1 or r['method']!=mode:
             raise ValueError('Fixed complete TRAIN01 reference required')
@@ -52,7 +53,7 @@ def main():
             raw_predictions=predictions==json.loads(Path(reference['predictions']['raw']['path']).read_text()),
             stock_predictions=stock==json.loads(Path(reference['predictions']['stock']['path']).read_text()),
             no_commit_failure=not controller.failed,no_missing_evidence=not controller.fallbacks,
-            actual_veto_exercised=controller.veto_edges>0,
+            veto_exercised_as_reference=(controller.veto_edges>0)==(reference['CIR_stats']['guard_veto_edges']>0),
             veto_count=controller.veto_edges==reference['CIR_stats']['guard_veto_edges'],
             native_solves=controller.guard_joint_solves==reference['CIR_stats']['guard_joint_solves'],
             native_validation_aborts=controller.guard_aborted==reference['CIR_stats']['guard_aborted'])
@@ -64,6 +65,9 @@ def main():
             veto_edges=controller.veto_edges,constrained_solves=controller.guard_joint_solves)
         save_json(a.out/'RESULT.json',report)
         if not all(checks.values()):raise RuntimeError('Complete native COW replay mismatch: '+mode)
+    if not any(x['veto_edges']>0 for x in report['results'].values()):
+        report.update(status='INSUFFICIENT_VETO_PATH_COVERAGE');save_json(a.out/'RESULT.json',report)
+        raise RuntimeError('Complete outputs match but no COW intervention exercised')
     report.update(status='PASS_COMPLETE_FIXED_SCENE_COW_REFERENCE_OUTPUTS',full_video=True,
         formal_admission=False,scope='Fixed TRAIN01 guard and margin; real mutated-state CausalGMT; all physical images and exact outputs vs sealed original full-snapshot actors. No GT or metric selection.')
     save_json(a.out/'RESULT.json',report)

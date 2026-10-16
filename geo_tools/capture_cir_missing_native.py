@@ -41,10 +41,13 @@ def main():
     rows=[r for r in all_rows if r['frame_id'] in set(frames)];metadata={r['image_id']:r for r in rows}
     a.out.mkdir(parents=True);cfg,model=load_gmt();seed_all(reference['seed']);model.min_track_len=0
     if model.cir_controller.enabled or model.geo_runtime.active:raise ValueError('Only pure Original evidence may be collected')
-    from cir_configuration import configuration_hashes,saved_configuration_hashes
-    if configuration_hashes(cfg,sha256(CHECKPOINT))['frozen_GMT_config_sha256']!=saved_configuration_hashes(reference_path.parent/'config.yaml',sha256(CHECKPOINT))['frozen_GMT_config_sha256']:
-        raise ValueError('Frozen GMT configuration differs from complete Original')
+    from cir_configuration import saved_configuration_hashes
+    # Compare both after identical serialization/reload. Live CfgNode dumps
+    # retain tuple aliases; a loaded saved file does not retain that topology.
+    # This changes YAML anchor spelling, not any model setting.
     (a.out/'config.yaml').write_text(cfg.dump())
+    if saved_configuration_hashes(a.out/'config.yaml',sha256(CHECKPOINT))['frozen_GMT_config_sha256']!=saved_configuration_hashes(reference_path.parent/'config.yaml',sha256(CHECKPOINT))['frozen_GMT_config_sha256']:
+        raise ValueError('Frozen GMT configuration differs from complete Original')
     model.eval().requires_grad_(False);tracker=CausalGMT(model);writer=StoreWriter(a.out/'indexed_inputs',dtype='float32')
     trace=FullNativeTrace(model,a.out,metadata,a.video,writer);trace.tracker=tracker
     tracker.reids=CommitDictionary(trace.commit);trace.install()

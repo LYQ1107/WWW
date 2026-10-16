@@ -1,6 +1,41 @@
 {
   "allocated_total_GPU_wall_hours": 0.1,
-  "measured_GPU_wall_hours": 0.0,
-  "stages": [],
-  "scope": "CIR missing-native-input prefix only; new subledger, no reset of any prior resource ledger; import actual cost once after root writer terminal."
+  "measured_GPU_wall_hours": 0.0055222059165438014,
+  "stages": [
+    {
+      "stage": "P5_MISSING_NATIVE_REAL40_CAPTURE_V2",
+      "status": "FAILED_EVIDENCE_RETAINED",
+      "device_physical_index": 9,
+      "maximum_process_seconds": 300,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "geo_tools/capture_cir_missing_native.py",
+        "--video",
+        "1",
+        "--reference-runs",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_runs.json",
+        "--reference-sha256",
+        "29817b18e42cf40889bde78b29ebf98eb8b765f57ae6b717a116ea19dc1b0e92",
+        "--prefix40",
+        "--stage-root",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/missing_capture_prefix_v2",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/missing_capture_prefix_v2/scene1"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/missing_capture_prefix_v2.log",
+      "start_UTC": "2026-10-16T16:49:49.349378+00:00",
+      "supervisor_pid": 21791,
+      "source_worktree": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/missing_capture_prefix_v2",
+      "source_commit": "ac74056b45eb3105f3401ac1687dcfabf0030250",
+      "child_pid": 21802,
+      "elapsed_seconds": 15.001167483627796,
+      "exit_code": 1,
+      "wall_seconds": 19.879941299557686,
+      "conservative_GPU_wall_hours": 0.0055222059165438014
+    }
+  ],
+  "scope": "CIR missing-native-input prefix only; new subledger, no reset of any prior resource ledger; import actual cost once after root writer terminal.",
+  "parent_root": "/data1/liuyeqiang/WWW_cir_gmt_20261016/results/CIR_GMT/RESOURCE_LEDGER.json",
+  "parent_existing_credit_only": true,
+  "new_GPU_credit": 0
 }

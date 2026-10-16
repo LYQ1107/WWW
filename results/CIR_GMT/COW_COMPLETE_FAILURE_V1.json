@@ -1,0 +1,57 @@
+{
+  "status": "FAILED_ENGINEERING_COVERAGE_NO_COW_GUARD_PATH_NOT_OUTPUT_MISMATCH",
+  "scene": 1,
+  "GT_in_inference": false,
+  "metrics_read": false,
+  "results": {
+    "guard": {
+      "checks": {
+        "images": true,
+        "raw_predictions": true,
+        "stock_predictions": true,
+        "no_commit_failure": true,
+        "no_missing_evidence": true,
+        "actual_veto_exercised": false,
+        "veto_count": true,
+        "native_solves": true,
+        "native_validation_aborts": true
+      },
+      "images": 1864,
+      "groups": 932,
+      "reference_manifest": {
+        "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v2/guard/scene1/video1/manifest.json",
+        "sha256": "e304ae1e63a0efa721b5073774cab4980046a792260576c3f05020d7d385ec8b"
+      },
+      "reference_full_image_seconds": 278.6737355366349,
+      "COW_replay_seconds": 257.8038571998477,
+      "timing_caveat": "Different entrypoints and current hardware load; engineering wall time only, not formal comparative FPS",
+      "veto_edges": 0,
+      "constrained_solves": 0
+    }
+  },
+  "source_sha256_at_import": {
+    "geo_tools/verify_cir_off_parity.py": "4cc9cf98f2f960915cc93564e803fd0e2381410d5627c009a21445e5a19301bf",
+    "geo_tools/test_cir_native_commit.py": "06751f396044751086728d6471816ffe87807e7bae980d7ca67aad6c4a7a6399",
+    "gtr/config.py": "775f27cb913e49e8e7cb41a0829d258078abc7d2041fbf46d61b0d8dfe5d6851",
+    "gtr/modeling/meta_arch/gtr_rcnn.py": "a71e625ddc494c3073fed3d61e2bbf56d144d66a317cd731b45e2bf39ef46dc5",
+    "gtr/geometry/online_runner.py": "315da9cf1a5b0193c52f39bba73aa65c86f12a5e65d662e299c7c061260a7fac",
+    "gtr/geometry/decision_trace.py": "1a929fe455a2c2ee6c39085f02ac622bb1decaf65cdb9c60e1690eab4299ef52",
+    "gtr/modeling/identity_revision/__init__.py": "cc04a68b6720a15d87a7e6b00cd3c321e0961b73339c8756af5e0485788470ba",
+    "gtr/modeling/identity_revision/commit_transaction.py": "3320a2123ca2a4be56619a9010199895aaecaf248e2182386af3bce6fc0a8103",
+    "gtr/modeling/identity_revision/conflict_detector.py": "65d2296f667d67fcdc3d90436adf1f1745fb44dddb3b9dbbb3a3f08a16536b8d",
+    "gtr/modeling/identity_revision/controller.py": "557ac71e6c1afceeab5a19ba4d4210eaa89e705e6f639b61e9f04e3bbec13404",
+    "gtr/modeling/identity_revision/features.py": "48c458265e2c55fb5bd02ec1fed84caa3509a75fe494fcb5e92d5e785c1d9b28",
+    "gtr/modeling/identity_revision/fragment_ledger.py": "97bfbadfc0c43a2a2a8f876970922b37a46a7c15ad73fdbc201b3356d4a890fe",
+    "gtr/modeling/identity_revision/model.py": "9bf90e1b6579abc08a1ca848a2d4d338d43fc17d8bafea6a83b4470ab6287213",
+    "gtr/modeling/identity_revision/native_evidence.py": "15656459d9346c546f89401238a53979baf7dfc6c06e6a26c969e5b896bb8007",
+    "gtr/modeling/identity_revision/output_buffer.py": "78dee1e146d6433b916c57c6dd6da8e2974558626e01c979e1c675c64e237831",
+    "gtr/modeling/identity_revision/state_transaction.py": "54f87ad3bf41885a49fbdd34b8ad72b79829125544c76cb6a96eabcfbb8b71f1",
+    "gtr/modeling/identity_revision/types.py": "90aedb0fd9bb357594afa2248ed7e0c88aa7a595dad189b49c6fe88b405ed876"
+  },
+  "current": "guard",
+  "completed_groups": 901,
+  "total_groups": 932,
+  "source_result_sha256": "0b799e25f3dd931f2fb90cfc1db47899878f999c789289c88302fbc751283637",
+  "explanation": "All1864 images and raw/stock outputs match; sealed Guard reference also has zeroVETO. Assertion required positive VETO for every method and stopped before margin. No evidence of COW output failure; no full-video intervention qualification. Future replay stays on pre-registered TRAIN01 margin, no new scene/threshold.",
+  "scientific_success": false
+}
