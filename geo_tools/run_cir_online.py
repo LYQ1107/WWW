@@ -46,12 +46,7 @@ class CurrentImages(list):
         return [self.mapped[r['image_id']] for r in records]
 
 
-def main():
-    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True)
-    p.add_argument('--method',choices=('original','off','keep','c1'),required=True)
-    p.add_argument('--qualification',type=Path,required=True)
-    p.add_argument('--out',type=Path,required=True)
-    a=p.parse_args()
+def validate_request(a):
     if a.video not in range(1,25):raise ValueError('TRAIN only; TEST requires separate final frozen lock')
     if a.out.exists():raise FileExistsError(a.out)
     gate=json.loads(a.qualification.read_text())
@@ -60,10 +55,17 @@ def main():
         raise ValueError('This policy/video has not passed the current qualification gate')
     for name,digest in gate['current_source_sha256'].items():
         if sha256(ROOT/name)!=digest:raise ValueError('Native source changed after OFF qualification: '+name)
-    cfg,model=load_gmt();cfg.MODEL.CIR.ENABLED=a.method in ('keep','c1');cfg.MODEL.CIR.MODE=a.method if cfg.MODEL.CIR.ENABLED else 'off'
+    return gate
+
+
+def run_loaded(a,cfg,model):
+    validate_request(a)
+    cfg=cfg.clone();cfg.defrost()
+    cfg.MODEL.CIR.ENABLED=a.method in ('keep','c1');cfg.MODEL.CIR.MODE=a.method if cfg.MODEL.CIR.ENABLED else 'off'
     from gtr.modeling.identity_revision.controller import IdentityRevisionController
     model.cir_controller=IdentityRevisionController(cfg.MODEL.CIR)
-    if a.method=='original':model.run_global_tracker_plus=MethodType(original_method(),model)
+    from gtr.modeling.meta_arch.gtr_rcnn import GTRRCNN
+    model.run_global_tracker_plus=MethodType(original_method() if a.method=='original' else GTRRCNN.run_global_tracker_plus,model)
     if cfg.MODEL.GEO.ENABLED or model.geo_runtime.active:raise ValueError('CIR must run pure frozen GMT')
     model.eval().requires_grad_(False)
     # raw0 and stock50 are both retained; filter is only after full tracking.
@@ -77,6 +79,8 @@ def main():
         seed=20261014,full_video=False,GT_in_inference=False,checkpoint_sha256=sha256(CHECKPOINT),
         config_sha256=sha256(a.out/'config.yaml'),source_sha256=source,
         source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
+        source_tree_dirty_at_video_start=bool(subprocess.check_output(['git','status','--porcelain'],cwd=ROOT)),
+        entrypoint=getattr(a,'entrypoint','geo_tools/run_cir_online.py'),
         qualification=dict(path=str(a.qualification),sha256=sha256(a.qualification)),
         inference_protocol='actual model.forward/sliding_inference_GMT with synchronized current image mapper; raw0 + stock50',
         parameter_count=sum(p.numel() for p in model.parameters()),new_learnable_parameters=0)
@@ -124,6 +128,20 @@ def main():
         raise
     finally:save_json(a.out/'manifest.json',manifest)
     print(json.dumps(dict(status=manifest['status'],method=a.method,video=a.video,images=len(records),FPS=manifest['full_image_FPS'])),flush=True)
+    return manifest
+
+
+
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True)
+    p.add_argument('--method',choices=('original','off','keep','c1'),required=True)
+    p.add_argument('--qualification',type=Path,required=True)
+    p.add_argument('--out',type=Path,required=True)
+    a=p.parse_args()
+    validate_request(a)
+    cfg,model=load_gmt()
+    run_loaded(a,cfg,model)
 
 
 if __name__=='__main__':main()

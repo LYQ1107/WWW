@@ -7,3 +7,5 @@
 test_net.py的Dataset注册当前使用datasets/VisionTrack/images路径，本轮只建立复用已有根目录的软链/注册适配，不复制数据。官方入口返回frame-major输出，现有评估对齐修复保持原样。现有MOTEvaluator末尾的eval_track仍写MOT17 half_val默认路径，不可直接将其称为VisionTrack官方指标；须经过可复核格式转换并调用未修改TrackEval和官方MATLAB工具。评价公式/原始GT均不修改。
 
 官方MATLAB现有二进制和MEX、工具包路径已发现，仍需运行与SHA认证；不因文件存在宣称可用。完整在线与原生状态资格未通过之前不启动正式TEST。若资源/授权/评测缺失，指标null并写真实阻塞。
+
+已实现test_net.py --cir-run-spec显式入口，重用已加载model与相同共享执行函数；原生输出不再经过外部硬编码writer。当前规范只允许TRAIN工程范围，TEST仍被最终模型锁挡住。该驱动会逐张量核验实际加载Stage2，随后真实整段forward；不是只检查文件名。

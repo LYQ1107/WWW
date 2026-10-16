@@ -73,6 +73,8 @@ def load_video_divo_json(
         record["height"] = img_dict["height"]
         record["width"] = img_dict["width"]
         record["view_id"]=img_dict["view_id"]
+        if 'frame_id' in img_dict:
+            record['frame_id'] = img_dict['frame_id']
         record["ids_range"] = img_dict["ids_range"]
         record["len_seq"] = img_dict["len_seq"]
         image_id = record["image_id"] = img_dict["id"]

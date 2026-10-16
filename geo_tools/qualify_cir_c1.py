@@ -36,7 +36,12 @@ def main():
             if sha256(spec['path'])!=spec['sha256'] or sha256(expected['path'])!=expected['sha256']:raise ValueError('Full prediction drift')
             if json.loads(Path(spec['path']).read_text())!=json.loads(Path(expected['path']).read_text()):raise ValueError('Current full OFF differs from original '+kind)
         if result['image_sha256']!=original['image_sha256'] or result['config_sha256']!=original['config_sha256']:raise ValueError('Actual inputs or config differ')
-        if any(result['source_sha256'][k]!=v for k,v in sources.items()):raise ValueError('Full OFF used different core source')
+        # The official entry does not import/use CausalGMT. Its source is
+        # separately pinned by both prefix runs above, not falsely claimed as
+        # part of the complete official actor's runtime import surface.
+        official_keys=('gtr/config.py','gtr/modeling/meta_arch/gtr_rcnn.py',
+                       'gtr/modeling/identity_revision/controller.py')
+        if any(result['source_sha256'].get(k)!=sources[k] for k in official_keys):raise ValueError('Full OFF used different core source')
         allowed+=['c1'];full_pass=True
     refs={name:dict(path=str(value),sha256=sha256(value)) for name,value in (
         ('off_prefix',a.off_prefix),('c1_prefix',a.c1_prefix),('original_full',a.original_full))}

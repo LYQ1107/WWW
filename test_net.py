@@ -76,11 +76,18 @@ def main(args):
     DetectionCheckpointer(model, save_dir=cfg.OUTPUT_DIR).resume_or_load(
         cfg.MODEL.WEIGHTS, resume=args.resume
     )
+    if getattr(args,'cir_run_spec',None):
+        if args.resume:
+            raise ValueError('CIR frozen comparison does not allow output-directory checkpoint resume')
+        sys.path.insert(0,os.path.join(os.path.dirname(os.path.abspath(__file__)), 'geo_tools'))
+        from cir_official_driver import run_spec
+        return run_spec(cfg,model,args.cir_run_spec)
     return do_test(cfg, model)
 
 
 if __name__ == "__main__":
     args = default_argument_parser()
+    args.add_argument('--cir-run-spec',default=None,help='Explicit CIR registered complete-video output adapter; defaults to legacy entry')
     args = args.parse_args()
     args.dist_url = 'tcp://127.0.0.1:{}'.format(
         torch.randint(11111, 60000, (1,))[0].item())
