@@ -11,7 +11,7 @@ from pathlib import Path
 from types import MethodType
 import numpy as np
 import torch
-from common import load_gmt,train_data,video_records,map_records,seed_all,save_json,sha256,CHECKPOINT
+from common import ROOT,load_gmt,train_data,video_records,map_records,seed_all,save_json,sha256,CHECKPOINT
 from gtr.geometry.online_runner import CausalGMT
 from gtr.modeling.meta_arch import gtr_rcnn as native
 from gtr.modeling.identity_revision.state_transaction import native_state,fingerprint
@@ -21,16 +21,28 @@ from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--groups',type=int,default=40);a=p.parse_args()
+    p.add_argument('--groups',type=int,default=40)
+    p.add_argument('--policy',choices=('guard','risk_mlp','risk_grouped'),default='guard')
+    p.add_argument('--risk-checkpoint',type=Path);p.add_argument('--risk-checkpoint-sha256');a=p.parse_args()
     if a.groups<10:raise ValueError('Need actual future after frame8')
     if a.out.exists():raise FileExistsError(a.out)
     a.out.mkdir(parents=True);cfg,model=load_gmt();model.min_track_len=0
+    from gtr.modeling.identity_revision.controller import IdentityRevisionController,RISK_MODES
+    if a.policy in RISK_MODES:
+        spec=json.loads((ROOT/'results/CIR_GMT/P4_NATIVE_INTEGRATION_PROTOCOL.json').read_text())['learned_models_frozen'][a.policy]
+        if not a.risk_checkpoint or a.risk_checkpoint_sha256!=spec['checkpoint_sha256']:
+            raise ValueError('Registered frozen risk checkpoint required')
     rows=video_records(train_data(),4,max_frames=a.groups)
     original_propose=model.propose_identity_revision;original_commit=model.commit_native_identity_state
     original_solver=native.linear_sum_assignment;arms={};started=time.monotonic()
     for arm in ('RAW_PASSIVE','GUARD_FAULT_RECOVERY'):
         seed_all(20261014);controller=model.cir_controller
-        controller.enabled=True;controller.mode='guard';controller.audit_only=True
+        if a.policy in RISK_MODES:
+            cc=cfg.MODEL.CIR.clone();cc.defrost();cc.ENABLED=True;cc.MODE=a.policy
+            cc.MODEL_PATH=str(a.risk_checkpoint);cc.MODEL_SHA256=a.risk_checkpoint_sha256
+            model.cir_controller=IdentityRevisionController(cc);controller=model.cir_controller
+        controller.enabled=True;controller.mode=a.policy;controller.audit_only=True
+        initial_head=fingerprint(controller.risk_head.state_dict()) if controller.risk_head is not None else None
         tracker=CausalGMT(model);state=[];rngs=[];predictions=[];costs=[];probe=dict(veto=False,fault=False)
         model.propose_identity_revision=lambda scores,*unused:scores
         current_costs=[]
@@ -42,6 +54,12 @@ def main():
             if controller.timestamp==8 and not probe['veto'] and kwargs.get('count',True):
                 selected=torch.nonzero(accepted>=0,as_tuple=True)[0]
                 if len(selected):
+                    if a.policy in RISK_MODES:
+                        # Probe the real frozen head on genuine unmasked C1
+                        # evidence; the deliberately forced veto below still
+                        # tests recovery against a common raw GMT baseline.
+                        reference=controller.propose(kwargs['reference_scores'],args[0],args[1],args[2])
+                        real_precommit(scores,accepted,*args,count=False,reference_scores=reference)
                     row=int(selected[0]);candidates=args[2]
                     col=int(torch.nonzero(candidates==accepted[row],as_tuple=True)[0][0])
                     result=scores.clone();result[row,col]=-1e6;probe['veto']=True;controller.veto_edges+=1
@@ -54,6 +72,8 @@ def main():
                 random.random();np.random.random();torch.rand(3);torch.rand(3,device='cuda')
                 native.poss_ids.poss_ids.add(999999);native.old_ids.old_ids.add(999998)
                 native.old_reids.old_reids.append('injected invalid Bank state')
+                if controller.risk_head is not None:
+                    with torch.no_grad():next(controller.risk_head.parameters()).add_(999)
                 raise RuntimeError('engineering fault after genuine native Gallery/count commit')
             return result
         if arm=='GUARD_FAULT_RECOVERY':
@@ -71,6 +91,9 @@ def main():
             arms[arm]=dict(predictions=predictions,states=state,rng=rngs,costs=costs,
                 fault_injected=probe['fault'],veto_injected=probe['veto'],controller_failed=controller.failed,
                 failure_events=controller.failure_events)
+            if controller.risk_head is not None:
+                arms[arm]['frozen_head_restored']=initial_head==fingerprint(controller.risk_head.state_dict())
+                arms[arm]['actual_risk_forward_calls']=controller.risk_forward_calls
             save_json(a.out/(arm+'.json'),arms[arm])
         finally:
             native.linear_sum_assignment=original_solver;model.commit_native_identity_state=original_commit
@@ -81,8 +104,12 @@ def main():
     checks={key:baseline[key]==fault[key] for key in ('predictions','states','rng')}
     checks['all_future_native_costs_equal']=baseline['costs'][8:]==fault['costs'][8:]
     checks['actual_fault_and_veto']=fault['fault_injected'] and fault['veto_injected'] and fault['controller_failed']
+    if a.policy in RISK_MODES:
+        checks['frozen_head_restored']=fault['frozen_head_restored']
+        checks['actual_frozen_head_forward_exercised']=fault['actual_risk_forward_calls']>0
     report=dict(status='PASS_REAL_GUARD_COMMIT_ROLLBACK_FUTURE' if all(checks.values()) else 'FAIL_NO_ADMISSION',
-        checks=checks,scene=4,groups=a.groups,checkpoint_sha256=sha256(CHECKPOINT),
+        checks=checks,policy=a.policy,risk_checkpoint_sha256=a.risk_checkpoint_sha256,
+        scene=4,groups=a.groups,checkpoint_sha256=sha256(CHECKPOINT),
         script_sha256=sha256(__file__),wall_seconds=time.monotonic()-started,GT_in_inference=False,
         source_sha256_at_import=__import__('verify_cir_off_parity').SOURCE_AT_IMPORT,
         scope='real frozen perception/GTA, Gallery/counts, module Bank, ledger, RNG; full future after one discarded commit',

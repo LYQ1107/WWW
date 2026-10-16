@@ -36,6 +36,15 @@ class RiskHeadContracts(unittest.TestCase):
         with self.assertRaises(ValueError):NativeRiskHead('teacher')
         model=NativeRiskHead('ordinary_mlp')
         with self.assertRaises(ValueError):model.set_normalization(torch.zeros(12),torch.zeros(12))
+    def test_constructor_precision_does_not_depend_on_global_default(self):
+        original=torch.get_default_dtype()
+        try:
+            torch.set_default_dtype(torch.float64)
+            for name in ('ordinary_mlp','grouped_risk'):
+                model=NativeRiskHead(name)
+                self.assertTrue(all(p.dtype==torch.float32 and p.device.type=='cpu' for p in model.parameters()))
+                self.assertEqual(model(torch.zeros(2,12,dtype=torch.float32)).dtype,torch.float32)
+        finally:torch.set_default_dtype(original)
 
 
 if __name__=='__main__':unittest.main()

@@ -35,6 +35,7 @@ class LearnedNativeContracts(unittest.TestCase):
         finally:hook.remove()
         self.assertEqual(result[0][-1].track_ids.tolist(),[1]);self.assertEqual(o.counts,{1:4,2:3})
         self.assertEqual(m.cir_controller.veto_edges,1)
+        self.assertEqual(m.cir_controller.risk_forward_calls,2)
         self.assertEqual(m.cir_controller.guard_changed_accepted_rows,1)
         self.assertGreaterEqual(len(seen),2)
         # The rejected competitor is a solver constraint, never a million-size
@@ -44,6 +45,11 @@ class LearnedNativeContracts(unittest.TestCase):
         m,o,s=risk_fixture();result=run(m,o,torch.zeros_like(s))
         self.assertEqual(result[0][-1].track_ids.tolist(),[3])
         self.assertEqual(m.cir_controller.risk_forward_calls,0);self.assertEqual(m.cir_controller.veto_edges,0)
+    def test_unchanged_proposal_is_not_validated_twice(self):
+        m,o,s=risk_fixture();m.cir_controller.risk_threshold=10.
+        self.assertEqual(run(m,o,s)[0][-1].track_ids.tolist(),[2])
+        self.assertEqual(m.cir_controller.risk_forward_calls,1)
+        self.assertEqual(m.cir_controller.guard_calls_with_veto,0)
     def test_reference_rule_same_legal_solver_path(self):
         m,o,s=fixture();m.cir_controller.mode='guard_reference'
         result=run(m,o,s);self.assertEqual(result[0][-1].track_ids.tolist(),[1])
@@ -75,6 +81,22 @@ class LearnedNativeContracts(unittest.TestCase):
             path=Path(tmp)/'head.pt';torch.save(dict(input_contract=INPUT_CONTRACT,architecture='ordinary_mlp',state_dict=head.state_dict(),threshold=0.),path)
             cfg.update(MODE='risk_grouped',MODEL_PATH=str(path),MODEL_SHA256=hashlib.sha256(path.read_bytes()).hexdigest())
             with self.assertRaises(ValueError):IdentityRevisionController(SimpleNamespace(**cfg))
+    def test_audit_hook_survives_snapshot_and_is_removed_from_restored_clone(self):
+        from cir_risk_trace import RiskTrace
+        m,o,s=risk_fixture();c=m.cir_controller
+        with tempfile.TemporaryDirectory() as tmp:
+            path=Path(tmp)/'probe.pt';torch.save(dict(input_contract=INPUT_CONTRACT,architecture='ordinary_mlp',state_dict=c.risk_head.state_dict(),threshold=0.),path)
+            trace=RiskTrace(c,path,hashlib.sha256(path.read_bytes()).hexdigest());trace.install()
+            original=m.commit_native_identity_state;calls=[]
+            def commit(*args):
+                result=original(*args);calls.append(1)
+                if len(calls)==1:raise RuntimeError('injected real commit failure with audit observer active')
+                return result
+            m.commit_native_identity_state=commit
+            try:
+                run(m,o,s);self.assertTrue(c.failed);self.assertGreater(trace.stats['model_forward_calls'],0)
+            finally:trace.close()
+            self.assertEqual(len(c.risk_head._forward_hooks),0)
 
 
 if __name__=='__main__':unittest.main()

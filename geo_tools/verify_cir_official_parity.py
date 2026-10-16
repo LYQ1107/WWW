@@ -100,6 +100,7 @@ def main():
     if a.policy in RISK_MODES:
         report['risk_checkpoint_sha256']=a.risk_checkpoint_sha256
         report['risk_checks']={arm:result['risk_checks'] for arm,result in results.items()}
+        report['risk_trace_sha256']=sha256(ROOT/'geo_tools/cir_risk_trace.py')
     save_json(a.out/'RESULT.json',report);print(json.dumps(report),flush=True)
     if report['status'].startswith('FAIL'):raise RuntimeError('Official/causal parity failed')
 

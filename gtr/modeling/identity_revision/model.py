@@ -18,16 +18,17 @@ LOCAL_INDICES=(3,4,5,6,7,10)
 class NativeRiskHead(nn.Module):
     def __init__(self,architecture):
         super().__init__();self.architecture=architecture
-        self.register_buffer('feature_mean',torch.zeros(12))
-        self.register_buffer('feature_scale',torch.ones(12))
+        self.register_buffer('feature_mean',torch.zeros(12,device='cpu',dtype=torch.float32))
+        self.register_buffer('feature_scale',torch.ones(12,device='cpu',dtype=torch.float32))
+        factory=dict(device='cpu',dtype=torch.float32)
         if architecture=='ordinary_mlp':
-            self.network=nn.Sequential(nn.Linear(12,32),nn.ReLU(),nn.Linear(32,16),nn.ReLU(),nn.Linear(16,1))
+            self.network=nn.Sequential(nn.Linear(12,32,**factory),nn.ReLU(),nn.Linear(32,16,**factory),nn.ReLU(),nn.Linear(16,1,**factory))
         elif architecture=='grouped_risk':
-            self.register_buffer('token_indices',torch.tensor([GLOBAL_INDICES,LOCAL_INDICES]))
-            self.encoder=nn.Linear(6,8)
-            self.type_bias=nn.Parameter(torch.zeros(2,8))
-            self.pool_query=nn.Parameter(torch.zeros(8))
-            self.network=nn.Sequential(nn.Linear(8,88),nn.ReLU(),nn.Linear(88,1))
+            self.register_buffer('token_indices',torch.tensor([GLOBAL_INDICES,LOCAL_INDICES],device='cpu',dtype=torch.long))
+            self.encoder=nn.Linear(6,8,**factory)
+            self.type_bias=nn.Parameter(torch.zeros(2,8,**factory))
+            self.pool_query=nn.Parameter(torch.zeros(8,**factory))
+            self.network=nn.Sequential(nn.Linear(8,88,**factory),nn.ReLU(),nn.Linear(88,1,**factory))
         else:raise ValueError('Unregistered risk architecture')
         if sum(p.numel() for p in self.parameters())!=961:raise RuntimeError('Matched parameter capacity drift')
 
