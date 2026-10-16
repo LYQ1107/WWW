@@ -25,6 +25,18 @@ def main():
                         stream.seek(max(0,log.stat().st_size-8192));tail=stream.read().decode(errors='replace')
                     matches=re.findall(r'(\d+)/(\d+)\s*\[',tail)
                     if matches:frame=dict(completed_groups=int(matches[-1][0]),total_groups=int(matches[-1][1]))
+                command=job['command']
+                if '--out' in command:
+                    manifest=Path(command[command.index('--out')+1])/'manifest.json'
+                    if manifest.exists():
+                        try:
+                            progress=json.loads(manifest.read_text())
+                            if 'completed' in progress and 'targets' in progress:
+                                frame=dict(prefix_frame=progress.get('prefix_frame'),
+                                    completed_cases=len(progress['completed']),total_cases=progress['targets'],
+                                    manifest_status=progress['status'],
+                                    manifest_age_seconds=time.time()-manifest.stat().st_mtime)
+                        except (OSError,json.JSONDecodeError):pass
                 running.append(dict(job=job['name'],gpu=job['gpu'],pid=pid,alive=proc.exists(),
                     actual_command=proc.read_bytes().replace(b'\x00',b' ').decode() if proc.exists() else None,
                     progress=frame,log_last_update_seconds_ago=time.time()-log.stat().st_mtime if log.exists() else None,log=str(log)))
