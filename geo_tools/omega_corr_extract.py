@@ -69,7 +69,7 @@ def main():
                 features={(a.backend,layer):v for layer,v in tokens.items()};forward_times=[elapsed];patch=14
             all_regions={};views={}
             for view,(image,mapping) in enumerate(zip(pair['images'],maps)):
-                for key,p in proposals[image['image_id']]:all_regions[key]=objects.object_regions(mapping,p['bbox_xyxy']);views[key]=view
+                for key,p in proposals[image['image_id']]:all_regions[key]=objects.object_regions(mapping,p['bbox_xyxy'],patch_size=patch);views[key]=view
             # Bounded local feature cache for only this physical pair.
             patch_cache={};roi_cache={}
             from torchvision.ops import roi_align

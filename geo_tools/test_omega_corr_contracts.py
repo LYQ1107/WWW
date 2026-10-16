@@ -23,6 +23,17 @@ class Tests(unittest.TestCase):
             self.assertTrue(np.isfinite(region['original_centers']).all())
             self.assertEqual(len(set(region['patch_ids'])),region['selected_count'])
 
+    def test_control_native_patch14_518_padding(self):
+        P=geometry_module('omega_adapter').PixelMapping
+        p=P(1920,1080,0,0,1920,1080,518,294,0,112,518,518)
+        module=geometry_module('object_patch_regions')
+        grid=module.patch_lattice(p,patch_size=14)
+        self.assertEqual(grid['grid_shape'],(37,37))
+        self.assertEqual(int(grid['valid'].sum()),37*21)
+        r=module.object_regions(p,[0,0,1920,1080],patch_size=14)
+        self.assertEqual(r['valid_object_patch_count'],37*21)
+        self.assertEqual(r['regions']['M0']['selected_count'],16)
+
     def test_mutual_cycle_redundancy_and_full_denominators(self):
         x=np.eye(4,dtype=np.float32);y=x.copy()
         m,_=geometry_module('crossview_point_matcher').match_tokens(x,y)
