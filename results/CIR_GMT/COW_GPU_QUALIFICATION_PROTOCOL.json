@@ -1,0 +1,34 @@
+{
+  "status": "REGISTERED_BEFORE_REAL_GPU_PROBES",
+  "stage": "P2_COW_REAL_NATIVE_ENGINEERING_V1",
+  "maximum_GPU_wall_hours": 1,
+  "maximum_concurrent_GPUs": 1,
+  "physical_GPU": 8,
+  "queue_rule": "Wait for all active CIR resource writers terminal and GPU8 memory empty; verify supervisor exists while live. Never preempt. Maximum queue21660s.",
+  "jobs": [
+    "guard actual fault full",
+    "guard official/causal40 full",
+    "guard actual fault COW",
+    "guard official/causal40 COW",
+    "frozen risk MLP actual fault COW",
+    "frozen grouped risk actual fault COW",
+    "OFF KEEP original official/causal40"
+  ],
+  "job_timeout_seconds": 600,
+  "stage_seconds": 3600,
+  "data": "TRAIN04 fixed40 actual image groups, no new model training or GT input",
+  "equality": [
+    "guard full/COW predictions",
+    "guard full/COW all native state digests",
+    "guard full/COW RNG",
+    "guard full/COW native cost traces",
+    "guard full/COW raw and stock outputs in both entrypoints",
+    "actual frozen learned head restored after genuine native commit fault"
+  ],
+  "not_admission": [
+    "No full-video qualification",
+    "No formal tracking method enabled by this stage",
+    "No latency or metric improvement claim"
+  ],
+  "cost": "Existing root22GPUh allocation; separate recorded stage, no old costs reset"
+}
