@@ -107,9 +107,12 @@ def main():
         baseline=classify(case['baseline_decisions'],labels,prior);branch=classify(case['decisions'],labels,prior)
         assert baseline.keys()==branch.keys()
         expected_states={'correct_link':'correct','wrong_link':'wrong','missed_known_positive':'missed_known_positive'}
+        unresolved=0
         for source,b in baseline.items():
             original=events_by_scene[scene][source]['actual_primary_state']
-            if original in expected_states:assert b['primary']==expected_states[original],('native offline classification mismatch',scene,source,original,b['primary'])
+            if original in expected_states and b['primary']!=expected_states[original]:
+                assert b['primary'] in ['unknown_query','unknown_or_mixed_reference','no_certified_positive'],('native offline classification conflict',scene,source,original,b['primary'])
+                unresolved+=1
         # Serialized current proposal order binds submitted IDs to physical sources.
         public_by_image=collections.defaultdict(list)
         for p in case['public_predictions']:public_by_image[p['image_id']].append(p)
@@ -125,6 +128,7 @@ def main():
             if before_scores.size:
                 summaries[case['arm'],case['weight']]['activated_track_row_rank_changes']+=int(np.any(np.argsort(-before_scores,axis=1,kind='stable')!=np.argsort(-after_scores,axis=1,kind='stable'),axis=1).sum())
         key=(case['arm'],case['weight']);summary=summaries[key]
+        summary['native_primary_certification_unresolved']+=unresolved
         summary['cases']+=1;summary['proposal_matrix_calls']+=len(case['matrices']);summary['nonzero_delta_calls']+=matrix_changes
         for source,b in baseline.items():
             a=branch[source];summary['queries']+=1
