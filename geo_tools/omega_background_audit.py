@@ -16,6 +16,8 @@ from omega_modules import geometry_module
 def distinct_matches(first, second):
     first = np.asarray(first).reshape(-1, 2)
     second = np.asarray(second).reshape(-1, 2)
+    if len(first) != len(second) or not np.isfinite(first).all() or not np.isfinite(second).all():
+        raise ValueError('invalid descriptor correspondence coordinates')
     # Millipixel binning removes numerically duplicated keypoint locations.
     # Coordinate order fixes which many-to-one pair survives, without scores,
     # residuals, model outputs, identity labels or RANSAC masks.
