@@ -2,14 +2,14 @@
   "status": "CPU_COMPONENTS_PASS_NOT_NATIVE_QUALIFIED",
   "enabled_in_native_runs": false,
   "tests": {
-    "new_COW_tests": 4,
-    "all_CIR_tests": 106,
+    "new_COW_tests": 5,
+    "all_CIR_tests": 107,
     "failures": 0
   },
   "GPU_hours": 0,
   "source_sha256": {
     "gtr/modeling/identity_revision/commit_transaction.py": "3320a2123ca2a4be56619a9010199895aaecaf248e2182386af3bce6fc0a8103",
-    "geo_tools/test_cir_commit_transaction.py": "4e6e0a51d6077094477f798b7baa2a8f08239da6bb20c3cb54651de649adce71"
+    "geo_tools/test_cir_commit_transaction.py": "ebbc2b294704ab334885a3ad2122cb55e1ed9092521136cdfa2171702142caf8"
   },
   "limitations": [
     "Experimental TorchDispatch ATen write interception only; not qualified for mutations through external NumPy/CUDA pointers or concurrent streams.",
@@ -21,5 +21,7 @@
     "Native CPU commit comparisons against full StateTransaction",
     "Real-image full state and RNG rollback including frozen NN weights",
     "OFF and complete-image native parity before prospective online enablement"
-  ]
+  ],
+  "native_CPU_bank_commit": "PASS_REAL_RESOLVE_BANK_FALLBACK_AND_COMMIT_EQUAL_FULL_SNAPSHOT_BOTH_ROLLBACK_EXACT",
+  "development_test_failure": "Initial new test assumed four native return values; actual native commit returns three. Test harness corrected; no native code changed."
 }

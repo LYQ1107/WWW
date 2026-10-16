@@ -79,6 +79,41 @@ class CommitTransactionTests(unittest.TestCase):
         tx.restore()
         self.assertEqual(before, fingerprint(native_state(tracker, native)))
 
+    def test_native_bank_and_commit_equal_full_snapshot(self):
+        from gtr.modeling.identity_revision.state_transaction import StateTransaction
+        outcomes = []
+        for tx_type in (StateTransaction, NativeCommitTransaction):
+            tracker = self.make()
+            m = tracker.model
+            history = tracker.instances[0]
+            query = instance(n=2)
+            tracker.cir_window = [history, query]
+            tracker.cir_older = [instance([1], 1)]
+            tracker.counts = {1: 1, 2: 1, 40: 2}
+            tracker.reids = {1: history[0], 2: history[1], 40: instance([40, 40])}
+            tracker.id_count = 40
+            native.poss_ids.poss_ids = {40}
+            m.get_asso = lambda inst, k, geo_context=False: ([torch.full((len(inst[-1]), len(inst[0])), .8)], None, None, None, None)
+            before = fingerprint(native_state(tracker, native))
+            head = {k: v.clone() for k, v in m.cir_controller.probe_head.state_dict().items()}
+            tx = tx_type(tracker, native)
+            from contextlib import nullcontext
+            with tx if tx_type is NativeCommitTransaction else nullcontext():
+                ids = m.resolve_bank_fallback(tracker.cir_window, 1, torch.tensor([-1, -1]),
+                    torch.tensor([1, 2]), tracker.counts, tracker.reids, tracker.cir_older, 0)
+                result = m.commit_native_identity_state(tracker.cir_window, 1, ids,
+                    tracker.id_count, tracker.counts, tracker.reids)
+                tracker.id_count = result[1]
+                outcomes.append(fingerprint(dict(window=result[0], counts=result[2], reids=tracker.reids,
+                    poss=native.poss_ids.poss_ids, old=native.old_reids.old_reids)))
+                with torch.no_grad():
+                    m.cir_controller.probe_head.weight.add_(99)
+            tx.restore()
+            self.assertEqual(before, fingerprint(native_state(tracker, native)))
+            for k, v in head.items():
+                self.assertTrue(torch.equal(v, m.cir_controller.probe_head.state_dict()[k]))
+        self.assertEqual(outcomes[0], outcomes[1])
+
 
 if __name__ == '__main__':
     unittest.main()
