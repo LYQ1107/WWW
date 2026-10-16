@@ -42,6 +42,14 @@ def main():
         with np.load(entry['path']) as z: a={k:z[k].copy() for k in z.files}
         correspondences[report['arm']+'/'+report['pair_id']]={k:v.tolist() for k,v in a.items()}
         p,q=a['eval_points_A'],a['eval_points_B'];pf,qf=a['fit_points_A'],a['fit_points_B']
+        pair=pairs[report['pair_id']]
+        sizes=[(i['original_width'],i['original_height']) for i in pair['images']]
+        for x in [p,q,pf,qf]:assert np.isfinite(x).all()
+        for endpoints in [np.r_[pf,p],np.r_[qf,q]]:
+            assert len(set(map(tuple,np.round(endpoints*1000).astype(np.int64))))==len(endpoints)
+        for x,parity in [(pf,0),(p,1)]:
+            blocks=np.floor(x/np.array(sizes[0])*4).astype(int).clip(0,3)
+            assert np.all((blocks[:,0]+blocks[:,1])%2==parity)
         Fref=None
         if len(pf)>=8:
             cv2.setRNGSeed(20261016);Fref,_=cv2.findFundamentalMat(pf,qf,cv2.FM_RANSAC,3.,.99)
