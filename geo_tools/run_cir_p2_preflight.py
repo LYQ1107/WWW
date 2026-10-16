@@ -14,7 +14,7 @@ from common import ROOT,CHECKPOINT,save_json,sha256
 def main():
     p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True)
     p.add_argument('--original-full',type=Path,required=True)
-    p.add_argument('--guard-prefix',type=Path,required=True);a=p.parse_args()
+    p.add_argument('--guard-prefix',type=Path);p.add_argument('--ledger-proof',type=Path,required=True);a=p.parse_args()
     if a.out.exists():raise FileExistsError(a.out)
     if subprocess.check_output(['git','status','--porcelain'],cwd=ROOT):raise ValueError('Clean frozen preflight source required')
     a.out.mkdir(parents=True);begun=time.monotonic();completed=[]
@@ -28,6 +28,9 @@ def main():
         save_json(a.out/'RESULT.json',report)
     try:
         run('off_keep_rollback_prefix',['geo_tools/verify_cir_off_parity.py','--out',str(a.out/'off_prefix')])
+        if a.guard_prefix is None:
+            run('guard_shared_core_prefix',['geo_tools/verify_cir_official_parity.py','--policy','guard','--out',str(a.out/'guard_prefix')])
+            a.guard_prefix=a.out/'guard_prefix/RESULT.json'
         for mode in ('margin','threshold','bias2'):
             run(mode+'_shared_core_prefix',['geo_tools/verify_cir_official_parity.py','--policy',mode,'--out',str(a.out/(mode+'_prefix'))])
         run('guarded_commit_rollback',['geo_tools/verify_cir_guard_rollback.py','--out',str(a.out/'guard_rollback')])
@@ -39,7 +42,13 @@ def main():
         run('complete_off04',['test_net.py','--config-file','configs/VISION_test.yaml','--num-gpus','1',
             '--cir-run-spec',str(a.out/'off04_spec.json'),'MODEL.WEIGHTS',str(CHECKPOINT),'OUTPUT_DIR',str(a.out/'setup_off04')])
         final=common+['--off-full',str(a.out/'official_off04/video4/manifest.json'),
-            '--rollback',str(a.out/'guard_rollback/RESULT.json'),'--out',str(a.out/'full_online_gate.json')]
+            '--rollback',str(a.out/'guard_rollback/RESULT.json'),'--ledger-proof',str(a.ledger_proof),
+            '--out',str(a.out/'full_online_gate.json')]
+        waiting=time.monotonic()
+        while not a.ledger_proof.exists():
+            if time.monotonic()-waiting>900:raise TimeoutError('Bounded wait for concurrent ledger regression expired')
+            report.update(current='waiting_for_complete_ledger_regression',elapsed_seconds=time.monotonic()-begun)
+            save_json(a.out/'RESULT.json',report);time.sleep(5)
         for mode in ('margin','threshold','bias2'):final.extend(['--control-prefix',str(a.out/(mode+'_prefix/RESULT.json'))])
         run('registered_full12_gate',final)
         report.update(status='PASS_ALL_PREFIXES_ROLLBACK_COMPLETE_OFF_AND_FULL12_GATE',

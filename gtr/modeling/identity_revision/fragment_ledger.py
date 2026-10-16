@@ -18,6 +18,7 @@ class FragmentLedger:
     def reset(self):
         self.video=None;self.latest_frame=0;self.fragments=OrderedDict();self.latest={}
         self.total_observations=0;self.journal_sha256='0'*64
+        self.evictions=0
 
     def observe_group(self,video,frame):
         if frame<1 or (self.video is not None and video!=self.video) or frame<=self.latest_frame:
@@ -39,9 +40,16 @@ class FragmentLedger:
             fragment=IdentityFragment(source,native_global_id,native_global_id,source.camera,source.frame,source.frame)
             same=[key for key,value in self.fragments.items() if value.current_global_id==native_global_id]
             if len(same)>=self.max_fragments:
-                evict=same[0];old=self.fragments[evict]
-                if old.published_through<old.latest_frame:raise RuntimeError('Cannot evict unpublished revision evidence')
+                # Creation order is not inactivity: an old fragment can still
+                # be extending in the current camera. Preserve current/previous
+                # group chains and every unpublished source. Only an ended,
+                # published fragment is eligible for bounded metadata removal.
+                eligible=[key for key in same if self.fragments[key].published_through>=self.fragments[key].latest_frame
+                          and self.fragments[key].latest_frame<source.frame-1]
+                if not eligible:raise RuntimeError('Cannot evict unpublished or active revision evidence')
+                evict=eligible[0]
                 del self.fragments[evict]
+                self.evictions+=1
                 for key,value in list(self.latest.items()):
                     if value==evict:del self.latest[key]
             self.fragments[source]=fragment;self.latest[slot]=source

@@ -35,6 +35,22 @@ class LedgerContracts(unittest.TestCase):
         with self.assertRaises(ValueError):ledger.register_commit(source(2),2)
     def test_gt_cannot_be_passed_as_source_field(self):
         with self.assertRaises(TypeError):SourceKey(4,1,1,2,0,gt_person=3)
+    def test_continuous_oldest_camera_fragment_does_not_block_ended_eviction(self):
+        ledger=FragmentLedger(16,2)
+        ledger.observe_group(4,1)
+        first=ledger.register_commit(source(1),1);ledger.register_commit(source(1,2),1);ledger.mark_published(1)
+        ledger.observe_group(4,2);ledger.register_commit(source(2),1);ledger.mark_published(2)
+        ledger.observe_group(4,3);ledger.register_commit(source(3),1)
+        # The oldest-created fragment is current and unpublished. The ended
+        # camera2 fragment is published and can safely leave the bounded ledger.
+        ledger.register_commit(source(3,2),1)
+        self.assertIn(first,ledger.fragments);self.assertEqual(ledger.fragments[first].observations_seen,3)
+        self.assertEqual(ledger.evictions,1);self.assertEqual(len(ledger.fragments),2)
+        self.assertTrue(ledger.validate_invariants())
+    def test_previous_group_fragment_is_retained_for_pending_camera(self):
+        ledger=FragmentLedger(16,1);ledger.register_commit(source(1),1);ledger.mark_published(1)
+        with self.assertRaises(RuntimeError):ledger.register_commit(source(2,2),1)
+        self.assertEqual(ledger.evictions,0)
     def test_future_action_evidence_rejected(self):
         with self.assertRaises(ValueError):RevisionAction('VETO',source(1),-1,3,(source(2),),1)
 

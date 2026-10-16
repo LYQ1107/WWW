@@ -3,7 +3,7 @@
   "historical_ledgers_modified": false,
   "maximum_concurrent_GPUs": 4,
   "initial_allocation_GPU_wall_hours": 1.0,
-  "measured_GPU_wall_hours": 3.7378638054596047,
+  "measured_GPU_wall_hours": 4.905461528644794,
   "stages": [
     {
       "stage": "P0_CPU_AND_REAL_PREFIX",
@@ -1023,12 +1023,1199 @@
       "exit_code": 0,
       "wall_seconds": 40.450216464698315,
       "conservative_GPU_wall_hours": 0.011236171240193975
+    },
+    {
+      "stage": "P2_ALL26_PAIRED_NATIVE_FUTURES_V1",
+      "status": "COMPLETE",
+      "allocation_sha256": "f524d0151f6e7bc9108274544bb4e0ff50d3fe67f00fdb6c6700a1d14fdfcfb7",
+      "maximum_GPU_wall_hours": 4.0,
+      "physical_GPUs": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "jobs": [
+        {
+          "name": "paired_scene21",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p2_paired_scene21_v1.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "geo_tools/run_cir_guard_paired.py",
+            "--scene",
+            "21",
+            "--events",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_guard_fit12_audit_v1/FIT_POLICY_EVENTS.jsonl.gz",
+            "--protocol",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/p2_paired_native_v1/results/CIR_GMT/P2_PAIRED_FUTURE_PROTOCOL.json",
+            "--out",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_paired_native_v1/scene21"
+          ],
+          "status": "COMPLETE",
+          "gpu": 7,
+          "pid": 19867,
+          "exit_code": 0,
+          "wall_seconds": 295.3517212793231
+        },
+        {
+          "name": "paired_scene12",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p2_paired_scene12_v1.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "geo_tools/run_cir_guard_paired.py",
+            "--scene",
+            "12",
+            "--events",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_guard_fit12_audit_v1/FIT_POLICY_EVENTS.jsonl.gz",
+            "--protocol",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/p2_paired_native_v1/results/CIR_GMT/P2_PAIRED_FUTURE_PROTOCOL.json",
+            "--out",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_paired_native_v1/scene12"
+          ],
+          "status": "COMPLETE",
+          "gpu": 8,
+          "pid": 19869,
+          "exit_code": 0,
+          "wall_seconds": 432.60243421792984
+        },
+        {
+          "name": "paired_scene20",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p2_paired_scene20_v1.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "geo_tools/run_cir_guard_paired.py",
+            "--scene",
+            "20",
+            "--events",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_guard_fit12_audit_v1/FIT_POLICY_EVENTS.jsonl.gz",
+            "--protocol",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/p2_paired_native_v1/results/CIR_GMT/P2_PAIRED_FUTURE_PROTOCOL.json",
+            "--out",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_paired_native_v1/scene20"
+          ],
+          "status": "COMPLETE",
+          "gpu": 9,
+          "pid": 19871,
+          "exit_code": 0,
+          "wall_seconds": 515.2502236738801
+        },
+        {
+          "name": "paired_scene24",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p2_paired_scene24_v1.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "geo_tools/run_cir_guard_paired.py",
+            "--scene",
+            "24",
+            "--events",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_guard_fit12_audit_v1/FIT_POLICY_EVENTS.jsonl.gz",
+            "--protocol",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/p2_paired_native_v1/results/CIR_GMT/P2_PAIRED_FUTURE_PROTOCOL.json",
+            "--out",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_paired_native_v1/scene24"
+          ],
+          "status": "COMPLETE",
+          "gpu": 6,
+          "pid": 20211,
+          "exit_code": 0,
+          "wall_seconds": 1852.3736002147198
+        }
+      ],
+      "supervisor_pid": 19846,
+      "start_UTC": "2026-10-16T13:57:10.960053+00:00",
+      "GPU_wall_hours_including_live": 0.8598827720516258,
+      "elapsed_seconds": 1881.7254097014666,
+      "failure": null
+    },
+    {
+      "stage": "P2_FINITE_FULL_ONLINE_PREFLIGHT_V1",
+      "status": "COMPLETE",
+      "device_physical_index": 7,
+      "maximum_process_seconds": 1200,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/run_cir_p2_preflight.py",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_finite_full_online_preflight_v1",
+        "--original-full",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_original_full04_v1/manifest.json",
+        "--guard-prefix",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_paired_scope_guard_prefix_v1/RESULT.json"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p2_finite_full_online_preflight_v1.log",
+      "start_UTC": "2026-10-16T14:09:19.428014+00:00",
+      "supervisor_pid": 27097,
+      "source_worktree": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/p2_full_controls_v1",
+      "source_commit": "e6baeaa6fe7d1e8a8ece1ac580664e95f5fbd4ee",
+      "child_pid": 27108,
+      "elapsed_seconds": 465.02920304983854,
+      "exit_code": 0,
+      "wall_seconds": 469.9928819090128,
+      "conservative_GPU_wall_hours": 0.1305535783080591,
+      "cost_record": {
+        "path": "/data1/liuyeqiang/WWW_cir_gmt_20261016/results/CIR_GMT/P2_PREFLIGHT_RESOURCE_LEDGER.json",
+        "sha256": "7cb2d2316572d74b1af2e3e1465b5e61d85f91cddc32f8d870c12178fb228002",
+        "GPU_wall_hours": 0.1305535783080591,
+        "new_GPU_credit": 0
+      }
+    },
+    {
+      "stage": "P2_COMPLETE_REGISTERED_DEV12_FOUR_CONTROLS_V1",
+      "status": "FAILED_EVIDENCE_RETAINED",
+      "allocation_sha256": "35ed7c16f93921133337ce3714c65679101dee0011e4c3cae873774c2d1f04d4",
+      "maximum_GPU_wall_hours": 12.0,
+      "physical_GPUs": [
+        6,
+        7,
+        8,
+        9
+      ],
+      "jobs": [
+        {
+          "name": "guard_video1",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video1.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene1_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video1"
+          ],
+          "status": "FAILED_EVIDENCE_RETAINED",
+          "gpu": 6,
+          "pid": 36437,
+          "exit_code": 1,
+          "wall_seconds": 158.94762954860926
+        },
+        {
+          "name": "guard_video2",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video2.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene2_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video2"
+          ],
+          "status": "STOPPED_OWNED_GROUP_EVIDENCE_RETAINED",
+          "gpu": 7,
+          "pid": 36443,
+          "exit_code": -15,
+          "wall_seconds": 159.58909683674574
+        },
+        {
+          "name": "guard_video3",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video3.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene3_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video3"
+          ],
+          "status": "STOPPED_OWNED_GROUP_EVIDENCE_RETAINED",
+          "gpu": 8,
+          "pid": 36445,
+          "exit_code": -15,
+          "wall_seconds": 159.63363409787416
+        },
+        {
+          "name": "guard_video10",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video10.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene10_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video10"
+          ],
+          "status": "STOPPED_OWNED_GROUP_EVIDENCE_RETAINED",
+          "gpu": 9,
+          "pid": 36447,
+          "exit_code": -15,
+          "wall_seconds": 159.6105816885829
+        },
+        {
+          "name": "guard_video11",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video11.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene11_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video11"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "guard_video14",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video14.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene14_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video14"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "guard_video15",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video15.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene15_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video15"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "guard_video16",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video16.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene16_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video16"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "guard_video18",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video18.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene18_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video18"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "guard_video19",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video19.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene19_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video19"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "guard_video22",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video22.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene22_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video22"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "guard_video23",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/guard_video23.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/guard_scene23_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/guard_video23"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video1",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video1.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene1_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video1"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video2",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video2.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene2_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video2"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video3",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video3.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene3_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video3"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video10",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video10.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene10_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video10"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video11",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video11.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene11_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video11"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video14",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video14.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene14_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video14"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video15",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video15.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene15_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video15"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video16",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video16.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene16_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video16"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video18",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video18.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene18_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video18"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video19",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video19.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene19_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video19"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video22",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video22.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene22_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video22"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "margin_video23",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/margin_video23.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/margin_scene23_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/margin_video23"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video1",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video1.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene1_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video1"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video2",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video2.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene2_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video2"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video3",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video3.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene3_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video3"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video10",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video10.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene10_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video10"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video11",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video11.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene11_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video11"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video14",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video14.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene14_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video14"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video15",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video15.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene15_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video15"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video16",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video16.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene16_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video16"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video18",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video18.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene18_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video18"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video19",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video19.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene19_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video19"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video22",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video22.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene22_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video22"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "threshold_video23",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/threshold_video23.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/threshold_scene23_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/threshold_video23"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video1",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video1.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene1_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video1"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video2",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video2.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene2_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video2"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video3",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video3.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene3_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video3"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video10",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video10.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene10_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video10"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video11",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video11.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene11_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video11"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video14",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video14.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene14_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video14"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video15",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video15.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene15_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video15"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video16",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video16.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene16_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video16"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video18",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video18.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene18_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video18"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video19",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video19.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene19_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video19"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video22",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video22.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene22_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video22"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        },
+        {
+          "name": "bias2_video23",
+          "maximum_seconds": 3600,
+          "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/logs/bias2_video23.log",
+          "command": [
+            "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+            "-u",
+            "test_net.py",
+            "--config-file",
+            "configs/VISION_test.yaml",
+            "--num-gpus",
+            "1",
+            "--cir-run-spec",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/bias2_scene23_spec.json",
+            "MODEL.WEIGHTS",
+            "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+            "OUTPUT_DIR",
+            "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/setup/bias2_video23"
+          ],
+          "status": "NOT_RUN_STAGE_STOP"
+        }
+      ],
+      "supervisor_pid": 36421,
+      "start_UTC": "2026-10-16T14:28:47.534012+00:00",
+      "GPU_wall_hours_including_live": 0.17716137282550334,
+      "elapsed_seconds": 159.70079142600298,
+      "failure": "JOB_FAILED guard_video1"
     }
   ],
   "storage_reserve_bytes": 32212254720,
   "storage_initial_free_bytes": 242337579008,
   "large_assets_location": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016",
-  "allocated_total_GPU_wall_hours": 10.0,
+  "allocated_total_GPU_wall_hours": 22.0,
   "allocations": [
     {
       "stage": "P1_COMPLETE_REGISTERED_DEV12_ORIGINAL_C1_V1",
@@ -1044,6 +2231,14 @@
       "protocol_sha256": "3b7f5345b1e479df330ec7cd32626485b2f453fdc20141e241b99c1b1d779a44",
       "reason": "~16000 real images at6FPS about0.75GPUh;4GPUh conservatively bounds dense scenes and exact state snapshots; all26 retained, no TEST",
       "maximum_parallel_GPUs": 4
+    },
+    {
+      "stage": "P2_COMPLETE_REGISTERED_DEV12_FOUR_CONTROLS_V1",
+      "added_GPU_wall_hours": 12.0,
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_development_v1/ALLOCATION.json",
+      "sha256": "35ed7c16f93921133337ce3714c65679101dee0011e4c3cae873774c2d1f04d4",
+      "reason": "P1 two methods all12 took2.95GPUh; four controls about6GPUh before guard overhead;12GPUh registered bound, no silent video omission",
+      "user_request_sha256": "19d7d9f49ac4705c7a27b5b80a6d7749cc64b5cb94376c1016a174ada241e5f0"
     }
   ],
   "scope_allocations": [
@@ -1052,6 +2247,14 @@
       "maximum_GPU_wall_hours": 0.4,
       "source_of_budget": "unspent registered CIR total6 after P1 actual completion; no new credit and no historic-ledger reset",
       "maximum_parallel_GPUs": 1
+    }
+  ],
+  "imported_subledgers": [
+    {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_20261016/results/CIR_GMT/P2_PREFLIGHT_RESOURCE_LEDGER.json",
+      "sha256": "7cb2d2316572d74b1af2e3e1465b5e61d85f91cddc32f8d870c12178fb228002",
+      "GPU_wall_hours": 0.1305535783080591,
+      "new_GPU_credit": 0
     }
   ]
 }

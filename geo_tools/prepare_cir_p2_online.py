@@ -16,7 +16,8 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--off-prefix',type=Path,required=True)
     p.add_argument('--guard-prefix',type=Path,required=True);p.add_argument('--original-full',type=Path,required=True)
     p.add_argument('--off-full',type=Path);p.add_argument('--control-prefix',type=Path,action='append',default=[])
-    p.add_argument('--rollback',type=Path);p.add_argument('--out',type=Path,required=True);a=p.parse_args()
+    p.add_argument('--rollback',type=Path);p.add_argument('--ledger-proof',type=Path)
+    p.add_argument('--out',type=Path,required=True);a=p.parse_args()
     if a.out.exists():raise FileExistsError(a.out)
     off=read(a.off_prefix);guard=read(a.guard_prefix)
     if off['status']!='PASS_REAL_PREFIX_OFF_KEEP_ROLLBACK' or guard['status']!='PASS_REAL_PREFIX_GUARD_OFFICIAL_CAUSAL':
@@ -64,8 +65,14 @@ def main():
         if rollback['status']!='PASS_REAL_GUARD_COMMIT_ROLLBACK_FUTURE' or not all(rollback['checks'].values()):
             raise ValueError('Real guarded commit rollback failed')
         pin(rollback)
+        if not a.ledger_proof:raise ValueError('Complete real ledger-retention regression proof required')
+        retention=read(a.ledger_proof);pin(retention)
+        if retention['status']!='PASS_FULL_NATIVE_LEDGER_RETENTION' or not retention['full_video'] or retention['scene']!=1:
+            raise ValueError('Complete failed-scene ledger regression required')
+        if not all(retention['comparisons'].values()) or retention['bounded_evictions']<1:
+            raise ValueError('Actual native outputs/futures or bounded eviction failed')
         allowed=['off','guard','margin','threshold','bias2'];videos=[1,2,3,10,11,14,15,16,18,19,22,23]
-        evidence.extend([a.off_full,a.rollback])
+        evidence.extend([a.off_full,a.rollback,a.ledger_proof])
     save_json(a.out,dict(status='PASS_FULL_VIDEO_NATIVE_OFF_QUALIFICATION',stage='P2_FINITE_CONTROLS',
         allowed_methods=allowed,allowed_video_ids=videos,current_source_sha256=core,
         native_evidence=[dict(path=str(path),sha256=sha256(path)) for path in evidence],

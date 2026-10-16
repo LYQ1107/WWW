@@ -49,3 +49,9 @@ All26 native pairs and independent GT evaluation finished. Utility is mixed:6 ca
 
 Automatic continuation imported the immutable preflight cost once, registered12 additional GPU-wall-hours without resetting old costs, and started the frozen48-job full12 matrix on up to4 idle GPUs. Actor source remains `e6baeaa6`; independent offline diagnostics do not change its inputs, thresholds or weights. Complete results and official TEST remain pending.
 
+# P2 full12 attempt v1 stopped: bounded ledger retention defect
+
+The actual complete-video matrix stopped at TRAIN01 group437 before producing a valid complete run. The oldest-created fragment was still extending in the current camera and unpublished; the bounded ledger tried to evict it instead of an ended published fragment. The safety check raised, and the supervisor stopped only its other owned jobs. No v1 score is valid. Failure manifest, trace and all incurred costs remain intact in `P2_FULL_ONLINE_FAILURE_V1.json` and the resource ledger.
+
+The repair preserves the prohibition on evicting unpublished evidence and also preserves current/previous-group chains. It chooses an eligible ended published fragment. Reproduction and pending-camera tests pass (82 CPU contracts total). No perception, score, threshold, candidate or development-video choice changes. Before replaying the exact48-job matrix as a new version, require full real TRAIN01 bounded32 versus wide1024 parity of native Gallery/counts/Bank, costs, outputs and RNG with actual eviction exercised, then fresh shared-core/rollback and complete OFF qualification. Old attempt/source and labels are retained; no failed field is overwritten as success.
+

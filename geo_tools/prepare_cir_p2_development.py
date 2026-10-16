@@ -5,6 +5,7 @@ The owned batch supervisor separately enforces the registered resource budget.
 """
 import argparse
 import json
+import re
 from pathlib import Path
 import subprocess
 import sys
@@ -14,7 +15,8 @@ from common import ROOT,CHECKPOINT,save_json,sha256
 def main():
     p=argparse.ArgumentParser();p.add_argument('--gate',type=Path,required=True)
     p.add_argument('--source-root',type=Path,required=True);p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--gpus',type=int,nargs='+',required=True);a=p.parse_args()
+    p.add_argument('--gpus',type=int,nargs='+',required=True);p.add_argument('--attempt',default='v1');a=p.parse_args()
+    if not re.fullmatch(r'v[1-9][0-9]*',a.attempt):raise ValueError('Explicit versioned attempt required')
     if a.out.exists():raise FileExistsError(a.out)
     if len(set(a.gpus))!=len(a.gpus) or not 1<=len(a.gpus)<=4 or any(g<0 for g in a.gpus):raise ValueError('At most4 unique authorized GPUs')
     matrix_path=ROOT/'results/CIR_GMT/P2_FULL_ONLINE_MATRIX.json';matrix=json.loads(matrix_path.read_text())
@@ -42,7 +44,7 @@ def main():
                     '--cir-run-spec',str(path.resolve()),'MODEL.WEIGHTS',str(CHECKPOINT),'OUTPUT_DIR',str(a.out.resolve()/f'setup/{method}_video{video}')]))
             bindings.append(dict(path=str(path.resolve()),sha256=sha256(path)))
         save_json(a.out/f'{method}_runs.json',dict(required_video_ids=videos,runs=runs))
-    allocation=dict(stage='P2_COMPLETE_REGISTERED_DEV12_FOUR_CONTROLS_V1',physical_GPUs=a.gpus,
+    allocation=dict(stage='P2_COMPLETE_REGISTERED_DEV12_FOUR_CONTROLS_'+a.attempt.upper(),physical_GPUs=a.gpus,
         maximum_GPU_wall_hours=12.,maximum_stage_wall_seconds=21600,source_root=str(source),source_commit=commit,jobs=jobs,
         estimate='P1 two methods all12 took2.95GPUh; four controls about6GPUh before guard overhead;12GPUh registered bound, no silent video omission')
     save_json(a.out/'ALLOCATION.json',allocation)
