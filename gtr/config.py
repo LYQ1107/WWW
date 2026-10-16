@@ -15,6 +15,7 @@ def add_gtr_config(cfg):
     _C.MODEL.CIR.ENABLED = False
     _C.MODEL.CIR.MODE = 'off'
     _C.MODEL.CIR.MODEL_PATH = ''
+    _C.MODEL.CIR.MODEL_SHA256 = ''
     _C.MODEL.CIR.MAX_HISTORY = 16
     _C.MODEL.CIR.MAX_FRAGMENTS_PER_ID = 32
     _C.MODEL.CIR.REVISION_WINDOW = 0

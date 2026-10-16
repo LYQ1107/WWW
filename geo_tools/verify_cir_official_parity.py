@@ -23,12 +23,19 @@ from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
 def main():
     p=argparse.ArgumentParser();p.add_argument('--scene',type=int,default=4)
     p.add_argument('--groups',type=int,default=40);p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--policy',choices=('off','c1','bias2','guard','margin','threshold'),default='off')
+    p.add_argument('--policy',choices=('off','c1','bias2','guard','margin','threshold','guard_reference','risk_mlp','risk_grouped'),default='off')
+    p.add_argument('--risk-checkpoint',type=Path);p.add_argument('--risk-checkpoint-sha256')
     a=p.parse_args()
     if a.scene not in range(1,25):raise ValueError('TRAIN only')
     if a.out.exists():raise FileExistsError(a.out)
     a.out.mkdir(parents=True)
     cfg,model=load_gmt();stock_min=model.min_track_len;model.min_track_len=0
+    from gtr.modeling.identity_revision.controller import IdentityRevisionController,RISK_MODES
+    if a.policy in RISK_MODES:
+        protocol=json.loads((ROOT/'results/CIR_GMT/P4_NATIVE_INTEGRATION_PROTOCOL.json').read_text())
+        spec=protocol['learned_models_frozen'][a.policy]
+        if not a.risk_checkpoint or a.risk_checkpoint_sha256!=spec['checkpoint_sha256']:
+            raise ValueError('Only the registered frozen first-seed checkpoint is admitted')
     rows=video_records(train_data(),a.scene,max_frames=a.groups)
     frame_rows=sorted(rows,key=lambda r:(r['frame_id'],r['view_id']))
     results={};start=time.monotonic()
@@ -39,6 +46,14 @@ def main():
         seed_all(20261014);model.cir_controller.enabled=arm=='CIR_KEEP_OFFICIAL'
         model.cir_controller.mode='keep' if arm=='CIR_KEEP_OFFICIAL' else 'off'
         if a.policy!='off':model.cir_controller.enabled=True;model.cir_controller.mode=a.policy
+        risk_trace=None
+        if a.policy in RISK_MODES:
+            cc=cfg.MODEL.CIR.clone();cc.defrost();cc.ENABLED=True;cc.MODE=a.policy
+            cc.MODEL_PATH=str(a.risk_checkpoint);cc.MODEL_SHA256=a.risk_checkpoint_sha256
+            model.cir_controller=IdentityRevisionController(cc)
+            if model.cir_controller.risk_threshold!=spec['threshold']:raise ValueError('Frozen risk threshold drift')
+            from cir_risk_trace import RiskTrace
+            risk_trace=RiskTrace(model.cir_controller,a.risk_checkpoint,a.risk_checkpoint_sha256);risk_trace.install()
         model.run_global_tracker_plus=MethodType(original_method() if arm=='ORIGINAL_OFFICIAL' else native.GTRRCNN.run_global_tracker_plus,model)
         directory=a.out/arm;directory.mkdir();trace=(C1ScoreTrace if a.policy!='off' else FullScoreTrace)(model,directory);trace.install()
         predictions=[];t=time.monotonic()
@@ -57,10 +72,15 @@ def main():
                     predictions.extend(custom_instances_to_coco_json(item['instances'].to('cpu'),row['image_id']))
             torch.cuda.synchronize()
             last_rng=rng_digest()
-        finally:trace.close()
+        finally:
+            trace.close()
+            if risk_trace is not None:risk_trace.close()
         count=Counter(r['track_id'] for r in predictions)
         stock=[r for r in predictions if count[r['track_id']]>=stock_min]
         results[arm]=dict(raw=predictions,stock=stock,rng=last_rng,decisions=decisions(directory),seconds=time.monotonic()-t)
+        if risk_trace is not None:
+            if risk_trace.stats['model_forward_calls']==0:raise ValueError('Real native risk forward was not exercised')
+            results[arm]['risk_checks']=risk_trace.stats
         if a.policy!='off' and (model.cir_controller.fallbacks or model.cir_controller.extra_joint_solves==0):
             raise ValueError('C1 prefix must exercise actual joint changes without missing-source fallback')
         save_json(directory/'raw_predictions.json',predictions);save_json(directory/'stock_predictions.json',stock)
@@ -77,6 +97,9 @@ def main():
         source_sha256_at_import=__import__('verify_cir_off_parity').SOURCE_AT_IMPORT,
         this_script_sha256=sha256(__file__),wall_seconds=time.monotonic()-start,
         camera_input_unchanged=True,physical_time='native frame indices; wall delay not inferred')
+    if a.policy in RISK_MODES:
+        report['risk_checkpoint_sha256']=a.risk_checkpoint_sha256
+        report['risk_checks']={arm:result['risk_checks'] for arm,result in results.items()}
     save_json(a.out/'RESULT.json',report);print(json.dumps(report),flush=True)
     if report['status'].startswith('FAIL'):raise RuntimeError('Official/causal parity failed')
 

@@ -59,15 +59,25 @@ def validate_request(a):
 
 
 def run_loaded(a,cfg,model):
-    validate_request(a)
+    gate=validate_request(a)
     cfg=cfg.clone();cfg.defrost()
-    cfg.MODEL.CIR.ENABLED=a.method in ('keep','c1','bias2','guard','margin','threshold');cfg.MODEL.CIR.MODE=a.method if cfg.MODEL.CIR.ENABLED else 'off'
-    from gtr.modeling.identity_revision.controller import IdentityRevisionController
+    from gtr.modeling.identity_revision.controller import IdentityRevisionController,GUARD_MODES,RISK_MODES
+    cfg.MODEL.CIR.ENABLED=a.method in ('keep','c1','bias2',*GUARD_MODES);cfg.MODEL.CIR.MODE=a.method if cfg.MODEL.CIR.ENABLED else 'off'
+    if a.method in RISK_MODES:
+        spec=gate.get('risk_models',{}).get(a.method)
+        if not spec:raise ValueError('Specific frozen risk model admission required')
+        cfg.MODEL.CIR.MODEL_PATH=spec['path'];cfg.MODEL.CIR.MODEL_SHA256=spec['sha256']
     model.cir_controller=IdentityRevisionController(cfg.MODEL.CIR)
+    if a.method in RISK_MODES and 'threshold' in spec and model.cir_controller.risk_threshold!=spec['threshold']:
+        raise ValueError('Frozen gate/checkpoint threshold mismatch')
+    head_parameters=sum(p.numel() for p in model.cir_controller.risk_head.parameters()) if model.cir_controller.risk_head is not None else 0
     from gtr.modeling.meta_arch.gtr_rcnn import GTRRCNN
     model.run_global_tracker_plus=MethodType(original_method() if a.method=='original' else GTRRCNN.run_global_tracker_plus,model)
     if cfg.MODEL.GEO.ENABLED or model.geo_runtime.active:raise ValueError('CIR must run pure frozen GMT')
     model.eval().requires_grad_(False)
+    inference_trainable=sum(p.numel() for p in model.parameters() if p.requires_grad)
+    if model.cir_controller.risk_head is not None:inference_trainable+=sum(p.numel() for p in model.cir_controller.risk_head.parameters() if p.requires_grad)
+    if inference_trainable:raise ValueError('All perception and risk weights must be frozen for inference')
     # raw0 and stock50 are both retained; filter is only after full tracking.
     stock_min=model.min_track_len;model.min_track_len=0
     records=video_records(train_data(),a.video);batch=CurrentImages(cfg,records)
@@ -91,7 +101,11 @@ def run_loaded(a,cfg,model):
         entrypoint=getattr(a,'entrypoint','geo_tools/run_cir_online.py'),
         qualification=dict(path=str(a.qualification),sha256=sha256(a.qualification)),
         inference_protocol='actual model.forward/sliding_inference_GMT with synchronized current image mapper; raw0 + stock50',
-        parameter_count=sum(p.numel() for p in model.parameters()),new_learnable_parameters=0)
+        parameter_count=sum(p.numel() for p in model.parameters())+head_parameters,
+        frozen_GMT_parameter_count=sum(p.numel() for p in model.parameters()),new_learnable_parameters=head_parameters,
+        trainable_parameters_during_inference=inference_trainable,
+        online_learning=False,risk_checkpoint_sha256=model.cir_controller.risk_checkpoint_sha256,
+        risk_logit_threshold=model.cir_controller.risk_threshold)
     manifest.update(config_hashes)
     manifest['hardware']=dict(CUDA_VISIBLE_DEVICES=os.environ.get('CUDA_VISIBLE_DEVICES'),
         GPU_name=torch.cuda.get_device_name(),GPU_total_bytes=torch.cuda.get_device_properties(0).total_memory,
@@ -134,9 +148,16 @@ def run_loaded(a,cfg,model):
             Bank_and_initialization='original, no C1 score modification in these stages',
             guard_veto_edges=controller.veto_edges,guard_joint_solves=controller.guard_joint_solves,
             guard_aborted=controller.guard_aborted,guard_failed=controller.failed,
+            primary_query_rows=controller.guard_primary_query_rows,initial_accepted_primary_rows=controller.guard_initial_accepted_rows,
+            guard_changed_preBank_primary_rows=controller.guard_changed_primary_rows,
+            guard_changed_preBank_accepted_rows=controller.guard_changed_accepted_rows,
+            reassociation_attempt_calls=controller.guard_calls_with_veto,stable_reassociation_calls=controller.guard_stable_after_reassociation,
+            risk_forward_calls=controller.risk_forward_calls,risk_scored_rows_including_revalidation=controller.risk_scored_query_rows,
             failure_events=controller.failure_events,
             ledger_observations=controller.ledger.total_observations if controller.ledger else 0)
         if controller.failed:raise RuntimeError('Guard commit invariant failed; restored output retained but method not qualified')
+        if a.method in (*RISK_MODES,'guard_reference') and controller.fallbacks:
+            raise RuntimeError('Untrusted C1 evidence fallback invalidates this learned/reference-policy run')
     except BaseException as error:
         manifest.update(status='FAILED_NO_ADMISSION',failure=repr(error),processed_image_ids=batch.processed)
         raise
@@ -149,7 +170,7 @@ def run_loaded(a,cfg,model):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True)
-    p.add_argument('--method',choices=('original','off','keep','c1','bias2','guard','margin','threshold'),required=True)
+    p.add_argument('--method',choices=('original','off','keep','c1','bias2','guard','margin','threshold','guard_reference','risk_mlp','risk_grouped'),required=True)
     p.add_argument('--qualification',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     a=p.parse_args()

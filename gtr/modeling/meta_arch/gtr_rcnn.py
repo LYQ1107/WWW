@@ -579,17 +579,24 @@ class GTRRCNN(CustomRCNN):
         transaction=None
         if self.cir_controller.wants_guard():
             thresholds=self.overlap_thresh*id_inds.sum(0) if not self.not_mult_thresh else traj_score.new_full((len(unique_ids),),self.overlap_thresh)
-            base_ids=track_ids;guarded=revised_score
+            base_ids=track_ids;guarded=revised_score;had_veto=False
+            self.cir_controller.guard_primary_query_rows+=len(track_ids)
+            self.cir_controller.guard_initial_accepted_rows+=int((track_ids>=1).sum())
             for _ in range(2):
-                proposal=self.cir_controller.precommit(guarded,track_ids,instances,k,unique_ids,thresholds)
+                proposal=self.cir_controller.precommit(guarded,track_ids,instances,k,unique_ids,thresholds,reference_scores=revised_score)
                 if proposal is guarded:break
+                had_veto=True
                 guarded=proposal
                 track_ids=self.solve_native_assignment(ids,unique_ids,id_inds,guarded)
                 self.cir_controller.guard_joint_solves+=1
-            if self.cir_controller.precommit(guarded,track_ids,instances,k,unique_ids,thresholds,count=False) is not guarded:
+            if self.cir_controller.precommit(guarded,track_ids,instances,k,unique_ids,thresholds,count=False,reference_scores=revised_score) is not guarded:
                 # Finite validation budget exhausted: no native state was changed.
                 self.cir_controller.guard_aborted+=1;track_ids=base_ids;guarded=revised_score
+            self.cir_controller.guard_changed_primary_rows+=int((track_ids!=base_ids).sum())
+            self.cir_controller.guard_changed_accepted_rows+=int(((base_ids>=1)&(track_ids!=base_ids)).sum())
+            if had_veto:self.cir_controller.guard_calls_with_veto+=1
             if guarded is not revised_score:
+                self.cir_controller.guard_stable_after_reassociation+=1
                 from ..identity_revision.state_transaction import StateTransaction
                 import sys
                 owner=getattr(self,'cir_owner',None)

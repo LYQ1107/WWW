@@ -35,7 +35,8 @@ class C1ScoreTrace(FullScoreTrace):
         try:
             result=self.originals[name](*args)
             final=(result if name=='run_memory_tracker' else result[0][k].track_ids).detach().cpu().tolist()
-            is_guard=self.model.cir_controller.mode in ('guard','margin','threshold')
+            from gtr.modeling.identity_revision.controller import GUARD_MODES
+            is_guard=self.model.cir_controller.mode in GUARD_MODES
             allowed=(1,2,3,4) if name=='run_global_tracker_plus' and is_guard else (1,2) if name=='run_global_tracker_plus' else (1,)
             if len(holder['records']) not in allowed:raise ValueError('Unexpected actual native solver count')
             last=holder['records'][-1]
