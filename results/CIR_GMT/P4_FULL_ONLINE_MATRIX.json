@@ -1,0 +1,50 @@
+{
+  "status": "FROZEN_BEFORE_ANY_LEARNED_FULL_ONLINE_SCORES",
+  "required_video_ids": [
+    1,
+    2,
+    3,
+    10,
+    11,
+    14,
+    15,
+    16,
+    18,
+    19,
+    22,
+    23
+  ],
+  "new_methods": [
+    "guard_reference",
+    "risk_mlp",
+    "risk_grouped"
+  ],
+  "references": "Complete same-scope Original GMT/C1 and recorded legacy Guard; no selection from their per-scene scores.",
+  "common": "original perception/GTA, native candidates/Bank/initialization, at most2 constrained solves plus final validation, identical raw0 and stock50 outputs",
+  "admission": "P4_FIRST_SEED_RISK_NATIVE current SHA gate, both actual checkpoint hashes961params, actual CPU/GPU features/logits and full OFF identity, no TEST",
+  "metrics": [
+    "HOTA",
+    "AssA",
+    "CVIDF1",
+    "IDF1",
+    "IDSW",
+    "DetA",
+    "MOTA",
+    "Frag",
+    "full_image_FPS"
+  ],
+  "raw_GT_invalid_videos": [
+    2,
+    3,
+    14,
+    15,
+    16,
+    22,
+    23
+  ],
+  "invalid_GT_handling": "complete inference retained; strict metric values null; do not change official equations or fix GT",
+  "no_TEST": true,
+  "no_threshold_or_scene_selection_after_scores": true,
+  "budget": "Existing CIR credit; at most8 new GPU-wall-hours, job maximum7200s, four authorized idle GPUs, maximum21600 stage seconds, separate root ledger stage; actual costs retained.",
+  "learning": "No new training; frozen seed17 FIT12 models and thresholds. No tuning using DEV metrics."
+}
