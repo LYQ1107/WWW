@@ -11,8 +11,21 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1]);a=p.parse_args()
     ledger=json.loads((a.root/'results/CIR_GMT/RESOURCE_LEDGER.json').read_text())
     result=dict(measured_GPU_wall_hours=ledger['measured_GPU_wall_hours'],phases=json.loads((a.root/'results/CIR_GMT/RESEARCH_GOAL.json').read_text())['phases'],active=[])
+    stages=list(ledger['stages']);unmerged=[]
+    imported={r['path'] for r in ledger.get('imported_subledgers',[])}
+    parent=str((a.root/'results/CIR_GMT/RESOURCE_LEDGER.json').resolve())
+    for path in sorted((a.root/'results/CIR_GMT').glob('*RESOURCE_LEDGER.json')):
+        if str(path.resolve())==parent or str(path.resolve()) in imported:continue
+        leaf=json.loads(path.read_text())
+        if leaf.get('parent_root')!=parent:continue
+        result['measured_GPU_wall_hours']+=leaf['measured_GPU_wall_hours'];stages.extend(leaf['stages'])
+        unmerged.append(dict(path=str(path.resolve()),measured_GPU_wall_hours=leaf['measured_GPU_wall_hours']))
+    result['unmerged_cost_records']=unmerged
+    result['single_process_unsettled_GPU_wall_hours_estimate']=sum(
+        s.get('elapsed_seconds',0)/3600 for s in stages if s['status']=='RUNNING')
+    result['GPU_wall_hours_including_single_live_estimate']=result['measured_GPU_wall_hours']+result['single_process_unsettled_GPU_wall_hours_estimate']
     images=None
-    for stage in ledger['stages']:
+    for stage in stages:
         if not stage['status'].startswith('RUNNING'):continue
         if stage['status']=='RUNNING_BATCH':
             jobs=stage['jobs'];running=[]
