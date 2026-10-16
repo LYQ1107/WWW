@@ -7,7 +7,7 @@ from omega_corr_eval_helpers import top_reference
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);args=p.parse_args();assert not args.output.exists()
-    base=Path(__file__).resolve().parents[1]/'results';meta=json.loads((base/'omega_corr_candidate_values_index.json').read_text());native=json.loads((base/'omega_corr_native_query_index.json').read_text());truth=json.loads((base/'omega_corr_offline_certifications.json').read_text())['rows'];a=np.load(base/'omega_corr_candidate_values.npz');names={c['config_id']:i for i,c in enumerate(meta['configurations'])};cache={};tracks={}
+    base=Path(__file__).resolve().parents[1]/'results';meta=json.loads((base/'omega_corr_candidate_values_index.json').read_text());native=json.loads((base/'omega_corr_native_query_index.json').read_text());truth=json.loads((base/'omega_corr_offline_certifications.json').read_text())['rows'];archive=np.load(base/'omega_corr_candidate_values.npz');a={k:archive[k] for k in archive.files};archive.close();names={c['config_id']:i for i,c in enumerate(meta['configurations'])};cache={};tracks={}
     assert [q['query'] for q in native]==[q['query'] for q in truth]==meta['queries']
     def load(name):
         if name not in cache:

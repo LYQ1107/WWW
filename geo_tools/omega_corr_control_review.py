@@ -7,7 +7,7 @@ from omega_corr_eval_helpers import top_reference,cluster_interval
 
 def main():
     source=provenance();assert not source['source_status'].strip()
-    ev=json.loads((RUNTIME/'evaluation_v1.json').read_text());meta=json.loads((RUNTIME/'candidate_values_v1.json').read_text());assert sha256(meta['values']['path'])==meta['values']['sha256'];a=np.load(meta['values']['path']);qs=json.loads((RUNTIME/'native_candidates_v1.json').read_text())['queries'];truth=json.loads((RUNTIME/'candidate_certifications_v1.json').read_text())['rows']
+    ev=json.loads((RUNTIME/'evaluation_v1.json').read_text());meta=json.loads((RUNTIME/'candidate_values_v1.json').read_text());assert sha256(meta['values']['path'])==meta['values']['sha256'];archive=np.load(meta['values']['path']);a={k:archive[k] for k in archive.files};archive.close();qs=json.loads((RUNTIME/'native_candidates_v1.json').read_text())['queries'];truth=json.loads((RUNTIME/'candidate_certifications_v1.json').read_text())['rows']
     names={c['config_id']:i for i,c in enumerate(meta['configurations'])};cache={};track={}
     def load(n):
         if n not in cache:
