@@ -4,6 +4,9 @@ Restoration replaces tracker-owned state roots; callers must not retain mutable
 references into an abandoned branch. Model parameters are frozen, not copied.
 """
 import copy
+from collections import OrderedDict,deque
+from dataclasses import is_dataclass,asdict
+from enum import Enum
 import hashlib
 import random
 import numpy as np
@@ -23,11 +26,17 @@ def fingerprint(value):
             visit(x.get_fields())
         elif hasattr(x, 'tensor'):
             visit(x.tensor)
+        elif isinstance(x,Enum):
+            visit((type(x).__qualname__,x.value))
+        elif is_dataclass(x) and not isinstance(x,type):
+            visit((type(x).__qualname__,asdict(x)))
+        elif isinstance(x,OrderedDict):
+            visit(('OrderedDict',list(x.items())))
         elif isinstance(x, dict):
             for k in sorted(x, key=repr):
                 visit(k)
                 visit(x[k])
-        elif isinstance(x, (list, tuple)):
+        elif isinstance(x, (list, tuple,deque)):
             h.update(type(x).__name__.encode())
             for item in x:
                 visit(item)
@@ -36,6 +45,8 @@ def fingerprint(value):
         elif isinstance(x, np.ndarray):
             h.update(str((str(x.dtype), x.shape)).encode())
             h.update(x.tobytes())
+        elif hasattr(x,'__dict__') and not callable(x):
+            visit((type(x).__qualname__,vars(x)))
         else:
             h.update(repr(x).encode())
         h.update(b'\x00')
@@ -55,13 +66,16 @@ class StateTransaction:
     def __init__(self, tracker, module):
         self.tracker, self.module = tracker, module
         # One memo across every root preserves native shared Tensor storage.
-        self.snapshot = copy.deepcopy(native_state(tracker, module))
+        original=native_state(tracker,module)
+        self.before_digest = fingerprint(original)
+        self.snapshot = copy.deepcopy(original)
+        if fingerprint(self.snapshot)!=self.before_digest:
+            raise RuntimeError('CIR snapshot content changed while cloning')
         self.python_rng = random.getstate()
         self.numpy_rng = np.random.get_state()
         self.cpu_rng = torch.get_rng_state().clone()
         # Never initialize CUDA as a side effect of a CPU audit.
         self.cuda_rng = torch.cuda.get_rng_state_all() if torch.cuda.is_initialized() else None
-        self.before_digest = fingerprint(self.snapshot)
 
     def restore(self):
         state = copy.deepcopy(self.snapshot)

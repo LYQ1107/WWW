@@ -2,6 +2,8 @@
 import argparse
 import gzip
 import json
+import re
+import time
 from pathlib import Path
 
 
@@ -11,7 +13,25 @@ def main():
     result=dict(measured_GPU_wall_hours=ledger['measured_GPU_wall_hours'],phases=json.loads((a.root/'results/CIR_GMT/RESEARCH_GOAL.json').read_text())['phases'],active=[])
     images=None
     for stage in ledger['stages']:
-        if stage['status']!='RUNNING':continue
+        if not stage['status'].startswith('RUNNING'):continue
+        if stage['status']=='RUNNING_BATCH':
+            jobs=stage['jobs'];running=[]
+            for job in jobs:
+                if job['status']!='RUNNING':continue
+                pid=job['pid'];proc=Path(f'/proc/{pid}/cmdline');log=Path(job['log'])
+                frame=None
+                if log.exists():
+                    with log.open('rb') as stream:
+                        stream.seek(max(0,log.stat().st_size-8192));tail=stream.read().decode(errors='replace')
+                    matches=re.findall(r'(\d+)/(\d+)\s*\[',tail)
+                    if matches:frame=dict(completed_groups=int(matches[-1][0]),total_groups=int(matches[-1][1]))
+                running.append(dict(job=job['name'],gpu=job['gpu'],pid=pid,alive=proc.exists(),
+                    actual_command=proc.read_bytes().replace(b'\x00',b' ').decode() if proc.exists() else None,
+                    progress=frame,log_last_update_seconds_ago=time.time()-log.stat().st_mtime if log.exists() else None,log=str(log)))
+            result['active'].append(dict(stage=stage['stage'],elapsed_seconds=stage['elapsed_seconds'],
+                GPU_wall_hours_including_live=stage['GPU_wall_hours_including_live'],
+                completed_jobs=sum(j['status']=='COMPLETE' for j in jobs),total_jobs=len(jobs),running=running))
+            continue
         pid=stage.get('child_pid');cmd=Path(f'/proc/{pid}/cmdline')
         actual=cmd.read_bytes().replace(b'\x00',b' ').decode() if cmd.exists() else None
         item=dict(stage=stage['stage'],pid=pid,actual_command=actual,elapsed_seconds=stage.get('elapsed_seconds'),log=stage['log'])

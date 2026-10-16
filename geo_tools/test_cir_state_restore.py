@@ -28,5 +28,21 @@ class RollbackTests(unittest.TestCase):
         tx.restore()
         self.assertFalse((tracker.instances[0].reid_features[0]==77).all())
 
+    def test_metadata_ledger_and_unpublished_buffer_restore(self):
+        from gtr.modeling.identity_revision.fragment_ledger import FragmentLedger
+        from gtr.modeling.identity_revision.types import SourceKey
+        from gtr.modeling.identity_revision.output_buffer import OutputBuffer
+        m=model(True);m.cir_controller.ledger=FragmentLedger()
+        ledger=m.cir_controller.ledger;ledger.register_commit(SourceKey(4,1,1,10,0),1);ledger.mark_published(1)
+        buffer=OutputBuffer(2);buffer.push(1,{'ids':[1]})
+        tracker=SimpleNamespace(model=m,instances=[instance([1],1)],counts={1:1},reids={},id_count=1,output_buffer=buffer)
+        native.poss_ids.poss_ids=set();native.old_ids.old_ids=set();native.old_reids.old_reids=[]
+        before=ledger.state_digest();tx=StateTransaction(tracker,native)
+        ledger.register_commit(SourceKey(4,2,1,11,0),1);buffer.push(2,{'ids':[2]})
+        tx.restore()
+        self.assertEqual(m.cir_controller.ledger.state_digest(),before)
+        self.assertEqual(tracker.output_buffer.flush(),[(1,{'ids':[1]})])
+        self.assertTrue(m.cir_controller.ledger.validate_invariants())
+
 
 if __name__=='__main__':unittest.main()

@@ -1,0 +1,56 @@
+{
+  "status": "FROZEN_BEFORE_FIT_POLICY_AND_LABEL_AUDIT",
+  "fit_video_ids": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    12,
+    13,
+    17,
+    20,
+    21,
+    24
+  ],
+  "GT_may_be_read_before_policy_seal": false,
+  "conflict_rule": {
+    "type": "fixed_conjunctive_precommit_conflict_v1",
+    "thresholds": {
+      "minimum_local_frames": 3,
+      "minimum_local_iou": 0.7,
+      "minimum_iou_margin": 0.3,
+      "minimum_local_cosine": 0.9,
+      "maximum_selected_cosine": 0.7,
+      "maximum_assignment_margin": 0.02
+    },
+    "output": "SAFE/SUSPECT/UNKNOWN; SUSPECT is a testable risk hypothesis, not certified GT",
+    "same_camera_overlap_alone_sufficient": false,
+    "cross_camera_appearance_alone_sufficient": false,
+    "simultaneous_cross_camera_observation_is_conflict": false
+  },
+  "maximum_CPU_wall_seconds": 1800,
+  "minimum_wrong_queries_for_learning": 50,
+  "minimum_wrong_person_groups_for_learning": 8,
+  "minimum_wrong_scenes_for_learning": 3,
+  "source_sha256": {
+    "geo_tools/audit_cir_guard_opportunity.py": "8c5928f66f278f87a27f6baff464989780852b24f748c6a86313222c05330ac4",
+    "geo_tools/cir_native_fit_inputs.py": "c142791d111dc97924ef96bc061984ed8d64cf9b788f4d98157edc71b0e3100b",
+    "gtr/modeling/identity_revision/native_evidence.py": "15656459d9346c546f89401238a53979baf7dfc6c06e6a26c969e5b896bb8007",
+    "gtr/modeling/identity_revision/conflict_detector.py": "65d2296f667d67fcdc3d90436adf1f1745fb44dddb3b9dbbb3a3f08a16536b8d",
+    "gtr/modeling/identity_revision/features.py": "48c458265e2c55fb5bd02ec1fed84caa3509a75fe494fcb5e92d5e785c1d9b28"
+  },
+  "scope": "all existing complete FIT12 normal native calls; no new error mining/video collection, no DEV results/TEST use",
+  "supervision_mask": "current GT known and chosen existing native ID certified pure in separate frozen supervision; otherwise UNKNOWN and no risk label",
+  "risk_classification_not_veto_utility": true,
+  "followups": "complete minimum Guard native engineering regardless of C1 sign; SPLIT/RELINK needs real paired mutated futures and safe opportunities; eligible binary risk alone does not prove good vetoes",
+  "finite_P2_controls": [
+    "C1 KEEP",
+    "C1 + fixed joint local conflict rule",
+    "C1 + normalized margin rule",
+    "C1 + fixed10percent acceptance guard"
+  ],
+  "optional_acceptance_attribution": "single bias+2 control if complete C1 DEV gain positive; cannot adjust after TEST; supplementary fixed-threshold explanation, no neural novelty claim",
+  "precision": "11 sealed FP16-native stores dequantized toFP32 plus originalFP32 TRAIN12; actual FP32 inference still required"
+}
