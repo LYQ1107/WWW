@@ -1,0 +1,110 @@
+{
+  "status": "PASS_P4_NATIVE_PREFIXES_FROZEN_HEAD_FAULTS_AND_COMPLETE_OFF",
+  "completed": [
+    "off_prefix",
+    "reference_prefix",
+    "risk_mlp_prefix",
+    "risk_mlp_fault",
+    "risk_grouped_prefix",
+    "risk_grouped_fault",
+    "engineering_off_gate",
+    "complete_off04",
+    "full_dev_gate"
+  ],
+  "GT_read": false,
+  "current": "full_dev_gate",
+  "gate_sha256": "372c45e982719919c73c56139917a77457e4d3a9c2409cbc54ec774ac702eb80",
+  "source_result": {
+    "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p4_native_preflight_v1/RESULT.json",
+    "sha256": "ee3969dd80bfd7a64df1be74b13fe86aff7bb301d34bdadaec324fcfd3076259"
+  },
+  "risk_evidence": {
+    "risk_mlp": {
+      "risk_checkpoint_sha256": "dfae5fce3aca2923cce06b6faa7b40a1e21f6e61c0547a6df45012a788cfc1b5",
+      "checks": {
+        "CIR_RISK_MLP_OFFICIAL": {
+          "evidence_calls": 78,
+          "model_forward_calls": 78,
+          "accepted_model_rows": 156,
+          "evidence_CPU_GPU_max_abs_error": 2.980232238769531e-07,
+          "logit_CPU_GPU_max_abs_error": 2.384185791015625e-07,
+          "threshold_mask_disagreements": 0
+        },
+        "CIR_RISK_MLP_CAUSAL": {
+          "evidence_calls": 78,
+          "model_forward_calls": 78,
+          "accepted_model_rows": 156,
+          "evidence_CPU_GPU_max_abs_error": 2.980232238769531e-07,
+          "logit_CPU_GPU_max_abs_error": 2.384185791015625e-07,
+          "threshold_mask_disagreements": 0
+        }
+      },
+      "comparisons": {
+        "CIR_RISK_MLP_CAUSAL": {
+          "raw": true,
+          "stock": true,
+          "rng": true,
+          "decisions": true
+        }
+      },
+      "source_report_sha256": "3263a802ad8a3f7c777ee47ab50a1e1a9df9fd5cbf3207e73cce1e13642eab98"
+    },
+    "risk_grouped": {
+      "risk_checkpoint_sha256": "5f3114749bc94db9c5c1dc4f01e84ef1f83b4311f462ad5d2254f2cbb8fcf50d",
+      "checks": {
+        "CIR_RISK_GROUPED_OFFICIAL": {
+          "evidence_calls": 78,
+          "model_forward_calls": 78,
+          "accepted_model_rows": 156,
+          "evidence_CPU_GPU_max_abs_error": 2.980232238769531e-07,
+          "logit_CPU_GPU_max_abs_error": 4.76837158203125e-07,
+          "threshold_mask_disagreements": 0
+        },
+        "CIR_RISK_GROUPED_CAUSAL": {
+          "evidence_calls": 78,
+          "model_forward_calls": 78,
+          "accepted_model_rows": 156,
+          "evidence_CPU_GPU_max_abs_error": 2.980232238769531e-07,
+          "logit_CPU_GPU_max_abs_error": 4.76837158203125e-07,
+          "threshold_mask_disagreements": 0
+        }
+      },
+      "comparisons": {
+        "CIR_RISK_GROUPED_CAUSAL": {
+          "raw": true,
+          "stock": true,
+          "rng": true,
+          "decisions": true
+        }
+      },
+      "source_report_sha256": "51d50dffe0e582bd3cc7dccd66298ced72e3d14529243b376060fa438eb0d4a1"
+    }
+  },
+  "resource_stage": {
+    "stage": "P4_LEARNED_NATIVE_PREFLIGHT_V1",
+    "status": "COMPLETE",
+    "device_physical_index": 8,
+    "maximum_process_seconds": 3600,
+    "command": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "geo_tools/run_cir_p4_preflight.py",
+      "--training-report",
+      "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p4_fit12_seed17_v1/TRAINING_RESULTS.json",
+      "--original-full",
+      "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_original_full04_v1/manifest.json",
+      "--out",
+      "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p4_native_preflight_v1"
+    ],
+    "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p4_native_preflight_v1.log",
+    "start_UTC": "2026-10-16T16:37:01.290396+00:00",
+    "supervisor_pid": 15622,
+    "source_worktree": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/cow_qualification_v1",
+    "source_commit": "e744d71f4f03c3a6090e6d180224b2ed07d52c7d",
+    "child_pid": 15629,
+    "elapsed_seconds": 480.26299434900284,
+    "exit_code": 0,
+    "wall_seconds": 495.1752301082015,
+    "conservative_GPU_wall_hours": 0.13754867503005597
+  },
+  "scientific_success": false
+}
