@@ -86,10 +86,14 @@ def main():
                         rkey=':'.join(map(str,ref['source']))
                         for layer in layers:
                             for mode in ['M0','M1','M2']:
-                                if qkey not in infos or rkey not in infos:continue
-                                qi,ri=infos[qkey]['regions'][mode],infos[rkey]['regions'][mode]
-                                m,raw=matcher.match_tokens(cache[layer,qkey,mode],cache[layer,rkey,mode])
-                                if mode=='M0':
+                                empty=dict(patch_ids=np.empty(0,dtype=int),available_count=0,original_centers=np.empty((0,2)),is_object_token=np.empty(0,dtype=bool),object_token_fraction=None)
+                                qi=infos[qkey]['regions'][mode] if qkey in infos else empty
+                                ri=infos[rkey]['regions'][mode] if rkey in infos else empty
+                                dim=2048 if a.backend=='omega' else 1024
+                                x=cache.get((layer,qkey,mode),np.empty((0,dim),np.float32));y=cache.get((layer,rkey,mode),np.empty((0,dim),np.float32))
+                                m,raw=matcher.match_tokens(x,y)
+                                if qkey not in infos or rkey not in infos:m['crop_failure']='NO_NONEMPTY_CLIPPED_CROP'
+                                if mode=='M0' and (layer,qkey) in rois and (layer,rkey) in rois:
                                     u,v=rois[layer,qkey],rois[layer,rkey];d=np.linalg.norm(u)*np.linalg.norm(v);m['roi_align_cosine']=float(u@v/d) if d>1e-12 else None
                                 if m['status']=='LOCAL_VISUAL_MATCH_MEASURED':
                                     object_pair=qi['is_object_token'][raw['mutual_indices_A']]&ri['is_object_token'][raw['mutual_indices_B']]
@@ -103,7 +107,7 @@ def main():
                                     original_centers_A=qi['original_centers'],original_centers_B=ri['original_centers'],object_fraction_A=qi['object_token_fraction'],object_fraction_B=ri['object_token_fraction'])
                                 stream.write(json.dumps(scalar(item),allow_nan=False,separators=(',',':'))+'\n');records+=1;count+=1
                 pair_receipts.append(dict(pair_id=pair_id,crop_side=side,encoded_physical_proposals=len(maps),actual_forward_calls=encoder.calls_completed-calls_before,
-                    records=count,pair_scale_wall_seconds=time.perf_counter()-started,mappings=maps))
+                    records=count,unavailable_proposals=[key for i in pair['images'] for key,p in by_image[i['image_id']] if key not in infos],pair_scale_wall_seconds=time.perf_counter()-started,mappings=maps))
                 print(json.dumps({k:v for k,v in pair_receipts[-1].items() if k!='mappings'}),flush=True)
                 del cache,features,rois
                 assert sum(p.stat().st_size for p in RUNTIME.rglob('*') if p.is_file() and 'deps' not in p.parts and 'sources' not in p.parts)<2147483648
