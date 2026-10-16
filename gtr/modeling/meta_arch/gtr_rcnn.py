@@ -1,4 +1,5 @@
 import cv2
+from contextlib import nullcontext
 import torch
 import random
 from scipy.optimize import linear_sum_assignment
@@ -605,13 +606,19 @@ class GTRRCNN(CustomRCNN):
                 if owner is None:raise RuntimeError('Guard requires full native state owner')
                 owner.cir_window=instances;owner.cir_older=instances_old
                 owner.counts=id_count_dict;owner.reids=id_reid_dict;owner.id_count=id_count
-                transaction=StateTransaction(owner,sys.modules[__name__])
+                if self.cir_controller.commit_snapshot=='cow_engineering':
+                    from ..identity_revision.commit_transaction import NativeCommitTransaction
+                    transaction=NativeCommitTransaction(owner,sys.modules[__name__])
+                else:
+                    transaction=StateTransaction(owner,sys.modules[__name__])
         if cir_begin is not None:
             self.cir_controller.intervention_latencies.append(time.perf_counter() - cir_begin)
         try:
-            track_ids = self.resolve_bank_fallback(instances, k, track_ids, unique_ids,
-                                                   id_count_dict, id_reid_dict, instances_old, view)
-            result=self.commit_native_identity_state(instances,k,track_ids,id_count,id_count_dict,id_reid_dict)
+            context=transaction if transaction is not None and self.cir_controller.commit_snapshot=='cow_engineering' else nullcontext()
+            with context:
+                track_ids = self.resolve_bank_fallback(instances, k, track_ids, unique_ids,
+                                                       id_count_dict, id_reid_dict, instances_old, view)
+                result=self.commit_native_identity_state(instances,k,track_ids,id_count,id_count_dict,id_reid_dict)
         except (RuntimeError,ValueError,AssertionError) as error:
             if transaction is None:raise
             transaction.restore()

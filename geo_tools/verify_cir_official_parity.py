@@ -24,6 +24,7 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--scene',type=int,default=4)
     p.add_argument('--groups',type=int,default=40);p.add_argument('--out',type=Path,required=True)
     p.add_argument('--policy',choices=('off','c1','bias2','guard','margin','threshold','guard_reference','risk_mlp','risk_grouped'),default='off')
+    p.add_argument('--commit-snapshot',choices=('full','cow_engineering'),default='full')
     p.add_argument('--risk-checkpoint',type=Path);p.add_argument('--risk-checkpoint-sha256')
     a=p.parse_args()
     if a.scene not in range(1,25):raise ValueError('TRAIN only')
@@ -54,6 +55,7 @@ def main():
             if model.cir_controller.risk_threshold!=spec['threshold']:raise ValueError('Frozen risk threshold drift')
             from cir_risk_trace import RiskTrace
             risk_trace=RiskTrace(model.cir_controller,a.risk_checkpoint,a.risk_checkpoint_sha256);risk_trace.install()
+        model.cir_controller.commit_snapshot=a.commit_snapshot
         model.run_global_tracker_plus=MethodType(original_method() if arm=='ORIGINAL_OFFICIAL' else native.GTRRCNN.run_global_tracker_plus,model)
         directory=a.out/arm;directory.mkdir();trace=(C1ScoreTrace if a.policy!='off' else FullScoreTrace)(model,directory);trace.install()
         predictions=[];t=time.monotonic()
@@ -89,7 +91,7 @@ def main():
     comparisons={arm:{k:results[arm][k]==results[reference][k] for k in ('raw','stock','rng','decisions')} for arm in results if arm!=reference}
     status='PASS_REAL_PREFIX_OFFICIAL_CAUSAL' if a.policy=='off' else f'PASS_REAL_PREFIX_{a.policy.upper()}_OFFICIAL_CAUSAL'
     report=dict(status=status if all(all(v.values()) for v in comparisons.values()) else 'FAIL_NO_ADMISSION',
-        policy=a.policy,reference_arm=reference,
+        policy=a.policy,commit_snapshot=a.commit_snapshot,reference_arm=reference,
         scene=a.scene,groups=a.groups,images=len(rows),full_video=len(rows)==len(video_records(train_data(),a.scene)),
         comparisons=comparisons,raw_protocol='MIN_TRACK_LEN=0 after tracking; fixed stock50 reconstructed by identical global occurrence count, same for allarms',
         official_entry='actual model.forward/sliding_inference_GMT, ordinary official whole-prefix mapper; not test_net complete-video result',

@@ -22,6 +22,7 @@ from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
 def main():
     p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True)
     p.add_argument('--groups',type=int,default=40)
+    p.add_argument('--commit-snapshot',choices=('full','cow_engineering'),default='full')
     p.add_argument('--policy',choices=('guard','risk_mlp','risk_grouped'),default='guard')
     p.add_argument('--risk-checkpoint',type=Path);p.add_argument('--risk-checkpoint-sha256');a=p.parse_args()
     if a.groups<10:raise ValueError('Need actual future after frame8')
@@ -42,6 +43,7 @@ def main():
             cc.MODEL_PATH=str(a.risk_checkpoint);cc.MODEL_SHA256=a.risk_checkpoint_sha256
             model.cir_controller=IdentityRevisionController(cc);controller=model.cir_controller
         controller.enabled=True;controller.mode=a.policy;controller.audit_only=True
+        controller.commit_snapshot=a.commit_snapshot
         initial_head=fingerprint(controller.risk_head.state_dict()) if controller.risk_head is not None else None
         tracker=CausalGMT(model);state=[];rngs=[];predictions=[];costs=[];probe=dict(veto=False,fault=False)
         model.propose_identity_revision=lambda scores,*unused:scores
@@ -108,7 +110,7 @@ def main():
         checks['frozen_head_restored']=fault['frozen_head_restored']
         checks['actual_frozen_head_forward_exercised']=fault['actual_risk_forward_calls']>0
     report=dict(status='PASS_REAL_GUARD_COMMIT_ROLLBACK_FUTURE' if all(checks.values()) else 'FAIL_NO_ADMISSION',
-        checks=checks,policy=a.policy,risk_checkpoint_sha256=a.risk_checkpoint_sha256,
+        checks=checks,policy=a.policy,commit_snapshot=a.commit_snapshot,risk_checkpoint_sha256=a.risk_checkpoint_sha256,
         scene=4,groups=a.groups,checkpoint_sha256=sha256(CHECKPOINT),
         script_sha256=sha256(__file__),wall_seconds=time.monotonic()-started,GT_in_inference=False,
         source_sha256_at_import=__import__('verify_cir_off_parity').SOURCE_AT_IMPORT,

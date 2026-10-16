@@ -20,6 +20,9 @@ class IdentityRevisionController:
             raise ValueError('CIR mode has not passed native qualification: ' + self.mode)
         if cfg.ENABLE_PROVISIONAL or cfg.ENABLE_REVISION or cfg.ENABLE_RELINK or cfg.REVISION_WINDOW:
             raise ValueError('CIR revision/buffer not qualified in Phase 0')
+        self.commit_snapshot=str(getattr(cfg,'COMMIT_SNAPSHOT','full'))
+        if self.commit_snapshot not in ('full','cow_engineering'):
+            raise ValueError('Unknown native commit snapshot backend')
         self.audit_only=bool(getattr(cfg,'AUDIT_ONLY',False))
         self.max_history=int(getattr(cfg,'MAX_HISTORY',16))
         self.max_fragments=int(getattr(cfg,'MAX_FRAGMENTS_PER_ID',32))

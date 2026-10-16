@@ -114,6 +114,26 @@ class CommitTransactionTests(unittest.TestCase):
                 self.assertTrue(torch.equal(v, m.cir_controller.probe_head.state_dict()[k]))
         self.assertEqual(outcomes[0], outcomes[1])
 
+    def test_real_guard_loop_fault_matches_full_backend(self):
+        from test_cir_guard_native import NativeGuardTests, fixture, run
+        from unittest.mock import patch
+        # Reuse the native guard's existing post-commit failure assertions on
+        # both backends; COW context exits before restoration and raw recovery.
+        real_fixture = fixture
+        def cow_fixture(*args, **kwargs):
+            m, o, scores = real_fixture(*args, **kwargs)
+            m.cir_controller.commit_snapshot = 'cow_engineering'
+            return m, o, scores
+        with patch('test_cir_guard_native.fixture', side_effect=cow_fixture):
+            test = NativeGuardTests('test_fault_restores_native_roots_bank_rng_and_commits_original_once')
+            result = unittest.TestResult()
+            test.run(result)
+            self.assertEqual(result.errors, [])
+            self.assertEqual(result.failures, [])
+            m, o, scores = fixture()
+            m.cir_controller.commit_snapshot = 'cow_engineering'
+            self.assertEqual(run(m, o, scores)[0][-1].track_ids.tolist(), [1])
+
 
 if __name__ == '__main__':
     unittest.main()

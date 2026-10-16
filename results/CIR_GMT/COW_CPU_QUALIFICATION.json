@@ -2,14 +2,19 @@
   "status": "CPU_COMPONENTS_PASS_NOT_NATIVE_QUALIFIED",
   "enabled_in_native_runs": false,
   "tests": {
-    "new_COW_tests": 5,
-    "all_CIR_tests": 107,
+    "new_COW_tests": 6,
+    "all_CIR_tests": 108,
     "failures": 0
   },
   "GPU_hours": 0,
   "source_sha256": {
     "gtr/modeling/identity_revision/commit_transaction.py": "3320a2123ca2a4be56619a9010199895aaecaf248e2182386af3bce6fc0a8103",
-    "geo_tools/test_cir_commit_transaction.py": "ebbc2b294704ab334885a3ad2122cb55e1ed9092521136cdfa2171702142caf8"
+    "geo_tools/test_cir_commit_transaction.py": "59ada36386e2b838cd968a5f6faa326615d617dcfbb03bbd18b2ffad28943f84",
+    "gtr/config.py": "775f27cb913e49e8e7cb41a0829d258078abc7d2041fbf46d61b0d8dfe5d6851",
+    "gtr/modeling/identity_revision/controller.py": "557ac71e6c1afceeab5a19ba4d4210eaa89e705e6f639b61e9f04e3bbec13404",
+    "gtr/modeling/meta_arch/gtr_rcnn.py": "a71e625ddc494c3073fed3d61e2bbf56d144d66a317cd731b45e2bf39ef46dc5",
+    "geo_tools/verify_cir_guard_rollback.py": "6f808501a8fa8c4717a50634f34663268d58d5b6d579beb15b455dc2b40b9bec",
+    "geo_tools/verify_cir_official_parity.py": "da9d0473ec5856ff6aa89b54e48e7cb137234b806f2a4521b16310eb55aedb1c"
   },
   "limitations": [
     "Experimental TorchDispatch ATen write interception only; not qualified for mutations through external NumPy/CUDA pointers or concurrent streams.",
@@ -18,10 +23,12 @@
     "Running P2 source and thresholds unchanged; generic StateTransaction retained."
   ],
   "next_admission": [
-    "Native CPU commit comparisons against full StateTransaction",
+    "COMPLETE_NATIVE_CPU_BANK_COMMIT_AND_GUARD_FAULT_EQUIVALENCE",
     "Real-image full state and RNG rollback including frozen NN weights",
     "OFF and complete-image native parity before prospective online enablement"
   ],
   "native_CPU_bank_commit": "PASS_REAL_RESOLVE_BANK_FALLBACK_AND_COMMIT_EQUAL_FULL_SNAPSHOT_BOTH_ROLLBACK_EXACT",
-  "development_test_failure": "Initial new test assumed four native return values; actual native commit returns three. Test harness corrected; no native code changed."
+  "development_test_failure": "Initial new test assumed four native return values; actual native commit returns three. Test harness corrected; no native code changed.",
+  "engineering_backend": "Explicit COMMIT_SNAPSHOT=cow_engineering only; full remains default and all live P2 runs use immutable original source.",
+  "native_CPU_guard_loop": "PASS_REAL_GUARD_SOLVE_AND_INJECTED_POST_COMMIT_FULL_RECOVERY_ASSERTIONS"
 }
