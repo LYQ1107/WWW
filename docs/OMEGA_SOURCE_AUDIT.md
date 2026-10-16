@@ -81,3 +81,13 @@ GT标签保存在单独离线scope结果，模型输入manifest没有GT身份标
 首次本地未提交索引按camera/person去重，源码检查后在任何Ω输出产生前修正为跨相机按person去重；
 首次文件及日志已归档外部 `cohort_prefreeze_initial/`，正式v1只在修正后提交冻结。
 未使用DEV5或TEST进行选样或调参。DEV12仅复用已有标签做适用性诊断，未加入96组fit图像。
+
+## 后续实际执行状态
+
+上面的“下载/加载待完成”描述首次preflight快照；后续512文件已完整下载并通过实际SHA核验，
+在独立torch2.6.0+cu118环境完成1411项strict load及全部24组/48次AB/BA前向。
+当前来源、结果与成本见 `OMEGA_PHASE0_INTERFACE_AUDIT.md`、
+`OMEGA_FINAL_RESEARCH_REPORT.md` 和 `results/omega_numeric_evidence_v1.json`。
+官方源码许可证与HF官方LICENSE的Git blob均为
+`01465aec627c2698f972ca68abcabf54a497db14`，复制到本地权重目录；没有对第三方文件的许可重新命名。
+416的官方访问仍然401/受限，主科研目标没有完成。
