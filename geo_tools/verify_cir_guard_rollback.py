@@ -84,6 +84,7 @@ def main():
     report=dict(status='PASS_REAL_GUARD_COMMIT_ROLLBACK_FUTURE' if all(checks.values()) else 'FAIL_NO_ADMISSION',
         checks=checks,scene=4,groups=a.groups,checkpoint_sha256=sha256(CHECKPOINT),
         script_sha256=sha256(__file__),wall_seconds=time.monotonic()-started,GT_in_inference=False,
+        source_sha256_at_import=__import__('verify_cir_off_parity').SOURCE_AT_IMPORT,
         scope='real frozen perception/GTA, Gallery/counts, module Bank, ledger, RNG; full future after one discarded commit',
         not_policy_benefit=True,method_with_fault_invalid=True)
     save_json(a.out/'RESULT.json',report);print(json.dumps(report),flush=True)

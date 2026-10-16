@@ -1,0 +1,18 @@
+{
+  "status": "FROZEN_BEFORE_FULL_ONLINE_CONTROL_SCORES",
+  "required_video_ids": [1, 2, 3, 10, 11, 14, 15, 16, 18, 19, 22, 23],
+  "new_methods": ["guard", "margin", "threshold", "bias2"],
+  "references": "complete matched Original GMT and C1 P1 runs from3e6d6c5d; compare only identical image/config/weight/metric scope",
+  "guard": "C1 plus frozen conjunctive native local conflict veto",
+  "margin": "C1 plus selected normalized margin<0.02 veto",
+  "threshold": "C1 plus selected score<=1.1*native acceptance threshold veto",
+  "bias2": "native GMT scores+2, same native joint solver; no C1 appearance features",
+  "common": "original perception/GTA, native candidates/Bank/initialization, at most2 constrained solves plus final validation, identical raw0 and stock50 outputs",
+  "admission": "current OFF/KEEP and per-control shared-core prefixes, real guarded commit rollback, and complete current OFF equals engineering Original; source SHA bound",
+  "metrics": ["HOTA", "AssA", "CVIDF1", "IDF1", "IDSW", "DetA", "MOTA", "Frag", "full_image_FPS"],
+  "raw_GT_invalid_videos": [2, 3, 14, 15, 16, 22, 23],
+  "invalid_GT_handling": "complete inference retained; strict metric values null; do not change official equations or fix GT",
+  "no_TEST": true,
+  "no_threshold_or_scene_selection_after_scores": true,
+  "budget": "must separately register measured stage estimate before launch; not yet allocated by this protocol"
+}
