@@ -31,13 +31,18 @@ def main():
     groups_selected={(p['scene'],p['group']):p['pair_id'] for p in selected}
     out=RUNTIME/('native_context_preflight_v1' if a.preflight else 'native_context_full_v1');out.mkdir(parents=True,exist_ok=False)
     inherited={}
-    if a.preflight:
+    if True:
         for row in lines(ROOT/'results/omega512_solver_numeric_v1.jsonl.gz'):
             if row['arm']=='G0_native' and row['pair_id'] in plan['preflight_pairs']:inherited[row['pair_id']]=row['matrices']
     index=json.loads((ROOT/'results/omega_corr_candidate_index_v1.json').read_text());assert sha256(index['input']['path'])==index['input']['sha256']
     native=json.loads(open(index['input']['path']).read());rank_by_query={tuple(q['query']):q['original_native_ranked_tracks'] for q in native['queries']}
     data=train_data();metadata={r['id']:r for r in data['images']};cfg,model=load_gmt(seed=20261014);assert not model.geo_runtime.active and model.test_len==40
-    rows=[];image_calls=0;raw_checks=0;max_raw_error=0.;max_score_error=0.;images_total=0;cache_portable={}
+    rows=[];image_calls=0;reused_images=0;raw_checks=0;max_raw_error=0.;max_score_error=0.;images_total=0;cache_portable={}
+    if not a.preflight:
+        parent=json.loads((RUNTIME/'native_context_preflight_v1/manifest.json').read_text());assert parent['status']=='MATCHED_NATIVE_CONTEXT_PARITY_PASS' and parent['max_raw_abs_error']==0
+        assert parent['source']['checkpoint_sha256']==source['checkpoint_sha256'] and parent['source']['config_sha256']==source['config_sha256']
+        assert sha256(parent['proposal_cache']['path'])==parent['proposal_cache']['sha256']
+        cache_portable=torch.load(parent['proposal_cache']['path'],map_location='cpu',weights_only=True)
     output=out/'scores.jsonl.gz'
     with gzip.open(output,'xt') as stream:
         for scene in sorted({p['scene'] for p in selected}):
@@ -89,6 +94,10 @@ def main():
                 for view,r in enumerate(group):
                     image=r['image_id']
                     if image not in needed:continue
+                    if image in cache_portable:
+                        packed=cache_portable[image];inst=Instances(tuple(packed['image_size']))
+                        for name,value in packed['fields'].items():inst.set(name,Boxes(value['box_tensor']) if isinstance(value,dict) else value)
+                        assert len(inst)==len(detectors[image]);cache[image]=inst;reused_images+=1;continue
                     torch.cuda.set_rng_state(image_rng[image]);record=mapped_by_image[image]
                     with torch.inference_mode():inst=model.inference([record],2,[frames[0],frame,frame],view,do_postprocess=False)[0]
                     assert len(inst)==len(detectors[image]),('native detector count',image)
@@ -121,7 +130,7 @@ def main():
                     random.setstate(primary_rng[d['stage'],d['method_call_index']])
                     with torch.inference_mode():result=model.get_asso(instances,k)
                     raw=result[0][0];assert tuple(raw.shape)==(len(d['queries']),len(d['references']))
-                    if a.preflight:
+                    if pair_id in inherited:
                         old=inherited[pair_id][primary_counter];assert old['queries']==d['queries'] and old['references']==d['references']
                         expected=np.array(old['raw_logits'],dtype=np.float32).reshape(raw.shape);current=raw.cpu().numpy()
                         error=float(np.max(np.abs(current-expected))) if current.size else 0.;max_raw_error=max(max_raw_error,error)
@@ -152,11 +161,11 @@ def main():
                         prior[str(weight)]=dict(track_scores=sc.cpu().tolist(),ranked_tracks=order)
                     row=dict(pair_id=pair_id,scene=scene,group=frame,queries=d['queries'],references=d['references'],raw_logits=raw.cpu().tolist(),
                         unique_tracks=unique.cpu().tolist(),native_scores=scores.cpu().tolist(),native_ranked_tracks=rank,NativePrior=prior,original_actual_decision=d)
-                    stream.write(json.dumps(row,allow_nan=False,separators=(',',':'))+'\n');rows.append(dict(pair_id=pair_id,queries=len(d['queries'])));primary_counter+=1
+                    stream.write(json.dumps(row,allow_nan=False,separators=(',',':'))+'\n');rows.append(dict(pair_id=pair_id,queries=len(d['queries']),references=len(d['references'])));primary_counter+=1
                 print('pair PASS',pair_id,flush=True)
     torch.save(cache_portable,out/'native_proposals_lossless.pt')
     save_new(out/'manifest.json',dict(status='MATCHED_NATIVE_CONTEXT_PARITY_PASS',preflight=a.preflight,source=source,pairs=len(selected),
-        actual_image_forward_calls=image_calls,unique_images_needed=images_total,primary_calls=len(rows),queries=sum(r['queries'] for r in rows),
+        actual_image_forward_calls=image_calls,reused_preflight_images=reused_images,unique_images_needed=images_total,primary_calls=len(rows),association_get_asso_invocations=len(rows),actual_association_transformer_forwards=sum(r['queries']>0 and r['references']>0 for r in rows),queries=sum(r['queries'] for r in rows),
         inherited_raw_matrix_checks=raw_checks,max_raw_abs_error=max_raw_error,max_native_pair_score_error=max_score_error,
         output=dict(path=str(output),sha256=sha256(output)),proposal_cache=dict(path=str(out/'native_proposals_lossless.pt'),sha256=sha256(out/'native_proposals_lossless.pt')),
         no_tracking_replay=True,no_new_GT_matching=True,no_GT_input=True,no_new_ID_management=True,
