@@ -87,5 +87,33 @@ class NativeCommitTests(unittest.TestCase):
         x=torch.zeros(2,3);m=model(True)
         self.assertIs(m.propose_identity_revision(x),x)
 
+    def test_c1_native_joint_resolve_and_dictionary_commit(self):
+        from unittest.mock import patch
+        m=model(True);m.cir_controller.mode='c1'
+        history=instance([1,2]);current=instance()
+        record=dict(video_id=4,frame_id=1,view_id=1,image_id=1)
+        m.cir_controller.observe([history],[record])
+        m.cir_controller.observe([current],[dict(record,frame_id=2,image_id=2)])
+        counts={1:1,2:1};reids={1:history[0],2:history[1]}
+        native.poss_ids.poss_ids=set();native.old_reids.old_reids=[]
+        real=native.linear_sum_assignment
+        with patch.object(native,'linear_sum_assignment',wraps=real) as solver:
+            output=native.GTRRCNN.run_global_tracker_plus(m,1,[history,current],
+                [torch.zeros(2,2)],None,1,2,counts,reids,[],0)
+        self.assertEqual(solver.call_count,2)
+        self.assertEqual(set(output[0][-1].track_ids.tolist()),{1,2})
+        self.assertEqual(output[1],2);self.assertEqual(counts,{1:2,2:2})
+        self.assertEqual([len(reids[i]) for i in (1,2)],[2,2])
+        self.assertEqual(m.cir_controller.extra_joint_solves,1)
+
+    def test_missing_provenance_keeps_original_joint_result(self):
+        m=model(True);m.cir_controller.mode='c1';m.cir_controller.timestamp=2;m.cir_controller.video=4
+        h=instance([1],1);q=instance(n=1);counts={1:1};reids={1:h[0]}
+        native.poss_ids.poss_ids=set();native.old_reids.old_reids=[]
+        output=native.GTRRCNN.run_global_tracker_plus(m,1,[h,q],[torch.tensor([[.9]])],None,1,1,counts,reids,[],0)
+        self.assertEqual(output[0][-1].track_ids.tolist(),[1])
+        self.assertEqual(m.cir_controller.extra_joint_solves,0)
+        self.assertEqual(sum(m.cir_controller.fallbacks.values()),1)
+
 
 if __name__=='__main__':unittest.main()

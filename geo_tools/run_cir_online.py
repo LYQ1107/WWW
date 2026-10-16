@@ -6,6 +6,7 @@ synchronized group at a time, avoiding a duplicate complete-video RAM cache.
 import argparse
 from collections import defaultdict
 import json
+import os
 from pathlib import Path
 import resource
 import subprocess
@@ -55,6 +56,8 @@ def main():
     if a.out.exists():raise FileExistsError(a.out)
     gate=json.loads(a.qualification.read_text())
     if gate['status']!='PASS_FULL_VIDEO_NATIVE_OFF_QUALIFICATION':raise ValueError('Complete original/OFF qualification required')
+    if a.method not in gate.get('allowed_methods',('original','off','keep')) or a.video not in gate.get('allowed_video_ids',range(1,25)):
+        raise ValueError('This policy/video has not passed the current qualification gate')
     for name,digest in gate['current_source_sha256'].items():
         if sha256(ROOT/name)!=digest:raise ValueError('Native source changed after OFF qualification: '+name)
     cfg,model=load_gmt();cfg.MODEL.CIR.ENABLED=a.method in ('keep','c1');cfg.MODEL.CIR.MODE=a.method if cfg.MODEL.CIR.ENABLED else 'off'
@@ -77,6 +80,9 @@ def main():
         qualification=dict(path=str(a.qualification),sha256=sha256(a.qualification)),
         inference_protocol='actual model.forward/sliding_inference_GMT with synchronized current image mapper; raw0 + stock50',
         parameter_count=sum(p.numel() for p in model.parameters()),new_learnable_parameters=0)
+    manifest['hardware']=dict(CUDA_VISIBLE_DEVICES=os.environ.get('CUDA_VISIBLE_DEVICES'),
+        GPU_name=torch.cuda.get_device_name(),GPU_total_bytes=torch.cuda.get_device_properties(0).total_memory,
+        torch=torch.__version__,torch_CUDA=torch.version.cuda)
     save_json(a.out/'manifest.json',manifest)
     begin=time.perf_counter()
     try:
@@ -103,6 +109,16 @@ def main():
             stock_min_track_len=stock_min,stock_filtering='unchanged model._remove_short_track on final Instances; count across original full multiview video',
             perception_cache_used=False,VGGT_calls=model.geo_runtime.vggt_calls,DINO_calls=model.geo_runtime.dinov2_calls,
             image_sha256={str(r['image_id']):sha256(r['file_name']) for r in records})
+        import numpy as np
+        controller=model.cir_controller
+        manifest['CIR_stats']=dict(calls=controller.calls,score_changed_calls=controller.score_changed_calls,
+            extra_joint_solves=controller.extra_joint_solves,changed_primary_rows=controller.changed_primary_rows,
+            changed_original_accept_rows=controller.changed_original_accept_rows,fallback_reasons=dict(controller.fallbacks),
+            controller_seconds=sum(controller.intervention_latencies),
+            p50_ms=float(np.quantile(controller.intervention_latencies,.5)*1000) if controller.intervention_latencies else None,
+            p95_ms=float(np.quantile(controller.intervention_latencies,.95)*1000) if controller.intervention_latencies else None,
+            correctness='not labelled here; changed native primary rows are not certified GT repairs',
+            Bank_and_initialization='original, no C1 score modification in these stages')
     except BaseException as error:
         manifest.update(status='FAILED_NO_ADMISSION',failure=repr(error),processed_image_ids=batch.processed)
         raise

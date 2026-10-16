@@ -69,6 +69,7 @@ def main():
         seed_all(20261014)
         model.run_global_tracker_plus=MethodType(original if arm=='ORIGINAL_SOURCE' else modified,model)
         model.cir_controller.enabled=arm=='CIR_KEEP'
+        model.cir_controller.mode='keep' if arm=='CIR_KEEP' else 'off'
         tracker=CausalGMT(model)
         directory=a.out/arm;directory.mkdir()
         trace=FullScoreTrace(model,directory);trace.install()

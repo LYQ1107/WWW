@@ -32,7 +32,7 @@ class CausalGMT:
         if self.first_timestamp is None:self.first_timestamp=timestamp
         current=[]
         for v,r in enumerate(records):current.extend(self.model.inference([r],views,[self.first_timestamp,timestamp,timestamp],v,do_postprocess=False))
-        self.model.geo_runtime.observe(current,records,self.frame);self.instances.extend(current)
+        self.model.geo_runtime.observe(current,records,self.frame);self.model.cir_controller.observe(current,records);self.instances.extend(current)
         if self.frame==0:
             order=np.argsort([len(x) for x in current]).tolist()[::-1];first=order.pop(0)
             initial=self.instances[first];initial.track_ids=torch.arange(1,len(initial)+1,device=initial.reid_features.device)

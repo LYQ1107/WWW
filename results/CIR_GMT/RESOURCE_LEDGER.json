@@ -3,7 +3,7 @@
   "historical_ledgers_modified": false,
   "maximum_concurrent_GPUs": 4,
   "initial_allocation_GPU_wall_hours": 1.0,
-  "measured_GPU_wall_hours": 0.4105758501899739,
+  "measured_GPU_wall_hours": 0.5034709303970966,
   "stages": [
     {
       "stage": "P0_CPU_AND_REAL_PREFIX",
@@ -102,6 +102,101 @@
       "exit_code": 0,
       "wall_seconds": 1334.2508681938052,
       "conservative_GPU_wall_hours": 0.3706252411649459
+    },
+    {
+      "stage": "P1_ORIGINAL_OFFICIAL_FULL04",
+      "status": "COMPLETE",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 700,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/run_cir_online.py",
+        "--video",
+        "4",
+        "--method",
+        "original",
+        "--qualification",
+        "/data1/liuyeqiang/WWW_cir_gmt_20261016/results/CIR_GMT/P0_NATIVE_QUALIFICATION.json",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_original_full04_v1"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_original_official_full04_v1.log",
+      "start_UTC": "2026-10-16T11:49:03.262889+00:00",
+      "supervisor_pid": 35590,
+      "child_pid": 35597,
+      "elapsed_seconds": 240.01877623051405,
+      "exit_code": 0,
+      "wall_seconds": 249.7092876881361,
+      "conservative_GPU_wall_hours": 0.06936369102448225
+    },
+    {
+      "stage": "P1_NEW_CORE_OFF_KEEP_PREFIX",
+      "status": "COMPLETE",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 400,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/verify_cir_off_parity.py",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_new_core_off_prefix_v1"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_new_core_off_prefix_v1.log",
+      "start_UTC": "2026-10-16T11:55:29.887603+00:00",
+      "supervisor_pid": 38485,
+      "child_pid": 38491,
+      "elapsed_seconds": 45.00359097868204,
+      "exit_code": 0,
+      "wall_seconds": 45.92032066732645,
+      "conservative_GPU_wall_hours": 0.012755644629812903
+    },
+    {
+      "stage": "P1_C1_SHARED_CORE_PREFIX",
+      "status": "COMPLETE",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 400,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/verify_cir_official_parity.py",
+        "--policy",
+        "c1",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_c1_shared_core_prefix_v1"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_c1_shared_core_prefix_v1.log",
+      "start_UTC": "2026-10-16T11:57:39.196527+00:00",
+      "supervisor_pid": 39418,
+      "child_pid": 39424,
+      "elapsed_seconds": 30.002328112721443,
+      "exit_code": 0,
+      "wall_seconds": 38.79268039017916,
+      "conservative_GPU_wall_hours": 0.010775744552827544
+    },
+    {
+      "stage": "P1_NEW_OFFICIAL_CORE_FULL04",
+      "status": "RUNNING",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 700,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/run_cir_online.py",
+        "--video",
+        "4",
+        "--method",
+        "off",
+        "--qualification",
+        "/data1/liuyeqiang/WWW_cir_gmt_20261016/results/CIR_GMT/P1_NEW_CORE_OFF_GATE.json",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_new_off_full04_v1"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_new_official_core_full04_v1.log",
+      "start_UTC": "2026-10-16T11:59:59.032860+00:00",
+      "supervisor_pid": 40577,
+      "child_pid": 40584,
+      "elapsed_seconds": 75.0067097991705
     }
   ],
   "storage_reserve_bytes": 32212254720,

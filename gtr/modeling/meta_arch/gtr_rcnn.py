@@ -205,6 +205,7 @@ class GTRRCNN(CustomRCNN):
                     do_postprocess=False)
                 st += view_frames
             self.geo_runtime.observe(instances_wo_id, [batched_inputs[v * view_frames + frame_id] for v in range(view_num)], frame_id)
+            self.cir_controller.observe(instances_wo_id, [batched_inputs[v * view_frames + frame_id] for v in range(view_num)])
             instances.extend([x for x in instances_wo_id])
             activate_first = True
             activate = True
@@ -491,10 +492,10 @@ class GTRRCNN(CustomRCNN):
                 track_ids[i] = unique_ids[j]
         return track_ids
 
-    def propose_identity_revision(self, traj_score):
+    def propose_identity_revision(self, traj_score, instances=None, k=None, unique_ids=None):
         if not self.cir_controller.enabled:
             return traj_score
-        return self.cir_controller.propose(traj_score)
+        return self.cir_controller.propose(traj_score, instances, k, unique_ids)
 
     def resolve_bank_fallback(self, instances, k, track_ids, unique_ids,
                               id_count_dict, id_reid_dict, instances_old, view):
@@ -548,8 +549,17 @@ class GTRRCNN(CustomRCNN):
     def run_global_tracker_plus(self, view_num,instances,asso_output,pred_boxes,k,id_count,id_count_dict,id_reid_dict,instances_old,view):
         ids, unique_ids, id_inds, traj_score = self.compute_native_track_scores(
             view_num, instances, asso_output, k)
-        traj_score = self.propose_identity_revision(traj_score)
         track_ids = self.solve_native_assignment(ids, unique_ids, id_inds, traj_score)
+        cir_begin = time.perf_counter() if self.cir_controller.enabled else None
+        # Preserve the actual original proposal before CIR. A changed score
+        # matrix always goes through the SAME native joint solver/strict gate.
+        revised_score = self.propose_identity_revision(traj_score, instances, k, unique_ids)
+        if revised_score is not traj_score:
+            revised_ids = self.solve_native_assignment(ids, unique_ids, id_inds, revised_score)
+            self.cir_controller.note_resolve(track_ids, revised_ids)
+            track_ids = revised_ids
+        if cir_begin is not None:
+            self.cir_controller.intervention_latencies.append(time.perf_counter() - cir_begin)
         track_ids = self.resolve_bank_fallback(instances, k, track_ids, unique_ids,
                                                id_count_dict, id_reid_dict, instances_old, view)
         return self.commit_native_identity_state(instances, k, track_ids,
