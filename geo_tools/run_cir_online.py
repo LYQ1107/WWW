@@ -61,7 +61,7 @@ def validate_request(a):
 def run_loaded(a,cfg,model):
     validate_request(a)
     cfg=cfg.clone();cfg.defrost()
-    cfg.MODEL.CIR.ENABLED=a.method in ('keep','c1','bias2');cfg.MODEL.CIR.MODE=a.method if cfg.MODEL.CIR.ENABLED else 'off'
+    cfg.MODEL.CIR.ENABLED=a.method in ('keep','c1','bias2','guard','margin','threshold');cfg.MODEL.CIR.MODE=a.method if cfg.MODEL.CIR.ENABLED else 'off'
     from gtr.modeling.identity_revision.controller import IdentityRevisionController
     model.cir_controller=IdentityRevisionController(cfg.MODEL.CIR)
     from gtr.modeling.meta_arch.gtr_rcnn import GTRRCNN
@@ -131,7 +131,12 @@ def run_loaded(a,cfg,model):
             p50_ms=float(np.quantile(controller.intervention_latencies,.5)*1000) if controller.intervention_latencies else None,
             p95_ms=float(np.quantile(controller.intervention_latencies,.95)*1000) if controller.intervention_latencies else None,
             correctness='not labelled here; changed native primary rows are not certified GT repairs',
-            Bank_and_initialization='original, no C1 score modification in these stages')
+            Bank_and_initialization='original, no C1 score modification in these stages',
+            guard_veto_edges=controller.veto_edges,guard_joint_solves=controller.guard_joint_solves,
+            guard_aborted=controller.guard_aborted,guard_failed=controller.failed,
+            failure_events=controller.failure_events,
+            ledger_observations=controller.ledger.total_observations if controller.ledger else 0)
+        if controller.failed:raise RuntimeError('Guard commit invariant failed; restored output retained but method not qualified')
     except BaseException as error:
         manifest.update(status='FAILED_NO_ADMISSION',failure=repr(error),processed_image_ids=batch.processed)
         raise
@@ -144,7 +149,7 @@ def run_loaded(a,cfg,model):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True)
-    p.add_argument('--method',choices=('original','off','keep','c1','bias2'),required=True)
+    p.add_argument('--method',choices=('original','off','keep','c1','bias2','guard','margin','threshold'),required=True)
     p.add_argument('--qualification',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     a=p.parse_args()

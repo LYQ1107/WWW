@@ -190,6 +190,12 @@ class GTRRCNN(CustomRCNN):
         id_count_dict = dict()
         id_reid_dict = dict()
         memory_bank = []
+        # Ordinary Python owner, never a model submodule/checkpoint parameter.
+        # It owns every mutable root needed if a guarded commit is discarded.
+        if self.cir_controller.ledger is not None:
+            from types import SimpleNamespace
+            self.cir_owner = SimpleNamespace(model=self, instances=instances,
+                counts=id_count_dict, reids=id_reid_dict, id_count=id_count)
         for frame_id in tqdm(range(view_frames)):
             batched_inputs_divo = []
             st = frame_id
@@ -224,6 +230,7 @@ class GTRRCNN(CustomRCNN):
                 for i in range(1, len(instances[max_index]) + 1):
                     id_count_dict[i] = 1
                     id_reid_dict[i] = instances[max_index][i-1]
+                self.cir_controller.committed(instances[max_index],id_count_dict,id_reid_dict)
                 #id = ([i for i in range(view_num)])
                 sort_index.remove(max_index)
                 id = np.sort(sort_index)
@@ -275,6 +282,9 @@ class GTRRCNN(CustomRCNN):
                     instacnes_old = instances[:win_st]
                     for i in range(view_num):
                         instances_kv = instances_kv + [instances[win_ed+i]]
+                        if self.cir_controller.ledger is not None:
+                            self.cir_owner.instances=instances;self.cir_owner.counts=id_count_dict
+                            self.cir_owner.reids=id_reid_dict;self.cir_owner.id_count=id_count
                         asso_output, pred_boxes, n_t, Np, query_inds = self.get_asso(
                             instances_kv,
                             k=len(instances_kv) - 1)
@@ -290,6 +300,9 @@ class GTRRCNN(CustomRCNN):
                             id_reid_dict,
                             instacnes_old,
                             i)
+                        if self.cir_controller.ledger is not None:
+                            instances=self.cir_owner.instances;id_reid_dict=self.cir_owner.reids
+                            instacnes_old=instances[:win_st]
                         instances[win_ed+i] = instances_kv[-1]
                 else :
                     for i in range(view_num):
@@ -301,6 +314,8 @@ class GTRRCNN(CustomRCNN):
                             id_count=id_count) # n_k x N
                         instances[win_ed+i] = instances_kv[len(instances_kv)-1]
 
+
+            self.cir_controller.published()
 
         batch = []
         #调整batch的顺序，和instances一致，view1_frame1,view_2_frame1,view_3_frame1 
@@ -362,6 +377,7 @@ class GTRRCNN(CustomRCNN):
         instances[k].track_ids = track_ids
 
         assert len(track_ids) == len(torch.unique(track_ids)), track_ids
+        self.cir_controller.committed(instances[k],id_count_dict,id_reid_dict)
         return instances, id_count ,id_count_dict,id_reid_dict
 
     def get_asso(self,  instances, k, geo_context=True):
@@ -544,12 +560,14 @@ class GTRRCNN(CustomRCNN):
         instances[k].track_ids = track_ids
 
         assert len(track_ids) == len(torch.unique(track_ids)), track_ids
+        self.cir_controller.committed(instances[k],id_count_dict,id_reid_dict)
         return instances, id_count, id_count_dict
 
     def run_global_tracker_plus(self, view_num,instances,asso_output,pred_boxes,k,id_count,id_count_dict,id_reid_dict,instances_old,view):
         ids, unique_ids, id_inds, traj_score = self.compute_native_track_scores(
             view_num, instances, asso_output, k)
         track_ids = self.solve_native_assignment(ids, unique_ids, id_inds, traj_score)
+        original_track_ids=track_ids.clone() if self.cir_controller.wants_guard() else None
         cir_begin = time.perf_counter() if self.cir_controller.enabled else None
         # Preserve the actual original proposal before CIR. A changed score
         # matrix always goes through the SAME native joint solver/strict gate.
@@ -558,12 +576,49 @@ class GTRRCNN(CustomRCNN):
             revised_ids = self.solve_native_assignment(ids, unique_ids, id_inds, revised_score)
             self.cir_controller.note_resolve(track_ids, revised_ids)
             track_ids = revised_ids
+        transaction=None
+        if self.cir_controller.wants_guard():
+            thresholds=self.overlap_thresh*id_inds.sum(0) if not self.not_mult_thresh else traj_score.new_full((len(unique_ids),),self.overlap_thresh)
+            base_ids=track_ids;guarded=revised_score
+            for _ in range(2):
+                proposal=self.cir_controller.precommit(guarded,track_ids,instances,k,unique_ids,thresholds)
+                if proposal is guarded:break
+                guarded=proposal
+                track_ids=self.solve_native_assignment(ids,unique_ids,id_inds,guarded)
+                self.cir_controller.guard_joint_solves+=1
+            if self.cir_controller.precommit(guarded,track_ids,instances,k,unique_ids,thresholds,count=False) is not guarded:
+                # Finite validation budget exhausted: no native state was changed.
+                self.cir_controller.guard_aborted+=1;track_ids=base_ids;guarded=revised_score
+            if guarded is not revised_score:
+                from ..identity_revision.state_transaction import StateTransaction
+                import sys
+                owner=getattr(self,'cir_owner',None)
+                if owner is None:raise RuntimeError('Guard requires full native state owner')
+                owner.cir_window=instances;owner.cir_older=instances_old
+                owner.counts=id_count_dict;owner.reids=id_reid_dict;owner.id_count=id_count
+                transaction=StateTransaction(owner,sys.modules[__name__])
         if cir_begin is not None:
             self.cir_controller.intervention_latencies.append(time.perf_counter() - cir_begin)
-        track_ids = self.resolve_bank_fallback(instances, k, track_ids, unique_ids,
-                                               id_count_dict, id_reid_dict, instances_old, view)
-        return self.commit_native_identity_state(instances, k, track_ids,
-                                                 id_count, id_count_dict, id_reid_dict)
+        try:
+            track_ids = self.resolve_bank_fallback(instances, k, track_ids, unique_ids,
+                                                   id_count_dict, id_reid_dict, instances_old, view)
+            result=self.commit_native_identity_state(instances,k,track_ids,id_count,id_count_dict,id_reid_dict)
+        except (RuntimeError,ValueError,AssertionError) as error:
+            if transaction is None:raise
+            transaction.restore()
+            self.cir_controller.failed=True
+            self.cir_controller.failure_events.append(dict(video=self.cir_controller.video,
+                frame=self.cir_controller.timestamp,error=type(error).__name__+': '+str(error),
+                recovery='full native state/RNG restored; raw GMT proposal committed once; method invalid'))
+            owner=self.cir_owner
+            instances=owner.cir_window;instances_old=owner.cir_older
+            id_count=owner.id_count;id_count_dict=owner.counts;id_reid_dict=owner.reids
+            track_ids=self.resolve_bank_fallback(instances,k,original_track_ids,unique_ids,
+                id_count_dict,id_reid_dict,instances_old,view)
+            result=self.commit_native_identity_state(instances,k,track_ids,id_count,id_count_dict,id_reid_dict)
+        if self.cir_controller.ledger is not None:
+            self.cir_owner.id_count=result[1];self.cir_owner.counts=result[2]
+        return result
 
     def memory_bank(self,id_count_dict,id_reid_dict,unique_ids,instances_old,instances_no_match):
         time1 = time.time()

@@ -19,6 +19,12 @@ class FragmentLedger:
         self.video=None;self.latest_frame=0;self.fragments=OrderedDict();self.latest={}
         self.total_observations=0;self.journal_sha256='0'*64
 
+    def observe_group(self,video,frame):
+        if frame<1 or (self.video is not None and video!=self.video) or frame<=self.latest_frame:
+            raise ValueError('Explicit reset and monotonic ledger clock required')
+        if self.video is None:self.video=video
+        self.latest_frame=frame
+
     def register_commit(self,source,native_global_id):
         if not isinstance(source,SourceKey):raise TypeError('Whitelisted source metadata required')
         if native_global_id<1:raise ValueError('Only actual final native commits can enter the ledger')

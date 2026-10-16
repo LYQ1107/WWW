@@ -23,7 +23,7 @@ from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
 def main():
     p=argparse.ArgumentParser();p.add_argument('--scene',type=int,default=4)
     p.add_argument('--groups',type=int,default=40);p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--policy',choices=('off','c1','bias2'),default='off')
+    p.add_argument('--policy',choices=('off','c1','bias2','guard','margin','threshold'),default='off')
     a=p.parse_args()
     if a.scene not in range(1,25):raise ValueError('TRAIN only')
     if a.out.exists():raise FileExistsError(a.out)

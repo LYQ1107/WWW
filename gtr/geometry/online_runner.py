@@ -21,6 +21,7 @@ class CausalGMT:
         self.model=model;self.instances=[];self.id_count=0;self.counts={};self.reids={};self.frame=0;self.first_timestamp=None;self.last_timestamp=None;self.views=None
         if model.roi_heads.delay_cls:raise ValueError('causal protocol does not support full-video delayed classification')
         poss_ids.poss_ids=set();old_ids.old_ids=set();old_reids.old_reids=[];model.geo_runtime.reset();model.cir_controller.reset()
+        if model.cir_controller.ledger is not None:model.cir_owner=self
 
     @torch.inference_mode()
     def step(self,records):
@@ -38,6 +39,7 @@ class CausalGMT:
             initial=self.instances[first];initial.track_ids=torch.arange(1,len(initial)+1,device=initial.reid_features.device)
             self.id_count=len(initial)
             for i in range(1,self.id_count+1):self.counts[i]=1;self.reids[i]=initial[i-1]
+            self.model.cir_controller.committed(initial,self.counts,self.reids)
             context=[initial]
             for v in sorted(order):
                 context.append(Instances.cat([self.instances[v]]));k=len(context)-1
@@ -50,7 +52,9 @@ class CausalGMT:
                 context=context+[self.instances[end+v]];k=len(context)-1
                 asso,boxes,_,Np,_=self.model.get_asso(context,k=k)
                 context,self.id_count,self.counts=self.model.run_global_tracker_plus(views,context,[asso[0][:,:Np]],boxes[:Np],k,self.id_count,self.counts,self.reids,older,v)
+                older=self.instances[:start]
                 self.instances[end+v]=context[-1]
+        self.model.cir_controller.published()
         output=self.instances[-views:]
         # Postprocess must not scale mutable boxes that remain in tracker history.
         output=CustomRCNN._postprocess([clone_instances(i) for i in output],records,[(0,0)]*views,not_clamp_box=self.model.not_clamp_box)

@@ -29,3 +29,7 @@ P1全12视频Original/C1共24个真实完整任务已完成，全部从同一干
 
 Published complete DEV12 predictions/strict5 metrics and all12 owner propagation evidence in `P1_COMPLETE_DEVELOPMENT.md` and `DEV_ONLINE_RESULTS.json`. C1 raw gain is small, stock HOTA regresses, and video19 shows substantial past-owner inconsistency. C1 is not final-qualified. FIT12 fixed guard audit completed on CPU: 174 known wrong accepts/72 person groups, 26 SUSPECT outputs, veto causal utility still unproven. No TEST inference or controller training. Pending guard edits remain unqualified until tests and real native parity pass.
 
+# P2 minimum native guard engineering
+
+70 CPU contracts pass, including genuine evidence/solver/Gallery commit, bounded second validation and a fault after native state mutation. On real TRAIN04 images, current OFF/KEEP parity and Guard official/causal prefix parity pass. A deliberately injected veto followed by a postcommit fault restores all native roots and RNG: all predictions/states/RNG and subsequent native costs equal the raw passive baseline through 40 groups. This fault probe is engineering evidence only, not the fixed rule's efficacy. Pinned results: `results/CIR_GMT/P2_NATIVE_ENGINEERING.json`. Guard performs at most two extra constrained native solves; unresolved validation keeps the pre-guard C1 proposal before any mutation. Actual invariant failure restores and disables the policy, and the complete-run driver rejects that method's result. No SPLIT/RELINK enabled.
+

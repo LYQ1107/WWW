@@ -35,7 +35,8 @@ class C1ScoreTrace(FullScoreTrace):
         try:
             result=self.originals[name](*args)
             final=(result if name=='run_memory_tracker' else result[0][k].track_ids).detach().cpu().tolist()
-            allowed=(1,2) if name=='run_global_tracker_plus' else (1,)
+            is_guard=self.model.cir_controller.mode in ('guard','margin','threshold')
+            allowed=(1,2,3,4) if name=='run_global_tracker_plus' and is_guard else (1,2) if name=='run_global_tracker_plus' else (1,)
             if len(holder['records']) not in allowed:raise ValueError('Unexpected actual native solver count')
             last=holder['records'][-1]
             if any(track>=0 and track!=actual for track,actual in zip(last['accepted_track_ids'],final)):
@@ -43,7 +44,9 @@ class C1ScoreTrace(FullScoreTrace):
             maximum_error=None
             if independent is not None:
                 expected=-holder['matrices'][0]+independent
-                actual=-holder['matrices'][-1]
+                # C1 precedes any guard edge masks. Its formula is checked on
+                # the second solve, while final accepted IDs use the last solve.
+                actual=-holder['matrices'][min(1,len(holder['matrices'])-1)]
                 maximum_error=float((actual-expected).abs().max()) if actual.numel() else 0.
                 tolerance=8*torch.finfo(torch.float32).eps*(expected.abs()+3)
                 if ((actual-expected).abs()>tolerance).any():raise ValueError('GPU policy differs from independent CPU frozen formula')

@@ -3,16 +3,23 @@ from collections import Counter
 import time
 import torch
 from .features import c1_scores
+from .fragment_ledger import FragmentLedger
+from .types import SourceKey,ConflictState
+from .conflict_detector import FixedConflictDetector
+from .native_evidence import native_conflicts
 
 
 class IdentityRevisionController:
     def __init__(self, cfg):
         self.enabled = bool(cfg.ENABLED)
         self.mode = str(cfg.MODE)
-        if self.enabled and self.mode not in ('off', 'keep', 'c1', 'bias2'):
+        if self.enabled and self.mode not in ('off', 'keep', 'c1', 'bias2','guard','margin','threshold'):
             raise ValueError('CIR mode has not passed native qualification: ' + self.mode)
         if cfg.ENABLE_PROVISIONAL or cfg.ENABLE_REVISION or cfg.ENABLE_RELINK or cfg.REVISION_WINDOW:
             raise ValueError('CIR revision/buffer not qualified in Phase 0')
+        self.audit_only=bool(getattr(cfg,'AUDIT_ONLY',False))
+        self.max_history=int(getattr(cfg,'MAX_HISTORY',16))
+        self.max_fragments=int(getattr(cfg,'MAX_FRAGMENTS_PER_ID',32))
         self.reset()
 
     def reset(self):
@@ -26,6 +33,11 @@ class IdentityRevisionController:
         self.changed_original_accept_rows = 0
         self.latencies = []
         self.intervention_latencies = []
+        self.ledger=FragmentLedger(self.max_history,self.max_fragments) if self.enabled and self.mode in ('guard','margin','threshold') else None
+        self.detector=FixedConflictDetector()
+        self.guard_target_sources=None
+        self.veto_edges=0;self.guard_joint_solves=0;self.guard_aborted=0
+        self.failed=False;self.failure_events=[]
 
     def observe(self,instances,records):
         if not self.enabled or self.mode in ('off','keep','bias2'):
@@ -38,6 +50,7 @@ class IdentityRevisionController:
         if self.video is not None and video!=self.video:
             raise ValueError('CIR requires reset between videos')
         self.video=video;self.timestamp=timestamp
+        if self.ledger is not None and not self.failed:self.ledger.observe_group(video,timestamp)
         for inst,record in zip(instances,records):
             if int(record['frame_id'])!=timestamp or int(record['video_id'])!=video:
                 raise ValueError('Mixed CIR observation groups')
@@ -52,7 +65,7 @@ class IdentityRevisionController:
     def propose(self, native_scores,instances=None,k=None,candidate_ids=None):
         # KEEP must preserve the very same tensor and consume no RNG.
         self.calls += 1
-        if self.mode in ('off','keep') or not native_scores.numel():
+        if self.mode in ('off','keep') or self.audit_only or self.failed or not native_scores.numel():
             return native_scores
         begin=time.perf_counter()
         try:
@@ -90,3 +103,54 @@ class IdentityRevisionController:
         self.extra_joint_solves+=1
         self.changed_primary_rows+=int((original_ids!=revised_ids).sum())
         self.changed_original_accept_rows+=int(((original_ids>=0)&(original_ids!=revised_ids)).sum())
+
+    def wants_guard(self):
+        return self.enabled and self.mode in ('guard','margin','threshold') and not self.audit_only and not self.failed
+
+    def precommit(self,scores,accepted,instances,k,candidates,thresholds,count=True):
+        if not self.wants_guard() or not scores.numel():return scores
+        query=instances[k];refs=[inst for i,inst in enumerate(instances) if i!=k]
+        if not query.has('cir_source') or any(not inst.has('cir_source') for inst in refs):return scores
+        if self.mode=='guard':
+            source=torch.cat([inst.cir_source for inst in refs])
+            # Normalize within each physical camera so different image sizes
+            # do not create a fictitious motion discontinuity.
+            def normalized_boxes(inst):
+                h,w=inst.image_size
+                return inst.pred_boxes.tensor/inst.pred_boxes.tensor.new_tensor([w,h,w,h])
+            evidence,_=native_conflicts(query.reid_features,normalized_boxes(query),self.timestamp,
+                int(query.cir_source[0,2]) if len(query) else 1,
+                torch.cat([inst.reid_features for inst in refs]),torch.cat([normalized_boxes(inst) for inst in refs]),
+                torch.cat([inst.track_ids for inst in refs]),source[:,1],source[:,2],candidates,scores,accepted)
+        else:evidence=None
+        revised=None
+        support=torch.stack([(torch.cat([inst.track_ids for inst in refs])==identity).sum() for identity in candidates]).clamp_min(1)
+        normalized=scores/support[None,:]
+        for row,identity in enumerate(accepted.tolist()):
+            if identity<0:continue
+            src=query.cir_source[row].tolist();key=(src[0],src[3],src[4])
+            if self.guard_target_sources is not None and key not in self.guard_target_sources:continue
+            column=int(torch.nonzero(candidates==identity,as_tuple=True)[0][0])
+            if self.mode=='guard':reject=self.detector.classify(evidence[row])[0]==ConflictState.SUSPECT
+            elif self.mode=='threshold':reject=bool(scores[row,column]<=1.1*thresholds[column])
+            else:
+                other=normalized[row].clone();other[column]=-float('inf')
+                reject=bool(normalized[row,column]-other.max()<.02) if len(candidates)>1 else False
+            if reject:
+                if revised is None:revised=scores.clone()
+                revised[row,column]=-1e6
+                if count:self.veto_edges+=1
+        return scores if revised is None else revised
+
+    def committed(self,instance,counts,reids):
+        if self.ledger is None or self.failed:return
+        for source,identity in zip(instance.cir_source.tolist(),instance.track_ids.tolist()):
+            if identity not in counts or identity not in reids or len(reids[identity])!=counts[identity]:
+                raise RuntimeError('CIR ledger/native count or Gallery mismatch')
+            if reids[identity].cir_source[-1].tolist()!=source:
+                raise RuntimeError('CIR native Gallery provenance mismatch')
+            self.ledger.register_commit(SourceKey(*source),int(identity))
+        self.ledger.validate_invariants()
+
+    def published(self):
+        if self.ledger is not None and not self.failed:self.ledger.mark_published(self.timestamp)
