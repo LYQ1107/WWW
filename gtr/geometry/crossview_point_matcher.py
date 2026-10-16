@@ -16,7 +16,7 @@ def match_tokens(first,second,temperature=.07):
         best_second_margin=None,primary_score=None,cycle_weighted_score=None,ROI_cosine=None)
     if not m or not n:return result,dict(cosine=np.empty((m,n),np.float32))
     a=x/nx[:,None];b=y/ny[:,None];C=a@b.T
-    ax=a.mean(0);by=b.mean(0);den=np.linalg.norm(ax)*np.linalg.norm(by)
+    ax=x.mean(0);by=y.mean(0);den=np.linalg.norm(ax)*np.linalg.norm(by)
     result['ROI_cosine']=float(ax@by/den) if den>1e-12 else None
     if min(m,n)<2:return result,dict(cosine=C)
     ab=C.argmax(1);ba=C.argmax(0);i=np.flatnonzero(ba[ab]==np.arange(m));j=ab[i]
