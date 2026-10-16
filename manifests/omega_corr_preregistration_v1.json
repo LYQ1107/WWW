@@ -1,0 +1,164 @@
+{
+  "schema": "omega-corr-preregistration/v1",
+  "status": "REGISTERED_BEFORE_CORRESPONDENCE_OUTPUTS",
+  "parent_commit": "594d9d3237966f1a4d73a3f689eec48e585f0e58",
+  "roles": {
+    "fit": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      20,
+      24
+    ],
+    "mechanism_check": [
+      9,
+      13,
+      17,
+      21
+    ],
+    "diagnostic_only": [
+      12
+    ]
+  },
+  "roles_caveat": "Original GMT-backbone seen TRAIN; previous labels already exposed. Roles fixed before new correspondence outputs, not unseen-backbone or blind GT testing.",
+  "cohort": {
+    "retain_original_pairs": 96,
+    "max_total_pairs": 160,
+    "additional_fit_mechanism_error_pairs": 56,
+    "additional_diagnostic12_error_pairs": 8,
+    "selection": "Use existing synchronous pure-positive error index; round-robin scenes then scene-qualified people then earliest eligible groups, spacing30 per person. Exclude already selected physical groups. No F-validity selection. Keep all actual primary queries and full legal reference provenance in every selected group, including unknown/no-sync failures.",
+    "local_crop_pairs": 32,
+    "local_selection": "First round-robin scene/person error-pair representatives from frozen160, then earliest groups to fill32; fixed before feature outputs."
+  },
+  "frozen_models": {
+    "omega512_sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+    "official_omega_commit": "48b23c8ce72c9a8fcf987f0d7f43d8e4870759f6",
+    "dino_sha256": "36e4deffbaef061a2576705b0c36f93621e2ae20bf6274694821b0b492551b51",
+    "gmt_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+    "old_vggt_sha256": "d15bf50a8615c8225ed48b51ea5cac673d82442ec0309036df555a053253afe0"
+  },
+  "features": {
+    "primary_layers": [
+      11,
+      17,
+      23
+    ],
+    "supplemental_layer4": "first16 frozen pairs",
+    "patch_size": 16,
+    "special_token_count_expected": 17,
+    "dimensions": "assert real output, expected2048=1024frame+1024interframe",
+    "variants": [
+      "F0_joint_frame_half",
+      "F1_joint_interframe_half",
+      "F2_joint_concat",
+      "F3_true_independent_singleview_concat"
+    ],
+    "regions": [
+      "M0_OBJECT_ONLY",
+      "M1_1.5_CONTEXT_SEPARATELY_TAGGED",
+      "M2_BACKGROUND_RING_ONLY"
+    ],
+    "K_max": 16,
+    "selection": "Unique real patch centers only; deterministic row-major evenly spaced indices if >K. No descriptor/GT-based selection. No padding; complete patch must lie inside resized real image, center must lie in declared region. Continuous bbox edges use PixelMapping.A_edges; centers converted via validated A inverse.",
+    "point_cycle_minimum_tokens_each_side": 2,
+    "zero_one_token": "POINT_CORRESPONDENCE_UNAVAILABLE; retain ROI single-vector comparison, never report100% multipoint cycle"
+  },
+  "matching": {
+    "normalize": "FP32 per-token L2, explicit zero/nonfinite invalid",
+    "methods": [
+      "ROI_mean_cosine",
+      "directional_NN_all_token_denominators",
+      "mutual_NN",
+      "soft_bidirectional_temperature0.07",
+      "one_to_one_local_Hungarian"
+    ],
+    "metrics": [
+      "mean_mutual_similarity",
+      "mutual_coverage_both_directions",
+      "hard_cycle_return_both_directions",
+      "soft_cycle_diagonal_mean",
+      "best_second_margin",
+      "valid_object_token_counts",
+      "object_token_fraction"
+    ],
+    "note": "Hard NN cycle equals mutual-return fraction algebraically, not an independent mechanism. Report this redundancy; soft cycle and one-to-one provide separate controls.",
+    "primary_score": "mutual cosine mean times min(two-side mutual coverage); no learned weights in frozen phase",
+    "secondary_score": "primary_score times soft cycle return; allvector components separately reported",
+    "geometry": "Reuse prior reliable F only as separate support on matched coordinates; absent/unreliable F is unknown, never excludes visual experiment. No new F/Pose sweep."
+  },
+  "controls": [
+    "B0_native_GTA",
+    "B1_NativePrior",
+    "B2_old_VGGT_ROI",
+    "B3_old_VGGT_patch_mutual",
+    "B4_DINO_patch_mutual",
+    "B5_Omega_independent_single",
+    "B6_Omega_joint_frame",
+    "B7_Omega_joint_interframe",
+    "B8_Omega_joint_concat_mutual",
+    "B9_Omega_joint_softcycle",
+    "B10_independent_reliable_F_support"
+  ],
+  "negative_controls": {
+    "N1": "Artificial same-timestamp wrong-partner duplication [A,A] and[B,B], preserve own real image and original first/second role for ROI being scored; duplicate physical camera is not a new camera, no geometry claim. Costs2 additional joint calls per pair.",
+    "N2": "Same real pair and candidate membership, cyclically rotate reference proposal-to-region mapping in physical source order, independently of GT; singleton unchanged and disclosed."
+  },
+  "local_crop": {
+    "trigger": "If >=25% selected original M0 target observations have <2 valid real centers, execute both224 and336 on fixed32-pair panel.",
+    "crop": "1.5x native detector bbox, clipped original RGB crop, no saved rawimage copy. Independently encode each proposal crop, not fake physical cameras. Same crops224/336 and image budgets for DINO. LOCAL_CROP_VISUAL distinct from FULL_IMAGE_MULTIVIEW. More encoded patches do not mean more original detail."
+  },
+  "gates": {
+    "A": "Engineering token/coordinate/parity passes AND positive-vs-knownnegative discrimination (paired perquery, all denominators), across>=2 fixed mechanism scenes and>=2 scene-qualified people; no random/cycle-only geometric claim.",
+    "B": "Complete all3 layers and all4 Fvariants, M0/M1/M2, oldVGGT/DINO and negative controls, plus required local scale panel before deciding. On mechanism scenes >=3 distinct known native row errors corrected, known corrections>harms, >=2scenes and>=2people; at least2 known corrections unique versus DINO,oldVGGT,F3; target-token evidence must exceed ring control; scene/person-cluster bootstrap1000 seed20261016 paired improvement lower95%bound>0 on common valid subset plus complete-coverage report. Otherwise NO_UNIQUE_OMEGA_CORRESPONDENCE_EVIDENCE or sample-insufficient.",
+    "C": "Only after usable independent evidence; original state forks and bounded logit residual abs<=1; genuine known final corrections>harms in>=2scenes/2people; otherwise NO_NATIVE_SOLVER_IDENTITY_GAIN.",
+    "D": "Only after trustworthy actual solver net benefit, full tracking and measured on-demand live inference; otherwise NOT_EXECUTED/NOT_MEASURED."
+  },
+  "conditional_head": {
+    "architecture": "input->32->16->1, zero residual initialization, maxabs1",
+    "optimizer": "AdamW",
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "steps": 500,
+    "seeds": [
+      20261014,
+      20261015,
+      20261016
+    ],
+    "supervision": "Fit scenes only, identity-aware listwise, mixed/unknown masked; matched native-only/DINO/oldVGGT heads on same rows; fixed optional margin. No DEV5/TEST tuning."
+  },
+  "resources": {
+    "max_extra_cache_bytes": 2147483648,
+    "max_primary_pairs": 160,
+    "max_local_pairs": 32,
+    "max_project_GPUs": 4,
+    "allowed_project_GPU_indices": [
+      0,
+      4,
+      5,
+      6
+    ],
+    "initial_single_idle_GPU": true,
+    "CPU_threads": 4,
+    "first_frozen_stage_GPU_process_wall_limit_hours": 2,
+    "shared_pair_forward": true,
+    "all_actual_calls_and_full_child_wall_and_CUDA_peaks_recorded": true
+  },
+  "prohibited": [
+    "repeat original F-only/Pose scan",
+    "rerun completeTRAIN12 audit",
+    "modify GT",
+    "modify GMT backbone/detector/ReID/RPCE/GTA/Hungarian/Bank/ID machinery",
+    "train Omega/GMT",
+    "use prior AG/QD/temporal-cycle as new method",
+    "select validation scenes after scores"
+  ],
+  "official416": "BLOCKED_WEIGHT_ACCESS_SEPARATE_NOT_STOPPING512",
+  "frozen_inputs": {
+    "manifests/omega_fixed_pair_cohort_v1.json": "0a50e7d37a803d528daee0bc811770bc7f4520accbf7405af4385f0749c74665",
+    "results/omega_native_synchronous_scope_v1.json": "f38ea7164980e62fd0b3901fbd31b4b054f39dc161f407cce8757598d31d9c6b",
+    "results/omega512_handoff_v1.json": "e8b3639d10cdcff0c39809611b5b45805735035fa273db78919ebf15e0f94642"
+  },
+  "created_utc": "2026-10-16T13:35:46.004846+00:00"
+}
