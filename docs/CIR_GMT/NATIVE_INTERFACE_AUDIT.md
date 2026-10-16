@@ -52,3 +52,13 @@ CausalGMT 按同步组输入，同一共享 first/global/memory 函数，逐组 
 已阅读 PIRGA 最终报告和 Phase XVI 最终报告：不继续未来预测；不删历史/硬隔离；WHO/Q4/真实 native state 不一致的方案不允许部署。之前的 HOTA/纠错结果只作失败证据，不填入 CIR 结果。
 
 后续增加 SPLIT/RELINK 前必须完成完整快照、别名恢复、已发布输出封存和真实分支回滚。第一版关闭这些动作，不能以图 alias 映射声称已完成原生修正。
+
+## 进一步核验（Phase0执行中）
+
+已检查 `_forward_asso` 整个函数：eval descriptor路径的 `time` 只出现在形参，未用于计算；官方传入全视频终止帧与CausalGMT当前timestamp的差异，在当前冻结配置中不改变该路径。真实40组的完整cost SHA、solver/阈值/提交、raw/stock输出和RNG对齐均已通过。完整901组原生状态比较仍执行，不将此前前缀证据扩写为全视频通过。
+
+外部 Detectron2 `evaluation/evaluator.py` 的本地改版 `inference_on_dataset` 注释了 evaluator.process，改为调用硬编码 `log_track`。该writer将输出box的XYXY四坐标直接写入应为XYWH的文本。不能从该副产物推断官方VisionTrack成绩；后续正式 `test_net.py` 将显式调用CIR命名空间输出驱动，复用同一model.forward和未改官方metric函数，记录这一数据适配修复，不改外部评测库。
+
+raw W=0只允许当前提交前干预，不能追改历史。原配置MIN_TRACK_LEN=50使用整个视频的轨迹长度；stock结果需原样并列输出，但不能称它自身是零延迟发布。输出缓冲组件的CPU合同通过不代表原生SPLIT/RELINK已实现或获准。
+
+完整冷启动结果：TRAIN04所有901同步组通过Original源码/OFF/KEEP的全部预测、完整native状态、RNG、完整cost/分配/阈值/最终提交比较。一次真实图像分支恢复也在全视频后续一致性中得到验证。原生核心SHA锁在P0_NATIVE_QUALIFICATION.json。官方与Causal共享核心的40组前缀已通过；新的完整视频流式官方驱动仍需与本次完整参照输出比较，不将前缀资格扩写为该驱动已验证。

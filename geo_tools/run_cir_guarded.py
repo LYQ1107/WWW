@@ -21,7 +21,7 @@ def main():
     p.add_argument('--seconds',type=int,required=True);p.add_argument('--log',type=Path,required=True)
     p.add_argument('command',nargs=argparse.REMAINDER)
     a=p.parse_args();ledger=json.loads(a.ledger.read_text())
-    if any(s['status']=='RUNNING' for s in ledger['stages']):raise ValueError('Concurrent ledger writer not supported')
+    if any(s['status'].startswith('RUNNING') for s in ledger['stages']):raise ValueError('Concurrent ledger writer not supported')
     if a.seconds<=0:raise ValueError('Positive bounded allocation required')
     total_cap=ledger.get('allocated_total_GPU_wall_hours',ledger['initial_allocation_GPU_wall_hours'])
     if ledger['measured_GPU_wall_hours']+a.seconds/3600>total_cap:raise ValueError('Registered CIR stage cap exceeded')

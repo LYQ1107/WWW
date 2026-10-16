@@ -9,3 +9,5 @@ Phase0真实前缀v1观察器合同失败：从Git AST读取原函数时拷贝�
 真实前缀v2在被丢弃的分支暂停观察器时缺少被动source字段，Instances.cat合同拒绝。保留日志，丢弃分支补相同来源字段后v3通过：40组真实图像，原函数/OFF/KEEP的全部输出、完整native状态及RNG相等，实际执行并恢复了一个原生图像步骤。v3运行期间新增完整求解矩阵SHA的后续代码未作用于该已启动进程，因此v3不声称已有矩阵SHA核验；后续正式检查使用冻结后新进程。
 
 41项CPU组件测试通过，包含C1公式/1152/严格历史/合法候选和GT接口拒绝、元数据Ledger、0/2/4输出缓冲及当前图像加载器。Ledger/缓冲/C1尚未接入运行中的tracker；这些测试不是原生SPLIT/RELINK资格。未修改的TrackEval和官方MATLAB/MEX通过一次合成完整解析检查，100分只为人工完美输入，不是科学成绩。原native缓存只读SHA核验完成12视频（原11+12），另外12需有界连续扫描；本轮训练视频数仍为0。完整OFF/KEEP在执行，未启动C1或训练。
+
+Phase0完整TRAIN04（901同步组/1802实际图像）完成：Original源码/OFF/KEEP的全部预测、901组native状态、RNG、完整联合cost SHA及solver/阈值/提交记录均一致；OFF真实分支恢复后所有未来保持一致。固定Stage2 strict加载成功。该审计过程保守记账约0.371 GPU-wall-hour；全Phase0累计约0.411，旧账本不变。P0_NATIVE_QUALIFICATION.json通过，科研Goal仍ACTIVE、真实跟踪指标仍null。下一步用实际官方forward的当前组图像适配器完成全视频输出核验，再开放C1；其余41组件测试不等于SPLIT/RELINK准入。
