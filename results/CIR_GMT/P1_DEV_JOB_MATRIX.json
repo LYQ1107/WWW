@@ -1,0 +1,515 @@
+{
+  "stage": "P1_COMPLETE_REGISTERED_DEV12_ORIGINAL_C1_V1",
+  "physical_GPUs": [
+    4,
+    5,
+    6,
+    7
+  ],
+  "maximum_GPU_wall_hours": 5.0,
+  "maximum_stage_wall_seconds": 14400,
+  "source_root": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/p1_c1_engineering_v1",
+  "source_commit": "3e6d6c5d4f794772070b6cd1e80fc84447e9546a",
+  "jobs": [
+    {
+      "name": "original_video1",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video1_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene1_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video1"
+      ]
+    },
+    {
+      "name": "c1_video1",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video1_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene1_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video1"
+      ]
+    },
+    {
+      "name": "original_video2",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video2_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene2_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video2"
+      ]
+    },
+    {
+      "name": "c1_video2",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video2_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene2_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video2"
+      ]
+    },
+    {
+      "name": "original_video3",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video3_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene3_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video3"
+      ]
+    },
+    {
+      "name": "c1_video3",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video3_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene3_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video3"
+      ]
+    },
+    {
+      "name": "original_video10",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video10_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene10_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video10"
+      ]
+    },
+    {
+      "name": "c1_video10",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video10_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene10_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video10"
+      ]
+    },
+    {
+      "name": "original_video11",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video11_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene11_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video11"
+      ]
+    },
+    {
+      "name": "c1_video11",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video11_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene11_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video11"
+      ]
+    },
+    {
+      "name": "original_video14",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video14_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene14_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video14"
+      ]
+    },
+    {
+      "name": "c1_video14",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video14_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene14_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video14"
+      ]
+    },
+    {
+      "name": "original_video15",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video15_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene15_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video15"
+      ]
+    },
+    {
+      "name": "c1_video15",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video15_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene15_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video15"
+      ]
+    },
+    {
+      "name": "original_video16",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video16_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene16_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video16"
+      ]
+    },
+    {
+      "name": "c1_video16",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video16_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene16_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video16"
+      ]
+    },
+    {
+      "name": "original_video18",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video18_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene18_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video18"
+      ]
+    },
+    {
+      "name": "c1_video18",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video18_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene18_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video18"
+      ]
+    },
+    {
+      "name": "original_video19",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video19_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene19_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video19"
+      ]
+    },
+    {
+      "name": "c1_video19",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video19_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene19_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video19"
+      ]
+    },
+    {
+      "name": "original_video22",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video22_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene22_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video22"
+      ]
+    },
+    {
+      "name": "c1_video22",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video22_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene22_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video22"
+      ]
+    },
+    {
+      "name": "original_video23",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_original_video23_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_scene23_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/original_video23"
+      ]
+    },
+    {
+      "name": "c1_video23",
+      "maximum_seconds": 3600,
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_dev_c1_video23_v1.log",
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_scene23_spec.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/setup/c1_video23"
+      ]
+    }
+  ],
+  "full_development_video_ids": [
+    1,
+    2,
+    3,
+    10,
+    11,
+    14,
+    15,
+    16,
+    18,
+    19,
+    22,
+    23
+  ],
+  "images_per_method": 30702,
+  "raw_estimated_GPU_wall_hours": 2.209412780656304,
+  "estimate_scope": "TRAIN04 measured7.72 imageFPS; budget conservatively >2x estimate for crowded scenes, no silent video omission",
+  "C1_alpha": 2.0,
+  "parameter_search": false,
+  "resource_policy": "new CIR only, maximum4 idle cards, no old ledger reset"
+}

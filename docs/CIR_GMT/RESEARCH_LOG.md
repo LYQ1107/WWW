@@ -17,3 +17,7 @@ Phase1：Original官方forward在TRAIN04完整901组完成，raw3635条与完整
 新核心OFF完整TRAIN04已完成，raw/stock与Original全视频逐项一致。第一次汇总门控误把仅Causal入口使用的online_runner.py当成官方actor报告必含源码，KeyError原日志保留；改为分别验证官方实际导入核心与两个前缀的Causal源码，未改变轨迹、阈值、成绩，v2通过。实现test_net.py显式--cir-run-spec输出驱动并校验DetectionCheckpointer实际加载的所有张量；默认入口不变。数据注册补传原JSON中的frame_id；未新增/推测时间。共享执行函数重构后CPU43项重跑通过，正式入口的完整OFF检查即将运行。
 
 正式test_net显式入口完整TRAIN04 OFF通过，raw/stock、全部图像SHA和归一化冻结GMT配置与Original精确一致；实际加载权重逐张量核验通过。46项CPU测试通过（新增输出目录/方法差异与GMT阈值不可更改的配置合同）。将从干净固定source worktree运行完整C1。
+
+完整C1已在干净3e6d6c5d source经test_net完成TRAIN04：原生主关联1800调用，1771次实际全矩阵重求解，164行相对当时原生提案改变，2个原先接受行被改变；这些不是164次认证纠错。无来源fallback、VGGT/DINO调用和新增参数。raw HOTA74.736869→75.071076、AssA71.504150→72.158622、官方CVIDF188.508361→89.016722、IDSW355→296；DetA78.200580→78.183045、MOTA81.458333→82.994792、Frag40→40，完整图像FPS7.786552→7.720871。stock HOTA75.575567→75.844408、CVIDF192.505593→92.738676，IDSW4→4、Frag71→68。仅FIT工程场景，不据此选择超参数。离线固定过去owner审计：2条WRONG→CORRECT均在1个人物组，0条CORRECT→WRONG，21条CORRECT→UNANCHORED单列；UNKNOWN不算修复。
+
+51项CPU合同通过。已按原冻结12个完整DEV视频启动Original与C1共24任务，使用空闲GPU4–7、同一个干净3e6d6c5d source。按7.72图像FPS估计约2.21GPUh，单独注册5GPUh保守阶段上限（CIR累计授权6，不重置任何旧账本）；预算/进程/每视频日志持续记录。所有12均运行；7个原始GT存在重复事件的视频保留完整预测，严格官方metric失败应null，不改GT或评测合法性检查。TT和最终24拟合仍未运行。
