@@ -39,6 +39,9 @@ def main():
             raise ValueError('Current complete OFF actor required')
         if current['source_tree_dirty_at_video_start']:raise ValueError('Full OFF source must be clean')
         for name,digest in core.items():
+            # The read-only decision observer is used and pinned in prefix
+            # proofs; it is not imported by the complete official actor.
+            if name=='gtr/geometry/decision_trace.py':continue
             if current['source_sha256'].get(name)!=digest:raise ValueError('Full OFF source mismatch: '+name)
         for kind in ('raw','stock'):
             left=current['predictions'][kind];right=original['predictions'][kind]
