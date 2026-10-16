@@ -63,7 +63,7 @@ def main():
     for p,h in plan['frozen_inputs'].items():assert sha256(ROOT/p)==h
     data=json.loads(Path('/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json').read_text())
     metadata={i['id']:i for i in data['images']}
-    labels_by_scene={};assignments={};seeds={};receipts=[];certified_recovered=0
+    labels_by_scene={};events_by_scene={};assignments={};seeds={};receipts=[];certified_recovered=0
     cohort=json.loads((ROOT/'manifests/omega_fixed_pair_cohort_v1.json').read_text())
     for scene in sorted({c['scene'] for c in plan['cases']}):
         directory=NATIVE/f'scene{scene}_full_v1'
@@ -89,7 +89,7 @@ def main():
                     if key in initial:assert initial[key]==r['track']
                     initial[key]=r['track']
             index+=1
-        labels_by_scene[scene]=labels;assignments[scene]=assign;seeds[scene]=initial
+        labels_by_scene[scene]=labels;events_by_scene[scene]=events;assignments[scene]=assign;seeds[scene]=initial
         receipts.append(dict(scene=scene,events_sha256=bound['artifacts']['events.jsonl.gz'],decisions_sha256=bound['artifacts']['actual_decisions.jsonl.gz']))
     rows=[];summaries=collections.defaultdict(collections.Counter);corrected=collections.defaultdict(set);changed=[]
     new_gpu_seconds=receipt['child_process_wall_seconds']
@@ -105,6 +105,10 @@ def main():
             if frame<group or (group==1 and source in seeds[scene]):prior[track].add(labels.get(source))
         baseline=classify(case['baseline_decisions'],labels,prior);branch=classify(case['decisions'],labels,prior)
         assert baseline.keys()==branch.keys()
+        expected_states={'correct_link':'correct','wrong_link':'wrong','missed_known_positive':'missed_known_positive'}
+        for source,b in baseline.items():
+            original=events_by_scene[scene][source]['actual_primary_state']
+            if original in expected_states:assert b['primary']==expected_states[original],('native offline classification mismatch',scene,source,original,b['primary'])
         # Serialized current proposal order binds submitted IDs to physical sources.
         public_by_image=collections.defaultdict(list)
         for p in case['public_predictions']:public_by_image[p['image_id']].append(p)
