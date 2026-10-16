@@ -17,7 +17,9 @@ class C1ScoreTrace(FullScoreTrace):
         context=self.context(name,instances,k)
         holder=dict(context=context,records=[],matrices=[]);self.stack.append(holder)
         independent=None
-        if name=='run_global_tracker_plus':
+        if name=='run_global_tracker_plus' and self.model.cir_controller.mode=='bias2':
+            independent=torch.full((len(context['queries']),len({r['track'] for r in context['references']})),2.)
+        elif name=='run_global_tracker_plus':
             refs=[inst for i,inst in enumerate(instances) if i!=k]
             features=torch.cat([inst.reid_features.detach().cpu().float() for inst in refs])
             tracks=torch.cat([inst.track_ids.detach().cpu() for inst in refs])
@@ -44,9 +46,10 @@ class C1ScoreTrace(FullScoreTrace):
                 actual=-holder['matrices'][-1]
                 maximum_error=float((actual-expected).abs().max()) if actual.numel() else 0.
                 tolerance=8*torch.finfo(torch.float32).eps*(expected.abs()+3)
-                if ((actual-expected).abs()>tolerance).any():raise ValueError('GPU C1 differs from independent CPU frozen formula')
+                if ((actual-expected).abs()>tolerance).any():raise ValueError('GPU policy differs from independent CPU frozen formula')
             record=dict(**context,solver_sequence=holder['records'],final_track_ids=final,
                 c1_independent_CPU_max_absolute_error=maximum_error,
+                policy=self.model.cir_controller.mode,
                 numeric_check='per-edge abs error <= 8*float32eps*(abs(expected)+3); no score/threshold retuning',
                 method_call_index=self.counts.get(name,0),
                 scope='actual ordered original and optional C1 native joint solves, original Bank and final commit; no GT')

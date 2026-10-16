@@ -9,7 +9,7 @@ class IdentityRevisionController:
     def __init__(self, cfg):
         self.enabled = bool(cfg.ENABLED)
         self.mode = str(cfg.MODE)
-        if self.enabled and self.mode not in ('off', 'keep', 'c1'):
+        if self.enabled and self.mode not in ('off', 'keep', 'c1', 'bias2'):
             raise ValueError('CIR mode has not passed native qualification: ' + self.mode)
         if cfg.ENABLE_PROVISIONAL or cfg.ENABLE_REVISION or cfg.ENABLE_RELINK or cfg.REVISION_WINDOW:
             raise ValueError('CIR revision/buffer not qualified in Phase 0')
@@ -28,7 +28,7 @@ class IdentityRevisionController:
         self.intervention_latencies = []
 
     def observe(self,instances,records):
-        if not self.enabled or self.mode in ('off','keep'):
+        if not self.enabled or self.mode in ('off','keep','bias2'):
             return
         if len(instances)!=len(records) or not records:
             raise ValueError('CIR current image membership mismatch')
@@ -56,6 +56,11 @@ class IdentityRevisionController:
             return native_scores
         begin=time.perf_counter()
         try:
+            if self.mode=='bias2':
+                # Registered fixed-threshold explanation control. It changes
+                # acceptance calibration without learning or identity features.
+                self.score_changed_calls+=1
+                return native_scores+2.
             if instances is None or candidate_ids is None or self.timestamp is None:
                 raise ValueError('Missing certified native source metadata')
             query=instances[k];refs=[inst for i,inst in enumerate(instances) if i!=k]

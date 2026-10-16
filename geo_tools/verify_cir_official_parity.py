@@ -23,7 +23,7 @@ from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
 def main():
     p=argparse.ArgumentParser();p.add_argument('--scene',type=int,default=4)
     p.add_argument('--groups',type=int,default=40);p.add_argument('--out',type=Path,required=True)
-    p.add_argument('--policy',choices=('off','c1'),default='off')
+    p.add_argument('--policy',choices=('off','c1','bias2'),default='off')
     a=p.parse_args()
     if a.scene not in range(1,25):raise ValueError('TRAIN only')
     if a.out.exists():raise FileExistsError(a.out)
@@ -32,15 +32,15 @@ def main():
     rows=video_records(train_data(),a.scene,max_frames=a.groups)
     frame_rows=sorted(rows,key=lambda r:(r['frame_id'],r['view_id']))
     results={};start=time.monotonic()
-    arms=('ORIGINAL_OFFICIAL','CIR_OFF_OFFICIAL','CIR_KEEP_OFFICIAL','CIR_OFF_CAUSAL') if a.policy=='off' else ('CIR_C1_OFFICIAL','CIR_C1_CAUSAL')
-    if a.policy=='c1':
+    arms=('ORIGINAL_OFFICIAL','CIR_OFF_OFFICIAL','CIR_KEEP_OFFICIAL','CIR_OFF_CAUSAL') if a.policy=='off' else (f'CIR_{a.policy.upper()}_OFFICIAL',f'CIR_{a.policy.upper()}_CAUSAL')
+    if a.policy!='off':
         from cir_score_trace import C1ScoreTrace
     for arm in arms:
         seed_all(20261014);model.cir_controller.enabled=arm=='CIR_KEEP_OFFICIAL'
         model.cir_controller.mode='keep' if arm=='CIR_KEEP_OFFICIAL' else 'off'
-        if a.policy=='c1':model.cir_controller.enabled=True;model.cir_controller.mode='c1'
+        if a.policy!='off':model.cir_controller.enabled=True;model.cir_controller.mode=a.policy
         model.run_global_tracker_plus=MethodType(original_method() if arm=='ORIGINAL_OFFICIAL' else native.GTRRCNN.run_global_tracker_plus,model)
-        directory=a.out/arm;directory.mkdir();trace=(C1ScoreTrace if a.policy=='c1' else FullScoreTrace)(model,directory);trace.install()
+        directory=a.out/arm;directory.mkdir();trace=(C1ScoreTrace if a.policy!='off' else FullScoreTrace)(model,directory);trace.install()
         predictions=[];t=time.monotonic()
         try:
             if arm.endswith('_CAUSAL'):
@@ -61,13 +61,13 @@ def main():
         count=Counter(r['track_id'] for r in predictions)
         stock=[r for r in predictions if count[r['track_id']]>=stock_min]
         results[arm]=dict(raw=predictions,stock=stock,rng=last_rng,decisions=decisions(directory),seconds=time.monotonic()-t)
-        if a.policy=='c1' and (model.cir_controller.fallbacks or model.cir_controller.extra_joint_solves==0):
+        if a.policy!='off' and (model.cir_controller.fallbacks or model.cir_controller.extra_joint_solves==0):
             raise ValueError('C1 prefix must exercise actual joint changes without missing-source fallback')
         save_json(directory/'raw_predictions.json',predictions);save_json(directory/'stock_predictions.json',stock)
         print(json.dumps(dict(arm=arm,raw_detections=len(predictions),stock_detections=len(stock),seconds=results[arm]['seconds'])),flush=True)
     reference=arms[0]
     comparisons={arm:{k:results[arm][k]==results[reference][k] for k in ('raw','stock','rng','decisions')} for arm in results if arm!=reference}
-    status='PASS_REAL_PREFIX_OFFICIAL_CAUSAL' if a.policy=='off' else 'PASS_REAL_PREFIX_C1_OFFICIAL_CAUSAL'
+    status='PASS_REAL_PREFIX_OFFICIAL_CAUSAL' if a.policy=='off' else f'PASS_REAL_PREFIX_{a.policy.upper()}_OFFICIAL_CAUSAL'
     report=dict(status=status if all(all(v.values()) for v in comparisons.values()) else 'FAIL_NO_ADMISSION',
         policy=a.policy,reference_arm=reference,
         scene=a.scene,groups=a.groups,images=len(rows),full_video=len(rows)==len(video_records(train_data(),a.scene)),

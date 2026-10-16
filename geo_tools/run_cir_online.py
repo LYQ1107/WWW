@@ -61,7 +61,7 @@ def validate_request(a):
 def run_loaded(a,cfg,model):
     validate_request(a)
     cfg=cfg.clone();cfg.defrost()
-    cfg.MODEL.CIR.ENABLED=a.method in ('keep','c1');cfg.MODEL.CIR.MODE=a.method if cfg.MODEL.CIR.ENABLED else 'off'
+    cfg.MODEL.CIR.ENABLED=a.method in ('keep','c1','bias2');cfg.MODEL.CIR.MODE=a.method if cfg.MODEL.CIR.ENABLED else 'off'
     from gtr.modeling.identity_revision.controller import IdentityRevisionController
     model.cir_controller=IdentityRevisionController(cfg.MODEL.CIR)
     from gtr.modeling.meta_arch.gtr_rcnn import GTRRCNN
@@ -144,7 +144,7 @@ def run_loaded(a,cfg,model):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--video',type=int,required=True)
-    p.add_argument('--method',choices=('original','off','keep','c1'),required=True)
+    p.add_argument('--method',choices=('original','off','keep','c1','bias2'),required=True)
     p.add_argument('--qualification',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True)
     a=p.parse_args()

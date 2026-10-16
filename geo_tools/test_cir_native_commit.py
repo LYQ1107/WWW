@@ -115,5 +115,15 @@ class NativeCommitTests(unittest.TestCase):
         self.assertEqual(m.cir_controller.extra_joint_solves,0)
         self.assertEqual(sum(m.cir_controller.fallbacks.values()),1)
 
+    def test_bias2_reuses_native_solve_and_commit_without_identity_features(self):
+        m=model(True);m.cir_controller.mode='bias2'
+        h=instance([1,2]);q=instance();counts={1:1,2:1};reids={1:h[0],2:h[1]}
+        native.poss_ids.poss_ids=set();native.old_reids.old_reids=[]
+        output=native.GTRRCNN.run_global_tracker_plus(m,1,[h,q],[torch.zeros(2,2)],None,1,2,counts,reids,[],0)
+        self.assertEqual(set(output[0][-1].track_ids.tolist()),{1,2})
+        self.assertEqual(counts,{1:2,2:2});self.assertEqual(output[1],2)
+        self.assertEqual(m.cir_controller.extra_joint_solves,1)
+        self.assertIsNone(m.cir_controller.timestamp)
+
 
 if __name__=='__main__':unittest.main()
