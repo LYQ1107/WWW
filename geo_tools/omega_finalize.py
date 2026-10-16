@@ -119,6 +119,15 @@ def main():
                     provenance=source)
     summary = background['summary']
     table = '\n'.join(f"|{k}|{v['valid']}/{v['pairs']}|{','.join(map(str,v['scenes_with_valid'])) or '无'}|" for k,v in summary.items())
+    raw_omega_valid = sum(r['outputs']['AB']['heldout_background']['valid'] for r in runs['omega512'])
+    duplicate_count = sum(p['dropped_duplicate_or_many_to_one'] for p in background['pair_audits'])
+    enough_eval = sum(p['eval_count'] >= 20 for p in background['pair_audits'])
+    support_note = (f'原始初步Ω512正序gate为{raw_omega_valid}/24；去除两侧重复端点/多对一后为'
+                    f'{summary["omega512_AB"]["valid"]}/24，全部24个物理图像对保留，阈值未变。'
+                    f'去除{duplicate_count}条重复支持后，仅{enough_eval}/24对拥有至少20个独立eval端点。'
+                    '这是对应点权重/有效样本集合的工程修正，不把两套数字混为完全相同分母。'
+                    '通过样本仅来自场景8，未达到预注册的至少3个时刻/2个fit场景扩展参考。'
+                    '两个通过对的Ω正序P90残差仍约157/227原像素，不能把中位数gate当作全部对应正确。\n')
     common = ('416主实验：**BLOCKED_WEIGHT_ACCESS / NOT_EXECUTED**。512仅为单独的固定样本诊断，'
               '不替代416，不代表身份或跟踪成功。所有24组及失败样本均保留。\n')
     documents = {
@@ -138,7 +147,7 @@ def main():
         '相机GT姿态误差未测；矩阵存在/数值有限不等于可靠几何。\n\n'
         '|方法/输入顺序|共同独立背景gate通过|通过场景|\n|---|---:|---|\n'+table+'\n\n'
         '旧VGGT使用真实518×518 pad接口，Ω512使用真实balanced形状；不同分辨率、有效像素支持及输出head范围限制架构归因。'
-        '原任务要求的416对照尚未执行。\n',
+        '原任务要求的416对照尚未执行。\n\n'+support_note,
       'OMEGA_BACKGROUND_VALIDITY_REPORT.md': '# Ω 独立背景验证\n\n'+common+
         '\nSIFT与检测框屏蔽复用原geometry_confidence实现；原有all-point F/H及自拟合指标被丢弃。'
         '保存的putative matches按两侧原图坐标去重，避免同一SIFT位置多方向或many-to-one重复计数；'
@@ -148,7 +157,7 @@ def main():
         '阈值未降低；归一化残差单列。匹配不足、覆盖不足和预测F不一致分开记录，不能从这些数字断言无物理重叠。'
         '描述子匹配是可复核的putative对应，并非真实相机或三维GT。\n\n'
         '|方法/顺序|通过/全部|通过场景|\n|---|---:|---|\n'+table+'\n\n'
-        '详见omega_background_geometry.csv和omega_distinct_heldout_comparison_v1.json，全部失败对保留。'
+        +support_note+'\n详见omega_background_geometry.csv和omega_distinct_heldout_comparison_v1.json，全部失败对保留。'
         '没有通过集时不计算虚假100%准确率。512单独诊断不准入416主实验后续阶段。\n',
       'OMEGA_IDENTITY_CORRECTION_REPORT.md': '# Ω 身份纠错：NOT_EXECUTED\n\n'+common+
         '\n没有执行几何候选身份分离、logits修正、联合求解/Bank/最终ID干预；纠错和破坏均NOT_MEASURED，不能填0。'
@@ -173,7 +182,7 @@ def main():
         '精确预处理/合成几何/真实检测框坐标验证、原生同步适用性统计与96组预先冻结索引；'
         '已获取并核验公开512原版字节，完成24组48次双向真实Ω调用及同物理图像的旧VGGT/传统背景对照。\n\n'
         '|方法/顺序|独立背景gate通过/全部|通过场景|\n|---|---:|---|\n'+table+'\n\n'
-        '通过背景残差不证明身份区分；没有执行身份打分/求解干预、完整视频或新增GMT速度实验。'
+        +support_note+'\n通过背景残差不证明身份区分；没有执行身份打分/求解干预、完整视频或新增GMT速度实验。'
         '其余72组扩展、深度身份用途和全部在线分支均明确NOT_EXECUTED。'
         '首24组覆盖11个fit场景而非独立人物样本，原GMT见过DEV5，DEV12标签已接触。'
         '未知/失败样本保留，阈值和原GT未修改。\n\n'
