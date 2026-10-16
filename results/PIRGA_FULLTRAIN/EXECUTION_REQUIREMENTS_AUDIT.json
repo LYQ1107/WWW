@@ -1,6 +1,6 @@
 {
-  "observed_utc": "2026-10-15T23:49:17.857916+00:00",
-  "status": "INCOMPLETE_UNTIL_ALL_REQUIRED_EVIDENCE",
+  "observed_utc": "2026-10-16T00:51:36.126137+00:00",
+  "status": "ALL_FIXED_INTEGRITY_PASS_FINAL_GATE_RECORDED_MANUAL_REVIEW_REQUIRED",
   "sufficient_to_mark_goal_complete": false,
   "scientific_success": false,
   "fixed_families": {
@@ -93,7 +93,7 @@
       "checkpoint_weights_finite": true
     },
     "PHASE2": {
-      "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
+      "status": "PASS_FIXED_FIT_AND_REPLAYS",
       "protocol_sha256": "17ffe01425aa3da9e321c2b96d55eb30d82dccecfebdfadbff724f4563a552c6",
       "source_checks": {
         "geo_tools/pirga_candidate_state.py": true,
@@ -108,7 +108,8 @@
         1,
         2,
         3,
-        4
+        4,
+        5
       ],
       "expected_queries_per_epoch": 113415,
       "checked_checkpoint_endpoints": [
@@ -167,18 +168,67 @@
         [
           "AS_same_camera",
           3
+        ],
+        [
+          "A2_rank",
+          5
+        ],
+        [
+          "AC_contrastive",
+          5
+        ],
+        [
+          "A4_uncertainty",
+          5
+        ],
+        [
+          "A5_no_uncertainty",
+          5
+        ],
+        [
+          "A6_no_camera",
+          5
+        ],
+        [
+          "A7_no_time",
+          5
+        ],
+        [
+          "AS_same_camera",
+          5
         ]
       ],
       "completed_full_DEV12_replays": [
         1,
-        3
+        3,
+        5
       ],
       "expected_per_arm_total_updates": 567075,
       "actual_checkpoint_bytes_verified": true,
       "engineering_step300_checkpoints_excluded": [],
       "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true,
       "gradient_health": {
-        "status": "PENDING_FINAL_FIT_RESULT"
+        "status": "PASS_REAL_FINAL_COUNTERS",
+        "zero_gradient_updates": [
+          454655,
+          1090,
+          1,
+          27,
+          20,
+          5,
+          24
+        ],
+        "nonzero_gradient_updates": [
+          112420,
+          565985,
+          567074,
+          567048,
+          567055,
+          567070,
+          567051
+        ],
+        "actual_per_arm_optimizer_steps": 567075,
+        "qualification": "Zero-gradient visits are preserved explicitly; visits are not independent effective gradients. No claim of global optimization convergence."
       },
       "checkpoint_weights_finite": true
     },
@@ -321,7 +371,7 @@
       "checkpoint_weights_finite": true
     },
     "LEGACY": {
-      "status": "PENDING_REGISTERED_FIXED_ENDPOINTS",
+      "status": "PASS_FIXED_FIT_AND_REPLAYS",
       "protocol_sha256": "227456e663624c7170bc0464e0fe99bb0ec9aa025b377471f43aad976fbe7638",
       "source_checks": {
         "geo_tools/train_pirga_legacy_coverage.py": true,
@@ -336,7 +386,9 @@
       "completed_full_epochs": [
         1,
         2,
-        3
+        3,
+        4,
+        5
       ],
       "expected_queries_per_epoch": 106800,
       "checked_checkpoint_endpoints": [
@@ -363,18 +415,43 @@
         [
           "C4",
           3
+        ],
+        [
+          "C2",
+          5
+        ],
+        [
+          "C3",
+          5
+        ],
+        [
+          "C4",
+          5
         ]
       ],
       "completed_full_DEV12_replays": [
         1,
-        3
+        3,
+        5
       ],
       "expected_per_arm_total_updates": 534000,
       "actual_checkpoint_bytes_verified": true,
       "engineering_step300_checkpoints_excluded": [],
       "completed_replay_C0_C1_and_supervision_exact_frozen_reference": true,
       "gradient_health": {
-        "status": "PENDING_FINAL_FIT_RESULT"
+        "status": "PASS_REAL_FINAL_COUNTERS",
+        "zero_gradient_updates": [
+          275181,
+          1712,
+          1739
+        ],
+        "nonzero_gradient_updates": [
+          258819,
+          532288,
+          532261
+        ],
+        "actual_per_arm_optimizer_steps": 534000,
+        "qualification": "Zero-gradient visits are preserved explicitly; visits are not independent effective gradients. No claim of global optimization convergence."
       },
       "checkpoint_weights_finite": true
     }
@@ -382,7 +459,7 @@
   "deliverables": {
     "MASTER_GOAL.json": {
       "exists": true,
-      "sha256": "5e22a622ec3e9b8822b65fba1c465057a74473b9c0134b25abb88a24fd55f4c7",
+      "sha256": "b2119e11ba6facad30cc58e1045927bac563637cd35057dfb405b7f9c1bd59fd",
       "existence_alone_proves_content_complete": false
     },
     "DATA_SCOPE_AUDIT.json": {
@@ -417,7 +494,7 @@
     },
     "PREDICTION_ABLATIONS.csv": {
       "exists": true,
-      "sha256": "73b652dc81bb96ce90d4d4e175b2ea6e68dd223bb10cb1ee5f3531aeab05eca4",
+      "sha256": "73c19921b66b3d69956cf49c7f383dcd425400cfbdc5b0bf052fdd54add1e853",
       "existence_alone_proves_content_complete": false
     },
     "RELIABILITY_ABLATIONS.csv": {
@@ -432,52 +509,54 @@
     },
     "ORIGINAL_ERROR_REPAIRS.json": {
       "exists": true,
-      "sha256": "ea64bd9316ea5cba7a24f00d897413dac73f129b9d47425d59bc426a58c65c7c",
+      "sha256": "25090a081ea1a5fb70216206549a5e5f90d80ae59077a7ea2a4e78da41608709",
       "existence_alone_proves_content_complete": false
     },
     "PER_PERSON_AND_SCENE_RESULTS.csv": {
       "exists": true,
-      "sha256": "13f5507ea23ac3f454dc2a21c15e1fd539ece13836cdd9c19e15c2519654ffa3",
+      "sha256": "a7eef8f82d1ed97381fc8613292312962bd0f061dfd42e6867d1971e0da7ddb9",
       "existence_alone_proves_content_complete": false
     },
     "ONLINE_TRACKING_RESULTS.json": {
       "exists": true,
-      "sha256": "b33c719d091ebfb620b0d970525a596887ebf8533278eed15a9b4b0043539502",
+      "sha256": "8c1c7b47580c8049f39e8385143dcafaf49819a10eb97c626520028ab0de1b65",
       "existence_alone_proves_content_complete": false
     },
     "SPEED_AND_MEMORY.json": {
       "exists": true,
-      "sha256": "eec1b542af2f0494601e8fc00592b9923fbfcaab6b0190d44f8108db25928e2d",
+      "sha256": "724c726a34fd1df68e5c6fc759d3d8b916d615ddc0fa0f9ae4c83c3a2ce9ea76",
       "existence_alone_proves_content_complete": false
     },
     "RESOURCE_LEDGER.json": {
       "exists": true,
-      "sha256": "c666de4156965f01d225d9534c482ee53142285f8ff81e62b97d34e44fa89198",
+      "sha256": "6af05c6a7f58b01611ee1471ead3a4bd2c4c19f923e5d2b13df0f6d2e94a79a6",
       "existence_alone_proves_content_complete": false
     },
     "GO_NO_GO.json": {
       "exists": true,
-      "sha256": "acc97ca73a77f2b03f6ee833a7b26a4dd934fbc09164642113067c3f402a80f9",
+      "sha256": "61f114f980e53430fa120c69df2e3772d581ac4599db1eb8e7277620b0225e37",
       "existence_alone_proves_content_complete": false
     },
     "FINAL_RESEARCH_REPORT_ZH.md": {
       "exists": true,
-      "sha256": "8be6425aeba48de0766f1c34f1731168e6002dffb402c43415a18deed267992a",
+      "sha256": "83e8332296c5ac204ae2375243ed833cd097f09f0b7d8552db6219371390f293",
       "existence_alone_proves_content_complete": false
     },
     "REVIEWER_QUESTIONS.md": {
       "exists": true,
-      "sha256": "88d405abd5bf7ddb84db467e9e83a22247fc4dae902d939a16d60d17b87f6858",
+      "sha256": "ebc9826eda5fe9dcb8f1b98741df96c9b079a84641985d3cb094367c2c578f1c",
       "existence_alone_proves_content_complete": false
     }
   },
   "conditional_obligations": {
-    "learned_reliability": "PENDING_FINAL_PHASE2_GATE",
-    "predictive_margin_and_full_PIRGA": "PENDING_FINAL_PHASE2_GATE",
-    "full_native_online": "NOT_ADMITTED_AT_COMPLETED_ENDPOINTS",
-    "full24_OOF": "NOT_RUN_SCOPE_AND_SEPARATE_RESOURCE_REVIEW_REQUIRED",
-    "full24_final_fit": "NOT_RUN_REQUIRES_LOCKED_METHOD_AND_VALIDATION_PLAN",
-    "second_seed": "NOT_RUN_NO_INDEPENDENT_GENERALIZATION_CLAIM"
+    "learned_history_reliability": "NOT_RUN_CONDITIONAL_NO_PREDICTIVE_GATE",
+    "D4_prediction_reliability": "NOT_RUN_CONDITIONAL_NO_PREDICTIVE_GATE",
+    "D5_prediction_margin": "NOT_RUN_CONDITIONAL_NO_PREDICTIVE_GATE",
+    "D6_full_PIRGA": "NOT_RUN_CONDITIONAL_NO_PREDICTIVE_GATE",
+    "full_native_online": "NOT_RUN_FAILED_SCIENTIFIC_ADMISSION",
+    "full24_OOF": "NOT_RUN_CORE_NO_GO_SEPARATE_STAGE_NOT_ACTIVATED",
+    "full24_final_fit": "NOT_RUN_NO_QUALIFIED_LOCKED_METHOD",
+    "second_seed_and_independent_validation": "NOT_RUN_NO_QUALIFIED_CANDIDATE_NO_GENERALIZATION_CLAIM"
   },
   "canonical300_control": {
     "verified_checkpoint_arms": [
@@ -499,9 +578,9 @@
       "sha256": "bf803a2df31f55c48c46f5b51e695e0e11cd1716190efd140624216d69e3eb1a"
     },
     "5": {
-      "complete": false,
+      "complete": true,
       "path": "/data1/liuyeqiang/WWW_pirga_runtime_20261016/uncertainty_gate_fixed_audits_v1/epoch5/RESULTS.json",
-      "sha256": null
+      "sha256": "49736e46eddb55a27472173504727d9b566c0cd758024a99c1cb0c5b95918297"
     }
   },
   "asset_admission": {
@@ -523,9 +602,113 @@
     "sha256": "6815f8d694d7aace041fd5b7ab837af1f50eccae2cf229d191e42148df2e0749",
     "official_TEST_in_scope": false
   },
+  "current_fit_input_integrity": {
+    "status": "PASS_FRESH_ALL11_STORES_AND_ACTOR_CACHE_HASHES",
+    "queries": 154911,
+    "stores": [
+      {
+        "scene": 4,
+        "actual_primary_queries": 3633,
+        "manifest_sha256": "8573ffd52da7d38783452df081b29fc33a3b419bf44dc3e0232a0e49c19b7bba",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      },
+      {
+        "scene": 5,
+        "actual_primary_queries": 6926,
+        "manifest_sha256": "1cd53a9f96ef1d499b605ee8bef0c19b704e0ebc3c5d5c2c57297ebb2c6b1fac",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      },
+      {
+        "scene": 6,
+        "actual_primary_queries": 2600,
+        "manifest_sha256": "0c512e9e20998493c8232e79599c403b0309011bf5715a4d78039fa4db620929",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      },
+      {
+        "scene": 7,
+        "actual_primary_queries": 1703,
+        "manifest_sha256": "430c04246bbd0f1e498374259b934b8c41b402e77c135dc0dfc81cd28b1f1959",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      },
+      {
+        "scene": 8,
+        "actual_primary_queries": 1997,
+        "manifest_sha256": "5186c3e3f78404f9768b0c93e77e05ce82e183a86338de616d964e99b1720863",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      },
+      {
+        "scene": 9,
+        "actual_primary_queries": 8712,
+        "manifest_sha256": "011de3cbdd13b3d57f152c3c816e843d5ccae3ed967d036e44785b5dbe7bd24f",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      },
+      {
+        "scene": 13,
+        "actual_primary_queries": 16924,
+        "manifest_sha256": "6b7d83aa08235dc37e2fc8249eebed28659f3905bc5802759ae92414bbacc3b0",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      },
+      {
+        "scene": 17,
+        "actual_primary_queries": 11242,
+        "manifest_sha256": "ff2171c8f2821b6531945520fb2d354771bc60def5c80a8706860300c77ffd3a",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      },
+      {
+        "scene": 20,
+        "actual_primary_queries": 24054,
+        "manifest_sha256": "a7296fc715e7e1c7d2d15cf9d7f1895fb6137a7025ae182b57d2621eec7d4de5",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      },
+      {
+        "scene": 21,
+        "actual_primary_queries": 7127,
+        "manifest_sha256": "630e98e3677d1ae98128faaf73cd05f27789630b5500b7767850c717bf6698c2",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      },
+      {
+        "scene": 24,
+        "actual_primary_queries": 69993,
+        "manifest_sha256": "66e0014468fe532d35d1866eb138cd9edf1d12d3e9e97d3c9a68e088f1974571",
+        "artifact_checksums_verified": 2,
+        "native_feature_dim": 1152,
+        "GT_in_input_store": false
+      }
+    ],
+    "actor_cache_manifest_sha256": "587c2d3069ca2d4a99863eaa4fba960184cf83e2037824b8fb6258e511cc8a1d",
+    "actor_calls_sha256": "8fe25f6a6b9fc669944a856688677690bde552a4019a4a9fb5dc60fc80035325",
+    "offline_supervision_sha256": "4cefb1f4af6e594b03ac57d8e47596778209eaed99f414f84c6d0486ce729014",
+    "qualification": "Rechecks immutable bytes and scope of the previously admitted complete inputs. StoreReader validates every store artifact,1152 dimension and GT-free schema. GT bytes hashed offline only; no raw GT rematching or new tracker inference."
+  },
+  "final_stage_gate_sha256": "d43d657fbcfdbd7eb91a88d106dc42384260e7921d7ae15675097b3361c56252",
   "limitations": [
     "Checkpoint/coverage integrity and complete replay scope do not themselves certify scientific value.",
     "Final audit must inspect objectives, supervision contract, old evidence preservation, GT separation, gate and report content.",
     "Conditional phases require explicit gate decisions after all fixed endpoints. No goal completion or online metrics inferred here."
-  ]
+  ],
+  "separate_author_requirement_review": {
+    "path": "docs/PIRGA_FULLTRAIN/FINAL_REQUIREMENT_REVIEW.md",
+    "sha256": "f22a85afbb49b7d494fcc5241f59d5620cbef1e105d9f169f7bdb12f1c8a4d4e",
+    "content_requires_author_review_not_certified_by_this_hash": true
+  }
 }

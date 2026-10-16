@@ -2,6 +2,7 @@
 import csv,datetime,json
 from pathlib import Path
 from pirga_indexed_store import sha
+from pirga_status import processes
 
 
 def main():
@@ -67,6 +68,8 @@ def main():
         CPU_snapshot_qualification='Per-process training wall times overlap in real time. No conversion to GPU hours; no old ledger reset. P1 resumed wall field covers only suffix.')
     (root/'RESOURCE_LEDGER.json').write_text(json.dumps(resource,indent=2)+'\n')
     master=json.loads((root/'MASTER_GOAL.json').read_text());master['updated_utc']=now
+    all_fits_complete=all(s['status'] in ['COMPLETE','COMPLETE_FIXED5EPOCHS','COMPLETE_CANONICAL300_AND_FULL5EPOCHS'] for s in status.values())
+    master['engineering_training_status']='FULLTRAIN_TRAINED_ALL_REGISTERED_FITS' if all_fits_complete else 'REGISTERED_FIXED_FITS_RUNNING'
     control=master.get('completed_new_control_replay_epochs',{})
     p1complete=master.get('completed_Phase1_replay_epochs')==[1,3,5] and status['P1']['status']=='COMPLETE'
     p2complete=control.get('PHASE2')==[1,3,5] and status['P2']['status']=='COMPLETE_FIXED5EPOCHS'
@@ -82,7 +85,10 @@ def main():
         master['phases']['4']='ORDINARY_FIXED1_3_5_REPLAYS_COMPLETE_PREDICTIVE_COMBINATIONS_CONDITIONAL'
     master['supplementary_exhaustive_margin']='FIXED5EPOCH_FIT_COMPLETE_PENDING_ALL_REPLAYS' if status['exhaustive_margin']['status']=='COMPLETE_FIXED5EPOCHS' else 'RUNNING_CPU113453_QUERIES_SEPARATE_FROM113415_COMMON_DOMAIN'
     if control.get('EXHAUSTIVE_MARGIN')==[1,3,5] and status['exhaustive_margin']['status']=='COMPLETE_FIXED5EPOCHS':master['supplementary_exhaustive_margin']='COMPLETE_FIXED1_3_5_FIT_AND_REPLAYS_SEPARATE_UPDATE_BUDGET'
-    master['goal_turn_audit'].update(this_turn='PROGRESS_CANONICAL_MASKED_COVERAGE_CONTROL_AND_ACTUAL_ENDPOINT_PUBLICATION',live_CPU_training=not (p1complete and p2complete),remaining_blocker=None)
+    actual_processes=processes(runtime)
+    master['goal_turn_audit'].update(this_turn='PROGRESS_CANONICAL_MASKED_COVERAGE_CONTROL_AND_ACTUAL_ENDPOINT_PUBLICATION',
+        live_CPU_training=any(name.startswith('train_pirga_') for name in actual_processes),
+        live_CPU_evaluation_or_waiting_queue=any(name.startswith('run_pirga_') for name in actual_processes),remaining_blocker=None)
     (root/'MASTER_GOAL.json').write_text(json.dumps(master,indent=2)+'\n')
     gate=json.loads((root/'GO_NO_GO.json').read_text());gate.update(updated_utc=now,
         fixed_endpoints_complete=dict(phase1=p1complete,phase2=p2complete,

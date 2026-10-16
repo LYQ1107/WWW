@@ -61,12 +61,27 @@ def main():
         audit.update(epoch=epoch,scientific_success=False,online_admitted=False,
             families=dict(S0='Old frozen300, historical negative masks',S1='Same old300 schedule refit under conservative canonical masks',
                 L1='Legacy Top8/latest4 preprocessing, full106800-query epoch under canonical masks',L2='Full native candidates/history,113415-query common epoch'),
-            causal_interpretation='S0 vs S1: canonical supervision policy change. S1 vs L1: preregistered coverage/order/epoch expansion under the same input and mask policies. L1 vs L2: training evidence/eligibility/update-count changes; not pure model effect.',
+            causal_interpretation='S0 vs S1: canonical supervision policy change. S1 vs L1: preregistered coverage/order/epoch expansion under the same input and mask policies. L1 vs L2: training evidence/eligibility/update-count and CPU vs GPU/CPU execution changes; not pure model or coverage effect.',
             qualifications=['All use complete identical exposed DEV12 native matrices at evaluation; no online mutated states.',
                 'Never select the best epoch; all1/3/5 published. Single seed and exposed single scene do not establish generalization.',
                 'Different update counts across S0/S1,L1,L2 are deliberate coverage controls, not equal-budget claims.'],
             input_csv_sha256={str(p):sha(p) for p in [old,canonical,full]+([native] if native.exists() else [])})
         (root/f'LEGACY_COVERAGE_COMPARISON_EPOCH{epoch}.json').write_text(json.dumps(audit,indent=2)+'\n')
+        if epoch==5:
+            baseline={tuple(k) for k in audit['methods']['C1']['fixed_keys']}
+            extras={arm:[list(k) for k in sorted({tuple(k) for k in audit['methods'][arm]['fixed_keys']}-baseline)] for arm in ['L1_C2','L1_C3','L1_C4']}
+            selected={tuple(k) for keys in extras.values() for k in keys};details=[]
+            for key in sorted(selected):
+                row=combined[key]
+                details.append({k:v for k,v in row.items() if k in ['key','person','positive_covered','source_primary_state'] or k.startswith(('C0_','C1_','L1_'))})
+            escalation={arm:sum(r['source_primary_state']=='missed_known_positive' and r[arm+'_accepted_id'] is not None and r[arm+'_primary'] is False for r in combined.values()) for arm in ['C1','L1_C2','L1_C3','L1_C4']}
+            case=dict(status='POSTHOC_REGISTERED_EPOCH5_LOCAL_CASE_DESCRIPTION',extra_fix_keys_over_C1=extras,
+                extra_fix_scene_person_groups=sorted({str((k[0],combined[k]['person'])) for k in selected}),cases=details,
+                original_misses_changed_to_known_wrong_acceptances=escalation,
+                C3_lost_C1_fix_keys=audit['comparisons']['L1_C3_vs_C1']['lost_fix_keys'],
+                input_csv_sha256=sha(full),scientific_success=False,online_admitted=False,
+                qualification='All extra C2/C3/C4 repairs overC1 at the fixed epoch5 are included, not selected favorable frames. Local ranking/assignment gains coexist with lost repairs, correctness-toUNKNOWN and new errors. Two queries from one person are not two independent groups and do not establish useful independent predictive value; no new training, scoring, tuning or online state mutation.')
+            (root/'LEGACY_EPOCH5_LOCAL_CASE_AUDIT.json').write_text(json.dumps(case,indent=2)+'\n')
     if summaries:
         with (root/'LEGACY_COVERAGE_ABLATIONS.csv').open('w') as f:
             w=csv.DictWriter(f,fieldnames=list(summaries[0]),lineterminator='\n');w.writeheader();w.writerows(summaries)

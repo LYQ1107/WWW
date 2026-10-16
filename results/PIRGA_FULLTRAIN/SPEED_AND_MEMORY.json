@@ -5,7 +5,7 @@
   "inference_added_latency_p50_ms": null,
   "inference_added_latency_p95_ms": null,
   "qualification": "Training RSS and head CPU probes are not complete-image online FPS. No new full online native run admitted.",
-  "training_observed_utc": "2026-10-15T23:46:46.498206+00:00",
+  "training_observed_utc": "2026-10-16T00:46:21.522929+00:00",
   "training_processes": {
     "P1": {
       "status": "COMPLETE",
@@ -14,10 +14,10 @@
       "epoch": 5
     },
     "P2": {
-      "status": "TRAINING_CPU",
-      "step": 455660,
+      "status": "COMPLETE_FIXED5EPOCHS",
+      "step": 567075,
       "epoch": 5,
-      "CPU_wall_seconds": 10003.013572148979,
+      "CPU_wall_seconds": 12174.096862643957,
       "peak_RSS_bytes": 3597139968
     },
     "ordinary": {
@@ -35,10 +35,21 @@
       "peak_RSS_bytes": 3606335488
     },
     "legacy_coverage": {
-      "status": "FULL_LEGACY_TRAINING_CPU",
-      "step": 350400,
-      "epoch": 4,
-      "CPU_wall_seconds": 3783.2359670475125
+      "status": "COMPLETE_CANONICAL300_AND_FULL5EPOCHS",
+      "step": 534000,
+      "epoch": 5,
+      "CPU_wall_seconds": 5313.479702606797
     }
-  }
+  },
+  "online_peak_GPU_memory_bytes": null,
+  "online_CPU_wall_hours": null,
+  "online_GPU_wall_hours": null,
+  "frozen_GMT_parameters": 53515309,
+  "additional_parameters_per_individual_model": {
+    "C1": 0,
+    "original_CandidatePredictor": 38080,
+    "new_forecast_head_allocated": 38225,
+    "ordinary_DecisionMLP": 38204
+  },
+  "parameter_qualification": "Individual independently trained heads, not simultaneous deployment. Actual inactive camera/time/variance parameter differences are in frozen protocols; parameter counts do not establish full image FPS."
 }

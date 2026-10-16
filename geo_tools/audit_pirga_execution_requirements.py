@@ -2,7 +2,7 @@
 import csv,datetime,json
 from pathlib import Path
 import torch
-from pirga_indexed_store import sha
+from pirga_indexed_store import sha,StoreReader
 from cv_pil_native_handoff import safe_torch_load
 
 
@@ -85,12 +85,41 @@ def main():
         path=repo/'docs/PIRGA_FULLTRAIN'/name;output['deliverables'][name]=dict(exists=path.exists(),sha256=sha(path) if path.exists() else None,existence_alone_proves_content_complete=False)
     admission=root/'FULLTRAIN_ADMISSION.json';data=json.loads(admission.read_text())
     output['asset_admission']=dict(status=data['status'],actual_queries=data['actual_queries'],fit_scenes=data['fit_scenes'],sha256=sha(admission),official_TEST_in_scope=False)
+    native_protocol=json.loads((root/'PHASE1_MATCHED_PROTOCOL.json').read_text());binding=native_protocol['admission']
+    if sha(admission)!=binding['sha256'] or sha(binding['path'])!=binding['sha256']:raise ValueError('Full admission bytes changed')
+    stores=[];queries=0
+    for scene,spec in data['stores'].items():
+        reader=StoreReader(spec['root'],spec['manifest_sha256']);manifest=reader.manifest
+        count=reader.db.execute('SELECT COUNT(*) FROM queries').fetchone()[0];queries+=count
+        if Path(data['supervision']['path']).resolve().is_relative_to(Path(spec['root']).resolve()):raise ValueError('Offline GT placed inside actor store')
+        stores.append(dict(scene=int(scene),actual_primary_queries=count,manifest_sha256=spec['manifest_sha256'],artifact_checksums_verified=len(manifest['artifacts']),native_feature_dim=manifest['native_feature_dim'],GT_in_input_store=manifest['GT_in_input_store']))
+        reader.db.close();reader.vectors._mmap.close()
+    if {v['scene'] for v in stores}!={4,5,6,7,8,9,13,17,20,21,24} or queries!=154911:raise ValueError('Full input scope changed')
+    cache_spec=native_protocol['cache']
+    if sha(cache_spec['path'])!=cache_spec['sha256']:raise ValueError('Actor cache manifest changed')
+    cache=json.loads(Path(cache_spec['path']).read_text())
+    if cache['GT_in_cache'] is not False or sha(cache['calls_path'])!=cache['calls_sha256']:raise ValueError('Actor cached calls changed')
+    for key in ['supervision','ranking_eligibility','prediction_eligibility']:
+        spec=data[key]
+        if sha(spec['path'])!=spec['sha256']:raise ValueError('Frozen offline target/domain changed '+key)
+    output['current_fit_input_integrity']=dict(status='PASS_FRESH_ALL11_STORES_AND_ACTOR_CACHE_HASHES',queries=queries,stores=stores,
+        actor_cache_manifest_sha256=cache_spec['sha256'],actor_calls_sha256=cache['calls_sha256'],offline_supervision_sha256=data['supervision']['sha256'],
+        qualification='Rechecks immutable bytes and scope of the previously admitted complete inputs. StoreReader validates every store artifact,1152 dimension and GT-free schema. GT bytes hashed offline only; no raw GT rematching or new tracker inference.')
     output['conditional_obligations']=dict(learned_reliability='PENDING_FINAL_PHASE2_GATE',predictive_margin_and_full_PIRGA='PENDING_FINAL_PHASE2_GATE',
         full_native_online='NOT_ADMITTED_AT_COMPLETED_ENDPOINTS',full24_OOF='NOT_RUN_SCOPE_AND_SEPARATE_RESOURCE_REVIEW_REQUIRED',
         full24_final_fit='NOT_RUN_REQUIRES_LOCKED_METHOD_AND_VALIDATION_PLAN',second_seed='NOT_RUN_NO_INDEPENDENT_GENERALIZATION_CLAIM')
+    final=root/'FINAL_STAGE_GATE_DECISION.json'
+    if final.exists():
+        decision=json.loads(final.read_text())
+        if decision['status']!='STOP_PIRGA_NO_PREDICTION_SPECIFIC_GAIN' or not all(v['status']=='PASS_FIXED_FIT_AND_REPLAYS' for v in output['fixed_families'].values()):raise ValueError('Final stop conflicts with actual fixed evidence')
+        output['conditional_obligations']=decision['conditional_not_run']
+        output['status']='ALL_FIXED_INTEGRITY_PASS_FINAL_GATE_RECORDED_MANUAL_REVIEW_REQUIRED'
+        output['final_stage_gate_sha256']=sha(final)
     output['limitations']=['Checkpoint/coverage integrity and complete replay scope do not themselves certify scientific value.',
         'Final audit must inspect objectives, supervision contract, old evidence preservation, GT separation, gate and report content.',
         'Conditional phases require explicit gate decisions after all fixed endpoints. No goal completion or online metrics inferred here.']
+    review=repo/'docs/PIRGA_FULLTRAIN/FINAL_REQUIREMENT_REVIEW.md'
+    if review.exists():output['separate_author_requirement_review']=dict(path=str(review.relative_to(repo)),sha256=sha(review),content_requires_author_review_not_certified_by_this_hash=True)
     path=root/'EXECUTION_REQUIREMENTS_AUDIT.json';path.write_text(json.dumps(output,indent=2)+'\n')
     print(json.dumps(dict(families={k:v['status'] for k,v in output['fixed_families'].items()},goal_completion_proven=False)))
 
