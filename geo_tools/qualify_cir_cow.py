@@ -62,7 +62,8 @@ def probes(out):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--out',type=Path,required=True)
     p.add_argument('--ledger',type=Path);p.add_argument('--probe-only',action='store_true')
-    p.add_argument('--gpu',type=int,default=8);a=p.parse_args()
+    p.add_argument('--gpu',type=int,default=8)
+    p.add_argument('--complete-reference',type=Path);a=p.parse_args()
     if a.probe_only:
         probes(a.out);return
     if not a.ledger or a.out.exists():raise ValueError('Fresh output and existing CIR ledger required')
@@ -82,10 +83,12 @@ def main():
         if not running and not used:break
         if time.monotonic()-start>21660:raise TimeoutError('Engineering qualification queue expired; no restart')
         time.sleep(15)
+    stage='P2_COW_COMPLETE_SCENE_ENGINEERING_V1' if a.complete_reference else 'P2_COW_REAL_NATIVE_ENGINEERING_V1'
+    probe_command=([sys.executable,'geo_tools/verify_cir_cow_complete.py','--reference-root',str(a.complete_reference),'--out',str(a.out)] if a.complete_reference else [sys.executable,'geo_tools/qualify_cir_cow.py','--probe-only','--out',str(a.out)])
     command=[sys.executable,'geo_tools/run_cir_guarded.py','--ledger',str(a.ledger),
-        '--stage','P2_COW_REAL_NATIVE_ENGINEERING_V1','--gpu',str(a.gpu),'--seconds','3600',
+        '--stage',stage,'--gpu',str(a.gpu),'--seconds','3600',
         '--log',str(queued/'probe.log'),'--cwd',str(ROOT),'--source-commit',head,
-        '--',sys.executable,'geo_tools/qualify_cir_cow.py','--probe-only','--out',str(a.out)]
+        '--',*probe_command]
     code=subprocess.call(command,cwd=ROOT)
     save_json(queued/'STATE.json',dict(status='COMPLETE' if code==0 else 'FAILED_EVIDENCE_RETAINED',
         pid=os.getpid(),exit_code=code,source_commit=head,scientific_success=False))
