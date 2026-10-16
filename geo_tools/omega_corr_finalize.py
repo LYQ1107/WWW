@@ -18,6 +18,8 @@ def main():
     states=dict(TOKEN_CORRESPONDENCE_EVIDENCE='REAL_TOKEN_INTERFACE_PASS; DISCRIMINATIVE_ADVANTAGE_GATE_NOT_PASSED',UNIQUE_OMEGA_EVIDENCE='NO_UNIQUE_OMEGA_CORRESPONDENCE_EVIDENCE',NATIVE_GMT_CORRECTION='NOT_EXECUTED_GATE_B_FAILED',FULL_TRACKING_EFFICIENCY='NOT_EXECUTED / NOT_MEASURED')
     shutil.copyfile(RUNTIME/'derived_candidate_scores_v1.csv',results/'omega_corr_candidate_scores.csv')
     shutil.copyfile(RUNTIME/'paired_query_results_v1.csv.gz',results/'omega_corr_query_results.csv.gz')
+    for filename in ['geometry_support_v1.jsonl.gz','native_appearance_candidates_v1.jsonl.gz','native_prior_canonical2_v1.jsonl.gz']:shutil.copyfile(RUNTIME/filename,results/('omega_corr_'+filename))
+    write(results/'omega_corr_supporting_measurements_v1.json',{n:load(RUNTIME/n) for n in ['geometry_support_v1.json','native_appearance_v1.json','native_prior_canonical2_v1.json','final_asset_recheck_v1.json']})
     for src,dest in [('candidate_values_v1.npz','omega_corr_candidate_values.npz'),('candidate_values_v1.json','omega_corr_candidate_values_index.json')]:shutil.copyfile(RUNTIME/src,results/dest)
     for p in ['evaluation_v1.json','control_review_v1.json','cycle_audit_v1.json']:
         with gzip.open(results/('omega_corr_'+p+'.gz'),'wb') as f:f.write((RUNTIME/p).read_bytes())
