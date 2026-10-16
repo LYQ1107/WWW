@@ -1,0 +1,86 @@
+{
+  "status": "PASS_REAL_PREFIX_COW_ENGINEERING",
+  "checks": {
+    "RAW_PASSIVE_predictions": true,
+    "RAW_PASSIVE_states": true,
+    "RAW_PASSIVE_rng": true,
+    "RAW_PASSIVE_costs": true,
+    "GUARD_FAULT_RECOVERY_predictions": true,
+    "GUARD_FAULT_RECOVERY_states": true,
+    "GUARD_FAULT_RECOVERY_rng": true,
+    "GUARD_FAULT_RECOVERY_costs": true,
+    "CIR_GUARD_OFFICIAL_raw_predictions.json": true,
+    "CIR_GUARD_OFFICIAL_stock_predictions.json": true,
+    "CIR_GUARD_CAUSAL_raw_predictions.json": true,
+    "CIR_GUARD_CAUSAL_stock_predictions.json": true
+  },
+  "evidence": {
+    "guard_fault_full": {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/cow_qualification_v1/guard_fault_full/RESULT.json",
+      "sha256": "f6ebcb4308930f5da6ed9b92c6d8963cfe1227d4993cca4c0d25078b5beeaf22",
+      "status": "PASS_REAL_GUARD_COMMIT_ROLLBACK_FUTURE"
+    },
+    "guard_prefix_full": {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/cow_qualification_v1/guard_prefix_full/RESULT.json",
+      "sha256": "4279f2f673e70e83e98788fad0832ebefe5ae63fe7d04657d1861b80912d624e",
+      "status": "PASS_REAL_PREFIX_GUARD_OFFICIAL_CAUSAL"
+    },
+    "guard_fault_cow_engineering": {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/cow_qualification_v1/guard_fault_cow_engineering/RESULT.json",
+      "sha256": "1943dbbb91c8a8feb9c176bb1ed54beebfc74d0f5f35b9a5630e35d3507ea136",
+      "status": "PASS_REAL_GUARD_COMMIT_ROLLBACK_FUTURE"
+    },
+    "guard_prefix_cow_engineering": {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/cow_qualification_v1/guard_prefix_cow_engineering/RESULT.json",
+      "sha256": "53fe98cc76a72bb8f50f517055727e2d40ed8ec76cc651e9692fbe2efeb0f7b7",
+      "status": "PASS_REAL_PREFIX_GUARD_OFFICIAL_CAUSAL"
+    },
+    "risk_mlp_fault_cow": {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/cow_qualification_v1/risk_mlp_fault_cow/RESULT.json",
+      "sha256": "0b61950301f2f6ae65b6f0744f90d6e7214296c521059ee13f3a9db89bfedd0f",
+      "status": "PASS_REAL_GUARD_COMMIT_ROLLBACK_FUTURE"
+    },
+    "risk_grouped_fault_cow": {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/cow_qualification_v1/risk_grouped_fault_cow/RESULT.json",
+      "sha256": "2deeaaa1acb06502e68c8c64d0528566dbdb843af5849027cca72784453e338b",
+      "status": "PASS_REAL_GUARD_COMMIT_ROLLBACK_FUTURE"
+    },
+    "off_prefix": {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/cow_qualification_v1/off_prefix/RESULT.json",
+      "sha256": "c937e9595e3a31156070f5c44bd2c210e78a480b6068dff41b78cff54d63e3d3",
+      "status": "PASS_REAL_PREFIX_OFFICIAL_CAUSAL"
+    }
+  },
+  "GT_in_inference": false,
+  "scientific_success": false,
+  "full_video_qualified": false,
+  "formal_method_admitted": false,
+  "source_commit": "e744d71f4f03c3a6090e6d180224b2ed07d52c7d",
+  "source_result": {
+    "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/cow_qualification_v1/RESULT.json",
+    "sha256": "b476b91c4c166b4391f7dd3a406bd61d8252a534db81c3b162f3033b91119cd1"
+  },
+  "resource_stage": {
+    "stage": "P2_COW_REAL_NATIVE_ENGINEERING_V1",
+    "status": "COMPLETE",
+    "device_physical_index": 8,
+    "maximum_process_seconds": 3600,
+    "command": [
+      "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+      "geo_tools/qualify_cir_cow.py",
+      "--probe-only",
+      "--out",
+      "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/cow_qualification_v1"
+    ],
+    "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/cow_qualification_v1_queue/probe.log",
+    "start_UTC": "2026-10-16T16:30:48.211053+00:00",
+    "supervisor_pid": 11543,
+    "source_worktree": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/cow_qualification_v1",
+    "source_commit": "e744d71f4f03c3a6090e6d180224b2ed07d52c7d",
+    "child_pid": 11550,
+    "elapsed_seconds": 270.1308295428753,
+    "exit_code": 0,
+    "wall_seconds": 274.1095582395792,
+    "conservative_GPU_wall_hours": 0.07614154395543866
+  }
+}
