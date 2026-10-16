@@ -180,9 +180,10 @@ def main():
              detector_sources=detector_sources, no_GT_input=True, unchanged_GMT_no_inference=True,
              no_cross_time_propagation=True, inference_seed=20261016,
              torch=torch.__version__, torch_cuda=torch.version.cuda, numpy=np.__version__, opencv=cv2.__version__,
-             inference_precision='official internal autocast with fp32 camera/depth heads; actual device-supported dtype',
+             inference_precision='official autocast=False constructor plus explicit native-supported outer AMP; original fp32 camera/depth head guards retained',
              hardware=dict(name=torch.cuda.get_device_name(), capability=list(torch.cuda.get_device_capability()),
-                           bf16_supported=torch.cuda.is_bf16_supported(), aggregator_dtype='bf16' if torch.cuda.is_bf16_supported() else 'fp16'),
+                           bf16_reported_including_emulation=torch.cuda.is_bf16_supported(),
+                           aggregator_dtype=str(adapter.amp_dtype)),
              official_416_status='BLOCKED_WEIGHT_ACCESS' if args.resolution == 512 else 'LOADED',
              main_scientific_goal_complete=False, provenance=source))
 

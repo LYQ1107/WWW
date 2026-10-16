@@ -6,6 +6,7 @@ import sys
 import tempfile
 import types
 import unittest
+from unittest.mock import patch
 import numpy as np
 from PIL import Image
 from omega_common import ROOT, RUNTIME
@@ -148,6 +149,13 @@ class Tests(unittest.TestCase):
                 adapter.OmegaAdapter(SOURCE, checkpoint)
         with self.assertRaisesRegex(ValueError, 'exactly two'):
             adapter.preprocess_pair(SOURCE, [])
+
+    def test_V100_emulated_bf16_does_not_select_bf16_AMP(self):
+        import torch
+        with patch('torch.cuda.get_device_capability', return_value=(7, 0)), patch('torch.cuda.is_bf16_supported', return_value=True):
+            self.assertEqual(adapter.native_autocast_dtype(), torch.float16)
+        with patch('torch.cuda.get_device_capability', return_value=(8, 0)), patch('torch.cuda.is_bf16_supported', return_value=True):
+            self.assertEqual(adapter.native_autocast_dtype(), torch.bfloat16)
 
 
 if __name__ == '__main__':

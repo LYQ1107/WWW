@@ -46,6 +46,14 @@ def official_api(source):
     return load_fn, encoding_to_camera
 
 
+def native_autocast_dtype(device='cuda:0'):
+    import torch
+    # torch2.6 is_bf16_supported() includes emulation by default and returns
+    # True on this V100. Native BF16 tensor cores require compute capability8+.
+    native = torch.cuda.get_device_capability(device)[0] >= 8 and torch.cuda.is_bf16_supported()
+    return torch.bfloat16 if native else torch.float16
+
+
 @dataclass(frozen=True)
 class PixelMapping:
     original_width: int
@@ -147,7 +155,10 @@ class OmegaAdapter:
             raise ValueError('weight bytes do not match the official Hugging Face LFS SHA256')
         self.load_fn, self.decode = official_api(source)
         from vggt_omega.models import VGGTOmega
-        self.model = VGGTOmega().eval().requires_grad_(False)
+        self.amp_dtype = native_autocast_dtype(device)
+        # Official constructor option; keep FP32 head guards and all parameters.
+        # Explicit outer AMP avoids the official helper selecting emulated BF16.
+        self.model = VGGTOmega(autocast=False).eval().requires_grad_(False)
         state = torch.load(checkpoint, map_location='cpu', weights_only=True)
         self.model.load_state_dict(state, strict=True)
         self.state_keys = len(state)
@@ -165,7 +176,8 @@ class OmegaAdapter:
             images, mappings = preprocess_pair(self.source, image_paths, self.resolution)
             with torch.inference_mode():
                 self.calls_attempted += 1
-                predictions = self.model(images.to(self.device))
+                with torch.autocast('cuda', dtype=self.amp_dtype):
+                    predictions = self.model(images.to(self.device))
                 extrinsics, intrinsics = self.decode(predictions['pose_enc'], predictions['images'].shape[-2:])
             torch.cuda.synchronize(self.device)
             self.calls_completed += 1
