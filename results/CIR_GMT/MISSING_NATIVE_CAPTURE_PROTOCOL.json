@@ -1,0 +1,41 @@
+{
+  "status": "REGISTERED_PREFIX_ONLY_NO_FULL_CAPTURE_ADMISSION",
+  "missing_native_videos": [
+    1,
+    2,
+    3,
+    10,
+    11,
+    14,
+    15,
+    16,
+    18,
+    19,
+    22,
+    23
+  ],
+  "existing12_reused": true,
+  "peer_error_mining_repeated": false,
+  "reference_runs": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_runs.json",
+  "reference_runs_sha256": "29817b18e42cf40889bde78b29ebf98eb8b765f57ae6b717a116ea19dc1b0e92",
+  "prefix_video": 1,
+  "prefix_groups": 40,
+  "GPU": 9,
+  "maximum_GPU_wall_hours": 0.1,
+  "maximum_process_seconds": 300,
+  "concurrency_rule": "All CIR tasks stay on6/7/8/9; batch uses only empty cards, so concurrent prefix on9 leaves at most3 batch workers. No preemption.",
+  "new_storage_limit_bytes": 8589934592,
+  "disk_reserve_bytes": 32212254720,
+  "storage": "No videos, datasets or teacher outputs; actual1152 FP32 query/reference vectors, true Bank variants, exact FP32 native joint scores, physical detector provenance and commit links.",
+  "admission": [
+    "All physical input image SHAs match own sealed Original",
+    "Frozen GMT checkpoint/config equal",
+    "Prefix raw output exact own complete Original subset",
+    "Queries/commits exact physical observation coverage",
+    "Sealed indexed StoreReader validates every retained byte",
+    "No GT or supervision in collector"
+  ],
+  "full_training_not_admitted": true,
+  "CPU_regression": "108 CIR tests pass; collector compile passes; actual GPU prefix pending",
+  "known_reference_limit": "Own formal Original actors lack passive call traces; never claim unavailable per-call original trace equality."
+}
