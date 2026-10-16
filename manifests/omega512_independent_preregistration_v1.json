@@ -1,0 +1,108 @@
+{
+  "schema": "omega512-independent-preregistration/v1",
+  "utc": "2026-10-16T09:16:22.400183+00:00",
+  "status": "PREREGISTERED_BEFORE_NEW_MATCHER_RESULTS",
+  "user_instruction": "先用已核验的512原版权重作为单独研究继续推进，不等416，也不冒充416复现结果。先注册后续有限实验，保留固定门槛和失败样本，只有可靠几何和真实身份净纠错证据通过后才接入GMT。",
+  "research_role": "INDEPENDENT_512_STUDY_NOT_416_REPRODUCTION",
+  "weight": {
+    "path": "/data1/liuyeqiang/WWW_omega_runtime_20261016/weights/vggt_omega_1b_512.pt",
+    "sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+    "resolution": 512,
+    "mode": "balanced",
+    "patch_size": 16,
+    "frozen": true
+  },
+  "parent_commit": "2118c9ec864fe67a41ad66674086e726086f5d68",
+  "frozen_inputs": {
+    "manifests/omega_fixed_pair_cohort_v1.json": "0a50e7d37a803d528daee0bc811770bc7f4520accbf7405af4385f0749c74665",
+    "results/omega_distinct_heldout_comparison_v1.json": "bb01474282f27d5959d830e01478e030bd08436d93accf10e85bd8a9a46280fe",
+    "results/omega_numeric_evidence_v1.json": "a368aa0a4e1dbe6993941f05e038cb94fb662e4598599ad6a72bdfae2d92595e",
+    "results/omega_public_512_acquisition_v1.json": "cbb5d713dc08b13a1db30d1b920cb5cfd9ddbd90d9498e6d932458b8bccf8bb7"
+  },
+  "prior_observed_results": {
+    "pair_count": 24,
+    "omega512_AB_valid": 2,
+    "omega512_BA_valid": 2,
+    "scenes": [
+      8
+    ],
+    "at_least20_unique_heldout_points": 3,
+    "development_labels_already_viewed": true
+  },
+  "arms": [
+    {
+      "id": "C0_retained_sift3000",
+      "method": "sift",
+      "nfeatures": 3000,
+      "ratio": 0.75,
+      "mutual": false,
+      "execution": "REUSE_EXISTING_CORRESPONDENCES_AND_METRICS_NO_REPEAT"
+    },
+    {
+      "id": "C1_orb3000",
+      "method": "orb",
+      "nfeatures": 3000,
+      "ratio": 0.75,
+      "mutual": false,
+      "execution": "NEW_CPU_MATCHER_ON_SAME_FIXED24"
+    },
+    {
+      "id": "C2_sift6000_mutual",
+      "method": "sift",
+      "nfeatures": 6000,
+      "ratio": 0.75,
+      "mutual": true,
+      "execution": "NEW_CPU_MATCHER_ON_SAME_FIXED24"
+    }
+  ],
+  "common_protocol": {
+    "native_detector_masks": "existing actual OFF detections; original4px margin, noGT masks",
+    "correspondence_dedup": "existing distinct_matches, both endpoints unique at.001px, coordinate order, noresidualfilter",
+    "fit_eval": "original-camera-A4x4 spatial checkerboard, traditionalRANSAC fits onlyfit, allmodels use sameeval",
+    "background_gate": {
+      "min_eval_matches": 20,
+      "inlier_pixel_threshold": 12,
+      "min_inlier_ratio": 0.25,
+      "max_median_original_pixels": 12,
+      "min_full_original_area_coverage": 0.01
+    },
+    "model_F": "reuse all48 existingAB/BA Omega512 and48 oldVGGT same-call F; no oldmodel replay",
+    "failed_pairs": "all24 kept for every arm, no overlap-based filtering"
+  },
+  "gates": {
+    "pilot_expansion": "An individual preregistered arm must pass Omega512 background gate in BOTH AB andBA on at least3 distinct synchronized groups across at least2fit scenes. No union of per-arm valid sets. Report every arm.",
+    "expansion_scope": "Only if pilot gate passes: remaining42 uniform and30 hard TRAIN pairs already fixed in96cohort; no rerun first24; same matched arms andoldVGGT/traditional controls, max72 newpairs.",
+    "identity_admission": "Require at least3 jointly AB/BA reliable groups across2fit scenes among NEW42 uniform pairs in one same admitted arm; hard30 remain TRAIN diagnostics. Then probe only synchronous actual legal native candidates and certify unknowns offline.",
+    "online_admission": "Need reliablegeometry AND actual joint solver/threshold/Bank/final-submit counterfactual evidence with known corrections greater than known harms, involving at least2scene-qualified people and2scenes; compare G0/G1/G2/G3/G4conditional/G5 plusNativePrior; no rank-only admission.",
+    "depth": "Only after reliableF; confidence remains uncalibrated until independent residual calibration, no automaticdepthgate.",
+    "stop": "If neither new arm passes pilot gate, close this finite512camera-support experiment as insufficient reliable multiscean support. No96expansion, identity training, onlinefusion orfullvideo."
+  },
+  "conditional_solver_protocol": {
+    "lambda_geo": [
+      0,
+      0.1,
+      0.3
+    ],
+    "residual_abs_bound": 1,
+    "legal_reference": "differentphysicalcamera, exactlycurrentgroup, already causal-published native observation in currentlegalhistory",
+    "no_GT_or_future_input": true,
+    "actual_solver_not_rowtop1": true,
+    "unknown_histories_preserved": true,
+    "NativePrior_control": "use existing fixed nativeprior source; no dev tuning",
+    "GMT_core": "nochanges before identitynetgain gate, originalGTA/Hungarian/history/IDorder retained"
+  },
+  "resources": {
+    "new_GPU_calls_phaseA": 0,
+    "max_new_Omega_forward_calls_conditional": 144,
+    "max_new_old_VGGT_forward_calls_conditional": 144,
+    "max_additional_GPU_visible_process_wall_hours": 0.5,
+    "additional_research_cache_cap_bytes": 2147483648,
+    "maximum_project_GPUs": 4,
+    "first_GPU_if_needed": "one verified idle member of0/4/5/6",
+    "weights_and_environment": "existing, accounted separately",
+    "CPU_threads": 4
+  },
+  "model_or_threshold_selection": "These arms are fixed after observing originalSIFT24. This is development diagnosis, not blind validation; no per-pair best-arm oracle or lowered threshold. A second42uniform check is required before identity admission.",
+  "official416": "SEPARATE_NOT_EXECUTED_NO_LONGER_BLOCKS_THIS512STUDY",
+  "publication": "commit/push this preregistration before running newarms; publish allresults, costs, sourceSHAs, failures and conditionalNOT_EXECUTED branches"
+}
