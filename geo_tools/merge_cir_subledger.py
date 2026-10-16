@@ -21,6 +21,8 @@ def main():
     names={s['stage'] for s in parent['stages']}
     if any(s['stage'] in names for s in child['stages']):raise ValueError('Duplicate existing stage identity')
     used=child['measured_GPU_wall_hours']
+    stage_cost=sum(s.get('conservative_GPU_wall_hours',s.get('GPU_wall_hours_including_live',-1)) for s in child['stages'])
+    if stage_cost<0 or abs(stage_cost-used)>1e-9:raise ValueError('Terminal stage costs disagree with child total')
     if used<0 or used>child['allocated_total_GPU_wall_hours'] or parent['measured_GPU_wall_hours']+used>parent['allocated_total_GPU_wall_hours']:
         raise ValueError('Recorded cost exceeds existing registered credit')
     evidence=dict(path=str(a.child.resolve()),sha256=digest,GPU_wall_hours=used,new_GPU_credit=0)
