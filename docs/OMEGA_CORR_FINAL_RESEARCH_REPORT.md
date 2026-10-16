@@ -50,3 +50,23 @@
 小目标补救已执行：固定32组224/336同像素crop，Ω/DINO各686次真实独立forward。机制子集73查询、26条有可认证共同正负；Ω没有稳健优于同crop DINO，更多编码patch不等于新增原始细节。所有主配置、安慰剂、失败及未知保留。
 
 复现：使用final_audit内每个receipt记录的精确source_commit、command、环境和输入SHA，在新的输出目录执行对应脚本；不要覆盖原实验。冻结原始候选分数、共同候选索引、逐query输出已发布。独立CPU复算命令：`/data1/liuyeqiang/WWW_omega_runtime_20261016/venv/bin/python geo_tools/omega_corr_reproduce_rows.py --output /tmp/omega_corr_independent_rows.json`（新输出文件，禁止覆盖原结果）。README式细节见SOURCE_AUDIT、TOKEN_INTERFACE、DATA_AND_COVERAGE、MATCHING_RESULTS、CONTROL_EXPERIMENTS、ACTUAL_SOLVER_RESULTS、EFFICIENCY_REPORT、REVIEWER_AUDIT。
+
+
+目标区域及安慰剂的共同候选检查（Layer11，机制场景）：
+
+| 对照 | 共同正负查询 | Ω正确 | 对照正确 | Ω减对照R1的95%聚类区间 |
+|---|---:|---:|---:|---|
+| FULL_IMAGE_MULTIVIEW|omega|F0|11|M0|primary|0 | 122 | 50 | 49 | [-0.0353046218487395, 0.04878475183353232] |
+| FULL_IMAGE_MULTIVIEW|omega|F1|11|M0|primary|0 | 122 | 50 | 48 | [-0.017551691729323308, 0.047262992125984234] |
+| FULL_IMAGE_MULTIVIEW|omega|F3|11|M0|primary|0 | 122 | 50 | 49 | [-0.06557676199593156, 0.06870887075546196] |
+| FULL_IMAGE_MULTIVIEW|omega|N1|11|M0|primary|0 | 122 | 50 | 47 | [-0.024395241903238704, 0.06382978723404255] |
+| FULL_IMAGE_MULTIVIEW|omega|N2|11|M0|primary|0 | 111 | 47 | 28 | [0.008378462496109556, 0.3529718137254902] |
+| FULL_IMAGE_MULTIVIEW|omega|F2|11|M1|primary|0 | 122 | 50 | 45 | [-0.08333333333333333, 0.13513513513513514] |
+| FULL_IMAGE_MULTIVIEW|omega|F2|11|M2|primary|0 | 78 | 41 | 28 | [0.028542074363992174, 0.36735444177671067] |
+| FULL_IMAGE_MULTIVIEW|omega|F2|11|M0|ROI_mean|0 | 122 | 50 | 51 | [-0.14301705756929636, 0.0938100961538461] |
+| FULL_IMAGE_MULTIVIEW|omega|F2|11|M0|ROI_align|0 | 122 | 50 | 50 | [-0.1, 0.10241949104830536] |
+| FULL_IMAGE_MULTIVIEW|omega|F2|11|M0|random_local_assignment|0 | 122 | 50 | 48 | [-0.06782583284628872, 0.09590792341220421] |
+| FULL_IMAGE_MULTIVIEW|old_vggt|old_vggt|11|M0|primary|0 | 97 | 43 | 41 | [-0.06897405257767156, 0.10231331168831166] |
+| FULL_IMAGE_MULTIVIEW|dino|dino|23|M0|primary|0 | 97 | 43 | 50 | [-0.22448979591836735, 0.0744172128811627] |
+
+保留部分正结果：目标M0在共同78条正负查询中41条正确、背景环28条；在共同111条查询中真实区域47条正确、打乱区域28条。这支持局部区域具有一定身份区分信息，但未证明Ω联合输入独有：对F3、N1、ROI及随机配对的区间仍跨0；DINO和NativeGMT强对照未被超越。以上区间未做多重比较校正，不提升为新的主假设成功。
