@@ -1,0 +1,57 @@
+{
+  "status": "READONLY_REUSE_CHECK_NO_NEW_SCAN_OR_ADMISSION",
+  "observed_UTC": "2026-10-16T16:12:12.209188+00:00",
+  "current_missing_native_asset_video_ids": [
+    1,
+    2,
+    3,
+    10,
+    11,
+    14,
+    15,
+    16,
+    18,
+    19,
+    22,
+    23
+  ],
+  "peer_records": [
+    {
+      "path": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/full_train_audit_v1/scene1_full_v1/manifest.json",
+      "observed_status": "COMPLETE_FULL_CAUSAL_AUDIT",
+      "source_commit": "4d8eb79d2b74348f41ff5be2100f0181a94fdabf",
+      "source_tree_dirty": true,
+      "admission": "NOT_ADMITTED_FOR_COMPLETE_NATIVE_FEATURE_TRAINING",
+      "reason": "peer full causal audit, current release not complete12 missing-scene native feature store; mutable running records are not pinned as sealed training assets"
+    },
+    {
+      "path": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/full_train_audit_v1/scene2_full_v1/manifest.json",
+      "observed_status": "COMPLETE_FULL_CAUSAL_AUDIT",
+      "source_commit": "4d8eb79d2b74348f41ff5be2100f0181a94fdabf",
+      "source_tree_dirty": true,
+      "admission": "NOT_ADMITTED_FOR_COMPLETE_NATIVE_FEATURE_TRAINING",
+      "reason": "peer full causal audit, current release not complete12 missing-scene native feature store; mutable running records are not pinned as sealed training assets"
+    },
+    {
+      "path": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/full_train_audit_v1/scene3_full_v1/manifest.json",
+      "observed_status": "RUNNING_GT_NOT_READ",
+      "source_commit": "4d8eb79d2b74348f41ff5be2100f0181a94fdabf",
+      "source_tree_dirty": true,
+      "admission": "NOT_ADMITTED_FOR_COMPLETE_NATIVE_FEATURE_TRAINING",
+      "reason": "peer full causal audit, current release not complete12 missing-scene native feature store; mutable running records are not pinned as sealed training assets"
+    }
+  ],
+  "partial_context": {
+    "path": "/data1/liuyeqiang/WWW_omega_corr_runtime_20261016/native_context_full_v1/manifest.json",
+    "status": "MATCHED_NATIVE_CONTEXT_PARITY_PASS",
+    "pairs": 160,
+    "queries": 1895,
+    "precision": "Original GMT FP32 torch2.0 original eval jitter/RPCE restored; not Omega FP16 backend",
+    "admitted": false,
+    "reason": "1895 queries/160 context pairs, not complete missing12 videos; 266MB tensor not loaded"
+  },
+  "no_peer_process_or_file_modified": true,
+  "no_new_GT_semantics_read": true,
+  "no_video_download_or_recapture": true,
+  "conclusion": "Reuse existing sealed FIT12 assets. Do not count partial/mutable peer audits as final TRAIN24. Recheck an actual SHA-sealed complete release before scheduling any missing native feature capture."
+}
