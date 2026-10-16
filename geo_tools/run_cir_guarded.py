@@ -19,6 +19,7 @@ def main():
     p.add_argument('--ledger',type=Path,default=Path('results/CIR_GMT/RESOURCE_LEDGER.json'))
     p.add_argument('--stage',required=True);p.add_argument('--gpu',type=int,required=True)
     p.add_argument('--seconds',type=int,required=True);p.add_argument('--log',type=Path,required=True)
+    p.add_argument('--cwd',type=Path,default=Path.cwd());p.add_argument('--source-commit')
     p.add_argument('command',nargs=argparse.REMAINDER)
     a=p.parse_args();ledger=json.loads(a.ledger.read_text())
     if any(s['status'].startswith('RUNNING') for s in ledger['stages']):raise ValueError('Concurrent ledger writer not supported')
@@ -29,16 +30,20 @@ def main():
     if used:raise ValueError('Choose an idle GPU; no preemption authorized')
     cmd=a.command[1:] if a.command[:1]==['--'] else a.command
     if not cmd:raise ValueError('Missing actual command')
+    if a.source_commit:
+        if subprocess.check_output(['git','rev-parse','HEAD'],cwd=a.cwd,text=True).strip()!=a.source_commit or subprocess.check_output(['git','status','--porcelain'],cwd=a.cwd):
+            raise ValueError('Exact clean source snapshot required')
     a.log.parent.mkdir(parents=True,exist_ok=True)
     if a.log.exists():raise FileExistsError(a.log)
     stage=dict(stage=a.stage,status='RUNNING',device_physical_index=a.gpu,maximum_process_seconds=a.seconds,
         command=cmd,log=str(a.log.resolve()),start_UTC=datetime.datetime.now(datetime.timezone.utc).isoformat(),
         supervisor_pid=os.getpid())
+    stage.update(source_worktree=str(a.cwd.resolve()),source_commit=a.source_commit)
     ledger['stages'].append(stage);save(a.ledger,ledger)
     env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(a.gpu),OMP_NUM_THREADS='1',OPENBLAS_NUM_THREADS='1')
     t=time.monotonic();code=None
     with a.log.open('x') as stream:
-        process=subprocess.Popen(cmd,stdout=stream,stderr=subprocess.STDOUT,env=env,start_new_session=True)
+        process=subprocess.Popen(cmd,stdout=stream,stderr=subprocess.STDOUT,env=env,start_new_session=True,cwd=a.cwd)
         stage['child_pid']=process.pid
         try:
             while True:

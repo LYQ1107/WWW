@@ -3,7 +3,7 @@
   "historical_ledgers_modified": false,
   "maximum_concurrent_GPUs": 4,
   "initial_allocation_GPU_wall_hours": 1.0,
-  "measured_GPU_wall_hours": 0.5721396970893773,
+  "measured_GPU_wall_hours": 0.6433315363754,
   "stages": [
     {
       "stage": "P0_CPU_AND_REAL_PREFIX",
@@ -200,6 +200,35 @@
       "exit_code": 0,
       "wall_seconds": 247.20756009221077,
       "conservative_GPU_wall_hours": 0.06866876669228077
+    },
+    {
+      "stage": "P1_TEST_NET_FULL_OFF04",
+      "status": "COMPLETE",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 700,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "test_net.py",
+        "--config-file",
+        "configs/VISION_test.yaml",
+        "--num-gpus",
+        "1",
+        "--cir-run-spec",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_testnet_off_spec_v1.json",
+        "MODEL.WEIGHTS",
+        "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+        "OUTPUT_DIR",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_testnet_off_setup_v1"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p1_testnet_off_full04_v1.log",
+      "start_UTC": "2026-10-16T12:07:02.290742+00:00",
+      "supervisor_pid": 5539,
+      "child_pid": 5545,
+      "elapsed_seconds": 255.02257383614779,
+      "exit_code": 0,
+      "wall_seconds": 256.2906214296818,
+      "conservative_GPU_wall_hours": 0.07119183928602271
     }
   ],
   "storage_reserve_bytes": 32212254720,

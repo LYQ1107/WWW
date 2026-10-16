@@ -73,7 +73,15 @@ def run_loaded(a,cfg,model):
     records=video_records(train_data(),a.video);batch=CurrentImages(cfg,records)
     a.out.mkdir(parents=True);(a.out/'config.yaml').write_text(cfg.dump())
     source={str(p.relative_to(ROOT)):sha256(p) for p in (ROOT/'gtr/modeling/meta_arch/gtr_rcnn.py',
-        ROOT/'gtr/config.py',ROOT/'geo_tools/run_cir_online.py',*sorted((ROOT/'gtr/modeling/identity_revision').glob('*.py')))}
+        ROOT/'gtr/config.py',ROOT/'gtr/geometry/online_runner.py',ROOT/'gtr/data/datasets/mot.py',
+        ROOT/'test_net.py',ROOT/'geo_tools/run_cir_online.py',ROOT/'geo_tools/cir_official_driver.py',
+        ROOT/'geo_tools/cir_configuration.py',ROOT/'geo_tools/common.py',ROOT/'geo_tools/test_cir_native_commit.py',
+        *sorted((ROOT/'gtr/modeling/identity_revision').glob('*.py')))}
+    from cir_configuration import configuration_hashes,reference_configuration_hash
+    checkpoint_sha256=sha256(CHECKPOINT)
+    config_hashes=configuration_hashes(cfg,checkpoint_sha256)
+    if config_hashes['frozen_GMT_config_sha256']!=reference_configuration_hash(checkpoint_sha256):
+        raise ValueError('CIR comparison may not change GMT inference settings outside the CIR namespace')
     seed_all(20261014);torch.cuda.reset_peak_memory_stats()
     manifest=dict(status='RUNNING',split='train',video_id=a.video,method=a.method,
         seed=20261014,full_video=False,GT_in_inference=False,checkpoint_sha256=sha256(CHECKPOINT),
@@ -84,6 +92,7 @@ def run_loaded(a,cfg,model):
         qualification=dict(path=str(a.qualification),sha256=sha256(a.qualification)),
         inference_protocol='actual model.forward/sliding_inference_GMT with synchronized current image mapper; raw0 + stock50',
         parameter_count=sum(p.numel() for p in model.parameters()),new_learnable_parameters=0)
+    manifest.update(config_hashes)
     manifest['hardware']=dict(CUDA_VISIBLE_DEVICES=os.environ.get('CUDA_VISIBLE_DEVICES'),
         GPU_name=torch.cuda.get_device_name(),GPU_total_bytes=torch.cuda.get_device_properties(0).total_memory,
         torch=torch.__version__,torch_CUDA=torch.version.cuda)

@@ -42,7 +42,11 @@ def collect(source,split='train'):
             predictions[kind]=byview
         result[vid]=dict(run=run,scene=scene,gt=gt,lengths=lengths,predictions=predictions,raw_gt_sha256=rawsha,
                          manifest=dict(path=str(path),sha256=sha256(path)))
-        bindings.append(tuple(run[k] for k in ('method','checkpoint_sha256','config_sha256','seed','inference_protocol')))
+        scientific_config=run.get('protocol_config_sha256')
+        if scientific_config is None:
+            from cir_configuration import saved_configuration_hashes
+            scientific_config=saved_configuration_hashes(path.parent/'config.yaml',run['checkpoint_sha256'])['protocol_config_sha256']
+        bindings.append((run['method'],run['checkpoint_sha256'],scientific_config,run['seed'],run['inference_protocol']))
     if len(set(bindings))!=1:raise ValueError('Mixed method/weights/config/seed/inference protocol in one suite')
     return result
 

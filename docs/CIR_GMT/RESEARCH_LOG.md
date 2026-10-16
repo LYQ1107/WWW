@@ -15,3 +15,5 @@ Phase0完整TRAIN04（901同步组/1802实际图像）完成：Original源码/OF
 Phase1：Original官方forward在TRAIN04完整901组完成，raw3635条与完整Causal参照精确相同，真实图像7.78655FPS（含read/map/感知/关联/原生状态/后处理，未含模型初始化与评测）。C1接入前后43项CPU合同通过；一条新测试最初创建了长度不一致的fixture，日志保留，改正fixture后通过。新核心OFF/KEEP40组再验通过；C1官方/逐组40组真实图像通过独立CPU公式与全部实际求解/输出/RNG核验，无缺失来源回退。新核心完整OFF已启动。C1仍未有完整视频质量结果。预检从记录SHA的工作文件启动，随后commit封存确切版本；不将当时HEAD字段误写成全部执行源码，后续批量任务用干净固定source worktree。
 
 新核心OFF完整TRAIN04已完成，raw/stock与Original全视频逐项一致。第一次汇总门控误把仅Causal入口使用的online_runner.py当成官方actor报告必含源码，KeyError原日志保留；改为分别验证官方实际导入核心与两个前缀的Causal源码，未改变轨迹、阈值、成绩，v2通过。实现test_net.py显式--cir-run-spec输出驱动并校验DetectionCheckpointer实际加载的所有张量；默认入口不变。数据注册补传原JSON中的frame_id；未新增/推测时间。共享执行函数重构后CPU43项重跑通过，正式入口的完整OFF检查即将运行。
+
+正式test_net显式入口完整TRAIN04 OFF通过，raw/stock、全部图像SHA和归一化冻结GMT配置与Original精确一致；实际加载权重逐张量核验通过。46项CPU测试通过（新增输出目录/方法差异与GMT阈值不可更改的配置合同）。将从干净固定source worktree运行完整C1。
