@@ -1,0 +1,641 @@
+{
+  "status": "COMPLETE_DEV12_MIXED_UNSAFE_FOR_FINAL_SELECTION",
+  "scientific_success": false,
+  "all12_inference_complete": true,
+  "images_per_method": 30702,
+  "strict_metric_videos": [
+    1,
+    10,
+    11,
+    18,
+    19
+  ],
+  "metric_blocked_raw_GT_videos": [
+    2,
+    3,
+    14,
+    15,
+    16,
+    22,
+    23
+  ],
+  "raw_GT_modified": false,
+  "metric_formulas_modified": false,
+  "GT_in_inference": false,
+  "methods": {
+    "Original GMT": {
+      "all12_image_FPS": 6.236043021375462,
+      "metrics": {
+        "raw": {
+          "HOTA": 80.7487570792218,
+          "AssA": 81.4726003319329,
+          "DetA": 80.26755852102676,
+          "IDF1": 95.05796217205614,
+          "MOTA": 94.72950407729844,
+          "IDSW": 482,
+          "Frag": 211,
+          "CVIDF1": 95.05796217205614,
+          "CVMA": 94.78624580516511,
+          "FPS": 7.278460845535743,
+          "actual_evaluation_video_ids": [
+            1,
+            10,
+            11,
+            18,
+            19
+          ]
+        },
+        "stock": {
+          "HOTA": 81.05507217499988,
+          "AssA": 81.89549511179817,
+          "DetA": 80.45999971703776,
+          "IDF1": 95.63166429168099,
+          "MOTA": 95.7022194121557,
+          "IDSW": 41,
+          "Frag": 346,
+          "CVIDF1": 95.631664291681,
+          "CVMA": 95.70384060438046,
+          "FPS": 7.278460845535743,
+          "actual_evaluation_video_ids": [
+            1,
+            10,
+            11,
+            18,
+            19
+          ]
+        }
+      }
+    },
+    "C1": {
+      "all12_image_FPS": 6.167110639191567,
+      "metrics": {
+        "raw": {
+          "HOTA": 80.82212728384077,
+          "AssA": 81.6255522119274,
+          "DetA": 80.26184085205304,
+          "IDF1": 95.25157616432784,
+          "MOTA": 94.91269879869655,
+          "IDSW": 371,
+          "Frag": 211,
+          "CVIDF1": 95.25157616432784,
+          "CVMA": 94.83488157190799,
+          "FPS": 7.131073954875044,
+          "actual_evaluation_video_ids": [
+            1,
+            10,
+            11,
+            18,
+            19
+          ]
+        },
+        "stock": {
+          "HOTA": 81.0362738857522,
+          "AssA": 81.98884984817336,
+          "DetA": 80.32872912618501,
+          "IDF1": 95.6618446768667,
+          "MOTA": 95.51091872963377,
+          "IDSW": 48,
+          "Frag": 314,
+          "CVIDF1": 95.66184467686672,
+          "CVMA": 95.50119157628521,
+          "FPS": 7.131073954875044,
+          "actual_evaluation_video_ids": [
+            1,
+            10,
+            11,
+            18,
+            19
+          ]
+        }
+      }
+    }
+  },
+  "source_results": [
+    {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_dev_original_final_v1.json",
+      "sha256": "ef1a458e57ee729b3245c19e7a6e6400dee6a27d46f0a146b0b261a4a2d0f9fc"
+    },
+    {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_dev_c1_final_v1.json",
+      "sha256": "0e9634f27e16179347abb8b42c85064f1f774cb7e502e40633c6e75e5e4f2096"
+    },
+    {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_dev12_propagation_v1/RESULT.json",
+      "sha256": "2194b3863e8afbe13d479b4b90179c5ff8cc0712bfe373ad321d830a55505c74"
+    }
+  ],
+  "source_commit": "3e6d6c5d4f794772070b6cd1e80fc84447e9546a",
+  "delta_C1_minus_original": {
+    "raw": {
+      "HOTA": 0.0733702046189677,
+      "AssA": 0.15295187999450377,
+      "CVIDF1": 0.1936139922717075,
+      "IDF1": 0.1936139922717075,
+      "IDSW": -111,
+      "DetA": -0.005717668973716172,
+      "MOTA": 0.18319472139810955,
+      "Frag": 0,
+      "CVMA": 0.048635766742876285,
+      "FPS": -0.147386890660699
+    },
+    "stock": {
+      "HOTA": -0.018798289247683897,
+      "AssA": 0.09335473637518987,
+      "CVIDF1": 0.030180385185715863,
+      "IDF1": 0.030180385185715863,
+      "IDSW": 7,
+      "DetA": -0.1312705908527505,
+      "MOTA": -0.191300682521927,
+      "Frag": -32,
+      "CVMA": -0.20264902809525154,
+      "FPS": -0.147386890660699
+    }
+  },
+  "owner_diagnostic": {
+    "status": "COMPLETE_OFFLINE_CAUSAL_OWNER_DIAGNOSTIC",
+    "per_video": {
+      "1": {
+        "original": {
+          "native_global_IDs": 214,
+          "fixed_causal_owners": 7,
+          "mixed_native_IDs": 1,
+          "states": {
+            "UNANCHORED": 190,
+            "CORRECT": 4182,
+            "GT_UNKNOWN": 154,
+            "WRONG": 1
+          },
+          "error_episode_count": 1,
+          "longest_observed_wrong_camera_frames": 1
+        },
+        "candidate": {
+          "native_global_IDs": 107,
+          "fixed_causal_owners": 11,
+          "mixed_native_IDs": 4,
+          "states": {
+            "UNANCHORED": 158,
+            "CORRECT": 4214,
+            "GT_UNKNOWN": 154,
+            "WRONG": 1
+          },
+          "error_episode_count": 1,
+          "longest_observed_wrong_camera_frames": 1
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 155,
+          "CORRECT->CORRECT": 4179,
+          "UNANCHORED->CORRECT": 35,
+          "GT_UNKNOWN->GT_UNKNOWN": 154,
+          "WRONG->WRONG": 1,
+          "CORRECT->UNANCHORED": 3
+        }
+      },
+      "2": {
+        "original": {
+          "native_global_IDs": 169,
+          "fixed_causal_owners": 15,
+          "mixed_native_IDs": 2,
+          "states": {
+            "UNANCHORED": 256,
+            "CORRECT": 12419,
+            "GT_UNKNOWN": 423,
+            "WRONG": 740
+          },
+          "error_episode_count": 18,
+          "longest_observed_wrong_camera_frames": 454
+        },
+        "candidate": {
+          "native_global_IDs": 79,
+          "fixed_causal_owners": 17,
+          "mixed_native_IDs": 4,
+          "states": {
+            "UNANCHORED": 354,
+            "CORRECT": 12519,
+            "GT_UNKNOWN": 423,
+            "WRONG": 542
+          },
+          "error_episode_count": 5,
+          "longest_observed_wrong_camera_frames": 454
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 236,
+          "CORRECT->CORRECT": 12334,
+          "GT_UNKNOWN->GT_UNKNOWN": 423,
+          "CORRECT->UNANCHORED": 84,
+          "UNANCHORED->CORRECT": 18,
+          "WRONG->WRONG": 539,
+          "CORRECT->WRONG": 1,
+          "UNANCHORED->WRONG": 2,
+          "WRONG->UNANCHORED": 34,
+          "WRONG->CORRECT": 167
+        }
+      },
+      "3": {
+        "original": {
+          "native_global_IDs": 279,
+          "fixed_causal_owners": 36,
+          "mixed_native_IDs": 13,
+          "states": {
+            "UNANCHORED": 2395,
+            "GT_UNKNOWN": 3338,
+            "CORRECT": 28031,
+            "WRONG": 1500
+          },
+          "error_episode_count": 120,
+          "longest_observed_wrong_camera_frames": 315
+        },
+        "candidate": {
+          "native_global_IDs": 115,
+          "fixed_causal_owners": 33,
+          "mixed_native_IDs": 17,
+          "states": {
+            "UNANCHORED": 1500,
+            "GT_UNKNOWN": 3338,
+            "CORRECT": 28351,
+            "WRONG": 2075
+          },
+          "error_episode_count": 94,
+          "longest_observed_wrong_camera_frames": 717
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 1323,
+          "GT_UNKNOWN->GT_UNKNOWN": 3338,
+          "CORRECT->CORRECT": 27248,
+          "UNANCHORED->CORRECT": 915,
+          "CORRECT->UNANCHORED": 78,
+          "WRONG->WRONG": 1213,
+          "WRONG->UNANCHORED": 99,
+          "WRONG->CORRECT": 188,
+          "UNANCHORED->WRONG": 157,
+          "CORRECT->WRONG": 705
+        }
+      },
+      "10": {
+        "original": {
+          "native_global_IDs": 29,
+          "fixed_causal_owners": 4,
+          "mixed_native_IDs": 0,
+          "states": {
+            "UNANCHORED": 107,
+            "CORRECT": 13686,
+            "GT_UNKNOWN": 133
+          },
+          "error_episode_count": 0,
+          "longest_observed_wrong_camera_frames": 0
+        },
+        "candidate": {
+          "native_global_IDs": 19,
+          "fixed_causal_owners": 4,
+          "mixed_native_IDs": 0,
+          "states": {
+            "UNANCHORED": 101,
+            "CORRECT": 13692,
+            "GT_UNKNOWN": 133
+          },
+          "error_episode_count": 0,
+          "longest_observed_wrong_camera_frames": 0
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 101,
+          "CORRECT->CORRECT": 13686,
+          "UNANCHORED->CORRECT": 6,
+          "GT_UNKNOWN->GT_UNKNOWN": 133
+        }
+      },
+      "11": {
+        "original": {
+          "native_global_IDs": 44,
+          "fixed_causal_owners": 6,
+          "mixed_native_IDs": 2,
+          "states": {
+            "UNANCHORED": 37,
+            "CORRECT": 14808,
+            "GT_UNKNOWN": 280,
+            "WRONG": 3
+          },
+          "error_episode_count": 3,
+          "longest_observed_wrong_camera_frames": 1
+        },
+        "candidate": {
+          "native_global_IDs": 31,
+          "fixed_causal_owners": 6,
+          "mixed_native_IDs": 2,
+          "states": {
+            "UNANCHORED": 31,
+            "CORRECT": 14814,
+            "GT_UNKNOWN": 280,
+            "WRONG": 3
+          },
+          "error_episode_count": 3,
+          "longest_observed_wrong_camera_frames": 1
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 31,
+          "CORRECT->CORRECT": 14808,
+          "UNANCHORED->CORRECT": 6,
+          "GT_UNKNOWN->GT_UNKNOWN": 280,
+          "WRONG->WRONG": 3
+        }
+      },
+      "14": {
+        "original": {
+          "native_global_IDs": 178,
+          "fixed_causal_owners": 21,
+          "mixed_native_IDs": 8,
+          "states": {
+            "UNANCHORED": 1900,
+            "GT_UNKNOWN": 4465,
+            "CORRECT": 25635,
+            "WRONG": 311
+          },
+          "error_episode_count": 10,
+          "longest_observed_wrong_camera_frames": 297
+        },
+        "candidate": {
+          "native_global_IDs": 96,
+          "fixed_causal_owners": 20,
+          "mixed_native_IDs": 13,
+          "states": {
+            "UNANCHORED": 1934,
+            "GT_UNKNOWN": 4465,
+            "CORRECT": 25894,
+            "WRONG": 18
+          },
+          "error_episode_count": 12,
+          "longest_observed_wrong_camera_frames": 4
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 1888,
+          "GT_UNKNOWN->GT_UNKNOWN": 4465,
+          "CORRECT->CORRECT": 25589,
+          "CORRECT->UNANCHORED": 45,
+          "WRONG->WRONG": 15,
+          "WRONG->UNANCHORED": 1,
+          "WRONG->CORRECT": 295,
+          "UNANCHORED->CORRECT": 10,
+          "UNANCHORED->WRONG": 2,
+          "CORRECT->WRONG": 1
+        }
+      },
+      "15": {
+        "original": {
+          "native_global_IDs": 1155,
+          "fixed_causal_owners": 84,
+          "mixed_native_IDs": 58,
+          "states": {
+            "UNANCHORED": 10659,
+            "GT_UNKNOWN": 9181,
+            "CORRECT": 52742,
+            "WRONG": 2565
+          },
+          "error_episode_count": 202,
+          "longest_observed_wrong_camera_frames": 580
+        },
+        "candidate": {
+          "native_global_IDs": 491,
+          "fixed_causal_owners": 79,
+          "mixed_native_IDs": 71,
+          "states": {
+            "UNANCHORED": 10956,
+            "GT_UNKNOWN": 9181,
+            "CORRECT": 52837,
+            "WRONG": 2173
+          },
+          "error_episode_count": 226,
+          "longest_observed_wrong_camera_frames": 589
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 9148,
+          "GT_UNKNOWN->GT_UNKNOWN": 9181,
+          "CORRECT->CORRECT": 50523,
+          "CORRECT->UNANCHORED": 1801,
+          "UNANCHORED->CORRECT": 1425,
+          "UNANCHORED->WRONG": 86,
+          "WRONG->WRONG": 1669,
+          "CORRECT->WRONG": 418,
+          "WRONG->CORRECT": 889,
+          "WRONG->UNANCHORED": 7
+        }
+      },
+      "16": {
+        "original": {
+          "native_global_IDs": 1367,
+          "fixed_causal_owners": 63,
+          "mixed_native_IDs": 32,
+          "states": {
+            "UNANCHORED": 2269,
+            "GT_UNKNOWN": 4533,
+            "CORRECT": 47860,
+            "WRONG": 3805
+          },
+          "error_episode_count": 175,
+          "longest_observed_wrong_camera_frames": 777
+        },
+        "candidate": {
+          "native_global_IDs": 430,
+          "fixed_causal_owners": 65,
+          "mixed_native_IDs": 32,
+          "states": {
+            "UNANCHORED": 2140,
+            "GT_UNKNOWN": 4533,
+            "CORRECT": 48815,
+            "WRONG": 2979
+          },
+          "error_episode_count": 188,
+          "longest_observed_wrong_camera_frames": 315
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 1646,
+          "CORRECT->CORRECT": 47103,
+          "CORRECT->UNANCHORED": 387,
+          "GT_UNKNOWN->GT_UNKNOWN": 4533,
+          "UNANCHORED->CORRECT": 598,
+          "WRONG->UNANCHORED": 107,
+          "WRONG->WRONG": 2584,
+          "WRONG->CORRECT": 1114,
+          "CORRECT->WRONG": 370,
+          "UNANCHORED->WRONG": 25
+        }
+      },
+      "18": {
+        "original": {
+          "native_global_IDs": 97,
+          "fixed_causal_owners": 13,
+          "mixed_native_IDs": 1,
+          "states": {
+            "UNANCHORED": 210,
+            "GT_UNKNOWN": 462,
+            "CORRECT": 11177,
+            "WRONG": 2
+          },
+          "error_episode_count": 2,
+          "longest_observed_wrong_camera_frames": 1
+        },
+        "candidate": {
+          "native_global_IDs": 43,
+          "fixed_causal_owners": 13,
+          "mixed_native_IDs": 3,
+          "states": {
+            "UNANCHORED": 247,
+            "GT_UNKNOWN": 462,
+            "CORRECT": 11137,
+            "WRONG": 5
+          },
+          "error_episode_count": 5,
+          "longest_observed_wrong_camera_frames": 1
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 201,
+          "CORRECT->CORRECT": 11131,
+          "GT_UNKNOWN->GT_UNKNOWN": 462,
+          "CORRECT->UNANCHORED": 46,
+          "UNANCHORED->CORRECT": 6,
+          "UNANCHORED->WRONG": 3,
+          "WRONG->WRONG": 2
+        }
+      },
+      "19": {
+        "original": {
+          "native_global_IDs": 167,
+          "fixed_causal_owners": 21,
+          "mixed_native_IDs": 1,
+          "states": {
+            "UNANCHORED": 559,
+            "GT_UNKNOWN": 757,
+            "CORRECT": 14493,
+            "WRONG": 1
+          },
+          "error_episode_count": 1,
+          "longest_observed_wrong_camera_frames": 1
+        },
+        "candidate": {
+          "native_global_IDs": 64,
+          "fixed_causal_owners": 18,
+          "mixed_native_IDs": 2,
+          "states": {
+            "UNANCHORED": 662,
+            "GT_UNKNOWN": 757,
+            "CORRECT": 12606,
+            "WRONG": 1785
+          },
+          "error_episode_count": 14,
+          "longest_observed_wrong_camera_frames": 595
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 534,
+          "CORRECT->CORRECT": 12583,
+          "UNANCHORED->WRONG": 3,
+          "CORRECT->WRONG": 1782,
+          "GT_UNKNOWN->GT_UNKNOWN": 757,
+          "UNANCHORED->CORRECT": 22,
+          "CORRECT->UNANCHORED": 128,
+          "WRONG->CORRECT": 1
+        }
+      },
+      "22": {
+        "original": {
+          "native_global_IDs": 247,
+          "fixed_causal_owners": 13,
+          "mixed_native_IDs": 4,
+          "states": {
+            "UNANCHORED": 806,
+            "GT_UNKNOWN": 1792,
+            "CORRECT": 18315,
+            "WRONG": 5
+          },
+          "error_episode_count": 3,
+          "longest_observed_wrong_camera_frames": 2
+        },
+        "candidate": {
+          "native_global_IDs": 124,
+          "fixed_causal_owners": 13,
+          "mixed_native_IDs": 9,
+          "states": {
+            "UNANCHORED": 865,
+            "GT_UNKNOWN": 1792,
+            "CORRECT": 18255,
+            "WRONG": 6
+          },
+          "error_episode_count": 4,
+          "longest_observed_wrong_camera_frames": 2
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 787,
+          "CORRECT->CORRECT": 18237,
+          "GT_UNKNOWN->GT_UNKNOWN": 1792,
+          "WRONG->WRONG": 5,
+          "UNANCHORED->WRONG": 1,
+          "CORRECT->UNANCHORED": 78,
+          "UNANCHORED->CORRECT": 18
+        }
+      },
+      "23": {
+        "original": {
+          "native_global_IDs": 1420,
+          "fixed_causal_owners": 80,
+          "mixed_native_IDs": 62,
+          "states": {
+            "UNANCHORED": 2892,
+            "GT_UNKNOWN": 11213,
+            "CORRECT": 67750,
+            "WRONG": 8408
+          },
+          "error_episode_count": 853,
+          "longest_observed_wrong_camera_frames": 528
+        },
+        "candidate": {
+          "native_global_IDs": 692,
+          "fixed_causal_owners": 76,
+          "mixed_native_IDs": 69,
+          "states": {
+            "UNANCHORED": 3717,
+            "GT_UNKNOWN": 11213,
+            "CORRECT": 65226,
+            "WRONG": 10107
+          },
+          "error_episode_count": 937,
+          "longest_observed_wrong_camera_frames": 528
+        },
+        "transitions": {
+          "UNANCHORED->UNANCHORED": 2437,
+          "GT_UNKNOWN->GT_UNKNOWN": 11213,
+          "CORRECT->CORRECT": 64190,
+          "CORRECT->UNANCHORED": 852,
+          "WRONG->WRONG": 7257,
+          "UNANCHORED->CORRECT": 313,
+          "CORRECT->WRONG": 2708,
+          "WRONG->CORRECT": 723,
+          "UNANCHORED->WRONG": 142,
+          "WRONG->UNANCHORED": 428
+        }
+      }
+    },
+    "certified_wrong_to_correct": 3377,
+    "certified_correct_to_wrong": 5985,
+    "transitions": {
+      "UNANCHORED->UNANCHORED": 18487,
+      "CORRECT->CORRECT": 301611,
+      "UNANCHORED->CORRECT": 3372,
+      "GT_UNKNOWN->GT_UNKNOWN": 36731,
+      "WRONG->WRONG": 13288,
+      "CORRECT->UNANCHORED": 3502,
+      "CORRECT->WRONG": 5985,
+      "UNANCHORED->WRONG": 421,
+      "WRONG->UNANCHORED": 676,
+      "WRONG->CORRECT": 3377
+    },
+    "repair_person_dependence_groups": 46,
+    "harmed_person_dependence_groups": 56,
+    "criterion": "owner fixed after >=3 known past observations, >=80% known coverage and >=80% dominant known person; same-group GT excluded; never future relabelled",
+    "GT_query_rule": "IoU>=0.5 Hungarian, unique plausible GT and nonduplicated event identity, zero-marked ignored; other queries UNKNOWN",
+    "time_unit": "observed camera-frame indices, not physical seconds; gaps/end censored; identity changes split episodes",
+    "caveat": "Dependencies share person/video. UNANCHORED/GT_UNKNOWN are not repairs; always-new fragmentation may hide owner errors, native ID counts and coverage reported separately.",
+    "input_manifests": {
+      "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/original_runs.json": "29817b18e42cf40889bde78b29ebf98eb8b765f57ae6b717a116ea19dc1b0e92",
+      "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p1_development_v1/c1_runs.json": "9aa27bee3d8e5997312b874ef01da46ce61401fde05f8f8ba00f661855e48def"
+    },
+    "episodes_sha256": "a110215a219df003d003f98d86ca6fe0e37ac79a5b4199c7dbfa37835b1821a1",
+    "GT_in_deployment": false,
+    "metric_distinction": "Past-owner consistency diagnostic, not optimal IDF1 identity mapping; dependent observations, not independent repair events."
+  }
+}

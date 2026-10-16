@@ -3,7 +3,7 @@
   "historical_ledgers_modified": false,
   "maximum_concurrent_GPUs": 4,
   "initial_allocation_GPU_wall_hours": 1.0,
-  "measured_GPU_wall_hours": 3.6697292074188588,
+  "measured_GPU_wall_hours": 3.6929005967308246,
   "stages": [
     {
       "stage": "P0_CPU_AND_REAL_PREFIX",
@@ -879,6 +879,54 @@
       "GPU_wall_hours_including_live": 2.9543559672269555,
       "elapsed_seconds": 2890.3974495902658,
       "failure": null
+    },
+    {
+      "stage": "P2_NEW_CORE_OFF_PREFIX_V1",
+      "status": "COMPLETE",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 400,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/verify_cir_off_parity.py",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_new_core_off_prefix_v1"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p2_new_core_off_prefix_v1.log",
+      "start_UTC": "2026-10-16T13:22:51.107359+00:00",
+      "supervisor_pid": 856,
+      "source_worktree": "/data1/liuyeqiang/WWW_cir_gmt_20261016",
+      "source_commit": null,
+      "child_pid": 864,
+      "elapsed_seconds": 45.007354401052,
+      "exit_code": 0,
+      "wall_seconds": 45.875168688595295,
+      "conservative_GPU_wall_hours": 0.012743102413498693
+    },
+    {
+      "stage": "P2_BIAS2_SHARED_CORE_PREFIX_V1",
+      "status": "COMPLETE",
+      "device_physical_index": 4,
+      "maximum_process_seconds": 400,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/verify_cir_official_parity.py",
+        "--policy",
+        "bias2",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_bias2_shared_core_prefix_v1"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p2_bias2_shared_core_prefix_v1.log",
+      "start_UTC": "2026-10-16T13:24:10.710985+00:00",
+      "supervisor_pid": 1391,
+      "source_worktree": "/data1/liuyeqiang/WWW_cir_gmt_20261016",
+      "source_commit": null,
+      "child_pid": 1398,
+      "elapsed_seconds": 30.004385113716125,
+      "exit_code": 0,
+      "wall_seconds": 37.54183283448219,
+      "conservative_GPU_wall_hours": 0.010428286898467276
     }
   ],
   "storage_reserve_bytes": 32212254720,

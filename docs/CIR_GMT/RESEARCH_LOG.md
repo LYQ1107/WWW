@@ -25,3 +25,7 @@ Phase1：Original官方forward在TRAIN04完整901组完成，raw3635条与完整
 P1全12视频Original/C1共24个真实完整任务已完成，全部从同一干净3e6d6c5d源运行。合法5视频原始GT指标先完成：raw HOTA80.748757→80.822127、AssA81.472600→81.625552、CVIDF195.057962→95.251576、IDSW482→371；stock HOTA81.055072→81.036274、CVIDF195.631664→95.661845、IDSW41→48。raw小幅正向、stock存在退化，不宣称全面提升或最终Goal成功。原GT有冲突的其余7视频保留完整预测，指标null。原始11视频中间评价完整保留，最后23视频也完成后验证其原始GT无效，再复用完全相同合法5视频的native组合计数，不重复算作新实验。
 
 按照P2已冻结条件，增加唯一bias+2普通接受阈值解释控制，复用原生完整Hungarian/Bank/提交，不加载身份特征或训练参数。CPU64合同通过；新core还需原始OFF、KEEP及原C1/bias2真实前缀再验。登记至多0.4GPUh，从已注册CIR累计6小时的未用额度内分配；旧JEV/PIRGA账本不改。P2 FIT12规则审计仍CPU运行，先生成完整GT-free输出，再解析监督，尚未训练或启用Guard。
+# P1 complete development and P2 FIT audit
+
+Published complete DEV12 predictions/strict5 metrics and all12 owner propagation evidence in `P1_COMPLETE_DEVELOPMENT.md` and `DEV_ONLINE_RESULTS.json`. C1 raw gain is small, stock HOTA regresses, and video19 shows substantial past-owner inconsistency. C1 is not final-qualified. FIT12 fixed guard audit completed on CPU: 174 known wrong accepts/72 person groups, 26 SUSPECT outputs, veto causal utility still unproven. No TEST inference or controller training. Pending guard edits remain unqualified until tests and real native parity pass.
+
