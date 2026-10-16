@@ -1,0 +1,24 @@
+{
+  "status": "PINNED_BEFORE_LOCAL_MODEL_OUTPUTS",
+  "trigger_observed_fraction": 0.4645030425963489,
+  "pairs": 32,
+  "cohort_local_ids_source": "manifests/omega_corr_cohort_v1.json",
+  "sizes": [
+    224,
+    336
+  ],
+  "crop": "nativebbox1.5 context, integerfloor/ceil andclip original RGB; preserveaspect resize longestside to224/336, whitecenterpad, explicit PixelMapping. Samepixels for bothbackbones; nativepatch16/14 masks differ and recorded.",
+  "models": [
+    "Omega512_frozen_true_singleview_L11_L17_L23",
+    "DINO_frozen_singleview_lastlayer"
+  ],
+  "regions": [
+    "M0",
+    "M1",
+    "M2"
+  ],
+  "calls": "Exactlyone fullforward per physical nativeproposal per size perbackbone, reused byallcandidate comparisons. Not a deployed pergroup scheduler; actual overheadreported.",
+  "no_fake_camera_or_3D_claim": true,
+  "all_available_patch_denominators": "Record realavailable and selected counts, observedmutual/allavailable fractions as coverage of observedselectedmatches, not exhaustive matching of unselectedtokens.",
+  "scope": "LOCAL_CROP_VISUAL, never substitute these independent cropfeatures for FULL_IMAGE_MULTIVIEW jointinteraction evidence."
+}
