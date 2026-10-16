@@ -21,7 +21,7 @@ def main():
     for q in native['queries']:expected[q['pair_id']]+=len(q['legal_synchronous_references'])
     P=geometry_module('omega_adapter').PixelMapping;regions_module=geometry_module('object_patch_regions')
     configurations={};states={};aggregate=collections.defaultdict(lambda:collections.Counter());inputs=[];checked=0;all_records=0
-    slim_path=ROOT/'results/omega_corr_candidate_scores.csv'
+    slim_path=RUNTIME/'derived_candidate_scores_v1.csv'
     fields=['pair_id','query','reference','track','backend','variant','layer','mode','status','M','N','available_A','available_B','mutual_count','mutual_cosine','coverage_A','coverage_B','soft_cycle_A','soft_cycle_B','primary_score','cycle_score','ROI_align','observed_mutual_all_available_A','observed_mutual_all_available_B']
     csv_file=slim_path.open('x',newline='');writer=csv.DictWriter(csv_file,fieldnames=fields,lineterminator='\n');writer.writeheader()
     def config(backend,variant,layer,mode,kind,route,side):
@@ -115,7 +115,7 @@ def main():
         aggregate=[dict(route=k[0],backend=k[1],variant=k[2],layer=k[3],mode=k[4],crop_side=k[5],candidate_status=k[6],scene=k[7],role=role(k[7]),**v) for k,v in aggregate.items()],
         full_query_count=len(native['queries']),all_available_patch_denominators_retained=True)
     save_new(RUNTIME/'reduced_scores_v1.json',result)
-    save_new(ROOT/'results/omega_corr_reduction_audit_v1.json',dict(status='PASS',raw_records=all_records,independent_mutual_checks=checked,
+    save_new(RUNTIME/'reduction_audit_v1.json',dict(status='PASS',raw_records=all_records,independent_mutual_checks=checked,
         configs=len(configurations),input_receipts=inputs,output=dict(path=str(RUNTIME/'reduced_scores_v1.json'),sha256=sha256(RUNTIME/'reduced_scores_v1.json')),
         candidate_CSV_scope='Fullimage M0 F2/oldVGGT/DINO, everyselected layer and allcandidatefailures. Complete allvariants/modes matrices remain hashed rawinputs; allquery config outputs inpairedcontrols.',candidate_CSV_sha256=sha256(slim_path)))
     print('PASS',all_records,checked,len(configurations),flush=True)

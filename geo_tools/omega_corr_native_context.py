@@ -24,20 +24,19 @@ def main():
     from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
     from gtr.geometry.pair_score_adapter import PairScoreAdapter
     from scipy.optimize import linear_sum_assignment
-    source=provenance(seed=20261014);assert not source['source_tree_dirty'];torch.set_num_threads(4)
+    source=provenance(seed=20261014);assert not source['source_tree_dirty'];source['used_cache']=not a.preflight;source['cache_scope']='verified lossless preflight proposals and sealed DEV12 raw native inputs only' if not a.preflight else None;torch.set_num_threads(4)
     plan=json.loads((ROOT/'manifests/omega_corr_native_context_parity_v1.json').read_text())
     cohort=json.loads((ROOT/'manifests/omega_corr_cohort_v1.json').read_text())
     selected=[p for p in cohort['pairs'] if not a.preflight or p['pair_id'] in plan['preflight_pairs']]
     groups_selected={(p['scene'],p['group']):p['pair_id'] for p in selected}
     out=RUNTIME/('native_context_preflight_v1' if a.preflight else 'native_context_full_v1');out.mkdir(parents=True,exist_ok=False)
     inherited={}
-    if True:
-        for row in lines(ROOT/'results/omega512_solver_numeric_v1.jsonl.gz'):
-            if row['arm']=='G0_native' and row['pair_id'] in plan['preflight_pairs']:inherited[row['pair_id']]=row['matrices']
+    for row in lines(ROOT/'results/omega512_solver_numeric_v1.jsonl.gz'):
+        if row['arm']=='G0_native' and row['pair_id'] in plan['preflight_pairs']:inherited[row['pair_id']]=row['matrices']
     index=json.loads((ROOT/'results/omega_corr_candidate_index_v1.json').read_text());assert sha256(index['input']['path'])==index['input']['sha256']
     native=json.loads(open(index['input']['path']).read());rank_by_query={tuple(q['query']):q['original_native_ranked_tracks'] for q in native['queries']}
     data=train_data();metadata={r['id']:r for r in data['images']};cfg,model=load_gmt(seed=20261014);assert not model.geo_runtime.active and model.test_len==40
-    rows=[];image_calls=0;reused_images=0;raw_checks=0;max_raw_error=0.;max_score_error=0.;images_total=0;cache_portable={}
+    rows=[];image_calls=0;reused_images=0;sealed_images=0;raw_checks=0;max_raw_error=0.;max_score_error=0.;images_total=0;cache_portable={}
     if not a.preflight:
         parent=json.loads((RUNTIME/'native_context_preflight_v1/manifest.json').read_text());assert parent['status']=='MATCHED_NATIVE_CONTEXT_PARITY_PASS' and parent['max_raw_abs_error']==0
         assert parent['source']['checkpoint_sha256']==source['checkpoint_sha256'] and parent['source']['config_sha256']==source['config_sha256']
@@ -72,6 +71,40 @@ def main():
                 if (scene,frames[i]) in groups_selected:
                     for d,_ in entries:needed.update(context_ids(i,d))
             images_total+=len(needed);assert images_total<=9250
+            if scene==12 and not a.preflight:
+                from read_dev12_native_release import NativeRelease
+                release=NativeRelease('/data1/liuyeqiang/WWW_trackvggt_runtime/cv_pil_dev12_native_release_v1','ef7f65d0bccb1e665f7125391f4a3c64a1449b1fe4d204c735371522386421d4')
+                assert release.labels is None
+                by_primary={c['primary_index']:c for c in release.calls.values() if c['stage']!='run_memory_tracker'}
+                for i,entries in sorted(calls.items()):
+                    frame=frames[i];pair_id=groups_selected.get((scene,frame))
+                    if pair_id is None:continue
+                    for d,_ in entries:
+                        ordinal=0 if d['stage']=='run_first_tracker_plus' else d['method_call_index']+1
+                        c=by_primary[ordinal];assert c['queries']==d['queries'] and c['references']==d['references']
+                        raw=c['raw_logits'].cuda();unique=torch.tensor(c['track_ids'],device='cuda',dtype=torch.long)
+                        track_ids=torch.tensor([r['track'] for r in c['references']],device='cuda',dtype=torch.long)
+                        membership=(track_ids[:,None]==unique[None,:]).float();scores=c['track_scores'].cuda()
+                        rank=unique[torch.argsort(scores,dim=1,descending=True,stable=True)].cpu().tolist()
+                        for q,r in zip(d['queries'],rank):assert r==rank_by_query[tuple(q)]
+                        for p in d['hungarian_pairs']:assert float(scores[p['row'],list(c['track_ids']).index(p['track'])])==p['score']
+                        qfeatures=torch.stack([release.vector(k) for k in c['query_feature_keys']]).cuda() if c['query_feature_keys'] else raw.new_empty((0,1152))
+                        rfeatures=torch.stack([release.vector(k) for k in c['reference_feature_keys']]).cuda() if c['reference_feature_keys'] else raw.new_empty((0,1152))
+                        valid=(torch.isfinite(qfeatures).all(1)&(qfeatures.norm(dim=1)>0))[:,None]&(torch.isfinite(rfeatures).all(1)&(rfeatures.norm(dim=1)>0))[None,:]
+                        mask=torch.zeros_like(raw,dtype=torch.bool)
+                        for qi,q in enumerate(d['queries']):
+                            for rj,r in enumerate(d['references']):
+                                qm,rm=metadata[q[0]],metadata[r['source'][0]]
+                                mask[qi,rj]=qm['view_id']!=rm['view_id'] and abs(frame_index[qm['frame_id']]-frame_index[rm['frame_id']])<=20
+                        mask&=valid;prior={}
+                        for weight in [.1,.3]:
+                            changed=PairScoreAdapter(enabled=True,feature_weight=weight,max_residual=1.).apply(raw,mask.float(),None,mask)
+                            sc=torch.cat(model.roi_heads._activate_asso(changed.split(c['activation_block_sizes'],dim=1)),dim=1)@membership
+                            prior[str(weight)]=dict(track_scores=sc.cpu().tolist(),ranked_tracks=unique[torch.argsort(sc,dim=1,descending=True,stable=True)].cpu().tolist())
+                        row=dict(pair_id=pair_id,scene=scene,group=frame,queries=d['queries'],references=d['references'],raw_logits=raw.cpu().tolist(),unique_tracks=c['track_ids'],native_scores=scores.cpu().tolist(),native_ranked_tracks=rank,NativePrior=prior,original_actual_decision=d,from_sealed_DEV12=True)
+                        stream.write(json.dumps(row,allow_nan=False,separators=(',',':'))+'\n');rows.append(dict(pair_id=pair_id,queries=len(d['queries']),references=len(d['references']),from_sealed=True))
+                    print('pair sealed PASS',pair_id,flush=True)
+                sealed_images+=len(needed);del release;continue
             seed_all(20261014);image_rng={};primary_rng={}
             def advance_association(d):
                 if d['references']:random.sample(range(400),len({r['track'] for r in d['references']}))
@@ -161,11 +194,11 @@ def main():
                         prior[str(weight)]=dict(track_scores=sc.cpu().tolist(),ranked_tracks=order)
                     row=dict(pair_id=pair_id,scene=scene,group=frame,queries=d['queries'],references=d['references'],raw_logits=raw.cpu().tolist(),
                         unique_tracks=unique.cpu().tolist(),native_scores=scores.cpu().tolist(),native_ranked_tracks=rank,NativePrior=prior,original_actual_decision=d)
-                    stream.write(json.dumps(row,allow_nan=False,separators=(',',':'))+'\n');rows.append(dict(pair_id=pair_id,queries=len(d['queries']),references=len(d['references'])));primary_counter+=1
+                    stream.write(json.dumps(row,allow_nan=False,separators=(',',':'))+'\n');rows.append(dict(pair_id=pair_id,queries=len(d['queries']),references=len(d['references']),from_sealed=False));primary_counter+=1
                 print('pair PASS',pair_id,flush=True)
     torch.save(cache_portable,out/'native_proposals_lossless.pt')
     save_new(out/'manifest.json',dict(status='MATCHED_NATIVE_CONTEXT_PARITY_PASS',preflight=a.preflight,source=source,pairs=len(selected),
-        actual_image_forward_calls=image_calls,reused_preflight_images=reused_images,unique_images_needed=images_total,primary_calls=len(rows),association_get_asso_invocations=len(rows),actual_association_transformer_forwards=sum(r['queries']>0 and r['references']>0 for r in rows),queries=sum(r['queries'] for r in rows),
+        actual_image_forward_calls=image_calls,reused_preflight_images=reused_images,sealed_DEV12_context_images=sealed_images,unique_images_needed=images_total,primary_calls=len(rows),association_get_asso_invocations=sum(not r['from_sealed'] for r in rows),actual_association_transformer_forwards=sum(r['queries']>0 and r['references']>0 and not r['from_sealed'] for r in rows),queries=sum(r['queries'] for r in rows),
         inherited_raw_matrix_checks=raw_checks,max_raw_abs_error=max_raw_error,max_native_pair_score_error=max_score_error,
         output=dict(path=str(output),sha256=sha256(output)),proposal_cache=dict(path=str(out/'native_proposals_lossless.pt'),sha256=sha256(out/'native_proposals_lossless.pt')),
         no_tracking_replay=True,no_new_GT_matching=True,no_GT_input=True,no_new_ID_management=True,
