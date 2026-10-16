@@ -109,6 +109,7 @@ class IdentityRevisionController:
 
     def precommit(self,scores,accepted,instances,k,candidates,thresholds,count=True):
         if not self.wants_guard() or not scores.numel():return scores
+        if self.guard_target_sources is not None and not self.guard_target_sources:return scores
         query=instances[k];refs=[inst for i,inst in enumerate(instances) if i!=k]
         if not query.has('cir_source') or any(not inst.has('cir_source') for inst in refs):return scores
         if self.mode=='guard':

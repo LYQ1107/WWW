@@ -1,0 +1,39 @@
+{
+  "status": "FROZEN_BEFORE_PAIRED_NATIVE_FUTURES",
+  "events_sha256": "106f5e7efce7b0ed08bb1f327d8aa30696ef65dbb5b29fadbdaeec88a44edc74",
+  "targets": "all26 SUSPECT sources from sealed FIT12 GT-free policy audit, none selected by outcome",
+  "scene_ids": [
+    12,
+    20,
+    21,
+    24
+  ],
+  "horizon_camera_groups": 64,
+  "reported_horizons": [
+    32,
+    64
+  ],
+  "starting_state": "exact same original-GMT native state, passive source ledger and all RNG immediately before target synchronized group",
+  "arms": [
+    "C1_KEEP",
+    "C1_SINGLE_TARGET_GUARD"
+  ],
+  "guard_scope": "same full current group C1 in both arms; only specified physical target may veto; all subsequent frames recompute real GTA from mutated history with C1 and no further veto",
+  "inputs": "actual JPEG perception, complete actual candidates and FP32 native scores; verify identical evidence/candidates/GTA scores/RNG at target",
+  "native_validation": "same native Hungarian, strict acceptance, two extra guard solves at most; unresolved validation keeps pre-guard C1 proposal; invariant failure invalidates run",
+  "GT_in_inference": false,
+  "teacher_or_perception_cache": false,
+  "no_op_handling": "retain targets that cease to be SUSPECT or do not change IDs in actual FP32/current-group state",
+  "evaluation": "sealed policy trajectories before separate offline GT join, duplicate identity events UNKNOWN; causal-owner observations and censored camera-frame error episodes, scene/person dependence groups",
+  "dependence": "overlapping horizons are dependent; do not sum repeated observations as independent successes; report per-case effects and unique scene-person groups",
+  "not_full_video_metrics": true,
+  "no_TEST_or_DEV_selection": true,
+  "maximum_GPU_wall_hours": 4.0,
+  "maximum_GPUs": 4,
+  "storage_bound_GiB": 8,
+  "estimation": "four original prefixes plus26 paired65-group rollouts: conservatively ~16000 actual images at measured6imageFPS ~0.75GPUh;4GPUh allows crowded scenes, snapshots and cold initialization",
+  "native_guard_prefix": {
+    "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_paired_scope_guard_prefix_v1/RESULT.json",
+    "sha256": "80206ce7d2f61a307b8348ff402ba35204adf4903cf7081f3a5c89c5acf74309"
+  }
+}

@@ -3,7 +3,7 @@
   "historical_ledgers_modified": false,
   "maximum_concurrent_GPUs": 4,
   "initial_allocation_GPU_wall_hours": 1.0,
-  "measured_GPU_wall_hours": 3.726627634219411,
+  "measured_GPU_wall_hours": 3.7378638054596047,
   "stages": [
     {
       "stage": "P0_CPU_AND_REAL_PREFIX",
@@ -998,12 +998,37 @@
       "exit_code": 0,
       "wall_seconds": 34.435868449509144,
       "conservative_GPU_wall_hours": 0.00956551901375254
+    },
+    {
+      "stage": "P2_PAIRED_SCOPE_GUARD_PREFIX_V1",
+      "status": "COMPLETE",
+      "device_physical_index": 6,
+      "maximum_process_seconds": 400,
+      "command": [
+        "/home/liuyeqiang/anaconda3/envs/GMT/bin/python",
+        "-u",
+        "geo_tools/verify_cir_official_parity.py",
+        "--policy",
+        "guard",
+        "--out",
+        "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_paired_scope_guard_prefix_v1"
+      ],
+      "log": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/logs/p2_paired_scope_guard_prefix_v1.log",
+      "start_UTC": "2026-10-16T13:54:48.682420+00:00",
+      "supervisor_pid": 18446,
+      "source_worktree": "/data1/liuyeqiang/WWW_cir_gmt_20261016",
+      "source_commit": null,
+      "child_pid": 18453,
+      "elapsed_seconds": 30.004331462085247,
+      "exit_code": 0,
+      "wall_seconds": 40.450216464698315,
+      "conservative_GPU_wall_hours": 0.011236171240193975
     }
   ],
   "storage_reserve_bytes": 32212254720,
   "storage_initial_free_bytes": 242337579008,
   "large_assets_location": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016",
-  "allocated_total_GPU_wall_hours": 6.0,
+  "allocated_total_GPU_wall_hours": 10.0,
   "allocations": [
     {
       "stage": "P1_COMPLETE_REGISTERED_DEV12_ORIGINAL_C1_V1",
@@ -1012,6 +1037,13 @@
       "sha256": "a1acc1df09f868ecc2b7e1564504946120cccbdbd76f047fc89c0cd6e5b80aab",
       "reason": "TRAIN04 measured7.72 imageFPS; budget conservatively >2x estimate for crowded scenes, no silent video omission",
       "predecessor": "initial1 GPU-wall-hour retains all measured costs"
+    },
+    {
+      "stage": "P2_ALL26_PAIRED_NATIVE_FUTURES",
+      "added_GPU_wall_hours": 4,
+      "protocol_sha256": "3b7f5345b1e479df330ec7cd32626485b2f453fdc20141e241b99c1b1d779a44",
+      "reason": "~16000 real images at6FPS about0.75GPUh;4GPUh conservatively bounds dense scenes and exact state snapshots; all26 retained, no TEST",
+      "maximum_parallel_GPUs": 4
     }
   ],
   "scope_allocations": [
