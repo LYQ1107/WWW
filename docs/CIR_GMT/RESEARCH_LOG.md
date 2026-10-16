@@ -43,3 +43,9 @@ Read-only progress: `python geo_tools/cir_status.py` reports live process member
 
 Frozen source `e6baeaa6fe7d1e8a8ece1ac580664e95f5fbd4ee` passed fresh OFF/KEEP/rollback, margin/threshold/bias2 shared-core prefixes, genuine guarded commit fault/future recovery, and complete official-entry OFF04 equality against the same-image Original raw/stock outputs. No GT or metric was read by admission. The four-control/full12 gate is pinned in `P2_FULL_OFF_CONTROLS_QUALIFICATION.json`; 48 exact jobs prepared, not yet running. 75 CPU contracts pass. Preflight actual cost0.1305535783GPUh is retained in its separate cost record, using existing CIR credit; merge only after the remaining paired batch writer terminates. No historical cost reset or extra credit was introduced by preflight.
 
+# P2 paired attribution complete; full12 controls running
+
+All26 native pairs and independent GT evaluation finished. Utility is mixed:6 cases with certified repair/no certified harm,8 with harm,12 with no certified change; overlapping observations are not independent trials. A separate duration extension preserves v1 and every case classification/group, excludes unrelated window errors from intervention propagation, and finds maximum certified harm46/repair7 observed camera-frames.13 target GT persons are certified; others remain UNKNOWN.80 CPU tests pass. Details and source pins: `P2_PAIRED_NATIVE_FINDINGS.md`, `CAUSAL_REVISION_AUDIT.json`. No SPLIT/RELINK qualified.
+
+Automatic continuation imported the immutable preflight cost once, registered12 additional GPU-wall-hours without resetting old costs, and started the frozen48-job full12 matrix on up to4 idle GPUs. Actor source remains `e6baeaa6`; independent offline diagnostics do not change its inputs, thresholds or weights. Complete results and official TEST remain pending.
+

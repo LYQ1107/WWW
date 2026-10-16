@@ -93,6 +93,39 @@ def episodes(video,states):
     return output
 
 
+def paired_effect_episodes(before,after,first_frame,last_frame,kind):
+    """Consecutive certified intervention effects, without unrelated errors.
+
+    Each camera/person is a separate observed trajectory. UNKNOWN gaps censor
+    episodes; elapsed wall time and unobserved frames are never invented.
+    """
+    required=('CORRECT','WRONG') if kind=='HARM' else ('WRONG','CORRECT') if kind=='REPAIR' else None
+    if required is None:raise ValueError('HARM or REPAIR only')
+    grouped=defaultdict(list)
+    if set(before)!=set(after):raise ValueError('Paired physical query coverage differs')
+    for key,b in before.items():
+        a=after[key]
+        if (b['frame'],b['camera'],b['person'])!=(a['frame'],a['camera'],a['person']):
+            raise ValueError('Physical GT certification differs across arms')
+        if b['person'] is not None and first_frame<=b['frame']<=last_frame:
+            grouped[(b['camera'],b['person'])].append((b['frame'],b['state'],a['state']))
+    result=[]
+    for (camera,person),rows in sorted(grouped.items()):
+        rows.sort();current=None;seen=set()
+        for frame,b,a in rows:
+            if frame in seen:raise ValueError('Repeated certified person/camera/frame')
+            seen.add(frame);active=(b,a)==required
+            if current is not None and (not active or frame!=current['end_frame']+1):
+                current['end_reason']='GAP_CENSORED' if frame!=current['end_frame']+1 else ('CERTIFICATION_LOST_CENSORED' if b in ('UNANCHORED','GT_UNKNOWN') or a in ('UNANCHORED','GT_UNKNOWN') else 'NEXT_CERTIFIED_NON_'+kind)
+                result.append(current);current=None
+            if active:
+                if current is None:current=dict(camera=camera,person=person,effect=kind,start_frame=frame,end_frame=frame,observed_affected_camera_frames=1,first_effect_delay_groups=frame-first_frame)
+                else:current['end_frame']=frame;current['observed_affected_camera_frames']+=1
+        if current is not None:
+            current['end_reason']='WINDOW_OR_OBSERVATION_END_CENSORED';result.append(current)
+    return result
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--original-runs',type=Path,required=True);p.add_argument('--candidate-runs',type=Path,required=True)
     p.add_argument('--out',type=Path,required=True);a=p.parse_args()

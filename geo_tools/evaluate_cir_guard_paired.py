@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from common import DATA,train_data,video_records,save_json,sha256
 from cir_evaluation import read_mot
-from audit_cir_identity_propagation import certify_queries,owner_states,episodes
+from audit_cir_identity_propagation import certify_queries,owner_states,episodes,paired_effect_episodes
 
 
 def main():
@@ -91,6 +91,15 @@ def main():
                 groups=[dict(scene=s,person=p,transitions={f'{b}->{c}':n for (b,c),n in cc.items()}) for (s,p),cc in sorted(groups.items())],
                 arms=summaries,end_censored=end<frame+horizon,
                 unit='observed camera-frame indices; left-window clipping and end/gaps censored, not seconds')
+            effects={kind:paired_effect_episodes(states['C1_KEEP'],states['C1_SINGLE_TARGET_GUARD'],frame,end,kind) for kind in ('HARM','REPAIR')}
+            per_horizon[str(horizon)]['paired_effect_propagation']=dict(
+                episodes=effects,
+                longest_certified_harm_camera_frames=max([e['observed_affected_camera_frames'] for e in effects['HARM']]+[0]),
+                longest_certified_repair_camera_frames=max([e['observed_affected_camera_frames'] for e in effects['REPAIR']]+[0]),
+                known_target_person=target_person,
+                target_person_effects={kind:[e for e in entries if e['person']==target_person] for kind,entries in effects.items()} if target_person is not None else None,
+                unknown_target_reason='GT target person not certified; no target-specific duration invented' if target_person is None else None,
+                distinction='These episodes require a certified difference across paired arms; whole-window unrelated error maxima above are not intervention propagation.')
             if horizon==64:
                 repaired.update(g for g,cc in groups.items() if cc[('WRONG','CORRECT')]>0)
                 harmed.update(g for g,cc in groups.items() if cc[('CORRECT','WRONG')]>0)
@@ -106,6 +115,7 @@ def main():
         dependence='Overlapping futures are dependent. Do not pool repeated camera-frame observations as independent repairs or trials.',
         owner_metric='Past-only anchored native identity consistency, not optimal IDF1 matching. UNKNOWN/unanchored are not certified repairs.',
         full_video_quality_qualified=False,scientific_success=False,GT_in_inference=False,raw_GT_modified=False,
+        evaluation_script_sha256=sha256(__file__),
         policy_seal_sha256=sha256(a.out/'POLICY_SEAL.json'),raw_GT_sha256=gtsha)
     save_json(a.out/'RESULT.json',report)
     print(json.dumps({k:v for k,v in report.items() if k not in ('cases','raw_GT_sha256')}),flush=True)
