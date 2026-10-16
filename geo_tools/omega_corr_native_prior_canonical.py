@@ -7,7 +7,8 @@ import numpy as np
 import torch
 from omega_corr_common import ROOT,RUNTIME,sha256,save_new,provenance,DATA
 from dev12_native_schema import activate
-from gtr.geometry.pair_score_adapter import PairScoreAdapter
+from omega_modules import geometry_module
+PairScoreAdapter=geometry_module('pair_score_adapter').PairScoreAdapter
 
 
 def main():
@@ -21,9 +22,12 @@ def main():
     data=json.loads((DATA/'annotations/train.json').read_text());meta={i['id']:i for i in data['images']};frames=collections.defaultdict(set)
     for i in data['images']:frames[i['video_id']].add(i['frame_id'])
     positions={scene:{f:i for i,f in enumerate(sorted(ff))} for scene,ff in frames.items()}
+    valid_cache={}
     def valid(source):
+        key=tuple(source)
+        if key in valid_cache:return valid_cache[key]
         v=cache[source[0]]['fields']['reid_features'][source[1]] if source[0] in cache else release.observations[tuple(source)]['feature']
-        return bool(torch.isfinite(v).all() and v.norm()>0)
+        result=bool(torch.isfinite(v).all() and v.norm()>0);valid_cache[key]=result;return result
     path=RUNTIME/'native_prior_canonical2_v1.jsonl.gz';calls=0;queries=0;maximum=0.
     with gzip.open(m['output']['path'],'rt') as f,gzip.open(path,'xt') as out:
         for line in f:
