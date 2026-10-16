@@ -55,3 +55,7 @@ The actual complete-video matrix stopped at TRAIN01 group437 before producing a 
 
 The repair preserves the prohibition on evicting unpublished evidence and also preserves current/previous-group chains. It chooses an eligible ended published fragment. Reproduction and pending-camera tests pass (82 CPU contracts total). No perception, score, threshold, candidate or development-video choice changes. Before replaying the exact48-job matrix as a new version, require full real TRAIN01 bounded32 versus wide1024 parity of native Gallery/counts/Bank, costs, outputs and RNG with actual eviction exercised, then fresh shared-core/rollback and complete OFF qualification. Old attempt/source and labels are retained; no failed field is overwritten as success.
 
+# P4 first actual risk fit complete, native claims pending
+
+The registered CPU run completed both961-parameter heads on the same115,614 known FIT12 queries,452 matched steps/two visits per record, same normalization/order and seed17. Training cost7.400625CPU seconds/GPU0.93 software contracts pass. Actual saved-model verification reproduces all counts and preserves RNG; eligibility join rejects treating1154 unaccepted-edge score crossings as possible VETO actions. Classification flag counts and UNKNOWN scope are documented in `P4_FIRST_RISK_FIT.md`. There is no native learned-head integration, full24 fit or online improvement yet. Checkpoints remain server-only with SHA; all prior costs/results retained.
+

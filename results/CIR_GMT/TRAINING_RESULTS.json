@@ -1,0 +1,221 @@
+{
+  "status": "COMPLETE_FIRST_SEED_FIT12_RISK_ONLY_NATIVE_ONLINE_PENDING",
+  "scope": "FIT12_RISK_ONLY_NOT_FULL24_OR_ONLINE",
+  "seed": 17,
+  "GT_in_model_inputs": false,
+  "protocol": {
+    "path": "/data1/liuyeqiang/WWW_cir_gmt_20261016/results/CIR_GMT/P4_RISK_LEARNING_PROTOCOL.json",
+    "sha256": "fdc1c4ad5bbd3dc1c8fbc3c54ba1a43261a39c4386ab10ee3091aab6c210cb7b"
+  },
+  "data": {
+    "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p2_guard_fit12_audit_v1/OFFLINE_RISK_TRAINING.jsonl.gz",
+    "sha256": "363d78138d0dc92bff4682d20c76b02bd790e66073285d6dd831fe23936bdbb5"
+  },
+  "models": {
+    "ordinary_mlp": {
+      "checkpoint": {
+        "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p4_fit12_seed17_v1/ordinary_mlp_seed17.pt",
+        "sha256": "dfae5fce3aca2923cce06b6faa7b40a1e21f6e61c0547a6df45012a788cfc1b5"
+      },
+      "parameters": 961,
+      "steps": 452,
+      "epochs": 2,
+      "all_eligible_records_seen_twice": true,
+      "sample_order_sha256": "4cefaf5473c8ef9392997fa94a72200f0172bbe7898a6ff7763a4971e9093150",
+      "weighted_fit_losses": [
+        0.5071725068015818,
+        0.38157597041992886
+      ],
+      "fitting_calibration": {
+        "threshold": 4.174434661865234,
+        "strict_comparison": "logit>threshold",
+        "TP": 21,
+        "FP": 64,
+        "FN": 153,
+        "TN": 115376,
+        "F1": 0.16216216216216217,
+        "correct_record_FPR": 0.0005544005544005544,
+        "wrong_record_recall": 0.1206896551724138,
+        "maximum_correct_record_FPR": 0.001,
+        "scope": "in-sample FIT risk classification, not action utility or online tracking"
+      },
+      "group_metrics": {
+        "macro_wrong_person_group_recall": 0.14087301587301587,
+        "macro_correct_person_group_FPR": 0.0006992239956890756,
+        "caveat": "Dependence groups are retained; no independent-trial significance claim"
+      },
+      "all_FIT_queries_above_threshold": 1409,
+      "UNKNOWN_FIT_queries_above_threshold": 1324,
+      "elapsed_CPU_wall_seconds": 1.4496624395251274,
+      "tracking_metrics": null,
+      "online_improvement": null
+    },
+    "grouped_risk": {
+      "checkpoint": {
+        "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p4_fit12_seed17_v1/grouped_risk_seed17.pt",
+        "sha256": "5f3114749bc94db9c5c1dc4f01e84ef1f83b4311f462ad5d2254f2cbb8fcf50d"
+      },
+      "parameters": 961,
+      "steps": 452,
+      "epochs": 2,
+      "all_eligible_records_seen_twice": true,
+      "sample_order_sha256": "4cefaf5473c8ef9392997fa94a72200f0172bbe7898a6ff7763a4971e9093150",
+      "weighted_fit_losses": [
+        0.4854057426068099,
+        0.3709755595315587
+      ],
+      "fitting_calibration": {
+        "threshold": 3.891096591949463,
+        "strict_comparison": "logit>threshold",
+        "TP": 24,
+        "FP": 92,
+        "FN": 150,
+        "TN": 115348,
+        "F1": 0.16551724137931034,
+        "correct_record_FPR": 0.000796950796950797,
+        "wrong_record_recall": 0.13793103448275862,
+        "maximum_correct_record_FPR": 0.001,
+        "scope": "in-sample FIT risk classification, not action utility or online tracking"
+      },
+      "group_metrics": {
+        "macro_wrong_person_group_recall": 0.13832671957671958,
+        "macro_correct_person_group_FPR": 0.0008484600926945182,
+        "caveat": "Dependence groups are retained; no independent-trial significance claim"
+      },
+      "all_FIT_queries_above_threshold": 1643,
+      "UNKNOWN_FIT_queries_above_threshold": 1527,
+      "elapsed_CPU_wall_seconds": 1.9466662779450417,
+      "tracking_metrics": null,
+      "online_improvement": null
+    }
+  },
+  "source_sha256": {
+    "geo_tools/run_cir_train.py": "05950ba9cd5cc428bb0b25d909f9c6ec42b355ca82b226804725688668d872a6",
+    "geo_tools/cir_risk_training.py": "45e118c8fe73081fb5a14ac072eaf591c9b82fe1407b9e783a195da8db4ab4c9",
+    "gtr/modeling/identity_revision/model.py": "6119d6fed52bf85d7967020f1fe4ba78d480bd5bd599f2e9a184052d7e0849bb"
+  },
+  "coverage": {
+    "all_queries": 169408,
+    "known_queries": 115614,
+    "UNKNOWN_queries": 53794,
+    "correct_queries": 115440,
+    "wrong_queries": 174,
+    "wrong_scene_person_groups": 72,
+    "correct_scene_person_groups": 150,
+    "wrong_scenes": [
+      4,
+      7,
+      8,
+      9,
+      12,
+      13,
+      17,
+      20,
+      21,
+      24
+    ],
+    "training_video_ids": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      12,
+      13,
+      17,
+      20,
+      21,
+      24
+    ],
+    "all_source_video_ids": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      12,
+      13,
+      17,
+      20,
+      21,
+      24
+    ],
+    "per_scene_queries": {
+      "4": 3631,
+      "5": 6924,
+      "6": 2598,
+      "7": 1701,
+      "8": 1995,
+      "9": 8710,
+      "12": 14551,
+      "13": 16920,
+      "17": 11239,
+      "20": 24044,
+      "21": 7124,
+      "24": 69971
+    },
+    "weight_mean": 1.0
+  },
+  "scientific_success": false,
+  "full24_fit_complete": false,
+  "timing_scope": "CPU data hash/read/mask/train/calibrate; no GPU/GMT/teacher; Python/Torch import excluded",
+  "peak_process_RSS_KiB": 600824,
+  "CPU_wall_seconds": 7.400625288486481,
+  "source_results": [
+    {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p4_fit12_seed17_v1/TRAINING_RESULTS.json",
+      "sha256": "e06acc9068ded13e8ba5125934160f17b995c6d46a5dc31bf07742477af64054"
+    },
+    {
+      "path": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/p4_fit12_seed17_v1/SAVED_CHECKPOINT_VERIFICATION.json",
+      "sha256": "f65272327eb30a412f603e26d2843e25633d5b1c80d05272ffab45c7ddb7d04a"
+    }
+  ],
+  "saved_checkpoint_verification": {
+    "status": "PASS_SAVED_FIT_CHECKPOINTS_AND_NATIVE_EDGE_ELIGIBILITY",
+    "models": {
+      "ordinary_mlp": {
+        "reproduced_fit_counts": {
+          "TP": 21,
+          "FP": 64,
+          "FN": 153,
+          "TN": 115376
+        },
+        "all_scores_above_threshold": 1409,
+        "accepted_native_edges_above_threshold": 255,
+        "accepted_GT_UNKNOWN_edges_above_threshold": 170,
+        "no_accepted_edge_above_threshold": 1154,
+        "actual_load_RNG_preserved": true,
+        "checkpoint_sha256": "dfae5fce3aca2923cce06b6faa7b40a1e21f6e61c0547a6df45012a788cfc1b5"
+      },
+      "grouped_risk": {
+        "reproduced_fit_counts": {
+          "TP": 24,
+          "FP": 92,
+          "FN": 150,
+          "TN": 115348
+        },
+        "all_scores_above_threshold": 1643,
+        "accepted_native_edges_above_threshold": 489,
+        "accepted_GT_UNKNOWN_edges_above_threshold": 373,
+        "no_accepted_edge_above_threshold": 1154,
+        "actual_load_RNG_preserved": true,
+        "checkpoint_sha256": "5f3114749bc94db9c5c1dc4f01e84ef1f83b4311f462ad5d2254f2cbb8fcf50d"
+      }
+    },
+    "accepted_native_queries": 168254,
+    "all_queries": 169408,
+    "normalization_identical": true,
+    "scope": "same original-state cached query/edge flags, not actual mutated-state veto counts or tracking metrics",
+    "source_sha256": "7f28f7cc73ffb18ee374882e26afd8bc4c021fb41ddc2b5a60a269f85e7c3e64",
+    "training_report_sha256": "e06acc9068ded13e8ba5125934160f17b995c6d46a5dc31bf07742477af64054",
+    "policy_events_sha256": "106f5e7efce7b0ed08bb1f327d8aa30696ef65dbb5b29fadbdaeec88a44edc74",
+    "CPU_wall_seconds": 8.762515939772129,
+    "GPU_wall_hours": 0,
+    "scientific_success": false
+  },
+  "tracking_metrics": null,
+  "tracking_null_reason": "No learned head native integration/evaluation yet. FIT classification counts are not corrective action utility."
+}
