@@ -1,0 +1,37 @@
+{
+  "status": "PINNED_BEFORE_REMAINING72_MODEL_CALLS",
+  "parent_preregistration_sha256": "890fe639e67e844454330330d028217fb4530bf79901f4908d9e2bad0267cca7",
+  "pilot_source_commit": "79c16a1d",
+  "producer_source_commit": "f984adaa",
+  "commands": {
+    "omega": [
+      "/data1/liuyeqiang/WWW_omega_runtime_20261016/venv/bin/python",
+      "geo_tools/omega_512_expansion_pose.py",
+      "--resolution",
+      "512",
+      "--checkpoint",
+      "/data1/liuyeqiang/WWW_omega_runtime_20261016/weights/vggt_omega_1b_512.pt",
+      "--tag",
+      "omega512_remaining72_v1"
+    ],
+    "old": [
+      "/data1/liuyeqiang/WWW_omega_runtime_20261016/venv/bin/python",
+      "geo_tools/omega_512_expansion_old.py",
+      "--omega-run",
+      "/data1/liuyeqiang/WWW_omega_runtime_20261016/pose_audits/omega512_remaining72_v1",
+      "--tag",
+      "old_vggt_remaining72_v1"
+    ],
+    "compare": [
+      "/data1/liuyeqiang/WWW_omega_runtime_20261016/venv/bin/python",
+      "geo_tools/omega_512_expansion_compare.py"
+    ]
+  },
+  "CUDA_VISIBLE_DEVICES": "4",
+  "CPU_threads": 4,
+  "combined_GPU_child_wall_limit_seconds": 1800,
+  "each_model_calls_limit": 144,
+  "old24_rerun": false,
+  "comparison_all_fixed_arms": true,
+  "identity_admission": "Only admitted C2 on NEW42uniform, >=3joint ABBA groups across>=2scenes; hard30 excluded from gate"
+}
