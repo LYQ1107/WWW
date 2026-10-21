@@ -449,10 +449,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('command', choices=['prepare', 'infer', 'evaluate'])
     parser.add_argument('--config', choices=['max512', 'balanced512', 'max384', 'max256'])
+    parser.add_argument('--execution', choices=['eager', 'cuda_graph'], default='eager')
     args = parser.parse_args()
     if args.command == 'prepare':
         prepare()
     elif args.command == 'infer':
-        infer(args.config)
+        infer(args.config, args.execution)
     else:
         evaluate()
