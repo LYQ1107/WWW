@@ -134,7 +134,7 @@ def infer(config_name):
 
     plan = json.loads(PLAN.read_text())
     config = next(c for c in plan['configs'] if c['name'] == config_name)
-    output = RUNTIME / config_name
+    output = RUNTIME / 'native_fp16' / config_name
     output.mkdir(parents=True, exist_ok=False)
     save(output / 'status.json', dict(status='RUNNING', plan_sha256=sha256(PLAN), config=config))
     torch.set_num_threads(2)
@@ -144,7 +144,11 @@ def infer(config_name):
     process_started = time.perf_counter()
     if sha256(CHECKPOINT) != CHECKPOINT_SHA:
         raise ValueError('checkpoint hash mismatch')
-    model = VGGTOmega().eval().to('cuda').requires_grad_(False)
+    # PyTorch 2.6 reports BF16 emulation as supported on V100 by default.
+    # The official automatic selector consequently chooses BF16 on this host.
+    # Explicit outer FP16 implements the locked native precision contract;
+    # VGGTOmega.forward retains its own disabled-autocast FP32 head guards.
+    model = VGGTOmega(autocast=False).eval().to('cuda').requires_grad_(False)
     state = torch.load(CHECKPOINT, map_location='cpu', weights_only=True)
     state = state.get('model', state.get('state_dict', state))
     keys = len(state)
@@ -158,7 +162,8 @@ def infer(config_name):
                                           image_resolution=config['resolution'], patch_size=16).unsqueeze(0)
 
     def forward(images):
-        predictions = model(images)
+        with torch.autocast('cuda', dtype=torch.float16):
+            predictions = model(images)
         extrinsics, intrinsics = encoding_to_camera(predictions['pose_enc'], images.shape[-2:])
         return predictions, extrinsics, intrinsics
 
@@ -244,7 +249,9 @@ def infer(config_name):
                   checkpoint_sha256=CHECKPOINT_SHA, strict_loaded_keys=keys,
                   source_commit=plan['source_commit'], script_sha256=sha256(__file__),
                   gpu=torch.cuda.get_device_name(), cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),
-                  torch=torch.__version__, cuda=torch.version.cuda, precision='fp16 aggregator / fp32 heads',
+                  torch=torch.__version__, cuda=torch.version.cuda, precision='explicit fp16 aggregator / fp32 heads',
+                  bf16_reported_supported=torch.cuda.is_bf16_supported(),
+                  bf16_native_supported=torch.cuda.is_bf16_supported(including_emulation=False),
                   finite_pairs=sum(r['finite'] for r in rows), total_pairs=len(rows),
                   load_seconds=load_seconds, warmup_seconds=warmup_seconds,
                   compute=stats([r['compute_seconds'] for r in rows]),
@@ -279,11 +286,15 @@ def geometry_scores(pair, arrays):
         b[:, 2:] += b[:, :2]
         b *= np.asarray([width / image['width'], height / image['height']] * 2)
         boxes.append(b)
+    if not all(np.isfinite(a).all() for a in (depth, E, K)):
+        return dict(projected_support=np.zeros((len(boxes[0]), len(boxes[1]))),
+                    foot_3d=np.full((len(boxes[0]), len(boxes[1])), -1e6))
     directed = []
     feet = []
+    feet_valid = []
     for view in (0, 1):
         other = 1 - view
-        supports, foot_points = [], []
+        supports, foot_points, foot_valid = [], [], []
         for box in boxes[view]:
             xs = box[0] + np.linspace(.2, .8, 5) * (box[2] - box[0])
             ys = box[1] + np.linspace(.2, .9, 7) * (box[3] - box[1])
@@ -304,11 +315,14 @@ def geometry_scores(pair, arrays):
             foot = np.asarray([[(box[0] + box[2]) * .5, box[1] + .97 * (box[3] - box[1])]])
             foot_z = sample_depth(depth[view], foot)
             foot_points.append(world_points(foot, foot_z, E[view], K[view])[0])
+            foot_valid.append(bool(foot_z[0] > 0 and 0 <= foot[0, 0] < width and 0 <= foot[0, 1] < height))
         directed.append(np.asarray(supports).reshape(len(boxes[view]), len(boxes[other])))
         feet.append(np.asarray(foot_points).reshape(-1, 3))
+        feet_valid.append(np.asarray(foot_valid, dtype=bool))
     support = np.sqrt(directed[0] * directed[1].T)
     scale = max(float(np.median(depth)), 1e-8)
     distance = np.linalg.norm(feet[0][:, None] - feet[1][None], axis=-1) / scale
+    distance[~(feet_valid[0][:, None] & feet_valid[1][None])] = 1e6
     return dict(projected_support=support, foot_3d=-distance)
 
 
@@ -325,7 +339,7 @@ def bbox_iou(a, b):
 
 def evaluate():
     plan = json.loads(PLAN.read_text())
-    reports = {c['name']: json.loads((RUNTIME / c['name'] / 'manifest.json').read_text()) for c in plan['configs']}
+    reports = {c['name']: json.loads((RUNTIME / 'native_fp16' / c['name'] / 'manifest.json').read_text()) for c in plan['configs']}
     if not all(r['status'] == 'COMPLETE_DUAL_VIEW_RECONSTRUCTION_PROBE' and r['plan_sha256'] == sha256(PLAN) for r in reports.values()):
         raise ValueError('all inference artifacts must be frozen before reading labels')
     gt = collections.defaultdict(list)
@@ -354,7 +368,7 @@ def evaluate():
                         if iou[i, j] >= .5 and int(iou[:, j].argmax()) == i:
                             result[i] = int(legal[j]['instance_id'])
                 labels.append(result)
-            path = RUNTIME / name / (pair['pair_id'] + '.npz')
+            path = RUNTIME / 'native_fp16' / name / (pair['pair_id'] + '.npz')
             with np.load(path) as archive:
                 arrays = {k: archive[k] for k in archive.files}
             start = time.perf_counter()
@@ -378,7 +392,7 @@ def evaluate():
                         values = (matrix if view == 0 else matrix.T)[query, known]
                         best = float(np.max(values))
                         winners = np.flatnonzero(np.isclose(values, best, rtol=0, atol=1e-8))
-                        status = 'abstain' if (len(winners) != 1 or (score == 'projected_support' and best <= 0)) else 'correct' if positives[winners[0]] else 'wrong'
+                        status = 'abstain' if (len(winners) != 1 or best <= -1e5 or (score == 'projected_support' and best <= 0)) else 'correct' if positives[winners[0]] else 'wrong'
                         for count in (counters[score], by_scene[pair['scene']][score]):
                             count['eligible'] += 1
                             count[status] += 1

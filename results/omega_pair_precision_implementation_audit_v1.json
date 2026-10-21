@@ -1,0 +1,19 @@
+{
+  "status": "IMPLEMENTATION_CORRECTED_BEFORE_LABEL_COMPARISON",
+  "initial_source_commit": "1fd142c8",
+  "initial_outputs": "/data1/liuyeqiang/WWW_omega_pair_geometry_runtime_20261021/{max512,balanced512,max384,max256}",
+  "initial_precision_metadata_error": "Initial manifests describe FP16, but VGGTOmega() default automatic selector chose BF16. All original logs, manifests and NPZ predictions retained without rewriting.",
+  "observed_host": {
+    "torch": "2.6.0+cu118",
+    "gpu": "Tesla V100-DGXS-32GB",
+    "compute_capability": [7, 0],
+    "torch_cuda_is_bf16_supported_default": true,
+    "torch_cuda_is_bf16_supported_including_emulation_false": false
+  },
+  "evidence": "Official VGGTOmega.forward chooses BF16 if torch.cuda.is_bf16_supported() is true. Standalone components explicitly used FP16, revealing large disagreement with full forward timings. The native-support query confirms emulated, not native BF16.",
+  "correction": "VGGTOmega(autocast=False) under explicit outer FP16 autocast; original nested FP32 camera/depth head guards retained. Same locked weights, image pairs, image sizes, warmups and scores. Not an architecture or checkpoint change.",
+  "corrected_outputs": "/data1/liuyeqiang/WWW_omega_pair_geometry_runtime_20261021/native_fp16",
+  "scope": "Runtime implementation correction to meet predeclared native-FP16 precision; bounded development study, not blind or TEST evaluation.",
+  "geometry_guard_correction": "Missing/out-of-frame foot depth and nonfinite camera/depth outputs abstain, as already required by locked plan. No score thresholds selected from labels.",
+  "old_gmt_gates": "CLOSED_UNCHANGED"
+}
