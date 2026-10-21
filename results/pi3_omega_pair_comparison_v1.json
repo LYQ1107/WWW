@@ -1,0 +1,1571 @@
+{
+  "status": "COMPLETE_PI3_OMEGA_COMPARISON",
+  "plan_sha256": "c3b8a0836d59992857a7766392678547dcb678c349c35ea01790fb2dba6c2f4a",
+  "annotation_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+  "labels_read_after_inference": true,
+  "models": {
+    "omega": {
+      "weight_sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+      "gpu": "Tesla V100-DGXS-32GB",
+      "model_latency": {
+        "n": 54,
+        "mean_ms": 142.7519980956007,
+        "p50_ms": 137.0677500963211,
+        "p95_ms": 167.83165857195854
+      },
+      "module_e2e": {
+        "n": 54,
+        "mean_ms": 335.1859774578501,
+        "p50_ms": 281.49258345365524,
+        "p95_ms": 669.3578440696
+      },
+      "model_pair_fps": 7.005155888117953,
+      "module_e2e_pair_fps": 2.9834183624992217,
+      "composed_detector_plus_module": {
+        "detector_pair_serial_ms": 198.54185868192604,
+        "latency": {
+          "n": 54,
+          "mean_ms": 533.7278361397761,
+          "p50_ms": 483.1620454788208,
+          "p95_ms": 866.7377576231955
+        },
+        "mean_ms": 533.7278361397761,
+        "pair_timestamp_fps": 1.8736141012104035,
+        "camera_image_fps": 3.747228202420807,
+        "scope": "serial measured live GMT detector + model read/preprocess/forward/world-point association; no GMT tracker"
+      },
+      "reconstruction_proxy": {
+        "pairs": 54,
+        "pairs_with_valid_sift": 54,
+        "median_of_pair_medians": 0.5016797780990601,
+        "p90_of_pair_medians": 1.352668142318726,
+        "median_of_pair_p90": 1.1240185379981995,
+        "interpretation": "relative cross-view world-point agreement; lower is better; no 3D GT"
+      },
+      "association": {
+        "scores": {
+          "world_chamfer": {
+            "eligible": 764,
+            "correct": 580,
+            "wrong": 184
+          },
+          "world_centroid": {
+            "eligible": 764,
+            "correct": 553,
+            "wrong": 211
+          }
+        },
+        "by_scene": {
+          "2": {
+            "world_chamfer": {
+              "eligible": 22,
+              "correct": 22
+            },
+            "world_centroid": {
+              "eligible": 22,
+              "correct": 22
+            }
+          },
+          "3": {
+            "world_chamfer": {
+              "eligible": 34,
+              "correct": 29,
+              "wrong": 5
+            },
+            "world_centroid": {
+              "eligible": 34,
+              "correct": 29,
+              "wrong": 5
+            }
+          },
+          "4": {
+            "world_chamfer": {
+              "eligible": 9,
+              "correct": 9
+            },
+            "world_centroid": {
+              "eligible": 9,
+              "correct": 9
+            }
+          },
+          "5": {
+            "world_chamfer": {
+              "eligible": 12,
+              "correct": 12
+            },
+            "world_centroid": {
+              "eligible": 12,
+              "correct": 12
+            }
+          },
+          "6": {
+            "world_chamfer": {
+              "eligible": 12,
+              "correct": 12
+            },
+            "world_centroid": {
+              "eligible": 12,
+              "correct": 12
+            }
+          },
+          "7": {
+            "world_chamfer": {
+              "eligible": 9,
+              "correct": 9
+            },
+            "world_centroid": {
+              "eligible": 9,
+              "correct": 9
+            }
+          },
+          "8": {
+            "world_chamfer": {
+              "eligible": 12,
+              "correct": 11,
+              "wrong": 1
+            },
+            "world_centroid": {
+              "eligible": 12,
+              "correct": 11,
+              "wrong": 1
+            }
+          },
+          "9": {
+            "world_chamfer": {
+              "eligible": 12,
+              "correct": 10,
+              "wrong": 2
+            },
+            "world_centroid": {
+              "eligible": 12,
+              "correct": 10,
+              "wrong": 2
+            }
+          },
+          "11": {
+            "world_chamfer": {
+              "eligible": 20,
+              "correct": 20
+            },
+            "world_centroid": {
+              "eligible": 20,
+              "correct": 20
+            }
+          },
+          "12": {
+            "world_chamfer": {
+              "eligible": 26,
+              "correct": 14,
+              "wrong": 12
+            },
+            "world_centroid": {
+              "eligible": 26,
+              "correct": 11,
+              "wrong": 15
+            }
+          },
+          "13": {
+            "world_chamfer": {
+              "eligible": 24,
+              "correct": 21,
+              "wrong": 3
+            },
+            "world_centroid": {
+              "eligible": 24,
+              "correct": 18,
+              "wrong": 6
+            }
+          },
+          "15": {
+            "world_chamfer": {
+              "eligible": 148,
+              "correct": 109,
+              "wrong": 39
+            },
+            "world_centroid": {
+              "eligible": 148,
+              "correct": 108,
+              "wrong": 40
+            }
+          },
+          "16": {
+            "world_chamfer": {
+              "eligible": 76,
+              "correct": 55,
+              "wrong": 21
+            },
+            "world_centroid": {
+              "eligible": 76,
+              "correct": 53,
+              "wrong": 23
+            }
+          },
+          "17": {
+            "world_chamfer": {
+              "eligible": 16,
+              "correct": 9,
+              "wrong": 7
+            },
+            "world_centroid": {
+              "eligible": 16,
+              "wrong": 7,
+              "correct": 9
+            }
+          },
+          "20": {
+            "world_chamfer": {
+              "eligible": 52,
+              "correct": 35,
+              "wrong": 17
+            },
+            "world_centroid": {
+              "eligible": 52,
+              "correct": 29,
+              "wrong": 23
+            }
+          },
+          "21": {
+            "world_chamfer": {
+              "eligible": 12,
+              "correct": 12
+            },
+            "world_centroid": {
+              "eligible": 12,
+              "correct": 12
+            }
+          },
+          "23": {
+            "world_chamfer": {
+              "eligible": 204,
+              "correct": 151,
+              "wrong": 53
+            },
+            "world_centroid": {
+              "eligible": 204,
+              "correct": 139,
+              "wrong": 65
+            }
+          },
+          "24": {
+            "world_chamfer": {
+              "eligible": 64,
+              "correct": 40,
+              "wrong": 24
+            },
+            "world_centroid": {
+              "eligible": 64,
+              "correct": 40,
+              "wrong": 24
+            }
+          }
+        },
+        "duplicate_gt_instance_rows_excluded": 3,
+        "interpretation": "known-candidate ranking only; eligible directions are correlated and not an open-world detector metric"
+      },
+      "rows": [
+        {
+          "pair_id": "scene2_frame189",
+          "scene": 2,
+          "matches": 9,
+          "valid": 9,
+          "median_normalized_error": 0.35050317645072937,
+          "p90_normalized_error": 0.6862773776054383,
+          "valid_points": 273
+        },
+        {
+          "pair_id": "scene2_frame943",
+          "scene": 2,
+          "matches": 7,
+          "valid": 7,
+          "median_normalized_error": 0.4046507477760315,
+          "p90_normalized_error": 1.5724378824234009,
+          "valid_points": 245
+        },
+        {
+          "pair_id": "scene2_frame1697",
+          "scene": 2,
+          "matches": 6,
+          "valid": 6,
+          "median_normalized_error": 0.5902886390686035,
+          "p90_normalized_error": 0.9175957441329956,
+          "valid_points": 410
+        },
+        {
+          "pair_id": "scene3_frame121",
+          "scene": 3,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 1.4557609558105469,
+          "p90_normalized_error": 6.598317003250123,
+          "valid_points": 910
+        },
+        {
+          "pair_id": "scene3_frame601",
+          "scene": 3,
+          "matches": 10,
+          "valid": 10,
+          "median_normalized_error": 0.11181624978780746,
+          "p90_normalized_error": 0.8201882958412167,
+          "valid_points": 1085
+        },
+        {
+          "pair_id": "scene3_frame1080",
+          "scene": 3,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 1.3960678577423096,
+          "p90_normalized_error": 1.4415783405303955,
+          "valid_points": 1190
+        },
+        {
+          "pair_id": "scene4_frame91",
+          "scene": 4,
+          "matches": 8,
+          "valid": 8,
+          "median_normalized_error": 0.40342557430267334,
+          "p90_normalized_error": 5.327887630462645,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene4_frame451",
+          "scene": 4,
+          "matches": 14,
+          "valid": 14,
+          "median_normalized_error": 0.8311352729797363,
+          "p90_normalized_error": 2.3812947630882277,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene4_frame811",
+          "scene": 4,
+          "matches": 5,
+          "valid": 5,
+          "median_normalized_error": 3.4513633251190186,
+          "p90_normalized_error": 5.319597625732422,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene5_frame178",
+          "scene": 5,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 0.4985387921333313,
+          "p90_normalized_error": 1.6589509248733523,
+          "valid_points": 135
+        },
+        {
+          "pair_id": "scene5_frame885",
+          "scene": 5,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 0.22586610913276672,
+          "p90_normalized_error": 0.4135577380657196,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene5_frame1592",
+          "scene": 5,
+          "matches": 11,
+          "valid": 11,
+          "median_normalized_error": 0.5793642997741699,
+          "p90_normalized_error": 0.6549416780471802,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene6_frame61",
+          "scene": 6,
+          "matches": 3,
+          "valid": 3,
+          "median_normalized_error": 1.0006434917449951,
+          "p90_normalized_error": 1.0408162593841552,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene6_frame301",
+          "scene": 6,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 1.4511923789978027,
+          "p90_normalized_error": 1.5106396675109863,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene6_frame541",
+          "scene": 6,
+          "matches": 6,
+          "valid": 6,
+          "median_normalized_error": 0.8601816892623901,
+          "p90_normalized_error": 1.419413685798645,
+          "valid_points": 175
+        },
+        {
+          "pair_id": "scene7_frame45",
+          "scene": 7,
+          "matches": 3,
+          "valid": 3,
+          "median_normalized_error": 0.6553093791007996,
+          "p90_normalized_error": 0.7264161944389343,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene7_frame222",
+          "scene": 7,
+          "matches": 3,
+          "valid": 3,
+          "median_normalized_error": 0.3656206429004669,
+          "p90_normalized_error": 0.6103729784488678,
+          "valid_points": 105
+        },
+        {
+          "pair_id": "scene7_frame399",
+          "scene": 7,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 0.5609907507896423,
+          "p90_normalized_error": 0.6062200427055359,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene8_frame53",
+          "scene": 8,
+          "matches": 9,
+          "valid": 9,
+          "median_normalized_error": 0.2950003743171692,
+          "p90_normalized_error": 0.3937244534492493,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene8_frame262",
+          "scene": 8,
+          "matches": 14,
+          "valid": 14,
+          "median_normalized_error": 0.5568692088127136,
+          "p90_normalized_error": 1.1705201685428623,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene8_frame471",
+          "scene": 8,
+          "matches": 13,
+          "valid": 13,
+          "median_normalized_error": 0.41296008229255676,
+          "p90_normalized_error": 2.621042728424074,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene9_frame195",
+          "scene": 9,
+          "matches": 26,
+          "valid": 26,
+          "median_normalized_error": 0.053912874311208725,
+          "p90_normalized_error": 1.0207412838935852,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene9_frame971",
+          "scene": 9,
+          "matches": 16,
+          "valid": 16,
+          "median_normalized_error": 0.044528353959321976,
+          "p90_normalized_error": 0.7142657041549683,
+          "valid_points": 161
+        },
+        {
+          "pair_id": "scene9_frame1748",
+          "scene": 9,
+          "matches": 16,
+          "valid": 16,
+          "median_normalized_error": 0.39078330993652344,
+          "p90_normalized_error": 1.0935215950012207,
+          "valid_points": 175
+        },
+        {
+          "pair_id": "scene11_frame207",
+          "scene": 11,
+          "matches": 11,
+          "valid": 11,
+          "median_normalized_error": 0.4138263463973999,
+          "p90_normalized_error": 1.0692417621612549,
+          "valid_points": 280
+        },
+        {
+          "pair_id": "scene11_frame1029",
+          "scene": 11,
+          "matches": 18,
+          "valid": 18,
+          "median_normalized_error": 0.3334038257598877,
+          "p90_normalized_error": 1.1637421607971192,
+          "valid_points": 315
+        },
+        {
+          "pair_id": "scene11_frame1851",
+          "scene": 11,
+          "matches": 6,
+          "valid": 6,
+          "median_normalized_error": 0.6682189702987671,
+          "p90_normalized_error": 1.6115681529045105,
+          "valid_points": 210
+        },
+        {
+          "pair_id": "scene12_frame121",
+          "scene": 12,
+          "matches": 8,
+          "valid": 8,
+          "median_normalized_error": 0.5415967106819153,
+          "p90_normalized_error": 1.1593894362449642,
+          "valid_points": 420
+        },
+        {
+          "pair_id": "scene12_frame601",
+          "scene": 12,
+          "matches": 7,
+          "valid": 7,
+          "median_normalized_error": 0.3536478579044342,
+          "p90_normalized_error": 0.8272901058197022,
+          "valid_points": 385
+        },
+        {
+          "pair_id": "scene12_frame1080",
+          "scene": 12,
+          "matches": 8,
+          "valid": 8,
+          "median_normalized_error": 0.8645167350769043,
+          "p90_normalized_error": 1.0858516216278076,
+          "valid_points": 455
+        },
+        {
+          "pair_id": "scene13_frame163",
+          "scene": 13,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 0.505071759223938,
+          "p90_normalized_error": 0.6555499851703644,
+          "valid_points": 385
+        },
+        {
+          "pair_id": "scene13_frame811",
+          "scene": 13,
+          "matches": 7,
+          "valid": 7,
+          "median_normalized_error": 0.6946560144424438,
+          "p90_normalized_error": 1.1545154809951783,
+          "valid_points": 350
+        },
+        {
+          "pair_id": "scene13_frame1459",
+          "scene": 13,
+          "matches": 3,
+          "valid": 3,
+          "median_normalized_error": 0.6235377192497253,
+          "p90_normalized_error": 0.6581490397453308,
+          "valid_points": 350
+        },
+        {
+          "pair_id": "scene15_frame106",
+          "scene": 15,
+          "matches": 8,
+          "valid": 8,
+          "median_normalized_error": 0.01944514364004135,
+          "p90_normalized_error": 0.23381465971469875,
+          "valid_points": 2555
+        },
+        {
+          "pair_id": "scene15_frame525",
+          "scene": 15,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 0.06972779333591461,
+          "p90_normalized_error": 0.8735683083534244,
+          "valid_points": 2485
+        },
+        {
+          "pair_id": "scene15_frame943",
+          "scene": 15,
+          "matches": 14,
+          "valid": 14,
+          "median_normalized_error": 0.20081983506679535,
+          "p90_normalized_error": 1.4590567469596867,
+          "valid_points": 2240
+        },
+        {
+          "pair_id": "scene16_frame104",
+          "scene": 16,
+          "matches": 22,
+          "valid": 22,
+          "median_normalized_error": 0.8516775965690613,
+          "p90_normalized_error": 2.0002864599227905,
+          "valid_points": 1960
+        },
+        {
+          "pair_id": "scene16_frame517",
+          "scene": 16,
+          "matches": 18,
+          "valid": 18,
+          "median_normalized_error": 0.3538985252380371,
+          "p90_normalized_error": 1.4220108509063722,
+          "valid_points": 2100
+        },
+        {
+          "pair_id": "scene16_frame931",
+          "scene": 16,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 0.5598551034927368,
+          "p90_normalized_error": 1.3086751937866212,
+          "valid_points": 1974
+        },
+        {
+          "pair_id": "scene17_frame121",
+          "scene": 17,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 0.5048207640647888,
+          "p90_normalized_error": 0.7432022154331208,
+          "valid_points": 245
+        },
+        {
+          "pair_id": "scene17_frame601",
+          "scene": 17,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 0.6008685827255249,
+          "p90_normalized_error": 1.6779106914997104,
+          "valid_points": 350
+        },
+        {
+          "pair_id": "scene17_frame1080",
+          "scene": 17,
+          "matches": 7,
+          "valid": 7,
+          "median_normalized_error": 0.3286091983318329,
+          "p90_normalized_error": 0.8997124910354615,
+          "valid_points": 350
+        },
+        {
+          "pair_id": "scene20_frame101",
+          "scene": 20,
+          "matches": 11,
+          "valid": 11,
+          "median_normalized_error": 0.6806914806365967,
+          "p90_normalized_error": 4.173925399780273,
+          "valid_points": 595
+        },
+        {
+          "pair_id": "scene20_frame501",
+          "scene": 20,
+          "matches": 9,
+          "valid": 9,
+          "median_normalized_error": 0.03784551844000816,
+          "p90_normalized_error": 0.31623247265815746,
+          "valid_points": 945
+        },
+        {
+          "pair_id": "scene20_frame901",
+          "scene": 20,
+          "matches": 7,
+          "valid": 7,
+          "median_normalized_error": 0.07532154768705368,
+          "p90_normalized_error": 0.5302618265151979,
+          "valid_points": 910
+        },
+        {
+          "pair_id": "scene21_frame101",
+          "scene": 21,
+          "matches": 18,
+          "valid": 18,
+          "median_normalized_error": 0.4341515302658081,
+          "p90_normalized_error": 3.920617437362671,
+          "valid_points": 245
+        },
+        {
+          "pair_id": "scene21_frame501",
+          "scene": 21,
+          "matches": 10,
+          "valid": 10,
+          "median_normalized_error": 1.2514021396636963,
+          "p90_normalized_error": 4.145826911926269,
+          "valid_points": 245
+        },
+        {
+          "pair_id": "scene21_frame901",
+          "scene": 21,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 0.37210768461227417,
+          "p90_normalized_error": 3.0353333234787,
+          "valid_points": 245
+        },
+        {
+          "pair_id": "scene23_frame106",
+          "scene": 23,
+          "matches": 66,
+          "valid": 66,
+          "median_normalized_error": 0.03326518088579178,
+          "p90_normalized_error": 0.3592083901166916,
+          "valid_points": 3115
+        },
+        {
+          "pair_id": "scene23_frame527",
+          "scene": 23,
+          "matches": 37,
+          "valid": 37,
+          "median_normalized_error": 0.024452373385429382,
+          "p90_normalized_error": 0.6029658913612365,
+          "valid_points": 3150
+        },
+        {
+          "pair_id": "scene23_frame947",
+          "scene": 23,
+          "matches": 43,
+          "valid": 43,
+          "median_normalized_error": 0.03905937448143959,
+          "p90_normalized_error": 0.6980987668037416,
+          "valid_points": 3045
+        },
+        {
+          "pair_id": "scene24_frame121",
+          "scene": 24,
+          "matches": 25,
+          "valid": 25,
+          "median_normalized_error": 1.5645979642868042,
+          "p90_normalized_error": 2.497150182723999,
+          "valid_points": 1925
+        },
+        {
+          "pair_id": "scene24_frame601",
+          "scene": 24,
+          "matches": 18,
+          "valid": 18,
+          "median_normalized_error": 1.4798383712768555,
+          "p90_normalized_error": 4.112522673606875,
+          "valid_points": 1925
+        },
+        {
+          "pair_id": "scene24_frame1081",
+          "scene": 24,
+          "matches": 26,
+          "valid": 26,
+          "median_normalized_error": 0.6046033501625061,
+          "p90_normalized_error": 2.098299205303192,
+          "valid_points": 2350
+        }
+      ]
+    },
+    "pi3": {
+      "weight_sha256": "33580e4702ac671558aedeab1148fd08118f7ce45bdbeb99f3e3cf340062875d",
+      "gpu": "Tesla V100-DGXS-32GB",
+      "model_latency": {
+        "n": 54,
+        "mean_ms": 180.42431040494532,
+        "p50_ms": 177.00127884745598,
+        "p95_ms": 202.69067771732804
+      },
+      "module_e2e": {
+        "n": 54,
+        "mean_ms": 375.6079251567523,
+        "p50_ms": 306.8012744188309,
+        "p95_ms": 690.1777185499662
+      },
+      "model_pair_fps": 5.542490353742212,
+      "module_e2e_pair_fps": 2.662350640185961,
+      "composed_detector_plus_module": {
+        "detector_pair_serial_ms": 198.54185868192604,
+        "latency": {
+          "n": 54,
+          "mean_ms": 574.1497838386783,
+          "p50_ms": 508.241456001997,
+          "p95_ms": 887.5621970742935
+        },
+        "mean_ms": 574.1497838386783,
+        "pair_timestamp_fps": 1.7417057850551676,
+        "camera_image_fps": 3.483411570110335,
+        "scope": "serial measured live GMT detector + model read/preprocess/forward/world-point association; no GMT tracker"
+      },
+      "reconstruction_proxy": {
+        "pairs": 54,
+        "pairs_with_valid_sift": 54,
+        "median_of_pair_medians": 0.9552120864391327,
+        "p90_of_pair_medians": 1.9474113941192628,
+        "median_of_pair_p90": 2.035105895996094,
+        "interpretation": "relative cross-view world-point agreement; lower is better; no 3D GT"
+      },
+      "association": {
+        "scores": {
+          "world_chamfer": {
+            "eligible": 764,
+            "correct": 603,
+            "wrong": 161
+          },
+          "world_centroid": {
+            "eligible": 764,
+            "correct": 587,
+            "wrong": 177
+          }
+        },
+        "by_scene": {
+          "2": {
+            "world_chamfer": {
+              "eligible": 22,
+              "correct": 22
+            },
+            "world_centroid": {
+              "eligible": 22,
+              "correct": 22
+            }
+          },
+          "3": {
+            "world_chamfer": {
+              "eligible": 34,
+              "correct": 33,
+              "wrong": 1
+            },
+            "world_centroid": {
+              "eligible": 34,
+              "correct": 32,
+              "wrong": 2
+            }
+          },
+          "4": {
+            "world_chamfer": {
+              "eligible": 9,
+              "correct": 9
+            },
+            "world_centroid": {
+              "eligible": 9,
+              "correct": 9
+            }
+          },
+          "5": {
+            "world_chamfer": {
+              "eligible": 12,
+              "correct": 12
+            },
+            "world_centroid": {
+              "eligible": 12,
+              "correct": 12
+            }
+          },
+          "6": {
+            "world_chamfer": {
+              "eligible": 12,
+              "correct": 12
+            },
+            "world_centroid": {
+              "eligible": 12,
+              "correct": 12
+            }
+          },
+          "7": {
+            "world_chamfer": {
+              "eligible": 9,
+              "correct": 9
+            },
+            "world_centroid": {
+              "eligible": 9,
+              "correct": 9
+            }
+          },
+          "8": {
+            "world_chamfer": {
+              "eligible": 12,
+              "correct": 11,
+              "wrong": 1
+            },
+            "world_centroid": {
+              "eligible": 12,
+              "correct": 12
+            }
+          },
+          "9": {
+            "world_chamfer": {
+              "eligible": 12,
+              "correct": 10,
+              "wrong": 2
+            },
+            "world_centroid": {
+              "eligible": 12,
+              "correct": 11,
+              "wrong": 1
+            }
+          },
+          "11": {
+            "world_chamfer": {
+              "eligible": 20,
+              "correct": 20
+            },
+            "world_centroid": {
+              "eligible": 20,
+              "correct": 20
+            }
+          },
+          "12": {
+            "world_chamfer": {
+              "eligible": 26,
+              "correct": 16,
+              "wrong": 10
+            },
+            "world_centroid": {
+              "eligible": 26,
+              "correct": 15,
+              "wrong": 11
+            }
+          },
+          "13": {
+            "world_chamfer": {
+              "eligible": 24,
+              "correct": 19,
+              "wrong": 5
+            },
+            "world_centroid": {
+              "eligible": 24,
+              "correct": 17,
+              "wrong": 7
+            }
+          },
+          "15": {
+            "world_chamfer": {
+              "eligible": 148,
+              "wrong": 30,
+              "correct": 118
+            },
+            "world_centroid": {
+              "eligible": 148,
+              "correct": 119,
+              "wrong": 29
+            }
+          },
+          "16": {
+            "world_chamfer": {
+              "eligible": 76,
+              "correct": 63,
+              "wrong": 13
+            },
+            "world_centroid": {
+              "eligible": 76,
+              "correct": 61,
+              "wrong": 15
+            }
+          },
+          "17": {
+            "world_chamfer": {
+              "eligible": 16,
+              "correct": 10,
+              "wrong": 6
+            },
+            "world_centroid": {
+              "eligible": 16,
+              "wrong": 9,
+              "correct": 7
+            }
+          },
+          "20": {
+            "world_chamfer": {
+              "eligible": 52,
+              "correct": 31,
+              "wrong": 21
+            },
+            "world_centroid": {
+              "eligible": 52,
+              "correct": 32,
+              "wrong": 20
+            }
+          },
+          "21": {
+            "world_chamfer": {
+              "eligible": 12,
+              "correct": 12
+            },
+            "world_centroid": {
+              "eligible": 12,
+              "correct": 12
+            }
+          },
+          "23": {
+            "world_chamfer": {
+              "eligible": 204,
+              "correct": 158,
+              "wrong": 46
+            },
+            "world_centroid": {
+              "eligible": 204,
+              "correct": 149,
+              "wrong": 55
+            }
+          },
+          "24": {
+            "world_chamfer": {
+              "eligible": 64,
+              "correct": 38,
+              "wrong": 26
+            },
+            "world_centroid": {
+              "eligible": 64,
+              "correct": 36,
+              "wrong": 28
+            }
+          }
+        },
+        "duplicate_gt_instance_rows_excluded": 3,
+        "interpretation": "known-candidate ranking only; eligible directions are correlated and not an open-world detector metric"
+      },
+      "rows": [
+        {
+          "pair_id": "scene2_frame189",
+          "scene": 2,
+          "matches": 9,
+          "valid": 9,
+          "median_normalized_error": 0.45218053460121155,
+          "p90_normalized_error": 0.8342967748641968,
+          "valid_points": 273
+        },
+        {
+          "pair_id": "scene2_frame943",
+          "scene": 2,
+          "matches": 7,
+          "valid": 7,
+          "median_normalized_error": 0.4969702661037445,
+          "p90_normalized_error": 2.0618234395980837,
+          "valid_points": 245
+        },
+        {
+          "pair_id": "scene2_frame1697",
+          "scene": 2,
+          "matches": 6,
+          "valid": 6,
+          "median_normalized_error": 1.190904140472412,
+          "p90_normalized_error": 1.8252813816070557,
+          "valid_points": 410
+        },
+        {
+          "pair_id": "scene3_frame121",
+          "scene": 3,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 2.275996208190918,
+          "p90_normalized_error": 10.885982990264893,
+          "valid_points": 910
+        },
+        {
+          "pair_id": "scene3_frame601",
+          "scene": 3,
+          "matches": 10,
+          "valid": 10,
+          "median_normalized_error": 0.4199039936065674,
+          "p90_normalized_error": 2.1753135919570914,
+          "valid_points": 1085
+        },
+        {
+          "pair_id": "scene3_frame1080",
+          "scene": 3,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 1.913170337677002,
+          "p90_normalized_error": 1.9931031703948974,
+          "valid_points": 1190
+        },
+        {
+          "pair_id": "scene4_frame91",
+          "scene": 4,
+          "matches": 8,
+          "valid": 8,
+          "median_normalized_error": 0.7433746457099915,
+          "p90_normalized_error": 8.540479946136472,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene4_frame451",
+          "scene": 4,
+          "matches": 14,
+          "valid": 14,
+          "median_normalized_error": 1.2454057931900024,
+          "p90_normalized_error": 8.931711864471445,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene4_frame811",
+          "scene": 4,
+          "matches": 5,
+          "valid": 5,
+          "median_normalized_error": 4.1574249267578125,
+          "p90_normalized_error": 10.212340164184571,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene5_frame178",
+          "scene": 5,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 0.8837892413139343,
+          "p90_normalized_error": 2.8181301116943365,
+          "valid_points": 135
+        },
+        {
+          "pair_id": "scene5_frame885",
+          "scene": 5,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 0.4304782450199127,
+          "p90_normalized_error": 0.8389911890029907,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene5_frame1592",
+          "scene": 5,
+          "matches": 11,
+          "valid": 11,
+          "median_normalized_error": 0.8705956339836121,
+          "p90_normalized_error": 0.9746816754341125,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene6_frame61",
+          "scene": 6,
+          "matches": 3,
+          "valid": 3,
+          "median_normalized_error": 0.9297886490821838,
+          "p90_normalized_error": 1.497986900806427,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene6_frame301",
+          "scene": 6,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 2.3545420169830322,
+          "p90_normalized_error": 2.4205700635910032,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene6_frame541",
+          "scene": 6,
+          "matches": 6,
+          "valid": 6,
+          "median_normalized_error": 1.3256077766418457,
+          "p90_normalized_error": 2.3581079244613647,
+          "valid_points": 175
+        },
+        {
+          "pair_id": "scene7_frame45",
+          "scene": 7,
+          "matches": 3,
+          "valid": 3,
+          "median_normalized_error": 1.3916056156158447,
+          "p90_normalized_error": 1.530115270614624,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene7_frame222",
+          "scene": 7,
+          "matches": 3,
+          "valid": 3,
+          "median_normalized_error": 0.5365821719169617,
+          "p90_normalized_error": 1.1016011595726014,
+          "valid_points": 105
+        },
+        {
+          "pair_id": "scene7_frame399",
+          "scene": 7,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 1.129594326019287,
+          "p90_normalized_error": 1.2108823657035828,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene8_frame53",
+          "scene": 8,
+          "matches": 9,
+          "valid": 9,
+          "median_normalized_error": 0.6715154051780701,
+          "p90_normalized_error": 1.909637212753296,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene8_frame262",
+          "scene": 8,
+          "matches": 14,
+          "valid": 14,
+          "median_normalized_error": 0.9539024829864502,
+          "p90_normalized_error": 2.0587865591049197,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene8_frame471",
+          "scene": 8,
+          "matches": 13,
+          "valid": 13,
+          "median_normalized_error": 1.1595827341079712,
+          "p90_normalized_error": 4.011600065231323,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene9_frame195",
+          "scene": 9,
+          "matches": 26,
+          "valid": 26,
+          "median_normalized_error": 0.14108701050281525,
+          "p90_normalized_error": 1.6274608373641968,
+          "valid_points": 140
+        },
+        {
+          "pair_id": "scene9_frame971",
+          "scene": 9,
+          "matches": 16,
+          "valid": 16,
+          "median_normalized_error": 0.15204232931137085,
+          "p90_normalized_error": 1.0944698452949524,
+          "valid_points": 161
+        },
+        {
+          "pair_id": "scene9_frame1748",
+          "scene": 9,
+          "matches": 16,
+          "valid": 16,
+          "median_normalized_error": 0.5259851813316345,
+          "p90_normalized_error": 1.1043109595775604,
+          "valid_points": 175
+        },
+        {
+          "pair_id": "scene11_frame207",
+          "scene": 11,
+          "matches": 11,
+          "valid": 11,
+          "median_normalized_error": 0.4480099380016327,
+          "p90_normalized_error": 1.1932555437088013,
+          "valid_points": 280
+        },
+        {
+          "pair_id": "scene11_frame1029",
+          "scene": 11,
+          "matches": 18,
+          "valid": 18,
+          "median_normalized_error": 0.6409915685653687,
+          "p90_normalized_error": 2.142803502082825,
+          "valid_points": 315
+        },
+        {
+          "pair_id": "scene11_frame1851",
+          "scene": 11,
+          "matches": 6,
+          "valid": 6,
+          "median_normalized_error": 0.5872104167938232,
+          "p90_normalized_error": 1.5866521000862122,
+          "valid_points": 210
+        },
+        {
+          "pair_id": "scene12_frame121",
+          "scene": 12,
+          "matches": 8,
+          "valid": 8,
+          "median_normalized_error": 1.9098995923995972,
+          "p90_normalized_error": 3.3679257392883293,
+          "valid_points": 420
+        },
+        {
+          "pair_id": "scene12_frame601",
+          "scene": 12,
+          "matches": 7,
+          "valid": 7,
+          "median_normalized_error": 1.3306710720062256,
+          "p90_normalized_error": 2.9550245285034182,
+          "valid_points": 385
+        },
+        {
+          "pair_id": "scene12_frame1080",
+          "scene": 12,
+          "matches": 8,
+          "valid": 8,
+          "median_normalized_error": 1.9287314414978027,
+          "p90_normalized_error": 2.3714027404785156,
+          "valid_points": 455
+        },
+        {
+          "pair_id": "scene13_frame163",
+          "scene": 13,
+          "matches": 4,
+          "valid": 4,
+          "median_normalized_error": 1.9531958103179932,
+          "p90_normalized_error": 2.4689220905303957,
+          "valid_points": 385
+        },
+        {
+          "pair_id": "scene13_frame811",
+          "scene": 13,
+          "matches": 7,
+          "valid": 7,
+          "median_normalized_error": 1.2332173585891724,
+          "p90_normalized_error": 2.0239434719085696,
+          "valid_points": 350
+        },
+        {
+          "pair_id": "scene13_frame1459",
+          "scene": 13,
+          "matches": 3,
+          "valid": 3,
+          "median_normalized_error": 1.9339144229888916,
+          "p90_normalized_error": 2.0462683200836183,
+          "valid_points": 350
+        },
+        {
+          "pair_id": "scene15_frame106",
+          "scene": 15,
+          "matches": 8,
+          "valid": 8,
+          "median_normalized_error": 0.046985529363155365,
+          "p90_normalized_error": 0.39953689575195306,
+          "valid_points": 2555
+        },
+        {
+          "pair_id": "scene15_frame525",
+          "scene": 15,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 0.08754512667655945,
+          "p90_normalized_error": 1.109110271930695,
+          "valid_points": 2485
+        },
+        {
+          "pair_id": "scene15_frame943",
+          "scene": 15,
+          "matches": 14,
+          "valid": 14,
+          "median_normalized_error": 0.2778162956237793,
+          "p90_normalized_error": 1.4602591872215271,
+          "valid_points": 2240
+        },
+        {
+          "pair_id": "scene16_frame104",
+          "scene": 16,
+          "matches": 22,
+          "valid": 22,
+          "median_normalized_error": 1.1030354499816895,
+          "p90_normalized_error": 2.5101239681243896,
+          "valid_points": 1960
+        },
+        {
+          "pair_id": "scene16_frame517",
+          "scene": 16,
+          "matches": 18,
+          "valid": 18,
+          "median_normalized_error": 0.6476079225540161,
+          "p90_normalized_error": 2.3271924495697025,
+          "valid_points": 2100
+        },
+        {
+          "pair_id": "scene16_frame931",
+          "scene": 16,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 0.9565216898918152,
+          "p90_normalized_error": 1.756824553012848,
+          "valid_points": 1974
+        },
+        {
+          "pair_id": "scene17_frame121",
+          "scene": 17,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 1.5320669412612915,
+          "p90_normalized_error": 1.8755282878875732,
+          "valid_points": 245
+        },
+        {
+          "pair_id": "scene17_frame601",
+          "scene": 17,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 1.2933112382888794,
+          "p90_normalized_error": 2.3464409589767454,
+          "valid_points": 350
+        },
+        {
+          "pair_id": "scene17_frame1080",
+          "scene": 17,
+          "matches": 7,
+          "valid": 7,
+          "median_normalized_error": 1.0305005311965942,
+          "p90_normalized_error": 1.6852905035018924,
+          "valid_points": 350
+        },
+        {
+          "pair_id": "scene20_frame101",
+          "scene": 20,
+          "matches": 11,
+          "valid": 11,
+          "median_normalized_error": 1.6411066055297852,
+          "p90_normalized_error": 13.78043270111084,
+          "valid_points": 595
+        },
+        {
+          "pair_id": "scene20_frame501",
+          "scene": 20,
+          "matches": 9,
+          "valid": 9,
+          "median_normalized_error": 0.10630133748054504,
+          "p90_normalized_error": 0.439659357070923,
+          "valid_points": 945
+        },
+        {
+          "pair_id": "scene20_frame901",
+          "scene": 20,
+          "matches": 7,
+          "valid": 7,
+          "median_normalized_error": 0.07801191508769989,
+          "p90_normalized_error": 0.9222656011581425,
+          "valid_points": 910
+        },
+        {
+          "pair_id": "scene21_frame101",
+          "scene": 21,
+          "matches": 18,
+          "valid": 18,
+          "median_normalized_error": 0.7303919196128845,
+          "p90_normalized_error": 5.941503286361695,
+          "valid_points": 245
+        },
+        {
+          "pair_id": "scene21_frame501",
+          "scene": 21,
+          "matches": 10,
+          "valid": 10,
+          "median_normalized_error": 2.413168430328369,
+          "p90_normalized_error": 7.365516996383667,
+          "valid_points": 245
+        },
+        {
+          "pair_id": "scene21_frame901",
+          "scene": 21,
+          "matches": 12,
+          "valid": 12,
+          "median_normalized_error": 1.1609532833099365,
+          "p90_normalized_error": 8.008995056152346,
+          "valid_points": 245
+        },
+        {
+          "pair_id": "scene23_frame106",
+          "scene": 23,
+          "matches": 66,
+          "valid": 66,
+          "median_normalized_error": 0.04107241332530975,
+          "p90_normalized_error": 0.5359821319580078,
+          "valid_points": 3115
+        },
+        {
+          "pair_id": "scene23_frame527",
+          "scene": 23,
+          "matches": 37,
+          "valid": 37,
+          "median_normalized_error": 0.03689029440283775,
+          "p90_normalized_error": 0.9942498087882992,
+          "valid_points": 3150
+        },
+        {
+          "pair_id": "scene23_frame947",
+          "scene": 23,
+          "matches": 43,
+          "valid": 43,
+          "median_normalized_error": 0.037184447050094604,
+          "p90_normalized_error": 1.1000045776367189,
+          "valid_points": 3045
+        },
+        {
+          "pair_id": "scene24_frame121",
+          "scene": 24,
+          "matches": 25,
+          "valid": 25,
+          "median_normalized_error": 1.4467917680740356,
+          "p90_normalized_error": 2.6029205322265625,
+          "valid_points": 1925
+        },
+        {
+          "pair_id": "scene24_frame601",
+          "scene": 24,
+          "matches": 18,
+          "valid": 18,
+          "median_normalized_error": 2.2654476165771484,
+          "p90_normalized_error": 3.374462676048279,
+          "valid_points": 1925
+        },
+        {
+          "pair_id": "scene24_frame1081",
+          "scene": 24,
+          "matches": 26,
+          "valid": 26,
+          "median_normalized_error": 1.4561569690704346,
+          "p90_normalized_error": 3.69568133354187,
+          "valid_points": 2350
+        }
+      ]
+    }
+  },
+  "comparison": {
+    "world_chamfer": {
+      "scene_count": 18,
+      "omega": {
+        "correct": 580,
+        "evaluated": 764,
+        "accuracy": 0.7591623036649214,
+        "scene_bootstrap_95": [
+          0.7204018956491359,
+          0.8264319988004198
+        ]
+      },
+      "pi3": {
+        "correct": 603,
+        "evaluated": 764,
+        "accuracy": 0.7892670157068062,
+        "scene_bootstrap_95": [
+          0.7337837082048492,
+          0.8561281979371164
+        ]
+      },
+      "pi3_minus_omega": 0.030104712041884807,
+      "paired_scene_bootstrap_95": [
+        -0.0062402496099843744,
+        0.05637321360214369
+      ]
+    },
+    "world_centroid": {
+      "scene_count": 18,
+      "omega": {
+        "correct": 553,
+        "evaluated": 764,
+        "accuracy": 0.7238219895287958,
+        "scene_bootstrap_95": [
+          0.6778695569136746,
+          0.801007877962268
+        ]
+      },
+      "pi3": {
+        "correct": 587,
+        "evaluated": 764,
+        "accuracy": 0.768324607329843,
+        "scene_bootstrap_95": [
+          0.7103633298336294,
+          0.843751967884131
+        ]
+      },
+      "pi3_minus_omega": 0.04450261780104714,
+      "paired_scene_bootstrap_95": [
+        0.007498789120715411,
+        0.06868700212161243
+      ]
+    }
+  },
+  "shared_detector": {
+    "pair_serial": {
+      "n": 54,
+      "mean_ms": 198.54185868192604,
+      "p50_ms": 197.02228903770447,
+      "p95_ms": 214.5797662436962
+    },
+    "model": {
+      "n": 54,
+      "mean_ms": 89.33540778579535,
+      "p50_ms": 88.00217136740685,
+      "p95_ms": 95.51745653152466
+    },
+    "cache": "/data1/liuyeqiang/WWW_pi3_omega_pair_comparison_runtime_20261022/detector_cache.json",
+    "tracker_or_gmt_main_flow_called": false
+  }
+}
