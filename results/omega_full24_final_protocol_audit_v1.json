@@ -1,0 +1,479 @@
+{
+  "status": "COMPLETE_OMEGA_FULL24_RESEARCH_AUDIT",
+  "protocol": "manifests/omega_full24_training_protocol_v1.json",
+  "protocol_sha256": "4a5534051b49c20ee76d7f3bedd68caed453ac38fdacc2ce8a0bb60b12514a44",
+  "scene_split": {
+    "fit": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      20,
+      21,
+      23,
+      24
+    ],
+    "validation": [
+      1,
+      10,
+      14,
+      18,
+      19,
+      22
+    ]
+  },
+  "inventory": {
+    "train_scenes": 24,
+    "train_images": 57508,
+    "train_annotation_sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+    "test_scenes": 22,
+    "test_images": 58038,
+    "test_annotation_sha256": "7a1e735bf25026a56148deaeb432e0520c6ad5dad97d5362aa58739255389593",
+    "test_status": "NOT_ACCESSED"
+  },
+  "omega_checkpoint": {
+    "path": "/data1/liuyeqiang/WWW_omega_runtime_20261016/weights/vggt_omega_1b_512.pt",
+    "sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+    "feature_dim": 2048,
+    "resolution": 512
+  },
+  "dino_control_checkpoint": {
+    "path": "/data1/liuyeqiang/WWW_vggt_geo_runtime/weights/dinov2_vitl14_reg4.pth",
+    "sha256": "36e4deffbaef061a2576705b0c36f93621e2ae20bf6274694821b0b492551b51",
+    "feature_dim": 1024
+  },
+  "causal_score_coverage": {
+    "status": "PASS_COMPLETE_ALL24_NATIVE_SCORE_MATRIX_COVERAGE",
+    "score_rows": 556719,
+    "candidate_cells": 33462889
+  },
+  "supervised_datasets": {
+    "omega": {
+      "path": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/supervised_omega_v1",
+      "groups": 54053,
+      "fit_groups": 41576,
+      "validation_groups": 12477,
+      "candidate_rows": 300587
+    },
+    "dino": {
+      "path": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/supervised_dino_v1",
+      "groups": 54053,
+      "fit_groups": 41576,
+      "validation_groups": 12477,
+      "candidate_rows": 300587
+    }
+  },
+  "stage_a": {
+    "status": "FAIL_STAGE_A_SELECTION_GATE",
+    "omega_primary_identity_gate": false,
+    "selection": {
+      "native": {
+        "selected_epoch": 10,
+        "selected_seed": 20261014,
+        "selected": {
+          "model": "native",
+          "seed": 20261014,
+          "epoch": 10,
+          "validation_loss": 0.011572372096662339,
+          "net_fixes": 0,
+          "fixes": 0,
+          "harms": 0,
+          "report": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/heads_stageA_v1/native_seed20261014/manifest.json"
+        },
+        "primary_seed_at_selected_epoch": {
+          "model": "native",
+          "seed": 20261014,
+          "epoch": 10,
+          "validation_loss": 0.011572372096662339,
+          "net_fixes": 0,
+          "fixes": 0,
+          "harms": 0,
+          "report": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/heads_stageA_v1/native_seed20261014/manifest.json"
+        }
+      },
+      "omega": {
+        "selected_epoch": 10,
+        "selected_seed": 20261016,
+        "selected": {
+          "model": "omega",
+          "seed": 20261016,
+          "epoch": 10,
+          "validation_loss": 0.011137344578925807,
+          "net_fixes": 0,
+          "fixes": 0,
+          "harms": 0,
+          "report": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/heads_stageA_v1/omega_seed20261016/manifest.json"
+        },
+        "primary_seed_at_selected_epoch": {
+          "model": "omega",
+          "seed": 20261014,
+          "epoch": 10,
+          "validation_loss": 0.01115882658184721,
+          "net_fixes": 0,
+          "fixes": 0,
+          "harms": 0,
+          "report": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/heads_stageA_v1/omega_seed20261014/manifest.json"
+        }
+      },
+      "dino": {
+        "selected_epoch": 10,
+        "selected_seed": 20261016,
+        "selected": {
+          "model": "dino",
+          "seed": 20261016,
+          "epoch": 10,
+          "validation_loss": 0.010792488026289413,
+          "net_fixes": 0,
+          "fixes": 0,
+          "harms": 0,
+          "report": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/heads_stageA_v1/dino_seed20261016/manifest.json"
+        },
+        "primary_seed_at_selected_epoch": {
+          "model": "dino",
+          "seed": 20261014,
+          "epoch": 10,
+          "validation_loss": 0.010829985132799126,
+          "net_fixes": 0,
+          "fixes": 0,
+          "harms": 0,
+          "report": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/heads_stageA_v1/dino_seed20261014/manifest.json"
+        }
+      }
+    }
+  },
+  "stage_b_all24_metrics": {
+    "native": {
+      "groups": 54053,
+      "listwise_loss": 0.01921542248917076,
+      "native_top1": 0.9990379812406341,
+      "model_top1": 0.9990749819621483,
+      "fixes_vs_native": 2,
+      "harms_vs_native": 0,
+      "net_fixes_vs_native": 2,
+      "correctable_groups": 344,
+      "correctable_native_top1": 0.9244186046511628,
+      "correctable_model_top1": 0.9302325581395349
+    },
+    "omega": {
+      "groups": 54053,
+      "listwise_loss": 0.01874772930421146,
+      "native_top1": 0.9990379812406341,
+      "model_top1": 0.9990564816013913,
+      "fixes_vs_native": 4,
+      "harms_vs_native": 3,
+      "net_fixes_vs_native": 1,
+      "correctable_groups": 344,
+      "correctable_native_top1": 0.9244186046511628,
+      "correctable_model_top1": 0.9273255813953488
+    },
+    "dino": {
+      "groups": 54053,
+      "listwise_loss": 0.018466012077933212,
+      "native_top1": 0.9990379812406341,
+      "model_top1": 0.9991489834051764,
+      "fixes_vs_native": 6,
+      "harms_vs_native": 0,
+      "net_fixes_vs_native": 6,
+      "correctable_groups": 344,
+      "correctable_native_top1": 0.9244186046511628,
+      "correctable_model_top1": 0.9418604651162791
+    }
+  },
+  "causal_head_validation": {
+    "comparison": "results/omega_full24_head_validation_comparison_v1.json",
+    "accepted_primary": {
+      "eligible": 12477,
+      "fixes": 6,
+      "harms": 1,
+      "net": 5
+    },
+    "final_output": {
+      "eligible": 12477,
+      "fixes": 6,
+      "harms": 1,
+      "net": 5
+    },
+    "tracking_metrics": "results/omega_full24_head_validation_metrics_v1.json",
+    "metric_deltas": {
+      "1": {
+        "HOTA": {
+          "baseline": 86.55351457210155,
+          "head": 86.97353426910445,
+          "delta": 0.42001969700289976
+        },
+        "AssA": {
+          "baseline": 85.2196946037858,
+          "head": 86.04773278574784,
+          "delta": 0.828038181962043
+        },
+        "DetA": {
+          "baseline": 87.93225734540148,
+          "head": 87.93225734540148,
+          "delta": 0.0
+        },
+        "IDF1": {
+          "baseline": 94.66487334678322,
+          "head": 95.15803631472764,
+          "delta": 0.4931629679444143
+        },
+        "CVIDF1": {
+          "baseline": 94.66487334678322,
+          "head": 95.15803631472764,
+          "delta": 0.4931629679444143
+        },
+        "CVMA": {
+          "baseline": 89.3287827076223,
+          "head": 90.30716723549487,
+          "delta": 0.9783845278725778
+        },
+        "MOTA": {
+          "baseline": 89.67007963594995,
+          "head": 90.64846416382252,
+          "delta": 0.9783845278725778
+        },
+        "IDSW": {
+          "baseline": 278,
+          "head": 235,
+          "delta": -43
+        }
+      },
+      "10": {
+        "HOTA": {
+          "baseline": 80.94746549327041,
+          "head": 80.95688907645462,
+          "delta": 0.009423583184201334
+        },
+        "AssA": {
+          "baseline": 80.93470572524005,
+          "head": 80.95285161705326,
+          "delta": 0.01814589181320514
+        },
+        "DetA": {
+          "baseline": 80.96159607508253,
+          "head": 80.96227208325173,
+          "delta": 0.0006760081692078757
+        },
+        "IDF1": {
+          "baseline": 98.879291883789,
+          "head": 98.89356842030124,
+          "delta": 0.014276536512241478
+        },
+        "CVIDF1": {
+          "baseline": 98.879291883789,
+          "head": 98.89356842030124,
+          "delta": 0.014276536512241478
+        },
+        "CVMA": {
+          "baseline": 97.77888163497019,
+          "head": 97.8072665342038,
+          "delta": 0.028384899233614647
+        },
+        "MOTA": {
+          "baseline": 97.8072665342038,
+          "head": 97.82855520862901,
+          "delta": 0.021288674425207432
+        },
+        "IDSW": {
+          "baseline": 35,
+          "head": 32,
+          "delta": -3
+        }
+      },
+      "14": {
+        "HOTA": {
+          "baseline": 79.83944517163414,
+          "head": 79.76687681852974,
+          "delta": -0.07256835310440124
+        },
+        "AssA": {
+          "baseline": 82.77197261384194,
+          "head": 82.63611645099978,
+          "delta": -0.13585616284215973
+        },
+        "DetA": {
+          "baseline": 77.38314966065805,
+          "head": 77.37039455461803,
+          "delta": -0.01275510604001795
+        },
+        "IDF1": {
+          "baseline": 94.8508267433501,
+          "head": 94.75796788880902,
+          "delta": -0.09285885454107756
+        },
+        "CVIDF1": {
+          "baseline": 94.81787682722262,
+          "head": 94.73999520728492,
+          "delta": -0.07788161993769904
+        },
+        "CVMA": {
+          "baseline": 89.68577870373014,
+          "head": 89.56591226918576,
+          "delta": -0.1198664345443774
+        },
+        "MOTA": {
+          "baseline": 90.49345015554097,
+          "head": 90.32221239190616,
+          "delta": -0.17123776363480658
+        },
+        "IDSW": {
+          "baseline": 293,
+          "head": 315,
+          "delta": 22
+        }
+      },
+      "18": {
+        "HOTA": {
+          "baseline": 78.77889797929718,
+          "head": 79.20584846313048,
+          "delta": 0.4269504838332949
+        },
+        "AssA": {
+          "baseline": 81.04268885288457,
+          "head": 81.9107697935172,
+          "delta": 0.8680809406326375
+        },
+        "DetA": {
+          "baseline": 76.89686448973472,
+          "head": 76.89276491310729,
+          "delta": -0.004099576627439205
+        },
+        "IDF1": {
+          "baseline": 95.94411515664692,
+          "head": 96.62997459779848,
+          "delta": 0.6858594411515639
+        },
+        "CVIDF1": {
+          "baseline": 95.94411515664692,
+          "head": 96.62997459779848,
+          "delta": 0.6858594411515639
+        },
+        "CVMA": {
+          "baseline": 93.21947489166455,
+          "head": 93.24496558756053,
+          "delta": 0.025490695895982185
+        },
+        "MOTA": {
+          "baseline": 93.22797179029654,
+          "head": 93.25346248619255,
+          "delta": 0.025490695896010607
+        },
+        "IDSW": {
+          "baseline": 29,
+          "head": 26,
+          "delta": -3
+        }
+      },
+      "19": {
+        "HOTA": {
+          "baseline": 77.46137266252114,
+          "head": 77.46097773113326,
+          "delta": -0.0003949313878877092
+        },
+        "AssA": {
+          "baseline": 81.02261515540918,
+          "head": 81.01979863606698,
+          "delta": -0.00281651934220406
+        },
+        "DetA": {
+          "baseline": 74.51595209234846,
+          "head": 74.51980056239734,
+          "delta": 0.0038484700488794488
+        },
+        "IDF1": {
+          "baseline": 94.05203302695125,
+          "head": 94.0333385262502,
+          "delta": -0.018694500701045058
+        },
+        "CVIDF1": {
+          "baseline": 94.05203302695125,
+          "head": 94.0333385262502,
+          "delta": -0.018694500701045058
+        },
+        "CVMA": {
+          "baseline": 90.54344488793367,
+          "head": 90.52502302732576,
+          "delta": -0.01842186060791562
+        },
+        "MOTA": {
+          "baseline": 90.6355541909733,
+          "head": 90.66625729198648,
+          "delta": 0.03070310101318796
+        },
+        "IDSW": {
+          "baseline": 106,
+          "head": 103,
+          "delta": -3
+        }
+      },
+      "22": {
+        "HOTA": {
+          "baseline": 84.33472858698714,
+          "head": 84.37771813000117,
+          "delta": 0.04298954301403057
+        },
+        "AssA": {
+          "baseline": 83.9827179516079,
+          "head": 84.06627466017477,
+          "delta": 0.08355670856687425
+        },
+        "DetA": {
+          "baseline": 84.69798152610032,
+          "head": 84.69989663374993,
+          "delta": 0.0019151076496086716
+        },
+        "IDF1": {
+          "baseline": 97.29691312691004,
+          "head": 97.34903224278032,
+          "delta": 0.052119115870283395
+        },
+        "CVIDF1": {
+          "baseline": 97.29691312691004,
+          "head": 97.34903224278032,
+          "delta": 0.052119115870283395
+        },
+        "CVMA": {
+          "baseline": 94.46264744429882,
+          "head": 94.61243212881483,
+          "delta": 0.1497846845160069
+        },
+        "MOTA": {
+          "baseline": 94.50945515821007,
+          "head": 94.56094364351245,
+          "delta": 0.0514884853023716
+        },
+        "IDSW": {
+          "baseline": 401,
+          "head": 386,
+          "delta": -15
+        }
+      }
+    }
+  },
+  "model_c_task_adapted_omega_lora": {
+    "status": "NOT_EXECUTED",
+    "reason": "No full differentiable \u03a9 gradient recomputation and causal online LoRA training path was executed; no proxy reported."
+  },
+  "official_test": {
+    "status": "NOT_EXECUTED",
+    "reason": "No legal official TEST submission/metric interface was verified; no TEST GT was opened."
+  },
+  "gmt_integration": {
+    "status": "CLOSED",
+    "reason": "Pre-registered Stage-A \u03a9 primary identity gate failed (validation fixes=0, harms=0, net=0). The subsequent causal head diagnostic net +5 is retained as evidence but cannot override the locked Stage-A gate. GMT remains unchanged."
+  },
+  "failure_samples": {
+    "head_scene1_initial": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/full_train_head_audit_v1/scene1_omega_head_v1",
+    "head_scene1_retry1": "/data1/liuyeqiang/WWW_omega_fulltrain_runtime_20261016/full_train_head_audit_v1/scene1_omega_head_v1_retry",
+    "empty_matrix_builder_case": "scene4 call1253 handled by supervised_dataset builder"
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "protocol_id": "omega_full24_mot_v1",
+  "created_utc": "2026-10-16T00:00:00Z",
+  "purpose": "Pre-registered full VisionTrack TRAIN supervised association study for VGGT+GMT. This protocol is independent of JEV and does not use the prior Omega-Corr row-replacement result as a training target.",
+  "dataset": {
+    "name": "VisionTrack",
+    "split": "original TRAIN",
+    "video_ids": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+    "annotation_path": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json",
+    "annotation_sha256_required": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+    "raw_gt_policy": "read-only; preserve every original gt.txt; duplicate, conflict, invalid, unknown and mixed rows remain masked rather than repaired"
+  },
+  "scene_split": {
+    "selection_locked_before_new_training": true,
+    "fit_video_ids": [2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 15, 16, 17, 20, 21, 23, 24],
+    "validation_video_ids": [1, 10, 14, 18, 19, 22],
+    "fit_count": 18,
+    "validation_count": 6,
+    "selection_note": "The six validation scenes were fixed before any new model fitting: prior strict-development scenes 1,10,18,19 plus conflict-heavy football scene 14 and basketball scene 22. The remaining 18 scenes are fit. No scene is moved after inspecting scores.",
+    "original_association_train_ids": [4, 5, 6, 7, 8, 9, 12, 13, 17, 20, 21, 24],
+    "original_full_development_ids": [1, 2, 3, 10, 11, 14, 15, 16, 18, 19, 22, 23],
+    "backbone_exposure": "GMT checkpoint was trained on original TRAIN; this is not a backbone-unseen split",
+    "test_selection": "never used for fitting, checkpoint selection, threshold selection or early stopping"
+  },
+  "stages": {
+    "A": {
+      "name": "fit_train_validate",
+      "fit_scenes": "scene_split.fit_video_ids",
+      "validation_scenes": "scene_split.validation_video_ids",
+      "epochs": [3, 5, 10],
+      "seeds": [20261014, 20261015, 20261016],
+      "primary_seed": 20261014,
+      "selection": "minimum validation listwise loss, then fixed identity-safe gate; no TEST access"
+    },
+    "B": {
+      "name": "refit_all24",
+      "scenes": "dataset.video_ids",
+      "epochs": "selected_stage_A_epoch",
+      "seeds": [20261014],
+      "selection": "stage A only; no additional tuning"
+    },
+    "C": {
+      "name": "official_test_once",
+      "scenes": "official TEST only after legal protocol audit",
+      "repeated_runs": 1,
+      "if_gt_or_submission_protocol_unverified": "NOT_EXECUTED; report the reason and retain no fabricated metric"
+    }
+  },
+  "models": {
+    "A_native_only": {
+      "backbone": "native GMT association features",
+      "trainable": "bounded zero-initialized residual head",
+      "foundation_frozen": true,
+      "max_residual": 0.25,
+      "missing_evidence": "exact native score fallback"
+    },
+    "B_frozen_omega_fusion": {
+      "backbone": "verified 512 original VGGT weights",
+      "trainable": "fusion/residual head only",
+      "foundation_frozen": true,
+      "max_residual": 0.25,
+      "direct_top1_replacement": false,
+      "required_evidence": "causal per-candidate VGGT evidence for all admitted TRAIN scenes"
+    },
+    "C_task_adapted_omega": {
+      "backbone": "same verified 512 VGGT weights",
+      "trainable": "rank8 LoRA adapter plus bounded residual head",
+      "rank16_policy": "run only if rank8 is pre-registered infeasible and resources are available; otherwise NOT_EXECUTED",
+      "foundation_frozen_except_adapter": true
+    },
+    "D_matched_dino": {
+      "backbone": "frozen matched DINO control",
+      "trainable": "same parameter-count residual/fusion head as B",
+      "foundation_frozen": true,
+      "direct_top1_replacement": false
+    }
+  },
+  "supervision": {
+    "objective": "identity-aware listwise candidate ranking on actual causal GMT calls",
+    "hard_negatives": "same-frame competing identities, same-camera shortcuts, recent wrong IDs and pure-but-incorrect candidates",
+    "positive_policy": "preserve correct, repair wrong, and retain legal no-match decisions",
+    "masked_labels": ["unknown", "mixed", "ambiguous", "null", "unreliable_raw_gt_frame", "no_one_to_one_iou_match"],
+    "future_information": false,
+    "gt_built_tracks": false,
+    "candidate_history": "original live tracker history, logits, solver, threshold and IDs are retained"
+  },
+  "gates": {
+    "full24_coverage": "all 24 scene manifests complete and immutable",
+    "validation_net_gain": "primary seed must have more known identity fixes than harms on validation and no safety-gate violation",
+    "gmt_invariance": "OFF prefix parity exact before GT labels enter any run",
+    "integration": "only after reliable geometry and positive net identity correction; otherwise GMT remains unchanged"
+  },
+  "test_policy": {
+    "local_test_gt_is_not_automatically_official": true,
+    "official_submission_or_metrics_required": true,
+    "historical_test_exposure": "audit and disclose; do not claim unseen benchmark generalization"
+  }
+}

@@ -5,7 +5,11 @@ ROOT = Path(__file__).resolve().parents[1]
 RUNTIME = Path(os.environ.get('GEO_RUNTIME', '/data1/liuyeqiang/WWW_vggt_geo_runtime'))
 DATA = Path('/data/DATASETS/TRACKING/JDE/VisionTrack')
 CHECKPOINT = Path('/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth')
-sys.path[:0] = [str(ROOT), str(ROOT / 'third_party/CenterNet2')]
+# The research worktrees intentionally keep Detectron2 outside the Git tree;
+# retain the checked-out CenterNet2 path and use the immutable shared install
+# when this worktree is run on the development host.
+_DETECTRON2 = Path('/data1/liuyeqiang/WWW/third_party/detectron2')
+sys.path[:0] = [str(ROOT), str(ROOT / 'third_party/CenterNet2')] + ([str(_DETECTRON2)] if _DETECTRON2.is_dir() else [])
 
 def sha256(path):
     h = hashlib.sha256()
