@@ -33,16 +33,21 @@ def main():
         torch.cuda.synchronize()
         start = time.perf_counter()
         mapped = map_records(cfg, sorted(group, key=lambda r: r['view_id']))
+        read_seconds = time.perf_counter() - start
         outputs = tracker.step(mapped)
         torch.cuda.synchronize()
         elapsed = time.perf_counter() - start
-        rows.append(dict(frame=frame, seconds=elapsed, detections=sum(len(o['instances']) for o in outputs)))
+        rows.append(dict(frame=frame, seconds=elapsed, read_preprocess_seconds=read_seconds,
+                         tracker_step_seconds=elapsed - read_seconds,
+                         detections=sum(len(o['instances']) for o in outputs)))
     times = [r['seconds'] for r in rows[10:]]
     report = dict(status='COMPLETE_SHORT_CAUSAL_GMT_TIMING_PROBE', scene=args.scene, continuous_prefix_groups=len(rows),
                   excluded_warmup_groups=10, measured_groups=len(times), model_resident=True,
                   scope='read/decode/preprocess/two-view detection/causal association/final postprocess; full-video and Omega integration not measured',
                   synchronized_timestamp_fps=len(times) / sum(times), camera_image_fps=2 * len(times) / sum(times),
                   mean_ms=float(np.mean(times) * 1000), p50_ms=float(np.median(times) * 1000), p95_ms=float(np.quantile(times, .95) * 1000),
+                  mean_read_preprocess_ms=float(np.mean([r['read_preprocess_seconds'] for r in rows[10:]]) * 1000),
+                  mean_tracker_step_ms=float(np.mean([r['tracker_step_seconds'] for r in rows[10:]]) * 1000),
                   peak_allocated_bytes=torch.cuda.max_memory_allocated(), rows=rows,
                   script_sha256=sha256(__file__), gt_used=False, omega_enabled=False)
     save_json(args.output, report)

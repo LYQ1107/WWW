@@ -125,7 +125,7 @@ def project_points(world, extrinsics, intrinsics):
     return image[:, :2] / np.maximum(image[:, 2:3], 1e-12), camera[:, 2]
 
 
-def infer(config_name):
+def infer(config_name, execution='eager'):
     import torch
     sys.path.insert(0, str(SOURCE))
     from vggt_omega.models import VGGTOmega
@@ -134,7 +134,7 @@ def infer(config_name):
 
     plan = json.loads(PLAN.read_text())
     config = next(c for c in plan['configs'] if c['name'] == config_name)
-    output = RUNTIME / 'native_fp16' / config_name
+    output = RUNTIME / ('native_fp16' if execution == 'eager' else 'cuda_graph_fp16') / config_name
     output.mkdir(parents=True, exist_ok=False)
     save(output / 'status.json', dict(status='RUNNING', plan_sha256=sha256(PLAN), config=config))
     torch.set_num_threads(2)
@@ -175,6 +175,32 @@ def infer(config_name):
         torch.cuda.synchronize()
         warmup_seconds = time.perf_counter() - cold_start
         del result
+        graph_setup_seconds = None
+        if execution == 'cuda_graph':
+            setup_started = time.perf_counter()
+            reference_forward = forward
+            static_images = images.clone()
+            side = torch.cuda.Stream()
+            side.wait_stream(torch.cuda.current_stream())
+            with torch.cuda.stream(side):
+                for _ in range(3):
+                    graph_result = reference_forward(static_images)
+            torch.cuda.current_stream().wait_stream(side)
+            torch.cuda.synchronize()
+            graph = torch.cuda.CUDAGraph()
+            with torch.cuda.graph(graph):
+                graph_result = reference_forward(static_images)
+            torch.cuda.synchronize()
+
+            def graph_forward(current):
+                if current.shape != static_images.shape:
+                    raise ValueError('CUDA Graph requires the locked fixed shape')
+                static_images.copy_(current)
+                graph.replay()
+                return graph_result
+
+            forward = graph_forward
+            graph_setup_seconds = time.perf_counter() - setup_started
         torch.cuda.reset_peak_memory_stats()
         rows = []
         for pair in plan['samples']:
@@ -196,15 +222,23 @@ def infer(config_name):
                           confidence=predictions['depth_conf'][0].float().cpu().numpy(),
                           extrinsics=extrinsics[0].cpu().numpy(), intrinsics=intrinsics[0].cpu().numpy())
             finite = all(np.isfinite(a).all() for a in arrays.values())
+            parity = None
+            if execution == 'cuda_graph':
+                reference_path = RUNTIME / 'native_fp16' / config_name / (pair['pair_id'] + '.npz')
+                with np.load(reference_path) as reference:
+                    parity = {k: float(np.max(np.abs(a - reference[k]) / (1 + np.abs(reference[k])))) for k, a in arrays.items()}
+                if max(parity.values()) > 1e-4:
+                    raise ValueError(f'CUDA Graph changed outputs beyond locked tolerance: {parity}')
             archive = output / (pair['pair_id'] + '.npz')
             np.savez(archive, **arrays)
             rows.append(dict(pair_id=pair['pair_id'], finite=finite, shape=list(images.shape),
                              compute_seconds=compute_seconds, read_preprocess_h2d_seconds=pre_seconds,
-                             serial_read_to_geometry_seconds=serial_seconds, archive_sha256=sha256(archive)))
+                             serial_read_to_geometry_seconds=serial_seconds, archive_sha256=sha256(archive),
+                             eager_parity_max_normalized_error=parity))
             del predictions, extrinsics, intrinsics, arrays
 
         component = {}
-        for part in ('aggregator', 'camera', 'depth'):
+        for part in (('aggregator', 'camera', 'depth') if execution == 'eager' else ()):
             times = []
             if part != 'aggregator':
                 with torch.autocast('cuda', dtype=torch.float16):
@@ -228,7 +262,7 @@ def infer(config_name):
             if part != 'aggregator':
                 del tokens
         batch4 = None
-        if config_name == 'max512':
+        if config_name == 'max512' and execution == 'eager':
             batch_images = images.expand(4, -1, -1, -1, -1).contiguous()
             for _ in range(2):
                 result = forward(batch_images)
@@ -250,6 +284,7 @@ def infer(config_name):
                   source_commit=plan['source_commit'], script_sha256=sha256(__file__),
                   gpu=torch.cuda.get_device_name(), cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),
                   torch=torch.__version__, cuda=torch.version.cuda, precision='explicit fp16 aggregator / fp32 heads',
+                  execution=execution, graph_setup_seconds=graph_setup_seconds,
                   bf16_reported_supported=torch.cuda.is_bf16_supported(),
                   bf16_native_supported=torch.cuda.is_bf16_supported(including_emulation=False),
                   finite_pairs=sum(r['finite'] for r in rows), total_pairs=len(rows),

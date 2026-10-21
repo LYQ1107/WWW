@@ -1,0 +1,11 @@
+{
+  "status": "LOCKED_BEFORE_CUDA_GRAPH_INFERENCE_AND_LABEL_COMPARISON",
+  "reason": "Native-FP16 eager measurements show little latency reduction from max512 (113.7 ms) to max256 (108.2 ms); test fixed-shape launch-overhead reduction.",
+  "scope": "Same 54 physical image pairs, all four prior input-size configs and same 512 checkpoint; no architecture/weight/identity-head change.",
+  "execution": "Capture fixed batch1, two-view model+pose decoding after three side-stream warmups; copy new input data and replay one graph per pair; all outputs compared to eager per physical pair.",
+  "parity": "For depth, confidence, extrinsics and intrinsics, max abs(graph-eager)/(1+abs(eager)) <= 0.0001 for every array and pair; fail rather than relax tolerance.",
+  "timing": "Same synchronized resident-model and serial read-to-geometry scopes; graph setup separately recorded; no detector/GMT included.",
+  "inputs_and_precision": "Original locked plan and native-FP16 implementation correction apply; no labels inspected for score comparisons yet.",
+  "resource_scope": "Within original four physical GPUs 2,3,4,5 and 1800 summed inference-process seconds / 2GiB research cache; all eager/BF16 attempts retained.",
+  "gmt_integration": "CLOSED; research feasibility only"
+}
