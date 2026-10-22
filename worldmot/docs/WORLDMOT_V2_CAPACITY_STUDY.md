@@ -59,6 +59,6 @@ Status: IN_PROGRESS.
 | Trial | Profile | Seed | Completed epochs | Timestamps / epoch | Status |
 |---|---|---:|---:|---:|---|
 | large | large | 20261022 | 24 | 22894 | TRAIN_SUBSET_COMPLETE |
-| small | small | 20261022 | 12 | 22894 | TRAINING_RUNNING |
+| small | small | 20261022 | 16 | 22894 | TRAINING_RUNNING |
 
 Independent TEST scores and real inference FPS are pending. TRAIN optimization losses and cached identity surrogates are not independent MOT accuracy.
