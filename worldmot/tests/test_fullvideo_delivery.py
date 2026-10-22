@@ -130,3 +130,26 @@ def test_test_queue_reuses_free_gpu_without_overlapping_jobs(tmp_path,monkeypatc
     assert sorted(completed)==list(range(5))
     assert sorted(i for i,gpu in result)==list(range(5))
     assert all(count==0 for count in active.values())
+
+
+def test_capacity_job_uses_isolated_code_and_preserves_base_comparisons_on_failure(tmp_path,monkeypatch):
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'scripts'))
+    import orchestrate_fulltrain_test as driver
+    isolated=tmp_path/'larger_model';isolated.mkdir()
+    source=isolated/'run.py';source.write_text('print("registered")\n')
+    registration={'status':'READY_AND_REGISTERED_BEFORE_TEST','cwd':str(isolated),
+                  'command':['python','run.py'],'execution_sha256':{'run.py':driver.sha(source)}}
+    (tmp_path/'original').mkdir()
+    experiment=driver.Experiment(tmp_path/'original')
+    calls=[]
+    def command(name,cmd,gpu=None,cwd=None):
+        calls.append((name,cmd,gpu,cwd))
+        return {'name':name,'physical_gpu':gpu}
+    monkeypatch.setattr(experiment,'command',command)
+    result=experiment.registered_capacity_job(registration,4)
+    assert result['physical_gpu']==4
+    assert calls==[('CAPACITY_TRAIN_STUDY',['python','run.py'],4,isolated)]
+    source.write_text('print("changed after registration")\n')
+    rejected=experiment.registered_capacity_job(registration,4)
+    assert rejected['status']=='FAILED_REQUIRES_AGENT_FIX'
+    assert len(calls)==1

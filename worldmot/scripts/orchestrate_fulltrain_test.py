@@ -32,14 +32,30 @@ class Experiment:
         atomic_json(self.root/'experiment_status.json',data)
         with (self.root/'events.jsonl').open('a') as f:f.write(json.dumps(data)+'\n')
         print(json.dumps(data),flush=True)
-    def command(self,name,cmd,gpu=None):
-        env={**os.environ,'PYTHONPATH':str(ROOT),'OMP_NUM_THREADS':'2','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'2'}
+    def command(self,name,cmd,gpu=None,cwd=None):
+        cwd=Path(cwd) if cwd is not None else ROOT
+        env={**os.environ,'PYTHONPATH':str(cwd),'OMP_NUM_THREADS':'2','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'2'}
         if gpu is not None:env['CUDA_VISIBLE_DEVICES']=str(gpu)
         started=time.time()
         with (self.logs/(name+'.log')).open('a') as f:
-            f.write('\nCOMMAND '+json.dumps(cmd)+'\n');f.flush();result=subprocess.run(cmd,cwd=ROOT,env=env,stdout=f,stderr=subprocess.STDOUT)
+            f.write('\nCOMMAND '+json.dumps(cmd)+'\n');f.flush();result=subprocess.run(cmd,cwd=cwd,env=env,stdout=f,stderr=subprocess.STDOUT)
         if result.returncode:raise RuntimeError(f'{name} exited {result.returncode}; see {self.logs/(name+".log")}')
         return {'name':name,'physical_gpu':gpu,'elapsed_s':time.time()-started,'log':str(self.logs/(name+'.log'))}
+    def registered_capacity_job(self,registration,gpu):
+        # This independent TRAIN experiment occupies one exclusive queue slot.
+        # Its failure is reported separately and does not discard base TEST runs.
+        try:
+            cwd=Path(registration['cwd'])
+            if registration['status']!='READY_AND_REGISTERED_BEFORE_TEST':raise RuntimeError('capacity job is not ready')
+            if any(sha(cwd/name)!=expected for name,expected in registration['execution_sha256'].items()):
+                raise RuntimeError('capacity job code/registration changed after queue registration')
+            result=self.command('CAPACITY_TRAIN_STUDY',registration['command'],gpu,cwd=cwd)
+            atomic_json(self.root/'capacity_queue_result.json',{'status':'CAPACITY_TRAIN_RETURNED',**result})
+            return result
+        except Exception as error:
+            result={'name':'CAPACITY_TRAIN_STUDY','physical_gpu':gpu,'status':'FAILED_REQUIRES_AGENT_FIX','error':str(error)}
+            atomic_json(self.root/'capacity_queue_result.json',result)
+            return result
     def parallel(self,jobs,dynamic=False):
         queues=[[] for _ in GPUS]
         pending=queue.Queue()
@@ -166,7 +182,11 @@ class Experiment:
         # A freed card then takes the next registered trial, never another
         # job on a card that is still busy with its current video stream.
         jobs.insert(2,lambda gpu,cmd=cmd:self.command('TEST_gmt_native',cmd,gpu))
-        self.state('INDEPENDENT_TEST_RUNNING',methods=len(jobs),test_scenes=22,timestamps_per_method=29019)
+        method_count=len(jobs);capacity_registration=snapshot(self.root/'additional_capacity_job.json')
+        if capacity_registration:
+            jobs.insert(3,lambda gpu:self.registered_capacity_job(capacity_registration,gpu))
+        self.state('INDEPENDENT_TEST_RUNNING',methods=method_count,test_scenes=22,timestamps_per_method=29019,
+                   independent_capacity_TRAIN_job_queued=bool(capacity_registration))
         schedule=self.parallel(jobs,dynamic=True)
         atomic_json(self.root/'test_experiment_schedule.json',{'results':schedule,'each_method_exclusively_uses_one_GPU':True,'aggregate_throughput_is_not_stream_FPS':True})
         self.state('INDEPENDENT_TEST_INFERENCE_COMPLETE')
