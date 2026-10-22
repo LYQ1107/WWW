@@ -73,17 +73,22 @@ class OnlineWorldMOTV2:
     def step(self, images_by_camera: Mapping[int, np.ndarray], timestamp: int) -> dict:
         started = time.perf_counter()
         detections = self.detector.infer(images_by_camera)
+        detector_done = time.perf_counter()
         frame = self.geometry.reconstruct(images_by_camera, int(timestamp))
+        geometry_done = time.perf_counter()
         self._set_dynamic_masks(frame, detections)
         alignment = self._align(frame)
         aligned = bool(alignment.success and frame.status == "OK")
+        alignment_done = time.perf_counter()
         transform = alignment.transform if aligned else None
         tokens = self.observation_encoder.encode(
             detections, images_by_camera, frame, int(timestamp), transform,
             detector_feature_maps=getattr(self.detector, "last_feature_maps", {}),
             omega_patch_features=getattr(frame, "omega_patch_features", {}),
         )
+        encoding_done = time.perf_counter()
         query_result = self.query_runtime.step(tokens, int(timestamp))
+        query_done = time.perf_counter()
         world_cameras = ({v: _transform_camera(c, alignment.transform) for v, c in frame.cameras.items()}
                          if aligned else dict(frame.cameras))
         tracks_2d = {int(v): [] for v in world_cameras}
@@ -125,6 +130,12 @@ class OnlineWorldMOTV2:
             "geometry_status": frame.status, "omega_feature_status": getattr(frame, "feature_status", "NOT_REQUESTED"),
             "query_runtime": query_result.diagnostics, "query_status": query_result.status,
             "runtime": {"total_s": float(time.perf_counter() - started),
+                        "frame_stage_s": {"detection": detector_done-started,
+                            "geometry_backend": geometry_done-detector_done,
+                            "world_alignment": alignment_done-geometry_done,
+                            "object_encoding": encoding_done-alignment_done,
+                            "query_and_lifecycle": query_done-encoding_done,
+                            "projection_and_output_build": time.perf_counter()-query_done},
                         "omega_forward_s": float(frame.diagnostics.get("model_only_s", 0.0)),
                         "detector_forward_s": float(sum(self.detector.last_timings.values()))},
         }

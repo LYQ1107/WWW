@@ -200,5 +200,94 @@
   },
   "checkpoint_sha256": "ed97ada8178920ba0d2a0f4ce74265f8d4d61302f3c7bc38bdecb8de9bf8e667",
   "formal_test_metrics": null,
-  "full_goal_complete": false
+  "full_goal_complete": false,
+  "appearance_memory_replay": [
+    {
+      "scene": 8,
+      "frames": 32,
+      "observations": 206,
+      "assigned": 134,
+      "births": 4,
+      "unique_ids": 4,
+      "ids_with_multiple_observations": 3,
+      "maximum_id_observations": 64,
+      "query_only_total_s": 0.6163583323359489,
+      "formal_e2e_fps": null,
+      "checkpoint_scope": "TRAIN_SUBSET_OR_REGRESSION",
+      "thresholds": {
+        "null_margin": 0.5,
+        "birth_threshold": 0.5,
+        "pair_threshold": 0.7
+      }
+    }
+  ],
+  "live_RGB_to_ID_regression": {
+    "status": "COMPLETE",
+    "split": "train",
+    "scene": 8,
+    "method": "v2",
+    "frames": 32,
+    "expected_frames": 32,
+    "scene_total_frames": 523,
+    "full_video": false,
+    "GT_in_inference": false,
+    "metadata_sha256": "92e09f77d8d98af3ba732e75f0d2dd648313aa6e02bc058fa02a2d3d6ba97d87",
+    "checkpoint_sha256": "ed97ada8178920ba0d2a0f4ce74265f8d4d61302f3c7bc38bdecb8de9bf8e667",
+    "final_lock_sha256": null,
+    "trained_scope": "TRAIN_SUBSET_OR_REGRESSION",
+    "real_e2e_fps": 0.8209818137128488,
+    "e2e": {
+      "count": 32,
+      "total_s": 38.97772090137005,
+      "p50_s": 1.1325434036552906,
+      "p95_s": 1.5022711649537084,
+      "mean_s": 1.218053778167814
+    },
+    "rgb_read": {
+      "count": 32,
+      "total_s": 2.035342015326023,
+      "p50_s": 0.05768495425581932,
+      "p95_s": 0.08187928274273872,
+      "mean_s": 0.06360443797893822
+    },
+    "prediction_sha256": "4226876e9dad89e19b133ff0760db44fa0848dca6f8756ce7fadbfb10f7bf96b",
+    "global_ids": 4,
+    "delivered_boxes": 134,
+    "fps_unit": "synchronized dual-camera timestamps/second",
+    "timing_scope": "RGB decode + detector + Omega + all CPU/postprocessing + query/memory + serialization + flushed final-ID delivery; excludes initialization and offline evaluation",
+    "device": "cuda:0",
+    "gpu": "Tesla V100-DGXS-32GB",
+    "detector": {
+      "status": "READY",
+      "reason": "",
+      "backend": "rtmdet-ins-tiny",
+      "config": "/data1/liuyeqiang/WWW_fulltrain/worldmot/assets/mmdetection/rtmdet-ins_tiny_8xb32-300e_coco.py",
+      "checkpoint": "/data1/liuyeqiang/models/rtmdet/rtmdet-ins_tiny_8xb32-300e_coco_20221130_151727-ec670f7e.pth",
+      "checkpoint_sha256": "ec670f7ee9e20bd7931e15f15b7016f7fe531baaab81f2e6153382d046111885",
+      "device": "cuda:0",
+      "score_threshold": 0.25,
+      "max_detections": 100,
+      "expose_intermediate_features": true,
+      "mmdet_version": "3.3.0",
+      "mmcv_version": "2.2.0",
+      "mmengine_version": "0.10.7",
+      "initialization_seconds": 4.9837746396660805
+    },
+    "omega": {
+      "status": "READY",
+      "source_root": "/data1/liuyeqiang/WWW_omega_runtime_20261016/official_vggt_omega",
+      "checkpoint": "/data1/liuyeqiang/WWW_omega_runtime_20261016/weights/vggt_omega_1b_512.pt",
+      "expected_source_commit": "48b23c8ce72c9a8fcf987f0d7f43d8e4870759f6",
+      "expected_checkpoint_sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+      "image_resolution": 512,
+      "device": "cuda:0",
+      "expose_intermediate_features": true,
+      "checkpoint_sha256": "c02da418b18bb01d0392598d3f6147366bcde1bb70fd08a5e3bf7925b0667934",
+      "reason": "",
+      "source_commit": "48b23c8ce72c9a8fcf987f0d7f43d8e4870759f6",
+      "load_seconds": 22.35439907759428
+    },
+    "perception_cache_used": false,
+    "speed_scope_warning": "32 TRAIN frames with concurrent cache extraction on the GPU; regression only, not independent TEST performance"
+  }
 }

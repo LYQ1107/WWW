@@ -109,7 +109,10 @@ class PersistentWorldQueryTransformer(nn.Module):
             rgb, det, omega = rgb * 0, det * 0, omega * 0
         visual = self.appearance_fusion(torch.cat([rgb, det, omega], -1))
         g = geometry if self.ablation != "no_omega" else geometry * 0
-        return visual + self.observed_geometry_projection(torch.cat([g, observations[..., -2:]], -1))
+        auxiliary = observations[..., -2:]
+        if self.ablation == "no_omega":
+            auxiliary = torch.cat([auxiliary[..., :1], auxiliary[..., 1:] * 0], -1)
+        return visual + self.observed_geometry_projection(torch.cat([g, auxiliary], -1))
 
     def accept_observations(self, state, output, assignments, world_xyz=None, world_covariance=None, geometry_valid=None):
         """Initialize births and update recurrent memory from actual observations.
@@ -129,7 +132,10 @@ class PersistentWorldQueryTransformer(nn.Module):
         recurrent = self.update_cell(pooled.reshape(-1, self.hidden_dim), state.embedding.reshape(-1, self.hidden_dim)).reshape_as(state.embedding)
         embedding = torch.where(newly_born[..., None], pooled, recurrent)
         state.embedding = torch.where(observed[..., None], embedding, state.embedding)
-        state.appearance_memory = torch.where(observed[..., None], pooled, state.appearance_memory)
+        appearance = torch.where(newly_born[..., None], pooled,
+                                 0.8 * state.appearance_memory + 0.2 * pooled)
+        state.appearance_memory = torch.where(observed[..., None], appearance, state.appearance_memory)
+        state.age = torch.where(newly_born, torch.ones_like(state.age), state.age)
         gweights = weights
         if geometry_valid is not None:
             gweights = weights * geometry_valid[:, None, :].float()
@@ -138,7 +144,8 @@ class PersistentWorldQueryTransformer(nn.Module):
         state.geometry = torch.where(geometry_observed[..., None], gweights @ output["input_geometry"], state.geometry)
         if world_xyz is not None:
             xyz = gweights @ torch.nan_to_num(world_xyz)
-            state.velocity = torch.where(geometry_observed[..., None], xyz - state.xyz, state.velocity)
+            delta = torch.where(newly_born[..., None], torch.zeros_like(xyz), xyz - state.xyz)
+            state.velocity = torch.where(geometry_observed[..., None], delta, state.velocity)
             state.xyz = torch.where(geometry_observed[..., None], xyz, state.xyz)
         if world_covariance is not None:
             cov = (gweights @ torch.nan_to_num(world_covariance).flatten(-2)).reshape_as(state.covariance)

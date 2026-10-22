@@ -39,11 +39,12 @@ def constrained_assign(assignment_logits: torch.Tensor, birth_logits: torch.Tens
     v1 cross-view fusion stage: all cameras were visible to every query in the
     preceding attention layers.
     """
-    logits = assignment_logits.detach().float()
+    logits = assignment_logits.detach().float().cpu()
     if logits.ndim == 3:
         logits = logits[0]
-    births = torch.sigmoid(birth_logits.detach().float().reshape(-1))
-    exists = query_exists.detach().float().reshape(-1)
+    births = torch.sigmoid(birth_logits.detach().float().reshape(-1)).cpu()
+    exists = query_exists.detach().float().reshape(-1).cpu()
+    if active_mask is not None: active_mask = active_mask.detach().cpu()
     qn, total = logits.shape
     on = max(total - 1, 0)
     candidates = []

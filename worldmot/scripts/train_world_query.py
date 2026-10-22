@@ -15,6 +15,9 @@ from worldmot.training.world_query_criterion import TemporalQueryCriterion
 def train_step(model,row,criterion,tbptt,optimizer=None,max_missed=12):
     b,T,N,_=row['observations'].shape;state=model.init_state(b,row['observations'].device)
     logs=[];segment=[];grad_norms=[];real_frames=0
+    identity_cpu=row['identity'].detach().cpu().numpy()
+    valid_cpu=row['observation_valid'].detach().cpu().numpy()
+    time_cpu=row['time_valid'].detach().cpu().numpy()
     for t in range(T):
         output=model(row['observations'][:,t],row['geometry'][:,t],state,row['observation_valid'][:,t],row['camera_ids'][:,t])
         identity=row['identity'][:,t];valid=row['observation_valid'][:,t];time_valid=row['time_valid'][:,t]
@@ -23,11 +26,11 @@ def train_step(model,row,criterion,tbptt,optimizer=None,max_missed=12):
         mappings=[];born=[]
         for bi in range(b):
             mapping={};new={}
-            if bool(time_valid[bi]):
+            if bool(time_cpu[bi,t]):
                 gids=state.global_ids[bi].tolist();slot_by_id={gid:q for q,gid in enumerate(gids) if gid>=0};free=[q for q,gid in enumerate(gids) if gid<0]
                 for o in range(N):
-                    gid=int(identity[bi,o])
-                    if gid<0 or not bool(valid[bi,o]):continue
+                    gid=int(identity_cpu[bi,t,o])
+                    if gid<0 or not bool(valid_cpu[bi,t,o]):continue
                     if gid not in slot_by_id:
                         if not free:raise RuntimeError('training clip identity capacity exceeded')
                         q=free.pop(0);slot_by_id[gid]=q;new[q]=gid
@@ -36,8 +39,7 @@ def train_step(model,row,criterion,tbptt,optimizer=None,max_missed=12):
         state=model.accept_observations(output['state'],output,mappings,row['world_xyz'][:,t],row['world_covariance'][:,t],row['geometry_valid'][:,t])
         for bi in range(b):
             for q,gid in born[bi].items():state.global_ids[bi,q]=gid
-            for q in range(model.max_world_queries):
-                if int(state.missed[bi,q])>max_missed:state.global_ids[bi,q]=-1
+        state.global_ids = state.global_ids.masked_fill(state.missed > max_missed, -1)
         real_frames+=int(time_valid.sum())
         if (t+1)%tbptt==0 or t==T-1:
             if optimizer is not None:
@@ -73,7 +75,12 @@ def main(argv=None):
     manifest['training_scope'] = 'FULL_24_TRAIN' if complete_all_train else 'TRAIN_SUBSET_OR_REGRESSION'
     for epoch in range(start_epoch,a.epochs):
         length=a.clip_lengths[min(len(a.clip_lengths)-1,epoch*len(a.clip_lengths)//a.epochs)];ds.set_clip_length(length)
-        loader=DataLoader(ds,batch_size=a.batch_size,shuffle=True,collate_fn=collate_clips,num_workers=0)
+        # Preserve full coverage while reducing padding of crowded and sparse
+        # clips in the same batch.  Bucket order is seed/epoch randomized.
+        ordered=sorted(range(len(ds)),key=lambda i:max((len(f['observations']) for f in ds.scenes[ds.clips[i][0]][ds.clips[i][1]:ds.clips[i][2]]),default=0))
+        batches=[ordered[i:i+a.batch_size] for i in range(0,len(ordered),a.batch_size)]
+        np.random.default_rng(a.seed+epoch).shuffle(batches)
+        loader=DataLoader(ds,batch_sampler=batches,collate_fn=collate_clips,num_workers=0)
         model.train();records=[];coverage={s:0 for s in ds.scenes};started=time.time()
         for i,row in enumerate(loader):
             for s,ts in zip(row['scene'].tolist(),row['time_valid']):coverage[s]+=int(ts.sum())
@@ -84,6 +91,8 @@ def main(argv=None):
         history.append(metric);manifest['history']=history;manifest['epochs_completed']=epoch+1
         manifest['status']=('FULLTRAIN_COMPLETE' if complete_all_train else 'TRAIN_SUBSET_COMPLETE') if epoch+1==a.epochs else 'TRAINING_RUNNING'
         save_checkpoint(out.with_suffix('.tmp.pt'),model,opt,epoch+1,manifest);os.replace(out.with_suffix('.tmp.pt'),out)
+        if epoch+1 in (2,4,6):
+            save_checkpoint(out.with_name(out.stem+f'.epoch{epoch+1}.pt'),model,opt,epoch+1,manifest)
         out.with_suffix('.json').write_text(json.dumps(manifest,indent=2));print(json.dumps(metric),flush=True)
     print(json.dumps({'status':manifest['status'],'checkpoint':str(out),'sha256':hashlib.sha256(out.read_bytes()).hexdigest(),'timestamps':manifest['total_timestamps']}),flush=True)
 if __name__=='__main__':main()
