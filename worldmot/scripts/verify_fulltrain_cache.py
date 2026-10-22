@@ -7,24 +7,27 @@ from worldmot.data.visiontrack import VisionTrack
 from worldmot.models.person_detector import PersonDetection
 from worldmot.training.identity_targets import match_detections_to_gt,iou_xywh
 from cache_fulltrain import sha,atomic_json
+from audit_cached_coordinates import coordinate_summary
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--cache',required=True);p.add_argument('--output',required=True);a=p.parse_args()
     ds=VisionTrack('/data/DATASETS/TRACKING/JDE/VisionTrack',split='train');out=Path(a.output);out.mkdir(parents=True,exist_ok=True);scenes=[]
     with gzip.open(out/'detection_supervision_failures.jsonl.gz','wt') as log:
         for sid in ds.scene_ids():
-            directory=Path(a.cache)/f'scene_{sid:02d}';seen=[];counts=collections.Counter();branch_missing=collections.Counter();shards=[]
+            directory=Path(a.cache)/f'scene_{sid:02d}';seen=[];counts=collections.Counter();branch_missing=collections.Counter();shards=[];frame_metadata=[];geometry_positions=[]
             manifest=json.loads((directory/'manifest.json').read_text())
             if manifest['detector'].get('input_contract')!='caller_RGB_to_contiguous_BGR_for_MMDetection':raise RuntimeError('unverified detector color contract: '+str(directory))
             pairs={p.frame_id:p for p in ds.synchronized_pairs(sid)}
             for shard in sorted(directory.glob('shard_*.npz')):
                 meta=json.loads(shard.with_suffix('.json').read_text())
                 if sha(shard)!=meta['sha256']:raise RuntimeError('corrupt cache: '+str(shard))
+                frame_metadata.extend(meta['per_frame'])
                 with np.load(shard,allow_pickle=False) as d:
                     if d['observations'].shape[-1]!=532 or d['observations'].dtype!=np.float16:raise RuntimeError('feature schema/dtype invalid')
                     if not np.isfinite(d['observations']).all() or not np.isfinite(d['geometry']).all():raise RuntimeError('non-finite cached model inputs')
                     counts['world_geometry_valid_observations']+=int(d['geometry_valid'].sum())
                     counts['world_geometry_invalid_observations']+=int(len(d['geometry_valid'])-d['geometry_valid'].sum())
+                    geometry_positions.append(d['geometry'][d['geometry_valid'],:3])
                     for name,start,end in [('RGB',0,128),('RTMDet',128,256),('Omega',256,512)]:branch_missing[name]+=int((np.linalg.norm(d['observations'][:,start:end].astype(np.float32),axis=-1)<1e-8).sum())
                     for i,timestamp in enumerate(d['timestamps']):
                         timestamp=int(timestamp);seen.append(timestamp);lo,hi=map(int,d['frame_offsets'][i:i+2]);pair=pairs[timestamp];gt=ds.ground_truth_pair(pair);dets={1:[],2:[]}
@@ -50,7 +53,7 @@ if __name__=='__main__':
                 shards.append({'file':str(shard),'sha256':meta['sha256'],'frames':len(meta['frames'])})
             if seen!=ds.frames(sid):raise RuntimeError(f'incomplete full scene {sid}: {len(seen)}/{len(ds.frames(sid))}')
             if any(branch_missing.values()):raise RuntimeError(f'missing visual branches in scene {sid}: {branch_missing}')
-            scenes.append({'scene':sid,'counts':dict(counts),'missing_visual_branches':dict(branch_missing),'shards':shards});print(sid,dict(counts),flush=True)
+            scenes.append({'scene':sid,'counts':dict(counts),'missing_visual_branches':dict(branch_missing),'shards':shards,'coordinate_diagnostics':coordinate_summary(frame_metadata,geometry_positions)});print(sid,dict(counts),flush=True)
     coverage={'status':'VERIFIED_COMPLETE_24_TRAIN_OBJECT_CACHE','timestamps':sum(s['counts']['timestamps'] for s in scenes),'scenes':scenes,'images':57508,'raw_annotations':596749,
               'raw_GT_modified':False,'all_inputs_finite':True,'GT_xyz_in_inputs':False,'supervision_failure_samples':str(out/'detection_supervision_failures.jsonl.gz'),'failure_samples_sha256':sha(out/'detection_supervision_failures.jsonl.gz')}
     coverage['geometry_valid_flag_is_reconstruction_accuracy']=False
