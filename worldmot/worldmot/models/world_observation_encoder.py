@@ -11,6 +11,7 @@ from ..geometry.relative_geometry_encoding import encode_relative_geometry, fit_
 from .detection_to_world import lift_detection
 from .omega_object_features import FrozenObjectFeatureExtractor
 from .person_detector import PersonDetection
+from ..geometry.reprojection import project_support
 
 
 @dataclass
@@ -33,6 +34,9 @@ class WorldObservationToken:
 
     @property
     def feature(self) -> np.ndarray:
+        if len(self.image_feature) == 512:
+            return np.concatenate([self.image_feature, self.geometry_feature,
+                                   np.asarray([self.detection_score, self.geometry_reliability], np.float32)])
         return np.concatenate([
             np.asarray(self.image_feature, dtype=np.float32).reshape(-1),
             np.asarray(self.omega_feature, dtype=np.float32).reshape(-1),
@@ -86,6 +90,10 @@ class MultiViewObservationEncoder:
         self.feature_extractor = feature_extractor or FrozenObjectFeatureExtractor()
         self.min_confidence = float(min_confidence)
         self.min_points = int(min_points)
+        self.normalization = None
+
+    def reset(self):
+        self.normalization = None
 
     def encode(
         self,
@@ -108,33 +116,48 @@ class MultiViewObservationEncoder:
                 lifted.append((int(view), det, obs))
                 if np.isfinite(obs.center).all():
                     raw_centers.append(_apply_sim3(world_transform, obs.center))
-        normalization = fit_geometry_normalization(np.asarray(raw_centers, dtype=np.float32))
+        if self.normalization is None and raw_centers:
+            self.normalization = fit_geometry_normalization(np.asarray(raw_centers, dtype=np.float32))
+        normalization = self.normalization or fit_geometry_normalization(np.empty((0, 3)))
         out: list[WorldObservationToken] = []
         for view, det, obs in lifted:
             feature = source_features[(int(view), int(det.detection_id))]
             xyz = _apply_sim3(world_transform, obs.center) if np.isfinite(obs.center).all() else np.full(3, np.nan, np.float32)
             camera = getattr(geometry_frame, "cameras", {}).get(int(view))
             camera_pose = getattr(camera, "world_from_camera", None)
+            if camera_pose is not None and world_transform is not None:
+                camera_pose = world_transform.matrix() @ camera_pose
+            world_cov = np.asarray(obs.covariance, dtype=np.float32)
+            if world_transform is not None:
+                rot = world_transform.rotation
+                world_cov = world_transform.scale ** 2 * rot @ world_cov @ rot.T
             geom = encode_relative_geometry(
                 xyz if np.isfinite(xyz).all() else np.zeros(3, dtype=np.float32),
-                covariance=obs.covariance, camera_pose=camera_pose,
+                covariance=world_cov, camera_pose=camera_pose,
                 geometry_reliability=1.0 if obs.geometry_reliable else 0.0,
                 visible=1.0, normalization=normalization,
             )
+            if world_transform is None:
+                geom[:] = 0
+            projection = project_support(obs.support_points, camera) if camera is not None else None
             out.append(WorldObservationToken(
                 camera_id=int(view), timestamp=int(timestamp), detection_id=int(det.detection_id),
                 image_feature=feature.appearance_feature, omega_feature=feature.omega_feature,
-                xyz_world=xyz, covariance=np.asarray(obs.covariance, dtype=np.float32),
+                xyz_world=xyz, covariance=world_cov,
                 bbox=np.asarray(det.bbox_xywh, dtype=np.float32),
                 mask_feature=_mask_descriptor(det.mask, det.bbox_xywh, np.asarray(images[view]).shape[:2]),
                 detection_score=float(det.score), geometry_reliability=float(obs.geometry_reliable),
-                geometry_feature=geom, valid=bool(obs.geometry_reliable and feature.valid),
+                geometry_feature=geom, valid=bool(feature.valid),
                 source=feature.source,
                 diagnostics={"lift_rejection_reason": obs.rejection_reason,
                              "fusion_preassignment_forbidden": True,
                              "omega_feature_available": bool(len(feature.omega_feature)),
-                             "rtmdet_feature_available": bool(len(feature.detector_feature))},
+                             "rtmdet_feature_available": bool(len(feature.detector_feature)),
+                             "normalization_origin": normalization.origin.tolist(),
+                             "normalization_scale": float(normalization.scale),
+                             "geometry_coordinate_valid": bool(world_transform is not None and obs.geometry_reliable)},
             ))
+            out[-1].diagnostics["pure_3d_bbox_xywh"] = list(projection.bbox_xywh) if projection and projection.bbox_xywh else None
         return out
 
 
@@ -154,6 +177,11 @@ def observations_to_tensors(tokens: Sequence[WorldObservationToken],
     geo = []
     camera_ids = []
     for token in tokens:
+        if len(token.image_feature) == 512:
+            obs.append(token.feature)
+            geo.append(token.geometry_feature)
+            camera_ids.append(int(token.camera_id))
+            continue
         omega = np.asarray(token.omega_feature, dtype=np.float32).reshape(-1)
         if len(omega) < omega_dim:
             omega = np.pad(omega, (0, omega_dim - len(omega)))

@@ -59,13 +59,19 @@ class PersistentWorldQuery:
 class PersistentWorldQueryTransformer(nn.Module):
     def __init__(self, observation_dim: int = 340, hidden_dim: int = 256,
                  max_world_queries: int = 128, cameras: int = 2,
-                 heads: int = 4, decoder_layers: int = 2, geometry_dim: int = 18):
+                 heads: int = 4, decoder_layers: int = 2, geometry_dim: int = 18,
+                 ablation: str = "joint"):
         super().__init__()
         self.observation_dim = int(observation_dim)
         self.hidden_dim = int(hidden_dim)
         self.max_world_queries = int(max_world_queries)
         self.cameras = int(cameras)
         self.geometry_dim = int(geometry_dim)
+        self.ablation = ablation
+        self.config = dict(observation_dim=observation_dim, hidden_dim=hidden_dim,
+                           max_world_queries=max_world_queries, cameras=cameras,
+                           heads=heads, decoder_layers=decoder_layers, geometry_dim=geometry_dim,
+                           ablation=ablation)
         self.slot_embeddings = nn.Parameter(torch.randn(max_world_queries, hidden_dim) * 0.02)
         # Camera IDs are an input condition, not an identity label.  A few
         # spare entries keep IDs 1/2 valid while allowing camera-order
@@ -75,6 +81,71 @@ class PersistentWorldQueryTransformer(nn.Module):
         self.query_geometry_projection = nn.Linear(geometry_dim, hidden_dim)
         self.attention = MultiViewQueryAttention(hidden_dim, heads, decoder_layers, geometry_dim=geometry_dim)
         self.decoder = WorldQueryDecoder(hidden_dim, cameras, geometry_dim)
+        self.rgb_projection = nn.Sequential(nn.LayerNorm(128), nn.Linear(128, hidden_dim), nn.GELU())
+        self.detector_projection = nn.Sequential(nn.LayerNorm(128), nn.Linear(128, hidden_dim), nn.GELU())
+        self.omega_projection = nn.Sequential(nn.LayerNorm(256), nn.Linear(256, hidden_dim), nn.GELU())
+        self.appearance_fusion = nn.Sequential(nn.Linear(hidden_dim * 3, hidden_dim), nn.LayerNorm(hidden_dim))
+        self.observed_geometry_projection = nn.Linear(geometry_dim + 2, hidden_dim)
+        self.update_cell = nn.GRUCell(hidden_dim, hidden_dim)
+        self.identity_projection = nn.Linear(hidden_dim, hidden_dim)
+        self.pair_head = nn.Sequential(nn.Linear(2 * hidden_dim + 6, hidden_dim), nn.GELU(), nn.Linear(hidden_dim, 1))
+        self.match_geometry_head = nn.Sequential(nn.Linear(6, hidden_dim // 2), nn.GELU(), nn.Linear(hidden_dim // 2, 1))
+        self.logit_scale = nn.Parameter(torch.tensor(2.0))
+        self.birth_novelty = nn.Linear(1, 1)
+        # A fixed novelty prior distinguishes an empty scene memory from a
+        # previously observed identity; training learns the final calibration.
+        nn.init.constant_(self.birth_novelty.weight, 2.0)
+        nn.init.constant_(self.birth_novelty.bias, -1.0)
+
+    def encode_observations(self, observations, geometry):
+        if self.observation_dim != 532:
+            return self.observation_projection(observations)
+        rgb = self.rgb_projection(observations[..., :128])
+        det = self.detector_projection(observations[..., 128:256])
+        omega = self.omega_projection(observations[..., 256:512])
+        if self.ablation == "no_omega":
+            omega = omega * 0
+        if self.ablation == "no_appearance":
+            rgb, det, omega = rgb * 0, det * 0, omega * 0
+        visual = self.appearance_fusion(torch.cat([rgb, det, omega], -1))
+        g = geometry if self.ablation != "no_omega" else geometry * 0
+        return visual + self.observed_geometry_projection(torch.cat([g, observations[..., -2:]], -1))
+
+    def accept_observations(self, state, output, assignments, world_xyz=None, world_covariance=None, geometry_valid=None):
+        """Initialize births and update recurrent memory from actual observations.
+
+        assignments is one list of {slot: observation_indices} per batch.
+        This differentiable state update is shared by teacher-forced BPTT
+        and causal inference; identity labels are never embedded in a query.
+        """
+        obs = output["observation_features"]
+        weights = obs.new_zeros((obs.shape[0], self.max_world_queries, obs.shape[1]))
+        for b, mapping in enumerate(assignments):
+            for q, indices in mapping.items():
+                if indices: weights[b, q, indices] = 1.0 / len(indices)
+        observed = weights.sum(-1) > 0
+        pooled = weights @ obs
+        newly_born = observed & (state.global_ids < 0)
+        recurrent = self.update_cell(pooled.reshape(-1, self.hidden_dim), state.embedding.reshape(-1, self.hidden_dim)).reshape_as(state.embedding)
+        embedding = torch.where(newly_born[..., None], pooled, recurrent)
+        state.embedding = torch.where(observed[..., None], embedding, state.embedding)
+        state.appearance_memory = torch.where(observed[..., None], pooled, state.appearance_memory)
+        gweights = weights
+        if geometry_valid is not None:
+            gweights = weights * geometry_valid[:, None, :].float()
+            gweights = gweights / gweights.sum(-1, keepdim=True).clamp_min(1e-8)
+        geometry_observed = gweights.sum(-1) > 0
+        state.geometry = torch.where(geometry_observed[..., None], gweights @ output["input_geometry"], state.geometry)
+        if world_xyz is not None:
+            xyz = gweights @ torch.nan_to_num(world_xyz)
+            state.velocity = torch.where(geometry_observed[..., None], xyz - state.xyz, state.velocity)
+            state.xyz = torch.where(geometry_observed[..., None], xyz, state.xyz)
+        if world_covariance is not None:
+            cov = (gweights @ torch.nan_to_num(world_covariance).flatten(-2)).reshape_as(state.covariance)
+            state.covariance = torch.where(geometry_observed[..., None, None], cov, state.covariance)
+        state.missed = torch.where(observed, torch.zeros_like(state.missed), state.missed + 1)
+        state.existence = torch.where(observed, torch.ones_like(state.existence), state.existence)
+        return state
 
     def init_state(self, batch_size: int, device=None, dtype=None) -> QueryBatchState:
         device = device or self.slot_embeddings.device
@@ -102,7 +173,27 @@ class PersistentWorldQueryTransformer(nn.Module):
         b = observations.shape[0]
         if state is None:
             state = self.init_state(b, observations.device, observations.dtype)
-        obs = self.observation_projection(observations)
+        if self.ablation == "no_omega": observation_geometry = observation_geometry * 0
+        obs = self.encode_observations(observations, observation_geometry)
+        visual_obs = obs
+        no = obs.shape[1]
+        left = visual_obs[:, :, None, :].expand(-1, -1, no, -1)
+        right = visual_obs[:, None, :, :].expand(-1, no, -1, -1)
+        pair_geometry = observation_geometry[:, :, None, :6] - observation_geometry[:, None, :, :6]
+        pair_logits = self.pair_head(torch.cat([abs(left-right), left*right, abs(pair_geometry)], -1)).squeeze(-1)
+        if self.ablation == "two_stage" and no:
+            # Explicit learned stage 1: soft cross-camera fusion precedes the
+            # temporal query decoder.  All methods retain the same detections,
+            # feature sources and loss/epoch budget.  Joint uses no pre-fusion.
+            pair_weights = pair_logits.sigmoid()
+            if camera_ids is not None:
+                pair_weights = pair_weights * (camera_ids[:, :, None] != camera_ids[:, None, :])
+            if observation_mask is not None:
+                pair_weights = pair_weights * observation_mask[:, None, :]
+            eye = torch.eye(no, device=obs.device, dtype=obs.dtype)[None]
+            pair_weights = pair_weights + eye
+            pair_weights = pair_weights / pair_weights.sum(-1, keepdim=True).clamp_min(1e-8)
+            obs = pair_weights @ visual_obs
         if camera_ids is not None:
             camera_ids = camera_ids.to(device=observations.device, dtype=torch.long)
             if camera_ids.ndim == 1:
@@ -115,17 +206,31 @@ class PersistentWorldQueryTransformer(nn.Module):
         query_input = state.embedding + self.query_geometry_projection(state.geometry)
         attn = self.attention(query_input, obs, observation_geometry, state.geometry, observation_mask)
         decoded = self.decoder(attn.query_features, obs)
-        new_geometry = decoded["geometry"]
+        # A recurrent appearance memory gives the learned scorer an identity
+        # anchor rather than relying on a random slot embedding.
+        qkey = torch.nn.functional.normalize(self.identity_projection(state.appearance_memory), dim=-1)
+        okey = torch.nn.functional.normalize(self.identity_projection(visual_obs), dim=-1)
+        similarity = qkey @ okey.transpose(-1, -2)
+        rel = observation_geometry[:, None, :, :6] - state.geometry[:, :, None, :6]
+        geo_match = self.match_geometry_head(rel).squeeze(-1)
+        if self.ablation == "no_omega": geo_match = geo_match * 0
+        decoded["assignment_logits"] = torch.cat([
+            decoded["assignment_logits"][..., :-1] + self.logit_scale.exp().clamp_max(20) * similarity + geo_match,
+            decoded["assignment_logits"][..., -1:]], -1)
+        active = state.global_ids >= 0
+        novelty = similarity.masked_fill(~active[:, :, None], -1.0).amax(1) if similarity.shape[-1] else similarity.new_empty((b, 0))
+        decoded["birth_logits"] = decoded["birth_logits"] + self.birth_novelty((1 - novelty)[..., None]).squeeze(-1)
+        decoded["pair_logits"] = pair_logits
         new_state = QueryBatchState(
             embedding=attn.query_features,
-            xyz=decoded["xyz"], velocity=decoded["velocity"],
-            covariance=torch.diag_embed(torch.nn.functional.softplus(decoded["log_covariance"]) + 1e-4),
-            appearance_memory=attn.query_features,
+            xyz=state.xyz, velocity=state.velocity, covariance=state.covariance,
+            appearance_memory=state.appearance_memory,
             existence=torch.sigmoid(decoded["existence_logits"]),
-            visibility=torch.sigmoid(decoded["visibility_logits"]), geometry=new_geometry,
+            visibility=torch.sigmoid(decoded["visibility_logits"]), geometry=state.geometry,
             age=state.age + 1, missed=state.missed, last_seen=state.last_seen,
             global_ids=state.global_ids, slot_ids=state.slot_ids,
         )
         return {**decoded, "queries": attn.query_features, "attention": attn.attention,
                 "geometry_bias": attn.geometry_bias, "state": new_state,
-                "previous_state": state, "observation_features": obs}
+                "previous_state": state, "observation_features": visual_obs,
+                "input_geometry": observation_geometry}

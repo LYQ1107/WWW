@@ -39,6 +39,7 @@ class OnlineWorldMOTV2:
         self.previous = None
         self.previous_world_points = {}
         self.query_runtime.reset(scene_id)
+        self.observation_encoder.reset()
 
     @staticmethod
     def _set_dynamic_masks(frame: GeometryFrame, detections):
@@ -86,25 +87,21 @@ class OnlineWorldMOTV2:
         world_cameras = ({v: _transform_camera(c, alignment.transform) for v, c in frame.cameras.items()}
                          if aligned else dict(frame.cameras))
         tracks_2d = {int(v): [] for v in world_cameras}
-        if self.query_runtime.state is not None:
-            state = self.query_runtime.state
-            for slot, gid in enumerate(state.global_ids[0].tolist()):
-                if gid < 0:
-                    continue
-                xyz = state.xyz[0, slot].detach().cpu().numpy()
-                for view, camera in world_cameras.items():
-                    assigned = query_result.query_to_observations.get(int(slot), [])
-                    current_view = any(tokens[o].camera_id == int(view) for o in assigned)
-                    projection = project_world_query(
-                        camera, xyz, view, gid, current_view,
-                        coordinate_system_valid=bool(self.query_runtime.coordinates_calibrated),
-                    )
-                    tracks_2d[int(view)].append({
-                        "global_id": int(gid), "slot_id": int(slot),
-                        "uv": projection.uv.tolist() if projection.uv is not None else None,
-                        "visible": projection.visible, "evaluation_eligible": projection.evaluation_eligible,
-                        "visibility_evidence": projection.reason,
-                    })
+        pure_projections = {int(v): [] for v in world_cameras}
+        # Formal boxes come from an actual current detection assigned to this
+        # Query.  Learned normalized coordinates never become camera pixels.
+        for slot, indices in query_result.query_to_observations.items():
+            for o in indices:
+                token = tokens[o]; view = int(token.camera_id)
+                gid = query_result.global_ids_by_observation[o]
+                tracks_2d[view].append({"global_id": int(gid), "slot_id": int(slot),
+                    "bbox_xywh": token.bbox.tolist(), "score": float(token.detection_score),
+                    "visible": True, "evaluation_eligible": True,
+                    "output_source": "CURRENT_ASSIGNED_DETECTOR_BBOX", "timestamp": int(timestamp), "camera_id": view})
+                pure_projections[view].append({"global_id": int(gid),
+                    "bbox_xywh": token.diagnostics.get("pure_3d_bbox_xywh"),
+                    "output_source": "CURRENT_OMEGA_SUPPORT_PURE_3D_PROJECTION",
+                    "evaluation_eligible": False, "occlusion_unknown": True})
         if aligned:
             self.previous = frame
             self.previous_world_points = {v: alignment.transform.apply(x.reshape(-1, 3)).reshape(x.shape)
@@ -120,6 +117,7 @@ class OnlineWorldMOTV2:
             "global_ids_by_observation": {str(o): int(g) for o, g in query_result.global_ids_by_observation.items()},
             "birth_global_ids": [int(x) for x in query_result.births],
             "tracks_2d_by_camera": {str(v): rows for v, rows in tracks_2d.items()},
+            "pure_3d_projection_by_camera": {str(v): rows for v, rows in pure_projections.items()},
             "alignment": {"success": bool(alignment.success), "reason": alignment.reason,
                           "correspondences": int(alignment.correspondences), "inliers": int(alignment.inliers),
                           "inlier_ratio": float(alignment.inlier_ratio), "residual_median": float(alignment.residual_median),

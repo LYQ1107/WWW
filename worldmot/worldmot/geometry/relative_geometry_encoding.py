@@ -25,6 +25,12 @@ class GeometryNormalization:
     def normalize(self, xyz: np.ndarray) -> np.ndarray:
         return (np.asarray(xyz, dtype=np.float32) - self.origin) / max(float(self.scale), 1e-6)
 
+    def denormalize(self, xyz: np.ndarray) -> np.ndarray:
+        return np.asarray(xyz, dtype=np.float32) * self.scale + self.origin
+
+    def normalize_covariance(self, cov: np.ndarray) -> np.ndarray:
+        return np.asarray(cov, dtype=np.float32) / max(self.scale ** 2, 1e-12)
+
 
 def fit_geometry_normalization(points: np.ndarray) -> GeometryNormalization:
     """Fit a deterministic robust scale from observed (non-GT) positions."""
@@ -62,12 +68,12 @@ def encode_relative_geometry(
     pos = normal.normalize(xyz)
     vel = np.zeros(3, dtype=np.float32) if velocity is None else np.asarray(velocity, dtype=np.float32).reshape(3) / max(normal.scale, 1e-6)
     cov = np.eye(3, dtype=np.float32) if covariance is None else np.asarray(covariance, dtype=np.float32).reshape(3, 3)
-    cov_diag = np.log1p(np.clip(np.diag(cov), 0.0, 1e6)).astype(np.float32)
+    cov_diag = np.log1p(np.clip(np.diag(normal.normalize_covariance(cov)), 0.0, 1e6)).astype(np.float32)
     pose = np.zeros(6, dtype=np.float32)
     if camera_pose is not None:
         p = np.asarray(camera_pose, dtype=np.float32)
         if p.shape == (4, 4):
-            pose[:3] = p[:3, 3] / max(normal.scale, 1e-6)
+            pose[:3] = normal.normalize(p[:3, 3])
             # A compact rotation representation that is continuous near the
             # identity; full matrices are retained in the observation record.
             pose[3:] = np.asarray([p[2, 1] - p[1, 2], p[0, 2] - p[2, 0], p[1, 0] - p[0, 1]], dtype=np.float32) / 2.0

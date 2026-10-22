@@ -1,0 +1,22 @@
+{
+  "base_commit": "177adbe1391bef5af152db2eff38d1a508d98db8",
+  "branch": "research/worldmot-v2-fulltrain-test-20261022",
+  "internal_validation_scenes": [4, 8, 12, 16, 20, 24],
+  "internal_training_scenes": [1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 17, 18, 19, 21, 22, 23],
+  "epochs": 6,
+  "epoch_candidates": [2, 4, 6],
+  "clip_lengths": [8, 16, 32],
+  "tbptt": 8,
+  "batch_size": 4,
+  "hidden_dim": 128,
+  "query_capacity": 128,
+  "seed_set": [20261022, 20261023, 20261024],
+  "ablations": ["joint", "no_omega", "no_appearance", "two_stage"],
+  "threshold_grid": {"null_margin": [0.0, 0.5, 1.0], "birth_threshold": [0.3, 0.5, 0.7], "pair_threshold": [0.5, 0.7]},
+  "test_protocol": "complete causal videos, original raw GT, TrackEval plus native VisionTrack MATLAB",
+  "fps_unit": "synchronized dual-camera timestamps per second",
+  "raw_gt_modified": false,
+  "test_hyperparameter_selection_forbidden": true,
+  "cache_root": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/train_cache",
+  "data_audit": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/data_audit.json"
+}

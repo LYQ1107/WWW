@@ -36,8 +36,15 @@ class VisionTrack:
     after inference; the runtime never calls that method.
     """
 
-    def __init__(self, root: str | Path, annotation: str = "annotations/train.json",
-                 image_root: str = "train", views: Sequence[int] = (1, 2)):
+    def __init__(self, root: str | Path, annotation: str | None = None,
+                 image_root: str | None = None, views: Sequence[int] = (1, 2),
+                 split: str = "train", load_annotations: bool = True):
+        if split not in ("train", "test"):
+            raise ValueError("split must be train or test")
+        self.split = split
+        self.load_annotations = bool(load_annotations)
+        annotation = annotation or f"annotations/{split}.json"
+        image_root = image_root or split
         self.root = Path(root)
         self.annotation_path = self.root / annotation
         self.image_root = self.root / image_root
@@ -61,7 +68,7 @@ class VisionTrack:
             self.images[rec.image_id] = rec
             self._by_scene_view_frame[(scene_id, view_id, rec.frame_id)] = rec
         self._annotations: Dict[int, List[dict]] = {}
-        for ann in data.get("annotations", []):
+        for ann in data.get("annotations", []) if self.load_annotations else []:
             self._annotations.setdefault(int(ann["image_id"]), []).append(ann)
 
     def scene_ids(self) -> List[int]:
@@ -102,6 +109,8 @@ class VisionTrack:
 
     def ground_truth(self, image_id: int) -> List[dict]:
         """Return copied annotations for post-hoc evaluation only."""
+        if not self.load_annotations:
+            raise RuntimeError("inference metadata-only adapter forbids GT access")
         return [dict(x) for x in self._annotations.get(int(image_id), [])]
 
     def ground_truth_pair(self, pair: SynchronizedPair) -> Dict[int, List[dict]]:

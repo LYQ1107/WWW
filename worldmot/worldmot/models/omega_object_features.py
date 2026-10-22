@@ -27,6 +27,7 @@ class ObjectFeature:
     source: str
     valid: bool
     diagnostics: dict
+    rgb_feature: np.ndarray | None = None
 
 
 def _normalize(x: np.ndarray) -> np.ndarray:
@@ -47,7 +48,7 @@ def _fixed_pool(x: np.ndarray, dim: int) -> np.ndarray:
     if not len(x):
         return np.zeros(int(dim), dtype=np.float32)
     bins = np.array_split(x, int(dim))
-    return _normalize(np.asarray([part.mean() for part in bins], dtype=np.float32))
+    return _normalize(np.asarray([part.mean() if len(part) else 0.0 for part in bins], dtype=np.float32))
 
 
 def _resize_crop(image: np.ndarray, bbox: Sequence[float], size: int = 16) -> np.ndarray:
@@ -139,23 +140,22 @@ class FrozenObjectFeatureExtractor:
         for view, view_detections in sorted(detections.items()):
             image = np.asarray(images[int(view)])
             for det in view_detections:
-                rgb = _rgb_descriptor(image, det.bbox_xywh, det.mask)
+                rgb = _fixed_pool(_rgb_descriptor(image, det.bbox_xywh, det.mask), 128)
                 det_feat = np.zeros(0, dtype=np.float32)
                 omega_feat = np.zeros(0, dtype=np.float32)
                 if int(view) in detector_feature_maps:
                     det_feat = _fixed_pool(
-                        _roi_pool(detector_feature_maps[int(view)], det.bbox_xywh, image.shape[:2]), 64,
+                        _roi_pool(detector_feature_maps[int(view)], det.bbox_xywh, image.shape[:2]), 128,
                     )
                 if int(view) in omega_patch_features:
                     omega_feat = _fixed_pool(
-                        _roi_pool(omega_patch_features[int(view)], det.bbox_xywh, image.shape[:2]), 64,
+                        _roi_pool(omega_patch_features[int(view)], det.bbox_xywh, image.shape[:2]), 256,
                     )
-                parts = [rgb, det_feat, omega_feat]
-                merged = _normalize(np.concatenate([p for p in parts if len(p)]))
-                if len(merged) < self.appearance_dim:
-                    merged = np.pad(merged, (0, self.appearance_dim - len(merged)))
-                else:
-                    merged = merged[: self.appearance_dim]
+                # Each branch has a separate learned projection in PWQT.
+                # Never concatenate then truncate: every source survives.
+                merged = np.concatenate([rgb,
+                    det_feat if len(det_feat) else np.zeros(128, np.float32),
+                    omega_feat if len(omega_feat) else np.zeros(256, np.float32)])
                 learned_ok = len(det_feat) > 0 and len(omega_feat) > 0
                 source = "rgb+rtmdet_roi+omega_patch" if learned_ok else "rgb_source_only"
                 valid = len(rgb) > 0 and (learned_ok or not self.require_intermediate)
@@ -164,6 +164,6 @@ class FrozenObjectFeatureExtractor:
                     source, valid,
                     {"rgb_available": True, "rtmdet_roi_available": bool(len(det_feat)),
                      "omega_patch_available": bool(len(omega_feat)),
-                     "formal_intermediate_required": self.require_intermediate},
+                     "formal_intermediate_required": self.require_intermediate}, rgb,
                 )
         return out

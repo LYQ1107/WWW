@@ -53,6 +53,8 @@ class MultiViewQueryAttention(nn.Module):
                query_geometry: torch.Tensor, layer: int, obs_mask: torch.Tensor | None):
         b, nq, d = q.shape
         no = obs.shape[1]
+        if no == 0:
+            return torch.zeros_like(q), q.new_zeros((b, self.heads, nq, 0)), q.new_zeros((b, self.heads, nq, 0))
         qh = self.q_proj[layer](q).view(b, nq, self.heads, d // self.heads).transpose(1, 2)
         kh = self.k_proj[layer](obs).view(b, no, self.heads, d // self.heads).transpose(1, 2)
         vh = self.v_proj[layer](obs).view(b, no, self.heads, d // self.heads).transpose(1, 2)
@@ -74,6 +76,9 @@ class MultiViewQueryAttention(nn.Module):
         if obs_mask is not None:
             logits = logits.masked_fill(~obs_mask[:, None, None, :], -1e4)
         weights = torch.softmax(logits, dim=-1)
+        if obs_mask is not None:
+            weights = weights * obs_mask[:, None, None, :]
+            weights = weights / weights.sum(-1, keepdim=True).clamp_min(1e-9)
         attended = torch.matmul(weights, vh).transpose(1, 2).reshape(b, nq, d)
         return self.out_proj[layer](attended), weights, gb
 

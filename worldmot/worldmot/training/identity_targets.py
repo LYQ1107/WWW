@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from collections import Counter
 from typing import Mapping, Sequence
 
 import numpy as np
@@ -33,6 +34,8 @@ def match_detections_to_gt(detections: Mapping[int, Sequence], ground_truth: Map
     out = {}
     for view, ds in detections.items():
         gt = list(ground_truth.get(int(view), []))
+        keys = [a.get("instance_id", a.get("track_id", a.get("id"))) for a in gt]
+        ambiguous = {key for key, count in Counter(keys).items() if count > 1}
         pairs = []
         for di, det in enumerate(ds):
             for gi, ann in enumerate(gt):
@@ -44,6 +47,9 @@ def match_detections_to_gt(detections: Mapping[int, Sequence], ground_truth: Map
             used_d.add(di); used_g.add(gi)
             ann = gt[gi]
             raw = ann.get("instance_id", ann.get("track_id", ann.get("id")))
+            if raw in ambiguous:
+                out[(int(view), int(di))] = IdentityTarget(-1, int(view), None, -1, False, float(score), "ambiguous_duplicate_identity_masked")
+                continue
             key = f"scene{int(scene_id)}:id{int(raw)}" if raw is not None else None
             out[(int(view), int(di))] = IdentityTarget(-1, int(view), key, -1, True, float(score), "bbox_iou_gt_supervision")
         for di in range(len(ds)):

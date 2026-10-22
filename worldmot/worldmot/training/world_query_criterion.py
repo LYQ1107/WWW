@@ -84,3 +84,49 @@ class WorldQueryCriterion(nn.Module):
             total = total + float(self.weights.get(name, 1.0)) * value
         losses["total"] = total
         return losses
+
+class TemporalQueryCriterion(nn.Module):
+    """Balanced active-query/NULL CE and newborn/multi-view supervision.
+
+    Duplicate GT targets (-2) and padding never become negative identities.
+    Invisible active tracks remain alive for their registered miss window.
+    """
+    def forward(self,output,identity,valid,cameras,previous_ids,step_mask):
+        logits=output['assignment_logits'];b,q,total=logits.shape;n=total-1
+        observed_valid = valid & step_mask[:, None]
+        valid=observed_valid & (identity!=-2)
+        active=previous_ids>=0
+        scores=(logits[...,:-1]-logits[...,-1:]).transpose(1,2).masked_fill(~active[:,None,:],-1e4)
+        classes=torch.full((b,n),q,device=logits.device,dtype=torch.long)
+        same=(identity[:,:,None]==previous_ids[:,None,:]) & active[:,None,:] & (identity[:,:,None]>=0)
+        seen=same.any(-1);classes=torch.where(seen,same.float().argmax(-1),classes)
+        ce=F.cross_entropy(torch.cat([scores,scores.new_zeros((b,n,1))],-1).reshape(-1,q+1),classes.reshape(-1),reduction='none').reshape(b,n)
+        # Average positives and NULLs independently to avoid majority collapse.
+        pos=valid&seen;neg=valid&~seen
+        assignment=(ce*pos).sum()/pos.sum().clamp_min(1)+(ce*neg).sum()/neg.sum().clamp_min(1)
+        newborn=(identity>=0)&~seen
+        birth_weights=valid.float();positive=(birth_weights*newborn).sum();negative=(birth_weights*(~newborn)).sum()
+        # Birth is rare over a continuous clip, even when one frame contains
+        # many newborns.  Per-frame ratios alone collapse to all-negative.
+        pw=(negative/positive.clamp_min(1)).clamp(10,30)
+        birth=F.binary_cross_entropy_with_logits(output['birth_logits'],newborn.float(),pos_weight=pw,reduction='none')
+        birth=(birth*birth_weights).sum()/birth_weights.sum().clamp_min(1)
+        pair_mask=valid[:,:,None]&valid[:,None,:]&(cameras[:,:,None]!=cameras[:,None,:])
+        pair_target=(identity[:,:,None]==identity[:,None,:])&(identity[:,:,None]>=0)
+        ppos=(pair_target&pair_mask).sum();pneg=(~pair_target&pair_mask).sum();ppw=(pneg/ppos.clamp_min(1)).clamp(1,30)
+        pair=F.binary_cross_entropy_with_logits(output['pair_logits'],pair_target.float(),pos_weight=ppw,reduction='none')
+        pair=(pair*pair_mask).sum()/pair_mask.sum().clamp_min(1)
+        visible=(same&valid[:,:,None]).any(1)
+        # Active but temporarily occluded queries are positive existence.
+        existence_target=active.float();emask=step_mask[:,None].expand(-1,q)
+        epw=((~active & emask).sum()/(active & emask).sum().clamp_min(1)).clamp(1,32)
+        existence=F.binary_cross_entropy_with_logits(output['existence_logits'],existence_target,pos_weight=epw,reduction='none')
+        existence=(existence*emask).sum()/emask.sum().clamp_min(1)
+        visibility=output['visibility_logits'].new_zeros(output['visibility_logits'].shape)
+        for c in range(visibility.shape[-1]):visibility[:,:,c]=(same & valid[:,:,None] & (cameras[:,:,None]==c+1)).any(1)
+        vloss=F.binary_cross_entropy_with_logits(output['visibility_logits'],visibility,reduction='none')
+        vloss=(vloss*emask[:,:,None]).sum()/(emask.sum()*visibility.shape[-1]).clamp_min(1)
+        total_loss=assignment+birth+pair+0.25*existence+0.25*vloss
+        return {'total':total_loss,'assignment':assignment,'birth':birth,'pair':pair,'existence':existence,'visibility':vloss,
+                'positive_observations':pos.sum().detach(),'NULL_observations':neg.sum().detach(),'birth_targets':(newborn&valid).sum().detach(),
+                'ambiguous_masked':((identity==-2)&observed_valid).sum().detach()}

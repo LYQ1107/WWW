@@ -30,7 +30,8 @@ class QueryAssignment:
 
 def constrained_assign(assignment_logits: torch.Tensor, birth_logits: torch.Tensor,
                        camera_ids: list[int], query_exists: torch.Tensor,
-                       null_margin: float = 0.0, birth_threshold: float = 0.5) -> QueryAssignment:
+                       null_margin: float = 0.0, birth_threshold: float = 0.5,
+                       active_mask: torch.Tensor | None = None) -> QueryAssignment:
     """Greedy constrained assignment used only after joint query attention.
 
     A query can claim at most one observation per camera, while an observation
@@ -47,6 +48,8 @@ def constrained_assign(assignment_logits: torch.Tensor, birth_logits: torch.Tens
     on = max(total - 1, 0)
     candidates = []
     for q in range(qn):
+        if active_mask is not None and not bool(active_mask.reshape(-1)[q]):
+            continue
         if exists[q] < 0.05:
             continue
         for o in range(on):

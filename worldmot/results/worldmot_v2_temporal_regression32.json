@@ -1,0 +1,204 @@
+{
+  "scope": "32 real consecutive TRAIN Scene8 timestamps; regression only, not full training or test",
+  "before_calibration": [
+    {
+      "scene": 8,
+      "frames": 32,
+      "observations": 206,
+      "assigned": 0,
+      "births": 0,
+      "unique_ids": 0,
+      "ids_with_multiple_observations": 0,
+      "maximum_id_observations": 0,
+      "query_only_total_s": 0.5241489410400391,
+      "formal_e2e_fps": null,
+      "checkpoint_scope": "TRAIN_SUBSET_OR_REGRESSION",
+      "thresholds": {
+        "null_margin": 0.5,
+        "birth_threshold": 0.5,
+        "pair_threshold": 0.7
+      }
+    }
+  ],
+  "after_calibration": [
+    {
+      "scene": 8,
+      "frames": 32,
+      "observations": 206,
+      "assigned": 134,
+      "births": 4,
+      "unique_ids": 4,
+      "ids_with_multiple_observations": 3,
+      "maximum_id_observations": 64,
+      "query_only_total_s": 0.6067827939987183,
+      "formal_e2e_fps": null,
+      "checkpoint_scope": "TRAIN_SUBSET_OR_REGRESSION",
+      "thresholds": {
+        "null_margin": 0.5,
+        "birth_threshold": 0.5,
+        "pair_threshold": 0.7
+      }
+    }
+  ],
+  "temporal_training": {
+    "status": "TRAIN_SUBSET_COMPLETE",
+    "seed": 20261022,
+    "model_config": {
+      "observation_dim": 532,
+      "hidden_dim": 128,
+      "max_world_queries": 128,
+      "cameras": 2,
+      "heads": 4,
+      "decoder_layers": 2,
+      "geometry_dim": 18,
+      "ablation": "joint"
+    },
+    "cache": [
+      "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/regression32"
+    ],
+    "train_scenes": [
+      8
+    ],
+    "epochs_requested": 6,
+    "frames_per_scene": {
+      "8": 32
+    },
+    "total_timestamps": 32,
+    "tbptt": 8,
+    "clip_curriculum": [
+      32
+    ],
+    "initialization": "fixed_seed_random_pwqt_frozen_official_rtmdet_omega",
+    "history": [
+      {
+        "total": 4.342209756374359,
+        "assignment": 2.4879369735717773,
+        "birth": 0.3610399439930916,
+        "pair": 1.0490025095641613,
+        "existence": 1.1255749128758907,
+        "visibility": 0.6513462550938129,
+        "positive_observations": 3.875,
+        "NULL_observations": 2.5625,
+        "birth_targets": 0.125,
+        "ambiguous_masked": 0.0,
+        "gradient_norm": 21.804131984710693,
+        "real_frames": 32.0,
+        "epoch": 1,
+        "clip_length": 32,
+        "coverage": {
+          "8": 32
+        },
+        "elapsed_s": 2.15423583984375
+      },
+      {
+        "total": 1.9939205832779408,
+        "assignment": 0.40815128781832755,
+        "birth": 0.3534518489614129,
+        "pair": 0.8910234495997429,
+        "existence": 0.8149677291512489,
+        "visibility": 0.5502081215381622,
+        "positive_observations": 3.875,
+        "NULL_observations": 2.5625,
+        "birth_targets": 0.125,
+        "ambiguous_masked": 0.0,
+        "gradient_norm": 6.208589553833008,
+        "real_frames": 32.0,
+        "epoch": 2,
+        "clip_length": 32,
+        "coverage": {
+          "8": 32
+        },
+        "elapsed_s": 1.2320573329925537
+      },
+      {
+        "total": 1.4856523610651493,
+        "assignment": 0.21222923789173365,
+        "birth": 0.2872885628603399,
+        "pair": 0.7011086456477642,
+        "existence": 0.7124389465898275,
+        "visibility": 0.42766474187374115,
+        "positive_observations": 3.875,
+        "NULL_observations": 2.5625,
+        "birth_targets": 0.125,
+        "ambiguous_masked": 0.0,
+        "gradient_norm": 4.936853289604187,
+        "real_frames": 32.0,
+        "epoch": 3,
+        "clip_length": 32,
+        "coverage": {
+          "8": 32
+        },
+        "elapsed_s": 1.2774162292480469
+      },
+      {
+        "total": 1.035540021955967,
+        "assignment": 0.10698338923975825,
+        "birth": 0.2195705824997276,
+        "pair": 0.48487037792801857,
+        "existence": 0.5956097841262817,
+        "visibility": 0.30085292365401983,
+        "positive_observations": 3.875,
+        "NULL_observations": 2.5625,
+        "birth_targets": 0.125,
+        "ambiguous_masked": 0.0,
+        "gradient_norm": 2.9772690534591675,
+        "real_frames": 32.0,
+        "epoch": 4,
+        "clip_length": 32,
+        "coverage": {
+          "8": 32
+        },
+        "elapsed_s": 1.2898094654083252
+      },
+      {
+        "total": 0.665710206143558,
+        "assignment": 0.06181031069718301,
+        "birth": 0.2028550140094012,
+        "pair": 0.2657406935468316,
+        "existence": 0.32716736756265163,
+        "visibility": 0.2140493611805141,
+        "positive_observations": 3.875,
+        "NULL_observations": 2.5625,
+        "birth_targets": 0.125,
+        "ambiguous_masked": 0.0,
+        "gradient_norm": 2.41939178109169,
+        "real_frames": 32.0,
+        "epoch": 5,
+        "clip_length": 32,
+        "coverage": {
+          "8": 32
+        },
+        "elapsed_s": 1.3255488872528076
+      },
+      {
+        "total": 0.4365177326835692,
+        "assignment": 0.042633938777726144,
+        "birth": 0.1947233707178384,
+        "pair": 0.12695215339772403,
+        "existence": 0.0882644122466445,
+        "visibility": 0.20056863594800234,
+        "positive_observations": 3.875,
+        "NULL_observations": 2.5625,
+        "birth_targets": 0.125,
+        "ambiguous_masked": 0.0,
+        "gradient_norm": 2.0721611380577087,
+        "real_frames": 32.0,
+        "epoch": 6,
+        "clip_length": 32,
+        "coverage": {
+          "8": 32
+        },
+        "elapsed_s": 1.2127251625061035
+      }
+    ],
+    "formal_inference_allowed": false,
+    "optimizer": "AdamW",
+    "learning_rate": 0.0003,
+    "full_train_coverage": false,
+    "training_scope": "TRAIN_SUBSET_OR_REGRESSION",
+    "epochs_completed": 6
+  },
+  "checkpoint_sha256": "ed97ada8178920ba0d2a0f4ce74265f8d4d61302f3c7bc38bdecb8de9bf8e667",
+  "formal_test_metrics": null,
+  "full_goal_complete": false
+}
