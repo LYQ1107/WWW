@@ -7,6 +7,7 @@ import numpy as np
 import torch
 from torch.utils.data import DataLoader
 from worldmot.models.persistent_world_queries import PersistentWorldQueryTransformer
+from worldmot.models.query_model_profiles import MODEL_PROFILES, build_profile
 from worldmot.training.clip_dataset import WorldQueryClipDataset,collate_clips
 from worldmot.training.train_utils import save_checkpoint,seed_everything,restore_rng_state
 from worldmot.training.world_query_criterion import TemporalQueryCriterion
@@ -62,11 +63,24 @@ def main(argv=None):
     p.add_argument('--seed',type=int,default=20261022);p.add_argument('--device',default='cuda:0');p.add_argument('--scenes',nargs='+',type=int)
     p.add_argument('--batch-size',type=int,default=4);p.add_argument('--tbptt',type=int,default=8);p.add_argument('--clip-lengths',nargs='+',type=int,default=[8,16,32])
     p.add_argument('--hidden-dim',type=int,default=128);p.add_argument('--max-queries',type=int,default=128);p.add_argument('--ablation',choices=['joint','no_omega','no_geometry','no_appearance','two_stage'],default='joint')
+    p.add_argument('--model-profile', choices=sorted(MODEL_PROFILES))
+    p.add_argument('--heads', type=int, default=4);p.add_argument('--decoder-layers', type=int, default=2)
+    p.add_argument('--lr-milestones', type=int, nargs='*', default=[])
+    p.add_argument('--lr-drop-factor', type=float, default=.1)
+    p.add_argument('--checkpoint-every', type=int, default=2)
     p.add_argument('--resume');p.add_argument('--lr',type=float,default=3e-4);a=p.parse_args(argv)
     torch.set_num_threads(2);seed_everything(a.seed);out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True)
     ds=WorldQueryClipDataset(a.cache,scenes=a.scenes,clip_length=a.clip_lengths[0])
     if not len(ds):raise RuntimeError('empty feature cache')
-    model=PersistentWorldQueryTransformer(observation_dim=532,hidden_dim=a.hidden_dim,max_world_queries=a.max_queries,ablation=a.ablation).to(a.device)
+    if a.model_profile:
+        if a.hidden_dim != 128 or a.heads != 4 or a.decoder_layers != 2:
+            raise ValueError('use a registered profile or explicit dimensions, not both')
+        model=build_profile(a.model_profile,max_queries=a.max_queries,ablation=a.ablation).to(a.device)
+    else:
+        model=PersistentWorldQueryTransformer(observation_dim=532,hidden_dim=a.hidden_dim,max_world_queries=a.max_queries,
+            heads=a.heads,decoder_layers=a.decoder_layers,ablation=a.ablation).to(a.device)
+    if a.checkpoint_every < 1 or not 0 < a.lr_drop_factor <= 1:
+        raise ValueError('invalid checkpoint interval or learning rate drop')
     provenance=source_stamp();cache_provenance=cache_stamp(a.cache,ds.scenes)
     criterion=TemporalQueryCriterion();opt=torch.optim.AdamW(model.parameters(),lr=a.lr,weight_decay=1e-4);start_epoch=0;history=[]
     if a.resume:
@@ -74,18 +88,26 @@ def main(argv=None):
         if payload['manifest'].get('source_provenance')!=provenance or payload['manifest'].get('cache_provenance')!=cache_provenance:
             raise RuntimeError('resume source/cache differs from checkpoint; preserve prior trial before a fresh run')
         if 'rng_state' not in payload:raise RuntimeError('exact resume requires saved RNG state')
+        if (payload['manifest']['model_config'] != model.config
+                or payload['manifest'].get('lr_milestones', []) != a.lr_milestones
+                or payload['manifest'].get('lr_drop_factor', .1) != a.lr_drop_factor):
+            raise RuntimeError('resume architecture or learning rate recipe differs')
         model.load_state_dict(payload['model']);opt.load_state_dict(payload['optimizer']);start_epoch=payload['epoch'];history=payload['manifest']['history'];restore_rng_state(payload['rng_state'])
     manifest={'status':'FULLTRAIN_RUNNING','seed':a.seed,'model_config':model.config,'cache':a.cache,'train_scenes':sorted(ds.scenes),'epochs_requested':a.epochs,
               'frames_per_scene':{str(s):len(f) for s,f in ds.scenes.items()},'total_timestamps':sum(len(f) for f in ds.scenes.values()),'tbptt':a.tbptt,'clip_curriculum':a.clip_lengths,
               'initialization':'fixed_seed_random_pwqt_frozen_official_rtmdet_omega','history':history,'formal_inference_allowed':False,'optimizer':'AdamW','learning_rate':a.lr,'max_missed':64,
               'gradient_clip_norm':1.,'gradient_norm_log':'pre_clip','supervision_counts':'actual epoch sums; losses are batch/step means'}
     manifest.update(source_provenance=provenance,cache_provenance=cache_provenance,
-                    resume_checkpoint=str(a.resume) if a.resume else None,resume_rng_restored=bool(a.resume))
+                    resume_checkpoint=str(a.resume) if a.resume else None,resume_rng_restored=bool(a.resume),
+                    model_profile=a.model_profile,trainable_parameters=sum(p.numel() for p in model.parameters() if p.requires_grad),
+                    lr_milestones=a.lr_milestones,lr_drop_factor=a.lr_drop_factor)
     official_lengths = [932,1886,1200,901,1769,601,443,523,1942,2092,2057,1200,1621,969,1048,1034,1200,1029,1052,1001,1001,1000,1052,1201]
     complete_all_train = sorted(ds.scenes) == list(range(1,25)) and all(len(ds.scenes[s]) == official_lengths[s-1] for s in ds.scenes)
     manifest['full_train_coverage'] = bool(complete_all_train)
     manifest['training_scope'] = 'FULL_24_TRAIN' if complete_all_train else 'TRAIN_SUBSET_OR_REGRESSION'
     for epoch in range(start_epoch,a.epochs):
+        epoch_lr=a.lr*a.lr_drop_factor**sum(epoch >= milestone for milestone in a.lr_milestones)
+        for group in opt.param_groups:group['lr']=epoch_lr
         # A fixed prefix makes a 4-epoch refit match the first four epochs of
         # the 6-epoch internal trial. All candidates include length 32.
         length=a.clip_lengths[min(len(a.clip_lengths)-1,epoch)];ds.set_clip_length(length)
@@ -101,14 +123,14 @@ def main(argv=None):
             row={k:v.to(a.device) for k,v in row.items()};r=train_step(model,row,criterion,a.tbptt,opt);records.append(r)
             if i%25==0:print(json.dumps({'epoch':epoch+1,'batch':i,'batches':len(loader),'loss':r['total'],'grad':r['gradient_norm'],'elapsed_s':round(time.time()-started,1)}),flush=True)
         if coverage!={s:len(f) for s,f in ds.scenes.items()}:raise RuntimeError('incomplete epoch coverage')
-        metric={k:float(np.mean([r[k] for r in records])) for k in records[0]};metric.update(epoch=epoch+1,clip_length=length,coverage=coverage,elapsed_s=time.time()-started)
+        metric={k:float(np.mean([r[k] for r in records])) for k in records[0]};metric.update(epoch=epoch+1,clip_length=length,coverage=coverage,elapsed_s=time.time()-started,learning_rate=epoch_lr)
         for key in COUNT_FIELDS:metric[key]=sum(r[key] for r in records)
         metric['real_frames']=sum(r['real_frames'] for r in records)
         metric['positive_to_FP_ratio']=metric['legal_positive_observations']/metric['FP_observations'] if metric['FP_observations'] else None
         history.append(metric);manifest['history']=history;manifest['epochs_completed']=epoch+1
         manifest['status']=('FULLTRAIN_COMPLETE' if complete_all_train else 'TRAIN_SUBSET_COMPLETE') if epoch+1==a.epochs else 'TRAINING_RUNNING'
         save_checkpoint(out.with_suffix('.tmp.pt'),model,opt,epoch+1,manifest);os.replace(out.with_suffix('.tmp.pt'),out)
-        if epoch+1 in (2,4,6):
+        if epoch+1 in (2,4,6) or (epoch+1)%a.checkpoint_every==0 or epoch+1==a.epochs:
             save_checkpoint(out.with_name(out.stem+f'.epoch{epoch+1}.pt'),model,opt,epoch+1,manifest)
         out.with_suffix('.json').write_text(json.dumps(manifest,indent=2));print(json.dumps(metric),flush=True)
     print(json.dumps({'status':manifest['status'],'checkpoint':str(out),'sha256':hashlib.sha256(out.read_bytes()).hexdigest(),'timestamps':manifest['total_timestamps']}),flush=True)
