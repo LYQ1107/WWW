@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Durable experiment driver. Status reflects completed work, never config files."""
 from __future__ import annotations
-import argparse,collections,concurrent.futures,hashlib,json,os,subprocess,sys,time
+import argparse,collections,concurrent.futures,hashlib,json,os,queue,subprocess,sys,time
 from pathlib import Path
 import torch
 from cache_fulltrain import atomic_json,sha
@@ -39,12 +39,23 @@ class Experiment:
         with (self.logs/(name+'.log')).open('a') as f:
             f.write('\nCOMMAND '+json.dumps(cmd)+'\n');f.flush();result=subprocess.run(cmd,cwd=ROOT,env=env,stdout=f,stderr=subprocess.STDOUT)
         if result.returncode:raise RuntimeError(f'{name} exited {result.returncode}; see {self.logs/(name+".log")}')
-        return {'name':name,'elapsed_s':time.time()-started,'log':str(self.logs/(name+'.log'))}
-    def parallel(self,jobs):
+        return {'name':name,'physical_gpu':gpu,'elapsed_s':time.time()-started,'log':str(self.logs/(name+'.log'))}
+    def parallel(self,jobs,dynamic=False):
         queues=[[] for _ in GPUS]
-        for i,job in enumerate(jobs):queues[i%len(GPUS)].append(job)
+        pending=queue.Queue()
+        if dynamic:
+            for i,job in enumerate(jobs[:len(GPUS)]):queues[i].append(job)
+            for job in jobs[len(GPUS):]:pending.put(job)
+        else:
+            for i,job in enumerate(jobs):queues[i%len(GPUS)].append(job)
         def worker(idx):
-            return [fn(GPUS[idx]) for fn in queues[idx]]
+            results=[fn(GPUS[idx]) for fn in queues[idx]]
+            if dynamic:
+                while True:
+                    try:fn=pending.get_nowait()
+                    except queue.Empty:break
+                    results.append(fn(GPUS[idx]))
+            return results
         with concurrent.futures.ThreadPoolExecutor(max_workers=len(GPUS)) as pool:
             futures=[pool.submit(worker,i) for i in range(len(GPUS))]
             return [r for f in futures for r in f.result()]
@@ -151,9 +162,14 @@ class Experiment:
             jobs.append(lambda gpu,cmd=cmd,label=label:self.command('TEST_'+label,cmd,gpu))
         # The independently frozen native GMT comparator has its own environment.
         cmd=[GMT_PY,'scripts/run_gmt_test_baseline.py','--split','test','--metadata',str(self.root/'audit/test_metadata.json'),'--output',str(test/'gmt_native')]
-        jobs.append(lambda gpu,cmd=cmd:self.command('TEST_gmt_native',cmd,gpu))
+        # Start the three complete-system comparators in the first wave.
+        # A freed card then takes the next registered trial, never another
+        # job on a card that is still busy with its current video stream.
+        jobs.insert(2,lambda gpu,cmd=cmd:self.command('TEST_gmt_native',cmd,gpu))
         self.state('INDEPENDENT_TEST_RUNNING',methods=len(jobs),test_scenes=22,timestamps_per_method=29019)
-        self.parallel(jobs);self.state('INDEPENDENT_TEST_INFERENCE_COMPLETE')
+        schedule=self.parallel(jobs,dynamic=True)
+        atomic_json(self.root/'test_experiment_schedule.json',{'results':schedule,'each_method_exclusively_uses_one_GPU':True,'aggregate_throughput_is_not_stream_FPS':True})
+        self.state('INDEPENDENT_TEST_INFERENCE_COMPLETE')
         submissions=self.root/'test_submissions';submissions.mkdir(exist_ok=True)
         for pred in sorted(test.iterdir()):
             if not pred.is_dir():continue

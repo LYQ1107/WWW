@@ -98,3 +98,35 @@ def test_image_preflight_checks_actual_pixels_and_keeps_failure_evidence(tmp_pat
     path.write_bytes(b'corrupt image')
     corrupted=check_image(item,tmp_path)
     assert corrupted['status']=='RGB_DECODE_FAILED' and corrupted['image_id']==1
+
+
+def test_test_queue_reuses_free_gpu_without_overlapping_jobs(tmp_path,monkeypatch):
+    import collections
+    import threading
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'scripts'))
+    import orchestrate_fulltrain_test as driver
+    monkeypatch.setattr(driver,'GPUS',[0,2])
+    active=collections.Counter();completed=[];lock=threading.Lock()
+    first_started=threading.Event();release_first=threading.Event()
+    def job(index,gpu):
+        with lock:
+            active[gpu]+=1
+            assert active[gpu]==1
+        try:
+            if index==0:
+                first_started.set()
+                assert release_first.wait(5)
+            elif index==1:
+                assert first_started.wait(5)
+            elif index==2:
+                assert gpu==2  # GPU 0 is still occupied by the first job.
+                release_first.set()
+            with lock:completed.append(index)
+            return index,gpu
+        finally:
+            with lock:active[gpu]-=1
+    experiment=driver.Experiment(tmp_path)
+    result=experiment.parallel([lambda gpu,i=i:job(i,gpu) for i in range(5)],dynamic=True)
+    assert sorted(completed)==list(range(5))
+    assert sorted(i for i,gpu in result)==list(range(5))
+    assert all(count==0 for count in active.values())

@@ -1,0 +1,27 @@
+{
+  "status": "REGISTERED_BEFORE_TEST_NOT_EXECUTED",
+  "priority_methods": [
+    "v1",
+    "v2_joint_seed20261022",
+    "gmt_native"
+  ],
+  "all_TEST_scenes": 22,
+  "timestamps_per_method": 29019,
+  "physical_GPUs": [
+    0,
+    2,
+    3,
+    4
+  ],
+  "exclusive_GPU_per_experiment": true,
+  "dynamic_reuse_of_free_cards": true,
+  "training_queue_changed": false,
+  "model_or_threshold_changes": false,
+  "unit_test": {
+    "command": "PYTHONPATH=. python -m pytest -q tests/test_fullvideo_delivery.py -k test_queue_reuses_free_gpu",
+    "status": "PASS",
+    "scope": "CPU thread scheduling invariant; no model performance or GPU speed claim"
+  },
+  "driver_source_sha256": "1a3d2b4fc1a5253d1799f83d8cf1169b79dbe47b485afd730860484e1f5f11d1",
+  "registered_utc": "2026-10-22T15:54:36Z"
+}
