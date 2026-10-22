@@ -64,5 +64,6 @@ Status: IN_PROGRESS.
 |---|---|---:|---:|---:|---|
 | large | large | 20261022 | 24 | 22894 | TRAIN_SUBSET_COMPLETE |
 | small | small | 20261022 | 24 | 22894 | TRAIN_SUBSET_COMPLETE |
+| large_seed20261022 | large | 20261022 | 4 | 28754 | FULLTRAIN_COMPLETE |
 
 Independent TEST scores and real inference FPS are pending. TRAIN optimization losses and cached identity surrogates are not independent MOT accuracy.
