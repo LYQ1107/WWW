@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Model/threshold selection exclusively on the held-out TRAIN scenes."""
 from __future__ import annotations
-import argparse,copy,csv,itertools,json,time
+import argparse,collections,copy,csv,itertools,json,time
 from pathlib import Path
 import numpy as np
 import torch
@@ -76,14 +76,17 @@ def continuous_audit(ds,checkpoint,thresholds,device):
     runtime=PersistentQueryRuntime(model,device,checkpoint,**thresholds)
     scenes=[]
     for sid,frames in sorted(ds.scenes.items()):
-        runtime.reset(sid);id_frames={};assigned=births=0
+        runtime.reset(sid);id_frames={};assigned=births=overflow=0;rejections=collections.Counter()
         for frame in frames:
             n=len(frame['observations']);tokens=tokens_from_cache({**frame,'frame_offsets':np.asarray([0,n])},0,frame['timestamp'])
             result=runtime.step(tokens,frame['timestamp']);assigned+=len(result.global_ids_by_observation);births+=len(result.births)
+            overflow+=result.diagnostics['query_capacity_overflow']
+            rejections.update(r['reason'] for r in result.diagnostics['rejections'])
             for gid in set(result.global_ids_by_observation.values()):id_frames[gid]=id_frames.get(gid,0)+1
         row={'scene':sid,'timestamps':len(frames),'assigned_observations':assigned,'births':births,
             'global_ids':len(id_frames),'max_ID_distinct_timestamps':max(id_frames.values(),default=0),
-            'IDs_with_at_least_two_timestamps':sum(n>=2 for n in id_frames.values())}
+            'IDs_with_at_least_two_timestamps':sum(n>=2 for n in id_frames.values()),
+            'query_capacity_overflow_observations':overflow,'query_rejection_reasons':dict(rejections)}
         scenes.append(row);print(json.dumps({'continuous_TRAIN_validation':row}),flush=True)
     return {'thresholds_changed_by_this_audit':False,'scenes':scenes,
         'timestamps':sum(r['timestamps'] for r in scenes),

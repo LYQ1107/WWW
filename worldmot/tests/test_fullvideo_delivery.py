@@ -81,3 +81,20 @@ def test_empty_experiment_cannot_publish_complete_test_scores(tmp_path,monkeypat
     assert not (out/'worldmot_v2_test_official_metrics.json').exists()
     with pytest.raises(RuntimeError,match='final artifacts incomplete'):
         collect(root,out,require_complete=True)
+
+
+def test_image_preflight_checks_actual_pixels_and_keeps_failure_evidence(tmp_path,monkeypatch):
+    import hashlib
+    from PIL import Image
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'scripts'))
+    from audit_test_rgb import check_image
+    path=tmp_path/'frame.jpg';Image.new('RGB',(16,8),(80,90,100)).save(path)
+    item={'id':1,'video_id':1,'view_id':2,'frame_id':3,'file_name':'frame.jpg','width':16,'height':8}
+    valid=check_image(item,tmp_path)
+    assert valid['status']=='RGB_DECODE_OK'
+    assert valid['sha256']==hashlib.sha256(path.read_bytes()).hexdigest()
+    mismatched=check_image({**item,'width':17},tmp_path)
+    assert mismatched['status']=='RGB_DECODE_FAILED' and 'dimensions' in mismatched['error']
+    path.write_bytes(b'corrupt image')
+    corrupted=check_image(item,tmp_path)
+    assert corrupted['status']=='RGB_DECODE_FAILED' and corrupted['image_id']==1

@@ -93,6 +93,17 @@ class Experiment:
         return self.command('collect_actual_artifacts',[PY,'scripts/collect_fulltrain_results.py','--root',str(self.root)])
     def run(self):
         self.wait_cache()
+        capacity=self.root/'audit/query_capacity.json'
+        if not capacity.exists():
+            self.command('audit_TRAIN_query_capacity',[PY,'scripts/audit_train_query_capacity.py','--output',str(capacity)])
+        if json.loads(capacity.read_text())['status']!='GT_CLIP_CAPACITY_SUFFICIENT':raise RuntimeError('TRAIN query capacity audit failed')
+        rgb_summary=self.root/'audit/test_RGB_decode_summary.json'
+        rgb=snapshot(rgb_summary)
+        if not rgb or rgb.get('status')!='ALL_TEST_RGB_DECODE_VERIFIED':
+            self.command('verify_complete_TEST_RGB',[PY,'scripts/audit_test_rgb.py','--metadata',str(self.root/'audit/test_metadata.json'),'--output',str(self.root/'audit')])
+            rgb=json.loads(rgb_summary.read_text())
+        if rgb['decoded_images']!=58038 or rgb['synchronized_timestamps']!=29019 or len(rgb['scenes'])!=22 or rgb['metadata_sha256']!=sha(self.root/'audit/test_metadata.json'):
+            raise RuntimeError('TEST RGB preflight does not cover the registered complete split')
         verification=self.root/'cache_verification/coverage.json'
         if not verification.exists():
             self.command('verify_all_train_cache',[PY,'scripts/verify_fulltrain_cache.py','--cache',str(self.root/'train_cache'),'--output',str(self.root/'cache_verification')])
@@ -119,7 +130,7 @@ class Experiment:
             if not m.get('full_train_coverage') or m.get('status')!='FULLTRAIN_COMPLETE':raise RuntimeError('incomplete full TRAIN checkpoint')
             m['thresholds']=choice['methods'][method]['thresholds'];m['formal_inference_allowed']=True;m['selection_sha256']=sha(selected/'selection.json');m['trained_checkpoint_sha256']=sha(p)
             target=final/f'{method}_seed{seed}.frozen.pt';torch.save(saved,target);target.with_suffix('.json').write_text(json.dumps(m,indent=2));sha_set.append(sha(target));frozen.append({'method':method,'seed':seed,'path':str(target),'sha256':sha_set[-1],'train_timestamps':m['total_timestamps']})
-        lock={'status':'FROZEN_BEFORE_INDEPENDENT_TEST','checkpoint_sha256':sha_set,'checkpoints':frozen,'selection_sha256':sha(selected/'selection.json'),'TEST_used_for_selection':False,'TRAIN_scenes':list(range(1,25)),'TEST_metadata_sha256':sha(self.root/'audit/test_metadata.json'),'source_provenance':source_stamp()}
+        lock={'status':'FROZEN_BEFORE_INDEPENDENT_TEST','checkpoint_sha256':sha_set,'checkpoints':frozen,'selection_sha256':sha(selected/'selection.json'),'TEST_used_for_selection':False,'TRAIN_scenes':list(range(1,25)),'TEST_metadata_sha256':sha(self.root/'audit/test_metadata.json'),'TEST_RGB_preflight_sha256':sha(rgb_summary),'TEST_RGB_fingerprint_records_sha256':rgb['per_image_fingerprints_sha256'],'source_provenance':source_stamp()}
         atomic_json(self.root/'final_test_lock.json',lock);self.state('FINAL_FULLTRAIN_COMPLETE',checkpoints=frozen);self.collect()
         # Every method uses actual RGB, with independent causal memory and the
         # same complete TEST metadata. Cache replay is not an E2E substitute.

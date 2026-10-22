@@ -23,6 +23,8 @@ if __name__=='__main__':
                 with np.load(shard,allow_pickle=False) as d:
                     if d['observations'].shape[-1]!=532 or d['observations'].dtype!=np.float16:raise RuntimeError('feature schema/dtype invalid')
                     if not np.isfinite(d['observations']).all() or not np.isfinite(d['geometry']).all():raise RuntimeError('non-finite cached model inputs')
+                    counts['world_geometry_valid_observations']+=int(d['geometry_valid'].sum())
+                    counts['world_geometry_invalid_observations']+=int(len(d['geometry_valid'])-d['geometry_valid'].sum())
                     for name,start,end in [('RGB',0,128),('RTMDet',128,256),('Omega',256,512)]:branch_missing[name]+=int((np.linalg.norm(d['observations'][:,start:end].astype(np.float32),axis=-1)<1e-8).sum())
                     for i,timestamp in enumerate(d['timestamps']):
                         timestamp=int(timestamp);seen.append(timestamp);lo,hi=map(int,d['frame_offsets'][i:i+2]);pair=pairs[timestamp];gt=ds.ground_truth_pair(pair);dets={1:[],2:[]}
@@ -51,5 +53,6 @@ if __name__=='__main__':
             scenes.append({'scene':sid,'counts':dict(counts),'missing_visual_branches':dict(branch_missing),'shards':shards});print(sid,dict(counts),flush=True)
     coverage={'status':'VERIFIED_COMPLETE_24_TRAIN_OBJECT_CACHE','timestamps':sum(s['counts']['timestamps'] for s in scenes),'scenes':scenes,'images':57508,'raw_annotations':596749,
               'raw_GT_modified':False,'all_inputs_finite':True,'GT_xyz_in_inputs':False,'supervision_failure_samples':str(out/'detection_supervision_failures.jsonl.gz'),'failure_samples_sha256':sha(out/'detection_supervision_failures.jsonl.gz')}
+    coverage['geometry_valid_flag_is_reconstruction_accuracy']=False
     if coverage['timestamps']!=28754:raise RuntimeError('not complete TRAIN')
     atomic_json(out/'coverage.json',coverage)
