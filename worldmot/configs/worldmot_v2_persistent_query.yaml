@@ -1,0 +1,13 @@
+name: worldmot_v2_persistent_query
+base: worldmot_v2_baseline.yaml
+query:
+  max_world_queries: 128
+  null_margin: 0.0
+  birth_threshold: 0.5
+  max_missed: 12
+  coordinate_system_valid_for_eval: false
+constraints:
+  one_query_per_observation: true
+  one_observation_per_query_per_camera: true
+  cross_camera_joint_attention: true
+  fixed_cross_view_fusion_before_query: false

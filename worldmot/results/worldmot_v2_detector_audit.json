@@ -1,0 +1,51 @@
+{
+  "status": "PASS_REAL_RTMDET_SINGLE_PAIR",
+  "scene_id": 8,
+  "frame_id": 1,
+  "views": [
+    1,
+    2
+  ],
+  "device": "cuda:3",
+  "manifest": {
+    "status": "READY",
+    "reason": "",
+    "backend": "rtmdet-ins-tiny",
+    "config": "/data1/liuyeqiang/WWW_v2/worldmot/assets/mmdetection/rtmdet-ins_tiny_8xb32-300e_coco.py",
+    "checkpoint": "/data1/liuyeqiang/models/rtmdet/rtmdet-ins_tiny_8xb32-300e_coco_20221130_151727-ec670f7e.pth",
+    "checkpoint_sha256": "ec670f7ee9e20bd7931e15f15b7016f7fe531baaab81f2e6153382d046111885",
+    "device": "cuda:3",
+    "score_threshold": 0.25,
+    "max_detections": 100,
+    "expose_intermediate_features": true,
+    "mmdet_version": "3.3.0",
+    "mmcv_version": "2.2.0",
+    "mmengine_version": "0.10.7",
+    "initialization_seconds": 9.783415533602238
+  },
+  "detections_per_view": {
+    "1": 4,
+    "2": 2
+  },
+  "feature_map_shapes": {
+    "1": [
+      384,
+      20,
+      20
+    ],
+    "2": [
+      384,
+      20,
+      20
+    ]
+  },
+  "timings": {
+    "total_s": 2.09998144954443,
+    "per_view_s": {
+      "1": 1.863058589398861,
+      "2": 0.22759226709604263
+    }
+  },
+  "formal_precision_recall": null,
+  "note": "One real pair forward; no full-sequence detector metrics."
+}

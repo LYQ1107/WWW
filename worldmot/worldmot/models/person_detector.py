@@ -109,6 +109,7 @@ class PersonDetector:
         score_threshold: float = 0.25,
         max_detections: int = 100,
         backend_name: str = "rtmdet-ins-tiny",
+        expose_intermediate_features: bool = False,
     ) -> None:
         self.config = str(Path(config).resolve())
         self.checkpoint = str(Path(checkpoint).resolve())
@@ -116,6 +117,7 @@ class PersonDetector:
         self.score_threshold = float(score_threshold)
         self.max_detections = int(max_detections)
         self.backend_name = str(backend_name)
+        self.expose_intermediate_features = bool(expose_intermediate_features)
         self.model = None
         self.status = "NOT_INITIALIZED"
         self.reason = ""
@@ -125,6 +127,9 @@ class PersonDetector:
         self.weight_sha256 = sha256_file(self.checkpoint)
         self.initialization_seconds = None
         self.last_timings: dict[str, float] = {}
+        self.last_feature_maps: dict[int, np.ndarray] = {}
+        self._feature_hook = None
+        self._last_backbone_output = None
         self._init_model()
 
     def _init_model(self) -> None:
@@ -145,6 +150,10 @@ class PersonDetector:
             self.model_version = getattr(mmdet, "__version__", None)
             self.model = init_detector(self.config, self.checkpoint, device=self.device)
             self.model.eval()
+            if self.expose_intermediate_features and hasattr(self.model, "backbone"):
+                def _capture(_module, _inputs, output):
+                    self._last_backbone_output = output
+                self._feature_hook = self.model.backbone.register_forward_hook(_capture)
             self.status = "READY"
             self.reason = ""
         except Exception as exc:  # dependency failures must be visible to reports
@@ -164,6 +173,7 @@ class PersonDetector:
             "device": self.device,
             "score_threshold": self.score_threshold,
             "max_detections": self.max_detections,
+            "expose_intermediate_features": self.expose_intermediate_features,
             "mmdet_version": self.model_version,
             "mmcv_version": self.mmcv_version,
             "mmengine_version": self.mmengine_version,
@@ -185,9 +195,19 @@ class PersonDetector:
 
         outputs: dict[int, list[PersonDetection]] = {}
         self.last_timings = {}
+        self.last_feature_maps = {}
+        torch = None
+        if self.device.startswith("cuda"):
+            import torch as _torch
+            torch = _torch
         for view, image in sorted(images.items()):
+            if torch is not None:
+                torch.cuda.synchronize(self.device)
             started = time.perf_counter()
+            self._last_backbone_output = None
             result = inference_detector(self.model, np.asarray(image))
+            if torch is not None:
+                torch.cuda.synchronize(self.device)
             # MMDetection 3.x returns DetDataSample.pred_instances.  Keep a
             # strict branch so a future API change becomes a visible failure.
             pred = getattr(result, "pred_instances", None)
@@ -230,6 +250,17 @@ class PersonDetector:
                     )
                 )
             outputs[int(view)] = detections
+            if self.expose_intermediate_features and self._last_backbone_output is not None:
+                feature = self._last_backbone_output
+                if isinstance(feature, dict):
+                    feature = next(reversed(feature.values()))
+                elif isinstance(feature, (tuple, list)):
+                    feature = feature[-1]
+                feature = self._array(feature)
+                if feature.ndim == 4:
+                    feature = feature[0]
+                if feature.ndim == 3:
+                    self.last_feature_maps[int(view)] = feature.astype(np.float32, copy=False)
             self.last_timings[str(int(view))] = float(time.perf_counter() - started)
         return outputs
 

@@ -1,0 +1,3 @@
+experiment,scope,devices,steps,observations,p50_s,p95_s,fps_pair_p50,fps_pair_p95_inverse,end_to_end,status,notes
+m2_query_decoder_cuda2,query_decoder_only,cuda:2,20,4,0.004672713577747345,0.004806080833077431,214.0084093239216,208.0697422144021,False,DIAGNOSTIC_ONLY,PWQT decoder only; no detector/Omega/RGB decode.
+m2_real_three_pair_smoke,detector+omega+pwqt,detector=cuda:3;omega=cuda:2;query=cuda:4,3,variable,1.3859807178378105,3.698881161212921,0.7215107592261767,0.27035202171028505,True,PASS_REAL_V2_THREE_PAIR_SMOKE,"Three consecutive real pairs with explicit CUDA synchronization; decoder is untrained and this is an engineering timing smoke, not a tracking score."

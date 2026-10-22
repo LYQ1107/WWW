@@ -1,0 +1,12 @@
+name: worldmot_v2_fulltrain
+base: worldmot_v2_persistent_query.yaml
+status: REGISTERED_NOT_RUN
+training:
+  scenes: all_24_train_scenes
+  feature_cache: object_level_only
+  gt_allowed: loss_and_posthoc_eval_only
+  seeds: [20261022, 20261023, 20261024]
+  checkpoint_output: external_storage_required
+evaluation:
+  validation_split: registered_train_internal_only
+  independent_test: blocked_until_checkpoint_and_protocol_audit

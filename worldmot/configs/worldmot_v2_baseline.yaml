@@ -1,0 +1,25 @@
+name: worldmot_v2_baseline
+architecture: PWQT_JOINT_MULTI_VIEW_PERSISTENT_WORLD_QUERY
+dataset_root: /data/DATASETS/TRACKING/JDE/VisionTrack
+annotation: annotations/train.json
+image_root: train
+views: [1, 2]
+detector:
+  name: RTMDet-Ins-tiny
+  weights_source: official_mmdetection_coco
+geometry:
+  name: VGGT-Omega
+  checkpoint_resolution: 512
+  full_rgb_pair: true
+  update_interval: 1
+query:
+  max_world_queries: 128
+  hidden_dim: 256
+  heads: 4
+  decoder_layers: 2
+  observation_dim: 340
+  geometry_dim: 18
+  coordinates: clip_normalized_until_calibration
+evaluation:
+  evaluator: TrackEval_required
+  short_clip_metrics_are_diagnostic: true

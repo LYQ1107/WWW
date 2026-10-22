@@ -1,0 +1,76 @@
+{
+  "status": "PASS_REAL_V2_THREE_PAIR_SMOKE",
+  "scene_id": 8,
+  "frames": [
+    1,
+    2,
+    3
+  ],
+  "devices": {
+    "detector": "cuda:3",
+    "omega": "cuda:2",
+    "query": "cuda:4"
+  },
+  "timings": [
+    {
+      "frame_id": 1,
+      "read_s": 0.045350581407547,
+      "total_s_including_decode": 3.955870099365711,
+      "runtime_s": 3.910519517958164,
+      "detector_s": 1.6896051317453384,
+      "omega_s": 1.3885699361562729,
+      "observations": 6,
+      "global_ids": {
+        "0": 1,
+        "1": 2,
+        "2": 3,
+        "3": 4,
+        "4": 5,
+        "5": 6
+      }
+    },
+    {
+      "frame_id": 2,
+      "read_s": 0.05788987874984741,
+      "total_s_including_decode": 1.3859807178378105,
+      "runtime_s": 1.328090839087963,
+      "detector_s": 0.18936558067798615,
+      "omega_s": 0.17950429022312164,
+      "observations": 7,
+      "global_ids": {
+        "0": 7,
+        "1": 8,
+        "2": 9,
+        "3": 10,
+        "4": 11,
+        "5": 12,
+        "6": 13
+      }
+    },
+    {
+      "frame_id": 3,
+      "read_s": 0.05677061527967453,
+      "total_s_including_decode": 1.0784164890646935,
+      "runtime_s": 1.021645873785019,
+      "detector_s": 0.194460891187191,
+      "omega_s": 0.1763189733028412,
+      "observations": 6,
+      "global_ids": {
+        "0": 14,
+        "1": 15,
+        "2": 16,
+        "3": 17,
+        "4": 18,
+        "5": 19
+      }
+    }
+  ],
+  "p50_s": 1.3859807178378105,
+  "p95_s": 3.698881161212921,
+  "fps_pair_p50": 0.7215107592261767,
+  "fps_pair_p95_inverse": 0.27035202171028505,
+  "end_to_end_includes_rgb_decode": true,
+  "query_status": "SMOKE_UNTRAINED",
+  "formal_metrics": null,
+  "note": "Three consecutive real pairs with explicit CUDA synchronization; decoder is untrained and this is an engineering timing smoke, not a tracking score."
+}

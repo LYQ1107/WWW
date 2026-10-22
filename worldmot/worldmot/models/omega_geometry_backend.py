@@ -184,12 +184,13 @@ class OmegaGeometryBackend(GeometryBackend):
 
     def __init__(self, source_root: str | Path, checkpoint: str | Path,
                  device: str = "cuda:0", image_resolution: int = 512,
-                 verify_hash: bool = True):
+                 verify_hash: bool = True, expose_intermediate_features: bool = False):
         self.source_root = Path(source_root).resolve()
         self.checkpoint = Path(checkpoint).resolve()
         self.device_name = str(device)
         self.image_resolution = int(image_resolution)
         self.verify_hash = bool(verify_hash)
+        self.expose_intermediate_features = bool(expose_intermediate_features)
         self.status = "NOT_INITIALIZED"
         self.reason = ""
         self.model = None
@@ -210,6 +211,7 @@ class OmegaGeometryBackend(GeometryBackend):
             "expected_checkpoint_sha256": OFFICIAL_OMEGA_CHECKPOINT_SHA256,
             "image_resolution": self.image_resolution,
             "device": self.device_name,
+            "expose_intermediate_features": self.expose_intermediate_features,
         }
         if self.image_resolution != 512:
             self.status, self.reason = "UNREGISTERED_RESOLUTION", "only the verified 512 checkpoint is registered"
@@ -286,7 +288,23 @@ class OmegaGeometryBackend(GeometryBackend):
             amp_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
             context = torch.autocast("cuda", dtype=amp_dtype) if str(self.device_name).startswith("cuda") else __import__("contextlib").nullcontext()
             with context:
-                predictions = self.model(tensors.to(self.device_name, non_blocking=True))
+                model_input = tensors.to(self.device_name, non_blocking=True)
+                if self.expose_intermediate_features:
+                    # Mirror the pinned VGGTOmega.forward path while retaining
+                    # the final Aggregator patch tokens for object-level ROI
+                    # features.  The official backbone weights remain frozen.
+                    aggregator_input = model_input.unsqueeze(0) if model_input.ndim == 4 else model_input
+                    aggregated, patch_start = self.model.aggregator(aggregator_input)
+                    final_tokens = aggregated[-1]
+                    predictions = {"camera_and_register_tokens": final_tokens[:, :, :patch_start].contiguous(),
+                                   "images": aggregator_input, "aggregated_tokens_list": aggregated,
+                                   "patch_token_start": patch_start}
+                    with torch.autocast(device_type="cuda", enabled=False):
+                        predictions["pose_enc"] = self.model.camera_head(aggregated, patch_token_start=patch_start)
+                        predictions["depth"], predictions["depth_conf"] = self.model.dense_head(
+                            aggregated, images=aggregator_input, patch_token_start=patch_start)
+                else:
+                    predictions = self.model(model_input)
             extrinsic, intrinsic = self.decode_camera(
                 predictions["pose_enc"], predictions["images"].shape[-2:]
             )
@@ -299,6 +317,23 @@ class OmegaGeometryBackend(GeometryBackend):
         intrinsic_np = self._as_numpy(intrinsic)[0]
         points = _unproject_depth(depth, extrinsic_np, intrinsic_np)
         pointmaps, confidences, cameras = {}, {}, {}
+        omega_patch_features = {}
+        feature_status = "NOT_REQUESTED"
+        if self.expose_intermediate_features:
+            final_tokens = predictions["aggregated_tokens_list"][-1]
+            patch_start = int(predictions["patch_token_start"])
+            token_np = self._as_numpy(final_tokens)[0]
+            patch_count = token_np.shape[1] - patch_start
+            for idx, view in enumerate(sorted(int(v) for v in images)):
+                hp, wp = points[idx].shape[:2]
+                patch_h, patch_w = max(1, hp // 16), max(1, wp // 16)
+                expected = patch_h * patch_w
+                if patch_count != expected:
+                    feature_status = "OMEGA_TOKEN_GRID_MISMATCH"
+                    continue
+                omega_patch_features[view] = token_np[idx, patch_start:].reshape(patch_h, patch_w, -1).astype(np.float32)
+            if len(omega_patch_features) == len(images):
+                feature_status = "OMEGA_FINAL_PATCH_FEATURES"
         views = sorted(int(v) for v in images)
         for idx, view in enumerate(views):
             mapping = mappings[view]
@@ -324,6 +359,7 @@ class OmegaGeometryBackend(GeometryBackend):
             "depth_conf": depth_conf,
             "extrinsic": extrinsic_np,
             "intrinsic": intrinsic_np,
+            "omega_patch_features": {str(v): list(x.shape) for v, x in omega_patch_features.items()},
         }
         diagnostics = {
             "preprocess_s": float(t_pre - started),
@@ -345,6 +381,8 @@ class OmegaGeometryBackend(GeometryBackend):
             cameras=cameras,
             image_to_model={v: mappings[v].matrix for v in views},
             model_to_image={v: np.linalg.inv(mappings[v].matrix) for v in views},
+            omega_patch_features=omega_patch_features,
+            feature_status=feature_status,
             status="OK" if finite else "INVALID_WORLD_GEOMETRY", diagnostics=diagnostics,
         )
 

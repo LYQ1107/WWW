@@ -27,6 +27,11 @@ class GeometryFrame:
     # they are never populated from ground truth.
     dynamic_masks: Mapping[int, np.ndarray] = field(default_factory=dict)
     detector_outputs: Mapping[int, list] = field(default_factory=dict)
+    # Optional frozen Omega intermediate patch features.  These are exposed
+    # only when a v2 caller explicitly enables the feature path; v1 geometry
+    # outputs remain unchanged and do not retain the large token tensor.
+    omega_patch_features: Mapping[int, np.ndarray] = field(default_factory=dict)
+    feature_status: str = "NOT_REQUESTED"
     status: str = "OK"
     diagnostics: dict = field(default_factory=dict)
 
