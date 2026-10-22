@@ -107,6 +107,13 @@ class Experiment:
         verification=self.root/'cache_verification/coverage.json'
         if not verification.exists():
             self.command('verify_all_train_cache',[PY,'scripts/verify_fulltrain_cache.py','--cache',str(self.root/'train_cache'),'--output',str(self.root/'cache_verification')])
+        verified=json.loads(verification.read_text())
+        if (verified.get('status')!='VERIFIED_COMPLETE_24_TRAIN_OBJECT_CACHE' or verified.get('timestamps')!=28754
+            or [s['scene'] for s in verified.get('scenes',[])]!=list(range(1,25))
+            or verified.get('identity_label_mismatches')!=0
+            or verified.get('identity_labels_checked')!=sum(s['counts']['observations'] for s in verified.get('scenes',[]))
+            or verified.get('verification_source_sha256')!=sha(ROOT/'scripts/verify_fulltrain_cache.py')):
+            raise RuntimeError('full TRAIN supervision verification is missing, failed or produced by different verification source')
         self.collect()
         internal=self.root/'internal';internal.mkdir(exist_ok=True)
         self.state('TRAIN_INTERNAL_RUNNING',train_scenes=TRAIN_SCENES,validation_scenes=[4,8,12,16,20,24])

@@ -22,7 +22,10 @@ if __name__=='__main__':
                 meta=json.loads(shard.with_suffix('.json').read_text())
                 if sha(shard)!=meta['sha256']:raise RuntimeError('corrupt cache: '+str(shard))
                 frame_metadata.extend(meta['per_frame'])
-                with np.load(shard,allow_pickle=False) as d:
+                with np.load(shard,allow_pickle=False) as archive:
+                    # NpzFile decompresses a member on every access. Materialize
+                    # each member once before per-frame/per-observation checks.
+                    d={key:archive[key] for key in archive.files}
                     if d['observations'].shape[-1]!=532 or d['observations'].dtype!=np.float16:raise RuntimeError('feature schema/dtype invalid')
                     if not np.isfinite(d['observations']).all() or not np.isfinite(d['geometry']).all():raise RuntimeError('non-finite cached model inputs')
                     counts['world_geometry_valid_observations']+=int(d['geometry_valid'].sum())
@@ -30,13 +33,18 @@ if __name__=='__main__':
                     geometry_positions.append(d['geometry'][d['geometry_valid'],:3])
                     for name,start,end in [('RGB',0,128),('RTMDet',128,256),('Omega',256,512)]:branch_missing[name]+=int((np.linalg.norm(d['observations'][:,start:end].astype(np.float32),axis=-1)<1e-8).sum())
                     for i,timestamp in enumerate(d['timestamps']):
-                        timestamp=int(timestamp);seen.append(timestamp);lo,hi=map(int,d['frame_offsets'][i:i+2]);pair=pairs[timestamp];gt=ds.ground_truth_pair(pair);dets={1:[],2:[]}
+                        timestamp=int(timestamp);seen.append(timestamp);lo,hi=map(int,d['frame_offsets'][i:i+2]);pair=pairs[timestamp];gt=ds.ground_truth_pair(pair);dets={1:[],2:[]};indices={1:[],2:[]}
                         for o in range(lo,hi):
-                            v=int(d['camera_ids'][o]);dets[v].append(PersonDetection(v,len(dets[v]),tuple(map(float,d['bbox'][o])),float(d['observations'][o,-2])))
+                            v=int(d['camera_ids'][o]);indices[v].append(o);dets[v].append(PersonDetection(v,len(dets[v]),tuple(map(float,d['bbox'][o])),float(d['observations'][o,-2])))
                         mapped=match_detections_to_gt(dets,gt,sid);events=[]
                         for v,ds_view in dets.items():
                             for di,det in enumerate(ds_view):
                                 target=mapped[(v,di)]
+                                expected=int(target.identity_key.split(':id')[1]) if target.identity_key else (-2 if target.source=='ambiguous_duplicate_identity_masked' else -1)
+                                cached=int(d['identity'][indices[v][di]]);counts['identity_labels_checked']+=1
+                                if cached!=expected:
+                                    counts['identity_label_mismatches']+=1
+                                    events.append({'type':'CACHED_IDENTITY_TARGET_MISMATCH','view':v,'bbox':list(det.bbox_xywh),'cached':cached,'recomputed':expected,'matched_iou':target.matched_iou})
                                 if target.source=='unmatched_detector':events.append({'type':'DETECTOR_FP','view':v,'bbox':list(det.bbox_xywh)});counts['FP_observations']+=1
                                 elif target.source=='ambiguous_duplicate_identity_masked':counts['ambiguous_identity_masked']+=1
                                 else:counts['legal_identity_observations']+=1
@@ -57,5 +65,10 @@ if __name__=='__main__':
     coverage={'status':'VERIFIED_COMPLETE_24_TRAIN_OBJECT_CACHE','timestamps':sum(s['counts']['timestamps'] for s in scenes),'scenes':scenes,'images':57508,'raw_annotations':596749,
               'raw_GT_modified':False,'all_inputs_finite':True,'GT_xyz_in_inputs':False,'supervision_failure_samples':str(out/'detection_supervision_failures.jsonl.gz'),'failure_samples_sha256':sha(out/'detection_supervision_failures.jsonl.gz')}
     coverage['geometry_valid_flag_is_reconstruction_accuracy']=False
+    coverage['identity_labels_checked']=sum(s['counts'].get('identity_labels_checked',0) for s in scenes)
+    coverage['identity_label_mismatches']=sum(s['counts'].get('identity_label_mismatches',0) for s in scenes)
+    coverage['verification_source_sha256']=sha(__file__)
+    if coverage['identity_label_mismatches']:coverage['status']='VERIFICATION_FAILED_IDENTITY_TARGET_MISMATCH'
     if coverage['timestamps']!=28754:raise RuntimeError('not complete TRAIN')
     atomic_json(out/'coverage.json',coverage)
+    if coverage['identity_label_mismatches']:raise RuntimeError('cached identity labels disagree with immutable TRAIN GT; see retained failure samples')
