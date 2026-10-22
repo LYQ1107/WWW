@@ -270,6 +270,8 @@ def main() -> int:
             failures.extend(case)
             scene_records[f"{system}:scene_{scene:02d}"] = {
                 "jsonl": str(jsonl.relative_to(ROOT)), "frames": len(rows),
+                "jsonl_gz": (str(jsonl.with_suffix(jsonl.suffix + ".gz").relative_to(ROOT))
+                             if jsonl.with_suffix(jsonl.suffix + ".gz").is_file() else None),
                 "metrics": metrics, "fusion": _fusion_stats(rows),
             }
     # The public VGGT-Det reference checkpoint is ScanNet-only and has no
