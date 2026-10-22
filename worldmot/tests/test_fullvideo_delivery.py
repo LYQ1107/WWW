@@ -1,0 +1,83 @@
+import json
+from pathlib import Path
+import pytest
+
+
+def test_export_preserves_all_camera_streams_without_opening_GT(tmp_path,monkeypatch):
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'scripts'))
+    from export_fullvideo_predictions import export
+    metadata=tmp_path/'metadata.json';pred=tmp_path/'pred/scene_01';pred.mkdir(parents=True)
+    metadata.write_text(json.dumps({'videos':[{'id':1,'file_name':'sample'}],
+        'images':[{'video_id':1,'frame_id':t,'view_id':v} for t in range(1,4) for v in [1,2]]}))
+    (pred/'manifest.json').write_text(json.dumps({'status':'COMPLETE','full_video':True}))
+    rows=[{'timestamp':t,'tracks_2d_by_camera':{str(v):[{'global_id':7,'bbox_xywh':[1,2,3,4]}] for v in [1,2]}}
+          for t in range(1,4)]
+    (pred/'tracks.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
+    report=export(metadata,pred.parent,tmp_path/'submission')
+    assert report['GT_read'] is False and report['timestamps']==3
+    assert len((tmp_path/'submission/sample_View1.txt').read_text().splitlines())==3
+    assert len((tmp_path/'submission/sample_View2.txt').read_text().splitlines())==3
+    (pred/'tracks.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows[:2]))
+    with pytest.raises(RuntimeError,match='incomplete timestamp'):
+        export(metadata,pred.parent,tmp_path/'bad_submission')
+
+
+def test_interrupted_stream_is_archived_and_complete_mismatch_is_rejected(tmp_path,monkeypatch):
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'scripts'))
+    from preserve_inference_attempts import prepare_scene
+    scene=tmp_path/'scene_01';scene.mkdir();(scene/'tracks.jsonl').write_text('negative attempt\n')
+    (scene/'manifest.json').write_text(json.dumps({'status':'RUNNING'}))
+    assert prepare_scene(scene,{'checkpoint_sha256':'first'})
+    archived=list((tmp_path/'.interrupted_attempts').glob('*/tracks.jsonl'))
+    assert len(archived)==1 and archived[0].read_text()=='negative attempt\n'
+    (scene/'manifest.json').write_text(json.dumps({'status':'COMPLETE','checkpoint_sha256':'first'}))
+    assert prepare_scene(scene,{'checkpoint_sha256':'first'}) is False
+    with pytest.raises(RuntimeError,match='different checkpoint'):
+        prepare_scene(scene,{'checkpoint_sha256':'second'})
+
+
+def test_official_format_conversion_does_not_round_groundtruth_coordinates(tmp_path):
+    from worldmot.evaluation.official_fullvideo import read_mot,write_mot
+    rows=[[1,4,.1234567891234567,21.987654321234567,32.333333333333336,43.77777777777778,1,1,1,-1]]
+    path=tmp_path/'gt.txt';write_mot(path,rows)
+    assert read_mot(path)==rows
+
+
+def test_posthoc_identity_diagnostics_keep_official_IDSW_separate(tmp_path,monkeypatch):
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'scripts'))
+    from analyze_fulltrain_test_failures import analyze
+    from worldmot.evaluation.official_fullvideo import sha
+    root=tmp_path/'experiment';(root/'audit').mkdir(parents=True)
+    groundtruth=[]
+    for view in [1,2]:
+        path=root/f'GT_View{view}.txt';path.write_text('1,7,10,20,30,40,1,1,1\n2,7,10,20,30,40,1,1,1\n')
+        groundtruth.append({'view':view,'path':str(path),'sha256':sha(path)})
+    (root/'audit/data_audit.json').write_text(json.dumps({'test':{'scenes':[{'scene':1,'official_gt_legal':True,'raw_gt':groundtruth}]}}))
+    (root/'audit/test_metadata.json').write_text(json.dumps({'images':[]}))
+    pred=root/'test/synthetic/scene_01';pred.mkdir(parents=True)
+    (pred/'manifest.json').write_text(json.dumps({'status':'COMPLETE','full_video':True}))
+    rows=[]
+    for t in [1,2]:
+        boxes={str(v):[{'global_id':11 if t==2 and v==2 else 10,'bbox_xywh':[10,20,30,40]}] for v in [1,2]}
+        rows.append({'timestamp':t,'tracks_2d_by_camera':boxes,'detections_by_camera':boxes})
+    (pred/'tracks.jsonl').write_text(''.join(json.dumps(r)+'\n' for r in rows))
+    ev=root/'test_evaluation/synthetic';ev.mkdir(parents=True)
+    (ev/'metrics.json').write_text(json.dumps({'status':'COMPLETE_VALID_SCOPE','TrackEval':{'combined':{'IDSW':99}}}))
+    target=tmp_path/'results/failures.json';analyze(root,target)
+    result=json.loads(target.read_text());method=result['methods']['synthetic']
+    assert method['official_IDSW']==99
+    assert method['counts']['PERSISTENT_ID_CHANGE_DIAGNOSTIC']==1
+    assert method['counts']['SAME_PERSON_SPLIT_ACROSS_CAMERAS']==1
+    assert result['matching_is_not_TrackEval_or_official_IDSW'] is True
+    assert all(sha(r['path'])==r['sha256'] for r in groundtruth)
+
+
+def test_empty_experiment_cannot_publish_complete_test_scores(tmp_path,monkeypatch):
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'scripts'))
+    from collect_fulltrain_results import collect
+    root=tmp_path/'experiment';root.mkdir();out=tmp_path/'results'
+    result=collect(root,out)
+    assert result['complete'] is False and result['official_methods']==0
+    assert not (out/'worldmot_v2_test_official_metrics.json').exists()
+    with pytest.raises(RuntimeError,match='final artifacts incomplete'):
+        collect(root,out,require_complete=True)

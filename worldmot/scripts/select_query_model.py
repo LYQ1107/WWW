@@ -11,7 +11,7 @@ from worldmot.models.persistent_world_queries import PersistentWorldQueryTransfo
 from worldmot.training.clip_dataset import WorldQueryClipDataset,collate_clips
 from worldmot.training.world_query_criterion import TemporalQueryCriterion
 from worldmot.tracking.persistent_query_runtime import PersistentQueryRuntime
-from train_world_query import train_step
+from train_world_query import train_step,COUNT_FIELDS
 from replay_query_cache import tokens_from_cache
 
 VAL_SCENES=[4,8,12,16,20,24]
@@ -22,7 +22,9 @@ def validation_loss(ds,checkpoint,device):
     with torch.no_grad():
         for row in DataLoader(ds,batch_size=1,collate_fn=collate_clips):
             row={k:v.to(device) for k,v in row.items()};values.append(train_step(model,row,criterion,8))
-    return {k:float(np.mean([r[k] for r in values])) for k in values[0]}
+    result={k:float(np.mean([r[k] for r in values])) for k in values[0]}
+    for key in (*COUNT_FIELDS,'real_frames'):result[key]=sum(r[key] for r in values)
+    return result
 
 def calibration(ds,checkpoint,device):
     saved=torch.load(checkpoint,map_location='cpu',weights_only=True);samples=[]
@@ -62,6 +64,32 @@ def calibration(ds,checkpoint,device):
     best=max(results,key=lambda r:(r['identity_f1_surrogate'],r['birth_threshold'],r['pair_threshold'],r['null_margin']))
     return results,best
 
+
+def continuous_audit(ds,checkpoint,thresholds,device):
+    """Check complete held-out TRAIN streams after fixed-window selection.
+
+    This cannot choose another threshold. It detects empty or nonpersistent
+    identity delivery before an expensive final refit / independent TEST.
+    """
+    saved=torch.load(checkpoint,map_location='cpu',weights_only=True)
+    model=PersistentWorldQueryTransformer(**saved['manifest']['model_config'])
+    runtime=PersistentQueryRuntime(model,device,checkpoint,**thresholds)
+    scenes=[]
+    for sid,frames in sorted(ds.scenes.items()):
+        runtime.reset(sid);id_frames={};assigned=births=0
+        for frame in frames:
+            n=len(frame['observations']);tokens=tokens_from_cache({**frame,'frame_offsets':np.asarray([0,n])},0,frame['timestamp'])
+            result=runtime.step(tokens,frame['timestamp']);assigned+=len(result.global_ids_by_observation);births+=len(result.births)
+            for gid in set(result.global_ids_by_observation.values()):id_frames[gid]=id_frames.get(gid,0)+1
+        row={'scene':sid,'timestamps':len(frames),'assigned_observations':assigned,'births':births,
+            'global_ids':len(id_frames),'max_ID_distinct_timestamps':max(id_frames.values(),default=0),
+            'IDs_with_at_least_two_timestamps':sum(n>=2 for n in id_frames.values())}
+        scenes.append(row);print(json.dumps({'continuous_TRAIN_validation':row}),flush=True)
+    return {'thresholds_changed_by_this_audit':False,'scenes':scenes,
+        'timestamps':sum(r['timestamps'] for r in scenes),
+        'assigned_observations':sum(r['assigned_observations'] for r in scenes),
+        'max_ID_distinct_timestamps':max(r['max_ID_distinct_timestamps'] for r in scenes)}
+
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--cache',required=True);p.add_argument('--internal-root',required=True);p.add_argument('--output',required=True);p.add_argument('--device',default='cuda:0');a=p.parse_args();torch.set_num_threads(2)
     out=Path(a.output);out.mkdir(parents=True,exist_ok=True);ds=WorldQueryClipDataset([a.cache],clip_length=32,scenes=VAL_SCENES)
@@ -77,5 +105,9 @@ if __name__=='__main__':
     for method in ['joint','no_omega','no_appearance','two_stage','no_geometry']:
         cp=Path(a.internal_root)/f'{method}.epoch{selected_epoch}.pt';grid,best=calibration(ds,cp,a.device)
         final['methods'][method]={'thresholds':{k:best[k] for k in ['null_margin','birth_threshold','pair_threshold']},'validation_identity_f1_surrogate':best['identity_f1_surrogate'],'candidates':grid}
+        audit=continuous_audit(ds,cp,final['methods'][method]['thresholds'],a.device)
+        final['methods'][method]['complete_continuous_TRAIN_validation_audit']=audit
         (out/'selection.json').write_text(json.dumps(final,indent=2))
+        if method=='joint' and (not audit['assigned_observations'] or audit['max_ID_distinct_timestamps']<2):
+            raise RuntimeError('joint PWQT has no persistent IDs on full TRAIN validation; preserve trial and fix training before TEST')
     final['status']='FROZEN_FROM_TRAIN_VALIDATION';(out/'selection.json').write_text(json.dumps(final,indent=2))

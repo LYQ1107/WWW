@@ -17,7 +17,7 @@ def main():
     p.add_argument('--metadata',required=True);p.add_argument('--split',choices=['train','test'],required=True);p.add_argument('--output',required=True);p.add_argument('--scenes',nargs='+',type=int);p.add_argument('--limit',type=int)
     a=p.parse_args();source=Path(a.source);sys.path[:0]=[str(source/'geo_tools'),str(source),str(source/'third_party/CenterNet2')]
     import torch;torch.set_num_threads(2)
-    from common import load_gmt,seed_all,CHECKPOINT
+    from common import load_gmt,seed_all,CHECKPOINT,SOURCE_HASHES,SOURCE_COMMIT,SOURCE_DIFF_SHA256
     from run_cir_online import CurrentImages
     from test_cir_native_commit import original_method
     from gtr.evaluation.mot_evaluation import custom_instances_to_coco_json
@@ -27,9 +27,12 @@ def main():
     cfg,model=load_gmt(20261014,{'ENABLED':False});cfg.defrost();cfg.MODEL.CIR.ENABLED=False;cfg.MODEL.CIR.MODE='off'
     model.cir_controller.enabled=False;model.cir_controller.mode='off';model.run_global_tracker_plus=MethodType(original_method(),model)
     model.min_track_len=0;model.eval().requires_grad_(False)
+    if model.roi_heads.delay_cls:raise RuntimeError('future-dependent delayed classification is forbidden for this causal comparison')
     root=Path(a.output);root.mkdir(parents=True,exist_ok=True)
     lock={'checkpoint_sha256':sha(CHECKPOINT),'config_sha256':hashlib.sha256(cfg.dump().encode()).hexdigest(),'split':a.split,'native_method':'original run_global_tracker_plus from frozen base f595189e62dac917a4880b1220b3c9ae6d7303aa',
-          'CIR_enabled':False,'GEO_enabled':False,'future_short_track_filter':False,'source':str(source),'metadata_sha256':sha(a.metadata),'GT_in_inference':False,'source_sha256':source_stamp()['sha256']}
+          'CIR_enabled':False,'GEO_enabled':False,'future_short_track_filter':False,'future_delayed_classification':False,
+          'native_source_commit':SOURCE_COMMIT,'native_source_diff_sha256':SOURCE_DIFF_SHA256,'native_source_file_sha256':SOURCE_HASHES,
+          'source':str(source),'metadata_sha256':sha(a.metadata),'GT_in_inference':False,'source_sha256':source_stamp()['sha256']}
     (root/'GMT_FROZEN_LOCK.json').write_text(json.dumps(lock,indent=2))
     for sid in a.scenes or [v['id'] for v in data['videos']]:
         out=root/f'scene_{sid:02d}'

@@ -1,0 +1,84 @@
+{
+  "status": "PASS_CORRECTED_INPUT_EXECUTION_REGRESSION_ONLY",
+  "scene": 10,
+  "timestamps": 32,
+  "observations": 64,
+  "official_TEST_result": false,
+  "checkpoint_sha256": "30c78e85df74857a5742d32c197f0c0e05de5579434d471e1a667b9965430421",
+  "training_status": "TRAIN_SUBSET_COMPLETE",
+  "formal_inference_allowed": false,
+  "losses": [
+    {
+      "epoch": 1,
+      "clip_length": 8,
+      "total_loss": 30.55717694759369,
+      "gradient_norm_pre_clip": 780.74169921875
+    },
+    {
+      "epoch": 2,
+      "clip_length": 16,
+      "total_loss": 12.846288949251175,
+      "gradient_norm_pre_clip": 1358.1216125488281
+    },
+    {
+      "epoch": 3,
+      "clip_length": 32,
+      "total_loss": 2.233350407332182,
+      "gradient_norm_pre_clip": 203.98943722248077
+    },
+    {
+      "epoch": 4,
+      "clip_length": 32,
+      "total_loss": 0.5620212750509381,
+      "gradient_norm_pre_clip": 1.4377289116382599
+    },
+    {
+      "epoch": 5,
+      "clip_length": 32,
+      "total_loss": 2.0502187674865127,
+      "gradient_norm_pre_clip": 100.56313803792
+    },
+    {
+      "epoch": 6,
+      "clip_length": 32,
+      "total_loss": 0.39439726434648037,
+      "gradient_norm_pre_clip": 0.7979704886674881
+    }
+  ],
+  "cache_replay": [
+    {
+      "scene": 10,
+      "frames": 32,
+      "observations": 64,
+      "assigned": 50,
+      "births": 1,
+      "unique_ids": 1,
+      "ids_with_multiple_observations": 1,
+      "maximum_id_observations": 50,
+      "query_only_total_s": 0.4864933267235756,
+      "formal_e2e_fps": null,
+      "checkpoint_scope": "TRAIN_SUBSET_OR_REGRESSION",
+      "thresholds": {
+        "null_margin": 0.5,
+        "birth_threshold": 0.5,
+        "pair_threshold": 0.7
+      }
+    }
+  ],
+  "real_RGB_run": {
+    "frames": 32,
+    "delivered_boxes": 50,
+    "global_ids": 1,
+    "max_ID_distinct_timestamps": 32,
+    "IDs_with_at_least_two_timestamps": 1,
+    "GT_in_inference": false,
+    "input_contract": "caller_RGB_to_contiguous_BGR_for_MMDetection",
+    "e2e_fps_diagnostic_only": 0.9075558351602943,
+    "concurrent_full_cache_on_same_GPU": true,
+    "formal_speed_comparison_allowed": false,
+    "prediction_sha256": "b058fe628cf4851cfc3ad88d061a792813ea791b36db542f743f328b170ffd12",
+    "manifest": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/corrected_regression32/live/scene_10/manifest.json"
+  },
+  "no_formal_tracking_quality_claim": true,
+  "negative_old_input_cache_preserved": true
+}

@@ -12,6 +12,8 @@ from worldmot.training.train_utils import save_checkpoint,seed_everything,restor
 from worldmot.training.world_query_criterion import TemporalQueryCriterion
 from experiment_provenance import source_stamp,cache_stamp
 
+COUNT_FIELDS=('positive_observations','NULL_observations','birth_targets','ambiguous_masked','legal_positive_observations','FP_observations')
+
 
 def train_step(model,row,criterion,tbptt,optimizer=None,max_missed=64):
     b,T,N,_=row['observations'].shape;state=model.init_state(b,row['observations'].device)
@@ -50,6 +52,7 @@ def train_step(model,row,criterion,tbptt,optimizer=None,max_missed=64):
                 optimizer.step();grad_norms.append(float(norm))
             segment=[];state=state.detach()
     avg={k:float(np.mean([r[k] for r in logs])) for k in logs[0]}
+    for key in COUNT_FIELDS:avg[key]=int(sum(r[key] for r in logs))
     avg['gradient_norm']=float(np.mean(grad_norms)) if grad_norms else 0.;avg['real_frames']=real_frames
     return avg
 
@@ -74,7 +77,8 @@ def main(argv=None):
         model.load_state_dict(payload['model']);opt.load_state_dict(payload['optimizer']);start_epoch=payload['epoch'];history=payload['manifest']['history'];restore_rng_state(payload['rng_state'])
     manifest={'status':'FULLTRAIN_RUNNING','seed':a.seed,'model_config':model.config,'cache':a.cache,'train_scenes':sorted(ds.scenes),'epochs_requested':a.epochs,
               'frames_per_scene':{str(s):len(f) for s,f in ds.scenes.items()},'total_timestamps':sum(len(f) for f in ds.scenes.values()),'tbptt':a.tbptt,'clip_curriculum':a.clip_lengths,
-              'initialization':'fixed_seed_random_pwqt_frozen_official_rtmdet_omega','history':history,'formal_inference_allowed':False,'optimizer':'AdamW','learning_rate':a.lr,'max_missed':64}
+              'initialization':'fixed_seed_random_pwqt_frozen_official_rtmdet_omega','history':history,'formal_inference_allowed':False,'optimizer':'AdamW','learning_rate':a.lr,'max_missed':64,
+              'gradient_clip_norm':1.,'gradient_norm_log':'pre_clip','supervision_counts':'actual epoch sums; losses are batch/step means'}
     manifest.update(source_provenance=provenance,cache_provenance=cache_provenance,
                     resume_checkpoint=str(a.resume) if a.resume else None,resume_rng_restored=bool(a.resume))
     official_lengths = [932,1886,1200,901,1769,601,443,523,1942,2092,2057,1200,1621,969,1048,1034,1200,1029,1052,1001,1001,1000,1052,1201]
@@ -98,6 +102,9 @@ def main(argv=None):
             if i%25==0:print(json.dumps({'epoch':epoch+1,'batch':i,'batches':len(loader),'loss':r['total'],'grad':r['gradient_norm'],'elapsed_s':round(time.time()-started,1)}),flush=True)
         if coverage!={s:len(f) for s,f in ds.scenes.items()}:raise RuntimeError('incomplete epoch coverage')
         metric={k:float(np.mean([r[k] for r in records])) for k in records[0]};metric.update(epoch=epoch+1,clip_length=length,coverage=coverage,elapsed_s=time.time()-started)
+        for key in COUNT_FIELDS:metric[key]=sum(r[key] for r in records)
+        metric['real_frames']=sum(r['real_frames'] for r in records)
+        metric['positive_to_FP_ratio']=metric['legal_positive_observations']/metric['FP_observations'] if metric['FP_observations'] else None
         history.append(metric);manifest['history']=history;manifest['epochs_completed']=epoch+1
         manifest['status']=('FULLTRAIN_COMPLETE' if complete_all_train else 'TRAIN_SUBSET_COMPLETE') if epoch+1==a.epochs else 'TRAINING_RUNNING'
         save_checkpoint(out.with_suffix('.tmp.pt'),model,opt,epoch+1,manifest);os.replace(out.with_suffix('.tmp.pt'),out)

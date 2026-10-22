@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Metadata-only RGB -> delivered IDs; complete causal independent videos."""
 from __future__ import annotations
-import argparse,hashlib,json,os,time
+import argparse,collections,hashlib,json,os,time
 from pathlib import Path
 import numpy as np
 import torch
@@ -53,8 +53,9 @@ def main():
     for sid in a.scenes or ds.scene_ids():
         out=root/f'scene_{sid:02d}'
         if not prepare_scene(out,signature):continue
-        pipeline.reset(sid);pairs=list(ds.synchronized_pairs(sid,limit=a.limit));times=[];reads=[];stages={};deliver=[];count=0;boxes=0;ids=set()
+        pipeline.reset(sid);pairs=list(ds.synchronized_pairs(sid,limit=a.limit));times=[];reads=[];stages={};count=0;boxes=0;ids=set();id_frame_counts=collections.Counter()
         atomic_json(out/'manifest.json',{'status':'RUNNING',**signature,'scene':sid,'expected_frames':len(pairs),'GT_in_inference':False})
+        scene_started=time.perf_counter();last_delivery=scene_started
         with (out/'tracks.jsonl').open('w') as f,(out/'timings.jsonl').open('w') as tf:
             for pair in pairs:
                 started=time.perf_counter();images={v:np.asarray(Image.open(ds.image_path(rec)).convert('RGB')) for v,rec in pair.images.items()};read=time.perf_counter()-started
@@ -71,20 +72,26 @@ def main():
                     stages.setdefault(name, []).append(float(value))
                 if a.method=='v1':row['world_observations']=[{k:o.get(k) for k in ('observation_id','camera_ids','detection_ids','center','covariance','confidence','geometry_reliable','fusion_status','rejection_reason','reprojection_coverage')} for o in row.get('world_observations',[])]
                 raw=json.dumps(row,default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x))+'\n';f.write(raw);f.flush()
-                total=time.perf_counter()-started;times.append(total);reads.append(read);count+=1
+                last_delivery=time.perf_counter();total=last_delivery-started;times.append(total);reads.append(read);count+=1
                 tf.write(json.dumps({'timestamp':pair.frame_id,'rgb_read_s':read,'rgb_to_delivered_ids_s':total,'stages_s':frame_stages,'queue_s':0.,'synchronous':True})+'\n');tf.flush()
+                frame_ids=set()
                 for values in row['tracks_2d_by_camera'].values():
                     for obj in values:
-                        if obj.get('evaluation_eligible',True) and obj.get('visible',True):boxes+=1;ids.add(obj['global_id'])
+                        if obj.get('evaluation_eligible',True) and obj.get('visible',True):boxes+=1;ids.add(obj['global_id']);frame_ids.add(obj['global_id'])
+                id_frame_counts.update(frame_ids)
                 if count%128==0:
                     atomic_json(out/'progress.json',{'frames':count,'expected':len(pairs),'boxes':boxes,'global_ids':len(ids),'e2e_fps':count/sum(times)})
                     print(json.dumps({'scene':sid,'frames':count,'expected':len(pairs),'boxes':boxes,'global_ids':len(ids),'e2e_fps':count/sum(times)}),flush=True)
         report={'status':'COMPLETE','split':a.split,'scene':sid,'method':a.method,'frames':count,'expected_frames':len(pairs),'scene_total_frames':len(ds.frames(sid)),
                 'full_video':count==len(ds.frames(sid)),'GT_in_inference':False,'metadata_sha256':sha(a.metadata),'checkpoint_sha256':sha(a.checkpoint) if a.checkpoint else None,
                 'final_lock_sha256':sha(a.lock) if a.lock else None,'trained_scope':manifest.get('training_scope') if a.method=='v2' else 'RULE_HUNGARIAN_FROZEN_BACKBONES',
-                'real_e2e_fps':len(times)/sum(times),'e2e':stats(times),'rgb_read':stats(reads),'stages':{k:stats(v) for k,v in stages.items()},'prediction_sha256':sha(out/'tracks.jsonl'),
+                'real_e2e_fps':len(times)/(last_delivery-scene_started),'real_e2e_seconds':last_delivery-scene_started,
+                'e2e':stats(times),'rgb_read':stats(reads),'stages':{k:stats(v) for k,v in stages.items()},'prediction_sha256':sha(out/'tracks.jsonl'),
                 'global_ids':len(ids),'delivered_boxes':boxes,'fps_unit':'synchronized dual-camera timestamps/second','timing_scope':'RGB decode + detector + Omega + all CPU/postprocessing + query/memory + serialization + flushed final-ID delivery; excludes initialization and offline evaluation',
-                'device':a.device,'gpu':torch.cuda.get_device_name(a.device),'detector':detector.manifest(),'omega':geometry.diagnostics(),'perception_cache_used':False}
+                'max_ID_distinct_timestamps':max(id_frame_counts.values(),default=0),
+                'IDs_with_at_least_two_timestamps':sum(n>=2 for n in id_frame_counts.values()),
+                'device':a.device,'visible_devices':os.environ.get('CUDA_VISIBLE_DEVICES'),
+                'gpu':torch.cuda.get_device_name(a.device),'detector':detector.manifest(),'omega':geometry.diagnostics(),'perception_cache_used':False}
         report.update(signature)
         atomic_json(out/'manifest.json',report);print(json.dumps({k:report[k] for k in ['scene','frames','global_ids','real_e2e_fps','full_video']}),flush=True)
 if __name__=='__main__':main()

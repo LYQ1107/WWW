@@ -20,7 +20,9 @@ def write_mot(p,rows):
     with p.open('w') as f:
         for r in sorted(rows,key=lambda r:(r[0],r[1])):
             tail=list(r[6:10])+[-1]*max(0,10-len(r))
-            f.write(f'{int(r[0])},{int(r[1])},'+','.join(f'{x:.2f}' for x in r[2:6])+','+','.join(map(str,tail))+'\n')
+            # Round-trip source coordinates exactly, including original GT.
+            # Two-decimal presentation rounding must not change scoring boxes.
+            f.write(f'{int(r[0])},{int(r[1])},'+','.join(format(float(x),'.17g') for x in r[2:6])+','+','.join(map(str,tail))+'\n')
 def prepare(dataset_root,split,audit,inference_root,scenes=None,box_source="tracks_2d_by_camera"):
     ds=Path(dataset_root);audit=json.loads(Path(audit).read_text())[split];root=Path(inference_root)
     gt={};pred={};lengths={};groups={};blocked=[];coverage=[]

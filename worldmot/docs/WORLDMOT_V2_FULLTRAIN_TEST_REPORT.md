@@ -8,6 +8,8 @@ The detector audit found that the pipeline passed RGB arrays unchanged to MMDete
 
 All 9,001 timestamps generated before this correction have been moved to a separate NAS negative-results directory. They are invalid for formal training; their counts are excluded from current coverage. Prior 32-frame persistence runs remain execution diagnostics produced with the old detector input, and cannot establish detector quality or a scientific tracking score. No final training or independent TEST had started before discovery. The corrected four-GPU full cache has restarted. Nothing in the raw dataset or old branch was changed.
 
+A corrected-input Scene 10 regression uses 32 consecutive real timestamps and 64 detected observations. Cache replay and a fresh RGB run both deliver 50 assigned observations, one newborn global ID, and that ID appears at all 32 timestamps. The subset checkpoint is explicitly forbidden for TEST. Its concurrent-load RGB throughput (0.908 pairs/s) is an execution diagnostic, not a formal speed or model-quality result. The checkpoint SHA and curves are saved in `results/worldmot_v2_corrected_regression32.json`.
+
 ## Frozen registration (2026-10-22)
 
 Base commit: 177adbe1391bef5af152db2eff38d1a508d98db8. Branch: research/worldmot-v2-fulltrain-test-20261022. Independent from GMT/JEV.
@@ -31,7 +33,7 @@ Cache policy: four V100 workers, complete scene timelines, immutable resumable o
 - New isolated worktree created at /data1/liuyeqiang/WWW_fulltrain from the exact specified commit.
 - TRAIN source audit: 24 scenes, 28,754 synchronized timestamps, 57,508 images, 596,749 annotations.
 - TEST source audit: 22 scenes, 29,019 synchronized timestamps, 58,038 images, 580,178 annotations present; raw per-camera GT files exist. The row-by-row GT version audit is complete.
-- Temporal, lifecycle, feature, coordinate, and current detection-box output corrections have passed 32-frame regression and 27 unit tests. No full-training checkpoint or TEST result is claimed yet.
+- Temporal, lifecycle, feature, coordinate, and current detection-box output corrections have passed 32-frame regression and 36 unit tests. No full-training checkpoint or TEST result is claimed yet.
 
 ## Phase 1 regression (completed, not final training)
 
@@ -49,3 +51,6 @@ The four real cache workers process complete assigned TRAIN scene timelines on V
 - A separate frozen native GMT comparator has passed a 32-frame TRAIN interface check. It uses the original native association method, disables CIR/GEO interventions and future-dependent short-track-count filtering, and never enters WorldMOT's model modules. Prior five-scene TRAIN guard scores will not be substituted for TEST. Native GMT's complete-video return latency and its throughput are recorded separately.
 - Final epoch selection is restricted to 4 or 6 so the refit includes all 8/16/32 clip lengths; epoch 2 is retained as a diagnostic curve point. The registered TRAIN-only threshold grid remains unchanged. No independent TEST metric has been read for selection.
 - A durable driver is running while caches finish. It checks all 24 scene timelines and checksums, preserves per-camera missed GT and FP supervision separately, then runs internal training, TRAIN-only selection, three full-TRAIN joint seeds and matched-budget ablations, freezes checkpoints, and runs complete RGB TEST inference plus official evaluation. This is orchestration in progress, not a completion claim.
+- Threshold selection is followed by complete causal replay of all six TRAIN-validation scene timelines. That audit cannot change the selected thresholds; an empty or nonpersistent joint model blocks TEST until training is fixed. Epoch supervision counts are sums over actual valid observations, with separate ambiguous, positive-GT and FP counts.
+- The delivery path additionally exports all 44 TEST camera streams from metadata and predictions without GT, including the eight locally GT-invalid scenes. Official conversion preserves source box coordinates at round-trip precision. Per-scene TrackEval metrics use the official metric combiners, not a mean of camera scores. Final FPS uses actual scene wall time through the last delivered IDs and includes telemetry gaps between frames.
+- The final collector checks all seven full-TRAIN trials, three-seed persistent ID delivery, all complete TEST image streams, common official evaluation scope and native cross-view metrics before permitting a complete artifact status. Failure matching remains a separately labelled posthoc diagnostic; official IDSW is retained unchanged.

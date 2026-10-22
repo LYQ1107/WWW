@@ -129,4 +129,6 @@ class TemporalQueryCriterion(nn.Module):
         total_loss=assignment+birth+pair+0.25*existence+0.25*vloss
         return {'total':total_loss,'assignment':assignment,'birth':birth,'pair':pair,'existence':existence,'visibility':vloss,
                 'positive_observations':pos.sum().detach(),'NULL_observations':neg.sum().detach(),'birth_targets':(newborn&valid).sum().detach(),
-                'ambiguous_masked':((identity==-2)&observed_valid).sum().detach()}
+                'ambiguous_masked':((identity==-2)&observed_valid).sum().detach(),
+                'legal_positive_observations':((identity>=0)&valid).sum().detach(),
+                'FP_observations':((identity==-1)&valid).sum().detach()}
