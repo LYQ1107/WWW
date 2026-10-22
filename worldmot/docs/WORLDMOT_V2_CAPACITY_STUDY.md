@@ -47,6 +47,8 @@ Two read-only audits accompany the fixed study. `watch_capacity_validation_loss.
 
 The fixed held-out diagnostics cover PWQT-L epochs 4, 8, 12, 16, 20 and 24: total teacher-forced loss is 1.922696, 2.125682, 2.871052, 3.357578, 3.778035 and 3.899627 respectively over all 5,860 held-out TRAIN timestamps. Later training checkpoints are increasingly worse on this diagnostic despite lower internal loss, so this is evidence against assuming that the larger model has generalized; it is not a capacity claim. The matched small control is not yet available; the full record is in `results/worldmot_v2_capacity_CPU_validation_loss.json`.
 
+The actual small-model epoch-4 prefix audit now verifies the registered recipe, cache, scene coverage, curriculum and frame-update function against the original epoch-4 control. The saved parameters are bitwise equal in this execution (`max_parameter_absolute_difference=0.0`); this is a reproducibility check for the matched prefix, not a tracking-quality result or a guarantee of CUDA bitwise determinism. The full audit is in `results/worldmot_v2_capacity_control_prefix_audit.json`.
+
 Known input limitations remain visible: TRAIN detector recall is approximately 55.43% under the fixed supervision-matching diagnostic, and some world-coordinate inputs have poor numerical conditioning. A larger association module cannot recover a person with no observation and is not guaranteed to repair unreliable geometry. Neither limitation proves that capacity is sufficient or insufficient.
 
 <!-- BEGIN ACTUAL CAPACITY TRAINING -->
@@ -57,5 +59,6 @@ Status: IN_PROGRESS.
 | Trial | Profile | Seed | Completed epochs | Timestamps / epoch | Status |
 |---|---|---:|---:|---:|---|
 | large | large | 20261022 | 24 | 22894 | TRAIN_SUBSET_COMPLETE |
+| small | small | 20261022 | 4 | 22894 | TRAINING_RUNNING |
 
 Independent TEST scores and real inference FPS are pending. TRAIN optimization losses and cached identity surrogates are not independent MOT accuracy.
