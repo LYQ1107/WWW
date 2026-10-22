@@ -27,7 +27,7 @@ class OnlineWorldMOT:
     def __init__(self, geometry: GeometryBackend, min_confidence: float = 1.5,
                  min_points: int = 24, aligner: Optional[Sim3Aligner] = None,
                  memory: Optional[WorldIdentityMemory] = None, person_category_ids=None,
-                 device: str = "cuda:0"):
+                 device: str = "cuda:0", emit_predictions: bool = False):
         self.geometry = geometry
         self.min_confidence = float(min_confidence)
         self.min_points = int(min_points)
@@ -35,6 +35,7 @@ class OnlineWorldMOT:
         self.memory = memory or WorldIdentityMemory()
         self.person_category_ids = person_category_ids
         self.device = device
+        self.emit_predictions = bool(emit_predictions)
         self.scene_id = None
         self.previous: Optional[GeometryFrame] = None
         self.previous_world_points: dict[int, np.ndarray] = {}
@@ -47,6 +48,41 @@ class OnlineWorldMOT:
         self.previous = None
         self.previous_world_points = {}
         self.timer = RuntimeTimer()
+
+    @staticmethod
+    def _native_person_mask(frame: GeometryFrame, view: int) -> np.ndarray | None:
+        pred = frame.panoptic.get(view, {}) if isinstance(frame.panoptic, Mapping) else {}
+        pan = pred.get("pan") if isinstance(pred, dict) else None
+        segments = pred.get("segments_info", []) if isinstance(pred, dict) else []
+        if pan is None:
+            return None
+        pan = np.asarray(pan)
+        while pan.ndim > 2 and pan.shape[0] == 1:
+            pan = pan[0]
+        mask = np.zeros(pan.shape[:2], dtype=bool)
+        for seg in segments:
+            category = str(seg.get("category_name", "")).lower()
+            if category and category != "person" and seg.get("category_id") not in (0, None):
+                continue
+            if "id" in seg:
+                mask |= pan == int(seg["id"])
+        return mask if mask.any() else None
+
+    @staticmethod
+    def _dynamic_at(frame: GeometryFrame, view: int, x: float, y: float) -> bool:
+        masks = getattr(frame, "dynamic_masks", {}) or {}
+        mask = masks.get(view)
+        if mask is None:
+            mask = OnlineWorldMOT._native_person_mask(frame, view)
+        if mask is None:
+            return False
+        mask = np.asarray(mask).astype(bool)
+        h, w = np.asarray(frame.images[view]).shape[:2]
+        if mask.shape != (h, w):
+            from PIL import Image
+            mask = np.asarray(Image.fromarray(mask.astype(np.uint8)).resize((w, h), Image.Resampling.NEAREST)) > 0
+        xi, yi = int(round(x)), int(round(y))
+        return bool(0 <= xi < w and 0 <= yi < h and mask[yi, xi])
 
     @staticmethod
     def _static_correspondences(previous: GeometryFrame, current: GeometryFrame, view: int,
@@ -77,6 +113,14 @@ class OnlineWorldMOT:
         h_a, w_a = pm_a.shape[:2]; h_b, w_b = pm_b.shape[:2]
         pa, pb = [], []
         for m in matches:
+            # A keypoint is a valid static-background support point only when
+            # neither its previous nor current RGB location falls inside a
+            # causal person mask.  This filters moving people before Sim(3)
+            # RANSAC; no annotation or future frame is consulted.
+            if OnlineWorldMOT._dynamic_at(previous, view, *ka[m.queryIdx].pt):
+                continue
+            if OnlineWorldMOT._dynamic_at(current, view, *kb[m.trainIdx].pt):
+                continue
             def sample(kp, pm, cf, mat, h, w, pred):
                 p = np.array([kp.pt[0], kp.pt[1], 1.0])
                 q = mat @ p; x, y = int(round(q[0] / q[2])), int(round(q[1] / q[2]))
@@ -128,19 +172,38 @@ class OnlineWorldMOT:
             world_cameras = {v: _transform_camera(c, alignment.transform) for v, c in frame.cameras.items()} if aligned else dict(frame.cameras)
             tracks_2d = {}
             with self.timer.stage("reprojection"):
+                suppressed_predictions = []
                 for view, camera in world_cameras.items():
                     rows = []
                     for tr in tracks:
                         if tr.status.value == "DELETED" or len(tr.support_points) == 0:
                             continue
+                        if not tr.observed_this_step or tr.status.value == "LOST":
+                            suppressed_predictions.append({
+                                "global_id": int(tr.global_id), "view": int(view),
+                                "reason": "LOST_OR_PURE_PREDICTION_SUPPRESSED",
+                                "missed": int(tr.missed), "status": tr.status.value,
+                            })
+                            if not self.emit_predictions:
+                                continue
                         p = project_support(tr.support_points, camera)
+                        native_observed = bool(view in tr.masks_by_camera) and tr.observed_this_step
+                        # ``visible`` is evaluation-eligible only when this
+                        # synchronized frame has an actual target-view mask.
+                        # A cross-view projection remains available as a
+                        # diagnostic but is never presented as a real target
+                        # observation.
                         rows.append({
-                            "global_id": int(tr.global_id), "visible": bool(p.visible),
+                            "global_id": int(tr.global_id), "visible": bool(p.visible and native_observed),
+                            "projected_visible": bool(p.visible),
                             "bbox_xywh": list(p.bbox_xywh) if p.bbox_xywh is not None else None,
                             "visible_fraction": float(p.visible_fraction),
-                            "native_view_mask": bool(view in tr.masks_by_camera),
+                            "native_view_mask": native_observed,
+                            "visibility_state": "CURRENT_MASK_AND_PROJECTION" if native_observed else "CURRENT_OTHER_VIEW_ONLY",
+                            "visibility_evidence": "current_target_mask" if native_observed else "projection_only",
                             "projected_from_world": True,
                             "projection_refined_by_target_view": False,
+                            "evaluation_eligible": native_observed,
                             "status": tr.status.value,
                         })
                     tracks_2d[int(view)] = rows
@@ -155,12 +218,16 @@ class OnlineWorldMOT:
         return {
             "timestamp": int(timestamp), "scene_id": self.scene_id,
             "tracks_3d": [x.to_dict() for x in tracks], "tracks_2d_by_camera": tracks_2d,
+            "suppressed_predictions": suppressed_predictions,
             "geometry_status": frame.status, "alignment": {
                 "success": bool(alignment.success), "reason": alignment.reason,
                 "correspondences": int(alignment.correspondences), "inliers": int(alignment.inliers),
                 "inlier_ratio": float(alignment.inlier_ratio), "residual_median": float(alignment.residual_median),
                 "residual_p95": float(alignment.residual_p95), "scale": float(alignment.transform.scale),
             },
-            "runtime": {"stages": self.timer.summary(), "gpu": gpu_memory_summary(self.device)},
+            "runtime": {"stages": self.timer.summary(),
+                        "frame_stages": dict(self.timer.last_stages),
+                        "frame_total_s": float(self.timer.last_stages.get("total", 0.0)),
+                        "gpu": gpu_memory_summary(self.device)},
             "proposal_count": len(instances), "causal": True,
         }

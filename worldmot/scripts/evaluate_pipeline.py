@@ -3,7 +3,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
+
+# Allow this script to be run directly from the repository checkout without
+# requiring an editable install.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from worldmot.data.visiontrack import VisionTrack
 from worldmot.evaluation.evaluate_2d import evaluate_jsonl

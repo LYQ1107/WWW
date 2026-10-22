@@ -21,6 +21,10 @@ class WorldInstance:
     geometry_valid: bool = True
     source: str = "native-panoptic"
     category_id: int | None = None
+    # Optional view-specific 3-D supports.  Detection-first keeps these so a
+    # target-view reprojection does not inflate its box with the opposite
+    # camera's visible surface.  Native PanSt3R instances may leave it empty.
+    support_points_by_camera: Dict[int, np.ndarray] = field(default_factory=dict)
 
     def transformed(self, transform) -> "WorldInstance":
         # Covariance lives in the proposal's coordinate frame.  Carry it into
@@ -37,6 +41,8 @@ class WorldInstance:
             confidence=self.confidence,
             visible_cameras=self.visible_cameras,
             masks_by_camera=self.masks_by_camera,
+            support_points_by_camera={int(v): transform.apply(np.asarray(p))
+                                     for v, p in self.support_points_by_camera.items()},
             geometry_valid=self.geometry_valid,
             source=self.source,
             category_id=self.category_id,

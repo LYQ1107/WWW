@@ -22,6 +22,11 @@ class GeometryFrame:
     cameras: Mapping[int, CameraModel]
     image_to_model: Mapping[int, np.ndarray] = field(default_factory=dict)
     model_to_image: Mapping[int, np.ndarray] = field(default_factory=dict)
+    # Detector masks are kept in original-image coordinates.  They are used
+    # only for causal static-background filtering and for lifting detections;
+    # they are never populated from ground truth.
+    dynamic_masks: Mapping[int, np.ndarray] = field(default_factory=dict)
+    detector_outputs: Mapping[int, list] = field(default_factory=dict)
     status: str = "OK"
     diagnostics: dict = field(default_factory=dict)
 

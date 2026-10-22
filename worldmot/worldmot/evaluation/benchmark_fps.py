@@ -11,6 +11,7 @@ import time
 class RuntimeTimer:
     def __init__(self):
         self.stages: dict[str, list[float]] = {}
+        self.last_stages: dict[str, float] = {}
 
     @contextmanager
     def stage(self, name: str):
@@ -18,10 +19,14 @@ class RuntimeTimer:
         try:
             yield
         finally:
-            self.stages.setdefault(name, []).append(time.perf_counter() - t)
+            elapsed = time.perf_counter() - t
+            self.stages.setdefault(name, []).append(elapsed)
+            self.last_stages[name] = float(elapsed)
 
     def add(self, name: str, seconds: float) -> None:
-        self.stages.setdefault(name, []).append(float(seconds))
+        value = float(seconds)
+        self.stages.setdefault(name, []).append(value)
+        self.last_stages[name] = value
 
     def summary(self) -> dict:
         out = {}

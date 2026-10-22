@@ -6,7 +6,11 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+import sys
+import time
 import traceback
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from worldmot.data.visiontrack import VisionTrack
 from worldmot.data.synchronized_loader import load_pair
@@ -32,9 +36,15 @@ def main():
         runtime.reset(args.scene)
         with (outdir / "tracks.jsonl").open("w", encoding="utf-8") as f:
             for pair in pairs:
+                t_read = time.perf_counter()
                 images = load_pair(dataset, pair)
+                read_s = time.perf_counter() - t_read
                 row = runtime.step(images, pair.frame_id)
                 row["image_ids"] = {str(v): int(x.image_id) for v, x in pair.images.items()}
+                row["rgb_read_s"] = float(read_s)
+                row["end_to_end_s"] = float(read_s + row["runtime"].get("frame_total_s", 0.0))
+                row["runtime"].setdefault("frame_stages", {})["rgb_read"] = float(read_s)
+                row["runtime"]["frame_stages"]["end_to_end"] = float(row["end_to_end_s"])
                 f.write(json.dumps(row, ensure_ascii=False) + "\n"); f.flush()
                 result["records"].append({"frame": pair.frame_id, "geometry_status": row["geometry_status"],
                                           "alignment": row["alignment"], "proposal_count": row["proposal_count"],

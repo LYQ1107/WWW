@@ -27,8 +27,11 @@ class WorldTrackState:
     status: TrackStatus = TrackStatus.TENTATIVE
     last_timestamp: int = 0
     support_points: np.ndarray = field(default_factory=lambda: np.empty((0, 3), dtype=np.float64))
+    support_points_by_camera: dict = field(default_factory=dict)
     masks_by_camera: dict = field(default_factory=dict)
     source: str = "native-panoptic"
+    observed_this_step: bool = True
+    last_observed_timestamp: int | None = None
 
     def predict(self, dt: float = 1.0) -> None:
         self.xyz_center = self.xyz_center + self.xyz_velocity * float(dt)
@@ -36,6 +39,7 @@ class WorldTrackState:
 
     def update(self, center: np.ndarray, covariance: np.ndarray, feature: np.ndarray,
                support_points: np.ndarray, masks_by_camera: dict, timestamp: int,
+               support_points_by_camera: dict | None = None,
                source: str = "native-panoptic") -> None:
         center = np.asarray(center, dtype=np.float64).reshape(3)
         old = self.xyz_center.copy()
@@ -48,19 +52,26 @@ class WorldTrackState:
             f /= max(np.linalg.norm(f), 1e-8)
         self.identity_feature = f
         self.support_points = np.asarray(support_points, dtype=np.float64).reshape(-1, 3)
+        self.support_points_by_camera = {
+            int(v): np.asarray(p, dtype=np.float64).reshape(-1, 3)
+            for v, p in (support_points_by_camera or {}).items()
+        }
         self.masks_by_camera = masks_by_camera
         self.last_timestamp = int(timestamp)
+        self.last_observed_timestamp = int(timestamp)
         self.age += 1
         self.hits += 1
         self.missed = 0
         if self.status in (TrackStatus.TENTATIVE, TrackStatus.LOST) and self.hits >= 2:
             self.status = TrackStatus.CONFIRMED
         self.source = source
+        self.observed_this_step = True
 
     def mark_missed(self, timestamp: int, max_missed: int) -> None:
         self.last_timestamp = int(timestamp)
         self.age += 1
         self.missed += 1
+        self.observed_this_step = False
         if self.missed > max_missed:
             self.status = TrackStatus.DELETED
         elif self.status == TrackStatus.CONFIRMED:
@@ -72,5 +83,6 @@ class WorldTrackState:
             "xyz_velocity": self.xyz_velocity.tolist(), "covariance": self.covariance.tolist(),
             "age": int(self.age), "hits": int(self.hits), "missed": int(self.missed),
             "status": self.status.value, "last_timestamp": int(self.last_timestamp),
-            "source": self.source,
+            "source": self.source, "observed_this_step": bool(self.observed_this_step),
+            "last_observed_timestamp": self.last_observed_timestamp,
         }

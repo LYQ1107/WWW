@@ -31,7 +31,10 @@ class WorldIdentityMemory:
             global_id=gid, xyz_center=np.asarray(instance.xyz_center, dtype=np.float64).copy(),
             xyz_velocity=np.zeros(3, dtype=np.float64), covariance=np.asarray(instance.covariance, dtype=np.float64).copy(),
             identity_feature=f.copy(), last_timestamp=int(timestamp), support_points=np.asarray(instance.xyz_support).copy(),
+            support_points_by_camera={int(v): np.asarray(p).copy()
+                                     for v, p in getattr(instance, "support_points_by_camera", {}).items()},
             masks_by_camera=dict(instance.masks_by_camera), source=instance.source,
+            observed_this_step=True, last_observed_timestamp=int(timestamp),
         )
         if self.min_hits <= 1:
             tr.status = TrackStatus.CONFIRMED
@@ -40,6 +43,8 @@ class WorldIdentityMemory:
 
     def step(self, instances, timestamp: int, geometry_aligned: bool = True) -> list[WorldTrackState]:
         active = [x for x in self.tracks.values() if x.status != TrackStatus.DELETED]
+        for tr in active:
+            tr.observed_this_step = False
         if not geometry_aligned:
             for tr in active:
                 tr.predict()
@@ -52,7 +57,8 @@ class WorldIdentityMemory:
         for i, j in pairs:
             tr = active[i]; ins = instances[j]
             tr.update(ins.xyz_center, ins.covariance, ins.query_feature, ins.xyz_support,
-                      ins.masks_by_camera, timestamp, ins.source)
+                      ins.masks_by_camera, timestamp,
+                      getattr(ins, "support_points_by_camera", {}), ins.source)
         for i in unmatched_tracks:
             active[i].mark_missed(timestamp, self.max_missed)
         for j in unmatched_instances:
