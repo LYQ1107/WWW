@@ -1,6 +1,6 @@
 # WorldMOT v2: larger persistent identity model
 
-Status: REGISTERED_AND_IMPLEMENTED. Formal larger-model training has not started. Existing four-epoch weights and their independent TEST comparison remain a separate experiment.
+Status: IN_PROGRESS. PWQT-L internal TRAIN fitting is running. Existing four-epoch weights and their independent TEST comparison remain a separate experiment.
 
 The current evidence does not establish convergence or a capacity bottleneck. The original 953,365-parameter association model has sparse TRAIN validation checkpoints and substantial pair-loss/gradient variation. We implement a larger model and a matched training-budget control to test the capacity hypothesis. RTMDet and the verified original VGGT-Omega 512 weight variant stay frozen; both profiles read the same complete, verified object cache from all 24 TRAIN scenes. There is no GMT model dependency.
 
@@ -36,6 +36,10 @@ Both profiles pass real TRAIN forward/backward checks on two complete 32-frame c
 Dedicated tests check parameter scaling, the unchanged observation/identity contract, propagation of temporal gradients into all three feature branches, and exact state-dict/config restoration. Before formal fitting, the queue also executes a synchronized V100 memory/gradient probe on the assigned exclusive card. Complete-video model and end-to-end FPS will use raw RGB inference after final freezing.
 
 The separate worktree is `/data1/liuyeqiang/WWW_capacity` on `research/worldmot-v2-capacity-20261022`. Large artifacts go to `/data1/liuyeqiang/nas/A100/WorldMOT/capacity_20261022`. The larger study starts only after all seven original final fits finish. It occupies one exclusive V100 queue slot while the other three cards run the original v1, v2 and native GMT complete-video comparisons. No four-card throughput is reported as per-stream latency. Original checkpoints are verified unchanged when the capacity training phase returns.
+
+The original seven final fits completed and passed strict model-state loading, finite-parameter, optimizer/RNG-payload, complete-epoch and source checks. Their coordinator reloaded the registered queue at 2026-10-22 17:11:58 UTC with every original checkpoint SHA unchanged. PWQT-L internal fitting started at 17:14:27 UTC on physical GPU 4 and has emitted real losses and gradients. It trains on the 18-scene selection split; fresh all-24-scene final fits remain pending. Start/process/source evidence is in `results/worldmot_v2_capacity_train_start.json`.
+
+The synchronized V100 probe uses four real 32-frame clips, batch shape 4×32×46×532. Both models produce finite updates. The single training-batch wall times are 1.496 seconds for small and 2.072 seconds for large, with peak allocated memory approximately 0.70 GiB and 2.82 GiB respectively. These cold, finite training checks do not estimate full-epoch time, inference FPS or a whole-video memory maximum. Exact clips and scope are in `results/worldmot_v2_capacity_V100_probe.json`. The original v1/v2/GMT full-video comparisons have started on the other three cards. An independent four-card TEST follow-up for the four capacity fits waits until both the original comparisons and all capacity fitting/selection/freezing complete; it cannot read TEST for model selection.
 
 Known input limitations remain visible: TRAIN detector recall is approximately 55.43% under the fixed supervision-matching diagnostic, and some world-coordinate inputs have poor numerical conditioning. A larger association module cannot recover a person with no observation and is not guaranteed to repair unreliable geometry. Neither limitation proves that capacity is sufficient or insufficient.
 
