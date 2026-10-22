@@ -74,7 +74,7 @@ if __name__=='__main__':
     # diagnostic curve point; only epoch budgets 4 and 6 are eligible.
     selected_epoch=min([r for r in losses if r['epoch']>=4],key=lambda r:r['total'])['epoch']
     final={'status':'TRAIN_ONLY_SELECTION','validation_scenes':VAL_SCENES,'loss_evaluation':'all validation timestamps in continuous 32-frame clips','threshold_evaluation':'fixed start/middle/end 32-frame windows; cached identity-F1 selection surrogate, not HOTA or official IDF1','selected_epochs':selected_epoch,'epoch_validation':losses,'methods':{}}
-    for method in ['joint','no_omega','no_appearance','two_stage']:
+    for method in ['joint','no_omega','no_appearance','two_stage','no_geometry']:
         cp=Path(a.internal_root)/f'{method}.epoch{selected_epoch}.pt';grid,best=calibration(ds,cp,a.device)
         final['methods'][method]={'thresholds':{k:best[k] for k in ['null_margin','birth_threshold','pair_threshold']},'validation_identity_f1_surrogate':best['identity_f1_surrogate'],'candidates':grid}
         (out/'selection.json').write_text(json.dumps(final,indent=2))

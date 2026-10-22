@@ -8,6 +8,8 @@ it is a separate, explicitly locked baseline entry for this experiment.
 import argparse,collections,hashlib,json,os,sys,time
 from pathlib import Path
 from types import MethodType
+from experiment_provenance import source_stamp
+from preserve_inference_attempts import prepare_scene
 
 def sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()
 def main():
@@ -27,11 +29,12 @@ def main():
     model.min_track_len=0;model.eval().requires_grad_(False)
     root=Path(a.output);root.mkdir(parents=True,exist_ok=True)
     lock={'checkpoint_sha256':sha(CHECKPOINT),'config_sha256':hashlib.sha256(cfg.dump().encode()).hexdigest(),'split':a.split,'native_method':'original run_global_tracker_plus from frozen base f595189e62dac917a4880b1220b3c9ae6d7303aa',
-          'CIR_enabled':False,'GEO_enabled':False,'future_short_track_filter':False,'source':str(source),'metadata_sha256':sha(a.metadata),'GT_in_inference':False}
+          'CIR_enabled':False,'GEO_enabled':False,'future_short_track_filter':False,'source':str(source),'metadata_sha256':sha(a.metadata),'GT_in_inference':False,'source_sha256':source_stamp()['sha256']}
     (root/'GMT_FROZEN_LOCK.json').write_text(json.dumps(lock,indent=2))
     for sid in a.scenes or [v['id'] for v in data['videos']]:
-        out=root/f'scene_{sid:02d}';out.mkdir(exist_ok=True)
-        if (out/'manifest.json').exists() and json.loads((out/'manifest.json').read_text()).get('status')=='COMPLETE':continue
+        out=root/f'scene_{sid:02d}'
+        signature={k:lock[k] for k in ('checkpoint_sha256','config_sha256','split','metadata_sha256','source_sha256')}
+        if not prepare_scene(out,signature):continue
         records=sorted([dict(x,image_id=x['id'],file_name=str(Path('/data/DATASETS/TRACKING/JDE/VisionTrack')/a.split/x['file_name']),view_num=2) for x in data['images'] if x['video_id']==sid and (not a.limit or x['frame_id']<=a.limit)],key=lambda x:(x['view_id'],x['frame_id']))
         batch=CurrentImages(cfg,records);seed_all(20261014)
         (out/'manifest.json').write_text(json.dumps({'status':'RUNNING',**lock,'scene':sid,'images_expected':len(records)},indent=2))

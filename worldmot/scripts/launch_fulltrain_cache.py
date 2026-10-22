@@ -7,6 +7,13 @@ from worldmot.data.visiontrack import VisionTrack
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--root',default='/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022');a=p.parse_args()
     root=Path(a.root);root.mkdir(parents=True,exist_ok=True);logs=root/'logs';logs.mkdir(exist_ok=True)
+    verified=json.loads((root/'detector_channel_verification.json').read_text())
+    if verified.get('status')!='PASS_OFFICIAL_FILENAME_EQUIVALENCE':raise RuntimeError('official detector input verification required')
+    previous=root/'cache_workers.json'
+    if previous.exists():
+        for w in json.loads(previous.read_text())['workers']:
+            proc=Path('/proc')/str(w['pid'])/'cmdline'
+            if proc.exists() and b'scripts/cache_fulltrain.py' in proc.read_bytes().split(b'\0'):raise RuntimeError('existing cache worker is still running')
     ds=VisionTrack('/data/DATASETS/TRACKING/JDE/VisionTrack');groups=[[] for _ in range(4)];load=[0]*4
     for sid in sorted(ds.scene_ids(),key=lambda s:-len(ds.frames(s))):
         idx=load.index(min(load));groups[idx].append(sid);load[idx]+=len(ds.frames(sid))

@@ -5,13 +5,14 @@ import argparse,collections,concurrent.futures,hashlib,json,os,subprocess,sys,ti
 from pathlib import Path
 import torch
 from cache_fulltrain import atomic_json,sha
+from experiment_provenance import source_stamp
 
 ROOT=Path(__file__).resolve().parents[1]
 PY='/data1/liuyeqiang/envs/worldmot311/bin/python'
 VISION_PY='/data1/liuyeqiang/envs/worldmot_mmdet311/bin/python'
 GMT_PY='/home/liuyeqiang/anaconda3/envs/GMT/bin/python'
 GPUS=[0,2,3,4]
-METHODS=['joint','no_omega','no_appearance','two_stage']
+METHODS=['joint','no_omega','no_appearance','two_stage','no_geometry']
 TRAIN_SCENES=[1,2,3,5,6,7,9,10,11,13,14,15,17,18,19,21,22,23]
 
 class Experiment:
@@ -52,6 +53,12 @@ class Experiment:
             done=sum(p['done'] for p in progress)
             self.state('TRAIN_CACHE_RUNNING',completed_scenes=len(manifests),completed_timestamps=done,expected_timestamps=sum(expected.values()))
             if len(manifests)==len(expected):break
+            complete={m['scene'] for m in manifests}
+            for worker in json.loads((self.root/'cache_workers.json').read_text())['workers']:
+                if set(worker['scenes'])<=complete:continue
+                proc=Path('/proc')/str(worker['pid'])/'cmdline'
+                if not proc.exists() or b'scripts/cache_fulltrain.py' not in proc.read_bytes().split(b'\0'):
+                    raise RuntimeError('cache worker stopped before full coverage; see '+worker['log'])
             # Wait is confined to the background driver; the agent can inspect
             # files and continue useful work without blocking a tool call.
             time.sleep(30)
@@ -65,6 +72,7 @@ class Experiment:
         output=Path(output)
         if output.exists():
             saved=torch.load(output,map_location='cpu',weights_only=True)
+            if saved['manifest'].get('source_provenance')!=source_stamp():raise RuntimeError('existing training checkpoint source differs: '+str(output))
             if saved['epoch']==epochs and saved['manifest'].get('train_scenes')==sorted(scenes):return {'name':output.stem,'status':'EXISTING_COMPLETE_CHECKPOINT'}
         cmd=[PY,'scripts/train_world_query.py','--cache',str(self.root/'train_cache'),'--output',str(output),'--epochs',str(epochs),'--seed',str(seed),'--device','cuda:0','--ablation',method,'--scenes',*map(str,scenes)]
         if output.exists():cmd+=['--resume',str(output)]
@@ -95,7 +103,7 @@ class Experiment:
             if not m.get('full_train_coverage') or m.get('status')!='FULLTRAIN_COMPLETE':raise RuntimeError('incomplete full TRAIN checkpoint')
             m['thresholds']=choice['methods'][method]['thresholds'];m['formal_inference_allowed']=True;m['selection_sha256']=sha(selected/'selection.json');m['trained_checkpoint_sha256']=sha(p)
             target=final/f'{method}_seed{seed}.frozen.pt';torch.save(saved,target);target.with_suffix('.json').write_text(json.dumps(m,indent=2));sha_set.append(sha(target));frozen.append({'method':method,'seed':seed,'path':str(target),'sha256':sha_set[-1],'train_timestamps':m['total_timestamps']})
-        lock={'status':'FROZEN_BEFORE_INDEPENDENT_TEST','checkpoint_sha256':sha_set,'checkpoints':frozen,'selection_sha256':sha(selected/'selection.json'),'TEST_used_for_selection':False,'TRAIN_scenes':list(range(1,25)),'TEST_metadata_sha256':sha(self.root/'audit/test_metadata.json')}
+        lock={'status':'FROZEN_BEFORE_INDEPENDENT_TEST','checkpoint_sha256':sha_set,'checkpoints':frozen,'selection_sha256':sha(selected/'selection.json'),'TEST_used_for_selection':False,'TRAIN_scenes':list(range(1,25)),'TEST_metadata_sha256':sha(self.root/'audit/test_metadata.json'),'source_provenance':source_stamp()}
         atomic_json(self.root/'final_test_lock.json',lock);self.state('FINAL_FULLTRAIN_COMPLETE',checkpoints=frozen)
         # Every method uses actual RGB, with independent causal memory and the
         # same complete TEST metadata. Cache replay is not an E2E substitute.
@@ -117,6 +125,7 @@ class Experiment:
         for pred in sorted(test.iterdir()):
             if not pred.is_dir():continue
             self.command('EVAL_'+pred.name,[PY,'scripts/evaluate_fullvideo.py','--split','test','--audit',str(self.root/'audit/data_audit.json'),'--predictions',str(pred),'--output',str(evaluations/pred.name)])
+        self.command('EVAL_v1_observed_bbox',[PY,'scripts/evaluate_fullvideo.py','--split','test','--audit',str(self.root/'audit/data_audit.json'),'--predictions',str(test/'v1'),'--output',str(evaluations/'v1_observed_bbox'),'--box-source','tracks_2d_observation_boxes_by_camera'])
         self.state('OFFICIAL_TEST_EVALUATION_COMPLETE',results=str(evaluations),goal_requires_artifact_review_and_github_push=True)
 
 if __name__=='__main__':

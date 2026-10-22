@@ -14,6 +14,8 @@ if __name__=='__main__':
     with gzip.open(out/'detection_supervision_failures.jsonl.gz','wt') as log:
         for sid in ds.scene_ids():
             directory=Path(a.cache)/f'scene_{sid:02d}';seen=[];counts=collections.Counter();branch_missing=collections.Counter();shards=[]
+            manifest=json.loads((directory/'manifest.json').read_text())
+            if manifest['detector'].get('input_contract')!='caller_RGB_to_contiguous_BGR_for_MMDetection':raise RuntimeError('unverified detector color contract: '+str(directory))
             pairs={p.frame_id:p for p in ds.synchronized_pairs(sid)}
             for shard in sorted(directory.glob('shard_*.npz')):
                 meta=json.loads(shard.with_suffix('.json').read_text())

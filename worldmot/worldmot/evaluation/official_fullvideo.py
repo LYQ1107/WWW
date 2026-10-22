@@ -21,7 +21,7 @@ def write_mot(p,rows):
         for r in sorted(rows,key=lambda r:(r[0],r[1])):
             tail=list(r[6:10])+[-1]*max(0,10-len(r))
             f.write(f'{int(r[0])},{int(r[1])},'+','.join(f'{x:.2f}' for x in r[2:6])+','+','.join(map(str,tail))+'\n')
-def prepare(dataset_root,split,audit,inference_root,scenes=None):
+def prepare(dataset_root,split,audit,inference_root,scenes=None,box_source="tracks_2d_by_camera"):
     ds=Path(dataset_root);audit=json.loads(Path(audit).read_text())[split];root=Path(inference_root)
     gt={};pred={};lengths={};groups={};blocked=[];coverage=[]
     for scene in audit['scenes']:
@@ -30,6 +30,7 @@ def prepare(dataset_root,split,audit,inference_root,scenes=None):
         p=root/f'scene_{sid:02d}'/'tracks.jsonl'
         if not p.is_file():blocked.append({'scene':sid,'reason':'PREDICTIONS_MISSING'});continue
         rows=[json.loads(line) for line in p.open() if line.strip()];times=[int(r['timestamp']) for r in rows]
+        if any(box_source not in row for row in rows):raise RuntimeError('requested prediction box source missing: '+box_source+' in '+str(p))
         expected=list(range(scene['first_frame'],scene['last_frame']+1))
         if times!=expected or len(rows)!=scene['synchronized_frames']:
             blocked.append({'scene':sid,'reason':'INCOMPLETE_OR_NONCAUSAL_SEQUENCE','actual':len(rows),'expected':scene['synchronized_frames']});continue
@@ -41,26 +42,31 @@ def prepare(dataset_root,split,audit,inference_root,scenes=None):
             v=raw['view'];name=f'{scene["name"]}_View{v}';names.append(name);g=read_mot(raw['path']);pr=[]
             if sha(raw['path'])!=raw['sha256']:raise RuntimeError('original GT changed since audit')
             for row in rows:
-                for obj in row.get('tracks_2d_by_camera',{}).get(str(v),[]):
+                for obj in row.get(box_source,{}).get(str(v),[]):
                     if obj.get('evaluation_eligible',True) and obj.get('visible',True) and obj.get('bbox_xywh') is not None:
                         pr.append([row['timestamp'],obj['global_id'],*obj['bbox_xywh'],obj.get('score',1.),-1,-1,-1])
             validate(g,name+' raw GT');validate(pr,name+' predictions');gt[name]=g;pred[name]=pr;lengths[name]=scene['last_frame']
         groups[scene['name']]=names
     return gt,pred,lengths,groups,blocked,coverage
 
-def trackeval(gt,pred,lengths,output,trackeval_root,split):
+def trackeval(gt,pred,lengths,output,trackeval_root,split,groups=None):
     sys.path.insert(0,str(trackeval_root));import trackeval
     out=Path(output);out.mkdir(parents=True,exist_ok=True)
     for name,rows in gt.items():write_mot(out/'gt'/name/'gt/gt.txt',rows);write_mot(out/'trackers/WorldMOT/data'/f'{name}.txt',pred[name])
     ec=trackeval.Evaluator.get_default_eval_config();ec.update(USE_PARALLEL=False,PRINT_CONFIG=False,PRINT_RESULTS=False,PLOT_CURVES=False,OUTPUT_FOLDER=str(out/'output'))
     dc=trackeval.datasets.MotChallenge2DBox.get_default_dataset_config();dc.update(GT_FOLDER=str(out/'gt'),TRACKERS_FOLDER=str(out/'trackers'),TRACKERS_TO_EVAL=['WorldMOT'],BENCHMARK='VisionTrack',SPLIT_TO_EVAL=split,SKIP_SPLIT_FOL=True,SEQ_INFO=lengths,PRINT_CONFIG=False,OUTPUT_FOLDER=str(out/'output'))
     dataset=trackeval.datasets.MotChallenge2DBox(dc)
-    result,messages=trackeval.Evaluator(ec).evaluate([dataset],[trackeval.metrics.HOTA(),trackeval.metrics.CLEAR(),trackeval.metrics.Identity()])
+    metrics=[trackeval.metrics.HOTA(),trackeval.metrics.CLEAR(),trackeval.metrics.Identity()]
+    result,messages=trackeval.Evaluator(ec).evaluate([dataset],metrics)
     values=result[dataset.get_name()]['WorldMOT']
     if values is None:raise RuntimeError(str(messages))
     def extract(row):
-        return {'HOTA':float(np.mean(row['HOTA']['HOTA'])*100),'AssA':float(np.mean(row['HOTA']['AssA'])*100),'DetA':float(np.mean(row['HOTA']['DetA'])*100),'IDF1':float(row['Identity']['IDF1']*100),'MOTA':float(row['CLEAR']['MOTA']*100),'IDSW':int(row['CLEAR']['IDSW']),'Frag':int(row['CLEAR']['Frag'])}
-    return {'combined':extract(values['COMBINED_SEQ']['pedestrian']),'per_camera':{name:extract(row['pedestrian']) for name,row in values.items() if name!='COMBINED_SEQ'},'tool_sha256':{str(p.relative_to(trackeval_root)):sha(p) for p in sorted((Path(trackeval_root)/'trackeval').rglob('*.py'))}}
+        return {'HOTA':float(np.mean(row['HOTA']['HOTA'])*100),'AssA':float(np.mean(row['HOTA']['AssA'])*100),'DetA':float(np.mean(row['HOTA']['DetA'])*100),'IDF1':float(row['Identity']['IDF1']*100),'MOTA':float(row['CLEAR']['MOTA']*100),'IDSW':int(row['CLEAR']['IDSW']),'Frag':int(row['CLEAR']['Frag']),'CLR_TP':int(row['CLEAR']['CLR_TP']),'CLR_FN':int(row['CLEAR']['CLR_FN']),'CLR_FP':int(row['CLEAR']['CLR_FP'])}
+    per_scene={}
+    for scene,names in (groups or {}).items():
+        combined={metric.get_name():metric.combine_sequences({name:values[name]['pedestrian'][metric.get_name()] for name in names}) for metric in metrics}
+        per_scene[scene]=extract(combined)
+    return {'combined':extract(values['COMBINED_SEQ']['pedestrian']),'per_scene':per_scene,'per_camera':{name:extract(row['pedestrian']) for name,row in values.items() if name!='COMBINED_SEQ'},'tool_sha256':{str(p.relative_to(trackeval_root)):sha(p) for p in sorted((Path(trackeval_root)/'trackeval').rglob('*.py'))}}
 
 def matlab(gt,pred,groups,out,kit,executable,driver):
     kit=Path(kit);out=Path(out);out.mkdir(parents=True,exist_ok=True)

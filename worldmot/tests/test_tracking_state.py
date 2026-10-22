@@ -24,5 +24,15 @@ def test_world_id_persists_and_lifecycle_is_causal():
 def test_scene_reset_restarts_ids():
     memory = WorldIdentityMemory(min_hits=1)
     assert memory.step([make_instance(0.)], 1)[0].global_id == 1
+
+
+def test_saved_assignment_follows_hungarian_with_reordered_observations():
+    memory = WorldIdentityMemory(min_hits=1)
+    memory.step([make_instance(0., (1., 0.)), make_instance(2., (0., 1.))], 1)
+    original = dict(memory.last_instance_to_global_id)
+    memory.step([make_instance(2.01, (0., 1.)), make_instance(.01, (1., 0.))], 2)
+    assert memory.last_instance_to_global_id == {0: original[1], 1: original[0]}
+    memory.step([], 3, geometry_aligned=False)
+    assert memory.last_instance_to_global_id == {}
     memory.reset()
     assert memory.step([make_instance(0.)], 1)[0].global_id == 1

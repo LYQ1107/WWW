@@ -17,10 +17,12 @@ class WorldIdentityMemory:
         self.gate_distance = float(gate_distance)
         self.next_id = int(next_id)
         self.tracks: dict[int, WorldTrackState] = {}
+        self.last_instance_to_global_id: dict[int, int] = {}
 
     def reset(self) -> None:
         self.next_id = 1
         self.tracks.clear()
+        self.last_instance_to_global_id.clear()
 
     def _new(self, instance, timestamp: int) -> WorldTrackState:
         gid = self.next_id; self.next_id += 1
@@ -42,6 +44,7 @@ class WorldIdentityMemory:
         return tr
 
     def step(self, instances, timestamp: int, geometry_aligned: bool = True) -> list[WorldTrackState]:
+        self.last_instance_to_global_id = {}
         active = [x for x in self.tracks.values() if x.status != TrackStatus.DELETED]
         for tr in active:
             tr.observed_this_step = False
@@ -56,13 +59,15 @@ class WorldIdentityMemory:
         pairs, unmatched_tracks, unmatched_instances = linear_assignment(cost)
         for i, j in pairs:
             tr = active[i]; ins = instances[j]
+            self.last_instance_to_global_id[int(j)] = int(tr.global_id)
             tr.update(ins.xyz_center, ins.covariance, ins.query_feature, ins.xyz_support,
                       ins.masks_by_camera, timestamp,
                       getattr(ins, "support_points_by_camera", {}), ins.source)
         for i in unmatched_tracks:
             active[i].mark_missed(timestamp, self.max_missed)
         for j in unmatched_instances:
-            self._new(instances[j], timestamp)
+            tr = self._new(instances[j], timestamp)
+            self.last_instance_to_global_id[int(j)] = int(tr.global_id)
         # Tentative tracks are returned for diagnostics; deleted tracks are not.
         return [x for x in self.tracks.values() if x.status != TrackStatus.DELETED]
 

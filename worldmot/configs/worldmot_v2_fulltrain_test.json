@@ -39,6 +39,7 @@
     16,
     32
   ],
+  "clip_length_by_epoch": [8,16,32,32,32,32],
   "tbptt": 8,
   "batch_size": 4,
   "hidden_dim": 128,
@@ -52,7 +53,8 @@
     "joint",
     "no_omega",
     "no_appearance",
-    "two_stage"
+    "two_stage",
+    "no_geometry"
   ],
   "threshold_grid": {
     "null_margin": [
@@ -78,5 +80,10 @@
   "data_audit": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/data_audit.json",
   "epoch_diagnostic_only": [
     2
-  ]
+  ],
+  "max_missed": 64,
+  "lifecycle_note": "persistent queries survive 64 missed timestamps; fixed before any independent TEST inference",
+  "detector_input_contract": "caller_RGB_to_contiguous_BGR_for_MMDetection",
+  "v1_observed_bbox_control": "same actual v1 Hungarian IDs with current assigned detector boxes; preserve native v1 projection output",
+  "geometry_contribution_control": "no_geometry retains RGB, detector and Omega local visual features; disables all geometry/reliability inputs and geometric score. Registered before TRAIN internal selection and TEST."
 }

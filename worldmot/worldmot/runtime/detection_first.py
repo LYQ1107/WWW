@@ -80,6 +80,7 @@ class DetectionFirstWorldMOT:
 
     def step(self, images_by_camera: Mapping[int, np.ndarray], timestamp: int) -> dict:
         t0 = time.perf_counter()
+        self.timer.last_stages = {}
         with self.timer.stage("total"):
             with self.timer.stage("person_detection"):
                 detections = self.detector.infer(images_by_camera)
@@ -143,18 +144,22 @@ class DetectionFirstWorldMOT:
             self.timer.add("omega_forward", float(frame.diagnostics.get("model_only_s", 0.0)))
             self.timer.add("detector_forward", float(sum(self.detector.last_timings.values())))
         obs_rows = []
-        # Memory does not expose a public pair assignment.  A deterministic
-        # nearest current-instance lookup records the identity on each saved
-        # observation without changing association decisions.
-        available = [tr for tr in tracks if tr.observed_this_step]
-        for obs in observations:
+        # Export actual memory decisions, preserving the original v1 output.
+        # The observed-box control isolates projection-box effects from IDs.
+        proposal_to_gid = {int(instances[j].proposal_id): int(gid)
+                           for j, gid in self.memory.last_instance_to_global_id.items()}
+        observation_boxes = {str(v): [] for v in images_by_camera}
+        for proposal_id, obs in enumerate(observations):
             row = obs.to_dict(include_support=True)
-            if available and np.isfinite(obs.center).all():
-                distances = [float(np.linalg.norm(tr.xyz_center - alignment.transform.apply(obs.center)))
-                             if aligned else float("inf") for tr in available]
-                if distances:
-                    idx = int(np.argmin(distances)); row["global_id"] = int(available[idx].global_id)
-                    row["association_distance"] = distances[idx]
+            gid = proposal_to_gid.get(proposal_id)
+            if gid is not None:
+                row["global_id"] = gid
+                row["identity_assignment_source"] = "ACTUAL_MEMORY_HUNGARIAN_OR_BIRTH"
+                for det in obs.detections:
+                    observation_boxes[str(det.view_id)].append({"global_id":gid,
+                        "bbox_xywh":list(det.bbox_xywh),"score":float(det.score),
+                        "visible":True,"evaluation_eligible":True,
+                        "output_source":"CURRENT_DETECTOR_BBOX_ACTUAL_V1_ID"})
             obs_rows.append(row)
         return {
             "timestamp": int(timestamp), "scene_id": self.scene_id,
@@ -162,6 +167,7 @@ class DetectionFirstWorldMOT:
             "world_observations": obs_rows,
             "tracks_3d": [x.to_dict() for x in tracks],
             "tracks_2d_by_camera": tracks_2d,
+            "tracks_2d_observation_boxes_by_camera": observation_boxes,
             "geometry_status": frame.status, "alignment": {
                 "success": bool(alignment.success), "reason": alignment.reason,
                 "correspondences": int(alignment.correspondences), "inliers": int(alignment.inliers),

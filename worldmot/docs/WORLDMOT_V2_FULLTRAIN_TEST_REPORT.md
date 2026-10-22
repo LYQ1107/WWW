@@ -2,6 +2,12 @@
 
 Status: IN_PROGRESS. This report is updated from actual artifacts; neither a configuration nor a pilot is a completion claim.
 
+## Detector input correction and cache invalidation
+
+The detector audit found that the pipeline passed RGB arrays unchanged to MMDetection's ndarray loader. Official RTMDet filename inference decodes BGR, and this checkpoint has `bgr_to_rgb=False`. The adapter now explicitly converts caller RGB to contiguous BGR. Six real images (both cameras of TRAIN Scenes 8, 9, 24) reproduce official filename inference exactly: zero box-coordinate error, zero score error, identical masks. The previous input differs on all six. Evidence is in `results/worldmot_v2_detector_input_verification.json`.
+
+All 9,001 timestamps generated before this correction have been moved to a separate NAS negative-results directory. They are invalid for formal training; their counts are excluded from current coverage. Prior 32-frame persistence runs remain execution diagnostics produced with the old detector input, and cannot establish detector quality or a scientific tracking score. No final training or independent TEST had started before discovery. The corrected four-GPU full cache has restarted. Nothing in the raw dataset or old branch was changed.
+
 ## Frozen registration (2026-10-22)
 
 Base commit: 177adbe1391bef5af152db2eff38d1a508d98db8. Branch: research/worldmot-v2-fulltrain-test-20261022. Independent from GMT/JEV.
@@ -10,7 +16,11 @@ All 24 TRAIN scenes and 28,754 synchronized timestamps must be cached and consum
 
 Internal model selection: TRAIN scenes [4, 8, 12, 16, 20, 24] are held out, the other 18 are training scenes. Final fitting restarts at a fixed initialization on all 24 TRAIN scenes with seeds [20261022, 20261023, 20261024]. Clip curriculum is 8/16/32, TBPTT=8. Candidate thresholds are registered as assignment margins [0.0, 0.5, 1.0], birth probabilities [0.3, 0.5, 0.7], pair probabilities [0.5, 0.7]; selection uses TRAIN validation only. Threshold zero is not a birth setting. Positive ID delivery and continuity are audited independently from losses.
 
+The epoch schedule is a fixed prefix [8,16,32,32,32,32], so a selected four-epoch final refit matches the first four epochs of the internal trial. Query miss tolerance is fixed at 64 timestamps before TRAIN selection and independent TEST. Checkpoints include optimizer state, Python/NumPy/Torch/CUDA RNG streams, source digests and cache-manifest digests; resume rejects incompatible source or cache assets.
+
 Registered methods: v1 Rule/Hungarian; v2 joint PWQT; v2 without Ω geometry/local features; v2 without appearance; v2 learned two-stage association. GMT native baseline must be run on the same independent TEST or marked incomparable with a concrete reason. Prior five-scene TRAIN scores are not TEST baselines.
+
+Two controls were registered before internal training. First, `no_geometry` keeps all RGB, detector and Ω local visual features while disabling geometry and reliability inputs; joint versus this control isolates geometry, whereas removing Ω local features and geometry together would confound their effects. Second, v1 additionally exports its actual Hungarian/birth IDs on current assigned detection boxes. This preserves native v1 projection output and makes its box-source advantage separately measurable. Interrupted inference files are archived, never silently overwritten.
 
 TEST model and threshold selection are prohibited. TEST images must use metadata-only loading; GT is confined to posthoc official TrackEval and VisionTrack MATLAB conversion. Invalid raw-GT sequences are explicitly blocked for evaluation, never silently repaired. All TEST image sequences still receive continuous causal inference and submission files.
 

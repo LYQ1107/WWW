@@ -37,7 +37,7 @@ def birth_groups(indices,pair_logits,cameras,threshold):
     return [sorted(g) for g in groups]
 
 class PersistentQueryRuntime:
-    def __init__(self,model:PersistentWorldQueryTransformer,device='cpu',checkpoint=None,allow_untrained=False,max_missed=12,
+    def __init__(self,model:PersistentWorldQueryTransformer,device='cpu',checkpoint=None,allow_untrained=False,max_missed=None,
                  null_margin=None,birth_threshold=None,pair_threshold=None):
         self.model=model.to(device).eval();self.device=str(device);self.checkpoint=checkpoint;self.trained=False;self.manifest={}
         if checkpoint:
@@ -49,7 +49,7 @@ class PersistentQueryRuntime:
         self.birth_threshold=float(thresholds.get('birth_threshold',0.5) if birth_threshold is None else birth_threshold)
         self.pair_threshold=float(thresholds.get('pair_threshold',0.7) if pair_threshold is None else pair_threshold)
         if not 0<self.birth_threshold<1:raise ValueError('birth probability threshold must be strictly between zero and one')
-        self.max_missed=int(max_missed);self.coordinates_calibrated=False;self.memory=QueryMemoryBank();self.state=None;self.scene_id=None;self.last_timestamp=None
+        self.max_missed=int(self.manifest.get('max_missed',64) if max_missed is None else max_missed);self.coordinates_calibrated=False;self.memory=QueryMemoryBank();self.state=None;self.scene_id=None;self.last_timestamp=None
     def reset(self,scene_id=None):
         self.scene_id=scene_id;self.memory.reset();self.state=None;self.last_timestamp=None
     @torch.inference_mode()

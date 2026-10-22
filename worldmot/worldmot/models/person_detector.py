@@ -174,6 +174,7 @@ class PersonDetector:
             "score_threshold": self.score_threshold,
             "max_detections": self.max_detections,
             "expose_intermediate_features": self.expose_intermediate_features,
+            "input_contract": "caller_RGB_to_contiguous_BGR_for_MMDetection",
             "mmdet_version": self.model_version,
             "mmcv_version": self.mmcv_version,
             "mmengine_version": self.mmengine_version,
@@ -205,7 +206,11 @@ class PersonDetector:
                 torch.cuda.synchronize(self.device)
             started = time.perf_counter()
             self._last_backbone_output = None
-            result = inference_detector(self.model, np.asarray(image))
+            # MMDetection's ndarray loader keeps channel order unchanged; its
+            # official file loader uses BGR. Our public pipeline receives RGB.
+            # Match file inference before applying the model's preprocessor.
+            bgr = np.ascontiguousarray(np.asarray(image)[..., ::-1])
+            result = inference_detector(self.model, bgr)
             if torch is not None:
                 torch.cuda.synchronize(self.device)
             # MMDetection 3.x returns DetDataSample.pred_instances.  Keep a

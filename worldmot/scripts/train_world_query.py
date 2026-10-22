@@ -8,11 +8,12 @@ import torch
 from torch.utils.data import DataLoader
 from worldmot.models.persistent_world_queries import PersistentWorldQueryTransformer
 from worldmot.training.clip_dataset import WorldQueryClipDataset,collate_clips
-from worldmot.training.train_utils import save_checkpoint,seed_everything
+from worldmot.training.train_utils import save_checkpoint,seed_everything,restore_rng_state
 from worldmot.training.world_query_criterion import TemporalQueryCriterion
+from experiment_provenance import source_stamp,cache_stamp
 
 
-def train_step(model,row,criterion,tbptt,optimizer=None,max_missed=12):
+def train_step(model,row,criterion,tbptt,optimizer=None,max_missed=64):
     b,T,N,_=row['observations'].shape;state=model.init_state(b,row['observations'].device)
     logs=[];segment=[];grad_norms=[];real_frames=0
     identity_cpu=row['identity'].detach().cpu().numpy()
@@ -57,24 +58,33 @@ def main(argv=None):
     p=argparse.ArgumentParser();p.add_argument('--cache',nargs='+',required=True);p.add_argument('--output',required=True);p.add_argument('--epochs',type=int,default=6)
     p.add_argument('--seed',type=int,default=20261022);p.add_argument('--device',default='cuda:0');p.add_argument('--scenes',nargs='+',type=int)
     p.add_argument('--batch-size',type=int,default=4);p.add_argument('--tbptt',type=int,default=8);p.add_argument('--clip-lengths',nargs='+',type=int,default=[8,16,32])
-    p.add_argument('--hidden-dim',type=int,default=128);p.add_argument('--max-queries',type=int,default=128);p.add_argument('--ablation',choices=['joint','no_omega','no_appearance','two_stage'],default='joint')
+    p.add_argument('--hidden-dim',type=int,default=128);p.add_argument('--max-queries',type=int,default=128);p.add_argument('--ablation',choices=['joint','no_omega','no_geometry','no_appearance','two_stage'],default='joint')
     p.add_argument('--resume');p.add_argument('--lr',type=float,default=3e-4);a=p.parse_args(argv)
     torch.set_num_threads(2);seed_everything(a.seed);out=Path(a.output);out.parent.mkdir(parents=True,exist_ok=True)
     ds=WorldQueryClipDataset(a.cache,scenes=a.scenes,clip_length=a.clip_lengths[0])
     if not len(ds):raise RuntimeError('empty feature cache')
     model=PersistentWorldQueryTransformer(observation_dim=532,hidden_dim=a.hidden_dim,max_world_queries=a.max_queries,ablation=a.ablation).to(a.device)
+    provenance=source_stamp();cache_provenance=cache_stamp(a.cache,ds.scenes)
     criterion=TemporalQueryCriterion();opt=torch.optim.AdamW(model.parameters(),lr=a.lr,weight_decay=1e-4);start_epoch=0;history=[]
     if a.resume:
-        payload=torch.load(a.resume,map_location=a.device,weights_only=True);model.load_state_dict(payload['model']);opt.load_state_dict(payload['optimizer']);start_epoch=payload['epoch'];history=payload['manifest']['history']
+        payload=torch.load(a.resume,map_location=a.device,weights_only=True)
+        if payload['manifest'].get('source_provenance')!=provenance or payload['manifest'].get('cache_provenance')!=cache_provenance:
+            raise RuntimeError('resume source/cache differs from checkpoint; preserve prior trial before a fresh run')
+        if 'rng_state' not in payload:raise RuntimeError('exact resume requires saved RNG state')
+        model.load_state_dict(payload['model']);opt.load_state_dict(payload['optimizer']);start_epoch=payload['epoch'];history=payload['manifest']['history'];restore_rng_state(payload['rng_state'])
     manifest={'status':'FULLTRAIN_RUNNING','seed':a.seed,'model_config':model.config,'cache':a.cache,'train_scenes':sorted(ds.scenes),'epochs_requested':a.epochs,
               'frames_per_scene':{str(s):len(f) for s,f in ds.scenes.items()},'total_timestamps':sum(len(f) for f in ds.scenes.values()),'tbptt':a.tbptt,'clip_curriculum':a.clip_lengths,
-              'initialization':'fixed_seed_random_pwqt_frozen_official_rtmdet_omega','history':history,'formal_inference_allowed':False,'optimizer':'AdamW','learning_rate':a.lr}
+              'initialization':'fixed_seed_random_pwqt_frozen_official_rtmdet_omega','history':history,'formal_inference_allowed':False,'optimizer':'AdamW','learning_rate':a.lr,'max_missed':64}
+    manifest.update(source_provenance=provenance,cache_provenance=cache_provenance,
+                    resume_checkpoint=str(a.resume) if a.resume else None,resume_rng_restored=bool(a.resume))
     official_lengths = [932,1886,1200,901,1769,601,443,523,1942,2092,2057,1200,1621,969,1048,1034,1200,1029,1052,1001,1001,1000,1052,1201]
     complete_all_train = sorted(ds.scenes) == list(range(1,25)) and all(len(ds.scenes[s]) == official_lengths[s-1] for s in ds.scenes)
     manifest['full_train_coverage'] = bool(complete_all_train)
     manifest['training_scope'] = 'FULL_24_TRAIN' if complete_all_train else 'TRAIN_SUBSET_OR_REGRESSION'
     for epoch in range(start_epoch,a.epochs):
-        length=a.clip_lengths[min(len(a.clip_lengths)-1,epoch*len(a.clip_lengths)//a.epochs)];ds.set_clip_length(length)
+        # A fixed prefix makes a 4-epoch refit match the first four epochs of
+        # the 6-epoch internal trial. All candidates include length 32.
+        length=a.clip_lengths[min(len(a.clip_lengths)-1,epoch)];ds.set_clip_length(length)
         # Preserve full coverage while reducing padding of crowded and sparse
         # clips in the same batch.  Bucket order is seed/epoch randomized.
         ordered=sorted(range(len(ds)),key=lambda i:max((len(f['observations']) for f in ds.scenes[ds.clips[i][0]][ds.clips[i][1]:ds.clips[i][2]]),default=0))

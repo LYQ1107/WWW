@@ -126,7 +126,9 @@ class MultiViewObservationEncoder:
             camera = getattr(geometry_frame, "cameras", {}).get(int(view))
             camera_pose = getattr(camera, "world_from_camera", None)
             if camera_pose is not None and world_transform is not None:
-                camera_pose = world_transform.matrix() @ camera_pose
+                camera_pose = np.array(camera_pose, copy=True)
+                camera_pose[:3, :3] = world_transform.rotation @ camera_pose[:3, :3]
+                camera_pose[:3, 3] = world_transform.apply(camera_pose[:3, 3][None])[0]
             world_cov = np.asarray(obs.covariance, dtype=np.float32)
             if world_transform is not None:
                 rot = world_transform.rotation

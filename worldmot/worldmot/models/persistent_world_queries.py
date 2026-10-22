@@ -108,9 +108,10 @@ class PersistentWorldQueryTransformer(nn.Module):
         if self.ablation == "no_appearance":
             rgb, det, omega = rgb * 0, det * 0, omega * 0
         visual = self.appearance_fusion(torch.cat([rgb, det, omega], -1))
-        g = geometry if self.ablation != "no_omega" else geometry * 0
+        geometry_disabled = self.ablation in ("no_omega", "no_geometry")
+        g = geometry * 0 if geometry_disabled else geometry
         auxiliary = observations[..., -2:]
-        if self.ablation == "no_omega":
+        if geometry_disabled:
             auxiliary = torch.cat([auxiliary[..., :1], auxiliary[..., 1:] * 0], -1)
         return visual + self.observed_geometry_projection(torch.cat([g, auxiliary], -1))
 
@@ -180,7 +181,7 @@ class PersistentWorldQueryTransformer(nn.Module):
         b = observations.shape[0]
         if state is None:
             state = self.init_state(b, observations.device, observations.dtype)
-        if self.ablation == "no_omega": observation_geometry = observation_geometry * 0
+        if self.ablation in ("no_omega", "no_geometry"): observation_geometry = observation_geometry * 0
         obs = self.encode_observations(observations, observation_geometry)
         visual_obs = obs
         no = obs.shape[1]
@@ -220,7 +221,7 @@ class PersistentWorldQueryTransformer(nn.Module):
         similarity = qkey @ okey.transpose(-1, -2)
         rel = observation_geometry[:, None, :, :6] - state.geometry[:, :, None, :6]
         geo_match = self.match_geometry_head(rel).squeeze(-1)
-        if self.ablation == "no_omega": geo_match = geo_match * 0
+        if self.ablation in ("no_omega", "no_geometry"): geo_match = geo_match * 0
         decoded["assignment_logits"] = torch.cat([
             decoded["assignment_logits"][..., :-1] + self.logit_scale.exp().clamp_max(20) * similarity + geo_match,
             decoded["assignment_logits"][..., -1:]], -1)

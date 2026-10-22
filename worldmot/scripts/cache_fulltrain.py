@@ -19,6 +19,7 @@ DEFAULT_DETECTOR = '/data1/liuyeqiang/WWW_fulltrain/worldmot/assets/mmdetection/
 DEFAULT_WEIGHTS = '/data1/liuyeqiang/models/rtmdet/rtmdet-ins_tiny_8xb32-300e_coco_20221130_151727-ec670f7e.pth'
 DEFAULT_OMEGA = '/data1/liuyeqiang/WWW_omega_runtime_20261016/official_vggt_omega'
 DEFAULT_OMEGA_WEIGHTS = '/data1/liuyeqiang/WWW_omega_runtime_20261016/weights/vggt_omega_1b_512.pt'
+INPUT_CONTRACT = 'caller_RGB_to_contiguous_BGR_for_MMDetection'
 def sha(path):
     h=hashlib.sha256()
     with open(path,'rb') as f:
@@ -66,7 +67,7 @@ def cache_scene(ds,sid,destination,detector,omega,shard_frames=128,limit=None):
     expected=[p.frame_id for p in pairs];ex=SceneExtractor(detector,omega);completed=[];records=[];buffer=[];totals=collections.Counter();start=time.perf_counter()
     for path in sorted(dest.glob('shard_*.json')):
         entry=json.loads(path.read_text());payload=dest/entry['file']
-        if entry['schema']!=SCHEMA or not payload.exists() or sha(payload)!=entry['sha256']:raise RuntimeError(f'cache integrity failure: {path}')
+        if entry['schema']!=SCHEMA or entry.get('detector_input_contract')!=INPUT_CONTRACT or not payload.exists() or sha(payload)!=entry['sha256']:raise RuntimeError(f'cache integrity/input contract failure: {path}')
         if entry['frames']!=expected[len(completed):len(completed)+len(entry['frames'])]:raise RuntimeError('noncontiguous cache prefix')
         completed.extend(entry['frames']);totals.update(entry['counts']);records.append(entry)
     if completed and len(completed)<len(expected):ex.restore(ds,sid,records[-1]['last_frame'])
@@ -80,7 +81,8 @@ def cache_scene(ds,sid,destination,detector,omega,shard_frames=128,limit=None):
                 if target.identity_key:raw=int(target.identity_key.split(':id')[1]);counts['positive_observations']+=1
                 elif target.source=='ambiguous_duplicate_identity_masked':raw=-2;counts['ambiguous_observations']+=1
                 else:counts['negative_observations']+=1
-                features.append(np.nan_to_num(token.feature,nan=0,posinf=0,neginf=0));geo.append(np.nan_to_num(token.geometry_feature))
+                if not np.isfinite(token.feature).all() or not np.isfinite(token.geometry_feature).all():raise RuntimeError('nonfinite source feature; refusing silent cache substitution')
+                features.append(token.feature);geo.append(token.geometry_feature)
                 cameras.append(token.camera_id);valid.append(token.valid);targets.append(raw);boxes.append(token.bbox)
                 xyz.append(token.xyz_world);cov.append(token.covariance);geom_valid.append(token.diagnostics['geometry_coordinate_valid']);pure.append(token.diagnostics.get('pure_3d_bbox_xywh') or [np.nan]*4)
             offs.append(len(features));counts['observations']+=len(tokens);counts['valid_observations']+=sum(t.valid for t in tokens)
@@ -88,10 +90,11 @@ def cache_scene(ds,sid,destination,detector,omega,shard_frames=128,limit=None):
                 'geometry':np.asarray(geo,np.float32).reshape(-1,18),'camera_ids':np.asarray(cameras,np.int8),'observation_valid':np.asarray(valid,bool),'identity':np.asarray(targets,np.int32),
                 'bbox':np.asarray(boxes,np.float32).reshape(-1,4),'xyz_world':np.asarray(xyz,np.float32).reshape(-1,3),'covariance':np.asarray(cov,np.float32).reshape(-1,3,3),
                 'geometry_valid':np.asarray(geom_valid,bool),'pure_projection_bbox':np.asarray(pure,np.float32).reshape(-1,4)}
+        if not np.isfinite(arrays['observations']).all():raise RuntimeError('FP16 feature overflow')
         path=dest/f'shard_{len(records):04d}.npz';tmp=path.with_suffix('.tmp')
         with tmp.open('wb') as f:np.savez_compressed(f,**arrays)
         os.replace(tmp,path)
-        entry={'schema':SCHEMA,'scene':sid,'frames':timestamps,'file':path.name,'sha256':sha(path),'counts':dict(counts),'bytes':path.stat().st_size,
+        entry={'schema':SCHEMA,'detector_input_contract':INPUT_CONTRACT,'scene':sid,'frames':timestamps,'file':path.name,'sha256':sha(path),'counts':dict(counts),'bytes':path.stat().st_size,
                'last_frame':buffer[-1][3],'per_frame':[r[3] for r in buffer]}
         atomic_json(path.with_suffix('.json'),entry);records.append(entry);totals.update(counts);completed.extend(timestamps);buffer.clear()
         atomic_json(dest/'progress.json',{'scene':sid,'done':len(completed),'expected':len(expected),'counts':dict(totals),'elapsed_s':time.perf_counter()-start})
