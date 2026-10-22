@@ -19,6 +19,60 @@ from worldmot.models.person_detector import PersonDetector
 from worldmot.runtime.detection_first import DetectionFirstWorldMOT
 
 
+def _compact_record(row: dict) -> dict:
+    """Keep only fields required for reproducible metrics and failure audits.
+
+    The normal runner preserves full manifests for single-scene forensic work.
+    Full-scene sweeps use this projection so repeated detector/Omega manifests
+    do not turn every synchronized timestamp into a multi-hundred-kilobyte
+    JSON record.
+    """
+    detections = {}
+    for view, values in row.get("detections_by_camera", {}).items():
+        detections[str(view)] = [
+            {"bbox_xywh": list(d.get("bbox_xywh", [])), "score": float(d.get("score", 0.0))}
+            for d in values
+        ]
+    observations = []
+    for obs in row.get("world_observations", []):
+        observations.append({
+            "fusion_status": obs.get("fusion_status", "UNKNOWN"),
+            "geometry_reliable": bool(obs.get("geometry_reliable", False)),
+        })
+    tracks = {}
+    for view, values in row.get("tracks_2d_by_camera", {}).items():
+        tracks[str(view)] = [
+            {
+                "global_id": int(t["global_id"]),
+                "visible": bool(t.get("visible", False)),
+                "evaluation_eligible": bool(t.get("evaluation_eligible", False)),
+                "bbox_xywh": list(t["bbox_xywh"]) if t.get("bbox_xywh") is not None else None,
+            }
+            for t in values
+        ]
+    runtime = row.get("runtime", {}) or {}
+    return {
+        "timestamp": int(row["timestamp"]),
+        "scene_id": row.get("scene_id"),
+        "detections_by_camera": detections,
+        "world_observations": observations,
+        "tracks_2d_by_camera": tracks,
+        "geometry_status": row.get("geometry_status"),
+        "alignment": row.get("alignment", {}),
+        "fusion": row.get("fusion", {}),
+        "runtime": {
+            "frame_stages": runtime.get("frame_stages", {}),
+            "frame_total_s": float(runtime.get("frame_total_s", 0.0)),
+        },
+        "proposal_count": int(row.get("proposal_count", 0)),
+        "causal": bool(row.get("causal", True)),
+        "ablation": row.get("ablation"),
+        "image_ids": row.get("image_ids", {}),
+        "rgb_read_s": float(row.get("rgb_read_s", 0.0)),
+        "end_to_end_s": float(row.get("end_to_end_s", 0.0)),
+    }
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dataset-root", default="/data/DATASETS/TRACKING/JDE/VisionTrack")
@@ -33,6 +87,8 @@ def main() -> int:
     ap.add_argument("--det-score", type=float, default=0.25)
     ap.add_argument("--image-resolution", type=int, default=512)
     ap.add_argument("--output-dir", default="results/detection_order/A")
+    ap.add_argument("--compact-output", action="store_true",
+                    help="write metric/failure fields without repeated backend manifests")
     args = ap.parse_args()
     outdir = Path(args.output_dir) / f"scene_{args.scene:02d}"
     outdir.mkdir(parents=True, exist_ok=True)
@@ -65,11 +121,13 @@ def main() -> int:
                 row["end_to_end_s"] = float(read_s + row["runtime"].get("frame_total_s", 0.0))
                 row["runtime"].setdefault("frame_stages", {})["rgb_read"] = float(read_s)
                 row["runtime"]["frame_stages"]["end_to_end"] = float(row["end_to_end_s"])
+                if args.compact_output:
+                    row = _compact_record(row)
                 f.write(json.dumps(row, ensure_ascii=False, default=lambda x: x.tolist() if hasattr(x, "tolist") else str(x)) + "\n")
                 f.flush()
                 summary["records"].append({"frame": pair.frame_id, "geometry_status": row["geometry_status"],
                                            "alignment": row["alignment"], "proposal_count": row["proposal_count"],
-                                           "track_count": len(row["tracks_3d"])})
+                                           "track_count": len(row.get("tracks_3d", []))})
         summary["status"] = "PASS" if len(summary["records"]) == args.limit else "PARTIAL"
         summary["runtime"] = runtime.timer.summary()
         summary["jsonl"] = str(jsonl)
