@@ -1,0 +1,44 @@
+{
+  "project": "WorldMOT",
+  "code_root": "/data1/liuyeqiang/WorldMOT",
+  "backend": "official PanSt3R v2, two keyframes, use_retrieval=False, standard_v2",
+  "inference_uses_gt": false,
+  "gmt_integration": "NOT_ATTEMPTED",
+  "fallback_person": "DISABLED_OR_DEPENDENCY_BLOCKED; no fallback predictions used",
+  "statuses": {
+    "PIPELINE_EXECUTABLE": "PASS",
+    "REAL_PANOPTIC_INSTANCE_STATUS": "PASS_WITH_FALSE_POSITIVES",
+    "WORLD_ALIGNMENT_STATUS": "PASS",
+    "TEMPORAL_ID_STATUS": "PARTIAL_FAILURES_RECORDED",
+    "REPROJECTION_STATUS": "PASS_WITH_DETECTION_ERRORS",
+    "FPS_MEASURED": "PASS",
+    "SCIENTIFIC_SUCCESS_NOT_YET_CLAIMED": true
+  },
+  "acceptance_gate_summary": {
+    "gate_a_real_multiview_instance": "PASS_WITH_QUALITY_LIMITS",
+    "gate_b_3d_instance_and_projection": "PASS_WITH_POSTHOC_2D_ERRORS",
+    "gate_c_100_group_persistent_state": "PASS_ENGINEERING_GATE; identity accuracy remains partial",
+    "gate_d_two_scene_end_to_end": "PASS",
+    "gate_e_real_fps": "PASS"
+  },
+  "evidence": {
+    "environment": "results/environment_audit.json",
+    "smoke_visualization": "results/worldmot_smoke_v2/pointcloud_3d.png",
+    "instance_visualization": "results/worldmot_smoke_v2/instance_visualization.json",
+    "geometry": "results/worldmot_geometry_audit.json",
+    "instances": "results/worldmot_instance_audit.json",
+    "projection": "results/worldmot_projection_audit.json",
+    "tracking": "results/worldmot_tracking_audit.json",
+    "fps": "results/worldmot_fps.json",
+    "continuous_artifacts": [
+      "results/continuous_v0_100/scene_08/artifacts/artifact_manifest.json",
+      "results/continuous_v0_100/scene_09/artifacts/artifact_manifest.json"
+    ]
+  },
+  "failure_samples": {
+    "scene_08": "results/worldmot_tracking_audit_scene08_100.json",
+    "scene_09": "results/worldmot_tracking_audit_scene09_100.json",
+    "scene_24_crowded": "results/worldmot_tracking_audit_scene24_20.json"
+  },
+  "scientific_conclusion": "The independent RGB-to-PanSt3R-to-WorldInstance-to-Sim3-to-persistent-ID-to-reprojection loop is executable. Native person-query precision and temporal/cross-view identity are not yet strong enough for a scientific MOT success claim or GMT integration."
+}

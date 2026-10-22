@@ -1,0 +1,122 @@
+{
+  "exact_stage_split_source": "results/continuous_v1_stage10/scene_08/summary.json",
+  "exact_stage_split": {
+    "preprocess": {
+      "count": 10,
+      "mean_s": 0.06242907792329788,
+      "p50_s": 0.06066565215587616,
+      "p95_s": 0.07270906120538712,
+      "total_s": 0.6242907792329788
+    },
+    "model_only": {
+      "count": 10,
+      "mean_s": 0.7467282988131047,
+      "p50_s": 0.6241370663046837,
+      "p95_s": 1.711557149887085,
+      "total_s": 7.467282988131046
+    },
+    "panoptic": {
+      "count": 10,
+      "mean_s": 0.34218221455812453,
+      "p50_s": 0.3217220604419708,
+      "p95_s": 0.39393405616283417,
+      "total_s": 3.4218221455812454
+    },
+    "pointmap_postprocess": {
+      "count": 10,
+      "mean_s": 0.04302014708518982,
+      "p50_s": 0.015810079872608185,
+      "p95_s": 0.27413860708475113,
+      "total_s": 0.4302014708518982
+    },
+    "geometry": {
+      "count": 10,
+      "mean_s": 1.2020643211901187,
+      "p50_s": 1.0612462162971497,
+      "p95_s": 2.361807607114315,
+      "total_s": 12.020643211901188
+    },
+    "world_alignment": {
+      "count": 10,
+      "mean_s": 0.19662176966667175,
+      "p50_s": 0.19068122655153275,
+      "p95_s": 0.4305727407336235,
+      "total_s": 1.9662176966667175
+    },
+    "instance_build": {
+      "count": 10,
+      "mean_s": 0.01208837553858757,
+      "p50_s": 0.011563636362552643,
+      "p95_s": 0.016120970249176025,
+      "total_s": 0.1208837553858757
+    },
+    "identity_memory": {
+      "count": 10,
+      "mean_s": 0.0006200179457664489,
+      "p50_s": 0.000610843300819397,
+      "p95_s": 0.0010167062282562256,
+      "total_s": 0.00620017945766449
+    },
+    "reprojection": {
+      "count": 10,
+      "mean_s": 0.0060483992099761965,
+      "p50_s": 0.005408912897109985,
+      "p95_s": 0.008408226072788239,
+      "total_s": 0.06048399209976196
+    },
+    "total": {
+      "count": 10,
+      "mean_s": 1.4288003891706467,
+      "p50_s": 1.2977370545268059,
+      "p95_s": 2.3917730152606964,
+      "total_s": 14.288003891706467
+    }
+  },
+  "model_only_fps_mean": 1.3391751746779395,
+  "pipeline_fps_stage10": 0.6998878272845757,
+  "continuous_100_runs": [
+    {
+      "name": "scene_08_100",
+      "frames": 100,
+      "pipeline_fps": 0.7590307200814953,
+      "total_mean_s": 1.3174697328358889,
+      "total_p50_s": 1.284798078238964,
+      "total_p95_s": 1.373722605407238,
+      "host_max_rss_mb": 6082.12109375,
+      "gpu_max": {
+        "available": true,
+        "device": "cuda:0",
+        "allocated_mb": 3074.67236328125,
+        "reserved_mb": 4478.0,
+        "peak_allocated_mb": 3954.41552734375,
+        "peak_reserved_mb": 4478.0
+      },
+      "model_only_note": "legacy timing field from v0 run; exact forward-only split is the 10-frame stage audit above"
+    },
+    {
+      "name": "scene_09_100",
+      "frames": 100,
+      "pipeline_fps": 0.813604817966084,
+      "total_mean_s": 1.2290979329496623,
+      "total_p50_s": 1.2101329416036606,
+      "total_p95_s": 1.3170511424541473,
+      "host_max_rss_mb": 6144.890625,
+      "gpu_max": {
+        "available": true,
+        "device": "cuda:0",
+        "allocated_mb": 3074.67236328125,
+        "reserved_mb": 4478.0,
+        "peak_allocated_mb": 3954.41552734375,
+        "peak_reserved_mb": 4478.0
+      },
+      "model_only_note": "legacy timing field from v0 run; exact forward-only split is the 10-frame stage audit above"
+    }
+  ],
+  "camera_image_throughput_fps": null,
+  "parallel_gpu_aggregate_fps": null,
+  "notes": [
+    "FPS is synchronized two-camera group throughput on one V100 (cuda:0).",
+    "No four-GPU aggregate throughput is claimed.",
+    "The PanSt3R RoPE CUDA extension was unavailable; official PyTorch RoPE fallback was used."
+  ]
+}
