@@ -75,6 +75,8 @@ def collect(root,output,require_complete=False):
     root=Path(root);out=Path(output);out.mkdir(parents=True,exist_ok=True)
     state=read(root/'experiment_status.json',{'stage':'NOT_STARTED'})
     verification=read(root/'cache_verification/coverage.json')
+    extracted=read(root/'cache_complete.json')
+    extraction_complete=bool(extracted and extracted.get('status')=='COMPLETE' and extracted.get('timestamps')==28754 and len(extracted.get('scenes',[]))==24)
     progress=[r for p in sorted((root/'train_cache').glob('scene_*/progress.json')) if (r:=read(p)) is not None]
     training=[]
     for phase in ['internal','final']:
@@ -87,9 +89,11 @@ def collect(root,output,require_complete=False):
                 'source_sha256':row.get('source_provenance',{}).get('sha256'),'history':row.get('history',[]),
                 'manifest':str(path),'manifest_sha256':sha(path),
                 'checkpoint_sha256':sha(path.with_suffix('.pt')) if path.with_suffix('.pt').is_file() else None})
-    coverage={'status':verification['status'] if verification else 'CORRECTED_TRAIN_CACHE_RUNNING',
+    coverage={'status':verification['status'] if verification else ('FULL_TRAIN_CACHE_EXTRACTED_AWAITING_VERIFICATION' if extraction_complete else 'CORRECTED_TRAIN_CACHE_RUNNING'),
         'updated_utc':state.get('updated_utc'),'expected_scenes':24,'expected_timestamps':28754,
         'cached_timestamps':sum(r['done'] for r in progress),'completed_cache_scenes':sum(r['done']==r['expected'] for r in progress),
+        'cache_extraction_complete':extraction_complete,'cache_verification_complete':bool(verification),
+        'cache_extraction_manifest_sha256':sha(root/'cache_complete.json') if extracted else None,
         'detector_input_verified':read(root/'detector_channel_verification.json',{}).get('status')=='PASS_OFFICIAL_FILENAME_EQUIVALENCE',
         'invalidated_cache':read(root/'channel_cache_invalidation.json'),
         'per_scene':[{k:r[k] for k in ['scene','done','expected','counts']} for r in progress],
