@@ -41,7 +41,7 @@ The original seven final fits completed and passed strict model-state loading, f
 
 The synchronized V100 probe uses four real 32-frame clips, batch shape 4×32×46×532. Both models produce finite updates. The single training-batch wall times are 1.496 seconds for small and 2.072 seconds for large, with peak allocated memory approximately 0.70 GiB and 2.82 GiB respectively. These cold, finite training checks do not estimate full-epoch time, inference FPS or a whole-video memory maximum. Exact clips and scope are in `results/worldmot_v2_capacity_V100_probe.json`. The original v1/v2/GMT full-video comparisons have started on the other three cards. An independent four-card TEST follow-up for the four capacity fits waits until both the original comparisons and all capacity fitting/selection/freezing complete; it cannot read TEST for model selection.
 
-PWQT-L has completed eight full internal epochs, each covering 22,894 timestamps across all 18 training scenes. The epoch losses are 56.4137, 45.2698, 25.4403, 6.2732, 4.7003, 17.9962, 5.0167 and 1.9949; epoch 8 has pair loss 0.7881. The rebound at epoch 6 demonstrates substantial optimization variance, so the later descent does not establish convergence, capacity improvement or generalization. The 24-epoch large internal fit still excludes selection, small controls, final three-seed fitting and independent TEST. Actual coverage and full curves are in `results/worldmot_v2_capacity_training_curves.json`.
+PWQT-L has completed ten full internal epochs, each covering 22,894 timestamps across all 18 training scenes. The epoch losses are 56.4137, 45.2698, 25.4403, 6.2732, 4.7003, 17.9962, 5.0167, 1.9949, 1.6086 and 1.8613; epoch 10 has pair loss 0.1891. The rebound at epoch 6 and the later small increase demonstrate optimization variance, so the current descent does not establish convergence, capacity improvement or generalization. The 24-epoch large internal fit still excludes selection, small controls, final three-seed fitting and independent TEST. Actual coverage and full curves are in `results/worldmot_v2_capacity_training_curves.json`.
 
 Two read-only audits accompany the fixed study. `watch_capacity_validation_loss.py` computes complete six-scene held-out TRAIN teacher-forced loss on CPU for the already registered checkpoints as they appear; the registered GPU selector does not consume these diagnostic files, and no budget or threshold changes follow them. `audit_capacity_control_prefix.py` compares the actual small-model epoch-4 control with the original epoch-4 internal model, including their recorded recipe, cache and weight tensors. This tests the matched-prefix assumption without promising bitwise CUDA determinism. These helpers use no TEST data and do not modify trained weights.
 
@@ -56,6 +56,6 @@ Status: IN_PROGRESS.
 
 | Trial | Profile | Seed | Completed epochs | Timestamps / epoch | Status |
 |---|---|---:|---:|---:|---|
-| large | large | 20261022 | 8 | 22894 | TRAINING_RUNNING |
+| large | large | 20261022 | 10 | 22894 | TRAINING_RUNNING |
 
 Independent TEST scores and real inference FPS are pending. TRAIN optimization losses and cached identity surrogates are not independent MOT accuracy.
