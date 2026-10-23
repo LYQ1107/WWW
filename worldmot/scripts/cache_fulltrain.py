@@ -10,6 +10,7 @@ from worldmot.geometry.relative_geometry_encoding import GeometryNormalization
 from worldmot.geometry.world_alignment import Sim3, Sim3Aligner
 from worldmot.models.omega_geometry_backend import OmegaGeometryBackend
 from worldmot.models.person_detector import PersonDetector
+from worldmot.models.person_detector_factory import make_person_detector
 from worldmot.models.world_observation_encoder import MultiViewObservationEncoder
 from worldmot.runtime.online_worldmot import OnlineWorldMOT
 from worldmot.runtime.online_worldmot_v2 import OnlineWorldMOTV2
@@ -32,9 +33,13 @@ def read_images(ds,pair):
 class SceneExtractor:
     def __init__(self,detector,omega):
         self.detector,self.omega=detector,omega
-        self.encoder=MultiViewObservationEncoder(); self.aligner=Sim3Aligner(); self.previous=None; self.previous_world={}; self.reference=None
+        self.encoder=MultiViewObservationEncoder(); self.aligner=Sim3Aligner(); self.previous=None; self.previous_world={}; self.reference=None;self.scene_id=None
     def align_encode(self,images,timestamp):
-        started=time.perf_counter(); dets=self.detector.infer(images); frame=self.omega.reconstruct(images,timestamp)
+        started=time.perf_counter()
+        if hasattr(self.detector,'set_context'):
+            if self.scene_id is None:raise RuntimeError('Replay requires explicit scene context')
+            self.detector.set_context(self.scene_id,timestamp)
+        dets=self.detector.infer(images); frame=self.omega.reconstruct(images,timestamp)
         OnlineWorldMOTV2._set_dynamic_masks(frame,dets); astart=time.perf_counter()
         if self.previous is None: alignment=self.aligner.initialize()
         else:
@@ -56,6 +61,7 @@ class SceneExtractor:
         r=meta.get('reference')
         if not r:return
         pair=next(ds.synchronized_pairs(sid,start_frame=r['timestamp'],limit=1)); images=read_images(ds,pair)
+        if hasattr(self.detector,'set_context'):self.detector.set_context(sid,pair.frame_id)
         dets=self.detector.infer(images); frame=self.omega.reconstruct(images,pair.frame_id); OnlineWorldMOTV2._set_dynamic_masks(frame,dets)
         t=Sim3(r['scale'],np.asarray(r['rotation']),np.asarray(r['translation'])); self.previous=frame
         self.previous_world={v:t.apply(pm.reshape(-1,3)).reshape(pm.shape) for v,pm in frame.pointmaps.items()};self.reference=r
@@ -64,7 +70,7 @@ class SceneExtractor:
 def cache_scene(ds,sid,destination,detector,omega,shard_frames=128,limit=None):
     dest=Path(destination)/f'scene_{sid:02d}'; dest.mkdir(parents=True,exist_ok=True)
     pairs=list(ds.synchronized_pairs(sid));pairs=pairs[:limit] if limit else pairs
-    expected=[p.frame_id for p in pairs];ex=SceneExtractor(detector,omega);completed=[];records=[];buffer=[];totals=collections.Counter();start=time.perf_counter()
+    expected=[p.frame_id for p in pairs];ex=SceneExtractor(detector,omega);ex.scene_id=int(sid);completed=[];records=[];buffer=[];totals=collections.Counter();start=time.perf_counter()
     for path in sorted(dest.glob('shard_*.json')):
         entry=json.loads(path.read_text());payload=dest/entry['file']
         if entry['schema']!=SCHEMA or entry.get('detector_input_contract')!=INPUT_CONTRACT or not payload.exists() or sha(payload)!=entry['sha256']:raise RuntimeError(f'cache integrity/input contract failure: {path}')
@@ -113,11 +119,17 @@ def cache_scene(ds,sid,destination,detector,omega,shard_frames=128,limit=None):
     atomic_json(dest/'manifest.json',result);return result
 
 def main():
+    global SCHEMA,INPUT_CONTRACT
     p=argparse.ArgumentParser();p.add_argument('--dataset-root',default='/data/DATASETS/TRACKING/JDE/VisionTrack');p.add_argument('--output',required=True)
     p.add_argument('--scenes',nargs='+',type=int,required=True);p.add_argument('--device',default='cuda:0');p.add_argument('--shard-frames',type=int,default=128);p.add_argument('--limit',type=int)
+    p.add_argument('--detector',choices=['rtmdet','gmt_pre_gta'],default='rtmdet');p.add_argument('--gmt-raw-cache')
     a=p.parse_args();import torch;torch.set_num_threads(2)
     import cv2;cv2.setNumThreads(1)
-    ds=VisionTrack(a.dataset_root,split='train');det=PersonDetector(DEFAULT_DETECTOR,DEFAULT_WEIGHTS,a.device,expose_intermediate_features=True)
+    if a.detector=='gmt_pre_gta':
+        SCHEMA='worldmot_object_v4_gmt_rgb128_detector128_omega256_geometry18_scores2'
+        INPUT_CONTRACT='caller_RGB_immutable_GMT_pre_GTA_ROI_F32'
+    ds=VisionTrack(a.dataset_root,split='train')
+    det=make_person_detector(a.detector,a.device,DEFAULT_DETECTOR,DEFAULT_WEIGHTS,True,a.gmt_raw_cache,'replay')
     om=OmegaGeometryBackend(DEFAULT_OMEGA,DEFAULT_OMEGA_WEIGHTS,device=a.device,expose_intermediate_features=True)
     if det.status!='READY' or om.status!='READY':raise RuntimeError(f'backend not ready: {det.reason} {om.reason}')
     for sid in a.scenes:cache_scene(ds,sid,a.output,det,om,a.shard_frames,a.limit)

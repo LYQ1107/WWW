@@ -21,6 +21,7 @@ class ImmutableGMTDetectionCache:
         self._loaded_key=None
         self._arrays=None
         self._context=None
+        self._manifests={}
 
     def manifest(self):
         return {'status':self.status,'source':'gmt_pre_gta_detector',
@@ -39,7 +40,10 @@ class ImmutableGMTDetectionCache:
     def get(self,scene,timestamp,images=None,image_ids=None):
         start=time.perf_counter()
         directory=self.root/f'scene_{int(scene):02d}'
-        manifest=json.loads((directory/'manifest.json').read_text())
+        if int(scene) not in self._manifests:
+            current=json.loads((directory/'manifest.json').read_text())
+            if current.get('status')=='COMPLETE':self._manifests[int(scene)]=current
+        manifest=self._manifests.get(int(scene),current if 'current' in locals() else {})
         if manifest.get('status')!='COMPLETE' or manifest['signature']!=self.lock:
             raise RuntimeError('Replay requires a complete immutable scene with matching detector lock')
         candidates=[s for s in manifest['shards'] if int(timestamp) in s['timestamps']]

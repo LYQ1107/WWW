@@ -68,6 +68,8 @@ def main(argv=None):
     if not len(ds):raise RuntimeError('empty feature cache')
     model=PersistentWorldQueryTransformer(observation_dim=532,hidden_dim=a.hidden_dim,max_world_queries=a.max_queries,ablation=a.ablation).to(a.device)
     provenance=source_stamp();cache_provenance=cache_stamp(a.cache,ds.scenes)
+    cache_schemas=sorted({m['schema'] for m in cache_provenance.values()})
+    gmt_frontend=any('_gmt_' in schema for schema in cache_schemas)
     criterion=TemporalQueryCriterion();opt=torch.optim.AdamW(model.parameters(),lr=a.lr,weight_decay=1e-4);start_epoch=0;history=[]
     if a.resume:
         payload=torch.load(a.resume,map_location=a.device,weights_only=True)
@@ -81,6 +83,9 @@ def main(argv=None):
               'gradient_clip_norm':1.,'gradient_norm_log':'pre_clip','supervision_counts':'actual epoch sums; losses are batch/step means'}
     manifest.update(source_provenance=provenance,cache_provenance=cache_provenance,
                     resume_checkpoint=str(a.resume) if a.resume else None,resume_rng_restored=bool(a.resume))
+    manifest['feature_cache_schemas']=cache_schemas
+    manifest['detector_frontend']='gmt_pre_gta_detector' if gmt_frontend else 'rtmdet'
+    if gmt_frontend:manifest['initialization']='fixed_seed_random_pwqt_frozen_official_GMT_pre_GTA_omega'
     official_lengths = [932,1886,1200,901,1769,601,443,523,1942,2092,2057,1200,1621,969,1048,1034,1200,1029,1052,1001,1001,1000,1052,1201]
     complete_all_train = sorted(ds.scenes) == list(range(1,25)) and all(len(ds.scenes[s]) == official_lengths[s-1] for s in ds.scenes)
     manifest['full_train_coverage'] = bool(complete_all_train)

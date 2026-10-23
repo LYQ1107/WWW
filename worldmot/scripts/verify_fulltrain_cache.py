@@ -9,6 +9,23 @@ from worldmot.training.identity_targets import match_detections_to_gt,iou_xywh
 from cache_fulltrain import sha,atomic_json
 from audit_cached_coordinates import coordinate_summary
 
+
+def verify_detector_contract(manifest,directory):
+    detector=manifest['detector']
+    if detector.get('source')=='gmt_pre_gta_detector':
+        from worldmot.models.gmt_detector_adapter import GMT_CHECKPOINT_SHA256
+        if '_gmt_' not in manifest['schema']:raise RuntimeError('GMT source mislabeled as an original RTMDet cache')
+        path=Path(detector['cache'])/'DETECTOR_LOCK.json'
+        if sha(path)!=detector['cache_lock_sha256']:raise RuntimeError('Shared detector lock changed')
+        lock=json.loads(path.read_text())
+        if (lock['checkpoint_sha256']!=GMT_CHECKPOINT_SHA256 or lock['split']!='train'
+            or lock['roi_feature_dim']<=0 or detector.get('GT_in_cache') or detector.get('track_ids_in_cache')):
+            raise RuntimeError('Unverified GMT detector cache contract')
+        return 'GMTDetector'
+    if detector.get('input_contract')!='caller_RGB_to_contiguous_BGR_for_MMDetection':
+        raise RuntimeError('unverified detector color contract: '+str(directory))
+    return 'RTMDet'
+
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--cache',required=True);p.add_argument('--output',required=True);a=p.parse_args()
     ds=VisionTrack('/data/DATASETS/TRACKING/JDE/VisionTrack',split='train');out=Path(a.output);out.mkdir(parents=True,exist_ok=True);scenes=[]
@@ -16,7 +33,7 @@ if __name__=='__main__':
         for sid in ds.scene_ids():
             directory=Path(a.cache)/f'scene_{sid:02d}';seen=[];counts=collections.Counter();branch_missing=collections.Counter();shards=[];frame_metadata=[];geometry_positions=[]
             manifest=json.loads((directory/'manifest.json').read_text())
-            if manifest['detector'].get('input_contract')!='caller_RGB_to_contiguous_BGR_for_MMDetection':raise RuntimeError('unverified detector color contract: '+str(directory))
+            detector_label=verify_detector_contract(manifest,directory)
             pairs={p.frame_id:p for p in ds.synchronized_pairs(sid)}
             for shard in sorted(directory.glob('shard_*.npz')):
                 meta=json.loads(shard.with_suffix('.json').read_text())
@@ -31,7 +48,7 @@ if __name__=='__main__':
                     counts['world_geometry_valid_observations']+=int(d['geometry_valid'].sum())
                     counts['world_geometry_invalid_observations']+=int(len(d['geometry_valid'])-d['geometry_valid'].sum())
                     geometry_positions.append(d['geometry'][d['geometry_valid'],:3])
-                    for name,start,end in [('RGB',0,128),('RTMDet',128,256),('Omega',256,512)]:branch_missing[name]+=int((np.linalg.norm(d['observations'][:,start:end].astype(np.float32),axis=-1)<1e-8).sum())
+                    for name,start,end in [('RGB',0,128),(detector_label,128,256),('Omega',256,512)]:branch_missing[name]+=int((np.linalg.norm(d['observations'][:,start:end].astype(np.float32),axis=-1)<1e-8).sum())
                     for i,timestamp in enumerate(d['timestamps']):
                         timestamp=int(timestamp);seen.append(timestamp);lo,hi=map(int,d['frame_offsets'][i:i+2]);pair=pairs[timestamp];gt=ds.ground_truth_pair(pair);dets={1:[],2:[]};indices={1:[],2:[]}
                         for o in range(lo,hi):

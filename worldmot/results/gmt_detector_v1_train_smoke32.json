@@ -1,0 +1,102 @@
+{
+  "status": "COMPLETE_TRAIN_PILOT_DIAGNOSTIC",
+  "scope": "post-hoc TRAIN at fixed IoU .5",
+  "official_TEST_metrics": false,
+  "raw_GT_modified": false,
+  "counts": {
+    "raw_candidates": 128,
+    "output_boxes": 128,
+    "GT_matched_output_boxes": 128,
+    "same_GT_both_views_detected": 64,
+    "correct_cross_view_shared_ID": 64
+  },
+  "per_scene": {
+    "8": {
+      "counts": {
+        "raw_candidates": 128,
+        "output_boxes": 128,
+        "GT_matched_output_boxes": 128,
+        "same_GT_both_views_detected": 64,
+        "correct_cross_view_shared_ID": 64
+      },
+      "real_e2e_fps": 0.5903614010757319,
+      "stages": {
+        "person_detection": {
+          "count": 32,
+          "total_s": 14.719317741692066,
+          "p50_s": 0.4337889775633812,
+          "p95_s": 0.490836289152503,
+          "mean_s": 0.45997867942787707
+        },
+        "world_alignment": {
+          "count": 32,
+          "total_s": 10.222616836428642,
+          "p50_s": 0.3077348321676254,
+          "p95_s": 0.37475810497999185,
+          "mean_s": 0.31945677613839507
+        },
+        "detection_to_world": {
+          "count": 32,
+          "total_s": 1.3579892218112946,
+          "p50_s": 0.04129403829574585,
+          "p95_s": 0.04937903322279453,
+          "mean_s": 0.042437163181602955
+        },
+        "instance_build": {
+          "count": 32,
+          "total_s": 0.10542728006839752,
+          "p50_s": 0.003206811845302582,
+          "p95_s": 0.004603428393602371,
+          "mean_s": 0.0032946025021374226
+        },
+        "identity_memory": {
+          "count": 32,
+          "total_s": 0.14436672627925873,
+          "p50_s": 0.0004619881510734558,
+          "p95_s": 0.0006712879985570908,
+          "mean_s": 0.004511460196226835
+        },
+        "reprojection": {
+          "count": 32,
+          "total_s": 0.05566691607236862,
+          "p50_s": 0.001643165946006775,
+          "p95_s": 0.0022680006921291353,
+          "mean_s": 0.0017395911272615194
+        },
+        "preprocess": {
+          "count": 32,
+          "total_s": 3.357073485851288,
+          "p50_s": 0.07254557684063911,
+          "p95_s": 0.10922060124576091,
+          "mean_s": 0.10490854643285275
+        },
+        "omega_forward": {
+          "count": 32,
+          "total_s": 12.894280232489109,
+          "p50_s": 0.39643630012869835,
+          "p95_s": 0.40328641012310984,
+          "mean_s": 0.40294625726528466
+        },
+        "detector_forward": {
+          "count": 32,
+          "total_s": 14.718808114528656,
+          "p50_s": 0.43377528339624405,
+          "p95_s": 0.49082390554249283,
+          "mean_s": 0.4599627535790205
+        },
+        "total": {
+          "count": 32,
+          "total_s": 47.542272448539734,
+          "p50_s": 1.3973771147429943,
+          "p95_s": 1.8056065686047074,
+          "mean_s": 1.4856960140168667
+        }
+      },
+      "manifest_sha256": "0096b8fe394fdd56ccf2b3f4e6c25fc50f89c18f7c1e9f7c2b68ba21914ca6a3",
+      "prediction_sha256": "69cc48a7c464c18408a59b8a23b549b1a7d327a13af9029bd33f6c78c43f57db"
+    }
+  },
+  "cross_view_same_ID_rate": 1.0,
+  "point_pair_identity_consistency": null,
+  "point_accuracy_definition": "GT identity consistency of accepted box-level support, not dense point correspondence ground truth"
+}
