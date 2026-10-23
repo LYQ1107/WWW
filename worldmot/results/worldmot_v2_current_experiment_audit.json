@@ -1,0 +1,112 @@
+{
+  "status": "IN_PROGRESS_NOT_FINAL",
+  "as_of_utc": "2026-10-23T13:06:16Z",
+  "branch": "research/worldmot-v2-fulltrain-test-20261022",
+  "source_root": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022",
+  "train": {
+    "scenes": 24,
+    "synchronized_timestamps": 28754,
+    "images": 57508,
+    "corrected_detector_rgb_to_bgr": true,
+    "cache_and_supervision_audit": "COMPLETE",
+    "frozen_trials": 7,
+    "main_seeds": [20261022, 20261023, 20261024],
+    "registered_controls": ["no_omega", "no_appearance", "two_stage", "no_geometry"],
+    "test_used_for_selection": false,
+    "frozen_lock_status": "FROZEN_BEFORE_INDEPENDENT_TEST"
+  },
+  "test": {
+    "scenes_expected_per_method": 22,
+    "timestamps_per_method": 29019,
+    "methods": {
+      "gmt_native": {"complete_scenes": 22, "status": "COMPLETE"},
+      "v1": {"complete_scenes": 22, "status": "COMPLETE"},
+      "v2_joint_seed20261022": {"complete_scenes": 22, "status": "COMPLETE"},
+      "v2_joint_seed20261023": {"complete_scenes": 22, "status": "COMPLETE"},
+      "v2_joint_seed20261024": {"complete_scenes": 22, "status": "COMPLETE"},
+      "v2_no_appearance_seed20261022": {
+        "complete_scenes": 19,
+        "active_scene": 20,
+        "active_progress": null,
+        "status": "RUNNING"
+      },
+      "v2_no_omega_seed20261022": {
+        "complete_scenes": 20,
+        "active_scene": 21,
+        "active_frames": 896,
+        "active_expected_frames": 1052,
+        "status": "RUNNING"
+      },
+      "v2_two_stage_seed20261022": {
+        "complete_scenes": 14,
+        "active_scene": 15,
+        "active_frames": 1408,
+        "active_expected_frames": 1904,
+        "status": "RUNNING"
+      },
+      "v2_no_geometry_seed20261022": {
+        "complete_scenes": 5,
+        "active_scene": 6,
+        "active_frames": 768,
+        "active_expected_frames": 851,
+        "status": "RUNNING"
+      }
+    },
+    "complete_manifest_audit": {
+      "checked_manifests": 168,
+      "error_count": 0,
+      "gt_in_inference_all_complete_manifests_false": true,
+      "test_used_for_selection": false
+    },
+    "official_evaluation_started": false,
+    "raw_gt_blocked_scene_ids": [5, 12, 13, 14, 17, 20, 21, 22],
+    "raw_gt_block_reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+  },
+  "midrun_trackeval_diagnostic": {
+    "status": "DIAGNOSTIC_COMPLETE_VALID_SCOPE",
+    "evaluated_legal_scene_count": 14,
+    "same_tracks_2d_by_camera_protocol": true,
+    "raw_gt_modified": false,
+    "v2_three_seed_mean": {
+      "HOTA": 37.25608434964571,
+      "AssA": 45.03222056973599,
+      "DetA": 31.364352042781764,
+      "IDF1": 44.93687197200154,
+      "MOTA": 37.892878783887035,
+      "IDSW": 943.6666666666666,
+      "Frag": 1375.6666666666667
+    },
+    "gmt_native": {
+      "HOTA": 66.06458719840953,
+      "AssA": 69.57874927900562,
+      "DetA": 63.066450212409954,
+      "IDF1": 80.11214466022774,
+      "MOTA": 72.9636167241879,
+      "IDSW": 6044,
+      "Frag": 1584
+    },
+    "v2_minus_gmt": {
+      "HOTA": -28.808502848763816,
+      "AssA": -24.54652870926963,
+      "DetA": -31.70209816962819,
+      "IDF1": -35.1752726882262,
+      "MOTA": -35.070737940300866
+    }
+  },
+  "end_to_end_fps": {
+    "unit": "synchronized dual-camera timestamps per second",
+    "gmt_native_all_22": 3.3313,
+    "v2_joint_seed20261022_all_22": 0.8101,
+    "v2_joint_seed20261023_all_22": 0.8067,
+    "v2_joint_seed20261024_all_22": 0.7916,
+    "v2_joint_three_seed_combined_wall_clock": 0.8027,
+    "four_card_total_throughput_used_as_single_stream": false
+  },
+  "pending": [
+    "complete all four registered ablation TEST videos",
+    "run official full-method evaluation and unified export",
+    "collect failure cases and final comparison report",
+    "run capacity TEST after the original TEST gate"
+  ],
+  "interpretation": "The main v2 diagnostic is currently well below GMT; no new architecture or tuning study is being added. Existing registered ablations are retained only for causal diagnosis and pre-registered audit completeness."
+}
