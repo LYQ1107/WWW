@@ -28,6 +28,7 @@ def main():
     p.add_argument('--scenes',nargs='+',type=int);p.add_argument('--device',default='cuda:0');p.add_argument('--limit',type=int)
     p.add_argument('--detector',choices=['rtmdet','gmt_pre_gta'],default='rtmdet');p.add_argument('--gmt-raw-cache')
     p.add_argument('--gmt-detector-mode',choices=['replay','live_verified'],default='live_verified')
+    p.add_argument('--resource-mode',choices=['unspecified','exclusive_gpu','shared_gpu'],default='unspecified')
     p.add_argument('--v1-output-boxes',choices=['projection','current_detector']);a=p.parse_args()
     torch.set_num_threads(2)
     import cv2;cv2.setNumThreads(1)
@@ -60,6 +61,7 @@ def main():
                'checkpoint_sha256':sha(a.checkpoint) if a.checkpoint else None,
                'source_sha256':source_stamp()['sha256'],'detector_frontend':a.detector,
                'detector_mode':a.gmt_detector_mode if a.detector=='gmt_pre_gta' else 'live',
+               'resource_mode':a.resource_mode,
                'v1_output_boxes':a.v1_output_boxes or ('current_detector' if a.detector=='gmt_pre_gta' else 'projection')}
     for sid in a.scenes or ds.scene_ids():
         out=root/f'scene_{sid:02d}'
