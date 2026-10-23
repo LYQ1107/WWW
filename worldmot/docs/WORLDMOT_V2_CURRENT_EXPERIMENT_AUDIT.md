@@ -1,6 +1,6 @@
 # WorldMOT v2 当前实验审计
 
-更新时间：2026-10-23 13:16:13 UTC  
+更新时间：2026-10-23 13:21:31 UTC  
 分支：`research/worldmot-v2-fulltrain-test-20261022`  
 状态：**进行中，不能视为最终结论**
 
@@ -30,7 +30,7 @@
 | `v2_two_stage_seed20261022` | 15/22 | 运行中 |
 | `v2_no_geometry_seed20261022` | 6/22 | 运行中 |
 
-当前运行中的最新进度：no-appearance Scene 20 为 512/1006；no-Ω Scene 22 为 128/1201；two-stage Scene 16 已启动但尚未写入 progress；no-geometry Scene 7 为 384/2055。四个进程均仍存活。新增核验的 two-stage Scene 15 为 1904 帧、真实端到端 0.917769 FPS，且 `GT_in_inference=false`。
+当前运行中的最新进度：no-appearance Scene 20 为 768/1006；no-Ω Scene 22 为 384/1201；two-stage Scene 16 为 256/1043；no-geometry Scene 7 为 768/2055。四个进程均仍存活。已完成场景的 manifest 数量仍为 171，部分 progress 不计入正式结果。
 
 ## 当前已得到的 v2/GMT 结果
 
