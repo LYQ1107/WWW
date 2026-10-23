@@ -58,7 +58,7 @@ The registered selector chose the earliest large-model candidate within 0.002 ab
 <!-- BEGIN ACTUAL CAPACITY TRAINING -->
 ## Actual training evidence
 
-Status: IN_PROGRESS.
+Status: FOUR_FINAL_FITS_FROZEN_AWAITING_TEST.
 
 | Trial | Profile | Seed | Completed epochs | Timestamps / epoch | Status |
 |---|---|---:|---:|---:|---|
@@ -67,5 +67,6 @@ Status: IN_PROGRESS.
 | large_seed20261022 | large | 20261022 | 4 | 28754 | FULLTRAIN_COMPLETE |
 | large_seed20261023 | large | 20261023 | 4 | 28754 | FULLTRAIN_COMPLETE |
 | large_seed20261024 | large | 20261024 | 4 | 28754 | FULLTRAIN_COMPLETE |
+| small_seed20261022 | small | 20261022 | 4 | 28754 | FULLTRAIN_COMPLETE |
 
 Independent TEST scores and real inference FPS are pending. TRAIN optimization losses and cached identity surrogates are not independent MOT accuracy.
