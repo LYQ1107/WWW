@@ -1,0 +1,42 @@
+{
+  "status": "COMPLETE_VALID_SCOPE",
+  "method": "GMT pre-GTA detector + fixed V1 association",
+  "split": "train",
+  "prediction_coverage": {
+    "scenes": [4, 8, 12, 16, 20, 24],
+    "frames": {"4": 901, "8": 523, "12": 1200, "16": 1034, "20": 1001, "24": 1201},
+    "full_video": true,
+    "box_source": "tracks_2d_by_camera"
+  },
+  "valid_gt_scope": {
+    "evaluated_scenes": [4, 8, 12],
+    "blocked_scenes": {"16": "RAW_GT_DUPLICATE_OR_VERSION_INVALID", "20": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"},
+    "raw_GT_modified": false
+  },
+  "TrackEval_combined": {
+    "HOTA": 48.27675585506867,
+    "AssA": 34.108116155975594,
+    "DetA": 69.06126505447827,
+    "IDF1": 49.17423397589082,
+    "MOTA": 76.17673926631088,
+    "IDSW": 665,
+    "Frag": 180,
+    "CLR_TP": 16686,
+    "CLR_FN": 4113,
+    "CLR_FP": 177
+  },
+  "VisionTrack_MATLAB_combined": {
+    "CVIDF1": 48.00063724709256,
+    "CVMA": 70.27260926006058,
+    "IDTP": 9039,
+    "IDFP": 7824,
+    "IDFN": 11760,
+    "CLEAR_TP": 16663,
+    "CLEAR_FP": 200,
+    "CLEAR_FN": 4136,
+    "CLEAR_IDSW": 1847
+  },
+  "test_used_for_selection": false,
+  "custom_metrics_used": false,
+  "source": "gmt_detector_comparison_20261023/v1_train_validation_evaluation_v2/metrics.json"
+}
