@@ -1,0 +1,64 @@
+{
+  "status": "COMPLETE_VALID_SCOPE",
+  "gate": "GMT pre-GTA detector + fixed V1 association official full TEST",
+  "split": "test",
+  "source_sha256": "c0ef87cc85759f654156c9ec71208bca12bc4f120cb0174264682b9015859e2e",
+  "driver_sha256": "808bf093f4774cfb7eccb2ff05753b096b7ff6836e4f48f77e7678a3cbabac65",
+  "test_used_for_selection": false,
+  "custom_metrics_used": false,
+  "raw_GT_modified": false,
+  "prediction_box_source": "tracks_2d_by_camera",
+  "resource_mode": "shared_gpu",
+  "fps_summary": {
+    "mean_scene_e2e_fps": 0.7209106101238646,
+    "median_scene_e2e_fps": 0.8088155023337273,
+    "minimum_scene_e2e_fps": 0.26183358840253507,
+    "maximum_scene_e2e_fps": 0.9008503565879524,
+    "unit": "synchronized dual-camera timestamps per second",
+    "source": "results/gmt_v1_test_fps_20261023.csv"
+  },
+  "full_video_coverage": {
+    "scenes": 22,
+    "total_synchronized_frames": 29019,
+    "all_manifests_full_video": true,
+    "test_lock_sha256": "77d483fc9b1aaef11cf16e8fb1b3bdde5bcd848a828a35b76a2b2f470ac5f668",
+    "raw_test_integrity_sha256": "b6bf53f82964dffe71c0b2f010dd7258444a6057047cb057e0edf8aceaaa560f",
+    "test_metadata_sha256": "617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f"
+  },
+  "valid_gt_scope": {
+    "evaluated_scenes": [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 15, 16, 18, 19],
+    "evaluated_scene_count": 14,
+    "blocked_scenes": [5, 12, 13, 14, 17, 20, 21, 22],
+    "blocked_reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+  },
+  "TrackEval_combined": {
+    "HOTA": 48.483054016911495,
+    "AssA": 41.560070768195324,
+    "DetA": 56.87551509925592,
+    "IDF1": 53.07887398432617,
+    "MOTA": 67.83043970809074,
+    "IDSW": 2761,
+    "Frag": 1655,
+    "CLR_TP": 137246,
+    "CLR_FN": 52539,
+    "CLR_FP": 5753
+  },
+  "VisionTrack_MATLAB_combined": {
+    "CVIDF1": 52.521154863214576,
+    "CVMA": 65.28176620913139,
+    "IDTP": 87391,
+    "IDFP": 55608,
+    "IDFN": 102394,
+    "CLEAR_TP": 137261,
+    "CLEAR_FP": 5738,
+    "CLEAR_FN": 52524,
+    "CLEAR_IDSW": 7628
+  },
+  "provenance": {
+    "raw_metrics_json": "results/gmt_v1_test_official_raw_metrics_20261023.json",
+    "raw_metrics_sha256": "d8b6ea4f76b7d33f5a9c07e39d541b7a8facfaa9b6cfa7b1f19c9bc52513c71b",
+    "queue_status_sha256": "b0a36bd0a7ba68d066603ecbfce7c04ec3168f45f25e7f70d176336fdc0bc0fa",
+    "evaluation_protocol": "official evaluate_fullvideo.py / TrackEval / VisionTrack MATLAB; no TEST tuning",
+    "note": "All 22 TEST videos were inferred. Only the 14 raw-GT-valid scenes enter the aggregate; eight duplicate-key GT scenes remain blocked without modifying GT. Shared-GPU timing is not an exclusive latency ranking."
+  }
+}

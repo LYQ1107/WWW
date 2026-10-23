@@ -1,6 +1,6 @@
 # GMT detector replacement and VGGT point association
 
-Status: COMPONENTS_VALIDATED_FULL_COMPARISON_RUNNING. Registration date: 2026-10-23.
+Status: COMPONENTS_VALIDATED_V1_TEST_COMPLETE_REMAINING_ROUTES_RUNNING. Registration date: 2026-10-23.
 
 The user execution specification is the attachment
 `72c424c4-a10d-471c-a81d-d2acf67a046b/Pasted text.txt`. It remains the
@@ -83,9 +83,20 @@ NO_DEMONSTRATED_GAIN; scientific success requires actual measured benefit.
 
 ## Results
 
-New official TEST scores: NOT_AVAILABLE (real TRAIN validation/calibration running).
-Historical GMT/V2 TEST metrics are reference evidence only and are not
-hyperparameter-selection data.
+The GMT pre-GTA detector + fixed V1 association now has a complete official
+TEST Gate. All 22 videos (29,019 synchronized timestamps) were inferred under
+the frozen lock; the legal raw-GT scope is 14 scenes, with eight duplicate-key
+GT scenes blocked without modifying GT. TrackEval on the valid scope is HOTA
+48.48305, AssA 41.56007, DetA 56.87552, IDF1 53.07887, MOTA 67.83044, IDSW
+2,761 and Frag 1,655. VisionTrack MATLAB is CVIDF1 52.52115 / CVMA 65.28177.
+The complete provenance is in `results/gmt_v1_test_gate_complete_20261023.json`
+and the raw official report is in
+`results/gmt_v1_test_official_raw_metrics_20261023.json`.
+
+New VGGT-point TEST scores and the V2 route scores remain `NOT_AVAILABLE`:
+their registered TRAIN full-video validation and/or independent TEST routes
+are still running. Historical GMT/V2 TEST metrics are reference evidence only
+and are not hyperparameter-selection data.
 
 The GMT pre-GTA detector + fixed V1 association has now completed its
 official TRAIN validation Gate. All six registered validation videos are
@@ -232,8 +243,8 @@ not retrospectively merged in this simple 2D control.
 The original two-stage ablation has also completed 22/22 TEST videos and the
 official legal-GT scope: HOTA 35.19849, AssA 47.59979, IDF1 41.57418,
 MOTA 31.89188, IDSW 373. Its 65,580 true positives and 124,205 misses explain
-why fewer ID switches are not evidence of superiority to GMT. New-method
-official TEST metrics remain pending; no threshold is chosen from these
+why fewer ID switches are not evidence of superiority to GMT. VGGT-point and
+V2 official TEST metrics remain pending; no threshold is chosen from these
 historical TEST references.
 The merged CPU suite passes 79 tests, including NULL assignment, mask
 semantics, box storage precision, exact model-request replay integrity and
@@ -271,7 +282,19 @@ complete six-scene TRAIN full-video validation. This is a TRAIN gate only: no
 official TEST metric or final route ranking is implied.
 
 `build_gmt_point_comparison.py` creates the required partial official main
-JSON/CSV, error-attribution JSON and FPS CSV. Missing new TEST scores are
-`NOT_AVAILABLE`. Short TRAIN speed, model-only throughput and historical
-complete TEST throughput have distinct scope labels. Raw per-frame timing
-aggregation for legacy P50/P95 remains explicitly pending.
+JSON/CSV, error-attribution JSON and FPS CSV. Point and V2 TEST scores remain
+`NOT_AVAILABLE` until their own complete official gates. Short TRAIN speed,
+model-only throughput and historical complete TEST throughput have distinct
+scope labels. Raw per-frame timing aggregation for legacy P50/P95 remains
+explicitly pending.
+
+### V1 official TEST Gate (2026-10-23)
+
+The fixed V1 detector-replacement route completed all 22 TEST videos. Its
+shared-GPU per-scene E2E timing is recorded in
+`results/gmt_v1_test_fps_20261023.csv` (mean 0.72091, median 0.80882,
+minimum 0.26183 synchronized dual-camera timestamps/s). Because these are
+concurrent accuracy runs, they are not an exclusive single-video latency
+ranking. The eight raw-GT-blocked scenes are retained as inference coverage
+but excluded from the official aggregate; the new point and V2 routes cannot
+be compared scientifically until their own complete official gates exist.

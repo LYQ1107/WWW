@@ -278,3 +278,29 @@ The valid-scope aggregate is TrackEval HOTA 48.27676, AssA 34.10812, DetA
 MATLAB aggregate is CVIDF1 48.00064 and CVMA 70.27261. These are TRAIN-only
 validation values, not TEST results and not a claim of improvement over GMT.
 `TEST_used_for_selection=false` remains explicit.
+
+### GMT V1 official full-TEST Gate completed (2026-10-23)
+
+The fixed-rule GMT pre-GTA V1 route completed all 22 registered TEST videos
+(29,019 synchronized timestamps) under the frozen lock. The official evaluator
+used the original GT without modification, `tracks_2d_by_camera`, and no
+TEST-derived threshold or checkpoint selection. Eight scenes (5, 12, 13, 14,
+17, 20, 21, 22) remain explicitly blocked because their raw GT contains
+duplicate keys; their inference is retained, but they do not enter the legal
+aggregate. The raw evaluator output is retained at
+`results/gmt_v1_test_official_raw_metrics_20261023.json` and the audited gate
+summary at `results/gmt_v1_test_gate_complete_20261023.json`.
+
+On the 14-scene valid scope, TrackEval reports HOTA **48.48305**, AssA
+**41.56007**, DetA **56.87552**, IDF1 **53.07887**, MOTA **67.83044**, IDSW
+**2,761**, and Frag **1,655**. The interleaved VisionTrack MATLAB evaluator
+reports CVIDF1 **52.52115**, CVMA **65.28177**, IDTP 87,391, IDFP 55,608,
+IDFN 102,394 and CLEAR-IDSW 7,628. These are the official GMT V1 detector
+replacement numbers, not a GMT-native historical baseline and not evidence of
+an improvement by the unfinished VGGT point routes.
+
+The shared-GPU full-video timing is stored per scene in
+`results/gmt_v1_test_fps_20261023.csv`: mean 0.72091, median 0.80882 and
+minimum 0.26183 synchronized dual-camera timestamps/s. It is an accuracy-run
+throughput record, not an exclusive latency ranking; a separate exclusive FPS
+audit is still required for a fair speed claim.
