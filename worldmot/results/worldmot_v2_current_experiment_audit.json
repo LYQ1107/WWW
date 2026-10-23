@@ -1,6 +1,6 @@
 {
   "status": "IN_PROGRESS_NOT_FINAL",
-  "as_of_utc": "2026-10-23T13:45:08Z",
+  "as_of_utc": "2026-10-23T13:53:54Z",
   "branch": "research/worldmot-v2-fulltrain-test-20261022",
   "source_root": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022",
   "train": {
@@ -86,7 +86,26 @@
       "gt_in_inference_all_complete_manifests_false": true,
       "test_used_for_selection": false
     },
-    "official_evaluation_started": false,
+    "official_evaluation_started": true,
+    "full_method_official_evaluation_complete": false,
+    "early_official_evaluations": {
+      "v2_no_omega_seed20261022": {
+        "status": "COMPLETE_VALID_SCOPE",
+        "evaluated_scene_count": 14,
+        "blocked_scene_ids": [5, 12, 13, 14, 17, 20, 21, 22],
+        "HOTA": 31.720178621496526,
+        "AssA": 35.40191571125303,
+        "DetA": 28.726320846068294,
+        "IDF1": 37.444850144530655,
+        "MOTA": 35.55707774587032,
+        "IDSW": 259,
+        "CVIDF1": 34.80526395861859,
+        "CVMA": 30.15939088969096,
+        "real_e2e_fps": 0.7835893905346664,
+        "raw_GT_modified": false,
+        "source_result": "results/worldmot_v2_no_omega_official_evaluation.json"
+      }
+    },
     "raw_gt_blocked_scene_ids": [5, 12, 13, 14, 17, 20, 21, 22],
     "raw_gt_block_reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
   },

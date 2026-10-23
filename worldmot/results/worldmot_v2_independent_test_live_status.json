@@ -1,9 +1,27 @@
 {
   "status": "INDEPENDENT_TEST_RUNNING_NOT_FINAL",
-  "updated_utc": "2026-10-23T13:45:08+00:00",
+  "updated_utc": "2026-10-23T13:53:54+00:00",
   "source_root": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022",
   "TEST_used_for_selection": false,
-  "official_evaluation_started": false,
+  "official_evaluation_started": true,
+  "full_method_official_evaluation_complete": false,
+  "early_official_evaluations": {
+    "v2_no_omega_seed20261022": {
+      "status": "COMPLETE_VALID_SCOPE",
+      "evaluated_scene_count": 14,
+      "blocked_scene_ids": [5, 12, 13, 14, 17, 20, 21, 22],
+      "HOTA": 31.720178621496526,
+      "AssA": 35.40191571125303,
+      "DetA": 28.726320846068294,
+      "IDF1": 37.444850144530655,
+      "MOTA": 35.55707774587032,
+      "IDSW": 259,
+      "CVIDF1": 34.80526395861859,
+      "CVMA": 30.15939088969096,
+      "real_e2e_fps": 0.7835893905346664,
+      "raw_GT_modified": false
+    }
+  },
   "coordinator_status": {
     "stage": "INDEPENDENT_TEST_RUNNING",
     "updated_utc": "2026-10-22T17:14:06Z",
@@ -202,7 +220,7 @@
     }
   ],
   "metric_policy": "No partial sequence is scored or used for selection; this snapshot is operational evidence only.",
-  "next_gate": "All registered full TEST videos must complete before export, official evaluation and capacity TEST.",
+  "next_gate": "Finish the three remaining registered TEST methods, then export and run the same official evaluation for all methods; no-Ω early evaluation is complete.",
   "causal_manifest_integrity": {
     "verified_utc": "2026-10-23T13:42:18+00:00",
     "complete_manifests_checked": 175,
