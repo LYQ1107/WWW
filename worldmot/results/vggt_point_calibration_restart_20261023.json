@@ -18,12 +18,19 @@
       "error": "Registered source/driver/budget changed during calibration"
     }
   ],
+  "stale_window_retry": {
+    "root": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/calibration_v2",
+    "stage": "FAILED_REQUIRES_ENGINEERING_FIX",
+    "error": "completed prediction has a different source_sha256",
+    "reason": "The strict resume guard correctly rejected COMPLETE windows produced under the old source stamp."
+  },
   "old_source_sha256": "d2f493aaed6c0c955b394abbada4a41c80811eb84424de97e2c06df157bf899a",
   "new_source_sha256": "0d6b8bc62da81fa4423afd808ea6fc55d05face2ab57c32e7d49eeb69256a229",
   "driver_sha256": "262b277d0cf0282f7d0747b553cc5a8405bda2a9e0a61048815314fcd609c6b8",
   "budget_sha256": "9dbbe02988acdb85abf68e8dd2756af9fae0d1441db7071706e3052138685e4d",
   "cause": "The shared source stamp intentionally invalidated the in-flight calibration after adding legacy-Pillow resampling compatibility. This is an engineering provenance stop, not a model-quality result.",
-  "remediation": "Re-registered the unchanged TRAIN budget with the new source stamp and restarted both partitions on CUDA devices 3 and 7. Existing mismatched/incomplete windows are preserved as interrupted attempts and are not reused.",
+  "remediation": "Kept calibration_v2 unchanged as audit evidence and re-registered the unchanged TRAIN budget in a fresh calibration_v3 root on CUDA devices 3 and 7. No mismatched window is reused.",
+  "active_retry_root": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/calibration_v3",
   "TEST_used_for_selection": false,
   "scientific_result": "NOT_A_MODEL_FAILURE"
 }
