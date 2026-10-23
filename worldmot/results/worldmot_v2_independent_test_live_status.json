@@ -1,6 +1,6 @@
 {
   "status": "INDEPENDENT_TEST_RUNNING_NOT_FINAL",
-  "updated_utc": "2026-10-23T05:45:02.413752+00:00",
+  "updated_utc": "2026-10-23T05:46:03.772365+00:00",
   "source_root": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022",
   "TEST_used_for_selection": false,
   "official_evaluation_started": false,
@@ -67,21 +67,20 @@
     },
     "v2_joint_seed20261023": {
       "progress_files": 22,
-      "complete_manifests": 21,
+      "complete_manifests": 22,
       "last_progress": {
         "scene": 22,
-        "frames": 1152,
-        "expected": 1201,
-        "boxes": 19062,
-        "global_ids": 171,
-        "e2e_fps": 0.6377710407287884
+        "frames": 1201,
+        "global_ids": 175,
+        "real_e2e_fps": 0.6395651392655974,
+        "full_video": true
       },
       "last_complete": {
-        "scene": 21,
+        "scene": 22,
         "full_video": true,
-        "frames": 1052,
-        "expected_frames": 1052,
-        "real_e2e_fps": 0.4994465821662944
+        "frames": 1201,
+        "expected_frames": 1201,
+        "real_e2e_fps": 0.6395651392655974
       }
     },
     "v2_joint_seed20261024": {
@@ -108,11 +107,11 @@
       "complete_manifests": 4,
       "last_progress": {
         "scene": 5,
-        "frames": 256,
+        "frames": 384,
         "expected": 2533,
-        "boxes": 987,
+        "boxes": 1495,
         "global_ids": 2,
-        "e2e_fps": 0.976706427285932
+        "e2e_fps": 0.9748438198541016
       },
       "last_complete": {
         "scene": 4,
@@ -148,23 +147,23 @@
       "command": "/data1/liuyeqiang/envs/worldmot_mmdet311/bin/python scripts/run_fullvideo.py --split test --metadata /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/test_metadata.json --method v2 --output /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_no_appearance_seed20261022 --device cuda:0 --checkpoint /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final/no_appearance_seed20261022.frozen.pt --lock /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final_test_lock.json"
     },
     {
+      "pid": 14992,
+      "command": "/data1/liuyeqiang/envs/worldmot_mmdet311/bin/python scripts/run_fullvideo.py --split test --metadata /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/test_metadata.json --method v2 --output /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_two_stage_seed20261022 --device cuda:0 --checkpoint /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final/two_stage_seed20261022.frozen.pt --lock /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final_test_lock.json"
+    },
+    {
       "pid": 16051,
       "command": "/data1/liuyeqiang/envs/worldmot_mmdet311/bin/python scripts/run_fullvideo.py --split test --metadata /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/test_metadata.json --method v2 --output /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_joint_seed20261024 --device cuda:0 --checkpoint /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final/joint_seed20261024.frozen.pt --lock /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final_test_lock.json"
     },
     {
       "pid": 37358,
       "command": "/data1/liuyeqiang/envs/worldmot_mmdet311/bin/python scripts/run_fullvideo.py --split test --metadata /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/test_metadata.json --method v2 --output /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_no_omega_seed20261022 --device cuda:0 --checkpoint /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final/no_omega_seed20261022.frozen.pt --lock /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final_test_lock.json"
-    },
-    {
-      "pid": 40584,
-      "command": "/data1/liuyeqiang/envs/worldmot_mmdet311/bin/python scripts/run_fullvideo.py --split test --metadata /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/test_metadata.json --method v2 --output /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_joint_seed20261023 --device cuda:0 --checkpoint /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final/joint_seed20261023.frozen.pt --lock /data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final_test_lock.json"
     }
   ],
   "metric_policy": "No partial sequence is scored or used for selection; this snapshot is operational evidence only.",
   "next_gate": "All registered full TEST videos must complete before export, official evaluation and capacity TEST.",
   "causal_manifest_integrity": {
-    "verified_utc": "2026-10-23T05:45:17.986552+00:00",
-    "complete_manifests_checked": 107,
+    "verified_utc": "2026-10-23T05:46:24.251192+00:00",
+    "complete_manifests_checked": 108,
     "error_count": 0,
     "errors": [],
     "GT_in_inference_all_complete_manifests_false": true,
