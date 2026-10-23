@@ -141,3 +141,22 @@ complete video. The preregistered TRAIN window scan evaluates confidence
 0.2/0.3/0.5 and support 0.1/0.2 at 8/16/32 points; TEST remains unopened for
 selection. Full A3 evidence is in
 `results/vggt_point_joint_fullscene8_train_diagnostic_v2.json`.
+
+## TRAIN-only selection Gate completed (2026-10-23)
+
+Both registered calibration workers completed their 324-window partitions
+(648 windows total across the six internal validation scenes). The frozen
+TRAIN selector chose these settings:
+
+| Route | Points/person | Minimum confidence | Minimum support |
+|---|---:|---:|---:|
+| temporal (A2) | 16 | 0.3 | 0.2 |
+| joint (A3) | 32 | 0.2 | 0.1 |
+
+The selection objective remains the diagnostic
+`TRAIN_window_identity_consistency_F1` at IoU 0.5; it is not an official MOT
+metric. Both partition results, the selection SHA, source SHA, and
+`TEST_used_for_selection=false` are retained in
+`results/gmt_point_train_selection_20261023.json`. Complete six-scene TRAIN
+full-video validation is running for both settings. No point TEST lock or
+official TEST result exists at this Gate.

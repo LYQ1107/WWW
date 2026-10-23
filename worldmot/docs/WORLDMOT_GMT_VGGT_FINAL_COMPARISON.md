@@ -252,6 +252,14 @@ GPU and is excluded from the main full-TEST comparison. The all-window scan
 and selected complete-video validation remain required; no threshold has
 been selected from TEST or promoted based on this prefix alone.
 
+The registered all-window TRAIN scan has now completed. Its selected A2/A3
+settings are temporal `points_per_person=16, minimum_confidence=0.3,
+minimum_support=0.2` and joint `points_per_person=32,
+minimum_confidence=0.2, minimum_support=0.1`. The selection artifact is
+`results/gmt_point_train_selection_20261023.json`; both settings are currently
+under complete six-scene TRAIN full-video validation. This is a TRAIN gate
+only: no official TEST metric or final route ranking is implied.
+
 `build_gmt_point_comparison.py` creates the required partial official main
 JSON/CSV, error-attribution JSON and FPS CSV. Missing new TEST scores are
 `NOT_AVAILABLE`. Short TRAIN speed, model-only throughput and historical
