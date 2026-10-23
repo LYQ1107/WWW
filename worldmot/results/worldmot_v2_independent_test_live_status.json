@@ -1,6 +1,6 @@
 {
   "status": "INDEPENDENT_TEST_RUNNING_NOT_FINAL",
-  "updated_utc": "2026-10-23T03:40:15.787123+00:00",
+  "updated_utc": "2026-10-23T03:42:28.555268+00:00",
   "source_root": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022",
   "TEST_used_for_selection": false,
   "official_evaluation_started": false,
@@ -67,14 +67,15 @@
       }
     },
     "v2_joint_seed20261023": {
-      "progress_files": 17,
+      "progress_files": 18,
       "complete_manifests": 17,
       "last_progress": {
-        "scene": 17,
-        "frames": 1040,
-        "global_ids": 12,
-        "real_e2e_fps": 0.8561751296745553,
-        "full_video": true
+        "scene": 18,
+        "frames": 128,
+        "expected": 1001,
+        "boxes": 936,
+        "global_ids": 14,
+        "e2e_fps": 0.8934186511659113
       },
       "last_complete": {
         "scene": 17,
@@ -89,11 +90,11 @@
       "complete_manifests": 7,
       "last_progress": {
         "scene": 8,
-        "frames": 896,
+        "frames": 1024,
         "expected": 2061,
-        "boxes": 4237,
+        "boxes": 4981,
         "global_ids": 3,
-        "e2e_fps": 0.9220314356187976
+        "e2e_fps": 0.9192170467337987
       },
       "last_complete": {
         "scene": 7,
@@ -105,16 +106,21 @@
     },
     "v2_no_omega_seed20261022": {
       "progress_files": 1,
-      "complete_manifests": 0,
+      "complete_manifests": 1,
       "last_progress": {
         "scene": 1,
-        "frames": 896,
-        "expected": 1005,
-        "boxes": 5697,
+        "frames": 1005,
         "global_ids": 33,
-        "e2e_fps": 0.7587268718077652
+        "real_e2e_fps": 0.7689417520116716,
+        "full_video": true
       },
-      "last_complete": null
+      "last_complete": {
+        "scene": 1,
+        "full_video": true,
+        "frames": 1005,
+        "expected_frames": 1005,
+        "real_e2e_fps": 0.7689417520116716
+      }
     }
   },
   "running_inference_processes": [
@@ -138,8 +144,8 @@
   "metric_policy": "No partial sequence is scored or used for selection; this snapshot is operational evidence only.",
   "next_gate": "All registered full TEST videos must complete before export, official evaluation and capacity TEST.",
   "causal_manifest_integrity": {
-    "verified_utc": "2026-10-23T03:40:31.948611+00:00",
-    "complete_manifests_checked": 89,
+    "verified_utc": "2026-10-23T03:42:46.539403+00:00",
+    "complete_manifests_checked": 90,
     "error_count": 0,
     "errors": [],
     "GT_in_inference_all_complete_manifests_false": true,
