@@ -1,0 +1,98 @@
+{
+  "status": "COMPLETE_TRAIN_PILOT_DIAGNOSTIC",
+  "scope": "post-hoc TRAIN at fixed IoU .5",
+  "official_TEST_metrics": false,
+  "raw_GT_modified": false,
+  "counts": {
+    "output_boxes": 128,
+    "GT_matched_output_boxes": 128,
+    "same_GT_both_views_detected": 64,
+    "candidate_point_evidence_pairs": 504,
+    "valid_point_votes": 3982,
+    "inside_box_point_votes": 1985,
+    "accepted_point_pairs_with_GT_identity": 124,
+    "GT_consistent_accepted_point_pairs": 124
+  },
+  "per_scene": {
+    "8": {
+      "counts": {
+        "output_boxes": 128,
+        "GT_matched_output_boxes": 128,
+        "same_GT_both_views_detected": 64,
+        "candidate_point_evidence_pairs": 504,
+        "valid_point_votes": 3982,
+        "inside_box_point_votes": 1985,
+        "accepted_point_pairs_with_GT_identity": 124,
+        "GT_consistent_accepted_point_pairs": 124
+      },
+      "real_e2e_fps": 0.21390535750793896,
+      "stages": {
+        "rgb_read_s": {
+          "count": 32,
+          "total_s": 1.8662040084600449,
+          "p50_s": 0.05644378438591957,
+          "p95_s": 0.07406070716679096
+        },
+        "raw_cache_verify_s": {
+          "count": 32,
+          "total_s": 4.625109367072582,
+          "p50_s": 0.09575941786170006,
+          "p95_s": 0.3321861866861581
+        },
+        "GMT_detector_s": {
+          "count": 32,
+          "total_s": 7.752007283270359,
+          "p50_s": 0.1918586865067482,
+          "p95_s": 0.21779240816831588
+        },
+        "VGGT_aggregator_s": {
+          "count": 32,
+          "total_s": 22.060740537941456,
+          "p50_s": 0.6463628560304642,
+          "p95_s": 0.6609073501080275
+        },
+        "VGGT_track_head_s": {
+          "count": 32,
+          "total_s": 104.93856874108315,
+          "p50_s": 3.1986756436526775,
+          "p95_s": 3.634224132075906
+        },
+        "point_preprocess_s": {
+          "count": 32,
+          "total_s": 6.546601802110672,
+          "p50_s": 0.20658833533525467,
+          "p95_s": 0.24331131540238857
+        },
+        "point_postprocess_s": {
+          "count": 32,
+          "total_s": 0.040356747806072235,
+          "p50_s": 0.0011769384145736694,
+          "p95_s": 0.0017091881483793257
+        },
+        "point_memory_total_s": {
+          "count": 32,
+          "total_s": 134.07600516080856,
+          "p50_s": 4.0515902154147625,
+          "p95_s": 4.507938886806369
+        },
+        "VGGT_model_only_s": {
+          "count": 32,
+          "total_s": 126.9993092790246,
+          "p50_s": 3.843691226094961,
+          "p95_s": 4.281331346929074
+        },
+        "output_serialization_s": {
+          "count": 32,
+          "total_s": 0.03932364284992218,
+          "p50_s": 0.0008797533810138702,
+          "p95_s": 0.0020554173737764355
+        }
+      },
+      "manifest_sha256": "0a4a0ea1e10064b37356ed3e3545b94f7059c42b13bef5bfde75cfede771376c",
+      "prediction_sha256": "167082a2eea16a6086bf7dd7c4c506428cb321874e6cb36be26e4bcdd8536888"
+    }
+  },
+  "cross_view_same_ID_rate": 0.0,
+  "point_pair_identity_consistency": 1.0,
+  "point_accuracy_definition": "GT identity consistency of accepted box-level support, not dense point correspondence ground truth"
+}
