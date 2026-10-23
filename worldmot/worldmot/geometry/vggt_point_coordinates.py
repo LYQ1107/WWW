@@ -39,17 +39,18 @@ class VGGTPointCoordinates:
         points = np.asarray(xy, np.float64)
         if points.shape[-1:] != (2,):
             raise ValueError('Expected xy pixel coordinates')
-        return points * self.scale + [self.pad_left-self.crop_x, self.pad_top-self.crop_y]
+        # PIL resize operates on pixel centers: (x+.5)*scale-.5.
+        return (points+.5) * self.scale - .5 + [self.pad_left-self.crop_x, self.pad_top-self.crop_y]
 
     def to_original(self, xy):
         points = np.asarray(xy, np.float64)
         if points.shape[-1:] != (2,):
             raise ValueError('Expected xy pixel coordinates')
-        return (points - [self.pad_left-self.crop_x, self.pad_top-self.crop_y]) / self.scale
+        return (points - [self.pad_left-self.crop_x, self.pad_top-self.crop_y] + .5) / self.scale - .5
 
     def valid_original(self, xy):
         xy = np.asarray(xy)
-        return (np.isfinite(xy).all(-1) & (xy[..., 0] >= 0) & (xy[..., 1] >= 0)
+        return (np.isfinite(xy).all(-1) & (xy[..., 0] >= -1e-7) & (xy[..., 1] >= -1e-7)
                 & (xy[..., 0] < self.original_width) & (xy[..., 1] < self.original_height))
 
     def valid_network(self, xy):
@@ -68,5 +69,5 @@ class VGGTPointCoordinates:
 
     def manifest(self):
         return {**asdict(self),'scale_xy':self.scale.tolist(),
-                'mode':'official pad','point_convention':'continuous pixel xy; resize scale plus padding',
+                'mode':'official pad','point_convention':'pixel-center xy; PIL half-pixel resize plus padding',
                 'padding_rgb':[255,255,255]}

@@ -20,6 +20,7 @@ class PointIdentity:
     missed: int = 0
     status: str = 'NEWBORN'
     source_evidence: list = field(default_factory=list)
+    seen_timestamps_by_camera: dict = field(default_factory=dict)
 
 
 class PointIdentityMemory:
@@ -36,7 +37,33 @@ class PointIdentityMemory:
         self.images={}
         self.next_id=1
         self.timestamp=None
+        self.aliases={}
         self.last_diagnostics={}
+
+    def _merge_existing_ids(self,ga,gb,assigned,timestamp):
+        """Apply a supported alias to future deliveries, never rewrite history."""
+        if ga==gb:return ga,None
+        if ga not in self.tracks or gb not in self.tracks:return None,'MISSING_EXISTING_IDENTITY'
+        for current in assigned.values():
+            if sum(g in (ga,gb) for g in current.values())>1:
+                return None,'SAME_CAMERA_ID_EXCLUSIVITY'
+        a,b=self.tracks[ga],self.tracks[gb]
+        for view in set(a.seen_timestamps_by_camera)|set(b.seen_timestamps_by_camera):
+            if a.seen_timestamps_by_camera.get(view,set()) & b.seen_timestamps_by_camera.get(view,set()):
+                return None,'IDENTITIES_COEXISTED_IN_SAME_CAMERA'
+        canonical,old=min(ga,gb),max(ga,gb)
+        target,source=self.tracks[canonical],self.tracks[old]
+        for view,ref in source.reference_points_by_camera.items():
+            if view not in target.reference_points_by_camera or ref.timestamp>target.reference_points_by_camera[view].timestamp:
+                target.reference_points_by_camera[view]=ref
+                target.latest_detector_bbox_by_camera[view]=source.latest_detector_bbox_by_camera[view]
+            target.seen_timestamps_by_camera.setdefault(view,set()).update(source.seen_timestamps_by_camera.get(view,set()))
+        self.aliases[old]={'canonical_id':canonical,'effective_timestamp':timestamp}
+        self.tracks.pop(old)
+        for current in assigned.values():
+            for index,gid in list(current.items()):
+                if gid==old:current[index]=canonical
+        return canonical,None
 
     def _allocate(self):
         gid=self.next_id;self.next_id+=1
@@ -54,7 +81,7 @@ class PointIdentityMemory:
         for view,ds in detections.items():
             if len({d.detection_id for d in ds})!=len(ds):raise ValueError('Duplicate detection IDs within camera')
             if any(d.view_id!=view for d in ds):raise ValueError('Detection assigned to wrong camera')
-        assigned={v:{} for v in detections};decisions={};evidence=[];forwards=[];point_predictions=[]
+        assigned={v:{} for v in detections};decisions={};evidence=[];forwards=[];point_predictions=[];merges=[]
         old_ids=sorted(self.tracks)
         row_index={gid:i for i,gid in enumerate(old_ids)}
         scores={v:np.zeros((len(old_ids),len(ds)),np.float64) for v,ds in detections.items()}
@@ -100,6 +127,32 @@ class PointIdentityMemory:
                 ev=best_evidence[view,i,j]
                 decisions[view,j]={'kind':'TEMPORAL_MATCH' if ev['source_camera']==view else 'TEMPORAL_AND_CROSS_VIEW_MATCH',
                                    'global_id':gid,'evidence':ev}
+        # Separate IDs initially born in different cameras can later acquire
+        # reliable bidirectional cross-view support from their actual historic
+        # anchors. Aliasing is effective only from this timestamp onward.
+        if self.cross_view and len(images)==2:
+            a,b=sorted(images)
+            ab=np.zeros((len(detections[a]),len(detections[b])),np.float64)
+            ba=np.zeros(ab.T.shape,np.float64)
+            for i,ga in assigned[a].items():
+                for j,gb in assigned[b].items():
+                    if ga!=gb:
+                        ab[i,j]=scores[b][row_index[ga],j]
+                        ba[j,i]=scores[a][row_index[gb],i]
+            for i,j,score in bidirectional_matches(ab,ba,self.settings.minimum_support):
+                ga,gb=assigned[a][i],assigned[b][j]
+                if ga==gb:continue
+                canonical,reason=self._merge_existing_ids(ga,gb,assigned,timestamp)
+                event={'kind':'LATE_BIDIRECTIONAL_POINT_MERGE','previous_ids':[ga,gb],
+                       'canonical_id':canonical,'effective_timestamp':timestamp,
+                       'association_score':score,'rejection_reason':reason}
+                evidence.append(event)
+                if reason is None:
+                    merges.append(event)
+                    for view,current in assigned.items():
+                        for index,gid in current.items():
+                            if gid==canonical:decisions[view,index]={'global_id':canonical,
+                                'kind':'TEMPORAL_AND_CROSS_VIEW_MATCH','merge_event':event}
         # Synchronous newborns are associated before separate IDs are created.
         # Current detections matched in one view may also transfer an existing
         # ID into the other, subject to one-ID-per-camera exclusivity.
@@ -164,6 +217,7 @@ class PointIdentityMemory:
                 track.last_seen_timestamp=timestamp;track.last_camera=view
                 track.latest_detector_bbox_by_camera[view]=tuple(det.bbox_xywh)
                 track.reference_points_by_camera[view]=self.sampler.sample(images[view],det,timestamp,gid)
+                track.seen_timestamps_by_camera.setdefault(view,set()).add(timestamp)
                 track.source_evidence=[decisions[view,j]]
                 track.status='OBSERVED';track.missed=0
                 output[str(view)].append({'global_id':gid,'detection_id':det.detection_id,
@@ -180,6 +234,7 @@ class PointIdentityMemory:
         # Lost IDs retain their recorded state but never emit prediction boxes.
         self.last_diagnostics={'point_evidence':evidence,'point_forward_calls':forwards,
             'point_predictions':point_predictions,
+            'identity_merges':merges,'identity_aliases':dict(self.aliases),
             'decisions':[{**d,'view_id':v,'detection_id':detections[v][j].detection_id} for (v,j),d in decisions.items()],
             'raw_candidate_count':sum(map(len,detections.values())),
             'output_count':sum(map(len,output.values())),'lost_ids':[g for g,t in self.tracks.items() if t.status=='LOST'],

@@ -70,3 +70,40 @@ From the point worktree, use `PYTHONPATH=worldmot` with the existing
 Then run `worldmot/scripts/analyze_vggt_point_pilot.py --predictions NEW_DIRECTORY
 --output NEW_DIAGNOSTIC.json --render` offline. CUDA_VISIBLE_DEVICES was 5 for
 the pilot, with both GMT and VGGT belonging to this method on that one V100.
+
+## Corrected coordinate/lifecycle pilot v2
+
+The next revision uses exact PIL pixel-center resize coordinates, preserves
+separate rounded x/y scales, and permits late identity aliasing only with
+bidirectional point support. It rejects merging IDs that ever coexisted in
+the same camera, enforces current per-camera exclusivity, and changes only
+future deliveries. Twenty-two focused tests pass, including a late merge
+without changing the already delivered prefix and historical-conflict vetoes.
+
+A second real live-detector 32-timestamp run is preserved separately at
+`train_joint_smoke32_v2/scene_08/`, with inference source SHA
+`7749579913d89792b869a253bd17f7e5e7faf158b34dba27dba8655a9f564a13`.
+The code snapshot was independently checked against this stored SHA.
+It again outputs 128/128 GT-matched boxes, keeps four IDs, and shares the
+correct cross-view identity in 0/64 eligible events at the same fixed default
+confidence/support thresholds. All 124 accepted temporal support pairs are
+GT-identity consistent. E2E is 0.196039 synchronized timestamps/s on a V100.
+The earlier negative result remains retained; the engineering fixes are not
+reported as an identity improvement. Full TRAIN calibration and complete
+video comparisons are still required.
+
+The finite TRAIN-only calibration search is registered before any point TEST:
+point count in {8,16,32}; minimum confidence in {0.2,0.3,0.5}; support threshold
+in {0.1,0.2}; visibility fixed at 0.5; minimum valid/inside points fixed at 3;
+reference gap fixed at 3; lost retention fixed at 30. Evaluate fixed 32-frame
+start/middle/end windows in each of the six internal validation scenes, then
+run complete validation videos with the selected temporal/joint settings.
+Tie-breaking prefers higher identity consistency, then fewer wrong merges,
+then higher rejection thresholds, then fewer query points. Selection must
+include raw detection-to-output coverage, correct and incorrect cross-view
+merges and temporal identity continuity. No TEST result may select thresholds.
+
+Full-video defaults and this finite calibration search are separate registered
+TRAIN diagnostics; cached calibration, if implemented, must be labeled replay
+and cannot produce system E2E FPS. All final TEST speed runs require real RGB,
+real live detector and real anchored VGGT forwards.

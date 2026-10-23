@@ -23,3 +23,10 @@ def test_preprocessing_keeps_complete_view_and_rejects_wrong_rgb_shape():
     assert np.array_equal(output[:,0,0],np.ones(3))
     assert np.array_equal(output[:,259,259],np.array([1,0,0]))
     with pytest.raises(ValueError):a.preprocess(image[:80])
+
+
+def test_exact_pil_pixel_center_mapping_keeps_resize_rounding_per_axis():
+    t=VGGTPointCoordinates.from_shape((777,1023,3))
+    expected=(np.array([0.,0.])+.5)*t.scale-.5+np.array([t.pad_left,t.pad_top])
+    assert np.allclose(t.to_network([[0,0]])[0],expected)
+    assert t.scale[0]!=t.scale[1]

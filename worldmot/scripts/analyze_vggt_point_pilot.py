@@ -29,12 +29,21 @@ def main():
             gt={int(v):ds.ground_truth(int(image_id)) for v,image_id in row['image_ids'].items()}
             targets=match_detections_to_gt(dets,gt,sid)
             by_det={};by_camera=collections.defaultdict(dict)
+            raw_gt_by_camera={v:{targets[v,i].identity_key for i in range(len(values))
+                                if targets[v,i].identity_key is not None} for v,values in dets.items()}
+            scene_counts['raw_candidates']+=sum(map(len,dets.values()))
             for v,values in row['tracks_2d_by_camera'].items():
                 view=int(v)
                 for out in values:
-                    index=next(i for i,d in enumerate(dets[view]) if d.detection_id==out['detection_id'])
+                    detection_id=out.get('detection_id')
+                    if detection_id is None:
+                        index=min(range(len(dets[view])),key=lambda i:np.abs(np.asarray(dets[view][i].bbox_xywh)-out['bbox_xywh']).max())
+                        if not np.allclose(dets[view][index].bbox_xywh,out['bbox_xywh'],atol=1e-4):
+                            raise ValueError('Primary output does not use a shared current detection box')
+                        detection_id=dets[view][index].detection_id
+                    else:index=next(i for i,d in enumerate(dets[view]) if d.detection_id==detection_id)
                     target=targets[view,index].identity_key;gid=out['global_id']
-                    by_det[view,out['detection_id']]=(target,gid)
+                    by_det[view,detection_id]=(target,gid)
                     history[sid,t,view,gid]=target
                     scene_counts['output_boxes']+=1
                     if target is not None:
@@ -43,10 +52,11 @@ def main():
                         if key in last_gid and last_gid[key]!=gid:scene_counts['diagnostic_temporal_ID_changes']+=1
                         last_gid[key]=gid
                     else:scene_counts['unmatched_or_ambiguous_output_boxes']+=1
-            if 1 in by_camera and 2 in by_camera:
-                for target in set(by_camera[1])&set(by_camera[2]):
+            if 1 in raw_gt_by_camera and 2 in raw_gt_by_camera:
+                for target in raw_gt_by_camera[1]&raw_gt_by_camera[2]:
                     scene_counts['same_GT_both_views_detected']+=1
-                    if by_camera[1][target]==by_camera[2][target]:scene_counts['correct_cross_view_shared_ID']+=1
+                    if target in by_camera[1] and target in by_camera[2] and by_camera[1][target]==by_camera[2][target]:
+                        scene_counts['correct_cross_view_shared_ID']+=1
                 for ta,ga in by_camera[1].items():
                     for tb,gb in by_camera[2].items():
                         if ga==gb and ta!=tb:scene_counts['different_GT_cross_view_wrong_merge']+=1

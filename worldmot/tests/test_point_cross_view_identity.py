@@ -30,3 +30,25 @@ def test_two_detections_in_one_camera_cannot_share_identity():
     row=memory.step(images(),dets,1,8)
     ids=[r['global_id'] for r in row['tracks_2d_by_camera']['1']]
     assert len(ids)==len(set(ids))==2
+
+
+def test_later_bidirectional_evidence_can_merge_separate_ids_without_rewriting_prefix():
+    oracle=PointOracle(confidence=0.,cross_scale=.9)
+    memory=PointIdentityMemory(oracle)
+    first=memory.step(images(),scene_detections(),1,8)
+    before=[first['tracks_2d_by_camera'][str(v)][0]['global_id'] for v in [1,2]]
+    assert before[0]!=before[1]
+    oracle.confidence=1.
+    second=memory.step(images(),scene_detections(2),2,8)
+    assert second['tracks_2d_by_camera']['1'][0]['global_id']==second['tracks_2d_by_camera']['2'][0]['global_id']
+    assert second['identity_merges'][0]['effective_timestamp']==2
+    assert [first['tracks_2d_by_camera'][str(v)][0]['global_id'] for v in [1,2]]==before
+
+
+def test_identities_seen_together_in_a_camera_cannot_be_late_merged():
+    from worldmot.models.person_detector import PersonDetection
+    memory=PointIdentityMemory(PointOracle(),cross_view=False)
+    memory.step(images(),{1:[PersonDetection(1,0,(10,10,20,40),.9),
+                                PersonDetection(1,1,(40,10,20,40),.9)],2:[]},1,8)
+    gid,reason=memory._merge_existing_ids(1,2,{1:{0:1},2:{0:2}},2)
+    assert gid is None and reason=='IDENTITIES_COEXISTED_IN_SAME_CAMERA'
