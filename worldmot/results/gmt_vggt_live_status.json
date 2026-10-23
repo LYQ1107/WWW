@@ -1,0 +1,448 @@
+{
+  "generated_utc": "2026-10-23T15:41:00.195610+00:00",
+  "goal_complete": false,
+  "live_processes": [
+    {
+      "pid": 2843,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": "0",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_gmt_feature_queue.py",
+        "--raw-cache",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
+        "--output",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/fulltrain_objects_v1",
+        "--scenes",
+        "4",
+        "16",
+        "1",
+        "5",
+        "9",
+        "13",
+        "17",
+        "21",
+        "--label",
+        "gpu0"
+      ]
+    },
+    {
+      "pid": 2883,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": "2",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_gmt_feature_queue.py",
+        "--raw-cache",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
+        "--output",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/fulltrain_objects_v1",
+        "--scenes",
+        "8",
+        "20",
+        "2",
+        "6",
+        "10",
+        "14",
+        "18",
+        "22",
+        "--label",
+        "gpu2"
+      ]
+    },
+    {
+      "pid": 2950,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": "6",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_gmt_feature_queue.py",
+        "--raw-cache",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
+        "--output",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/fulltrain_objects_v1",
+        "--scenes",
+        "12",
+        "24",
+        "3",
+        "7",
+        "11",
+        "15",
+        "19",
+        "23",
+        "--label",
+        "gpu6"
+      ]
+    },
+    {
+      "pid": 13041,
+      "cwd": "/data1/liuyeqiang/WWW_fulltrain/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": "4",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot_mmdet311/bin/python",
+        "scripts/run_fullvideo.py",
+        "--split",
+        "test",
+        "--metadata",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/test_metadata.json",
+        "--method",
+        "v2",
+        "--output",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_no_geometry_seed20261022",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final/no_geometry_seed20261022.frozen.pt",
+        "--lock",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final_test_lock.json"
+      ]
+    },
+    {
+      "pid": 14992,
+      "cwd": "/data1/liuyeqiang/WWW_fulltrain/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": "3",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot_mmdet311/bin/python",
+        "scripts/run_fullvideo.py",
+        "--split",
+        "test",
+        "--metadata",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/test_metadata.json",
+        "--method",
+        "v2",
+        "--output",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_two_stage_seed20261022",
+        "--device",
+        "cuda:0",
+        "--checkpoint",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final/two_stage_seed20261022.frozen.pt",
+        "--lock",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final_test_lock.json"
+      ]
+    },
+    {
+      "pid": 20615,
+      "cwd": "/data1/liuyeqiang/WWW_capacity/worldmot",
+      "state": "T (stopped)",
+      "physical_GPU_visible_devices": null,
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "scripts/run_capacity_test.py",
+        "--wait-for-original"
+      ]
+    },
+    {
+      "pid": 21919,
+      "cwd": "/data1/liuyeqiang/WWW_fulltrain/worldmot",
+      "state": "S (sleeping)",
+      "physical_GPU_visible_devices": null,
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/orchestrate_fulltrain_test.py"
+      ]
+    },
+    {
+      "pid": 22590,
+      "cwd": "/data1/liuyeqiang/WWW_vggt_points_20261023/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": "7",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_vggt_point_fullvideo.py",
+        "--metadata",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/train_metadata.json",
+        "--split",
+        "train",
+        "--raw-cache",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
+        "--scenes",
+        "8",
+        "--method",
+        "temporal",
+        "--detector-mode",
+        "live_verified",
+        "--output",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/train_temporal_default_fullscene8_v1"
+      ]
+    },
+    {
+      "pid": 22607,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": "0",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_fullvideo.py",
+        "--split",
+        "train",
+        "--metadata",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/train_metadata.json",
+        "--method",
+        "v1",
+        "--detector",
+        "gmt_pre_gta",
+        "--gmt-raw-cache",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
+        "--scenes",
+        "4",
+        "8",
+        "12",
+        "16",
+        "20",
+        "24",
+        "--resource-mode",
+        "shared_gpu",
+        "--output",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/train_v1_validation_shared_gpu0_v1"
+      ]
+    }
+  ],
+  "live_owned_GPU_cards": [
+    "0",
+    "2",
+    "3",
+    "4",
+    "6",
+    "7"
+  ],
+  "user_maximum_physical_cards": 6,
+  "raw_GMT_TRAIN": {
+    "root": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
+    "completed_scenes": 24,
+    "completed_timestamps": 28754,
+    "checkpointed_timestamps": 28754,
+    "scenes": [
+      {
+        "scene": 1,
+        "status": "COMPLETE",
+        "completed_timestamps": 932,
+        "checkpointed_timestamps": 932
+      },
+      {
+        "scene": 2,
+        "status": "COMPLETE",
+        "completed_timestamps": 1886,
+        "checkpointed_timestamps": 1886
+      },
+      {
+        "scene": 3,
+        "status": "COMPLETE",
+        "completed_timestamps": 1200,
+        "checkpointed_timestamps": 1200
+      },
+      {
+        "scene": 4,
+        "status": "COMPLETE",
+        "completed_timestamps": 901,
+        "checkpointed_timestamps": 901
+      },
+      {
+        "scene": 5,
+        "status": "COMPLETE",
+        "completed_timestamps": 1769,
+        "checkpointed_timestamps": 1769
+      },
+      {
+        "scene": 6,
+        "status": "COMPLETE",
+        "completed_timestamps": 601,
+        "checkpointed_timestamps": 601
+      },
+      {
+        "scene": 7,
+        "status": "COMPLETE",
+        "completed_timestamps": 443,
+        "checkpointed_timestamps": 443
+      },
+      {
+        "scene": 8,
+        "status": "COMPLETE",
+        "completed_timestamps": 523,
+        "checkpointed_timestamps": 523
+      },
+      {
+        "scene": 9,
+        "status": "COMPLETE",
+        "completed_timestamps": 1942,
+        "checkpointed_timestamps": 1942
+      },
+      {
+        "scene": 10,
+        "status": "COMPLETE",
+        "completed_timestamps": 2092,
+        "checkpointed_timestamps": 2092
+      },
+      {
+        "scene": 11,
+        "status": "COMPLETE",
+        "completed_timestamps": 2057,
+        "checkpointed_timestamps": 2057
+      },
+      {
+        "scene": 12,
+        "status": "COMPLETE",
+        "completed_timestamps": 1200,
+        "checkpointed_timestamps": 1200
+      },
+      {
+        "scene": 13,
+        "status": "COMPLETE",
+        "completed_timestamps": 1621,
+        "checkpointed_timestamps": 1621
+      },
+      {
+        "scene": 14,
+        "status": "COMPLETE",
+        "completed_timestamps": 969,
+        "checkpointed_timestamps": 969
+      },
+      {
+        "scene": 15,
+        "status": "COMPLETE",
+        "completed_timestamps": 1048,
+        "checkpointed_timestamps": 1048
+      },
+      {
+        "scene": 16,
+        "status": "COMPLETE",
+        "completed_timestamps": 1034,
+        "checkpointed_timestamps": 1034
+      },
+      {
+        "scene": 17,
+        "status": "COMPLETE",
+        "completed_timestamps": 1200,
+        "checkpointed_timestamps": 1200
+      },
+      {
+        "scene": 18,
+        "status": "COMPLETE",
+        "completed_timestamps": 1029,
+        "checkpointed_timestamps": 1029
+      },
+      {
+        "scene": 19,
+        "status": "COMPLETE",
+        "completed_timestamps": 1052,
+        "checkpointed_timestamps": 1052
+      },
+      {
+        "scene": 20,
+        "status": "COMPLETE",
+        "completed_timestamps": 1001,
+        "checkpointed_timestamps": 1001
+      },
+      {
+        "scene": 21,
+        "status": "COMPLETE",
+        "completed_timestamps": 1001,
+        "checkpointed_timestamps": 1001
+      },
+      {
+        "scene": 22,
+        "status": "COMPLETE",
+        "completed_timestamps": 1000,
+        "checkpointed_timestamps": 1000
+      },
+      {
+        "scene": 23,
+        "status": "COMPLETE",
+        "completed_timestamps": 1052,
+        "checkpointed_timestamps": 1052
+      },
+      {
+        "scene": 24,
+        "status": "COMPLETE",
+        "completed_timestamps": 1201,
+        "checkpointed_timestamps": 1201
+      }
+    ]
+  },
+  "GMT_Omega_TRAIN_objects": {
+    "root": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/fulltrain_objects_v1",
+    "completed_scenes": 2,
+    "completed_timestamps": 1424,
+    "checkpointed_timestamps": 3088,
+    "scenes": [
+      {
+        "scene": 4,
+        "status": "COMPLETE",
+        "completed_timestamps": 901,
+        "checkpointed_timestamps": 901
+      },
+      {
+        "scene": 8,
+        "status": "COMPLETE",
+        "completed_timestamps": 523,
+        "checkpointed_timestamps": 523
+      },
+      {
+        "scene": 12,
+        "status": "RUNNING_WITHOUT_FINAL_MANIFEST",
+        "completed_timestamps": 0,
+        "checkpointed_timestamps": 1024
+      },
+      {
+        "scene": 16,
+        "status": "RUNNING_WITHOUT_FINAL_MANIFEST",
+        "completed_timestamps": 0,
+        "checkpointed_timestamps": 128
+      },
+      {
+        "scene": 20,
+        "status": "RUNNING_WITHOUT_FINAL_MANIFEST",
+        "completed_timestamps": 0,
+        "checkpointed_timestamps": 512
+      }
+    ]
+  },
+  "TRAIN_target_scenes": 24,
+  "TRAIN_target_timestamps": 28754,
+  "new_TEST_methods": "NOT_STARTED_PENDING_TRAIN_VALIDATION_FREEZE",
+  "point_default_TRAIN_temporal": {
+    "root": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/train_temporal_default_fullscene8_v1",
+    "completed_scenes": 0,
+    "completed_timestamps": 0,
+    "checkpointed_timestamps": 80,
+    "scenes": [
+      {
+        "scene": 8,
+        "status": "RUNNING",
+        "completed_timestamps": 0,
+        "checkpointed_timestamps": 80
+      }
+    ]
+  },
+  "GMT_V1_TRAIN_validation": {
+    "root": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/train_v1_validation_shared_gpu0_v1",
+    "completed_scenes": 0,
+    "completed_timestamps": 0,
+    "checkpointed_timestamps": 256,
+    "scenes": [
+      {
+        "scene": 4,
+        "status": "RUNNING",
+        "completed_timestamps": 0,
+        "checkpointed_timestamps": 256
+      }
+    ]
+  },
+  "remaining": [
+    "Full detector/object cache integrity and supervision audit",
+    "Matched-budget GMTDet V2 joint/no-geometry fitting and TRAIN-only selection/freeze",
+    "A0/A1 2D controls and A2/A3 complete TRAIN validation and fixed selection",
+    "All new 22-video TEST streams and formal TrackEval/MATLAB evaluation",
+    "Final shared-candidate attribution, comparable exclusive-GPU timing and failure figures"
+  ]
+}
