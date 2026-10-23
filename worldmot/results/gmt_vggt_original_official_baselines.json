@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-10-23T15:41:00.195610+00:00",
+  "generated_utc": "2026-10-23T17:34:14.709501+00:00",
   "status": "ORIGINAL_METHODS_AVAILABLE_NEW_METHODS_PENDING",
   "methods": {
     "gmt_native": {
@@ -9352,6 +9352,1175 @@
       "full_inference_scenes": 22,
       "full_inference_timestamps": 29019,
       "real_e2e_fps": 0.7770310294956496,
+      "timing_scope": "RGB decode + detector + Omega + all CPU/postprocessing + query/memory + serialization + flushed final-ID delivery; excludes initialization and offline evaluation"
+    },
+    "v2_two_stage_seed20261022": {
+      "source_metrics": {
+        "path": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test_evaluation/v2_two_stage_seed20261022/metrics.json",
+        "bytes": 43057,
+        "sha256": "1ec6f77b8339901520f0812286024066990f274f2c77ee4bc979bcd27a3cf75d"
+      },
+      "TrackEval": {
+        "combined": {
+          "HOTA": 35.19849274925731,
+          "AssA": 47.59979074588621,
+          "DetA": 26.451377116084434,
+          "IDF1": 41.57418302915638,
+          "MOTA": 31.891877651026164,
+          "IDSW": 373,
+          "Frag": 1216,
+          "CLR_TP": 65580,
+          "CLR_FN": 124205,
+          "CLR_FP": 4681
+        },
+        "per_scene": {
+          "00001garden": {
+            "HOTA": 41.6790090136892,
+            "AssA": 58.35621560139913,
+            "DetA": 30.058514880009263,
+            "IDF1": 50.096632503660324,
+            "MOTA": 34.74906610362189,
+            "IDSW": 38,
+            "Frag": 78,
+            "CLR_TP": 4539,
+            "CLR_FN": 7775,
+            "CLR_FP": 222
+          },
+          "00003garden": {
+            "HOTA": 50.817530493902886,
+            "AssA": 63.8154832666547,
+            "DetA": 40.55459801920742,
+            "IDF1": 61.84588593818023,
+            "MOTA": 48.51712051765975,
+            "IDSW": 38,
+            "Frag": 124,
+            "CLR_TP": 7685,
+            "CLR_FN": 7151,
+            "CLR_FP": 449
+          },
+          "00005garden": {
+            "HOTA": 24.84431674374851,
+            "AssA": 42.38809100266096,
+            "DetA": 14.722958304072481,
+            "IDF1": 26.689293427954336,
+            "MOTA": 17.599735508044965,
+            "IDSW": 43,
+            "Frag": 218,
+            "CLR_TP": 5011,
+            "CLR_FN": 22211,
+            "CLR_FP": 177
+          },
+          "00012night": {
+            "HOTA": 56.258021680317746,
+            "AssA": 60.74917430373551,
+            "DetA": 52.13738276471577,
+            "IDF1": 78.46655791190864,
+            "MOTA": 68.81243063263041,
+            "IDSW": 6,
+            "Frag": 86,
+            "CLR_TP": 2506,
+            "CLR_FN": 1098,
+            "CLR_FP": 20
+          },
+          "00019court2": {
+            "HOTA": 43.619584510655045,
+            "AssA": 39.45249674314088,
+            "DetA": 48.574742041606086,
+            "IDF1": 50.04866180048661,
+            "MOTA": 42.75147928994083,
+            "IDSW": 111,
+            "Frag": 64,
+            "CLR_TP": 3198,
+            "CLR_FN": 182,
+            "CLR_FP": 1642
+          },
+          "00022gate": {
+            "HOTA": 37.5235361923821,
+            "AssA": 37.79079240141155,
+            "DetA": 37.26386757272764,
+            "IDF1": 50.729545034784216,
+            "MOTA": 46.804820157020266,
+            "IDSW": 14,
+            "Frag": 47,
+            "CLR_TP": 5215,
+            "CLR_FN": 5739,
+            "CLR_FP": 74
+          },
+          "00023court4": {
+            "HOTA": 58.96979757528587,
+            "AssA": 75.53499566543302,
+            "DetA": 46.08673986758563,
+            "IDF1": 61.92327192834206,
+            "MOTA": 51.692146870508296,
+            "IDSW": 2,
+            "Frag": 23,
+            "CLR_TP": 8138,
+            "CLR_FN": 7168,
+            "CLR_FP": 224
+          },
+          "00027square": {
+            "HOTA": 18.67844654036939,
+            "AssA": 14.824347997456153,
+            "DetA": 23.55937991692155,
+            "IDF1": 27.326509531411403,
+            "MOTA": 30.88654053027906,
+            "IDSW": 18,
+            "Frag": 112,
+            "CLR_TP": 5197,
+            "CLR_FN": 10606,
+            "CLR_FP": 298
+          },
+          "00028path": {
+            "HOTA": 29.560753040529963,
+            "AssA": 25.585565798192594,
+            "DetA": 34.369817129647096,
+            "IDF1": 50.17651212049894,
+            "MOTA": 45.77064286228493,
+            "IDSW": 14,
+            "Frag": 97,
+            "CLR_TP": 6863,
+            "CLR_FN": 7028,
+            "CLR_FP": 491
+          },
+          "00029path": {
+            "HOTA": 32.90245757071205,
+            "AssA": 34.780820322520775,
+            "DetA": 31.140437231512845,
+            "IDF1": 44.85695566717624,
+            "MOTA": 38.03985030848589,
+            "IDSW": 11,
+            "Frag": 47,
+            "CLR_TP": 3811,
+            "CLR_FN": 6076,
+            "CLR_FP": 39
+          },
+          "00117wood": {
+            "HOTA": 28.471781244901162,
+            "AssA": 48.06088363937048,
+            "DetA": 16.879749431952547,
+            "IDF1": 29.40916457934286,
+            "MOTA": 19.762399762399763,
+            "IDSW": 15,
+            "Frag": 27,
+            "CLR_TP": 3434,
+            "CLR_FN": 13401,
+            "CLR_FP": 92
+          },
+          "00120park": {
+            "HOTA": 34.82414880920468,
+            "AssA": 42.85853351910293,
+            "DetA": 28.35174433565126,
+            "IDF1": 47.59694012134001,
+            "MOTA": 38.53325502863016,
+            "IDSW": 12,
+            "Frag": 63,
+            "CLR_TP": 5297,
+            "CLR_FN": 8325,
+            "CLR_FP": 36
+          },
+          "00144road": {
+            "HOTA": 15.092600929046505,
+            "AssA": 25.687008393348698,
+            "DetA": 9.804093329620436,
+            "IDF1": 17.91044776119403,
+            "MOTA": 10.050726079172469,
+            "IDSW": 25,
+            "Frag": 90,
+            "CLR_TP": 2828,
+            "CLR_FN": 17280,
+            "CLR_FP": 782
+          },
+          "00146bridge": {
+            "HOTA": 18.447460217819238,
+            "AssA": 32.33735963067388,
+            "DetA": 10.540663980033786,
+            "IDF1": 21.27568493150685,
+            "MOTA": 14.114613657157115,
+            "IDSW": 26,
+            "Frag": 140,
+            "CLR_TP": 1858,
+            "CLR_FN": 10165,
+            "CLR_FP": 135
+          }
+        },
+        "per_camera": {
+          "00001garden_View1": {
+            "HOTA": 40.60112766421115,
+            "AssA": 55.7164549978014,
+            "DetA": 30.08949282477793,
+            "IDF1": 50.76673281616453,
+            "MOTA": 35.24642087926011,
+            "IDSW": 29,
+            "Frag": 49,
+            "CLR_TP": 3002,
+            "CLR_FN": 4891,
+            "CLR_FP": 191
+          },
+          "00001garden_View2": {
+            "HOTA": 43.484137496385834,
+            "AssA": 62.905695627843436,
+            "DetA": 30.111015273437268,
+            "IDF1": 48.85623643346135,
+            "MOTA": 33.86111739425469,
+            "IDSW": 9,
+            "Frag": 29,
+            "CLR_TP": 1537,
+            "CLR_FN": 2884,
+            "CLR_FP": 31
+          },
+          "00003garden_View1": {
+            "HOTA": 46.9232823047186,
+            "AssA": 64.32134769399913,
+            "DetA": 34.40573257731126,
+            "IDF1": 55.61019222172553,
+            "MOTA": 40.4928247734139,
+            "IDSW": 36,
+            "Frag": 87,
+            "CLR_TP": 4696,
+            "CLR_FN": 5896,
+            "CLR_FP": 371
+          },
+          "00003garden_View2": {
+            "HOTA": 59.46171013224599,
+            "AssA": 63.12622632183602,
+            "DetA": 56.016711507244956,
+            "IDF1": 75.20175078648612,
+            "MOTA": 68.54382657869934,
+            "IDSW": 2,
+            "Frag": 37,
+            "CLR_TP": 2989,
+            "CLR_FN": 1255,
+            "CLR_FP": 78
+          },
+          "00005garden_View1": {
+            "HOTA": 18.600480855644687,
+            "AssA": 33.24046790525705,
+            "DetA": 10.607029734224664,
+            "IDF1": 20.117597648047038,
+            "MOTA": 13.016215352663952,
+            "IDSW": 41,
+            "Frag": 207,
+            "CLR_TP": 3417,
+            "CLR_FN": 21621,
+            "CLR_FP": 117
+          },
+          "00005garden_View2": {
+            "HOTA": 59.90946716704205,
+            "AssA": 59.72945678322048,
+            "DetA": 60.15606764609157,
+            "IDF1": 75.61229807191245,
+            "MOTA": 70.14652014652015,
+            "IDSW": 2,
+            "Frag": 11,
+            "CLR_TP": 1594,
+            "CLR_FN": 590,
+            "CLR_FP": 60
+          },
+          "00012night_View1": {
+            "HOTA": 34.94764714566275,
+            "AssA": 36.47706423914876,
+            "DetA": 33.524958164180845,
+            "IDF1": 55.12820512820513,
+            "MOTA": 44.83906770255272,
+            "IDSW": 6,
+            "Frag": 43,
+            "CLR_TP": 832,
+            "CLR_FN": 970,
+            "CLR_FP": 18
+          },
+          "00012night_View2": {
+            "HOTA": 71.51320567019904,
+            "AssA": 72.2400015251455,
+            "DetA": 70.83418444451614,
+            "IDF1": 96.26221966647499,
+            "MOTA": 92.78579356270811,
+            "IDSW": 0,
+            "Frag": 43,
+            "CLR_TP": 1674,
+            "CLR_FN": 128,
+            "CLR_FP": 2
+          },
+          "00019court2_View1": {
+            "HOTA": 57.27954693149954,
+            "AssA": 44.06553601401469,
+            "DetA": 74.72425010982455,
+            "IDF1": 63.58136721113128,
+            "MOTA": 89.21334922526817,
+            "IDSW": 15,
+            "Frag": 19,
+            "CLR_TP": 1570,
+            "CLR_FN": 108,
+            "CLR_FP": 58
+          },
+          "00019court2_View2": {
+            "HOTA": 33.97500619849866,
+            "AssA": 32.82357156507785,
+            "DetA": 35.20959741771068,
+            "IDF1": 40.944240944240946,
+            "MOTA": -3.055229142185664,
+            "IDSW": 96,
+            "Frag": 45,
+            "CLR_TP": 1628,
+            "CLR_FN": 74,
+            "CLR_FP": 1584
+          },
+          "00022gate_View1": {
+            "HOTA": 35.86314050851428,
+            "AssA": 38.239175725915295,
+            "DetA": 33.64340914558133,
+            "IDF1": 47.87426503844414,
+            "MOTA": 42.526864213611205,
+            "IDSW": 10,
+            "Frag": 23,
+            "CLR_TP": 2662,
+            "CLR_FN": 3480,
+            "CLR_FP": 40
+          },
+          "00022gate_View2": {
+            "HOTA": 39.517860095012246,
+            "AssA": 37.29452796050447,
+            "DetA": 41.87834695854203,
+            "IDF1": 54.14245168265982,
+            "MOTA": 52.26517040731504,
+            "IDSW": 4,
+            "Frag": 24,
+            "CLR_TP": 2553,
+            "CLR_FN": 2259,
+            "CLR_FP": 34
+          },
+          "00023court4_View1": {
+            "HOTA": 65.23913266911696,
+            "AssA": 87.03435016273751,
+            "DetA": 48.904398531994815,
+            "IDF1": 70.40493108466741,
+            "MOTA": 54.55508474576271,
+            "IDSW": 1,
+            "Frag": 10,
+            "CLR_TP": 4125,
+            "CLR_FN": 3427,
+            "CLR_FP": 4
+          },
+          "00023court4_View2": {
+            "HOTA": 52.11350774158072,
+            "AssA": 62.474635253187785,
+            "DetA": 43.47884107080763,
+            "IDF1": 53.65812964044382,
+            "MOTA": 48.90379159143668,
+            "IDSW": 1,
+            "Frag": 13,
+            "CLR_TP": 4013,
+            "CLR_FN": 3741,
+            "CLR_FP": 220
+          },
+          "00027square_View1": {
+            "HOTA": 20.76778519085482,
+            "AssA": 15.251915615829365,
+            "DetA": 28.303050204616593,
+            "IDF1": 31.25056679060488,
+            "MOTA": 36.49513568868408,
+            "IDSW": 10,
+            "Frag": 54,
+            "CLR_TP": 3038,
+            "CLR_FN": 4774,
+            "CLR_FP": 177
+          },
+          "00027square_View2": {
+            "HOTA": 16.2640256295661,
+            "AssA": 14.007034647383627,
+            "DetA": 18.894786840132294,
+            "IDF1": 23.1136208743063,
+            "MOTA": 25.403579026404703,
+            "IDSW": 8,
+            "Frag": 58,
+            "CLR_TP": 2159,
+            "CLR_FN": 5832,
+            "CLR_FP": 121
+          },
+          "00028path_View1": {
+            "HOTA": 30.163903575601847,
+            "AssA": 24.889158420994896,
+            "DetA": 36.56914481485156,
+            "IDF1": 53.559928443649376,
+            "MOTA": 51.45949024633347,
+            "IDSW": 5,
+            "Frag": 61,
+            "CLR_TP": 3888,
+            "CLR_FN": 3135,
+            "CLR_FP": 269
+          },
+          "00028path_View2": {
+            "HOTA": 28.45186316488404,
+            "AssA": 25.2134240192887,
+            "DetA": 32.27753519819337,
+            "IDF1": 46.41828117237953,
+            "MOTA": 39.953407105416424,
+            "IDSW": 9,
+            "Frag": 36,
+            "CLR_TP": 2975,
+            "CLR_FN": 3893,
+            "CLR_FP": 222
+          },
+          "00029path_View1": {
+            "HOTA": 37.71082450172496,
+            "AssA": 31.916663612354547,
+            "DetA": 44.58719142959412,
+            "IDF1": 52.08483624296638,
+            "MOTA": 53.45632362747277,
+            "IDSW": 5,
+            "Frag": 15,
+            "CLR_TP": 2421,
+            "CLR_FN": 2078,
+            "CLR_FP": 11
+          },
+          "00029path_View2": {
+            "HOTA": 28.05302884488437,
+            "AssA": 39.46470593715464,
+            "DetA": 19.946353719210748,
+            "IDF1": 37.496326770496616,
+            "MOTA": 25.16703786191537,
+            "IDSW": 6,
+            "Frag": 32,
+            "CLR_TP": 1390,
+            "CLR_FN": 3998,
+            "CLR_FP": 28
+          },
+          "00117wood_View1": {
+            "HOTA": 13.25874863610873,
+            "AssA": 12.444829745006873,
+            "DetA": 14.129637775635787,
+            "IDF1": 22.816818582769773,
+            "MOTA": 16.335275968460746,
+            "IDSW": 5,
+            "Frag": 8,
+            "CLR_TP": 963,
+            "CLR_FN": 4871,
+            "CLR_FP": 5
+          },
+          "00117wood_View2": {
+            "HOTA": 33.77268258741127,
+            "AssA": 62.248665802261804,
+            "DetA": 18.32905301958128,
+            "IDF1": 32.716277011579024,
+            "MOTA": 21.579856376693026,
+            "IDSW": 10,
+            "Frag": 19,
+            "CLR_TP": 2471,
+            "CLR_FN": 8530,
+            "CLR_FP": 87
+          },
+          "00120park_View1": {
+            "HOTA": 36.62129866631707,
+            "AssA": 34.70849494112681,
+            "DetA": 38.72888830137789,
+            "IDF1": 50.610734114743984,
+            "MOTA": 51.614720240330456,
+            "IDSW": 6,
+            "Frag": 28,
+            "CLR_TP": 2767,
+            "CLR_FN": 2559,
+            "CLR_FP": 12
+          },
+          "00120park_View2": {
+            "HOTA": 33.421009320032645,
+            "AssA": 51.773036231537176,
+            "DetA": 21.65322861209933,
+            "IDF1": 45.34562211981567,
+            "MOTA": 30.13500482160077,
+            "IDSW": 6,
+            "Frag": 35,
+            "CLR_TP": 2530,
+            "CLR_FN": 5766,
+            "CLR_FP": 24
+          },
+          "00144road_View1": {
+            "HOTA": 14.659359443345613,
+            "AssA": 31.129471534883322,
+            "DetA": 7.626353950271525,
+            "IDF1": 15.519807242576714,
+            "MOTA": 8.745247148288973,
+            "IDSW": 13,
+            "Frag": 34,
+            "CLR_TP": 1302,
+            "CLR_FN": 11322,
+            "CLR_FP": 185
+          },
+          "00144road_View2": {
+            "HOTA": 15.422267316894192,
+            "AssA": 18.06789236954352,
+            "DetA": 13.246046006070358,
+            "IDF1": 21.42187987925471,
+            "MOTA": 12.252805986103688,
+            "IDSW": 12,
+            "Frag": 56,
+            "CLR_TP": 1526,
+            "CLR_FN": 5958,
+            "CLR_FP": 597
+          },
+          "00146bridge_View1": {
+            "HOTA": 10.598247834692106,
+            "AssA": 20.642438621667917,
+            "DetA": 5.447434989312256,
+            "IDF1": 12.132857534998626,
+            "MOTA": 7.05518411336194,
+            "IDSW": 19,
+            "Frag": 89,
+            "CLR_TP": 817,
+            "CLR_FN": 9204,
+            "CLR_FP": 91
+          },
+          "00146bridge_View2": {
+            "HOTA": 37.47908717029041,
+            "AssA": 40.13082871292184,
+            "DetA": 35.03053635976292,
+            "IDF1": 53.64431486880466,
+            "MOTA": 49.45054945054945,
+            "IDSW": 7,
+            "Frag": 51,
+            "CLR_TP": 1041,
+            "CLR_FN": 961,
+            "CLR_FP": 44
+          }
+        },
+        "tool_sha256": {
+          "trackeval/__init__.py": "636586f4cc90a0be21e8aff605fb7fe97c089b3c46fafd43745d4c41bedceae3",
+          "trackeval/_timing.py": "62e60638efc675bccc35c7da65158f0f19ce31f332121efe7cc748bd92ad2b30",
+          "trackeval/datasets/__init__.py": "f0b3346f098eefd359f292cfd7b95fde2ba407f7d4698aa86de602e046b588f2",
+          "trackeval/datasets/_base_dataset.py": "9094b50490b5567ed6f22cac6aa6ec969f4d467d4d28515546e0b875ffe976f5",
+          "trackeval/datasets/_timing.py": "62e60638efc675bccc35c7da65158f0f19ce31f332121efe7cc748bd92ad2b30",
+          "trackeval/datasets/bdd100k.py": "e9d5c62f164185bc996b02c61f54f0cf02c09098a715ed04aa9971d6a8de927d",
+          "trackeval/datasets/davis.py": "4c55560bd58892e30a794b68fdf7ecb08dfdb5a1e51a9b85b1ba21fae78eaf90",
+          "trackeval/datasets/kitti_2d_box.py": "050ac54284a982b5ab400ae9f29022370f52df6d6e03566fd8b30a0be7828a97",
+          "trackeval/datasets/kitti_mots.py": "5d62bddeb7713e16107161556f619b58a39e5397c3c6eee0dba965b82cb8ea33",
+          "trackeval/datasets/mot_challenge_2d_box.py": "6935c306db2ab32c900df7ea46c009c85419931708f18dc6c61ef6fa0a327ec1",
+          "trackeval/datasets/mots_challenge.py": "23b02bbdb33916739cb10c5139347c1727c6f1467e6ee974b6af6e6072c13de7",
+          "trackeval/datasets/rob_mots.py": "418af99e5b3d849a36229e9257f97c34422d44ab39e8e404c1b1aae9f61b56e3",
+          "trackeval/datasets/rob_mots_classmap.py": "db79031762d5fb55c009999cdb89586a70d11a1deaf2e1948192387872a64d1e",
+          "trackeval/datasets/run_rob_mots.py": "5d1bb96c2bb376b7cb4e00cada1e1ecab3974d6b06fad080f9e1708358a00a4a",
+          "trackeval/datasets/tao.py": "82fb49965e30b2d108aecdd38e538d5c0a24bc383ee347e19d2195fd8b3e4f3f",
+          "trackeval/datasets/utils.py": "e20e57f0badcd7f9d768c96f244fbefc0fb2b4a9e28808f929f30e11aef6fc19",
+          "trackeval/datasets/youtube_vis.py": "aa04208b1b7e5fa9018e0066d42be03c0dd68f4bf7dfcb626c85fd7dc52cac2c",
+          "trackeval/eval.py": "559fe9dbc6c0fff7f8d81ad16f03bc2900f9e8e53f4f49cd4bdf0c24dd34eab5",
+          "trackeval/metrics/__init__.py": "98d7706e37f55b1f91736037652689636836768d3cb76bac477d15beeb08dddb",
+          "trackeval/metrics/_base_metric.py": "a16618762601ad8f4a8e5a25a7490ee8fe003ab2850b894088bb6bd4f1b9db0b",
+          "trackeval/metrics/clear.py": "349daafdbb009f6cd71cf66ff1c9b8074940cd3310fcd663151d644b7ff0e5e3",
+          "trackeval/metrics/count.py": "ffce9a3ed557f164f7a811f0a8cf66f609eec0af822dbc87d8fdaef560032163",
+          "trackeval/metrics/hota.py": "421cb37dd492ecf2591114ea7e4a0d006cd0401225551717fd0b50473c8505d5",
+          "trackeval/metrics/identity.py": "33b4ef7e11a24c47c6060eb2464cb92167aea42e8c0e6f652b10ca317872028c",
+          "trackeval/metrics/j_and_f.py": "ad1339106129664658b47e2db142a02f22c6c711664a9e0930feb9bde2cc213f",
+          "trackeval/metrics/track_map.py": "492b588ca63d1adce96530f914239530fac1b018e5a2c603f036a3337d9aefb0",
+          "trackeval/metrics/vace.py": "13db97a61cc7291e5356c80a0a4f11a88b75a9664a81fc903d6bd41a1cd6ffdc",
+          "trackeval/plotting.py": "6d3ebada977b6990527dab143e0e4a0bbf5f1dd64f46bf214701a64acadba13f",
+          "trackeval/utils.py": "e20e57f0badcd7f9d768c96f244fbefc0fb2b4a9e28808f929f30e11aef6fc19"
+        }
+      },
+      "VisionTrack_MATLAB": {
+        "combined": {
+          "CVIDF1": 40.90199426255355,
+          "CVMA": 28.970677345417183,
+          "identity_counts": {
+            "IDTP": 53182,
+            "IDFP": 17079,
+            "IDFN": 136603,
+            "n_gt": 189785,
+            "n_tr": 70261
+          },
+          "CLEAR_counts": {
+            "fn": 124195,
+            "fp": 4671,
+            "id_switches": 5937,
+            "tp": 65590
+          }
+        },
+        "per_scene": {
+          "00001garden": {
+            "CVIDF1": 50.096632503660324,
+            "CVMA": 34.00194900113692,
+            "identity_counts": {
+              "IDTP": 4277,
+              "IDFP": 484,
+              "IDFN": 8037,
+              "n_gt": 12314,
+              "n_tr": 4761
+            },
+            "CLEAR_counts": {
+              "fn": 7775,
+              "fp": 222,
+              "id_switches": 130,
+              "tp": 4539
+            }
+          },
+          "00003garden": {
+            "CVIDF1": 61.84588593818024,
+            "CVMA": 48.36209220814236,
+            "identity_counts": {
+              "IDTP": 7103,
+              "IDFP": 1031,
+              "IDFN": 7733,
+              "n_gt": 14836,
+              "n_tr": 8134
+            },
+            "CLEAR_counts": {
+              "fn": 7151,
+              "fp": 449,
+              "id_switches": 61,
+              "tp": 7685
+            }
+          },
+          "00005garden": {
+            "CVIDF1": 25.49213205800679,
+            "CVMA": 15.39930938211741,
+            "identity_counts": {
+              "IDTP": 4131,
+              "IDFP": 1057,
+              "IDFN": 23091,
+              "n_gt": 27222,
+              "n_tr": 5188
+            },
+            "CLEAR_counts": {
+              "fn": 22211,
+              "fp": 177,
+              "id_switches": 642,
+              "tp": 5011
+            }
+          },
+          "00012night": {
+            "CVIDF1": 78.46655791190865,
+            "CVMA": 63.8457269700333,
+            "identity_counts": {
+              "IDTP": 2405,
+              "IDFP": 121,
+              "IDFN": 1199,
+              "n_gt": 3604,
+              "n_tr": 2526
+            },
+            "CLEAR_counts": {
+              "fn": 1098,
+              "fp": 20,
+              "id_switches": 185,
+              "tp": 2506
+            }
+          },
+          "00019court2": {
+            "CVIDF1": 44.72019464720194,
+            "CVMA": -16.775147928994084,
+            "identity_counts": {
+              "IDTP": 1838,
+              "IDFP": 3002,
+              "IDFN": 1542,
+              "n_gt": 3380,
+              "n_tr": 4840
+            },
+            "CLEAR_counts": {
+              "fn": 181,
+              "fp": 1641,
+              "id_switches": 2125,
+              "tp": 3199
+            }
+          },
+          "00022gate": {
+            "CVIDF1": 50.729545034784216,
+            "CVMA": 46.86872375387986,
+            "identity_counts": {
+              "IDTP": 4120,
+              "IDFP": 1169,
+              "IDFN": 6834,
+              "n_gt": 10954,
+              "n_tr": 5289
+            },
+            "CLEAR_counts": {
+              "fn": 5739,
+              "fp": 74,
+              "id_switches": 7,
+              "tp": 5215
+            }
+          },
+          "00023court4": {
+            "CVIDF1": 61.92327192834207,
+            "CVMA": 41.4281980922514,
+            "identity_counts": {
+              "IDTP": 7328,
+              "IDFP": 1034,
+              "IDFN": 7978,
+              "n_gt": 15306,
+              "n_tr": 8362
+            },
+            "CLEAR_counts": {
+              "fn": 7168,
+              "fp": 224,
+              "id_switches": 1573,
+              "tp": 8138
+            }
+          },
+          "00027square": {
+            "CVIDF1": 25.786458822424642,
+            "CVMA": 30.930835917230905,
+            "identity_counts": {
+              "IDTP": 2746,
+              "IDFP": 2749,
+              "IDFN": 13057,
+              "n_gt": 15803,
+              "n_tr": 5495
+            },
+            "CLEAR_counts": {
+              "fn": 10606,
+              "fp": 298,
+              "id_switches": 11,
+              "tp": 5197
+            }
+          },
+          "00028path": {
+            "CVIDF1": 50.17651212049894,
+            "CVMA": 44.15088906486214,
+            "identity_counts": {
+              "IDTP": 5330,
+              "IDFP": 2024,
+              "IDFN": 8561,
+              "n_gt": 13891,
+              "n_tr": 7354
+            },
+            "CLEAR_counts": {
+              "fn": 7028,
+              "fp": 491,
+              "id_switches": 239,
+              "tp": 6863
+            }
+          },
+          "00029path": {
+            "CVIDF1": 44.128994685884834,
+            "CVMA": 35.268534439162536,
+            "identity_counts": {
+              "IDTP": 3031,
+              "IDFP": 819,
+              "IDFN": 6856,
+              "n_gt": 9887,
+              "n_tr": 3850
+            },
+            "CLEAR_counts": {
+              "fn": 6076,
+              "fp": 39,
+              "id_switches": 285,
+              "tp": 3811
+            }
+          },
+          "00117wood": {
+            "CVIDF1": 27.709837434310693,
+            "CVMA": 19.251559251559247,
+            "identity_counts": {
+              "IDTP": 2821,
+              "IDFP": 705,
+              "IDFN": 14014,
+              "n_gt": 16835,
+              "n_tr": 3526
+            },
+            "CLEAR_counts": {
+              "fn": 13401,
+              "fp": 92,
+              "id_switches": 101,
+              "tp": 3434
+            }
+          },
+          "00120park": {
+            "CVIDF1": 47.59694012134002,
+            "CVMA": 38.430480105711354,
+            "identity_counts": {
+              "IDTP": 4511,
+              "IDFP": 822,
+              "IDFN": 9111,
+              "n_gt": 13622,
+              "n_tr": 5333
+            },
+            "CLEAR_counts": {
+              "fn": 8321,
+              "fp": 32,
+              "id_switches": 34,
+              "tp": 5301
+            }
+          },
+          "00144road": {
+            "CVIDF1": 17.286449110380303,
+            "CVMA": 7.88243485180028,
+            "identity_counts": {
+              "IDTP": 2050,
+              "IDFP": 1560,
+              "IDFN": 18058,
+              "n_gt": 20108,
+              "n_tr": 3610
+            },
+            "CLEAR_counts": {
+              "fn": 17280,
+              "fp": 782,
+              "id_switches": 461,
+              "tp": 2828
+            }
+          },
+          "00146bridge": {
+            "CVIDF1": 21.27568493150685,
+            "CVMA": 13.723696248856355,
+            "identity_counts": {
+              "IDTP": 1491,
+              "IDFP": 502,
+              "IDFN": 10532,
+              "n_gt": 12023,
+              "n_tr": 1993
+            },
+            "CLEAR_counts": {
+              "fn": 10160,
+              "fp": 130,
+              "id_switches": 83,
+              "tp": 1863
+            }
+          }
+        },
+        "MATLAB_version": "9.8.0.1323502 (R2020a)",
+        "native_function": "/data1/liuyeqiang/WWW_fulltrain/MOTChallengeEvalKit_cv_test/matlab_devkit/evaluateTracking.m",
+        "toolkit_sha256": {
+          "Demo.m": "ca0d0e0519200fe9f2d5223bd2d37f1e23822f277d4bb9103ddf77489396b2c4",
+          "average.m": "9dafb07cd513dac30e64ef02d8bbc7e249ccea6ed20317e5f6f84dd30517526a",
+          "compile.m": "cbc1d8b6a408281d5a88ff7ae22105eb11416e251cabf54e1f974aad41b26cf1",
+          "evaluateDetection.m": "49279a7a086ea00bd42b9a85919d31e087499efaf153428bdec709264dd09fea",
+          "evaluateTracking.m": "3a9de497409fc2bfc1c5534cda0f9ce9ab10a425e45c79b557526bc51fb83aae",
+          "utils/CLEAR_MOD_HUN.m": "4e7aaf3351fcf0841e5236dc006c0660c760fab464be5a7beb170cbc549782c5",
+          "utils/CLEAR_MOT_HUN.m": "d0ce5953d9c9a5f65296bf955e90e305de2944c9d045aeeeb3c4e7cbc73235c8",
+          "utils/Hungarian.m": "1d83ec20881144f6ad3839ccc0ea00bcd4a805eae3d67c0a18713e37fa516241",
+          "utils/IDmeasures.m": "90ce9ccf607978bd69d1071238ff1eb0f477489067465b267623e83bad2d1299",
+          "utils/MinCostMatching.cpp": "dd22d80d78abb900c2b41b2b7de2e5e8f525b04287a65cf5e9adbcfefebfb555",
+          "utils/MinCostMatching.mexa64": "0c44d71aff3dd90161b27568e10d237e627731e9c8e331b4dc04ed8ed3a45efc",
+          "utils/boxIntersect.m": "70971beee2ea56a596e9d783b12b61e89121cd76005eebf53fa825cf6c3175a5",
+          "utils/boxUnion.m": "b13e20376261a90938bafc5acd16df75ed38ea17da506962239c1108e3843206",
+          "utils/boxiou.m": "ca8a162b0ed29aae61d353956a13f94ed658a26368f322973de90184f2a67272",
+          "utils/camera/calib_towncentre.m": "1738b75551c9fd3951e047e001c694b2e7bfe59284fe9471124aaa29462c6c02",
+          "utils/camera/distortedToUndistortedImageCoord.m": "927bd6cfa6ae564188e6a7ff57d47589f61da4c99877198f15466fe42a8f768a",
+          "utils/camera/distortedToUndistortedSensorCoord.m": "f5fa510f5ffc05c08b03ad457ddd0d79c12bfa28a1c2fcd0f8e269e71eb8bfe7",
+          "utils/camera/getRotTrans.m": "34d185efaf1a92f027e6ceb9caeac41ca82cf79604330e91ceee9e89a604dcfd",
+          "utils/camera/imageToWorld.m": "68e26bf16414142c26c32813b0f7c6f5681b654c266d8b83f7094096b7dd1d64",
+          "utils/camera/parseCameraParameters.m": "20f4662a47bd123513187e29a901918196680808a7f94129ab2afb7b06e989a4",
+          "utils/camera/undistortedToDistortedImageCoord.m": "008ceb355b579878f7913f1abd64d18d7a4a544161cc2ad1f2815f3e84184f7a",
+          "utils/camera/undistortedToDistortedSensorCoord.m": "22d1b1bba6865e16c85f1fb2dcb4bfa954a8352e6e9f280ea4c152834507de6b",
+          "utils/camera/worldToImage.m": "a53c46baa316f13ce4b6c0177135cb08dc9ea02c332adebca8260b2be21f1560",
+          "utils/classIDToString.m": "efde74df8d8f3f1230d86d5be5d2e92594e46858787034107a615c90468d044d",
+          "utils/classStringToID.m": "e9dd4eeb313210134263f96a75a3400e5f2236bb9f71945f89a1ef84f0826c58",
+          "utils/cleanRequired.m": "8dcbfa7fc951526608df399cc9eaf87cc61fbdf1332ff47996e9367e5f60ab23",
+          "utils/clearMOTLoopMatlab.m": "b247c0f1604e8c689fd90fd7a12ecadc160687a5ce46152da80425c14469a9a9",
+          "utils/clearMOTMex.cpp": "b2ac14029f421cad40c396c44342295028e61d069d97c8b683b5b74b9bfc243f",
+          "utils/clearMOTMex.mexa64": "5e106928555c18eea53604088afded146297a8c2d1ae3cd3b0abf9feab4fde79",
+          "utils/convertMatToStruct.m": "383e9f6fbaca977771c0d83cc0b96b74e6c4546eb248657ea00bc6d634a26cd1",
+          "utils/convertTXTToStruct.m": "43683e6b2e359c1dcd347d28069bbbde104d7aaa33ef97898e33fb4757745f61",
+          "utils/costBlockMex.cpp": "32ea59674c07e5a7284cd28df1f235844b9f5d4b2a2bdea6da66f59f96ce70bf",
+          "utils/costBlockMex.mexa64": "e59649aebc376cd390de2b9968dcaa41fd919398d893110cb6ea8bf640b37a60",
+          "utils/costFunction.m": "1b072fa1e4237df59007dda3bf69335d0bc61acbe6e4c14bfa4bab4ee254cdbc",
+          "utils/evaluateBenchmark.m": "a384056c8099e453a627235b6354bab6e51cb01075f37713b446a2a6a853fcba",
+          "utils/evaluateMultiCam.m": "50625fe8d5414349971ed8393c60f0bf454815b40eee495e72aa87fb52d1bc55",
+          "utils/external/PrintTable.m": "5b969532a4a0b7ba3b557be709618ac3c563f72898bfe931dddde74537d7a5b7",
+          "utils/external/dollar/toolbox/detector/Contents.m": "38965fe6f9e6d4d1279beed4e22c8f90061ab2dc2cd8d57a0559d5a93d3a0db3",
+          "utils/external/dollar/toolbox/detector/acfDemoCal.m": "0ff5abd2e3e1c50805eed14a847abbf0639a73be3f30c2a6f56291282098550f",
+          "utils/external/dollar/toolbox/detector/acfDemoInria.m": "d3eaf42ab97f466ff8b6c25645cae811d59b81f6d7f27065d0e1f618420bc3ac",
+          "utils/external/dollar/toolbox/detector/acfDetect.m": "b127e745f74718322313fc513dfe71fe0efccb0563d83cc984eaa0932fbd3a0a",
+          "utils/external/dollar/toolbox/detector/acfDetect1.mexa64": "b42fcdaa6e146c2ae66058e563e0fbb808c84eef5ec18732bdf06d916b4a3a93",
+          "utils/external/dollar/toolbox/detector/acfModify.m": "79b6186cd3b54d17b8b0128ffe53b084cb99317201d157071a29a79d13d7abbb",
+          "utils/external/dollar/toolbox/detector/acfTest.m": "df1c8ad1b4fba14518a420474acf227e5ce31b5f41e4a9529f3cc719224101ed",
+          "utils/external/dollar/toolbox/detector/acfTrain.m": "ecfe963d6142610c6bb52bad8775796fed78a2a3889b4cacef0468bb1f2641b9",
+          "utils/external/dollar/toolbox/detector/bbApply.m": "0dc30ef30512f06eadd3225678e821ce87a5730056b9f8f6927b0b77d322a246",
+          "utils/external/dollar/toolbox/detector/bbGt.m": "6fb35c5ad325955ea1d156931e08d0ec0b0b7c5f53cd17a2acbe91016301f6cc",
+          "utils/external/dollar/toolbox/detector/bbLabeler.m": "574331dee7a2142a84e6bb1ce64ef2770a6b22fc9167733b0ac9be476ac65f4a",
+          "utils/external/dollar/toolbox/detector/bbNms.m": "f6863ddf1d28798b648b8720fd5ee3e0690251b16e36bfa67ec5f31f8395cb7f",
+          "utils/external/dollar/toolbox/detector/detectPeople.m": "83cbad27a8e8c3bd9fc8a403213f0cfade5a98ff2f3e45c8e1acc53052f0b21e",
+          "utils/external/dollar/toolbox/detector/evalDetections.m": "367181346c9e0dc3a7dc15ac071ec5cb1d53b2bb6108897db9e7fe0f6a66b3ef",
+          "utils/external/dollar/toolbox/detector/private/acfDetect1.cpp": "07643fc9afeb40e0b6c0b154e5070f4d3d3b5643a3128d588fc43077f9d85486",
+          "utils/external/dollar/toolbox/detector/private/acfDetect1.mexa64": "b42fcdaa6e146c2ae66058e563e0fbb808c84eef5ec18732bdf06d916b4a3a93",
+          "utils/external/dollar/toolbox/detector/writeDets.m": "27bde83e12cfb93b2de796d3f5c3941f65c0e5fab3f02b816b6b2be0a2e7a9dd",
+          "utils/external/iniconfig/IniConfig.m": "6a5b0940e6580e16012871310caee9479b4eed8f8f36767e5565bf88393b6214",
+          "utils/getClassLabels.m": "d1c932ce0d16a61761ae7d5ecd4f1a75310f922a408bc08e3de9bd38c26012ed",
+          "utils/getImgExt.m": "a6dec507ba56a6d020185637ba6c2f02dad7641971e014bd903f20bf41d3788c",
+          "utils/getROIs.m": "a69d33e8c3f0fa05b9ab21dc18f1dc53ec71a17eef1c8c4ed1daaf98fc44ab1e",
+          "utils/getSeqInfoFromFile.m": "903ef0f9ba4b0a8136c7b828c1c26bb9731e5b2f3605beae31ab63e15a5cb788",
+          "utils/parseSequences2.m": "a629d0516d546851e1e8cc843448370fbaf59faeea1b4e40f8ec8d3896795246",
+          "utils/preprocessResult.m": "08d1c9f068750509b94406d586b56cdafe8d940e953546727b0b3d79572a93f9",
+          "utils/printMetrics.m": "838babd87eae7eaf5f15d8a8dd12feea54c78acf0275939bbce4e8cc1d500035",
+          "utils/printMetricsDet.m": "992731de10faa2aaebc6dd03bae8d714f32e53bcaa72db64bf9dd5309f803db9",
+          "utils/printMetricsExt.m": "34d1e4ccbd800ad169ddbb850f8a6f1a26ba12a4224954b4bc7683cbeac257c1"
+        },
+        "adapter_sha256": "4f0c6a734372d806ec9d5fbdaeed9118bb10595c789443877683e63207dd319a",
+        "native_report_sha256": "585259e30297de29cf0e093707e341e834577faa54303d2ae50adaedbab5ebac"
+      },
+      "blocked": [
+        {
+          "scene": 5,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+          "gt_audit": [
+            {
+              "view": 1,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00018court1_View1/gt/gt.txt",
+              "exists": true,
+              "sha256": "b2f271dab542c0b5d20505ae42a9e6f07bd320240cb97c190c5aca39336f16e5",
+              "rows": 7455,
+              "duplicate_keys": 1,
+              "duplicate_rows_extra": 1,
+              "max_frame": 2533,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            },
+            {
+              "view": 2,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00018court1_View2/gt/gt.txt",
+              "exists": true,
+              "sha256": "ab98518b2f0003e99c9a5f3bdf2f822017bc1556c3413b7e0ff1c668423cc6b2",
+              "rows": 7251,
+              "duplicate_keys": 0,
+              "duplicate_rows_extra": 0,
+              "max_frame": 2533,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            }
+          ]
+        },
+        {
+          "scene": 12,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+          "gt_audit": [
+            {
+              "view": 1,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00043football_View1/gt/gt.txt",
+              "exists": true,
+              "sha256": "63cbfd5eab7febe77357cced4ba3ee15df31af39fdc6899c2491b2312afbf1be",
+              "rows": 18952,
+              "duplicate_keys": 0,
+              "duplicate_rows_extra": 0,
+              "max_frame": 1001,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            },
+            {
+              "view": 2,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00043football_View2/gt/gt.txt",
+              "exists": true,
+              "sha256": "766a58dbc13b75b9e7368f39d6cf7b38aa00ec8dc1b1dac1d3be0ed267f85410",
+              "rows": 20352,
+              "duplicate_keys": 1,
+              "duplicate_rows_extra": 1,
+              "max_frame": 1001,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            }
+          ]
+        },
+        {
+          "scene": 13,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+          "gt_audit": [
+            {
+              "view": 1,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00051football_View1/gt/gt.txt",
+              "exists": true,
+              "sha256": "62961543c3869287d25a769fd3baf88494295907d9fa5d1f110adf827ec37ecb",
+              "rows": 33327,
+              "duplicate_keys": 0,
+              "duplicate_rows_extra": 0,
+              "max_frame": 1040,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            },
+            {
+              "view": 2,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00051football_View2/gt/gt.txt",
+              "exists": true,
+              "sha256": "1f994b90344dc060d0cda5853b0c6bde83593d955855c237b3ddecdef37225d1",
+              "rows": 54660,
+              "duplicate_keys": 199,
+              "duplicate_rows_extra": 199,
+              "max_frame": 1040,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            }
+          ]
+        },
+        {
+          "scene": 14,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+          "gt_audit": [
+            {
+              "view": 1,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00067football_View1/gt/gt.txt",
+              "exists": true,
+              "sha256": "49b704211717e16238dc08465fb788f7335f3cac5bdc64d5a452df4cf34c874d",
+              "rows": 34207,
+              "duplicate_keys": 77,
+              "duplicate_rows_extra": 77,
+              "max_frame": 1043,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            },
+            {
+              "view": 2,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00067football_View2/gt/gt.txt",
+              "exists": true,
+              "sha256": "ad26f41bbabde33dba681920f911afc057f2993d2b326d938c26ce153538bec5",
+              "rows": 35076,
+              "duplicate_keys": 2,
+              "duplicate_rows_extra": 2,
+              "max_frame": 1043,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            }
+          ]
+        },
+        {
+          "scene": 17,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+          "gt_audit": [
+            {
+              "view": 1,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00121park_View1/gt/gt.txt",
+              "exists": true,
+              "sha256": "7429078723a4cc6546dbc8ba0df5139d10c11451d3b996a9d48216d6c0ca3de2",
+              "rows": 5031,
+              "duplicate_keys": 0,
+              "duplicate_rows_extra": 0,
+              "max_frame": 1040,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            },
+            {
+              "view": 2,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00121park_View2/gt/gt.txt",
+              "exists": true,
+              "sha256": "b17f24e042b4d0c7ee601e270a032e4c834ae4642a69c354ba09ca9e0136726e",
+              "rows": 8580,
+              "duplicate_keys": 1,
+              "duplicate_rows_extra": 1,
+              "max_frame": 1040,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            }
+          ]
+        },
+        {
+          "scene": 20,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+          "gt_audit": [
+            {
+              "view": 1,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00156basketball_View1/gt/gt.txt",
+              "exists": true,
+              "sha256": "35262703bf9b8f5acf658d93bcd6f2e943cb80545ca44dad626bf9c56e4a27aa",
+              "rows": 9214,
+              "duplicate_keys": 0,
+              "duplicate_rows_extra": 0,
+              "max_frame": 1006,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            },
+            {
+              "view": 2,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00156basketball_View2/gt/gt.txt",
+              "exists": true,
+              "sha256": "cc8d0f4dbf43f317c1a1c6139aaf965c1652867e8a92daee4ad93248162b9228",
+              "rows": 10028,
+              "duplicate_keys": 1,
+              "duplicate_rows_extra": 1,
+              "max_frame": 1006,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            }
+          ]
+        },
+        {
+          "scene": 21,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+          "gt_audit": [
+            {
+              "view": 1,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00161basketball_View1/gt/gt.txt",
+              "exists": true,
+              "sha256": "1041e4789052c2e9012505993d3e21f83870fe2d279f0c80830923343ddec8e0",
+              "rows": 46440,
+              "duplicate_keys": 2,
+              "duplicate_rows_extra": 2,
+              "max_frame": 1052,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            },
+            {
+              "view": 2,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00161basketball_View2/gt/gt.txt",
+              "exists": true,
+              "sha256": "5048b2594d2da96d928742dad182b8a1de0a24056dbc3356753aa4ee5bf79b6d",
+              "rows": 42851,
+              "duplicate_keys": 3,
+              "duplicate_rows_extra": 3,
+              "max_frame": 1052,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            }
+          ]
+        },
+        {
+          "scene": 22,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+          "gt_audit": [
+            {
+              "view": 1,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00183canteen_View1/gt/gt.txt",
+              "exists": true,
+              "sha256": "4404757a646bbe2e7868506737a450bb4b477b075b8c2805034c7a65f9e3cf63",
+              "rows": 33446,
+              "duplicate_keys": 29,
+              "duplicate_rows_extra": 29,
+              "max_frame": 1201,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            },
+            {
+              "view": 2,
+              "path": "/data/DATASETS/TRACKING/JDE/VisionTrack/test/00183canteen_View2/gt/gt.txt",
+              "exists": true,
+              "sha256": "5eb4eba33aa4e657f1d9681a515fe0c9a9f05f7e9afe07b8dfeac70785545690",
+              "rows": 23523,
+              "duplicate_keys": 0,
+              "duplicate_rows_extra": 0,
+              "max_frame": 1201,
+              "same_annotation_rows": true,
+              "frame_indices_inside_sequence": true,
+              "same_max_frame_as_metadata": true
+            }
+          ]
+        }
+      ],
+      "evaluated_scenes": [
+        "00001garden",
+        "00003garden",
+        "00005garden",
+        "00012night",
+        "00019court2",
+        "00022gate",
+        "00023court4",
+        "00027square",
+        "00028path",
+        "00029path",
+        "00117wood",
+        "00120park",
+        "00144road",
+        "00146bridge"
+      ],
+      "original_GT": true,
+      "box_source": "tracks_2d_by_camera",
+      "full_inference_scenes": 22,
+      "full_inference_timestamps": 29019,
+      "real_e2e_fps": 0.7896061157367698,
       "timing_scope": "RGB decode + detector + Omega + all CPU/postprocessing + query/memory + serialization + flushed final-ID delivery; excludes initialization and offline evaluation"
     }
   },

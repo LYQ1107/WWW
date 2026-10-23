@@ -1,0 +1,179 @@
+{
+  "status": "PASS_REAL_MOT_E2E_SEMANTIC_AND_POINT_EVIDENCE_EXACT_PARITY",
+  "frames": 32,
+  "scene": 8,
+  "fields_bit_exact": [
+    "timestamp",
+    "scene_id",
+    "tracks_2d_by_camera",
+    "point_evidence",
+    "point_predictions",
+    "identity_merges",
+    "identity_aliases",
+    "decisions",
+    "raw_candidate_count",
+    "output_count",
+    "lost_ids",
+    "deleted_ids",
+    "image_ids",
+    "detections_by_camera",
+    "raw_candidate_shard_sha256"
+  ],
+  "source_sha256": "f7eb97f5b0bdfca3cf8961c9698d4c1dfa60a2a1fe20fb7002c3d9e674c6b71f",
+  "GPU_physical_index": "3",
+  "before": {
+    "directory": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/train_position_cache_off_smoke32_v1/scene_08",
+    "manifest_sha256": "84fd41874fefed8a58c9a94f08b5b30efc7755b0ade80dc0974554f21dd1ea3e",
+    "real_e2e_fps": 0.19129127263642665,
+    "e2e": {
+      "count": 32,
+      "total_s": 166.3625712543726,
+      "p50_s": 5.038849946111441,
+      "p95_s": 5.190639510378242
+    },
+    "stages": {
+      "rgb_read_s": {
+        "count": 32,
+        "total_s": 1.9005382284522057,
+        "p50_s": 0.05792122334241867,
+        "p95_s": 0.07824372090399265
+      },
+      "raw_cache_verify_s": {
+        "count": 32,
+        "total_s": 1.7325037345290184,
+        "p50_s": 0.03845769166946411,
+        "p95_s": 0.04935858510434627
+      },
+      "GMT_detector_s": {
+        "count": 32,
+        "total_s": 8.434919007122517,
+        "p50_s": 0.204004168510437,
+        "p95_s": 0.23394303917884826
+      },
+      "VGGT_aggregator_s": {
+        "count": 32,
+        "total_s": 22.277491219341755,
+        "p50_s": 0.6418607942759991,
+        "p95_s": 0.6561582740396261
+      },
+      "VGGT_track_head_s": {
+        "count": 32,
+        "total_s": 124.7152639478445,
+        "p50_s": 3.869695283472538,
+        "p95_s": 3.997813181951642
+      },
+      "point_preprocess_s": {
+        "count": 32,
+        "total_s": 6.591109476983547,
+        "p50_s": 0.20696362480521202,
+        "p95_s": 0.2233848564326763
+      },
+      "point_postprocess_s": {
+        "count": 32,
+        "total_s": 0.04374866187572479,
+        "p50_s": 0.0013021305203437805,
+        "p95_s": 0.001608075574040413
+      },
+      "point_memory_total_s": {
+        "count": 32,
+        "total_s": 154.04509840905666,
+        "p50_s": 4.724466301500797,
+        "p95_s": 4.864323602989316
+      },
+      "VGGT_model_only_s": {
+        "count": 32,
+        "total_s": 146.99275516718626,
+        "p50_s": 4.509117286652327,
+        "p95_s": 4.643772647529841
+      },
+      "output_serialization_s": {
+        "count": 32,
+        "total_s": 0.03996901959180832,
+        "p50_s": 0.0009226799011230469,
+        "p95_s": 0.002100469544529915
+      }
+    }
+  },
+  "after": {
+    "directory": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/train_position_cache_on_smoke32_v1/scene_08",
+    "manifest_sha256": "05c633f1890921401ed216779ccaf3fc0851abf4b9e17cef695bc3adbff3c469",
+    "real_e2e_fps": 0.5948312491378533,
+    "e2e": {
+      "count": 32,
+      "total_s": 52.86151909083128,
+      "p50_s": 1.4940826557576656,
+      "p95_s": 1.5469350211322308
+    },
+    "stages": {
+      "rgb_read_s": {
+        "count": 32,
+        "total_s": 1.8315720483660698,
+        "p50_s": 0.0553588829934597,
+        "p95_s": 0.06564188748598099
+      },
+      "raw_cache_verify_s": {
+        "count": 32,
+        "total_s": 1.7427008599042892,
+        "p50_s": 0.038305703550577164,
+        "p95_s": 0.04730535559356212
+      },
+      "GMT_detector_s": {
+        "count": 32,
+        "total_s": 8.32222492992878,
+        "p50_s": 0.20650556311011314,
+        "p95_s": 0.2282908469438553
+      },
+      "VGGT_aggregator_s": {
+        "count": 32,
+        "total_s": 22.440865971148014,
+        "p50_s": 0.6559616476297379,
+        "p95_s": 0.6726548314094544
+      },
+      "VGGT_track_head_s": {
+        "count": 32,
+        "total_s": 11.222561657428741,
+        "p50_s": 0.31134606897830963,
+        "p95_s": 0.3323891434818506
+      },
+      "point_preprocess_s": {
+        "count": 32,
+        "total_s": 6.625840321183205,
+        "p50_s": 0.20759103819727898,
+        "p95_s": 0.22253879345953465
+      },
+      "point_postprocess_s": {
+        "count": 32,
+        "total_s": 0.04401008039712906,
+        "p50_s": 0.0013355277478694916,
+        "p95_s": 0.0016537547111511231
+      },
+      "point_memory_total_s": {
+        "count": 32,
+        "total_s": 40.75669328123331,
+        "p50_s": 1.1917243748903275,
+        "p95_s": 1.2170662775635719
+      },
+      "VGGT_model_only_s": {
+        "count": 32,
+        "total_s": 33.663427628576756,
+        "p50_s": 0.9705961607396603,
+        "p95_s": 0.9906781319528818
+      },
+      "output_serialization_s": {
+        "count": 32,
+        "total_s": 0.03771177679300308,
+        "p50_s": 0.0008123964071273804,
+        "p95_s": 0.0021889928728342054
+      }
+    },
+    "constant_position_cache": {
+      "hits": 255,
+      "misses": 1,
+      "entries": 1,
+      "bytes": 104109712,
+      "cached_content": "fixed sinusoidal grid; no image/depth/track/identity data"
+    }
+  },
+  "e2e_speedup": 3.109557696698509,
+  "scope": "Same 32 TRAIN timestamps, exclusive single V100, both live GMT forwards and final ID writes included. Not full-video TEST or an identity improvement."
+}

@@ -107,3 +107,37 @@ Full-video defaults and this finite calibration search are separate registered
 TRAIN diagnostics; cached calibration, if implemented, must be labeled replay
 and cannot produce system E2E FPS. All final TEST speed runs require real RGB,
 real live detector and real anchored VGGT forwards.
+
+## Complete temporal TRAIN Scene 8 diagnostic
+
+A2 at the registered defaults finished all 523 synchronized timestamps with
+1,999 shared detections and 1,999 delivered boxes. Post-hoc raw TRAIN GT
+matches 1,971 boxes. Of 1,961 **selected temporal assignments** with known
+source/target identities, 1,949 are consistent (99.3881%) and 12 are wrong;
+there are 15 diagnostic per-view ID changes. These are fixed-IoU TRAIN
+diagnostics, not official TEST metrics. The measured exclusive V100 E2E
+throughput is 0.217704 dual-camera timestamps/s.
+
+The diagnostic script now separates all positive-support candidate edges
+from selected Hungarian decisions. Earlier v1 JSON labels called all positive
+edges `accepted_point_pairs`; those edges were not all selected. The preserved
+v1 report has 2,552 such edges, 1,960 consistent (76.8025%). The corrected v2
+report names this quantity explicitly and adds actual selected assignments.
+No inference output changed. Cross-view same-ID is 0/936 for this A2 control,
+which intentionally does not associate across cameras; A3 runs separately.
+
+Evidence: `results/vggt_point_temporal_fullscene8_train_diagnostic_v2.json` and
+NAS `vggt_point_association_20261023/train_temporal_default_fullscene8_v1/`.
+
+A3 with the same defaults also finishes all 523 timestamps and 1,999 outputs.
+Correct cross-view shared ID remains **0/936**; 1,949/1,961 selected temporal
+assignments are GT consistent. It produces 21 IDs, as does A2, with 11 versus
+15 diagnostic per-view ID changes. These counts are not official IDSW and
+do not prove a cross-view improvement. Its unoptimized exclusive V100 E2E is
+0.174433 timestamps/s, versus A2's 0.217704. Both use the same source hash
+`7749579913d89792b869a253bd17f7e5e7faf158b34dba27dba8655a9f564a13`.
+The default confidence gate still rejects useful cross-view evidence on this
+complete video. The preregistered TRAIN window scan evaluates confidence
+0.2/0.3/0.5 and support 0.1/0.2 at 8/16/32 points; TEST remains unopened for
+selection. Full A3 evidence is in
+`results/vggt_point_joint_fullscene8_train_diagnostic_v2.json`.

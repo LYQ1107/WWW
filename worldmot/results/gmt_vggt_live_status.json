@@ -1,7 +1,45 @@
 {
-  "generated_utc": "2026-10-23T15:41:00.195610+00:00",
+  "generated_utc": "2026-10-23T17:34:14.709501+00:00",
   "goal_complete": false,
   "live_processes": [
+    {
+      "pid": 2691,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot",
+      "state": "S (sleeping)",
+      "physical_GPU_visible_devices": "3",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/calibrate_vggt_point_train.py",
+        "--root",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/calibration_v1",
+        "--scenes",
+        "8",
+        "16",
+        "4",
+        "--label",
+        "gpu3"
+      ]
+    },
+    {
+      "pid": 2698,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot",
+      "state": "S (sleeping)",
+      "physical_GPU_visible_devices": "7",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/calibrate_vggt_point_train.py",
+        "--root",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/calibration_v1",
+        "--scenes",
+        "24",
+        "12",
+        "20",
+        "--label",
+        "gpu7"
+      ]
+    },
     {
       "pid": 2843,
       "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
@@ -81,6 +119,39 @@
       ]
     },
     {
+      "pid": 10088,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
+      "state": "S (sleeping)",
+      "physical_GPU_visible_devices": null,
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_gmt_training_queue.py",
+        "--root",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023",
+        "--gpus",
+        "2",
+        "6"
+      ]
+    },
+    {
+      "pid": 10540,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": null,
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_gmt_2d_queue.py",
+        "--root",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/final_comparison_20261023/2d_controls_v1",
+        "--gpus",
+        "0",
+        "2",
+        "6"
+      ]
+    },
+    {
       "pid": 13041,
       "cwd": "/data1/liuyeqiang/WWW_fulltrain/worldmot",
       "state": "R (running)",
@@ -105,27 +176,133 @@
       ]
     },
     {
-      "pid": 14992,
-      "cwd": "/data1/liuyeqiang/WWW_fulltrain/worldmot",
-      "state": "R (running)",
-      "physical_GPU_visible_devices": "3",
+      "pid": 15560,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
+      "state": "S (sleeping)",
+      "physical_GPU_visible_devices": null,
       "command": [
-        "/data1/liuyeqiang/envs/worldmot_mmdet311/bin/python",
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_gmt_v1_queue.py",
+        "--root",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023",
+        "--gpus",
+        "0",
+        "2",
+        "6"
+      ]
+    },
+    {
+      "pid": 15641,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": "0",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
         "scripts/run_fullvideo.py",
-        "--split",
-        "test",
         "--metadata",
-        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/test_metadata.json",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/train_metadata.json",
+        "--split",
+        "train",
         "--method",
-        "v2",
+        "v1",
+        "--detector",
+        "gmt_pre_gta",
+        "--gmt-raw-cache",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
+        "--gmt-detector-mode",
+        "live_verified",
+        "--resource-mode",
+        "shared_gpu",
+        "--scenes",
+        "4",
+        "16",
         "--output",
-        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_two_stage_seed20261022",
-        "--device",
-        "cuda:0",
-        "--checkpoint",
-        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final/two_stage_seed20261022.frozen.pt",
-        "--lock",
-        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/final_test_lock.json"
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/train_v1_validation_shared_v2"
+      ]
+    },
+    {
+      "pid": 15642,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": "2",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_fullvideo.py",
+        "--metadata",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/train_metadata.json",
+        "--split",
+        "train",
+        "--method",
+        "v1",
+        "--detector",
+        "gmt_pre_gta",
+        "--gmt-raw-cache",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
+        "--gmt-detector-mode",
+        "live_verified",
+        "--resource-mode",
+        "shared_gpu",
+        "--scenes",
+        "8",
+        "20",
+        "--output",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/train_v1_validation_shared_v2"
+      ]
+    },
+    {
+      "pid": 15643,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
+      "state": "R (running)",
+      "physical_GPU_visible_devices": "6",
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_fullvideo.py",
+        "--metadata",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/train_metadata.json",
+        "--split",
+        "train",
+        "--method",
+        "v1",
+        "--detector",
+        "gmt_pre_gta",
+        "--gmt-raw-cache",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
+        "--gmt-detector-mode",
+        "live_verified",
+        "--resource-mode",
+        "shared_gpu",
+        "--scenes",
+        "12",
+        "24",
+        "--output",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/train_v1_validation_shared_v2"
+      ]
+    },
+    {
+      "pid": 19432,
+      "cwd": "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot",
+      "state": "S (sleeping)",
+      "physical_GPU_visible_devices": null,
+      "command": [
+        "/data1/liuyeqiang/envs/worldmot311/bin/python",
+        "-u",
+        "scripts/run_point_validation_queue.py",
+        "--root",
+        "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023",
+        "--gpus",
+        "3",
+        "7",
+        "--test-gpus",
+        "0",
+        "2",
+        "3",
+        "4",
+        "6",
+        "7"
       ]
     },
     {
@@ -148,63 +325,6 @@
         "/data1/liuyeqiang/envs/worldmot311/bin/python",
         "-u",
         "scripts/orchestrate_fulltrain_test.py"
-      ]
-    },
-    {
-      "pid": 22590,
-      "cwd": "/data1/liuyeqiang/WWW_vggt_points_20261023/worldmot",
-      "state": "R (running)",
-      "physical_GPU_visible_devices": "7",
-      "command": [
-        "/data1/liuyeqiang/envs/worldmot311/bin/python",
-        "-u",
-        "scripts/run_vggt_point_fullvideo.py",
-        "--metadata",
-        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/train_metadata.json",
-        "--split",
-        "train",
-        "--raw-cache",
-        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
-        "--scenes",
-        "8",
-        "--method",
-        "temporal",
-        "--detector-mode",
-        "live_verified",
-        "--output",
-        "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/train_temporal_default_fullscene8_v1"
-      ]
-    },
-    {
-      "pid": 22607,
-      "cwd": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
-      "state": "R (running)",
-      "physical_GPU_visible_devices": "0",
-      "command": [
-        "/data1/liuyeqiang/envs/worldmot311/bin/python",
-        "-u",
-        "scripts/run_fullvideo.py",
-        "--split",
-        "train",
-        "--metadata",
-        "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/audit/train_metadata.json",
-        "--method",
-        "v1",
-        "--detector",
-        "gmt_pre_gta",
-        "--gmt-raw-cache",
-        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_v1",
-        "--scenes",
-        "4",
-        "8",
-        "12",
-        "16",
-        "20",
-        "24",
-        "--resource-mode",
-        "shared_gpu",
-        "--output",
-        "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/train_v1_validation_shared_gpu0_v1"
       ]
     }
   ],
@@ -369,17 +489,193 @@
       }
     ]
   },
-  "GMT_Omega_TRAIN_objects": {
-    "root": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/fulltrain_objects_v1",
-    "completed_scenes": 2,
-    "completed_timestamps": 1424,
-    "checkpointed_timestamps": 3088,
+  "raw_GMT_TEST": {
+    "root": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_test_v1",
+    "completed_scenes": 22,
+    "completed_timestamps": 29019,
+    "checkpointed_timestamps": 29019,
     "scenes": [
+      {
+        "scene": 1,
+        "status": "COMPLETE",
+        "completed_timestamps": 1005,
+        "checkpointed_timestamps": 1005
+      },
+      {
+        "scene": 2,
+        "status": "COMPLETE",
+        "completed_timestamps": 1660,
+        "checkpointed_timestamps": 1660
+      },
+      {
+        "scene": 3,
+        "status": "COMPLETE",
+        "completed_timestamps": 900,
+        "checkpointed_timestamps": 900
+      },
       {
         "scene": 4,
         "status": "COMPLETE",
         "completed_timestamps": 901,
         "checkpointed_timestamps": 901
+      },
+      {
+        "scene": 5,
+        "status": "COMPLETE",
+        "completed_timestamps": 2533,
+        "checkpointed_timestamps": 2533
+      },
+      {
+        "scene": 6,
+        "status": "COMPLETE",
+        "completed_timestamps": 851,
+        "checkpointed_timestamps": 851
+      },
+      {
+        "scene": 7,
+        "status": "COMPLETE",
+        "completed_timestamps": 2055,
+        "checkpointed_timestamps": 2055
+      },
+      {
+        "scene": 8,
+        "status": "COMPLETE",
+        "completed_timestamps": 2061,
+        "checkpointed_timestamps": 2061
+      },
+      {
+        "scene": 9,
+        "status": "COMPLETE",
+        "completed_timestamps": 1969,
+        "checkpointed_timestamps": 1969
+      },
+      {
+        "scene": 10,
+        "status": "COMPLETE",
+        "completed_timestamps": 1748,
+        "checkpointed_timestamps": 1748
+      },
+      {
+        "scene": 11,
+        "status": "COMPLETE",
+        "completed_timestamps": 1004,
+        "checkpointed_timestamps": 1004
+      },
+      {
+        "scene": 12,
+        "status": "COMPLETE",
+        "completed_timestamps": 1001,
+        "checkpointed_timestamps": 1001
+      },
+      {
+        "scene": 13,
+        "status": "COMPLETE",
+        "completed_timestamps": 1040,
+        "checkpointed_timestamps": 1040
+      },
+      {
+        "scene": 14,
+        "status": "COMPLETE",
+        "completed_timestamps": 1043,
+        "checkpointed_timestamps": 1043
+      },
+      {
+        "scene": 15,
+        "status": "COMPLETE",
+        "completed_timestamps": 1904,
+        "checkpointed_timestamps": 1904
+      },
+      {
+        "scene": 16,
+        "status": "COMPLETE",
+        "completed_timestamps": 1043,
+        "checkpointed_timestamps": 1043
+      },
+      {
+        "scene": 17,
+        "status": "COMPLETE",
+        "completed_timestamps": 1040,
+        "checkpointed_timestamps": 1040
+      },
+      {
+        "scene": 18,
+        "status": "COMPLETE",
+        "completed_timestamps": 1001,
+        "checkpointed_timestamps": 1001
+      },
+      {
+        "scene": 19,
+        "status": "COMPLETE",
+        "completed_timestamps": 1001,
+        "checkpointed_timestamps": 1001
+      },
+      {
+        "scene": 20,
+        "status": "COMPLETE",
+        "completed_timestamps": 1006,
+        "checkpointed_timestamps": 1006
+      },
+      {
+        "scene": 21,
+        "status": "COMPLETE",
+        "completed_timestamps": 1052,
+        "checkpointed_timestamps": 1052
+      },
+      {
+        "scene": 22,
+        "status": "COMPLETE",
+        "completed_timestamps": 1201,
+        "checkpointed_timestamps": 1201
+      }
+    ]
+  },
+  "GMT_Omega_TRAIN_objects": {
+    "root": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/fulltrain_objects_v1",
+    "completed_scenes": 16,
+    "completed_timestamps": 19751,
+    "checkpointed_timestamps": 22183,
+    "scenes": [
+      {
+        "scene": 1,
+        "status": "COMPLETE",
+        "completed_timestamps": 932,
+        "checkpointed_timestamps": 932
+      },
+      {
+        "scene": 2,
+        "status": "COMPLETE",
+        "completed_timestamps": 1886,
+        "checkpointed_timestamps": 1886
+      },
+      {
+        "scene": 3,
+        "status": "COMPLETE",
+        "completed_timestamps": 1200,
+        "checkpointed_timestamps": 1200
+      },
+      {
+        "scene": 4,
+        "status": "COMPLETE",
+        "completed_timestamps": 901,
+        "checkpointed_timestamps": 901
+      },
+      {
+        "scene": 5,
+        "status": "COMPLETE",
+        "completed_timestamps": 1769,
+        "checkpointed_timestamps": 1769
+      },
+      {
+        "scene": 6,
+        "status": "COMPLETE",
+        "completed_timestamps": 601,
+        "checkpointed_timestamps": 601
+      },
+      {
+        "scene": 7,
+        "status": "COMPLETE",
+        "completed_timestamps": 443,
+        "checkpointed_timestamps": 443
       },
       {
         "scene": 8,
@@ -388,22 +684,70 @@
         "checkpointed_timestamps": 523
       },
       {
+        "scene": 9,
+        "status": "COMPLETE",
+        "completed_timestamps": 1942,
+        "checkpointed_timestamps": 1942
+      },
+      {
+        "scene": 10,
+        "status": "COMPLETE",
+        "completed_timestamps": 2092,
+        "checkpointed_timestamps": 2092
+      },
+      {
+        "scene": 11,
+        "status": "COMPLETE",
+        "completed_timestamps": 2057,
+        "checkpointed_timestamps": 2057
+      },
+      {
         "scene": 12,
+        "status": "COMPLETE",
+        "completed_timestamps": 1200,
+        "checkpointed_timestamps": 1200
+      },
+      {
+        "scene": 13,
         "status": "RUNNING_WITHOUT_FINAL_MANIFEST",
         "completed_timestamps": 0,
-        "checkpointed_timestamps": 1024
+        "checkpointed_timestamps": 1280
+      },
+      {
+        "scene": 14,
+        "status": "COMPLETE",
+        "completed_timestamps": 969,
+        "checkpointed_timestamps": 969
+      },
+      {
+        "scene": 15,
+        "status": "RUNNING_WITHOUT_FINAL_MANIFEST",
+        "completed_timestamps": 0,
+        "checkpointed_timestamps": 384
       },
       {
         "scene": 16,
+        "status": "COMPLETE",
+        "completed_timestamps": 1034,
+        "checkpointed_timestamps": 1034
+      },
+      {
+        "scene": 18,
         "status": "RUNNING_WITHOUT_FINAL_MANIFEST",
         "completed_timestamps": 0,
-        "checkpointed_timestamps": 128
+        "checkpointed_timestamps": 768
       },
       {
         "scene": 20,
-        "status": "RUNNING_WITHOUT_FINAL_MANIFEST",
-        "completed_timestamps": 0,
-        "checkpointed_timestamps": 512
+        "status": "COMPLETE",
+        "completed_timestamps": 1001,
+        "checkpointed_timestamps": 1001
+      },
+      {
+        "scene": 24,
+        "status": "COMPLETE",
+        "completed_timestamps": 1201,
+        "checkpointed_timestamps": 1201
       }
     ]
   },
@@ -412,29 +756,73 @@
   "new_TEST_methods": "NOT_STARTED_PENDING_TRAIN_VALIDATION_FREEZE",
   "point_default_TRAIN_temporal": {
     "root": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/train_temporal_default_fullscene8_v1",
-    "completed_scenes": 0,
-    "completed_timestamps": 0,
-    "checkpointed_timestamps": 80,
+    "completed_scenes": 1,
+    "completed_timestamps": 523,
+    "checkpointed_timestamps": 512,
     "scenes": [
       {
         "scene": 8,
-        "status": "RUNNING",
-        "completed_timestamps": 0,
-        "checkpointed_timestamps": 80
+        "status": "COMPLETE",
+        "completed_timestamps": 523,
+        "checkpointed_timestamps": 512
       }
     ]
   },
   "GMT_V1_TRAIN_validation": {
+    "root": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/train_v1_validation_shared_v2",
+    "completed_scenes": 3,
+    "completed_timestamps": 2624,
+    "checkpointed_timestamps": 3712,
+    "scenes": [
+      {
+        "scene": 4,
+        "status": "COMPLETE",
+        "completed_timestamps": 901,
+        "checkpointed_timestamps": 896
+      },
+      {
+        "scene": 8,
+        "status": "COMPLETE",
+        "completed_timestamps": 523,
+        "checkpointed_timestamps": 512
+      },
+      {
+        "scene": 12,
+        "status": "COMPLETE",
+        "completed_timestamps": 1200,
+        "checkpointed_timestamps": 1152
+      },
+      {
+        "scene": 16,
+        "status": "RUNNING",
+        "completed_timestamps": 0,
+        "checkpointed_timestamps": 384
+      },
+      {
+        "scene": 20,
+        "status": "RUNNING",
+        "completed_timestamps": 0,
+        "checkpointed_timestamps": 768
+      },
+      {
+        "scene": 24,
+        "status": "RUNNING",
+        "completed_timestamps": 0,
+        "checkpointed_timestamps": 0
+      }
+    ]
+  },
+  "preserved_V1_failed_validation": {
     "root": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/train_v1_validation_shared_gpu0_v1",
     "completed_scenes": 0,
     "completed_timestamps": 0,
-    "checkpointed_timestamps": 256,
+    "checkpointed_timestamps": 512,
     "scenes": [
       {
         "scene": 4,
         "status": "RUNNING",
         "completed_timestamps": 0,
-        "checkpointed_timestamps": 256
+        "checkpointed_timestamps": 512
       }
     ]
   },
@@ -444,5 +832,183 @@
     "A0/A1 2D controls and A2/A3 complete TRAIN validation and fixed selection",
     "All new 22-video TEST streams and formal TrackEval/MATLAB evaluation",
     "Final shared-candidate attribution, comparable exclusive-GPU timing and failure figures"
-  ]
+  ],
+  "association_training_queue": {
+    "stage": "WAITING_FULL_24_GMT_OBJECT_CACHE",
+    "pid": 10088,
+    "updated_utc": "2026-10-23T17:35:30Z",
+    "budget_sha256": "85d9f88b415ecc8e2af265670c84dc3fee5ba4058414855e5ddda4f4d0830820",
+    "driver_sha256": "f1a2d00a07c9b1310eb8d5605ec509515375a905de03cd7b42c101607c85a92c",
+    "source_sha256": "c0ef87cc85759f654156c9ec71208bca12bc4f120cb0174264682b9015859e2e",
+    "registration": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/association_registration_1792774880579257924_10088.json",
+    "goal_complete": false,
+    "complete_scenes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      14,
+      16,
+      20,
+      24
+    ],
+    "timestamps": 19751,
+    "verified_live_process": true
+  },
+  "V1_fixed_rule_queue": {
+    "stage": "COMPLETE_SIX_SCENE_TRAIN_VALIDATION_RUNNING",
+    "pid": 15560,
+    "updated_utc": "2026-10-23T17:05:11Z",
+    "source_sha256": "c0ef87cc85759f654156c9ec71208bca12bc4f120cb0174264682b9015859e2e",
+    "driver_sha256": "808bf093f4774cfb7eccb2ff05753b096b7ff6836e4f48f77e7678a3cbabac65",
+    "gpus": [
+      0,
+      2,
+      6
+    ],
+    "quality_selection": "fixed existing V1 defaults; no threshold search",
+    "TEST_used_for_selection": false,
+    "resource_mode": "shared_gpu",
+    "goal_complete": false,
+    "verified_live_process": true
+  },
+  "point_calibration_gpu3": {
+    "stage": "FINITE_TRAIN_WINDOW_SCAN",
+    "pid": 2691,
+    "source_sha256": "d2f493aaed6c0c955b394abbada4a41c80811eb84424de97e2c06df157bf899a",
+    "driver_sha256": "82ee9accef711e2c7fbb424d8c3abcecd06c9b796ade07e720a46a845ca034d5",
+    "budget_sha256": "9dbbe02988acdb85abf68e8dd2756af9fae0d1441db7071706e3052138685e4d",
+    "scenes": [
+      8,
+      16,
+      4
+    ],
+    "updated_utc": "2026-10-23T17:35:27Z",
+    "visible_devices": "3",
+    "TEST_used_for_selection": false,
+    "timing_label": "TRAIN_ASSOCIATION_REQUEST_REPLAY_NOT_E2E",
+    "goal_complete": false,
+    "method": "temporal",
+    "config": "k8_c0.2_s0.1",
+    "scene": 16,
+    "window": "middle",
+    "completed_windows": 5,
+    "expected_windows": 324,
+    "request_cache": {
+      "root": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/calibration_v1/requests",
+      "hits": 0,
+      "misses": 360,
+      "timing_scope": "TRAIN exact-request association replay; NOT E2E FPS",
+      "key_includes": "original RGB bytes, camera/timestamp order, exact FP32 query bytes, model/source/precision signature",
+      "GT_or_identity_labels": false
+    },
+    "verified_live_process": true
+  },
+  "point_calibration_gpu7": {
+    "stage": "FINITE_TRAIN_WINDOW_SCAN",
+    "pid": 2698,
+    "source_sha256": "d2f493aaed6c0c955b394abbada4a41c80811eb84424de97e2c06df157bf899a",
+    "driver_sha256": "82ee9accef711e2c7fbb424d8c3abcecd06c9b796ade07e720a46a845ca034d5",
+    "budget_sha256": "9dbbe02988acdb85abf68e8dd2756af9fae0d1441db7071706e3052138685e4d",
+    "scenes": [
+      24,
+      12,
+      20
+    ],
+    "updated_utc": "2026-10-23T17:33:08Z",
+    "visible_devices": "7",
+    "TEST_used_for_selection": false,
+    "timing_label": "TRAIN_ASSOCIATION_REQUEST_REPLAY_NOT_E2E",
+    "goal_complete": false,
+    "method": "temporal",
+    "config": "k8_c0.2_s0.1",
+    "scene": 24,
+    "window": "end",
+    "completed_windows": 3,
+    "expected_windows": 324,
+    "request_cache": {
+      "root": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/calibration_v1/requests",
+      "hits": 0,
+      "misses": 301,
+      "timing_scope": "TRAIN exact-request association replay; NOT E2E FPS",
+      "key_includes": "original RGB bytes, camera/timestamp order, exact FP32 query bytes, model/source/precision signature",
+      "GT_or_identity_labels": false
+    },
+    "verified_live_process": true
+  },
+  "point_fullvideo_queue": {
+    "stage": "WAITING_COMPLETE_REGISTERED_TRAIN_WINDOW_SCAN",
+    "pid": 19432,
+    "source_sha256": "d2f493aaed6c0c955b394abbada4a41c80811eb84424de97e2c06df157bf899a",
+    "registered_script_sha256": {
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/scripts/run_point_validation_queue.py": "b276b2d7df9019aa0013ad9e4bc6f237db7e165f6b44409bfe3abd0ac53eab31",
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/scripts/run_vggt_point_fullvideo.py": "7b4e6727df94e7775a2cc4987bb0ab4c957aa74ff78078916724543d107ab53a",
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/scripts/score_train_association_windows.py": "2531d5828c5c539c081671b0ae0a02952bc87c813aba82a32cb1ac314668450d",
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/scripts/calibrate_vggt_point_train.py": "82ee9accef711e2c7fbb424d8c3abcecd06c9b796ade07e720a46a845ca034d5",
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/scripts/point_request_cache.py": "94526232f3b684517e84300c662dceeb173822014da2ccad1fac78fde5e1b9b0",
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/configs/gmt_point_train_budget_20261023.json": "9dbbe02988acdb85abf68e8dd2756af9fae0d1441db7071706e3052138685e4d"
+    },
+    "gpus": [
+      3,
+      7
+    ],
+    "test_gpus": [
+      0,
+      2,
+      3,
+      4,
+      6,
+      7
+    ],
+    "TEST_used_for_selection": false,
+    "goal_complete": false,
+    "updated_utc": "2026-10-23T17:35:17Z",
+    "complete_partitions": [],
+    "verified_live_process": true
+  },
+  "two_D_control_queue": {
+    "stage": "FINITE_TRAIN_2D_WINDOW_SCAN",
+    "pid": 10540,
+    "source_sha256": "d2f493aaed6c0c955b394abbada4a41c80811eb84424de97e2c06df157bf899a",
+    "script_sha256": {
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/scripts/run_gmt_2d_queue.py": "1bdbcf047f0eedb11f280a819c9bfbcc01204ee5342620c08cb0530e17d71e17",
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/scripts/gmt_2d_control.py": "0cf132db2d40b30093f89259e67da3c5575e26eaaa84a8c57d722dbfcee7bc00",
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/scripts/run_gmt_2d_fullvideo.py": "8d07cbe7bdc6722bca954b5e5a939b080fcad3906cfb45e8a196777ff632c813",
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/scripts/score_train_association_windows.py": "2531d5828c5c539c081671b0ae0a02952bc87c813aba82a32cb1ac314668450d",
+      "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/configs/gmt_point_train_budget_20261023.json": "9dbbe02988acdb85abf68e8dd2756af9fae0d1441db7071706e3052138685e4d"
+    },
+    "TEST_used_for_selection": false,
+    "gpus": [
+      0,
+      2,
+      6
+    ],
+    "goal_complete": false,
+    "updated_utc": "2026-10-23T17:35:29Z",
+    "scene": 16,
+    "window": "end",
+    "completed_trials": 144,
+    "expected_trials": 216,
+    "verified_live_process": true
+  },
+  "raw_TRAIN_integrity": {
+    "artifact": {
+      "path": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/raw_train_integrity_v1.json",
+      "bytes": 92493,
+      "sha256": "b240b8f69d2a278aeb972e52be2d6eec9280f1e5df7dfd93352320aad8552f45"
+    },
+    "status": "VERIFIED_COMPLETE_IMMUTABLE_RAW_GMT_SPLIT",
+    "timestamps": 28754,
+    "images": 57508,
+    "observations": 557002,
+    "total_shard_bytes": 1041985391
+  }
 }

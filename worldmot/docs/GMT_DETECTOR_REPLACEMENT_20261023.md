@@ -95,3 +95,94 @@ All large artifacts are under
 `omega_objects_smoke32_v1/`, and `association_smoke32_v1.pt`.
 Small result copies in `worldmot/results/` contain the measured counts,
 per-scene/camera detector diagnostics, stage timings and source/weight SHA.
+
+## Complete raw TRAIN cache gate and registered fit queue
+
+All 24 raw GMT TRAIN scenes are now complete: 28,754 synchronized timestamps,
+57,508 images, 557,002 candidate observations. Deep verification checks every
+compressed data shard SHA, coordinate/score/feature finiteness, 1,024-D native
+ROI shape, stable per-camera detection indices, both image IDs per timestamp,
+native score threshold, original RGB fingerprints, and absence of GT/track-ID
+arrays. There are zero empty ROI descriptors. Total compressed shard size is
+1,041,985,391 bytes. Each sidecar SHA is included in the retained audit.
+
+`raw_train_integrity_v1.json` and `detector_frontend_freeze.json` preserve this
+admission. The detector-only freeze SHA is
+`54f9e2db2befc946e8fc165a87986148c7294a9c456a2983ef9e9625dcbb085f`.
+GT-free TEST detector candidates may now be exported at the same fixed native
+threshold. This does not authorize association TEST before TRAIN selection.
+
+The finite matched association budget is committed in
+`configs/gmt_detector_association_budget_20261023.json`: internal joint and
+no-geometry fits, four epochs, seed 20261022; final all-24 refits, joint seeds
+20261022/23/24 and no-geometry seed 20261022, four epochs. The selector accepts
+the explicit methods and the single preregistered epoch budget 4 while
+preserving its original defaults for the old experiment. A durable controller
+`run_gmt_training_queue.py --root EXPERIMENT_ROOT --gpus 2 6` waits for all
+24 complete **object-feature** scenes, independently verifies supervision,
+then trains, calibrates on TRAIN only and freezes new weights. It never
+starts TEST automatically. Source or budget changes cause an explicit failure;
+an incomplete cache or the 32-frame smoke weights cannot enter formal fitting.
+
+Projection metadata follow-up: current bbox-only GMT evidence is now reported
+as `CURRENT_BBOX_AND_PROJECTION` / `current_target_detection_bbox`, with
+`native_view_mask=False`. A real nonempty mask has its own mask flag. Current
+camera support is derived from the actual accepted observation-to-ID memory
+map, so a historical mask from another camera cannot manufacture current
+visibility. This correction changes diagnostic visibility evidence and does
+not alter the primary current detection boxes. Existing pilot/validation v1
+outputs retain their original code SHA. The idle training waiter was stopped
+before it had any child fits, its registration snapshot was preserved, and
+the source registration is renewed before formal training proceeds.
+The V1 per-frame ablation label now also records GMT_PRE_GTA for this frontend;
+the original RTMDet label is preserved for original RTMDet runs. Previously
+saved pilot streams retain their original labels and exact source SHA, while
+their detector manifests/candidate checks already identify the actual GMT input.
+
+The first real two-frame follow-up (`train_v1_visibility_audit2_v1`) failed
+the mask assertion. Its output is retained. The root cause was in
+`lift_detection`: it replaced `det.mask=None` with the synthetic rectangle
+used for 3D sampling. The corrected implementation preserves the actual mask
+and stores that rectangle separately as `geometry_support_mask`, retaining
+the exact sampling and fusion coverage calculation. The repeated real run
+(`train_v1_visibility_audit2_v2`) passes all eight current projection rows:
+zero false mask claims, real current bbox evidence and the GMT ablation tag.
+`gmt_bbox_visibility_evidence_audit_v2.json` records the output/source hashes.
+
+An independent rerun of the same 32 TRAIN Scene 8 timestamps verifies every
+array in both object-cache shards is bit exact: 128 532-D observations,
+geometry, covariance, identity targets and projection boxes. This limited
+real parity check and the exact-raster unit test support keeping the existing
+full-cache workers running; they do not constitute a full-cache rerun.
+`gmt_geometry_sampling_parity_v2.json` records this evidence. Previously
+saved diagnostics retain their original metadata and source hashes.
+The detector worktree's complete CPU test suite passes 47 tests after this fix.
+
+## Full-video live/cache numeric boundary correction
+
+The first six-scene V1 validation attempt stopped at Scene 4 timestamp 598
+after 597 delivered timestamps. The strict checker found a box-width delta
+of 0.0000076294 pixels: native FP32 xyxy coordinates were subtracted as Python
+float64, whereas the immutable cache stores xywh as FP32. Real inference on
+timestamps 597/598/599 confirms identical candidate counts, scores and every
+ROI feature; FP32 boxes are also exact. This is a representation mismatch.
+`live_difference_scene4_598_v1.json` retains both values and the failed
+validation stream is preserved, not promoted to a completed result.
+
+The adapter now explicitly emits FP32 xywh at its boundary, matching the
+existing immutable schema. Equality remains exact, without an epsilon or
+candidate substitution. Shared raw caches and training object arrays remain
+unchanged. A real repeat checks the failure timestamps before fresh complete
+validation. The idle fit controller is re-registered before any formal fit.
+The v2 real repeat passes exact all-field equality at all three timestamps.
+The complete CPU suite passes 48 tests, including the real failing coordinate.
+
+`run_gmt_v1_queue.py --root EXPERIMENT_ROOT --gpus 0 2 6` registers the fixed
+existing V1 rules with this corrected source. Three independent workers run
+the six complete TRAIN validation videos into `train_v1_validation_shared_v2`.
+The controller then runs official TRAIN evaluation, deeply verifies all 22
+GT-free TEST candidate scenes, writes `v1_fixed_rule_test_lock_v2.json`, and
+runs all 22 independent TEST videos plus TrackEval/MATLAB. Every transition
+checks the source stamp. No quality threshold is selected from TEST. These
+accuracy runs share GPUs with cache/training workers and are explicitly
+marked `shared_gpu`; their FPS is not an exclusive speed comparison.

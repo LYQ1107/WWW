@@ -1,0 +1,246 @@
+{
+  "status": "PASS_REAL_PRETRAINED_PAIRED_FORWARD_EXACT_PARITY",
+  "backend": {
+    "model": "facebook/VGGT-1B",
+    "checkpoint": "/data1/liuyeqiang/WWW_vggt_geo_runtime/weights/vggt_1b.pt",
+    "checkpoint_sha256": "d15bf50a8615c8225ed48b51ea5cac673d82442ec0309036df555a053253afe0",
+    "official_weight_pointer": "https://huggingface.co/facebook/VGGT-1B/raw/main/model.pt",
+    "source": "/data1/liuyeqiang/WWW_vggt_geo_runtime/sources/vggt",
+    "source_commit": "a288dd0f14786c93483e45524328726ab7b1b4ce",
+    "source_dirty": false,
+    "source_sha256": {
+      "vggt/models/vggt.py": "dbc92d6214882161d9042b1bc60cc932a9fd6bb609fc913d14906328f7833607",
+      "vggt/models/aggregator.py": "c994d7231eda2380f208355a64bce3cd7c4b97ef06393355e632415bfc1513e5",
+      "vggt/heads/track_head.py": "5838f10401ad4c614e5608314f7b27b9195af8839e8bbb3321bfb6aad41a3e59",
+      "vggt/heads/track_modules/base_track_predictor.py": "8afb4311f71b74a85a2faf12386e72a782678e8d5e223a95645b951e6fbae185",
+      "vggt/utils/load_fn.py": "d57b7a16c2e04333a2e68d365aa21f1dd61759e984f744cbcbe6b66d787f37ef"
+    },
+    "strict_aggregator_track_load": true,
+    "trained_in_this_experiment": false,
+    "enabled_heads": [
+      "track_head"
+    ],
+    "parameter_count": 975053716,
+    "trainable_parameters": 0,
+    "aggregator_precision": "autocast float16 on V100",
+    "track_head_precision": "float32",
+    "preprocessing": "official 518 pad; RGB in [0,1]",
+    "initialization_seconds": 47.980828285217285,
+    "torch": "2.6.0+cu118",
+    "status": "READY",
+    "device": "cuda:0"
+  },
+  "benchmark_source_sha256": "9f70f76969a0e36b202b7b22b161ff793d3c04e047d0cca45ba9ab87885dfdcc",
+  "official_track_utils_sha256": "0480f9c7a452310affc4cf4566c6ba37fde80675c476123ee61a4eab121f4917",
+  "metadata_sha256": "92e09f77d8d98af3ba732e75f0d2dd648313aa6e02bc058fa02a2d3d6ba97d87",
+  "scene": 8,
+  "timestamps": [
+    1,
+    2
+  ],
+  "queries_per_anchor": [
+    32,
+    32
+  ],
+  "results": {
+    "original": {
+      "samples": [
+        {
+          "repeat": 0,
+          "warm": false,
+          "paired_point_pipeline_s": 8.91340684145689,
+          "aggregator_s": 2.4185740500688553,
+          "track_head_s": 6.168624609708786,
+          "model_only_s": 8.587198659777641
+        },
+        {
+          "repeat": 1,
+          "warm": true,
+          "paired_point_pipeline_s": 5.78638606518507,
+          "aggregator_s": 0.6674760058522224,
+          "track_head_s": 4.877532966434956,
+          "model_only_s": 5.545008972287178
+        },
+        {
+          "repeat": 2,
+          "warm": true,
+          "paired_point_pipeline_s": 5.609803378582001,
+          "aggregator_s": 0.6487484499812126,
+          "track_head_s": 4.716230541467667,
+          "model_only_s": 5.364978991448879
+        },
+        {
+          "repeat": 3,
+          "warm": true,
+          "paired_point_pipeline_s": 5.587794966995716,
+          "aggregator_s": 0.6455649212002754,
+          "track_head_s": 4.7318399623036385,
+          "model_only_s": 5.377404883503914
+        }
+      ],
+      "paired_model_median_s": 5.377404883503914,
+      "paired_point_pipeline_median_s": 5.609803378582001
+    },
+    "constant_cache": {
+      "samples": [
+        {
+          "repeat": 0,
+          "warm": false,
+          "paired_point_pipeline_s": 1.6743882298469543,
+          "aggregator_s": 0.6487829014658928,
+          "track_head_s": 0.8127929642796516,
+          "model_only_s": 1.4615758657455444
+        },
+        {
+          "repeat": 1,
+          "warm": true,
+          "paired_point_pipeline_s": 1.1653837338089943,
+          "aggregator_s": 0.661272257566452,
+          "track_head_s": 0.2757761925458908,
+          "model_only_s": 0.9370484501123428
+        },
+        {
+          "repeat": 2,
+          "warm": true,
+          "paired_point_pipeline_s": 1.1366389840841293,
+          "aggregator_s": 0.6465113162994385,
+          "track_head_s": 0.27085448056459427,
+          "model_only_s": 0.9173657968640327
+        },
+        {
+          "repeat": 3,
+          "warm": true,
+          "paired_point_pipeline_s": 1.1712462976574898,
+          "aggregator_s": 0.6560877934098244,
+          "track_head_s": 0.29001354426145554,
+          "model_only_s": 0.9461013376712799
+        }
+      ],
+      "paired_model_median_s": 0.9370484501123428,
+      "paired_point_pipeline_median_s": 1.1653837338089943
+    }
+  },
+  "parity": [
+    {
+      "optimized": false,
+      "repeat": 0,
+      "anchor": 0,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": false,
+      "repeat": 0,
+      "anchor": 1,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": false,
+      "repeat": 1,
+      "anchor": 0,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": false,
+      "repeat": 1,
+      "anchor": 1,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": false,
+      "repeat": 2,
+      "anchor": 0,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": false,
+      "repeat": 2,
+      "anchor": 1,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": false,
+      "repeat": 3,
+      "anchor": 0,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": false,
+      "repeat": 3,
+      "anchor": 1,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": true,
+      "repeat": 0,
+      "anchor": 0,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": true,
+      "repeat": 0,
+      "anchor": 1,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": true,
+      "repeat": 1,
+      "anchor": 0,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": true,
+      "repeat": 1,
+      "anchor": 1,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": true,
+      "repeat": 2,
+      "anchor": 0,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": true,
+      "repeat": 2,
+      "anchor": 1,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": true,
+      "repeat": 3,
+      "anchor": 0,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    },
+    {
+      "optimized": true,
+      "repeat": 3,
+      "anchor": 1,
+      "exact": true,
+      "maximum_xy_difference": 0.0
+    }
+  ],
+  "constant_cache_calls": {
+    "misses": 1,
+    "hits": 31
+  },
+  "constant_cache_bytes": 104109712,
+  "model_only_speedup": 5.738662587680729,
+  "MOT_E2E_FPS": "NOT_MEASURED",
+  "identity_accuracy": "NOT_MEASURED",
+  "scope": "Two actual anchored three-image forwards per synchronized timestamp; RGB predecoded, no detector; only fixed sinusoidal position tensor memoized, not images/depth/tracks."
+}

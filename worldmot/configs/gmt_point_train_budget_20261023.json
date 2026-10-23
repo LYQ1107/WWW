@@ -1,0 +1,23 @@
+{
+  "status": "REGISTERED_BEFORE_CALIBRATION",
+  "split": "train",
+  "validation_scenes": [4, 8, 12, 16, 20, 24],
+  "window_length": 32,
+  "window_starts": "0, floor((N-32)/2), N-32; 0-based ordinal offsets in each complete synchronized video",
+  "point_methods": ["temporal", "joint"],
+  "points_per_person": [8, 16, 32],
+  "minimum_confidence": [0.2, 0.3, 0.5],
+  "minimum_support": [0.1, 0.2],
+  "fixed_point_settings": {"minimum_visibility": 0.5, "minimum_valid_points": 3, "minimum_inside_points": 3, "maximum_reference_gap": 3, "lost_retention": 30},
+  "point_configs_per_method": 18,
+  "constant_position_cache": true,
+  "request_replay": "Exact original RGB bytes / FP32 queries / image ordering / model-source signature; TRAIN calibration only, no E2E FPS",
+  "control_A0_minimum_iou": [0.1, 0.3, 0.5],
+  "control_A1_minimum_iou": [0.1, 0.3, 0.5],
+  "control_A1_minimum_cosine": [0.7, 0.8, 0.9],
+  "control_fixed": {"lost_retention": 30, "maximum_motion_distance": 2.0},
+  "selection_objective": "TRAIN_window_identity_consistency_F1, then fewer different-person cross-view merges, fewer temporal ID changes, higher confidence/support thresholds, fewer points",
+  "required_after_window_selection": "Complete all six validation videos, official TRAIN evaluation, then freeze before full 22-video independent TEST",
+  "TEST_used_for_selection": false,
+  "no_online_GT": true
+}

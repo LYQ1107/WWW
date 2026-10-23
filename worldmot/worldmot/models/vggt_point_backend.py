@@ -8,6 +8,7 @@ import time
 import numpy as np
 from .person_detector import sha256_file
 from ..geometry.vggt_point_coordinates import VGGTPointCoordinates
+from .constant_position_cache import ConstantPositionCache
 
 VGGT_SOURCE = '/data1/liuyeqiang/WWW_vggt_geo_runtime/sources/vggt'
 VGGT_WEIGHTS = '/data1/liuyeqiang/WWW_vggt_geo_runtime/weights/vggt_1b.pt'
@@ -28,7 +29,7 @@ class PointTracks:
 
 
 class VGGTPointBackend:
-    def __init__(self, source=VGGT_SOURCE, checkpoint=VGGT_WEIGHTS, device='cuda:0'):
+    def __init__(self, source=VGGT_SOURCE, checkpoint=VGGT_WEIGHTS, device='cuda:0', cache_position_encoding=False):
         import torch
         self.source,self.checkpoint,self.device = Path(source).resolve(),Path(checkpoint).resolve(),device
         started=time.perf_counter()
@@ -37,6 +38,11 @@ class VGGTPointBackend:
             raise RuntimeError('Official VGGT-1B checkpoint SHA mismatch; Omega/substitute weights forbidden')
         sys.path.insert(0,str(self.source))
         from vggt.models.vggt import VGGT
+        import vggt.heads.track_modules.base_track_predictor as track_module
+        from vggt.heads.track_modules.utils import get_2d_sincos_pos_embed
+        self.track_module=track_module
+        self.cache_position_encoding=bool(cache_position_encoding)
+        self.position_cache=ConstantPositionCache(get_2d_sincos_pos_embed,device)
         self.model=VGGT(enable_camera=False,enable_point=False,enable_depth=False,enable_track=True)
         payload=torch.load(self.checkpoint,map_location='cpu',weights_only=True,mmap=True)
         state={k:v for k,v in payload.items() if k.startswith(('aggregator.','track_head.'))}
@@ -64,7 +70,9 @@ class VGGTPointBackend:
         }
 
     def manifest(self):
-        return {**self._manifest,'status':self.status,'device':self.device}
+        return {**self._manifest,'status':self.status,'device':self.device,
+                'constant_position_cache_enabled':self.cache_position_encoding,
+                'constant_position_cache':self.position_cache.manifest()}
 
     @staticmethod
     def validate_request(images,query_points,image_keys,reference_key,current_timestamp):
@@ -109,8 +117,9 @@ class VGGTPointBackend:
             # Keep tracker coordinates, DPT and correlation refinement stable
             # in FP32 while using the official pretrained parameters.
             with torch.autocast('cuda',enabled=False):
-                coords,vis,conf=self.model.track_head([x.float() if x is not None else None for x in tokens],tensor,
-                    patch_start_idx=patch_start,query_points=queries)
+                with self.position_cache.apply(self.track_module,self.cache_position_encoding):
+                    coords,vis,conf=self.model.track_head([x.float() if x is not None else None for x in tokens],tensor,
+                        patch_start_idx=patch_start,query_points=queries)
             if use_cuda:torch.cuda.synchronize(self.device)
             head_s=time.perf_counter()-begin
             begin=time.perf_counter()

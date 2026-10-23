@@ -46,7 +46,8 @@ class WorldDetectionObservation:
             support_points_by_camera={int(v): np.asarray(p, dtype=np.float64)
                                      for v, p in self.support_points_by_camera.items()},
             geometry_valid=bool(self.geometry_reliable),
-            source="rtmdet-ins-tiny+omega512", category_id=0,
+            source=("gmt-pre-gta+omega512" if any(x.source == "gmt_pre_gta_detector" for x in self.detections)
+                    else "rtmdet-ins-tiny+omega512"), category_id=0,
         )
 
     def to_dict(self, include_support: bool = True) -> dict:
@@ -55,6 +56,9 @@ class WorldDetectionObservation:
             "camera_ids": list(self.cameras),
             "detection_ids": [f"{x.view_id}:{x.detection_id}" for x in self.detections],
             "detections": [x.to_dict(include_mask=False) for x in self.detections],
+            "geometry_support_sources": {f"{x.view_id}:{x.detection_id}":
+                getattr(x, "geometry_support_source", "instance_mask" if x.mask is not None else "bbox_rectangle")
+                for x in self.detections},
             "center": np.asarray(self.center, dtype=float).tolist(),
             "covariance": np.asarray(self.covariance, dtype=float).tolist(),
             "confidence": float(self.confidence),
@@ -130,9 +134,13 @@ def lift_detection(det: PersonDetection, frame, min_confidence: float = 1.5,
         center = np.median(trimmed, axis=0)
         covariance = np.cov(trimmed.T) if len(trimmed) >= 3 else np.eye(3) * 1e-3
         covariance = np.asarray(covariance, dtype=np.float64).reshape(3, 3)
-    # Retain the original mask on the detection, because WorldMOT's static
-    # mask filter operates in original RGB coordinates.
-    det.mask = mask_original
+    # A bbox raster is a geometry sampling region, not an instance mask.
+    # Preserve immutable detector semantics (GMT supplies mask=None) and keep
+    # the exact previous raster for geometric coverage/fusion calculations.
+    det.geometry_support_mask = mask_original
+    det.geometry_support_source = ("instance_mask" if det.mask is not None
+                                   and np.asarray(det.mask).shape == np.asarray(frame.images[view]).shape[:2]
+                                   else "bbox_rectangle")
     return WorldDetectionObservation(
         observation_id=f"{view}:{det.detection_id}", detections=[det],
         support_points=np.asarray(support, dtype=np.float64), center=center,
@@ -152,10 +160,13 @@ def _mask_coverage(points: np.ndarray, target: PersonDetection, camera) -> float
     valid &= (uv[:, 0] >= 0) & (uv[:, 0] < w) & (uv[:, 1] >= 0) & (uv[:, 1] < h)
     if not valid.any():
         return 0.0
-    if target.mask is not None and np.asarray(target.mask).shape == (h, w):
+    target_support = getattr(target, "geometry_support_mask", None)
+    if target_support is None and target.mask is not None:
+        target_support = np.asarray(target.mask, dtype=bool)
+    if target_support is not None and np.asarray(target_support).shape == (h, w):
         xy = np.rint(uv[valid]).astype(np.int64)
         xy[:, 0] = np.clip(xy[:, 0], 0, w - 1); xy[:, 1] = np.clip(xy[:, 1], 0, h - 1)
-        return float(np.mean(np.asarray(target.mask)[xy[:, 1], xy[:, 0]]))
+        return float(np.mean(np.asarray(target_support)[xy[:, 1], xy[:, 0]]))
     x, y, bw, bh = target.bbox_xywh
     return float(np.mean((uv[valid, 0] >= x) & (uv[valid, 0] <= x + bw) &
                          (uv[valid, 1] >= y) & (uv[valid, 1] <= y + bh)))

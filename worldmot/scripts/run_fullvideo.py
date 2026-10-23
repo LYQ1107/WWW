@@ -88,7 +88,7 @@ def main():
                     if src in row.get('runtime',{}):frame_stages[dst]=float(row['runtime'][src])
                 for name, value in frame_stages.items():
                     stages.setdefault(name, []).append(float(value))
-                if a.method=='v1':row['world_observations']=[{k:o.get(k) for k in ('observation_id','camera_ids','detection_ids','center','covariance','confidence','geometry_reliable','fusion_status','rejection_reason','reprojection_coverage')} for o in row.get('world_observations',[])]
+                if a.method=='v1':row['world_observations']=[{k:o.get(k) for k in ('observation_id','camera_ids','detection_ids','center','covariance','confidence','geometry_reliable','fusion_status','rejection_reason','reprojection_coverage','geometry_support_sources')} for o in row.get('world_observations',[])]
                 raw=json.dumps(row,default=lambda x:x.tolist() if hasattr(x,'tolist') else str(x))+'\n';f.write(raw);f.flush()
                 last_delivery=time.perf_counter();total=last_delivery-started;times.append(total);reads.append(read);count+=1
                 tf.write(json.dumps({'timestamp':pair.frame_id,'rgb_read_s':read,'rgb_to_delivered_ids_s':total,'stages_s':frame_stages,'queue_s':0.,'synchronous':True})+'\n');tf.flush()

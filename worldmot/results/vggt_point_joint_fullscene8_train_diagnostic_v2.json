@@ -1,0 +1,114 @@
+{
+  "status": "COMPLETE_TRAIN_PILOT_DIAGNOSTIC",
+  "scope": "post-hoc TRAIN at fixed IoU .5",
+  "official_TEST_metrics": false,
+  "raw_GT_modified": false,
+  "counts": {
+    "raw_candidates": 1999,
+    "output_boxes": 1999,
+    "GT_matched_output_boxes": 1971,
+    "same_GT_both_views_detected": 936,
+    "candidate_point_evidence_pairs": 8046,
+    "valid_point_votes": 63814,
+    "inside_box_point_votes": 37119,
+    "positive_support_candidate_pairs_with_GT_identity": 2543,
+    "GT_consistent_positive_support_candidate_pairs": 1958,
+    "selected_temporal_assignments_with_GT_identity": 1961,
+    "GT_consistent_selected_temporal_assignments": 1949,
+    "unmatched_or_ambiguous_output_boxes": 28,
+    "GT_inconsistent_positive_support_candidate_pairs": 585,
+    "diagnostic_temporal_ID_changes": 11,
+    "GT_inconsistent_selected_temporal_assignments": 12
+  },
+  "per_scene": {
+    "8": {
+      "counts": {
+        "raw_candidates": 1999,
+        "output_boxes": 1999,
+        "GT_matched_output_boxes": 1971,
+        "same_GT_both_views_detected": 936,
+        "candidate_point_evidence_pairs": 8046,
+        "valid_point_votes": 63814,
+        "inside_box_point_votes": 37119,
+        "positive_support_candidate_pairs_with_GT_identity": 2543,
+        "GT_consistent_positive_support_candidate_pairs": 1958,
+        "selected_temporal_assignments_with_GT_identity": 1961,
+        "GT_consistent_selected_temporal_assignments": 1949,
+        "unmatched_or_ambiguous_output_boxes": 28,
+        "GT_inconsistent_positive_support_candidate_pairs": 585,
+        "diagnostic_temporal_ID_changes": 11,
+        "GT_inconsistent_selected_temporal_assignments": 12
+      },
+      "real_e2e_fps": 0.17443301346530196,
+      "stages": {
+        "rgb_read_s": {
+          "count": 523,
+          "total_s": 33.03241480141878,
+          "p50_s": 0.06092256307601929,
+          "p95_s": 0.08402939066290853
+        },
+        "raw_cache_verify_s": {
+          "count": 523,
+          "total_s": 79.67400407791138,
+          "p50_s": 0.11470573395490646,
+          "p95_s": 0.34940203279256804
+        },
+        "GMT_detector_s": {
+          "count": 523,
+          "total_s": 109.62052408605814,
+          "p50_s": 0.20171642303466797,
+          "p95_s": 0.24496839717030525
+        },
+        "VGGT_aggregator_s": {
+          "count": 523,
+          "total_s": 368.32072523236275,
+          "p50_s": 0.6630069389939308,
+          "p95_s": 0.9948095418512821
+        },
+        "VGGT_track_head_s": {
+          "count": 523,
+          "total_s": 2256.2414235770702,
+          "p50_s": 3.9613256230950356,
+          "p95_s": 6.107331699877977
+        },
+        "point_preprocess_s": {
+          "count": 523,
+          "total_s": 121.69719325006008,
+          "p50_s": 0.21927449107170105,
+          "p95_s": 0.32598517462611193
+        },
+        "point_postprocess_s": {
+          "count": 523,
+          "total_s": 0.8006815314292908,
+          "p50_s": 0.0014185532927513123,
+          "p95_s": 0.002455130219459532
+        },
+        "point_memory_total_s": {
+          "count": 523,
+          "total_s": 2751.9648146927357,
+          "p50_s": 4.844344571232796,
+          "p95_s": 7.335266244411468
+        },
+        "VGGT_model_only_s": {
+          "count": 523,
+          "total_s": 2624.562148809433,
+          "p50_s": 4.618206925690174,
+          "p95_s": 7.0154428653419005
+        },
+        "output_serialization_s": {
+          "count": 523,
+          "total_s": 0.6924394890666008,
+          "p50_s": 0.0008985176682472229,
+          "p95_s": 0.0021645128726959224
+        }
+      },
+      "manifest_sha256": "13cef5c3f583f9aeef66a2ead7ed47e7556224753029562f190bd9a7f629631a",
+      "prediction_sha256": "3b6ae6a22187b529f78425fa9655ff99644b0911e9dd4642c3b1af912f481b5b"
+    }
+  },
+  "cross_view_same_ID_rate": 0.0,
+  "positive_support_candidate_identity_consistency": 0.7699567440031458,
+  "selected_temporal_assignment_identity_consistency": 0.9938806731259562,
+  "point_accuracy_definition": "GT identity consistency of box-level candidate support and selected temporal decisions are reported separately; no dense point correspondence ground truth",
+  "legacy_report_correction": "Earlier v1 reports called all positive-score candidate edges accepted_point_pairs. They were not all selected assignments."
+}

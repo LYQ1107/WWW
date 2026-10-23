@@ -47,33 +47,47 @@ def main():
     p.add_argument('--scenes',nargs='+',type=int)
     p.add_argument('--limit',type=int)
     p.add_argument('--lock')
+    p.add_argument('--train-settings',help='TRAIN-only settings selected by the registered window scan')
+    p.add_argument('--resource-mode',choices=['unspecified','exclusive_gpu','shared_gpu'],default='unspecified')
     p.add_argument('--points',type=int,choices=[8,16,32],default=16)
     p.add_argument('--point-log-stride',type=int,default=100)
     p.add_argument('--device',default='cuda:0')
+    p.add_argument('--constant-position-cache',action='store_true')
     a=p.parse_args()
     torch.set_num_threads(2)
     if a.split=='test' and a.limit:raise ValueError('TEST must run complete videos')
     meta=json.loads(Path(a.metadata).read_text())
     if meta.get('annotations'):raise ValueError('Inference must use GT-free metadata')
     settings=PointAssociationSettings(points_per_person=a.points)
+    if a.train_settings:
+        if a.split!='train' or a.lock:raise ValueError('TRAIN settings cannot bypass the TEST freeze lock')
+        selected=json.loads(Path(a.train_settings).read_text())
+        if selected['TEST_used_for_selection']:raise ValueError('TEST selection forbidden')
+        settings=PointAssociationSettings(**selected['settings'][a.method])
     if a.lock:
         lock=json.loads(Path(a.lock).read_text())
         if lock['status']!='FROZEN_FROM_TRAIN_VALIDATION' or lock['TEST_used_for_selection']:
             raise ValueError('Invalid point association freeze lock')
         settings=PointAssociationSettings(**lock['settings'][a.method])
         if lock['source_sha256']!=source_stamp()['sha256']:raise RuntimeError('Point source changed after freeze')
+        if lock.get('runner_sha256')!=sha256_file(__file__):raise RuntimeError('Point runner changed after freeze')
+        if a.split=='test' and lock.get('TEST_metadata_sha256')!=sha256_file(a.metadata):raise RuntimeError('TEST metadata differs from freeze')
+        if lock.get('constant_position_cache',False)!=a.constant_position_cache:raise RuntimeError('Position encoding mode differs from TRAIN freeze')
     elif a.split=='test':raise ValueError('TEST requires TRAIN-only frozen settings')
     cache=ImmutableGMTDetectionCache(a.raw_cache)
     if cache.lock['split']!=a.split:raise ValueError('Raw detector cache split mismatch')
+    if a.split=='test' and lock.get('TEST_detector_lock_sha256')!=sha256_file(cache.lock_path):raise RuntimeError('TEST candidates differ from freeze')
     ds=VisionTrack(a.dataset_root,annotation=a.metadata,split=a.split,load_annotations=False)
     detector=GMTDetectorAdapter(device=a.device,python=GMT_PYTHON) if a.detector_mode=='live_verified' else None
-    backend=VGGTPointBackend(device=a.device)
+    backend=VGGTPointBackend(device=a.device,cache_position_encoding=a.constant_position_cache)
     memory=PointIdentityMemory(backend,settings,cross_view=a.method=='joint')
     root=Path(a.output);root.mkdir(parents=True,exist_ok=True)
     signature={'split':a.split,'method':'vggt_point_'+a.method,'metadata_sha256':sha256_file(a.metadata),
         'source_sha256':source_stamp()['sha256'],'runner_sha256':sha256_file(__file__),
         'settings':settings.manifest(),'detector_cache_lock_sha256':sha256_file(cache.lock_path),
         'VGGT_checkpoint_sha256':backend.manifest()['checkpoint_sha256'],'detector_mode':a.detector_mode,
+        'constant_position_cache':a.constant_position_cache,
+        'resource_mode':a.resource_mode,'train_settings_sha256':sha256_file(a.train_settings) if a.train_settings else None,
         'lock_sha256':sha256_file(a.lock) if a.lock else None}
     try:
         for sid in a.scenes or ds.scene_ids():
