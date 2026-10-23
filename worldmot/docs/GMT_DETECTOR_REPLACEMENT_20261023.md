@@ -158,6 +158,25 @@ full-cache workers running; they do not constitute a full-cache rerun.
 saved diagnostics retain their original metadata and source hashes.
 The detector worktree's complete CPU test suite passes 47 tests after this fix.
 
+### Current object-cache verification Gate (2026-10-23)
+
+The new GMT detector-feature cache has now passed the full immutable TRAIN
+verification. `cache_verification/coverage.json` reports
+`VERIFIED_COMPLETE_24_TRAIN_OBJECT_CACHE`: all 28,754 synchronized TRAIN
+timestamps (57,508 images) were scanned, with 557,002 identity targets checked
+and zero identity-label mismatches. The verifier also records finite feature,
+geometry, and score arrays, `raw_GT_modified=false`, and
+`GT_xyz_in_inputs=false`; the retained detector/GT failure samples are
+`detection_supervision_failures.jsonl.gz` (its SHA is captured in
+`results/gmt_object_cache_verification_20261023.json`).
+
+The registered source, budget, registration, and coverage SHA256 values are
+recorded in that result file. The fixed TRAIN-only queue has consequently
+started the preregistered four-epoch `joint` and `no_geometry` internal fits on
+the 18 TRAIN scenes, with Scenes 4/8/12/16/20/24 held out for validation.
+No TEST frame or threshold was used for this transition; this Gate is cache
+admission evidence, not a GMT association or tracking result.
+
 ## Full-video live/cache numeric boundary correction
 
 The first six-scene V1 validation attempt stopped at Scene 4 timestamp 598
