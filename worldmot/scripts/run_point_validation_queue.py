@@ -66,8 +66,16 @@ def main():
             guard();complete=[]
             for label in ['gpu3','gpu7']:
                 path=calibration/f'{label}_results.json';s=calibration/f'{label}_status.json'
-                if s.exists() and json.loads(s.read_text())['stage']=='FAILED_REQUIRES_ENGINEERING_FIX':
-                    raise RuntimeError('Point calibration partition failed: '+str(s))
+                if s.exists():
+                    # atomic_json replaces status files on a shared NAS. A
+                    # reader can observe the tiny rename gap; retry rather
+                    # than treating that observation as a calibration error.
+                    try:
+                        status_data=json.loads(s.read_text())
+                    except FileNotFoundError:
+                        status_data=None
+                    if status_data and status_data.get('stage')=='FAILED_REQUIRES_ENGINEERING_FIX':
+                        raise RuntimeError('Point calibration partition failed: '+str(s))
                 if path.exists() and json.loads(path.read_text())['status']=='COMPLETE_TRAIN_CALIBRATION_PARTITION':complete.append(label)
             state('WAITING_COMPLETE_REGISTERED_TRAIN_WINDOW_SCAN',complete_partitions=complete)
             if len(complete)==2:break
