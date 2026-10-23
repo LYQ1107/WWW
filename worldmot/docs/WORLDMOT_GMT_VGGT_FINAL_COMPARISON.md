@@ -87,6 +87,16 @@ New official TEST scores: NOT_AVAILABLE (real TRAIN validation/calibration runni
 Historical GMT/V2 TEST metrics are reference evidence only and are not
 hyperparameter-selection data.
 
+The GMT pre-GTA detector + fixed V1 association has now completed its
+official TRAIN validation Gate. All six registered validation videos are
+covered (5,860 synchronized timestamps); the legal aggregate contains only
+scenes 4/8/12 because raw GT in 16/20/24 has duplicate keys. TrackEval on the
+valid scope is HOTA 48.27676, AssA 34.10812, DetA 69.06127, IDF1 49.17423,
+MOTA 76.17674, IDSW 665 and Frag 180. The interleaved VisionTrack MATLAB
+result is CVIDF1 48.00064 / CVMA 70.27261. This is a TRAIN-only diagnostic
+Gate; it is not a TEST comparison or a claim of gain over GMT. Full provenance
+is in `results/gmt_v1_train_gate_complete_20261023.json`.
+
 ## Completed first gates
 
 The GMT raw adapter passes exact native-candidate parity, causal-prefix and
@@ -115,10 +125,10 @@ both preserved on the point branch with exact inference source SHA.
 
 Full TRAIN raw candidate extraction and full GMT+Omega object-feature
 extraction initially ran in parallel, with disjoint per-worker scene lists and the
-same immutable shared detector lock. Full V1 TRAIN validation is marked
-shared-GPU and its latency cannot be promoted to the final comparable
-exclusive-GPU table. Point default temporal full Scene 8 runs next to the
-other jobs on a separate card, followed by default joint full Scene 8.
+same immutable shared detector lock. The completed V1 TRAIN validation is
+marked shared-GPU and its latency cannot be promoted to the final comparable
+exclusive-GPU table. Point default temporal and joint validation remain
+separate live jobs.
 
 The matched-budget V2 registration is four epochs for joint/no-geometry
 internal fits, seed 20261022, using the original 18/6 TRAIN split. Thresholds
@@ -256,9 +266,9 @@ The registered all-window TRAIN scan has now completed. Its selected A2/A3
 settings are temporal `points_per_person=16, minimum_confidence=0.3,
 minimum_support=0.2` and joint `points_per_person=32,
 minimum_confidence=0.2, minimum_support=0.1`. The selection artifact is
-`results/gmt_point_train_selection_20261023.json`; both settings are currently
-under complete six-scene TRAIN full-video validation. This is a TRAIN gate
-only: no official TEST metric or final route ranking is implied.
+`results/gmt_point_train_selection_20261023.json`; both settings remain under
+complete six-scene TRAIN full-video validation. This is a TRAIN gate only: no
+official TEST metric or final route ranking is implied.
 
 `build_gmt_point_comparison.py` creates the required partial official main
 JSON/CSV, error-attribution JSON and FPS CSV. Missing new TEST scores are

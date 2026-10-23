@@ -261,3 +261,20 @@ The immutable selection and partition hashes, source SHA, and the explicit
 `results/gmt_point_train_selection_20261023.json`. Complete six-scene TRAIN
 full-video validation is now running for both settings. No TEST lock or formal
 MOT metric exists at this Gate; the selection is not a final GMT comparison.
+
+### GMT V1 official TRAIN validation Gate completed (2026-10-23)
+
+The corrected fixed-rule V1 queue completed all six registered validation
+videos (scenes 4/8/12/16/20/24; 5,860 synchronized timestamps) and ran the
+official TrackEval and VisionTrack MATLAB evaluators. Only scenes 4/8/12 are
+in the legal aggregate: raw GT for scenes 16, 20 and 24 contains duplicate
+keys and is therefore explicitly blocked without editing GT. The complete
+coverage, source stamps, evaluator hashes and metrics are recorded in
+`results/gmt_v1_train_gate_complete_20261023.json`; the compact synchronized
+copy is `results/gmt_v1_train_validation_metrics_v2.json`.
+
+The valid-scope aggregate is TrackEval HOTA 48.27676, AssA 34.10812, DetA
+69.06127, IDF1 49.17423, MOTA 76.17674, IDSW 665, Frag 180; the interleaved
+MATLAB aggregate is CVIDF1 48.00064 and CVMA 70.27261. These are TRAIN-only
+validation values, not TEST results and not a claim of improvement over GMT.
+`TEST_used_for_selection=false` remains explicit.

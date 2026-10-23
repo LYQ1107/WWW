@@ -1,0 +1,62 @@
+{
+  "status": "COMPLETE_VALID_SCOPE",
+  "gate": "GMT pre-GTA detector + fixed V1 association official TRAIN validation",
+  "split": "train",
+  "source_sha256": "c0ef87cc85759f654156c9ec71208bca12bc4f120cb0174264682b9015859e2e",
+  "driver_sha256": "808bf093f4774cfb7eccb2ff05753b096b7ff6836e4f48f77e7678a3cbabac65",
+  "test_used_for_selection": false,
+  "custom_metrics_used": false,
+  "raw_GT_modified": false,
+  "prediction_box_source": "tracks_2d_by_camera",
+  "full_video_coverage": {
+    "scenes": [4, 8, 12, 16, 20, 24],
+    "frames": {"4": 901, "8": 523, "12": 1200, "16": 1034, "20": 1001, "24": 1201},
+    "total_synchronized_frames": 5860,
+    "manifest_sha256": {
+      "4": "8e205bab52bfe10d29ef56b322d2d78b418609ed072577becf8f5680e9f52809",
+      "8": "2e9c7eb1d5697192bfc63171da90dd0d474fbadf83c9fc18c86c57ef11563f26",
+      "12": "8a000a159fc6f575f34c4a6141165d03f08f9ce23c467a675d6d0165a7c31382",
+      "16": "90607f030d34860fc024abfa29d3c1e165e3d6e4f15f6de2686914babe69f4aa",
+      "20": "3156e888951bdea2ceaba4256e4ca2fd66ebafcc90f38ccd8affc3c0c74d168e",
+      "24": "cae6816c5e502a0d7b503ce6dc16b35fdf9721642e4509f913afc5b70313ba11"
+    }
+  },
+  "valid_gt_scope": {
+    "evaluated_scenes": [4, 8, 12],
+    "blocked_scenes": {
+      "16": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+      "20": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+      "24": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+    }
+  },
+  "TrackEval_combined": {
+    "HOTA": 48.27675585506867,
+    "AssA": 34.108116155975594,
+    "DetA": 69.06126505447827,
+    "IDF1": 49.17423397589082,
+    "MOTA": 76.17673926631088,
+    "IDSW": 665,
+    "Frag": 180,
+    "CLR_TP": 16686,
+    "CLR_FN": 4113,
+    "CLR_FP": 177
+  },
+  "VisionTrack_MATLAB_interleaved_combined": {
+    "CVIDF1": 48.00063724709256,
+    "CVMA": 70.27260926006058,
+    "IDTP": 9039,
+    "IDFP": 7824,
+    "IDFN": 11760,
+    "CLEAR_TP": 16663,
+    "CLEAR_FP": 200,
+    "CLEAR_FN": 4136,
+    "CLEAR_IDSW": 1847
+  },
+  "provenance": {
+    "metrics_json": "gmt_detector_comparison_20261023/v1_train_validation_evaluation_v2/metrics.json",
+    "metrics_sha256": "7991431a601d84af95b57daf95f5dcd2410f09338d8fe3537db3f13f9526aa15",
+    "matlab_native_json": "gmt_detector_comparison_20261023/v1_train_validation_evaluation_v2/matlab/NATIVE.json",
+    "matlab_native_sha256": "7aedb4f47d9d9af8a4cce397a533ef0ee8a5b3eebe3ebde7ae371edafa1448c2",
+    "evaluation_protocol": "official evaluate_fullvideo.py / TrackEval / VisionTrack MATLAB; no TEST tuning"
+  }
+}
