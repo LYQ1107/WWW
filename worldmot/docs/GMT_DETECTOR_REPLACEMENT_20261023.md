@@ -134,3 +134,26 @@ not alter the primary current detection boxes. Existing pilot/validation v1
 outputs retain their original code SHA. The idle training waiter was stopped
 before it had any child fits, its registration snapshot was preserved, and
 the source registration is renewed before formal training proceeds.
+The V1 per-frame ablation label now also records GMT_PRE_GTA for this frontend;
+the original RTMDet label is preserved for original RTMDet runs. Previously
+saved pilot streams retain their original labels and exact source SHA, while
+their detector manifests/candidate checks already identify the actual GMT input.
+
+The first real two-frame follow-up (`train_v1_visibility_audit2_v1`) failed
+the mask assertion. Its output is retained. The root cause was in
+`lift_detection`: it replaced `det.mask=None` with the synthetic rectangle
+used for 3D sampling. The corrected implementation preserves the actual mask
+and stores that rectangle separately as `geometry_support_mask`, retaining
+the exact sampling and fusion coverage calculation. The repeated real run
+(`train_v1_visibility_audit2_v2`) passes all eight current projection rows:
+zero false mask claims, real current bbox evidence and the GMT ablation tag.
+`gmt_bbox_visibility_evidence_audit_v2.json` records the output/source hashes.
+
+An independent rerun of the same 32 TRAIN Scene 8 timestamps verifies every
+array in both object-cache shards is bit exact: 128 532-D observations,
+geometry, covariance, identity targets and projection boxes. This limited
+real parity check and the exact-raster unit test support keeping the existing
+full-cache workers running; they do not constitute a full-cache rerun.
+`gmt_geometry_sampling_parity_v2.json` records this evidence. Previously
+saved diagnostics retain their original metadata and source hashes.
+The detector worktree's complete CPU test suite passes 47 tests after this fix.

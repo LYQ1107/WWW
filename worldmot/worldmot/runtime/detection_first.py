@@ -56,6 +56,7 @@ class DetectionFirstWorldMOT:
                  memory: Optional[WorldIdentityMemory] = None,
                  device: str = "cuda:0"):
         self.detector = detector
+        self.detector_frontend = detector.manifest().get("source", "rtmdet")
         self.geometry = geometry
         self.min_confidence = float(min_confidence)
         self.min_points = int(min_points)
@@ -205,7 +206,8 @@ class DetectionFirstWorldMOT:
                         "frame_total_s": float(self.timer.last_stages.get("total", 0.0)),
                         "gpu": gpu_memory_summary(self.device)},
             "proposal_count": len(instances), "causal": True,
-            "ablation": "A_DETECT_FIRST_RTMDET_INS_TINY_OMEGA512",
+            "ablation": ("A_DETECT_FIRST_GMT_PRE_GTA_OMEGA512" if self.detector_frontend == "gmt_pre_gta_detector"
+                         else "A_DETECT_FIRST_RTMDET_INS_TINY_OMEGA512"),
             "detector_status": self.detector.manifest(),
             "omega_status": self.geometry.diagnostics() if hasattr(self.geometry, "diagnostics") else {},
         }
