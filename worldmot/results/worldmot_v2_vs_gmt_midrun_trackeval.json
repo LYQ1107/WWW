@@ -25,15 +25,17 @@
   ],
   "blocked_scene_ids": [5, 12, 13, 14, 17, 20, 21, 22],
   "blocked_reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
-  "scope_note": "Only methods with all 22 causal TEST videos were compared. v2_joint_seed20261024 and all registered ablations were excluded because their independent TEST streams are incomplete. This is not the final all-method official comparison.",
+  "scope_note": "The three main v2 seeds and GMT have all 22 causal TEST videos. The registered ablations remain incomplete. This is a midrun diagnostic, not the final all-method official comparison.",
   "prediction_roots": {
     "v2_joint_seed20261022": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_joint_seed20261022",
     "v2_joint_seed20261023": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_joint_seed20261023",
+    "v2_joint_seed20261024": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_joint_seed20261024",
     "gmt_native": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/gmt_native"
   },
   "diagnostic_output_roots": {
     "v2_joint_seed20261022": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test_evaluation_midrun/v2_joint_seed20261022",
     "v2_joint_seed20261023": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test_evaluation_midrun/v2_joint_seed20261023",
+    "v2_joint_seed20261024": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test_evaluation_midrun/v2_joint_seed20261024",
     "gmt_native": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test_evaluation_midrun/gmt_native"
   },
   "metrics": {
@@ -85,17 +87,41 @@
       "CLR_FP": 20820,
       "CLR_FN": 24447
     },
-    "v2_mean_minus_gmt": {
-      "HOTA": -29.06290401551381,
-      "AssA": -23.78559376503569,
-      "DetA": -32.635293326397994,
-      "IDF1": -35.75766701618056,
-      "MOTA": -36.43544010327476,
-      "IDSW": -5078.0,
-      "Frag": -190.0,
-      "CLR_TP": -89466.5,
-      "CLR_FP": -15239.5,
-      "CLR_FN": 89466.5
+    "v2_joint_seed20261024": {
+      "HOTA": 37.76488668314569,
+      "AssA": 43.510350681268115,
+      "DetA": 33.23074235632138,
+      "IDF1": 46.10166062791025,
+      "MOTA": 40.62228310983481,
+      "IDSW": 899,
+      "Frag": 1339,
+      "CLR_TP": 82516,
+      "CLR_FP": 4522,
+      "CLR_FN": 107269
+    },
+    "v2_joint_mean_three_seeds": {
+      "HOTA": 37.25608434964571,
+      "AssA": 45.03222056973599,
+      "DetA": 31.364352042781764,
+      "IDF1": 44.93687197200154,
+      "MOTA": 37.892878783887035,
+      "IDSW": 943.6666666666666,
+      "Frag": 1375.6666666666667,
+      "CLR_TP": 78086.33333333333,
+      "CLR_FP": 5227.666666666667,
+      "CLR_FN": 111698.66666666667
+    },
+    "v2_mean_three_seeds_minus_gmt": {
+      "HOTA": -28.808502848763816,
+      "AssA": -24.54652870926963,
+      "DetA": -31.70209816962819,
+      "IDF1": -35.1752726882262,
+      "MOTA": -35.070737940300866,
+      "IDSW": -5100.333333333333,
+      "Frag": -208.33333333333326,
+      "CLR_TP": -87251.66666666667,
+      "CLR_FP": -15592.333333333332,
+      "CLR_FN": 87251.66666666667
     }
   }
 }
