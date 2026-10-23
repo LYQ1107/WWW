@@ -1,2 +1,24 @@
-fatal: Path 'worldmot/results/gmt_2d_control_failure_20261023.json' exists, but not 'results/gmt_2d_control_failure_20261023.json'.
-Did you mean 'HEAD:worldmot/results/gmt_2d_control_failure_20261023.json' aka 'HEAD:./results/gmt_2d_control_failure_20261023.json'?
+{
+  "status": "FAILED_REQUIRES_ENGINEERING_FIX",
+  "stage": "2D_CONTROL_TEST_AFTER_IOU_ROUTE",
+  "updated_utc": "2026-10-23T19:31:09Z",
+  "experiment_root": "/data1/liuyeqiang/nas/A100/WorldMOT/final_comparison_20261023/2d_controls_v1",
+  "queue_pid": 10540,
+  "queue_process_terminal": true,
+  "failure": "Registered 2D source/runner/budget changed",
+  "registered_source_sha256": "d2f493aaed6c0c955b394abbada4a41c80811eb84424de97e2c06df157bf899a",
+  "current_source_sha256_at_audit": "0d6b8bc62da81fa4423afd808ea6fc55d05face2ab57c32e7d49eeb69256a229",
+  "registered_queue_status_sha256": "da6ea426d6f79719a8159f14d39fe737b1d9c2f8592e5d99f9dc2696588a3ea3",
+  "frozen_test_lock_sha256": "0c9685b3a96584fe63228514b4a7445fa6303b79c5ce07f750dc8ec1dbb4f77a",
+  "TEST_used_for_selection": false,
+  "preserved_outputs": {
+    "iou_motion_complete_scenes": 22,
+    "iou_motion_frames": 29019,
+    "iou_motion_official_metrics": "NOT_AVAILABLE",
+    "appearance_motion_complete_scenes": 0,
+    "appearance_motion_official_metrics": "NOT_AVAILABLE"
+  },
+  "interpretation": "The 2D queue stopped after source-guard invalidation. Preserved iou_motion predictions are not promoted to a final comparison because the appearance route was not run and the registered source differs from the current branch. Rerun both controls under one immutable current-source registration before any metric claim.",
+  "GT_in_inference": false,
+  "claim_allowed": false
+}
