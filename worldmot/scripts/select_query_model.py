@@ -94,18 +94,22 @@ def continuous_audit(ds,checkpoint,thresholds,device):
         'max_ID_distinct_timestamps':max(r['max_ID_distinct_timestamps'] for r in scenes)}
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--cache',required=True);p.add_argument('--internal-root',required=True);p.add_argument('--output',required=True);p.add_argument('--device',default='cuda:0');a=p.parse_args();torch.set_num_threads(2)
+    p=argparse.ArgumentParser();p.add_argument('--cache',required=True);p.add_argument('--internal-root',required=True);p.add_argument('--output',required=True);p.add_argument('--device',default='cuda:0')
+    p.add_argument('--methods',nargs='+',choices=['joint','no_omega','no_appearance','two_stage','no_geometry'],default=['joint','no_omega','no_appearance','two_stage','no_geometry'])
+    p.add_argument('--candidate-epochs',nargs='+',type=int,default=[2,4,6])
+    a=p.parse_args();torch.set_num_threads(2)
     out=Path(a.output);out.mkdir(parents=True,exist_ok=True);ds=WorldQueryClipDataset([a.cache],clip_length=32,scenes=VAL_SCENES)
     if set(ds.scenes)!=set(VAL_SCENES):raise RuntimeError('all six held-out TRAIN scenes are required')
     losses=[]
-    for epoch in [2,4,6]:
+    if not any(epoch>=4 for epoch in a.candidate_epochs):raise ValueError('Refit must cover the full 8/16/32 curriculum')
+    for epoch in sorted(set(a.candidate_epochs)):
         checkpoint=Path(a.internal_root)/f'joint.epoch{epoch}.pt';values=validation_loss(ds,checkpoint,a.device)
         losses.append({'epoch':epoch,'checkpoint':str(checkpoint),**values});print(json.dumps(losses[-1]),flush=True)
     # Final refit must contain all 8/16/32 curriculum lengths. Epoch 2 is a
     # diagnostic curve point; only epoch budgets 4 and 6 are eligible.
     selected_epoch=min([r for r in losses if r['epoch']>=4],key=lambda r:r['total'])['epoch']
     final={'status':'TRAIN_ONLY_SELECTION','validation_scenes':VAL_SCENES,'loss_evaluation':'all validation timestamps in continuous 32-frame clips','threshold_evaluation':'fixed start/middle/end 32-frame windows; cached identity-F1 selection surrogate, not HOTA or official IDF1','selected_epochs':selected_epoch,'epoch_validation':losses,'methods':{}}
-    for method in ['joint','no_omega','no_appearance','two_stage','no_geometry']:
+    for method in a.methods:
         cp=Path(a.internal_root)/f'{method}.epoch{selected_epoch}.pt';grid,best=calibration(ds,cp,a.device)
         final['methods'][method]={'thresholds':{k:best[k] for k in ['null_margin','birth_threshold','pair_threshold']},'validation_identity_f1_surrogate':best['identity_f1_surrogate'],'candidates':grid}
         audit=continuous_audit(ds,cp,final['methods'][method]['thresholds'],a.device)

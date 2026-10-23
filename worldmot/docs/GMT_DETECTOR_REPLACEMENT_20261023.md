@@ -95,3 +95,31 @@ All large artifacts are under
 `omega_objects_smoke32_v1/`, and `association_smoke32_v1.pt`.
 Small result copies in `worldmot/results/` contain the measured counts,
 per-scene/camera detector diagnostics, stage timings and source/weight SHA.
+
+## Complete raw TRAIN cache gate and registered fit queue
+
+All 24 raw GMT TRAIN scenes are now complete: 28,754 synchronized timestamps,
+57,508 images, 557,002 candidate observations. Deep verification checks every
+compressed data shard SHA, coordinate/score/feature finiteness, 1,024-D native
+ROI shape, stable per-camera detection indices, both image IDs per timestamp,
+native score threshold, original RGB fingerprints, and absence of GT/track-ID
+arrays. There are zero empty ROI descriptors. Total compressed shard size is
+1,041,985,391 bytes. Each sidecar SHA is included in the retained audit.
+
+`raw_train_integrity_v1.json` and `detector_frontend_freeze.json` preserve this
+admission. The detector-only freeze SHA is
+`54f9e2db2befc946e8fc165a87986148c7294a9c456a2983ef9e9625dcbb085f`.
+GT-free TEST detector candidates may now be exported at the same fixed native
+threshold. This does not authorize association TEST before TRAIN selection.
+
+The finite matched association budget is committed in
+`configs/gmt_detector_association_budget_20261023.json`: internal joint and
+no-geometry fits, four epochs, seed 20261022; final all-24 refits, joint seeds
+20261022/23/24 and no-geometry seed 20261022, four epochs. The selector accepts
+the explicit methods and the single preregistered epoch budget 4 while
+preserving its original defaults for the old experiment. A durable controller
+`run_gmt_training_queue.py --root EXPERIMENT_ROOT --gpus 2 6` waits for all
+24 complete **object-feature** scenes, independently verifies supervision,
+then trains, calibrates on TRAIN only and freezes new weights. It never
+starts TEST automatically. Source or budget changes cause an explicit failure;
+an incomplete cache or the 32-frame smoke weights cannot enter formal fitting.
