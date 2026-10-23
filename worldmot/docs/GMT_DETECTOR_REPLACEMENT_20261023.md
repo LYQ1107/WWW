@@ -244,3 +244,20 @@ scope produced TrackEval HOTA 57.65895, AssA 53.15544, DetA 63.08694, IDF1
 `results/gmt_2d_iou_motion_partial_official_metrics_20261023.json` only as
 partial A0 evidence: the source registration is stale and A1 is absent, so
 they are not a final 2D-control or GMT comparison.
+
+### VGGT-point TRAIN selection Gate (2026-10-23)
+
+The finite TRAIN-only scan completed both registered partitions (324 windows
+per GPU partition, six scenes, temporal and joint methods). The selector chose
+the following settings without reading TEST frames:
+
+| Method | Points/person | Minimum confidence | Minimum support |
+|---|---:|---:|---:|
+| temporal | 16 | 0.3 | 0.2 |
+| joint | 32 | 0.2 | 0.1 |
+
+The immutable selection and partition hashes, source SHA, and the explicit
+`TEST_used_for_selection=false` flag are recorded in
+`results/gmt_point_train_selection_20261023.json`. Complete six-scene TRAIN
+full-video validation is now running for both settings. No TEST lock or formal
+MOT metric exists at this Gate; the selection is not a final GMT comparison.
