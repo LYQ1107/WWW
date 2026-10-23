@@ -143,7 +143,13 @@ class FrozenObjectFeatureExtractor:
                 rgb = _fixed_pool(_rgb_descriptor(image, det.bbox_xywh, det.mask), 128)
                 det_feat = np.zeros(0, dtype=np.float32)
                 omega_feat = np.zeros(0, dtype=np.float32)
-                if int(view) in detector_feature_maps:
+                native_roi = getattr(det, "detector_roi_feature", None)
+                if native_roi is not None:
+                    native_roi = np.asarray(native_roi, dtype=np.float32)
+                    if not native_roi.size or not np.isfinite(native_roi).all():
+                        raise ValueError("Invalid frozen detector ROI feature")
+                    det_feat = _fixed_pool(native_roi, 128)
+                elif int(view) in detector_feature_maps:
                     det_feat = _fixed_pool(
                         _roi_pool(detector_feature_maps[int(view)], det.bbox_xywh, image.shape[:2]), 128,
                     )
@@ -157,12 +163,16 @@ class FrozenObjectFeatureExtractor:
                     det_feat if len(det_feat) else np.zeros(128, np.float32),
                     omega_feat if len(omega_feat) else np.zeros(256, np.float32)])
                 learned_ok = len(det_feat) > 0 and len(omega_feat) > 0
-                source = "rgb+rtmdet_roi+omega_patch" if learned_ok else "rgb_source_only"
+                is_gmt = det.source == "gmt_pre_gta_detector"
+                detector_name = "gmt_roi" if is_gmt else "rtmdet_roi"
+                source = f"rgb+{detector_name}+omega_patch" if learned_ok else "rgb_source_only"
                 valid = len(rgb) > 0 and (learned_ok or not self.require_intermediate)
                 out[(int(view), int(det.detection_id))] = ObjectFeature(
                     int(view), int(det.detection_id), merged.astype(np.float32), det_feat, omega_feat,
                     source, valid,
-                    {"rgb_available": True, "rtmdet_roi_available": bool(len(det_feat)),
+                    {"rgb_available": True, "detector_roi_available": bool(len(det_feat)),
+                     "detector_roi_source": detector_name,
+                     "rtmdet_roi_available": bool(len(det_feat)) and not is_gmt,
                      "omega_patch_available": bool(len(omega_feat)),
                      "formal_intermediate_required": self.require_intermediate}, rgb,
                 )
