@@ -1,0 +1,101 @@
+{
+  "status": "DIAGNOSTIC_COMPLETE_VALID_SCOPE",
+  "official_final": false,
+  "evaluation": "TrackEval",
+  "split": "test",
+  "box_source": "tracks_2d_by_camera",
+  "custom_metrics_used": false,
+  "raw_GT_modified": false,
+  "evaluated_scene_count": 14,
+  "evaluated_scene_ids": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    15,
+    16,
+    18,
+    19
+  ],
+  "blocked_scene_ids": [5, 12, 13, 14, 17, 20, 21, 22],
+  "blocked_reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+  "scope_note": "Only methods with all 22 causal TEST videos were compared. v2_joint_seed20261024 and all registered ablations were excluded because their independent TEST streams are incomplete. This is not the final all-method official comparison.",
+  "prediction_roots": {
+    "v2_joint_seed20261022": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_joint_seed20261022",
+    "v2_joint_seed20261023": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/v2_joint_seed20261023",
+    "gmt_native": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test/gmt_native"
+  },
+  "diagnostic_output_roots": {
+    "v2_joint_seed20261022": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test_evaluation_midrun/v2_joint_seed20261022",
+    "v2_joint_seed20261023": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test_evaluation_midrun/v2_joint_seed20261023",
+    "gmt_native": "/data1/liuyeqiang/nas/A100/WorldMOT/fulltrain_20261022/test_evaluation_midrun/gmt_native"
+  },
+  "metrics": {
+    "v2_joint_seed20261022": {
+      "HOTA": 36.47634303770017,
+      "AssA": 44.736090482998506,
+      "DetA": 30.249975067868967,
+      "IDF1": 43.36527132472267,
+      "MOTA": 36.29896988697737,
+      "IDSW": 875,
+      "Frag": 1347,
+      "CLR_TP": 74939,
+      "CLR_FP": 5174,
+      "CLR_FN": 114846
+    },
+    "v2_joint_seed20261023": {
+      "HOTA": 37.527023328091275,
+      "AssA": 46.85022054494136,
+      "DetA": 30.61233870415495,
+      "IDF1": 45.34368396337168,
+      "MOTA": 36.75738335484891,
+      "IDSW": 1057,
+      "Frag": 1441,
+      "CLR_TP": 76804,
+      "CLR_FP": 5987,
+      "CLR_FN": 112981
+    },
+    "v2_joint_mean_two_seeds": {
+      "HOTA": 37.00168318289572,
+      "AssA": 45.79315551396993,
+      "DetA": 30.43115688601196,
+      "IDF1": 44.35447764404718,
+      "MOTA": 36.52817662091314,
+      "IDSW": 966.0,
+      "Frag": 1394.0,
+      "CLR_TP": 75871.5,
+      "CLR_FP": 5580.5,
+      "CLR_FN": 113913.5
+    },
+    "gmt_native": {
+      "HOTA": 66.06458719840953,
+      "AssA": 69.57874927900562,
+      "DetA": 63.066450212409954,
+      "IDF1": 80.11214466022774,
+      "MOTA": 72.9636167241879,
+      "IDSW": 6044,
+      "Frag": 1584,
+      "CLR_TP": 165338,
+      "CLR_FP": 20820,
+      "CLR_FN": 24447
+    },
+    "v2_mean_minus_gmt": {
+      "HOTA": -29.06290401551381,
+      "AssA": -23.78559376503569,
+      "DetA": -32.635293326397994,
+      "IDF1": -35.75766701618056,
+      "MOTA": -36.43544010327476,
+      "IDSW": -5078.0,
+      "Frag": -190.0,
+      "CLR_TP": -89466.5,
+      "CLR_FP": -15239.5,
+      "CLR_FN": 89466.5
+    }
+  }
+}
