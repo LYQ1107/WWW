@@ -241,10 +241,11 @@ class PersonDetector:
                     mask = np.asarray(masks[idx]).astype(bool)
                     if mask.shape != np.asarray(image).shape[:2]:
                         from PIL import Image
+                        from ..utils.pillow_compat import RESAMPLING
                         mask = np.asarray(
                             Image.fromarray(mask.astype(np.uint8) * 255).resize(
                                 (np.asarray(image).shape[1], np.asarray(image).shape[0]),
-                                Image.Resampling.NEAREST,
+                                RESAMPLING.NEAREST,
                             )
                         ) > 127
                 detections.append(

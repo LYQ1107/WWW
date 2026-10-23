@@ -21,6 +21,7 @@ from PIL import Image
 
 from .geometry_interface import GeometryBackend, GeometryFrame
 from ..geometry.camera_model import CameraModel
+from ..utils.pillow_compat import RESAMPLING
 
 
 OFFICIAL_OMEGA_COMMIT = "48b23c8ce72c9a8fcf987f0d7f43d8e4870759f6"
@@ -122,7 +123,7 @@ def _preprocess_full_pair(images: Mapping[int, np.ndarray], resolution: int = 51
         cropped, (crop_left, crop_top) = _crop_to_supported_aspect_ratio(image)
         crop_w, crop_h = cropped.size
         target_h, target_w = _balanced_target_shape(crop_h / max(crop_w, 1), resolution, 16)
-        resized = cropped.resize((target_w, target_h), Image.Resampling.BICUBIC)
+        resized = cropped.resize((target_w, target_h), RESAMPLING.BICUBIC)
         tensors.append(TF.ToTensor()(resized))
         records.append({
             "view": view,
@@ -396,7 +397,7 @@ def map_mask_to_model(mask: np.ndarray, mapping: PixelMapping) -> np.ndarray:
     ]
     resized = np.asarray(
         Image.fromarray(cropped * 255).resize(
-            (mapping.resize_width, mapping.resize_height), Image.Resampling.NEAREST
+            (mapping.resize_width, mapping.resize_height), RESAMPLING.NEAREST
         )
     ) > 127
     out = np.zeros((mapping.network_height, mapping.network_width), dtype=bool)

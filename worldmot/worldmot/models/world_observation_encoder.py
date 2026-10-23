@@ -64,6 +64,7 @@ class WorldObservationToken:
 
 def _mask_descriptor(mask: np.ndarray | None, bbox: Sequence[float], shape: tuple[int, int], size: int = 8) -> np.ndarray:
     from PIL import Image
+    from ..utils.pillow_compat import RESAMPLING
 
     h, w = shape
     if mask is not None and np.asarray(mask).shape == (h, w):
@@ -73,7 +74,7 @@ def _mask_descriptor(mask: np.ndarray | None, bbox: Sequence[float], shape: tupl
         m = m[y0:y1, x0:x1] if x1 > x0 and y1 > y0 else np.zeros((1, 1), dtype=np.uint8)
     else:
         m = np.ones((max(1, int(bbox[3])), max(1, int(bbox[2]))), dtype=np.uint8)
-    return (np.asarray(Image.fromarray(m * 255).resize((size, size), Image.Resampling.NEAREST), dtype=np.float32) / 255.0).reshape(-1)
+    return (np.asarray(Image.fromarray(m * 255).resize((size, size), RESAMPLING.NEAREST), dtype=np.float32) / 255.0).reshape(-1)
 
 
 def _apply_sim3(transform, xyz: np.ndarray) -> np.ndarray:

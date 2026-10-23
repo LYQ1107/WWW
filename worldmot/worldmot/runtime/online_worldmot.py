@@ -80,7 +80,8 @@ class OnlineWorldMOT:
         h, w = np.asarray(frame.images[view]).shape[:2]
         if mask.shape != (h, w):
             from PIL import Image
-            mask = np.asarray(Image.fromarray(mask.astype(np.uint8)).resize((w, h), Image.Resampling.NEAREST)) > 0
+            from ..utils.pillow_compat import RESAMPLING
+            mask = np.asarray(Image.fromarray(mask.astype(np.uint8)).resize((w, h), RESAMPLING.NEAREST)) > 0
         xi, yi = int(round(x)), int(round(y))
         return bool(0 <= xi < w and 0 <= yi < h and mask[yi, xi])
 

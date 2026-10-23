@@ -11,6 +11,7 @@ from .person_detector import PersonDetection
 from .omega_geometry_backend import PixelMapping, map_mask_to_model
 from ..geometry.reprojection import project_support
 from ..models.panoptic_instances import WorldInstance
+from ..utils.pillow_compat import RESAMPLING
 
 
 @dataclass
@@ -116,7 +117,7 @@ def lift_detection(det: PersonDetection, frame, min_confidence: float = 1.5,
         # This is only a defensive path for non-Omega backends.
         from PIL import Image
         mask_model = np.asarray(Image.fromarray(mask_model.astype(np.uint8)).resize(
-            (points.shape[1], points.shape[0]), Image.Resampling.NEAREST)) > 0
+            (points.shape[1], points.shape[0]), RESAMPLING.NEAREST)) > 0
     good = mask_model & np.isfinite(points).all(-1) & np.isfinite(conf) & (conf >= float(min_confidence))
     support = points[good]
     reliable = len(support) >= int(min_points)

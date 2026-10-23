@@ -15,6 +15,7 @@ from typing import Mapping, Sequence
 import numpy as np
 
 from .person_detector import PersonDetection
+from ..utils.pillow_compat import RESAMPLING
 
 
 @dataclass(frozen=True)
@@ -64,7 +65,7 @@ def _resize_crop(image: np.ndarray, bbox: Sequence[float], size: int = 16) -> np
     if x1 <= x0 or y1 <= y0:
         return np.zeros((size, size, 3), dtype=np.float32)
     crop = arr[y0:y1, x0:x1, :3].astype(np.uint8)
-    return np.asarray(Image.fromarray(crop, mode="RGB").resize((size, size), Image.Resampling.BILINEAR), dtype=np.float32) / 255.0
+    return np.asarray(Image.fromarray(crop, mode="RGB").resize((size, size), RESAMPLING.BILINEAR), dtype=np.float32) / 255.0
 
 
 def _rgb_descriptor(image: np.ndarray, bbox: Sequence[float], mask: np.ndarray | None) -> np.ndarray:

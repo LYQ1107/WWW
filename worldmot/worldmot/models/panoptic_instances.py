@@ -77,7 +77,8 @@ def _normalize_conf(x, shape) -> np.ndarray:
     if c.shape != shape:
         # Confidence is auxiliary; nearest resize keeps the conservative mask.
         from PIL import Image
-        c = np.asarray(Image.fromarray(c.astype(np.float32), mode="F").resize((shape[1], shape[0]), Image.Resampling.NEAREST))
+        from ..utils.pillow_compat import RESAMPLING
+        c = np.asarray(Image.fromarray(c.astype(np.float32), mode="F").resize((shape[1], shape[0]), RESAMPLING.NEAREST))
     return c.astype(np.float64, copy=False)
 
 
@@ -87,7 +88,8 @@ def _mask_for_segment(pan, segment_id, shape) -> np.ndarray:
         p = p[0]
     if p.shape != shape:
         from PIL import Image
-        p = np.asarray(Image.fromarray(p.astype(np.int32), mode="I").resize((shape[1], shape[0]), Image.Resampling.NEAREST))
+        from ..utils.pillow_compat import RESAMPLING
+        p = np.asarray(Image.fromarray(p.astype(np.int32), mode="I").resize((shape[1], shape[0]), RESAMPLING.NEAREST))
     return p == int(segment_id)
 
 

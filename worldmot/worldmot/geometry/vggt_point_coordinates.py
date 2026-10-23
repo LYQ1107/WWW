@@ -4,6 +4,8 @@ from dataclasses import asdict, dataclass
 import numpy as np
 from PIL import Image
 
+from ..utils.pillow_compat import RESAMPLING
+
 
 @dataclass(frozen=True)
 class VGGTPointCoordinates:
@@ -61,7 +63,7 @@ class VGGTPointCoordinates:
         if rgb.shape != (self.original_height,self.original_width,3) or rgb.dtype != np.uint8:
             raise ValueError('Expected original uint8 RGB image')
         resized = np.asarray(Image.fromarray(rgb).resize((self.resized_width,self.resized_height),
-                                                        Image.Resampling.BICUBIC))
+                                                        RESAMPLING.BICUBIC))
         out = np.full((self.network_size,self.network_size,3),255,np.uint8)
         out[self.pad_top:self.pad_top+self.resized_height,
             self.pad_left:self.pad_left+self.resized_width] = resized
