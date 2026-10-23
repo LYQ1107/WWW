@@ -107,3 +107,24 @@ Full-video defaults and this finite calibration search are separate registered
 TRAIN diagnostics; cached calibration, if implemented, must be labeled replay
 and cannot produce system E2E FPS. All final TEST speed runs require real RGB,
 real live detector and real anchored VGGT forwards.
+
+## Complete temporal TRAIN Scene 8 diagnostic
+
+A2 at the registered defaults finished all 523 synchronized timestamps with
+1,999 shared detections and 1,999 delivered boxes. Post-hoc raw TRAIN GT
+matches 1,971 boxes. Of 1,961 **selected temporal assignments** with known
+source/target identities, 1,949 are consistent (99.3881%) and 12 are wrong;
+there are 15 diagnostic per-view ID changes. These are fixed-IoU TRAIN
+diagnostics, not official TEST metrics. The measured exclusive V100 E2E
+throughput is 0.217704 dual-camera timestamps/s.
+
+The diagnostic script now separates all positive-support candidate edges
+from selected Hungarian decisions. Earlier v1 JSON labels called all positive
+edges `accepted_point_pairs`; those edges were not all selected. The preserved
+v1 report has 2,552 such edges, 1,960 consistent (76.8025%). The corrected v2
+report names this quantity explicitly and adds actual selected assignments.
+No inference output changed. Cross-view same-ID is 0/936 for this A2 control,
+which intentionally does not associate across cameras; A3 runs separately.
+
+Evidence: `results/vggt_point_temporal_fullscene8_train_diagnostic_v2.json` and
+NAS `vggt_point_association_20261023/train_temporal_default_fullscene8_v1/`.

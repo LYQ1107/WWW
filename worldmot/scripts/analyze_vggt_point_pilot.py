@@ -71,8 +71,18 @@ def main():
                     source=history.get((sid,ev['reference_timestamp'],ev['source_camera'],ev['global_id']))
                 else:source=by_det.get((ev['source_camera'],ev['source_detection_id']),(None,None))[0]
                 if source is not None and target is not None:
-                    scene_counts['accepted_point_pairs_with_GT_identity']+=1
-                    scene_counts['GT_consistent_accepted_point_pairs' if source==target else 'GT_inconsistent_accepted_point_pairs']+=1
+                    # A positive candidate edge may lose the Hungarian match.
+                    # Count it separately from actual delivered ID transfers.
+                    scene_counts['positive_support_candidate_pairs_with_GT_identity']+=1
+                    scene_counts['GT_consistent_positive_support_candidate_pairs' if source==target else 'GT_inconsistent_positive_support_candidate_pairs']+=1
+            for decision in row.get('decisions',[]):
+                ev=decision.get('evidence',{})
+                if ev.get('kind')!='TEMPORAL':continue
+                source=history.get((sid,ev['reference_timestamp'],ev['source_camera'],ev['global_id']))
+                target=by_det.get((decision['view_id'],decision['detection_id']),(None,None))[0]
+                if source is not None and target is not None:
+                    scene_counts['selected_temporal_assignments_with_GT_identity']+=1
+                    scene_counts['GT_consistent_selected_temporal_assignments' if source==target else 'GT_inconsistent_selected_temporal_assignments']+=1
             if row.get('point_predictions') and len(snapshots)<4:snapshots.append((sid,row))
         counts.update(scene_counts);per_scene[str(sid)]={'counts':dict(scene_counts),
             'real_e2e_fps':manifest['real_e2e_fps'],'stages':manifest['stages'],
@@ -80,8 +90,10 @@ def main():
     report={'status':'COMPLETE_TRAIN_PILOT_DIAGNOSTIC','scope':'post-hoc TRAIN at fixed IoU .5',
         'official_TEST_metrics':False,'raw_GT_modified':False,'counts':dict(counts),'per_scene':per_scene,
         'cross_view_same_ID_rate':counts['correct_cross_view_shared_ID']/counts['same_GT_both_views_detected'] if counts['same_GT_both_views_detected'] else None,
-        'point_pair_identity_consistency':counts['GT_consistent_accepted_point_pairs']/counts['accepted_point_pairs_with_GT_identity'] if counts['accepted_point_pairs_with_GT_identity'] else None,
-        'point_accuracy_definition':'GT identity consistency of accepted box-level support, not dense point correspondence ground truth'}
+        'positive_support_candidate_identity_consistency':counts['GT_consistent_positive_support_candidate_pairs']/counts['positive_support_candidate_pairs_with_GT_identity'] if counts['positive_support_candidate_pairs_with_GT_identity'] else None,
+        'selected_temporal_assignment_identity_consistency':counts['GT_consistent_selected_temporal_assignments']/counts['selected_temporal_assignments_with_GT_identity'] if counts['selected_temporal_assignments_with_GT_identity'] else None,
+        'point_accuracy_definition':'GT identity consistency of box-level candidate support and selected temporal decisions are reported separately; no dense point correspondence ground truth',
+        'legacy_report_correction':'Earlier v1 reports called all positive-score candidate edges accepted_point_pairs. They were not all selected assignments.'}
     a.output.parent.mkdir(parents=True,exist_ok=True)
     if a.output.exists():raise FileExistsError(a.output)
     a.output.write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
