@@ -24,6 +24,32 @@ from .online_worldmot import OnlineWorldMOT, _transform_camera
 
 
 class DetectionFirstWorldMOT:
+    @staticmethod
+    def _current_detection_support(observations, instances, assignments):
+        support = {}
+        for index, global_id in assignments.items():
+            observation = observations[int(instances[index].proposal_id)]
+            for detection in observation.detections:
+                support[int(global_id), int(detection.view_id)] = {
+                    "has_real_mask": detection.mask is not None and bool(np.asarray(detection.mask, bool).any()),
+                }
+        return support
+
+    @staticmethod
+    def _visibility_evidence(global_id, view, current_support):
+        current = current_support.get((int(global_id), int(view)))
+        native = current is not None
+        mask = bool(current and current["has_real_mask"])
+        return {
+            "native_view_detection": native,
+            "native_view_mask": mask,
+            "evaluation_eligible": native,
+            "visibility_state": ("CURRENT_MASK_AND_PROJECTION" if mask else
+                                 "CURRENT_BBOX_AND_PROJECTION" if native else "CURRENT_OTHER_VIEW_ONLY"),
+            "visibility_evidence": ("current_target_mask" if mask else
+                                    "current_target_detection_bbox" if native else "projection_only"),
+        }
+
     def __init__(self, detector: PersonDetector, geometry: GeometryBackend,
                  min_confidence: float = 1.5, min_points: int = 16,
                  aligner: Optional[Sim3Aligner] = None,
@@ -107,6 +133,8 @@ class DetectionFirstWorldMOT:
                 fusion_diag = {"reason": alignment.reason}
             with self.timer.stage("identity_memory"):
                 tracks = self.memory.step(instances, int(timestamp), geometry_aligned=aligned)
+            current_support = self._current_detection_support(
+                observations, instances, self.memory.last_instance_to_global_id)
             world_cameras = ({v: _transform_camera(c, alignment.transform) for v, c in frame.cameras.items()}
                              if aligned else dict(frame.cameras))
             tracks_2d = {}
@@ -119,17 +147,14 @@ class DetectionFirstWorldMOT:
                         support = getattr(tr, "support_points_by_camera", {}).get(
                             int(view), tr.support_points)
                         p = project_support(support, camera)
-                        native = bool(view in tr.masks_by_camera)
+                        evidence = self._visibility_evidence(tr.global_id, view, current_support)
                         rows.append({
                             "global_id": int(tr.global_id),
-                            "visible": bool(p.visible and native),
+                            "visible": bool(p.visible and evidence["evaluation_eligible"]),
                             "projected_visible": bool(p.visible),
                             "bbox_xywh": list(p.bbox_xywh) if p.bbox_xywh is not None else None,
                             "visible_fraction": float(p.visible_fraction),
-                            "native_view_mask": native,
-                            "visibility_state": "CURRENT_MASK_AND_PROJECTION" if native else "CURRENT_OTHER_VIEW_ONLY",
-                            "visibility_evidence": "current_target_mask" if native else "projection_only",
-                            "evaluation_eligible": native,
+                            **evidence,
                             "projected_from_world": True,
                             "status": tr.status.value,
                         })

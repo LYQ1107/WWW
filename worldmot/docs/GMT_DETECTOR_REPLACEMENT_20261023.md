@@ -123,3 +123,14 @@ preserving its original defaults for the old experiment. A durable controller
 then trains, calibrates on TRAIN only and freezes new weights. It never
 starts TEST automatically. Source or budget changes cause an explicit failure;
 an incomplete cache or the 32-frame smoke weights cannot enter formal fitting.
+
+Projection metadata follow-up: current bbox-only GMT evidence is now reported
+as `CURRENT_BBOX_AND_PROJECTION` / `current_target_detection_bbox`, with
+`native_view_mask=False`. A real nonempty mask has its own mask flag. Current
+camera support is derived from the actual accepted observation-to-ID memory
+map, so a historical mask from another camera cannot manufacture current
+visibility. This correction changes diagnostic visibility evidence and does
+not alter the primary current detection boxes. Existing pilot/validation v1
+outputs retain their original code SHA. The idle training waiter was stopped
+before it had any child fits, its registration snapshot was preserved, and
+the source registration is renewed before formal training proceeds.

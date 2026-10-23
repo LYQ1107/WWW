@@ -34,9 +34,14 @@ def main():
     budget_path=HERE/'configs/gmt_detector_association_budget_20261023.json'
     budget=json.loads(budget_path.read_text());budget_digest=sha(budget_path);provenance=source_stamp()
     cache=root/'fulltrain_objects_v1'
+    registration=root/f'association_registration_{time.time_ns()}_{os.getpid()}.json'
+    atomic_json(registration,{'source_provenance':provenance,'budget_sha256':budget_digest,
+        'driver_sha256':sha(__file__),'pid':os.getpid(),'root':str(root),
+        'TEST_used_for_selection':False,'formal_fits_started':False})
     def state(stage,**fields):
         atomic_json(status_path,{'stage':stage,'pid':os.getpid(),'updated_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),
-            'budget_sha256':budget_digest,'driver_sha256':sha(__file__),'goal_complete':False,**fields})
+            'budget_sha256':budget_digest,'driver_sha256':sha(__file__),
+            'source_sha256':provenance['sha256'],'registration':str(registration),'goal_complete':False,**fields})
         print(json.dumps({'stage':stage,**fields}),flush=True)
     def run(name,command,gpu=None):
         if source_stamp()!=provenance:raise RuntimeError('Model/training source changed after queue registration')
