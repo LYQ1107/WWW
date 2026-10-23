@@ -242,3 +242,18 @@ admits wrong-person matches. To get an earlier diagnostic without adding a
 new setting, the already registered K=16/confidence=0.2/support=0.1 A3 first-32
 window is executed separately on shared GPU 3. Its result is not a freeze or
 a substitute for all-window selection and full-video validation.
+
+The early registered K16/c0.2/s0.1 run is complete: all 128 detections are
+delivered with two IDs; 64/64 shared-GT cross-view events have the correct
+shared ID, with zero observed different-person merges in this 32-frame
+window. All 124 selected temporal transfers are GT consistent. This is a
+short two-person TRAIN diagnostic. Its measured 0.573900 FPS is on a shared
+GPU and is excluded from the main full-TEST comparison. The all-window scan
+and selected complete-video validation remain required; no threshold has
+been selected from TEST or promoted based on this prefix alone.
+
+`build_gmt_point_comparison.py` creates the required partial official main
+JSON/CSV, error-attribution JSON and FPS CSV. Missing new TEST scores are
+`NOT_AVAILABLE`. Short TRAIN speed, model-only throughput and historical
+complete TEST throughput have distinct scope labels. Raw per-frame timing
+aggregation for legacy P50/P95 remains explicitly pending.

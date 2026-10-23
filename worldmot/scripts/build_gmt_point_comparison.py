@@ -67,6 +67,49 @@ def main():
     columns=['Method','Detector','Association','Parameters',*FIELDS,'E2E_FPS','delta_HOTA_vs_GMT','delta_IDF1_vs_GMT','Status','Timing']
     with (output/'gmt_vggt_point_final_comparison.csv').open('w') as f:
         writer=csv.DictWriter(f,fieldnames=columns,extrasaction='ignore');writer.writeheader();writer.writerows(rows)
+    fps_rows=[]
+    for name,data in original.items():
+        fps_rows.append({'scope':'COMPLETE_22_TEST_VIDEOS','method':name,'stage':'full_video_delivery',
+            'timestamps':29019,'real_e2e_FPS':data['real_e2e_fps'],'VGGT_model_only_FPS':'NOT_AVAILABLE',
+            'P50_s':'NOT_AVAILABLE_PENDING_RAW_TIMING_AGGREGATION','P95_s':'NOT_AVAILABLE_PENDING_RAW_TIMING_AGGREGATION',
+            'conditions':data['timing_scope'],'source':data['source_metrics']['path']})
+    point=NAS/'vggt_point_association_20261023';speed=point/'position_cache_e2e_parity_v1.json'
+    if speed.exists():
+        audit=json.loads(speed.read_text())
+        for mode in ['before','after']:
+            m=audit[mode];model=m['stages']['VGGT_model_only_s']
+            for stage,values in {'rgb_to_delivered_ID':m['e2e'],**m['stages']}.items():
+                fps_rows.append({'scope':'32_TRAIN_TIMESTAMPS_CONTROLLED_SPEED_ONLY','method':'A3_position_cache_'+mode,'stage':stage,
+                    'timestamps':audit['frames'],'real_e2e_FPS':m['real_e2e_fps'] if stage=='rgb_to_delivered_ID' else 'NOT_APPLICABLE',
+                    'VGGT_model_only_FPS':audit['frames']/model['total_s'] if stage=='VGGT_model_only_s' else 'NOT_APPLICABLE',
+                    'P50_s':values['p50_s'],'P95_s':values['p95_s'],
+                    'conditions':'exclusive single V100 GPU3; real live detector; FP16 Aggregator / FP32 TrackHead',
+                    'source':str(speed)})
+    with (output/'gmt_vggt_point_fps.csv').open('w') as f:
+        writer=csv.DictWriter(f,fieldnames=['scope','method','stage','timestamps','real_e2e_FPS','VGGT_model_only_FPS','P50_s','P95_s','conditions','source'])
+        writer.writeheader();writer.writerows(fps_rows)
+    diagnostic_files=['train_temporal_default_fullscene8_diagnostic_v2.json','train_joint_default_fullscene8_diagnostic_v2.json',
+        'train_joint_registered_k16_c0.2_s0.1_first32_diagnostic_v1.json']
+    diagnostics=[]
+    for name in diagnostic_files:
+        path=point/name
+        if path.exists():
+            d=json.loads(path.read_text());diagnostics.append({'artifact':str(path),'sha256':sha256_file(path),
+                'scope':d['scope'],'counts':d['counts'],'official_TEST_metrics':False})
+    attribution={'status':'TRAIN_DIAGNOSTICS_ONLY_FORMAL_TEST_ERROR_ATTRIBUTION_PENDING',
+        'raw_GT_modified':False,'diagnostics':diagnostics,
+        'engineering_failures_preserved':[
+            {'failure':'bbox rectangle incorrectly represented as real instance mask','preserved_attempt':'gmt_detector_comparison_20261023/train_v1_visibility_audit2_v1',
+             'fix_evidence':'results/gmt_bbox_visibility_evidence_audit_v2.json'},
+            {'failure':'float64 xyxy subtraction versus FP32 xywh cache; 0.0000076294 pixel width delta',
+             'preserved_attempt':'gmt_detector_comparison_20261023/train_v1_validation_shared_gpu0_v1/scene_04',
+             'fix_evidence':'results/gmt_live_difference_scene4_598_v2.json'}],
+        'scientific_limitations':['Default full TRAIN Scene8 A3 has 0/936 correct shared cross-view IDs.',
+            'Early lower-gate results cover only an already registered 32-frame two-person TRAIN window.',
+            'GT identity consistency of box support is not dense correspondence ground truth.',
+            'Unmatched or ambiguous GT boxes cannot all be called detector false positives.',
+            'Independent geometry identity benefit over shared-detector 2D controls remains unmeasured.']}
+    (output/'gmt_vggt_point_error_attribution.json').write_text(json.dumps(attribution,indent=2)+'\n')
     print(json.dumps({'status':report['status'],'official_methods_available':[r['Method'] for r in rows if r['HOTA']!='NOT_AVAILABLE'],
         'new_methods_not_yet_measured':[r['Method'] for r in rows if r['HOTA']=='NOT_AVAILABLE']}))
 

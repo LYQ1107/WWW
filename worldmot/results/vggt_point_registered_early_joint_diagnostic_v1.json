@@ -1,0 +1,108 @@
+{
+  "status": "COMPLETE_TRAIN_PILOT_DIAGNOSTIC",
+  "scope": "post-hoc TRAIN at fixed IoU .5",
+  "official_TEST_metrics": false,
+  "raw_GT_modified": false,
+  "counts": {
+    "raw_candidates": 128,
+    "output_boxes": 128,
+    "GT_matched_output_boxes": 128,
+    "same_GT_both_views_detected": 64,
+    "correct_cross_view_shared_ID": 64,
+    "candidate_point_evidence_pairs": 504,
+    "valid_point_votes": 6300,
+    "inside_box_point_votes": 2963,
+    "positive_support_candidate_pairs_with_GT_identity": 186,
+    "GT_consistent_positive_support_candidate_pairs": 186,
+    "selected_temporal_assignments_with_GT_identity": 124,
+    "GT_consistent_selected_temporal_assignments": 124
+  },
+  "per_scene": {
+    "8": {
+      "counts": {
+        "raw_candidates": 128,
+        "output_boxes": 128,
+        "GT_matched_output_boxes": 128,
+        "same_GT_both_views_detected": 64,
+        "correct_cross_view_shared_ID": 64,
+        "candidate_point_evidence_pairs": 504,
+        "valid_point_votes": 6300,
+        "inside_box_point_votes": 2963,
+        "positive_support_candidate_pairs_with_GT_identity": 186,
+        "GT_consistent_positive_support_candidate_pairs": 186,
+        "selected_temporal_assignments_with_GT_identity": 124,
+        "GT_consistent_selected_temporal_assignments": 124
+      },
+      "real_e2e_fps": 0.5739002343434626,
+      "stages": {
+        "rgb_read_s": {
+          "count": 32,
+          "total_s": 1.713121235370636,
+          "p50_s": 0.05198441445827484,
+          "p95_s": 0.06889161765575409
+        },
+        "raw_cache_verify_s": {
+          "count": 32,
+          "total_s": 1.964939646422863,
+          "p50_s": 0.03803272172808647,
+          "p95_s": 0.06609962172806262
+        },
+        "GMT_detector_s": {
+          "count": 32,
+          "total_s": 8.135163709521294,
+          "p50_s": 0.18691861629486084,
+          "p95_s": 0.30546389855444434
+        },
+        "VGGT_aggregator_s": {
+          "count": 32,
+          "total_s": 24.101256117224693,
+          "p50_s": 0.6464353241026402,
+          "p95_s": 0.9347515370696783
+        },
+        "VGGT_track_head_s": {
+          "count": 32,
+          "total_s": 10.788677021861076,
+          "p50_s": 0.28847991675138474,
+          "p95_s": 0.38426924794912337
+        },
+        "point_preprocess_s": {
+          "count": 32,
+          "total_s": 6.557852789759636,
+          "p50_s": 0.20351862162351608,
+          "p95_s": 0.23439530655741692
+        },
+        "point_postprocess_s": {
+          "count": 32,
+          "total_s": 0.033794768154621124,
+          "p50_s": 0.0010258778929710388,
+          "p95_s": 0.0012775231152772901
+        },
+        "point_memory_total_s": {
+          "count": 32,
+          "total_s": 41.914877369999886,
+          "p50_s": 1.1643658354878426,
+          "p95_s": 1.4864381298422813
+        },
+        "VGGT_model_only_s": {
+          "count": 32,
+          "total_s": 34.88993313908577,
+          "p50_s": 0.9445054344832897,
+          "p95_s": 1.25840576402843
+        },
+        "output_serialization_s": {
+          "count": 32,
+          "total_s": 0.03304179757833481,
+          "p50_s": 0.0008196085691452026,
+          "p95_s": 0.001944875344634056
+        }
+      },
+      "manifest_sha256": "e474a5706a86bb5ba6de7c77d3f4b1b709a8cfa3b266f6529f05bb970a51ce80",
+      "prediction_sha256": "0ad9a0aa32e210d82168cbc0eb50e7b8d56892a23c6ac3c83f5868b65c57fb7c"
+    }
+  },
+  "cross_view_same_ID_rate": 1.0,
+  "positive_support_candidate_identity_consistency": 1.0,
+  "selected_temporal_assignment_identity_consistency": 1.0,
+  "point_accuracy_definition": "GT identity consistency of box-level candidate support and selected temporal decisions are reported separately; no dense point correspondence ground truth",
+  "legacy_report_correction": "Earlier v1 reports called all positive-score candidate edges accepted_point_pairs. They were not all selected assignments."
+}

@@ -1,0 +1,91 @@
+{
+  "status": "TRAIN_DIAGNOSTICS_ONLY_FORMAL_TEST_ERROR_ATTRIBUTION_PENDING",
+  "raw_GT_modified": false,
+  "diagnostics": [
+    {
+      "artifact": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/train_temporal_default_fullscene8_diagnostic_v2.json",
+      "sha256": "c4ceeae5c74e222d22b7f7de5ae82cae96ff475c297c6b35fe2059a9014f792b",
+      "scope": "post-hoc TRAIN at fixed IoU .5",
+      "counts": {
+        "raw_candidates": 1999,
+        "output_boxes": 1999,
+        "GT_matched_output_boxes": 1971,
+        "same_GT_both_views_detected": 936,
+        "candidate_point_evidence_pairs": 3979,
+        "valid_point_votes": 63664,
+        "inside_box_point_votes": 37200,
+        "positive_support_candidate_pairs_with_GT_identity": 2552,
+        "GT_consistent_positive_support_candidate_pairs": 1960,
+        "selected_temporal_assignments_with_GT_identity": 1961,
+        "GT_consistent_selected_temporal_assignments": 1949,
+        "unmatched_or_ambiguous_output_boxes": 28,
+        "GT_inconsistent_positive_support_candidate_pairs": 592,
+        "diagnostic_temporal_ID_changes": 15,
+        "GT_inconsistent_selected_temporal_assignments": 12
+      },
+      "official_TEST_metrics": false
+    },
+    {
+      "artifact": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/train_joint_default_fullscene8_diagnostic_v2.json",
+      "sha256": "0a155ecab5e875e9e850a95b7257964da81c22dd000c774db7c38cf04cb5d6cf",
+      "scope": "post-hoc TRAIN at fixed IoU .5",
+      "counts": {
+        "raw_candidates": 1999,
+        "output_boxes": 1999,
+        "GT_matched_output_boxes": 1971,
+        "same_GT_both_views_detected": 936,
+        "candidate_point_evidence_pairs": 8046,
+        "valid_point_votes": 63814,
+        "inside_box_point_votes": 37119,
+        "positive_support_candidate_pairs_with_GT_identity": 2543,
+        "GT_consistent_positive_support_candidate_pairs": 1958,
+        "selected_temporal_assignments_with_GT_identity": 1961,
+        "GT_consistent_selected_temporal_assignments": 1949,
+        "unmatched_or_ambiguous_output_boxes": 28,
+        "GT_inconsistent_positive_support_candidate_pairs": 585,
+        "diagnostic_temporal_ID_changes": 11,
+        "GT_inconsistent_selected_temporal_assignments": 12
+      },
+      "official_TEST_metrics": false
+    },
+    {
+      "artifact": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/train_joint_registered_k16_c0.2_s0.1_first32_diagnostic_v1.json",
+      "sha256": "3cd22e4b316b424f84345dd0c67952e922a8aa857b93444a4fd4dc1a13a5a277",
+      "scope": "post-hoc TRAIN at fixed IoU .5",
+      "counts": {
+        "raw_candidates": 128,
+        "output_boxes": 128,
+        "GT_matched_output_boxes": 128,
+        "same_GT_both_views_detected": 64,
+        "correct_cross_view_shared_ID": 64,
+        "candidate_point_evidence_pairs": 504,
+        "valid_point_votes": 6300,
+        "inside_box_point_votes": 2963,
+        "positive_support_candidate_pairs_with_GT_identity": 186,
+        "GT_consistent_positive_support_candidate_pairs": 186,
+        "selected_temporal_assignments_with_GT_identity": 124,
+        "GT_consistent_selected_temporal_assignments": 124
+      },
+      "official_TEST_metrics": false
+    }
+  ],
+  "engineering_failures_preserved": [
+    {
+      "failure": "bbox rectangle incorrectly represented as real instance mask",
+      "preserved_attempt": "gmt_detector_comparison_20261023/train_v1_visibility_audit2_v1",
+      "fix_evidence": "results/gmt_bbox_visibility_evidence_audit_v2.json"
+    },
+    {
+      "failure": "float64 xyxy subtraction versus FP32 xywh cache; 0.0000076294 pixel width delta",
+      "preserved_attempt": "gmt_detector_comparison_20261023/train_v1_validation_shared_gpu0_v1/scene_04",
+      "fix_evidence": "results/gmt_live_difference_scene4_598_v2.json"
+    }
+  ],
+  "scientific_limitations": [
+    "Default full TRAIN Scene8 A3 has 0/936 correct shared cross-view IDs.",
+    "Early lower-gate results cover only an already registered 32-frame two-person TRAIN window.",
+    "GT identity consistency of box support is not dense correspondence ground truth.",
+    "Unmatched or ambiguous GT boxes cannot all be called detector false positives.",
+    "Independent geometry identity benefit over shared-detector 2D controls remains unmeasured."
+  ]
+}
