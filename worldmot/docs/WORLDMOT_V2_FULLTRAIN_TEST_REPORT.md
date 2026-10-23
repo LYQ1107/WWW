@@ -2,6 +2,16 @@
 
 Status: IN_PROGRESS. This report is updated from actual artifacts; neither a configuration nor a pilot is a completion claim.
 
+## Scope clarification
+
+This is a standalone WorldMOT v2 research task. WorldMOT v2 does not import,
+modify, train with, or fuse into GMT/JEV. Any native GMT stream retained in the
+experiment directory is a separately labelled external reference only; it is
+not a v2 component, a v2 success gate, or an integration decision. The v2
+conclusion is determined by its own frozen TRAIN-to-TEST protocol, v1 and
+registered v2 controls, and the legal official metrics. Existing GMT artifacts
+remain unchanged for provenance and are never used for v2 selection.
+
 ## Detector input correction and cache invalidation
 
 The detector audit found that the pipeline passed RGB arrays unchanged to MMDetection's ndarray loader. Official RTMDet filename inference decodes BGR, and this checkpoint has `bgr_to_rgb=False`. The adapter now explicitly converts caller RGB to contiguous BGR. Six real images (both cameras of TRAIN Scenes 8, 9, 24) reproduce official filename inference exactly: zero box-coordinate error, zero score error, identical masks. The previous input differs on all six. Evidence is in `results/worldmot_v2_detector_input_verification.json`.
