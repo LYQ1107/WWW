@@ -1,0 +1,29 @@
+{
+  "status": "FROZEN_BEFORE_INDEPENDENT_TEST_TEST_RUNNING",
+  "experiment_root": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023",
+  "source_sha256": "c0ef87cc85759f654156c9ec71208bca12bc4f120cb0174264682b9015859e2e",
+  "budget_sha256": "85d9f88b415ecc8e2af265670c84dc3fee5ba4058414855e5ddda4f4d0830820",
+  "selection_sha256": "cd0ae78f969819e86e6f7b24622319b3d7076e3cad3e4929e8b3b828320e7514",
+  "final_test_lock_sha256": "e8760e8eff5a69b8716af747a66bc32503da632b8f66f5a095ef5de5163fdf52",
+  "checkpoint_sha256": {
+    "joint_seed20261022": "6cdfc6c5d57f3bb17470a53646b8f8121899da4a78b0183c5729f9ae59841fa2",
+    "joint_seed20261023": "97f3a510d24be88fdf1c6c3b92da4498d45d94c7149bab8d3c987da6cd29511c",
+    "joint_seed20261024": "e038bd27a86b8ba804ee19d97cf4cfa85842c65c40c1008b7996dc1eef5ae449",
+    "no_geometry_seed20261022": "2caa18e5a53ad5e84bd042dc210a6b5aba6c631873aae67d19cb777da0b43664"
+  },
+  "trained_scenes": 24,
+  "trained_timestamps": 28754,
+  "selected_epochs": 4,
+  "test_used_for_selection": false,
+  "test_metadata_sha256": "617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f",
+  "test_routes": [
+    "joint_seed20261022",
+    "no_geometry_seed20261022",
+    "joint_seed20261023",
+    "joint_seed20261024"
+  ],
+  "test_detector_route": "gmt_pre_gta_live_verified",
+  "test_resource_mode": "shared_gpu",
+  "official_metrics_available": false,
+  "note": "Freeze is complete and independent TEST inference is running. No TEST metric, threshold, or model selection value is recorded here. A scheduler race was recovered by preserving the four started workers and adding the missing two joint seed-20261022 partitions with identical command, lock, and output root."
+}

@@ -205,3 +205,22 @@ runs all 22 independent TEST videos plus TrackEval/MATLAB. Every transition
 checks the source stamp. No quality threshold is selected from TEST. These
 accuracy runs share GPUs with cache/training workers and are explicitly
 marked `shared_gpu`; their FPS is not an exclusive speed comparison.
+
+### Final association freeze and independent TEST admission (2026-10-23)
+
+The registered association queue completed all four fixed-budget full-TRAIN
+fits and wrote `final_test_lock.json` with four SHA-locked checkpoints:
+three `joint` seeds (20261022/23/24) and one `no_geometry` seed (20261022).
+All four cover 24 TRAIN scenes and 28,754 synchronized timestamps; the
+selection file was frozen from TRAIN validation only (`selected_epochs=4`,
+`TEST_used_for_selection=false`). The immutable freeze evidence is recorded
+in `results/gmt_association_final_freeze_20261023.json`.
+
+Independent TEST inference has now started on the complete 22-video TEST
+metadata with the `gmt_pre_gta` detector in `live_verified` mode. The first
+wave contains `joint_seed20261022` and `no_geometry_seed20261022`; the second
+wave will run the two remaining joint seeds. Because other registered V1 and
+VGGT-point jobs share the six authorized cards, the TEST route is explicitly
+`shared_gpu`; its per-scene timing includes RGB decode, detector, Omega,
+query/memory, post-processing and flushed ID delivery. No formal metric is
+reported until all 22 scenes of a route are complete and evaluated.
