@@ -20,6 +20,7 @@ from cache_fulltrain import atomic_json
 from experiment_provenance import source_stamp
 from preserve_inference_attempts import prepare_scene
 from point_request_cache import RequestCache
+from ram_point_request_cache import RamRequestCache
 from score_train_association_windows import score_rows,OBJECTIVE
 
 HERE=Path(__file__).resolve().parents[1]
@@ -29,6 +30,12 @@ BASE=Path('/data1/liuyeqiang/nas/A100/WorldMOT')
 def main():
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True)
     p.add_argument('--scenes',type=int,nargs='+',required=True);p.add_argument('--label',required=True)
+    p.add_argument('--ram-requests',action='store_true',
+                   help='Use the bounded RAM request replay layer with checked async persistence.')
+    p.add_argument('--request-root',type=Path,default=None,
+                   help='Existing request-cache root to reuse; defaults to ROOT/requests.')
+    p.add_argument('--ram-memory-bytes',type=int,default=1<<30)
+    p.add_argument('--ram-io-workers',type=int,default=8)
     a=p.parse_args();torch.set_num_threads(2)
     budget_path=HERE/'configs/gmt_point_train_budget_20261023.json';budget=json.loads(budget_path.read_text())
     assert set(a.scenes)<=set(budget['validation_scenes']) and len(a.scenes)==len(set(a.scenes))
@@ -39,9 +46,13 @@ def main():
     gt=VisionTrack('/data/DATASETS/TRACKING/JDE/VisionTrack',split='train')
     cache=ImmutableGMTDetectionCache(BASE/'gmt_detector_comparison_20261023/raw_train_v1')
     status=root/f'{a.label}_status.json'
+    request_root=a.request_root or (root/'requests')
     registration={'source_provenance':provenance,'driver_sha256':driver_sha,'budget_sha256':budget_sha,
         'metadata_sha256':sha256_file(metadata),'cache_lock_sha256':sha256_file(cache.lock_path),
-        'scenes':a.scenes,'label':a.label,'TEST_used_for_selection':False,'objective':OBJECTIVE}
+        'scenes':a.scenes,'label':a.label,'TEST_used_for_selection':False,'objective':OBJECTIVE,
+        'request_root':str(request_root),'ram_requests':bool(a.ram_requests),
+        'ram_request_cache_driver_sha256':sha256_file(HERE/'scripts/ram_point_request_cache.py') if a.ram_requests else None,
+        'request_cache_driver_sha256':sha256_file(HERE/'scripts/point_request_cache.py')}
     atomic_json(root/f'{a.label}_registration_{time.time_ns()}.json',registration)
     def state(stage,**extra):
         atomic_json(status,{'stage':stage,'pid':os.getpid(),'source_sha256':provenance['sha256'],
@@ -50,13 +61,22 @@ def main():
             'visible_devices':os.environ.get('CUDA_VISIBLE_DEVICES'),'TEST_used_for_selection':False,
             'timing_label':'TRAIN_ASSOCIATION_REQUEST_REPLAY_NOT_E2E','goal_complete':False,**extra})
         print(json.dumps({'stage':stage,**extra}),flush=True)
+    request_cache=None
     try:
         state('INITIALIZING_REAL_PRETRAINED_BACKEND')
         backend=VGGTPointBackend(cache_position_encoding=True)
         signature={'core_source_sha256':provenance['sha256'],'request_cache_driver_sha256':sha256_file(HERE/'scripts/point_request_cache.py'),
             'checkpoint_sha256':backend.manifest()['checkpoint_sha256'],'precision':['float16 aggregator','float32 TrackHead'],
             'constant_position_cache':True}
-        request_cache=RequestCache(backend,root/'requests',signature)
+        if a.ram_requests:
+            request_cache=RamRequestCache(backend,request_root,signature,
+                                          max_memory_bytes=a.ram_memory_bytes,
+                                          io_workers=a.ram_io_workers)
+            state('PRELOADING_VERIFIED_TRAIN_REQUESTS_IN_RAM',request_cache=request_cache.manifest())
+            request_cache.preload()
+            state('RAM_REQUEST_REPLAY_READY',request_cache=request_cache.manifest())
+        else:
+            request_cache=RequestCache(backend,request_root,signature)
         configs=list(itertools.product(budget['points_per_person'],budget['minimum_confidence'],budget['minimum_support']))
         results=[];total_windows=0
         for method in budget['point_methods']:
@@ -93,6 +113,10 @@ def main():
                                     stream.write(json.dumps(row,default=lambda x:x.tolist() if hasattr(x,'tolist') else x)+'\n')
                                     rows.append(row)
                             counts=score_rows(rows,gt,sid)
+                            # A window is not published complete until every
+                            # asynchronous request write has reached the
+                            # checked persisted representation.
+                            if hasattr(request_cache,'flush'):request_cache.flush()
                             atomic_json(folder/'manifest.json',{'status':'COMPLETE',**run_signature,'counts':counts,
                                 'GT_in_inference':False,'GT_only_in_posthoc_score':True,'objective':OBJECTIVE,
                                 'prediction_sha256':sha256_file(folder/'tracks.jsonl'),'request_cache':request_cache.manifest(),
@@ -106,6 +130,7 @@ def main():
                         state('FINITE_TRAIN_WINDOW_SCAN',method=method,config=name,scene=sid,window=label,
                             completed_windows=total_windows,expected_windows=2*18*len(a.scenes)*3,
                             request_cache=request_cache.manifest())
+        if hasattr(request_cache,'flush'):request_cache.flush()
         result=root/f'{a.label}_results.json'
         atomic_json(result,{'status':'COMPLETE_TRAIN_CALIBRATION_PARTITION','registration':registration,'results':results,
             'backend':backend.manifest(),'request_cache':request_cache.manifest(),'TEST_used_for_selection':False})
@@ -113,6 +138,9 @@ def main():
               request_cache=request_cache.manifest())
     except BaseException as error:
         state('FAILED_REQUIRES_ENGINEERING_FIX',error=repr(error));raise
+    finally:
+        if request_cache is not None:
+            request_cache.close()
 
 
 if __name__=='__main__':main()

@@ -20,13 +20,15 @@ PYTHON='/data1/liuyeqiang/envs/worldmot311/bin/python'
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--root',type=Path,required=True)
+    p.add_argument('--calibration-root',type=Path,default=None)
     p.add_argument('--gpus',type=int,nargs='+',default=[3,7])
     p.add_argument('--test-gpus',type=int,nargs='+',default=[0,2,3,4,6,7]);a=p.parse_args()
     assert set(a.gpus)=={3,7} and len(set(a.test_gpus))==len(a.test_gpus) and set(a.test_gpus)<={0,2,3,4,6,7}
     root=a.root;root.mkdir(parents=True,exist_ok=True);logs=root/'logs';logs.mkdir(exist_ok=True)
-    calibration=root/'calibration_v1';provenance=source_stamp()
+    calibration=a.calibration_root or (root/'calibration_v1');provenance=source_stamp()
     watched=[Path(__file__),HERE/'scripts/run_vggt_point_fullvideo.py',HERE/'scripts/score_train_association_windows.py',
-        HERE/'scripts/calibrate_vggt_point_train.py',HERE/'scripts/point_request_cache.py',HERE/'configs/gmt_point_train_budget_20261023.json']
+        HERE/'scripts/calibrate_vggt_point_train.py',HERE/'scripts/point_request_cache.py',
+        HERE/'scripts/ram_point_request_cache.py',HERE/'configs/gmt_point_train_budget_20261023.json']
     registered={str(p):sha256_file(p) for p in watched};budget=json.loads(watched[-1].read_text())
     status=root/'point_fullvideo_queue_status.json'
     if status.exists():
@@ -40,6 +42,7 @@ def main():
         atomic_json(status,{'stage':stage,'pid':os.getpid(),'source_sha256':provenance['sha256'],
             'registered_script_sha256':registered,'gpus':a.gpus,'test_gpus':a.test_gpus,
             'TEST_used_for_selection':False,'goal_complete':False,
+            'calibration_root':str(calibration),
             'updated_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),**extra})
         print(json.dumps({'stage':stage,**extra}),flush=True)
     def run(label,command,gpu=None):
