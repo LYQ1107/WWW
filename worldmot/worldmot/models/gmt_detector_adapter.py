@@ -25,6 +25,12 @@ GMT_PYTHON = '/home/liuyeqiang/anaconda3/envs/GMT/bin/python'
 GMT_CHECKPOINT_SHA256 = 'cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8'
 
 
+def bbox_xyxy_to_float32_xywh(box):
+    """Use the immutable NPZ schema's FP32 representation at the boundary."""
+    x0,y0,x1,y1=map(float,box)
+    return tuple(map(float,np.asarray([x0,y0,x1-x0,y1-y0],dtype=np.float32)))
+
+
 class GMTDetectorAdapter:
     """PersonDetector-compatible pre-GTA adapter; caller images are uint8 RGB."""
 
@@ -106,6 +112,7 @@ class GMTDetectorAdapter:
             'source_file_sha256': SOURCE_HASHES, 'input_color': 'RGB',
             'threshold': self.threshold, 'candidate_rule': 'CenterNet proposals: objectness_logits > threshold',
             'mask_available': False, 'GT_in_inference': False, 'history_or_future_images': False,
+            'output_bbox_dtype': 'float32 xywh, identical to immutable cache storage',
             'GTA_called': False, 'roi_feature_source': 'frozen asso_pooler + asso_head, unjittered current boxes',
             'roi_feature_dim': int(self.model.roi_heads.feature_dim),
             'total_backbone_parameters': sum(p.numel() for p in self.model.parameters()),
@@ -201,8 +208,7 @@ class GMTDetectorAdapter:
                 rois = roi.cpu().numpy()
             result[view] = []
             for index, (box, score, raw_index) in enumerate(zip(xyxy, scores, indices)):
-                x0, y0, x1, y1 = map(float, box)
-                det = PersonDetection(view, index, (x0, y0, x1-x0, y1-y0), float(score),
+                det = PersonDetection(view, index, bbox_xyxy_to_float32_xywh(box), float(score),
                                       source='gmt_pre_gta_detector')
                 det.detector_roi_feature = np.asarray(rois[int(raw_index)], np.float32)
                 self.last_roi_features[view, index] = det.detector_roi_feature

@@ -157,3 +157,32 @@ full-cache workers running; they do not constitute a full-cache rerun.
 `gmt_geometry_sampling_parity_v2.json` records this evidence. Previously
 saved diagnostics retain their original metadata and source hashes.
 The detector worktree's complete CPU test suite passes 47 tests after this fix.
+
+## Full-video live/cache numeric boundary correction
+
+The first six-scene V1 validation attempt stopped at Scene 4 timestamp 598
+after 597 delivered timestamps. The strict checker found a box-width delta
+of 0.0000076294 pixels: native FP32 xyxy coordinates were subtracted as Python
+float64, whereas the immutable cache stores xywh as FP32. Real inference on
+timestamps 597/598/599 confirms identical candidate counts, scores and every
+ROI feature; FP32 boxes are also exact. This is a representation mismatch.
+`live_difference_scene4_598_v1.json` retains both values and the failed
+validation stream is preserved, not promoted to a completed result.
+
+The adapter now explicitly emits FP32 xywh at its boundary, matching the
+existing immutable schema. Equality remains exact, without an epsilon or
+candidate substitution. Shared raw caches and training object arrays remain
+unchanged. A real repeat checks the failure timestamps before fresh complete
+validation. The idle fit controller is re-registered before any formal fit.
+The v2 real repeat passes exact all-field equality at all three timestamps.
+The complete CPU suite passes 48 tests, including the real failing coordinate.
+
+`run_gmt_v1_queue.py --root EXPERIMENT_ROOT --gpus 0 2 6` registers the fixed
+existing V1 rules with this corrected source. Three independent workers run
+the six complete TRAIN validation videos into `train_v1_validation_shared_v2`.
+The controller then runs official TRAIN evaluation, deeply verifies all 22
+GT-free TEST candidate scenes, writes `v1_fixed_rule_test_lock_v2.json`, and
+runs all 22 independent TEST videos plus TrackEval/MATLAB. Every transition
+checks the source stamp. No quality threshold is selected from TEST. These
+accuracy runs share GPUs with cache/training workers and are explicitly
+marked `shared_gpu`; their FPS is not an exclusive speed comparison.
