@@ -128,3 +128,16 @@ which intentionally does not associate across cameras; A3 runs separately.
 
 Evidence: `results/vggt_point_temporal_fullscene8_train_diagnostic_v2.json` and
 NAS `vggt_point_association_20261023/train_temporal_default_fullscene8_v1/`.
+
+A3 with the same defaults also finishes all 523 timestamps and 1,999 outputs.
+Correct cross-view shared ID remains **0/936**; 1,949/1,961 selected temporal
+assignments are GT consistent. It produces 21 IDs, as does A2, with 11 versus
+15 diagnostic per-view ID changes. These counts are not official IDSW and
+do not prove a cross-view improvement. Its unoptimized exclusive V100 E2E is
+0.174433 timestamps/s, versus A2's 0.217704. Both use the same source hash
+`7749579913d89792b869a253bd17f7e5e7faf158b34dba27dba8655a9f564a13`.
+The default confidence gate still rejects useful cross-view evidence on this
+complete video. The preregistered TRAIN window scan evaluates confidence
+0.2/0.3/0.5 and support 0.1/0.2 at 8/16/32 points; TEST remains unopened for
+selection. Full A3 evidence is in
+`results/vggt_point_joint_fullscene8_train_diagnostic_v2.json`.
