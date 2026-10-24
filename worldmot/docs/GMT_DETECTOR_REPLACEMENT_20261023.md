@@ -1,6 +1,28 @@
 # GMT pre-GTA detector replacement
 
-Status: IMPLEMENTING. Base: `9a5572ebb3184b58253d448648195d175983ca1c`.
+Status: OFFICIAL_SINGLE_SEED_EFFECT_GATE_COMPLETE_POSTHOC_AUDIT_RUNNING. Base: `9a5572ebb3184b58253d448648195d175983ca1c`.
+
+The complete six-scene TRAIN detector audit covers 5,860 paired timestamps /
+11,720 identical image IDs. At the frozen operating points, GMT precision /
+recall is 96.46909% / 89.94112%, versus RTMDet 75.41204% / 47.85455%.
+This is the fixed-IoU .5 diagnostic in
+`results/gmt_detector_train_validation_quality.json`, with its raw annotation
+limitations; it is not COCO AP or an official TEST MOT metric.
+
+Archived real detector-stage timing on those same images is GMT 78.142 ms
+per image and 6.39860 paired timestamps/s, versus RTMDet 122.407 ms per image
+and 4.08474 paired timestamps/s. Pair-stage P50/P95 is GMT
+0.15343/0.16675 s and RTMDet 0.22857/0.32890 s. These stage values include
+the respective actual frontend preprocessing/descriptors/masks, and exclude
+tracking; they come from separate shared-resource cache-building runs and
+do not establish an exclusive latency ranking. Commands and full per-scene
+values are reproducible with `scripts/audit_gmt_detector_train_speed.py` and
+`results/gmt_detector_train_speed_20261024.json` / `.csv`.
+
+Official V1/V2 replacement and output-policy deltas are now in
+`docs/WORLDMOT_GMT_VGGT_FINAL_COMPARISON.md`. New V2 joint seed22 improves
+over its original RTMDet counterpart by +24.54136 HOTA and +30.85364 IDF1,
+while remaining below GMT Native. New multi-seed work is stopped.
 
 The frozen GMT configuration uses RGB, DLA/BiFPN and CenterNet proposals,
 `ROI_HEADS.NO_BOX_HEAD=True`, and an association candidate score threshold

@@ -65,6 +65,13 @@ def main():
         report = read_json(out / 'gmt_vggt_point_final_comparison.json')
         if report.get('status') != 'COMPLETE_OFFICIAL_ROUTE_TABLE_SINGLE_SEED_EFFECT_GATE':
             raise ValueError('Generate the verified official table before attaching diagnostics')
+        native_audit = read_json(out / 'gmt_native_parameter_audit_20261024.json')
+        native_manifest = read_json(args.nas / 'fulltrain_20261022/test/gmt_native/scene_01/manifest.json')
+        if native_manifest['checkpoint_sha256'] != native_audit['checkpoint_sha256']:
+            raise ValueError('Native parameter audit checkpoint mismatch')
+        native_row = next(r for r in report['official_rows'] if r['Method'] == 'GMT Native')
+        native_row['Trainable_Assoc_Params'] = native_audit['native_association_transformer_parameters']
+        report['parameter_definition'] = 'Native counts the pretrained association transformer; V2 counts its learned checkpoint tensors. Frozen point methods/fixed rules optimize zero added association parameters in this study. Native descriptor and classifier totals are separate in gmt_native_parameter_audit_20261024.json.'
         (out / 'gmt_vggt_point_error_attribution.json').write_text(json.dumps(diagnostics, indent=2, allow_nan=False) + '\n')
         summary = []
         for method, data in diagnostics['methods'].items():
@@ -75,6 +82,9 @@ def main():
         report['posthoc_error_attribution'] = artifact(args.diagnostics)
         report['remaining'] = 'Final hardware scope, reproduction and GitHub delivery audit; no additional seed experiments.'
         (out / 'gmt_vggt_point_final_comparison.json').write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
+        with (out / 'gmt_vggt_point_final_comparison.csv').open() as stream:
+            fields = next(csv.reader(stream))
+        write_csv(out / 'gmt_vggt_point_final_comparison.csv', report['official_rows'], fields)
         print(json.dumps(dict(status='COMPLETE_DIAGNOSTICS_ATTACHED', methods=len(summary))), flush=True)
         return
     rows, scene_rows, camera_rows, fps_rows, scene_fps, evidence = [], [], [], [], [], []

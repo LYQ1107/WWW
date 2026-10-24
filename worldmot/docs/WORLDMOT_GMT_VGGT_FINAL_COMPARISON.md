@@ -9,6 +9,56 @@ Post-hoc attribution is running; the full research goal remains active.
 New multi-seed work is stopped under
 `configs/gmt_point_effect_gate_policy_20261024.json`.
 
+### Verified complete-video tables (2026-10-24)
+
+The reproducible builder now emits 238 official scene rows and 476 official
+camera rows, including historical controls and all eight completed new
+routes. Primary FPS is consistently total timestamps divided by summed
+full-video wall seconds; the older new-route arithmetic means remain in
+their own CSV column and in the historical Gate notes below.
+
+| Shared GMT candidate route | HOTA | IDF1 | CVIDF1 | frame-weighted E2E FPS |
+|---|---:|---:|---:|---:|
+| A0 IoU/motion | 57.65895 | 64.33262 | 43.96730 | 2.42677 |
+| A1 appearance/motion | 58.21174 | 65.63601 | 50.97634 | 2.34929 |
+| V1 | 48.48305 | 53.07887 | 52.52115 | 0.67410 |
+| V2 joint, fixed primary seed22 | 61.01771 | 74.21891 | 72.69293 | 0.74806 |
+| V2 joint, already completed seed23 | 61.75587 | 73.91947 | 72.46872 | 0.71218 |
+| V2 no-geometry, seed22 | 59.20433 | 71.72844 | 69.95230 | 0.73037 |
+| VGGT point temporal | 52.46113 | 55.70791 | 39.53578 | 0.64932 |
+| VGGT point joint | 53.39746 | 57.73960 | 47.23269 | 0.42088 |
+
+GMT Native remains HOTA 66.06459 / IDF1 80.11214 / CVIDF1 78.06130 at
+3.33129 full-video timestamps/s under its native final-ID delivery convention.
+The preregistered primary V2 seed22 beats A1 by +2.80597 HOTA, +8.58290 IDF1
+and +21.71658 CVIDF1, but is slower and remains below GMT Native. Seed23 is
+reported separately and is not selected from TEST as a replacement primary.
+The learned PWQT checkpoint contains 953,365 parameters. The native
+association transformer contains 21,714,048 parameters, with descriptor and
+training-classifier counts separately audited in
+`results/gmt_native_parameter_audit_20261024.json`.
+
+For detector replacement, compare the matched seed22 V2 runs: +24.54136
+HOTA, +30.85364 IDF1 and +29.90417 CVIDF1 over the original RTMDet V2
+seed22. This is the detector replacement plus legitimately retrained
+association system, under the same four-epoch budget.
+
+The V1 full-system gain is +26.19907 HOTA / +32.85438 IDF1, but it includes
+an output-policy difference: original V1 uses 3D projected boxes, whereas the
+new primary V1 uses current detection boxes. The closer current-observation
+box control gives +23.22592 HOTA / +29.62656 IDF1 versus original RTMDet V1.
+Its actual official box-source key and immutable raw report are explicit in
+`results/gmt_v1_output_policy_attribution_20261024.json`; it is a separately
+labelled reference, not a change to the original benchmark output.
+
+The unified files are `gmt_vggt_point_per_scene.csv`,
+`gmt_vggt_point_per_camera.csv`, `gmt_vggt_point_fps.csv`,
+`gmt_vggt_point_fps_per_scene.csv` and
+`gmt_vggt_official_evidence_20261024.json` under `results/`.
+Per-camera CVIDF1/CVMA are marked not applicable because these are
+cross-camera metrics. The complete research goal still awaits the final
+post-hoc attribution and delivery audit.
+
 The user execution specification is the attachment
 `72c424c4-a10d-471c-a81d-d2acf67a046b/Pasted text.txt`. It remains the
 completion contract. Negative pilots do not stop the registered comparisons.
