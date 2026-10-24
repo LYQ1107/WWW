@@ -1,0 +1,239 @@
+{
+  "status": "VERIFIED_DISTINCT_FROZEN_RUNTIME_SOURCE_PINS",
+  "new_GPU_inference": false,
+  "source_guards_disabled": false,
+  "runtimes": [
+    {
+      "route": "GMTDet_V1_V2",
+      "local_worktree": "/data1/liuyeqiang/WWW_gmt_detector_20261023/worldmot",
+      "remote_commit": "373631187ab9790132c073b3a66d0a84e860367d",
+      "branch": "research/worldmot-gmt-detector-20261023",
+      "remote_runtime_files_checked": 63,
+      "all_remote_runtime_blobs_equal_local": true,
+      "extra_runners": [
+        {
+          "name": "run_fullvideo.py",
+          "sha": "207a8523d33ad933a2f099a2ceec086f6c2c2408",
+          "matches_remote": true
+        },
+        {
+          "name": "cache_fulltrain.py",
+          "sha": "a793155337e57f9f526cf01a988c53672ba1eeac",
+          "matches_remote": true
+        },
+        {
+          "name": "train_world_query.py",
+          "sha": "b8397e282d78f97452a2f4b1af2df1be623e3ed5",
+          "matches_remote": true
+        },
+        {
+          "name": "select_query_model.py",
+          "sha": "1ce9ab970ebf570d5b357abb7b6d3e89e5e055ac",
+          "matches_remote": true
+        },
+        {
+          "name": "gmt_detector_worker.py",
+          "sha": "d05e9de9e9cb02f3ed4a7b91c371146d5f2ad9ba",
+          "matches_remote": true
+        },
+        {
+          "name": "run_gmt_training_queue.py",
+          "sha": "d04a887552ed5b67bb5478df99a2ec2827fa5b8c",
+          "matches_remote": true
+        },
+        {
+          "name": "export_gmt_raw_detections.py",
+          "sha": "df3af3babb6d2197d1aa321ea15ac5c5b4c01d66",
+          "matches_remote": true
+        },
+        {
+          "name": "verify_fulltrain_cache.py",
+          "sha": "be5cd67627ac0f80e049365f7500d71f7a388525",
+          "matches_remote": true
+        }
+      ],
+      "source_provenance": {
+        "files": {
+          "worldmot/__init__.py": "7c0fe6e92cbfd7f302d266a20dc84ba3617af991521241f07b9356e5ce80bc79",
+          "worldmot/data/__init__.py": "141e6d51e772d834039fa1318ef726615de0433fc03e9731ad00cf8b3eccad47",
+          "worldmot/data/synchronized_loader.py": "5e2df9c5dcb57ca8a8a378367bb00b28cadc4981c869405b520dc228569c44c7",
+          "worldmot/data/visiontrack.py": "1ee77c64e048071611acecf86cd5ce156fd4e083b685ca9b8daa885b560e7506",
+          "worldmot/evaluation/__init__.py": "2fbdb7af6b8cb080ba11e3c6ba8e7de2e535d276654609ec353dbcec90a8ac69",
+          "worldmot/evaluation/benchmark_fps.py": "bcfbcfb465606e9014936c88afa631483269446689d5bca0edbad5c265dd6fc2",
+          "worldmot/evaluation/evaluate_2d.py": "9e6ee3a7ef92cff679d36477d93abd1392b4f1bb43d2c516b511af4137fd6396",
+          "worldmot/evaluation/official_fullvideo.py": "2606a2533be37d86ea023aac090111356f67d28eb0d491f38d985600015e9330",
+          "worldmot/evaluation/official_tracking_eval.py": "9a8671d48974938e18371bc96f254ef35d272c4937dc86e6902dec8a56131e8d",
+          "worldmot/evaluation/query_error_analysis.py": "973cecddbaf7f24c83f097a639fbdf9a5f24fb50fe1afd4cfa5da6882ab83f23",
+          "worldmot/evaluation/query_runtime_benchmark.py": "a979861ea477938e2e8f3c1011d798768fe259ca65aa284c3ae50c6b89c4e462",
+          "worldmot/geometry/__init__.py": "fc9b1fc10c8dd4e7a2695ac28aa933a4afa74bcfbd5c5763e67d3815c0ff7cdd",
+          "worldmot/geometry/camera_conditioned_sampling.py": "4ed3b3cf5fd327a1216e76cc3eded9cc21d83a3255a869f709cc29ce2292dc4b",
+          "worldmot/geometry/camera_model.py": "2e80a5d6d3c2f3bb31deda05dbd1be01c314efe2ece1d0ac4dbe2cc81b910687",
+          "worldmot/geometry/relative_geometry_encoding.py": "dfb78bf509ccc7b11997d56e4b6295e1c5533d0ea786f8b3ec527cbcf14db21a",
+          "worldmot/geometry/reprojection.py": "4d523dbeddc84a63ddf2ae4a43578e84f7d218cef2d19c478abc465690483e3a",
+          "worldmot/geometry/world_alignment.py": "6cf04de82b62411b4b98ff6ffd7ee1b42dc7129f32ec1673a8f7ea064c0bf9c3",
+          "worldmot/models/__init__.py": "4441e3c72c03a9a856a9fb7fb7e5da177e13d1988630a91611bb2e38ac3c97ee",
+          "worldmot/models/detection_to_world.py": "2521e9807794abacc809e30cfa6e9781169826441b748bed33a2bb908baea85e",
+          "worldmot/models/geometry_interface.py": "a04ee5c6cd298843c7d4c30946012f2b63e5e25e62484cc3c72c4a933ec3682f",
+          "worldmot/models/gmt_detection_cache.py": "34ec2ad852ef02e02bac24ea525dc56119cc579f986d66ea281f24f20b692c69",
+          "worldmot/models/gmt_detector_adapter.py": "4b9d74d3a0172680b1c76d2849e916a32c1e3e1c8e5cb89573d3e67df64bfb3a",
+          "worldmot/models/multi_view_query_attention.py": "17c99d355f0075b033bd9975c766092e81db4127886b054c2f9eb999f850b352",
+          "worldmot/models/omega_3d_query_detector.py": "31ae90d230c003bd91c3c28c67397f7faba888026e9414f50f6ce0b45b7ad363",
+          "worldmot/models/omega_geometry_backend.py": "6cc849d104000c8c38f0c4c8891949672836f90e8a528fc0dc4defeb2f477f19",
+          "worldmot/models/omega_object_features.py": "72311ee8334733c6e61a186561ef9e8b8d8fc54fef0960dba9d7a333e7371fbb",
+          "worldmot/models/panoptic_instances.py": "c7ac2cbdda693e5f97c7de6d8d0801a7d84d085e5bbfa53ea5d8530296a6fdb6",
+          "worldmot/models/panst3r_backbone.py": "b1cd9afcd8bd5bb1b2926c602da721fb7ba0f0f72b50867b6158d358bb9e26bc",
+          "worldmot/models/persistent_world_queries.py": "0d072c550a84d462b8692a9b4c4d92c6a4b724323af6349345c9125a4f463563",
+          "worldmot/models/person_detector.py": "9024d937515486b35c6c275b0c414dd814f7bc7598fc2434eeaf766d42e0ec9a",
+          "worldmot/models/person_detector_factory.py": "77c9603fa150dcdc8fcd826b6a7c485a8f7b7adb575d838d1646082d808b05d2",
+          "worldmot/models/person_fallback.py": "549d444524d9a8e19212b3ad3922d4a0b5b91a44d2f6d4cc4c6573c8528fc8a5",
+          "worldmot/models/query_birth_head.py": "508d920992deed940a93bf6058011d55ba3d1f6bfbd2a89d19ee45df64565854",
+          "worldmot/models/query_projection_head.py": "42e8831deae812f388c3e393e6333b02004ee4ab1a122f921a2cc5d08b264864",
+          "worldmot/models/query_visibility_head.py": "a16ee8db18f7adf4beee2a62a627da576a31458a764af0b7ac37130cd9cf6bcf",
+          "worldmot/models/world_observation_encoder.py": "2554a8cb64181d34e58d941b3fbb13a4a685ab70c98fed575dcbca9f296deb8a",
+          "worldmot/models/world_query_decoder.py": "aff7155bf7a9a03e7206e34b81aa641560e76b097cb98b2edf2689167b3c08fa",
+          "worldmot/runtime/__init__.py": "b444746af3d42a787625684bea4a2eab38175818746c9ee3351c563b53c1900d",
+          "worldmot/runtime/detection_first.py": "b711dea8172ba3962be54063391597d3154039b4a88b549b1edccb262f1c6b8c",
+          "worldmot/runtime/online_worldmot.py": "1521b779136859b25ed6284dfdcd037000f1565f5201feb29ac483ade8aa6cba",
+          "worldmot/runtime/online_worldmot_v2.py": "e426bf640fc48e525096833355d97d5312109d5756efe1dbbcf957f4fac50ffc",
+          "worldmot/tracking/__init__.py": "6f89d45e9c947eb0201f20fcade5c6f215b0368e052f4a141f71ea4925da5fda",
+          "worldmot/tracking/association.py": "4a1ab5e78997227e57aa166cb9cdca0b1c48e8f9bb0713812a0410a314d3532e",
+          "worldmot/tracking/persistent_query_runtime.py": "4017ec2b0ed1ba93b87a170265592aa116ac9384d0fd484a30fc81ac45b79988",
+          "worldmot/tracking/query_lifecycle.py": "bff86cc8a5433a67d38df3f73344305e88f85873d6db6f2e4916b2876b33b44c",
+          "worldmot/tracking/query_memory_bank.py": "38de4c32d622c84cdf047021c79228839ddf1f6ddaeda4043c4b76fa18f266d4",
+          "worldmot/tracking/state.py": "c47e2fb5e4295234ac9f601bb5f754b1a20f35241728ce1271154e73566ec9e5",
+          "worldmot/tracking/world_memory.py": "5d2c106b4791c03cef2652bfd2d8e1aea5d4b93e3061a627f6865fa2fc787048",
+          "worldmot/training/__init__.py": "5bfa55afcef36c25ede0711e78e39f88ac85e467cf0d9b0881aefcd9697aced8",
+          "worldmot/training/build_worldmot_training_data.py": "bfe25e17987fec1dfe260d7f10c971b6b321b28b258348331111a81560f9b222",
+          "worldmot/training/clip_dataset.py": "e051325cd82e8feb4706fa4af8539fcba9fb975e9cac1ac8bff13198ec8d90bf",
+          "worldmot/training/identity_targets.py": "5c97c0282ed42569a1ccbff4e90230fa765c3dcd008e00e70c2185c8961171a8",
+          "worldmot/training/train_utils.py": "edbbb0deddc8313f526edf017659816421394ecb15853190f7981e98b37fc788",
+          "worldmot/training/train_world_queries.py": "d1ae04ca29e9ab307ee8e6909a4ce1b3174ccfb8b5a6880804ce5a99f9393777",
+          "worldmot/training/world_query_criterion.py": "e8601d08311ec645c24ccef8e319699e1a6bf68ab4ee7831aa1eee63a3ad5459",
+          "scripts/train_world_query.py": "8a90833c6d077647f76a754274b63e3329057b6db2be76c8ef1d6fe593ac55d4",
+          "scripts/select_query_model.py": "85af812601caab6feb0f184d2b237c07ddcc8f92176d33c2bc6b492f3092791a",
+          "scripts/run_fullvideo.py": "dc229aca6307ae9d8c58de9171092f9a9ea37b23ef215c441cd62cafee6dbab8",
+          "scripts/run_gmt_test_baseline.py": "c17689f25a2b837e349f5b015e909ee9cd42159728f20156e3793c5284a72c9b",
+          "scripts/evaluate_fullvideo.py": "9265a2eac62911ab5a3f67a655459438169bbaf9ce42fda1b50deca6cc20c6e0",
+          "scripts/official_worldmot_metrics.m": "4f0c6a734372d806ec9d5fbdaeed9118bb10595c789443877683e63207dd319a",
+          "scripts/experiment_provenance.py": "c86310f854a2503d8dd2eb042b3e11b956a4d65e4122af8a8ce19471ed817ed9",
+          "scripts/preserve_inference_attempts.py": "a4f05c41936d06d6fc5a848f7a181af0f008b94d398a7e9bc190b423ee04808b"
+        },
+        "sha256": "c0ef87cc85759f654156c9ec71208bca12bc4f120cb0174264682b9015859e2e"
+      },
+      "local_HEAD": "6ee7c65ab042adbe46c57851ae153a45e3ecec1a"
+    },
+    {
+      "route": "VGGT_point_and_2D_controls",
+      "local_worktree": "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot",
+      "remote_commit": "12057c4e784a2e98cd38c40b420f7d2c53f91008",
+      "branch": "research/worldmot-gmt-point-comparison-20261023",
+      "remote_runtime_files_checked": 71,
+      "all_remote_runtime_blobs_equal_local": true,
+      "extra_runners": [
+        {
+          "name": "run_vggt_point_fullvideo.py",
+          "sha": "707c9bbddfa353f4e20174cae95bf1e3d10ca6d0",
+          "matches_remote": true
+        },
+        {
+          "name": "run_gmt_2d_fullvideo.py",
+          "sha": "96b64be384638a2d6bd3f9ec4fc97da289f90b9f",
+          "matches_remote": true
+        },
+        {
+          "name": "gmt_2d_control.py",
+          "sha": "e614fb5c4c6f9877575735674ff4bc95b9031a74",
+          "matches_remote": true
+        },
+        {
+          "name": "gmt_detector_worker.py",
+          "sha": "d05e9de9e9cb02f3ed4a7b91c371146d5f2ad9ba",
+          "matches_remote": true
+        },
+        {
+          "name": "score_train_association_windows.py",
+          "sha": "b15930e4bbd28680659088a7aaeeba9b7a271c79",
+          "matches_remote": true
+        }
+      ],
+      "source_provenance": {
+        "files": {
+          "worldmot/__init__.py": "7c0fe6e92cbfd7f302d266a20dc84ba3617af991521241f07b9356e5ce80bc79",
+          "worldmot/data/__init__.py": "141e6d51e772d834039fa1318ef726615de0433fc03e9731ad00cf8b3eccad47",
+          "worldmot/data/synchronized_loader.py": "5e2df9c5dcb57ca8a8a378367bb00b28cadc4981c869405b520dc228569c44c7",
+          "worldmot/data/visiontrack.py": "1ee77c64e048071611acecf86cd5ce156fd4e083b685ca9b8daa885b560e7506",
+          "worldmot/evaluation/__init__.py": "2fbdb7af6b8cb080ba11e3c6ba8e7de2e535d276654609ec353dbcec90a8ac69",
+          "worldmot/evaluation/benchmark_fps.py": "bcfbcfb465606e9014936c88afa631483269446689d5bca0edbad5c265dd6fc2",
+          "worldmot/evaluation/evaluate_2d.py": "9e6ee3a7ef92cff679d36477d93abd1392b4f1bb43d2c516b511af4137fd6396",
+          "worldmot/evaluation/official_fullvideo.py": "2606a2533be37d86ea023aac090111356f67d28eb0d491f38d985600015e9330",
+          "worldmot/evaluation/official_tracking_eval.py": "9a8671d48974938e18371bc96f254ef35d272c4937dc86e6902dec8a56131e8d",
+          "worldmot/evaluation/query_error_analysis.py": "973cecddbaf7f24c83f097a639fbdf9a5f24fb50fe1afd4cfa5da6882ab83f23",
+          "worldmot/evaluation/query_runtime_benchmark.py": "a979861ea477938e2e8f3c1011d798768fe259ca65aa284c3ae50c6b89c4e462",
+          "worldmot/geometry/__init__.py": "fc9b1fc10c8dd4e7a2695ac28aa933a4afa74bcfbd5c5763e67d3815c0ff7cdd",
+          "worldmot/geometry/camera_conditioned_sampling.py": "4ed3b3cf5fd327a1216e76cc3eded9cc21d83a3255a869f709cc29ce2292dc4b",
+          "worldmot/geometry/camera_model.py": "2e80a5d6d3c2f3bb31deda05dbd1be01c314efe2ece1d0ac4dbe2cc81b910687",
+          "worldmot/geometry/relative_geometry_encoding.py": "dfb78bf509ccc7b11997d56e4b6295e1c5533d0ea786f8b3ec527cbcf14db21a",
+          "worldmot/geometry/reprojection.py": "4d523dbeddc84a63ddf2ae4a43578e84f7d218cef2d19c478abc465690483e3a",
+          "worldmot/geometry/vggt_point_coordinates.py": "e526d5e8298ae41955422dca21c39fe278127ccb2e00181e3304836dd524c96e",
+          "worldmot/geometry/world_alignment.py": "6cf04de82b62411b4b98ff6ffd7ee1b42dc7129f32ec1673a8f7ea064c0bf9c3",
+          "worldmot/models/__init__.py": "4441e3c72c03a9a856a9fb7fb7e5da177e13d1988630a91611bb2e38ac3c97ee",
+          "worldmot/models/constant_position_cache.py": "6d2ffa91ab7bda414fc3ebdbd4ac2861ecd97d2559b1ba9ac49385db2bbeab46",
+          "worldmot/models/detection_to_world.py": "f7f8d1639166a878440d9a85b6960d02a8c2f8937b947ab7f9403c28d8b3f859",
+          "worldmot/models/geometry_interface.py": "a04ee5c6cd298843c7d4c30946012f2b63e5e25e62484cc3c72c4a933ec3682f",
+          "worldmot/models/gmt_detection_cache.py": "34ec2ad852ef02e02bac24ea525dc56119cc579f986d66ea281f24f20b692c69",
+          "worldmot/models/gmt_detector_adapter.py": "4b9d74d3a0172680b1c76d2849e916a32c1e3e1c8e5cb89573d3e67df64bfb3a",
+          "worldmot/models/multi_view_query_attention.py": "17c99d355f0075b033bd9975c766092e81db4127886b054c2f9eb999f850b352",
+          "worldmot/models/omega_3d_query_detector.py": "31ae90d230c003bd91c3c28c67397f7faba888026e9414f50f6ce0b45b7ad363",
+          "worldmot/models/omega_geometry_backend.py": "6222fc14fc7cf6e39556c11a687c250b98d5d6998727ab0340c033b0b1cd2904",
+          "worldmot/models/omega_object_features.py": "c4889c96f0f65587bf6f92a8c08b8c8eb496158a4236c35e5b9891c46636a069",
+          "worldmot/models/panoptic_instances.py": "6986b65fe37e337ace5aa9446696b69491c2e6973c098b8fcc29f0d51dd4bbe1",
+          "worldmot/models/panst3r_backbone.py": "b1cd9afcd8bd5bb1b2926c602da721fb7ba0f0f72b50867b6158d358bb9e26bc",
+          "worldmot/models/persistent_world_queries.py": "0d072c550a84d462b8692a9b4c4d92c6a4b724323af6349345c9125a4f463563",
+          "worldmot/models/person_detector.py": "c8f23c317dafd6436daa7f3574ab38a06fab757f3f5f4cc38a26984b27c4b78d",
+          "worldmot/models/person_detector_factory.py": "77c9603fa150dcdc8fcd826b6a7c485a8f7b7adb575d838d1646082d808b05d2",
+          "worldmot/models/person_fallback.py": "549d444524d9a8e19212b3ad3922d4a0b5b91a44d2f6d4cc4c6573c8528fc8a5",
+          "worldmot/models/query_birth_head.py": "508d920992deed940a93bf6058011d55ba3d1f6bfbd2a89d19ee45df64565854",
+          "worldmot/models/query_projection_head.py": "42e8831deae812f388c3e393e6333b02004ee4ab1a122f921a2cc5d08b264864",
+          "worldmot/models/query_visibility_head.py": "a16ee8db18f7adf4beee2a62a627da576a31458a764af0b7ac37130cd9cf6bcf",
+          "worldmot/models/vggt_point_backend.py": "560ae76d185e25753907b6810c6f531b2a391db8093780bd9984e5052f1488ac",
+          "worldmot/models/world_observation_encoder.py": "31f2044ac5a5f75e3d87d677f33695e5efc0b44686ae79d5547222fbbc338477",
+          "worldmot/models/world_query_decoder.py": "aff7155bf7a9a03e7206e34b81aa641560e76b097cb98b2edf2689167b3c08fa",
+          "worldmot/runtime/__init__.py": "b444746af3d42a787625684bea4a2eab38175818746c9ee3351c563b53c1900d",
+          "worldmot/runtime/detection_first.py": "b711dea8172ba3962be54063391597d3154039b4a88b549b1edccb262f1c6b8c",
+          "worldmot/runtime/online_worldmot.py": "881f8175bd73a3a0a465b3390fb17a4b76165a078765f88d60d33f1b1f509a70",
+          "worldmot/runtime/online_worldmot_v2.py": "e426bf640fc48e525096833355d97d5312109d5756efe1dbbcf957f4fac50ffc",
+          "worldmot/tracking/__init__.py": "6f89d45e9c947eb0201f20fcade5c6f215b0368e052f4a141f71ea4925da5fda",
+          "worldmot/tracking/association.py": "4a1ab5e78997227e57aa166cb9cdca0b1c48e8f9bb0713812a0410a314d3532e",
+          "worldmot/tracking/persistent_query_runtime.py": "4017ec2b0ed1ba93b87a170265592aa116ac9384d0fd484a30fc81ac45b79988",
+          "worldmot/tracking/person_point_sampler.py": "0b4a2d14fa9e97be5e3dbe214321cdea79f0884b3f8922b3936348c0c255d0df",
+          "worldmot/tracking/point_identity_memory.py": "3cafbcf92c43634001b08a5add14d322d240f4358055cfbc3276c0321828c0ac",
+          "worldmot/tracking/point_to_instance_association.py": "c518f69f0e655e54809060c956c240063db02e56783c0157f96e99cf5a3258f8",
+          "worldmot/tracking/query_lifecycle.py": "bff86cc8a5433a67d38df3f73344305e88f85873d6db6f2e4916b2876b33b44c",
+          "worldmot/tracking/query_memory_bank.py": "38de4c32d622c84cdf047021c79228839ddf1f6ddaeda4043c4b76fa18f266d4",
+          "worldmot/tracking/state.py": "c47e2fb5e4295234ac9f601bb5f754b1a20f35241728ce1271154e73566ec9e5",
+          "worldmot/tracking/world_memory.py": "5d2c106b4791c03cef2652bfd2d8e1aea5d4b93e3061a627f6865fa2fc787048",
+          "worldmot/training/__init__.py": "5bfa55afcef36c25ede0711e78e39f88ac85e467cf0d9b0881aefcd9697aced8",
+          "worldmot/training/build_worldmot_training_data.py": "bfe25e17987fec1dfe260d7f10c971b6b321b28b258348331111a81560f9b222",
+          "worldmot/training/clip_dataset.py": "e051325cd82e8feb4706fa4af8539fcba9fb975e9cac1ac8bff13198ec8d90bf",
+          "worldmot/training/identity_targets.py": "5c97c0282ed42569a1ccbff4e90230fa765c3dcd008e00e70c2185c8961171a8",
+          "worldmot/training/train_utils.py": "edbbb0deddc8313f526edf017659816421394ecb15853190f7981e98b37fc788",
+          "worldmot/training/train_world_queries.py": "d1ae04ca29e9ab307ee8e6909a4ce1b3174ccfb8b5a6880804ce5a99f9393777",
+          "worldmot/training/world_query_criterion.py": "e8601d08311ec645c24ccef8e319699e1a6bf68ab4ee7831aa1eee63a3ad5459",
+          "worldmot/utils/__init__.py": "a90b6b2405e72d2ebfefc6dd7230cc271b6466a48b459a2a33fc79144d6a9ac8",
+          "worldmot/utils/pillow_compat.py": "6b978905521d1ca18e48da67568d321fe7a9564552d66706760f486f08a18854",
+          "scripts/train_world_query.py": "8a90833c6d077647f76a754274b63e3329057b6db2be76c8ef1d6fe593ac55d4",
+          "scripts/select_query_model.py": "85af812601caab6feb0f184d2b237c07ddcc8f92176d33c2bc6b492f3092791a",
+          "scripts/run_fullvideo.py": "dc229aca6307ae9d8c58de9171092f9a9ea37b23ef215c441cd62cafee6dbab8",
+          "scripts/run_gmt_test_baseline.py": "c17689f25a2b837e349f5b015e909ee9cd42159728f20156e3793c5284a72c9b",
+          "scripts/evaluate_fullvideo.py": "9265a2eac62911ab5a3f67a655459438169bbaf9ce42fda1b50deca6cc20c6e0",
+          "scripts/official_worldmot_metrics.m": "4f0c6a734372d806ec9d5fbdaeed9118bb10595c789443877683e63207dd319a",
+          "scripts/experiment_provenance.py": "c86310f854a2503d8dd2eb042b3e11b956a4d65e4122af8a8ce19471ed817ed9",
+          "scripts/preserve_inference_attempts.py": "a4f05c41936d06d6fc5a848f7a181af0f008b94d398a7e9bc190b423ee04808b"
+        },
+        "sha256": "0d6b8bc62da81fa4423afd808ea6fc55d05face2ab57c32e7d49eeb69256a229"
+      },
+      "local_HEAD": "c82b7e153e18a4211fdec8b1de543322ceef38b5"
+    }
+  ],
+  "note": "GitHub Git Data API publications and local Git commit IDs differ. Every runtime source file contributing to the SHA, plus listed extra drivers, was compared by exact Git blob SHA against each pinned remote tree. The detector route has 55 Python package files plus 8 provenance scripts; the point/control route has 63 Python package files plus 8 scripts. Each frozen source guard must run from its matching pin; report scripts run from the comparison checkout."
+}

@@ -1,12 +1,14 @@
 # GMT detector replacement and VGGT point association
 
-Status: SINGLE_ROUTE_EFFECT_GATE_COMPLETE_TEMPORAL_OFFICIAL_V2_SEED24_CANCELLED_NO_MULTI_SEED_AGGREGATE. Registration date: 2026-10-23.
+Status: COMPLETE_RESEARCH_NO_DEMONSTRATED_OVERALL_IDENTITY_GAIN. Registration date: 2026-10-23.
 
 Reporting audit update: the reproducible table builder, complete-video CPU
 error attribution, actual TEST illustrations and provenance corrections are
 documented in [GMT_POINT_REPORTING_AUDIT_20261024.md](GMT_POINT_REPORTING_AUDIT_20261024.md).
-Post-hoc attribution has completed and its scope/counts are reported below;
-the full research goal remains active pending the final delivery audit.
+Post-hoc attribution and frozen-source reproduction checks have completed.
+The two verified runtime pins and command templates are in
+[GMT_POINT_REPRODUCTION_20261024.md](GMT_POINT_REPRODUCTION_20261024.md).
+Measurement limits and optional work not run are explicit below.
 New multi-seed work is stopped under
 `configs/gmt_point_effect_gate_policy_20261024.json`.
 
@@ -57,8 +59,8 @@ The unified files are `gmt_vggt_point_per_scene.csv`,
 `gmt_vggt_point_fps_per_scene.csv` and
 `gmt_vggt_official_evidence_20261024.json` under `results/`.
 Per-camera CVIDF1/CVMA are marked not applicable because these are
-cross-camera metrics. The complete research goal still awaits the final
-delivery audit.
+cross-camera metrics. Completion evidence is indexed in
+`results/gmt_point_completion_audit_20261024.json`.
 
 ### Complete TEST error attribution (2026-10-24)
 

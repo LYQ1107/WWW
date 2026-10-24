@@ -1,5 +1,19 @@
 # VGGT point association experiment record
 
+Final status: full A2/A3 TEST inference, official evaluation and post-hoc
+attribution are complete. The frozen point/control runtime is published at
+commit `12057c4e784a2e98cd38c40b420f7d2c53f91008` with source fingerprint
+`0d6b8bc62da81fa4423afd808ea6fc55d05face2ab57c32e7d49eeb69256a229`.
+See `GMT_POINT_REPRODUCTION_20261024.md` for the checked source pins.
+
+On the legal complete-video TEST scope, the joint method's selected temporal
+assignment identity consistency is 99.546%, while only 26.497% of same-person
+dual-view detection events receive a correct shared ID. It has 3,223
+different-person shared-ID events. These fixed-IoU diagnostic counts are
+separate from the official HOTA/IDF1/CVIDF1 values and are not dense point
+ground truth. Full counts/groups/verified input SHAs are in
+`results/gmt_vggt_point_error_attribution.json`.
+
 ## Component admission
 
 Official local VGGT-1B weights match the author's Hugging Face LFS pointer:

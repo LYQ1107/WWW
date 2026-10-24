@@ -1,7 +1,7 @@
 {
-  "generated_utc": "2026-10-24T10:25:38.125087+00:00",
-  "goal_complete": false,
-  "status": "ALL_NEW_OFFICIAL_ROUTES_AND_CPU_ATTRIBUTION_COMPLETE_FINAL_DELIVERY_AUDIT_PENDING",
+  "generated_utc": "2026-10-24T10:57:34.800883923Z",
+  "goal_complete": true,
+  "status": "COMPLETE_RESEARCH_NO_DEMONSTRATED_OVERALL_IDENTITY_GAIN",
   "live_processes": [
     {
       "pid": 20615,
@@ -80,9 +80,14 @@
     "command": "PYTHONPATH=.:scripts CUDA_VISIBLE_DEVICES='' /data1/liuyeqiang/envs/worldmot311/bin/python -m pytest -q tests/test_gmt_point_reporting.py",
     "passed": 5
   },
-  "remaining": [
-    "Final requirement-by-requirement reproduction and delivery audit; no further seed experiment"
-  ],
+  "remaining": [],
+  "completion_audit": "gmt_point_completion_audit_20261024.json",
+  "frozen_runtime_CPU_tests": {
+    "detector_runtime_all_tests_passed": 48,
+    "point_geometry_cache_report_selected_tests_passed": 31,
+    "additional_2D_control_tests_passed": 5,
+    "scope": "Two frozen runtime versions; these test groups overlap conceptually and are not summed as unique tests. No GPU inference."
+  },
   "notes": [
     "Capacity waiter is confirmed stopped; its checkpoints remain preserved.",
     "Scene-mean, frame-weighted and harmonic FPS have separate definitions.",
