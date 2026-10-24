@@ -286,9 +286,11 @@ scenes 16/20/24 remains blocked due duplicate keys; no GT was edited and
 
 These are complete TRAIN gates, not TEST scores. The frozen TEST lock and
 22-video raw candidate integrity are recorded in
-`results/gmt_2d_train_gate_complete_20261024.json`; live TEST inference was
-explicitly not started by the `--train-only` command. Replay FPS uses cached
-GMT candidates and must not be presented as live detector or final TEST FPS.
+`results/gmt_2d_train_gate_complete_20261024.json`. The `--train-only`
+command itself did not launch TEST; the separate frozen-lock live TEST routes
+are now running and have not yet produced official metrics. Replay FPS uses
+cached GMT candidates and must not be presented as live detector or final TEST
+FPS.
 
 ### VGGT-point TRAIN selection Gate (2026-10-23)
 
@@ -304,8 +306,11 @@ the following settings without reading TEST frames:
 The immutable selection and partition hashes, source SHA, and the explicit
 `TEST_used_for_selection=false` flag are recorded in
 `results/gmt_point_train_selection_20261023.json`. Complete six-scene TRAIN
-full-video validation is now running for both settings. No TEST lock or formal
-MOT metric exists at this Gate; the selection is not a final GMT comparison.
+full-video validation and the frozen TEST lock are complete. The joint TEST
+route has now finished official evaluation (HOTA 53.39746 / IDF1 57.73960 /
+CVIDF1 47.23269 at mean full-video 0.452815 FPS); temporal TEST remains in
+progress. This point result is VGGT-1B TrackHead, not Ω geometry, and does not
+show a net identity gain over GMT Native.
 
 ### GMT V1 official TRAIN validation Gate completed (2026-10-23)
 

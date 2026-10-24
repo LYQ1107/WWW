@@ -158,5 +158,31 @@ The selection objective remains the diagnostic
 metric. Both partition results, the selection SHA, source SHA, and
 `TEST_used_for_selection=false` are retained in
 `results/gmt_point_train_selection_20261023.json`. Complete six-scene TRAIN
-full-video validation is running for both settings. No point TEST lock or
-official TEST result exists at this Gate.
+full-video validation completed and the frozen TEST lock retained the above
+settings. The joint route has now completed its official 22-video TEST
+evaluation; temporal TEST remains in progress.
+
+## Joint TEST Gate completed (2026-10-24)
+
+The frozen joint route used the live verified GMT pre-GTA candidates and the
+pretrained VGGT-1B TrackHead with 32 deterministic points/person. All 22 TEST
+videos (29,019 synchronized timestamps) completed causally without GT or track
+IDs in inference. Official TrackEval on the 14 legal raw-GT scenes reports
+HOTA **53.39746**, AssA **45.72730**, DetA **62.82394**, IDF1 **57.73960**,
+MOTA **75.47277**, IDSW **1,194** and Frag **1,562**. The official MATLAB
+adapter reports CVIDF1 **47.23269** and CVMA **34.11808**.
+
+The arithmetic mean full-video E2E throughput over scene routes is
+**0.452815 synchronized dual-camera timestamps/s**; frame-weighted throughput
+is 0.420882 and the harmonic scene summary is 0.404346. The aggregate
+VGGT-only timing is 0.629592 FPS. Full stage P50/P95 and per-scene timings
+are in `results/gmt_vggt_joint_test_fps_20261024.csv`; the immutable official
+Gate, metrics SHA, coverage and evaluator counts are in
+`results/gmt_vggt_joint_test_gate_20261024.json`.
+
+Relative to GMT Native, the route is -12.66713 HOTA, -22.37254 IDF1 and
+-30.82861 CVIDF1, with +2.50916 MOTA and 4,850 fewer ID switches. It therefore
+does not demonstrate a net identity gain in this route. This is a point
+association experiment using VGGT-1B TrackHead; it is not a VGGT-Ω geometry
+result. Temporal TEST, the 2D controls and the remaining V2 routes are still
+required for the final comparison.

@@ -1,6 +1,6 @@
 # GMT detector replacement and VGGT point association
 
-Status: COMPONENTS_VALIDATED_V1_TEST_COMPLETE_V2_NO_GEOMETRY_GATE_COMPLETE_REMAINING_ROUTES_RUNNING. Registration date: 2026-10-23.
+Status: COMPONENTS_VALIDATED_V1_TEST_V2_NO_GEOMETRY_POINT_JOINT_COMPLETE_REMAINING_ROUTES_RUNNING. Registration date: 2026-10-23.
 
 The user execution specification is the attachment
 `72c424c4-a10d-471c-a81d-d2acf67a046b/Pasted text.txt`. It remains the
@@ -94,10 +94,15 @@ The complete provenance is in `results/gmt_v1_test_gate_complete_20261023.json`
 and the raw official report is in
 `results/gmt_v1_test_official_raw_metrics_20261023.json`.
 
-The final VGGT-point TEST scores remain `NOT_AVAILABLE`. The first frozen
-GMTDet+V2 joint route (seed 20261022) now has a complete official legal-scope
-score; the registered three-seed V2 aggregate remains `NOT_AVAILABLE` until
-seeds 20261023 and 20261024 finish.
+The frozen VGGT-point joint TEST route is now complete on all 22 videos and
+has an official legal-scope score. Its TrackEval result is HOTA 53.39746,
+AssA 45.72730, DetA 62.82394, IDF1 57.73960, MOTA 75.47277, IDSW 1,194 and
+Frag 1,562; VisionTrack MATLAB is CVIDF1 47.23269 / CVMA 34.11808. This is
+the GMT pre-GTA detector plus the pretrained VGGT-1B TrackHead point-joint
+route, not an Ω geometry result. It is below GMT Native by -12.66713 HOTA,
+-22.37254 IDF1 and -30.82861 CVIDF1, while MOTA is +2.50916 and IDSW is
+4,850 lower. The temporal point route, 2D controls and remaining V2 seeds
+are still running; no final cross-route ranking is claimed yet.
 The VGGT temporal and joint routes have now completed their registered
 six-scene TRAIN full-video validation and official TRAIN evaluation; their
 independent TEST inference is running under a frozen TRAIN-only lock.
@@ -133,6 +138,37 @@ evidence, not the final three-seed V2 claim. The auditable files are
 `results/gmt_v2_no_geometry_seed20261022_test_gate_20261024.json`,
 `results/gmt_v2_no_geometry_seed20261022_test_fps_20261024.csv` and
 `results/gmt_v2_geometry_ablation_20261024.json`.
+
+### VGGT-point joint official TEST Gate (2026-10-24)
+
+The frozen GMTDet + VGGT point-joint route completed all 22 TEST videos
+(29,019 synchronized timestamps) with the live verified GMT pre-GTA detector,
+32 deterministic person points, and no GT/track IDs in inference. The same
+14 legal raw-GT scenes were evaluated by the official TrackEval and
+VisionTrack MATLAB adapters; the eight duplicate-key raw-GT scenes remain
+inference-only and were not repaired.
+
+| Route | HOTA | AssA | DetA | IDF1 | MOTA | IDSW | Frag | CVIDF1 | CVMA |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| GMTDet + VGGT Joint | 53.39746 | 45.72730 | 62.82394 | 57.73960 | 75.47277 | 1,194 | 1,562 | 47.23269 | 34.11808 |
+
+Mean per-scene full-video E2E throughput is **0.452815 synchronized
+dual-camera timestamps/s**; the frame-weighted throughput is 0.420882 and
+the conservative harmonic scene summary is 0.404346. The VGGT model-only
+stage is 0.629592 FPS when measured as timestamps divided by accumulated
+aggregator plus TrackHead seconds. Global P50/P95 per-timestamp times are
+2.00268/4.55325 s for RGB-to-final-ID delivery, 0.96403/2.20512 s for the
+VGGT aggregator, 0.40128/0.98569 s for the TrackHead, and 1.69230/3.96535 s
+for point-memory processing. The full stage/per-scene table is
+`results/gmt_vggt_joint_test_fps_20261024.csv` and the provenance Gate is
+`results/gmt_vggt_joint_test_gate_20261024.json`.
+
+Against GMT Native, this route is -12.66713 HOTA, -22.37254 IDF1 and
+-30.82861 CVIDF1, with +2.50916 MOTA and 4,850 fewer ID switches. Thus the
+joint point association does not show a net identity gain in this official
+route. This is a pretrained VGGT-1B TrackHead point experiment, not a
+VGGT-Ω geometry experiment; the temporal point route and other registered
+controls still have to finish before final cross-route conclusions.
 
 The GMT pre-GTA detector + fixed V1 association has now completed its
 official TRAIN validation Gate. All six registered validation videos are
@@ -195,8 +231,9 @@ The live status is generated from `/proc`-verified owned processes plus actual
 scene artifacts in `results/gmt_vggt_live_status.json`. It is a timestamped
 snapshot, not a substitute for checking current process handles. The original
 official baseline results, including source metric SHA and GT blocks, are in
-`results/gmt_vggt_original_official_baselines.json`. New final TEST rows remain
-NOT_AVAILABLE until the respective complete inference and official scores exist.
+`results/gmt_vggt_original_official_baselines.json`. Remaining final TEST rows
+remain NOT_AVAILABLE until the respective complete inference and official
+scores exist.
 
 The complete raw GMT TRAIN gate has now passed deep verification of every
 data shard and all 24 timelines: 557,002 observations / 57,508 RGB images,

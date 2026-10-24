@@ -1,0 +1,91 @@
+{
+  "status": "OFFICIAL_COMPLETE_14_VALID_GT_22_INFERENCE",
+  "recorded_utc": "2026-10-24T06:38:09Z",
+  "experiment": "GMT_detector_replacement_vggt_point_association",
+  "route": "joint",
+  "split": "TEST",
+  "TEST_used_for_selection": false,
+  "raw_GT_modified": false,
+  "source_sha256": "0d6b8bc62da81fa4423afd808ea6fc55d05face2ab57c32e7d49eeb69256a229",
+  "runner_sha256": "7b4e6727df94e7775a2cc4987bb0ab4c957aa74ff78078916724543d107ab53a",
+  "VGGT_checkpoint_sha256": "d15bf50a8615c8225ed48b51ea5cac673d82442ec0309036df555a053253afe0",
+  "final_test_lock_sha256": "e6b64b32fb5e94b49b848b985523befe5a357847d4ddfdf78b3ee7dec9d6a1e3",
+  "test_metadata_sha256": "617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f",
+  "test_detector_lock_sha256": "496cde1a6261239466b0da08cf4196c9142f8c26aa6796c3bbcf9cd8f939cdcf",
+  "raw_test_integrity_sha256": "b6bf53f82964dffe71c0b2f010dd7258444a6057047cb057e0edf8aceaaa560f",
+  "raw_gt_legal_scenes": [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 15, 16, 18, 19],
+  "blocked_raw_gt_scenes": [5, 12, 13, 14, 17, 20, 21, 22],
+  "settings": {
+    "minimum_visibility": 0.5,
+    "minimum_confidence": 0.2,
+    "minimum_valid_points": 3,
+    "minimum_inside_points": 3,
+    "minimum_support": 0.1,
+    "maximum_reference_gap": 3,
+    "lost_retention": 30,
+    "points_per_person": 32,
+    "constant_position_cache": true,
+    "detector_mode": "live_verified",
+    "resource_mode": "shared_gpu"
+  },
+  "prediction_coverage": {
+    "complete_scenes": 22,
+    "frames": 29019,
+    "full_video": true,
+    "aggregate_prediction_sha256": "676db9f4b6dc06ef26f0b42bd03f9c4ac38d0f9966af3d1a2ea20d8cfad64f0d",
+    "aggregate_timings_sha256": "00b053e69f0143a6d074c6c452aeb142c45758c507f462dec72e2f5a713eb1bb",
+    "blocked_raw_gt_scenes": [5, 12, 13, 14, 17, 20, 21, 22]
+  },
+  "evaluation": {
+    "evaluated_legal_scenes": 14,
+    "blocked_scenes": [],
+    "metrics_sha256": "5e7148d27b86daacbe592724332f074384045a535f542d9b8c0f6e3d9ad998fe",
+    "metrics_path": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/test_evaluation_v1/joint/metrics.json",
+    "TrackEval": {
+      "HOTA": 53.39745626800154,
+      "AssA": 45.72729862281076,
+      "DetA": 62.82394094719385,
+      "IDF1": 57.73960414211729,
+      "MOTA": 75.47277182074453,
+      "IDSW": 1194,
+      "Frag": 1562,
+      "CLR_TP": 165294,
+      "CLR_FN": 24491,
+      "CLR_FP": 20864
+    },
+    "VisionTrack_MATLAB": {
+      "CVIDF1": 47.23269219003945,
+      "CVMA": 34.118080986379326,
+      "IDTP": 88784,
+      "IDFP": 97374,
+      "IDFN": 101001,
+      "CLEAR_TP": 165360,
+      "CLEAR_FP": 20798,
+      "CLEAR_FN": 24425,
+      "CLEAR_IDSW": 79811,
+      "MATLAB_version": "9.8.0.1323502 (R2020a)"
+    }
+  },
+  "timing": {
+    "unit": "synchronized dual-camera timestamps per second",
+    "scope": "full-video shared-GPU accuracy run; initialization and offline evaluation excluded",
+    "mean_e2e_fps_over_scenes": 0.4528148055113958,
+    "median_e2e_fps_over_scenes": 0.4489175756627477,
+    "frame_weighted_e2e_fps": 0.4208821747007869,
+    "harmonic_scene_fps": 0.40434634605214714,
+    "minimum_e2e_fps": 0.21157138035933595,
+    "maximum_e2e_fps": 0.63847892034804,
+    "VGGT_model_only_fps": 0.6295924489697904,
+    "stage_timing_source": "gmt_vggt_joint_test_fps_20261024.csv"
+  },
+  "comparison_to_gmt_native": {
+    "HOTA_delta": -12.667130930407986,
+    "IDF1_delta": -22.372540518110455,
+    "CVIDF1_delta": -30.828609656251082,
+    "CVMA_delta": -34.52538398714334,
+    "MOTA_delta": 2.5091550965566256,
+    "IDSW_delta": -4850,
+    "status": "official_point_joint_route_complete; temporal_route_and_other_controls_still_running"
+  },
+  "claim_boundary": "This is a complete official frozen GMT-detector + VGGT-1B TrackHead point-joint route on 14 legal raw-GT scenes with all 22 TEST videos inferred. It is not an Omega geometry result, does not use GT or track IDs in inference, and does not constitute the final cross-route ranking until temporal, 2D controls, and registered V2 continuation routes are evaluated."
+}
