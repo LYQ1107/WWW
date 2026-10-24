@@ -37,7 +37,8 @@ def match(rows, gt):
 
 
 def feature(row, width, height, no_geometry=False):
-    center = np.asarray(row["center"], np.float32); diag = np.diag(np.asarray(row["cov"], np.float32))
+    center = np.nan_to_num(np.asarray(row["center"], np.float32), nan=0.0, posinf=0.0, neginf=0.0)
+    diag = np.nan_to_num(np.diag(np.asarray(row["cov"], np.float32)), nan=1.0, posinf=1.0, neginf=1.0)
     geo = np.zeros(7, np.float32) if no_geometry else np.concatenate([center, diag, [row["quality"]]]).astype(np.float32)
     b = np.asarray(row["bbox"], np.float32)
     visual = np.asarray([b[0] / max(width, 1), b[1] / max(height, 1), b[2] / max(width, 1), b[3] / max(height, 1),
