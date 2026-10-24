@@ -1,5 +1,5 @@
 {
-  "status": "SINGLE_ROUTE_EFFECT_GATE_V1_V2_SEED22_NO_GEOMETRY_POINT_JOINT_2D_CONTROLS_COMPLETE_TEMPORAL_EVALUATION_RUNNING_V2_SEED24_CANCELLED",
+  "status": "SINGLE_ROUTE_EFFECT_GATE_COMPLETE_TEMPORAL_OFFICIAL_V2_SEED24_CANCELLED_NO_MULTI_SEED_AGGREGATE",
   "source_original_baselines_sha256": "8003a91955dd314b96ef1093b43896b2db16e187d79babff15a8102505cb6b07",
   "official_rows": [
     {
@@ -147,9 +147,9 @@
       "Frag": 1289,
       "CVMA": 68.30676818505151,
       "E2E_FPS": 0.7734590114844996,
-      "Status": "OFFICIAL_ROUTE_COMPLETE_14_VALID_GT_22_INFERENCE_AGGREGATE_PENDING",
+      "Status": "OFFICIAL_ROUTE_COMPLETE_14_VALID_GT_22_INFERENCE_SINGLE_SEED_EFFECT_GATE",
       "Parameters": "FROZEN_SEED_20261022; TEST_used_for_selection=false",
-      "Timing": "shared-GPU full-video mean; per-scene FPS in gmt_v2_joint_seed20261022_test_fps_20261024.csv; single-seed effect-gate result; no multi-seed aggregate in first gate",
+      "Timing": "shared-GPU full-video mean; per-scene FPS in gmt_v2_joint_seed20261022_test_fps_20261024.csv; no multi-seed aggregate in first effect gate",
       "delta_HOTA_vs_GMT": -5.046879503565421,
       "delta_IDF1_vs_GMT": -5.893235585772416
     },
@@ -167,7 +167,7 @@
       "Frag": 1210,
       "CVMA": 66.56743156729983,
       "E2E_FPS": 0.723982118075668,
-      "Status": "OFFICIAL_ROUTE_COMPLETE_14_VALID_GT_22_INFERENCE_AGGREGATE_PENDING",
+      "Status": "OFFICIAL_ROUTE_COMPLETE_14_VALID_GT_22_INFERENCE_SINGLE_SEED_EFFECT_GATE",
       "Parameters": "FROZEN_SEED_20261023; TEST_used_for_selection=false",
       "Timing": "shared-GPU full-video mean; frame-weighted FPS 0.712180158301926; harmonic scene FPS 0.6938239162452527; per-stage timing in gmt_v2_joint_seed20261023_test_fps_20261024.csv; seed20261024 cancelled before completion by user request",
       "delta_HOTA_vs_GMT": -4.30871435662411,
@@ -217,21 +217,21 @@
       "Method": "GMTDet + VGGT Temporal",
       "Detector": "GMT",
       "Association": "Single-view points",
-      "HOTA": "NOT_AVAILABLE",
-      "AssA": "NOT_AVAILABLE",
-      "DetA": "NOT_AVAILABLE",
-      "IDF1": "NOT_AVAILABLE",
-      "CVIDF1": "NOT_AVAILABLE",
-      "MOTA": "NOT_AVAILABLE",
-      "IDSW": "NOT_AVAILABLE",
-      "Frag": "NOT_AVAILABLE",
-      "CVMA": "NOT_AVAILABLE",
-      "E2E_FPS": "NOT_AVAILABLE",
-      "Status": "PENDING_TRAIN_VALIDATION_FREEZE_AND_FULL_TEST",
-      "Parameters": 0,
-      "Timing": "NOT_AVAILABLE; full TEST pending",
-      "delta_HOTA_vs_GMT": "NOT_AVAILABLE",
-      "delta_IDF1_vs_GMT": "NOT_AVAILABLE"
+      "HOTA": 52.46113106920245,
+      "AssA": 44.05927861162674,
+      "DetA": 62.972031119715496,
+      "IDF1": 55.70791316768765,
+      "CVIDF1": 39.535780690157814,
+      "MOTA": 75.50122507047449,
+      "IDSW": 1158,
+      "Frag": 1557,
+      "CVMA": 18.780198645836077,
+      "E2E_FPS": 0.654285345701112,
+      "Status": "OFFICIAL_COMPLETE_14_VALID_GT_22_INFERENCE",
+      "Parameters": "FROZEN_TEMPORAL_POINTS_16_CONF_0.3_SUPPORT_0.2; TEST_used_for_selection=false",
+      "Timing": "shared-GPU full-video mean over 22 scenes; frame-weighted FPS 0.649315810850013; harmonic scene FPS 0.633927113339453; model-only FPS 1.062184324245521; per-stage timing in gmt_vggt_temporal_test_fps_20261024.csv",
+      "delta_HOTA_vs_GMT": -13.603456129207075,
+      "delta_IDF1_vs_GMT": -24.40423149254009
     },
     {
       "Method": "GMTDet + VGGT Joint",
@@ -249,7 +249,7 @@
       "E2E_FPS": 0.4528148055113958,
       "Status": "OFFICIAL_COMPLETE_14_VALID_GT_22_INFERENCE",
       "Parameters": "FROZEN_JOINT_POINTS_32_CONF_0.2_SUPPORT_0.1; TEST_used_for_selection=false",
-      "Timing": "shared-GPU full-video mean over 22 scenes; frame-weighted FPS 0.4208821747007869; harmonic scene FPS 0.40434634605214714; per-stage and per-scene timing in gmt_vggt_joint_test_fps_20261024.csv; temporal official evaluator pending; multi-seed continuation cancelled",
+      "Timing": "shared-GPU full-video mean over 22 scenes; frame-weighted FPS 0.4208821747007869; harmonic scene FPS 0.40434634605214714; per-stage and per-scene timing in gmt_vggt_joint_test_fps_20261024.csv; temporal route now complete; multi-seed continuation cancelled",
       "delta_HOTA_vs_GMT": -12.667130930407986,
       "delta_IDF1_vs_GMT": -22.372540518110455
     }
@@ -260,5 +260,7 @@
   "new_TEST_used_for_selection": false,
   "parameter_note": "Zero means no association parameters trained in this experiment, not a zero-parameter detector/backbone.",
   "pilot_speed_excluded_from_main_table": "Short TRAIN prefix speed/quality reports are separate artifacts.",
-  "remaining": "VGGT-point temporal official evaluator and final single-route effect report; V2 seed20261024 was cancelled before official evaluation by user request, so no multi-seed aggregate will be produced"
+  "remaining": "No further multi-seed run in the first effect gate; seed20261024 cancellation is recorded and the temporal official route is complete."
 }
+
+

@@ -1,0 +1,144 @@
+{
+  "status": "OFFICIAL_COMPLETE_14_VALID_GT_22_INFERENCE",
+  "recorded_utc": "2026-10-24T09:24:37Z",
+  "experiment": "GMT_detector_replacement_vggt_point_association",
+  "route": "temporal",
+  "split": "TEST",
+  "TEST_used_for_selection": false,
+  "raw_GT_modified": false,
+  "source_sha256": "0d6b8bc62da81fa4423afd808ea6fc55d05face2ab57c32e7d49eeb69256a229",
+  "runner_sha256": "7b4e6727df94e7775a2cc4987bb0ab4c957aa74ff78078916724543d107ab53a",
+  "VGGT_checkpoint_sha256": "d15bf50a8615c8225ed48b51ea5cac673d82442ec0309036df555a053253afe0",
+  "detector_cache_lock_sha256": "496cde1a6261239466b0da08cf4196c9142f8c26aa6796c3bbcf9cd8f939cdcf",
+  "final_test_lock_sha256": "e6b64b32fb5e94b49b848b985523befe5a357847d4ddfdf78b3ee7dec9d6a1e3",
+  "test_metadata_sha256": "617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f",
+  "raw_gt_legal_scenes": [
+    1,
+    2,
+    3,
+    4,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    15,
+    16,
+    18,
+    19
+  ],
+  "blocked_raw_gt_scenes": [
+    5,
+    12,
+    13,
+    14,
+    17,
+    20,
+    21,
+    22
+  ],
+  "settings": {
+    "minimum_visibility": 0.5,
+    "minimum_confidence": 0.3,
+    "minimum_valid_points": 3,
+    "minimum_inside_points": 3,
+    "minimum_support": 0.2,
+    "maximum_reference_gap": 3,
+    "lost_retention": 30,
+    "points_per_person": 16,
+    "constant_position_cache": true,
+    "detector_mode": "live_verified",
+    "resource_mode": "shared_gpu"
+  },
+  "prediction_coverage": {
+    "complete_scenes": 22,
+    "frames": 29019,
+    "full_video": true,
+    "aggregate_manifest_sha256": "093dbed338e15be50226d9e447ab6074d3c4893beb3dd1b4f4d87f13dd424c33",
+    "blocked_raw_gt_scenes": [
+      5,
+      12,
+      13,
+      14,
+      17,
+      20,
+      21,
+      22
+    ]
+  },
+  "evaluation": {
+    "evaluated_legal_scenes": 14,
+    "blocked_scenes": [],
+    "metrics_sha256": "70d180f0bef0cd5715c79f1a392d8637264e301046270fdeb5f401274b2afd7a",
+    "metrics_path": "/data1/liuyeqiang/nas/A100/WorldMOT/vggt_point_association_20261023/test_evaluation_v1/temporal/metrics.json",
+    "TrackEval": {
+      "HOTA": 52.46113106920245,
+      "AssA": 44.05927861162674,
+      "DetA": 62.972031119715496,
+      "IDF1": 55.70791316768765,
+      "MOTA": 75.50122507047449,
+      "IDSW": 1158,
+      "Frag": 1557,
+      "CLR_TP": 165303,
+      "CLR_FN": 24482,
+      "CLR_FP": 20855
+    },
+    "VisionTrack_MATLAB": {
+      "CVIDF1": 39.535780690157814,
+      "CVMA": 18.780198645836077,
+      "IDTP": 74316,
+      "IDFP": 111842,
+      "IDFN": 115469,
+      "CLEAR_IDSW": 109016
+    }
+  },
+  "timing": {
+    "unit": "synchronized dual-camera timestamps per second",
+    "scope": "full-video shared-GPU accuracy run; initialization and offline evaluation excluded",
+    "mean_e2e_fps_over_scenes": 0.654285345701112,
+    "median_e2e_fps_over_scenes": 0.6602970297459938,
+    "frame_weighted_e2e_fps": 0.6493158108500126,
+    "harmonic_scene_fps": 0.6339271133394533,
+    "minimum_e2e_fps": 0.4262440743467303,
+    "maximum_e2e_fps": 0.850694661211753,
+    "VGGT_model_only_fps": 1.0621843242455213,
+    "stage_p50_s": {
+      "rgb_read_s": 0.04755812883377075,
+      "raw_cache_verify_s": 0.03694804757833481,
+      "GMT_detector_s": 0.21691620349884033,
+      "VGGT_aggregator_s": 0.5899861082434654,
+      "VGGT_track_head_s": 0.2771542891860008,
+      "point_preprocess_s": 0.13650085031986237,
+      "point_memory_total_s": 1.0351329073309898,
+      "point_postprocess_s": 0.0010143667459487915,
+      "VGGT_model_only_s": 0.8761655017733574,
+      "output_serialization_s": 0.001452803611755371,
+      "rgb_to_delivered_ids_s": 1.3766303658485413
+    },
+    "stage_p95_s": {
+      "rgb_read_s": 0.06261007189750671,
+      "raw_cache_verify_s": 0.05108342319726944,
+      "GMT_detector_s": 0.32604288682341576,
+      "VGGT_aggregator_s": 1.0566361933946609,
+      "VGGT_track_head_s": 0.5152118094265461,
+      "point_preprocess_s": 0.25485850125551224,
+      "point_memory_total_s": 1.933290434628725,
+      "point_postprocess_s": 0.0019640110433101652,
+      "VGGT_model_only_s": 1.4971618972718717,
+      "output_serialization_s": 0.03157742246985436,
+      "rgb_to_delivered_ids_s": 2.367611237615347
+    },
+    "fps_csv": "results/gmt_vggt_temporal_test_fps_20261024.csv"
+  },
+  "comparison_to_gmt_native": {
+    "HOTA_delta": -13.603456129207075,
+    "IDF1_delta": -24.40423149254009,
+    "CVIDF1_delta": -38.52552115613272,
+    "CVMA_delta": -49.86326632768659,
+    "MOTA_delta": 2.5376083462865893,
+    "IDSW_delta": -4886
+  },
+  "claim_boundary": "This is a complete official frozen GMT-detector + VGGT-1B TrackHead temporal route on 14 legal raw-GT scenes with all 22 TEST videos inferred. It is not a VGGT-Omega geometry result, does not use GT or track IDs in inference, and is a single registered route; no multi-seed aggregate is produced in the first effect gate."
+}
+

@@ -1,6 +1,6 @@
 # GMT detector replacement and VGGT point association
 
-Status: SINGLE_ROUTE_EFFECT_GATE_V1_V2_SEED22_NO_GEOMETRY_POINT_JOINT_2D_CONTROLS_COMPLETE_TEMPORAL_EVALUATION_RUNNING_V2_SEED24_CANCELLED. Registration date: 2026-10-23.
+Status: SINGLE_ROUTE_EFFECT_GATE_COMPLETE_TEMPORAL_OFFICIAL_V2_SEED24_CANCELLED_NO_MULTI_SEED_AGGREGATE. Registration date: 2026-10-23.
 
 The user execution specification is the attachment
 `72c424c4-a10d-471c-a81d-d2acf67a046b/Pasted text.txt`. It remains the
@@ -101,10 +101,9 @@ Frag 1,562; VisionTrack MATLAB is CVIDF1 47.23269 / CVMA 34.11808. This is
 the GMT pre-GTA detector plus the pretrained VGGT-1B TrackHead point-joint
 route, not an Ω geometry result. It is below GMT Native by -12.66713 HOTA,
 -22.37254 IDF1 and -30.82861 CVIDF1, while MOTA is +2.50916 and IDSW is
-4,850 lower. The temporal point route is in its official evaluator. The user
-then stopped the unfinished multi-seed continuation before determining whether
-the method has any effect; no new seed aggregate will be produced in this
-first effect gate.
+4,850 lower. The temporal point route is now also complete and is reported
+below. The user stopped the unfinished multi-seed continuation before spending
+more time on it; no new seed aggregate is produced in this first effect gate.
 
 The frozen GMTDet 2D controls have also completed all 22 TEST videos and the
 same official 14-scene legal scope. A0 IoU/motion obtains HOTA 57.65895 /
@@ -119,9 +118,8 @@ and stage-timing provenance is in `results/gmt_2d_iou_motion_test_gate_20261024.
 `results/gmt_2d_appearance_motion_test_gate_20261024.json` and
 `results/gmt_2d_appearance_motion_test_fps_20261024.csv`.
 The VGGT temporal and joint routes have now completed their registered
-six-scene TRAIN full-video validation and official TRAIN evaluation; temporal
-TEST inference is complete and its official evaluator is running under the
-frozen TRAIN-only lock.
+six-scene TRAIN full-video validation, full 22-video TEST inference and
+official legal-scope evaluation under the frozen TRAIN-only lock.
 Historical GMT/V2 TEST metrics are reference evidence only and are not
 hyperparameter-selection data.
 
@@ -196,8 +194,25 @@ Against GMT Native, this route is -12.66713 HOTA, -22.37254 IDF1 and
 -30.82861 CVIDF1, with +2.50916 MOTA and 4,850 fewer ID switches. Thus the
 joint point association does not show a net identity gain in this official
 route. This is a pretrained VGGT-1B TrackHead point experiment, not a
-VGGT-Ω geometry experiment; the temporal point route and other registered
-controls still have to finish before final cross-route conclusions.
+VGGT-Ω geometry experiment.
+
+### VGGT-point temporal official TEST Gate (2026-10-24)
+
+The frozen GMTDet + VGGT temporal route completed all 22 TEST videos and the
+same 14-scene legal raw-GT evaluation. It obtains HOTA **52.46113**, AssA
+**44.05928**, DetA **62.97203**, IDF1 **55.70791**, MOTA **75.50123**, IDSW
+**1,158**, Frag **1,557**, MATLAB CVIDF1 **39.53578** and CVMA **18.78020**.
+Compared with GMT Native this is **-13.60346 HOTA, -24.40423 IDF1,
+-38.52552 CVIDF1 and -49.86327 CVMA**; MOTA is +2.53761 and IDSW is 4,886
+lower. It therefore does not provide a net identity improvement.
+
+Mean live shared-GPU full-video throughput is **0.654285 synchronized
+dual-camera timestamps/s**; frame-weighted throughput is 0.649316, harmonic
+scene FPS is 0.633927, and VGGT model-only throughput is 1.062184 FPS. The
+stage P50/P95 and end-to-end timing are in
+`results/gmt_vggt_temporal_test_fps_20261024.csv`; the official provenance and
+metrics SHA are in `results/gmt_vggt_temporal_test_gate_20261024.json`. This
+is a VGGT-1B TrackHead point route, not a VGGT-Ω geometry result.
 
 ### GMTDet 2D-control official TEST Gates (2026-10-24)
 
@@ -373,8 +388,8 @@ The original two-stage ablation has also completed 22/22 TEST videos and the
 official legal-GT scope: HOTA 35.19849, AssA 47.59979, IDF1 41.57418,
 MOTA 31.89188, IDSW 373. Its 65,580 true positives and 124,205 misses explain
 why fewer ID switches are not evidence of superiority to GMT. The VGGT-point
-temporal route is still in its official evaluator; the V2 seed aggregate is
-intentionally not run in this first effect gate. No threshold is chosen from
+temporal route is now complete; the V2 seed aggregate is intentionally not run
+in this first effect gate. No threshold is chosen from
 the historical two-stage TEST reference.
 The merged CPU suite passes 79 tests, including NULL assignment, mask
 semantics, box storage precision, exact model-request replay integrity and

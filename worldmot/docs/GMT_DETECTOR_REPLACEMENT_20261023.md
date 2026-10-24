@@ -331,9 +331,18 @@ The immutable selection and partition hashes, source SHA, and the explicit
 `results/gmt_point_train_selection_20261023.json`. Complete six-scene TRAIN
 full-video validation and the frozen TEST lock are complete. The joint TEST
 route has now finished official evaluation (HOTA 53.39746 / IDF1 57.73960 /
-CVIDF1 47.23269 at mean full-video 0.452815 FPS); temporal inference is
-complete and its official evaluator is running. This point result is VGGT-1B TrackHead, not Ω geometry, and does not
-show a net identity gain over GMT Native.
+CVIDF1 47.23269 at mean full-video 0.452815 FPS); temporal inference and its
+official evaluator are also complete. This point result is VGGT-1B TrackHead,
+not Ω geometry, and does not show a net identity gain over GMT Native.
+
+The temporal route reports HOTA **52.46113**, IDF1 **55.70791**, CVIDF1
+**39.53578**, MOTA **75.50123**, IDSW **1,158** and mean live full-video
+throughput **0.654285 synchronized dual-camera timestamps/s** (frame-weighted
+0.649316; harmonic scene FPS 0.633927; VGGT model-only 1.062184 FPS). Against
+GMT Native, the deltas are -13.60346 HOTA, -24.40423 IDF1 and -38.52552
+CVIDF1, so it also does not demonstrate a net identity gain. The official
+timing and provenance are in `results/gmt_vggt_temporal_test_fps_20261024.csv`
+and `results/gmt_vggt_temporal_test_gate_20261024.json`.
 
 ### GMT V1 official TRAIN validation Gate completed (2026-10-23)
 
