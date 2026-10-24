@@ -47,8 +47,8 @@ def size_group(bbox, width, height):
 
 
 def main():
-    p = argparse.ArgumentParser(); p.add_argument("--cache", required=True); p.add_argument("--dataset-root", default="/data/DATASETS/TRACKING/JDE/VisionTrack"); p.add_argument("--output-dir", required=True)
-    a = p.parse_args(); out = Path(a.output_dir); out.mkdir(parents=True, exist_ok=True); ds = VisionTrack(a.dataset_root, split="train")
+    p = argparse.ArgumentParser(); p.add_argument("--cache", required=True); p.add_argument("--dataset-root", default="/data/DATASETS/TRACKING/JDE/VisionTrack"); p.add_argument("--output-dir", required=True); p.add_argument("--split", choices=["train", "test"], default="train")
+    a = p.parse_args(); out = Path(a.output_dir); out.mkdir(parents=True, exist_ok=True); ds = VisionTrack(a.dataset_root, split=a.split)
     object_rows=[]; breakdown=defaultdict(lambda: Counter()); all_summary=Counter(); scene_summary={}
     for cache in iter_complete_scenes(a.cache):
         frame_map = {int(p.frame_id): p for p in ds.synchronized_pairs(cache.scene)}; scene=Counter()
@@ -92,8 +92,7 @@ def main():
                         scene["different_person_pairs"] += 1; all_summary["different_person_pairs"] += 1
                         if np.isfinite(score): scene["different_person_ambiguous"] += 1; all_summary["different_person_ambiguous"] += 1
         scene_summary[str(cache.scene)] = dict(scene)
-    (out / "G1_object_support_all24.csv").write_text("")
-    with (out / "G1_object_support_all24.csv").open("w", newline="") as f:
+    with (out / f"G1_object_support_all{len(scene_summary)}.csv").open("w", newline="") as f:
         fields=list(object_rows[0]) if object_rows else ["scene"]; w=csv.DictWriter(f, fieldnames=fields); w.writeheader(); w.writerows(object_rows)
     rows=[]
     for group, c in sorted(breakdown.items()):
@@ -101,7 +100,7 @@ def main():
                      "unmatched": c["unmatched"], "low_quality": c["low_quality"], "high_quality": c["high_quality"]})
     with (out / "G1_object_support_size_crowd_breakdown.csv").open("w", newline="") as f:
         fields=list(rows[0]) if rows else ["size_group"]; w=csv.DictWriter(f, fieldnames=fields); w.writeheader(); w.writerows(rows)
-    (out / "G1_object_support_summary.json").write_text(json.dumps({"schema":"worldobject_g1_support_v1", "scenes":scene_summary, "summary":dict(all_summary), "cache":str(Path(a.cache).resolve()), "gt_role":"ORACLE_GT_MATCH_DIAGNOSTIC_ONLY"}, indent=2))
+    (out / "G1_object_support_summary.json").write_text(json.dumps({"schema":"worldobject_g1_support_v1", "split":a.split, "scenes":scene_summary, "summary":dict(all_summary), "cache":str(Path(a.cache).resolve()), "gt_role":"ORACLE_GT_MATCH_DIAGNOSTIC_ONLY"}, indent=2))
     print(json.dumps({"scenes":len(scene_summary), "observations":len(object_rows), "same_person_pairs":all_summary["same_person_pairs"], "different_person_ambiguous":all_summary["different_person_ambiguous"]}, indent=2))
 
 
