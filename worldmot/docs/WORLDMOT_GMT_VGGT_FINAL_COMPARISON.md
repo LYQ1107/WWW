@@ -93,7 +93,10 @@ The complete provenance is in `results/gmt_v1_test_gate_complete_20261023.json`
 and the raw official report is in
 `results/gmt_v1_test_official_raw_metrics_20261023.json`.
 
-Final VGGT-point TEST scores and final V2 route scores remain `NOT_AVAILABLE`.
+The final VGGT-point TEST scores remain `NOT_AVAILABLE`. The first frozen
+GMTDet+V2 joint route (seed 20261022) now has a complete official legal-scope
+score; the registered three-seed V2 aggregate remains `NOT_AVAILABLE` until
+seeds 20261023 and 20261024 finish.
 The VGGT temporal and joint routes have now completed their registered
 six-scene TRAIN full-video validation and official TRAIN evaluation; their
 independent TEST inference is running under a frozen TRAIN-only lock.
@@ -108,7 +111,15 @@ no-geometry route at that observation point had only 12 legal scenes because
 predictions for scenes 11 and 19 were missing; its diagnostic was HOTA
 60.70615 / IDF1 73.89260 / CVIDF1 72.01332 / CVMA 67.94222. These are
 partial legal-scope diagnostics, not the final full-22 route ranking; no
-TEST parameter was selected from them.
+TEST parameter was selected from them. The joint route has since been rerun
+and independently verified as a complete 22-video inference with the same
+metrics hash; the auditable route gate is
+`results/gmt_v2_joint_seed20261022_test_gate_20261024.json`, with per-scene
+timing in `results/gmt_v2_joint_seed20261022_test_fps_20261024.csv`.
+Its official legal-scope result is HOTA 61.01771 / IDF1 74.21891 /
+CVIDF1 72.69293 / CVMA 68.30677, or -5.04688 HOTA and -5.89324 IDF1 versus
+GMT Native. This is a completed frozen-seed route, not the final three-seed
+V2 aggregate.
 
 The GMT pre-GTA detector + fixed V1 association has now completed its
 official TRAIN validation Gate. All six registered validation videos are
@@ -179,9 +190,9 @@ data shard and all 24 timelines: 557,002 observations / 57,508 RGB images,
 1,041,985,391 compressed bytes, zero empty ROI descriptors. The independently
 frozen detector now exports GT-free TEST candidates concurrently. The
 registered V2 training/TEST controller and its actual process handle are
-included in the generated live snapshot. The first V2 wave has produced the
-partial legal-scope diagnostic above while the remaining full-video routes
-continue; no final route ranking is claimed until those complete gates exist.
+included in the generated live snapshot. The first V2 wave has now completed
+the joint seed-20261022 route gate above; no final three-seed route ranking is
+claimed until the remaining registered V2 routes complete.
 # Six-card execution and additional real evidence
 
 The current allocation stays within physical V100 cards **0/2/3/4/6/7**.
@@ -306,8 +317,10 @@ JSON gate artifact. The eight raw-GT-blocked scenes remain blocked without
 modifying GT.
 
 `build_gmt_point_comparison.py` creates the required partial official main
-JSON/CSV, error-attribution JSON and FPS CSV. Final point and V2 TEST scores remain
-`NOT_AVAILABLE` until their own complete official gates. Short TRAIN speed,
+JSON/CSV, error-attribution JSON and FPS CSV. Final point TEST scores and the
+aggregate V2 TEST score remain `NOT_AVAILABLE` until their own complete
+official gates. The completed joint seed-20261022 route is reported separately
+above and is not used to select TEST parameters. Short TRAIN speed,
 model-only throughput and historical complete TEST throughput have distinct
 scope labels. Raw per-frame timing aggregation for legacy P50/P95 remains
 explicitly pending.

@@ -1,0 +1,64 @@
+{
+  "status": "OFFICIAL_ROUTE_COMPLETE_14_VALID_GT_22_INFERENCE",
+  "recorded_utc": "2026-10-24T02:25:00Z",
+  "experiment": "GMT_detector_replacement_v2",
+  "route": "joint_seed20261022",
+  "split": "TEST",
+  "TEST_used_for_selection": false,
+  "raw_GT_modified": false,
+  "source_sha256": "c0ef87cc85759f654156c9ec71208bca12bc4f120cb0174264682b9015859e2e",
+  "checkpoint_sha256": "6cdfc6c5d57f3bb17470a53646b8f8121899da4a78b0183c5729f9ae59841fa2",
+  "final_test_lock_sha256": "e8760e8eff5a69b8716af747a66bc32503da632b8f66f5a095ef5de5163fdf52",
+  "test_metadata_sha256": "617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f",
+  "raw_gt_legal_scenes": [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 15, 16, 18, 19],
+  "prediction_coverage": {
+    "complete_scenes": 22,
+    "frames": 29019,
+    "full_video": true,
+    "blocked_raw_gt_scenes": [5, 12, 13, 14, 17, 20, 21, 22]
+  },
+  "evaluation": {
+    "evaluated_legal_scenes": 14,
+    "blocked_scenes": [],
+    "metrics_sha256": "97079638f3671cc9d52c34af5ca06b48d901c51fafe0f1ebfe788fbe7da749ee",
+    "TrackEval": {
+      "HOTA": 61.017707694844106,
+      "AssA": 60.227445225827594,
+      "DetA": 62.10987666049185,
+      "IDF1": 74.21890907445533,
+      "MOTA": 75.45643754775139,
+      "IDSW": 598,
+      "Frag": 1289,
+      "CLR_TP": 153813,
+      "CLR_FN": 35972,
+      "CLR_FP": 10010
+    },
+    "VisionTrack_MATLAB": {
+      "CVIDF1": 72.69292549942308,
+      "CVMA": 68.30676818505151,
+      "IDTP": 128524,
+      "IDFP": 35299,
+      "IDFN": 61261,
+      "CLEAR_TP": 153817,
+      "CLEAR_FP": 10006,
+      "CLEAR_FN": 35968,
+      "CLEAR_IDSW": 14175
+    }
+  },
+  "timing": {
+    "unit": "synchronized dual-camera timestamps per second",
+    "scope": "full-video shared-GPU accuracy run; initialization excluded",
+    "mean_e2e_fps": 0.7734590114844996,
+    "median_e2e_fps": 0.807586205073398,
+    "minimum_e2e_fps": 0.4364792495562153,
+    "maximum_e2e_fps": 1.014412822291817,
+    "harmonic_scene_fps": 0.7343955900521518
+  },
+  "comparison_to_gmt_native": {
+    "HOTA_delta": -5.046879503565421,
+    "IDF1_delta": -5.893235585772416,
+    "CVIDF1_delta": -5.368376711099716,
+    "status": "route_complete_but_three_seed_v2_aggregate_pending"
+  },
+  "claim_boundary": "This is a complete official route score for frozen joint seed 20261022 on the 14 legal raw-GT scenes, with all 22 TEST videos inferred. It is not the final three-seed GMTDet+V2 aggregate; seeds 20261023 and 20261024 remain in the registered continuation. No TEST parameter was selected from this score."
+}
