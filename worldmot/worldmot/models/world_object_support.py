@@ -65,6 +65,28 @@ def bbox_mask(bbox_xywh: Sequence[float], shape: tuple[int, int], margin: float 
     return out
 
 
+def map_bbox_to_model(bbox_xywh: Sequence[float], image_to_model: np.ndarray,
+                      model_shape: tuple[int, int] | None = None) -> np.ndarray:
+    """Map an original-RGB ``xywh`` box into pointmap pixel coordinates.
+
+    Ω predicts pointmaps after crop/resize/pad preprocessing. Detector boxes
+    remain in the original RGB frame, so sampling a pointmap with the raw box
+    silently selects the wrong pixels. Mapping all four corners keeps the
+    registered affine preprocessing transform explicit and clips only at the
+    pointmap boundary.
+    """
+    x, y, w, h = [float(v) for v in bbox_xywh]
+    corners = np.asarray([[x, y, 1.0], [x + w, y, 1.0],
+                          [x, y + h, 1.0], [x + w, y + h, 1.0]], dtype=np.float64)
+    mapped = (np.asarray(image_to_model, dtype=np.float64) @ corners.T).T
+    mapped = mapped[:, :2] / np.maximum(mapped[:, 2:3], 1e-12)
+    lo = np.min(mapped, axis=0); hi = np.max(mapped, axis=0)
+    if model_shape is not None:
+        mh, mw = [int(v) for v in model_shape]
+        lo = np.maximum(lo, 0.0); hi = np.minimum(hi, [mw, mh])
+    return np.asarray([lo[0], lo[1], max(0.0, hi[0] - lo[0]), max(0.0, hi[1] - lo[1])], dtype=np.float64)
+
+
 def _kmeans_depth(values: np.ndarray, iterations: int = 12) -> tuple[np.ndarray, float]:
     """Deterministic two-cluster 1-D k-means; returns labels and separation."""
     values = np.asarray(values, dtype=np.float64).reshape(-1)

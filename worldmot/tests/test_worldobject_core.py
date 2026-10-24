@@ -1,7 +1,7 @@
 import numpy as np
 
 from worldmot.models.multi_view_world_object import JointWorldObjectBuilder
-from worldmot.models.world_object_support import WorldObjectSupport, extract_world_object_support
+from worldmot.models.world_object_support import WorldObjectSupport, extract_world_object_support, map_bbox_to_model
 from worldmot.tracking.persistent_world_object_bank import PersistentWorldObjectBank
 from worldmot.geometry.dual_view_static_alignment import DualCameraStaticAligner
 from worldmot.geometry.world_alignment import Sim3
@@ -38,6 +38,12 @@ def test_support_is_not_a_gt_mask_and_depth_ambiguity_is_explicit():
     support = extract_world_object_support(pm, np.ones((20, 20)) * 2, (3, 3, 10, 10))
     assert support.ambiguity in {"DEPTH_NOT_SEPARATED", "DEPTH_CLUSTERED"}
     assert support.diagnostics["box_count"] > 0
+
+
+def test_bbox_mapping_uses_model_frame_and_clips():
+    matrix = np.asarray([[0.5, 0.0, 4.0], [0.0, 0.5, 2.0], [0.0, 0.0, 1.0]])
+    mapped = map_bbox_to_model([10, 20, 40, 20], matrix, (32, 32))
+    np.testing.assert_allclose(mapped, [9.0, 12.0, 20.0, 10.0])
 
 
 def test_sim3_round_trip_direction():

@@ -20,7 +20,7 @@ from worldmot.geometry.dual_view_static_alignment import DualCameraStaticAligner
 from worldmot.geometry.world_alignment import Sim3Aligner
 from worldmot.models.gmt_detection_cache import ImmutableGMTDetectionCache
 from worldmot.models.omega_geometry_backend import OmegaGeometryBackend
-from worldmot.models.world_object_support import extract_world_object_support
+from worldmot.models.world_object_support import extract_world_object_support, map_bbox_to_model
 from worldmot.runtime.detection_first import DetectionFirstWorldMOT
 from worldmot.runtime.online_worldmot import OnlineWorldMOT
 
@@ -86,7 +86,12 @@ class SceneState:
         for view, ds in sorted(detections.items()):
             pm, cf = frame.pointmaps[int(view)], frame.confidences[int(view)]
             for det in ds:
-                support = extract_world_object_support(pm, cf, det.bbox_xywh, max_points=64)
+                # Detector boxes are in original RGB coordinates. Ω pointmaps
+                # are in the crop/resize/pad model frame.
+                model_bbox = map_bbox_to_model(det.bbox_xywh,
+                                               frame.image_to_model.get(int(view), np.eye(3)),
+                                               pm.shape[:2])
+                support = extract_world_object_support(pm, cf, model_bbox, max_points=64)
                 box = transform.apply(support.box_points) if len(support.box_points) else np.empty((0, 3))
                 fg = transform.apply(support.foreground_points) if len(support.foreground_points) else np.empty((0, 3))
                 center = transform.apply(support.center[None])[0] if np.isfinite(support.center).all() else np.full(3, np.nan)

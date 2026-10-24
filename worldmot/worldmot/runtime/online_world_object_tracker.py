@@ -9,7 +9,7 @@ import numpy as np
 
 from ..models.detection_to_world import lift_detection
 from ..models.multi_view_world_object import JointWorldObjectBuilder
-from ..models.world_object_support import extract_world_object_support
+from ..models.world_object_support import extract_world_object_support, map_bbox_to_model
 from ..tracking.persistent_world_object_bank import PersistentWorldObjectBank
 from ..geometry.dual_view_static_alignment import DualCameraStaticAligner
 from ..runtime.detection_first import DetectionFirstWorldMOT
@@ -56,7 +56,10 @@ class OnlineWorldObjectTracker:
             pm = frame.pointmaps[int(view)]; cf = frame.confidences[int(view)]
             transform = alignment.result.transform if aligned else self.aligner.transform
             for det in ds:
-                sup = extract_world_object_support(pm, cf, det.bbox_xywh,
+                model_bbox = map_bbox_to_model(det.bbox_xywh,
+                                               frame.image_to_model.get(int(view), np.eye(3)),
+                                               pm.shape[:2])
+                sup = extract_world_object_support(pm, cf, model_bbox,
                                                    min_confidence=self.min_confidence)
                 if aligned:
                     box = transform.apply(sup.box_points) if len(sup.box_points) else sup.box_points
