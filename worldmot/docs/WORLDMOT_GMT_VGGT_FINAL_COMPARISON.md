@@ -1,6 +1,6 @@
 # GMT detector replacement and VGGT point association
 
-Status: COMPONENTS_VALIDATED_V1_TEST_V2_NO_GEOMETRY_POINT_JOINT_2D_CONTROLS_COMPLETE_REMAINING_ROUTES_RUNNING. Registration date: 2026-10-23.
+Status: SINGLE_ROUTE_EFFECT_GATE_V1_V2_SEED22_NO_GEOMETRY_POINT_JOINT_2D_CONTROLS_COMPLETE_TEMPORAL_EVALUATION_RUNNING_V2_SEED24_CANCELLED. Registration date: 2026-10-23.
 
 The user execution specification is the attachment
 `72c424c4-a10d-471c-a81d-d2acf67a046b/Pasted text.txt`. It remains the
@@ -101,8 +101,10 @@ Frag 1,562; VisionTrack MATLAB is CVIDF1 47.23269 / CVMA 34.11808. This is
 the GMT pre-GTA detector plus the pretrained VGGT-1B TrackHead point-joint
 route, not an Ω geometry result. It is below GMT Native by -12.66713 HOTA,
 -22.37254 IDF1 and -30.82861 CVIDF1, while MOTA is +2.50916 and IDSW is
-4,850 lower. The temporal point route and remaining V2 seeds are still
-running; no final cross-route ranking is claimed yet.
+4,850 lower. The temporal point route is in its official evaluator. The user
+then stopped the unfinished multi-seed continuation before determining whether
+the method has any effect; no new seed aggregate will be produced in this
+first effect gate.
 
 The frozen GMTDet 2D controls have also completed all 22 TEST videos and the
 same official 14-scene legal scope. A0 IoU/motion obtains HOTA 57.65895 /
@@ -117,9 +119,9 @@ and stage-timing provenance is in `results/gmt_2d_iou_motion_test_gate_20261024.
 `results/gmt_2d_appearance_motion_test_gate_20261024.json` and
 `results/gmt_2d_appearance_motion_test_fps_20261024.csv`.
 The VGGT temporal and joint routes have now completed their registered
-six-scene TRAIN full-video validation and official TRAIN evaluation; the
-independent temporal TEST inference remains running under a frozen TRAIN-only
-lock.
+six-scene TRAIN full-video validation and official TRAIN evaluation; temporal
+TEST inference is complete and its official evaluator is running under the
+frozen TRAIN-only lock.
 Historical GMT/V2 TEST metrics are reference evidence only and are not
 hyperparameter-selection data.
 
@@ -147,10 +149,12 @@ The independently frozen `joint_seed20261023` route has also completed all
 IDSW 506, Frag 1,210, MATLAB CVIDF1 72.46872 and CVMA 66.56743 at mean
 shared-GPU E2E 0.723982 FPS (frame-weighted 0.712180; harmonic scene FPS
 0.693824). This route is -4.30871 HOTA and -6.19267 IDF1 versus GMT Native;
-it is another completed seed, not the final three-seed aggregate. Its Gate and
-stage timing are in `results/gmt_v2_joint_seed20261023_test_gate_20261024.json`
-and `results/gmt_v2_joint_seed20261023_test_fps_20261024.csv`. Seed 20261024
-is now running under the pre-registered lock.
+it is another completed seed, not a multi-seed aggregate. Its Gate and stage
+timing are in `results/gmt_v2_joint_seed20261023_test_gate_20261024.json`
+and `results/gmt_v2_joint_seed20261023_test_fps_20261024.csv`. The registered
+seed20261024 continuation was stopped before official evaluation; its three
+complete and three partial scenes are audit-only in
+`results/gmt_v2_joint_seed20261024_cancelled_20261024.json`.
 
 The matched `no_geometry_seed20261022` ablation has also completed all 22
 TEST videos and the same 14-scene legal evaluation. It obtains HOTA 59.20433,
@@ -285,9 +289,10 @@ data shard and all 24 timelines: 557,002 observations / 57,508 RGB images,
 1,041,985,391 compressed bytes, zero empty ROI descriptors. The independently
 frozen detector now exports GT-free TEST candidates concurrently. The
 registered V2 training/TEST controller and its actual process handle are
-included in the generated live snapshot. The first V2 wave has now completed
-the joint seed-20261022 route gate above; no final three-seed route ranking is
-claimed until the remaining registered V2 routes complete.
+included in the generated live snapshot. The first V2 wave has completed the
+joint seed-20261022 route gate above. The user stopped the seed-20261024
+continuation before official evaluation, so no multi-seed route ranking or
+aggregate is claimed in this first effect gate.
 # Six-card execution and additional real evidence
 
 The current allocation stays within physical V100 cards **0/2/3/4/6/7**.
@@ -368,8 +373,9 @@ The original two-stage ablation has also completed 22/22 TEST videos and the
 official legal-GT scope: HOTA 35.19849, AssA 47.59979, IDF1 41.57418,
 MOTA 31.89188, IDSW 373. Its 65,580 true positives and 124,205 misses explain
 why fewer ID switches are not evidence of superiority to GMT. The VGGT-point
-temporal route and final V2 seed aggregate remain pending; no threshold is
-chosen from the historical two-stage TEST reference.
+temporal route is still in its official evaluator; the V2 seed aggregate is
+intentionally not run in this first effect gate. No threshold is chosen from
+the historical two-stage TEST reference.
 The merged CPU suite passes 79 tests, including NULL assignment, mask
 semantics, box storage precision, exact model-request replay integrity and
 causal 2D lifecycle tests.
@@ -418,10 +424,10 @@ JSON gate artifact. The eight raw-GT-blocked scenes remain blocked without
 modifying GT.
 
 `build_gmt_point_comparison.py` creates the required partial official main
-JSON/CSV, error-attribution JSON and FPS CSV. Final point TEST scores and the
-aggregate V2 TEST score remain `NOT_AVAILABLE` until their own complete
-official gates. The completed joint seed-20261022 route is reported separately
-above and is not used to select TEST parameters. Short TRAIN speed,
+JSON/CSV, error-attribution JSON and FPS CSV. The completed point TEST score
+and the single-seed V2 route scores are reported above; no aggregate V2 TEST
+score is produced in this first effect gate. The completed joint seed-20261022
+route is reported separately above and is not used to select TEST parameters. Short TRAIN speed,
 model-only throughput and historical complete TEST throughput have distinct
 scope labels. Raw per-frame timing aggregation for legacy P50/P95 remains
 explicitly pending.

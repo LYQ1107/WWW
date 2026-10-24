@@ -219,8 +219,9 @@ in `results/gmt_association_final_freeze_20261023.json`.
 Independent TEST inference has now started on the complete 22-video TEST
 metadata with the `gmt_pre_gta` detector in `live_verified` mode. The first
 wave contains `joint_seed20261022` and `no_geometry_seed20261022`; the
-`joint_seed20261023` route is complete and `joint_seed20261024` is the final
-registered seed now running. Because other registered V1 and
+`joint_seed20261023` route is complete. The registered `joint_seed20261024`
+continuation was stopped before official evaluation at the user's request to
+determine effect before spending time on multi-seed testing. Because other registered V1 and
 VGGT-point jobs share the six authorized cards, the TEST route is explicitly
 `shared_gpu`; its per-scene timing includes RGB decode, detector, Omega,
 query/memory, post-processing and flushed ID delivery. No formal metric is
@@ -330,8 +331,8 @@ The immutable selection and partition hashes, source SHA, and the explicit
 `results/gmt_point_train_selection_20261023.json`. Complete six-scene TRAIN
 full-video validation and the frozen TEST lock are complete. The joint TEST
 route has now finished official evaluation (HOTA 53.39746 / IDF1 57.73960 /
-CVIDF1 47.23269 at mean full-video 0.452815 FPS); temporal TEST remains in
-progress. This point result is VGGT-1B TrackHead, not Ω geometry, and does not
+CVIDF1 47.23269 at mean full-video 0.452815 FPS); temporal inference is
+complete and its official evaluator is running. This point result is VGGT-1B TrackHead, not Ω geometry, and does not
 show a net identity gain over GMT Native.
 
 ### GMT V1 official TRAIN validation Gate completed (2026-10-23)

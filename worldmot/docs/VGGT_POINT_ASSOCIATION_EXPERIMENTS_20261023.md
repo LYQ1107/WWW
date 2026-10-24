@@ -160,7 +160,8 @@ metric. Both partition results, the selection SHA, source SHA, and
 `results/gmt_point_train_selection_20261023.json`. Complete six-scene TRAIN
 full-video validation completed and the frozen TEST lock retained the above
 settings. The joint route has now completed its official 22-video TEST
-evaluation; temporal TEST remains in progress.
+evaluation; temporal inference is complete and the official evaluator is in
+progress.
 
 ## Joint TEST Gate completed (2026-10-24)
 
@@ -184,5 +185,6 @@ Relative to GMT Native, the route is -12.66713 HOTA, -22.37254 IDF1 and
 -30.82861 CVIDF1, with +2.50916 MOTA and 4,850 fewer ID switches. It therefore
 does not demonstrate a net identity gain in this route. This is a point
 association experiment using VGGT-1B TrackHead; it is not a VGGT-Ω geometry
-result. Temporal TEST, the 2D controls and the remaining V2 routes are still
-required for the final comparison.
+result. The temporal official metrics remain to be read. The 2D controls are
+complete, seed20261024 was cancelled before official evaluation at the user's
+request, and no multi-seed aggregate is part of this first effect gate.
