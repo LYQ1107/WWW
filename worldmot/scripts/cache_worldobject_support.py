@@ -62,10 +62,16 @@ class SceneState:
         self.previous_original = None; self.previous_original_world = {}
 
     def step(self, images, timestamp):
+        started = time.perf_counter()
+        t = time.perf_counter()
         self.detector_cache.set_context(self.scene_id, int(timestamp))
         detections = self.detector_cache.infer(images)
+        detector_s = time.perf_counter() - t
+        t = time.perf_counter()
         frame = self.omega.reconstruct(images, int(timestamp))
+        omega_wall_s = time.perf_counter() - t
         DetectionFirstWorldMOT._set_dynamic_masks(frame, detections)
+        t = time.perf_counter()
         if self.previous is None:
             align = self.aligner.initialize()
             original = self.original_aligner.initialize()
@@ -80,8 +86,10 @@ class SceneState:
                 original = self.original_aligner.update(src, dst)
             else:
                 original = self.original_aligner.update(np.empty((0, 3)), np.empty((0, 3)))
+        alignment_s = time.perf_counter() - t
         transform = align.result.transform if align.result.success else self.aligner.transform
         aligned = bool(align.result.success and frame.status == "OK")
+        t = time.perf_counter()
         rows = []
         for view, ds in sorted(detections.items()):
             pm, cf = frame.pointmaps[int(view)], frame.confidences[int(view)]
@@ -110,7 +118,14 @@ class SceneState:
             self.previous_original = frame
             self.previous_original_world = {v: original.transform.apply(pm.reshape(-1, 3)).reshape(pm.shape)
                                             for v, pm in frame.pointmaps.items()}
-        return rows, frame, detections, align, original, aligned
+        support_s = time.perf_counter() - t
+        runtime = {"detector_s": float(detector_s),
+                   "omega_wall_s": float(omega_wall_s),
+                   "omega_model_only_s": float(frame.diagnostics.get("model_only_s", omega_wall_s)),
+                   "omega_preprocess_s": float(frame.diagnostics.get("preprocess_s", 0.0)),
+                   "alignment_s": float(alignment_s), "support_s": float(support_s),
+                   "total_cache_step_s": float(time.perf_counter() - started)}
+        return rows, frame, detections, align, original, aligned, runtime
 
     def restore(self, images, timestamp):
         # Re-run the last completed timestamp to restore the causal alignment
@@ -162,7 +177,7 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
         if not buffer: return
         offsets = [0]; timestamps=[]; cameras=[]; det_ids=[]; bboxes=[]; scores=[]; centers=[]; covs=[]
         qualities=[]; fg_frac=[]; ambiguity=[]; box_all=[]; fg_all=[]; ids=[]; aligns=[]; camera_json=[]; counts=collections.Counter()
-        for pair, rows, align, original, detections in buffer:
+        for pair, rows, align, original, detections, runtime in buffer:
             timestamps.append(int(pair.frame_id)); counts["timestamps"] += 1
             for row in rows:
                 cameras.append(row["view"]); det_ids.append(row["detection_id"]); bboxes.append(row["bbox"]); scores.append(row["score"])
@@ -204,15 +219,17 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
                         "residual_p95": safe_float(o.residual_p95), "scale": safe_float(o.transform.scale)},
                     "camera_ids": sorted(int(v) for v in pair.images),
                     "image_ids": {str(v): int(rec.image_id) for v, rec in pair.images.items()}}
-                           for pair, _, a, o, _ in buffer]}
+                           for pair, _, a, o, _, rt in buffer]}
+        for record, (_, _, _, _, _, runtime) in zip(side["records"], buffer):
+            record["runtime"] = runtime
         atomic_json(path.with_suffix(".json"), side); entries.append(side); totals.update(counts); completed.extend(timestamps); buffer=[]
         atomic_json(dest / "progress.json", {"scene": int(sid), "done": len(completed), "expected": len(expected),
                                                "counts": dict(totals), "elapsed_s": time.perf_counter() - started})
         print(json.dumps({"scene": int(sid), "done": len(completed), "expected": len(expected), "observations": totals["observations"]}), flush=True)
 
     for pair in pairs[len(completed):]:
-        images = read_images(ds, pair); rows, frame, detections, align, original, aligned = state.step(images, pair.frame_id)
-        buffer.append((pair, rows, align, original, detections))
+        images = read_images(ds, pair); rows, frame, detections, align, original, aligned, runtime = state.step(images, pair.frame_id)
+        buffer.append((pair, rows, align, original, detections, runtime))
         if len(buffer) >= int(shard_frames): flush()
     flush()
     atomic_json(dest / "manifest.json", {"schema": SCHEMA, "scene": int(sid),
