@@ -37,8 +37,8 @@ def as_support(r):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--cache",required=True);p.add_argument("--dataset-root",default="/data/DATASETS/TRACKING/JDE/VisionTrack");p.add_argument("--output-dir",required=True)
-    a=p.parse_args();out=Path(a.output_dir);out.mkdir(parents=True,exist_ok=True);ds=VisionTrack(a.dataset_root,split="train")
+    p=argparse.ArgumentParser();p.add_argument("--cache",required=True);p.add_argument("--dataset-root",default="/data/DATASETS/TRACKING/JDE/VisionTrack");p.add_argument("--output-dir",required=True);p.add_argument("--split",choices=["train","test"],default="train")
+    a=p.parse_args();out=Path(a.output_dir);out.mkdir(parents=True,exist_ok=True);ds=VisionTrack(a.dataset_root,split=a.split)
     per_scene={}; curve=[]; total=Counter(); rows=[]
     for cache in iter_complete_scenes(a.cache):
         frames={int(x.frame_id):x for x in ds.synchronized_pairs(cache.scene)}; c=Counter()
@@ -71,7 +71,7 @@ def main():
         rows.append({"threshold":float(threshold),"accepted":len(accepted),"same_person_recall":pos/max(1,total_pos),"different_person_false_merge_rate":neg/max(1,total_neg)})
     with (out/"G2_false_merge_vs_correct_fusion.csv").open("w",newline="") as f:
         fields=list(rows[0]);w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(rows)
-    (out/"G2_multiview_object_all24.csv").write_text(json.dumps({"schema":"worldobject_g2_formation_v1","per_scene":per_scene,"summary":dict(total),"candidate_pairs":len(curve),"gt_role":"ORACLE_GT_MATCH_DIAGNOSTIC_ONLY","selection":"thresholds_swept_on_TRAIN_only"},indent=2))
+    (out/"G2_multiview_object_all24.csv").write_text(json.dumps({"schema":"worldobject_g2_formation_v1","split":a.split,"per_scene":per_scene,"summary":dict(total),"candidate_pairs":len(curve),"gt_role":"ORACLE_GT_MATCH_DIAGNOSTIC_ONLY","selection":"thresholds_swept_on_TRAIN_only" if a.split=="train" else "diagnostic_only_no_threshold_selection"},indent=2))
     print(json.dumps({"scenes":len(per_scene),"frames":total["frames"],"fused":total["fused"],"correct_fused":total["correct_fused"],"wrong_fused":total["wrong_fused"],"candidate_pairs":len(curve)},indent=2))
 
 
