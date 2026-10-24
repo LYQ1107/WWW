@@ -56,6 +56,37 @@ class FrozenUpdateHead:
                 float(self.torch.sigmoid(out["birth_logit"]).detach().cpu()[0]),
                 out["memory_delta"].detach().cpu().numpy()[0].astype(np.float32))
 
+    def batch(self, items):
+        """Run the frozen head once for all hypotheses in a frame.
+
+        This is numerically equivalent to repeated single-row calls, but
+        avoids thousands of tiny host/device synchronizations during replay.
+        The batch is still strictly causal: each item's memory was selected
+        from the bank before this frame's update.
+        """
+        if not items:
+            return []
+        geos, visuals, memories = [], [], []
+        for row, width, height, memory in items:
+            center = np.nan_to_num(np.asarray(row["center"], np.float32), nan=0.0, posinf=0.0, neginf=0.0)
+            diag = np.nan_to_num(np.diag(np.asarray(row["cov"], np.float32)), nan=1.0, posinf=0.0, neginf=0.0)
+            geo = (np.zeros(7, np.float32) if self.no_geometry
+                   else np.concatenate([center, diag, [float(row["quality"])]])).astype(np.float32)
+            b = np.asarray(row["bbox"], np.float32)
+            visual = np.asarray([b[0] / max(width, 1), b[1] / max(height, 1),
+                                 b[2] / max(width, 1), b[3] / max(height, 1),
+                                 row["score"], row["foreground_fraction"],
+                                 float(row["view"] == 1), float(row["view"] == 2)], np.float32)
+            geos.append(geo); visuals.append(visual); memories.append(np.asarray(memory, np.float32).reshape(16))
+        with self.torch.inference_mode():
+            out = self.model(self.torch.as_tensor(np.asarray(geos), device=self.device),
+                             self.torch.as_tensor(np.asarray(visuals), device=self.device),
+                             self.torch.as_tensor(np.asarray(memories), device=self.device))
+            gates = out["update_gate"].detach().cpu().numpy().reshape(-1)
+            births = self.torch.sigmoid(out["birth_logit"]).detach().cpu().numpy().reshape(-1)
+            deltas = out["memory_delta"].detach().cpu().numpy().astype(np.float32)
+        return [(float(g), float(b), d) for g, b, d in zip(gates, births, deltas)]
+
 
 def run_scene(cache, out_scene, pair_by_timestamp=None, learned=None):
     out_scene.mkdir(parents=True,exist_ok=True); bank=PersistentWorldObjectBank(min_hits=1); builder=JointWorldObjectBuilder(); rows=[]; timings=[]
@@ -71,6 +102,8 @@ def run_scene(cache, out_scene, pair_by_timestamp=None, learned=None):
         if learned is not None:
             pair = pair_by_timestamp.get(int(fr["timestamp"]))
             dims = {int(v): (int(rec.width), int(rec.height)) for v, rec in pair.images.items()} if pair is not None else {}
+            batch_items = []
+            batch_indices = []
             for i, hyp in enumerate(hyps):
                 rep = getattr(hyp.observations[0], "cache_row", None) if hyp.observations else None
                 if rep is None: continue
@@ -81,7 +114,8 @@ def run_scene(cache, out_scene, pair_by_timestamp=None, learned=None):
                 if bank.objects:
                     nearest = min(bank.objects.values(), key=lambda x: float(np.linalg.norm(x.center - hyp.center)))
                     memory = memory_by_gid.get(int(nearest.global_id), memory)
-                gate, birth, delta = learned(rep, width, height, memory)
+                batch_items.append((rep, width, height, memory)); batch_indices.append((i, hyp))
+            for (i, hyp), (gate, birth, delta) in zip(batch_indices, learned.batch(batch_items)):
                 hyp.diagnostics["learned_update_gate"] = gate
                 hyp.diagnostics["learned_birth_probability"] = birth
                 delta_by_hyp[i] = delta
@@ -122,3 +156,4 @@ def main():
 
 
 if __name__=="__main__":main()
+
