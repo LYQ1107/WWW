@@ -19,7 +19,7 @@ def val(x):
 
 
 def main():
-    p = argparse.ArgumentParser(); p.add_argument("--cache", required=True); p.add_argument("--output-dir", required=True)
+    p = argparse.ArgumentParser(); p.add_argument("--cache", required=True); p.add_argument("--output-dir", required=True); p.add_argument("--split", choices=["train", "test"], default="train")
     a = p.parse_args(); out = Path(a.output_dir); out.mkdir(parents=True, exist_ok=True)
     rows = []; summary = {}
     for cache in iter_complete_scenes(a.cache):
@@ -55,13 +55,13 @@ def main():
             "g0b_scale_median": median("g0b_scale"),
             "g0b_object_build_blocked_rate": float(np.mean([r["object_build_blocked"] for r in scene_rows])) if scene_rows else 0.0,
             "g0b_failure_reasons": dict(Counter(r["g0b_reason"] for r in scene_rows if not r["g0b_success"]))}
-    csv_path = out / "G0_world_alignment_all24.csv"
+    csv_path = out / f"G0_world_alignment_all{len(summary)}.csv"
     fields = list(rows[0]) if rows else ["scene", "timestamp"]
     with csv_path.open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fields); w.writeheader(); w.writerows(rows)
     summary_path = out / "G0_world_alignment_per_scene.json"
     summary_path.write_text(json.dumps({"schema": "worldobject_g0_alignment_v1", "cache": str(Path(a.cache).resolve()),
-                                        "scenes": summary, "timestamps": len(rows),
+                                        "split": a.split, "scenes": summary, "timestamps": len(rows),
                                         "note": "G0-A is the original first-view alignment recorded alongside G0-B; errors are internal consistency, not absolute metric accuracy."}, indent=2, allow_nan=False))
     print(json.dumps({"timestamps": len(rows), "scenes": len(summary), "csv": str(csv_path), "summary": str(summary_path)}, indent=2))
 
