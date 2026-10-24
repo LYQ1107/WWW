@@ -1,0 +1,18 @@
+{
+  "status": "CHECKPOINT_TENSOR_COUNTS_MATCH_LOADED_MODEL_MANIFEST",
+  "device": "CPU",
+  "checkpoint": "/data1/liuyeqiang/WWW/outputs/stage2_single_gpu/model_20000.pth",
+  "checkpoint_sha256": "cd72823824d16c86ed27c2dfc8323de610aa9f6c0c0b29249aa3de609deabce8",
+  "checkpoint_state_tensor_elements_with_buffers": 53533653,
+  "total_model_parameters_excluding_BN_buffers": 53515309,
+  "matches_recorded_loaded_GMT_parameter_count": true,
+  "native_association_transformer_parameters": 21714048,
+  "frozen_ROI_descriptor_parameters": 9078784,
+  "all_loaded_roi_association_descriptor_classifier_parameters": 31387423,
+  "all_loaded_roi_scope": "Every roi_heads.* state tensor except running_mean, running_var and num_batches_tracked. This includes the descriptor and training identity classifier, not just the online transformer.",
+  "optimized_parameters_in_current_new_route_experiments": 0,
+  "inference_total_model_parameters_from_real_loaded_manifest": 53515309,
+  "count_method": "torch.load(weights_only=True, mmap=True, map_location=cpu); sum numel with module-prefix and buffer filters; no forward or GPU work",
+  "architecture_source": "/data1/liuyeqiang/WWW_cir_gmt_runtime_20261016/sources/p2_full_controls_v2/gtr/modeling/roi_heads/gtr_roi_heads.py",
+  "note": "Pretrained native association model size is separate from the count of parameters optimized during the current research experiment. A raw state-dict tensor-element sum includes buffers and must not be reported as the model parameter count."
+}

@@ -2,6 +2,13 @@
 
 Status: SINGLE_ROUTE_EFFECT_GATE_COMPLETE_TEMPORAL_OFFICIAL_V2_SEED24_CANCELLED_NO_MULTI_SEED_AGGREGATE. Registration date: 2026-10-23.
 
+Reporting audit update: the reproducible table builder, complete-video CPU
+error attribution, actual TEST illustrations and provenance corrections are
+documented in [GMT_POINT_REPORTING_AUDIT_20261024.md](GMT_POINT_REPORTING_AUDIT_20261024.md).
+Post-hoc attribution is running; the full research goal remains active.
+New multi-seed work is stopped under
+`configs/gmt_point_effect_gate_policy_20261024.json`.
+
 The user execution specification is the attachment
 `72c424c4-a10d-471c-a81d-d2acf67a046b/Pasted text.txt`. It remains the
 completion contract. Negative pilots do not stop the registered comparisons.

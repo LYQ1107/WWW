@@ -1,117 +1,218 @@
 #!/usr/bin/env python3
-"""Publish partial official table without replacing missing scores by zero."""
+"""Rebuild official tables from complete frozen routes; CPU-only reporting."""
+from __future__ import annotations
+import argparse
+from collections import defaultdict
 import csv
 import json
 from pathlib import Path
 import statistics
-from worldmot.models.person_detector import sha256_file
+import numpy as np
+from gmt_point_report_common import NAS, FIELDS, artifact, new_routes, read_json, sha, validate_route
 
-HERE=Path(__file__).resolve().parents[1]
-NAS=Path('/data1/liuyeqiang/nas/A100/WorldMOT')
-FIELDS=['HOTA','AssA','DetA','IDF1','CVIDF1','MOTA','IDSW','Frag','CVMA']
+HERE = Path(__file__).resolve().parents[1]
+NA = 'NOT_AVAILABLE'
+
+
+def write_csv(path, rows, fields=None):
+    fields = fields or list(dict.fromkeys(k for row in rows for k in row))
+    with Path(path).open('w') as stream:
+        writer = csv.DictWriter(stream, fieldnames=fields, extrasaction='ignore', lineterminator='\n')
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def extract(data):
-    return {**{k:v for k,v in data['TrackEval']['combined'].items() if k in FIELDS},
-        **{k:v for k,v in data['VisionTrack_MATLAB']['combined'].items() if k in FIELDS}}
+    return {**{k: v for k, v in data['TrackEval']['combined'].items() if k in FIELDS},
+            **{k: v for k, v in data['VisionTrack_MATLAB']['combined'].items() if k in FIELDS}}
+
+
+def throughput(manifests):
+    frames = sum(m['frames'] for m in manifests)
+    seconds = sum(m['real_e2e_seconds'] for m in manifests)
+    values = [m['real_e2e_fps'] for m in manifests]
+    return dict(frames=frames, real_e2e_seconds=seconds, frame_weighted_fps=frames / seconds,
+                mean_scene_fps=statistics.mean(values), median_scene_fps=statistics.median(values),
+                harmonic_scene_fps=len(values) / sum(1 / x for x in values))
+
+
+def checkpoint_parameters(path):
+    if not Path(path).is_file():
+        return NA
+    import torch
+    payload = torch.load(path, map_location='cpu', weights_only=True, mmap=True)
+    return sum(t.numel() for t in payload['model'].values())
 
 
 def main():
-    output=HERE/'results';source=output/'gmt_vggt_original_official_baselines.json'
-    original=json.loads(source.read_text())['methods'];rows=[]
-    def row(name,detector,association,metrics=None,fps=None,**extra):
-        rows.append({'Method':name,'Detector':detector,'Association':association,
-            **{k:metrics.get(k,'NOT_AVAILABLE') if metrics else 'NOT_AVAILABLE' for k in FIELDS},
-            'E2E_FPS':fps if fps is not None else 'NOT_AVAILABLE',
-            'Status':'OFFICIAL_COMPLETE_14_VALID_GT_22_INFERENCE' if metrics else 'PENDING_TRAIN_VALIDATION_FREEZE_AND_FULL_TEST',**extra})
-    native=original['gmt_native'];row('GMT Native','GMT','Native GTA',extract(native),native['real_e2e_fps'],
-        Parameters='NOT_AVAILABLE_PENDING_ASSOCIATION_COUNT_AUDIT',Timing='full-video delivered throughput; per-frame latency differs')
-    old=original['v1'];row('Original V1','RTMDet','Omega 3D rules',extract(old),old['real_e2e_fps'],Parameters=0,Timing=old['timing_scope'])
-    seeds=[original[f'v2_joint_seed{x}'] for x in [20261022,20261023,20261024]]
-    scores=[extract(x) for x in seeds];mean={k:statistics.mean(x[k] for x in scores) for k in FIELDS}
-    row('Original V2 (3-seed mean)','RTMDet','PWQT',mean,statistics.mean(x['real_e2e_fps'] for x in seeds),
-        Parameters='NOT_AVAILABLE_PENDING_ASSOCIATION_COUNT_AUDIT',Timing='mean of real full-video FPS; three seeds',
-        standard_deviation={k:statistics.pstdev(x[k] for x in scores) for k in FIELDS})
-    specs=[('GMTDet + 2D IoU/Motion','IoU/Motion',0,NAS/'final_comparison_20261023/2d_controls_v1','iou_motion','test','test_evaluation'),
-        ('GMTDet + 2D Appearance/Motion','ROI/Motion',0,NAS/'final_comparison_20261023/2d_controls_v1','appearance_motion','test','test_evaluation'),
-        ('GMTDet + V1','Omega 3D rules',0,NAS/'gmt_detector_comparison_20261023','gmt_v1_v2','test','evaluation'),
-        ('GMTDet + V2','PWQT','NOT_AVAILABLE_PENDING_FIT',NAS/'gmt_detector_comparison_20261023','gmt_v2_joint_seed20261022','test','evaluation'),
-        ('GMTDet + VGGT Temporal','Single-view points',0,NAS/'vggt_point_association_20261023','temporal','test_v1','test_evaluation_v1'),
-        ('GMTDet + VGGT Joint','Multi-view points',0,NAS/'vggt_point_association_20261023','joint','test_v1','test_evaluation_v1')]
-    for name,association,parameters,root,method,pred_parent,eval_parent in specs:
-        if association in ['Omega 3D rules','PWQT']:
-            pred=root/f'{pred_parent}_{method}';evaluation=root/f'{eval_parent}_{method}/metrics.json'
-        else:pred=root/pred_parent/method;evaluation=root/eval_parent/method/'metrics.json'
-        metrics=None;fps=None;timing='NOT_AVAILABLE; full TEST pending'
-        if evaluation.exists():
-            data=json.loads(evaluation.read_text());assert data['status']=='COMPLETE_VALID_SCOPE'
-            assert not data['raw_GT_modified'] and not data['custom_metrics_used'] and data['box_source']=='tracks_2d_by_camera'
-            manifests=[json.loads(p.read_text()) for p in pred.glob('scene_*/manifest.json')]
-            assert len(manifests)==22 and all(m['status']=='COMPLETE' and m['full_video'] and not m['GT_in_inference'] for m in manifests)
-            assert sum(m['frames'] for m in manifests)==29019
-            metrics=extract(data)
-            if all(m.get('real_e2e_seconds') is not None for m in manifests):fps=29019/sum(m['real_e2e_seconds'] for m in manifests)
-            timing='real RGB-to-ID full-video throughput; GPU sharing recorded in manifests; not exclusive latency ranking'
-        row(name,'GMT',association,metrics,fps,Parameters=parameters,Timing=timing)
-    for r in rows:
-        r['delta_HOTA_vs_GMT']=r['HOTA']-rows[0]['HOTA'] if isinstance(r['HOTA'],(int,float)) else 'NOT_AVAILABLE'
-        r['delta_IDF1_vs_GMT']=r['IDF1']-rows[0]['IDF1'] if isinstance(r['IDF1'],(int,float)) else 'NOT_AVAILABLE'
-    report={'status':'PARTIAL_NEW_METHOD_OFFICIAL_TEST_PENDING' if any(r['HOTA']=='NOT_AVAILABLE' for r in rows) else 'ALL_PRIMARY_OFFICIAL_SCORES_AVAILABLE',
-        'source_original_baselines_sha256':sha256_file(source),'official_rows':rows,
-        'raw_GT_modified':False,'official_valid_GT_scenes':14,'inference_required_scenes':22,
-        'new_TEST_used_for_selection':False,
-        'parameter_note':'Zero means no association parameters trained in this experiment, not a zero-parameter detector/backbone.',
-        'pilot_speed_excluded_from_main_table':'Short TRAIN prefix speed/quality reports are separate artifacts.',
-        'remaining':'Matched-budget V2 fit and all new frozen full TEST, per-scene attribution and exclusive timing audit'}
-    (output/'gmt_vggt_point_final_comparison.json').write_text(json.dumps(report,indent=2)+'\n')
-    columns=['Method','Detector','Association','Parameters',*FIELDS,'E2E_FPS','delta_HOTA_vs_GMT','delta_IDF1_vs_GMT','Status','Timing']
-    with (output/'gmt_vggt_point_final_comparison.csv').open('w') as f:
-        writer=csv.DictWriter(f,fieldnames=columns,extrasaction='ignore');writer.writeheader();writer.writerows(rows)
-    fps_rows=[]
-    for name,data in original.items():
-        fps_rows.append({'scope':'COMPLETE_22_TEST_VIDEOS','method':name,'stage':'full_video_delivery',
-            'timestamps':29019,'real_e2e_FPS':data['real_e2e_fps'],'VGGT_model_only_FPS':'NOT_AVAILABLE',
-            'P50_s':'NOT_AVAILABLE_PENDING_RAW_TIMING_AGGREGATION','P95_s':'NOT_AVAILABLE_PENDING_RAW_TIMING_AGGREGATION',
-            'conditions':data['timing_scope'],'source':data['source_metrics']['path']})
-    point=NAS/'vggt_point_association_20261023';speed=point/'position_cache_e2e_parity_v1.json'
-    if speed.exists():
-        audit=json.loads(speed.read_text())
-        for mode in ['before','after']:
-            m=audit[mode];model=m['stages']['VGGT_model_only_s']
-            for stage,values in {'rgb_to_delivered_ID':m['e2e'],**m['stages']}.items():
-                fps_rows.append({'scope':'32_TRAIN_TIMESTAMPS_CONTROLLED_SPEED_ONLY','method':'A3_position_cache_'+mode,'stage':stage,
-                    'timestamps':audit['frames'],'real_e2e_FPS':m['real_e2e_fps'] if stage=='rgb_to_delivered_ID' else 'NOT_APPLICABLE',
-                    'VGGT_model_only_FPS':audit['frames']/model['total_s'] if stage=='VGGT_model_only_s' else 'NOT_APPLICABLE',
-                    'P50_s':values['p50_s'],'P95_s':values['p95_s'],
-                    'conditions':'exclusive single V100 GPU3; real live detector; FP16 Aggregator / FP32 TrackHead',
-                    'source':str(speed)})
-    with (output/'gmt_vggt_point_fps.csv').open('w') as f:
-        writer=csv.DictWriter(f,fieldnames=['scope','method','stage','timestamps','real_e2e_FPS','VGGT_model_only_FPS','P50_s','P95_s','conditions','source'])
-        writer.writeheader();writer.writerows(fps_rows)
-    diagnostic_files=['train_temporal_default_fullscene8_diagnostic_v2.json','train_joint_default_fullscene8_diagnostic_v2.json',
-        'train_joint_registered_k16_c0.2_s0.1_first32_diagnostic_v1.json']
-    diagnostics=[]
-    for name in diagnostic_files:
-        path=point/name
-        if path.exists():
-            d=json.loads(path.read_text());diagnostics.append({'artifact':str(path),'sha256':sha256_file(path),
-                'scope':d['scope'],'counts':d['counts'],'official_TEST_metrics':False})
-    attribution={'status':'TRAIN_DIAGNOSTICS_ONLY_FORMAL_TEST_ERROR_ATTRIBUTION_PENDING',
-        'raw_GT_modified':False,'diagnostics':diagnostics,
-        'engineering_failures_preserved':[
-            {'failure':'bbox rectangle incorrectly represented as real instance mask','preserved_attempt':'gmt_detector_comparison_20261023/train_v1_visibility_audit2_v1',
-             'fix_evidence':'results/gmt_bbox_visibility_evidence_audit_v2.json'},
-            {'failure':'float64 xyxy subtraction versus FP32 xywh cache; 0.0000076294 pixel width delta',
-             'preserved_attempt':'gmt_detector_comparison_20261023/train_v1_validation_shared_gpu0_v1/scene_04',
-             'fix_evidence':'results/gmt_live_difference_scene4_598_v2.json'}],
-        'scientific_limitations':['Default full TRAIN Scene8 A3 has 0/936 correct shared cross-view IDs.',
-            'Early lower-gate results cover only an already registered 32-frame two-person TRAIN window.',
-            'GT identity consistency of box support is not dense correspondence ground truth.',
-            'Unmatched or ambiguous GT boxes cannot all be called detector false positives.',
-            'Independent geometry identity benefit over shared-detector 2D controls remains unmeasured.']}
-    (output/'gmt_vggt_point_error_attribution.json').write_text(json.dumps(attribution,indent=2)+'\n')
-    print(json.dumps({'status':report['status'],'official_methods_available':[r['Method'] for r in rows if r['HOTA']!='NOT_AVAILABLE'],
-        'new_methods_not_yet_measured':[r['Method'] for r in rows if r['HOTA']=='NOT_AVAILABLE']}))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--nas', type=Path, default=NAS)
+    parser.add_argument('--output', type=Path, default=HERE / 'results')
+    parser.add_argument('--diagnostics', type=Path)
+    parser.add_argument('--attach-diagnostics-only', action='store_true',
+                        help='attach a completed diagnostic to existing verified tables without rescanning timing streams')
+    args = parser.parse_args()
+    out = args.output
+    out.mkdir(parents=True, exist_ok=True)
+    if args.attach_diagnostics_only:
+        if not args.diagnostics:
+            parser.error('--attach-diagnostics-only requires --diagnostics')
+        diagnostics = read_json(args.diagnostics)
+        if (diagnostics.get('status') != 'COMPLETE_POSTHOC_TEST_DIAGNOSTICS'
+                or set(diagnostics.get('methods', {})) != {r.key for r in new_routes(args.nas)}
+                or diagnostics.get('all_22_scene_prediction_hashes_verified') is not True):
+            raise ValueError('Cannot attach incomplete diagnostic evidence')
+        report = read_json(out / 'gmt_vggt_point_final_comparison.json')
+        if report.get('status') != 'COMPLETE_OFFICIAL_ROUTE_TABLE_SINGLE_SEED_EFFECT_GATE':
+            raise ValueError('Generate the verified official table before attaching diagnostics')
+        (out / 'gmt_vggt_point_error_attribution.json').write_text(json.dumps(diagnostics, indent=2, allow_nan=False) + '\n')
+        summary = []
+        for method, data in diagnostics['methods'].items():
+            summary.append(dict(method=method, **data['counts'],
+                                same_person_shared_ID_ratio=data['same_person_shared_ID_ratio'],
+                                selected_temporal_identity_consistency=data['selected_temporal_identity_consistency']))
+        write_csv(out / 'gmt_vggt_point_error_summary.csv', summary)
+        report['posthoc_error_attribution'] = artifact(args.diagnostics)
+        report['remaining'] = 'Final hardware scope, reproduction and GitHub delivery audit; no additional seed experiments.'
+        (out / 'gmt_vggt_point_final_comparison.json').write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
+        print(json.dumps(dict(status='COMPLETE_DIAGNOSTICS_ATTACHED', methods=len(summary))), flush=True)
+        return
+    rows, scene_rows, camera_rows, fps_rows, scene_fps, evidence = [], [], [], [], [], []
+
+    def record(key, name, detector, association, pred, metrics_path, metrics, manifests, params, frozen):
+        speed = throughput(list(manifests.values()))
+        row = dict(Method=name, Detector=detector, Association=association, Trainable_Assoc_Params=params,
+                   Parameters=frozen, **extract(metrics), E2E_FPS=speed['frame_weighted_fps'],
+                   E2E_FPS_mean_scene=speed['mean_scene_fps'], E2E_FPS_harmonic_scene=speed['harmonic_scene_fps'],
+                   Status='OFFICIAL_COMPLETE_14_VALID_GT_22_INFERENCE',
+                   Timing='29019 timestamps / sum(full-video wall seconds); shared GPU; initialization/evaluation excluded')
+        if key == 'gmt_native':
+            row['Timing'] += '; final IDs delivered after native full-video processing'
+        rows.append(row)
+        evidence.append(dict(method=key, metrics=artifact(metrics_path), prediction_root=str(pred), timing=speed,
+                             manifests=[dict(scene=sid, **artifact(pred / f'scene_{sid:02d}/manifest.json')) for sid in manifests]))
+        for scene, values in metrics['TrackEval']['per_scene'].items():
+            cv = metrics['VisionTrack_MATLAB']['per_scene'][scene]
+            scene_rows.append(dict(method=name, scene=scene, **values, CVIDF1=cv['CVIDF1'], CVMA=cv['CVMA']))
+        for camera, values in metrics['TrackEval']['per_camera'].items():
+            camera_rows.append(dict(method=name, camera=camera, **values,
+                                    CVIDF1='NOT_APPLICABLE_CROSS_CAMERA_METRIC', CVMA='NOT_APPLICABLE_CROSS_CAMERA_METRIC'))
+        durations = defaultdict(list)
+        for sid, m in manifests.items():
+            scene_fps.append(dict(method=name, scene=sid, frames=m['frames'], full_video_seconds=m['real_e2e_seconds'],
+                                  E2E_FPS=m['real_e2e_fps'], gpu=m.get('gpu', 'see frozen detector manifest'),
+                                  resource_mode=m.get('resource_mode', 'historical; see manifest'),
+                                  manifest_sha256=sha(pred / f'scene_{sid:02d}/manifest.json')))
+            timing_path = pred / f'scene_{sid:02d}/timings.jsonl'
+            if not timing_path.exists():
+                continue
+            count = 0
+            with timing_path.open() as stream:
+                for line in stream:
+                    if not line.strip():
+                        continue
+                    timing = json.loads(line)
+                    count += 1
+                    for stage, value in timing.get('stages_s', {}).items():
+                        if isinstance(value, (int, float)):
+                            durations[stage].append(value)
+                    for stage in ('rgb_to_delivered_ids_s', 'rgb_read_s'):
+                        if stage in timing and stage not in timing.get('stages_s', {}):
+                            durations[stage].append(timing[stage])
+            if count != m['frames']:
+                raise ValueError('Incomplete timing stream: ' + str(timing_path))
+        fps_rows.append(dict(scope='COMPLETE_22_TEST_VIDEOS', method=key, stage='full_video_delivery',
+                             timestamps=speed['frames'], real_e2e_FPS=speed['frame_weighted_fps'],
+                             mean_scene_FPS=speed['mean_scene_fps'], harmonic_scene_FPS=speed['harmonic_scene_fps'],
+                             model_only_FPS='NOT_APPLICABLE', P50_s=NA, P95_s=NA, peak_GPU_memory_bytes=NA,
+                             conditions=row['Timing'],
+                             missing_reason='Full-video runners did not log process peak GPU memory. Native has no causal per-frame final-ID timing stream.',
+                             source=str(pred)))
+        for stage, values in durations.items():
+            fps_rows.append(dict(scope='COMPLETE_22_TEST_VIDEOS', method=key, stage=stage, timestamps=len(values),
+                                 real_e2e_FPS='NOT_APPLICABLE',
+                                 model_only_FPS=len(values) / sum(values) if stage in ('VGGT_model_only_s', 'omega_forward') else 'NOT_APPLICABLE',
+                                 P50_s=statistics.median(values), P95_s=float(np.quantile(values, .95)),
+                                 peak_GPU_memory_bytes=NA, conditions='Pooled real wall times; nested stages overlap and must not be summed.',
+                                 source=str(pred / 'scene_*/timings.jsonl')))
+
+    old = args.nas / 'fulltrain_20261022'
+    historical = ['gmt_native', 'v1', 'v2_joint_seed20261022', 'v2_joint_seed20261023',
+                  'v2_joint_seed20261024', 'v2_no_omega_seed20261022', 'v2_no_appearance_seed20261022',
+                  'v2_two_stage_seed20261022', 'v2_no_geometry_seed20261022']
+    historical_scores, historical_speed = [], []
+    for key in historical:
+        path = old / 'test_evaluation' / key / 'metrics.json'
+        metrics = read_json(path)
+        pred = old / 'test' / key
+        manifests = {sid: read_json(pred / f'scene_{sid:02d}/manifest.json') for sid in range(1, 23)}
+        if (metrics.get('status') != 'COMPLETE_VALID_SCOPE' or metrics.get('raw_GT_modified') is not False
+                or metrics.get('custom_metrics_used') is not False or metrics.get('box_source') != 'tracks_2d_by_camera'
+                or len(metrics['evaluated_scenes']) != 14 or len(metrics['coverage']) != 22
+                or sum(m['frames'] for m in manifests.values()) != 29019
+                or not all(m.get('status') == 'COMPLETE' and m.get('full_video') is True and m.get('GT_in_inference') is False for m in manifests.values())):
+            raise ValueError('Historical official gate is incomplete: ' + key)
+        name = 'GMT Native' if key == 'gmt_native' else 'Original V1' if key == 'v1' else 'Original V2 ' + key.removeprefix('v2_')
+        params = 0 if key == 'v1' else checkpoint_parameters(old / 'final' / (key.removeprefix('v2_') + '.frozen.pt')) if key.startswith('v2_') else NA
+        if key == 'gmt_native':
+            audit = read_json(out / 'gmt_native_parameter_audit_20261024.json')
+            if manifests[1]['checkpoint_sha256'] != audit['checkpoint_sha256']:
+                raise ValueError('Native parameter audit belongs to a different checkpoint')
+            params = audit['native_association_transformer_parameters']
+        record(key, name, 'GMT' if key == 'gmt_native' else 'RTMDet', 'Native GTA' if key == 'gmt_native' else 'Omega 3D rules' if key == 'v1' else 'PWQT',
+               pred, path, metrics, manifests, params, 'HISTORICAL_FROZEN_REFERENCE')
+        if key.startswith('v2_joint_seed'):
+            historical_scores.append(extract(metrics))
+            historical_speed.append(throughput(list(manifests.values()))['frame_weighted_fps'])
+    # Only this already-completed original reference is averaged. No new seed runs.
+    rows.insert(2, dict(Method='Original V2 (3-seed mean)', Detector='RTMDet', Association='PWQT',
+                        Trainable_Assoc_Params=rows[2]['Trainable_Assoc_Params'], Parameters='HISTORICAL_ALREADY_COMPLETE',
+                        **{k: statistics.mean(r[k] for r in historical_scores) for k in FIELDS},
+                        E2E_FPS=statistics.mean(historical_speed),
+                        Status='HISTORICAL_ALREADY_COMPLETE_THREE_SEED_REFERENCE',
+                        Timing='Historical original reference completed before the new multi-seed cancellation.',
+                        standard_deviation={k: statistics.pstdev(r[k] for r in historical_scores) for k in FIELDS}))
+    for route in new_routes(args.nas):
+        metrics, manifests = validate_route(route, out)
+        checkpoint = args.nas / 'gmt_detector_comparison_20261023/final' / (route.key + '.frozen.pt')
+        params = checkpoint_parameters(checkpoint) if route.association.startswith('PWQT') else 0
+        frozen = json.dumps(manifests[1].get('settings', {}), sort_keys=True, separators=(',', ':'))
+        record(route.key, route.name, 'GMT', route.association, route.predictions, route.metrics,
+               metrics, manifests, params, frozen)
+    native = rows[0]
+    for row in rows:
+        for field in ('HOTA', 'IDF1', 'CVIDF1', 'MOTA', 'IDSW'):
+            row['delta_' + field + '_vs_GMT'] = row[field] - native[field]
+    report = dict(status='COMPLETE_OFFICIAL_ROUTE_TABLE_SINGLE_SEED_EFFECT_GATE', official_rows=rows,
+                  raw_GT_modified=False, new_TEST_used_for_selection=False, official_valid_GT_scenes=14,
+                  inference_required_scenes=22,
+                  speed_definition='Primary E2E_FPS = timestamps / summed full-video wall seconds for every route. Scene mean and harmonic mean are separate columns. Earlier hand-maintained new-route rows used scene arithmetic means.',
+                  parameter_definition='Trainable_Assoc_Params counts learned association model parameters (native: transformer only; V2: frozen checkpoint state). Fixed rules and frozen VGGT point methods optimize zero added association parameters in this study. Native descriptor/ROI totals are separate in gmt_native_parameter_audit_20261024.json; do not treat zero as backbone size.',
+                  multi_seed_policy=read_json(out / 'gmt_v2_joint_seed20261024_cancelled_20261024.json'),
+                  scientific_status='NO_DEMONSTRATED_OVERALL_IDENTITY_GAIN_VS_GMT_NATIVE',
+                  evidence_inventory='gmt_vggt_official_evidence_20261024.json',
+                  remaining='Post-hoc attribution, parameter/hardware limitations and representative figures require final audit before goal completion.')
+    (out / 'gmt_vggt_point_final_comparison.json').write_text(json.dumps(report, indent=2, allow_nan=False) + '\n')
+    write_csv(out / 'gmt_vggt_point_final_comparison.csv', rows,
+              ['Method', 'Detector', 'Association', 'Trainable_Assoc_Params', 'Parameters', *FIELDS,
+               'E2E_FPS', 'E2E_FPS_mean_scene', 'E2E_FPS_harmonic_scene',
+               *['delta_' + k + '_vs_GMT' for k in ('HOTA', 'IDF1', 'CVIDF1', 'MOTA', 'IDSW')], 'Status', 'Timing'])
+    write_csv(out / 'gmt_vggt_point_per_scene.csv', scene_rows)
+    write_csv(out / 'gmt_vggt_point_per_camera.csv', camera_rows)
+    write_csv(out / 'gmt_vggt_point_fps.csv', fps_rows)
+    write_csv(out / 'gmt_vggt_point_fps_per_scene.csv', scene_fps)
+    (out / 'gmt_vggt_official_evidence_20261024.json').write_text(json.dumps(
+        dict(status='VERIFIED_OFFICIAL_FILES_AND_FULLVIDEO_MANIFESTS', routes=evidence,
+             prediction_hash_scope='New route manifest SHA equals official evaluator SHA; raw rehash is done by analyze_gmt_point_test.py.',
+             reproduce='PYTHONPATH=. python scripts/build_gmt_point_comparison.py; original evaluator and frozen lock paths are in Gate artifacts.'), indent=2) + '\n')
+    if args.diagnostics:
+        diagnostics = read_json(args.diagnostics)
+        if diagnostics['status'] != 'COMPLETE_POSTHOC_TEST_DIAGNOSTICS':
+            raise ValueError('Incomplete error analysis')
+        (out / 'gmt_vggt_point_error_attribution.json').write_text(json.dumps(diagnostics, indent=2, allow_nan=False) + '\n')
+    print(json.dumps(dict(status=report['status'], official_rows=len(rows), per_scene_rows=len(scene_rows),
+                          per_camera_rows=len(camera_rows), new_multi_seed_aggregate=False)), flush=True)
 
 
-if __name__=='__main__':main()
+if __name__ == '__main__':
+    main()

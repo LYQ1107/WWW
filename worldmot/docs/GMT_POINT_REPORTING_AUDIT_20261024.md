@@ -1,0 +1,133 @@
+# Complete-video reporting audit, 2026-10-24
+
+The first effect check has official results for all eight completed new
+routes: A0, A1, GMTDet+V1, V2 joint seed22/seed23, V2 no-geometry seed22,
+and VGGT point temporal/joint. Each route inferred 22 videos and 29,019
+synchronized dual-camera timestamps. The official common scoring scope is
+the original 14 legal raw-GT scenes. The user's later instruction stops new
+multi-seed work; seed24 is cancelled and has no official score. The completed
+seed23 remains a separately reported observation. The older RTMDet three-seed
+reference was completed previously.
+
+## Provenance correction
+
+The earlier seed22 Gate pointed to SHA
+`97079638f3671cc9d52c34af5ca06b48d901c51fafe0f1ebfe788fbe7da749ee`, which
+is the preserved `joint_seed20261022_legal14_complete/metrics.json` file. Its
+coverage array has 14 entries. The report at
+`test_gmt_v2_evaluation/joint_seed20261022/metrics.json` has all 22 inference
+entries and eight explicit GT blocks; its SHA is
+`4ec30c291e8cc49b82ce149dda227efafe54d57260bad2dc80a079689775bb84`.
+The complete `TrackEval` and `VisionTrack_MATLAB` objects are exactly equal,
+including per-scene/per-camera values and tool hashes. Only `coverage` and
+`blocked` differ. The Gate now records both SHAs and points to the complete
+report. No prediction, GT or score was edited.
+
+## Reproducible report generation
+
+The old report builder still used `2d_controls_v1` and obsolete V2 paths,
+which would replace completed rows with pending placeholders. The new builder
+validates official status, frozen Gate metric SHA, TRAIN-only selection,
+full-video manifests, original GT scope and manifest-to-evaluator prediction
+SHAs before writing the comparison.
+
+```bash
+PYTHONPATH=.:scripts CUDA_VISIBLE_DEVICES='' \
+  /data1/liuyeqiang/envs/worldmot311/bin/python \
+  scripts/build_gmt_point_comparison.py
+
+PYTHONPATH=.:scripts CUDA_VISIBLE_DEVICES='' \
+  /data1/liuyeqiang/envs/worldmot311/bin/python -m pytest -q \
+  tests/test_gmt_point_reporting.py
+```
+
+The five reporting tests pass. They verify wall-time throughput, exclusion
+of cancelled seed24, deterministic one-to-one diagnostic matching, rejection
+of changed metric files, and rejection of a manifest from another prediction
+attempt. They do not replace the real-video evidence.
+
+Generated tables include the required primary JSON/CSV, official per-scene
+and per-camera CSVs, the unified stage timing CSV, per-scene wall-time FPS,
+and a metric/manifest evidence inventory with absolute paths, sizes and SHAs.
+Primary `E2E_FPS` consistently means total timestamps divided by summed
+full-video wall seconds. Earlier hand-maintained new-route rows used scene
+arithmetic means, while the native reference used frame-weighted throughput.
+Scene arithmetic and harmonic means now have their own columns. This is a
+reporting correction, not a new benchmark run. Shared-GPU runs do not establish
+an exclusive hardware latency ranking. The native full-video final-ID
+delivery convention remains explicit.
+
+## Full-video post-hoc error attribution
+
+```bash
+PYTHONPATH=.:scripts CUDA_VISIBLE_DEVICES='' \
+  /data1/liuyeqiang/envs/worldmot311/bin/python -u \
+  scripts/analyze_gmt_point_test.py --workers 4 \
+  --output /data1/liuyeqiang/nas/A100/WorldMOT/final_comparison_20261023/posthoc_test_attribution_20261024_v1.json
+
+PYTHONPATH=.:scripts CUDA_VISIBLE_DEVICES='' \
+  /data1/liuyeqiang/envs/worldmot311/bin/python \
+  scripts/build_gmt_point_comparison.py \
+  --diagnostics /data1/liuyeqiang/nas/A100/WorldMOT/final_comparison_20261023/posthoc_test_attribution_20261024_v1.json
+```
+
+This CPU analysis reads original raw person GT only after inference. It
+rehashes all 176 completed prediction files, scores diagnostics only on the
+14 legal scenes, and checks identical normalized raw candidate streams across
+all eight methods. It counts raw detector TP/FP/FN, detections lost after
+association, same-person split IDs, different-person merged IDs, selected
+temporal assignment consistency, rejected point evidence, query NULL/birth/
+capacity rejections and alignment/geometry exposures. It groups GT recall by
+size, crowd density and raw visibility when available. Diagnostic IoU is .5;
+these counts are not official HOTA/IDF1/CVIDF1. An observation-gap bin is not
+proof that occlusion caused an identity change. Alignment failures and
+unreliable geometry are exposures, not automatically the cause of every
+identity error. Dense true point correspondence is unavailable.
+
+The analysis is still running at this documentation Gate. A partial result
+must not replace the final error-attribution artifact. The previous TRAIN
+pilot artifact remains explicitly labelled until the completed output passes
+all checks.
+
+## Actual TEST illustrations
+
+The renderer selects the first logged example of each delivered-ID outcome
+in ascending legal scene/time, then overlays the real frozen predictions.
+GT selects illustrations only; it never changes a threshold or prediction.
+
+```bash
+PYTHONPATH=.:scripts CUDA_VISIBLE_DEVICES='' \
+  /data1/liuyeqiang/envs/worldmot311/bin/python \
+  scripts/render_gmt_point_test_cases.py --output results/figures
+```
+
+![Same person split into different IDs](../results/figures/gmt_point_test_same_person_split_failure.jpg)
+
+Scene1/frame1/GT1 receives different global IDs. A-to-B has 25/32 in-image
+points above the frozen confidence/visibility gate, but many do not support
+the intended person's box. Passing scalar confidence gates alone does not
+prove a valid bidirectional person match.
+
+![Correct shared ID with uncertain current cross-view points](../results/figures/gmt_point_test_shared_id_success.jpg)
+
+Scene2/frame1001/GT6 has shared ID61. The current A-to-B query has 0/32 points
+passing the frozen gate. This is a delivered-ID success retained by the
+sequence's earlier evidence; the picture does not prove a successful current
+cross-view point transfer. Both examples use actual network point positions,
+including the rejected orange markers. The sidecar records image IDs, frame,
+point counts, file sizes and image SHAs.
+
+## Remaining evidence limits
+
+- The new V2 checkpoint tensor count is read directly from the frozen
+  checkpoint; a frozen backbone parameter count is a separate quantity.
+- Point forward records contain actual VGGT-process allocated CUDA peaks.
+  The current summary has not yet aggregated them over full videos.
+  They cannot represent combined detector-worker plus VGGT process memory.
+- Whole-system peak GPU memory and some historical association-module
+  parameter counts remain unavailable until independently audited. Missing
+  values are labelled `NOT_AVAILABLE` with reasons.
+- Optional A4 point+Omega consistency has not been run in this first effect
+  check. No A4 score is claimed.
+- Report/attribution completion still needs verification and GitHub delivery;
+  the full research goal remains active.
