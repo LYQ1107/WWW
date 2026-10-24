@@ -256,12 +256,19 @@ image-independent constant-grid cache.
 
 A0 uses IoU plus constant box-velocity prediction; A1 uses the independent
 frozen GMT ROI descriptor plus motion and current cross-view appearance.
-Neither calls GTA, VGGT, GT calibration or 3D geometry. Their preregistered
-budgets are three A0 IoU settings and nine A1 IoU/cosine settings. They preserve
-all current candidates with NULL/newborn decisions and run the same complete
-TRAIN-validation/freeze/full-22-TEST gate. Code hashes for their independent
-control module and runners are included in the lock. Already separate IDs are
-not retrospectively merged in this simple 2D control.
+Neither calls GTA, VGGT, GT calibration or 3D geometry. The fresh 2026-10-24
+TRAIN gate exhausted the preregistered three A0 IoU settings and nine A1
+IoU/cosine settings, then completed all six validation videos and official
+TRAIN evaluation. The selected settings are A0 IoU=0.3 and A1 IoU=0.5,
+cosine=0.7. On legal TRAIN scenes 4/8/12, A0 obtains HOTA 67.19296 / IDF1
+72.33212 / CVIDF1 45.57407, while A1 obtains HOTA 69.35764 / IDF1 75.45918 /
+CVIDF1 59.79462; scenes 16/20/24 remain blocked by raw GT duplicate keys.
+These are TRAIN-only diagnostics. The controls preserve all current candidates
+with NULL/newborn decisions and have a frozen TEST lock, but full 22-video TEST
+inference has not started. Code hashes and the raw-candidate integrity hash are
+in `results/gmt_2d_train_gate_complete_20261024.json`; replay FPS is not live
+TEST FPS. Already separate IDs are not retrospectively merged in this simple
+2D control.
 
 The original two-stage ablation has also completed 22/22 TEST videos and the
 official legal-GT scope: HOTA 35.19849, AssA 47.59979, IDF1 41.57418,

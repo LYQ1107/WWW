@@ -25,6 +25,7 @@ PYTHON='/data1/liuyeqiang/envs/worldmot311/bin/python'
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--root',required=True,type=Path)
+    p.add_argument('--train-only',action='store_true',help='finish the TRAIN gate and freeze TEST settings, then stop before TEST inference')
     p.add_argument('--gpus',type=int,nargs='+',default=[0,2,6]);a=p.parse_args()
     assert len(set(a.gpus))==len(a.gpus) and set(a.gpus)<={0,2,6}
     root=a.root;root.mkdir(parents=True,exist_ok=True);(root/'logs').mkdir(exist_ok=True)
@@ -134,6 +135,10 @@ def main():
             'TEST_raw_integrity_sha256':sha256_file(integrity)}
         if lock.exists() and json.loads(lock.read_text())!=payload:raise RuntimeError('Do not overwrite a different 2D freeze')
         atomic_json(lock,payload);state('FROZEN_2D_FULL22_TEST_RUNNING',lock_sha256=sha256_file(lock),settings=selected)
+        if a.train_only:
+            state('TRAIN_GATE_COMPLETE_TEST_PENDING',lock_sha256=sha256_file(lock),settings=selected,
+                  note='TRAIN-only gate requested; no TEST inference was started')
+            return
         def worker(index):
             scenes=list(range(1,23))[index::len(a.gpus)]
             for method in configs:

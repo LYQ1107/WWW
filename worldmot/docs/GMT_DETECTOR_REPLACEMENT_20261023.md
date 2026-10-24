@@ -245,6 +245,28 @@ scope produced TrackEval HOTA 57.65895, AssA 53.15544, DetA 63.08694, IDF1
 partial A0 evidence: the source registration is stale and A1 is absent, so
 they are not a final 2D-control or GMT comparison.
 
+### 2D-control TRAIN Gate completed (2026-10-24)
+
+The 2D controls were rerun from a fresh root under the current immutable
+source registration. All 216 registered TRAIN window trials (three A0 IoU
+settings and nine A1 IoU/cosine settings over six windows/scenes) completed;
+the selector chose A0 `minimum_iou=0.3` and A1 `minimum_iou=0.5,
+minimum_cosine=0.7`. Both selected controls then completed all six full TRAIN
+videos (5,860 synchronized timestamps) and the official evaluator. Raw GT for
+scenes 16/20/24 remains blocked due duplicate keys; no GT was edited and
+`TEST_used_for_selection=false`.
+
+| TRAIN route | HOTA | IDF1 | CVIDF1 | CVMA | IDSW | legal scenes | replay FPS mean |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| A0 GMTDet + IoU/motion | 67.19296 | 72.33212 | 45.57407 | 17.14506 | 131 | 4/8/12 | 8.7973 |
+| A1 GMTDet + appearance/motion | 69.35764 | 75.45918 | 59.79462 | 42.79052 | 182 | 4/8/12 | 8.4509 |
+
+These are complete TRAIN gates, not TEST scores. The frozen TEST lock and
+22-video raw candidate integrity are recorded in
+`results/gmt_2d_train_gate_complete_20261024.json`; live TEST inference was
+explicitly not started by the `--train-only` command. Replay FPS uses cached
+GMT candidates and must not be presented as live detector or final TEST FPS.
+
 ### VGGT-point TRAIN selection Gate (2026-10-23)
 
 The finite TRAIN-only scan completed both registered partitions (324 windows

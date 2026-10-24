@@ -1,0 +1,101 @@
+{
+  "status": "TRAIN_GATE_COMPLETE_TEST_PENDING",
+  "experiment": "GMT_detector_replacement_2D_controls",
+  "split": "TRAIN",
+  "recorded_utc": "2026-10-24T03:56:43Z",
+  "source_sha256": "0d6b8bc62da81fa4423afd808ea6fc55d05face2ab57c32e7d49eeb69256a229",
+  "runner_sha256": "b5cf3ee15f725b818a5dc318d3d54e999b099d7a3bc69aa50d956f314d67ef5f",
+  "control_module_sha256": "0cf132db2d40b30093f89259e67da3c5575e26eaaa84a8c57d722dbfcee7bc00",
+  "fullvideo_runner_sha256": "8d07cbe7bdc6722bca954b5e5a939b080fcad3906cfb45e8a196777ff632c813",
+  "window_selection_sha256": "a3897567e0846112414e3785c58806de1ba037e221d4bdd42736b80ad327c03a",
+  "frozen_test_lock_sha256": "11f09270f413a9e5fcf974c408c9c05a4df9a77e0dfc671f531e912adf8aa217",
+  "test_raw_integrity_sha256": "b6bf53f82964dffe71c0b2f010dd7258444a6057047cb057e0edf8aceaaa560f",
+  "test_used_for_selection": false,
+  "gt_in_inference": false,
+  "train_validation_scenes": [4, 8, 12, 16, 20, 24],
+  "train_validation_timestamps": 5860,
+  "legal_raw_gt_scenes": [4, 8, 12],
+  "blocked_raw_gt_scenes": [16, 20, 24],
+  "blocked_reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID; raw GT was not modified",
+  "test_inference_started": false,
+  "test_inference_status": "FROZEN_TEST_PENDING_GPU_CAPACITY",
+  "routes": {
+    "iou_motion": {
+      "settings": {
+        "appearance": false,
+        "minimum_iou": 0.3,
+        "minimum_cosine": 0.8,
+        "lost_retention": 30,
+        "maximum_motion_distance": 2.0
+      },
+      "trackeval": {
+        "HOTA": 67.1929593411539,
+        "AssA": 58.341670462450146,
+        "DetA": 77.74792642896637,
+        "IDF1": 72.3321218625753,
+        "MOTA": 91.22073176595029,
+        "IDSW": 131,
+        "Frag": 202,
+        "CLR_TP": 19651,
+        "CLR_FN": 1148,
+        "CLR_FP": 547
+      },
+      "visiontrack_matlab": {
+        "CVIDF1": 45.57406639510208,
+        "CVMA": 17.14505505072359,
+        "IDTP": 9342,
+        "IDFP": 10856,
+        "IDFN": 11457,
+        "CLEAR_TP": 19682,
+        "CLEAR_FP": 516,
+        "CLEAR_FN": 1117,
+        "CLEAR_IDSW": 15600
+      },
+      "metrics_sha256": "5956eca3d3285c63ca1f62ec61c742be678a46cf6630d5025feac9aae67c40f6",
+      "metrics_path": "/data1/liuyeqiang/nas/A100/WorldMOT/final_comparison_20261023/2d_controls_v2/train_evaluation/iou_motion/metrics.json"
+    },
+    "appearance_motion": {
+      "settings": {
+        "appearance": true,
+        "minimum_iou": 0.5,
+        "minimum_cosine": 0.7,
+        "lost_retention": 30,
+        "maximum_motion_distance": 2.0
+      },
+      "trackeval": {
+        "HOTA": 69.3576419851384,
+        "AssA": 62.03934690598661,
+        "DetA": 77.94269384472462,
+        "IDF1": 75.45917993999561,
+        "MOTA": 91.16784460791384,
+        "IDSW": 182,
+        "Frag": 200,
+        "CLR_TP": 19671,
+        "CLR_FN": 1128,
+        "CLR_FP": 527
+      },
+      "visiontrack_matlab": {
+        "CVIDF1": 59.794619118472085,
+        "CVMA": 42.7905187749411,
+        "IDTP": 12257,
+        "IDFP": 7941,
+        "IDFN": 8542,
+        "CLEAR_TP": 19682,
+        "CLEAR_FP": 516,
+        "CLEAR_FN": 1117,
+        "CLEAR_IDSW": 10266
+      },
+      "metrics_sha256": "ed344ac1d9a0061ca768c680673a5f153008c5663a3663006533f682af6771d1",
+      "metrics_path": "/data1/liuyeqiang/nas/A100/WorldMOT/final_comparison_20261023/2d_controls_v2/train_evaluation/appearance_motion/metrics.json"
+    }
+  },
+  "timing_scope": "TRAIN replay only: cached GMT candidates + causal association + flushed output; not a live detector TEST FPS claim",
+  "timing_summary": {
+    "iou_motion_replay_fps_mean_over_scenes": 8.797303829784276,
+    "iou_motion_replay_fps_median_over_scenes": 9.48519443233144,
+    "appearance_motion_replay_fps_mean_over_scenes": 8.450946114263065,
+    "appearance_motion_replay_fps_median_over_scenes": 9.504949437923639
+  },
+  "command": "PYTHONPATH=worldmot python -u scripts/run_gmt_2d_queue.py --root /data1/liuyeqiang/nas/A100/WorldMOT/final_comparison_20261023/2d_controls_v2 --gpus 0 --train-only",
+  "claim_boundary": "This is a complete TRAIN selection/validation/freeze gate. It contains no TEST metric and cannot be used to claim final A0/A1 TEST ranking."
+}
