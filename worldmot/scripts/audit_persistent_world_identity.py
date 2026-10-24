@@ -32,8 +32,8 @@ def match(rows,gt):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--cache",required=True);p.add_argument("--dataset-root",default="/data/DATASETS/TRACKING/JDE/VisionTrack");p.add_argument("--output-dir",required=True)
-    a=p.parse_args();out=Path(a.output_dir);out.mkdir(parents=True,exist_ok=True);ds=VisionTrack(a.dataset_root,split="train");scene_rows=[];failures=[]
+    p=argparse.ArgumentParser();p.add_argument("--cache",required=True);p.add_argument("--dataset-root",default="/data/DATASETS/TRACKING/JDE/VisionTrack");p.add_argument("--output-dir",required=True);p.add_argument("--split",choices=["train","test"],default="train")
+    a=p.parse_args();out=Path(a.output_dir);out.mkdir(parents=True,exist_ok=True);ds=VisionTrack(a.dataset_root,split=a.split);scene_rows=[];failures=[]
     for cache in iter_complete_scenes(a.cache):
         pairs={int(x.frame_id):x for x in ds.synchronized_pairs(cache.scene)};bank=PersistentWorldObjectBank(min_hits=1);c=Counter();last_gid={};oracle_last={};
         for fr in cache.frames():
@@ -60,7 +60,7 @@ def main():
         scene_rows.append({"scene":cache.scene,**dict(c),"predicted_switch_rate":c["identity_gid_switch"]/max(1,c["identity_observations"]),"oracle_switch_rate":c["oracle_gid_switch"]/max(1,c["oracle_observations"]),"wrong_merge_rate":c["wrong_world_object_merge"]/max(1,c["frames"] )})
     with (out/"G3_oracle_vs_predicted_all24.csv").open("w",newline="") as f:
         fields=list(scene_rows[0]) if scene_rows else ["scene"];w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(scene_rows)
-    (out/"G3_temporal_identity_failures.json").write_text(json.dumps({"schema":"worldobject_g3_identity_v1","scenes":scene_rows,"failures":failures[:100000],"history_policy":{"oracle":"identity-key diagnostic only","predicted":"PersistentWorldObjectBank autonomous causal replay"}},indent=2))
+    (out/"G3_temporal_identity_failures.json").write_text(json.dumps({"schema":"worldobject_g3_identity_v1","split":a.split,"scenes":scene_rows,"failures":failures[:100000],"history_policy":{"oracle":"identity-key diagnostic only","predicted":"PersistentWorldObjectBank autonomous causal replay"}},indent=2))
     print(json.dumps({"scenes":len(scene_rows),"failures":len(failures),"predicted_switches":sum(x.get("identity_gid_switch",0) for x in scene_rows),"wrong_merges":sum(x.get("wrong_world_object_merge",0) for x in scene_rows)},indent=2))
 
 
