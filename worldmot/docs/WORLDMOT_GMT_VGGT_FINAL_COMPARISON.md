@@ -141,6 +141,17 @@ CVIDF1 72.69293 / CVMA 68.30677, or -5.04688 HOTA and -5.89324 IDF1 versus
 GMT Native. This is a completed frozen-seed route, not the final three-seed
 V2 aggregate.
 
+The independently frozen `joint_seed20261023` route has also completed all
+22 TEST videos and the same 14-scene legal evaluation. It obtains HOTA
+61.75587, AssA 63.83939, DetA 59.97305, IDF1 73.91947, MOTA 72.35661,
+IDSW 506, Frag 1,210, MATLAB CVIDF1 72.46872 and CVMA 66.56743 at mean
+shared-GPU E2E 0.723982 FPS (frame-weighted 0.712180; harmonic scene FPS
+0.693824). This route is -4.30871 HOTA and -6.19267 IDF1 versus GMT Native;
+it is another completed seed, not the final three-seed aggregate. Its Gate and
+stage timing are in `results/gmt_v2_joint_seed20261023_test_gate_20261024.json`
+and `results/gmt_v2_joint_seed20261023_test_fps_20261024.csv`. Seed 20261024
+is now running under the pre-registered lock.
+
 The matched `no_geometry_seed20261022` ablation has also completed all 22
 TEST videos and the same 14-scene legal evaluation. It obtains HOTA 59.20433,
 AssA 59.70257, DetA 58.96238, IDF1 71.72844, MOTA 71.48247, CVIDF1 69.95230,

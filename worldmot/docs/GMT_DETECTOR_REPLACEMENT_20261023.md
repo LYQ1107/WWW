@@ -218,8 +218,9 @@ in `results/gmt_association_final_freeze_20261023.json`.
 
 Independent TEST inference has now started on the complete 22-video TEST
 metadata with the `gmt_pre_gta` detector in `live_verified` mode. The first
-wave contains `joint_seed20261022` and `no_geometry_seed20261022`; the second
-wave will run the two remaining joint seeds. Because other registered V1 and
+wave contains `joint_seed20261022` and `no_geometry_seed20261022`; the
+`joint_seed20261023` route is complete and `joint_seed20261024` is the final
+registered seed now running. Because other registered V1 and
 VGGT-point jobs share the six authorized cards, the TEST route is explicitly
 `shared_gpu`; its per-scene timing includes RGB decode, detector, Omega,
 query/memory, post-processing and flushed ID delivery. No formal metric is

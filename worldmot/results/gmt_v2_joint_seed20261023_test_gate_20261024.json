@@ -1,0 +1,92 @@
+{
+  "status": "OFFICIAL_ROUTE_COMPLETE_14_VALID_GT_22_INFERENCE_AGGREGATE_PENDING",
+  "recorded_utc": "2026-10-24T08:10:00Z",
+  "experiment": "GMT_detector_replacement_v2",
+  "route": "joint_seed20261023",
+  "split": "TEST",
+  "TEST_used_for_selection": false,
+  "raw_GT_modified": false,
+  "source_sha256": "c0ef87cc85759f654156c9ec71208bca12bc4f120cb0174264682b9015859e2e",
+  "checkpoint_sha256": "97f3a510d24be88fdf1c6c3b92da4498d45d94c7149bab8d3c987da6cd29511c",
+  "final_test_lock_sha256": "e8760e8eff5a69b8716af747a66bc32503da632b8f66f5a095ef5de5163fdf52",
+  "test_metadata_sha256": "617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f",
+  "raw_cache_lock_sha256": "496cde1a6261239466b0da08cf4196c9142f8c26aa6796c3bbcf9cd8f939cdcf",
+  "trained_scope": "FULL_24_TRAIN",
+  "prediction_coverage": {
+    "complete_scenes": 22,
+    "frames": 29019,
+    "aggregate_manifest_sha256": "b09e7e7aa81920a570025b1e8c0d8cf0598206f95a3ef35bbf0ebdffc10cf39a",
+    "blocked_raw_gt_scenes": [5, 12, 13, 14, 17, 20, 21, 22]
+  },
+  "evaluation": {
+    "evaluated_legal_scenes": 14,
+    "blocked_scenes": [],
+    "metrics_sha256": "010dcd698780304efabb26ed722acd1ce34793f95876367cbc7e6473623ed90a",
+    "metrics_path": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/test_gmt_v2_evaluation/joint_seed20261023/metrics.json",
+    "TrackEval": {
+      "HOTA": 61.75587284178542,
+      "AssA": 63.83939110408379,
+      "DetA": 59.973048359711136,
+      "IDF1": 73.91947090888736,
+      "MOTA": 72.35661406328214,
+      "IDSW": 506,
+      "Frag": 1210
+    },
+    "VisionTrack_MATLAB": {
+      "CVIDF1": 72.46871869357668,
+      "CVMA": 66.56743156729983,
+      "IDTP": 126230,
+      "IDFP": 32356,
+      "IDFN": 63555,
+      "CLEAR_IDSW": 11503
+    }
+  },
+  "timing": {
+    "unit": "synchronized dual-camera timestamps per second",
+    "scope": "full-video shared-GPU accuracy run; initialization and offline evaluation excluded",
+    "mean_e2e_fps_over_scenes": 0.723982118075668,
+    "median_e2e_fps_over_scenes": 0.7417149167948165,
+    "frame_weighted_e2e_fps": 0.712180158301926,
+    "harmonic_scene_fps": 0.6938239162452527,
+    "minimum_e2e_fps": 0.45064835419604016,
+    "maximum_e2e_fps": 0.9486108456528012,
+    "stage_p50_s": {
+      "detection": 0.30816837400197983,
+      "geometry_backend": 0.4158675894141197,
+      "world_alignment": 0.2694992870092392,
+      "object_encoding": 0.12811624258756638,
+      "query_and_lifecycle": 0.0326726958155632,
+      "projection_and_output_build": 0.012739337980747223,
+      "omega_forward": 0.2203184813261032,
+      "detector_forward": 0.3081309199333191,
+      "rgb_to_delivered_ids_s": 1.3190654069185257
+    },
+    "stage_p95_s": {
+      "detection": 0.4384394124150276,
+      "geometry_backend": 0.558645711094141,
+      "world_alignment": 0.30758324936032294,
+      "object_encoding": 1.0050122827291488,
+      "query_and_lifecycle": 0.12747016847133635,
+      "projection_and_output_build": 0.015862635523080825,
+      "omega_forward": 0.35347393080592154,
+      "detector_forward": 0.4384071320295334,
+      "rgb_to_delivered_ids_s": 2.104962145537138
+    },
+    "fps_csv": "results/gmt_v2_joint_seed20261023_test_fps_20261024.csv"
+  },
+  "comparison_to_gmt_native": {
+    "HOTA_delta": -4.30871435662411,
+    "IDF1_delta": -6.19267375134038,
+    "CVIDF1_delta": -5.59258315271385,
+    "CVMA_delta": -2.07603340622284,
+    "MOTA_delta": -0.60700266090576,
+    "IDSW_delta": -5538
+  },
+  "comparison_to_joint_seed20261022": {
+    "HOTA_delta": 0.738165147676316,
+    "IDF1_delta": -0.29943816556797,
+    "CVIDF1_delta": -0.2242068058464,
+    "IDSW_delta": -92
+  },
+  "claim_boundary": "This is a complete official frozen V2 joint seed-20261023 route on 14 legal raw-GT scenes with all 22 TEST videos inferred. It is not the final three-seed aggregate; seed 20261024 remains registered and no TEST value was selected from this score."
+}
