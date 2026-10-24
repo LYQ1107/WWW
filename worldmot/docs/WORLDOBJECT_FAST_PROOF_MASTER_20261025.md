@@ -35,6 +35,11 @@ The foreground proposal is not called an instance mask. If depth is not
 separated, the ambiguity code is retained and the object is allowed to abstain
 or fall back conservatively.
 
+All detector boxes are kept in the original RGB coordinate system for output,
+but are explicitly transformed through Ω's registered crop/resize/pad
+`image_to_model` matrix before pointmap support sampling. A pre-fix partial
+cache is retained under `diagnostics/` and is not eligible for any metric.
+
 ## Registered routes
 
 - G0-A: original first-camera Sim(3) alignment.

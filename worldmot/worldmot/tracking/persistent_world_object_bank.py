@@ -63,7 +63,15 @@ class PersistentWorldObjectBank:
         # Unreliable/mixed geometry cannot aggressively rewrite a persistent
         # object; it is allowed as a visual fallback only within a narrow gate.
         reliability = float(np.clip(hyp.support.quality, 0.0, 1.0))
-        return 0.75 * dist / max(self.gate_distance, 1e-6) + 0.15 * app + 0.10 * (1.0 - reliability)
+        cost = (0.75 * dist / max(self.gate_distance, 1e-6)
+                + 0.15 * app + 0.10 * (1.0 - reliability))
+        # W4 is optional and frozen at inference.  The learned gate is only a
+        # small persistent-update prior; absent diagnostics reproduce W3
+        # exactly.  It cannot create an identity or access GT.
+        gate = hyp.diagnostics.get("learned_update_gate")
+        if gate is not None and np.isfinite(float(gate)):
+            cost += 0.10 * (1.0 - float(np.clip(gate, 0.0, 1.0)))
+        return cost
 
     def step(self, hypotheses, timestamp: int) -> tuple[list[PersistentWorldObject], dict]:
         hypotheses = list(hypotheses); self.last_assignments = {}
