@@ -78,14 +78,19 @@ class SceneState:
         else:
             old = copy.copy(self.previous); old.world_pointmaps = self.previous_world
             align = self.aligner.update(old, frame, sorted(frame.pointmaps))
-            old_original = copy.copy(self.previous_original)
-            old_original.pointmaps = self.previous_original_world
-            common = sorted(set(frame.pointmaps) & set(old_original.pointmaps))
-            if common:
-                src, dst = OnlineWorldMOT._static_correspondences(old_original, frame, common[0])
-                original = self.original_aligner.update(src, dst)
-            else:
+            if self.previous_original is None:
+                # A failed historical G0-A update must not dereference a
+                # missing frame or pretend that the current frame is aligned.
                 original = self.original_aligner.update(np.empty((0, 3)), np.empty((0, 3)))
+            else:
+                old_original = copy.copy(self.previous_original)
+                old_original.pointmaps = self.previous_original_world
+                common = sorted(set(frame.pointmaps) & set(old_original.pointmaps))
+                if common:
+                    src, dst = OnlineWorldMOT._static_correspondences(old_original, frame, common[0])
+                    original = self.original_aligner.update(src, dst)
+                else:
+                    original = self.original_aligner.update(np.empty((0, 3)), np.empty((0, 3)))
         alignment_s = time.perf_counter() - t
         transform = align.result.transform if align.result.success else self.aligner.transform
         aligned = bool(align.result.success and frame.status == "OK")
