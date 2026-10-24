@@ -1,0 +1,87 @@
+{
+  "status": "PARTIAL_LEGAL_SCOPE_DIAGNOSTIC",
+  "recorded_utc": "2026-10-24T02:14:39Z",
+  "experiment": "GMT_detector_replacement_v2",
+  "split": "TEST",
+  "TEST_used_for_selection": false,
+  "raw_GT_modified": false,
+  "source_sha256": "c0ef87cc85759f654156c9ec71208bca12bc4f120cb0174264682b9015859e2e",
+  "final_test_lock_sha256": "e8760e8eff5a69b8716af747a66bc32503da632b8f66f5a095ef5de5163fdf52",
+  "raw_GT_legal_scenes": [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 15, 16, 18, 19],
+  "routes": {
+    "joint_seed20261022": {
+      "prediction_coverage_at_registration": {
+        "complete_scenes": 22,
+        "running_scenes": 0,
+        "missing_scenes": []
+      },
+      "evaluation_scope": {
+        "evaluated_legal_scenes": 14,
+        "blocked_scenes": [],
+        "command_scope": "--scenes 1 2 3 4 6 7 8 9 10 11 15 16 18 19",
+        "metrics_sha256": "97079638f3671cc9d52c34af5ca06b48d901c51fafe0f1ebfe788fbe7da749ee"
+      },
+      "TrackEval": {
+        "HOTA": 61.017707694844106,
+        "AssA": 60.227445225827594,
+        "DetA": 62.10987666049185,
+        "IDF1": 74.21890907445533,
+        "MOTA": 75.45643754775139,
+        "IDSW": 598,
+        "Frag": 1289,
+        "CLR_TP": 153813,
+        "CLR_FN": 35972,
+        "CLR_FP": 10010
+      },
+      "VisionTrack_MATLAB": {
+        "CVIDF1": 72.69292549942308,
+        "CVMA": 68.30676818505151,
+        "IDTP": 128524,
+        "IDFP": 35299,
+        "IDFN": 61261,
+        "CLEAR_TP": 153817,
+        "CLEAR_FP": 10006,
+        "CLEAR_FN": 35968,
+        "CLEAR_IDSW": 14175
+      }
+    },
+    "no_geometry_seed20261022": {
+      "prediction_coverage_at_registration": {
+        "complete_scenes": 17,
+        "running_scenes": 2,
+        "missing_scenes": [11, 17, 19]
+      },
+      "evaluation_scope": {
+        "evaluated_legal_scenes": 12,
+        "blocked_scenes": [11, 19],
+        "blocked_reason": "PREDICTIONS_MISSING",
+        "command_scope": "--scenes 1 2 3 4 6 7 8 9 10 11 15 16 18 19",
+        "metrics_sha256": "2c6b8cafbfe9d45893faa4fe69e9e2a43d0af3cf16d543cc9cce5ca1504357c7"
+      },
+      "TrackEval": {
+        "HOTA": 60.70615213480386,
+        "AssA": 60.61421972922889,
+        "DetA": 61.040073390816474,
+        "IDF1": 73.89259535690191,
+        "MOTA": 74.32315711094564,
+        "IDSW": 562,
+        "Frag": 995,
+        "CLR_TP": 132139,
+        "CLR_FN": 35736,
+        "CLR_FP": 6807
+      },
+      "VisionTrack_MATLAB": {
+        "CVIDF1": 72.01332372947093,
+        "CVMA": 67.94221891288161,
+        "IDTP": 110476,
+        "IDFP": 28470,
+        "IDFN": 57399,
+        "CLEAR_TP": 132148,
+        "CLEAR_FP": 6798,
+        "CLEAR_FN": 35727,
+        "CLEAR_IDSW": 11292
+      }
+    }
+  },
+  "claim_boundary": "These are official-protocol diagnostics restricted to the legal scenes available at evaluation time. They are not the final full-22 route ranking; no TEST parameter was selected from them. The joint route has since reached 22/22 prediction coverage, while no-geometry still has running/missing scenes and requires a later complete evaluation."
+}
