@@ -112,8 +112,8 @@ def run_scene(cache, out_scene, pair_by_timestamp=None, learned=None):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--cache",required=True);p.add_argument("--output",required=True);p.add_argument("--scenes",nargs="*",type=int);p.add_argument("--dataset-root",default="/data/DATASETS/TRACKING/JDE/VisionTrack");p.add_argument("--checkpoint");p.add_argument("--device",default="cpu");p.add_argument("--no-geometry",action="store_true")
-    a=p.parse_args();root=Path(a.output);root.mkdir(parents=True,exist_ok=True);scenes=a.scenes or [int(x.name.split("_")[1]) for x in sorted(Path(a.cache).glob("scene_*")) if x.is_dir()]; ds=VisionTrack(a.dataset_root,split="test",load_annotations=False) if a.checkpoint else None; learned=FrozenUpdateHead(a.checkpoint,a.device,a.no_geometry) if a.checkpoint else None
+    p=argparse.ArgumentParser();p.add_argument("--cache",required=True);p.add_argument("--output",required=True);p.add_argument("--scenes",nargs="*",type=int);p.add_argument("--dataset-root",default="/data/DATASETS/TRACKING/JDE/VisionTrack");p.add_argument("--split",choices=["train","test"],default="test");p.add_argument("--checkpoint");p.add_argument("--device",default="cpu");p.add_argument("--no-geometry",action="store_true")
+    a=p.parse_args();root=Path(a.output);root.mkdir(parents=True,exist_ok=True);scenes=a.scenes or [int(x.name.split("_")[1]) for x in sorted(Path(a.cache).glob("scene_*")) if x.is_dir()]; ds=VisionTrack(a.dataset_root,split=a.split,load_annotations=False) if a.checkpoint else None; learned=FrozenUpdateHead(a.checkpoint,a.device,a.no_geometry) if a.checkpoint else None
     reports=[]
     for sid in scenes:
         pairs = {int(p.frame_id): p for p in ds.synchronized_pairs(int(sid))} if ds is not None else {}
