@@ -1,0 +1,116 @@
+{
+  "status": "COMPLETE_TRAIN_FULLVIDEO_VALIDATION_POINT_TEST_RUNNING",
+  "experiment": "GMT_detector_replacement_vggt_point_association",
+  "recorded_utc": "2026-10-24T01:50:00Z",
+  "source_sha256": "0d6b8bc62da81fa4423afd808ea6fc55d05face2ab57c32e7d49eeb69256a229",
+  "runner_sha256": "7b4e6727df94e7775a2cc4987bb0ab4c957aa74ff78078916724543d107ab53a",
+  "VGGT_checkpoint_sha256": "d15bf50a8615c8225ed48b51ea5cac673d82442ec0309036df555a053253afe0",
+  "train_metadata_sha256": "92e09f77d8d98af3ba732e75f0d2dd648313aa6e02bc058fa02a2d3d6ba97d87",
+  "test_metadata_sha256": "617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f",
+  "selection": {
+    "status": "TRAIN_ONLY_LOCKED",
+    "objective": "TRAIN_window_identity_consistency_F1",
+    "selection_sha256": "6c71f21cb51e32ca2d720d6af2334dd5b8d17426bddfb40afa37c45881a8d004",
+    "TEST_used_for_selection": false,
+    "temporal": {
+      "points_per_person": 16,
+      "minimum_visibility": 0.5,
+      "minimum_confidence": 0.3,
+      "minimum_valid_points": 3,
+      "minimum_inside_points": 3,
+      "minimum_support": 0.2,
+      "maximum_reference_gap": 3,
+      "lost_retention": 30
+    },
+    "joint": {
+      "points_per_person": 32,
+      "minimum_visibility": 0.5,
+      "minimum_confidence": 0.2,
+      "minimum_valid_points": 3,
+      "minimum_inside_points": 3,
+      "minimum_support": 0.1,
+      "maximum_reference_gap": 3,
+      "lost_retention": 30
+    }
+  },
+  "validation": {
+    "scenes": [4, 8, 12, 16, 20, 24],
+    "frames": 5860,
+    "raw_GT_modified": false,
+    "official_legal_scenes": [4, 8, 12],
+    "blocked_scenes": [16, 20, 24],
+    "blocked_reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID",
+    "all_six_manifests": "COMPLETE_FULL_VIDEO"
+  },
+  "metrics": {
+    "temporal": {
+      "evaluated_scenes": [4, 8, 12],
+      "blocked_scenes": [16, 20, 24],
+      "TrackEval": {
+        "HOTA": 65.81176684712685,
+        "AssA": 56.13410196223006,
+        "DetA": 77.51944320372314,
+        "IDF1": 69.21969900236603,
+        "MOTA": 91.0332227510938,
+        "IDSW": 166,
+        "Frag": 197,
+        "CLR_TP": 19649,
+        "CLR_FN": 1150,
+        "CLR_FP": 549
+      },
+      "timing": {
+        "harmonic_full_six_scene_fps": 0.6546806832694724,
+        "mean_scene_fps": 0.7044860869994243,
+        "median_scene_fps": 0.7477854543750824,
+        "min_scene_fps": 0.48705856752197196,
+        "max_scene_fps": 0.8635803776450075,
+        "fps_unit": "synchronized dual-camera timestamps/second",
+        "scope": "shared_gpu TRAIN accuracy run"
+      },
+      "source_metrics_sha256": "0ee0a11af7fe6a951bc42d9e25c97a930e333563740e745fb3f89fbcaade8b73"
+    },
+    "joint": {
+      "evaluated_scenes": [4, 8, 12],
+      "blocked_scenes": [16, 20, 24],
+      "TrackEval": {
+        "HOTA": 66.14742062500066,
+        "AssA": 56.51692153922001,
+        "DetA": 77.76365339713533,
+        "IDF1": 69.99048710881284,
+        "MOTA": 90.81686619549016,
+        "IDSW": 203,
+        "Frag": 198,
+        "CLR_TP": 19645,
+        "CLR_FN": 1154,
+        "CLR_FP": 553
+      },
+      "timing": {
+        "harmonic_full_six_scene_fps": 0.4403763899260272,
+        "mean_scene_fps": 0.49984870175445967,
+        "median_scene_fps": 0.5419571186434402,
+        "min_scene_fps": 0.3029575227984683,
+        "max_scene_fps": 0.6582131183909182,
+        "fps_unit": "synchronized dual-camera timestamps/second",
+        "scope": "shared_gpu TRAIN accuracy run"
+      },
+      "source_metrics_sha256": "d5b99d7d52e579b4b3a4d6ed5ece92f78cf671381ce4947ef61248482b6d6990"
+    }
+  },
+  "test_lock": {
+    "status": "FROZEN_FROM_TRAIN_VALIDATION",
+    "lock_sha256": "e6b64b32fb5e94b49b848b985523befe5a357847d4ddfdf78b3ee7dec9d6a1e3",
+    "raw_test_integrity_sha256": "b6bf53f82964dffe71c0b2f010dd7258444a6057047cb057e0edf8aceaaa560f",
+    "TEST_used_for_selection": false,
+    "current_stage": "JOINT_TEST_RUNNING"
+  },
+  "recovery_evidence": {
+    "initial_joint_missing_scenes_recovered": [4, 6, 10, 12, 16, 20, 21],
+    "recovery_devices": {
+      "gpu6": [4, 10, 12, 20],
+      "gpu8": [6, 16, 21]
+    },
+    "all_recovered_manifests": "COMPLETE_FULL_VIDEO",
+    "reason": "original first-wave workers exited before all assigned scene manifests; no existing complete scene was overwritten"
+  },
+  "claim_boundary": "These are TRAIN-only diagnostics on the legal raw-GT scope. Official independent TEST metrics and final route ranking remain NOT_AVAILABLE while point TEST is running."
+}

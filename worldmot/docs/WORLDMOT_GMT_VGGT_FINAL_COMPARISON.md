@@ -93,10 +93,12 @@ The complete provenance is in `results/gmt_v1_test_gate_complete_20261023.json`
 and the raw official report is in
 `results/gmt_v1_test_official_raw_metrics_20261023.json`.
 
-New VGGT-point TEST scores and the V2 route scores remain `NOT_AVAILABLE`:
-their registered TRAIN full-video validation and/or independent TEST routes
-are still running. Historical GMT/V2 TEST metrics are reference evidence only
-and are not hyperparameter-selection data.
+New VGGT-point TEST scores and the V2 route scores remain `NOT_AVAILABLE`.
+The VGGT temporal and joint routes have now completed their registered
+six-scene TRAIN full-video validation and official TRAIN evaluation; their
+independent TEST inference is running under a frozen TRAIN-only lock.
+Historical GMT/V2 TEST metrics are reference evidence only and are not
+hyperparameter-selection data.
 
 The GMT pre-GTA detector + fixed V1 association has now completed its
 official TRAIN validation Gate. All six registered validation videos are
@@ -138,8 +140,9 @@ Full TRAIN raw candidate extraction and full GMT+Omega object-feature
 extraction initially ran in parallel, with disjoint per-worker scene lists and the
 same immutable shared detector lock. The completed V1 TRAIN validation is
 marked shared-GPU and its latency cannot be promoted to the final comparable
-exclusive-GPU table. Point default temporal and joint validation remain
-separate live jobs.
+exclusive-GPU table. The point temporal and joint full-video TRAIN gates are
+now complete; their shared-GPU timing is recorded separately from final TEST
+latency.
 
 The matched-budget V2 registration is four epochs for joint/no-geometry
 internal fits, seed 20261022, using the original 18/6 TRAIN split. Thresholds
@@ -276,10 +279,22 @@ been selected from TEST or promoted based on this prefix alone.
 The registered all-window TRAIN scan has now completed. Its selected A2/A3
 settings are temporal `points_per_person=16, minimum_confidence=0.3,
 minimum_support=0.2` and joint `points_per_person=32,
-minimum_confidence=0.2, minimum_support=0.1`. The selection artifact is
-`results/gmt_point_train_selection_20261023.json`; both settings remain under
-complete six-scene TRAIN full-video validation. This is a TRAIN gate only: no
-official TEST metric or final route ranking is implied.
+minimum_confidence=0.2, minimum_support=0.1`. The complete six-scene
+full-video TRAIN gate is recorded in
+`results/vggt_point_train_gate_complete_20261024.json` and the compact
+metrics table is `results/vggt_point_train_metrics_20261024.csv`. On the
+legal raw-GT scope (scenes 4/8/12), temporal obtains HOTA 65.81177 / IDF1
+69.21970 and joint obtains HOTA 66.14742 / IDF1 69.99049. Joint is slightly
+better on this TRAIN diagnostic (HOTA +0.33565, IDF1 +0.77079), but it is
+also slower (0.44038 versus 0.65468 harmonic six-scene FPS). This is a
+TRAIN-only gate; no official TEST metric or final route ranking is implied.
+
+The frozen point TEST lock is now valid (`TEST_used_for_selection=false`),
+and the live point TEST stage starts with joint. The first-wave joint worker
+needed an auditable recovery for missing scene manifests (scenes 4, 6, 10,
+12, 16, 20, 21); all recovered outputs are full-video and are listed in the
+JSON gate artifact. The eight raw-GT-blocked scenes remain blocked without
+modifying GT.
 
 `build_gmt_point_comparison.py` creates the required partial official main
 JSON/CSV, error-attribution JSON and FPS CSV. Point and V2 TEST scores remain
