@@ -1,14 +1,8 @@
 {
-  "generated_utc": "2026-10-24T10:08:47.868918+00:00",
+  "generated_utc": "2026-10-24T10:25:38.125087+00:00",
   "goal_complete": false,
-  "status": "ALL_EIGHT_NEW_OFFICIAL_ROUTES_COMPLETE_POSTHOC_ATTRIBUTION_RUNNING",
+  "status": "ALL_NEW_OFFICIAL_ROUTES_AND_CPU_ATTRIBUTION_COMPLETE_FINAL_DELIVERY_AUDIT_PENDING",
   "live_processes": [
-    {
-      "pid": 20690,
-      "state": "S (sleeping)",
-      "cwd": "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot",
-      "command": "/data1/liuyeqiang/envs/worldmot311/bin/python -u scripts/analyze_gmt_point_test.py --output /data1/liuyeqiang/nas/A100/WorldMOT/final_comparison_20261023/posthoc_test_attribution_20261024_v1.json --workers 4"
-    },
     {
       "pid": 20615,
       "state": "T (stopped)",
@@ -86,19 +80,22 @@
     "command": "PYTHONPATH=.:scripts CUDA_VISIBLE_DEVICES='' /data1/liuyeqiang/envs/worldmot311/bin/python -m pytest -q tests/test_gmt_point_reporting.py",
     "passed": 5
   },
-  "pending_attribution": {
-    "session_id": 47167,
-    "pid": 20690,
-    "target": "/data1/liuyeqiang/nas/A100/WorldMOT/final_comparison_20261023/posthoc_test_attribution_20261024_v1.json",
-    "rule": "Do not attach partial attribution. Preserve the existing TRAIN-only artifact until all 176 prediction-file hashes and shared-candidate checks complete."
-  },
   "remaining": [
-    "Finish and attach complete CPU post-hoc attribution",
-    "Final scope and reproducibility audit"
+    "Final requirement-by-requirement reproduction and delivery audit; no further seed experiment"
   ],
   "notes": [
     "Capacity waiter is confirmed stopped; its checkpoints remain preserved.",
     "Scene-mean, frame-weighted and harmonic FPS have separate definitions.",
     "No cancelled seed24 score or new seed aggregate is produced."
-  ]
+  ],
+  "posthoc_attribution": {
+    "status": "COMPLETE",
+    "verified_prediction_files": 176,
+    "shared_candidate_streams": "EXACT_MATCH_ALL_EIGHT_METHODS_ALL_LEGAL_SCENES",
+    "artifact": {
+      "path": "/data1/liuyeqiang/WWW_gmt_point_comparison_20261023/worldmot/results/gmt_vggt_point_error_attribution.json",
+      "bytes": 525024,
+      "sha256": "ee86407db41af63738649b93339e770ea15ca6aae8f2c9fe025e0db376de117d"
+    }
+  }
 }

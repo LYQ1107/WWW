@@ -1,6 +1,6 @@
 # GMT pre-GTA detector replacement
 
-Status: OFFICIAL_SINGLE_SEED_EFFECT_GATE_COMPLETE_POSTHOC_AUDIT_RUNNING. Base: `9a5572ebb3184b58253d448648195d175983ca1c`.
+Status: OFFICIAL_SINGLE_SEED_EFFECT_GATE_AND_POSTHOC_ATTRIBUTION_COMPLETE. Base: `9a5572ebb3184b58253d448648195d175983ca1c`.
 
 The complete six-scene TRAIN detector audit covers 5,860 paired timestamps /
 11,720 identical image IDs. At the frozen operating points, GMT precision /

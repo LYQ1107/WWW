@@ -17,7 +17,7 @@ NA = 'NOT_AVAILABLE'
 def write_csv(path, rows, fields=None):
     fields = fields or list(dict.fromkeys(k for row in rows for k in row))
     with Path(path).open('w') as stream:
-        writer = csv.DictWriter(stream, fieldnames=fields, extrasaction='ignore', lineterminator='\n')
+        writer = csv.DictWriter(stream, fieldnames=fields, extrasaction='ignore', restval='NOT_APPLICABLE', lineterminator='\n')
         writer.writeheader()
         writer.writerows(rows)
 
@@ -62,6 +62,11 @@ def main():
                 or set(diagnostics.get('methods', {})) != {r.key for r in new_routes(args.nas)}
                 or diagnostics.get('all_22_scene_prediction_hashes_verified') is not True):
             raise ValueError('Cannot attach incomplete diagnostic evidence')
+        diagnostics['source_diagnostic_artifact'] = artifact(args.diagnostics)
+        diagnostics['generator'] = dict(
+            command='PYTHONPATH=. python -u scripts/analyze_gmt_point_test.py --workers 4 --output ' + str(args.diagnostics),
+            script=artifact(HERE / 'scripts/analyze_gmt_point_test.py'),
+            route_registry=artifact(HERE / 'scripts/gmt_point_report_common.py'))
         report = read_json(out / 'gmt_vggt_point_final_comparison.json')
         if report.get('status') != 'COMPLETE_OFFICIAL_ROUTE_TABLE_SINGLE_SEED_EFFECT_GATE':
             raise ValueError('Generate the verified official table before attaching diagnostics')
@@ -75,9 +80,13 @@ def main():
         (out / 'gmt_vggt_point_error_attribution.json').write_text(json.dumps(diagnostics, indent=2, allow_nan=False) + '\n')
         summary = []
         for method, data in diagnostics['methods'].items():
-            summary.append(dict(method=method, **data['counts'],
+            counts = dict(same_person_shared_ID=0, different_person_cross_view_shared_ID=0,
+                          detected_GT_lost_after_detector=0)
+            counts.update(data['counts'])
+            summary.append(dict(method=method, **counts,
                                 same_person_shared_ID_ratio=data['same_person_shared_ID_ratio'],
-                                selected_temporal_identity_consistency=data['selected_temporal_identity_consistency']))
+                                selected_temporal_identity_consistency=data['selected_temporal_identity_consistency']
+                                if data['selected_temporal_identity_consistency'] is not None else 'NOT_APPLICABLE'))
         write_csv(out / 'gmt_vggt_point_error_summary.csv', summary)
         report['posthoc_error_attribution'] = artifact(args.diagnostics)
         report['remaining'] = 'Final hardware scope, reproduction and GitHub delivery audit; no additional seed experiments.'

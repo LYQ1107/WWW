@@ -5,7 +5,8 @@ Status: SINGLE_ROUTE_EFFECT_GATE_COMPLETE_TEMPORAL_OFFICIAL_V2_SEED24_CANCELLED_
 Reporting audit update: the reproducible table builder, complete-video CPU
 error attribution, actual TEST illustrations and provenance corrections are
 documented in [GMT_POINT_REPORTING_AUDIT_20261024.md](GMT_POINT_REPORTING_AUDIT_20261024.md).
-Post-hoc attribution is running; the full research goal remains active.
+Post-hoc attribution has completed and its scope/counts are reported below;
+the full research goal remains active pending the final delivery audit.
 New multi-seed work is stopped under
 `configs/gmt_point_effect_gate_policy_20261024.json`.
 
@@ -57,7 +58,50 @@ The unified files are `gmt_vggt_point_per_scene.csv`,
 `gmt_vggt_official_evidence_20261024.json` under `results/`.
 Per-camera CVIDF1/CVMA are marked not applicable because these are
 cross-camera metrics. The complete research goal still awaits the final
-post-hoc attribution and delivery audit.
+delivery audit.
+
+### Complete TEST error attribution (2026-10-24)
+
+All 176 new-route prediction files were rehashed, and the raw candidate
+streams agree exactly across all eight methods on every legal scene. The
+following are post-hoc fixed-IoU .5 person/timestamp diagnostics, separately
+labelled from official MOT metrics. Both cameras detect the same GT person
+in 54,452 events in the common legal scope.
+
+| Route | correct shared-ID events | share / detected-both | different-person shared-ID events | detected true boxes lost after association |
+|---|---:|---:|---:|---:|
+| A0 IoU/motion | 0 | 0.00% | 0 | 0 |
+| A1 appearance/motion | 13,360 | 24.54% | 616 | 0 |
+| V1 | 47,083 | 86.47% | 2,792 | 28,019 |
+| V2 joint primary seed22 | 43,512 | 79.91% | 2,906 | 11,615 |
+| V2 no-geometry seed22 | 40,722 | 74.79% | 2,658 | 20,740 |
+| VGGT temporal | 0 | 0.00% | 0 | 0 |
+| VGGT joint | 14,428 | 26.50% | 3,223 | 0 |
+
+VGGT joint's selected temporal transfers are 163,043 / 163,786 GT-consistent
+(99.546%), but 40,024 same-person dual-view events retain separate IDs.
+Its main measured gap is cross-view identity integration and wrong shared
+IDs, despite strong conditional local temporal matching. A2/A0 have cross-view
+merging disabled, explaining their zero shared events. High conditional
+transfer consistency is not full-trajectory identity accuracy.
+
+The V2 seed22 geometry ablation retains 9,125 more true detections than its
+no-geometry control, and adds 2,790 correct same-person shared-ID events,
+while also adding 248 different-person shared-ID events. Its metric gain
+therefore includes recall/acceptance effects and does not establish a pure
+independent geometric identity benefit. V1's relatively strong synchronous
+sharing is offset by 28,019 post-detector true-box losses and 3,068 diagnostic
+temporal label changes, compared with 690 in V2 seed22. Alignment reports
+33 hard failures over 19,103 legal timestamps; this count alone does not
+measure 3D drift or prove physically correct geometry.
+
+Full per-scene, size/crowd/raw-visibility grouping, selected versus candidate
+point evidence, NULL/birth reasons, file sizes and verified prediction SHAs
+are in `results/gmt_vggt_point_error_attribution.json`. The concise counters
+are in `results/gmt_vggt_point_error_summary.csv`. Diagnostic identity changes
+and false-merge events are not substituted for official IDSW/CVIDF1.
+
+## Historical registrations and Gate notes
 
 The user execution specification is the attachment
 `72c424c4-a10d-471c-a81d-d2acf67a046b/Pasted text.txt`. It remains the
