@@ -25,12 +25,24 @@ def iou(a, b):
     return inter / union if union > 0 else 0.
 
 
+def identity_key(ann):
+    value = ann.get("instance_id", ann.get("track_id", ann.get("id")))
+    if value is None:
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return str(value)
+
+
 def match(rows, gt):
     pairs = sorted([(iou(r["bbox"], a.get("bbox", [0] * 4)), r, a) for r in rows for a in gt], reverse=True, key=lambda x: x[0])
     used = set(); out = {}
     for score, row, ann in pairs:
         if score < .5: break
-        key = int(ann.get("instance_id", ann.get("track_id", ann.get("id", -1))))
+        key = identity_key(ann)
+        if key is None:
+            continue
         if key in used: continue
         used.add(key); out[int(row["detection_id"])] = key
     return out
@@ -50,9 +62,18 @@ def build_samples(cache_root, dataset_root, scenes, no_geometry=False):
     ds = VisionTrack(dataset_root, split="train"); samples=[]; coverage=[]
     for cache in iter_complete_scenes(cache_root, scenes):
         pairs={int(p.frame_id):p for p in ds.synchronized_pairs(cache.scene)}; previous={}; n=0
+        ambiguous_masked = 0; usable_annotations = 0; matched_detections = 0
         for fr in cache.frames():
-            pair=pairs[fr["timestamp"]]; gt={int(v):ds.ground_truth(rec.image_id) for v,rec in pair.images.items()}; byview={v:[r for r in fr["rows"] if r["view"]==v] for v in pair.images}
+            pair=pairs[fr["timestamp"]]; raw_gt={int(v):ds.ground_truth(rec.image_id) for v,rec in pair.images.items()}; gt={}
+            for view, anns in raw_gt.items():
+                counts={k: sum(identity_key(a) == k for a in anns) for k in {identity_key(a) for a in anns}}
+                ambiguous={k for k, count in counts.items() if k is not None and count > 1}
+                ambiguous_masked += sum(1 for a in anns if identity_key(a) in ambiguous or identity_key(a) is None)
+                clean=[a for a in anns if identity_key(a) is not None and identity_key(a) not in ambiguous]
+                usable_annotations += len(clean); gt[view]=clean
+            byview={v:[r for r in fr["rows"] if r["view"]==v] for v in pair.images}
             ids={v:match(byview[v],gt[v]) for v in byview}
+            matched_detections += sum(len(x) for x in ids.values())
             current={}
             for v, rows in byview.items():
                 w,h=pair.images[v].width,pair.images[v].height
@@ -63,7 +84,10 @@ def build_samples(cache_root, dataset_root, scenes, no_geometry=False):
                     if ident is not None: current[ident]=np.pad(np.concatenate([geo,visual]),(0,max(0,16-len(geo)-len(visual))))[:16]
                     n+=1
             previous=current
-        coverage.append({"scene":cache.scene,"timestamps":cache.manifest["timestamps"],"observations":n})
+        coverage.append({"scene":cache.scene,"timestamps":cache.manifest["timestamps"],"observations":n,
+                         "usable_gt_annotations": usable_annotations,
+                         "ambiguous_or_missing_identity_annotations_masked": ambiguous_masked,
+                         "matched_detection_supervision": matched_detections})
     return samples,coverage
 
 
