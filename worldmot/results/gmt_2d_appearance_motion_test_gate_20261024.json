@@ -1,0 +1,87 @@
+{
+  "status": "OFFICIAL_COMPLETE_14_VALID_GT_22_INFERENCE",
+  "recorded_utc": "2026-10-24T08:00:00Z",
+  "experiment": "GMT_detector_replacement_2d_control",
+  "route": "appearance_motion",
+  "split": "TEST",
+  "TEST_used_for_selection": false,
+  "raw_GT_modified": false,
+  "source_sha256": "0d6b8bc62da81fa4423afd808ea6fc55d05face2ab57c32e7d49eeb69256a229",
+  "runner_sha256": "8d07cbe7bdc6722bca954b5e5a939b080fcad3906cfb45e8a196777ff632c813",
+  "control_module_sha256": "0cf132db2d40b30093f89259e67da3c5575e26eaaa84a8c57d722dbfcee7bc00",
+  "final_test_lock_sha256": "11f09270f413a9e5fcf974c408c9c05a4df9a77e0dfc671f531e912adf8aa217",
+  "test_metadata_sha256": "617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f",
+  "raw_test_integrity_sha256": "b6bf53f82964dffe71c0b2f010dd7258444a6057047cb057e0edf8aceaaa560f",
+  "raw_cache_lock_sha256": "496cde1a6261239466b0da08cf4196c9142f8c26aa6796c3bbcf9cd8f939cdcf",
+  "settings": {
+    "appearance": true,
+    "minimum_iou": 0.5,
+    "minimum_cosine": 0.7,
+    "lost_retention": 30,
+    "maximum_motion_distance": 2.0,
+    "detector_mode": "live_verified",
+    "resource_mode": "shared_gpu"
+  },
+  "prediction_coverage": {
+    "complete_scenes": 22,
+    "frames": 29019,
+    "aggregate_manifest_sha256": "77b63bf7cf0a9e76284ba370b5f700d1df3ae18028596894341ebca662ff5b2e",
+    "blocked_raw_gt_scenes": [5, 12, 13, 14, 17, 20, 21, 22]
+  },
+  "evaluation": {
+    "evaluated_legal_scenes": 14,
+    "blocked_scenes": [],
+    "metrics_sha256": "2452588b346378655f93abaa7d4dc546391816deeb397f7284aa415d41a81435",
+    "metrics_path": "/data1/liuyeqiang/nas/A100/WorldMOT/final_comparison_20261023/2d_controls_v2/test_evaluation/appearance_motion/metrics.json",
+    "TrackEval": {
+      "HOTA": 58.21173888629892,
+      "AssA": 54.15544139267941,
+      "DetA": 63.03001976496635,
+      "IDF1": 65.63601397020294,
+      "MOTA": 75.79629580841478,
+      "IDSW": 662,
+      "Frag": 1544
+    },
+    "VisionTrack_MATLAB": {
+      "CVIDF1": 50.97634481823042,
+      "CVMA": 33.132228574439495,
+      "IDTP": 95821,
+      "IDFP": 90337,
+      "IDFN": 93964,
+      "CLEAR_IDSW": 81684
+    }
+  },
+  "timing": {
+    "unit": "synchronized dual-camera timestamps per second",
+    "scope": "full-video shared-GPU accuracy run; initialization and offline evaluation excluded",
+    "mean_e2e_fps_over_scenes": 2.3726031477649556,
+    "median_e2e_fps_over_scenes": 2.3776526524943646,
+    "frame_weighted_e2e_fps": 2.349288633066076,
+    "harmonic_scene_fps": 2.273022692211475,
+    "minimum_e2e_fps": 1.2988361375886115,
+    "maximum_e2e_fps": 2.83215413718427,
+    "stage_p50_s": {
+      "rgb_read_s": 0.05027078092098236,
+      "detector_and_candidate_verification_s": 0.32334858924150467,
+      "2D_association_s": 0.004452124238014221,
+      "output_serialization_s": 0.0005476772785186768,
+      "rgb_to_delivered_ids_s": 0.3849932849407196
+    },
+    "stage_p95_s": {
+      "rgb_read_s": 0.06986187398433685,
+      "detector_and_candidate_verification_s": 0.47250425145030023,
+      "2D_association_s": 0.19355909824371337,
+      "output_serialization_s": 0.0019081242382526398,
+      "rgb_to_delivered_ids_s": 0.6552463673055172
+    },
+    "fps_csv": "results/gmt_2d_appearance_motion_test_fps_20261024.csv"
+  },
+  "comparison_to_gmt_native": {
+    "HOTA_delta": -7.852848312110609,
+    "IDF1_delta": -14.476130690024803,
+    "CVIDF1_delta": -27.08495702806011,
+    "MOTA_delta": 2.832679084226882,
+    "IDSW_delta": -5382
+  },
+  "claim_boundary": "This is the frozen A1 GMT-detector plus appearance/motion control on all 22 TEST videos, evaluated only on the 14 legal raw-GT scenes. It is a 2D control, not a VGGT or geometry result; no TEST value selected a parameter. Replay TRAIN FPS is not used here."
+}

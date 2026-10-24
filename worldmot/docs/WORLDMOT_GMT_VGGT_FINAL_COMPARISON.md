@@ -1,6 +1,6 @@
 # GMT detector replacement and VGGT point association
 
-Status: COMPONENTS_VALIDATED_V1_TEST_V2_NO_GEOMETRY_POINT_JOINT_COMPLETE_REMAINING_ROUTES_RUNNING. Registration date: 2026-10-23.
+Status: COMPONENTS_VALIDATED_V1_TEST_V2_NO_GEOMETRY_POINT_JOINT_2D_CONTROLS_COMPLETE_REMAINING_ROUTES_RUNNING. Registration date: 2026-10-23.
 
 The user execution specification is the attachment
 `72c424c4-a10d-471c-a81d-d2acf67a046b/Pasted text.txt`. It remains the
@@ -101,11 +101,25 @@ Frag 1,562; VisionTrack MATLAB is CVIDF1 47.23269 / CVMA 34.11808. This is
 the GMT pre-GTA detector plus the pretrained VGGT-1B TrackHead point-joint
 route, not an Ω geometry result. It is below GMT Native by -12.66713 HOTA,
 -22.37254 IDF1 and -30.82861 CVIDF1, while MOTA is +2.50916 and IDSW is
-4,850 lower. The temporal point route, 2D controls and remaining V2 seeds
-are still running; no final cross-route ranking is claimed yet.
+4,850 lower. The temporal point route and remaining V2 seeds are still
+running; no final cross-route ranking is claimed yet.
+
+The frozen GMTDet 2D controls have also completed all 22 TEST videos and the
+same official 14-scene legal scope. A0 IoU/motion obtains HOTA 57.65895 /
+IDF1 64.33262 / CVIDF1 43.96730 / CVMA 18.79811 with 860 IDSW at 2.42080
+mean full-video FPS. A1 appearance/motion obtains HOTA 58.21174 / IDF1
+65.63601 / CVIDF1 50.97634 / CVMA 33.13223 with 662 IDSW at 2.37260 FPS.
+Both are below GMT Native on identity metrics (A1: -7.85285 HOTA, -14.47613
+IDF1, -27.08496 CVIDF1) but are substantially faster than the VGGT-point
+route; they are 2D controls and must not be described as geometry gains. Gate
+and stage-timing provenance is in `results/gmt_2d_iou_motion_test_gate_20261024.json`,
+`results/gmt_2d_iou_motion_test_fps_20261024.csv`,
+`results/gmt_2d_appearance_motion_test_gate_20261024.json` and
+`results/gmt_2d_appearance_motion_test_fps_20261024.csv`.
 The VGGT temporal and joint routes have now completed their registered
-six-scene TRAIN full-video validation and official TRAIN evaluation; their
-independent TEST inference is running under a frozen TRAIN-only lock.
+six-scene TRAIN full-video validation and official TRAIN evaluation; the
+independent temporal TEST inference remains running under a frozen TRAIN-only
+lock.
 Historical GMT/V2 TEST metrics are reference evidence only and are not
 hyperparameter-selection data.
 
@@ -170,6 +184,26 @@ route. This is a pretrained VGGT-1B TrackHead point experiment, not a
 VGGT-Ω geometry experiment; the temporal point route and other registered
 controls still have to finish before final cross-route conclusions.
 
+### GMTDet 2D-control official TEST Gates (2026-10-24)
+
+The selected A0 and A1 controls were evaluated with the same frozen detector
+lock, RGB timestamps, output rules and official evaluator. Both produced all
+22 TEST videos; only the 14 legal raw-GT scenes enter the aggregate. They do
+not call VGGT, geometry or GTA.
+
+| Route | HOTA | AssA | DetA | IDF1 | MOTA | IDSW | Frag | CVIDF1 | CVMA | mean E2E FPS |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| GMTDet + 2D IoU/motion (A0) | 57.65895 | 53.15544 | 63.08694 | 64.33262 | 75.67827 | 860 | 1,560 | 43.96730 | 18.79811 | 2.42080 |
+| GMTDet + 2D appearance/motion (A1) | 58.21174 | 54.15544 | 63.03002 | 65.63601 | 75.79630 | 662 | 1,544 | 50.97634 | 33.13223 | 2.37260 |
+
+Compared with GMT Native, A1 is -7.85285 HOTA, -14.47613 IDF1 and
+-27.08496 CVIDF1, while reducing IDSW by 5,382. A0 is -8.40563 HOTA,
+-15.77952 IDF1 and -34.09400 CVIDF1, while reducing IDSW by 5,184. The
+approximately 2.4 synchronized dual-camera timestamps/s is a real live
+detector-to-final-ID throughput, not the cached TRAIN replay speed. These
+controls provide a fast reproducible 2D baseline but no measured identity
+advantage over GMT Native.
+
 The GMT pre-GTA detector + fixed V1 association has now completed its
 official TRAIN validation Gate. All six registered validation videos are
 covered (5,860 synchronized timestamps); the legal aggregate contains only
@@ -231,9 +265,9 @@ The live status is generated from `/proc`-verified owned processes plus actual
 scene artifacts in `results/gmt_vggt_live_status.json`. It is a timestamped
 snapshot, not a substitute for checking current process handles. The original
 official baseline results, including source metric SHA and GT blocks, are in
-`results/gmt_vggt_original_official_baselines.json`. Remaining final TEST rows
-remain NOT_AVAILABLE until the respective complete inference and official
-scores exist.
+`results/gmt_vggt_original_official_baselines.json`. Only routes without a
+complete inference and official score remain NOT_AVAILABLE; the A0/A1 2D
+controls now have independent official TEST gates below.
 
 The complete raw GMT TRAIN gate has now passed deep verification of every
 data shard and all 24 timelines: 557,002 observations / 57,508 RGB images,
@@ -314,18 +348,17 @@ cosine=0.7. On legal TRAIN scenes 4/8/12, A0 obtains HOTA 67.19296 / IDF1
 72.33212 / CVIDF1 45.57407, while A1 obtains HOTA 69.35764 / IDF1 75.45918 /
 CVIDF1 59.79462; scenes 16/20/24 remain blocked by raw GT duplicate keys.
 These are TRAIN-only diagnostics. The controls preserve all current candidates
-with NULL/newborn decisions and have a frozen TEST lock, but full 22-video TEST
-inference has not started. Code hashes and the raw-candidate integrity hash are
-in `results/gmt_2d_train_gate_complete_20261024.json`; replay FPS is not live
-TEST FPS. Already separate IDs are not retrospectively merged in this simple
-2D control.
+with NULL/newborn decisions and use the frozen TEST lock. Their complete live
+TEST gates are recorded separately in the two `gmt_2d_*_test_gate_20261024.json`
+files; replay FPS remains distinct from live TEST FPS. Already separate IDs
+are not retrospectively merged in this simple 2D control.
 
 The original two-stage ablation has also completed 22/22 TEST videos and the
 official legal-GT scope: HOTA 35.19849, AssA 47.59979, IDF1 41.57418,
 MOTA 31.89188, IDSW 373. Its 65,580 true positives and 124,205 misses explain
-why fewer ID switches are not evidence of superiority to GMT. VGGT-point and
-final V2 official TEST metrics remain pending; no threshold is chosen from these
-historical TEST references.
+why fewer ID switches are not evidence of superiority to GMT. The VGGT-point
+temporal route and final V2 seed aggregate remain pending; no threshold is
+chosen from the historical two-stage TEST reference.
 The merged CPU suite passes 79 tests, including NULL assignment, mask
 semantics, box storage precision, exact model-request replay integrity and
 causal 2D lifecycle tests.

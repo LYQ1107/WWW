@@ -286,11 +286,32 @@ scenes 16/20/24 remains blocked due duplicate keys; no GT was edited and
 
 These are complete TRAIN gates, not TEST scores. The frozen TEST lock and
 22-video raw candidate integrity are recorded in
-`results/gmt_2d_train_gate_complete_20261024.json`. The `--train-only`
-command itself did not launch TEST; the separate frozen-lock live TEST routes
-are now running and have not yet produced official metrics. Replay FPS uses
-cached GMT candidates and must not be presented as live detector or final TEST
-FPS.
+`results/gmt_2d_train_gate_complete_20261024.json`. The selected live TEST
+routes have since completed all 22 videos and official evaluation. Replay FPS
+uses cached GMT candidates and must not be presented as live detector or final
+TEST FPS.
+
+### 2D-control official TEST Gate (2026-10-24)
+
+The frozen A0 IoU/motion route obtains TrackEval HOTA **57.65895**, AssA
+**53.15544**, DetA **63.08694**, IDF1 **64.33262**, MOTA **75.67827**, IDSW
+**860**, Frag **1,560**, and MATLAB CVIDF1 **43.96730** / CVMA **18.79811**.
+The frozen A1 appearance/motion route obtains HOTA **58.21174**, AssA
+**54.15544**, DetA **63.03002**, IDF1 **65.63601**, MOTA **75.79630**, IDSW
+**662**, Frag **1,544**, and MATLAB CVIDF1 **50.97634** / CVMA **33.13223**.
+Both cover all 22 TEST videos and are scored on the same 14 legal raw-GT
+scenes; eight duplicate-key scenes remain inference-only. Mean live shared-GPU
+full-video throughput is **2.42080 FPS** (A0) and **2.37260 FPS** (A1), with
+stage P50/P95 and lock hashes in
+`results/gmt_2d_iou_motion_test_gate_20261024.json`,
+`results/gmt_2d_iou_motion_test_fps_20261024.csv`,
+`results/gmt_2d_appearance_motion_test_gate_20261024.json` and
+`results/gmt_2d_appearance_motion_test_fps_20261024.csv`.
+
+Neither control uses VGGT or geometry. Relative to GMT Native, A1 is
+-7.85285 HOTA, -14.47613 IDF1 and -27.08496 CVIDF1 (A0 is -8.40563,
+-15.77952 and -34.09400); the lower IDSW counts do not establish identity
+superiority because the identity metrics remain lower.
 
 ### VGGT-point TRAIN selection Gate (2026-10-23)
 
