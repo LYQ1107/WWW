@@ -26,11 +26,12 @@ def make_support(r):
 class FrozenUpdateHead:
     """Optional W4 gate; Ω/GMT remain frozen and no labels enter inference."""
 
-    def __init__(self, checkpoint, device="cpu"):
+    def __init__(self, checkpoint, device="cpu", no_geometry=False):
         import torch
         from worldmot.models.world_object_update_head import WorldObjectUpdateHead
         self.torch = torch
         self.device = str(device)
+        self.no_geometry = bool(no_geometry)
         self.model = WorldObjectUpdateHead(geometry_dim=7, visual_dim=8,
                                           hidden_dim=128, memory_dim=16).to(self.device)
         state = torch.load(str(checkpoint), map_location=self.device, weights_only=True)
@@ -39,7 +40,8 @@ class FrozenUpdateHead:
     def __call__(self, row, width, height, memory):
         center = np.nan_to_num(np.asarray(row["center"], np.float32), nan=0.0, posinf=0.0, neginf=0.0)
         diag = np.nan_to_num(np.diag(np.asarray(row["cov"], np.float32)), nan=1.0, posinf=1.0, neginf=1.0)
-        geo = np.concatenate([center, diag, [float(row["quality"])]])[None].astype(np.float32)
+        geo = (np.zeros(7, np.float32) if self.no_geometry
+               else np.concatenate([center, diag, [float(row["quality"])]])).astype(np.float32)[None]
         b = np.asarray(row["bbox"], np.float32)
         visual = np.asarray([[b[0] / max(width, 1), b[1] / max(height, 1),
                               b[2] / max(width, 1), b[3] / max(height, 1),
@@ -103,13 +105,15 @@ def run_scene(cache, out_scene, pair_by_timestamp=None, learned=None):
         for row in rows:f.write(json.dumps(row,allow_nan=False,separators=(",",":"))+"\n")
     with (out_scene/"timings.jsonl").open("w") as f:
         for row in timings:f.write(json.dumps(row,allow_nan=False,separators=(",",":"))+"\n")
-    manifest={"schema":"worldobject_prediction_v1","route":"W4_LEARNED_UPDATE" if learned is not None else "W3_PERSISTENT_BANK","scene":cache.scene,"status":"COMPLETE","timestamps":len(rows),"first_frame":rows[0]["timestamp"] if rows else None,"last_frame":rows[-1]["timestamp"] if rows else None,"causal":True,"GT_in_inference":False,"cache_manifest":cache.manifest,"tracks_sha256":hashlib.sha256((out_scene/"tracks.jsonl").read_bytes()).hexdigest(),"timings_sha256":hashlib.sha256((out_scene/"timings.jsonl").read_bytes()).hexdigest(),"fps_definition":"cache_replay_only_not_live_E2E"}
+    route = ("W5_NO_GEOMETRY_CONTROL" if learned is not None and learned.no_geometry
+             else "W4_LEARNED_UPDATE" if learned is not None else "W3_PERSISTENT_BANK")
+    manifest={"schema":"worldobject_prediction_v1","route":route,"scene":cache.scene,"status":"COMPLETE","timestamps":len(rows),"first_frame":rows[0]["timestamp"] if rows else None,"last_frame":rows[-1]["timestamp"] if rows else None,"causal":True,"GT_in_inference":False,"cache_manifest":cache.manifest,"tracks_sha256":hashlib.sha256((out_scene/"tracks.jsonl").read_bytes()).hexdigest(),"timings_sha256":hashlib.sha256((out_scene/"timings.jsonl").read_bytes()).hexdigest(),"fps_definition":"cache_replay_only_not_live_E2E"}
     (out_scene/"manifest.json").write_text(json.dumps(manifest,indent=2,allow_nan=False));return manifest
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--cache",required=True);p.add_argument("--output",required=True);p.add_argument("--scenes",nargs="*",type=int);p.add_argument("--dataset-root",default="/data/DATASETS/TRACKING/JDE/VisionTrack");p.add_argument("--checkpoint");p.add_argument("--device",default="cpu")
-    a=p.parse_args();root=Path(a.output);root.mkdir(parents=True,exist_ok=True);scenes=a.scenes or [int(x.name.split("_")[1]) for x in sorted(Path(a.cache).glob("scene_*")) if x.is_dir()]; ds=VisionTrack(a.dataset_root,split="test",load_annotations=False) if a.checkpoint else None; learned=FrozenUpdateHead(a.checkpoint,a.device) if a.checkpoint else None
+    p=argparse.ArgumentParser();p.add_argument("--cache",required=True);p.add_argument("--output",required=True);p.add_argument("--scenes",nargs="*",type=int);p.add_argument("--dataset-root",default="/data/DATASETS/TRACKING/JDE/VisionTrack");p.add_argument("--checkpoint");p.add_argument("--device",default="cpu");p.add_argument("--no-geometry",action="store_true")
+    a=p.parse_args();root=Path(a.output);root.mkdir(parents=True,exist_ok=True);scenes=a.scenes or [int(x.name.split("_")[1]) for x in sorted(Path(a.cache).glob("scene_*")) if x.is_dir()]; ds=VisionTrack(a.dataset_root,split="test",load_annotations=False) if a.checkpoint else None; learned=FrozenUpdateHead(a.checkpoint,a.device,a.no_geometry) if a.checkpoint else None
     reports=[]
     for sid in scenes:
         pairs = {int(p.frame_id): p for p in ds.synchronized_pairs(int(sid))} if ds is not None else {}
