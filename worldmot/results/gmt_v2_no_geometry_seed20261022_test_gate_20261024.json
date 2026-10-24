@@ -1,0 +1,76 @@
+{
+  "status": "OFFICIAL_ABLATION_COMPLETE_14_VALID_GT_22_INFERENCE",
+  "recorded_utc": "2026-10-24T04:03:53Z",
+  "experiment": "GMT_detector_replacement_v2",
+  "route": "no_geometry_seed20261022",
+  "split": "TEST",
+  "test_used_for_selection": false,
+  "raw_GT_modified": false,
+  "source_sha256": "c0ef87cc85759f654156c9ec71208bca12bc4f120cb0174264682b9015859e2e",
+  "checkpoint_sha256": "2caa18e5a53ad5e84bd042dc210a6b5aba6c631873aae67d19cb777da0b43664",
+  "final_test_lock_sha256": "e8760e8eff5a69b8716af747a66bc32503da632b8f66f5a095ef5de5163fdf52",
+  "test_metadata_sha256": "617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f",
+  "raw_gt_legal_scenes": [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 15, 16, 18, 19],
+  "prediction_coverage": {
+    "complete_scenes": 22,
+    "frames": 29019,
+    "full_video": true,
+    "blocked_raw_gt_scenes": [5, 12, 13, 14, 17, 20, 21, 22]
+  },
+  "evaluation": {
+    "evaluated_legal_scenes": 14,
+    "blocked_scenes": [5, 12, 13, 14, 17, 20, 21, 22],
+    "metrics_sha256": "59d7eb723e75de835aefe89b3e07e560255cb7802e5860153f88204ec6805a68",
+    "metrics_path": "/data1/liuyeqiang/nas/A100/WorldMOT/gmt_detector_comparison_20261023/test_gmt_v2_evaluation/no_geometry_seed20261022/metrics.json",
+    "TrackEval": {
+      "HOTA": 59.20432734237009,
+      "AssA": 59.702570089297005,
+      "DetA": 58.96237911501368,
+      "IDF1": 71.72844368590725,
+      "MOTA": 71.482467002134,
+      "IDSW": 699,
+      "Frag": 1251,
+      "CLR_TP": 144671,
+      "CLR_FN": 45114,
+      "CLR_FP": 8309
+    },
+    "VisionTrack_MATLAB": {
+      "CVIDF1": 69.95229968053914,
+      "CVMA": 64.28695629264693,
+      "IDTP": 119886,
+      "IDFP": 33094,
+      "IDFN": 69899,
+      "CLEAR_TP": 144680,
+      "CLEAR_FP": 8300,
+      "CLEAR_FN": 45105,
+      "CLEAR_IDSW": 14373
+    }
+  },
+  "timing": {
+    "unit": "synchronized dual-camera timestamps per second",
+    "scope": "full-video shared-GPU accuracy run; initialization excluded",
+    "mean_e2e_fps": 0.757365923996761,
+    "median_e2e_fps": 0.7777685392817066,
+    "minimum_e2e_fps": 0.39640250417098105,
+    "maximum_e2e_fps": 1.0265425759066875,
+    "harmonic_scene_fps": 0.7303701651210337
+  },
+  "comparison_to_gmt_native": {
+    "HOTA_delta": -6.860259856039434,
+    "IDF1_delta": -8.38370097432049,
+    "CVIDF1_delta": -8.109002165751392,
+    "CVMA_delta": -4.356508680875734
+  },
+  "comparison_to_joint_seed20261022": {
+    "HOTA_delta": -1.813380352474013,
+    "AssA_delta": -0.5248751365305893,
+    "DetA_delta": -3.147497545478167,
+    "IDF1_delta": -2.490465388548074,
+    "MOTA_delta": -3.973970545617391,
+    "CVIDF1_delta": -2.7406258188839416,
+    "CVMA_delta": -4.019811892404576,
+    "IDSW_delta": 101,
+    "Frag_delta": -38
+  },
+  "claim_boundary": "This is a complete official no-geometry ablation route for one frozen seed on the 14 legal raw-GT scenes, with all 22 TEST videos inferred. It is not the final three-seed GMTDet+V2 aggregate and does not claim that geometry is beneficial without the matched joint route comparison."
+}

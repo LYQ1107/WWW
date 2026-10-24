@@ -225,6 +225,29 @@ VGGT-point jobs share the six authorized cards, the TEST route is explicitly
 query/memory, post-processing and flushed ID delivery. No formal metric is
 reported until all 22 scenes of a route are complete and evaluated.
 
+### V2 no-geometry official ablation Gate (2026-10-24)
+
+The matched `no_geometry_seed20261022` route completed all 22 TEST videos
+(29,019 synchronized timestamps) under the same frozen detector and lock. The
+legal raw-GT scope remains 14 scenes; eight duplicate-key scenes are retained
+as inference-only and are not scored. Without geometry features, the route
+scores HOTA **59.20433**, AssA **59.70257**, DetA **58.96238**, IDF1
+**71.72844**, MOTA **71.48247**, IDSW **699**, Frag **1,251**; the MATLAB
+interleaved scores are CVIDF1 **69.95230** and CVMA **64.28696**. Mean
+shared-GPU full-video E2E throughput is **0.75737 synchronized dual-camera
+timestamps/s** (harmonic scene FPS **0.73037**). This is a complete frozen-seed
+ablation, not the final three-seed V2 aggregate.
+
+Against the matched `joint_seed20261022` route, retaining geometry gives
+**+1.81338 HOTA, +2.49047 IDF1, +2.74063 CVIDF1, +3.97397 MOTA and -101
+IDSW** (joint minus no-geometry). Against GMT Native, the no-geometry route
+is -6.86026 HOTA, -8.38370 IDF1, -8.10900 CVIDF1 and -4.35651 CVMA. Full
+provenance and timing are in
+`results/gmt_v2_no_geometry_seed20261022_test_gate_20261024.json`,
+`results/gmt_v2_no_geometry_seed20261022_test_fps_20261024.csv` and
+`results/gmt_v2_geometry_ablation_20261024.json`; no TEST value was used for
+selection.
+
 ### Preserved 2D-control source-guard failure (2026-10-23)
 
 The first finite 2D-control queue reached a frozen TEST lock and produced all

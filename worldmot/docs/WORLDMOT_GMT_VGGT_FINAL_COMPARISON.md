@@ -1,6 +1,6 @@
 # GMT detector replacement and VGGT point association
 
-Status: COMPONENTS_VALIDATED_V1_TEST_COMPLETE_REMAINING_ROUTES_RUNNING. Registration date: 2026-10-23.
+Status: COMPONENTS_VALIDATED_V1_TEST_COMPLETE_V2_NO_GEOMETRY_GATE_COMPLETE_REMAINING_ROUTES_RUNNING. Registration date: 2026-10-23.
 
 The user execution specification is the attachment
 `72c424c4-a10d-471c-a81d-d2acf67a046b/Pasted text.txt`. It remains the
@@ -20,7 +20,8 @@ All three new worktrees start from verified remote commit
 
 The original experiment worktrees remain on their original branches.
 The original ablation/evaluation queues are preserved. No-appearance and
-two-stage are complete; no-geometry continues.
+two-stage are complete; the frozen V2 no-geometry ablation is now complete on
+22/22 TEST videos and its official legal-scope metrics are recorded below.
 The capacity TEST waiter PID 20615 was identity/cwd/owner/children checked
 and suspended with SIGSTOP before it started TEST. Its checkpoints remain
 preserved. Pause evidence is in
@@ -120,6 +121,18 @@ Its official legal-scope result is HOTA 61.01771 / IDF1 74.21891 /
 CVIDF1 72.69293 / CVMA 68.30677, or -5.04688 HOTA and -5.89324 IDF1 versus
 GMT Native. This is a completed frozen-seed route, not the final three-seed
 V2 aggregate.
+
+The matched `no_geometry_seed20261022` ablation has also completed all 22
+TEST videos and the same 14-scene legal evaluation. It obtains HOTA 59.20433,
+AssA 59.70257, DetA 58.96238, IDF1 71.72844, MOTA 71.48247, CVIDF1 69.95230,
+CVMA 64.28696, IDSW 699 and Frag 1,251 at mean shared-GPU E2E 0.75737
+synchronized dual-camera timestamps/s (harmonic scene FPS 0.73037). Relative
+to the matched joint seed, geometry adds +1.81338 HOTA, +2.49047 IDF1,
++2.74063 CVIDF1 and removes 101 ID switches; this is one-seed ablation
+evidence, not the final three-seed V2 claim. The auditable files are
+`results/gmt_v2_no_geometry_seed20261022_test_gate_20261024.json`,
+`results/gmt_v2_no_geometry_seed20261022_test_fps_20261024.csv` and
+`results/gmt_v2_geometry_ablation_20261024.json`.
 
 The GMT pre-GTA detector + fixed V1 association has now completed its
 official TRAIN validation Gate. All six registered validation videos are

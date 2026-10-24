@@ -1,5 +1,5 @@
 {
-  "status": "PARTIAL_V1_TEST_COMPLETE_POINT_V2_PENDING",
+  "status": "PARTIAL_V1_TEST_V2_SEED22_NO_GEOMETRY_COMPLETE_POINT_AND_V2_AGGREGATE_PENDING",
   "source_original_baselines_sha256": "8003a91955dd314b96ef1093b43896b2db16e187d79babff15a8102505cb6b07",
   "official_rows": [
     {
@@ -134,6 +134,46 @@
       "delta_IDF1_vs_GMT": -27.03327067590157
     },
     {
+      "Method": "GMTDet + V2 joint seed20261022",
+      "Detector": "GMT",
+      "Association": "PWQT",
+      "HOTA": 61.017707694844106,
+      "AssA": 60.227445225827594,
+      "DetA": 62.10987666049185,
+      "IDF1": 74.21890907445533,
+      "CVIDF1": 72.69292549942308,
+      "MOTA": 75.45643754775139,
+      "IDSW": 598,
+      "Frag": 1289,
+      "CVMA": 68.30676818505151,
+      "E2E_FPS": 0.7734590114844996,
+      "Status": "OFFICIAL_ROUTE_COMPLETE_14_VALID_GT_22_INFERENCE_AGGREGATE_PENDING",
+      "Parameters": "FROZEN_SEED_20261022; TEST_used_for_selection=false",
+      "Timing": "shared-GPU full-video mean; per-scene FPS in gmt_v2_joint_seed20261022_test_fps_20261024.csv; final three-seed aggregate pending",
+      "delta_HOTA_vs_GMT": -5.046879503565421,
+      "delta_IDF1_vs_GMT": -5.893235585772416
+    },
+    {
+      "Method": "GMTDet + V2 no-geometry seed20261022",
+      "Detector": "GMT",
+      "Association": "PWQT_NO_GEOMETRY",
+      "HOTA": 59.20432734237009,
+      "AssA": 59.702570089297005,
+      "DetA": 58.96237911501368,
+      "IDF1": 71.72844368590725,
+      "CVIDF1": 69.95229968053914,
+      "MOTA": 71.482467002134,
+      "IDSW": 699,
+      "Frag": 1251,
+      "CVMA": 64.28695629264693,
+      "E2E_FPS": 0.757365923996761,
+      "Status": "OFFICIAL_ABLATION_COMPLETE_14_VALID_GT_22_INFERENCE",
+      "Parameters": "FROZEN_NO_GEOMETRY_SEED_20261022; TEST_used_for_selection=false",
+      "Timing": "shared-GPU full-video mean; per-scene FPS in gmt_v2_no_geometry_seed20261022_test_fps_20261024.csv; one-seed ablation, final three-seed aggregate pending",
+      "delta_HOTA_vs_GMT": -6.860259856039434,
+      "delta_IDF1_vs_GMT": -8.38370097432049
+    },
+    {
       "Method": "GMTDet + V2",
       "Detector": "GMT",
       "Association": "PWQT",
@@ -200,5 +240,5 @@
   "new_TEST_used_for_selection": false,
   "parameter_note": "Zero means no association parameters trained in this experiment, not a zero-parameter detector/backbone.",
   "pilot_speed_excluded_from_main_table": "Short TRAIN prefix speed/quality reports are separate artifacts.",
-  "remaining": "Matched-budget V2 fit and all new frozen full TEST, per-scene attribution and exclusive timing audit"
+  "remaining": "V2 seed20261023/24 and VGGT-point TEST completion, matched-budget aggregate, per-scene attribution and exclusive timing audit"
 }
