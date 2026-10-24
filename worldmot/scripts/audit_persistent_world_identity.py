@@ -23,7 +23,7 @@ def iou(a,b):
 
 
 def match(rows,gt):
-    pairs=sorted([(iou(r["bbox"],a.get("bbox",[0]*4)),r,a) for r in rows for a in gt],reverse=True);used=set();out={}
+    pairs=sorted([(iou(r["bbox"],a.get("bbox",[0]*4)),r,a) for r in rows for a in gt],key=lambda x:x[0],reverse=True);used=set();out={}
     for s,r,a in pairs:
         ident=int(a.get("instance_id",a.get("track_id",a.get("id",-1))))
         if s<.5 or ident in used:continue
