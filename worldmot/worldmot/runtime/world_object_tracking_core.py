@@ -41,9 +41,12 @@ class WorldObjectTrackingCore:
             raise ValueError("TEACHER_DECISION_FORBIDDEN_IN_INFERENCE")
         if evidence is None:
             evidence = self.forward_evidence(observations, timestamp)
+        consumed={"assignment_logits","null_logits","existence_logits","birth_logits","update_gate",
+                  "memory_delta","birth_pair_logits","birth_pair_mask"}
         learned = None if evidence is None else {
-            k: (v.detach().cpu().numpy() if hasattr(v,"detach") else np.asarray(v))
-            for k,v in evidence.items()}
+            k: (v.detach() if k=="memory_delta" and hasattr(v,"detach") else
+                v.detach().cpu().numpy() if hasattr(v,"detach") else np.asarray(v))
+            for k,v in evidence.items() if k in consumed}
         objects,diag = self.bank.step(observations,timestamp,learned,training_decision=training_decision)
         diag["evidence_status"]=self.evidence_status
         tracks = {str(v):[] for v in sorted({o.camera_id for o in observations})}
@@ -58,6 +61,9 @@ class WorldObjectTrackingCore:
                     "output_source":"CURRENT_GMT_DETECTION", "projected_from_world":False})
             decisions.append({"camera_id":o.camera_id,"detection_id":o.detection_id,"global_id":gid,
                 "geometry_status":o.geometry_status,"feature_status":"AVAILABLE" if o.feature_valid else "FEATURE_UNAVAILABLE",
+                "point_support_available":o.point_support_available,"geometry_valid":o.geometry_valid,
+                "geometry_reliability":o.geometry_reliability,"cross_view_fusion_eligible":o.cross_view_fusion_eligible,
+                "world_state_update_eligible":o.world_state_update_eligible,
                 "decision":q.decision_status,"source":o.source})
         return {"schema":"worldobject_prediction_v3","timestamp":int(timestamp),"scene_id":self.scene_id,
             "method_id":self.config.method_id,"tracks_2d_by_camera":tracks,"decisions":decisions,

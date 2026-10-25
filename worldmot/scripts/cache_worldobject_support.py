@@ -10,6 +10,7 @@ import hashlib
 import json
 import os
 import time
+import uuid
 from pathlib import Path
 
 import numpy as np
@@ -27,7 +28,7 @@ from worldmot.geometry.world_frame_contract import WorldFrameTransform
 from worldmot.data.worldobject_observations import live_observations
 
 
-SCHEMA = "worldobject_omega512_sparse_support_v2"
+SCHEMA = "worldobject_omega512_sparse_support_v2_birthfix_v1"
 DEFAULT_OMEGA = "/data1/liuyeqiang/WWW_omega_runtime_20261016/official_vggt_omega"
 DEFAULT_OMEGA_WEIGHTS = "/data1/liuyeqiang/WWW_omega_runtime_20261016/weights/vggt_omega_1b_512.pt"
 
@@ -56,12 +57,13 @@ def read_images(ds, pair):
 
 
 class SceneState:
-    def __init__(self, omega, detector_cache, scene_id):
+    def __init__(self, omega, detector_cache, scene_id,audit_single_view=False):
         self.omega = omega; self.detector_cache = detector_cache; self.scene_id = int(scene_id)
         self.aligner = DualCameraStaticAligner(min_inliers=6)
         self.original_aligner = Sim3Aligner(min_inliers=6)
         self.previous = None; self.previous_world = {}
         self.previous_original = None; self.previous_original_world = {}
+        self.audit_single_view=bool(audit_single_view)
 
     def step(self, images, timestamp):
         started = time.perf_counter()
@@ -80,7 +82,10 @@ class SceneState:
         else:
             old = copy.copy(self.previous); old.world_pointmaps = self.previous_world
             align = self.aligner.update(old, frame, sorted(frame.pointmaps))
-            if self.previous_original is None:
+            if not self.audit_single_view:
+                from worldmot.geometry.world_alignment import AlignmentResult,Sim3
+                original=AlignmentResult(False,Sim3(),0,0,0.,float("inf"),float("inf"),"NOT_RUN_V3_DUAL_CAMERA_PRIMARY")
+            elif self.previous_original is None:
                 # A failed historical G0-A update must not dereference a
                 # missing frame or pretend that the current frame is aligned.
                 original = self.original_aligner.update(np.empty((0, 3)), np.empty((0, 3)))
@@ -109,12 +114,15 @@ class SceneState:
                          "quality":obs.geometry_reliability,"foreground_fraction":support.foreground_fraction if support else 0.,
                          "ambiguity":support.ambiguity if support else "WORLD_ALIGNMENT_FAILED",
                          "roi_feature":obs.feature,"feature_valid":obs.feature_valid,
-                         "geometry_valid":obs.geometry_valid,"geometry_status":obs.geometry_status})
+                         "geometry_valid":obs.geometry_valid,"geometry_status":obs.geometry_status,
+                         "point_support_available":obs.point_support_available,
+                         "cross_view_fusion_eligible":obs.cross_view_fusion_eligible,
+                         "world_state_update_eligible":obs.world_state_update_eligible})
         if aligned:
             self.previous = frame
             self.previous_world = {v: transform.apply(pm.reshape(-1, 3)).reshape(pm.shape)
                                    for v, pm in frame.pointmaps.items()}
-        if original.success:
+        if self.audit_single_view and original.success:
             self.previous_original = frame
             self.previous_original_world = {v: original.transform.apply(pm.reshape(-1, 3)).reshape(pm.shape)
                                             for v, pm in frame.pointmaps.items()}
@@ -155,11 +163,30 @@ def _fixed_points(rows, key, width=64):
 
 
 def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128, limit=None):
-    dest = Path(output) / f"scene_{int(sid):02d}"; dest.mkdir(parents=True, exist_ok=True)
-    if (dest/"manifest.json").exists():
-        raise FileExistsError("V2 cache is immutable; choose a fresh output directory")
     pairs = list(ds.synchronized_pairs(int(sid))); pairs = pairs[:int(limit)] if limit else pairs
     expected = [int(p.frame_id) for p in pairs]
+    dest = Path(output) / f"scene_{int(sid):02d}"
+    manifest_path=dest/"manifest.json"
+    if manifest_path.is_file():
+        manifest=json.loads(manifest_path.read_text())
+        if manifest.get("status")=="COMPLETE":
+            if (manifest.get("schema")!=SCHEMA or manifest.get("timestamps")!=len(expected)
+                    or manifest.get("detector_cache",{}).get("cache_lock_sha256")!=detector_cache.manifest()["cache_lock_sha256"]
+                    or manifest.get("omega",{}).get("checkpoint_sha256")!=omega.diagnostics().get("checkpoint_sha256")):
+                raise RuntimeError("EXISTING_COMPLETE_SCENE_PROVENANCE_MISMATCH")
+            for shard in manifest["shards"]:
+                path=dest/shard["file"]
+                if sha256(path)!=shard["sha256"] or sha256(path.with_suffix(".json"))!=shard["sidecar_sha256"]:
+                    raise RuntimeError("EXISTING_COMPLETE_SCENE_SHA_MISMATCH")
+            print(json.dumps({"scene":sid,"status":"REUSED_VERIFIED_COMPLETE"}),flush=True)
+            return manifest
+    if dest.exists() and any(dest.iterdir()):
+        quarantine=Path(output)/"failed_scenes"/(dest.name+"."+uuid.uuid4().hex)
+        quarantine.parent.mkdir(parents=True,exist_ok=True)
+        os.replace(dest,quarantine)
+        atomic_json(quarantine/"RECOVERY.json",{"reason":"NO_COMPLETE_WORLD_GAUGE_SNAPSHOT_RESTART_FROM_SCENE_ORIGIN",
+                    "original_scene":int(sid),"source_commit":source_commit(),"preserved_at":str(quarantine)})
+    dest.mkdir(parents=True,exist_ok=True)
     state = SceneState(omega, detector_cache, sid)
     completed, entries, totals = [], [], collections.Counter()
     for path in sorted(dest.glob("shard_*.json")):
@@ -180,6 +207,7 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
         if not buffer: return
         offsets = [0]; timestamps=[]; cameras=[]; det_ids=[]; bboxes=[]; scores=[]; centers=[]; covs=[]
         qualities=[]; fg_frac=[]; ambiguity=[]; box_all=[]; fg_all=[]; features=[]; feature_valid=[]; geometry_valid=[]; geometry_status=[]; counts=collections.Counter()
+        layered={key:[] for key in ("point_support_available","cross_view_fusion_eligible","world_state_update_eligible")}
         for pair, rows, align, original, detections, runtime in buffer:
             timestamps.append(int(pair.frame_id)); counts["timestamps"] += 1
             for row in rows:
@@ -188,6 +216,7 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
                 ambiguity.append(row["ambiguity"]); box_all.append(row["box"]); fg_all.append(row["foreground"])
                 features.append(row["roi_feature"]);feature_valid.append(row["feature_valid"])
                 geometry_valid.append(row["geometry_valid"]);geometry_status.append(row["geometry_status"])
+                for key in layered:layered[key].append(row[key])
                 counts["observations"] += 1
             offsets.append(len(cameras))
         box, box_count = _fixed_points([{"p": x} for x in box_all], "p")
@@ -206,6 +235,7 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
                   "roi_features": np.asarray(features,np.float32).reshape(-1,detector_cache.feature_dim),
                   "feature_valid":np.asarray(feature_valid,bool),"geometry_valid":np.asarray(geometry_valid,bool),
                   "geometry_status":np.asarray(geometry_status,dtype="U48")}
+        arrays.update({key:np.asarray(value,bool) for key,value in layered.items()})
         path = dest / f"shard_{len(entries):04d}.npz"; tmp = path.with_suffix(".tmp")
         with tmp.open("wb") as f: np.savez_compressed(f, **arrays)
         os.replace(tmp, path)
@@ -244,6 +274,7 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
     flush()
     atomic_json(dest / "manifest.json", {"schema": SCHEMA, "scene": int(sid),
         "split":split,
+        "full_video":not bool(limit),
         "status": "COMPLETE" if len(completed) == len(expected) else "PARTIAL",
         "timestamps": len(completed), "expected_timestamps": len(expected),
         "shards": [{"file": x["file"], "sha256": x["sha256"], "frames": x["frames"],
@@ -251,7 +282,7 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
         "counts": dict(totals), "raw_gt_modified": False, "gt_in_cache": False,
         "detector_cache": detector_cache.manifest(), "omega": omega.diagnostics(),
         "feature_dim":detector_cache.feature_dim,"source_commit":source_commit(),"source_sha256":source_fingerprint(),
-        "support_contract": "camera_forward_depth_to_persistent_world_v2"})
+        "support_contract": "camera_depth_layered_reliability_persistent_world_v3_1"})
 
 
 def worker(a):

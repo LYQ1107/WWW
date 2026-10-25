@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 
-APPROVAL_SCHEMA = "worldobject_experiment_user_approval_v3"
+APPROVAL_SCHEMA = "worldobject_joint_birth_experiment_user_approval_v3_1"
 
 
 def source_commit():
@@ -37,7 +37,7 @@ def read_git_head(repository):
 def source_fingerprint():
     root=Path(__file__).resolve().parents[2]
     files=sorted(list((root/"worldmot").rglob("*.py"))+list((root/"scripts").glob("*.py"))
-                 +list((root/"tests").glob("*.py"))+list((root/"configs").glob("worldobject_v3*")))
+                 +list((root/"scripts").glob("*.m"))+list((root/"tests").glob("*.py"))+list((root/"configs").glob("worldobject_v3*")))
     digest=hashlib.sha256()
     for path in files:
         digest.update(str(path.relative_to(root.parent)).encode()+b"\0"+path.read_bytes())

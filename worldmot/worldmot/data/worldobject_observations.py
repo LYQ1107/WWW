@@ -15,12 +15,16 @@ def replay_observations(frame):
         valid = bool(row.get("geometry_valid", False))
         support = WorldObjectSupport(np.asarray(row["box"]), np.asarray(row["foreground"]),
             np.asarray(row["center"]), np.asarray(row["cov"]), float(row["quality"]),
-            float(row["foreground_fraction"]), str(row.get("geometry_status", "UNVERIFIED")),
+            float(row["foreground_fraction"]), str(row.get("support_ambiguity",row.get("ambiguity",row.get("geometry_status", "UNVERIFIED")))),
             coordinate_frame="PERSISTENT_WORLD", depth_source="CACHE_V2_CAMERA_DEPTH" if valid else "UNVERIFIED")
         observations.append(WorldObjectObservation(row["view"], row["detection_id"], row["bbox"], row["score"],
             row.get("roi_feature"), row.get("feature_valid", False), support.center, support.covariance,
             support, valid, support.quality if valid else 0.0, frame["timestamp"],
             geometry_status=row.get("geometry_status", "VISUAL_ONLY_FALLBACK"), source=frame.get("source", {})))
+        o=observations[-1]
+        o.point_support_available=bool(row.get("point_support_available",support.point_support_available))
+        o.cross_view_fusion_eligible=bool(valid and row.get("cross_view_fusion_eligible",support.cross_view_fusion_eligible))
+        o.world_state_update_eligible=bool(valid and row.get("world_state_update_eligible",support.world_state_update_eligible))
     return sorted(observations, key=lambda o: o.key)
 
 
@@ -44,8 +48,8 @@ def live_observations(detections, frame, world_transform, *, min_confidence=1.5,
                     min_confidence=min_confidence, camera_from_world=frame.cameras[camera].camera_from_world)
                 support = world_transform.support(support)
                 valid = support.reliable
-                status = ("GEOMETRY_VALID" if valid and support.quality >= 0.6 else
-                          "GEOMETRY_LOW_CONFIDENCE" if valid else "SPATIAL_SUPPORT_AMBIGUOUS")
+                status = ("GEOMETRY_VALID" if valid and support.cross_view_fusion_eligible else
+                          "SPATIAL_SUPPORT_AMBIGUOUS" if valid else "GEOMETRY_LOW_CONFIDENCE")
             elif use_geometry:
                 status = WORLD_ALIGNMENT_FAILED
             feature = getattr(det, "detector_roi_feature", None)

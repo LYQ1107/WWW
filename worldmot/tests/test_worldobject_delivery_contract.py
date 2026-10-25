@@ -132,6 +132,62 @@ def test_timing_summary_uses_wall_latency_and_serial_throughput():
     assert summary["p50_s"]==2. and summary["serial_throughput_pairs_per_second"]==.5
 
 
+def test_complete_scene_cache_is_reused_without_rerunning_geometry(tmp_path,monkeypatch):
+    from test_gmt_detection_cache import fixture_cache
+    rawdir=tmp_path/"raw";rawdir.mkdir();raw,_,_=fixture_cache(rawdir)
+    frame,_=synthetic_frontend(timestamp=1)
+    class Omega:
+        calls=0
+        def reconstruct(self,images,timestamp):self.calls+=1;return frame
+        def diagnostics(self):return {"checkpoint_sha256":"synthetic_only"}
+    class Dataset:
+        def synchronized_pairs(self,scene):return iter([SimpleNamespace(frame_id=1,images={1:SimpleNamespace(image_id=1),2:SimpleNamespace(image_id=2)})])
+    producer=module("cache_worldobject_support");monkeypatch.setattr(producer,"read_images",lambda ds,pair:frame.images)
+    omega=Omega();producer.cache_scene(Dataset(),8,tmp_path/"output",omega,raw,"train",1)
+    producer.cache_scene(Dataset(),8,tmp_path/"output",omega,raw,"train",1)
+    assert omega.calls==1
+
+
+def test_partial_scene_is_recoverably_quarantined_before_restart(tmp_path,monkeypatch):
+    from test_gmt_detection_cache import fixture_cache
+    rawdir=tmp_path/"raw";rawdir.mkdir();raw,_,_=fixture_cache(rawdir)
+    frame,_=synthetic_frontend(timestamp=1)
+    class Omega:
+        def reconstruct(self,images,timestamp):return frame
+        def diagnostics(self):return {"checkpoint_sha256":"synthetic_only"}
+    class Dataset:
+        def synchronized_pairs(self,scene):return iter([SimpleNamespace(frame_id=1,images={1:SimpleNamespace(image_id=1),2:SimpleNamespace(image_id=2)})])
+    destination=tmp_path/"output"/"scene_08";destination.mkdir(parents=True)
+    (destination/"partial.tmp").write_text("synthetic partial shard, retained")
+    producer=module("cache_worldobject_support");monkeypatch.setattr(producer,"read_images",lambda ds,pair:frame.images)
+    producer.cache_scene(Dataset(),8,tmp_path/"output",Omega(),raw,"train",1)
+    preserved=list((tmp_path/"output"/"failed_scenes").glob("scene_08.*"))
+    assert len(preserved)==1 and (preserved[0]/"partial.tmp").read_text()=="synthetic partial shard, retained"
+    assert (destination/"manifest.json").is_file()
+
+
+def test_parallel_scene_claims_are_unique(tmp_path):
+    from concurrent.futures import ThreadPoolExecutor
+    worker=module("worldobject_v3_cache_worker")
+    for scene in range(1,7):
+        (tmp_path/f"scene_{scene:02d}.pending").write_text(json.dumps({"split":"train","scene":scene,"frames":100}))
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        results=list(pool.map(lambda _:worker.claim_scene(tmp_path,"train"),range(16)))
+    scenes=[task["scene"] for _,task in results if task is not None]
+    assert sorted(scenes)==list(range(1,7)) and len(list(tmp_path.glob("*.running")))==6
+
+
+def test_native_matlab_hash_scope_excludes_unused_detector_tree(tmp_path):
+    from worldmot.evaluation.official_fullvideo import native_tracking_sources
+    utils=tmp_path/"utils";utils.mkdir()
+    (tmp_path/"evaluateTracking.m").write_text("% synthetic tracking function")
+    (utils/"IDmeasures.m").write_text("% synthetic identity function")
+    detector=utils/"external"/"dollar"/"detector";detector.mkdir(parents=True)
+    (detector/"unused.m").write_text("% excluded synthetic detector")
+    paths=native_tracking_sources(tmp_path)
+    assert len(paths)==2 and all("dollar" not in str(path) for path in paths)
+
+
 def test_source_commit_reader_handles_worktree_and_packed_refs_without_fork(tmp_path):
     from worldmot.runtime.experiment_authorization import read_git_head
     repository=tmp_path/"checkout";repository.mkdir()

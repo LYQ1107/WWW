@@ -8,7 +8,7 @@ from worldmot.runtime.world_object_tracking_core import WorldObjectTrackingCore
 
 def obs(camera=1,det=0,center=(0,0,3),feature=(1.,0.,0.),timestamp=0,geometry=True,score=.9):
     center=np.asarray(center,float)
-    points=center+np.array([[0,0,0],[.01,0,0],[0,.01,0]])
+    points=center+np.array([[i*.001,j*.001,k*.001] for i in range(3) for j in range(2) for k in range(2)])
     support=WorldObjectSupport(points,points,center,np.eye(3)*.01,1.,1.,"DEPTH_CLUSTERED",
                                coordinate_frame="PERSISTENT_WORLD",depth_source="SYNTHETIC_CAMERA_DEPTH")
     return WorldObjectObservation(camera,det,np.array([10+det*20,10,10,20]),score,

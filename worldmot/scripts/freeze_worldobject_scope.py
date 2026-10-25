@@ -5,7 +5,7 @@ import argparse
 import json
 from pathlib import Path
 from worldmot.runtime.experiment_authorization import require_experiment_authorization,source_commit,source_fingerprint
-from worldmot.tracking.world_object_config import METHODS,WorldObjectConfig
+from worldmot.tracking.world_object_config import METHODS,METHOD_ALIASES,WorldObjectConfig
 from worldmot.models.gmt_detection_cache import ImmutableGMTDetectionCache
 from worldmot.models.world_object_checkpoint import detector_contract
 from worldmot.models.omega_geometry_backend import OFFICIAL_OMEGA_CHECKPOINT_SHA256
@@ -18,7 +18,8 @@ def main():
     p.add_argument("--authorization");p.add_argument("--cache-train",required=True);p.add_argument("--cache-test")
     p.add_argument("--raw-cache-train",required=True);p.add_argument("--raw-cache-test")
     p.add_argument("--method-id",choices=METHODS,default="FULL_WORLD_OBJECT_V3");p.add_argument("--output",required=True)
-    a=p.parse_args();approval=require_experiment_authorization(a.authorization,"freeze",method_id=a.method_id)
+    a=p.parse_args();a.method_id=METHOD_ALIASES.get(a.method_id,a.method_id)
+    approval=require_experiment_authorization(a.authorization,"freeze",method_id=a.method_id)
     train_raw=ImmutableGMTDetectionCache(a.raw_cache_train)
     config=WorldObjectConfig(train_raw.feature_dim,a.method_id)
     lock={"schema":SCOPE_SCHEMA,"source_commit":source_commit(),"source_sha256":source_fingerprint(),"method_id":a.method_id,

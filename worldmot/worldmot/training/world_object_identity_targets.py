@@ -17,6 +17,13 @@ def box_iou(a,b):
     return inter/max(1e-12,float(np.prod(a[2:])+np.prod(b[2:])-inter))
 
 
+def box_iou_matrix(left,right):
+    a=np.asarray(left,float).reshape(-1,4);b=np.asarray(right,float).reshape(-1,4)
+    lo=np.maximum(a[:,None,:2],b[None,:,:2]);hi=np.minimum(a[:,None,:2]+a[:,None,2:],b[None,:,:2]+b[None,:,2:])
+    inter=np.maximum(hi-lo,0).prod(-1)
+    return inter/np.maximum(1e-12,a[:,2:].prod(-1)[:,None]+b[:,2:].prod(-1)[None,:]-inter)
+
+
 def match_train_identities(observations, gt_by_camera, *, split="train", iou_threshold=0.5):
     if split != "train":
         raise ValueError("IDENTITY_TARGETS_REQUIRE_TRAIN_SPLIT")
@@ -44,10 +51,13 @@ def _match_identity_annotations(observations,gt_by_camera,iou_threshold):
             audit["valid_annotations" if valid else "ambiguous_or_invalid_annotations"]+=1
         obs=[o for o in observations if o.camera_id==camera]
         # Mask detections overlapping ambiguous labels before matching clean GT.
-        masked={o.key for o in obs if any(len(a.get("bbox",[]))==4 and
-                box_iou(o.bbox_xywh,a["bbox"])>=iou_threshold for a in ambiguous)}
-        candidates=sorted(((box_iou(o.bbox_xywh,a["bbox"]),o.key,identity_key(a))
-                           for o in obs if o.key not in masked for a in clean),key=lambda x:(-x[0],x[1],x[2]))
+        bad=[a["bbox"] for a in ambiguous if len(a.get("bbox",[]))==4]
+        overlap_bad=box_iou_matrix([o.bbox_xywh for o in obs],bad)
+        masked={o.key for i,o in enumerate(obs) if overlap_bad.shape[1] and overlap_bad[i].max()>=iou_threshold}
+        overlap=box_iou_matrix([o.bbox_xywh for o in obs],[a["bbox"] for a in clean])
+        candidates=sorted(((float(overlap[i,j]),o.key,identity_key(a))
+                           for i,o in enumerate(obs) if o.key not in masked for j,a in enumerate(clean)
+                           if overlap[i,j]>=iou_threshold),key=lambda x:(-x[0],x[1],x[2]))
         used_o,used_id=set(),set()
         for overlap,key,ident in candidates:
             if overlap<iou_threshold:
@@ -66,15 +76,13 @@ def build_identity_targets(history, observations, labels, history_labels, *, spl
         raise ValueError("TRAIN_TARGETS_FORBIDDEN_FOR_TEST")
     m,n=len(history),len(observations)
     qlabels=[history_labels.get(q.global_id) for q in history]
-    # A corrupted predicted bank may have several IDs for one person. Mask
-    # ambiguous history supervision rather than selecting one using future GT.
     counts=Counter(x for x in qlabels if x is not None)
-    qvalid=np.array([x is not None and counts[x]==1 for x in qlabels],bool)
+    qvalid=np.array([x is not None for x in qlabels],bool)
     mapping={x:i for i,x in enumerate(qlabels) if qvalid[i]}
     target=np.full(n,-1,np.int64)
     for j,label in enumerate(labels):
-        if label is not None and (label not in counts or counts[label]==1):
-            target[j]=mapping.get(label,m)
+        if label is not None:
+            target[j]=mapping.get(label,m) if counts[label]<=1 else -2
     same=[];different=[]
     for a in range(n):
         for b in range(a+1,n):
@@ -82,12 +90,32 @@ def build_identity_targets(history, observations, labels, history_labels, *, spl
                 continue
             (same if labels[a]==labels[b] else different).append((a,b))
     positives=np.zeros((m,n),bool)
-    for j,i in enumerate(target):
-        if 0<=i<m:
-            positives[i,j]=True
+    for i,label in enumerate(qlabels):
+        if label is not None:positives[i]=[current==label for current in labels]
+    assignment_positive=np.concatenate([positives,np.array([[i==m for i in target]],bool)],axis=0)
+    pair_target=np.zeros((n,n),np.float32);pair_mask=np.zeros((n,n),bool)
+    identity_pair_target=np.zeros((n,n),np.float32);identity_pair_mask=np.zeros((n,n),bool)
+    label_counts=Counter((o.camera_id,label) for o,label in zip(observations,labels) if label is not None)
+    for a in range(n):
+        for b in range(a+1,n):
+            la,lb=labels[a],labels[b]
+            if (la is None or lb is None or observations[a].camera_id==observations[b].camera_id
+                    or label_counts[observations[a].camera_id,la]>1 or label_counts[observations[b].camera_id,lb]>1):continue
+            identity_pair_mask[a,b]=True;identity_pair_target[a,b]=float(la==lb)
+            if la!=lb:pair_mask[a,b]=True
+            elif counts[la]==0:pair_mask[a,b]=True;pair_target[a,b]=1.
+    audit={"history_objects":m,"history_unlabelled_or_mixed":sum(x is None for x in qlabels),
+        "history_identity_split_objects":sum(count>1 for count in counts.values()),
+        "current_with_multiple_history_targets":int((target==-2).sum()),
+        "current_birth_no_matching_history":int((target==m).sum()),
+        "crossview_birth_positive_count":int(pair_target.sum()),
+        "crossview_birth_negative_count":int(pair_mask.sum()-pair_target.sum())}
     return {"assignment":target,"history_valid":qvalid,"positive_pairs":positives,
+            "assignment_positive":assignment_positive,"joint_birth_target":pair_target,"joint_birth_mask":pair_mask,
+            "crossview_identity_target":identity_pair_target,"crossview_identity_mask":identity_pair_mask,
+            "history_label_consistency_audit":audit,
             "birth":np.array([float(i==m) for i in target],np.float32),
-            "observation_valid":target>=0,"null":~positives.any(axis=1),
+            "observation_valid":np.array([label is not None for label in labels]),"null":~positives.any(axis=1),
             "existence":np.array([float(positives[i].any() or q.missed+1<=retention_steps) for i,q in enumerate(history)],np.float32),
             "same_pairs":same,"different_pairs":different}
 

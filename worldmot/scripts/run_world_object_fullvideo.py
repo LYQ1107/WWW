@@ -6,7 +6,7 @@ import json
 import time
 from pathlib import Path
 from worldmot.runtime.experiment_authorization import require_experiment_authorization,source_commit
-from worldmot.tracking.world_object_config import WorldObjectConfig,METHODS
+from worldmot.tracking.world_object_config import WorldObjectConfig,METHODS,METHOD_ALIASES
 from worldmot.runtime.world_object_tracking_core import WorldObjectTrackingCore
 from worldmot.data.worldobject_observations import replay_observations
 from worldmot.data.worldobject_cache import WorldObjectCache,sha256
@@ -52,6 +52,7 @@ def main():
     p.add_argument("--checkpoint-manifest");p.add_argument("--rule-based",action="store_true")
     p.add_argument("--device",default="cpu")
     a=p.parse_args()
+    a.method_id=METHOD_ALIASES.get(a.method_id,a.method_id)
     approval=require_experiment_authorization(a.authorization,"replay",a.split,a.method_id)
     from worldmot.models.gmt_detection_cache import ImmutableGMTDetectionCache
     from worldmot.models.world_object_checkpoint import load_identity_checkpoint,detector_contract

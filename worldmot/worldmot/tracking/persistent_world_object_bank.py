@@ -122,9 +122,16 @@ class PersistentWorldObjectBank:
             shapes={"assignment_logits":(m,n),"null_logits":(m,),"existence_logits":(m,),
                     "birth_logits":(n,),"update_gate":(m,n),"memory_delta":(m,n,self.config.feature_dim)}
             for key,shape in shapes.items():
-                value=np.asarray(learned[key])
-                if value.shape!=shape or not np.isfinite(value).all():
+                value=learned[key]
+                if hasattr(value,"detach"):
+                    import torch
+                    finite=bool(torch.isfinite(value).all().item())
+                else:finite=np.isfinite(value).all()
+                if tuple(value.shape)!=shape or not finite:
                     raise ValueError("INVALID_LEARNED_EVIDENCE_"+key)
+            if "birth_pair_logits" in learned and (learned["birth_pair_logits"].shape!=(n,n)
+                    or not np.isfinite(learned["birth_pair_logits"]).all()):
+                raise ValueError("INVALID_LEARNED_BIRTH_PAIR_EVIDENCE")
         decision = training_decision or self.assigner.assign(history, observations, learned)
         assigned=[j for option in decision.selected for j in option.indices]
         ids=[option.global_id for option in decision.selected if option.global_id is not None]
@@ -136,6 +143,13 @@ class PersistentWorldObjectBank:
                        for option in decision.selected)):
             raise ValueError("INVALID_JOINT_DECISION_CONSTRAINTS")
         qindex = {q.global_id: i for i, q in enumerate(history)}
+        selected_delta={}
+        if learned is not None:
+            keys=[(qindex[option.global_id],j) for option in decision.selected if option.global_id is not None for j in option.indices]
+            if keys:
+                rows,cols=zip(*keys);delta=learned["memory_delta"][list(rows),list(cols)]
+                delta=delta.detach().cpu().numpy() if hasattr(delta,"detach") else np.asarray(delta)
+                selected_delta=dict(zip(keys,delta))
         self.last_assignments = {}
         self.last_hypotheses = []
         for q in history:
@@ -160,7 +174,7 @@ class PersistentWorldObjectBank:
                 if learned is not None:
                     i = qindex[q.global_id]
                     gate = float(np.min(learned["update_gate"][i, list(option.indices)]))
-                    delta = np.mean(learned["memory_delta"][i, list(option.indices)], axis=0)
+                    delta = np.mean([selected_delta[i,j] for j in option.indices], axis=0)
                 self._update(q, measurement, timestamp, gate, delta,
                              option.reason == "VISUAL_RECOVERY_SPATIAL_CONFLICT")
             else:

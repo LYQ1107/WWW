@@ -10,6 +10,7 @@ from pathlib import Path
 import time
 
 TESTS=["test_worldobject_feature_contract.py","test_worldobject_camera_depth.py",
+       "test_worldobject_joint_birth_v3.py",
        "test_worldobject_joint_assignment.py","test_worldobject_memory.py",
        "test_worldobject_identity_loss.py","test_worldobject_ablation.py",
        "test_worldobject_causal_runtime.py","test_worldobject_delivery_contract.py",

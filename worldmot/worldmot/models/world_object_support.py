@@ -37,6 +37,20 @@ class WorldObjectSupport:
                     and self.ambiguity not in {"NO_FINITE_SUPPORT", "CAMERA_DEPTH_UNAVAILABLE",
                                                "WORLD_ALIGNMENT_FAILED", "LEGACY_CAMERA_DEPTH_UNVERIFIED"})
 
+    @property
+    def point_support_available(self):
+        return bool(len(self.foreground_points)>0 and np.isfinite(self.foreground_points).all())
+
+    @property
+    def cross_view_fusion_eligible(self):
+        return bool(self.reliable and self.ambiguity=="DEPTH_CLUSTERED"
+                    and len(self.foreground_points)>=8 and self.quality>=0.6
+                    and self.diagnostics.get("depth_separation",1.0)>=0.65)
+
+    @property
+    def world_state_update_eligible(self):
+        return self.cross_view_fusion_eligible
+
     def to_dict(self, include_points: bool = True) -> dict:
         out = {
             "center": np.asarray(self.center, dtype=float).tolist(),
@@ -48,6 +62,9 @@ class WorldObjectSupport:
             "ambiguity": str(self.ambiguity),
             "diagnostics": dict(self.diagnostics),
             "coordinate_frame": self.coordinate_frame, "depth_source": self.depth_source,
+            "point_support_available":self.point_support_available,
+            "cross_view_fusion_eligible":self.cross_view_fusion_eligible,
+            "world_state_update_eligible":self.world_state_update_eligible,
             "box_point_count": int(len(self.box_points)),
             "foreground_point_count": int(len(self.foreground_points)),
         }

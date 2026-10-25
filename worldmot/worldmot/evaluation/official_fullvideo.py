@@ -5,7 +5,7 @@ geo_tools/cir_evaluation.py converter.  No tracker/model from GMT is imported.
 Only this posthoc process opens original GT.  No duplicate removal is allowed.
 """
 from __future__ import annotations
-import collections,hashlib,json,os,subprocess,sys
+import collections,hashlib,json,os,signal,subprocess,sys
 from pathlib import Path
 import numpy as np
 
@@ -23,6 +23,15 @@ def write_mot(p,rows):
             # Round-trip source coordinates exactly, including original GT.
             # Two-decimal presentation rounding must not change scoring boxes.
             f.write(f'{int(r[0])},{int(r[1])},'+','.join(format(float(x),'.17g') for x in r[2:6])+','+','.join(map(str,tail))+'\n')
+
+def native_tracking_sources(kit):
+    """Hash the native tracking dependency tree, not the unused detector toolbox."""
+    kit=Path(kit);utils=kit/'utils'
+    paths=set()
+    for directory in (kit,utils,utils/'camera',utils/'external/iniconfig'):
+        for suffix in ('*.m','*.cpp','*.mexa64'):paths.update(directory.glob(suffix))
+    if (utils/'external/PrintTable.m').is_file():paths.add(utils/'external/PrintTable.m')
+    return sorted(path for path in paths if path.is_file())
 def prepare(dataset_root,split,audit,inference_root,scenes=None,box_source="tracks_2d_by_camera"):
     audit=json.loads(Path(audit).read_text())[split];root=Path(inference_root)
     gt={};pred={};lengths={};groups={};blocked=[];coverage=[]
@@ -76,7 +85,8 @@ def matlab(gt,pred,groups,out,kit,executable,driver,*,authorization=None,method_
     from ..runtime.experiment_authorization import require_experiment_authorization
     require_experiment_authorization(authorization,'evaluate',split,method_id)
     kit=Path(kit);out=Path(out);out.mkdir(parents=True,exist_ok=True)
-    if not Path(executable).is_file() or not list(kit.rglob('*.mexa64')):raise RuntimeError('Native MATLAB/MEX unavailable')
+    native_sources=native_tracking_sources(kit)
+    if not Path(executable).is_file() or not any(p.suffix=='.mexa64' for p in native_sources):raise RuntimeError('Native MATLAB/MEX unavailable')
     jobs=[]
     for scene,names in groups.items():
         names=sorted(names)
@@ -95,10 +105,22 @@ def matlab(gt,pred,groups,out,kit,executable,driver,*,authorization=None,method_
             total=max([int(r[0]) for rows in parts.values() for r in rows]+[1]);(directory/'seqinfo.ini').write_text(f'[Sequence]\nname={scene}\nimDir=img1\nframeRate=30\nseqLength={total}\nimWidth=1920\nimHeight=1080\nimExt=.jpg\n')
             jobs.append({'scene':scene,'convention':convention,'groundtruth':str(paths['gt'].resolve()),'prediction':str(paths['prediction'].resolve()),'gt_directory':str(directory.resolve())})
     config=out/'CONFIG.json';native=out/'NATIVE.json';config.write_text(json.dumps({'kit':str(kit.resolve()),'jobs':jobs,'output':str(native.resolve()),'benchmark':'VisionTrack'}))
-    before={str(p.relative_to(kit)):sha(p) for p in sorted(kit.rglob('*')) if p.is_file() and p.suffix in ['.m','.cpp','.mexa64']}
+    before={str(p.relative_to(kit)):sha(p) for p in native_sources}
     env={**os.environ,'CUDA_VISIBLE_DEVICES':'','WORLDMOT_MATLAB_CONFIG':str(config.resolve()),'OMP_NUM_THREADS':'1','OPENBLAS_NUM_THREADS':'1','MKL_NUM_THREADS':'1'}
-    with (out/'matlab.log').open('w') as f:subprocess.run([str(executable),'-batch',"run('"+str(Path(driver).resolve())+"')"],stdout=f,stderr=subprocess.STDOUT,env=env,timeout=1800,check=True)
-    data=json.loads(native.read_text());after={str(p.relative_to(kit)):sha(p) for p in sorted(kit.rglob('*')) if p.is_file() and p.suffix in ['.m','.cpp','.mexa64']}
+    env.pop('LD_LIBRARY_PATH',None);env.pop('MKL_THREADING_LAYER',None)
+    with (out/'matlab.log').open('w') as f:
+        process=subprocess.Popen([str(executable),'-batch',"run('"+str(Path(driver).resolve())+"')"],stdout=f,stderr=subprocess.STDOUT,env=env,start_new_session=True)
+        try:
+            code=process.wait(timeout=1800)
+            if code:raise RuntimeError('Native MATLAB failed with exit code '+str(code))
+        except subprocess.TimeoutExpired:
+            # Only the dedicated process group just created by this adapter.
+            if process.poll() is None and os.getpgid(process.pid)==process.pid:
+                os.killpg(process.pid,signal.SIGTERM)
+                try:process.wait(timeout=10)
+                except subprocess.TimeoutExpired:os.killpg(process.pid,signal.SIGKILL);process.wait()
+            raise RuntimeError('Native MATLAB timeout after 1800 seconds; partial jobs retained')
+    data=json.loads(native.read_text());after={str(p.relative_to(kit)):sha(p) for p in native_sources}
     if before!=after:raise RuntimeError('Official MATLAB toolkit modified')
     def combine(rows):
         ids=[x['Identity'] for x in rows if x['convention']=='sequential'];clear=[x['CLEAR'] for x in rows if x['convention']=='interleaved']

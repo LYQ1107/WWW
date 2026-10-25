@@ -31,7 +31,7 @@ def assigned_measurement(observations, object_id, feature_dim, use_geometry=True
     if len({o.camera_id for o in observations}) != len(observations):
         raise ValueError("ONE_OBSERVATION_PER_CAMERA_PER_OBJECT_REQUIRED")
     feature, _ = fuse_identity_features(observations, feature_dim, use_geometry=use_geometry)
-    geometry = [o for o in observations if use_geometry and o.visible and o.geometry_valid]
+    geometry = [o for o in observations if use_geometry and o.visible and o.world_state_update_eligible]
     support = None
     if geometry:
         weights = np.array([o.score * o.geometry_reliability for o in geometry])

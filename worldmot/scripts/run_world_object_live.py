@@ -7,8 +7,9 @@ import time
 from pathlib import Path
 import numpy as np
 from worldmot.runtime.experiment_authorization import require_experiment_authorization,source_commit
-from worldmot.tracking.world_object_config import METHODS,WorldObjectConfig
+from worldmot.tracking.world_object_config import METHODS,METHOD_ALIASES,WorldObjectConfig
 from worldmot.data.worldobject_cache import sha256
+from worldmot.runtime.legacy_worldobject_tracking_core import LEGACY_ROI_METHOD
 
 
 def run_scene(ds,scene,tracker,out_scene,max_timestamps=None):
@@ -32,7 +33,7 @@ def run_scene(ds,scene,tracker,out_scene,max_timestamps=None):
                 "live_rgb_to_id_s":time.perf_counter()-started,"stages":tracker.last_timings})+"\n")
             count+=1
     cache_detector=hasattr(tracker.detector,"set_context")
-    manifest={"schema":"worldobject_live_manifest_v3","method_id":tracker.config.method_id,
+    manifest={"schema":"worldobject_live_manifest_v3","method_id":getattr(tracker.core,"method_id",tracker.config.method_id),
         "source_commit":source_commit(),"scene":scene,"timestamps":count,"expected_timestamps":expected,
         "status":"COMPLETE" if count==expected else "PARTIAL_TIMING_SAMPLE",
         "GT_in_inference":False,"causal":True,"detector_is_frozen_replay":cache_detector,
@@ -51,12 +52,14 @@ def main():
     p.add_argument("--detector-backend",choices=["gmt","cache"],default="gmt")
     p.add_argument("--output",required=True);p.add_argument("--scenes",nargs="+",type=int)
     p.add_argument("--split",choices=["train","test"],default="test")
-    p.add_argument("--method-id",choices=METHODS,default="FULL_WORLD_OBJECT_V3")
+    p.add_argument("--method-id",choices=list(METHODS)+[LEGACY_ROI_METHOD],default="FULL_WORLD_OBJECT_V3")
     p.add_argument("--checkpoint-manifest");p.add_argument("--rule-based",action="store_true")
     p.add_argument("--scope-lock",required=True)
     p.add_argument("--device",default="cuda:0");p.add_argument("--max-timestamps",type=int)
     p.add_argument("--omega-source");p.add_argument("--omega-weights")
+    p.add_argument("--gmt-python",default="/home/liuyeqiang/anaconda3/envs/GMT/bin/python")
     a=p.parse_args()
+    a.method_id=METHOD_ALIASES.get(a.method_id,a.method_id)
     approval=require_experiment_authorization(a.authorization,"live",a.split,a.method_id)
     from worldmot.models.gmt_detection_cache import ImmutableGMTDetectionCache
     from worldmot.models.world_object_checkpoint import load_identity_checkpoint,detector_contract
@@ -66,9 +69,10 @@ def main():
     raw=ImmutableGMTDetectionCache(a.raw_cache)
     if raw.lock["split"]!=a.split:
         raise ValueError("DETECTOR_SPLIT_MISMATCH")
-    config=WorldObjectConfig(raw.feature_dim,a.method_id)
+    legacy=a.method_id==LEGACY_ROI_METHOD
+    config=WorldObjectConfig(raw.feature_dim,"FULL_WORLD_OBJECT_V3" if legacy else a.method_id)
     from worldmot.data.worldobject_scope import load_scope_lock
-    scope=load_scope_lock(a.scope_lock,a.split,a.method_id)
+    scope=load_scope_lock(a.scope_lock,a.split,config.method_id)
     if scope["detector_contract"]!=detector_contract(raw.lock):
         raise ValueError("LIVE_SCOPE_DETECTOR_MISMATCH")
     model=None
@@ -81,7 +85,7 @@ def main():
     detector=raw
     if a.detector_backend=="gmt":
         from worldmot.models.gmt_detector_adapter import GMTDetectorAdapter
-        detector=GMTDetectorAdapter(device=a.device)
+        detector=GMTDetectorAdapter(device=a.device,python=a.gmt_python)
         manifest=detector.manifest()
         if (manifest.get("roi_feature_dim")!=raw.feature_dim
                 or any(manifest.get(k)!=raw.lock[k] for k in ("checkpoint_sha256","config_sha256","threshold","precision"))):
@@ -95,6 +99,9 @@ def main():
         if geometry.status!="READY":
             raise RuntimeError(geometry.reason)
     core=WorldObjectTrackingCore(config,model,a.device)
+    if legacy:
+        from worldmot.runtime.legacy_worldobject_tracking_core import LegacyWorldObjectTrackingCore
+        core=LegacyWorldObjectTrackingCore(config)
     tracker=OnlineWorldObjectTracker(detector,geometry,config,core=core,device=a.device)
     ds=VisionTrack(a.dataset_root,split=a.split,load_annotations=False)
     root=Path(a.output);root.mkdir(parents=True,exist_ok=False)

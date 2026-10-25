@@ -38,22 +38,37 @@ def spatial_distance(center_a, covariance_a, center_b, covariance_b):
     return float(np.sqrt(max(0, delta @ np.linalg.pinv(cov) @ delta)))
 
 
+def spatial_distance_matrix(left,right):
+    def values(items):
+        centers=[];covariances=[]
+        for x in items:
+            valid=x.geometry_valid if hasattr(x,"center") else x.cross_view_fusion_eligible
+            centers.append((x.center if hasattr(x,"center") else x.world_center) if valid else np.zeros(3))
+            covariances.append((x.covariance if hasattr(x,"covariance") else x.world_covariance) if valid else np.eye(3)*1e6)
+        return np.asarray(centers),np.asarray(covariances)
+    a,ca=values(left);b,cb=values(right)
+    delta=a[:,None]-b[None,:];cov=ca[:,None]+cb[None,:]+np.eye(3)*.01
+    solved=np.linalg.solve(cov,delta[...,None])[...,0]
+    return np.sqrt(np.maximum(0,(delta*solved).sum(-1)))
+
+
 class JointWorldObjectAssignment:
     def __init__(self, config: WorldObjectConfig):
         self.config = config
+        self.last_birth_candidate_edges=set()
 
-    def _history_evidence(self, q, o):
+    def _history_evidence(self, q, o,app_override=None,spatial_override=None,learned_margin=None):
         cfg = self.config
         app = None
         if cfg.use_appearance and (q.identity_embedding is None or not o.feature_valid):
             return None
         if cfg.use_appearance and q.identity_embedding is not None and o.feature_valid:
-            app = _similarity(q.identity_embedding, o.roi_feature)
-            if app < cfg.min_appearance_similarity:
+            app = _similarity(q.identity_embedding, o.roi_feature) if app_override is None else float(app_override)
+            if app < cfg.min_appearance_similarity and (learned_margin is None or learned_margin<cfg.learned_identity_recovery_logit):
                 return None
         spatial = None
-        if cfg.use_geometry and q.geometry_valid and o.geometry_valid:
-            spatial = spatial_distance(q.center, q.covariance, o.world_center, o.world_covariance)
+        if cfg.use_geometry and q.geometry_valid and o.cross_view_fusion_eligible:
+            spatial = spatial_distance(q.center, q.covariance, o.world_center, o.world_covariance) if spatial_override is None else float(spatial_override)
             if spatial > cfg.geometry_gate:
                 # A stale position must not forbid a strong reappearance.
                 if not (q.missed > 0 and app is not None and app >= cfg.recovery_similarity):
@@ -65,7 +80,7 @@ class JointWorldObjectAssignment:
                     + (0.5 * np.exp(-0.5 * (spatial / 3) ** 2) if spatial is not None else 0.0))
         return float(evidence), "HISTORY_EXPLAINS_CURRENT_OBSERVATION"
 
-    def _pair_evidence(self, a, b, birth=False):
+    def _pair_evidence(self, a, b, birth=False, learned_probability=None):
         cfg = self.config
         if a.camera_id == b.camera_id:
             return None
@@ -73,18 +88,27 @@ class JointWorldObjectAssignment:
         if cfg.use_appearance:
             if not (a.feature_valid and b.feature_valid):
                 return None
-            app = _similarity(a.roi_feature, b.roi_feature)
-            if app < (cfg.joint_birth_similarity if birth else cfg.min_appearance_similarity):
+            indices=(self._current_index.get(id(a)),self._current_index.get(id(b))) if hasattr(self,"_current_index") else (None,None)
+            app = (float(self._current_appearance[indices]) if None not in indices and self._current_appearance is not None
+                   else _similarity(a.roi_feature,b.roi_feature))
+            # A learned interaction can link dissimilar views; cosine is only
+            # the explicit heuristic baseline, not a hard learned-birth gate.
+            if learned_probability is None and app < (cfg.joint_birth_similarity if birth else cfg.min_appearance_similarity):
                 return None
         geom = None
-        if cfg.use_geometry and a.geometry_valid and b.geometry_valid:
-            geom = spatial_distance(a.world_center, a.world_covariance, b.world_center, b.world_covariance)
+        if cfg.use_geometry and a.cross_view_fusion_eligible and b.cross_view_fusion_eligible:
+            indices=(self._current_index.get(id(a)),self._current_index.get(id(b))) if hasattr(self,"_current_index") else (None,None)
+            geom = (float(self._current_spatial[indices]) if None not in indices and self._current_spatial is not None
+                    else spatial_distance(a.world_center,a.world_covariance,b.world_center,b.world_covariance))
             if geom > cfg.geometry_gate:
                 return None
         # New objects require both cues in the full method; no forced fusion
         # from centre proximity alone. Visual-only methods have a stricter ROI gate.
-        if birth and cfg.use_geometry and geom is None:
+        if birth and cfg.use_geometry and geom is None and learned_probability is None and (app is None or app<0.97):
             return None
+        if learned_probability is not None:
+            if learned_probability<cfg.birth_pair_threshold:return None
+            return float(learned_probability)
         if app is None and geom is None:
             return None
         return float((app or 0.0) + (0.3 * np.exp(-geom / 3) if geom is not None else 0.0))
@@ -92,17 +116,27 @@ class JointWorldObjectAssignment:
     def assign(self, history, observations, learned=None):
         cfg = self.config
         n, m = len(observations), len(history)
+        self.last_birth_candidate_edges=set()
         if n > cfg.max_observations or m > cfg.max_history:
             return JointAssignmentResult([], list(range(n)), {
                 "fallback": "SEARCH_LIMIT_SINGLETON_TENTATIVE_BIRTHS", "observations": n,
                 "history": m, "expanded_states": 0, "constraints_satisfied": True})
         groups = []
         comparisons = 0
+        self._current_index={id(o):j for j,o in enumerate(observations)}
+        of=np.array([o.roi_feature if o.feature_valid else np.zeros(cfg.feature_dim) for o in observations],np.float32).reshape(n,cfg.feature_dim)
+        hf=np.array([q.identity_embedding if q.identity_embedding is not None else np.zeros(cfg.feature_dim) for q in history],np.float32).reshape(m,cfg.feature_dim)
+        app_matrix=np.clip(hf@of.T,-1,1) if cfg.use_appearance else None
+        self._current_appearance=np.clip(of@of.T,-1,1) if cfg.use_appearance else None
+        space_matrix=spatial_distance_matrix(history,observations) if cfg.use_geometry and m and n else None
+        self._current_spatial=spatial_distance_matrix(observations,observations) if cfg.use_geometry and n else None
         for qi, q in enumerate(history):
             per_view = {}
             for j, o in enumerate(observations):
                 comparisons += 1
-                evidence = self._history_evidence(q, o)
+                margin=None if learned is None else float(learned["assignment_logits"][qi,j]-learned["null_logits"][qi])
+                evidence = self._history_evidence(q,o,None if app_matrix is None else app_matrix[qi,j],
+                                                   None if space_matrix is None else space_matrix[qi,j],margin)
                 if evidence is None:
                     continue
                 value, reason = evidence
@@ -140,16 +174,26 @@ class JointWorldObjectAssignment:
                     if ob.camera_id != views[1]:
                         continue
                     comparisons += 1
-                    pair = self._pair_evidence(oa, ob, birth=True)
+                    probability=None
+                    if learned is not None and cfg.use_learned_joint_birth and "birth_pair_logits" in learned:
+                        probability=_sigmoid(learned["birth_pair_logits"][a,b])
+                    pair = self._pair_evidence(oa, ob, birth=True,learned_probability=probability)
                     if pair is None:
                         continue
                     birth_prob = 1.0
                     if learned is not None:
                         birth_prob = min(_sigmoid(learned["birth_logits"][a]), _sigmoid(learned["birth_logits"][b]))
                     if birth_prob >= cfg.birth_threshold:
-                        options.append(AssignmentOption(None, (a, b), 0.25 * pair * birth_prob, "HIGH_CONFIDENCE_JOINT_BIRTH"))
+                        if probability is None:
+                            value=0.25*pair*birth_prob;reason="HEURISTIC_JOINT_BIRTH"
+                        else:
+                            threshold_logit=np.log(cfg.birth_pair_threshold/(1-cfg.birth_pair_threshold))
+                            value=cfg.birth_pair_weight*max(0.,float(learned["birth_pair_logits"][a,b])-threshold_logit)*birth_prob
+                            reason="LEARNED_CROSS_VIEW_JOINT_BIRTH"
+                        options.append(AssignmentOption(None,(a,b),value,reason))
                 for option in sorted(options, key=lambda x: (-x.benefit, x.indices))[:cfg.top_k]:
                     birth_pairs[option.indices] = option
+                    self.last_birth_candidate_edges.add(option.indices)
             groups.extend([[x] for _, x in sorted(birth_pairs.items())])
         # Groups sharing an observation form an independent conflict component.
         parent = list(range(len(groups)))
@@ -183,6 +227,7 @@ class JointWorldObjectAssignment:
             "top_k": cfg.top_k, "beam_width": cfg.beam_width,
             "candidate_comparisons": comparisons,
             "expanded_states": sum(x["expanded_states"] for x in audits),
+            "learned_birth_pair_used":bool(learned is not None and cfg.use_learned_joint_birth and "birth_pair_logits" in learned),
             "constraints_satisfied": True, "premerged_pairs": False})
 
     def _solve_component(self, groups):

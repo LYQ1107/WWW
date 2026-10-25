@@ -8,7 +8,8 @@ from .worldobject_feature_join import FrozenGMTFeatureJoin
 from ..models.world_object_observation import normalized_feature, FeatureUnavailable
 
 V1 = "worldobject_omega512_sparse_support_v1"
-V2 = "worldobject_omega512_sparse_support_v2"
+LEGACY_V2 = "worldobject_omega512_sparse_support_v2"
+V2 = "worldobject_omega512_sparse_support_v2_birthfix_v1"
 
 
 def sha256(path):
@@ -27,13 +28,13 @@ class WorldObjectCache:
         if self.manifest.get("status") != "COMPLETE":
             raise RuntimeError("INCOMPLETE_SCENE_CACHE")
         schema = self.manifest.get("schema")
-        if schema not in (V1, V2):
+        if schema not in (V1, V2,LEGACY_V2):
             raise ValueError("UNSUPPORTED_WORLDOBJECT_CACHE_SCHEMA")
         if require_geometry and schema != V2:
             raise ValueError("V1_CAMERA_DEPTH_SUPPORT_REQUIRES_REBUILD: no lossless geometry migration")
         self.require_features = require_features
         self.require_geometry = require_geometry
-        if require_geometry and self.manifest.get("support_contract")!="camera_forward_depth_to_persistent_world_v2":
+        if require_geometry and self.manifest.get("support_contract")!="camera_depth_layered_reliability_persistent_world_v3_1":
             raise ValueError("V2_CAMERA_DEPTH_CONTRACT_REQUIRED")
         self.joiner = FrozenGMTFeatureJoin(raw_cache, self.manifest) if raw_cache is not None else None
         if schema == V1 and require_features and self.joiner is None:
@@ -49,7 +50,7 @@ class WorldObjectCache:
             if path.parent != self.path or sha256(path) != entry["sha256"]:
                 raise RuntimeError("SUPPORT_SHARD_SHA_OR_PATH_MISMATCH")
             sidepath = path.with_suffix(".json")
-            if self.schema == V2 and sha256(sidepath) != entry.get("sidecar_sha256"):
+            if self.schema != V1 and sha256(sidepath) != entry.get("sidecar_sha256"):
                 raise RuntimeError("SUPPORT_SIDECAR_SHA_MISMATCH")
             side = json.loads(sidepath.read_text())
             with np.load(path, allow_pickle=False) as payload:
@@ -77,16 +78,19 @@ class WorldObjectCache:
                            "quality": float(arrays["quality"][j]),
                            "foreground_fraction": float(arrays["foreground_fraction"][j]),
                            "ambiguity_code": int(arrays["ambiguity"][j]),
-                           "geometry_valid": bool(self.schema == V2 and arrays["geometry_valid"][j]),
+                           "geometry_valid": bool(self.schema != V1 and arrays["geometry_valid"][j]),
                            "geometry_status": ("LEGACY_CAMERA_DEPTH_UNVERIFIED" if self.schema == V1
                                                else str(arrays["geometry_status"][j])),
                            "coordinate_frame": "PERSISTENT_WORLD"}
-                    if self.schema == V2:
+                    row["support_ambiguity"]={0:"NONE",1:"DEPTH_CLUSTERED",2:"DEPTH_NOT_SEPARATED",3:"BOX_ONLY",4:"LOW_SUPPORT",5:"NO_FINITE_SUPPORT"}.get(row["ambiguity_code"],"UNVERIFIED")
+                    if self.schema != V1:
                         row["roi_feature"] = arrays["roi_features"][j].copy()
                         row["feature_valid"] = bool(arrays["feature_valid"][j])
                         if not record.get("alignment",{}).get("success",False):
                             row["geometry_valid"]=False
                             row["geometry_status"]="WORLD_ALIGNMENT_FAILED"
+                    for key in ("point_support_available","cross_view_fusion_eligible","world_state_update_eligible"):
+                        row[key]=bool(arrays[key][j]) if self.schema==V2 else False
                     rows.append(row)
                 if self.joiner is not None:
                     rows = self.joiner.join(self.scene, timestamp, rows, record)

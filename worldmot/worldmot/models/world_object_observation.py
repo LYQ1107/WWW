@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 import numpy as np
 
-OBSERVATION_SCHEMA = "worldobject_observation_v3"
+OBSERVATION_SCHEMA = "worldobject_observation_v3_birthfix_v1"
 GEOMETRY_VALID = "GEOMETRY_VALID"
 GEOMETRY_LOW_CONFIDENCE = "GEOMETRY_LOW_CONFIDENCE"
 WORLD_ALIGNMENT_FAILED = "WORLD_ALIGNMENT_FAILED"
@@ -47,6 +47,9 @@ class WorldObjectObservation:
     visible: bool = True
     coordinate_frame: str = "PERSISTENT_WORLD"
     source: dict = field(default_factory=dict)
+    point_support_available: bool | None = None
+    cross_view_fusion_eligible: bool | None = None
+    world_state_update_eligible: bool | None = None
 
     def __post_init__(self):
         self.camera_id = int(self.camera_id)
@@ -80,6 +83,16 @@ class WorldObjectObservation:
             self.geometry_status = GEOMETRY_LOW_CONFIDENCE
         if not self.geometry_valid:
             self.geometry_reliability = 0.0
+        support=self.spatial_support
+        if self.point_support_available is None:
+            self.point_support_available=bool(support is not None and support.point_support_available)
+        strong=bool(self.geometry_valid and support is not None and support.cross_view_fusion_eligible)
+        if self.cross_view_fusion_eligible is None:
+            self.cross_view_fusion_eligible=strong
+        if self.world_state_update_eligible is None:
+            self.world_state_update_eligible=strong
+        self.cross_view_fusion_eligible=bool(self.cross_view_fusion_eligible and strong)
+        self.world_state_update_eligible=bool(self.world_state_update_eligible and strong)
 
     @property
     def key(self):

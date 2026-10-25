@@ -5,7 +5,7 @@ from pathlib import Path
 from .worldobject_cache import sha256
 from ..runtime.experiment_authorization import source_fingerprint
 
-SCOPE_SCHEMA="worldobject_frozen_scope_v3"
+SCOPE_SCHEMA="worldobject_joint_birth_frozen_scope_v3_1"
 
 
 def load_scope_lock(path,split,method_id):

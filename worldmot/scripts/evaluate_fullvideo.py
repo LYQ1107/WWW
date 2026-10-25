@@ -16,6 +16,8 @@ if __name__=='__main__':
     (out/'metrics.json').write_text(json.dumps(report,indent=2))
     if not groups:raise RuntimeError('No complete valid sequences; no official score fabricated')
     report['TrackEval']=trackeval(gt,pred,lengths,out/'trackeval',repo/'TrackEval',a.split,groups,authorization=a.authorization,method_id=a.method_id)
+    report['status']='TRACKEVAL_COMPLETE_MATLAB_PENDING'
+    (out/'metrics.json').write_text(json.dumps(report,indent=2))
     if not a.skip_matlab:
         try:report['VisionTrack_MATLAB']=matlab(gt,pred,groups,out/'matlab',repo/'MOTChallengeEvalKit_cv_test/matlab_devkit','/data1/liuyeqiang/MATLAB/R2020a/bin/matlab',Path(__file__).with_name('official_worldmot_metrics.m'),authorization=a.authorization,method_id=a.method_id,split=a.split)
         except Exception as e:report['VisionTrack_MATLAB']={'status':'BLOCKED','reason':f'{type(e).__name__}: {e}'}
