@@ -1,0 +1,21 @@
+{
+  "schema": "worldobject_live_failure_cases_v1",
+  "scope": "TEST_LIVE_TIMING_ONLY",
+  "cases": [
+    {
+      "route": "W3_PERSISTENT_BANK_LIVE_FULL_SCENE_ATTEMPT",
+      "scene": 1,
+      "status": "ENGINEERING_FAILURE_NOT_USED_FOR_ACCURACY",
+      "reason": "strict JSON serialization rejected a non-finite alignment/geometry diagnostic after causal processing; no timing row was promoted",
+      "fix": "recursive JSON sanitization maps only non-finite diagnostic values to null; frame timing remains retained"
+    },
+    {
+      "route": "W3_PERSISTENT_BANK_LIVE_SAMPLE100",
+      "scenes": [1, 8, 22],
+      "status": "REGISTERED_TIMING_SAMPLE",
+      "sample_limit_per_scene": 100,
+      "accuracy_use": "not used for official MOT scoring"
+    }
+  ]
+}
+
