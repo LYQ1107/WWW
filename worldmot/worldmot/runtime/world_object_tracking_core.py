@@ -1,6 +1,7 @@
 """Shared causal identity core. No images, checkpoint loading, GT or future access."""
 from __future__ import annotations
 import numpy as np
+import time
 from ..tracking.persistent_world_object_bank import PersistentWorldObjectBank
 from ..models.world_object_model_inputs import model_inputs
 
@@ -12,6 +13,7 @@ class WorldObjectTrackingCore:
         self.scene_id = None
         self.training_context = bool(training)
         self.evidence_status = "RULE_BASED"
+        self.last_timings = {}
 
     def reset(self, scene_id):
         self.scene_id = int(scene_id)
@@ -39,6 +41,7 @@ class WorldObjectTrackingCore:
         observations = sorted(list(observations), key=lambda o:o.key)
         if training_decision is not None and not self.training_context:
             raise ValueError("TEACHER_DECISION_FORBIDDEN_IN_INFERENCE")
+        evidence_started = time.perf_counter()
         if evidence is None:
             evidence = self.forward_evidence(observations, timestamp)
         consumed={"assignment_logits","null_logits","existence_logits","birth_logits","update_gate",
@@ -47,7 +50,9 @@ class WorldObjectTrackingCore:
             k: (v.detach() if k=="memory_delta" and hasattr(v,"detach") else
                 v.detach().cpu().numpy() if hasattr(v,"detach") else np.asarray(v))
             for k,v in evidence.items() if k in consumed}
+        self.last_timings = {"head_and_evidence_transfer_s":time.perf_counter()-evidence_started}
         objects,diag = self.bank.step(observations,timestamp,learned,training_decision=training_decision)
+        self.last_timings.update(self.bank.last_timings)
         diag["evidence_status"]=self.evidence_status
         tracks = {str(v):[] for v in sorted({o.camera_id for o in observations})}
         decisions = []

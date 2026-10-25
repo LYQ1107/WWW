@@ -27,10 +27,13 @@ def run_scene(ds,scene,tracker,out_scene,max_timestamps=None):
             if hasattr(tracker.detector,"set_context"):
                 tracker.detector.set_context(scene,pair.frame_id,{v:r.image_id for v,r in pair.images.items()})
             result=tracker.step(images,pair.frame_id)
+            output_started=time.perf_counter()
             output.write(json.dumps(result,allow_nan=False)+"\n")
             output.flush()
+            output_s=time.perf_counter()-output_started
             timing.write(json.dumps({"timestamp":pair.frame_id,"rgb_read_s":rgb_s,
-                "live_rgb_to_id_s":time.perf_counter()-started,"stages":tracker.last_timings})+"\n")
+                "output_s":output_s,"live_rgb_to_id_s":time.perf_counter()-started,"stages":tracker.last_timings,
+                "detector_stages":getattr(tracker.detector,"last_timings",{})})+"\n")
             count+=1
     cache_detector=hasattr(tracker.detector,"set_context")
     manifest={"schema":"worldobject_live_manifest_v3","method_id":getattr(tracker.core,"method_id",tracker.config.method_id),

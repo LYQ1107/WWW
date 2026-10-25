@@ -83,11 +83,15 @@ class CausalWorldObjectTraining:
             predicted=torch.sigmoid(outputs["birth_pair_logits"])>=self.core.config.birth_pair_threshold
             counts=torch.stack([(pair_mask&truth&candidates).sum(),(pair_mask&truth).sum(),
                 (pair_mask&predicted&truth).sum(),(pair_mask&predicted&~truth).sum(),
-                (pair_mask&~predicted&truth).sum(),(torch.sigmoid(outputs["birth_logits"])>=.5).sum()]).cpu().tolist()
+                (pair_mask&~predicted&truth).sum(),(torch.sigmoid(outputs["birth_logits"])>=.5).sum(),
+                (outputs["null_logits"]>=0).sum(),(outputs["existence_logits"]>=0).sum(),
+                (torch.sigmoid(outputs["existence_logits"])<self.core.config.death_threshold).sum()]).cpu().tolist()
         self.last_diagnostics={**targets["history_label_consistency_audit"],
             "birth_candidate_positive_retained":counts[0],"birth_candidate_positive_total":counts[1],
             "birth_pair_tp":counts[2],"birth_pair_fp":counts[3],"birth_pair_fn":counts[4],
-            "birth_positive_predictions":counts[5],"history_objects_after":len(self.core.bank.active())}
+            "birth_positive_predictions":counts[5],"history_objects_after":len(self.core.bank.active()),
+            "null_positive_predictions":counts[6],"existence_positive_predictions":counts[7],
+            "death_probability_below_threshold":counts[8],"history_prediction_count":len(history)}
         proposals=self.core.bank.assigner.last_birth_candidate_edges
         self.last_diagnostics["birth_proposal_positive_retained"]=sum(int(targets["joint_birth_target"][a,b]>0 or targets["joint_birth_target"][b,a]>0) for a,b in proposals)
         # Post-decision diagnostics never enter the prediction state.

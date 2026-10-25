@@ -41,6 +41,8 @@ class OnlineWorldObjectTracker:
             t=time.perf_counter()
             frame=self.geometry.reconstruct(images_by_camera,int(timestamp))
             self.last_timings["omega"]=time.perf_counter()-t
+            self.last_timings["omega_model_only_s"]=float(frame.diagnostics.get("model_only_s",0.))
+            self.last_timings["omega_preprocess_s"]=float(frame.diagnostics.get("preprocess_s",0.))
             DetectionFirstWorldMOT._set_dynamic_masks(frame,detections)
             t=time.perf_counter()
             if frame.status=="OK":
@@ -64,6 +66,7 @@ class OnlineWorldObjectTracker:
         self.last_timings["support"]=time.perf_counter()-t
         t=time.perf_counter();result=self.step_observations(observations,timestamp)
         self.last_timings["assignment_and_state_update"]=time.perf_counter()-t
+        self.last_timings.update(getattr(self.core,"last_timings",{}))
         if aligned:
             self.previous=frame
             self.previous_world={v:transform.apply(x.reshape(-1,3)).reshape(x.shape) for v,x in frame.pointmaps.items()}

@@ -54,6 +54,15 @@ preflight must bind the final code fingerprint before six-card launch.
 A two-timestamp TRAIN engineering run also completed actual RGB→GMT→ID without
 using a detector replay. Its cold-start timing is not a formal speed result.
 
+Final passive instrumentation records per-epoch Null/Birth/Existence prediction
+counts (probability ≥0.5), low-existence counts (registered death threshold),
+and separates joint solver time from identity-state updates. Live records include
+head/evidence transfer, Ω model time, output serialization/flush and whole RGB-to-ID
+wall time. Nested timing components must not be added twice. This instrumentation
+changes no association scores or decisions and is included in the final source
+fingerprint and repeated real preflight. MATLAB R2020a starts successfully and
+finds the native MinCostMatching MEX; this is availability evidence, not CVIDF1.
+
 ## Frozen experiment registration
 
 `configs/worldobject_v3_birthfix_registered.json` fixes seed 20261025, hidden size

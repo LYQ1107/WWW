@@ -2,6 +2,7 @@
 from __future__ import annotations
 from dataclasses import dataclass, field
 import numpy as np
+import time
 from .joint_world_object_assignment import JointWorldObjectAssignment, _sigmoid, AssignmentOption
 from .world_object_config import WorldObjectConfig
 from .world_object_measurement_update import update_world_measurement
@@ -54,6 +55,7 @@ class PersistentWorldObjectBank:
         self.last_assignments = {}
         self.last_timestamp = None
         self.last_hypotheses = []
+        self.last_timings = {}
 
     def active(self):
         return sorted((q for q in self.objects.values() if q.status != "DELETED"), key=lambda q: q.global_id)
@@ -132,7 +134,10 @@ class PersistentWorldObjectBank:
             if "birth_pair_logits" in learned and (learned["birth_pair_logits"].shape!=(n,n)
                     or not np.isfinite(learned["birth_pair_logits"]).all()):
                 raise ValueError("INVALID_LEARNED_BIRTH_PAIR_EVIDENCE")
+        assignment_started = time.perf_counter()
         decision = training_decision or self.assigner.assign(history, observations, learned)
+        self.last_timings = {"joint_assignment_s":time.perf_counter()-assignment_started}
+        update_started = time.perf_counter()
         assigned=[j for option in decision.selected for j in option.indices]
         ids=[option.global_id for option in decision.selected if option.global_id is not None]
         if (len(assigned)!=len(set(assigned)) or len(ids)!=len(set(ids))
@@ -207,6 +212,7 @@ class PersistentWorldObjectBank:
                 if q.geometry_valid:
                     q.covariance = q.covariance + np.eye(3)*0.02
         self.last_timestamp = int(timestamp)
+        self.last_timings["identity_update_s"] = time.perf_counter()-update_started
         return self.active(), {**decision.diagnostics, "births": birth_count,
             "matched": sum(o.global_id is not None for o in decision.selected),
             "lost": sum(q.status == "LOST" for q in history),
