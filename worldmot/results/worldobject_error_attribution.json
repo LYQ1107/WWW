@@ -1,0 +1,86 @@
+{
+  "schema": "worldobject_error_attribution_v2",
+  "scope": "TRAIN_TEST_DIAGNOSTIC",
+  "inference_contract": {
+    "detector_cache": "immutable GMT candidate cache",
+    "GT_in_inference": false,
+    "raw_GT_modified": false,
+    "omega": "VGGT-Omega 512 original verified checkpoint"
+  },
+  "train": {
+    "scenes": 24,
+    "timestamps": 28754,
+    "g0_g1_g2_g3": "complete",
+    "g1_same_person_consistency": 0.7849,
+    "g2_correct_fusion_rate": 0.7697,
+    "g3_identity_observations": 362703,
+    "g3_predicted_gid_switch": 119721,
+    "g3_wrong_world_object_merge": 34831,
+    "g3_oracle_gid_switch": 0
+  },
+  "test": {
+    "scenes": 22,
+    "timestamps": 29019,
+    "g0": {
+      "g0a_success": 0.9756711120,
+      "g0b_success": 0.9992074158,
+      "g0b_object_build_blocked": 0.0007925842,
+      "g0b_residual_p95_per_scene_weighted_mean": 0.0106479961,
+      "g0b_roundtrip_error_weighted_mean": 5.49e-16,
+      "failure_owner": "world_alignment"
+    },
+    "g1": {
+      "matched": 510963,
+      "same_person_pairs": 170868,
+      "same_person_consistent": 143972,
+      "same_person_consistency": 0.842591942,
+      "different_person_pairs": 5386541,
+      "different_person_ambiguous": 279074,
+      "different_person_ambiguous_rate": 0.051809501,
+      "unmatched": 37620,
+      "failure_owner": "spatial_support_or_detector_pairing"
+    },
+    "g2": {
+      "hypotheses": 399470,
+      "fused": 149113,
+      "single": 250357,
+      "correct_fused": 118274,
+      "wrong_fused": 30690,
+      "correct_fusion_rate": 0.793977068,
+      "wrong_fusion_rate": 0.206022932,
+      "candidate_pairs": 5559143,
+      "diagnostic_threshold_0_5_same_person_recall": 0.7523391556,
+      "diagnostic_threshold_0_5_different_person_false_merge": 0.0344857920,
+      "failure_owner": "cross_view_formation"
+    },
+    "g3": {
+      "identity_observations": 332781,
+      "predicted_gid_switch": 85155,
+      "predicted_gid_switch_rate": 0.255884705,
+      "wrong_world_object_merge": 31958,
+      "oracle_gid_switch": 0,
+      "failure_owner": "persistent_identity_association"
+    }
+  },
+  "official_test_metrics": {
+    "legal_trackeval_scenes": 14,
+    "blocked_raw_gt_scenes": 8,
+    "GMT_NATIVE_OFFICIAL": {"HOTA": 66.0645871984, "AssA": 69.5787492790, "DetA": 63.0664502124, "IDF1": 80.1121446602, "MOTA": 72.9636167242, "IDSW": 6044},
+    "W3_PERSISTENT_BANK": {"HOTA": 41.0226902417, "AssA": 27.2985388325, "DetA": 62.6753531277, "IDF1": 38.3345347566, "MOTA": 60.8667702927, "IDSW": 28800},
+    "W4_LEARNED_UPDATE": {"HOTA": 37.0917343110, "AssA": 22.2559482506, "DetA": 62.6994533759, "IDF1": 34.2184852491, "MOTA": 60.8488552836, "IDSW": 28834},
+    "W5_NO_GEOMETRY_CONTROL": {"HOTA": 37.0718862018, "AssA": 22.2391661415, "DetA": 62.6829080349, "IDF1": 34.2131652937, "MOTA": 60.8478014595, "IDSW": 28836}
+  },
+  "interpretation": {
+    "dominant_failure": "persistent_identity_association",
+    "geometry_is_not_the_dominant_test_failure": true,
+    "learned_update_beats_no_geometry": false,
+    "world_object_beats_gmt": false
+  },
+  "artifacts": {
+    "test_g0": "results/worldobject_test/G0_world_alignment_all22.csv",
+    "test_g1": "results/worldobject_test/G1_object_support_all22.csv",
+    "test_g2": "results/worldobject_test/G2_multiview_object_all24.csv",
+    "test_g3": "results/worldobject_test/G3_temporal_identity_failures.json"
+  }
+}
+
