@@ -37,6 +37,26 @@ def sha256(path: Path) -> str:
     return h.hexdigest()
 
 
+def json_safe(value):
+    """Convert diagnostic NaN/Inf values to JSON null without hiding them.
+
+    Ω confidence and alignment residuals can be non-finite for an abstained
+    frame.  The online result must still be persisted so that the timing and
+    failure reason remain auditable; strict JSON rejects those IEEE values.
+    """
+    if isinstance(value, dict):
+        return {str(k): json_safe(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [json_safe(v) for v in value]
+    if isinstance(value, np.ndarray):
+        return json_safe(value.tolist())
+    if isinstance(value, np.generic):
+        return json_safe(value.item())
+    if isinstance(value, float) and not np.isfinite(value):
+        return None
+    return value
+
+
 def claim(queue: Path) -> int | None:
     for pending in sorted(queue.glob("scene_*.pending")):
         running = pending.with_suffix(".running")
@@ -53,11 +73,13 @@ def read_images(ds, pair):
             for v, rec in pair.images.items()}
 
 
-def run_scene(ds, sid, detector, geometry, out_scene):
+def run_scene(ds, sid, detector, geometry, out_scene, max_timestamps=None):
     out_scene.mkdir(parents=True, exist_ok=True)
     tracker = OnlineWorldObjectTracker(detector, geometry, device=geometry.device_name)
     tracker.reset(int(sid)); tracks = []; timings = []
-    for pair in ds.synchronized_pairs(int(sid)):
+    for pair_index, pair in enumerate(ds.synchronized_pairs(int(sid))):
+        if max_timestamps is not None and pair_index >= int(max_timestamps):
+            break
         e2e_started = time.perf_counter()
         rgb_started = time.perf_counter()
         images = read_images(ds, pair)
@@ -69,10 +91,10 @@ def run_scene(ds, sid, detector, geometry, out_scene):
         # the online wall-clock definition; it must not be confused with the
         # cache-replay or pure Ω-kernel timings.
         wall = float(time.perf_counter() - e2e_started)
-        tracks.append(row)
-        timings.append({"timestamp": int(pair.frame_id), "live_e2e_s": wall,
+        tracks.append(json_safe(row))
+        timings.append(json_safe({"timestamp": int(pair.frame_id), "live_e2e_s": wall,
                         "rgb_read_s": rgb_read_s,
-                        "stages": row.get("runtime", {}).get("stages", {})})
+                        "stages": row.get("runtime", {}).get("stages", {})}))
     with (out_scene / "tracks.jsonl").open("w") as f:
         for row in tracks:
             f.write(json.dumps(row, allow_nan=False, separators=(",", ":")) + "\n")
@@ -88,9 +110,10 @@ def run_scene(ds, sid, detector, geometry, out_scene):
         "tracks_sha256": sha256(out_scene / "tracks.jsonl"),
         "timings_sha256": sha256(out_scene / "timings.jsonl"),
         "fps_definition": "live_rgb_to_global_id",
+        "sample_limit": int(max_timestamps) if max_timestamps is not None else None,
         "detector": detector.manifest(), "omega": geometry.diagnostics(),
     }
-    (out_scene / "manifest.json").write_text(json.dumps(manifest, indent=2, allow_nan=False))
+    (out_scene / "manifest.json").write_text(json.dumps(json_safe(manifest), indent=2, allow_nan=False))
     return manifest
 
 
@@ -103,6 +126,8 @@ def main():
     p.add_argument("--scenes", nargs="*", type=int)
     p.add_argument("--scene-queue")
     p.add_argument("--device", default="cuda:0")
+    p.add_argument("--max-timestamps", type=int,
+                   help="optional registered live timing sample limit; does not produce a full-video accuracy result")
     p.add_argument("--omega-source", default=DEFAULT_OMEGA)
     p.add_argument("--omega-weights", default=DEFAULT_WEIGHTS)
     a = p.parse_args()
@@ -120,7 +145,7 @@ def main():
             sid = claim(queue)
             if sid is None: break
             try:
-                reports.append(run_scene(ds, sid, detector, geometry, root / f"scene_{sid:02d}"))
+                reports.append(run_scene(ds, sid, detector, geometry, root / f"scene_{sid:02d}", a.max_timestamps))
                 (queue / f"scene_{sid:02d}.running").unlink(missing_ok=True)
                 (queue / f"scene_{sid:02d}.done").touch()
             except Exception:
@@ -128,12 +153,12 @@ def main():
                 raise
     else:
         for sid in a.scenes or ds.scene_ids():
-            reports.append(run_scene(ds, int(sid), detector, geometry, root / f"scene_{int(sid):02d}"))
-    (root / "coverage.json").write_text(json.dumps({
+            reports.append(run_scene(ds, int(sid), detector, geometry, root / f"scene_{int(sid):02d}", a.max_timestamps))
+    (root / "coverage.json").write_text(json.dumps(json_safe({
         "schema": "worldobject_live_coverage_v1", "route": "LIVE_RGB_TO_ID",
         "split": a.split, "scenes": reports, "scene_count": len(reports),
         "all_complete": all(x["status"] == "COMPLETE" for x in reports),
-    }, indent=2, allow_nan=False))
+    }), indent=2, allow_nan=False))
     print(json.dumps({"scenes": len(reports), "complete": all(x["status"] == "COMPLETE" for x in reports)}, indent=2))
 
 
