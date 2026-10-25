@@ -73,14 +73,52 @@ class PersistentWorldObjectBank:
             cost += 0.10 * (1.0 - float(np.clip(gate, 0.0, 1.0)))
         return cost
 
+    def _cost_matrix(self, active, hypotheses) -> np.ndarray:
+        """Vectorized equivalent of the pairwise ``_cost`` loop.
+
+        World-dense frames can contain hundreds of persistent objects.  The
+        scalar implementation repeatedly enters NumPy for each object/query
+        pair, while all terms are separable into dense matrices.  Keeping the
+        same gate, weights, and learned prior here preserves assignments and
+        only changes execution overhead.
+        """
+        n_obj, n_hyp = len(active), len(hypotheses)
+        out = np.full((n_obj, n_hyp), np.inf, dtype=np.float64)
+        if not n_obj or not n_hyp:
+            return out
+        centers = np.asarray([x.center for x in active], dtype=np.float64)
+        hcenters = np.asarray([x.center for x in hypotheses], dtype=np.float64)
+        dist = np.linalg.norm(centers[:, None, :] - hcenters[None, :, :], axis=2)
+        scales = np.sqrt(np.maximum(np.trace(np.asarray([x.covariance for x in active], dtype=np.float64), axis1=1, axis2=2), 1e-6))
+        allowed = dist <= (self.gate_distance + 2.0 * scales[:, None]
+                           + 0.5 * np.asarray([x.missed for x in active], dtype=np.float64)[:, None])
+        # All WorldObject hypotheses use the same compact feature dimension;
+        # retain a conservative scalar fallback if a caller violates that
+        # contract rather than silently changing cosine-distance semantics.
+        of = [self._feature(x) for x in active]
+        hf = [self._feature(x) for x in hypotheses]
+        if len({len(x) for x in of + hf}) != 1:
+            for i, obj in enumerate(active):
+                for j, hyp in enumerate(hypotheses):
+                    out[i, j] = self._cost(obj, hyp)
+            return out
+        app = 1.0 - np.clip(np.asarray(of, dtype=np.float64) @ np.asarray(hf, dtype=np.float64).T, -1.0, 1.0)
+        reliability = np.clip(np.asarray([hyp.support.quality for hyp in hypotheses], dtype=np.float64), 0.0, 1.0)
+        out = (0.75 * dist / max(self.gate_distance, 1e-6)
+               + 0.15 * app + 0.10 * (1.0 - reliability)[None, :])
+        gates = np.asarray([hyp.diagnostics.get("learned_update_gate", np.nan) for hyp in hypotheses], dtype=np.float64)
+        valid = np.isfinite(gates)
+        if np.any(valid):
+            out[:, valid] += 0.10 * (1.0 - np.clip(gates[valid], 0.0, 1.0))[None, :]
+        out[~allowed] = np.inf
+        return out
+
     def step(self, hypotheses, timestamp: int) -> tuple[list[PersistentWorldObject], dict]:
         hypotheses = list(hypotheses); self.last_assignments = {}
         active = [x for x in self.objects.values() if x.status != "DELETED"]
         for x in active:
             x.predict(); x.last_observation = None
-        cost = np.full((len(active), len(hypotheses)), np.inf)
-        for i, obj in enumerate(active):
-            for j, hyp in enumerate(hypotheses): cost[i, j] = self._cost(obj, hyp)
+        cost = self._cost_matrix(active, hypotheses)
         pairs, unmatched_objects, unmatched_hyp = linear_assignment(cost, max_cost=1.5)
         for i, j in pairs:
             obj, hyp = active[i], hypotheses[j]
@@ -111,3 +149,4 @@ class PersistentWorldObjectBank:
             "lost": sum(x.status == "LOST" for x in active),
             "unmatched_hypotheses": len(unmatched_hyp),
         }
+
