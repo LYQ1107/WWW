@@ -204,7 +204,14 @@ def support_compatibility(left: WorldObjectSupport, right: WorldObjectSupport,
     scale = max(0.08, float(np.sqrt(np.trace(left.covariance + right.covariance) / 3.0)))
     normalized = float(np.linalg.norm(delta) / scale)
     cov = left.covariance + right.covariance + np.eye(3) * 1e-4
-    mahal = float(np.sqrt(max(0.0, delta @ np.linalg.pinv(cov) @ delta)))
+    # The diagonal jitter makes this 3x3 covariance numerically solvable in
+    # the normal case.  ``solve`` is equivalent to the quadratic form here
+    # but substantially cheaper than a full pseudo-inverse for every pair.
+    try:
+        mahal_sq = float(delta @ np.linalg.solve(cov, delta))
+    except np.linalg.LinAlgError:
+        mahal_sq = float(delta @ np.linalg.pinv(cov) @ delta)
+    mahal = float(np.sqrt(max(0.0, mahal_sq)))
     ok = normalized <= float(max_normalized_distance) and mahal <= 6.0
     if not ok:
         # Do not spend an O(P^2) support-distance computation on pairs already
