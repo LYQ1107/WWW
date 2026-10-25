@@ -8,6 +8,9 @@ The verified VGGT-Ω 512 checkpoint and immutable GMT candidate cache are
 locked. Raw GT is never modified and no GT identity enters inference. The
 full TEST cache and all three routes have 22/22 scene manifests and 29,019
 timestamps.
+The causal anchored-alignment implementation (G0-C) is retained as an
+engineering route, but it was not registered in the formal score table because
+the frozen sparse-cache audit records G0-A/G0-B; no G0-C number is claimed.
 
 ## Official complete-video comparison
 
