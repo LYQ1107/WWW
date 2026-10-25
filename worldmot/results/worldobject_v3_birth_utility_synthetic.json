@@ -1,0 +1,297 @@
+{
+  "status": "FROZEN_R2_SYNTHETIC_ACTUAL_DECISION_DIAGNOSIS",
+  "diagnostic_script_sha256": "179174821ef080eff4b12d2e3be14ea9e26d1e3a8a549d98c56fa969c6987b39",
+  "cases": [
+    {
+      "name": "JUST_BELOW_THRESHOLD",
+      "pair_logit_minus_threshold": -1e-06,
+      "singleton_birth_logit": -40.0,
+      "history_competitor": false,
+      "geometry_reliable": true,
+      "geometry_conflict": false,
+      "raw_above_threshold_wrong_pairs": 0,
+      "solver_birth_proposals": 0,
+      "selected_cross_view_pairs": [],
+      "actual_wrong_global_id_merges": 0,
+      "delivered_global_ids": [
+        1,
+        2
+      ],
+      "birth_objects": 2,
+      "actual_decisions": [
+        "SINGLETON_BIRTH_OR_UNCONFIRMED",
+        "SINGLETON_BIRTH_OR_UNCONFIRMED"
+      ],
+      "bank_constraints_satisfied": true
+    },
+    {
+      "name": "EXACT_THRESHOLD_ZERO_BENEFIT",
+      "pair_logit_minus_threshold": 0.0,
+      "singleton_birth_logit": -40.0,
+      "history_competitor": false,
+      "geometry_reliable": true,
+      "geometry_conflict": false,
+      "raw_above_threshold_wrong_pairs": 0,
+      "solver_birth_proposals": 1,
+      "selected_cross_view_pairs": [],
+      "actual_wrong_global_id_merges": 0,
+      "delivered_global_ids": [
+        1,
+        2
+      ],
+      "birth_objects": 2,
+      "actual_decisions": [
+        "SINGLETON_BIRTH_OR_UNCONFIRMED",
+        "SINGLETON_BIRTH_OR_UNCONFIRMED"
+      ],
+      "bank_constraints_satisfied": true
+    },
+    {
+      "name": "TINY_POSITIVE_PAIR_NO_HISTORY",
+      "pair_logit_minus_threshold": 1e-06,
+      "singleton_birth_logit": -40.0,
+      "history_competitor": false,
+      "geometry_reliable": true,
+      "geometry_conflict": false,
+      "raw_above_threshold_wrong_pairs": 1,
+      "solver_birth_proposals": 1,
+      "selected_cross_view_pairs": [
+        [
+          0,
+          1
+        ]
+      ],
+      "actual_wrong_global_id_merges": 1,
+      "delivered_global_ids": [
+        1,
+        1
+      ],
+      "birth_objects": 1,
+      "actual_decisions": [
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH",
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH"
+      ],
+      "bank_constraints_satisfied": true
+    },
+    {
+      "name": "LOW_SINGLETON_PRIOR_NO_HISTORY",
+      "pair_logit_minus_threshold": 1e-06,
+      "singleton_birth_logit": -60.0,
+      "history_competitor": false,
+      "geometry_reliable": true,
+      "geometry_conflict": false,
+      "raw_above_threshold_wrong_pairs": 1,
+      "solver_birth_proposals": 1,
+      "selected_cross_view_pairs": [
+        [
+          0,
+          1
+        ]
+      ],
+      "actual_wrong_global_id_merges": 1,
+      "delivered_global_ids": [
+        1,
+        1
+      ],
+      "birth_objects": 1,
+      "actual_decisions": [
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH",
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH"
+      ],
+      "bank_constraints_satisfied": true
+    },
+    {
+      "name": "CORRECT_HISTORY_COMPETES",
+      "pair_logit_minus_threshold": 1e-06,
+      "singleton_birth_logit": -40.0,
+      "history_competitor": true,
+      "geometry_reliable": true,
+      "geometry_conflict": false,
+      "raw_above_threshold_wrong_pairs": 1,
+      "solver_birth_proposals": 1,
+      "selected_cross_view_pairs": [],
+      "actual_wrong_global_id_merges": 0,
+      "delivered_global_ids": [
+        1,
+        2
+      ],
+      "birth_objects": 1,
+      "actual_decisions": [
+        "HISTORY_EXPLAINS_CURRENT_OBSERVATION",
+        "SINGLETON_BIRTH_OR_UNCONFIRMED"
+      ],
+      "bank_constraints_satisfied": true
+    },
+    {
+      "name": "MULTIPLE_WRONG_PAIRS_COMPETE",
+      "pair_logit_minus_threshold": 1e-06,
+      "singleton_birth_logit": -40.0,
+      "history_competitor": false,
+      "geometry_reliable": true,
+      "geometry_conflict": false,
+      "raw_above_threshold_wrong_pairs": 4,
+      "solver_birth_proposals": 4,
+      "selected_cross_view_pairs": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          3
+        ]
+      ],
+      "actual_wrong_global_id_merges": 2,
+      "delivered_global_ids": [
+        1,
+        2,
+        1,
+        2
+      ],
+      "birth_objects": 2,
+      "actual_decisions": [
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH",
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH",
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH",
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH"
+      ],
+      "bank_constraints_satisfied": true
+    },
+    {
+      "name": "RELIABLE_GEOMETRY_VETO",
+      "pair_logit_minus_threshold": 1e-06,
+      "singleton_birth_logit": -40.0,
+      "history_competitor": false,
+      "geometry_reliable": true,
+      "geometry_conflict": true,
+      "raw_above_threshold_wrong_pairs": 1,
+      "solver_birth_proposals": 0,
+      "selected_cross_view_pairs": [],
+      "actual_wrong_global_id_merges": 0,
+      "delivered_global_ids": [
+        1,
+        2
+      ],
+      "birth_objects": 2,
+      "actual_decisions": [
+        "SINGLETON_BIRTH_OR_UNCONFIRMED",
+        "SINGLETON_BIRTH_OR_UNCONFIRMED"
+      ],
+      "bank_constraints_satisfied": true
+    },
+    {
+      "name": "SAME_PAIR_WEAK_GEOMETRY",
+      "pair_logit_minus_threshold": 1e-06,
+      "singleton_birth_logit": -40.0,
+      "history_competitor": false,
+      "geometry_reliable": false,
+      "geometry_conflict": true,
+      "raw_above_threshold_wrong_pairs": 1,
+      "solver_birth_proposals": 1,
+      "selected_cross_view_pairs": [
+        [
+          0,
+          1
+        ]
+      ],
+      "actual_wrong_global_id_merges": 1,
+      "delivered_global_ids": [
+        1,
+        1
+      ],
+      "birth_objects": 1,
+      "actual_decisions": [
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH",
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH"
+      ],
+      "bank_constraints_satisfied": true
+    }
+  ],
+  "spatial_recovery_probes": [
+    {
+      "method": "FULL_WORLD_OBJECT_V3",
+      "recovered_global_ids": [
+        1,
+        1
+      ],
+      "next_frame_global_ids": [
+        2,
+        2
+      ],
+      "center_retained_after_recovery": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "missed_after_recovery": 0,
+      "recovery_decisions": [
+        "VISUAL_RECOVERY_SPATIAL_CONFLICT",
+        "VISUAL_RECOVERY_SPATIAL_CONFLICT"
+      ],
+      "next_frame_decisions": [
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH",
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH"
+      ],
+      "both_views_always_same_clean_person": true,
+      "appearance_exactly_identical": true,
+      "current_position_unchanged_between_recovery_and_next_frame": true
+    },
+    {
+      "method": "HEAD_ONLY_NO_GEOMETRY_V3",
+      "recovered_global_ids": [
+        1,
+        1
+      ],
+      "next_frame_global_ids": [
+        2,
+        2
+      ],
+      "center_retained_after_recovery": [
+        0.0,
+        0.0,
+        3.0
+      ],
+      "missed_after_recovery": 0,
+      "recovery_decisions": [
+        "VISUAL_RECOVERY_SPATIAL_CONFLICT",
+        "VISUAL_RECOVERY_SPATIAL_CONFLICT"
+      ],
+      "next_frame_decisions": [
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH",
+        "LEARNED_CROSS_VIEW_JOINT_BIRTH"
+      ],
+      "both_views_always_same_clean_person": true,
+      "appearance_exactly_identical": true,
+      "current_position_unchanged_between_recovery_and_next_frame": true
+    },
+    {
+      "method": "FULL_NO_GEOMETRY_V3",
+      "recovered_global_ids": [
+        1,
+        1
+      ],
+      "next_frame_global_ids": [
+        1,
+        1
+      ],
+      "center_retained_after_recovery": null,
+      "missed_after_recovery": 0,
+      "recovery_decisions": [
+        "JOINT_HISTORY_TWO_VIEW",
+        "JOINT_HISTORY_TWO_VIEW"
+      ],
+      "next_frame_decisions": [
+        "JOINT_HISTORY_TWO_VIEW",
+        "JOINT_HISTORY_TWO_VIEW"
+      ],
+      "both_views_always_same_clean_person": true,
+      "appearance_exactly_identical": true,
+      "current_position_unchanged_between_recovery_and_next_frame": true
+    }
+  ],
+  "TRAIN_or_TEST_data_used": false,
+  "R2_source_modified": false,
+  "new_training_started": false,
+  "R3_implemented_or_started": false,
+  "conclusion": "A geometry-admissible wrong pair with any strictly positive utility can beat two zero-utility singleton births when no historical option competes. A correct historical competitor or reliable spatial conflict can prevent that merge. This proves a structural synthetic possibility, not its frequency or net impact on real TRAIN VAL."
+}

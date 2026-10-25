@@ -1,0 +1,416 @@
+{
+  "status": "FULL_TRAIN_GATE_PASSED",
+  "method": "FULL_NO_GEOMETRY_V3",
+  "source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f",
+  "source_commit_in_gate": "c37aab106e2dc630fd1fa37dc6555b1a3c7852a4",
+  "tree_equivalent_published_commit": "3cf328c2b40fe20c39828cb38a5cd3319d54d908",
+  "gate_on_NAS": "/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v3_birthfix_r2_20261025/train/FULL_NO_GEOMETRY_V3/train_gate.json",
+  "gate_sha256": "1796b14b36f9a45381a2ed6067149b746482adceec4b233f9656779ae4c00b1f",
+  "weights_on_NAS": "/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v3_birthfix_r2_20261025/train/FULL_NO_GEOMETRY_V3/identity_v3_joint_birth.pt",
+  "checkpoint_sha256": "b08badfc634c9652a34366951c93207fa321deb7d1a2b240a76798f11607053f",
+  "training_budget": {
+    "selection_epochs": 4,
+    "selected_final_epochs": 2,
+    "max_epochs": 6,
+    "lr": 0.0002,
+    "clip_length": 64,
+    "clip_identity_reset": false,
+    "history_mode": "predicted"
+  },
+  "trainable_parameters": 436870,
+  "actual_final_scenes": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "actual_final_timestamps": 28754,
+  "identity_supervision_observations_per_final_epoch": 539738,
+  "final_epoch_metrics": [
+    {
+      "epoch": 1,
+      "train": {
+        "identity_assignment": 0.06307224175022051,
+        "joint_birth": 0.007349774590814818,
+        "cross_view_shared_identity": 0.0033949728999586796,
+        "cross_view_identity_pair": 0.03309520906834655,
+        "false_merge": 0.0030787964338190982,
+        "birth": 0.03865090784035596,
+        "null": 0.047757611844606945,
+        "existence": 0.006633318679082096,
+        "update_gate": 0.020093689458300548,
+        "state_update_consistency": 0.000663967921019328,
+        "total": 0.15548484003612506,
+        "frames": 28754,
+        "elapsed_s": 1848.7005558982491,
+        "diagnostics": {
+          "history_objects": 460121,
+          "history_unlabelled_or_mixed": 49406,
+          "history_identity_split_objects": 32141,
+          "current_with_multiple_history_targets": 41672,
+          "current_birth_no_matching_history": 9753,
+          "crossview_birth_positive_count": 1935,
+          "crossview_birth_negative_count": 5447885,
+          "birth_candidate_positive_retained": 1935,
+          "birth_candidate_positive_total": 1935,
+          "birth_pair_tp": 1685,
+          "birth_pair_fp": 34741,
+          "birth_pair_fn": 250,
+          "birth_positive_predictions": 147,
+          "history_objects_after": 460543,
+          "null_positive_predictions": 169,
+          "existence_positive_predictions": 460041,
+          "death_probability_below_threshold": 0,
+          "history_prediction_count": 460121,
+          "birth_proposal_positive_retained": 1672,
+          "current_detections": 557002,
+          "identity_observations": 539738,
+          "same_person_cross_view_pairs": 178520,
+          "same_person_split": 7418,
+          "different_person_cross_view_pairs": 5447885,
+          "correctly_separate": 5441801,
+          "first_appearance_split_count": 983,
+          "diagnostic_temporal_switches": 7504,
+          "correct_shared_identity": 171102,
+          "unmatched_or_ambiguous_detections": 17264,
+          "wrong_world_object_merges": 6084,
+          "false_cross_view_merge": 6084
+        },
+        "birth_pair_precision": 0.04625816724317795,
+        "birth_pair_recall": 0.8708010335917312,
+        "birth_candidate_recall": 1.0,
+        "birth_proposal_recall": 0.8640826873385012,
+        "average_history_objects": 16.001982332892815
+      }
+    },
+    {
+      "epoch": 2,
+      "train": {
+        "identity_assignment": 0.049958559320613403,
+        "joint_birth": 0.0054035364974795675,
+        "cross_view_shared_identity": 0.0022736175394836044,
+        "cross_view_identity_pair": 0.018232322465354125,
+        "false_merge": 0.002048739556759238,
+        "birth": 0.0316139105190691,
+        "null": 0.03991509671615682,
+        "existence": 0.0034765558052194633,
+        "update_gate": 0.010389049138967947,
+        "state_update_consistency": 4.7278153086802895e-05,
+        "total": 0.11915989246118272,
+        "frames": 28754,
+        "elapsed_s": 1855.1174719259143,
+        "diagnostics": {
+          "history_objects": 455890,
+          "history_unlabelled_or_mixed": 50749,
+          "history_identity_split_objects": 27009,
+          "current_with_multiple_history_targets": 34179,
+          "current_birth_no_matching_history": 9153,
+          "crossview_birth_positive_count": 1788,
+          "crossview_birth_negative_count": 5447885,
+          "birth_candidate_positive_retained": 1788,
+          "birth_candidate_positive_total": 1788,
+          "birth_pair_tp": 1598,
+          "birth_pair_fp": 25183,
+          "birth_pair_fn": 190,
+          "birth_positive_predictions": 446,
+          "history_objects_after": 456316,
+          "null_positive_predictions": 7020,
+          "existence_positive_predictions": 455890,
+          "death_probability_below_threshold": 0,
+          "history_prediction_count": 455890,
+          "birth_proposal_positive_retained": 1595,
+          "current_detections": 557002,
+          "identity_observations": 539738,
+          "same_person_cross_view_pairs": 178520,
+          "correct_shared_identity": 172417,
+          "different_person_cross_view_pairs": 5447885,
+          "correctly_separate": 5442635,
+          "first_appearance_split_count": 840,
+          "unmatched_or_ambiguous_detections": 17264,
+          "diagnostic_temporal_switches": 6746,
+          "same_person_split": 6103,
+          "wrong_world_object_merges": 5250,
+          "false_cross_view_merge": 5250
+        },
+        "birth_pair_precision": 0.05966916844031216,
+        "birth_pair_recall": 0.8937360178970917,
+        "birth_candidate_recall": 1.0,
+        "birth_proposal_recall": 0.8920581655480985,
+        "average_history_objects": 15.854837587813869
+      }
+    }
+  ],
+  "coverage": [
+    {
+      "scene": 1,
+      "timestamps": 932,
+      "target_audit": {
+        "valid_annotations": 4395,
+        "masked_detections": 0,
+        "matched_identity_observations": 4373
+      },
+      "cache_manifest_sha256": "eec5891c39f0d42da9358f0308bf78127a88db0cd042329a43d13ec34bd5e43a"
+    },
+    {
+      "scene": 2,
+      "timestamps": 1886,
+      "target_audit": {
+        "valid_annotations": 13996,
+        "masked_detections": 1,
+        "matched_identity_observations": 13443,
+        "ambiguous_or_invalid_annotations": 2
+      },
+      "cache_manifest_sha256": "e2b97d0a2cd707542a39004911ec798641ff2178680e8911e77177c52f87e2dc"
+    },
+    {
+      "scene": 3,
+      "timestamps": 1200,
+      "target_audit": {
+        "valid_annotations": 37701,
+        "masked_detections": 1,
+        "matched_identity_observations": 34871,
+        "ambiguous_or_invalid_annotations": 2
+      },
+      "cache_manifest_sha256": "0ff20cd899507f02edd30e41fca7262b86ad2548523a842b57ebfcb685510c92"
+    },
+    {
+      "scene": 4,
+      "timestamps": 901,
+      "target_audit": {
+        "valid_annotations": 3785,
+        "masked_detections": 0,
+        "matched_identity_observations": 3559
+      },
+      "cache_manifest_sha256": "a1107cfdc8bd1072c41dc75441ef33ab32b23bfe2d77def16b33b7446c78a415"
+    },
+    {
+      "scene": 5,
+      "timestamps": 1769,
+      "target_audit": {
+        "valid_annotations": 6916,
+        "masked_detections": 0,
+        "matched_identity_observations": 6914
+      },
+      "cache_manifest_sha256": "2ebb60131cd70b446972b60ff3ac5f7252d55b6d2e7d3e15fa6b99a2f203c748"
+    },
+    {
+      "scene": 6,
+      "timestamps": 601,
+      "target_audit": {
+        "valid_annotations": 2573,
+        "masked_detections": 0,
+        "matched_identity_observations": 2573
+      },
+      "cache_manifest_sha256": "cf53e9799401f68588d23fe8bce41726896be01958fec4622e3b4094b27a0455"
+    },
+    {
+      "scene": 7,
+      "timestamps": 443,
+      "target_audit": {
+        "valid_annotations": 1772,
+        "masked_detections": 0,
+        "matched_identity_observations": 1695
+      },
+      "cache_manifest_sha256": "5459d55634ac74c4ed820c6cfa0371a25b499fe9dec256f58b0c22fea3ea9e6d"
+    },
+    {
+      "scene": 8,
+      "timestamps": 523,
+      "target_audit": {
+        "valid_annotations": 2092,
+        "masked_detections": 0,
+        "matched_identity_observations": 1971
+      },
+      "cache_manifest_sha256": "4ba494de1a40a31a839af9964055fb09200b26e4d0f88128473775d4d71f11ba"
+    },
+    {
+      "scene": 9,
+      "timestamps": 1942,
+      "target_audit": {
+        "valid_annotations": 8720,
+        "masked_detections": 0,
+        "matched_identity_observations": 8680
+      },
+      "cache_manifest_sha256": "f42fbc1ed3fae89ea2dde5cc2e67d7a4933d69adb2049c0fd8794ad63bcc557b"
+    },
+    {
+      "scene": 10,
+      "timestamps": 2092,
+      "target_audit": {
+        "valid_annotations": 14092,
+        "masked_detections": 0,
+        "matched_identity_observations": 13872
+      },
+      "cache_manifest_sha256": "89f474c4b549dca0b3008f4b9934d7412c5c10039d7637fdeef7cf6a40e0b87d"
+    },
+    {
+      "scene": 11,
+      "timestamps": 2057,
+      "target_audit": {
+        "valid_annotations": 15142,
+        "masked_detections": 0,
+        "matched_identity_observations": 15069
+      },
+      "cache_manifest_sha256": "8ea3b8e0095fa0baad0167f71fdb20b216100b8b8ccd3553bcb5fa6db3929a61"
+    },
+    {
+      "scene": 12,
+      "timestamps": 1200,
+      "target_audit": {
+        "valid_annotations": 14867,
+        "masked_detections": 0,
+        "matched_identity_observations": 14141
+      },
+      "cache_manifest_sha256": "a7f84535366d9efbe8ac084fdbdf89c26d8076e4a92eb4f00f8393e25e0e4e6e"
+    },
+    {
+      "scene": 13,
+      "timestamps": 1621,
+      "target_audit": {
+        "valid_annotations": 17099,
+        "masked_detections": 0,
+        "matched_identity_observations": 16800
+      },
+      "cache_manifest_sha256": "82b35ca25629fc6c39195e6a8b9cc02f9889b3dc1a792e7f1aa0974477f08a63"
+    },
+    {
+      "scene": 14,
+      "timestamps": 969,
+      "target_audit": {
+        "valid_annotations": 33875,
+        "masked_detections": 1210,
+        "matched_identity_observations": 30978,
+        "ambiguous_or_invalid_annotations": 1164
+      },
+      "cache_manifest_sha256": "2effec7633cfbfe65019b1486028341474985e57150be4dc4995f72d59f280fa"
+    },
+    {
+      "scene": 15,
+      "timestamps": 1048,
+      "target_audit": {
+        "valid_annotations": 85405,
+        "masked_detections": 28,
+        "matched_identity_observations": 73610,
+        "ambiguous_or_invalid_annotations": 32
+      },
+      "cache_manifest_sha256": "3f3c0f9a78223cf3ed59a376fbfb1e2a76ddc137a5193d3b65208bbba0230034"
+    },
+    {
+      "scene": 16,
+      "timestamps": 1034,
+      "target_audit": {
+        "valid_annotations": 58198,
+        "masked_detections": 1679,
+        "matched_identity_observations": 54626,
+        "ambiguous_or_invalid_annotations": 1704
+      },
+      "cache_manifest_sha256": "2ef3dcb0940953a767a3a8aa68b0b7f514ff37fba19ee604f0883ce2b7d23cb7"
+    },
+    {
+      "scene": 17,
+      "timestamps": 1200,
+      "target_audit": {
+        "valid_annotations": 11731,
+        "masked_detections": 0,
+        "matched_identity_observations": 11006
+      },
+      "cache_manifest_sha256": "e8957996563d7ea7eb46ca8476fe47e03dd6066bb0900d37fd5f7ee325bd399b"
+    },
+    {
+      "scene": 18,
+      "timestamps": 1029,
+      "target_audit": {
+        "valid_annotations": 11769,
+        "masked_detections": 0,
+        "matched_identity_observations": 11426
+      },
+      "cache_manifest_sha256": "7d0403fde84ac2117b6774ac698580dfb7f77c7774aa15d1aa2267309728afed"
+    },
+    {
+      "scene": 19,
+      "timestamps": 1052,
+      "target_audit": {
+        "valid_annotations": 16285,
+        "masked_detections": 0,
+        "matched_identity_observations": 15339
+      },
+      "cache_manifest_sha256": "fe2a6ef32fa52efbab39c36ce2d278771a3bb082cbe019e07374b8919eee4f14"
+    },
+    {
+      "scene": 20,
+      "timestamps": 1001,
+      "target_audit": {
+        "valid_annotations": 26278,
+        "masked_detections": 2,
+        "matched_identity_observations": 23630,
+        "ambiguous_or_invalid_annotations": 4
+      },
+      "cache_manifest_sha256": "1ff4038a1825d5f336016df87e74cdb0cffd8cf063caae6b7903d4554d45394f"
+    },
+    {
+      "scene": 21,
+      "timestamps": 1001,
+      "target_audit": {
+        "valid_annotations": 8026,
+        "masked_detections": 0,
+        "matched_identity_observations": 6952
+      },
+      "cache_manifest_sha256": "5da4d5e45ced15e94d638cb85e04f53f52eaecb7ffda1aba85d279f31cd61c94"
+    },
+    {
+      "scene": 22,
+      "timestamps": 1000,
+      "target_audit": {
+        "valid_annotations": 21222,
+        "masked_detections": 147,
+        "matched_identity_observations": 20619,
+        "ambiguous_or_invalid_annotations": 142
+      },
+      "cache_manifest_sha256": "44967ad9610a74a466dfc95c8a52f7816bee27ad4b396fc4c4ee4796ec029733"
+    },
+    {
+      "scene": 23,
+      "timestamps": 1052,
+      "target_audit": {
+        "valid_annotations": 99387,
+        "masked_detections": 2,
+        "matched_identity_observations": 87250,
+        "ambiguous_or_invalid_annotations": 2
+      },
+      "cache_manifest_sha256": "f638b17a9d19ee0beb024d5dc56642767c259b164b75266b89e997fb3050f537"
+    },
+    {
+      "scene": 24,
+      "timestamps": 1201,
+      "target_audit": {
+        "valid_annotations": 77582,
+        "masked_detections": 743,
+        "matched_identity_observations": 66341,
+        "ambiguous_or_invalid_annotations": 734
+      },
+      "cache_manifest_sha256": "3bab6b56d28cd30c539964d41f5a464e514c3711720c8d3e3d1eaafa3d6f8b1b"
+    }
+  ],
+  "TEST_inference_started": true,
+  "TEST_worker_pid": 32132
+}

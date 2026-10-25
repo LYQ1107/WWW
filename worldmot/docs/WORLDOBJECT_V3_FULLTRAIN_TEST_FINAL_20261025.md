@@ -8,13 +8,16 @@ User instruction: attachment `c5d7a93f-e5e6-4068-83b2-45635a8dd642`.
 
 Active revision: R2. Its 120 CPU tests and source-bound 178-timestamp real TRAIN
 preflight pass. All 24 TRAIN geometry caches are now complete: 28,754 synchronized
-times / 57,508 RGB images. Full V3 and head-only no-geometry have started fresh
-selection training on the two released devices, alongside the existing full
-no-geometry training. Three unchanged geometry workers continue TEST preparation;
-the three neural jobs and these producers occupy the six registered devices.
-The rule-based joint-assignment, legacy ROI and legacy feature-off controls have
-completed full TRAIN causal replay on CPU; geometry-only replay is running. This
-cache completion does not mean that final all-24 model training has completed.
+times / 57,508 RGB images. Full V3 and head-only no-geometry continue selection
+training. Full no-geometry has completed its selected two final all-24 epochs,
+passed the source/checkpoint/coverage gate, and started complete 22-video TEST
+inference. Its checkpoint SHA is
+`b08badfc634c9652a34366951c93207fa321deb7d1a2b240a76798f11607053f`;
+see `results/worldobject_v3_no_geometry_fulltrain_gate.json`.
+Three unchanged geometry workers continue TEST preparation on the other devices.
+All four parameter-free controls have completed full TRAIN causal replay and
+independent row/hash/current-candidate verification; see
+`results/worldobject_v3_all_control_train_replay_verification.json`.
 No new official TEST accuracy result is available. This is an independent WorldMOT experiment; GMT is
 a frozen detector/ROI provider and a separately scored reference.
 
@@ -253,7 +256,7 @@ All three rows use the fixed six TRAIN VAL scenes, 5,860 synchronized times and
 different-person pair denominators are 40,082 and 1,744,285 respectively.
 The counts below are clean-IoU diagnostic labels, not TEST or official MOT scores.
 
-| Method | Same-person split pairs | Different-person merged pairs | Diagnostic temporal ID changes | First-clean-appearance splits |
+| Method | Same-person split pairs | Different-person merged pairs | Diagnostic temporal ID changes | Model-history-absent pair splits |
 |---|---:|---:|---:|---:|
 | Full V3 | 4,834 | 3,056 | 4,160 | 347 |
 | Full no-geometry | 5,865 | 3,232 | 2,664 | 458 |
@@ -265,6 +268,13 @@ This is a cross-view/temporal tradeoff, not established net identity improvement
 Full raw fit/VAL loss and diagnostic records are preserved in
 `results/worldobject_v3_first_epoch_three_methods.json`. No method or threshold
 is changed in response; final model selection and TEST remain as registered.
+
+The original training key `first_appearance_split_count` means a split of a
+same-person pair absent from cleanly labelled model history. It can include
+repeated births after a history failure; it does not mean first physical or
+first clean visibility in the video. The frozen raw key is preserved, and its
+report label is corrected above. The R2 addendum separately requests both event
+definitions; see `docs/WORLDOBJECT_V3_R2_SCIENTIFIC_DIAGNOSIS.md`.
 
 The three completed parameter-free controls were also checked independently of
 their completion markers. Every output row and timestamp was parsed against
