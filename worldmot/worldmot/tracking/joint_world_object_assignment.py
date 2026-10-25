@@ -156,6 +156,13 @@ class JointWorldObjectAssignment:
                 for va, a, ra in per_view[views[0]]:
                     for vb, b, rb in per_view[views[1]]:
                         pair = self._pair_evidence(observations[a], observations[b])
+                        if pair is None and learned is not None and "birth_pair_logits" in learned:
+                            # The pair encoder also receives clean same-person
+                            # supervision for existing identities. Its strong
+                            # identity evidence can explain dissimilar views of
+                            # one historical object; reliable geometry still vetoes.
+                            pair = self._pair_evidence(observations[a], observations[b],
+                                learned_probability=_sigmoid(learned["birth_pair_logits"][a,b]))
                         if pair is not None:
                             options.append(AssignmentOption(q.global_id, tuple(sorted((a, b))),
                                                             va + vb + 0.2 * pair,
@@ -170,6 +177,7 @@ class JointWorldObjectAssignment:
                 if oa.camera_id != views[0]:
                     continue
                 options = []
+                proposal_priority = {}
                 for b, ob in enumerate(observations):
                     if ob.camera_id != views[1]:
                         continue
@@ -183,7 +191,10 @@ class JointWorldObjectAssignment:
                     birth_prob = 1.0
                     if learned is not None:
                         birth_prob = min(_sigmoid(learned["birth_logits"][a]), _sigmoid(learned["birth_logits"][b]))
-                    if birth_prob >= cfg.birth_threshold:
+                    # Learned pair evidence competes with historical objects
+                    # even when the separately trained singleton prior is low.
+                    # Keep that prior as a soft score, never a hard pair prune.
+                    if probability is not None or birth_prob >= cfg.birth_threshold:
                         if probability is None:
                             value=0.25*pair*birth_prob;reason="HEURISTIC_JOINT_BIRTH"
                         else:
@@ -191,7 +202,12 @@ class JointWorldObjectAssignment:
                             value=cfg.birth_pair_weight*max(0.,float(learned["birth_pair_logits"][a,b])-threshold_logit)*birth_prob
                             reason="LEARNED_CROSS_VIEW_JOINT_BIRTH"
                         options.append(AssignmentOption(None,(a,b),value,reason))
-                for option in sorted(options, key=lambda x: (-x.benefit, x.indices))[:cfg.top_k]:
+                        # The independent singleton prior scores the hypothesis
+                        # in the optimizer; it must not erase the pair head's
+                        # strongest bounded candidates before that competition.
+                        proposal_priority[a,b] = (float(learned["birth_pair_logits"][a,b])
+                                                  if probability is not None else value)
+                for option in sorted(options, key=lambda x: (-proposal_priority[x.indices], x.indices))[:cfg.top_k]:
                     birth_pairs[option.indices] = option
                     self.last_birth_candidate_edges.add(option.indices)
             groups.extend([[x] for _, x in sorted(birth_pairs.items())])
@@ -235,17 +251,24 @@ class JointWorldObjectAssignment:
         combinations = math.prod(len(g) + 1 for g in groups)
         exact = combinations <= budget
         width = budget if exact else self.config.beam_width
-        states = [(0.0, frozenset(), ())]
+        # Integer occupancy and cached lexical paths are representation-only:
+        # they preserve the original frozenset beam's generation/tie order.
+        states = [(0.0, 0, (), ())]
         expanded = 0
         for group in groups:
+            encoded=[]
+            for option in group:
+                mask=0
+                for index in option.indices:mask |= 1 << index
+                encoded.append((option,mask,(option.global_id or 0,option.indices)))
             next_states = []
-            for value, used, chosen in states:
-                next_states.append((value, used, chosen))  # NULL alternative
-                for option in group:
+            for value, used, chosen, lexical in states:
+                next_states.append((value, used, chosen, lexical))  # NULL alternative
+                for option,mask,key in encoded:
                     expanded += 1
-                    if not used.intersection(option.indices):
-                        next_states.append((value + option.benefit, used.union(option.indices), chosen + (option,)))
-            next_states.sort(key=lambda x: (-x[0], tuple((o.global_id or 0, o.indices) for o in x[2])))
+                    if not used & mask:
+                        next_states.append((value + option.benefit, used | mask, chosen + (option,), lexical + (key,)))
+            next_states.sort(key=lambda x: (-x[0], x[3]))
             states = next_states[:width]
         return list(states[0][2]), {"mode": "EXACT" if exact else "BEAM", "groups": len(groups),
                                   "state_width_limit": width, "expanded_states": expanded,

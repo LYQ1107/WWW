@@ -24,6 +24,75 @@ def test_empty_history_same_person_uses_learned_birth_not_cosine_gate():
     assert r["decisions"][0]["decision"]=="LEARNED_CROSS_VIEW_JOINT_BIRTH"
 
 
+def test_strong_joint_birth_is_not_pruned_by_low_singleton_birth_prior():
+    c=core();ev=pair_evidence(2,10.);ev["birth_logits"]=np.full(2,-10.)
+    r=c.step([obs(1),obs(2)],0,evidence=ev)
+    assert gid(r,1)==gid(r,2)
+    assert (0,1) in c.bank.assigner.last_birth_candidate_edges
+    assert all(len(v)==1 for v in r["tracks_2d_by_camera"].values())
+
+
+def test_soft_birth_prior_still_lets_history_outbid_new_birth():
+    c=core();c.step([obs(1)],0)
+    ev=evidence(1,2);ev["birth_logits"]=np.full(2,-10.)
+    ev["birth_pair_logits"]=np.full((2,2),10.)
+    r=c.step([obs(1,timestamp=1),obs(2,timestamp=1)],1,evidence=ev)
+    assert gid(r,1)==gid(r,2)==1 and c.bank.next_id==2
+
+
+def test_pair_topk_uses_pair_confidence_before_singleton_prior():
+    from worldmot.runtime.world_object_tracking_core import WorldObjectTrackingCore
+    c=WorldObjectTrackingCore(WorldObjectConfig(3,top_k=1));c.reset(1)
+    ev=evidence(0,3);ev["birth_logits"]=np.array([10.,-10.,10.])
+    ev["birth_pair_logits"]=np.full((3,3),-30.)
+    ev["birth_pair_logits"][0,1]=ev["birth_pair_logits"][1,0]=10.
+    ev["birth_pair_logits"][0,2]=ev["birth_pair_logits"][2,0]=9.
+    result=c.step([obs(1),obs(2,0),obs(2,1)],0,evidence=ev)
+    assert c.bank.assigner.last_birth_candidate_edges=={(0,1)}
+    assert gid(result,1)==gid(result,2,0) and gid(result,1)!=gid(result,2,1)
+
+
+@pytest.mark.parametrize("method",["FULL_WORLD_OBJECT_V3","NO_LEARNED_JOINT_BIRTH_V3"])
+def test_learned_current_identity_evidence_can_jointly_update_history_for_dissimilar_views(method):
+    c=core(method);c.step([obs(1)],0)
+    ev=evidence(1,2);ev["assignment_logits"]=np.full((1,2),6.)
+    ev["null_logits"]=np.full(1,-4.);ev["birth_logits"]=np.full(2,-10.)
+    ev["birth_pair_logits"]=np.full((2,2),10.)
+    result=c.step([obs(1,timestamp=1),obs(2,feature=(0,1,0),timestamp=1)],1,evidence=ev)
+    assert gid(result,1)==gid(result,2)==1 and c.bank.next_id==2
+    assert result["decisions"][0]["decision"]=="JOINT_HISTORY_TWO_VIEW"
+
+
+@pytest.mark.parametrize("m,n,budget,seed",[(0,0,4096,0),(1,2,4096,0),(2,4,4096,1),
+    (7,20,4096,2),(20,64,4096,3),(60,100,4096,4),(90,120,4096,5),
+    (50,70,8,6),(15,40,1,7),(10,20,100000,8)])
+def test_compact_beam_matches_frozen_frozenset_reference(m,n,budget,seed):
+    import math
+    from worldmot.tracking.joint_world_object_assignment import JointWorldObjectAssignment,AssignmentOption
+    rng=np.random.default_rng(seed);config=replace(WorldObjectConfig(3),max_exact_states=budget)
+    groups=[]
+    for i in range(m):
+        indices=rng.choice(n,min(4,n),replace=False).tolist()
+        options=[AssignmentOption(i+1,(j,),float(rng.integers(1,4)),"SINGLE") for j in indices]
+        options += [AssignmentOption(i+1,tuple(sorted((a,b))),float(rng.integers(2,5)),"PAIR") for a in indices for b in indices if a<b]
+        groups.append(options)
+    exact=math.prod(len(g)+1 for g in groups)<=budget;width=budget if exact else config.beam_width
+    states=[(0.,frozenset(),())];expanded=0
+    for group in groups:
+        next_states=[]
+        for value,used,chosen in states:
+            next_states.append((value,used,chosen))
+            for option in group:
+                expanded+=1
+                if not used.intersection(option.indices):
+                    next_states.append((value+option.benefit,used.union(option.indices),chosen+(option,)))
+        next_states.sort(key=lambda x:(-x[0],tuple((o.global_id or 0,o.indices) for o in x[2])))
+        states=next_states[:width]
+    actual,audit=JointWorldObjectAssignment(config)._solve_component(groups)
+    assert actual==list(states[0][2]) and audit["expanded_states"]==expanded
+    assert audit["mode"]==("EXACT" if exact else "BEAM")
+
+
 def test_positive_birth_proposal_diagnostics_are_json_serializable():
     import json
     c=core();c.model=WorldObjectUpdateHead(3,8)

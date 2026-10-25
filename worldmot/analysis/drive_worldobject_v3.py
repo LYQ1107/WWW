@@ -44,7 +44,9 @@ def alive(pid):
 class Driver:
     def __init__(self,args):
         self.args=args;self.root=args.root;self.repo=args.repo
-        self.source=read(self.root/"diagnostics/preflight_attempt03/report.json")["source_sha256"]
+        self.cache_owner=args.cache_control_root or self.root
+        self.preflight_report=args.preflight_report or self.root/"diagnostics/preflight_attempt01/report.json"
+        self.source=read(self.preflight_report)["source_sha256"]
         sys.path.insert(0,str(self.repo/"worldmot"))
         from worldmot.runtime.experiment_authorization import source_fingerprint
         if source_fingerprint()!=self.source:raise RuntimeError("MODEL_SOURCE_CHANGED_AFTER_PREFLIGHT")
@@ -60,7 +62,10 @@ class Driver:
 
     def statuses(self):
         values={}
-        for p in (self.root/"jobs").glob("*.status.json"):
+        files=list((self.root/"jobs").glob("*.status.json"))
+        if self.cache_owner!=self.root:
+            files+=list((self.cache_owner/"jobs").glob("cache_*.status.json"))
+        for p in files:
             try:values[p.stem[:-7]]=read(p)
             except (FileNotFoundError,json.JSONDecodeError):continue
         return {v["job_id"]:v for v in values.values()}
@@ -90,7 +95,7 @@ class Driver:
         if not gpu and not self.cpu_available():return
         spec={"job_id":name,"script":script,"arguments":[str(x) for x in arguments],"gpu_uuid":gpu,
             "run_root":str(self.root),"source_sha256":self.source,
-            "preflight_report":str(self.root/"diagnostics/preflight_attempt03/report.json"),
+            "preflight_report":str(self.preflight_report),
             "scheduler_sha256":self.scheduler_sha,"registered_configuration_sha256":sha(self.repo/"worldmot/configs/worldobject_v3_birthfix_registered.json")}
         self.actions.append({"launch":name,"gpu":gpu})
         if self.args.dry_run:return
@@ -197,9 +202,9 @@ class Driver:
         if source_fingerprint()!=self.source or sha(__file__)!=self.scheduler_sha:raise RuntimeError("SOURCE_CHANGED_STOP_SCHEDULING")
         self.actions=[];self.alerts=[]
         train_done=self.cache_complete("train");test_done=self.cache_complete("test")
-        if not train_done and len(list((self.root/"queue").glob("train_*.pending")))<=2:
+        if not train_done and len(list((self.cache_owner/"queue").glob("train_*.pending")))<=2:
             for index in (1,2):
-                stop=self.root/"jobs"/f"cache_worker_{index}.stop"
+                stop=self.cache_owner/"jobs"/f"cache_worker_{index}.stop"
                 if not stop.exists():
                     self.actions.append({"reserve_after_current_scene":index})
                     if not self.args.dry_run:stop.write_text("Finish this scene, then reserve the device for registered supervised training.\n")
@@ -239,6 +244,7 @@ def main():
     p=argparse.ArgumentParser();p.add_argument("--root",required=True,type=Path);p.add_argument("--repo",required=True,type=Path)
     p.add_argument("--python",default="/data1/liuyeqiang/WWW_omega_runtime_20261016/venv/bin/python")
     p.add_argument("--eval-python",default="/home/liuyeqiang/anaconda3/bin/python")
+    p.add_argument("--cache-control-root",type=Path);p.add_argument("--preflight-report",type=Path)
     p.add_argument("--poll-seconds",type=float,default=15);p.add_argument("--once",action="store_true");p.add_argument("--dry-run",action="store_true")
     a=p.parse_args();driver=Driver(a)
     while not (a.root/"controller.stop").exists():

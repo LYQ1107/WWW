@@ -6,9 +6,10 @@ User instruction: attachment `c5d7a93f-e5e6-4068-83b2-45635a8dd642`.
 
 ## Status
 
-Phases A–C implementation, CPU acceptance and real TRAIN preflight are complete.
-Six registered GPU jobs are running; full TEST and official comparison are pending.
-No new accuracy result is claimed in this revision. This is an independent WorldMOT experiment; GMT is
+Active revision: R2. Its 120 CPU tests pass; the new source-bound real TRAIN
+preflight and fresh final-model training are pending. Five unchanged geometry
+producers continue from the preserved pre-R2 checkout. No TEST has started and no
+new accuracy result is claimed. This is an independent WorldMOT experiment; GMT is
 a frozen detector/ROI provider and a separately scored reference.
 
 ## Repairs
@@ -107,3 +108,37 @@ Only supervised TRAIN and later posthoc official scoring use original annotation
 
 Run root: `/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v3_birthfix_20261025`.
 Large caches/checkpoints stay on NAS. A RUNNING job is not completed coverage.
+
+## R2: full-TRAIN engineering audit before any TEST
+
+The first 18-scene fit epoch exposed a blocked inference path: all 1,562 clean
+new-person positive pairs reached the model, 1,389 passed the pair-head threshold,
+but only three reached solver proposals. The independent singleton-birth prior
+hard-pruned joint evidence. The original epoch, six-scene validation, safe
+checkpoint and logs are preserved in the old run root and in
+`results/worldobject_v3_pre_r2_training_audit.json`; this attempt never reached
+TEST or a full-final-training gate. It is an engineering attempt, not a final
+negative result for WorldMOT.
+
+R2 keeps the registered thresholds, loss weights, seed and supervision budget.
+Learned pair confidence now selects bounded birth candidates; the singleton
+prior remains a soft joint-hypothesis score. Historical hypotheses can also use
+the existing supervised current-pair identity evidence for dissimilar views,
+while reliable conflicting geometry still vetoes a pair. The no-learned-birth
+ablation disables new-pair birth evidence only and retains this historical
+identity evidence, with identical frozen weights.
+
+The beam's occupancy representation and cached tie keys are optimized separately.
+Ten bounded/dense/tied/empty cases compare selected options and expansion counts
+exactly with the frozen frozenset implementation. This equivalence applies to
+beam representation, not to the intentional R2 birth-policy correction.
+The full acceptance suite now has 120 passing CPU tests; see
+`results/worldobject_v3_r2_cpu_test_report.json`.
+
+Active run root:
+`/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v3_birthfix_r2_20261025`.
+Its cache directories link to the existing shared geometry producers. Thirteen
+perception/coordinate/ROI source files were compared byte-for-byte; see
+`results/worldobject_v3_r2_geometry_reuse.json`. Geometry inference has not changed
+and is not repeated. All final neural models restart from the fixed seed in the
+R2 run; pre-R2 weights are not promoted or relabelled as R2 training.

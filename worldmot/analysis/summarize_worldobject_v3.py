@@ -117,7 +117,7 @@ def main():
     for method,relative in REFERENCES.items():
         path=root.parent/relative
         rows.append({"method":method,"result_type":"HISTORICAL_OFFICIAL_REFERENCE",**official(path)})
-    preflight=read(root/"diagnostics/preflight_attempt03/report.json")
+    preflight=read(root/"diagnostics/preflight_attempt01/report.json")
     for method in METHODS:
         row={"method":method,"result_type":"REGISTERED_CURRENT_RUN","status":"PENDING_OFFICIAL_TEST"}
         path=root/"evaluation"/method/"metrics.json"
