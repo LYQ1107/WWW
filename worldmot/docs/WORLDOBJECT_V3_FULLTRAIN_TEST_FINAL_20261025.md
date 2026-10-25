@@ -12,7 +12,8 @@ times / 57,508 RGB images. Full V3 and head-only no-geometry have started fresh
 selection training on the two released devices, alongside the existing full
 no-geometry training. Three unchanged geometry workers continue TEST preparation;
 the three neural jobs and these producers occupy the six registered devices.
-Parameter-free controls have also begun full TRAIN causal replay on CPU. This
+The rule-based joint-assignment, legacy ROI and legacy feature-off controls have
+completed full TRAIN causal replay on CPU; geometry-only replay is running. This
 cache completion does not mean that final all-24 model training has completed.
 No new official TEST accuracy result is available. This is an independent WorldMOT experiment; GMT is
 a frozen detector/ROI provider and a separately scored reference.
@@ -245,6 +246,35 @@ It is an untrained initialization, not a released inference weight. Actual
 all-24 final training continues from it. Full selection history, rule evaluation
 and verification are in `results/worldobject_v3_no_geometry_selection.json`.
 
+## First completed selection epoch across the three neural methods
+
+All three rows use the fixed six TRAIN VAL scenes, 5,860 synchronized times and
+172,760 current detections after one 18-scene fit epoch. Same-person and
+different-person pair denominators are 40,082 and 1,744,285 respectively.
+The counts below are clean-IoU diagnostic labels, not TEST or official MOT scores.
+
+| Method | Same-person split pairs | Different-person merged pairs | Diagnostic temporal ID changes | First-clean-appearance splits |
+|---|---:|---:|---:|---:|
+| Full V3 | 4,834 | 3,056 | 4,160 | 347 |
+| Full no-geometry | 5,865 | 3,232 | 2,664 | 458 |
+| Head-only no-geometry | 5,790 | 2,071 | 2,878 | 96 |
+
+Full V3 has 1,031 fewer same-person splits and 176 fewer different-person merged
+pairs than full no-geometry at this epoch, but 1,496 more temporal ID changes.
+This is a cross-view/temporal tradeoff, not established net identity improvement.
+Full raw fit/VAL loss and diagnostic records are preserved in
+`results/worldobject_v3_first_epoch_three_methods.json`. No method or threshold
+is changed in response; final model selection and TEST remain as registered.
+
+The three completed parameter-free controls were also checked independently of
+their completion markers. Every output row and timestamp was parsed against
+physically annotation-free metadata, full file SHA values were verified, and
+current candidate keys, boxes and scores matched across methods. Each delivered
+24 scenes, 28,754 synchronized times and 557,002 detections. This is coverage and
+input-equivalence evidence, not accuracy or live speed evidence; see
+`results/worldobject_v3_control_train_replay_verification.json` and
+`analysis/verify_worldobject_v3_train_replays.py`.
+
 ## Posthoc attribution acceptance
 
 The final immutable-output audit now records false new IDs despite a unique
@@ -263,3 +293,11 @@ observer-recovery tests; see `results/worldobject_v3_posthoc_audit_validation.js
 No real TEST annotations have been consumed by this new audit, which remains
 gated on all eight methods' immutable complete predictions. These diagnostics
 are distinct from official TrackEval and MATLAB metrics.
+
+Live timing tables explicitly flag excluded model initialization and interframe
+timing-log writes for the RGB-read-to-ID-output-flush latency measurement. A
+separate complete-worker wall throughput includes model setup, scope validation,
+scene resets, interframe logs and output hashing. That whole-worker duration is
+not used to fabricate per-frame P50/P95. Both measurements use synchronized
+two-camera times as the unit; historical full-video throughput keeps its own
+scope label.

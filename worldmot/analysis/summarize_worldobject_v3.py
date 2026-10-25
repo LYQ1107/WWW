@@ -46,7 +46,7 @@ def write_json(path,value):
 
 def write_csv(path,rows,columns):
     with Path(path).open("w") as stream:
-        writer=csv.DictWriter(stream,fieldnames=columns,extrasaction="ignore")
+        writer=csv.DictWriter(stream,fieldnames=columns,extrasaction="ignore",lineterminator="\n")
         writer.writeheader();writer.writerows(rows)
 
 
@@ -137,7 +137,7 @@ def live_timing(root,method):
     duration=values["live_rgb_to_id_s"]
     result={"live_E2E_FPS":len(duration)/sum(duration),"live_timing_pairs":len(duration),
             "live_timing_scope":"TEST_SCENES_1_8_22_FIRST_100_EACH_INCLUDING_FIRST_FRAME",
-            "live_model_initialization_included":False}
+            "live_model_initialization_included":False,"live_interframe_timing_log_included":False}
     output=[]
     for stage,times in sorted(values.items()):
         array=np.asarray(times,dtype=float)
@@ -146,7 +146,18 @@ def live_timing(root,method):
             "p50_s":float(np.quantile(array,.5)),"p95_s":float(np.quantile(array,.95)),
             "mean_s":float(array.mean()),"equivalent_stage_FPS":len(times)/array.sum() if array.sum()>0 else None,
             "serial_E2E_FPS":result["live_E2E_FPS"] if stage=="live_rgb_to_id_s" else None,
-            "scope":result["live_timing_scope"],"notes":"Nested components overlap; do not sum Ω model/preprocess with Ω wall, or solver/update with combined core."})
+            "scope":result["live_timing_scope"],"notes":"Measured RGB-read-to-ID-output-flush wall latency, including first frame; model initialization and interframe timing-log writes excluded. Nested components overlap; do not sum Ω model/preprocess with Ω wall, or solver/update with combined core."})
+    job=Path(root)/"jobs"/("live_"+method+".status.json")
+    if job.is_file():
+        status=read(job)
+        if status.get("status")=="COMPLETE":
+            seconds=status["finished_at"]-status["started_at"]
+            if seconds<=0:raise ValueError("INVALID_LIVE_JOB_WALL_TIME")
+            result.update(live_job_wall_seconds=seconds,live_job_wall_FPS=len(duration)/seconds)
+            output.append({"method":method,"measurement":"LIVE_WORKER_PROCESS_WALL_INCLUDING_SETUP",
+                "stage":"complete_live_worker_process","paired_timestamps":len(duration),"total_s":seconds,
+                "equivalent_stage_FPS":len(duration)/seconds,"scope":result["live_timing_scope"],
+                "notes":"One complete live worker invocation: includes model initialization, scope verification, three scene resets, RGB-to-ID processing, interframe logs and final checksums. This is total sample throughput; no per-frame P50/P95 is inferred from the job duration."})
     memory=sampled_memory(Path(root),method);result.update(memory)
     for row in output:row.update(memory)
     return result,output
@@ -189,6 +200,7 @@ def main():
         speed,stages=live_timing(root,method);row.update(speed);runtime.extend(stages);rows.append(row)
     columns=["method","result_type","status","official_scenes","test_scenes_inferred","test_timestamps",*METRICS,
         "CLEAR_Precision","CLEAR_Recall","live_E2E_FPS","live_timing_pairs","live_timing_scope",
+        "live_model_initialization_included","live_interframe_timing_log_included","live_job_wall_seconds","live_job_wall_FPS",
         "historical_E2E_FPS","historical_timing_scope","sampled_peak_device_bytes","gpu_uuid",
         "association_parameters","frozen_omega_parameters","metrics_source","metrics_sha256"]
     write_csv(args.output/"worldobject_v3_final_comparison.csv",rows,columns)
