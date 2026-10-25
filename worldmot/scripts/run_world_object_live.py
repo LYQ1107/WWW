@@ -58,14 +58,20 @@ def run_scene(ds, sid, detector, geometry, out_scene):
     tracker = OnlineWorldObjectTracker(detector, geometry, device=geometry.device_name)
     tracker.reset(int(sid)); tracks = []; timings = []
     for pair in ds.synchronized_pairs(int(sid)):
+        e2e_started = time.perf_counter()
+        rgb_started = time.perf_counter()
         images = read_images(ds, pair)
+        rgb_read_s = float(time.perf_counter() - rgb_started)
         detector.set_context(int(sid), int(pair.frame_id),
                              {int(v): int(rec.image_id) for v, rec in pair.images.items()})
-        started = time.perf_counter()
         row = tracker.step(images, int(pair.frame_id))
-        wall = float(time.perf_counter() - started)
+        # Include synchronous RGB decode/read and all tracker stages.  This is
+        # the online wall-clock definition; it must not be confused with the
+        # cache-replay or pure Ω-kernel timings.
+        wall = float(time.perf_counter() - e2e_started)
         tracks.append(row)
         timings.append({"timestamp": int(pair.frame_id), "live_e2e_s": wall,
+                        "rgb_read_s": rgb_read_s,
                         "stages": row.get("runtime", {}).get("stages", {})})
     with (out_scene / "tracks.jsonl").open("w") as f:
         for row in tracks:
@@ -133,3 +139,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
