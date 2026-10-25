@@ -1,0 +1,36 @@
+{
+  "schema": "worldobject_v3_runtime_environment_v1",
+  "model_and_legacy_runtime": {
+    "python": "3.10.18 (main, Jun  5 2025, 13:14:17) [GCC 11.2.0]",
+    "executable": "/data1/liuyeqiang/WWW_omega_runtime_20261016/venv/bin/python",
+    "torch": "2.6.0+cu118",
+    "torch_cuda": "11.8",
+    "numpy": "1.26.4",
+    "scipy": "1.10.1",
+    "source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f"
+  },
+  "official_evaluation_runtime": {
+    "python": "3.9.12 (main, Apr  5 2022, 06:56:58) \n[GCC 7.5.0]",
+    "executable": "/home/liuyeqiang/anaconda3/bin/python",
+    "numpy": "1.21.5",
+    "scipy": "1.7.3",
+    "matplotlib": "3.5.1",
+    "role": "official CPU TrackEval and plotting; native MATLAB R2020a separately"
+  },
+  "hardware": [
+    "4, Tesla V100-DGXS-32GB, GPU-17231133-4742-e269-cf2b-bfa4bb6e9f8c, 470.141.03, 32508 MiB",
+    "5, Tesla V100-DGXS-32GB, GPU-6a5187fc-4b8f-b8cd-ddd1-f76b4be1b68d, 470.141.03, 32508 MiB",
+    "6, Tesla V100-DGXS-32GB, GPU-b6f2e85a-b45d-4494-6055-c552327e4f2e, 470.141.03, 32508 MiB",
+    "7, Tesla V100-DGXS-32GB, GPU-7c4bd41d-77d6-78e9-e6dc-b1b4b7f473bc, 470.141.03, 32508 MiB",
+    "8, Tesla V100-DGXS-32GB, GPU-30aaddaf-5be2-2673-3278-e1e33ce55aa1, 470.141.03, 32508 MiB",
+    "9, Tesla V100-DGXS-32GB, GPU-9914f516-bcdd-bef2-d453-bf5e3719a01f, 470.141.03, 32508 MiB"
+  ],
+  "gpu_bound_by_uuid": true,
+  "max_owned_gpu_devices": 6,
+  "head_precision": "float32",
+  "omega_precision": "verified backend float16 autocast on V100",
+  "native_matlab": "R2020a, original MEX smoke passed",
+  "legacy_assignment": "SciPy 1.10.1 Hungarian available for both replay and live control",
+  "numpy_and_torch_changed_during_training": false,
+  "notes": "Added compatible SciPy without changing Torch or NumPy; model/training paths do not import SciPy. No duplicate OpenMP runtime bypass used."
+}

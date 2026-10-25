@@ -174,3 +174,19 @@ or generalization conclusion. The remaining registered selection/final training
 continues unchanged. These counts use diagnostic clean-label IoU matching on
 TRAIN; they are not official HOTA, IDF1 or CVIDF1. Full raw details are in
 `results/worldobject_v3_r2_selection_epoch1.json`.
+
+Timing tables keep historical 22-video throughput in a separate field from the
+current registered 300-pair live sample. Native GMT's historical runner delivers
+final IDs at video return, so no native per-timestamp latency distribution is
+inferred from that throughput. Live stage logs also expose actual detector model
+and native postprocessing time. Device memory is observed through NVML, including
+the GMT child context; its sampled peak is labelled separately from the exact
+Torch allocation peak measured in preflight. Runtime/library versions are saved
+in `results/worldobject_v3_runtime_environment.json`.
+
+The frozen no-learned-new-birth ablation falls back to the registered heuristic
+birth policy. Its contrast measures the learned new-birth path, including its
+candidate selection and scoring, rather than a loss-only intervention. All
+historical identity evidence and trained weights are retained. Qualitative plots
+are generated only from the completed immutable posthoc audit; RGB display crops
+do not change the full-image model input or scientific scores.
