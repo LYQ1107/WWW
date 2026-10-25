@@ -39,10 +39,20 @@ a frozen detector/ROI provider and a separately scored reference.
 
 ## Phase B evidence
 
-`results/worldobject_v3_birthfix_cpu_test_report.json` records 104 passing CPU tests,
+`results/worldobject_v3_birthfix_cpu_test_report.json` records 105 passing CPU tests,
 including the original acceptance suite. The actual Ω Python environment was used:
 Torch 2.6.0+cu118, with CUDA hidden. Changed Python files also pass Pyflakes.
 These are engineering tests, not real-video MOT measurements.
+
+The first actual TRAIN preflight completed all 178 timestamps with finite losses,
+nonzero assignment/birth gradients, live/replay parity and 4,998,239,744 peak
+allocated GPU bytes. The identity head has 436,870 parameters; frozen Ω has
+1,143,814,185. A subsequent targeted positive-birth-proposal test exposed a
+NumPy integer JSON serialization error absent from that first preflight's chosen
+solver proposals. It is fixed and covered by the 105th test. A second full
+preflight must bind the final code fingerprint before six-card launch.
+A two-timestamp TRAIN engineering run also completed actual RGB→GMT→ID without
+using a detector replay. Its cold-start timing is not a formal speed result.
 
 ## Frozen experiment registration
 

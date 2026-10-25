@@ -24,6 +24,18 @@ def test_empty_history_same_person_uses_learned_birth_not_cosine_gate():
     assert r["decisions"][0]["decision"]=="LEARNED_CROSS_VIEW_JOINT_BIRTH"
 
 
+def test_positive_birth_proposal_diagnostics_are_json_serializable():
+    import json
+    c=core();c.model=WorldObjectUpdateHead(3,8)
+    with torch.no_grad():
+        c.model.birth_pair_encoder[-1].bias.fill_(10)
+        c.model.lifecycle[-1].bias[0]=10
+    runner=CausalWorldObjectTraining(c)
+    runner.step([obs(1),obs(2)],0,["A","A"])
+    assert runner.last_diagnostics["birth_proposal_positive_retained"]==1
+    json.dumps(runner.last_diagnostics,allow_nan=False)
+
+
 def test_low_joint_birth_logit_keeps_two_boxes_separate():
     c=core();r=c.step([obs(1),obs(2)],0,evidence=pair_evidence(2,-10.))
     assert gid(r,1)!=gid(r,2) and sum(map(len,r["tracks_2d_by_camera"].values()))==2

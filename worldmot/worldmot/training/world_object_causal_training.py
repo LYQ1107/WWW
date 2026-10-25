@@ -89,7 +89,7 @@ class CausalWorldObjectTraining:
             "birth_pair_tp":counts[2],"birth_pair_fp":counts[3],"birth_pair_fn":counts[4],
             "birth_positive_predictions":counts[5],"history_objects_after":len(self.core.bank.active())}
         proposals=self.core.bank.assigner.last_birth_candidate_edges
-        self.last_diagnostics["birth_proposal_positive_retained"]=sum(targets["joint_birth_target"][a,b]>0 or targets["joint_birth_target"][b,a]>0 for a,b in proposals)
+        self.last_diagnostics["birth_proposal_positive_retained"]=sum(int(targets["joint_birth_target"][a,b]>0 or targets["joint_birth_target"][b,a]>0) for a,b in proposals)
         # Post-decision diagnostics never enter the prediction state.
         from ..evaluation.world_object_diagnostics import identity_diagnostics
         if not hasattr(self,"_previous_diagnostic_ids"):self._previous_diagnostic_ids={}
