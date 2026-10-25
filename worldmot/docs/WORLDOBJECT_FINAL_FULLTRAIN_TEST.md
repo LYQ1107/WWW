@@ -56,3 +56,5 @@ scientifically competitive with GMT. Keep this branch as a reproducible
 failure/diagnostic baseline; do not promote W4 or W5 to a mainline tracker
 without a new identity-association design and a fresh registered TEST run.
 
+Registered scientific state: `WORLD_OBJECT_FEASIBLE_BUT_BELOW_GMT`.
+
