@@ -104,6 +104,10 @@ def run_scene(cache, out_scene, pair_by_timestamp=None, learned=None):
             dims = {int(v): (int(rec.width), int(rec.height)) for v, rec in pair.images.items()} if pair is not None else {}
             batch_items = []
             batch_indices = []
+            active_objects = list(bank.objects.values())
+            active_ids = [int(x.global_id) for x in active_objects]
+            active_centers = (np.asarray([x.center for x in active_objects], np.float32)
+                              if active_objects else None)
             for i, hyp in enumerate(hyps):
                 rep = getattr(hyp.observations[0], "cache_row", None) if hyp.observations else None
                 if rep is None: continue
@@ -111,9 +115,9 @@ def run_scene(cache, out_scene, pair_by_timestamp=None, learned=None):
                 # Use the nearest pre-existing world object memory when the
                 # frozen bank has one; new objects start from zero memory.
                 memory = np.zeros(16, np.float32)
-                if bank.objects:
-                    nearest = min(bank.objects.values(), key=lambda x: float(np.linalg.norm(x.center - hyp.center)))
-                    memory = memory_by_gid.get(int(nearest.global_id), memory)
+                if active_centers is not None:
+                    nearest_idx = int(np.argmin(np.linalg.norm(active_centers - np.asarray(hyp.center, np.float32)[None, :], axis=1)))
+                    memory = memory_by_gid.get(active_ids[nearest_idx], memory)
                 batch_items.append((rep, width, height, memory)); batch_indices.append((i, hyp))
             for (i, hyp), (gate, birth, delta) in zip(batch_indices, learned.batch(batch_items)):
                 hyp.diagnostics["learned_update_gate"] = gate
