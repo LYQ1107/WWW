@@ -7,10 +7,20 @@ User instruction: attachment `c5d7a93f-e5e6-4068-83b2-45635a8dd642`.
 ## Status
 
 Active revision: R2. Its 120 CPU tests and source-bound 178-timestamp real TRAIN
-preflight pass. Fresh no-geometry selection training is running, alongside five
-unchanged geometry producers from the preserved pre-R2 checkout. No TEST has started and no
-new accuracy result is claimed. This is an independent WorldMOT experiment; GMT is
+preflight pass. All 24 TRAIN geometry caches are now complete: 28,754 synchronized
+times / 57,508 RGB images. Full V3 and head-only no-geometry have started fresh
+selection training on the two released devices, alongside the existing full
+no-geometry training. Three unchanged geometry workers continue TEST preparation;
+the three neural jobs and these producers occupy the six registered devices.
+Parameter-free controls have also begun full TRAIN causal replay on CPU. This
+cache completion does not mean that final all-24 model training has completed.
+No new official TEST accuracy result is available. This is an independent WorldMOT experiment; GMT is
 a frozen detector/ROI provider and a separately scored reference.
+
+`results/worldobject_v3_three_model_training_launch.json` records all 24 cache
+manifest hashes, frozen scopes, actual live worker handles and UUID visibility
+as observed at 2026-10-25 07:54 UTC. Model/input fingerprint remains
+`6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f`.
 
 ## Repairs
 
@@ -199,3 +209,28 @@ tradeoff is tracked without changing the registered selection rule. The resource
 observer recovered from a transient NAS status-read failure, preserved its first
 16,759 CSV rows, and resumed before any live timing sample; three observation
 recovery tests pass. Model and perception jobs were not restarted.
+
+The third completed no-geometry selection epoch has VAL assignment/joint-birth
+losses 0.22834/0.12993, with 6,428 same-person split pairs and 3,478 false-merge
+pairs. Both error counts exceed epoch 2. Selection and extension still follow
+the original TRAIN-only registration; this is not a reason to tune TEST or add
+seeds. The figure now includes all three completed selection epochs.
+
+## Posthoc attribution acceptance
+
+The final immutable-output audit now records false new IDs despite a unique
+clean active history, serialized NULL outcomes despite a current clean person
+detection, wrong-person reuse of a historical ID, and cumulative contamination
+that later clean frames cannot erase. Four relative video quarters expose
+accumulation over a full timeline. Exact candidate-key/bbox equality establishes
+whether correctly detected observations were retained after association.
+
+The legacy active-history reconstruction previously assumed 30 timestamp units;
+its actual bank uses 12 missed processing steps. The posthoc sidecar is corrected
+to that implementation, without changing any model or inference output. Legacy
+does not serialize per-object NULL state, so that diagnostic's unavailable
+coverage is explicit. Eight new synthetic tests pass, alongside the three
+observer-recovery tests; see `results/worldobject_v3_posthoc_audit_validation.json`.
+No real TEST annotations have been consumed by this new audit, which remains
+gated on all eight methods' immutable complete predictions. These diagnostics
+are distinct from official TrackEval and MATLAB metrics.

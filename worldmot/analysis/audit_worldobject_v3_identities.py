@@ -16,6 +16,7 @@ import numpy as np
 
 from drive_worldobject_v3 import FULL,NG,HEAD,NOBIRTH,RULE,ROI,OFF,GEO,METHODS
 from summarize_worldobject_v3 import sha,read,write_json
+from worldobject_v3_temporal_audit import TemporalErrorAudit,increment_quarter
 
 CONTRASTS=((FULL,NG),(FULL,NOBIRTH),(RULE,ROI),(FULL,RULE),(ROI,OFF),(FULL,HEAD))
 
@@ -59,15 +60,19 @@ def main():
     ds=VisionTrack(a.dataset_root,split="test",load_annotations=True)
     per_scene={};primary={m:Counter() for m in METHODS};blocked={m:Counter() for m in METHODS}
     effects={f"{x}_VS_{y}":Counter() for x,y in CONTRASTS};examples=defaultdict(list)
+    primary_quarters={m:[Counter() for _ in range(4)] for m in METHODS}
     matched_audit=Counter()
     for sid in range(1,23):
         counts={m:Counter() for m in METHODS};seen=set()
-        states={m:{"active":set(),"history_labels":{},"previous":{},"last_id_time":{}} for m in METHODS}
+        states={m:{"active":set(),"history_labels":{},"previous":{},"last_id_step":{},
+                   "temporal_audit":TemporalErrorAudit()} for m in METHODS}
+        quarters={m:[Counter() for _ in range(4)] for m in METHODS}
         cache=WorldObjectCache(root/"cache_test_v2",sid,require_features=False,require_geometry=True)
         pairs={pair.frame_id:pair for pair in ds.synchronized_pairs(sid)}
         with ExitStack() as stack:
             streams={m:stack.enter_context((root/"predictions"/m/f"scene_{sid:02d}/tracks.jsonl").open()) for m in METHODS}
-            for frame in cache.frames():
+            for frame_index,frame in enumerate(cache.frames()):
+                before={m:counts[m].copy() for m in METHODS}
                 timestamp=frame["timestamp"];obs=replay_observations(frame)
                 labels,label_audit=match_evaluation_identities(obs,ds.ground_truth_pair(pairs[timestamp]))
                 if sid in legal:matched_audit.update(label_audit)
@@ -103,6 +108,9 @@ def main():
                                 reason=decisions[method].get(obs[left].key,{}).get("decision","")
                                 c["false_merge_by_new_birth" if "BIRTH" in reason else "false_merge_by_history_or_legacy"]+=1
                             if not result:
+                                c["incorrect_identity_pairs_with_two_fusion_eligible_supports" if
+                                  obs[left].cross_view_fusion_eligible and obs[right].cross_view_fusion_eligible else
+                                  "incorrect_identity_pairs_without_two_fusion_eligible_supports"]+=1
                                 kind="FIRST_CLEAN_BIRTH_SPLIT" if first else "SAME_PERSON_SPLIT" if same else "DIFFERENT_PERSON_MERGE"
                                 key=(method,kind,sid in legal)
                                 if len(examples[key])<6:
@@ -135,14 +143,33 @@ def main():
                         for proposed,baseline in CONTRASTS:contrast(effects[f"{proposed}_VS_{baseline}"],outcomes[proposed],outcomes[baseline],"temporal_continuity")
                 for method,row in outputs.items():
                     state=states[method];ids=assignments[method]
+                    temporal,events=state["temporal_audit"].observe(obs,labels,ids,state["active"],
+                        state["history_labels"],row.get("tracks_3d"))
+                    counts[method].update(temporal)
+                    for event in events:
+                        key=(method,event["error"],sid in legal)
+                        if len(examples[key])<6:
+                            examples[key].append({"scene":sid,"timestamp":timestamp,"method":method,
+                                "error":event["error"],"GT_scope_legal":sid in legal,
+                                "context":{k:v for k,v in event.items() if k not in ("error","observation_indices")},
+                                "actors":[{"camera":obs[j].camera_id,"detection_id":obs[j].detection_id,
+                                    "gt_identity":labels[j],"global_id":ids[obs[j].key],"bbox_xywh":obs[j].bbox_xywh.tolist(),
+                                    "geometry_valid":obs[j].geometry_valid,"fusion_eligible":obs[j].cross_view_fusion_eligible,
+                                    "reliability":obs[j].geometry_reliability,"decision":decisions[method].get(obs[j].key,{})}
+                                    for j in event["observation_indices"]]})
                     update_history_labels(state["history_labels"],ids,obs,labels)
-                    for gid in ids.values():state["last_id_time"][gid]=timestamp
+                    for gid in ids.values():state["last_id_step"][gid]=frame_index
                     state["active"]={x["global_id"] for x in row["tracks_3d"]} if "tracks_3d" in row else {
-                        gid for gid,t in state["last_id_time"].items() if timestamp-t<=30}
+                        gid for gid,step in state["last_id_step"].items() if frame_index-step<=12}
+                    increment_quarter(quarters[method],before[method],counts[method],frame_index,len(pairs))
                 seen.update(x for x in labels if x is not None)
             if any(stream.readline() for stream in streams.values()):raise ValueError("EXTRA_PREDICTION_FRAMES")
-        per_scene[str(sid)]={"official_GT_legal":sid in legal,"methods":{m:dict(v) for m,v in counts.items()}}
-        for method in METHODS:(primary if sid in legal else blocked)[method].update(counts[method])
+        per_scene[str(sid)]={"official_GT_legal":sid in legal,"methods":{m:dict(v) for m,v in counts.items()},
+            "relative_video_quarters":{m:[dict(v) for v in quarters[m]] for m in METHODS}}
+        for method in METHODS:
+            (primary if sid in legal else blocked)[method].update(counts[method])
+            if sid in legal:
+                for quarter in range(4):primary_quarters[method][quarter].update(quarters[method][quarter])
         print(json.dumps({"posthoc_scene_complete":sid,"GT_legal":sid in legal}),flush=True)
     for c in effects.values():
         for kind in ("same_person","different_person","first_clean_birth","temporal_continuity"):
@@ -151,17 +178,25 @@ def main():
         "official_metric":False,"posthoc_bbox_label_mapping_IoU":.5,"threshold_selection_on_TEST":False,
         "primary_scope":"14 original legal full TEST videos","blocked_scope":"8 full-inference videos; diagnostic only, excluded from primary counts",
         "prediction_proofs":proofs,"fixed_candidate_boxes_verified":True}
-    report={**common,"schema":"worldobject_v3_fixed_candidate_identity_attribution_v1",
+    report={**common,"schema":"worldobject_v3_fixed_candidate_identity_attribution_v2",
         "primary_legal14":{m:dict(v) for m,v in primary.items()},"blocked8_diagnostic_only":{m:dict(v) for m,v in blocked.items()},
         "matched_label_audit_legal14":dict(matched_audit),"per_scene":per_scene,
+        "relative_video_quarters_legal14":{m:[dict(v) for v in primary_quarters[m]] for m in METHODS},
+        "temporal_audit_definitions":{
+            "new_id_despite_unique_clean_active_history":"A new delivered ID while exactly one prior active cleanly labelled object has the same current person label; an outcome diagnostic, not a raw head-probability error.",
+            "NULL_despite_detection":"A uniquely labelled prior active object is serialized with missed>0 although its person has a clean current detection. Duplicate matching history labels are excluded. Legacy does not serialize object NULL state, and its missing coverage is explicit.",
+            "history_contamination":"Cumulative distinct clean GT identities assigned to a delivered ID; this sidecar never forgets contamination, unlike the separate last-clean-history label map. Counts describe GT/ID history, not embedding purity.",
+            "legacy_active_history":"Reconstructed from delivered IDs and 12 missed processing steps, matching LegacyPersistentWorldObjectBank's default max_missed=12; independent of numerical timestamp gaps.",
+            "relative_video_quarters":"Four contiguous bins by synchronized-frame ordinal within each full video; counts need denominators before comparing bins.",
+            "dropped_after_association":"Zero is established by exact candidate-key and bbox equality before counting retained clean detections; a mismatch fails the audit rather than silently dropping it."},
         "paired_counterfactuals_legal14":{k:dict(v) for k,v in effects.items()},
         "failure_cases":[case for cases in examples.values() for case in cases],
         "causal_limit":"Geometry flags in error examples are correlations. Geometry net corrections come from the Full-vs-NoGeometry fixed-candidate contrast.",
         "ROI_limit":"ROI restoration effect is new legacy ROI_ON minus new legacy FEATURE_OFF on the same corrected geometry; old W3 absolute deltas additionally include geometry/input repairs."}
     births={**common,"schema":"worldobject_v3_joint_birth_contribution_v1",
         "first_birth_definition":"First timestamp with any clean matched detection of this GT identity in the scene. Shared across methods; not a claim about physical first GT visibility.",
-        "model_absent_definition":"Identity absent from cleanly labelled prior active predicted objects; legacy active set approximates the documented 30-step retention.",
-        "TEST_legal14":{m:{k:v for k,v in counts.items() if "birth" in k or "false_merge" in k} for m,counts in primary.items()},
+        "model_absent_definition":"Identity absent from cleanly labelled prior active predicted objects; legacy active set is reconstructed with its 12 missed processing-step retention.",
+        "TEST_legal14":{m:{k:v for k,v in counts.items() if "birth" in k or "false_merge" in k or "new_id_" in k or "NULL" in k} for m,counts in primary.items()},
         "frozen_weight_birth_ablation":dict(effects[f"{FULL}_VS_{NOBIRTH}"]),"TRAIN_epoch_metrics":{}}
     for method in (FULL,NG,HEAD):
         gate=read(root/"train"/method/"train_gate.json")

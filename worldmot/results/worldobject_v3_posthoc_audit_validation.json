@@ -1,0 +1,36 @@
+{
+  "status": "POSTHOC_CPU_VALIDATION_PASSED",
+  "created_at": 1792914707.6681247,
+  "new_temporal_audit_tests": 8,
+  "existing_observer_tests": 3,
+  "combined_tests_passed": 11,
+  "pytest_exit_code": 0,
+  "pytest_command": "env CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 /data1/liuyeqiang/WWW_omega_runtime_20261016/venv/bin/python -m pytest -q worldmot/analysis/test_worldobject_v3_temporal_audit.py worldmot/analysis/test_observation_resilience.py",
+  "static_check": {
+    "command": "/home/liuyeqiang/anaconda3/bin/python -m pyflakes worldmot/analysis/worldobject_v3_temporal_audit.py worldmot/analysis/audit_worldobject_v3_identities.py worldmot/analysis/test_worldobject_v3_temporal_audit.py",
+    "exit_code": 0
+  },
+  "model_input_source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f",
+  "frozen_model_source_unchanged": true,
+  "TRAIN_or_TEST_data_consumed_by_these_tests": false,
+  "posthoc_TEST_analysis_executed": false,
+  "official_metric": false,
+  "correction": "Legacy active history reconstruction uses its actual max_missed=12 processing steps, replacing the incorrect 30-timestamp assumption. Tracker outputs and scoring protocols unchanged.",
+  "coverage": [
+    "actual new delivered ID vs previously observed unlabelled ID",
+    "false birth despite unique clean active history",
+    "serialized NULL while clean person is observed",
+    "exclude duplicate clean historical identity targets",
+    "removed object is not a serialized NULL",
+    "wrong-person historical reuse",
+    "cumulative contamination persists through later clean frames",
+    "first-frame mixed identity contamination",
+    "legacy processing-step retention and unavailable NULL-state coverage",
+    "full-video quarter count partition"
+  ],
+  "source_artifacts": {
+    "worldmot/analysis/worldobject_v3_temporal_audit.py": "96d2812800495d722a6e1d613fefcba8862e066f2ef119db666d757f66184bd9",
+    "worldmot/analysis/audit_worldobject_v3_identities.py": "d7dbb7ad088cbd0db42155e9bc7758e70d62c3ea428c1b51e45ed4e1bd552f95",
+    "worldmot/analysis/test_worldobject_v3_temporal_audit.py": "44e8a29ec40113f1b8bdc97cc62582a7825a2ac7aa33c54e2ddc152369da0c3b"
+  }
+}
