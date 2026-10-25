@@ -157,3 +157,20 @@ official CPU evaluation and same-device live timing as dependencies finish.
 posthoc attribution only after all immutable predictions exist. Both scripts
 have independent source hashes and never select parameters on TEST. A pending
 or running row remains explicitly incomplete.
+
+## First R2 selection epoch: mixed internal validation evidence
+
+The 18-scene fit pass processed 22,894 timestamps, followed by all 5,860 timestamps
+of the fixed six TRAIN VAL scenes. Fit assignment/joint-birth losses were
+0.05533/0.00642; VAL losses were 0.20873/0.13297. Proposal recall on the
+new-person diagnostic positives reached 87.02% (fit) and 81.35% (VAL), compared
+with 0.19%/0.97% in the preserved pre-R2 engineering attempt.
+
+On identical clean VAL detections, same-person cross-view sharing was
+34,217/40,082 (85.37%), versus 33,961/40,082 (84.73%) before R2. Same-person
+splits decreased from 6,121 to 5,865, while different-person merged pairs
+increased from 2,303 to 3,232. This is mixed evidence, not a positive net-identity
+or generalization conclusion. The remaining registered selection/final training
+continues unchanged. These counts use diagnostic clean-label IoU matching on
+TRAIN; they are not official HOTA, IDF1 or CVIDF1. Full raw details are in
+`results/worldobject_v3_r2_selection_epoch1.json`.
