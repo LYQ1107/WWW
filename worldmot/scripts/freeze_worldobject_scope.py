@@ -35,7 +35,9 @@ def main():
         except Exception as exc: return f"ERROR:{type(exc).__name__}:{exc}"
     result = {"schema": "worldobject_scope_lock_v1", "created_at": time.time(), "repo": str(repo),
               "git_head": cmd(["git", "-C", str(repo), "rev-parse", "HEAD"]),
-              "git_branch": cmd(["git", "-C", str(repo), "branch", "--show-current"]),
+              # The host Git is old enough that `branch --show-current` is
+              # unavailable; rev-parse is supported by both old and new Git.
+              "git_branch": cmd(["git", "-C", str(repo), "rev-parse", "--abbrev-ref", "HEAD"]),
               "source_hashes": hashes, "data_audit": str(Path(a.data_audit).resolve()),
               "data_audit_sha256": sha(Path(a.data_audit)),
               "old_queue_policy": "STOP_NEW_MULTI_SEED; no old V2 queue restart",
@@ -49,3 +51,4 @@ def main():
 
 
 if __name__ == "__main__": main()
+
