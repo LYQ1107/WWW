@@ -1,6 +1,6 @@
 # WorldMOT V3 R2 scientific diagnosis
 
-This is an in-progress TRAIN-only audit of the already running R2 experiment,
+This is the completed TRAIN diagnostic audit of the frozen R2 experiment,
 authorized by attachment `294ae6fe-469b-43f7-9d7b-3e0a3512409e`. It does not
 change training, thresholds, selected budgets, frozen assignments or TEST inputs.
 The model/input source fingerprint remains
@@ -20,7 +20,7 @@ TRAIN-only rule selected final budgets of one and three epochs respectively.
 Full finished its all24 final epoch, with checkpoint SHA-256
 `cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8`;
 all22 TEST inference and legal14 native scoring are complete. Head-only finished
-three final all24 epochs, passed its gate and started full22 TEST. Its checkpoint
+three final all24 epochs, passed its gate and completed full22 TEST/native legal14 scoring. Its checkpoint
 SHA is `dbf1d81d6440641f4b6864557fe9cd6dd349ef8d54ce48446f510b87d1f0142a`.
 Four parameter-free controls completed
 all-24 TRAIN replay and full row/checksum/candidate-equivalence checks.
@@ -45,8 +45,9 @@ no-geometry now has official legal-14 HOTA 60.4318, AssA 58.2867, IDF1 70.1622
 and CVIDF1 67.6049, below GMT and V2. MOTA 75.0228 exceeds GMT 72.9636 while
 identity scores remain lower. Full's formal HOTA/AssA/IDF1/CVIDF1 are now
 56.4218/50.7806/63.9655/61.8413, all below No-Geometry. The registered Full-vs-
-NoGeometry contrast therefore shows no independent geometry gain. Head TEST
-scoring remains pending full inference; no parameter or budget is changed using TEST. See
+NoGeometry contrast therefore shows no independent geometry gain. Head's
+HOTA/AssA/IDF1/CVIDF1 are 56.9114/51.7687/63.9155/61.3976, also below the
+No-Geometry control. No parameter or budget is changed using TEST. See
 `results/worldobject_v3_no_geometry_official_test.json` for hashes and live timing.
 
 The training key `first_appearance_split_count` is defined by the actual target
@@ -60,6 +61,28 @@ current assignment correction. They are not the learned solver's current
 decisions with only a corrected past. A clean-history causal comparison must
 inspect the normal solver before that correction; zero oracle-corrected ID
 errors alone do not prove learned model accuracy or isolate exposure bias.
+
+The corrected-past normal-current shadow audit is now measured. It uses the
+same already registered 129-time prefix per six VAL scenes (774 times per
+retained selection1 model), clones the teacher-past bank and invokes the ordinary
+GT-free current assigner before current teacher correction. Two regression
+tests verify that the clone does not mutate original state. Original predicted
+prefix split/merge counts reproduce exactly.
+
+| Prefix diagnostic | Full predicted past | Full teacher past / normal current | Head predicted past | Head teacher past / normal current |
+|---|---:|---:|---:|---:|
+| Same-person splits / 4,224 pairs | 738 | 554 | 744 | 500 |
+| Different-person merges / 202,133 pairs | 508 | 291 | 351 | 171 |
+| Wrong or unlabelled historical reuse observations | 1,312 | 960 | 959 | 812 |
+| New-ID observations despite some clean matching active history | 14 | 278 | 20 | 306 |
+
+Teacher-corrected past reduces some pair errors while substantial current
+decision errors remain; it does not resolve the method. The last outcome's
+historical target pools also differ, so it is not a same-denominator Birth-head
+precision comparison. Teacher-corrected CURRENT decisions give zero clean pair
+errors by construction and remain a ceiling, not learned prediction accuracy.
+These prefixes are TRAIN-only diagnostic scope, not full-video TEST scores.
+See `results/worldobject_v3_teacher_past_normal_current_shadow.json`.
 
 ## Frozen R2 birth-utility probes
 
@@ -76,9 +99,28 @@ illustrating why raw Pair FP is not a final false-merge count.
 The result is in `results/worldobject_v3_birth_utility_synthetic.json`; tests are
 in `analysis/test_worldobject_v3_birth_utility_diagnostic.py`. This establishes a
 synthetic structural possibility, not its real TRAIN frequency or causal share
-of R2 errors. The first real retained-checkpoint funnel is measured below;
-later epochs and the frozen-state counterfactual remain pending. A relative joint-versus-
-two-singleton utility remains a possible R3 proposal only after TRAIN evidence.
+of R2 errors. All available retained-checkpoint funnels and the complete
+six-scene frozen-state counterfactual are measured below. A relative utility
+change is not applied to R2 or trained in R3.
+
+The frozen-state Full/Head selection1 replay exactly reproduces the original
+baseline diagnostics. Actual selected wrong Joint Births are 0/1 despite
+13,233/19,194 raw high wrong pairs. Of those raw pairs, 12,658/18,488 have at
+least one endpoint covered by a clean correct historical option. Removing
+all new joint-Birth options keeps Full's 3,056 wrong historical two-view
+merges unchanged and removes only one Head false merge, while introducing
+29/31 more same-person splits.
+
+Artificially removing historical competitors and making retained positive
+benefits tiny yields 3,537/5,860 wrong joint births. This is a hypothetical
+stress case on actual fixed TRAIN graphs, not R2's observed error frequency.
+Identical-logit solver-geometry-off raises Full/Head instantaneous wrong merges
+from 3,056/2,071 to 4,329/2,370. The raw internal mode name mentions gates, but
+this intervention removes both geometry gates and geometry evidence bonuses;
+it is not a pure hard-gate toggle or a retrained NoGeometry model. Hypothetical
+decisions never update subsequent history. Full details and scene/density/
+appearance/reliability strata are in
+`results/worldobject_v3_frozen_birth_counterfactual.json`.
 
 An additional frozen-source probe gives the same person correct shared IDs in
 both views after a spatial-conflict visual recovery, then assigns a new shared
@@ -98,8 +140,8 @@ raw activation count alone therefore does not establish lifecycle failure.
 Calibration must join this relative probability, clean masked target and actual
 solver NULL outcome. Existence supervision also includes the registered retention
 window, so a high positive rate must be interpreted against that target policy.
-The first retained-checkpoint probability/outcome audit follows; later available
-checkpoints are still being replayed.
+All eight available retained-checkpoint probability/outcome audits are complete;
+selection epoch1 is expanded below.
 
 All eight available real retained-checkpoint replays are now complete: Full and
 Head-only selection epochs 1–4, all six fixed TRAIN VAL scenes / 5,860 synchronous
@@ -241,16 +283,17 @@ No retraining or pre-R2 checkpoint is substituted. Final-refit TRAIN replay is
 also distinct from held-out selection VAL because the final model has seen all
 24 TRAIN scenes.
 
-## Remaining real audits
+## Completed scope and retained limitations
 
 The birth, temporal, lifecycle, geometry and spatial/temporal JSON files contain
-real event joins for the completed retained replays and mark remaining epochs
-as incomplete. Remaining work completes all available retained checkpoints,
-the separate TRAIN-only R3 counterfactual, and full TEST geometry/Birth contrasts.
+real event joins for all eight available retained replays. The TRAIN-only R3
+counterfactual, frozen-state Birth audit, all22 TEST geometry/Birth contrasts,
+legal14 native primary scoring and six registered true-live samples are complete.
 No-Geometry's completed all22 posthoc TEST attribution is documented separately
 in `WORLDOBJECT_V3_R2_NO_GEOMETRY_IDENTITY_ATTRIBUTION.md`; it does not choose R2
 parameters or substitute for the Full-vs-NoGeometry formal TEST comparison.
 
-Registered full TEST inference, legal-14 TrackEval/MATLAB, same-device live timing,
-negative-result preservation and GitHub delivery continue in parallel. R2 source
-and selection rules stay frozen throughout these audits.
+The geometry-only control has legal14 TrackEval but an actual 1800-second native
+MATLAB timeout; its CVIDF1 remains unavailable. All three trained primary methods
+have complete TrackEval/MATLAB. NoGeometry selection weights1–4 remain unavailable
+and are not fabricated. R2 source and selection rules stayed frozen throughout.

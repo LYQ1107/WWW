@@ -1,405 +1,132 @@
-# WorldObject V3: joint birth repair and full-video verification
+# WorldMOT V3 R2：完整训练与独立 TEST 最终报告
 
-Branch: `research/worldmot-v3-birthfix-sixgpu-20261025`.
-Base: `c2c9c7f7ee03b6dfa160f23b2f44d2e7339b635d`.
-User instruction: attachment `c5d7a93f-e5e6-4068-83b2-45635a8dd642`.
+**结论：NO_INDEPENDENT_GEOMETRY_GAIN。** 本轮 Full V3＋Ω 没有获得独立的整体身份关联收益；Head 去显式几何输入版本也低于 Full No-Geometry。三个正式模型均已完成原定训练、22/22 TEST 推理及 14 个合法完整场景的 TrackEval＋MATLAB。R2 冻结参数和正常任务没有被重启或依据 TEST 调整。
 
-## Status
+## 正式 TEST 指标
 
-Active revision: R2. Its 120 CPU tests and source-bound 178-timestamp real TRAIN
-preflight pass. All 24 TRAIN geometry caches are now complete: 28,754 synchronized
-times / 57,508 RGB images. All22 TEST geometry inputs are also complete.
-Full V3 finished its selected one-epoch all24 final training and all22 TEST;
-legal14 native TrackEval/MATLAB scoring is complete. Head-only finished its
-unchanged selected three-epoch all24 training and is running all22 TEST. Full no-geometry
-completed its selected two final all24 epochs and all22 TEST. Its checkpoint SHA is
-`b08badfc634c9652a34366951c93207fa321deb7d1a2b240a76798f11607053f`;
-see `results/worldobject_v3_no_geometry_fulltrain_gate.json`.
-The completed geometry producers exited normally and were not restarted.
-All four parameter-free controls have completed full TRAIN causal replay and
-independent row/hash/current-candidate verification; see
-`results/worldobject_v3_all_control_train_replay_verification.json`.
-Full no-geometry has now completed all 22 TEST videos and official legal-14
-TrackEval plus original MATLAB scoring. Full geometry also has both official
-scores; Head-only official TEST scoring awaits its ongoing full inference.
-This is an independent WorldMOT experiment; GMT is
-a frozen detector/ROI provider and a separately scored reference.
+各行使用原始 GT 和相同合法14完整视频协议。八个原始 GT 不合法场景完成推理但排除正式汇总。IDSW、Frag 来自 TrackEval；CVIDF1、CVMA 来自未修改的 VisionTrack MATLAB，不能混用两套 CLEAR 的 IDSW。
 
-## Completed official TEST results
-
-All rows use the same original 14 legal TEST videos. The current no-geometry
-model also delivered all 29,019 times of all 22 videos. Eight original-GT-blocked
-videos remain excluded from official scoring.
-
-| Method | HOTA | AssA | IDF1 | CVIDF1 | MOTA | TrackEval IDSW |
+| 方法 | HOTA | AssA | IDF1 | CVIDF1 | MOTA | IDSW |
 |---|---:|---:|---:|---:|---:|---:|
-| GMT native reference | 66.0646 | 69.5787 | 80.1121 | 78.0613 | 72.9636 | 6,044 |
+| GMT native reference | 66.0646 | 69.5787 | 80.1121 | 78.0613 | 72.9636 | 6044 |
 | GMTDet + V2 reference | 61.0177 | 60.2274 | 74.2189 | 72.6929 | 75.4564 | 598 |
-| Full no-geometry V3 | 60.4318 | 58.2867 | 70.1622 | 67.6049 | 75.0228 | 2,130 |
-| Full V3 + Ω | 56.4218 | 50.7806 | 63.9655 | 61.8413 | 74.6619 | 2,837 |
+| GMTDet + V1 reference | 48.4831 | 41.5601 | 53.0789 | 52.5212 | 67.8304 | 2761 |
+| Full V3 + Ω | 56.4218 | 50.7806 | 63.9655 | 61.8413 | 74.6619 | 2837 |
+| Full No-Geometry | 60.4318 | 58.2867 | 70.1622 | 67.6049 | 75.0228 | 2130 |
+| Head geometry off / bank geometry on | 56.9114 | 51.7687 | 63.9155 | 61.3976 | 74.7346 | 2673 |
+| Frozen Full / learned new-Birth off | 56.4550 | 50.8522 | 63.8804 | 61.7423 | 74.4748 | 3194 |
+| Rule-based joint world objects | 55.8426 | 49.9174 | 62.3462 | 59.9447 | 74.3352 | 3415 |
+| Legacy pair-then-merge / ROI on | 48.4494 | 37.9175 | 48.3536 | 47.6306 | 62.0708 | 26585 |
+| Legacy pair-then-merge / features off | 44.2136 | 31.8520 | 43.4013 | 42.7549 | 61.2635 | 28063 |
+| Geometry-only / no appearance | 33.8755 | 18.8493 | 33.3721 | NA | 52.0078 | 45751 |
 
-The control is below GMT and V2 in the principal identity/association metrics.
-Its higher MOTA than GMT comes with fewer ID switches and nearly identical
-TP/FP/FN; that numerical advantage does not imply better global identity quality.
-The registered Full system falls below its capacity-matched No-Geometry control
-by 4.0100 HOTA, 7.5061 AssA, 6.1967 IDF1 and 5.7636 CVIDF1 percentage points.
-This experiment therefore has **no independent geometry gain** in the completed
-Full-vs-NoGeometry formal comparison. The common TRAIN-only selection rule
-selected different final budgets (Full 1, No-Geometry 2); this is the registered
-end-to-end model comparison, not a same-weights geometry toggle. It does not
-justify changing R2 or establish that every reconstruction method must fail.
-Full is also below V2 and GMT. Complete metrics/checksums are in
-`results/worldobject_v3_full_official_test.json` and
-`results/worldobject_v3_no_geometry_official_test.json`.
+Full 相对 No-Geometry：HOTA -4.0100、AssA -7.5061、IDF1 -6.1967、CVIDF1 -5.7636 个百分点。Full 与 Head 都未追平 V2 或 GMT。不同方法经过同一 TRAIN-only 规则选择，但最终训练预算分别为 1/2/3 个 epoch；这是预注册完整系统比较，不是同权重几何开关。
 
-Full's final checkpoint SHA-256 is
-`cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8`.
-All22 delivered candidate keys, boxes and scores match canonical detector inputs
-(548,583 detections, max difference zero). Registered true live timing is now
-complete and reported separately below; cache replay is not end-to-end FPS.
+Geometry-only 的 TrackEval 完成全部合法14场景；MATLAB 原生评分在注册的 1800 秒限制后超时，部分任务保留，CVIDF1 为 NA。没有用短片段、清洗 GT 或自定义指标填补。其他当前方法 MATLAB 均完成。
 
-The completed No-Geometry TEST posthoc audit finds 11,662 same-person cross-view
-splits out of 54,452 pairs, 123/151 detected people fragmented over IDs, and
-1,515 different-person false cross-view merges. Of the latter, 1,514 reuse
-existing IDs. These clean-IoU-join diagnostics are separate from official metrics;
-see `docs/WORLDOBJECT_V3_R2_NO_GEOMETRY_IDENTITY_ATTRIBUTION.md`.
-Lower local IDSW can coexist with stable view-specific splits and persistent
-wrong ID reuse, explaining why it does not imply higher global CVIDF1.
-
-True live GMT detection on TEST scenes 1/8/22 (100 paired times each) measures
-3.3655 paired-times/s from RGB read to ID output flush, including first frames
-but excluding model setup and interframe timing logs. P50/P95 are
-266.279/349.607 ms. The whole sample worker including initialization, scope checks
-and final hashing measures 2.5765 paired-times/s. GMT's historical 3.3313 FPS
-uses all-22 full-video wall throughput, so these scopes do not establish a speed
-win. The sampled device peak is 3,354,132,480 bytes including the GMT child.
-
-For the same registered 300 paired-time sample on the same physical V100,
-Full + Ω measures **0.6424 paired-times/s** RGB-read-to-ID-output-flush,
-P50/P95 **1.43693/2.06563 seconds**. Whole-worker throughput including setup is
-**0.5715 paired-times/s**, sampled device peak 8,956,674,048 bytes. This is a
-finite live speed diagnostic, not full22-video runtime. Ω model-only averages
-179.178 ms (5.5810 paired-times/s), Ω backend wall 391.123 ms, world alignment
-495.969 ms and support extraction 311.779 ms. Model-only excludes detector,
-geometry preparation, alignment, support, identity and output; it cannot be
-reported as pipeline FPS. Nested stages overlap and must not be added twice.
-
-The completed paired Full-vs-NoGeometry posthoc audit covers all22 predictions,
-with primary counts restricted to the same legal14 full videos. Among 54,452
-same-person cross-view pairs, Full corrects 3,219 NG splits but creates 1,011
-new splits: **2,208 net corrections**. Among 286,986 different-person pairs it
-corrects 1,111 false merges and creates 493: **618 net corrections**. However,
-it corrects 1,403 temporal ID changes and creates 2,132: **729 net new temporal
-errors** across 165,133 clean temporal comparisons. These diagnostic outcomes
-are not official IDSW or a same-weight causal geometry toggle. They establish
-an instantaneous cross-view benefit alongside worse persistent identities,
-consistent with the negative full-video HOTA/AssA/IDF1/CVIDF1 comparison.
-
-Full uses 186 output IDs cumulatively for multiple clean people versus NG's
-177. Minority-person observations inside those mixed IDs rise from 6,481 to
-10,877. The clean-join global one-to-one retained identity observations fall
-from 126,055 to 115,245. Thus fewer within-frame cross-view errors do not imply
-better whole-video identity assignment. These are posthoc output-ID graphs,
-not measurements of learned feature contents. See
-`results/worldobject_v3_Full_vs_NoGeometry_paired_TEST_attribution.json` and
-`results/worldobject_v3_full_identity_attribution.json`.
-
-`results/worldobject_v3_three_model_training_launch.json` records all 24 cache
-manifest hashes, frozen scopes, actual live worker handles and UUID visibility
-as observed at 2026-10-25 07:54 UTC. Model/input fingerprint remains
-`6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f`.
-
-## Repairs
-
-- A chunked, trainable current-view pair head supplies symmetric joint-birth
-  evidence to the actual constrained assignment solver. Its clean new-identity
-  positives and different-identity negatives are distinct from the auxiliary
-  current-view identity loss. Unmatched and ambiguous TRAIN labels are ignored.
-  Candidate generation does not use GT. Logs record model/proposal retention.
-- Predicted history is continuous within each scene. The 64-step boundary is
-  logging/graph truncation only. Duplicate historical objects with the same TRAIN
-  identity produce multi-positive historical targets instead of false births.
-  Teacher history is a separate, after-forward TRAIN diagnostic.
-- Point availability, alignment validity, reliability, fusion eligibility and
-  world-state update eligibility are separate fields. Weak depth support cannot
-  force spatial fusion or overwrite a reliable spatial state. Current detections
-  remain available to the visual fallback.
-- The capacity-matched appearance name is a deprecated alias of full no-geometry,
-  with no duplicate training job. The no-learned-birth experiment reuses the full
-  trained checkpoint with birth-pair decision evidence disabled.
-- Completed cache scenes are checksum/provenance verified and reused. Partial
-  scenes are preserved in a recovery directory and restarted at the scene origin.
-  Atomic scene claims prevent duplicate six-worker reconstruction. A concurrent
-  claim/read race was found by CPU testing and corrected.
-- Native MATLAB progress is saved per job, and TrackEval output is saved before
-  MATLAB. A timeout terminates only the evaluator's own process group. Native
-  scoring routines and original GT are unchanged.
-
-## Phase B evidence
-
-`results/worldobject_v3_birthfix_cpu_test_report.json` records 105 passing CPU tests,
-including the original acceptance suite. The actual Ω Python environment was used:
-Torch 2.6.0+cu118, with CUDA hidden. Changed Python files also pass Pyflakes.
-These are engineering tests, not real-video MOT measurements.
-
-The first actual TRAIN preflight completed all 178 timestamps with finite losses,
-nonzero assignment/birth gradients, live/replay parity and 4,998,239,744 peak
-allocated GPU bytes. The identity head has 436,870 parameters; frozen Ω has
-1,143,814,185. A subsequent targeted positive-birth-proposal test exposed a
-NumPy integer JSON serialization error absent from that first preflight's chosen
-solver proposals. It is fixed and covered by the 105th test. A second full
-preflight must bind the final code fingerprint before six-card launch.
-A two-timestamp TRAIN engineering run also completed actual RGB→GMT→ID without
-using a detector replay. Its cold-start timing is not a formal speed result.
-
-Final passive instrumentation records per-epoch Null/Birth/Existence prediction
-counts (probability ≥0.5), low-existence counts (registered death threshold),
-and separates joint solver time from identity-state updates. Live records include
-head/evidence transfer, Ω model time, output serialization/flush and whole RGB-to-ID
-wall time. Nested timing components must not be added twice. This instrumentation
-changes no association scores or decisions and is included in the final source
-fingerprint and repeated real preflight. MATLAB R2020a starts successfully and
-finds the native MinCostMatching MEX; this is availability evidence, not CVIDF1.
-
-## Frozen experiment registration
-
-`configs/worldobject_v3_birthfix_registered.json` fixes seed 20261025, hidden size
-128, the 18/6 TRAIN split, four selection epochs and the TRAIN-only extension rule
-(maximum six), all-24-scene reinitialization, continuous predicted history,
-joint-birth/auxiliary loss weights, geometry eligibility thresholds and candidate
-limits. Full TEST contains 22 scenes; only the original 14 legally evaluable
-scenes enter official aggregates. Eight blocked scenes still receive inference.
-No TEST outcome may select a checkpoint or change thresholds.
-
-Single-card engineering preflight is restricted to TRAIN scenes 1, 3, 8 and 24
-(130, 16, 16 and 16 paired timestamps). Six-card execution is gated on this
-preflight, checks physical GPU occupancy and binds UUIDs. Per-video latency is
-reported separately from parallel aggregate throughput. Full no-geometry may
-reuse immutable ROI-restored object caches; geometry methods require the new
-camera-depth/persistent-alignment cache contract.
-
-## Remaining registered measurements
-
-Head-only all22 TEST/scoring, remaining live samples, and the complete paired-method
-posthoc audit continue. The prior V3 results are preserved and are not results
-of this repaired model. No additional seed or R2 threshold change is introduced.
-
-All eight available retained Full/Head selection checkpoints have completed
-six-scene TRAIN VAL traced replay and legal3 native TrackEval scoring, with
-exact original diagnostic reproduction. Recovered-camera frequency refinement
-preserves the raw any-view counters and excludes a pre-existing split in another
-camera; see `results/worldobject_v3_recovered_view_frequency_refinement.json`.
-The final Head-only checkpoint SHA-256 is
-`dbf1d81d6440641f4b6864557fe9cd6dd349ef8d54ce48446f510b87d1f0142a`.
-No formal Head-only score is claimed until the complete all22/legal14 protocol.
-
-## Phase C and six-card launch
-
-The final 178-timestamp TRAIN preflight passed with source fingerprint
-`e0ea977f7eb6f9e9e24b75520c3dd5701c09be494913e9ea237467ea310f6ad3`.
-See `results/worldobject_v3_birthfix_preflight_report.json` for raw counts, gradients,
-peak allocation and launch process IDs. Earlier passing preflights remain on NAS
-with the engineering reason for each source revision; only the final fingerprint
-gates the long jobs. This is not multiple-seed experimentation.
-
-Four UUID-bound workers prefer complete TRAIN scenes, one prefers TEST perception,
-and one trains full no-geometry on the immutable ROI join. All five reconstruction
-workers share atomic scene claims. Physical GPUs 4–9 were free at launch; other
-users' devices and processes were not changed. Dataset metadata for perception
-workers is physically annotation-free: TRAIN metadata SHA
-`92e09f77d8d98af3ba732e75f0d2dd648313aa6e02bc058fa02a2d3d6ba97d87`, TEST
-`617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f`.
-Original RGB directories are read through links; no images or GT are modified.
-Only supervised TRAIN and later posthoc official scoring use original annotations.
-
-Run root: `/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v3_birthfix_20261025`.
-Large caches/checkpoints stay on NAS. A RUNNING job is not completed coverage.
-
-## R2: full-TRAIN engineering audit before any TEST
-
-The first 18-scene fit epoch exposed a blocked inference path: all 1,562 clean
-new-person positive pairs reached the model, 1,389 passed the pair-head threshold,
-but only three reached solver proposals. The independent singleton-birth prior
-hard-pruned joint evidence. The original epoch, six-scene validation, safe
-checkpoint and logs are preserved in the old run root and in
-`results/worldobject_v3_pre_r2_training_audit.json`; this attempt never reached
-TEST or a full-final-training gate. It is an engineering attempt, not a final
-negative result for WorldMOT.
-
-R2 keeps the registered thresholds, loss weights, seed and supervision budget.
-Learned pair confidence now selects bounded birth candidates; the singleton
-prior remains a soft joint-hypothesis score. Historical hypotheses can also use
-the existing supervised current-pair identity evidence for dissimilar views,
-while reliable conflicting geometry still vetoes a pair. The no-learned-birth
-ablation disables new-pair birth evidence only and retains this historical
-identity evidence, with identical frozen weights.
-
-The beam's occupancy representation and cached tie keys are optimized separately.
-Ten bounded/dense/tied/empty cases compare selected options and expansion counts
-exactly with the frozen frozenset implementation. This equivalence applies to
-beam representation, not to the intentional R2 birth-policy correction.
-The full acceptance suite now has 120 passing CPU tests; see
-`results/worldobject_v3_r2_cpu_test_report.json`.
-
-Active run root:
-`/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v3_birthfix_r2_20261025`.
-Its cache directories link to the existing shared geometry producers. Thirteen
-perception/coordinate/ROI source files were compared byte-for-byte; see
-`results/worldobject_v3_r2_geometry_reuse.json`. Geometry inference has not changed
-and is not repeated. All final neural models restart from the fixed seed in the
-R2 run; pre-R2 weights are not promoted or relabelled as R2 training.
-
-The R2 real preflight completed in 230.754 seconds with finite gradients and
-4,998,239,744 peak allocated GPU bytes. Of 39 eligible same-person new-pair
-diagnostic positives, 33 passed the pair threshold and 32 reached solver
-proposals. These finite TRAIN engineering counts demonstrate that the blocked
-path is active; they are not a TEST accuracy improvement. See
-`results/worldobject_v3_r2_real_preflight_report.json`.
-
-The dependency scheduler observes the preserved geometry workers and runs the
-remaining full/head-only training, frozen-birth ablation, full-video controls,
-official CPU evaluation and same-device live timing as dependencies finish.
-`analysis/watch_worldobject_v3_reports.py` refreshes measured tables and runs
-posthoc attribution only after all immutable predictions exist. Both scripts
-have independent source hashes and never select parameters on TEST. A pending
-or running row remains explicitly incomplete.
-
-## First R2 selection epoch: mixed internal validation evidence
-
-The 18-scene fit pass processed 22,894 timestamps, followed by all 5,860 timestamps
-of the fixed six TRAIN VAL scenes. Fit assignment/joint-birth losses were
-0.05533/0.00642; VAL losses were 0.20873/0.13297. Proposal recall on the
-new-person diagnostic positives reached 87.02% (fit) and 81.35% (VAL), compared
-with 0.19%/0.97% in the preserved pre-R2 engineering attempt.
-
-On identical clean VAL detections, same-person cross-view sharing was
-34,217/40,082 (85.37%), versus 33,961/40,082 (84.73%) before R2. Same-person
-splits decreased from 6,121 to 5,865, while different-person merged pairs
-increased from 2,303 to 3,232. This is mixed evidence, not a positive net-identity
-or generalization conclusion. The remaining registered selection/final training
-continues unchanged. These counts use diagnostic clean-label IoU matching on
-TRAIN; they are not official HOTA, IDF1 or CVIDF1. Full raw details are in
-`results/worldobject_v3_r2_selection_epoch1.json`.
-
-Timing tables keep historical 22-video throughput in a separate field from the
-current registered 300-pair live sample. Native GMT's historical runner delivers
-final IDs at video return, so no native per-timestamp latency distribution is
-inferred from that throughput. Live stage logs also expose actual detector model
-and native postprocessing time. Device memory is observed through NVML, including
-the GMT child context; its sampled peak is labelled separately from the exact
-Torch allocation peak measured in preflight. Runtime/library versions are saved
-in `results/worldobject_v3_runtime_environment.json`.
-
-The frozen no-learned-new-birth ablation falls back to the registered heuristic
-birth policy. Its contrast measures the learned new-birth path, including its
-candidate selection and scoring, rather than a loss-only intervention. All
-historical identity evidence and trained weights are retained. Qualitative plots
-are generated only from the completed immutable posthoc audit; RGB display crops
-do not change the full-image model input or scientific scores.
-
-Completed selection epochs are also plotted in
-`results/worldobject_v3_training_figures/selection_curves.png`, with source-file
-hashes beside the figure. At epoch 2, VAL false-merge pairs fall from 3,232 to
-2,209 while same-person split pairs rise from 5,865 to 6,293. This continuing
-tradeoff is tracked without changing the registered selection rule. The resource
-observer recovered from a transient NAS status-read failure, preserved its first
-16,759 CSV rows, and resumed before any live timing sample; three observation
-recovery tests pass. Model and perception jobs were not restarted.
-
-The third completed no-geometry selection epoch has VAL assignment/joint-birth
-losses 0.22834/0.12993, with 6,428 same-person split pairs and 3,478 false-merge
-pairs. Both error counts exceed epoch 2. Selection and extension still follow
-the original TRAIN-only registration; this is not a reason to tune TEST or add
-seeds. The figure snapshot covers the first three completed selection epochs;
-the four-epoch selection record below contains the later completed epoch.
-
-## No-geometry selection complete; final all-24 training running
-
-Full no-geometry completed all four registered 18/6 selection epochs. The
-minimum VAL assignment-plus-joint-birth loss selects two final epochs. Epoch 4
-does not improve that loss by 2% over epoch 3, so the registered extension rule
-does not permit epochs 5–6. Its normalized split-plus-merge error does improve
-over epoch 1; both extension conditions are required.
-
-All rows below cover the same 5,860 synchronized times of the six TRAIN VAL
-scenes. Birth-proposal recall is conditional on each epoch's causal predicted
-history, whose positive sets differ. These are diagnostic counts, not official
-TEST MOT metrics.
-
-| Selection epoch | VAL assignment loss | VAL joint-birth loss | Same-person split pairs | Different-person merged pairs | Birth proposal recall |
+| 方法 | TP | FP | FN | DetA | Frag |
 |---|---:|---:|---:|---:|---:|
-| 1 | 0.20873 | 0.13297 | 5,865 | 3,232 | 81.35% |
-| 2 (selected budget) | 0.20281 | 0.13358 | 6,293 | 2,209 | 90.95% |
-| 3 | 0.22834 | 0.12993 | 6,428 | 3,478 | 89.21% |
-| 4 | 0.27053 | 0.12784 | 5,082 | 4,023 | 69.86% |
+| GMT native reference | 165338 | 20820 | 24447 | 63.0665 | 1584 |
+| GMTDet + V2 reference | 153813 | 10010 | 35972 | 62.1099 | 1289 |
+| GMTDet + V1 reference | 137246 | 5753 | 52539 | 56.8755 | 1655 |
+| Full V3 + Ω | 165346 | 20812 | 24439 | 63.1085 | 1566 |
+| Full No-Geometry | 165335 | 20823 | 24450 | 63.0806 | 1575 |
+| Head geometry off / bank geometry on | 165333 | 20825 | 24452 | 63.0268 | 1588 |
+| Frozen Full / learned new-Birth off | 165347 | 20811 | 24438 | 63.0961 | 1570 |
+| Rule-based joint world objects | 165325 | 20833 | 24460 | 62.9742 | 1568 |
+| Legacy pair-then-merge / ROI on | 165272 | 20886 | 24513 | 62.8131 | 1708 |
+| Legacy pair-then-merge / features off | 165245 | 20913 | 24540 | 62.4327 | 1749 |
+| Geometry-only / no appearance | 165306 | 20852 | 24479 | 62.2313 | 1845 |
 
-The first final-stage safe checkpoint was inspected on CPU: every model tensor
-exactly matches a fresh seed-20261025 initialization, and the optimizer has no
-accumulated state. That boundary checkpoint is preserved on NAS with SHA
-`70c21b2fa504f6b0a0b72faee6495bb7ff5c4b44b167214baf2ba50b07a1b3d1`.
-It is an untrained initialization, not a released inference weight. Actual
-all-24 final training continues from it. Full selection history, rule evaluation
-and verification are in `results/worldobject_v3_no_geometry_selection.json`.
+当前八个方法每个均输出 548,583 个原始检测候选；合法14为 186,158 个。三主模型逐条与冻结 GMT 缓存核对，完整八方法审计再次核对所有 key、bbox 和 score。TP/FP/FN 的小差异属于正式匹配结果，不是修改检测框。V1/V2 历史系统的输出筛选策略不同，不能将与它们的召回差单独归因为关联模型。
 
-## First completed selection epoch across the three neural methods
+## 为什么 IDSW 更低，全球身份却更差
 
-All three rows use the fixed six TRAIN VAL scenes, 5,860 synchronized times and
-172,760 current detections after one 18-scene fit epoch. Same-person and
-different-person pair denominators are 40,082 and 1,744,285 respectively.
-The counts below are clean-IoU diagnostic labels, not TEST or official MOT scores.
+No-Geometry 的同人跨视角拆分为 11,662/54,452；151 个有干净检测匹配的人物中 123 个对应过多个 Global ID。不同人跨视角误合并 1,515 次，其中 1,514 次复用了已有 ID。独立相机里持续使用不同 ID，或稳定复用错误 ID，都可能只有较少局部切换，却损害全视频跨视角一一身份对应。
 
-| Method | Same-person split pairs | Different-person merged pairs | Diagnostic temporal ID changes | Model-history-absent pair splits |
+Full 相比 No-Geometry 在固定候选诊断中纠正 3,219 次同人拆分、新增 1,011 次（净 +2,208）；纠正 1,111 次异人误合并、新增 493 次（净 +618）。但纠正 1,403 次时间身份变化、新增 2,132 次（净 -729）。这些是完整合法14的 IoU=.5 干净匹配诊断，不是官方 IDSW 或 CVIDF1。
+
+Full 的累积混合 ID 数为 186，No-Geometry 为 177；混合 ID 内少数人物观测从 6,481 增至 10,877。干净匹配的一一身份保留观测从 126,055 降到 115,245。瞬时跨视角融合改善与持久身份污染同时存在。这里测量的是输出 ID 历史，不能等同于测量神经特征的污染。
+
+## 固定 TRAIN VAL 的真实机制诊断
+
+Full/Head 保存的选择期 checkpoint1–4 共八次重放均覆盖原定六个 VAL 场景、每次 5,860 对时刻/172,760 检测，全部精确复现原诊断计数。原始 GT 合法的 4/8/12 才进入正式 TRAIN VAL TrackEval；16/20/24 的干净子集只作诊断。No-Geometry 选择权重1–4在归档前被覆盖，未重训、替代或伪造其原生逐 epoch 曲线。
+
+| 模型 / 选择 epoch | 正确恢复 | 恢复相机下一帧换 ID | 新 ID | 实际几何拒绝 |
 |---|---:|---:|---:|---:|
-| Full V3 | 4,834 | 3,056 | 4,160 | 347 |
-| Full no-geometry | 5,865 | 3,232 | 2,664 | 458 |
-| Head-only no-geometry | 5,790 | 2,071 | 2,878 | 96 |
+| Full V3 + Ω / 1 | 6 | 6 | 1 | 5 |
+| Full V3 + Ω / 2 | 6 | 6 | 1 | 5 |
+| Full V3 + Ω / 3 | 8 | 8 | 0 | 6 |
+| Full V3 + Ω / 4 | 7 | 7 | 1 | 6 |
+| Head geometry off / bank geometry on / 1 | 7 | 6 | 1 | 6 |
+| Head geometry off / bank geometry on / 2 | 7 | 7 | 2 | 6 |
+| Head geometry off / bank geometry on / 3 | 5 | 5 | 1 | 4 |
+| Head geometry off / bank geometry on / 4 | 7 | 7 | 2 | 6 |
 
-Full V3 has 1,031 fewer same-person splits and 176 fewer different-person merged
-pairs than full no-geometry at this epoch, but 1,496 more temporal ID changes.
-This is a cross-view/temporal tradeoff, not established net identity improvement.
-Full raw fit/VAL loss and diagnostic records are preserved in
-`results/worldobject_v3_first_epoch_three_methods.json`. No method or threshold
-is changed in response; final model selection and TEST remain as registered.
+上述事件都在 TRAIN Scene24，都是单视角历史身份恢复，尚不是两视角已共享同一 ID 的成功融合。必须跟随发生恢复的相机，排除另一相机此前已有的分裂。旧 any-view 计数和原预测保留；Head epoch1 的变化计数由7更正为6。各行重复同一批视频，不能累加为独立样本。
 
-The original training key `first_appearance_split_count` means a split of a
-same-person pair absent from cleanly labelled model history. It can include
-repeated births after a history failure; it does not mean first physical or
-first clean visibility in the video. The frozen raw key is preserved, and its
-report label is corrected above. The R2 addendum separately requests both event
-definitions; see `docs/WORLDOBJECT_V3_R2_SCIENTIFIC_DIAGNOSIS.md`.
+Full 选择 epoch1 的具体例子：t704 的 ID158 视觉恢复后旧空间位置仍有效、missed 清零；t705 余弦0.9743、学习 margin4.9267仍被距离11.4044对门槛6的几何检查拒绝，产生 ID162。该真实频率很低，不能解释所有4,160次 TRAIN诊断时间变化。
 
-The three completed parameter-free controls were also checked independently of
-their completion markers. Every output row and timestamp was parsed against
-physically annotation-free metadata, full file SHA values were verified, and
-current candidate keys, boxes and scores matched across methods. Each delivered
-24 scenes, 28,754 synchronized times and 557,002 detections. This is coverage and
-input-equivalence evidence, not accuracy or live speed evidence; see
-`results/worldobject_v3_control_train_replay_verification.json` and
-`analysis/verify_worldobject_v3_train_replays.py`.
+![真实 TRAIN 恢复失败帧](../results/worldobject_v3_recovery_figures/TRAIN_scene24_recovery_next_ID.png)
 
-## Posthoc attribution acceptance
+NULL 按实际训练损失的 sigmoid(null−max assignment) 校准，不能把 raw null≥0 当作同一概率。Full epoch1 虽然 raw 正计数为0，相对概率≥.5却有8,169次；Brier .04145、十箱 ECE .02675。Existence 均值 .99954 对应注册保留窗口下 .99922 的正目标率，不能据此单独宣称塌缩。完整 bins、Birth 原始/相对概率、提案及选择漏斗均已保存。
 
-The final immutable-output audit now records false new IDs despite a unique
-clean active history, serialized NULL outcomes despite a current clean person
-detection, wrong-person reuse of a historical ID, and cumulative contamination
-that later clean frames cannot erase. Four relative video quarters expose
-accumulation over a full timeline. Exact candidate-key/bbox equality establishes
-whether correctly detected observations were retained after association.
+修正过去但由模型判断当前的129时刻前缀实验，Full拆分738→554、误合并508→291；Head744→500、351→171。当前错误仍显著存在，且历史目标池改变。用GT直接修正当前决定后的零错误只是上界，不是模型成功。该实验仅为 TRAIN 前缀诊断。
 
-The legacy active-history reconstruction previously assumed 30 timestamp units;
-its actual bank uses 12 missed processing steps. The posthoc sidecar is corrected
-to that implementation, without changing any model or inference output. Legacy
-does not serialize per-object NULL state, so that diagnostic's unavailable
-coverage is explicit. Eight new synthetic tests pass, alongside the three
-observer-recovery tests; see `results/worldobject_v3_posthoc_audit_validation.json`.
-No real TEST annotations have been consumed by this new audit, which remains
-gated on all eight methods' immutable complete predictions. These diagnostics
-are distinct from official TrackEval and MATLAB metrics.
+固定状态 Birth 反事实另对 Full/Head 选择 checkpoint1 的完整六场景重放，基线均精确复现。Full 实际选中错误联合Birth为0；只删除新联合Birth选项时，错误融合仍为3,056，同人拆分增加29。Head实际错误联合Birth为1，删除后误融合仅少1，同人拆分增加31。故原始高分错误候选不能当作最终Birth错误。
 
-Live timing tables explicitly flag excluded model initialization and interframe
-timing-log writes for the RGB-read-to-ID-output-flush latency measurement. A
-separate complete-worker wall throughput includes model setup, scope validation,
-scene resets, interframe logs and output hashing. That whole-worker duration is
-not used to fabricate per-frame P50/P95. Both measurements use synchronized
-two-camera times as the unit; historical full-video throughput keeps its own
-scope label.
+在相同候选图中人为删除历史竞争者，并将正Birth收益改为阈值logit+1e-6和singleton logit−60所对应的极小正值，Full/Head会出现3,537/5,860次错误联合Birth。这验证零singleton基线的结构性可能性，却不是R2自然发生频率。固定相同logit/历史而关闭求解器几何项（门控和几何加分均关闭），Full/Head的瞬时误融合从3,056/2,071变为4,329/2,370；这不是重新训练的No-Geometry系统。所有反事实决定被丢弃，未来仍沿用真实R2状态。见 `worldobject_v3_frozen_birth_counterfactual.json`。
+
+![完整训练曲线与合法 TRAIN VAL](../results/worldobject_v3_training_figures_complete/fit_VAL_final_and_native_TRAIN_VAL.png)
+
+## 同设备真实速度：有限 live 诊断
+
+以下为相同物理 V100 上 TEST1/8/22 各100组同步双图，共300对时刻的实际 RGB→冻结检测器→关联→ID落盘。包括首帧；RGB到ID分布排除模型初始化和帧间计时日志，整 worker吞吐另列。它不是全22视频运行FPS，也不是六卡总吞吐。
+
+| 方法 | RGB→ID FPS（对/秒） | 含启动整 worker FPS | P50 ms | P95 ms |
+|---|---:|---:|---:|---:|
+| Full V3 + Ω | 0.6424 | 0.5715 | 1436.928 | 2065.630 |
+| Full No-Geometry | 3.3655 | 2.5765 | 266.279 | 349.607 |
+| Head geometry off / bank geometry on | 0.7140 | 0.6190 | 1295.402 | 1804.182 |
+| Frozen Full / learned new-Birth off | 0.6485 | 0.5756 | 1413.268 | 2121.042 |
+| Rule-based joint world objects | 0.6431 | 0.5737 | 1395.954 | 2097.995 |
+| Legacy pair-then-merge / ROI on | 0.6164 | 0.5501 | 1594.519 | 2067.395 |
+
+Full 的 Ω 纯前向平均179.178ms（5.5810对/秒），Ω后端wall391.123ms，世界对齐495.969ms，支持提取311.779ms。纯GPU前向不能冒充端到端速度；嵌套阶段不能重复相加。完整阶段P50/P95、原始日志和采样显存见 runtime_breakdown.csv。GMT/V1/V2 的历史全22视频wall FPS 分列，不与这个短样本直接宣称速度胜负。
+
+## 正式 TEST 失败可视化
+
+六个固定候选、相同帧的原始RGB显示裁剪、实际ID和Ω稀疏世界支持图已保存；每个框最多64个支持点，不是完整人体网格。颜色表示各方法自己的ID，GT只在预测完成后标注。选取规则、原审计哈希和每张图的哈希见 `results/worldobject_v3_full_TEST_failure_figures/manifest.json`。
+
+![完整 TEST 的同人拆分例](../results/worldobject_v3_full_TEST_failure_figures/case_00_scene01_t00001.png)
+
+其余同人拆分、异人误合并和首次干净检测拆分图位于同一目录；这类例图不替代完整合法14的统计。
+
+## 六个预注册问题的回答
+
+1. **旧W3/W4为什么低？** 旧W3/W4合法14 HOTA分别41.0227/37.0917，旧 ROI 缺失/停用与几何输入问题都有影响。ROI独立效果必须看新 ROI-on 减 feature-off，不能把跨版本全部提升算给ROI。当前表保留这两个相同几何的控制。
+2. **联合求解好于先配对后合并吗？** Rule joint相对新Legacy ROI-on，HOTA变化 +7.3933，CVIDF1 +12.3141。这是完整V3/legacy控制组比较，也包含记忆及保留策略差异，不能把全部差值因果地归到求解器。它仍低于GMT。
+3. **学习联合Birth独立有效吗？** 相同Full权重关闭新Birth学习路径后，Full HOTA差 -0.0332，CVIDF1差 +0.0990，证据很小且并非各指标一致。此控制保留历史pair证据并回退启发式新Birth，不能解释为去掉训练loss。
+4. **Ω有独立整体收益吗？** 本次Full相对No-Geometry四个主身份/关联指标均下降；Head版本也未胜过No-Geometry。存在单时刻跨视角净纠错，尚未转成完整视频身份收益。
+5. **比V1/V2/GMT如何？** Full超过V1，但低于V2和GMT。相对GMT有MOTA/IDSW数值优势，同时全球身份更差；不能据此宣称主要目标成功。速度比较遵循上方不同范围限制。
+6. **世界对象状态是否只是名字？** 空间状态确实参与门控并能改变当前ID；真实恢复后旧状态拒绝下一帧的证据可复现。它目前也是错误来源。此系统依赖独立二维检测后提升至稀疏世界支持，不是已训练的原生3D人物检测头，也不能把方法名当成三维MOT成功证据。
+
+## 独立 R3：只做受限 TRAIN 归因
+
+分支 research/worldmot-v3-r3-state-update-fix-20261025 对视觉恢复后的旧空间状态作失效处理，保留身份，等待后续可靠当前观测初始化位置。203项CPU测试通过。同一R2选择期权重、六个TRAIN VAL场景的一次无优化器重放，净纠正同人配对10、异人配对22、时间身份变化60；全部在原始GT不合法的Scene24干净子集。合法3个VAL场景的官方HOTA/AssA/IDF1完全不变。R3没有正式MOT增益证据，没有进行TEST或六卡长训。R3结果提交 eb97b22f7a256169496788564dd124cacd636e15。
+
+## 范围、checkpoint与复核
+
+模型/输入源码指纹：`6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f`。GMT只提供冻结检测/ROI并作为独立评分参考，未使用其跟踪器决定本方法ID。未修改 WWW/main、旧WorldMOT分支或原始GT。
+
+| 模型 | 最终all24 epochs | checkpoint SHA-256 |
+|---|---:|---|
+| Full V3 + Ω | 1 | `cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8` |
+| Full No-Geometry | 2 | `b08badfc634c9652a34366951c93207fa321deb7d1a2b240a76798f11607053f` |
+| Head geometry off / bank geometry on | 3 | `dbf1d81d6440641f4b6864557fe9cd6dd349ef8d54ce48446f510b87d1f0142a` |
+
+TRAIN唯一28,754对时刻/57,508图像；TEST唯一29,019对/58,038图像。训练前18/6选择四个epoch，固定seed20261025，hidden128；然后重新初始化在全部24场景训练注册预算。64步clip不重置ID，只有真正场景边界重置。身份头436,870参数；Ω为冻结的1,143,814,185参数512原版权重，并非416复现。权重、缓存和完整轨迹留NAS，GitHub提交代码、报告、统计及可视化。
+
+正式表：`results/worldobject_v3_final_comparison.csv`；机器结论：`results/worldobject_v3_final_status.json`；全视频归因：`results/worldobject_v3_identity_error_attribution.json`；Birth：`results/worldobject_v3_birth_pair_analysis.json`；完整运行范围：`worldobject_v3_fulltrain_coverage.json` / `worldobject_v3_fulltest_coverage.json`；各阶段速度：`worldobject_v3_runtime_breakdown.csv`。
+
+详细 TRAIN 科学诊断、生命周期校准、恢复相机频率、真实失败图及全部8次保留checkpoint指标均在同目录对应JSON和 `WORLDOBJECT_V3_R2_SCIENTIFIC_DIAGNOSIS.md`。此前执行记录移至 `WORLDOBJECT_V3_R2_EXECUTION_HISTORY_20261025.md`，不以旧结果代替本轮测量。

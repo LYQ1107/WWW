@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter,defaultdict
 from contextlib import ExitStack
+import fcntl
 import json
 from pathlib import Path
 import sys
@@ -19,6 +20,14 @@ from summarize_worldobject_v3 import sha,read,write_json
 from worldobject_v3_temporal_audit import TemporalErrorAudit,increment_quarter
 
 CONTRASTS=((FULL,NG),(FULL,NOBIRTH),(RULE,ROI),(FULL,RULE),(ROI,OFF),(FULL,HEAD))
+
+
+def completed_posthoc_matches(report,births,proofs,analysis_sha,annotation_sha):
+    return all(x.get('source_analysis_sha256')==analysis_sha
+        and x.get('GT_annotations_sha256')==annotation_sha
+        and x.get('prediction_proofs')==proofs
+        and x.get('fixed_candidate_boxes_verified') is True
+        and x.get('fixed_candidate_scores_verified') is True for x in (report,births))
 
 
 def contrast(counts,proposed,baseline,kind):
@@ -46,6 +55,9 @@ def immutable_predictions(root):
 def main():
     p=argparse.ArgumentParser();p.add_argument("--run-root",required=True,type=Path);p.add_argument("--output",required=True,type=Path)
     p.add_argument("--dataset-root",default="/data/DATASETS/TRACKING/JDE/VisionTrack");a=p.parse_args();root=a.run_root
+    a.output.mkdir(parents=True,exist_ok=True)
+    lock=(root/'diagnostics/full_posthoc_identity.lock').open('a')
+    fcntl.flock(lock,fcntl.LOCK_EX)
     sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
     from worldmot.runtime.experiment_authorization import require_experiment_authorization
     from worldmot.data.visiontrack import VisionTrack
@@ -55,6 +67,15 @@ def main():
     for method in METHODS:
         require_experiment_authorization(root/("authorization_v4.json" if method==GEO else "authorization_v3.json"),"diagnostics","test",method)
     proofs=immutable_predictions(root)  # No GT annotation access precedes this check.
+    annotation_sha=sha(Path(a.dataset_root)/'annotations/test.json')
+    analysis_sha=sha(__file__)
+    try:
+        prior=read(a.output/'worldobject_v3_identity_error_attribution.json')
+        prior_births=read(a.output/'worldobject_v3_birth_pair_analysis.json')
+    except (FileNotFoundError,json.JSONDecodeError):prior=prior_births={}
+    if completed_posthoc_matches(prior,prior_births,proofs,analysis_sha,annotation_sha):
+        print(json.dumps({'status':'REUSED_COMPLETE_IMMUTABLE_POSTHOC_AUDIT','all22_each_of_8_methods':True}),flush=True)
+        return
     audit=read(root.parent/"fulltrain_20261022/audit/data_audit.json")["test"]
     legal={s["scene"] for s in audit["scenes"] if s["official_gt_legal"]}
     ds=VisionTrack(a.dataset_root,split="test",load_annotations=True)
@@ -84,6 +105,7 @@ def main():
                     if set(objects)!={o.key for o in obs}:raise ValueError("FIXED_CANDIDATE_COVERAGE_DIFFERENCE")
                     for o in obs:
                         if not np.array_equal(np.asarray(objects[o.key]["bbox_xywh"]),o.bbox_xywh):raise ValueError("FIXED_BOX_CHANGED")
+                        if objects[o.key]["score"]!=o.score:raise ValueError("FIXED_SCORE_CHANGED")
                     assignments[method]={k:v["global_id"] for k,v in objects.items()}
                     decisions[method]={(x["camera_id"],x["detection_id"]):x for x in row.get("decisions",[])}
                     state=states[method]
@@ -174,10 +196,10 @@ def main():
     for c in effects.values():
         for kind in ("same_person","different_person","first_clean_birth","temporal_continuity"):
             c[kind+"_net_corrections"]=c[kind+"_corrected"]-c[kind+"_new_errors"]
-    common={"source_analysis_sha256":sha(__file__),"GT_role":"POSTHOC_ONLY_AFTER_IMMUTABLE_PREDICTIONS",
+    common={"source_analysis_sha256":analysis_sha,"GT_annotations_sha256":annotation_sha,"GT_role":"POSTHOC_ONLY_AFTER_IMMUTABLE_PREDICTIONS",
         "official_metric":False,"posthoc_bbox_label_mapping_IoU":.5,"threshold_selection_on_TEST":False,
         "primary_scope":"14 original legal full TEST videos","blocked_scope":"8 full-inference videos; diagnostic only, excluded from primary counts",
-        "prediction_proofs":proofs,"fixed_candidate_boxes_verified":True}
+        "prediction_proofs":proofs,"fixed_candidate_boxes_verified":True,"fixed_candidate_scores_verified":True}
     report={**common,"schema":"worldobject_v3_fixed_candidate_identity_attribution_v2",
         "primary_legal14":{m:dict(v) for m,v in primary.items()},"blocked8_diagnostic_only":{m:dict(v) for m,v in blocked.items()},
         "matched_label_audit_legal14":dict(matched_audit),"per_scene":per_scene,
