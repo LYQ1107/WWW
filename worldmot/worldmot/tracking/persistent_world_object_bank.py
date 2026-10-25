@@ -63,6 +63,15 @@ class PersistentWorldObjectBank:
     def _update(self, q, measurement, timestamp, gate=1.0, delta=None, spatial_conflict=False):
         cfg = self.config
         support = measurement.support
+        if cfg.use_geometry and spatial_conflict:
+            # A visual reappearance validates identity, not the old position.
+            # Keeping that position valid while resetting missed=0 makes the
+            # next identical observation lose the stale-position exception.
+            # Abstain spatially until a later reliable current measurement can
+            # reinitialize the world state; never copy a rejected position.
+            q.geometry_valid = False
+            q.covariance = np.eye(3) * 1e6
+            q.support_points = np.empty((0, 3))
         if cfg.use_geometry and support is not None and not spatial_conflict and gate > 0:
             if q.geometry_valid:
                 q.center, q.covariance = update_world_measurement(q.center, q.covariance,
