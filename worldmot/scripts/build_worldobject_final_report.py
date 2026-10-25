@@ -29,12 +29,14 @@ def load(path: Path, default=None):
     return json.loads(path.read_text())
 
 
-def eval_row(route: str, path: Path, fps_by_route: dict[str, dict[str, object]]) -> dict:
+def eval_row(route: str, path: Path, fps_by_route: dict[str, dict[str, object]],
+             crossview_diag: dict[str, float]) -> dict:
     report = load(path)
     row = {"route": route, "scope": "TEST", "status": "BLOCKED" if report is None else report.get("status", "UNKNOWN")}
     for key in ["HOTA", "AssA", "DetA", "IDF1", "MOTA", "IDSW", "Frag"]:
         row[key] = None
     row["CVIDF1"] = None
+    row["CVIDF1_fixed_IoU_diagnostic"] = crossview_diag.get(route)
     row["CVMA"] = None
     if report:
         te = report.get("TrackEval", {}).get("combined", {})
@@ -90,12 +92,26 @@ def main() -> None:
     p.add_argument("--train-audit-dir", required=True)
     p.add_argument("--test-cache", required=True)
     p.add_argument("--output-dir", required=True)
+    p.add_argument("--crossview-diagnostic", help="optional non-official fixed-IoU cross-view diagnostic JSON")
     a = p.parse_args(); out = Path(a.output_dir); out.mkdir(parents=True, exist_ok=True)
     fp = fps_map(Path(a.fps))
+    diag = load(Path(a.crossview_diagnostic), {}) if a.crossview_diagnostic else {}
+    diag_by_route = {}
+    diag_keys = {
+        "W3_PERSISTENT_BANK": "W3_persistent_bank",
+        "W4_LEARNED_UPDATE": "W4_learned",
+        "W5_NO_GEOMETRY_CONTROL": "W5_no_geometry",
+    }
+    for route, diag_key in diag_keys.items():
+        counts = diag.get(diag_key, {}).get("combined_counts", {})
+        if not counts:
+            counts = diag.get(route, {}).get("combined_counts", {})
+        if counts.get("CVIDF1_fixed_IoU") is not None:
+            diag_by_route[route] = float(counts["CVIDF1_fixed_IoU"])
     rows = list(BASELINES)
     for route, filename in [("W3_PERSISTENT_BANK", "W3_persistent_bank/metrics.json"), ("W4_LEARNED_UPDATE", "W4_learned/metrics.json"), ("W5_NO_GEOMETRY_CONTROL", "W5_no_geometry/metrics.json")]:
-        rows.append(eval_row(route, Path(a.evaluation_dir) / filename, fp))
-    fields = ["route", "scope", "status", "HOTA", "AssA", "DetA", "IDF1", "CVIDF1", "CVMA", "MOTA", "IDSW", "Frag", "fps_pairs", "fps_source"]
+        rows.append(eval_row(route, Path(a.evaluation_dir) / filename, fp, diag_by_route))
+    fields = ["route", "scope", "status", "HOTA", "AssA", "DetA", "IDF1", "CVIDF1", "CVIDF1_fixed_IoU_diagnostic", "CVMA", "MOTA", "IDSW", "Frag", "fps_pairs", "fps_source"]
     with (out / "worldobject_final_comparison.csv").open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fields); w.writeheader(); w.writerows({k: r.get(k) for k in fields} for r in rows)
 
