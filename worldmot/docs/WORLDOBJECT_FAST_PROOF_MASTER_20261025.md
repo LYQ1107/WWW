@@ -17,8 +17,8 @@ multi-seed queue and it does not modify `WWW/main` or any frozen GMT result.
 The source/data/resource lock is saved as
 `diagnostics/scope_lock.json`; the actual dataset audit is
 `diagnostics/data_audit.json`. Cache shards are atomic, checksum-verified and
-claimed by an atomic scene queue. The active machine had only GPU 4/6/7/8
-available; other user processes were left untouched.
+claimed by an atomic scene queue. The six cache slots used physical GPUs
+2/3/4/6/7/8; unrelated user processes on other GPUs were left untouched.
 
 ## Architecture under test
 
@@ -71,3 +71,4 @@ smoke passed, the four-card TRAIN cache scheduler was running, and the W0–W3
 auditors, W4 training entry point and TEST replay entry point passed compile and
 core unit tests. Final numerical conclusions are written only after the full
 24-scene TRAIN gate and full 22-video TEST coverage gate.
+
