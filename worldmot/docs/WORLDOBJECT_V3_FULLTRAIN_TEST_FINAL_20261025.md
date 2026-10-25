@@ -190,3 +190,12 @@ candidate selection and scoring, rather than a loss-only intervention. All
 historical identity evidence and trained weights are retained. Qualitative plots
 are generated only from the completed immutable posthoc audit; RGB display crops
 do not change the full-image model input or scientific scores.
+
+Completed selection epochs are also plotted in
+`results/worldobject_v3_training_figures/selection_curves.png`, with source-file
+hashes beside the figure. At epoch 2, VAL false-merge pairs fall from 3,232 to
+2,209 while same-person split pairs rise from 5,865 to 6,293. This continuing
+tradeoff is tracked without changing the registered selection rule. The resource
+observer recovered from a transient NAS status-read failure, preserved its first
+16,759 CSV rows, and resumed before any live timing sample; three observation
+recovery tests pass. Model and perception jobs were not restarted.
