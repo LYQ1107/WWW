@@ -14,6 +14,51 @@ from worldobject_v4_audit_common import code_fingerprint,write_json
 def read(path):return json.loads(Path(path).read_text())
 
 
+RETAINED_CASE_CHECKPOINT_SHA='d4644ff95cbb7f255f70f155055fba6870863a69e7043f91b920e85ce20693dd'
+
+
+def qualify_state_variants(variants,error_attribution,*,cpu_passed,audits_complete):
+    """TRAIN score gains cannot substitute for the required real recovery case."""
+    base=variants['C0']['original_legal_TRAIN_VAL_TrackEval'];metric_eligible=[]
+    for key in ('C1','C2','C3','C4'):
+        m=variants[key]['original_legal_TRAIN_VAL_TrackEval'];d=variants[key]['paired_against_C0']
+        if (cpu_passed and all(m[k]>base[k] for k in ('HOTA','AssA','IDF1'))
+                and d.get('temporal_corrections',0)>d.get('temporal_regressions',0)
+                and d.get('same_person_corrections',0)>=d.get('same_person_regressions',0)
+                and d.get('different_person_corrections',0)>=d.get('different_person_regressions',0)):
+            metric_eligible.append(key)
+    case=error_attribution.get('separate_original_retained_epoch1_failure_case') or {}
+    assertions=case.get('assertions') or {}
+    provenance=(error_attribution.get('status')=='COMPLETE' and error_attribution.get('TRAIN_only') is True
+        and case.get('checkpoint',{}).get('checkpoint_sha256')==RETAINED_CASE_CHECKPOINT_SHA
+        and assertions.get('C0_original_158_to_162_found') is True)
+    case_status={};case_eligible=[]
+    for key in ('C1','C2','C3','C4'):
+        item=assertions.get('variants',{}).get(key)
+        if not provenance:case_status[key]='UNVERIFIED_CHECKPOINT_OR_ORIGINAL_CASE';continue
+        if item is None:case_status[key]='NOT_EVALUATED_ON_RETAINED_CASE';continue
+        ident=item.get('ID_at704')
+        passed=(item.get('passes_targeted_mechanism') is True
+            and item.get('recovered_camera_keeps_ID') is True
+            and item.get('different_current_person_merged') is False
+            and isinstance(ident,int) and not isinstance(ident,bool) and ident>0
+            and item.get('ID_at705')==ident)
+        case_status[key]='PASSED' if passed else 'FAILED'
+        if passed:case_eligible.append(key)
+    eligible=[key for key in metric_eligible if key in case_eligible]
+    def select(keys):
+        return max(keys,key=lambda k:(variants[k]['original_legal_TRAIN_VAL_TrackEval']['AssA'],
+            variants[k]['original_legal_TRAIN_VAL_TrackEval']['IDF1'],
+            variants[k]['original_legal_TRAIN_VAL_TrackEval']['HOTA'],-int(k[1]))) if keys else None
+    return dict(TRAIN_metric_gain_observed=bool(metric_eligible),scientific_gain_proven=bool(eligible),
+        TRAIN_metric_eligible_state_variants=metric_eligible,TRAIN_eligible_state_variants=eligible,
+        TRAIN_metric_selected_state_variant=select(metric_eligible),TRAIN_selected_state_variant=select(eligible),
+        retained_original_case_provenance_verified=provenance,retained_original_case_by_variant=case_status,
+        full_training_qualified=bool(eligible) and audits_complete,
+        C5_live_quality_gate_passed='C4' in eligible,
+        qualification_scope='TRAIN internal; score gains plus required retained real-case recovery without wrong-person merge; not TEST generalization')
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--runtime',type=Path,required=True)
     p.add_argument('--cpu-junit',type=Path,required=True);p.add_argument('--measurements',type=Path)
@@ -48,7 +93,7 @@ def main():
             writer=csv.DictWriter(f,['variant','HOTA','AssA','IDF1','status','scope'],lineterminator='\n');writer.writeheader()
             for variant in [*state_configs(),*(k for k in factorial_configs() if k!='G1_1_G2_1_G3_1'),'R2_NO_GEOMETRY_REFERENCE']:
                 writer.writerow({'variant':variant,'status':'NOT_MEASURED_NAS_OFFLINE','scope':'TRAIN only; no scores yet'})
-    A=read(out/names[0]);B=read(out/names[2]);D=read(out/names[3]);R=read(out/'v4_runtime_analysis.json')
+    A=read(out/names[0]);B=read(out/names[2]);D=read(out/names[3]);E=read(out/names[4]);R=read(out/'v4_runtime_analysis.json')
     gate={'schema':'worldmot_v4_stage_gate_v1','generated_utc':datetime.now(timezone.utc).isoformat(),
         'branch':'research/worldmot-v4-persistent-state-20261025','base_commit':'b448af4a7dfdf738aeab0c9dd5bc01e9a875beac',
         'source_sha256':fp,'stages':{'A_GMT_SYNCHRONOUS_IDENTITY_AUDIT':A['status'],
@@ -57,23 +102,10 @@ def main():
         'full_training_qualified':False,'new_full_training_authorized':False,'new_V4_formal_TEST_authorized':False,
         'R2_R3_predictions_or_weights_modified':False,'current_limit':'no new real V4 measurement until immutable NAS inputs can be verified'}
     if D.get('status')=='COMPLETE':
-        variants=D['variants'];base=variants['C0']['original_legal_TRAIN_VAL_TrackEval'];candidate=variants['C4']['original_legal_TRAIN_VAL_TrackEval']
-        diag=variants['C4']['paired_against_C0']
-        eligible=[]
-        for key in ('C1','C2','C3','C4'):
-            m=variants[key]['original_legal_TRAIN_VAL_TrackEval'];d=variants[key]['paired_against_C0']
-            if (not failures and all(m[k]>base[k] for k in ('HOTA','AssA','IDF1'))
-                and d.get('temporal_corrections',0)>d.get('temporal_regressions',0)
-                and d.get('same_person_corrections',0)>=d.get('same_person_regressions',0)
-                and d.get('different_person_corrections',0)>=d.get('different_person_regressions',0)):eligible.append(key)
-        chosen=max(eligible,key=lambda k:(variants[k]['original_legal_TRAIN_VAL_TrackEval']['AssA'],
-            variants[k]['original_legal_TRAIN_VAL_TrackEval']['IDF1'],variants[k]['original_legal_TRAIN_VAL_TrackEval']['HOTA'],-int(k[1]))) if eligible else None
-        qualified=bool(eligible) and B.get('status')=='COMPLETE' and A.get('status')=='COMPLETE'
         gate['stages']['C_WORLD_OBJECT_STATE_IMPLEMENTATION']='CPU_AND_REAL_C0_COMPATIBILITY_PASSED'
-        gate.update(scientific_gain_proven=bool(eligible),full_training_qualified=qualified,
-            TRAIN_eligible_state_variants=eligible,TRAIN_selected_state_variant=chosen,
-            C5_live_quality_gate_passed='C4' in eligible,
-            current_limit='TRAIN internal evidence only, final head saw all24; separate user authorization required for full next phase')
+        gate.update(qualify_state_variants(D['variants'],E,cpu_passed=not failures and not skipped,
+            audits_complete=B.get('status')=='COMPLETE' and A.get('status')=='COMPLETE'))
+        gate['current_limit']='TRAIN internal evidence only, final head saw all24; separate user authorization required for full next phase'
     write_json(out/'v4_stage_gate.json',gate)
     lines=['# WorldMOT V4 — master research report','',
         '本报告严格区分已通过的工程测试与尚未完成的真实实验。R2/R3 的原结果、权重与感知缓存不变。','',
@@ -97,7 +129,8 @@ def main():
         lines += ['','## 已完成 TRAIN 内部指标','','| 方法 | HOTA | AssA | IDF1 |','|---|---:|---:|---:|']
         for k,v in D['variants'].items():
             m=v['original_legal_TRAIN_VAL_TrackEval'];lines.append(f"| {k} | {m['HOTA']:.4f} | {m['AssA']:.4f} | {m['IDF1']:.4f} |")
-        lines += ['',f"预注册 TRAIN 验收门槛：{'通过' if gate['full_training_qualified'] else '未通过'}；候选：{gate.get('TRAIN_eligible_state_variants',[])}。所有负结果及新增回归均保留。"]
+        lines += ['',f"预注册 TRAIN 验收门槛：{'通过' if gate['full_training_qualified'] else '未通过'}；候选：{gate.get('TRAIN_eligible_state_variants',[])}。所有负结果及新增回归均保留。",
+            f"仅指标达标候选：{gate['TRAIN_metric_eligible_state_variants']}；原始真实案例验收：{gate['retained_original_case_by_variant']}。缺失或失败的案例不能视为通过。"]
     (docs/'V4_MASTER_RESEARCH_REPORT.md').write_text('\n'.join(lines)+'\n')
     stage_docs={'V4_STAGE_A_SYNC_IDENTITY.md':('阶段 A：公平同步身份核验',A['status'],
         'Protocol A 使用各自成功匹配的事件；Protocol B 使用与 GMT 共同 GT 事件。报告 TP/FP/FN、Precision、Recall、F1 和歧义掩码，不用总体 Accuracy 掩盖类不均衡。'),

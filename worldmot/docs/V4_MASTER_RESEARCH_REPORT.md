@@ -2,8 +2,8 @@
 
 本报告严格区分已通过的工程测试与尚未完成的真实实验。R2/R3 的原结果、权重与感知缓存不变。
 
-当前 CPU 测试：**258 项，失败 0 项，跳过 0 项**。
-执行代码指纹：`4f7086e8fc7fc1db19e1bcc3870739a3bf1405ffe0fc915221c4429e03da9465`。
+当前 CPU 测试：**271 项，失败 0 项，跳过 0 项**。
+执行代码指纹：`72bb31ffbbff9419ce13244dc11020c953cfdece4d41a6caf7461cfc6cb3795a`。
 
 GMT 原始完整轨迹已从原正式评测证据定位到 `fulltrain_20261022/test/gmt_native`，仍需恢复后逐文件复核 Manifest/轨迹 SHA。检测候选缓存不会作为 GMT Native Global ID。
 

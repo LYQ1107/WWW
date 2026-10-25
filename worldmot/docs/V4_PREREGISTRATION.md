@@ -131,3 +131,13 @@ identity similarity is shared by temporal assignment, update confidence and
 the causal scheduler. Unconfirmed/invalid-geometry pairs do not authorize this
 bridge, and future-dated memories are ignored. This is part of the registered
 C4 reliability-coordination bundle, not a new head or altered Birth threshold.
+
+Before any real replay starts, the qualification reporter also requires the
+retained original t704/t705 case to pass for the recommended state variant:
+the exact epoch1 checkpoint must be verified, C0 must reproduce ID158->162,
+and the variant must retain a positive ID without merging a different current
+person. Missing case evidence is not a pass. C1/C2 retain their measured TRAIN
+score eligibility, but are not recommended for full training without equivalent
+real-case evidence. C5 LIVE requires C4 to pass both its registered aggregate
+TRAIN quality gate and this mandatory case. No weights, state parameters,
+thresholds, variant inputs, or replay ranges change in this reporting fix.

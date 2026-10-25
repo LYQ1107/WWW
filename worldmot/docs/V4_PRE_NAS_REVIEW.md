@@ -3,7 +3,7 @@
 This review adds no real-data result and selects no parameter from TEST. The
 immutable checkpoint/cache/trajectory checks remain pending until NAS recovery.
 
-The source-bound CPU receipt currently contains 258 tests, zero failures and
+The source-bound CPU receipt currently contains 271 tests, zero failures and
 zero skips. The original 200 package tests remain in the suite. In addition to
 the numeric CV/Kalman, identity, visibility and matching assertions, the online
 frontend now has a complete synthetic request/skip/skip/request sequence:
@@ -65,3 +65,12 @@ does not change the registered real policy's 30-tick setting.
 The exact retained epoch1 t704/t705 case, native TRAIN scores, actual correction
 and regression counts, and LIVE latency remain **unmeasured** at this stage.
 Passing synthetic tests does not satisfy those outstanding requirements.
+
+Before real replay, 13 additional qualification regressions now verify that
+positive aggregate TRAIN scores cannot override a missing or failed original
+real-case recovery. The exact retained checkpoint and C0's ID158->162 failure
+must be verified, and the recommended variant must retain the recovered ID
+without a different-person merge. C5 LIVE also requires this C4-specific case
+pass. TRAIN metric eligibility and complete qualification are separate fields;
+C1/C2 without retained-case evidence are not silently marked qualified. These
+are reporting and acceptance checks, not changes to frozen model behavior.
