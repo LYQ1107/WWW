@@ -100,3 +100,14 @@ epoch1 (`d4644ff95cbb7f255f70f155055fba6870863a69e7043f91b920e85ce20693dd`),
 not necessarily the final all24 Full checkpoint. Any exact-number reproduction
 must use that separately identified retained checkpoint; it cannot be silently
 substituted into the primary C0-C5 comparison.
+
+Hardware selection is based on engineering timing, never identity scores.
+Before six-scene replay, run the registered 16-timestamp real CPU preflight and
+a 16-timestamp crowded TRAIN-scene24 CPU profile. Only if head computation is
+at least 35% of compute time, the mean variant step costs at least .02s, and
+six authorized V100s are idle, run one identical short GPU profile. Use six GPUs
+for the independent scenes only when measured compute speed is >1.25x faster
+and all six remain idle. Otherwise keep CPU. All variants within a scene share
+the same device and float32 head precision. These samples are not LIVE FPS.
+The independent existing-TEST-output A audit must continue even if a V4 TRAIN
+engineering preflight fails; it does not depend on V4 state-estimator success.

@@ -279,6 +279,8 @@ def main():
     report={'schema':'worldmot_v4_frozen_TRAIN_scene_replay_v1','status':'COMPLETE' if a.limit is None else 'LIMITED_PREFLIGHT',
         'scene':a.scene,'legal_original_GT':a.scene in LEGAL_VAL,'timestamps':exact_frames,'source_sha256':fp,
         'checkpoint':provenance,'separately_trained_NoGeometry_reference_checkpoint':ng_provenance,
+        'execution_device':a.device,'identity_head_precision':'float32',
+        'physical_device_selection':__import__('os').environ.get('CUDA_VISIBLE_DEVICES',''),
         'optimizer_used':False,'TEST_read':False,'C0_R2_exact_frames':exact_frames,
         'closed_loop':{k:audits[k].report() for k in audits},'corrections_and_regressions':{k:dict(v) for k,v in contrasts.items()},
         'factorial_single_factor_edges':{k:dict(v) for k,v in factorial_edges.items()},

@@ -69,20 +69,67 @@ def main():
         process=subprocess.Popen([sys.executable,'-u',*arguments],cwd=repo,env=environment,
             stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)
         log.close();return process
+    def idle_V100s():
+        try:
+            query=subprocess.run(['nvidia-smi','--query-gpu=index,uuid,name,memory.used','--format=csv,noheader,nounits'],
+                text=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE,check=True,timeout=10)
+        except (OSError,subprocess.SubprocessError):return []
+        available=[]
+        for line in query.stdout.splitlines():
+            index,uuid,name,memory=[x.strip() for x in line.split(',')]
+            if int(index) in (4,5,6,7,8,9) and 'V100' in name and int(memory)<100:
+                available.append((index,uuid))
+        return available
+    stage_a=run('existing_TEST_sync_audit',[str(Path(__file__).with_name('compare_gmt_v4_synchronous_identity.py')),
+        '--r2-root',str(a.r2_root),'--output',str(root/'v4_gmt_synchronous_identity_comparison.json'),'--with-current-only'])
+    def finish_stage_a():
+        code=stage_a.wait()
+        if code:
+            write_json(root/'v4_gmt_synchronous_identity_comparison.json',{'status':'AUDIT_UNAVAILABLE_LOGS_PRESERVED',
+                'exit_code':code,'GMT_sync_metrics':None,'inference_or_thresholds_not_modified':True})
+        return code
     replay=str(Path(__file__).with_name('run_worldobject_v4_train_replay.py'))
     status('REAL_CPU_PREFLIGHT_RUNNING',run_root=str(root),NAS_free_bytes=free)
     pre=run('CPU_real_preflight',[replay,'--r2-root',str(a.r2_root),'--output',str(root/'CPU_preflight'),
         '--scene','4','--limit','16','--with-single-step'])
     code=pre.wait()
-    if code:status('REAL_PREFLIGHT_FAILED_LOGS_PRESERVED',exit_code=code);return
+    if code:status('REAL_PREFLIGHT_FAILED_LOGS_PRESERVED',exit_code=code,stage_A_exit=finish_stage_a());return
     preflight=json.loads((root/'CPU_preflight/replay_report.json').read_text())
-    if preflight['C0_R2_exact_frames']!=16:status('REAL_PREFLIGHT_C0_EXACTNESS_FAILED');return
-    if code_fingerprint(repo)!=fp:status('HELD_SOURCE_CHANGED_AFTER_PREFLIGHT');return
-    status('TRAIN_SIX_SCENES_AND_EXISTING_TEST_SYNC_AUDIT_RUNNING',replay_device='cpu',healthy_workers_will_not_be_restarted=True)
+    if preflight['C0_R2_exact_frames']!=16:status('REAL_PREFLIGHT_C0_EXACTNESS_FAILED',stage_A_exit=finish_stage_a());return
+    if code_fingerprint(repo)!=fp:status('HELD_SOURCE_CHANGED_AFTER_PREFLIGHT',stage_A_exit=finish_stage_a());return
+    # CPU remains the default. Check the crowded TRAIN scene before deciding
+    # whether a measured head-compute bottleneck warrants short GPU profiling.
+    crowd=run('CPU_crowd_preflight',[replay,'--r2-root',str(a.r2_root),'--output',str(root/'CPU_crowd_preflight'),
+        '--scene','24','--limit','16','--with-single-step'])
+    if crowd.wait():status('CROWD_PREFLIGHT_FAILED_LOGS_PRESERVED',exit_code=crowd.returncode,stage_A_exit=finish_stage_a());return
+    crowd_report=json.loads((root/'CPU_crowd_preflight/replay_report.json').read_text())
+    def compute_seconds(report):
+        return sum(x['tracking_core_wall_s']['sum_s'] for x in report['timings'].values())+report['B1_total_wall_s']
+    cpu_compute=compute_seconds(crowd_report)
+    cpu_head=sum(x['head_and_evidence_transfer_s']['sum_s'] for x in crowd_report['timings'].values())
+    average_core=cpu_compute/(16*len(crowd_report['timings']))
+    choice={'selected':'cpu','CPU_crowd_compute_s':cpu_compute,'CPU_head_fraction':cpu_head/max(cpu_compute,1e-12),
+        'CPU_average_variant_step_s':average_core,'identity_metrics_used_for_device_selection':False,
+        'same_frozen_weights_inputs_precision_and_no_optimizer':True}
+    replay_GPUs=[];available=idle_V100s()
+    if cpu_head/max(cpu_compute,1e-12)>=.35 and average_core>=.02 and len(available)>=6:
+        status('FINITE_GPU_ENGINEERING_PROFILE_RUNNING',physical_GPU=available[0][0])
+        gpu=run('GPU_crowd_preflight',[replay,'--r2-root',str(a.r2_root),'--output',str(root/'GPU_crowd_preflight'),
+            '--scene','24','--limit','16','--with-single-step','--device','cuda:0'],{**env,'CUDA_VISIBLE_DEVICES':available[0][1]})
+        gpu_code=gpu.wait();choice['GPU_preflight_exit_code']=gpu_code
+        if gpu_code==0:
+            gpu_report=json.loads((root/'GPU_crowd_preflight/replay_report.json').read_text())
+            gpu_compute=compute_seconds(gpu_report);choice['GPU_crowd_compute_s']=gpu_compute
+            choice['compute_speed_ratio']=cpu_compute/max(gpu_compute,1e-12)
+            available=idle_V100s()
+            if gpu_compute*1.25<cpu_compute and len(available)>=6:
+                replay_GPUs=available[:6];choice['selected']='one_idle_V100_per_TRAIN_scene'
+    write_json(root/'hardware_choice.json',choice)
+    status('TRAIN_SIX_SCENES_AND_EXISTING_TEST_SYNC_AUDIT_RUNNING',replay_device=choice['selected'],
+        healthy_workers_will_not_be_restarted=True,hardware_choice=choice)
     workers={sid:run(f'TRAIN_scene_{sid:02d}',[replay,'--r2-root',str(a.r2_root),'--output',str(root/f'scene_{sid:02d}'),
-        '--scene',str(sid),'--with-single-step']) for sid in VAL_SCENES}
-    stage_a=run('existing_TEST_sync_audit',[str(Path(__file__).with_name('compare_gmt_v4_synchronous_identity.py')),
-        '--r2-root',str(a.r2_root),'--output',str(root/'v4_gmt_synchronous_identity_comparison.json'),'--with-current-only'])
+        '--scene',str(sid),'--with-single-step',*(['--device','cuda:0'] if replay_GPUs else [])],
+        {**env,'CUDA_VISIBLE_DEVICES':replay_GPUs[index][1]} if replay_GPUs else env) for index,sid in enumerate(VAL_SCENES)}
     mechanism=run('retained_original_case',[replay,'--r2-root',str(a.r2_root),'--output',str(root/'retained_case'),
         '--scene','24','--limit','705','--scope','state','--retained-mechanism'])
     failures={}
@@ -94,10 +141,7 @@ def main():
         write_json(a.runtime/'controller_state.json',state);time.sleep(20)
     failures={str(sid):w.returncode for sid,w in workers.items() if w.returncode}
     # A failure cannot cancel independent authorized audits or healthy workers.
-    a_code=stage_a.wait();mechanism_code=mechanism.wait()
-    if a_code:
-        write_json(root/'v4_gmt_synchronous_identity_comparison.json',{'status':'AUDIT_UNAVAILABLE_LOGS_PRESERVED',
-            'exit_code':a_code,'GMT_sync_metrics':None,'inference_or_thresholds_not_modified':True})
+    a_code=finish_stage_a();mechanism_code=mechanism.wait()
     if failures:status('TRAIN_REPLAY_FAILURE_NO_AUTOMATIC_RESTART',failed_scenes=failures,
         stage_A_exit=a_code,retained_case_exit=mechanism_code);return
     if code_fingerprint(repo)!=fp:status('HELD_SOURCE_CHANGED_NO_DEPENDENT_SCORING');return
@@ -111,12 +155,7 @@ def main():
     if report.returncode:status('REPORT_FAILED_LOGS_PRESERVED');return
     gate=json.loads((repo/'worldmot/results/v4_stage_gate.json').read_text())
     # Limited LIVE engineering only, on a genuinely idle authorized V100.
-    query=subprocess.run(['nvidia-smi','--query-gpu=index,uuid,memory.used','--format=csv,noheader,nounits'],
-        text=True,stdout=subprocess.PIPE,check=True)
-    idle=[]
-    for line in query.stdout.splitlines():
-        index,uuid,memory=[x.strip() for x in line.split(',')]
-        if int(index) in (4,5,6,7,8,9) and int(memory)<100:idle.append((index,uuid))
+    idle=idle_V100s()
     if idle:
         gpu_index,gpu_uuid=idle[0];variants=['C0','C1','C2','C3','C4']+(['C5'] if gate.get('C5_live_quality_gate_passed') else [])
         live_env={**env,'CUDA_VISIBLE_DEVICES':gpu_uuid}
