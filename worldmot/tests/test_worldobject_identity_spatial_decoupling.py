@@ -1,4 +1,5 @@
 import numpy as np
+import pytest
 from worldobject_synthetic import core,obs,gid
 from worldmot.tracking.world_object_identity_memory import WorldObjectIdentityMemory
 
@@ -18,8 +19,9 @@ def test_recovered_identity_survives_next_frame_spatial_staleness():
     assert c.bank.objects[1].center[0]>99
 
 
-def test_geometry_failure_preserves_identity_but_does_not_write_bad_position():
-    c=safe_core();c.step([obs()],0)
+@pytest.mark.parametrize('coordinate_views',[False,True])
+def test_geometry_failure_preserves_identity_but_does_not_write_bad_position(coordinate_views):
+    c=safe_core(enable_multiview_coordination=coordinate_views);c.step([obs()],0)
     old=c.bank.objects[1].center.copy();f=c.bank.objects[1].identity_embedding.copy()
     r=c.step([obs(center=(999,0,3),geometry=False,timestamp=1)],1)
     assert gid(r,1)==1
@@ -28,15 +30,17 @@ def test_geometry_failure_preserves_identity_but_does_not_write_bad_position():
     assert c.bank.objects[1].identity_state.identity_update_status=='SHORT_TERM_ONLY_SPATIAL_UNCERTAIN'
 
 
-def test_spatially_close_but_different_visual_identity_does_not_merge():
-    c=safe_core();c.step([obs()],0)
+@pytest.mark.parametrize('coordinate_views',[False,True])
+def test_spatially_close_but_different_visual_identity_does_not_merge(coordinate_views):
+    c=safe_core(enable_multiview_coordination=coordinate_views);c.step([obs()],0)
     r=c.step([obs(feature=(0,1,0),timestamp=1)],1)
     assert gid(r,1)!=1
     np.testing.assert_array_equal(c.bank.objects[1].identity_embedding,[1,0,0])
 
 
-def test_similar_people_compete_without_contaminating_memory():
-    c=safe_core();r=c.step([obs(1,0),obs(1,1,feature=(1,.01,0),center=(10,0,3))],0)
+@pytest.mark.parametrize('coordinate_views',[False,True])
+def test_similar_people_compete_without_contaminating_memory(coordinate_views):
+    c=safe_core(enable_multiview_coordination=coordinate_views);r=c.step([obs(1,0),obs(1,1,feature=(1,.01,0),center=(10,0,3))],0)
     first=c.bank.objects[1].identity_embedding.copy()
     r=c.step([obs(1,0,timestamp=1),obs(1,1,feature=(1,.01,0),center=(10,0,3),timestamp=1)],1)
     assert len({x['global_id'] for x in r['tracks_2d_by_camera']['1']})==2
@@ -93,3 +97,45 @@ def test_competing_current_people_prevent_overconfident_memory_update():
     assert len(r['tracks_2d_by_camera']['1'])==2
     assert c.bank.objects[1].identity_state.identity_update_status=='IDENTITY_UNCERTAIN_NO_LONG_TERM_UPDATE'
     assert c.bank.objects[1].spatial_state.last_trusted_geometry_timestamp==0
+
+
+def test_confirmed_unlike_views_survive_when_only_second_camera_remains():
+    from test_worldobject_memory import evidence
+    from worldmot.models.world_object_model_inputs import model_inputs
+    c=safe_core(enable_multiview_coordination=True)
+    ev=evidence(0,2);ev['birth_pair_logits']=np.ones((2,2))*20
+    first=c.step([obs(1),obs(2,feature=(0,1,0))],0,evidence=ev)
+    assert gid(first,1)==gid(first,2)==1
+    memory=c.bank.objects[1].identity_state
+    assert set(memory.short_term_embedding_by_camera)=={1,2}
+    np.testing.assert_array_equal(memory.long_term_embedding,[1,0,0])
+    current=[obs(2,feature=(0,1,0),timestamp=1)]
+    tensors=model_inputs(c.bank.active(),current,c.config,1)
+    np.testing.assert_array_equal(tensors[0].numpy()[0],[0,1,0])
+    second=c.step(current,1)
+    assert gid(second,2)==1 and c.bank.objects[1].spatial_state.last_trusted_geometry_timestamp==1
+    np.testing.assert_array_equal(memory.long_term_embedding,[1,0,0])
+    # Current similarity from an unrelated third appearance is insufficient,
+    # even with perfectly coincident geometry.
+    third=c.step([obs(2,feature=(0,0,1),timestamp=2)],2)
+    assert gid(third,2)!=1
+
+
+def test_unconfirmed_geometry_does_not_authorize_unlike_view_bridge():
+    from test_worldobject_memory import evidence
+    c=safe_core(enable_multiview_coordination=True)
+    ev=evidence(0,2);ev['birth_pair_logits']=np.ones((2,2))*20
+    c.step([obs(1,geometry=False),obs(2,feature=(0,1,0),geometry=False)],0,evidence=ev)
+    assert set(c.bank.objects[1].identity_state.short_term_embedding_by_camera)=={1}
+
+
+def test_future_camera_memory_is_not_used_by_query_or_identity_evidence():
+    from worldmot.models.world_object_model_inputs import model_inputs
+    from worldmot.tracking.world_object_identity_memory import identity_similarity
+    c=safe_core(enable_multiview_coordination=True);c.step([obs(1)],0)
+    memory=c.bank.objects[1].identity_state
+    memory.short_term_embedding_by_camera[2]=np.array([0.,1,0])
+    memory.short_term_confidence_by_camera[2]=1.;memory.short_term_timestamp_by_camera[2]=100
+    current=obs(2,feature=(0,1,0),timestamp=1)
+    np.testing.assert_array_equal(model_inputs(c.bank.active(),[current],c.config,1)[0].numpy()[0],[1,0,0])
+    assert identity_similarity(c.bank.objects[1],current,c.config)==0

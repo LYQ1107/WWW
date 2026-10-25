@@ -12,7 +12,7 @@ def main():
     p=argparse.ArgumentParser();p.add_argument('--r2-root',type=Path,required=True)
     p.add_argument('--output',type=Path,required=True);p.add_argument('--device',default='cuda:0')
     p.add_argument('--variants',nargs='+',choices=['C0','C1','C2','C3','C4','C5'],default=['C0','C1','C2','C3','C4'])
-    p.add_argument('--C5-quality-gate',type=Path);p.add_argument('--limit',type=int,default=30)
+    p.add_argument('--C5-quality-gate',type=Path);p.add_argument('--limit',type=int,default=61)
     a=p.parse_args()
     if not 1<=a.limit<=100:raise ValueError('FINITE_LIVE_PREFLIGHT_ONLY')
     if 'C5' in a.variants:
@@ -61,6 +61,7 @@ def main():
             torch.cuda.reset_peak_memory_stats();variant_started=time.perf_counter()
             for sid in (4,8,12):
                 tracker.reset(sid);path=folder/f'scene_{sid:02d}.jsonl';scene_count=0
+                scene_calls=0;reactivations=0;aligned_calls=0;last_request=None;max_gap=0
                 with path.open('x') as stream:
                     for pair in ds.synchronized_pairs(sid,limit=a.limit):
                         started=time.perf_counter();t=time.perf_counter()
@@ -73,9 +74,20 @@ def main():
                         latency=time.perf_counter()-started
                         timing_rows.append({'RGB_read_s':read_s,'final_output_s':output_s,'RGB_to_final_ID_s':latency,
                             **stages})
-                        calls+=int(row.get('omega_evidence_request',{}).get('action','REQUEST_OMEGA')=='REQUEST_OMEGA')
+                        requested=row.get('omega_evidence_request',{}).get('action','REQUEST_OMEGA')=='REQUEST_OMEGA'
+                        calls+=int(requested);scene_calls+=int(requested)
+                        if requested:
+                            if last_request is not None:
+                                gap=pair.frame_id-last_request;max_gap=max(max_gap,gap)
+                                reactivations+=int(gap>1)
+                            last_request=pair.frame_id
+                            aligned_calls+=int(row['alignment']['success'])
                         scene_count+=1
-                scope.append({'scene':sid,'paired_timestamps':scene_count,'full_video':False})
+                scope.append({'scene':sid,'paired_timestamps':scene_count,'full_video':False,
+                    'Omega_calls':scene_calls,'Omega_skips':scene_count-scene_calls,
+                    'nonconsecutive_reconstruction_reactivations':reactivations,
+                    'aligned_Omega_calls':aligned_calls,'failed_alignment_calls':scene_calls-aligned_calls,
+                    'maximum_reconstruction_gap_frame_ticks':max_gap})
             total=sum(r['RGB_to_final_ID_s'] for r in timing_rows)
             model_time=sum(r.get('omega_model_only_s',0.) for r in timing_rows)
             results[variant]={'scope':scope,'synchronized_dual_camera_times':len(timing_rows),'omega_calls':calls,
@@ -87,6 +99,7 @@ def main():
                 'initial_frames_included':True,'initialization_excluded_from_per_timestamp_latency':True,
                 'equal_warmup_per_variant':{'TRAIN_scene':4,'timestamps':5,'tracking_state_discarded_before_measured_origins':True},
                 'timing_scope':'real RGB decode + real GMT subprocess/IPC wait + conditional Ω + alignment/support + assignment/state + flushed final-ID serialization',
+                'sparse_LIVE_reactivation_observed':any(x['nonconsecutive_reconstruction_reactivations'] for x in scope),
                 'single_video_latency_not_six_GPU_total_throughput':True}
             write_json(folder/'timing_summary.json',results[variant])
             print(json.dumps({'live_variant_complete':variant,**results[variant]}),flush=True)

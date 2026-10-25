@@ -160,7 +160,7 @@ def main():
         gpu_index,gpu_uuid=idle[0];variants=['C0','C1','C2','C3','C4']+(['C5'] if gate.get('C5_live_quality_gate_passed') else [])
         live_env={**env,'CUDA_VISIBLE_DEVICES':gpu_uuid}
         arguments=[str(Path(__file__).with_name('run_worldobject_v4_live_preflight.py')),'--r2-root',str(a.r2_root),
-            '--output',str(root/'LIVE_TRAIN_preflight'),'--variants',*variants,'--limit','30']
+            '--output',str(root/'LIVE_TRAIN_preflight'),'--variants',*variants,'--limit','61']
         if 'C5' in variants:arguments+=['--C5-quality-gate',str(repo/'worldmot/results/v4_stage_gate.json')]
         status('FINITE_REAL_TRAIN_LIVE_TIMING_RUNNING',physical_GPU=gpu_index,variants=variants)
         live=run('LIVE_TRAIN_preflight',arguments,live_env);live_code=live.wait()

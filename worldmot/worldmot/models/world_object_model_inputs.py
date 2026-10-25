@@ -22,7 +22,10 @@ def model_inputs(history,observations,config,timestamp,device="cpu"):
     if int(birth_mask.sum())>config.max_birth_pair_edges:
         raise ValueError("BIRTH_PAIR_EDGE_LIMIT: no labelled samples silently removed")
     for i,x in enumerate(history):
-        if config.use_appearance and x.identity_embedding is not None:q[i]=x.identity_embedding
+        if config.use_appearance and x.identity_embedding is not None:
+            memory=getattr(x,'identity_state',None)
+            q[i]=(memory.context_embedding(cameras[visible],timestamp,d,config.min_memory_score)
+                  if config.enable_multiview_coordination and memory is not None else x.identity_embedding)
         qc[i]=[min(x.age,1000)/1000,min(x.missed,100)/100,x.identity_confidence,float(x.status=="CONFIRMED")]
     for j,o in enumerate(observations):
         if config.use_appearance and o.feature_valid:obs[j]=o.roi_feature

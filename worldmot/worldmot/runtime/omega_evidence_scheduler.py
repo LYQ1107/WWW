@@ -35,7 +35,8 @@ class OmegaEvidenceScheduler:
             # Deliberately do not access spatial_support/world_center/quality.
             if not o.feature_valid:
                 reasons.append("NO_VISUAL_FEATURE");continue
-            scores=sorted(((float(np.dot(q.identity_embedding,o.roi_feature)),q.global_id,q.missed)
+            from ..tracking.world_object_identity_memory import identity_similarity
+            scores=sorted(((identity_similarity(q,o,self.config),q.global_id,q.missed)
                 for q in history if q.identity_embedding is not None),reverse=True)
             if not scores or scores[0][0]<self.config.min_appearance_similarity:
                 reasons.append("NEW_OR_UNEXPLAINED_IDENTITY");continue

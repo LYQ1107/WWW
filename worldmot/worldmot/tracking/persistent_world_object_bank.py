@@ -80,14 +80,15 @@ class PersistentWorldObjectBank:
             return all(o.feature_valid and o.score>=cfg.min_memory_score for o in measurement.observations)
         if q.identity_embedding is None:return False
         history=self.active()
+        from .world_object_identity_memory import identity_similarity
         for j,o in zip(indices,measurement.observations):
-            app=float(np.dot(q.identity_embedding,o.roi_feature)) if o.feature_valid else -1.
-            others=[float(np.dot(other.identity_embedding,o.roi_feature)) for other in history
+            app=identity_similarity(q,o,cfg) if o.feature_valid else -1.
+            others=[identity_similarity(other,o,cfg) for other in history
                     if other.global_id!=q.global_id and other.identity_embedding is not None and o.feature_valid]
             gap=app-max(others,default=-1.)
             current=[(other_index,other) for other_index,other in enumerate(self._identity_reference_observations)
                      if other.camera_id==o.camera_id and other.key!=o.key and other.feature_valid]
-            current_gap=app-max((float(q.identity_embedding@other.roi_feature) for _,other in current),default=-1.)
+            current_gap=app-max((identity_similarity(q,other,cfg) for _,other in current),default=-1.)
             visual=(app>=cfg.recovery_similarity and gap>=cfg.identity_competition_margin
                     and current_gap>=cfg.identity_competition_margin)
             learned_strong=False
@@ -146,7 +147,8 @@ class PersistentWorldObjectBank:
         q.spatial_state_status=state.uncertainty_status
         return bool(accepted)
 
-    def _update(self, q, measurement, timestamp, gate=1.0, delta=None, spatial_conflict=False, identity_trusted=True):
+    def _update(self, q, measurement, timestamp, gate=1.0, delta=None, spatial_conflict=False, identity_trusted=True,
+                multiview_identity_confirmed=False):
         cfg = self.config
         support = measurement.support
         spatial_trusted=False
@@ -171,7 +173,7 @@ class PersistentWorldObjectBank:
                     identity_confidence=q.identity_confidence)
             q.identity_state.update(actual,timestamp,trusted=identity_trusted and gate>0,spatial_trusted=spatial_trusted,
                 dimension=cfg.feature_dim,momentum=cfg.memory_momentum,coordinate_views=cfg.enable_multiview_coordination,
-                update_gate=gate,memory_delta=delta)
+                update_gate=gate,memory_delta=delta,multiview_identity_confirmed=multiview_identity_confirmed)
             q.identity_embedding=q.identity_state.long_term_embedding
             q.identity_confidence=q.identity_state.identity_confidence
         elif cfg.use_appearance and actual and gate > 0:
@@ -289,7 +291,7 @@ class PersistentWorldObjectBank:
                     delta = np.mean([selected_delta[i,j] for j in option.indices], axis=0)
                 self._update(q, measurement, timestamp, gate, delta,
                              option.reason == "VISUAL_RECOVERY_SPATIAL_CONFLICT",
-                             trusted_selected.get(q.global_id,True))
+                             trusted_selected.get(q.global_id,True),len(option.indices)>1)
             else:
                 birth_count += 1
                 prob = (min(_sigmoid(learned["birth_logits"][j]) for j in option.indices)
@@ -304,7 +306,7 @@ class PersistentWorldObjectBank:
                     camera_history=set(measurement.cameras))
                 self.objects[q.global_id] = q
                 self.next_id += 1
-                self._update(q, measurement, timestamp)
+                self._update(q, measurement, timestamp,multiview_identity_confirmed=len(option.indices)>1)
                 if prob < self.config.birth_threshold or decision.diagnostics.get("fallback"):
                     q.status = "UNCONFIRMED"
             q.decision_status = option.reason

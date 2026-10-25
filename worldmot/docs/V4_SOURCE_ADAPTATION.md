@@ -36,3 +36,13 @@ Two views from one Ω reconstruction share errors. C4 uses a convex mixture of
 scatter plus view disagreement, performs one update per object/timestamp, and
 never divides its noise by the number of cameras. Disagreement also reduces
 confidence. C0 remains the frozen R2 path; all changes require explicit V4 flags.
+
+C4 retains camera-specific descriptors after a jointly selected, geometrically
+trusted two-view observation. A different appearance is kept in its camera's
+memory without overwriting the stable long-term reference. Historical matching,
+update confidence and the scheduler can use this established view evidence.
+The frozen head receives the same D1024 query shape, conditioned on trusted past
+descriptors of currently present cameras. This is an adapted memory mechanism,
+not extra learned weights or an independent 2D tracker. Its actual TRAIN benefit
+and any added wrong-view contamination must be measured, not inferred from the
+synthetic handoff test.

@@ -3,7 +3,7 @@
 This review adds no real-data result and selects no parameter from TEST. The
 immutable checkpoint/cache/trajectory checks remain pending until NAS recovery.
 
-The source-bound CPU receipt currently contains 250 tests, zero failures and
+The source-bound CPU receipt currently contains 258 tests, zero failures and
 zero skips. The original 200 package tests remain in the suite. In addition to
 the numeric CV/Kalman, identity, visibility and matching assertions, the online
 frontend now has a complete synthetic request/skip/skip/request sequence:
@@ -21,6 +21,13 @@ frontend now has a complete synthetic request/skip/skip/request sequence:
 * A corrupt prior covariance is detected, spatial evidence abstains, and a
   trusted current observation reinitializes a positive covariance without
   changing the current person's ID or suppressing the detector box.
+* The original TRAIN/TEST annotation hashes are pinned and locally verified
+  against the published R2 provenance. A unit fixture rejects modified bytes.
+* A confirmed unlike-view pair can remain one identity when only camera B is
+  present next. Its camera descriptor reaches the frozen head's unchanged
+  query shape, without replacing the long-term camera-A reference. Unreliable
+  geometry, unconfirmed pairs and future-dated memories do not authorize this
+  bridge. Distinct-person and competing-person regressions are also checked.
 
 These are synthetic engineering assertions, not reconstruction quality or person
 association measurements on VisionTrack. The 3-tick refresh in the unit fixture

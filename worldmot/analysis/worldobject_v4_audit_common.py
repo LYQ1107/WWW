@@ -7,6 +7,15 @@ import numpy as np
 
 VAL_SCENES=(4,8,12,16,20,24)
 LEGAL_VAL=(4,8,12)
+EXPECTED_TRAIN_ANNOTATIONS_SHA='9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85'
+EXPECTED_TEST_ANNOTATIONS_SHA='7a1e735bf25026a56148deaeb432e0520c6ad5dad97d5362aa58739255389593'
+
+
+def verify_immutable_annotations(dataset,expected_sha):
+    from worldmot.data.worldobject_cache import sha256
+    actual=sha256(dataset.annotation_path)
+    if actual!=expected_sha:raise ValueError('ORIGINAL_R2_GT_ANNOTATIONS_SHA_MISMATCH')
+    return {'sha256':actual,'source':str(dataset.annotation_path),'modified':False}
 
 
 def write_json(path,value):
@@ -75,11 +84,13 @@ class IdentityAudit:
         self.prior={gid:set(self.history_people[gid]) for gid in self.active}
         self.old_spatial={q.global_id:(q.center.copy(),q.covariance.copy()) for q in bank.active()}
         self.old_identity={q.global_id:(None if q.identity_embedding is None else q.identity_embedding.copy()) for q in bank.active()}
+        self.old_views={(q.global_id,camera):feature.copy() for q in bank.active() if q.identity_state is not None
+                        for camera,feature in q.identity_state.short_term_embedding_by_camera.items()}
 
     def observe(self,bank,observations,labels,history_calls):
         c=self.counts;self.events={};step=self.step_index;assignments=bank.last_assignments
         labelled=[(o,label,assignments[o.key]) for o,label in zip(observations,labels) if label is not None]
-        spatial_writes=set();identity_writes=set();false_births=set()
+        spatial_writes=set();identity_writes=set();view_writes=set();false_births=set()
         for o,label,gid in labelled:
             c['clean_observations']+=1;self.contingency[gid,label]+=1;self.gt_gids[label].add(gid)
             prior=self.prior.get(gid,set())
@@ -125,6 +136,11 @@ class IdentityAudit:
                 if (old_embedding is not None and q.identity_embedding is not None
                         and not np.array_equal(old_embedding,q.identity_embedding)):
                     identity_writes.add(gid)
+                if q.identity_state is not None:
+                    current_view=q.identity_state.short_term_embedding_by_camera.get(o.camera_id)
+                    previous_view=self.old_views.get((gid,o.camera_id))
+                    if current_view is not None and (previous_view is None or not np.array_equal(previous_view,current_view)):
+                        view_writes.add((gid,o.camera_id))
         for i,(a,la,ga) in enumerate(labelled):
             for b,lb,gb in labelled[i+1:]:
                 if a.camera_id==b.camera_id:continue
@@ -140,6 +156,7 @@ class IdentityAudit:
         for o,label,gid in labelled:self.history_people[gid].add(label)
         c['wrong_person_trusted_spatial_writes']+=len(spatial_writes)
         c['wrong_person_long_term_identity_writes']+=len(identity_writes)
+        c['short_term_view_writes_into_wrong_or_mixed_ID']+=len(view_writes)
         c['false_birth_global_IDs']+=len(false_births)
         c['timestamps']+=1;c['detections']+=len(observations);self.step_index+=1
 

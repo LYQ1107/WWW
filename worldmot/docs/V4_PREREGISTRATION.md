@@ -89,11 +89,14 @@ gated specifically on a qualifying C4; unsuccessful C4 still retains its finite
 cache/CPU diagnostics. Do not invent new variants after observing outcomes.
 
 Finite LIVE engineering timing, if a free authorized V100 is available: first
-30 timestamps of TRAIN scenes 4/8/12, identical physical device and precision for
+61 timestamps of TRAIN scenes 4/8/12, identical physical device and precision for
 C0-C4, and C5 only after its state-quality gate. Each variant gets the same five
 TRAIN-scene4 warmup timestamps, all tracking state discarded, before measured
 scene origins. Include read, IPC/wait, model, alignment, state and flushed ID
 output. Report initialization/warmup separately. This is not full-video FPS.
+The 61-time prefix extends past the 30-tick refresh interval. Report actual
+nonconsecutive reconstruction reactivations and their alignment success;
+do not infer successful sparse LIVE alignment from cache request counts.
 
 The historical t704->t705 ID158->162 example belongs to retained Full selection
 epoch1 (`d4644ff95cbb7f255f70f155055fba6870863a69e7043f91b920e85ce20693dd`),
@@ -111,3 +114,20 @@ and all six remain idle. Otherwise keep CPU. All variants within a scene share
 the same device and float32 head precision. These samples are not LIVE FPS.
 The independent existing-TEST-output A audit must continue even if a V4 TRAIN
 engineering preflight fails; it does not depend on V4 state-estimator success.
+
+Original annotation bytes are pinned to the published R2 provenance: TRAIN
+`9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85`
+and TEST `7a1e735bf25026a56148deaeb432e0520c6ad5dad97d5362aa58739255389593`.
+A's sparse per-frame ambiguity masks are retained alongside candidate counts;
+frames absent from that sparse mask list mean all-false masks, not missing data.
+
+C4 also preserves unlike camera appearances after the existing joint optimizer
+has confirmed a two-view object and both current geometric supports are trusted.
+It stores camera-specific short-term evidence without averaging a contrary view
+into the stable long-term reference. The frozen head still receives one D1024
+query vector: its descriptor is conditioned on the currently present cameras'
+trusted past memories, never GT/current association labels. Camera-specific
+identity similarity is shared by temporal assignment, update confidence and
+the causal scheduler. Unconfirmed/invalid-geometry pairs do not authorize this
+bridge, and future-dated memories are ignored. This is part of the registered
+C4 reliability-coordination bundle, not a new head or altered Birth threshold.

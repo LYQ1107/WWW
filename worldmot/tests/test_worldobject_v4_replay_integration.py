@@ -50,6 +50,7 @@ def test_all_registered_replay_paths_write_and_preserve_legacy_without_NAS(tmp_p
     monkeypatch.setattr('worldmot.data.visiontrack.VisionTrack',Dataset)
     monkeypatch.setattr('worldmot.data.worldobject_cache.WorldObjectCache',Cache)
     monkeypatch.setattr('worldmot.models.world_object_v4_checkpoint.load_frozen_r2_head',load_head)
+    monkeypatch.setattr(module,'verify_immutable_annotations',lambda dataset,expected:{'sha256':'SYNTHETIC_TEST_GT_ONLY','modified':False})
     monkeypatch.setattr(sys,'argv',['unit','--r2-root',str(tmp_path/'unused_R2'),'--output',str(tmp_path/'out'),
                                  '--scene','4','--limit','2','--with-single-step'])
     module.main()
@@ -62,3 +63,15 @@ def test_all_registered_replay_paths_write_and_preserve_legacy_without_NAS(tmp_p
     for variant in report['closed_loop']:
         rows=[json.loads(x) for x in (tmp_path/'out'/variant/'scene_04/tracks.jsonl').read_text().splitlines()]
         assert len(rows)==2 and all(sum(map(len,x['tracks_2d_by_camera'].values()))==2 for x in rows)
+
+
+def test_original_gt_hash_pin_rejects_edited_annotation(tmp_path,monkeypatch):
+    import pytest
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1]/'analysis'))
+    from worldobject_v4_audit_common import verify_immutable_annotations
+    from worldmot.data.worldobject_cache import sha256
+    path=tmp_path/'synthetic_annotations.json';path.write_text('{"synthetic":true}')
+    dataset=SimpleNamespace(annotation_path=path);expected=sha256(path)
+    assert verify_immutable_annotations(dataset,expected)['sha256']==expected
+    path.write_text('{"synthetic":"edited"}')
+    with pytest.raises(ValueError,match='GT_ANNOTATIONS_SHA_MISMATCH'):verify_immutable_annotations(dataset,expected)

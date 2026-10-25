@@ -65,7 +65,10 @@ class JointWorldObjectAssignment:
         if cfg.use_appearance and q.identity_embedding is not None and o.feature_valid:
             app = _similarity(q.identity_embedding, o.roi_feature) if app_override is None else float(app_override)
             memory=getattr(q,"identity_state",None)
-            if cfg.enable_safe_identity_memory and memory is not None:
+            if cfg.enable_multiview_coordination:
+                from .world_object_identity_memory import identity_similarity
+                app=identity_similarity(q,o,cfg,app)
+            elif cfg.enable_safe_identity_memory and memory is not None:
                 short=memory.short_term_embedding_by_camera.get(o.camera_id)
                 if short is not None:app=.8*app+.2*_similarity(short,o.roi_feature)
             if app < cfg.min_appearance_similarity and (learned_margin is None or learned_margin<cfg.learned_identity_recovery_logit):

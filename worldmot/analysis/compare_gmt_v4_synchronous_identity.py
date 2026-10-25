@@ -10,6 +10,7 @@ import numpy as np
 from worldmot.data.worldobject_cache import sha256
 from worldmot.data.visiontrack import VisionTrack
 from worldmot.evaluation.synchronous_multiview_identity import match_boxes,events,update_counts,summarize
+from worldobject_v4_audit_common import verify_immutable_annotations,EXPECTED_TEST_ANNOTATIONS_SHA
 
 METHODS=('GMT_NATIVE','FULL_WORLD_OBJECT_V3','FULL_NO_GEOMETRY_V3','HEAD_ONLY_NO_GEOMETRY_V3')
 LEGAL={1,2,3,4,6,7,8,9,10,11,15,16,18,19}
@@ -92,8 +93,9 @@ def main():
         no_history_provenance={'full':full_proof,'separately_trained_no_geometry':ng_proof,
             'all_histories_empty_each_timestamp':True,'threshold_selection_on_TEST':False,'not_an_online_MOT_experiment':True}
     ds=VisionTrack(a.dataset,split='test',load_annotations=True)
+    annotation_proof=verify_immutable_annotations(ds,EXPECTED_TEST_ANNOTATIONS_SHA)
     totals=defaultdict(Counter);paired=defaultdict(Counter);strata=defaultdict(Counter)
-    scenes={};cases=[];case_counts=Counter();match_audit=defaultdict(Counter)
+    scenes={};cases=[];case_counts=Counter();match_audit=defaultdict(Counter);ambiguity_masks=[]
     for sid in range(1,23):
         scope='legal14' if sid in LEGAL else 'blocked8_clean_subset_diagnostic'
         sc=defaultdict(Counter);sp=defaultdict(Counter);mask_counts=defaultdict(Counter)
@@ -123,11 +125,17 @@ def main():
                         core.reset(sid);current_results[key]=core.step(observations,pair.frame_id)
                 gt=ds.ground_truth_pair(pair)
                 for key,row in current_results.items():
+                    signature=lambda value:[(x['camera_id'],x.get('detection_id'),tuple(x['bbox_xywh']),x['score']) for x in flatten(value)]
+                    if signature(row)!=signature(rows[METHODS[1]]):raise ValueError('HISTORY_FREE_CURRENT_CANDIDATE_DIFFERENCE')
                     labels,_=match_boxes(flatten(row),gt)
                     for _,same,shared in events(labels):update_counts(current_counts[f'{scope}/{key}'],same,shared)
                 for m,row in rows.items():
                     matched[m],audit=match_boxes(flatten(row),gt)
                     mask_counts[m].update(audit['counts'])
+                    if audit['ambiguity_mask_indices']:
+                        ambiguity_masks.append({'scene':sid,'timestamp':pair.frame_id,'method':m,
+                            'prediction_count':audit['counts']['detections'],
+                            'masked_prediction_indices':audit['ambiguity_mask_indices']})
                     for _,same,shared in events(matched[m]):update_counts(sc[f'Protocol_A/{m}'],same,shared)
                 all_common=set.intersection(*(set(v) for v in matched.values()))
                 for m in METHODS[1:]:
@@ -179,6 +187,10 @@ def main():
         'IoU':.5,'matcher':'maximum cardinality then maximum IoU; ambiguous GT masked',
         'prediction_proofs':proofs,'GMT_manifest_evidence_sha256':sha256(evidence_path),
         'published_R2_coverage_evidence_sha256':sha256(r2_proof_path),
+        'original_TEST_annotation_proof':annotation_proof,
+        'GT_alignment_ambiguity_masks':{'encoding':'sparse nonzero masks; omitted frame/method entries have all-false masks',
+            'index_order':'flatten archived tracks_2d_by_camera in JSON camera/list order; original row hashes are in prediction_proofs',
+            'records':ambiguity_masks,'history_free_masks':'same as existing Full, after exact current candidate order/boxes/scores equality checks' if current_only else None},
         'metrics':{k:summarize(v) for k,v in totals.items()},'paired':{k:dict(v) for k,v in paired.items()},
         'strata':{k:dict(v) for k,v in strata.items()},'match_audit':{k:dict(v) for k,v in match_audit.items()},
         'per_scene':scenes,'runtime_wall_s':time.perf_counter()-started,

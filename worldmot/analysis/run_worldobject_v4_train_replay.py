@@ -19,7 +19,8 @@ import tarfile
 import time
 import numpy as np
 from worldobject_v4_audit_common import (VAL_SCENES,LEGAL_VAL,IdentityAudit,HistoryEvidenceObserver,
-    code_fingerprint,write_json,contrast_events,visual_only,visual_from_detections,timing_summary)
+    code_fingerprint,write_json,contrast_events,visual_only,visual_from_detections,timing_summary,
+    verify_immutable_annotations,EXPECTED_TRAIN_ANNOTATIONS_SHA)
 
 BASE='b448af4a7dfdf738aeab0c9dd5bc01e9a875beac'
 
@@ -98,6 +99,7 @@ def main():
     if raw.feature_dim!=1024:raise ValueError('FROZEN_1024D_ROI_REQUIRED')
     if any(p.requires_grad for p in model.parameters()):raise ValueError('FROZEN_MODEL_REQUIRED')
     ds=VisionTrack('/data/DATASETS/TRACKING/JDE/VisionTrack',split='train',load_annotations=True)
+    annotation_proof=verify_immutable_annotations(ds,EXPECTED_TRAIN_ANNOTATIONS_SHA)
     pairs={p.frame_id:p for p in ds.synchronized_pairs(a.scene)}
     cache=WorldObjectCache(a.r2_root/'cache_train_v2',a.scene,raw_cache=raw,require_features=True,require_geometry=True)
     states=state_configs(raw.feature_dim);factors=factorial_configs(raw.feature_dim)
@@ -248,6 +250,7 @@ def main():
                     probe.active=set(baseline_audit.active);probe.prior=copy.deepcopy(baseline_audit.prior)
                     probe.history_people.update(copy.deepcopy(baseline_audit.prior));probe.last=dict(prior_last)
                     probe.old_spatial=baseline_audit.old_spatial;probe.old_identity=baseline_audit.old_identity
+                    probe.old_views=baseline_audit.old_views
                     probe.step_index=baseline_audit.step_index-1
                     probe.observe(clone,observations,labels,cf_observers[key].calls)
                     b1_decisions[key].update(probe.counts)
@@ -280,6 +283,7 @@ def main():
         'scene':a.scene,'legal_original_GT':a.scene in LEGAL_VAL,'timestamps':exact_frames,'source_sha256':fp,
         'checkpoint':provenance,'separately_trained_NoGeometry_reference_checkpoint':ng_provenance,
         'execution_device':a.device,'identity_head_precision':'float32',
+        'original_TRAIN_annotation_proof':annotation_proof,
         'physical_device_selection':__import__('os').environ.get('CUDA_VISIBLE_DEVICES',''),
         'optimizer_used':False,'TEST_read':False,'C0_R2_exact_frames':exact_frames,
         'closed_loop':{k:audits[k].report() for k in audits},'corrections_and_regressions':{k:dict(v) for k,v in contrasts.items()},

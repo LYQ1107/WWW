@@ -132,3 +132,14 @@ def test_live_skip_then_fresh_reconstruction_reanchors_new_local_gauge(monkeypat
     assert gid(row,1)==gid(row,2)==1
     assert c.bank.objects[1].spatial_state.last_trusted_geometry_timestamp==3
     np.testing.assert_allclose(c.bank.objects[1].center,center,atol=1e-8)
+
+
+def test_scheduler_recognizes_confirmed_second_view_without_current_geometry():
+    from test_worldobject_memory import evidence
+    c=core(enable_motion_prediction=True,enable_safe_identity_memory=True,enable_multiview_coordination=True,
+           geometry_policy='UNCERTAINTY_SOFT')
+    ev=evidence(0,2);ev['birth_pair_logits']=np.ones((2,2))*20
+    c.step([obs(1),obs(2,feature=(0,1,0))],0,evidence=ev)
+    s=OmegaEvidenceScheduler(c.config);s.decide([],[],0);s.observe_alignment(0,True)
+    request=s.decide([obs(2,feature=(0,1,0),geometry=False,timestamp=1)],c.bank.active(),1)
+    assert request.action==SKIP_OMEGA and not request.reasons

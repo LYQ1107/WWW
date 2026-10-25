@@ -106,5 +106,7 @@ class WorldObjectTrackingCore:
                     row['identity_state']={'identity_confidence':q.identity_state.identity_confidence,
                         'last_identity_confirmed_timestamp':q.identity_state.last_identity_confirmed_timestamp,
                         'identity_update_status':q.identity_state.identity_update_status,
-                        'short_term_cameras':sorted(q.identity_state.short_term_embedding_by_camera)}
+                        'short_term_cameras':sorted(q.identity_state.short_term_embedding_by_camera),
+                        'short_term_confidence_by_camera':dict(q.identity_state.short_term_confidence_by_camera),
+                        'short_term_timestamp_by_camera':dict(q.identity_state.short_term_timestamp_by_camera)}
         return result
