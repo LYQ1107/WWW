@@ -13,8 +13,9 @@ Full no-geometry completed four selection epochs, selected two final epochs,
 then actually trained all 24 scenes twice. Each final epoch processed 28,754
 paired times and 539,738 clean matched identity observations. Its final checkpoint
 SHA is `b08badfc634c9652a34366951c93207fa321deb7d1a2b240a76798f11607053f`.
-The source/weight/coverage gate is verified and its 22-video TEST inference is
-running. Full V3 and head-only no-geometry have completed two selection epochs
+The source/weight/coverage gate is verified; its 22-video TEST inference has
+completed, with native TrackEval/MATLAB scoring and a true live sample.
+Full V3 and head-only no-geometry have completed three selection epochs
 and continue their registered training. Four parameter-free controls completed
 all-24 TRAIN replay and full row/checksum/candidate-equivalence checks.
 
@@ -33,8 +34,13 @@ no-geometry has 5,790 / 2,071 / 2,878. Thus the current cross-view aggregate
 improvement coexists with temporal regression. Independent net geometry benefit
 and superiority to GMT are not established.
 
-These counts are not official IDSW, HOTA, AssA, IDF1 or CVIDF1. Official current
-TEST columns remain empty until complete outputs and native scoring exist.
+These TRAIN counts are not official IDSW, HOTA, AssA, IDF1 or CVIDF1. Full
+no-geometry now has official legal-14 HOTA 60.4318, AssA 58.2867, IDF1 70.1622
+and CVIDF1 67.6049, below GMT and V2. MOTA 75.0228 exceeds GMT 72.9636 while
+identity scores remain lower. Full/Head TEST columns remain empty pending their
+registered final training and testing; no independent geometry gain is inferred
+from the completed appearance control. See
+`results/worldobject_v3_no_geometry_official_test.json` for hashes and live timing.
 
 The training key `first_appearance_split_count` is defined by the actual target
 builder as a split of a model-history-absent same-person birth pair. It is not

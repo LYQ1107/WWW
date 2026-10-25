@@ -18,8 +18,37 @@ Three unchanged geometry workers continue TEST preparation on the other devices.
 All four parameter-free controls have completed full TRAIN causal replay and
 independent row/hash/current-candidate verification; see
 `results/worldobject_v3_all_control_train_replay_verification.json`.
-No new official TEST accuracy result is available. This is an independent WorldMOT experiment; GMT is
+Full no-geometry has now completed all 22 TEST videos and official legal-14
+TrackEval plus original MATLAB scoring. Full geometry and head-only results are
+still pending. This is an independent WorldMOT experiment; GMT is
 a frozen detector/ROI provider and a separately scored reference.
+
+## First completed official TEST result: full no-geometry
+
+All rows use the same original 14 legal TEST videos. The current no-geometry
+model also delivered all 29,019 times of all 22 videos. Eight original-GT-blocked
+videos remain excluded from official scoring.
+
+| Method | HOTA | AssA | IDF1 | CVIDF1 | MOTA | TrackEval IDSW |
+|---|---:|---:|---:|---:|---:|---:|
+| GMT native reference | 66.0646 | 69.5787 | 80.1121 | 78.0613 | 72.9636 | 6,044 |
+| GMTDet + V2 reference | 61.0177 | 60.2274 | 74.2189 | 72.6929 | 75.4564 | 598 |
+| Full no-geometry V3 | 60.4318 | 58.2867 | 70.1622 | 67.6049 | 75.0228 | 2,130 |
+
+The control is below GMT and V2 in the principal identity/association metrics.
+Its higher MOTA than GMT comes with fewer ID switches and nearly identical
+TP/FP/FN; that numerical advantage does not imply better global identity quality.
+This result measures the completed no-geometry control and does not establish
+the independent effect of Ω. Complete metrics and immutable prediction hashes
+are in `results/worldobject_v3_no_geometry_official_test.json`.
+
+True live GMT detection on TEST scenes 1/8/22 (100 paired times each) measures
+3.3655 paired-times/s from RGB read to ID output flush, including first frames
+but excluding model setup and interframe timing logs. P50/P95 are
+266.279/349.607 ms. The whole sample worker including initialization, scope checks
+and final hashing measures 2.5765 paired-times/s. GMT's historical 3.3313 FPS
+uses all-22 full-video wall throughput, so these scopes do not establish a speed
+win. The sampled device peak is 3,354,132,480 bytes including the GMT child.
 
 `results/worldobject_v3_three_model_training_launch.json` records all 24 cache
 manifest hashes, frozen scopes, actual live worker handles and UUID visibility
