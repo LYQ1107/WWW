@@ -6,9 +6,9 @@ User instruction: attachment `c5d7a93f-e5e6-4068-83b2-45635a8dd642`.
 
 ## Status
 
-Active revision: R2. Its 120 CPU tests pass; the new source-bound real TRAIN
-preflight and fresh final-model training are pending. Five unchanged geometry
-producers continue from the preserved pre-R2 checkout. No TEST has started and no
+Active revision: R2. Its 120 CPU tests and source-bound 178-timestamp real TRAIN
+preflight pass. Fresh no-geometry selection training is running, alongside five
+unchanged geometry producers from the preserved pre-R2 checkout. No TEST has started and no
 new accuracy result is claimed. This is an independent WorldMOT experiment; GMT is
 a frozen detector/ROI provider and a separately scored reference.
 
@@ -142,3 +142,18 @@ perception/coordinate/ROI source files were compared byte-for-byte; see
 `results/worldobject_v3_r2_geometry_reuse.json`. Geometry inference has not changed
 and is not repeated. All final neural models restart from the fixed seed in the
 R2 run; pre-R2 weights are not promoted or relabelled as R2 training.
+
+The R2 real preflight completed in 230.754 seconds with finite gradients and
+4,998,239,744 peak allocated GPU bytes. Of 39 eligible same-person new-pair
+diagnostic positives, 33 passed the pair threshold and 32 reached solver
+proposals. These finite TRAIN engineering counts demonstrate that the blocked
+path is active; they are not a TEST accuracy improvement. See
+`results/worldobject_v3_r2_real_preflight_report.json`.
+
+The dependency scheduler observes the preserved geometry workers and runs the
+remaining full/head-only training, frozen-birth ablation, full-video controls,
+official CPU evaluation and same-device live timing as dependencies finish.
+`analysis/watch_worldobject_v3_reports.py` refreshes measured tables and runs
+posthoc attribution only after all immutable predictions exist. Both scripts
+have independent source hashes and never select parameters on TEST. A pending
+or running row remains explicitly incomplete.
