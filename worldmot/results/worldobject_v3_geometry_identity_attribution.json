@@ -1,7 +1,7 @@
 {
   "schema": "worldobject_v3_retained_TRAIN_VAL_attribution_v1",
-  "status": "PARTIAL_REAL_TRAIN_VAL_REPLAYS",
-  "completed_replays": 4,
+  "status": "COMPLETE_AVAILABLE_RETAINED_SELECTION_REPLAYS",
+  "completed_replays": 8,
   "expected_replays": 8,
   "R2_modified": false,
   "optimizer_used": false,
@@ -20,7 +20,7 @@
     "reason": "Original selection weights overwritten before archival. No retraining, final-refit weights or pre-R2 substitute."
   },
   "source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f",
-  "summarizer_sha256": "5e75285765f16a4eb896ae589cae6567b9d6fa93d77c28bf5a23511d16612382",
+  "summarizer_sha256": "621ae1e7bcca5715639a972c8d1a665681b096e8fd375a9d1718466ed1753df3",
   "replays": [
     {
       "method": "FULL_WORLD_OBJECT_V3",
@@ -42,6 +42,18 @@
         "correct_spatial_recovery_next_frame_new_ID": 1,
         "recovery_next_ID_change_with_correct_history_geometry_rejected": 5,
         "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+      },
+      "recovered_view_counts_primary": {
+        "correct_recovery_events": 6,
+        "single_view_correct_recovery_events": 6,
+        "stale_center_retained_missed_reset_0": 6,
+        "next_recovered_view_observed": 6,
+        "next_recovered_view_ID_change": 6,
+        "next_recovered_view_kept_old_ID": 0,
+        "next_new_ID_on_recovered_view": 1,
+        "next_recovered_view_geometry_rejected": 5,
+        "other_view_new_ID_only": 0,
+        "new_ID_on_recovered_view_with_geometry_rejection_and_stale_center": 1
       },
       "birth_funnel": {
         "NEW_SAME": {
@@ -107,6 +119,18 @@
         "recovery_next_ID_change_with_correct_history_geometry_rejected": 5,
         "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
       },
+      "recovered_view_counts_primary": {
+        "correct_recovery_events": 6,
+        "single_view_correct_recovery_events": 6,
+        "stale_center_retained_missed_reset_0": 6,
+        "next_recovered_view_observed": 6,
+        "next_recovered_view_ID_change": 6,
+        "next_recovered_view_kept_old_ID": 0,
+        "next_new_ID_on_recovered_view": 1,
+        "next_recovered_view_geometry_rejected": 5,
+        "other_view_new_ID_only": 0,
+        "new_ID_on_recovered_view_with_geometry_rejection_and_stale_center": 1
+      },
       "birth_funnel": {
         "NEW_SAME": {
           "raw_cross_view_pairs": 206,
@@ -151,6 +175,158 @@
       }
     },
     {
+      "method": "FULL_WORLD_OBJECT_V3",
+      "selection_epoch": 3,
+      "checkpoint_sha256": "0d382fa6835a02b9bd50b66b69b30eea76ab24a6460c6cdaf0089ce5c927d278",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "8fb68ede16486cac4e5cc82b24889c2a034bb1a8bfae0b0869cf1952b64129bf",
+      "counts": {
+        "clean_correct_history_comparisons": 182105,
+        "clean_correct_history_ACCEPTED": 176812,
+        "clean_correct_history_APPEARANCE_REJECTION": 5063,
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 230,
+        "all_selected_spatial_conflict_visual_recoveries": 8,
+        "correct_selected_spatial_conflict_visual_recoveries": 8,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 8,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 8,
+        "correct_spatial_recovery_next_frame_any_ID_change": 8,
+        "correct_spatial_recovery_next_frame_new_ID": 0,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 0
+      },
+      "recovered_view_counts_primary": {
+        "correct_recovery_events": 8,
+        "single_view_correct_recovery_events": 8,
+        "stale_center_retained_missed_reset_0": 8,
+        "next_recovered_view_observed": 8,
+        "next_recovered_view_ID_change": 8,
+        "next_recovered_view_kept_old_ID": 0,
+        "next_new_ID_on_recovered_view": 0,
+        "next_recovered_view_geometry_rejected": 6,
+        "other_view_new_ID_only": 0,
+        "new_ID_on_recovered_view_with_geometry_rejection_and_stale_center": 0
+      },
+      "birth_funnel": {
+        "NEW_SAME": {
+          "raw_cross_view_pairs": 329,
+          "model_mask": 329,
+          "high_score": 252,
+          "admissible_before_TopK": 252,
+          "TopK_proposal": 252,
+          "optimizer_birth_option": 252,
+          "selected_joint_birth": 25,
+          "final_shared_ID": 155
+        },
+        "DIFFERENT": {
+          "raw_cross_view_pairs": 1744285,
+          "model_mask": 1744285,
+          "high_score": 12657,
+          "admissible_before_TopK": 12641,
+          "TopK_proposal": 12541,
+          "optimizer_birth_option": 12541,
+          "selected_joint_birth": 1,
+          "final_shared_ID": 3277
+        },
+        "EXISTING_SAME": {
+          "raw_cross_view_pairs": 39753,
+          "model_mask": 39753,
+          "high_score": 33662,
+          "admissible_before_TopK": 33629,
+          "TopK_proposal": 33629,
+          "optimizer_birth_option": 33629,
+          "selected_joint_birth": 5,
+          "final_shared_ID": 35566
+        },
+        "UNKNOWN": {
+          "raw_cross_view_pairs": 215853,
+          "model_mask": 215853,
+          "high_score": 2085,
+          "admissible_before_TopK": 2070,
+          "TopK_proposal": 2023,
+          "optimizer_birth_option": 2023,
+          "selected_joint_birth": 0,
+          "final_shared_ID": 1365
+        }
+      }
+    },
+    {
+      "method": "FULL_WORLD_OBJECT_V3",
+      "selection_epoch": 4,
+      "checkpoint_sha256": "9b8a2b16de2d8f9a2fce8a7d2fd0fcee6482252861b4cd2bdbf62a3697cd7de0",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "f71d1b33a5b9cd570da429764430242b934cb68651777dea2589f49b9f6bd348",
+      "counts": {
+        "clean_correct_history_comparisons": 183328,
+        "clean_correct_history_ACCEPTED": 177993,
+        "clean_correct_history_APPEARANCE_REJECTION": 5097,
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 238,
+        "all_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 7,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 7,
+        "correct_spatial_recovery_next_frame_any_ID_change": 7,
+        "correct_spatial_recovery_next_frame_new_ID": 1,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+      },
+      "recovered_view_counts_primary": {
+        "correct_recovery_events": 7,
+        "single_view_correct_recovery_events": 7,
+        "stale_center_retained_missed_reset_0": 7,
+        "next_recovered_view_observed": 7,
+        "next_recovered_view_ID_change": 7,
+        "next_recovered_view_kept_old_ID": 0,
+        "next_new_ID_on_recovered_view": 1,
+        "next_recovered_view_geometry_rejected": 6,
+        "other_view_new_ID_only": 0,
+        "new_ID_on_recovered_view_with_geometry_rejection_and_stale_center": 1
+      },
+      "birth_funnel": {
+        "NEW_SAME": {
+          "raw_cross_view_pairs": 296,
+          "model_mask": 296,
+          "high_score": 261,
+          "admissible_before_TopK": 261,
+          "TopK_proposal": 261,
+          "optimizer_birth_option": 261,
+          "selected_joint_birth": 26,
+          "final_shared_ID": 182
+        },
+        "DIFFERENT": {
+          "raw_cross_view_pairs": 1744285,
+          "model_mask": 1744285,
+          "high_score": 19078,
+          "admissible_before_TopK": 18784,
+          "TopK_proposal": 18576,
+          "optimizer_birth_option": 18576,
+          "selected_joint_birth": 1,
+          "final_shared_ID": 2999
+        },
+        "EXISTING_SAME": {
+          "raw_cross_view_pairs": 39786,
+          "model_mask": 39786,
+          "high_score": 35313,
+          "admissible_before_TopK": 35276,
+          "TopK_proposal": 35275,
+          "optimizer_birth_option": 35275,
+          "selected_joint_birth": 6,
+          "final_shared_ID": 35593
+        },
+        "UNKNOWN": {
+          "raw_cross_view_pairs": 215853,
+          "model_mask": 215853,
+          "high_score": 3266,
+          "admissible_before_TopK": 3128,
+          "TopK_proposal": 3070,
+          "optimizer_birth_option": 3070,
+          "selected_joint_birth": 0,
+          "final_shared_ID": 1154
+        }
+      }
+    },
+    {
       "method": "HEAD_ONLY_NO_GEOMETRY_V3",
       "selection_epoch": 1,
       "checkpoint_sha256": "acef71a26a9676fde5ce3e0de962a336bebb4aa0f00db75b6d2fe2d0147976f2",
@@ -170,6 +346,18 @@
         "correct_spatial_recovery_next_frame_new_ID": 1,
         "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
         "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+      },
+      "recovered_view_counts_primary": {
+        "correct_recovery_events": 7,
+        "single_view_correct_recovery_events": 7,
+        "stale_center_retained_missed_reset_0": 7,
+        "next_recovered_view_observed": 7,
+        "next_recovered_view_ID_change": 6,
+        "next_recovered_view_kept_old_ID": 1,
+        "next_new_ID_on_recovered_view": 1,
+        "next_recovered_view_geometry_rejected": 6,
+        "other_view_new_ID_only": 0,
+        "new_ID_on_recovered_view_with_geometry_rejection_and_stale_center": 1
       },
       "birth_funnel": {
         "NEW_SAME": {
@@ -235,6 +423,18 @@
         "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
         "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 2
       },
+      "recovered_view_counts_primary": {
+        "correct_recovery_events": 7,
+        "single_view_correct_recovery_events": 7,
+        "stale_center_retained_missed_reset_0": 7,
+        "next_recovered_view_observed": 7,
+        "next_recovered_view_ID_change": 7,
+        "next_recovered_view_kept_old_ID": 0,
+        "next_new_ID_on_recovered_view": 2,
+        "next_recovered_view_geometry_rejected": 6,
+        "other_view_new_ID_only": 0,
+        "new_ID_on_recovered_view_with_geometry_rejection_and_stale_center": 2
+      },
       "birth_funnel": {
         "NEW_SAME": {
           "raw_cross_view_pairs": 170,
@@ -275,6 +475,158 @@
           "optimizer_birth_option": 2520,
           "selected_joint_birth": 1,
           "final_shared_ID": 876
+        }
+      }
+    },
+    {
+      "method": "HEAD_ONLY_NO_GEOMETRY_V3",
+      "selection_epoch": 3,
+      "checkpoint_sha256": "d5ce503a80233709e44413664095b4b308de4bee90f9b918ff9fbc628ea212ad",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "44f7c9e72516d6bb13f4ee380ea62ce4110591543dc5c6e00d58916566303389",
+      "counts": {
+        "clean_correct_history_comparisons": 191185,
+        "clean_correct_history_ACCEPTED": 185005,
+        "clean_correct_history_APPEARANCE_REJECTION": 5911,
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 269,
+        "all_selected_spatial_conflict_visual_recoveries": 5,
+        "correct_selected_spatial_conflict_visual_recoveries": 5,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 5,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 5,
+        "correct_spatial_recovery_next_frame_any_ID_change": 5,
+        "correct_spatial_recovery_next_frame_new_ID": 1,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 4,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+      },
+      "recovered_view_counts_primary": {
+        "correct_recovery_events": 5,
+        "single_view_correct_recovery_events": 5,
+        "stale_center_retained_missed_reset_0": 5,
+        "next_recovered_view_observed": 5,
+        "next_recovered_view_ID_change": 5,
+        "next_recovered_view_kept_old_ID": 0,
+        "next_new_ID_on_recovered_view": 1,
+        "next_recovered_view_geometry_rejected": 4,
+        "other_view_new_ID_only": 0,
+        "new_ID_on_recovered_view_with_geometry_rejection_and_stale_center": 1
+      },
+      "birth_funnel": {
+        "NEW_SAME": {
+          "raw_cross_view_pairs": 162,
+          "model_mask": 162,
+          "high_score": 126,
+          "admissible_before_TopK": 126,
+          "TopK_proposal": 126,
+          "optimizer_birth_option": 126,
+          "selected_joint_birth": 20,
+          "final_shared_ID": 88
+        },
+        "DIFFERENT": {
+          "raw_cross_view_pairs": 1744285,
+          "model_mask": 1744285,
+          "high_score": 14949,
+          "admissible_before_TopK": 14297,
+          "TopK_proposal": 14181,
+          "optimizer_birth_option": 14181,
+          "selected_joint_birth": 3,
+          "final_shared_ID": 1299
+        },
+        "EXISTING_SAME": {
+          "raw_cross_view_pairs": 39920,
+          "model_mask": 39920,
+          "high_score": 32619,
+          "admissible_before_TopK": 32582,
+          "TopK_proposal": 32582,
+          "optimizer_birth_option": 32582,
+          "selected_joint_birth": 5,
+          "final_shared_ID": 33874
+        },
+        "UNKNOWN": {
+          "raw_cross_view_pairs": 215853,
+          "model_mask": 215853,
+          "high_score": 2772,
+          "admissible_before_TopK": 2533,
+          "TopK_proposal": 2507,
+          "optimizer_birth_option": 2507,
+          "selected_joint_birth": 0,
+          "final_shared_ID": 769
+        }
+      }
+    },
+    {
+      "method": "HEAD_ONLY_NO_GEOMETRY_V3",
+      "selection_epoch": 4,
+      "checkpoint_sha256": "8de1a5ea9fb4ac1efd1f7cb9d05ac21fad1ba110a24cf04d72cf8e510f2d0ba3",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "16e074773f8cd34279fec0a173d094f4bafddc3625be08a367d730ce5a9c2d14",
+      "counts": {
+        "clean_correct_history_comparisons": 191296,
+        "clean_correct_history_ACCEPTED": 184942,
+        "clean_correct_history_APPEARANCE_REJECTION": 6090,
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 264,
+        "all_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 7,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 7,
+        "correct_spatial_recovery_next_frame_any_ID_change": 7,
+        "correct_spatial_recovery_next_frame_new_ID": 2,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 2
+      },
+      "recovered_view_counts_primary": {
+        "correct_recovery_events": 7,
+        "single_view_correct_recovery_events": 7,
+        "stale_center_retained_missed_reset_0": 7,
+        "next_recovered_view_observed": 7,
+        "next_recovered_view_ID_change": 7,
+        "next_recovered_view_kept_old_ID": 0,
+        "next_new_ID_on_recovered_view": 2,
+        "next_recovered_view_geometry_rejected": 6,
+        "other_view_new_ID_only": 0,
+        "new_ID_on_recovered_view_with_geometry_rejection_and_stale_center": 2
+      },
+      "birth_funnel": {
+        "NEW_SAME": {
+          "raw_cross_view_pairs": 179,
+          "model_mask": 179,
+          "high_score": 116,
+          "admissible_before_TopK": 116,
+          "TopK_proposal": 116,
+          "optimizer_birth_option": 116,
+          "selected_joint_birth": 20,
+          "final_shared_ID": 93
+        },
+        "DIFFERENT": {
+          "raw_cross_view_pairs": 1744285,
+          "model_mask": 1744285,
+          "high_score": 10394,
+          "admissible_before_TopK": 9855,
+          "TopK_proposal": 9819,
+          "optimizer_birth_option": 9819,
+          "selected_joint_birth": 2,
+          "final_shared_ID": 1696
+        },
+        "EXISTING_SAME": {
+          "raw_cross_view_pairs": 39903,
+          "model_mask": 39903,
+          "high_score": 31777,
+          "admissible_before_TopK": 31741,
+          "TopK_proposal": 31741,
+          "optimizer_birth_option": 31741,
+          "selected_joint_birth": 6,
+          "final_shared_ID": 33394
+        },
+        "UNKNOWN": {
+          "raw_cross_view_pairs": 215853,
+          "model_mask": 215853,
+          "high_score": 2400,
+          "admissible_before_TopK": 2113,
+          "TopK_proposal": 2098,
+          "optimizer_birth_option": 2098,
+          "selected_joint_birth": 0,
+          "final_shared_ID": 856
         }
       }
     }

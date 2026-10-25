@@ -19,8 +19,10 @@ Full V3 and head-only no-geometry completed four selection epochs. The unchanged
 TRAIN-only rule selected final budgets of one and three epochs respectively.
 Full finished its all24 final epoch, with checkpoint SHA-256
 `cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8`;
-all22 TEST inference and legal14 native scoring are complete. Head-only
-continues its normal three-epoch final training. Four parameter-free controls completed
+all22 TEST inference and legal14 native scoring are complete. Head-only finished
+three final all24 epochs, passed its gate and started full22 TEST. Its checkpoint
+SHA is `dbf1d81d6440641f4b6864557fe9cd6dd349ef8d54ce48446f510b87d1f0142a`.
+Four parameter-free controls completed
 all-24 TRAIN replay and full row/checksum/candidate-equivalence checks.
 
 The first all-24 no-geometry epoch also has 438 observed preserved clip boundaries,
@@ -44,7 +46,7 @@ and CVIDF1 67.6049, below GMT and V2. MOTA 75.0228 exceeds GMT 72.9636 while
 identity scores remain lower. Full's formal HOTA/AssA/IDF1/CVIDF1 are now
 56.4218/50.7806/63.9655/61.8413, all below No-Geometry. The registered Full-vs-
 NoGeometry contrast therefore shows no independent geometry gain. Head TEST
-remains pending normal training; no parameter or budget is changed using TEST. See
+scoring remains pending full inference; no parameter or budget is changed using TEST. See
 `results/worldobject_v3_no_geometry_official_test.json` for hashes and live timing.
 
 The training key `first_appearance_split_count` is defined by the actual target
@@ -99,18 +101,18 @@ window, so a high positive rate must be interpreted against that target policy.
 The first retained-checkpoint probability/outcome audit follows; later available
 checkpoints are still being replayed.
 
-The first four real retained-checkpoint replays are now complete: Full and
-Head-only selection epochs 1–2, all six fixed TRAIN VAL scenes / 5,860 synchronous
-times / 172,760 current detections each. All four exactly reproduce every comparable
+All eight available real retained-checkpoint replays are now complete: Full and
+Head-only selection epochs 1–4, all six fixed TRAIN VAL scenes / 5,860 synchronous
+times / 172,760 current detections each. All eight exactly reproduce every comparable
 original epoch diagnostic count; the observer changes no decisions or state.
-Epochs 3–4 are still being replayed. The detailed numbers below
+The detailed numbers below
 refer to these **selection** weights, not the final all24-refitted TEST weights.
 
 | Actual TRAIN VAL event | Full epoch 1 | Head-only epoch 1 |
 |---|---:|---:|
 | Correct selected spatial-conflict visual recoveries | 6 | 7 |
 | Same person cleanly detected immediately next frame | 6 | 7 |
-| Any next-frame change away from the recovered ID | 6 | 7 |
+| Recovered camera changes ID on the next frame | 6 | 6 |
 | Next-frame actual new ID | 1 | 1 |
 | ID break with correct history actually geometry-rejected | 5 | 6 |
 | New ID with retained stale center and geometry rejection | 1 | 1 |
@@ -123,10 +125,25 @@ subset. Its raw GT is not legal for official scoring. Most next-frame changes
 reuse another existing ID rather than creating a new one. Thus the exact
 synthetic stale-position/new-ID mechanism does occur in real TRAIN, but these
 small counts do not establish that it explains most temporal errors.
+
+These are **single-view historical recoveries**. None of the observed selected
+recovery groups in the eight replays already shared one ID across both cameras.
+The raw observer's any-view change count also counted another camera's existing
+split. A posthoc refinement follows only the recovered camera and corrects the
+Head epoch-1 change count from 7 to 6; one recovery actually retains its ID there.
+Original traces and raw counts are preserved, and four dedicated regression
+tests cover this definition. No R2 prediction or formal metric changes.
 Full's Scene 24 timestamp 704→705 is one concrete instance: recovered ID 158
 keeps its old center and resets missed=0; next-frame appearance cosine 0.9743
 and learned identity margin 4.9267 still lose to spatial distance 11.4044
 against gate 6, and the affected detection receives new ID 162.
+
+![Actual TRAIN recovery and next-frame new ID](../results/worldobject_v3_recovery_figures/TRAIN_scene24_recovery_next_ID.png)
+
+The plotted boxes and IDs are actual immutable TRAIN outputs with clean GT
+labels joined afterward. Camera 1 retains ID 1; Camera 2 cycles 144→158→162.
+This is a display crop of the original RGB, not cropped model inference, and
+it is not the final TEST checkpoint or an official Scene 24 result.
 
 Full's actual trained NULL-margin probability has 8,169 values ≥.5 despite
 zero nonnegative raw NULL logits. Its mean probability is .04821 versus a
@@ -147,13 +164,44 @@ and 5 ID breaks with actual geometry rejection; Head-only gives 7 / 2 / 6.
 These counts are repeated evaluations of the same VAL videos with different
 weights, so they must not be pooled as independent real-world events.
 
-Evidence is in `results/worldobject_v3_retained_TRAIN_VAL_summary.json` and the
+The complete recovered-camera frequencies are:
+
+| Model / selection epoch | Correct recoveries | Recovered-camera ID changes | Actual new IDs | Changes with actual geometry rejection |
+|---|---:|---:|---:|---:|
+| Full / 1 | 6 | 6 | 1 | 5 |
+| Full / 2 | 6 | 6 | 1 | 5 |
+| Full / 3 | 8 | 8 | 0 | 6 |
+| Full / 4 | 7 | 7 | 1 | 6 |
+| Head / 1 | 7 | 6 | 1 | 6 |
+| Head / 2 | 7 | 7 | 2 | 6 |
+| Head / 3 | 5 | 5 | 1 | 4 |
+| Head / 4 | 7 | 7 | 2 | 6 |
+
+Every row reuses the same six videos; do not sum the rows as independent events.
+Every actual new-ID event above also has the retained stale center and a direct
+geometry rejection in the recovered camera. This attributes a reproducible
+mechanism, while the much larger temporal error totals require other causes.
+
+Evidence is in `results/worldobject_v3_retained_TRAIN_VAL_summary.json`,
+`results/worldobject_v3_recovered_view_frequency_refinement.json`, and the
 birth, lifecycle, geometry and spatial/temporal attribution JSONs. They explicitly
-say four of eight requested retained replays are complete at this snapshot.
+say all eight available retained replays are complete. No-Geometry selection
+weights remain unavailable as documented below.
 A separate R3 branch, `research/worldmot-v3-r3-state-update-fix-20261025`, prepares
 spatial abstention after accepted visual recovery. Its package plus three new
 regressions pass 203 CPU tests. One fixed-weight TRAIN-only replay is registered
 after diagnostic GPU release; no R3 optimizer or long training is started.
+
+That registered R3 TRAIN-only replay is now complete. Same-person pair outcomes
+have 25 corrections / 15 regressions; different-person pairs 100 / 78; temporal
+comparisons 389 / 329 (+60 net). All changes occur in Scene24's clean subset,
+which is excluded from original raw-GT official scoring. Legal TRAIN VAL
+4/8/12 metrics stay exactly unchanged. Refined R3 recovery counts are five
+single-view recoveries, three next-frame ID retentions, two changes and zero
+new IDs or stale-geometry rejections in the recovered camera. This validates
+the bounded state repair mechanism without demonstrating formal MOT gains.
+The separate R3 result commit is `eb97b22f7a256169496788564dd124cacd636e15`;
+R2 remains untouched, and no R3 long training or TEST inference starts.
 
 ## Input-equivalence audit
 

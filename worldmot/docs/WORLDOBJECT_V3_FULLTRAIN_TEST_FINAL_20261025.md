@@ -10,8 +10,8 @@ Active revision: R2. Its 120 CPU tests and source-bound 178-timestamp real TRAIN
 preflight pass. All 24 TRAIN geometry caches are now complete: 28,754 synchronized
 times / 57,508 RGB images. All22 TEST geometry inputs are also complete.
 Full V3 finished its selected one-epoch all24 final training and all22 TEST;
-legal14 native TrackEval/MATLAB scoring is complete. Head-only continues normal
-final training for its unchanged selected three-epoch budget. Full no-geometry
+legal14 native TrackEval/MATLAB scoring is complete. Head-only finished its
+unchanged selected three-epoch all24 training and is running all22 TEST. Full no-geometry
 completed its selected two final all24 epochs and all22 TEST. Its checkpoint SHA is
 `b08badfc634c9652a34366951c93207fa321deb7d1a2b240a76798f11607053f`;
 see `results/worldobject_v3_no_geometry_fulltrain_gate.json`.
@@ -21,7 +21,7 @@ independent row/hash/current-candidate verification; see
 `results/worldobject_v3_all_control_train_replay_verification.json`.
 Full no-geometry has now completed all 22 TEST videos and official legal-14
 TrackEval plus original MATLAB scoring. Full geometry also has both official
-scores; Head-only TEST remains pending its final training gate.
+scores; Head-only official TEST scoring awaits its ongoing full inference.
 This is an independent WorldMOT experiment; GMT is
 a frozen detector/ROI provider and a separately scored reference.
 
@@ -55,8 +55,8 @@ Full is also below V2 and GMT. Complete metrics/checksums are in
 Full's final checkpoint SHA-256 is
 `cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8`.
 All22 delivered candidate keys, boxes and scores match canonical detector inputs
-(548,583 detections, max difference zero). Its true live timing continues as
-registered; cache replay is not substituted for end-to-end FPS.
+(548,583 detections, max difference zero). Registered true live timing is now
+complete and reported separately below; cache replay is not end-to-end FPS.
 
 The completed No-Geometry TEST posthoc audit finds 11,662 same-person cross-view
 splits out of 54,452 pairs, 123/151 detected people fragmented over IDs, and
@@ -73,6 +73,36 @@ but excluding model setup and interframe timing logs. P50/P95 are
 and final hashing measures 2.5765 paired-times/s. GMT's historical 3.3313 FPS
 uses all-22 full-video wall throughput, so these scopes do not establish a speed
 win. The sampled device peak is 3,354,132,480 bytes including the GMT child.
+
+For the same registered 300 paired-time sample on the same physical V100,
+Full + Ω measures **0.6424 paired-times/s** RGB-read-to-ID-output-flush,
+P50/P95 **1.43693/2.06563 seconds**. Whole-worker throughput including setup is
+**0.5715 paired-times/s**, sampled device peak 8,956,674,048 bytes. This is a
+finite live speed diagnostic, not full22-video runtime. Ω model-only averages
+179.178 ms (5.5810 paired-times/s), Ω backend wall 391.123 ms, world alignment
+495.969 ms and support extraction 311.779 ms. Model-only excludes detector,
+geometry preparation, alignment, support, identity and output; it cannot be
+reported as pipeline FPS. Nested stages overlap and must not be added twice.
+
+The completed paired Full-vs-NoGeometry posthoc audit covers all22 predictions,
+with primary counts restricted to the same legal14 full videos. Among 54,452
+same-person cross-view pairs, Full corrects 3,219 NG splits but creates 1,011
+new splits: **2,208 net corrections**. Among 286,986 different-person pairs it
+corrects 1,111 false merges and creates 493: **618 net corrections**. However,
+it corrects 1,403 temporal ID changes and creates 2,132: **729 net new temporal
+errors** across 165,133 clean temporal comparisons. These diagnostic outcomes
+are not official IDSW or a same-weight causal geometry toggle. They establish
+an instantaneous cross-view benefit alongside worse persistent identities,
+consistent with the negative full-video HOTA/AssA/IDF1/CVIDF1 comparison.
+
+Full uses 186 output IDs cumulatively for multiple clean people versus NG's
+177. Minority-person observations inside those mixed IDs rise from 6,481 to
+10,877. The clean-join global one-to-one retained identity observations fall
+from 126,055 to 115,245. Thus fewer within-frame cross-view errors do not imply
+better whole-video identity assignment. These are posthoc output-ID graphs,
+not measurements of learned feature contents. See
+`results/worldobject_v3_Full_vs_NoGeometry_paired_TEST_attribution.json` and
+`results/worldobject_v3_full_identity_attribution.json`.
 
 `results/worldobject_v3_three_model_training_launch.json` records all 24 cache
 manifest hashes, frozen scopes, actual live worker handles and UUID visibility
@@ -150,10 +180,18 @@ camera-depth/persistent-alignment cache contract.
 
 ## Remaining registered measurements
 
-Head-only final training/all22 TEST, remaining control scoring and live samples,
-all retained-checkpoint TRAIN VAL attribution and the complete paired-method
+Head-only all22 TEST/scoring, remaining live samples, and the complete paired-method
 posthoc audit continue. The prior V3 results are preserved and are not results
 of this repaired model. No additional seed or R2 threshold change is introduced.
+
+All eight available retained Full/Head selection checkpoints have completed
+six-scene TRAIN VAL traced replay and legal3 native TrackEval scoring, with
+exact original diagnostic reproduction. Recovered-camera frequency refinement
+preserves the raw any-view counters and excludes a pre-existing split in another
+camera; see `results/worldobject_v3_recovered_view_frequency_refinement.json`.
+The final Head-only checkpoint SHA-256 is
+`dbf1d81d6440641f4b6864557fe9cd6dd349ef8d54ce48446f510b87d1f0142a`.
+No formal Head-only score is claimed until the complete all22/legal14 protocol.
 
 ## Phase C and six-card launch
 

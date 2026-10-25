@@ -1,7 +1,7 @@
 {
   "schema": "worldobject_v3_retained_TRAIN_VAL_attribution_v1",
-  "status": "PARTIAL_REAL_TRAIN_VAL_REPLAYS",
-  "completed_replays": 4,
+  "status": "COMPLETE_AVAILABLE_RETAINED_SELECTION_REPLAYS",
+  "completed_replays": 8,
   "expected_replays": 8,
   "R2_modified": false,
   "optimizer_used": false,
@@ -20,7 +20,7 @@
     "reason": "Original selection weights overwritten before archival. No retraining, final-refit weights or pre-R2 substitute."
   },
   "source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f",
-  "summarizer_sha256": "5e75285765f16a4eb896ae589cae6567b9d6fa93d77c28bf5a23511d16612382",
+  "summarizer_sha256": "621ae1e7bcca5715639a972c8d1a665681b096e8fd375a9d1718466ed1753df3",
   "replays": [
     {
       "method": "FULL_WORLD_OBJECT_V3",
@@ -1809,6 +1809,1792 @@
       "trained_NULL_margin_probability_ge_0_5": 10483
     },
     {
+      "method": "FULL_WORLD_OBJECT_V3",
+      "selection_epoch": 3,
+      "checkpoint_sha256": "0d382fa6835a02b9bd50b66b69b30eea76ab24a6460c6cdaf0089ce5c927d278",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "8fb68ede16486cac4e5cc82b24889c2a034bb1a8bfae0b0869cf1952b64129bf",
+      "calibration": {
+        "cross_view_identity_pair": {
+          "count": 1784367,
+          "mean_probability": 0.03681159077849587,
+          "positive_target_fraction": 0.02246286778448604,
+          "Brier": 0.010964240408244952,
+          "ECE_10_equal_width": 0.014348722994009834,
+          "threshold_0_5_accuracy": 0.9846870066527794,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 1680391,
+              "probability_sum": 3076.1411655246284,
+              "positive_target_count": 1404,
+              "squared_error_sum": 1453.4967694112884
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 17666,
+              "probability_sum": 2554.8355823484476,
+              "positive_target_count": 624,
+              "squared_error_sum": 818.4396455558385
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 11004,
+              "probability_sum": 2720.2048469424753,
+              "positive_target_count": 675,
+              "squared_error_sum": 1018.0504327072649
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 8738,
+              "probability_sum": 3045.358068000098,
+              "positive_target_count": 680,
+              "squared_error_sum": 1270.5058757761085
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 7496,
+              "probability_sum": 3366.8790485347586,
+              "positive_target_count": 784,
+              "squared_error_sum": 1593.8222952407232
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 6551,
+              "probability_sum": 3596.900289434652,
+              "positive_target_count": 879,
+              "squared_error_sum": 1890.181360904438
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 5950,
+              "probability_sum": 3866.7847142499313,
+              "positive_target_count": 1122,
+              "squared_error_sum": 2174.2536497458977
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 5777,
+              "probability_sum": 4338.113802214897,
+              "positive_target_count": 1496,
+              "squared_error_sum": 2503.0259565696756
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 6916,
+              "probability_sum": 5896.670212222967,
+              "positive_target_count": 2579,
+              "squared_error_sum": 3197.146391911024
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 33878,
+              "probability_sum": 33223.50007317949,
+              "positive_target_count": 29839,
+              "squared_error_sum": 3645.306386716563
+            }
+          ]
+        },
+        "birth_raw_sigmoid": {
+          "count": 164268,
+          "mean_probability": 0.023565037559905286,
+          "positive_target_fraction": 0.033049650571018094,
+          "Brier": 0.030363055449512618,
+          "ECE_10_equal_width": 0.010584627673998818,
+          "threshold_0_5_accuracy": 0.9678939294323909,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 157287,
+              "probability_sum": 2795.5933078298985,
+              "positive_target_count": 4417,
+              "squared_error_sum": 4234.837630683401
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 6494,
+              "probability_sum": 874.032222032547,
+              "positive_target_count": 786,
+              "squared_error_sum": 692.4637792557814
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 330,
+              "probability_sum": 72.3163822889328,
+              "positive_target_count": 70,
+              "squared_error_sum": 55.03729039308462
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 2,
+              "probability_sum": 0.6420531868934631,
+              "positive_target_count": 1,
+              "squared_error_sum": 0.5358221118266648
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 32,
+              "probability_sum": 24.610208749771118,
+              "positive_target_count": 32,
+              "squared_error_sum": 1.72651310132391
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 119,
+              "probability_sum": 100.16416138410568,
+              "positive_target_count": 119,
+              "squared_error_sum": 3.0418058777740207
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 4,
+              "probability_sum": 3.623254418373108,
+              "positive_target_count": 4,
+              "squared_error_sum": 0.035551157346908724
+            }
+          ]
+        },
+        "birth_softmax_with_history": {
+          "count": 164268,
+          "mean_probability": 0.01881656353841999,
+          "positive_target_fraction": 0.033049650571018094,
+          "Brier": 0.031216600086303524,
+          "ECE_10_equal_width": 0.022175769013459908,
+          "threshold_0_5_accuracy": 0.9668833856868045,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 155980,
+              "probability_sum": 1203.5950175130715,
+              "positive_target_count": 4194,
+              "squared_error_sum": 4091.77681823636
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 5092,
+              "probability_sum": 720.9631047025323,
+              "positive_target_count": 524,
+              "squared_error_sum": 479.1231707982255
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 1703,
+              "probability_sum": 410.7077248096466,
+              "positive_target_count": 279,
+              "squared_error_sum": 244.9985040880143
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 682,
+              "probability_sum": 234.6289125084877,
+              "positive_target_count": 125,
+              "squared_error_sum": 119.56247159654532
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 326,
+              "probability_sum": 144.53120738267899,
+              "positive_target_count": 70,
+              "squared_error_sum": 71.2955137822373
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 129,
+              "probability_sum": 70.80746114253998,
+              "positive_target_count": 29,
+              "squared_error_sum": 36.25331116112823
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 87,
+              "probability_sum": 55.69532930850983,
+              "positive_target_count": 18,
+              "squared_error_sum": 30.751667935644363
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 50,
+              "probability_sum": 37.85688239336014,
+              "positive_target_count": 8,
+              "squared_error_sum": 24.556049267266925
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 40,
+              "probability_sum": 34.27687257528305,
+              "positive_target_count": 17,
+              "squared_error_sum": 16.908328243650576
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 179,
+              "probability_sum": 177.89674699306488,
+              "positive_target_count": 165,
+              "squared_error_sum": 12.662627867834722
+            }
+          ]
+        },
+        "NULL_trained_margin_sigmoid": {
+          "count": 144919,
+          "mean_probability": 0.041102441447979164,
+          "positive_target_fraction": 0.07141230618483428,
+          "Brier": 0.04283226673855335,
+          "ECE_10_equal_width": 0.030866399313750216,
+          "threshold_0_5_accuracy": 0.9481641468682506,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 134192,
+              "probability_sum": 948.7268833763642,
+              "positive_target_count": 4098,
+              "squared_error_sum": 3920.043766673004
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 3106,
+              "probability_sum": 442.04420928657055,
+              "positive_target_count": 1048,
+              "squared_error_sum": 811.4839398396427
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 1505,
+              "probability_sum": 369.6069758683443,
+              "positive_target_count": 613,
+              "squared_error_sum": 400.1920859641815
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 952,
+              "probability_sum": 328.9323702156544,
+              "positive_target_count": 502,
+              "squared_error_sum": 269.1430852132396
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 775,
+              "probability_sum": 348.86461597681046,
+              "positive_target_count": 475,
+              "squared_error_sum": 205.14643364420255
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 623,
+              "probability_sum": 342.2008529305458,
+              "positive_target_count": 414,
+              "squared_error_sum": 148.09594046010807
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 626,
+              "probability_sum": 407.7854150533676,
+              "positive_target_count": 438,
+              "squared_error_sum": 132.95847602620356
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 706,
+              "probability_sum": 530.6785518527031,
+              "positive_target_count": 548,
+              "squared_error_sum": 121.89101682985637
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 897,
+              "probability_sum": 765.3586204648018,
+              "positive_target_count": 781,
+              "squared_error_sum": 100.8775573163759
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 1537,
+              "probability_sum": 1472.32621717453,
+              "positive_target_count": 1432,
+              "squared_error_sum": 97.37696151759972
+            }
+          ]
+        },
+        "existence_raw_sigmoid": {
+          "count": 144919,
+          "mean_probability": 0.9994298285331897,
+          "positive_target_fraction": 0.9992754573244365,
+          "Brier": 0.0007125178897412257,
+          "ECE_10_equal_width": 0.00015437120875333438,
+          "threshold_0_5_accuracy": 0.9992754573244365,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 144919,
+              "probability_sum": 144836.37132120132,
+              "positive_target_count": 144814,
+              "squared_error_sum": 103.25738006340868
+            }
+          ]
+        },
+        "existence_missed_0": {
+          "count": 125440,
+          "mean_probability": 0.9999830793335579,
+          "positive_target_fraction": 1.0,
+          "Brier": 2.994854593122033e-08,
+          "ECE_10_equal_width": 1.6920666442098194e-05,
+          "threshold_0_5_accuracy": 1.0,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 125440,
+              "probability_sum": 125437.8774716015,
+              "positive_target_count": 125440,
+              "squared_error_sum": 0.003756745601612278
+            }
+          ]
+        },
+        "existence_missed_1_5": {
+          "count": 7660,
+          "mean_probability": 0.9972168074333855,
+          "positive_target_fraction": 1.0,
+          "Brier": 1.212470610563644e-05,
+          "ECE_10_equal_width": 0.0027831925666145035,
+          "threshold_0_5_accuracy": 1.0,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 7660,
+              "probability_sum": 7638.680744939733,
+              "positive_target_count": 7660,
+              "squared_error_sum": 0.09287524876917513
+            }
+          ]
+        },
+        "existence_missed_6_30": {
+          "count": 11819,
+          "mean_probability": 0.994992226112724,
+          "positive_target_fraction": 0.9911159996615619,
+          "Brier": 0.008728382108298455,
+          "ECE_10_equal_width": 0.003876226451162071,
+          "threshold_0_5_accuracy": 0.9911159996615619,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 11819,
+              "probability_sum": 11759.813120426285,
+              "positive_target_count": 11714,
+              "squared_error_sum": 103.16074813797944
+            }
+          ]
+        }
+      },
+      "actual_NULL_despite_unique_current_person": 1602,
+      "raw_NULL_logit_nonnegative": 0,
+      "trained_NULL_margin_probability_ge_0_5": 6706
+    },
+    {
+      "method": "FULL_WORLD_OBJECT_V3",
+      "selection_epoch": 4,
+      "checkpoint_sha256": "9b8a2b16de2d8f9a2fce8a7d2fd0fcee6482252861b4cd2bdbf62a3697cd7de0",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "f71d1b33a5b9cd570da429764430242b934cb68651777dea2589f49b9f6bd348",
+      "calibration": {
+        "cross_view_identity_pair": {
+          "count": 1784367,
+          "mean_probability": 0.04630767548732162,
+          "positive_target_fraction": 0.02246286778448604,
+          "Brier": 0.01492243021393496,
+          "ECE_10_equal_width": 0.02384480770283558,
+          "threshold_0_5_accuracy": 0.9786103419307799,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 1649232,
+              "probability_sum": 4998.492295328199,
+              "positive_target_count": 611,
+              "squared_error_sum": 769.495448777534
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 24564,
+              "probability_sum": 3547.144536309068,
+              "positive_target_count": 361,
+              "squared_error_sum": 785.346848778177
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 15307,
+              "probability_sum": 3787.885406244608,
+              "positive_target_count": 430,
+              "squared_error_sum": 1165.3843822963358
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 11927,
+              "probability_sum": 4155.862901697369,
+              "positive_target_count": 568,
+              "squared_error_sum": 1626.1053714811462
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 10286,
+              "probability_sum": 4621.125993244613,
+              "positive_target_count": 629,
+              "squared_error_sum": 2145.642176873644
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 9524,
+              "probability_sum": 5233.917122151136,
+              "positive_target_count": 852,
+              "squared_error_sum": 2794.186448290816
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 8875,
+              "probability_sum": 5770.031114094529,
+              "positive_target_count": 1057,
+              "squared_error_sum": 3433.898699171202
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 8482,
+              "probability_sum": 6357.970314526494,
+              "positive_target_count": 1508,
+              "squared_error_sum": 4009.207538188345
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 8822,
+              "probability_sum": 7510.672682833456,
+              "positive_target_count": 2664,
+              "squared_error_sum": 4505.835960662792
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 37348,
+              "probability_sum": 36646.78561985615,
+              "positive_target_count": 31402,
+              "squared_error_sum": 5391.9891590284915
+            }
+          ]
+        },
+        "birth_raw_sigmoid": {
+          "count": 164268,
+          "mean_probability": 0.036967638311982215,
+          "positive_target_fraction": 0.029299681009082718,
+          "Brier": 0.027980519252126367,
+          "ECE_10_equal_width": 0.008980082401363911,
+          "threshold_0_5_accuracy": 0.9716438989943263,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 147766,
+              "probability_sum": 3281.9921274126245,
+              "positive_target_count": 3373,
+              "squared_error_sum": 3285.9686837046975
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 12492,
+              "probability_sum": 1747.4947309419513,
+              "positive_target_count": 878,
+              "squared_error_sum": 879.4119074879309
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 3804,
+              "probability_sum": 888.8263836503029,
+              "positive_target_count": 395,
+              "squared_error_sum": 419.5169947085677
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 51,
+              "probability_sum": 16.048978477716446,
+              "positive_target_count": 12,
+              "squared_error_sum": 9.436999492677906
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 1,
+              "probability_sum": 0.785613477230072,
+              "positive_target_count": 1,
+              "squared_error_sum": 0.04596158114538085
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 87,
+              "probability_sum": 75.75521206855774,
+              "positive_target_count": 87,
+              "squared_error_sum": 1.4929843290976024
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 67,
+              "probability_sum": 61.69696420431137,
+              "positive_target_count": 67,
+              "squared_error_sum": 0.4304052041774362
+            }
+          ]
+        },
+        "birth_softmax_with_history": {
+          "count": 164268,
+          "mean_probability": 0.03317054265373025,
+          "positive_target_fraction": 0.029299681009082718,
+          "Brier": 0.032331880658377256,
+          "ECE_10_equal_width": 0.03178079532071491,
+          "threshold_0_5_accuracy": 0.9657754401344145,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 149501,
+              "probability_sum": 1187.6455074498817,
+              "positive_target_count": 3480,
+              "squared_error_sum": 3417.8373855489963
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 6084,
+              "probability_sum": 876.9269169867039,
+              "positive_target_count": 289,
+              "squared_error_sum": 337.19575889792833
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 3500,
+              "probability_sum": 860.2639378756285,
+              "positive_target_count": 258,
+              "squared_error_sum": 344.655562656908
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 2252,
+              "probability_sum": 778.9091370105743,
+              "positive_target_count": 208,
+              "squared_error_sum": 336.10141371627606
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 1238,
+              "probability_sum": 550.4897140860558,
+              "positive_target_count": 136,
+              "squared_error_sum": 259.9688219064006
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 624,
+              "probability_sum": 338.58782655000687,
+              "positive_target_count": 95,
+              "squared_error_sum": 176.17846449527053
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 339,
+              "probability_sum": 218.59510600566864,
+              "positive_target_count": 53,
+              "squared_error_sum": 125.68994686659936
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 231,
+              "probability_sum": 172.51547533273697,
+              "positive_target_count": 51,
+              "squared_error_sum": 103.81665508360848
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 166,
+              "probability_sum": 140.7962338924408,
+              "positive_target_count": 41,
+              "squared_error_sum": 91.65516256756314
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 333,
+              "probability_sum": 324.12884545326233,
+              "positive_target_count": 202,
+              "squared_error_sum": 117.994200250763
+            }
+          ]
+        },
+        "NULL_trained_margin_sigmoid": {
+          "count": 146966,
+          "mean_probability": 0.05353663722044947,
+          "positive_target_fraction": 0.07360886191363988,
+          "Brier": 0.04359798844938507,
+          "ECE_10_equal_width": 0.03208334490607105,
+          "threshold_0_5_accuracy": 0.9474708435964782,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 134616,
+              "probability_sum": 685.6538000051152,
+              "positive_target_count": 3921,
+              "squared_error_sum": 3785.032308318055
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 2465,
+              "probability_sum": 353.0679279193282,
+              "positive_target_count": 698,
+              "squared_error_sum": 546.5494217227874
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 1448,
+              "probability_sum": 356.9226318001747,
+              "positive_target_count": 517,
+              "squared_error_sum": 348.34922957368815
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 917,
+              "probability_sum": 320.0981578230858,
+              "positive_target_count": 383,
+              "squared_error_sum": 227.34006736020405
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 762,
+              "probability_sum": 341.70976158976555,
+              "positive_target_count": 371,
+              "squared_error_sum": 192.5030249945421
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 639,
+              "probability_sum": 350.76559376716614,
+              "positive_target_count": 319,
+              "squared_error_sum": 161.35777779839032
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 686,
+              "probability_sum": 447.5716241002083,
+              "positive_target_count": 367,
+              "squared_error_sum": 180.06934860541276
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 737,
+              "probability_sum": 553.3252880573273,
+              "positive_target_count": 427,
+              "squared_error_sum": 202.4116525365162
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 911,
+              "probability_sum": 778.4262256622314,
+              "positive_target_count": 582,
+              "squared_error_sum": 251.57191804811703
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 3785,
+              "probability_sum": 3680.5244150161743,
+              "positive_target_count": 3233,
+              "squared_error_sum": 512.2372214946138
+            }
+          ]
+        },
+        "existence_raw_sigmoid": {
+          "count": 146966,
+          "mean_probability": 0.9994968042699669,
+          "positive_target_fraction": 0.9991494631411347,
+          "Brier": 0.000834540257751667,
+          "ECE_10_equal_width": 0.0003473411288321827,
+          "threshold_0_5_accuracy": 0.9991494631411347,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 146966,
+              "probability_sum": 146892.04733633995,
+              "positive_target_count": 146841,
+              "squared_error_sum": 122.64904352073148
+            }
+          ]
+        },
+        "existence_missed_0": {
+          "count": 126371,
+          "mean_probability": 0.9999925791946701,
+          "positive_target_fraction": 1.0,
+          "Brier": 1.8638265681974144e-08,
+          "ECE_10_equal_width": 7.420805329921772e-06,
+          "threshold_0_5_accuracy": 1.0,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 126371,
+              "probability_sum": 126370.06222540965,
+              "positive_target_count": 126371,
+              "squared_error_sum": 0.0023553362724967547
+            }
+          ]
+        },
+        "existence_missed_1_5": {
+          "count": 7646,
+          "mean_probability": 0.9980234612495964,
+          "positive_target_fraction": 1.0,
+          "Brier": 6.952342598197862e-06,
+          "ECE_10_equal_width": 0.001976538750403595,
+          "threshold_0_5_accuracy": 1.0,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 7646,
+              "probability_sum": 7630.887384714414,
+              "positive_target_count": 7646,
+              "squared_error_sum": 0.05315761150582085
+            }
+          ]
+        },
+        "existence_missed_6_30": {
+          "count": 12949,
+          "mean_probability": 0.9955284346868318,
+          "positive_target_fraction": 0.9903467449223878,
+          "Brier": 0.009467412948119952,
+          "ECE_10_equal_width": 0.005181689764443962,
+          "threshold_0_5_accuracy": 0.9903467449223878,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 12949,
+              "probability_sum": 12891.097700759785,
+              "positive_target_count": 12824,
+              "squared_error_sum": 122.59353026520526
+            }
+          ]
+        }
+      },
+      "actual_NULL_despite_unique_current_person": 1426,
+      "raw_NULL_logit_nonnegative": 0,
+      "trained_NULL_margin_probability_ge_0_5": 10039
+    },
+    {
       "method": "HEAD_ONLY_NO_GEOMETRY_V3",
       "selection_epoch": 1,
       "checkpoint_sha256": "acef71a26a9676fde5ce3e0de962a336bebb4aa0f00db75b6d2fe2d0147976f2",
@@ -3593,6 +5379,1792 @@
       "actual_NULL_despite_unique_current_person": 868,
       "raw_NULL_logit_nonnegative": 0,
       "trained_NULL_margin_probability_ge_0_5": 10499
+    },
+    {
+      "method": "HEAD_ONLY_NO_GEOMETRY_V3",
+      "selection_epoch": 3,
+      "checkpoint_sha256": "d5ce503a80233709e44413664095b4b308de4bee90f9b918ff9fbc628ea212ad",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "44f7c9e72516d6bb13f4ee380ea62ce4110591543dc5c6e00d58916566303389",
+      "calibration": {
+        "cross_view_identity_pair": {
+          "count": 1784367,
+          "mean_probability": 0.05228755652511153,
+          "positive_target_fraction": 0.02246286778448604,
+          "Brier": 0.016408628138632652,
+          "ECE_10_equal_width": 0.02982468874062549,
+          "threshold_0_5_accuracy": 0.9776408104386598,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 1604684,
+              "probability_sum": 9682.501100274561,
+              "positive_target_count": 1911,
+              "squared_error_sum": 2206.21168897098
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 49464,
+              "probability_sum": 7100.311981313798,
+              "positive_target_count": 788,
+              "squared_error_sum": 1611.5997934327752
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 26801,
+              "probability_sum": 6596.695929251472,
+              "positive_target_count": 644,
+              "squared_error_sum": 1969.0670401106345
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 18580,
+              "probability_sum": 6454.864791995516,
+              "positive_target_count": 675,
+              "squared_error_sum": 2460.1025826260075
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 14461,
+              "probability_sum": 6490.820840981717,
+              "positive_target_count": 783,
+              "squared_error_sum": 3001.2602332769948
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 12225,
+              "probability_sum": 6709.070300303982,
+              "positive_target_count": 1063,
+              "squared_error_sum": 3579.693893159343
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 10458,
+              "probability_sum": 6783.936054892363,
+              "positive_target_count": 1473,
+              "squared_error_sum": 3959.5231103529723
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 8710,
+              "probability_sum": 6526.256858464783,
+              "positive_target_count": 2064,
+              "squared_error_sum": 3848.9173823305455
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 8796,
+              "probability_sum": 7486.427093566721,
+              "positive_target_count": 3763,
+              "squared_error_sum": 3698.799948164243
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 30188,
+              "probability_sum": 29469.305422998772,
+              "positive_target_count": 26918,
+              "squared_error_sum": 2943.8388934230315
+            }
+          ]
+        },
+        "birth_raw_sigmoid": {
+          "count": 164268,
+          "mean_probability": 0.026928540085064557,
+          "positive_target_fraction": 0.014823337472910123,
+          "Brier": 0.014269639715373565,
+          "ECE_10_equal_width": 0.012525815895605592,
+          "threshold_0_5_accuracy": 0.9861202425304989,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 154705,
+              "probability_sum": 2934.3454114329943,
+              "positive_target_count": 1804,
+              "squared_error_sum": 1801.0631405631925
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 8530,
+              "probability_sum": 1171.507571235299,
+              "positive_target_count": 369,
+              "squared_error_sum": 432.1224816393781
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 870,
+              "probability_sum": 194.60799232125282,
+              "positive_target_count": 106,
+              "squared_error_sum": 101.31752914131334
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 8,
+              "probability_sum": 2.583099126815796,
+              "positive_target_count": 1,
+              "squared_error_sum": 1.0760598453919012
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 2,
+              "probability_sum": 1.088523805141449,
+              "positive_target_count": 2,
+              "squared_error_sum": 0.41710811872217235
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 17,
+              "probability_sum": 11.29898077249527,
+              "positive_target_count": 17,
+              "squared_error_sum": 1.9283417308747381
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 69,
+              "probability_sum": 51.81441044807434,
+              "positive_target_count": 69,
+              "squared_error_sum": 4.348890845403531
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 67,
+              "probability_sum": 56.25143355131149,
+              "positive_target_count": 67,
+              "squared_error_sum": 1.7716248807078792
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            }
+          ]
+        },
+        "birth_softmax_with_history": {
+          "count": 164268,
+          "mean_probability": 0.022008412546767858,
+          "positive_target_fraction": 0.014823337472910123,
+          "Brier": 0.01578507281450743,
+          "ECE_10_equal_width": 0.012009761494831116,
+          "threshold_0_5_accuracy": 0.983794774393065,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 154593,
+              "probability_sum": 1342.7292054997724,
+              "positive_target_count": 1739,
+              "squared_error_sum": 1731.4008040204556
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 6026,
+              "probability_sum": 847.8495974764228,
+              "positive_target_count": 210,
+              "squared_error_sum": 273.4828847047122
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 1792,
+              "probability_sum": 433.6339491903782,
+              "positive_target_count": 98,
+              "squared_error_sum": 155.22127914650613
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 714,
+              "probability_sum": 246.41976165771484,
+              "positive_target_count": 70,
+              "squared_error_sum": 106.99443846732689
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 362,
+              "probability_sum": 160.95560583472252,
+              "positive_target_count": 41,
+              "squared_error_sum": 76.31891747264363
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 220,
+              "probability_sum": 120.29516071081161,
+              "positive_target_count": 28,
+              "squared_error_sum": 62.90354371148954
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 150,
+              "probability_sum": 96.52960878610611,
+              "positive_target_count": 29,
+              "squared_error_sum": 53.838667865271105
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 115,
+              "probability_sum": 85.67108207941055,
+              "positive_target_count": 27,
+              "squared_error_sum": 51.029542575926925
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 75,
+              "probability_sum": 63.34039545059204,
+              "positive_target_count": 13,
+              "squared_error_sum": 44.70740044350001
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 221,
+              "probability_sum": 217.85354554653168,
+              "positive_target_count": 180,
+              "squared_error_sum": 37.084862685675475
+            }
+          ]
+        },
+        "NULL_trained_margin_sigmoid": {
+          "count": 152133,
+          "mean_probability": 0.06515346787504976,
+          "positive_target_fraction": 0.07260094785483755,
+          "Brier": 0.043292355414765026,
+          "ECE_10_equal_width": 0.02411932620408687,
+          "threshold_0_5_accuracy": 0.9467045282746018,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 136002,
+              "probability_sum": 1510.340688844548,
+              "positive_target_count": 3451,
+              "squared_error_sum": 3272.073432323249
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 4741,
+              "probability_sum": 663.2142508625984,
+              "positive_target_count": 1034,
+              "squared_error_sum": 829.2319211204065
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 1619,
+              "probability_sum": 396.26859770715237,
+              "positive_target_count": 486,
+              "squared_error_sum": 344.13756894171934
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 1020,
+              "probability_sum": 355.2215714752674,
+              "positive_target_count": 353,
+              "squared_error_sum": 233.00626005138756
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 884,
+              "probability_sum": 398.3358798623085,
+              "positive_target_count": 319,
+              "squared_error_sum": 210.91494564139856
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 878,
+              "probability_sum": 483.0582794547081,
+              "positive_target_count": 382,
+              "squared_error_sum": 227.48096762260943
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 921,
+              "probability_sum": 599.2564368247986,
+              "positive_target_count": 479,
+              "squared_error_sum": 245.31407491620766
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 1011,
+              "probability_sum": 759.7310925722122,
+              "positive_target_count": 562,
+              "squared_error_sum": 286.9164239683206
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 1266,
+              "probability_sum": 1080.6173441410065,
+              "positive_target_count": 862,
+              "squared_error_sum": 309.9857820606778
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 3791,
+              "probability_sum": 3665.948386490345,
+              "positive_target_count": 3117,
+              "squared_error_sum": 627.1345296684715
+            }
+          ]
+        },
+        "existence_raw_sigmoid": {
+          "count": 152133,
+          "mean_probability": 0.9991440257422417,
+          "positive_target_fraction": 0.9990928989765534,
+          "Brier": 0.0008891403062544132,
+          "ECE_10_equal_width": 5.112676568829409e-05,
+          "threshold_0_5_accuracy": 0.9990928989765534,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 4,
+              "probability_sum": 3.5768715143203735,
+              "positive_target_count": 3,
+              "squared_error_sum": 0.8228921356299352
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 152129,
+              "probability_sum": 151999.20119673014,
+              "positive_target_count": 151992,
+              "squared_error_sum": 134.4446900757727
+            }
+          ]
+        },
+        "existence_missed_0": {
+          "count": 131195,
+          "mean_probability": 0.9999758905733189,
+          "positive_target_fraction": 1.0,
+          "Brier": 7.056959745834309e-08,
+          "ECE_10_equal_width": 2.410942668108825e-05,
+          "threshold_0_5_accuracy": 1.0,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 131195,
+              "probability_sum": 131191.83696376657,
+              "positive_target_count": 131195,
+              "squared_error_sum": 0.009258378338547322
+            }
+          ]
+        },
+        "existence_missed_1_5": {
+          "count": 7330,
+          "mean_probability": 0.9962498852435981,
+          "positive_target_fraction": 1.0,
+          "Brier": 2.471515688981102e-05,
+          "ECE_10_equal_width": 0.0037501147564019026,
+          "threshold_0_5_accuracy": 1.0,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 7330,
+              "probability_sum": 7302.511658835574,
+              "positive_target_count": 7330,
+              "squared_error_sum": 0.18116210000231478
+            }
+          ]
+        },
+        "existence_missed_6_30": {
+          "count": 13608,
+          "mean_probability": 0.9926829440134246,
+          "positive_target_fraction": 0.9898589065255732,
+          "Brier": 0.009926305286967243,
+          "ECE_10_equal_width": 0.002824037487851494,
+          "threshold_0_5_accuracy": 0.9898589065255732,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 4,
+              "probability_sum": 3.5768714267639754,
+              "positive_target_count": 3,
+              "squared_error_sum": 0.822892171749953
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 13604,
+              "probability_sum": 13504.85263070792,
+              "positive_target_count": 13467,
+              "squared_error_sum": 134.2542701733003
+            }
+          ]
+        }
+      },
+      "actual_NULL_despite_unique_current_person": 930,
+      "raw_NULL_logit_nonnegative": 0,
+      "trained_NULL_margin_probability_ge_0_5": 11384
+    },
+    {
+      "method": "HEAD_ONLY_NO_GEOMETRY_V3",
+      "selection_epoch": 4,
+      "checkpoint_sha256": "8de1a5ea9fb4ac1efd1f7cb9d05ac21fad1ba110a24cf04d72cf8e510f2d0ba3",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "16e074773f8cd34279fec0a173d094f4bafddc3625be08a367d730ce5a9c2d14",
+      "calibration": {
+        "cross_view_identity_pair": {
+          "count": 1784367,
+          "mean_probability": 0.03547435176205703,
+          "positive_target_fraction": 0.02246286778448604,
+          "Brier": 0.011295984799172733,
+          "ECE_10_equal_width": 0.01301148397757099,
+          "threshold_0_5_accuracy": 0.9847867619161305,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 1679320,
+              "probability_sum": 4031.107755415025,
+              "positive_target_count": 3586,
+              "squared_error_sum": 3613.464231167043
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 21651,
+              "probability_sum": 3109.1864597780677,
+              "positive_target_count": 749,
+              "squared_error_sum": 990.5064215909921
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 12441,
+              "probability_sum": 3064.0040763604875,
+              "positive_target_count": 646,
+              "squared_error_sum": 1090.306721138702
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 8903,
+              "probability_sum": 3095.885809116448,
+              "positive_target_count": 631,
+              "squared_error_sum": 1274.595331756178
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 7266,
+              "probability_sum": 3258.828649153452,
+              "positive_target_count": 609,
+              "squared_error_sum": 1529.8679437697463
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 6445,
+              "probability_sum": 3541.539428111379,
+              "positive_target_count": 828,
+              "squared_error_sum": 1862.3841999094561
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 6054,
+              "probability_sum": 3931.7966752613856,
+              "positive_target_count": 1140,
+              "squared_error_sum": 2208.608635569088
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 5635,
+              "probability_sum": 4228.031694355424,
+              "positive_target_count": 1692,
+              "squared_error_sum": 2319.86914687649
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 6757,
+              "probability_sum": 5758.255389946565,
+              "positive_target_count": 3206,
+              "squared_error_sum": 2632.8414534693875
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 29895,
+              "probability_sum": 29280.62669310818,
+              "positive_target_count": 26995,
+              "squared_error_sum": 2633.7384228983674
+            }
+          ]
+        },
+        "birth_raw_sigmoid": {
+          "count": 164268,
+          "mean_probability": 0.026981670072513682,
+          "positive_target_fraction": 0.019662989748459835,
+          "Brier": 0.018246587117233943,
+          "ECE_10_equal_width": 0.007614165719110369,
+          "threshold_0_5_accuracy": 0.9812805902549492,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 154597,
+              "probability_sum": 2913.5923569763836,
+              "positive_target_count": 2283,
+              "squared_error_sum": 2239.686884133262
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 8511,
+              "probability_sum": 1164.0072583854198,
+              "positive_target_count": 641,
+              "squared_error_sum": 621.4012427933834
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 1000,
+              "probability_sum": 222.32123820483685,
+              "positive_target_count": 150,
+              "squared_error_sum": 131.3695127274543
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 5,
+              "probability_sum": 1.5735233426094055,
+              "positive_target_count": 1,
+              "squared_error_sum": 0.8419056671513072
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 25,
+              "probability_sum": 19.487937808036804,
+              "positive_target_count": 25,
+              "squared_error_sum": 1.2248113269343932
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 121,
+              "probability_sum": 103.04966247081757,
+              "positive_target_count": 121,
+              "squared_error_sum": 2.733046218989564
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 9,
+              "probability_sum": 8.19300228357315,
+              "positive_target_count": 9,
+              "squared_error_sum": 0.07296970660980762
+            }
+          ]
+        },
+        "birth_softmax_with_history": {
+          "count": 164268,
+          "mean_probability": 0.02386132980392316,
+          "positive_target_fraction": 0.019662989748459835,
+          "Brier": 0.020288803227576927,
+          "ECE_10_equal_width": 0.015054244840865079,
+          "threshold_0_5_accuracy": 0.9781393819855358,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 153792,
+              "probability_sum": 1273.3611163558126,
+              "positive_target_count": 2165,
+              "squared_error_sum": 2131.446117807974
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 5910,
+              "probability_sum": 833.1840598732233,
+              "positive_target_count": 366,
+              "squared_error_sum": 382.7966931081512
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 2080,
+              "probability_sum": 504.6139818429947,
+              "positive_target_count": 168,
+              "squared_error_sum": 210.51999894337217
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 972,
+              "probability_sum": 335.2045004069805,
+              "positive_target_count": 108,
+              "squared_error_sum": 148.67575602546128
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 487,
+              "probability_sum": 217.41945934295654,
+              "positive_target_count": 90,
+              "squared_error_sum": 105.47148209060727
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 321,
+              "probability_sum": 175.7901644706726,
+              "positive_target_count": 50,
+              "squared_error_sum": 91.89942258230039
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 193,
+              "probability_sum": 125.57269859313965,
+              "positive_target_count": 42,
+              "squared_error_sum": 69.27608496123425
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 154,
+              "probability_sum": 115.8952607512474,
+              "positive_target_count": 32,
+              "squared_error_sum": 71.54541383448947
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 101,
+              "probability_sum": 85.37137019634247,
+              "positive_target_count": 22,
+              "squared_error_sum": 57.4595992827852
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 258,
+              "probability_sum": 253.24031239748,
+              "positive_target_count": 187,
+              "squared_error_sum": 63.710559951231076
+            }
+          ]
+        },
+        "NULL_trained_margin_sigmoid": {
+          "count": 152190,
+          "mean_probability": 0.071240896132904,
+          "positive_target_fraction": 0.07539260135357119,
+          "Brier": 0.044050165387066006,
+          "ECE_10_equal_width": 0.025506498443808787,
+          "threshold_0_5_accuracy": 0.9452263617846114,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 134608,
+              "probability_sum": 1323.3063137707945,
+              "positive_target_count": 3300,
+              "squared_error_sum": 3153.2531456205797
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 4670,
+              "probability_sum": 666.2548447325826,
+              "positive_target_count": 821,
+              "squared_error_sum": 682.3068091456328
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 1976,
+              "probability_sum": 483.6537511199713,
+              "positive_target_count": 605,
+              "squared_error_sum": 423.2089841747385
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 1237,
+              "probability_sum": 427.94408252835274,
+              "positive_target_count": 432,
+              "squared_error_sum": 283.21570414476207
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 971,
+              "probability_sum": 435.7421217560768,
+              "positive_target_count": 383,
+              "squared_error_sum": 234.50420639700494
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 832,
+              "probability_sum": 456.4002627134323,
+              "positive_target_count": 324,
+              "squared_error_sum": 219.3579492760333
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 819,
+              "probability_sum": 532.7803239226341,
+              "positive_target_count": 361,
+              "squared_error_sum": 237.4952253517434
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 997,
+              "probability_sum": 749.2425444722176,
+              "positive_target_count": 511,
+              "squared_error_sum": 306.1877195791848
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 1213,
+              "probability_sum": 1035.1026656031609,
+              "positive_target_count": 725,
+              "squared_error_sum": 370.1178617261364
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 4867,
+              "probability_sum": 4731.725071847439,
+              "positive_target_count": 4012,
+              "squared_error_sum": 794.3470648417599
+            }
+          ]
+        },
+        "existence_raw_sigmoid": {
+          "count": 152190,
+          "mean_probability": 0.9987014468560294,
+          "positive_target_fraction": 0.9990472435771076,
+          "Brier": 0.0009283565537560136,
+          "ECE_10_equal_width": 0.0003457967210782562,
+          "threshold_0_5_accuracy": 0.9990472435771076,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 70,
+              "probability_sum": 61.21323651075363,
+              "positive_target_count": 65,
+              "squared_error_sum": 4.735016393698782
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 152120,
+              "probability_sum": 151931.15996050835,
+              "positive_target_count": 151980,
+              "squared_error_sum": 136.55156752242894
+            }
+          ]
+        },
+        "existence_missed_0": {
+          "count": 130481,
+          "mean_probability": 0.9999798099661492,
+          "positive_target_fraction": 1.0,
+          "Brier": 1.2704224251226976e-07,
+          "ECE_10_equal_width": 2.0190033850769967e-05,
+          "threshold_0_5_accuracy": 1.0,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 130481,
+              "probability_sum": 130478.36558419312,
+              "positive_target_count": 130481,
+              "squared_error_sum": 0.01657659884524347
+            }
+          ]
+        },
+        "existence_missed_1_5": {
+          "count": 7403,
+          "mean_probability": 0.9957185196939745,
+          "positive_target_fraction": 1.0,
+          "Brier": 4.121858377350703e-05,
+          "ECE_10_equal_width": 0.0042814803060254765,
+          "threshold_0_5_accuracy": 1.0,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 7403,
+              "probability_sum": 7371.304201294493,
+              "positive_target_count": 7403,
+              "squared_error_sum": 0.30514117567527255
+            }
+          ]
+        },
+        "existence_missed_6_30": {
+          "count": 14306,
+          "mean_probability": 0.9885854484681891,
+          "positive_target_fraction": 0.9898643925625612,
+          "Brier": 0.009853548752609955,
+          "ECE_10_equal_width": 0.0012789440943720897,
+          "threshold_0_5_accuracy": 0.9898643925625612,
+          "bins": [
+            {
+              "range": [
+                0.0,
+                0.1
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.1,
+                0.2
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.2,
+                0.3
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.3,
+                0.4
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.4,
+                0.5
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.5,
+                0.6
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.6,
+                0.7
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.7,
+                0.8
+              ],
+              "count": 0,
+              "probability_sum": 0.0,
+              "positive_target_count": 0,
+              "squared_error_sum": 0.0
+            },
+            {
+              "range": [
+                0.8,
+                0.9
+              ],
+              "count": 70,
+              "probability_sum": 61.21323664884102,
+              "positive_target_count": 65,
+              "squared_error_sum": 4.735016554447762
+            },
+            {
+              "range": [
+                0.9,
+                1.0
+              ],
+              "count": 14236,
+              "probability_sum": 14081.490189137072,
+              "positive_target_count": 14096,
+              "squared_error_sum": 136.22985190039026
+            }
+          ]
+        }
+      },
+      "actual_NULL_despite_unique_current_person": 831,
+      "raw_NULL_logit_nonnegative": 0,
+      "trained_NULL_margin_probability_ge_0_5": 12439
     }
   ],
   "NULL_semantics": "sigmoid(NULL logit minus max current assignment logit), exactly the trained loss; max zero when no current candidates",
