@@ -1,28 +1,1809 @@
 {
+  "schema": "worldobject_v3_retained_TRAIN_VAL_attribution_v1",
+  "status": "PARTIAL_REAL_TRAIN_VAL_REPLAYS",
+  "completed_replays": 4,
+  "expected_replays": 8,
+  "R2_modified": false,
+  "optimizer_used": false,
+  "TEST_read": false,
+  "scope": "Six complete fixed TRAIN VAL scenes 4/8/12/16/20/24, clean current GT matching only",
+  "official_TRAIN_VAL_scope": "Original raw-GT-legal scenes 4/8/12 only; 16/20/24 excluded, GT unchanged",
+  "official_TEST_result": false,
+  "new_checkpoint_or_budget_selection": false,
+  "missing_historical_evidence": {
+    "FULL_NO_GEOMETRY_V3_selection_epochs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "reason": "Original selection weights overwritten before archival. No retraining, final-refit weights or pre-R2 substitute."
+  },
   "source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f",
-  "observed_at": 1792919700.0999863,
-  "split": "TRAIN_VAL_ONLY",
-  "official_TEST_metric": false,
-  "R2_decisions_modified": false,
-  "new_training_started": false,
-  "R3_training_started": false,
-  "addendum_sha256": "2e62dfac67a817d99070c57b83b59f70a2488633da35d49498d80459c45073f8",
-  "status": "PENDING_FULL_SEQUENCE_TRAIN_EVENT_REPLAY",
-  "required_event_groups": [
-    "crossview split/merge",
-    "temporal identity break",
-    "false Birth",
-    "wrong historical reuse",
-    "NULL despite observation",
-    "cumulative contamination",
-    "geometry-gate history rejection",
-    "occlusion return"
+  "summarizer_sha256": "5e75285765f16a4eb896ae589cae6567b9d6fa93d77c28bf5a23511d16612382",
+  "replays": [
+    {
+      "method": "FULL_WORLD_OBJECT_V3",
+      "selection_epoch": 1,
+      "checkpoint_sha256": "d4644ff95cbb7f255f70f155055fba6870863a69e7043f91b920e85ce20693dd",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "2fcb995df1073776182407ce10affffc5916008d90461ba708c81b4052a7e70a",
+      "counts": {
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 258,
+        "all_selected_spatial_conflict_visual_recoveries": 6,
+        "correct_selected_spatial_conflict_visual_recoveries": 6,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 6,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 6,
+        "correct_spatial_recovery_next_frame_any_ID_change": 6,
+        "correct_spatial_recovery_next_frame_new_ID": 1,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 5,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+      },
+      "per_scene": {
+        "4": {
+          "timestamps": 901,
+          "counts": {},
+          "examples": []
+        },
+        "8": {
+          "timestamps": 523,
+          "counts": {},
+          "examples": []
+        },
+        "12": {
+          "timestamps": 1200,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 9
+          },
+          "examples": []
+        },
+        "16": {
+          "timestamps": 1034,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 26
+          },
+          "examples": []
+        },
+        "20": {
+          "timestamps": 1001,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 126
+          },
+          "examples": []
+        },
+        "24": {
+          "timestamps": 1201,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 97,
+            "all_selected_spatial_conflict_visual_recoveries": 6,
+            "correct_selected_spatial_conflict_visual_recoveries": 6,
+            "correct_spatial_recovery_center_unchanged_missed_reset_0": 6,
+            "correct_spatial_recovery_next_frame_clean_observation_opportunities": 6,
+            "correct_spatial_recovery_next_frame_any_ID_change": 6,
+            "correct_spatial_recovery_next_frame_new_ID": 1,
+            "recovery_next_ID_change_with_correct_history_geometry_rejected": 5,
+            "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+          },
+          "examples": [
+            {
+              "scene": 24,
+              "timestamp": 138,
+              "frame_ordinal": 137,
+              "label": "2",
+              "recovered_ID": 42,
+              "new_IDs": [
+                14,
+                67
+              ],
+              "recovery_previous_frame": {
+                "label": "2",
+                "gid": 42,
+                "indices": [
+                  44
+                ],
+                "timestamp": 137,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.3252283242097507,
+                  -0.8448821559080318,
+                  1.4589150940120998
+                ],
+                "current_centers": [
+                  [
+                    -0.13175418972969055,
+                    0.06267774850130081,
+                    0.3420965373516083
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                44
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 6.689016046087127,
+                  "appearance": 0.46751588582992554,
+                  "learned_margin": -1.0857276916503906,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 6.437433583542444,
+                  "appearance": 0.9877174496650696,
+                  "learned_margin": 6.104395389556885,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 139,
+              "frame_ordinal": 138,
+              "label": "2",
+              "recovered_ID": 67,
+              "new_IDs": [
+                14,
+                42
+              ],
+              "recovery_previous_frame": {
+                "label": "2",
+                "gid": 67,
+                "indices": [
+                  44
+                ],
+                "timestamp": 138,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.4292817969527575,
+                  -0.146594042033259,
+                  2.285975417595642
+                ],
+                "current_centers": [
+                  [
+                    -0.13225401937961578,
+                    0.05750778317451477,
+                    0.35143306851387024
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                44
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 11.643446233829833,
+                  "appearance": 0.46576449275016785,
+                  "learned_margin": -1.6698212623596191,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 11.133053746672443,
+                  "appearance": 0.9934748411178589,
+                  "learned_margin": 6.131936550140381,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 702,
+              "frame_ordinal": 701,
+              "label": "1",
+              "recovered_ID": 144,
+              "new_IDs": [
+                1,
+                158
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 144,
+                "indices": [
+                  52
+                ],
+                "timestamp": 701,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.1904521167268783,
+                  -1.9427302282960535,
+                  0.6944786975353466
+                ],
+                "current_centers": [
+                  [
+                    -0.14095041155815125,
+                    0.038548793643713,
+                    0.39735594391822815
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 9.19867109053152,
+                  "appearance": 0.5181734561920166,
+                  "learned_margin": 1.3421885967254639,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": true,
+                  "reason": "ACCEPTED",
+                  "spatial_distance": 0.0020719008652344243,
+                  "appearance": 0.9529455900192261,
+                  "learned_margin": 4.744870662689209,
+                  "missed_before": 0,
+                  "accepted_reason": "HISTORY_EXPLAINS_CURRENT_OBSERVATION"
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 704,
+              "frame_ordinal": 703,
+              "label": "1",
+              "recovered_ID": 144,
+              "new_IDs": [
+                1,
+                158
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 144,
+                "indices": [
+                  55
+                ],
+                "timestamp": 703,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.1904521167268783,
+                  -1.9427302282960535,
+                  0.6944786975353466
+                ],
+                "current_centers": [
+                  [
+                    -0.13993699848651886,
+                    0.042740318924188614,
+                    0.3856387138366699
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                53
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 7.791406847529682,
+                  "appearance": 0.5205730199813843,
+                  "learned_margin": 0.892406702041626,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 7.579856148858096,
+                  "appearance": 0.9577040672302246,
+                  "learned_margin": 4.796988487243652,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 705,
+              "frame_ordinal": 704,
+              "label": "1",
+              "recovered_ID": 158,
+              "new_IDs": [
+                1,
+                162
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 158,
+                "indices": [
+                  53
+                ],
+                "timestamp": 704,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.24417778721948113,
+                  -2.41551606885691,
+                  1.053386882102619
+                ],
+                "current_centers": [
+                  [
+                    -0.14077268540859222,
+                    0.03970621898770332,
+                    0.39053091406822205
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                54
+              ],
+              "new_birth_indices": [
+                54
+              ],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 11.66699544052417,
+                  "appearance": 0.48378700017929077,
+                  "learned_margin": 0.5912306308746338,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 11.40441892679817,
+                  "appearance": 0.9742895364761353,
+                  "learned_margin": 4.926700115203857,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 715,
+              "frame_ordinal": 714,
+              "label": "1",
+              "recovered_ID": 144,
+              "new_IDs": [
+                1,
+                158
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 144,
+                "indices": [
+                  55
+                ],
+                "timestamp": 714,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.4525572782671068,
+                  -2.2916339864554316,
+                  2.7210362897528704
+                ],
+                "current_centers": [
+                  [
+                    -0.13829895853996277,
+                    0.047603677958250046,
+                    0.37970536947250366
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                57
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 15.168143115555122,
+                  "appearance": 0.4690077304840088,
+                  "learned_margin": 1.7683839797973633,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 14.878327308834848,
+                  "appearance": 0.9408369660377502,
+                  "learned_margin": 4.767022132873535,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "method": "FULL_WORLD_OBJECT_V3",
+      "selection_epoch": 2,
+      "checkpoint_sha256": "1bb3415e275e35ba10224f9864fb2d2514f227aad5b5f91287115c98f31a7836",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "c5be5dd53a282a9b2925a859df2c238f224167ed80cf78c1af167968260b0f9f",
+      "counts": {
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 263,
+        "all_selected_spatial_conflict_visual_recoveries": 6,
+        "correct_selected_spatial_conflict_visual_recoveries": 6,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 6,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 6,
+        "correct_spatial_recovery_next_frame_any_ID_change": 6,
+        "correct_spatial_recovery_next_frame_new_ID": 1,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 5,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+      },
+      "per_scene": {
+        "4": {
+          "timestamps": 901,
+          "counts": {},
+          "examples": []
+        },
+        "8": {
+          "timestamps": 523,
+          "counts": {},
+          "examples": []
+        },
+        "12": {
+          "timestamps": 1200,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 10
+          },
+          "examples": []
+        },
+        "16": {
+          "timestamps": 1034,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 21
+          },
+          "examples": []
+        },
+        "20": {
+          "timestamps": 1001,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 131
+          },
+          "examples": []
+        },
+        "24": {
+          "timestamps": 1201,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 101,
+            "all_selected_spatial_conflict_visual_recoveries": 6,
+            "correct_selected_spatial_conflict_visual_recoveries": 6,
+            "correct_spatial_recovery_center_unchanged_missed_reset_0": 6,
+            "correct_spatial_recovery_next_frame_clean_observation_opportunities": 6,
+            "correct_spatial_recovery_next_frame_any_ID_change": 6,
+            "correct_spatial_recovery_next_frame_new_ID": 1,
+            "recovery_next_ID_change_with_correct_history_geometry_rejected": 5,
+            "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+          },
+          "examples": [
+            {
+              "scene": 24,
+              "timestamp": 138,
+              "frame_ordinal": 137,
+              "label": "2",
+              "recovered_ID": 43,
+              "new_IDs": [
+                14,
+                70
+              ],
+              "recovery_previous_frame": {
+                "label": "2",
+                "gid": 43,
+                "indices": [
+                  44
+                ],
+                "timestamp": 137,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.32524247125844324,
+                  -0.8448392856855304,
+                  1.4590155898899082
+                ],
+                "current_centers": [
+                  [
+                    -0.13175418972969055,
+                    0.06267774850130081,
+                    0.3420965373516083
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                44
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 6.689253411505164,
+                  "appearance": 0.4665684700012207,
+                  "learned_margin": -4.385962009429932,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 6.437666111747646,
+                  "appearance": 0.9878185987472534,
+                  "learned_margin": 5.243866920471191,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 139,
+              "frame_ordinal": 138,
+              "label": "2",
+              "recovered_ID": 70,
+              "new_IDs": [
+                14,
+                43
+              ],
+              "recovery_previous_frame": {
+                "label": "2",
+                "gid": 70,
+                "indices": [
+                  44
+                ],
+                "timestamp": 138,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.42928174752343967,
+                  -0.14659397836703675,
+                  2.2859751020388686
+                ],
+                "current_centers": [
+                  [
+                    -0.13225401937961578,
+                    0.05750778317451477,
+                    0.35143306851387024
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                44
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 11.643444338466871,
+                  "appearance": 0.46566081047058105,
+                  "learned_margin": -5.69639778137207,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 11.133051882037599,
+                  "appearance": 0.9934689998626709,
+                  "learned_margin": 5.248195648193359,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 702,
+              "frame_ordinal": 701,
+              "label": "1",
+              "recovered_ID": 153,
+              "new_IDs": [
+                1,
+                167
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 153,
+                "indices": [
+                  52
+                ],
+                "timestamp": 701,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.190434813967327,
+                  -1.9431843868320617,
+                  0.6943190516149877
+                ],
+                "current_centers": [
+                  [
+                    -0.14095041155815125,
+                    0.038548793643713,
+                    0.39735594391822815
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 9.200525641050591,
+                  "appearance": 0.5181796550750732,
+                  "learned_margin": -2.1878602504730225,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": true,
+                  "reason": "ACCEPTED",
+                  "spatial_distance": 0.0020722716304300095,
+                  "appearance": 0.9528948068618774,
+                  "learned_margin": 3.844245195388794,
+                  "missed_before": 0,
+                  "accepted_reason": "HISTORY_EXPLAINS_CURRENT_OBSERVATION"
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 704,
+              "frame_ordinal": 703,
+              "label": "1",
+              "recovered_ID": 153,
+              "new_IDs": [
+                1,
+                167
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 153,
+                "indices": [
+                  55
+                ],
+                "timestamp": 703,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.190434813967327,
+                  -1.9431843868320617,
+                  0.6943190516149877
+                ],
+                "current_centers": [
+                  [
+                    -0.13993699848651886,
+                    0.042740318924188614,
+                    0.3856387138366699
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                53
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 7.792971894161113,
+                  "appearance": 0.5206716656684875,
+                  "learned_margin": -1.866072177886963,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 7.58145727954556,
+                  "appearance": 0.9577087163925171,
+                  "learned_margin": 3.776494026184082,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 705,
+              "frame_ordinal": 704,
+              "label": "1",
+              "recovered_ID": 167,
+              "new_IDs": [
+                1,
+                171
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 167,
+                "indices": [
+                  53
+                ],
+                "timestamp": 704,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.2442147814261058,
+                  -2.4152903579490848,
+                  1.0536846963384745
+                ],
+                "current_centers": [
+                  [
+                    -0.14077268540859222,
+                    0.03970621898770332,
+                    0.39053091406822205
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                54
+              ],
+              "new_birth_indices": [
+                54
+              ],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 11.666422302276603,
+                  "appearance": 0.4839097261428833,
+                  "learned_margin": -2.0650696754455566,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 11.403801921793889,
+                  "appearance": 0.9744296073913574,
+                  "learned_margin": 3.9664597511291504,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 715,
+              "frame_ordinal": 714,
+              "label": "1",
+              "recovered_ID": 153,
+              "new_IDs": [
+                1,
+                167
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 153,
+                "indices": [
+                  55
+                ],
+                "timestamp": 714,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.4525459438294221,
+                  -2.291382815399457,
+                  2.720961537820338
+                ],
+                "current_centers": [
+                  [
+                    -0.13829895853996277,
+                    0.047603677958250046,
+                    0.37970536947250366
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                57
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 15.167114440869167,
+                  "appearance": 0.4691206216812134,
+                  "learned_margin": -1.586465835571289,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 14.877294601925314,
+                  "appearance": 0.941087543964386,
+                  "learned_margin": 3.6407594680786133,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "method": "HEAD_ONLY_NO_GEOMETRY_V3",
+      "selection_epoch": 1,
+      "checkpoint_sha256": "acef71a26a9676fde5ce3e0de962a336bebb4aa0f00db75b6d2fe2d0147976f2",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "4295d8239cdeb3af0a8448ab16ddd762cda630b5ad8bc91561d81b654a61307b",
+      "counts": {
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 289,
+        "all_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 7,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 7,
+        "correct_spatial_recovery_next_frame_any_ID_change": 7,
+        "correct_spatial_recovery_next_frame_new_ID": 1,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+      },
+      "per_scene": {
+        "4": {
+          "timestamps": 901,
+          "counts": {},
+          "examples": []
+        },
+        "8": {
+          "timestamps": 523,
+          "counts": {},
+          "examples": []
+        },
+        "12": {
+          "timestamps": 1200,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 9
+          },
+          "examples": []
+        },
+        "16": {
+          "timestamps": 1034,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 20
+          },
+          "examples": []
+        },
+        "20": {
+          "timestamps": 1001,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 149
+          },
+          "examples": []
+        },
+        "24": {
+          "timestamps": 1201,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 111,
+            "all_selected_spatial_conflict_visual_recoveries": 7,
+            "correct_selected_spatial_conflict_visual_recoveries": 7,
+            "correct_spatial_recovery_center_unchanged_missed_reset_0": 7,
+            "correct_spatial_recovery_next_frame_clean_observation_opportunities": 7,
+            "correct_spatial_recovery_next_frame_any_ID_change": 7,
+            "correct_spatial_recovery_next_frame_new_ID": 1,
+            "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
+            "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+          },
+          "examples": [
+            {
+              "scene": 24,
+              "timestamp": 138,
+              "frame_ordinal": 137,
+              "label": "2",
+              "recovered_ID": 43,
+              "new_IDs": [
+                14,
+                71
+              ],
+              "recovery_previous_frame": {
+                "label": "2",
+                "gid": 43,
+                "indices": [
+                  44
+                ],
+                "timestamp": 137,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.3252149450385578,
+                  -0.844943315070269,
+                  1.45881611341522
+                ],
+                "current_centers": [
+                  [
+                    -0.13175418972969055,
+                    0.06267774850130081,
+                    0.3420965373516083
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                44
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 6.688835026470631,
+                  "appearance": 0.4660201072692871,
+                  "learned_margin": -6.619682312011719,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 6.437257992127404,
+                  "appearance": 0.9878433346748352,
+                  "learned_margin": 6.705593109130859,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 139,
+              "frame_ordinal": 138,
+              "label": "2",
+              "recovered_ID": 71,
+              "new_IDs": [
+                14,
+                43
+              ],
+              "recovery_previous_frame": {
+                "label": "2",
+                "gid": 71,
+                "indices": [
+                  44
+                ],
+                "timestamp": 138,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.4292819593442618,
+                  -0.14659427505412953,
+                  2.2859764562427567
+                ],
+                "current_centers": [
+                  [
+                    -0.13225401937961578,
+                    0.05750778317451477,
+                    0.35143306851387024
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                44
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 11.643452491000867,
+                  "appearance": 0.465532124042511,
+                  "learned_margin": -6.765933036804199,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 11.133059900664964,
+                  "appearance": 0.9934691190719604,
+                  "learned_margin": 6.609612464904785,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 707,
+              "frame_ordinal": 706,
+              "label": "1",
+              "recovered_ID": 169,
+              "new_IDs": [
+                1,
+                150
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 169,
+                "indices": [
+                  55
+                ],
+                "timestamp": 706,
+                "missed_before": 3,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.2648264504219586,
+                  -2.28666703809621,
+                  1.2197820426907218
+                ],
+                "current_centers": [
+                  [
+                    -0.14905300736427307,
+                    0.017525361850857735,
+                    0.45589467883110046
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                54
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 8.458694461015089,
+                  "appearance": 0.4919915795326233,
+                  "learned_margin": -4.174243927001953,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 8.157709732327508,
+                  "appearance": 0.9557698369026184,
+                  "learned_margin": 4.574026107788086,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 708,
+              "frame_ordinal": 707,
+              "label": "1",
+              "recovered_ID": 150,
+              "new_IDs": [
+                1,
+                169
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 150,
+                "indices": [
+                  54
+                ],
+                "timestamp": 707,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  0.03475537502147992,
+                  -2.572853183474688,
+                  -1.1382942058016985
+                ],
+                "current_centers": [
+                  [
+                    -0.14588230848312378,
+                    0.02970454841852188,
+                    0.4280935227870941
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                55
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 17.443544848694245,
+                  "appearance": 0.492448091506958,
+                  "learned_margin": -3.7675371170043945,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 17.56254028613393,
+                  "appearance": 0.9598115682601929,
+                  "learned_margin": 4.664303779602051,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 709,
+              "frame_ordinal": 708,
+              "label": "1",
+              "recovered_ID": 169,
+              "new_IDs": [
+                1
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 169,
+                "indices": [
+                  55
+                ],
+                "timestamp": 708,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.2648264504219586,
+                  -2.28666703809621,
+                  1.2197820426907218
+                ],
+                "current_centers": [
+                  [
+                    -0.1457766592502594,
+                    0.02743830531835556,
+                    0.43064358830451965
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 7.65232126962448,
+                  "appearance": 0.506641149520874,
+                  "learned_margin": -3.8468234539031982,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": true,
+                  "reason": "ACCEPTED",
+                  "spatial_distance": 0.002605157706756968,
+                  "appearance": 0.941892147064209,
+                  "learned_margin": 4.040808200836182,
+                  "missed_before": 0,
+                  "accepted_reason": "HISTORY_EXPLAINS_CURRENT_OBSERVATION"
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 717,
+              "frame_ordinal": 716,
+              "label": "1",
+              "recovered_ID": 173,
+              "new_IDs": [
+                1,
+                169
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 173,
+                "indices": [
+                  57
+                ],
+                "timestamp": 716,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.5203792748757302,
+                  0.13904768692152705,
+                  3.395192089873025
+                ],
+                "current_centers": [
+                  [
+                    -0.13414667546749115,
+                    0.0606146864593029,
+                    0.34084635972976685
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                57
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 13.90271986236607,
+                  "appearance": 0.45685988664627075,
+                  "learned_margin": -3.9366824626922607,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 13.886041298347754,
+                  "appearance": 0.9587314128875732,
+                  "learned_margin": 4.469350337982178,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 718,
+              "frame_ordinal": 717,
+              "label": "1",
+              "recovered_ID": 169,
+              "new_IDs": [
+                1,
+                174
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 169,
+                "indices": [
+                  57
+                ],
+                "timestamp": 717,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.19324547185545551,
+                  -1.4546124299161955,
+                  0.697314452334404
+                ],
+                "current_centers": [
+                  [
+                    -0.1433486044406891,
+                    0.062338877469301224,
+                    0.3139125108718872
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                56
+              ],
+              "new_birth_indices": [
+                56
+              ],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 9.111585812122037,
+                  "appearance": 0.5187675356864929,
+                  "learned_margin": -3.6451640129089355,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 9.046877357145858,
+                  "appearance": 0.9446349740028381,
+                  "learned_margin": 4.197883605957031,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "method": "HEAD_ONLY_NO_GEOMETRY_V3",
+      "selection_epoch": 2,
+      "checkpoint_sha256": "4c68c69d27e37ccae544b92bf70b973be5a2523fdb72ae87aae50dde7e508dc9",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "ccf8b751141f66c49cb5ce93b07b53dcdd1e73cd2064b32c0bf91e91b021ebc6",
+      "counts": {
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 268,
+        "all_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 7,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 7,
+        "correct_spatial_recovery_next_frame_any_ID_change": 7,
+        "correct_spatial_recovery_next_frame_new_ID": 2,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 2
+      },
+      "per_scene": {
+        "4": {
+          "timestamps": 901,
+          "counts": {},
+          "examples": []
+        },
+        "8": {
+          "timestamps": 523,
+          "counts": {},
+          "examples": []
+        },
+        "12": {
+          "timestamps": 1200,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 9
+          },
+          "examples": []
+        },
+        "16": {
+          "timestamps": 1034,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 20
+          },
+          "examples": []
+        },
+        "20": {
+          "timestamps": 1001,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 131
+          },
+          "examples": []
+        },
+        "24": {
+          "timestamps": 1201,
+          "counts": {
+            "clean_correct_history_GEOMETRY_GATE_REJECTION": 108,
+            "all_selected_spatial_conflict_visual_recoveries": 7,
+            "correct_selected_spatial_conflict_visual_recoveries": 7,
+            "correct_spatial_recovery_center_unchanged_missed_reset_0": 7,
+            "correct_spatial_recovery_next_frame_clean_observation_opportunities": 7,
+            "correct_spatial_recovery_next_frame_any_ID_change": 7,
+            "correct_spatial_recovery_next_frame_new_ID": 2,
+            "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
+            "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 2
+          },
+          "examples": [
+            {
+              "scene": 24,
+              "timestamp": 138,
+              "frame_ordinal": 137,
+              "label": "2",
+              "recovered_ID": 42,
+              "new_IDs": [
+                14,
+                68
+              ],
+              "recovery_previous_frame": {
+                "label": "2",
+                "gid": 42,
+                "indices": [
+                  44
+                ],
+                "timestamp": 137,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.3252248435511892,
+                  -0.844935417306433,
+                  1.4588822042096143
+                ],
+                "current_centers": [
+                  [
+                    -0.13175418972969055,
+                    0.06267774850130081,
+                    0.3420965373516083
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                44
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 6.689047631483195,
+                  "appearance": 0.4669203758239746,
+                  "learned_margin": -6.333876609802246,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 6.437468124959711,
+                  "appearance": 0.9878928661346436,
+                  "learned_margin": 5.28080940246582,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 139,
+              "frame_ordinal": 138,
+              "label": "2",
+              "recovered_ID": 68,
+              "new_IDs": [
+                14,
+                42
+              ],
+              "recovery_previous_frame": {
+                "label": "2",
+                "gid": 68,
+                "indices": [
+                  44
+                ],
+                "timestamp": 138,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.4292817332374975,
+                  -0.14659397157229948,
+                  2.2859750012638433
+                ],
+                "current_centers": [
+                  [
+                    -0.13225401937961578,
+                    0.05750778317451477,
+                    0.35143306851387024
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                44
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 11.643443744848181,
+                  "appearance": 0.46568331122398376,
+                  "learned_margin": -6.742155075073242,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 11.133051297148157,
+                  "appearance": 0.9934616088867188,
+                  "learned_margin": 5.085644721984863,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 702,
+              "frame_ordinal": 701,
+              "label": "1",
+              "recovered_ID": 150,
+              "new_IDs": [
+                1,
+                165
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 150,
+                "indices": [
+                  52
+                ],
+                "timestamp": 701,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.1904541649325303,
+                  -1.9426767171704786,
+                  0.6944975814767727
+                ],
+                "current_centers": [
+                  [
+                    -0.14095041155815125,
+                    0.038548793643713,
+                    0.39735594391822815
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 9.19845069001989,
+                  "appearance": 0.5190397500991821,
+                  "learned_margin": -4.152770042419434,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": true,
+                  "reason": "ACCEPTED",
+                  "spatial_distance": 0.002071857208494414,
+                  "appearance": 0.9527689218521118,
+                  "learned_margin": 3.0726678371429443,
+                  "missed_before": 0,
+                  "accepted_reason": "HISTORY_EXPLAINS_CURRENT_OBSERVATION"
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 704,
+              "frame_ordinal": 703,
+              "label": "1",
+              "recovered_ID": 150,
+              "new_IDs": [
+                1,
+                165
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 150,
+                "indices": [
+                  55
+                ],
+                "timestamp": 703,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.1904541649325303,
+                  -1.9426767171704786,
+                  0.6944975814767727
+                ],
+                "current_centers": [
+                  [
+                    -0.13993699848651886,
+                    0.042740318924188614,
+                    0.3856387138366699
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                53
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 7.791221326289555,
+                  "appearance": 0.5215643644332886,
+                  "learned_margin": -3.8491909503936768,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 7.579666342241138,
+                  "appearance": 0.9575775265693665,
+                  "learned_margin": 3.1439762115478516,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 705,
+              "frame_ordinal": 704,
+              "label": "1",
+              "recovered_ID": 165,
+              "new_IDs": [
+                1,
+                168
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 165,
+                "indices": [
+                  53
+                ],
+                "timestamp": 704,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.24420163445937826,
+                  -2.415370699743514,
+                  1.0535788509495154
+                ],
+                "current_centers": [
+                  [
+                    -0.14077268540859222,
+                    0.03970621898770332,
+                    0.39053091406822205
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                54
+              ],
+              "new_birth_indices": [
+                54
+              ],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 11.666626362875027,
+                  "appearance": 0.4845149517059326,
+                  "learned_margin": -4.414306163787842,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 11.404021561944617,
+                  "appearance": 0.9743034839630127,
+                  "learned_margin": 3.241811752319336,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 717,
+              "frame_ordinal": 716,
+              "label": "1",
+              "recovered_ID": 168,
+              "new_IDs": [
+                1,
+                165
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 168,
+                "indices": [
+                  57
+                ],
+                "timestamp": 716,
+                "missed_before": 2,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.48269857454385895,
+                  1.2264869311720696,
+                  3.1742169868599652
+                ],
+                "current_centers": [
+                  [
+                    -0.13414667546749115,
+                    0.0606146864593029,
+                    0.34084635972976685
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                57
+              ],
+              "new_birth_indices": [],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 13.877858825636862,
+                  "appearance": 0.4677566885948181,
+                  "learned_margin": -4.533766746520996,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 13.891527611154128,
+                  "appearance": 0.9503071308135986,
+                  "learned_margin": 3.04567551612854,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            },
+            {
+              "scene": 24,
+              "timestamp": 718,
+              "frame_ordinal": 717,
+              "label": "1",
+              "recovered_ID": 165,
+              "new_IDs": [
+                1,
+                172
+              ],
+              "recovery_previous_frame": {
+                "label": "1",
+                "gid": 165,
+                "indices": [
+                  57
+                ],
+                "timestamp": 717,
+                "missed_before": 1,
+                "missed_after": 0,
+                "center_unchanged": true,
+                "old_center": [
+                  -0.1932438724631661,
+                  -1.4546205814902833,
+                  0.6973014963829489
+                ],
+                "current_centers": [
+                  [
+                    -0.1433486044406891,
+                    0.062338877469301224,
+                    0.3139125108718872
+                  ]
+                ]
+              },
+              "geometry_rejected_indices": [
+                56
+              ],
+              "new_birth_indices": [
+                56
+              ],
+              "history_evidence": [
+                {
+                  "accepted": false,
+                  "reason": "APPEARANCE_REJECTION",
+                  "spatial_distance": 9.111612683768632,
+                  "appearance": 0.5171380639076233,
+                  "learned_margin": -4.283908367156982,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                },
+                {
+                  "accepted": false,
+                  "reason": "GEOMETRY_GATE_REJECTION",
+                  "spatial_distance": 9.04690428561891,
+                  "appearance": 0.9401474595069885,
+                  "learned_margin": 2.9656128883361816,
+                  "missed_before": 0,
+                  "accepted_reason": null
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
   ],
-  "required_strata": [
-    "scene",
-    "camera",
-    "gap",
-    "density",
-    "geometry reliability"
-  ]
+  "mechanism": "Accepted correct visual identity recovery leaves old center valid and clears missed to zero. Next-frame hard spatial gating can reject that identity; actual ID reuse and new Birth are counted separately.",
+  "R3": "Separate branch research/worldmot-v3-r3-state-update-fix-20261025; CPU-verified spatial abstention, one TRAIN-only replay registered; no long training."
 }

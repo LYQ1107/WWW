@@ -8,22 +8,24 @@ User instruction: attachment `c5d7a93f-e5e6-4068-83b2-45635a8dd642`.
 
 Active revision: R2. Its 120 CPU tests and source-bound 178-timestamp real TRAIN
 preflight pass. All 24 TRAIN geometry caches are now complete: 28,754 synchronized
-times / 57,508 RGB images. Full V3 and head-only no-geometry continue selection
-training. Full no-geometry has completed its selected two final all-24 epochs,
-passed the source/checkpoint/coverage gate, and started complete 22-video TEST
-inference. Its checkpoint SHA is
+times / 57,508 RGB images. All22 TEST geometry inputs are also complete.
+Full V3 finished its selected one-epoch all24 final training and all22 TEST;
+legal14 native TrackEval/MATLAB scoring is complete. Head-only continues normal
+final training for its unchanged selected three-epoch budget. Full no-geometry
+completed its selected two final all24 epochs and all22 TEST. Its checkpoint SHA is
 `b08badfc634c9652a34366951c93207fa321deb7d1a2b240a76798f11607053f`;
 see `results/worldobject_v3_no_geometry_fulltrain_gate.json`.
-Three unchanged geometry workers continue TEST preparation on the other devices.
+The completed geometry producers exited normally and were not restarted.
 All four parameter-free controls have completed full TRAIN causal replay and
 independent row/hash/current-candidate verification; see
 `results/worldobject_v3_all_control_train_replay_verification.json`.
 Full no-geometry has now completed all 22 TEST videos and official legal-14
-TrackEval plus original MATLAB scoring. Full geometry and head-only results are
-still pending. This is an independent WorldMOT experiment; GMT is
+TrackEval plus original MATLAB scoring. Full geometry also has both official
+scores; Head-only TEST remains pending its final training gate.
+This is an independent WorldMOT experiment; GMT is
 a frozen detector/ROI provider and a separately scored reference.
 
-## First completed official TEST result: full no-geometry
+## Completed official TEST results
 
 All rows use the same original 14 legal TEST videos. The current no-geometry
 model also delivered all 29,019 times of all 22 videos. Eight original-GT-blocked
@@ -34,13 +36,35 @@ videos remain excluded from official scoring.
 | GMT native reference | 66.0646 | 69.5787 | 80.1121 | 78.0613 | 72.9636 | 6,044 |
 | GMTDet + V2 reference | 61.0177 | 60.2274 | 74.2189 | 72.6929 | 75.4564 | 598 |
 | Full no-geometry V3 | 60.4318 | 58.2867 | 70.1622 | 67.6049 | 75.0228 | 2,130 |
+| Full V3 + Ω | 56.4218 | 50.7806 | 63.9655 | 61.8413 | 74.6619 | 2,837 |
 
 The control is below GMT and V2 in the principal identity/association metrics.
 Its higher MOTA than GMT comes with fewer ID switches and nearly identical
 TP/FP/FN; that numerical advantage does not imply better global identity quality.
-This result measures the completed no-geometry control and does not establish
-the independent effect of Ω. Complete metrics and immutable prediction hashes
-are in `results/worldobject_v3_no_geometry_official_test.json`.
+The registered Full system falls below its capacity-matched No-Geometry control
+by 4.0100 HOTA, 7.5061 AssA, 6.1967 IDF1 and 5.7636 CVIDF1 percentage points.
+This experiment therefore has **no independent geometry gain** in the completed
+Full-vs-NoGeometry formal comparison. The common TRAIN-only selection rule
+selected different final budgets (Full 1, No-Geometry 2); this is the registered
+end-to-end model comparison, not a same-weights geometry toggle. It does not
+justify changing R2 or establish that every reconstruction method must fail.
+Full is also below V2 and GMT. Complete metrics/checksums are in
+`results/worldobject_v3_full_official_test.json` and
+`results/worldobject_v3_no_geometry_official_test.json`.
+
+Full's final checkpoint SHA-256 is
+`cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8`.
+All22 delivered candidate keys, boxes and scores match canonical detector inputs
+(548,583 detections, max difference zero). Its true live timing continues as
+registered; cache replay is not substituted for end-to-end FPS.
+
+The completed No-Geometry TEST posthoc audit finds 11,662 same-person cross-view
+splits out of 54,452 pairs, 123/151 detected people fragmented over IDs, and
+1,515 different-person false cross-view merges. Of the latter, 1,514 reuse
+existing IDs. These clean-IoU-join diagnostics are separate from official metrics;
+see `docs/WORLDOBJECT_V3_R2_NO_GEOMETRY_IDENTITY_ATTRIBUTION.md`.
+Lower local IDSW can coexist with stable view-specific splits and persistent
+wrong ID reuse, explaining why it does not imply higher global CVIDF1.
 
 True live GMT detection on TEST scenes 1/8/22 (100 paired times each) measures
 3.3655 paired-times/s from RGB read to ID output flush, including first frames
@@ -124,11 +148,12 @@ reported separately from parallel aggregate throughput. Full no-geometry may
 reuse immutable ROI-restored object caches; geometry methods require the new
 camera-depth/persistent-alignment cache contract.
 
-## Results awaiting execution
+## Remaining registered measurements
 
-Training coverage, full TEST coverage, official metric comparison, birth/error
-attribution, and live runtime breakdown will be added as real jobs finish.
-The prior V3 results are preserved and are not results of this repaired model.
+Head-only final training/all22 TEST, remaining control scoring and live samples,
+all retained-checkpoint TRAIN VAL attribution and the complete paired-method
+posthoc audit continue. The prior V3 results are preserved and are not results
+of this repaired model. No additional seed or R2 threshold change is introduced.
 
 ## Phase C and six-card launch
 

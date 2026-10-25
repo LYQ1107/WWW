@@ -1,23 +1,283 @@
 {
-  "source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f",
-  "observed_at": 1792919700.0999863,
-  "split": "TRAIN_VAL_ONLY",
-  "official_TEST_metric": false,
-  "R2_decisions_modified": false,
-  "new_training_started": false,
-  "R3_training_started": false,
-  "addendum_sha256": "2e62dfac67a817d99070c57b83b59f70a2488633da35d49498d80459c45073f8",
-  "status": "PAIRED_FULL_EVENT_ATTRIBUTION_PENDING",
-  "epoch1_full_minus_no_geometry": {
-    "same_person_split": -1031,
-    "false_cross_view_merge": -176,
-    "diagnostic_temporal_switches": 1496,
-    "first_appearance_split_count": -111
+  "schema": "worldobject_v3_retained_TRAIN_VAL_attribution_v1",
+  "status": "PARTIAL_REAL_TRAIN_VAL_REPLAYS",
+  "completed_replays": 4,
+  "expected_replays": 8,
+  "R2_modified": false,
+  "optimizer_used": false,
+  "TEST_read": false,
+  "scope": "Six complete fixed TRAIN VAL scenes 4/8/12/16/20/24, clean current GT matching only",
+  "official_TRAIN_VAL_scope": "Original raw-GT-legal scenes 4/8/12 only; 16/20/24 excluded, GT unchanged",
+  "official_TEST_result": false,
+  "new_checkpoint_or_budget_selection": false,
+  "missing_historical_evidence": {
+    "FULL_NO_GEOMETRY_V3_selection_epochs": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "reason": "Original selection weights overwritten before archival. No retraining, final-refit weights or pre-R2 substitute."
   },
-  "input_equivalence_audit_status": "TRAIN_ALL24_PASSED_BBOX_SCORE_ROI_LABEL_MASK",
-  "geometry_gate_false_birth_events": null,
-  "correct_crossview_fusion_followed_by_next_timestamp_ID_break": null,
-  "independent_identity_gain_evidence": "NOT_ESTABLISHED; cross-view aggregate improvements coexist with temporal regression.",
-  "input_equivalence_report": "worldobject_v3_input_equivalence_train.json",
-  "synthetic_recovery_state_mechanism": "Spatial-conflict visual recovery retains old center and resets missed=0; the next identical current observation can be rejected and receive a new ID. Reproduced in Full/HeadOnly, absent in FullNoGeometry. Real frequency pending."
+  "source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f",
+  "summarizer_sha256": "5e75285765f16a4eb896ae589cae6567b9d6fa93d77c28bf5a23511d16612382",
+  "replays": [
+    {
+      "method": "FULL_WORLD_OBJECT_V3",
+      "selection_epoch": 1,
+      "checkpoint_sha256": "d4644ff95cbb7f255f70f155055fba6870863a69e7043f91b920e85ce20693dd",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "2fcb995df1073776182407ce10affffc5916008d90461ba708c81b4052a7e70a",
+      "counts": {
+        "clean_correct_history_comparisons": 181951,
+        "clean_correct_history_ACCEPTED": 176426,
+        "clean_correct_history_APPEARANCE_REJECTION": 5267,
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 258,
+        "all_selected_spatial_conflict_visual_recoveries": 6,
+        "correct_selected_spatial_conflict_visual_recoveries": 6,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 6,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 6,
+        "correct_spatial_recovery_next_frame_any_ID_change": 6,
+        "correct_spatial_recovery_next_frame_new_ID": 1,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 5,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+      },
+      "birth_funnel": {
+        "NEW_SAME": {
+          "raw_cross_view_pairs": 524,
+          "model_mask": 524,
+          "high_score": 430,
+          "admissible_before_TopK": 430,
+          "TopK_proposal": 430,
+          "optimizer_birth_option": 430,
+          "selected_joint_birth": 25,
+          "final_shared_ID": 177
+        },
+        "DIFFERENT": {
+          "raw_cross_view_pairs": 1744285,
+          "model_mask": 1744285,
+          "high_score": 13233,
+          "admissible_before_TopK": 13178,
+          "TopK_proposal": 13000,
+          "optimizer_birth_option": 13000,
+          "selected_joint_birth": 0,
+          "final_shared_ID": 3056
+        },
+        "EXISTING_SAME": {
+          "raw_cross_view_pairs": 39558,
+          "model_mask": 39558,
+          "high_score": 32996,
+          "admissible_before_TopK": 32967,
+          "TopK_proposal": 32967,
+          "optimizer_birth_option": 32967,
+          "selected_joint_birth": 4,
+          "final_shared_ID": 35071
+        },
+        "UNKNOWN": {
+          "raw_cross_view_pairs": 215853,
+          "model_mask": 215853,
+          "high_score": 1805,
+          "admissible_before_TopK": 1800,
+          "TopK_proposal": 1746,
+          "optimizer_birth_option": 1746,
+          "selected_joint_birth": 0,
+          "final_shared_ID": 1164
+        }
+      }
+    },
+    {
+      "method": "FULL_WORLD_OBJECT_V3",
+      "selection_epoch": 2,
+      "checkpoint_sha256": "1bb3415e275e35ba10224f9864fb2d2514f227aad5b5f91287115c98f31a7836",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "c5be5dd53a282a9b2925a859df2c238f224167ed80cf78c1af167968260b0f9f",
+      "counts": {
+        "clean_correct_history_comparisons": 184832,
+        "clean_correct_history_ACCEPTED": 178971,
+        "clean_correct_history_APPEARANCE_REJECTION": 5598,
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 263,
+        "all_selected_spatial_conflict_visual_recoveries": 6,
+        "correct_selected_spatial_conflict_visual_recoveries": 6,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 6,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 6,
+        "correct_spatial_recovery_next_frame_any_ID_change": 6,
+        "correct_spatial_recovery_next_frame_new_ID": 1,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 5,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+      },
+      "birth_funnel": {
+        "NEW_SAME": {
+          "raw_cross_view_pairs": 206,
+          "model_mask": 206,
+          "high_score": 182,
+          "admissible_before_TopK": 182,
+          "TopK_proposal": 182,
+          "optimizer_birth_option": 182,
+          "selected_joint_birth": 25,
+          "final_shared_ID": 134
+        },
+        "DIFFERENT": {
+          "raw_cross_view_pairs": 1744285,
+          "model_mask": 1744285,
+          "high_score": 18040,
+          "admissible_before_TopK": 17978,
+          "TopK_proposal": 17630,
+          "optimizer_birth_option": 17630,
+          "selected_joint_birth": 1,
+          "final_shared_ID": 2255
+        },
+        "EXISTING_SAME": {
+          "raw_cross_view_pairs": 39876,
+          "model_mask": 39876,
+          "high_score": 34586,
+          "admissible_before_TopK": 34557,
+          "TopK_proposal": 34556,
+          "optimizer_birth_option": 34556,
+          "selected_joint_birth": 5,
+          "final_shared_ID": 35389
+        },
+        "UNKNOWN": {
+          "raw_cross_view_pairs": 215853,
+          "model_mask": 215853,
+          "high_score": 3211,
+          "admissible_before_TopK": 3145,
+          "TopK_proposal": 3036,
+          "optimizer_birth_option": 3036,
+          "selected_joint_birth": 1,
+          "final_shared_ID": 1044
+        }
+      }
+    },
+    {
+      "method": "HEAD_ONLY_NO_GEOMETRY_V3",
+      "selection_epoch": 1,
+      "checkpoint_sha256": "acef71a26a9676fde5ce3e0de962a336bebb4aa0f00db75b6d2fe2d0147976f2",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "4295d8239cdeb3af0a8448ab16ddd762cda630b5ad8bc91561d81b654a61307b",
+      "counts": {
+        "clean_correct_history_comparisons": 187246,
+        "clean_correct_history_ACCEPTED": 181150,
+        "clean_correct_history_APPEARANCE_REJECTION": 5807,
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 289,
+        "all_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 7,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 7,
+        "correct_spatial_recovery_next_frame_any_ID_change": 7,
+        "correct_spatial_recovery_next_frame_new_ID": 1,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 1
+      },
+      "birth_funnel": {
+        "NEW_SAME": {
+          "raw_cross_view_pairs": 203,
+          "model_mask": 203,
+          "high_score": 136,
+          "admissible_before_TopK": 136,
+          "TopK_proposal": 136,
+          "optimizer_birth_option": 136,
+          "selected_joint_birth": 25,
+          "final_shared_ID": 107
+        },
+        "DIFFERENT": {
+          "raw_cross_view_pairs": 1744285,
+          "model_mask": 1744285,
+          "high_score": 19194,
+          "admissible_before_TopK": 18292,
+          "TopK_proposal": 18000,
+          "optimizer_birth_option": 18000,
+          "selected_joint_birth": 1,
+          "final_shared_ID": 2071
+        },
+        "EXISTING_SAME": {
+          "raw_cross_view_pairs": 39879,
+          "model_mask": 39879,
+          "high_score": 33642,
+          "admissible_before_TopK": 33605,
+          "TopK_proposal": 33599,
+          "optimizer_birth_option": 33599,
+          "selected_joint_birth": 6,
+          "final_shared_ID": 34185
+        },
+        "UNKNOWN": {
+          "raw_cross_view_pairs": 215853,
+          "model_mask": 215853,
+          "high_score": 2636,
+          "admissible_before_TopK": 2485,
+          "TopK_proposal": 2456,
+          "optimizer_birth_option": 2456,
+          "selected_joint_birth": 0,
+          "final_shared_ID": 918
+        }
+      }
+    },
+    {
+      "method": "HEAD_ONLY_NO_GEOMETRY_V3",
+      "selection_epoch": 2,
+      "checkpoint_sha256": "4c68c69d27e37ccae544b92bf70b973be5a2523fdb72ae87aae50dde7e508dc9",
+      "timestamps": 5860,
+      "exact_original_diagnostics": true,
+      "raw_report_sha256": "ccf8b751141f66c49cb5ce93b07b53dcdd1e73cd2064b32c0bf91e91b021ebc6",
+      "counts": {
+        "clean_correct_history_comparisons": 187817,
+        "clean_correct_history_ACCEPTED": 181735,
+        "clean_correct_history_APPEARANCE_REJECTION": 5814,
+        "clean_correct_history_GEOMETRY_GATE_REJECTION": 268,
+        "all_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_selected_spatial_conflict_visual_recoveries": 7,
+        "correct_spatial_recovery_center_unchanged_missed_reset_0": 7,
+        "correct_spatial_recovery_next_frame_clean_observation_opportunities": 7,
+        "correct_spatial_recovery_next_frame_any_ID_change": 7,
+        "correct_spatial_recovery_next_frame_new_ID": 2,
+        "recovery_next_ID_change_with_correct_history_geometry_rejected": 6,
+        "recovery_next_new_ID_with_geometry_rejection_and_stale_center": 2
+      },
+      "birth_funnel": {
+        "NEW_SAME": {
+          "raw_cross_view_pairs": 170,
+          "model_mask": 170,
+          "high_score": 137,
+          "admissible_before_TopK": 137,
+          "TopK_proposal": 137,
+          "optimizer_birth_option": 137,
+          "selected_joint_birth": 23,
+          "final_shared_ID": 112
+        },
+        "DIFFERENT": {
+          "raw_cross_view_pairs": 1744285,
+          "model_mask": 1744285,
+          "high_score": 13354,
+          "admissible_before_TopK": 12907,
+          "TopK_proposal": 12834,
+          "optimizer_birth_option": 12834,
+          "selected_joint_birth": 2,
+          "final_shared_ID": 1525
+        },
+        "EXISTING_SAME": {
+          "raw_cross_view_pairs": 39912,
+          "model_mask": 39912,
+          "high_score": 32575,
+          "admissible_before_TopK": 32540,
+          "TopK_proposal": 32540,
+          "optimizer_birth_option": 32540,
+          "selected_joint_birth": 6,
+          "final_shared_ID": 34730
+        },
+        "UNKNOWN": {
+          "raw_cross_view_pairs": 215853,
+          "model_mask": 215853,
+          "high_score": 2788,
+          "admissible_before_TopK": 2544,
+          "TopK_proposal": 2520,
+          "optimizer_birth_option": 2520,
+          "selected_joint_birth": 1,
+          "final_shared_ID": 876
+        }
+      }
+    }
+  ],
+  "causal_limit": "Actual gate rejection is observed directly. Model quality and geometry net benefit still require the registered Full-vs-NoGeometry TEST contrast; these per-epoch TRAIN rows do not replace it."
 }
