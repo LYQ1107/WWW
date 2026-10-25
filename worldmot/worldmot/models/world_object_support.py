@@ -27,11 +27,15 @@ class WorldObjectSupport:
     confidence_median: float = 0.0
     visible_fraction: float = 0.0
     diagnostics: dict = field(default_factory=dict)
+    coordinate_frame: str = "OMEGA_LOCAL_WORLD"
+    depth_source: str = "UNVERIFIED"
 
     @property
     def reliable(self) -> bool:
         return bool(len(self.foreground_points) >= 3 and np.isfinite(self.center).all()
-                    and self.quality > 0.0 and self.ambiguity != "NO_FINITE_SUPPORT")
+                    and np.isfinite(self.covariance).all() and self.quality > 0.0
+                    and self.ambiguity not in {"NO_FINITE_SUPPORT", "CAMERA_DEPTH_UNAVAILABLE",
+                                               "WORLD_ALIGNMENT_FAILED", "LEGACY_CAMERA_DEPTH_UNVERIFIED"})
 
     def to_dict(self, include_points: bool = True) -> dict:
         out = {
@@ -43,6 +47,7 @@ class WorldObjectSupport:
             "visible_fraction": float(self.visible_fraction),
             "ambiguity": str(self.ambiguity),
             "diagnostics": dict(self.diagnostics),
+            "coordinate_frame": self.coordinate_frame, "depth_source": self.depth_source,
             "box_point_count": int(len(self.box_points)),
             "foreground_point_count": int(len(self.foreground_points)),
         }
@@ -79,11 +84,13 @@ def map_bbox_to_model(bbox_xywh: Sequence[float], image_to_model: np.ndarray,
     corners = np.asarray([[x, y, 1.0], [x + w, y, 1.0],
                           [x, y + h, 1.0], [x + w, y + h, 1.0]], dtype=np.float64)
     mapped = (np.asarray(image_to_model, dtype=np.float64) @ corners.T).T
-    mapped = mapped[:, :2] / np.maximum(mapped[:, 2:3], 1e-12)
+    if not np.isfinite(mapped).all() or np.any(np.abs(mapped[:, 2]) < 1e-12):
+        raise ValueError("INVALID_IMAGE_TO_MODEL_TRANSFORM")
+    mapped = mapped[:, :2] / mapped[:, 2:3]
     lo = np.min(mapped, axis=0); hi = np.max(mapped, axis=0)
     if model_shape is not None:
         mh, mw = [int(v) for v in model_shape]
-        lo = np.maximum(lo, 0.0); hi = np.minimum(hi, [mw, mh])
+        lo = np.clip(lo, 0.0, [mw, mh]); hi = np.clip(hi, 0.0, [mw, mh])
     return np.asarray([lo[0], lo[1], max(0.0, hi[0] - lo[0]), max(0.0, hi[1] - lo[1])], dtype=np.float64)
 
 
@@ -132,7 +139,8 @@ def _stats(points: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 def extract_world_object_support(pointmap: np.ndarray, confidence: np.ndarray,
                                  bbox_xywh: Sequence[float], *, min_confidence: float = 1.5,
                                  max_points: int = 64, interior_margin: float = 0.05,
-                                 use_foreground: bool = True) -> WorldObjectSupport:
+                                 use_foreground: bool = True, camera_from_world=None,
+                                 depth_map=None) -> WorldObjectSupport:
     """Extract box and foreground supports without labels.
 
     The foreground hypothesis is selected from a compact depth cluster.  We
@@ -145,21 +153,33 @@ def extract_world_object_support(pointmap: np.ndarray, confidence: np.ndarray,
         raise ValueError(f"pointmap must be HxWx3, got {pm.shape}")
     if conf.shape != pm.shape[:2]:
         raise ValueError(f"confidence shape {conf.shape} != {pm.shape[:2]}")
+    depth_source = "CAMERA_FROM_OMEGA_LOCAL_WORLD"
+    if depth_map is not None:
+        depths = np.asarray(depth_map, dtype=np.float64)
+        if depths.shape != pm.shape[:2]:
+            raise ValueError("DEPTH_PIXEL_ALIGNMENT_MISMATCH")
+        depth_source = "OMEGA_DEPTH_HEAD_MODEL_PIXELS"
+    elif camera_from_world is not None:
+        pose = np.asarray(camera_from_world, dtype=np.float64)
+        if pose.shape != (4, 4) or not np.isfinite(pose).all() or not np.allclose(pose[3], [0, 0, 0, 1]):
+            raise ValueError("INVALID_CAMERA_FROM_WORLD")
+        # Local-world z is not camera-forward z when the camera rotates.
+        depths = np.einsum("j,hwj->hw", pose[2, :3], pm) + pose[2, 3]
+    else:
+        return WorldObjectSupport(np.empty((0, 3)), np.empty((0, 3)), np.full(3, np.nan),
+                                  np.eye(3) * 1e6, 0.0, 0.0, "CAMERA_DEPTH_UNAVAILABLE")
     mask = bbox_mask(bbox_xywh, pm.shape[:2])
     inner = bbox_mask(bbox_xywh, pm.shape[:2], margin=float(interior_margin))
-    finite = np.isfinite(pm).all(-1) & np.isfinite(conf) & (conf >= float(min_confidence))
+    finite = (np.isfinite(pm).all(-1) & np.isfinite(conf) & (conf >= float(min_confidence))
+              & np.isfinite(depths) & (depths > 1e-8))
     box = pm[mask & finite]
     candidate = pm[inner & finite]
     if len(candidate) == 0:
         center, cov = _stats(box)
         return WorldObjectSupport(_trim(box, max_points), np.empty((0, 3)), center, cov, 0.0,
-                                  0.0, "NO_FINITE_SUPPORT", 0.0, 0.0,
-                                  {"box_count": int(len(box)), "inner_count": 0})
-    # Depth is camera-forward z when pointmaps come from Omega.  Norm is a
-    # fallback for an alternate geometry backend with a nonstandard axis.
-    depth = candidate[:, 2]
-    if float(np.ptp(depth)) < 1e-6:
-        depth = np.linalg.norm(candidate, axis=1)
+                                  0.0, "PROJECTION_OUT_OF_BOUNDS" if not mask.any() else "NO_FINITE_SUPPORT", 0.0, 0.0,
+                                  {"box_count": int(len(box)), "inner_count": 0}, depth_source=depth_source)
+    depth = depths[inner & finite]
     labels, separation = _kmeans_depth(depth)
     counts = np.bincount(labels, minlength=2)
     if not use_foreground or len(candidate) < 8:
@@ -192,6 +212,7 @@ def extract_world_object_support(pointmap: np.ndarray, confidence: np.ndarray,
         diagnostics={"box_count": int(len(box)), "inner_count": int(len(candidate)),
                      "foreground_count": int(len(foreground)), "depth_separation": separation,
                      "cluster_counts": counts.tolist(), "interior_margin": float(interior_margin)},
+        depth_source=depth_source,
     )
 
 

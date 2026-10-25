@@ -24,7 +24,7 @@ def write_mot(p,rows):
             # Two-decimal presentation rounding must not change scoring boxes.
             f.write(f'{int(r[0])},{int(r[1])},'+','.join(format(float(x),'.17g') for x in r[2:6])+','+','.join(map(str,tail))+'\n')
 def prepare(dataset_root,split,audit,inference_root,scenes=None,box_source="tracks_2d_by_camera"):
-    ds=Path(dataset_root);audit=json.loads(Path(audit).read_text())[split];root=Path(inference_root)
+    audit=json.loads(Path(audit).read_text())[split];root=Path(inference_root)
     gt={};pred={};lengths={};groups={};blocked=[];coverage=[]
     for scene in audit['scenes']:
         sid=scene['scene']
@@ -51,7 +51,9 @@ def prepare(dataset_root,split,audit,inference_root,scenes=None,box_source="trac
         groups[scene['name']]=names
     return gt,pred,lengths,groups,blocked,coverage
 
-def trackeval(gt,pred,lengths,output,trackeval_root,split,groups=None):
+def trackeval(gt,pred,lengths,output,trackeval_root,split,groups=None,*,authorization=None,method_id=None):
+    from ..runtime.experiment_authorization import require_experiment_authorization
+    require_experiment_authorization(authorization,'evaluate',split,method_id)
     sys.path.insert(0,str(trackeval_root));import trackeval
     out=Path(output);out.mkdir(parents=True,exist_ok=True)
     for name,rows in gt.items():write_mot(out/'gt'/name/'gt/gt.txt',rows);write_mot(out/'trackers/WorldMOT/data'/f'{name}.txt',pred[name])
@@ -70,7 +72,9 @@ def trackeval(gt,pred,lengths,output,trackeval_root,split,groups=None):
         per_scene[scene]=extract(combined)
     return {'combined':extract(values['COMBINED_SEQ']['pedestrian']),'per_scene':per_scene,'per_camera':{name:extract(row['pedestrian']) for name,row in values.items() if name!='COMBINED_SEQ'},'tool_sha256':{str(p.relative_to(trackeval_root)):sha(p) for p in sorted((Path(trackeval_root)/'trackeval').rglob('*.py'))}}
 
-def matlab(gt,pred,groups,out,kit,executable,driver):
+def matlab(gt,pred,groups,out,kit,executable,driver,*,authorization=None,method_id=None,split='test'):
+    from ..runtime.experiment_authorization import require_experiment_authorization
+    require_experiment_authorization(authorization,'evaluate',split,method_id)
     kit=Path(kit);out=Path(out);out.mkdir(parents=True,exist_ok=True)
     if not Path(executable).is_file() or not list(kit.rglob('*.mexa64')):raise RuntimeError('Native MATLAB/MEX unavailable')
     jobs=[]

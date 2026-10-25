@@ -23,6 +23,13 @@ class ImmutableGMTDetectionCache:
         self._context=None
         self._manifests={}
 
+    @property
+    def feature_dim(self):
+        dim = self.lock.get('roi_feature_dim')
+        if not isinstance(dim, int) or dim <= 0:
+            raise ValueError('FEATURE_UNAVAILABLE: roi_feature_dim missing from frozen detector lock')
+        return dim
+
     def manifest(self):
         return {'status':self.status,'source':'gmt_pre_gta_detector',
             'cache':str(self.root.resolve()),'cache_lock_sha256':sha256_file(self.lock_path),
@@ -54,6 +61,8 @@ class ImmutableGMTDetectionCache:
             if sha256_file(path)!=shard['sha256']:raise RuntimeError('Shared detector cache checksum mismatch')
             self._arrays=dict(np.load(path,allow_pickle=False))
             self._entry=json.loads(path.with_suffix('.json').read_text())
+            if self._entry.get('signature', self.lock) != self.lock:
+                raise RuntimeError('Detector sidecar signature differs from lock')
             self._loaded_key=key
         at=list(self._arrays['timestamps']).index(int(timestamp))
         record=self._entry['records'][at]
@@ -66,12 +75,20 @@ class ImmutableGMTDetectionCache:
                 if hashlib.sha256(np.ascontiguousarray(im).tobytes()).hexdigest()!=record['rgb_sha256'][str(v)]:
                     raise ValueError('RGB pixels do not match the original detector input')
         a=self._arrays;lo,hi=a['frame_offsets'][at:at+2]
+        if a['roi_features'].ndim != 2 or a['roi_features'].shape[1] != self.feature_dim:
+            raise ValueError('FEATURE_DIMENSION_MISMATCH with frozen detector manifest')
         result={int(v):[] for v in record['image_ids']};self.last_roi_features={}
+        seen=set()
         for i in range(int(lo),int(hi)):
             v,d=int(a['camera_ids'][i]),int(a['detection_ids'][i])
+            if (v,d) in seen or v not in result:
+                raise ValueError('Duplicate/unknown camera detection in frozen GMT cache')
+            seen.add((v,d))
             det=PersonDetection(v,d,tuple(map(float,a['bbox'][i])),float(a['scores'][i]),source='gmt_pre_gta_detector')
             det.detector_roi_feature=a['roi_features'][i].copy()
             result[v].append(det);self.last_roi_features[v,d]=det.detector_roi_feature
+        if 'candidate_counts' in record and {str(v):len(ds) for v,ds in result.items()} != record['candidate_counts']:
+            raise ValueError('Frozen candidate count mismatch')
         self.last_timings={'replay_s':time.perf_counter()-start}
         self.last_diagnostics={**record,'raw_candidate_shard_sha256':shard['sha256']}
         return result

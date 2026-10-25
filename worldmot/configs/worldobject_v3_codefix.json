@@ -1,0 +1,50 @@
+{
+  "schema": "worldobject_experiment_plan_v3",
+  "status": "WAITING_USER_APPROVAL",
+  "source_base_commit": "190c735957f1079ba3f770c8aa35a341d72ba60a",
+  "feature_dim_source": "DETECTOR_LOCK.json:roi_feature_dim",
+  "methods": [
+    "FULL_WORLD_OBJECT_V3",
+    "HEAD_ONLY_NO_GEOMETRY_V3",
+    "FULL_NO_GEOMETRY_V3",
+    "APPEARANCE_CAPACITY_MATCHED_V3",
+    "GEOMETRY_ONLY_ABLATION_V3"
+  ],
+  "legacy_controls_only": [
+    "LEGACY_PAIR_THEN_MERGE_FEATURE_OFF_CONTROL",
+    "LEGACY_PAIR_THEN_MERGE_ROI_RESTORED_CONTROL"
+  ],
+  "train": {
+    "scenes": 24,
+    "timestamps": 28754,
+    "validation_scenes": [4, 8, 12, 16, 20, 24],
+    "seed": 20261025,
+    "selection_epochs": 4,
+    "hidden_dim": 128,
+    "clip_length": 64,
+    "learning_rate": 0.0002,
+    "history_mode": "predicted",
+    "multi_seed": false
+  },
+  "test": {
+    "scenes": 22,
+    "timestamps": 29019,
+    "official_legal_scenes": 14,
+    "raw_gt_blocked_scenes": 8,
+    "gt_policy": "immutable original GT; no identity labels in inference"
+  },
+  "search": {
+    "top_k": 4,
+    "beam_width": 64,
+    "max_exact_states": 4096,
+    "max_observations": 1024,
+    "max_history": 1024,
+    "max_model_pairs": 65536
+  },
+  "execution": {
+    "default_allowed": false,
+    "approval_file_created": false,
+    "six_gpu_queue_started": false,
+    "new_accuracy_metrics_available": false
+  }
+}

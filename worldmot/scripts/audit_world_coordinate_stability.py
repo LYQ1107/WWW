@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
@@ -20,9 +20,13 @@ def val(x):
 
 def main():
     p = argparse.ArgumentParser(); p.add_argument("--cache", required=True); p.add_argument("--output-dir", required=True); p.add_argument("--split", choices=["train", "test"], default="train")
-    a = p.parse_args(); out = Path(a.output_dir); out.mkdir(parents=True, exist_ok=True)
+    p.add_argument("--authorization");p.add_argument("--method-id",required=True)
+    a = p.parse_args()
+    from worldmot.runtime.experiment_authorization import require_experiment_authorization
+    require_experiment_authorization(a.authorization,"diagnostics",a.split,a.method_id)
+    out = Path(a.output_dir); out.mkdir(parents=True, exist_ok=False)
     rows = []; summary = {}
-    for cache in iter_complete_scenes(a.cache):
+    for cache in iter_complete_scenes(a.cache,require_features=False):
         scene_rows = []
         for frame in cache.frames():
             rec = frame["record"]; dual = rec.get("alignment", {}); original = rec.get("original_view_alignment", {})

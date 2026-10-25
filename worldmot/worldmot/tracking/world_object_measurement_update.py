@@ -13,6 +13,9 @@ def update_world_measurement(center: np.ndarray, covariance: np.ndarray,
     c = np.asarray(covariance, dtype=np.float64).reshape(3, 3)
     m = np.asarray(measurement, dtype=np.float64).reshape(3)
     mc = np.asarray(measurement_covariance, dtype=np.float64).reshape(3, 3)
+    if (r <= 0 or not np.isfinite(m).all() or not np.isfinite(mc).all()
+            or not np.allclose(mc, mc.T) or np.linalg.eigvalsh(mc).min() < -1e-8):
+        return np.asarray(center, dtype=np.float64).reshape(3).copy(), c.copy()
     mc = mc / max(r, 1e-3)
     try:
         p = np.linalg.pinv(c); q = np.linalg.pinv(mc)

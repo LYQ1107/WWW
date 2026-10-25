@@ -51,6 +51,9 @@ class VisionTrack:
         self.views = tuple(int(v) for v in views)
         with self.annotation_path.open("r", encoding="utf-8") as f:
             data = json.load(f)
+        if not self.load_annotations:
+            # Metadata-only inference explicitly isolates annotation payloads.
+            data.pop("annotations", None)
         self.categories = data.get("categories", [])
         self.videos = {int(v["id"]): v for v in data.get("videos", [])}
         self.images: Dict[int, ImageRecord] = {}
@@ -65,6 +68,8 @@ class VisionTrack:
                 file_name=str(x["file_name"]), width=int(x.get("width", 0)),
                 height=int(x.get("height", 0)),
             )
+            if rec.image_id in self.images or (scene_id, view_id, rec.frame_id) in self._by_scene_view_frame:
+                raise ValueError("DUPLICATE_IMAGE_OR_SCENE_CAMERA_TIMESTAMP_KEY")
             self.images[rec.image_id] = rec
             self._by_scene_view_frame[(scene_id, view_id, rec.frame_id)] = rec
         self._annotations: Dict[int, List[dict]] = {}

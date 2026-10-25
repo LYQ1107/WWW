@@ -1,8 +1,16 @@
-from .geometry_interface import GeometryBackend, GeometryFrame
-from .panoptic_instances import WorldInstance, build_world_instances
-from .persistent_world_queries import PersistentWorldQueryTransformer, QueryBatchState
-from .world_observation_encoder import MultiViewObservationEncoder, WorldObservationToken
+"""Lazy public exports: geometry/contracts do not initialize legacy Torch heads."""
+from importlib import import_module
 
-__all__ = ["GeometryBackend", "GeometryFrame", "WorldInstance", "build_world_instances",
-           "PersistentWorldQueryTransformer", "QueryBatchState",
-           "MultiViewObservationEncoder", "WorldObservationToken"]
+_EXPORTS={"GeometryBackend":"geometry_interface","GeometryFrame":"geometry_interface",
+    "WorldInstance":"panoptic_instances","build_world_instances":"panoptic_instances",
+    "PersistentWorldQueryTransformer":"persistent_world_queries","QueryBatchState":"persistent_world_queries",
+    "MultiViewObservationEncoder":"world_observation_encoder","WorldObservationToken":"world_observation_encoder"}
+__all__=list(_EXPORTS)
+
+
+def __getattr__(name):
+    if name not in _EXPORTS:
+        raise AttributeError(name)
+    value=getattr(import_module("."+_EXPORTS[name],__name__),name)
+    globals()[name]=value
+    return value

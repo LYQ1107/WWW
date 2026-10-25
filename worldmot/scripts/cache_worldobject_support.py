@@ -20,12 +20,14 @@ from worldmot.geometry.dual_view_static_alignment import DualCameraStaticAligner
 from worldmot.geometry.world_alignment import Sim3Aligner
 from worldmot.models.gmt_detection_cache import ImmutableGMTDetectionCache
 from worldmot.models.omega_geometry_backend import OmegaGeometryBackend
-from worldmot.models.world_object_support import extract_world_object_support, map_bbox_to_model
 from worldmot.runtime.detection_first import DetectionFirstWorldMOT
 from worldmot.runtime.online_worldmot import OnlineWorldMOT
+from worldmot.runtime.experiment_authorization import require_experiment_authorization, source_commit,source_fingerprint
+from worldmot.geometry.world_frame_contract import WorldFrameTransform
+from worldmot.data.worldobject_observations import live_observations
 
 
-SCHEMA = "worldobject_omega512_sparse_support_v1"
+SCHEMA = "worldobject_omega512_sparse_support_v2"
 DEFAULT_OMEGA = "/data1/liuyeqiang/WWW_omega_runtime_20261016/official_vggt_omega"
 DEFAULT_OMEGA_WEIGHTS = "/data1/liuyeqiang/WWW_omega_runtime_20261016/weights/vggt_omega_1b_512.pt"
 
@@ -92,30 +94,23 @@ class SceneState:
                 else:
                     original = self.original_aligner.update(np.empty((0, 3)), np.empty((0, 3)))
         alignment_s = time.perf_counter() - t
-        transform = align.result.transform if align.result.success else self.aligner.transform
         aligned = bool(align.result.success and frame.status == "OK")
+        transform = align.result.transform
         t = time.perf_counter()
         rows = []
-        for view, ds in sorted(detections.items()):
-            pm, cf = frame.pointmaps[int(view)], frame.confidences[int(view)]
-            for det in ds:
-                # Detector boxes are in original RGB coordinates. Ω pointmaps
-                # are in the crop/resize/pad model frame.
-                model_bbox = map_bbox_to_model(det.bbox_xywh,
-                                               frame.image_to_model.get(int(view), np.eye(3)),
-                                               pm.shape[:2])
-                support = extract_world_object_support(pm, cf, model_bbox, max_points=64)
-                box = transform.apply(support.box_points) if len(support.box_points) else np.empty((0, 3))
-                fg = transform.apply(support.foreground_points) if len(support.foreground_points) else np.empty((0, 3))
-                center = transform.apply(support.center[None])[0] if np.isfinite(support.center).all() else np.full(3, np.nan)
-                cov = transform.scale ** 2 * transform.rotation @ support.covariance @ transform.rotation.T
-                rows.append({"view": int(view), "detection_id": int(det.detection_id),
-                             "bbox": np.asarray(det.bbox_xywh, np.float32), "score": float(det.score),
-                             "box": box.astype(np.float32), "foreground": fg.astype(np.float32),
-                             "center": center.astype(np.float32), "cov": cov.astype(np.float32),
-                             "quality": float(support.quality), "foreground_fraction": float(support.foreground_fraction),
-                             "ambiguity": support.ambiguity})
-        if align.result.success:
+        observations=live_observations(detections,frame,WorldFrameTransform(transform,int(timestamp),aligned))
+        for obs in observations:
+            support=obs.spatial_support
+            rows.append({"view":obs.camera_id,"detection_id":obs.detection_id,
+                         "bbox":obs.bbox_xywh.astype(np.float32),"score":obs.score,
+                         "box":support.box_points.astype(np.float32) if support else np.empty((0,3),np.float32),
+                         "foreground":support.foreground_points.astype(np.float32) if support else np.empty((0,3),np.float32),
+                         "center":obs.world_center.astype(np.float32),"cov":obs.world_covariance.astype(np.float32),
+                         "quality":obs.geometry_reliability,"foreground_fraction":support.foreground_fraction if support else 0.,
+                         "ambiguity":support.ambiguity if support else "WORLD_ALIGNMENT_FAILED",
+                         "roi_feature":obs.feature,"feature_valid":obs.feature_valid,
+                         "geometry_valid":obs.geometry_valid,"geometry_status":obs.geometry_status})
+        if aligned:
             self.previous = frame
             self.previous_world = {v: transform.apply(pm.reshape(-1, 3)).reshape(pm.shape)
                                    for v, pm in frame.pointmaps.items()}
@@ -130,12 +125,13 @@ class SceneState:
                    "omega_preprocess_s": float(frame.diagnostics.get("preprocess_s", 0.0)),
                    "alignment_s": float(alignment_s), "support_s": float(support_s),
                    "total_cache_step_s": float(time.perf_counter() - started)}
+        runtime["camera_models"]={str(v):c.to_dict() for v,c in frame.cameras.items()}
+        runtime["raw_candidate_shard_sha256"]=self.detector_cache.last_diagnostics["raw_candidate_shard_sha256"]
+        runtime["rgb_sha256"]=self.detector_cache.last_diagnostics["rgb_sha256"]
         return rows, frame, detections, align, original, aligned, runtime
 
     def restore(self, images, timestamp):
-        # Re-run the last completed timestamp to restore the causal alignment
-        # state; this does not read a future frame or labels.
-        self.step(images, timestamp)
+        raise RuntimeError("V2_RESUME_REQUIRES_ALIGNMENT_SNAPSHOT: use a fresh output; a single frame cannot restore the world gauge")
 
 
 def _claim_scene(queue: Path) -> int | None:
@@ -160,6 +156,8 @@ def _fixed_points(rows, key, width=64):
 
 def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128, limit=None):
     dest = Path(output) / f"scene_{int(sid):02d}"; dest.mkdir(parents=True, exist_ok=True)
+    if (dest/"manifest.json").exists():
+        raise FileExistsError("V2 cache is immutable; choose a fresh output directory")
     pairs = list(ds.synchronized_pairs(int(sid))); pairs = pairs[:int(limit)] if limit else pairs
     expected = [int(p.frame_id) for p in pairs]
     state = SceneState(omega, detector_cache, sid)
@@ -181,15 +179,17 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
         nonlocal buffer
         if not buffer: return
         offsets = [0]; timestamps=[]; cameras=[]; det_ids=[]; bboxes=[]; scores=[]; centers=[]; covs=[]
-        qualities=[]; fg_frac=[]; ambiguity=[]; box_all=[]; fg_all=[]; ids=[]; aligns=[]; camera_json=[]; counts=collections.Counter()
+        qualities=[]; fg_frac=[]; ambiguity=[]; box_all=[]; fg_all=[]; features=[]; feature_valid=[]; geometry_valid=[]; geometry_status=[]; counts=collections.Counter()
         for pair, rows, align, original, detections, runtime in buffer:
             timestamps.append(int(pair.frame_id)); counts["timestamps"] += 1
             for row in rows:
                 cameras.append(row["view"]); det_ids.append(row["detection_id"]); bboxes.append(row["bbox"]); scores.append(row["score"])
                 centers.append(row["center"]); covs.append(row["cov"]); qualities.append(row["quality"]); fg_frac.append(row["foreground_fraction"])
                 ambiguity.append(row["ambiguity"]); box_all.append(row["box"]); fg_all.append(row["foreground"])
-                ids.append(-1); counts["observations"] += 1
-            offsets.append(len(cameras)); aligns.append(align); camera_json.append({})
+                features.append(row["roi_feature"]);feature_valid.append(row["feature_valid"])
+                geometry_valid.append(row["geometry_valid"]);geometry_status.append(row["geometry_status"])
+                counts["observations"] += 1
+            offsets.append(len(cameras))
         box, box_count = _fixed_points([{"p": x} for x in box_all], "p")
         fg, fg_count = _fixed_points([{"p": x} for x in fg_all], "p")
         # The arrays are intentionally compact; per-frame align details stay
@@ -203,7 +203,9 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
                   "box_support": box, "box_support_count": box_count, "foreground_support": fg, "foreground_support_count": fg_count,
                   "quality": np.asarray(qualities, np.float32), "foreground_fraction": np.asarray(fg_frac, np.float32),
                   "ambiguity": np.asarray([ambiguity_codes.get(str(x), -1) for x in ambiguity], np.int8),
-                  "identity": np.asarray(ids, np.int32)}
+                  "roi_features": np.asarray(features,np.float32).reshape(-1,detector_cache.feature_dim),
+                  "feature_valid":np.asarray(feature_valid,bool),"geometry_valid":np.asarray(geometry_valid,bool),
+                  "geometry_status":np.asarray(geometry_status,dtype="U48")}
         path = dest / f"shard_{len(entries):04d}.npz"; tmp = path.with_suffix(".tmp")
         with tmp.open("wb") as f: np.savez_compressed(f, **arrays)
         os.replace(tmp, path)
@@ -226,7 +228,10 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
                     "image_ids": {str(v): int(rec.image_id) for v, rec in pair.images.items()}}
                            for pair, _, a, o, _, rt in buffer]}
         for record, (_, _, _, _, _, runtime) in zip(side["records"], buffer):
-            record["runtime"] = runtime
+            record["camera_models"]=runtime["camera_models"]
+            record["raw_candidate_shard_sha256"]=runtime["raw_candidate_shard_sha256"]
+            record["rgb_sha256"]=runtime["rgb_sha256"]
+            record["runtime"] = {k:v for k,v in runtime.items() if k.endswith("_s")}
         atomic_json(path.with_suffix(".json"), side); entries.append(side); totals.update(counts); completed.extend(timestamps); buffer=[]
         atomic_json(dest / "progress.json", {"scene": int(sid), "done": len(completed), "expected": len(expected),
                                                "counts": dict(totals), "elapsed_s": time.perf_counter() - started})
@@ -238,15 +243,19 @@ def cache_scene(ds, sid, output, omega, detector_cache, split, shard_frames=128,
         if len(buffer) >= int(shard_frames): flush()
     flush()
     atomic_json(dest / "manifest.json", {"schema": SCHEMA, "scene": int(sid),
+        "split":split,
         "status": "COMPLETE" if len(completed) == len(expected) else "PARTIAL",
         "timestamps": len(completed), "expected_timestamps": len(expected),
-        "shards": [{"file": x["file"], "sha256": x["sha256"], "frames": x["frames"]} for x in entries],
+        "shards": [{"file": x["file"], "sha256": x["sha256"], "frames": x["frames"],
+                    "sidecar_sha256":sha256(dest/Path(x["file"]).with_suffix(".json"))} for x in entries],
         "counts": dict(totals), "raw_gt_modified": False, "gt_in_cache": False,
         "detector_cache": detector_cache.manifest(), "omega": omega.diagnostics(),
-        "support_contract": "box_and_depth_foreground_support_max64_world_frame"})
+        "feature_dim":detector_cache.feature_dim,"source_commit":source_commit(),"source_sha256":source_fingerprint(),
+        "support_contract": "camera_forward_depth_to_persistent_world_v2"})
 
 
 def worker(a):
+    require_experiment_authorization(a.authorization,"cache",a.split,"FULL_WORLD_OBJECT_V3")
     import torch
     torch.set_num_threads(2)
     try:
@@ -274,6 +283,7 @@ def worker(a):
 
 def main():
     p = argparse.ArgumentParser()
+    p.add_argument("--authorization")
     p.add_argument("--dataset-root", default="/data/DATASETS/TRACKING/JDE/VisionTrack")
     p.add_argument("--split", choices=["train", "test"], default="train")
     p.add_argument("--output", required=True); p.add_argument("--raw-cache", required=True)
@@ -281,6 +291,7 @@ def main():
     p.add_argument("--device", default="cuda:0"); p.add_argument("--shard-frames", type=int, default=128)
     p.add_argument("--limit", type=int); p.add_argument("--omega-source", default=DEFAULT_OMEGA); p.add_argument("--omega-weights", default=DEFAULT_OMEGA_WEIGHTS)
     a = p.parse_args(); np.set_printoptions(suppress=True)
+    require_experiment_authorization(a.authorization,"cache",a.split,"FULL_WORLD_OBJECT_V3")
     import torch
     torch.set_num_threads(2)
     try:

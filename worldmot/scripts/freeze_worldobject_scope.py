@@ -1,54 +1,54 @@
 #!/usr/bin/env python3
-"""Freeze source, data and resource provenance for the new experiment."""
-
+"""Prepare V3 source/cache locks after approval; no model loading."""
 from __future__ import annotations
-
 import argparse
-import hashlib
 import json
-import os
-import subprocess
-import time
 from pathlib import Path
-
-
-def sha(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as f:
-        for block in iter(lambda: f.read(8 << 20), b""):
-            h.update(block)
-    return h.hexdigest()
+from worldmot.runtime.experiment_authorization import require_experiment_authorization,source_commit,source_fingerprint
+from worldmot.tracking.world_object_config import METHODS,WorldObjectConfig
+from worldmot.models.gmt_detection_cache import ImmutableGMTDetectionCache
+from worldmot.models.world_object_checkpoint import detector_contract
+from worldmot.models.omega_geometry_backend import OFFICIAL_OMEGA_CHECKPOINT_SHA256
+from worldmot.data.worldobject_cache import WorldObjectCache,sha256
+from worldmot.data.worldobject_scope import SCOPE_SCHEMA
 
 
 def main():
-    p = argparse.ArgumentParser(); p.add_argument("--repo", required=True); p.add_argument("--data-audit", required=True); p.add_argument("--output", required=True)
-    a = p.parse_args(); repo = Path(a.repo).resolve()
-    files = ["docs/GMT_POINT_REPRODUCTION_20261024.md", "worldmot/worldmot/models/omega_geometry_backend.py",
-             "worldmot/worldmot/models/gmt_detection_cache.py", "worldmot/worldmot/runtime/online_worldmot.py",
-             "worldmot/scripts/cache_worldobject_support.py", "worldmot/scripts/orchestrate_worldobject_six_gpu.py"]
-    files += [str(x.relative_to(repo)) for x in repo.glob("worldmot/worldmot/models/world_object_support.py")]
-    files += [str(x.relative_to(repo)) for x in repo.glob("worldmot/worldmot/models/multi_view_world_object.py")]
-    files += [str(x.relative_to(repo)) for x in repo.glob("worldmot/worldmot/tracking/persistent_world_object_bank.py")]
-    hashes = {f: sha(repo / f) for f in files if (repo / f).is_file()}
-    def cmd(c):
-        try: return subprocess.check_output(c, text=True, stderr=subprocess.STDOUT).strip()
-        except Exception as exc: return f"ERROR:{type(exc).__name__}:{exc}"
-    result = {"schema": "worldobject_scope_lock_v1", "created_at": time.time(), "repo": str(repo),
-              "git_head": cmd(["git", "-C", str(repo), "rev-parse", "HEAD"]),
-              # The host Git is old enough that `branch --show-current` is
-              # unavailable; rev-parse is supported by both old and new Git.
-              "git_branch": cmd(["git", "-C", str(repo), "rev-parse", "--abbrev-ref", "HEAD"]),
-              "source_hashes": hashes, "data_audit": str(Path(a.data_audit).resolve()),
-              "data_audit_sha256": sha(Path(a.data_audit)),
-              "old_queue_policy": "STOP_NEW_MULTI_SEED; no old V2 queue restart",
-              "gt_policy": "raw_GT_immutable; official_metrics_only_legal_original_GT_scenes",
-              "runtime": {"nvidia_smi": cmd(["nvidia-smi", "--query-gpu=index,name,memory.total,memory.used,utilization.gpu", "--format=csv"]),
-                          "compute_apps": cmd(["nvidia-smi", "--query-compute-apps=pid,process_name,used_gpu_memory", "--format=csv"]),
-                          "df": cmd(["df", "-h", "/data1/liuyeqiang/nas/A100"])}}
-    out = Path(a.output); out.parent.mkdir(parents=True, exist_ok=True); tmp = out.with_suffix(out.suffix + ".tmp")
-    tmp.write_text(json.dumps(result, indent=2, sort_keys=True)); os.replace(tmp, out)
-    print(json.dumps({"output": str(out), "git_head": result["git_head"], "files": len(hashes)}, indent=2))
+    p=argparse.ArgumentParser()
+    p.add_argument("--authorization");p.add_argument("--cache-train",required=True);p.add_argument("--cache-test")
+    p.add_argument("--raw-cache-train",required=True);p.add_argument("--raw-cache-test")
+    p.add_argument("--method-id",choices=METHODS,default="FULL_WORLD_OBJECT_V3");p.add_argument("--output",required=True)
+    a=p.parse_args();approval=require_experiment_authorization(a.authorization,"freeze",method_id=a.method_id)
+    train_raw=ImmutableGMTDetectionCache(a.raw_cache_train)
+    config=WorldObjectConfig(train_raw.feature_dim,a.method_id)
+    lock={"schema":SCOPE_SCHEMA,"source_commit":source_commit(),"source_sha256":source_fingerprint(),"method_id":a.method_id,
+          "tracking_config":config.to_dict(),"detector_contract":detector_contract(train_raw.lock),
+          "omega_sha256":OFFICIAL_OMEGA_CHECKPOINT_SHA256 if config.use_geometry else None,
+          "approval":approval,"splits":{}}
+    for split,root,raw_root,total_scenes,total_timestamps in (
+        ("train",a.cache_train,a.raw_cache_train,24,28754),("test",a.cache_test,a.raw_cache_test,22,29019)):
+        if root is None:
+            continue
+        if raw_root is None:
+            raise ValueError("SPLIT_RAW_CACHE_REQUIRED")
+        raw=ImmutableGMTDetectionCache(raw_root)
+        if raw.lock.get("split")!=split or detector_contract(raw.lock)!=lock["detector_contract"]:
+            raise ValueError("FROZEN_DETECTOR_SPLIT_OR_CONTRACT_MISMATCH")
+        scenes={}
+        for scene in range(1,total_scenes+1):
+            cache=WorldObjectCache(root,scene,raw_cache=raw,require_features=config.use_appearance,
+                                   require_geometry=config.use_geometry)
+            if config.use_geometry and cache.manifest.get("omega",{}).get("checkpoint_sha256")!=lock["omega_sha256"]:
+                raise ValueError("OMEGA_CHECKPOINT_LOCK_MISMATCH")
+            scenes[str(scene)]={"manifest_sha256":sha256(cache.path/"manifest.json"),
+                                "timestamps":cache.manifest["timestamps"]}
+        count=sum(r["timestamps"] for r in scenes.values())
+        if count!=total_timestamps:
+            raise ValueError("FROZEN_TIMESTAMP_SCOPE_MISMATCH")
+        lock["splits"][split]={"scene_count":len(scenes),"timestamps":count,"scenes":scenes}
+    with Path(a.output).open("x") as stream:
+        json.dump(lock,stream,indent=2,allow_nan=False)
 
 
-if __name__ == "__main__": main()
-
+if __name__=="__main__":
+    main()

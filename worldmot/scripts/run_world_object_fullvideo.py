@@ -1,163 +1,87 @@
 #!/usr/bin/env python3
-"""Causal cache-replay runner for the persistent WorldObject route."""
-
+"""Approved causal replay through the same V3 core as live RGB inference."""
 from __future__ import annotations
-
 import argparse
-import hashlib
 import json
 import time
 from pathlib import Path
-
-import numpy as np
-
-from worldmot.data.visiontrack import VisionTrack
-from worldmot.data.worldobject_cache import WorldObjectCache
-from worldmot.models.multi_view_world_object import JointWorldObjectBuilder
-from worldmot.models.world_object_support import WorldObjectSupport
-from worldmot.tracking.persistent_world_object_bank import PersistentWorldObjectBank
+from worldmot.runtime.experiment_authorization import require_experiment_authorization,source_commit
+from worldmot.tracking.world_object_config import WorldObjectConfig,METHODS
+from worldmot.runtime.world_object_tracking_core import WorldObjectTrackingCore
+from worldmot.data.worldobject_observations import replay_observations
+from worldmot.data.worldobject_cache import WorldObjectCache,sha256
 
 
-def make_support(r):
-    box=np.asarray(r["box"]);box=box[np.isfinite(box).all(1)];fg=np.asarray(r["foreground"]);fg=fg[np.isfinite(fg).all(1)]
-    return WorldObjectSupport(box,fg,np.asarray(r["center"]),np.asarray(r["cov"]),float(r["quality"]),float(r["foreground_fraction"]),"CACHE",0.,1.)
-
-
-class FrozenUpdateHead:
-    """Optional W4 gate; Ω/GMT remain frozen and no labels enter inference."""
-
-    def __init__(self, checkpoint, device="cpu", no_geometry=False):
-        import torch
-        from worldmot.models.world_object_update_head import WorldObjectUpdateHead
-        self.torch = torch
-        self.device = str(device)
-        self.no_geometry = bool(no_geometry)
-        self.model = WorldObjectUpdateHead(geometry_dim=7, visual_dim=8,
-                                          hidden_dim=128, memory_dim=16).to(self.device)
-        state = torch.load(str(checkpoint), map_location=self.device, weights_only=True)
-        self.model.load_state_dict(state, strict=True); self.model.eval()
-
-    def __call__(self, row, width, height, memory):
-        center = np.nan_to_num(np.asarray(row["center"], np.float32), nan=0.0, posinf=0.0, neginf=0.0)
-        diag = np.nan_to_num(np.diag(np.asarray(row["cov"], np.float32)), nan=1.0, posinf=1.0, neginf=1.0)
-        geo = (np.zeros(7, np.float32) if self.no_geometry
-               else np.concatenate([center, diag, [float(row["quality"])]])).astype(np.float32)[None]
-        b = np.asarray(row["bbox"], np.float32)
-        visual = np.asarray([[b[0] / max(width, 1), b[1] / max(height, 1),
-                              b[2] / max(width, 1), b[3] / max(height, 1),
-                              row["score"], row["foreground_fraction"],
-                              float(row["view"] == 1), float(row["view"] == 2)]], np.float32)
-        mem = np.asarray(memory, np.float32).reshape(1, 16)
-        with self.torch.inference_mode():
-            out = self.model(self.torch.as_tensor(geo, device=self.device),
-                             self.torch.as_tensor(visual, device=self.device),
-                             self.torch.as_tensor(mem, device=self.device))
-        return (float(out["update_gate"].detach().cpu()[0]),
-                float(self.torch.sigmoid(out["birth_logit"]).detach().cpu()[0]),
-                out["memory_delta"].detach().cpu().numpy()[0].astype(np.float32))
-
-    def batch(self, items):
-        """Run the frozen head once for all hypotheses in a frame.
-
-        This is numerically equivalent to repeated single-row calls, but
-        avoids thousands of tiny host/device synchronizations during replay.
-        The batch is still strictly causal: each item's memory was selected
-        from the bank before this frame's update.
-        """
-        if not items:
-            return []
-        geos, visuals, memories = [], [], []
-        for row, width, height, memory in items:
-            center = np.nan_to_num(np.asarray(row["center"], np.float32), nan=0.0, posinf=0.0, neginf=0.0)
-            diag = np.nan_to_num(np.diag(np.asarray(row["cov"], np.float32)), nan=1.0, posinf=0.0, neginf=0.0)
-            geo = (np.zeros(7, np.float32) if self.no_geometry
-                   else np.concatenate([center, diag, [float(row["quality"])]])).astype(np.float32)
-            b = np.asarray(row["bbox"], np.float32)
-            visual = np.asarray([b[0] / max(width, 1), b[1] / max(height, 1),
-                                 b[2] / max(width, 1), b[3] / max(height, 1),
-                                 row["score"], row["foreground_fraction"],
-                                 float(row["view"] == 1), float(row["view"] == 2)], np.float32)
-            geos.append(geo); visuals.append(visual); memories.append(np.asarray(memory, np.float32).reshape(16))
-        with self.torch.inference_mode():
-            out = self.model(self.torch.as_tensor(np.asarray(geos), device=self.device),
-                             self.torch.as_tensor(np.asarray(visuals), device=self.device),
-                             self.torch.as_tensor(np.asarray(memories), device=self.device))
-            gates = out["update_gate"].detach().cpu().numpy().reshape(-1)
-            births = self.torch.sigmoid(out["birth_logit"]).detach().cpu().numpy().reshape(-1)
-            deltas = out["memory_delta"].detach().cpu().numpy().astype(np.float32)
-        return [(float(g), float(b), d) for g, b, d in zip(gates, births, deltas)]
-
-
-def run_scene(cache, out_scene, pair_by_timestamp=None, learned=None):
-    out_scene.mkdir(parents=True,exist_ok=True); bank=PersistentWorldObjectBank(min_hits=1); builder=JointWorldObjectBuilder(); rows=[]; timings=[]
-    memory_by_gid = {}
-    pair_by_timestamp = pair_by_timestamp or {}
-    for fr in cache.frames():
-        started=time.perf_counter();obs=[]
-        for r in fr["rows"]:
-            class O:pass
-            o=O();o.camera_id=r["view"];o.detection_id=r["detection_id"];o.bbox_xywh=r["bbox"];o.score=r["score"];o.feature=np.asarray([r["score"],r["quality"]],np.float32);o.support=make_support(r);o.cache_row=r;obs.append(o)
-        hyps,formation=builder.build(obs)
-        delta_by_hyp = {}
-        if learned is not None:
-            pair = pair_by_timestamp.get(int(fr["timestamp"]))
-            dims = {int(v): (int(rec.width), int(rec.height)) for v, rec in pair.images.items()} if pair is not None else {}
-            batch_items = []
-            batch_indices = []
-            active_objects = list(bank.objects.values())
-            active_ids = [int(x.global_id) for x in active_objects]
-            active_centers = (np.asarray([x.center for x in active_objects], np.float32)
-                              if active_objects else None)
-            for i, hyp in enumerate(hyps):
-                rep = getattr(hyp.observations[0], "cache_row", None) if hyp.observations else None
-                if rep is None: continue
-                width, height = dims.get(int(rep["view"]), (1920, 1080))
-                # Use the nearest pre-existing world object memory when the
-                # frozen bank has one; new objects start from zero memory.
-                memory = np.zeros(16, np.float32)
-                if active_centers is not None:
-                    nearest_idx = int(np.argmin(np.linalg.norm(active_centers - np.asarray(hyp.center, np.float32)[None, :], axis=1)))
-                    memory = memory_by_gid.get(active_ids[nearest_idx], memory)
-                batch_items.append((rep, width, height, memory)); batch_indices.append((i, hyp))
-            for (i, hyp), (gate, birth, delta) in zip(batch_indices, learned.batch(batch_items)):
-                hyp.diagnostics["learned_update_gate"] = gate
-                hyp.diagnostics["learned_birth_probability"] = birth
-                delta_by_hyp[i] = delta
-        # The optional gate is attached before the single causal bank update;
-        # W3 has no such field and therefore follows the original path.
-        objects,bd=bank.step(hyps,fr["timestamp"])
-        for i, hyp in enumerate(hyps):
-            gid = bank.last_assignments.get(i)
-            if gid is not None and i in delta_by_hyp:
-                memory_by_gid[int(gid)] = delta_by_hyp[i]
-        by_view={"1":[],"2":[]}
-        for i,h in enumerate(hyps):
-            gid=bank.last_assignments.get(i)
-            if gid is None: continue
-            score=max(float(getattr(x,"score",1.0)) for x in h.observations)
-            for x in h.observations:
-                by_view[str(int(x.camera_id))].append({"global_id":int(gid),"bbox_xywh":[float(v) for v in x.bbox_xywh],"score":score,"visible":True,"evaluation_eligible":True,"visibility_state":"CURRENT_DETECTOR_BOX","visibility_evidence":"current_target_detection_bbox","projected_from_world":False,"status":"CONFIRMED"})
-        rows.append({"timestamp":int(fr["timestamp"]),"scene_id":cache.scene,"tracks_2d_by_camera":by_view,"world_objects":[{"global_id":bank.last_assignments.get(i),"cameras":list(h.cameras),"status":h.status,"score":h.score} for i,h in enumerate(hyps)],"formation":formation,"bank":bd,"causal":True,"output_policy":"CURRENT_DETECTOR_BOX_ONLY"})
-        timings.append({"timestamp":int(fr["timestamp"]),"cache_replay_s":float(time.perf_counter()-started),"observation_count":len(obs),"object_count":len(hyps)})
-    with (out_scene/"tracks.jsonl").open("w") as f:
-        for row in rows:f.write(json.dumps(row,allow_nan=False,separators=(",",":"))+"\n")
-    with (out_scene/"timings.jsonl").open("w") as f:
-        for row in timings:f.write(json.dumps(row,allow_nan=False,separators=(",",":"))+"\n")
-    route = ("W5_NO_GEOMETRY_CONTROL" if learned is not None and learned.no_geometry
-             else "W4_LEARNED_UPDATE" if learned is not None else "W3_PERSISTENT_BANK")
-    manifest={"schema":"worldobject_prediction_v1","route":route,"scene":cache.scene,"status":"COMPLETE","timestamps":len(rows),"first_frame":rows[0]["timestamp"] if rows else None,"last_frame":rows[-1]["timestamp"] if rows else None,"causal":True,"GT_in_inference":False,"cache_manifest":cache.manifest,"tracks_sha256":hashlib.sha256((out_scene/"tracks.jsonl").read_bytes()).hexdigest(),"timings_sha256":hashlib.sha256((out_scene/"timings.jsonl").read_bytes()).hexdigest(),"fps_definition":"cache_replay_only_not_live_E2E"}
-    (out_scene/"manifest.json").write_text(json.dumps(manifest,indent=2,allow_nan=False));return manifest
+def run_scene(cache,out_scene,core):
+    out_scene=Path(out_scene)
+    out_scene.mkdir(parents=True,exist_ok=False)
+    core.reset(cache.scene)
+    count=0
+    with (out_scene/"tracks.jsonl").open("x") as output,(out_scene/"timings.jsonl").open("x") as timing:
+        iterator=iter(cache.frames())
+        while True:
+            started=time.perf_counter()
+            try:
+                frame=next(iterator)
+            except StopIteration:
+                break
+            observations=replay_observations(frame)
+            result=core.step(observations,frame["timestamp"])
+            output.write(json.dumps(result,allow_nan=False)+"\n")
+            output.flush()
+            timing.write(json.dumps({"timestamp":frame["timestamp"],"cache_replay_s":time.perf_counter()-started})+"\n")
+            count+=1
+    complete=count==cache.manifest["timestamps"]
+    manifest={"schema":"worldobject_prediction_manifest_v3","method_id":core.config.method_id,
+        "source_commit":source_commit(),"scene":cache.scene,"timestamps":count,
+        "expected_timestamps":cache.manifest["timestamps"],"status":"COMPLETE" if complete else "PARTIAL",
+        "GT_in_inference":False,"causal":True,"fps_definition":"CACHE_REPLAY_INCLUDING_IO_NO_RGB_NO_OMEGA",
+        "tracks_sha256":sha256(out_scene/"tracks.jsonl"),"tracking_config":core.config.to_dict(),
+        "cache_manifest_sha256":sha256(cache.path/"manifest.json")}
+    (out_scene/"manifest.json").write_text(json.dumps(manifest,indent=2,allow_nan=False))
+    return manifest
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument("--cache",required=True);p.add_argument("--output",required=True);p.add_argument("--scenes",nargs="*",type=int);p.add_argument("--dataset-root",default="/data/DATASETS/TRACKING/JDE/VisionTrack");p.add_argument("--split",choices=["train","test"],default="test");p.add_argument("--checkpoint");p.add_argument("--device",default="cpu");p.add_argument("--no-geometry",action="store_true")
-    a=p.parse_args();root=Path(a.output);root.mkdir(parents=True,exist_ok=True);scenes=a.scenes or [int(x.name.split("_")[1]) for x in sorted(Path(a.cache).glob("scene_*")) if x.is_dir()]; ds=VisionTrack(a.dataset_root,split=a.split,load_annotations=False) if a.checkpoint else None; learned=FrozenUpdateHead(a.checkpoint,a.device,a.no_geometry) if a.checkpoint else None
+    p=argparse.ArgumentParser()
+    p.add_argument("--authorization");p.add_argument("--cache",required=True);p.add_argument("--raw-cache",required=True)
+    p.add_argument("--output",required=True);p.add_argument("--scenes",nargs="+",type=int)
+    p.add_argument("--scope-lock",required=True)
+    p.add_argument("--split",choices=["train","test"],default="test")
+    p.add_argument("--method-id",choices=METHODS,default="FULL_WORLD_OBJECT_V3")
+    p.add_argument("--checkpoint-manifest");p.add_argument("--rule-based",action="store_true")
+    p.add_argument("--device",default="cpu")
+    a=p.parse_args()
+    approval=require_experiment_authorization(a.authorization,"replay",a.split,a.method_id)
+    from worldmot.models.gmt_detection_cache import ImmutableGMTDetectionCache
+    from worldmot.models.world_object_checkpoint import load_identity_checkpoint,detector_contract
+    raw=ImmutableGMTDetectionCache(a.raw_cache)
+    if raw.lock["split"]!=a.split:
+        raise ValueError("DETECTOR_SPLIT_MISMATCH")
+    config=WorldObjectConfig(raw.feature_dim,a.method_id)
+    from worldmot.data.worldobject_scope import load_scope_lock,validate_scene_lock
+    scope=load_scope_lock(a.scope_lock,a.split,a.method_id)
+    model=None;gate=None
+    if a.checkpoint_manifest:
+        model,gate=load_identity_checkpoint(a.checkpoint_manifest,config,a.device)
+        if gate["detector_contract"]!=detector_contract(raw.lock):
+            raise ValueError("TRAIN_TEST_DETECTOR_CONTRACT_MISMATCH")
+    elif not a.rule_based:
+        raise ValueError("V3_FULL_TRAIN_CHECKPOINT_REQUIRED: --rule-based identifies the untrained baseline")
+    core=WorldObjectTrackingCore(config,model,a.device)
+    root=Path(a.output);root.mkdir(parents=True,exist_ok=False)
+    scenes=a.scenes or [int(p.name.split("_")[1]) for p in sorted(Path(a.cache).glob("scene_*"))]
     reports=[]
     for sid in scenes:
-        pairs = {int(p.frame_id): p for p in ds.synchronized_pairs(int(sid))} if ds is not None else {}
-        reports.append(run_scene(WorldObjectCache(a.cache,sid),root/f"scene_{sid:02d}",pairs,learned))
-    (root/"coverage.json").write_text(json.dumps({"schema":"worldobject_test_coverage_v1","scenes":reports,"scene_count":len(reports),"all_complete":all(x["status"]=="COMPLETE" for x in reports)},indent=2,allow_nan=False));print(json.dumps({"scenes":len(reports),"complete":all(x["status"]=="COMPLETE" for x in reports)},indent=2))
+        cache=WorldObjectCache(a.cache,sid,raw_cache=raw,require_features=config.use_appearance,require_geometry=config.use_geometry)
+        validate_scene_lock(scope,cache,a.split)
+        reports.append(run_scene(cache,root/f"scene_{sid:02d}",core))
+    full_scope=(len(scenes)==22 and sum(r["timestamps"] for r in reports)==29019) if a.split=="test" else len(scenes)==24
+    (root/"coverage.json").write_text(json.dumps({"schema":"worldobject_coverage_v3","approval":approval,
+        "split":a.split,"method_id":a.method_id,"model_status":"TRAINED" if model else "RULE_BASED_BASELINE",
+        "scenes":reports,"full_split_scope":full_scope,"all_complete":all(r["status"]=="COMPLETE" for r in reports),
+        "checkpoint_manifest_sha256":sha256(a.checkpoint_manifest) if gate else None},indent=2))
 
 
-if __name__=="__main__":main()
-
+if __name__=="__main__":
+    main()

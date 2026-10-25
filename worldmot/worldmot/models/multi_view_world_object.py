@@ -1,80 +1,68 @@
-"""Joint two-view world-object formation without forced nearest pairing."""
-
+"""World-object measurements are formed only AFTER joint identity assignment."""
 from __future__ import annotations
-
 from dataclasses import dataclass, field
-from typing import Iterable
-
 import numpy as np
-
-from .world_object_support import WorldObjectSupport, support_compatibility
-from ..geometry.object_observation_consistency import merge_supports
+from .world_object_observation import fuse_identity_features
+from .world_object_support import WorldObjectSupport
 
 
 @dataclass
 class WorldObjectHypothesis:
     object_id: int
-    observations: list[object]
-    support: WorldObjectSupport
+    observations: list
+    support: WorldObjectSupport | None
     score: float
     status: str
+    feature: np.ndarray | None
+    feature_valid: bool
     diagnostics: dict = field(default_factory=dict)
 
     @property
-    def cameras(self) -> tuple[int, ...]:
-        return tuple(sorted({int(x.camera_id) for x in self.observations}))
+    def cameras(self):
+        return tuple(sorted(o.camera_id for o in self.observations))
 
     @property
-    def center(self) -> np.ndarray:
-        return np.asarray(self.support.center, dtype=np.float64)
+    def center(self):
+        return self.support.center if self.support is not None else np.full(3, np.nan)
+
+
+def assigned_measurement(observations, object_id, feature_dim, use_geometry=True):
+    observations = list(observations)
+    if len({o.camera_id for o in observations}) != len(observations):
+        raise ValueError("ONE_OBSERVATION_PER_CAMERA_PER_OBJECT_REQUIRED")
+    feature, _ = fuse_identity_features(observations, feature_dim, use_geometry=use_geometry)
+    geometry = [o for o in observations if use_geometry and o.visible and o.geometry_valid]
+    support = None
+    if geometry:
+        weights = np.array([o.score * o.geometry_reliability for o in geometry])
+        center = np.average([o.world_center for o in geometry], axis=0, weights=weights)
+        cov = sum(w * (o.world_covariance + np.outer(o.world_center - center, o.world_center - center))
+                  for w, o in zip(weights, geometry)) / weights.sum()
+        points = [o.spatial_support.foreground_points for o in geometry
+                  if o.spatial_support is not None and len(o.spatial_support.foreground_points)]
+        foreground = np.concatenate(points) if points else np.empty((0, 3))
+        support = WorldObjectSupport(foreground, foreground, center, cov,
+                                     float(np.average([o.geometry_reliability for o in geometry], weights=weights)),
+                                     1.0, "POST_ASSIGNMENT_MEASUREMENT", coordinate_frame="PERSISTENT_WORLD",
+                                     depth_source="VERIFIED_CAMERA_DEPTH")
+    return WorldObjectHypothesis(object_id, observations, support,
+                                 max((o.score for o in observations), default=0.0),
+                                 "ASSIGNED_MULTI_VIEW" if len(observations) > 1 else "ASSIGNED_SINGLE_VIEW",
+                                 feature, feature is not None)
 
 
 class JointWorldObjectBuilder:
-    """Build a set of hypotheses subject to one-observation/one-object rules."""
+    """Diagnostic facade; formal joint assignment requires historical objects.
 
-    def __init__(self, max_pair_distance: float = 3.5, min_pair_score: float = 0.08):
-        self.max_pair_distance = float(max_pair_distance)
-        self.min_pair_score = float(min_pair_score)
+    The old greedy implementation is reproducible at source commit 190c735.
+    This facade emits singletons and cannot commit camera pairs in advance.
+    """
+    def __init__(self, **kwargs):
+        self.diagnostic_settings = kwargs
 
-    def build(self, observations: Iterable[object], start_id: int = 1) -> tuple[list[WorldObjectHypothesis], dict]:
-        obs = list(observations)
-        by_camera: dict[int, list[object]] = {}
-        for x in obs:
-            by_camera.setdefault(int(x.camera_id), []).append(x)
-        views = sorted(by_camera)
-        used: set[int] = set()
-        hypotheses: list[WorldObjectHypothesis] = []
-        candidates = []
-        if len(views) >= 2:
-            for ai, a in enumerate(by_camera[views[0]]):
-                for bi, b in enumerate(by_camera[views[1]]):
-                    score, detail, reason = support_compatibility(
-                        a.support, b.support, self.max_pair_distance)
-                    candidates.append((score, ai, bi, detail, reason))
-            # Greedy maximum-weight matching is deterministic for the two-view
-            # case; hypotheses, rather than pairs, are the persistent state.
-            for score, ai, bi, detail, reason in sorted(candidates, reverse=True, key=lambda x: x[0]):
-                if not np.isfinite(score) or score < self.min_pair_score:
-                    continue
-                a, b = by_camera[views[0]][ai], by_camera[views[1]][bi]
-                ia, ib = id(a), id(b)
-                if ia in used or ib in used:
-                    continue
-                used.update((ia, ib))
-                hypotheses.append(WorldObjectHypothesis(int(start_id + len(hypotheses)), [a, b],
-                                                        merge_supports([a.support, b.support]),
-                                                        float(score), "FUSED_TWO_VIEW",
-                                                        {**detail, "pair_reason": reason}))
-        for view in views:
-            for x in by_camera[view]:
-                if id(x) in used:
-                    continue
-                hypotheses.append(WorldObjectHypothesis(int(start_id + len(hypotheses)), [x], x.support,
-                                                        float(x.support.quality), "SINGLE_VIEW",
-                                                        {"reason": "no_safe_cross_view_hypothesis"}))
-        return hypotheses, {
-            "candidate_pairs": len(candidates),
-            "accepted_pairs": sum(len(x.observations) == 2 for x in hypotheses),
-            "single_view_objects": sum(len(x.observations) == 1 for x in hypotheses),
-            "abstained_pairs": sum(1 for x in candidates if not np.isfinite(x[0]) or x[0] < self.min_pair_score),
-        }
+    def build(self, observations, start_id=1):
+        obs = sorted(observations, key=lambda o: o.key)
+        dim = next((o.roi_feature.size for o in obs if o.feature_valid), None)
+        hypotheses = [assigned_measurement([o], start_id + i, dim) for i, o in enumerate(obs)]
+        return hypotheses, {"accepted_pairs": 0, "single_view_objects": len(obs),
+                            "premerge_disabled": True, "requires_history_joint_assignment": True}

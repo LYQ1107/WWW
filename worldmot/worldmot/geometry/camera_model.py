@@ -38,8 +38,18 @@ class CameraModel:
             hm, wm = self.model_size
             self.image_to_model = np.array([[wm / w, 0.0, 0.0], [0.0, hm / h, 0.0], [0, 0, 1]], dtype=np.float64)
         self.image_to_model = np.asarray(self.image_to_model, dtype=np.float64).reshape(3, 3)
-        if not np.isfinite(self.intrinsic_model).all() or not np.isfinite(self.world_from_camera).all():
+        if (not np.isfinite(self.intrinsic_model).all() or not np.isfinite(self.world_from_camera).all()
+                or not np.isfinite(self.image_to_model).all()):
             raise ValueError("camera parameters contain non-finite values")
+        if (not np.allclose(self.world_from_camera[3], [0, 0, 0, 1])
+                or abs(np.linalg.det(self.world_from_camera)) < 1e-12
+                or abs(np.linalg.det(self.image_to_model)) < 1e-12):
+            raise ValueError("singular or invalid camera/pixel transform")
+
+    def forward_depth(self, points_world):
+        points = np.asarray(points_world, dtype=np.float64)
+        pose = self.camera_from_world
+        return np.einsum("j,...j->...", pose[2, :3], points) + pose[2, 3]
 
     @property
     def camera_from_world(self) -> np.ndarray:

@@ -7,7 +7,7 @@ from worldmot.models.person_detector import sha256_file
 
 
 def fixture_cache(tmp_path):
-    lock={'schema':'gmt_pre_gta_rgb_person_roi_v1','split':'train'}
+    lock={'schema':'gmt_pre_gta_rgb_person_roi_v1','split':'train','roi_feature_dim':8}
     (tmp_path/'DETECTOR_LOCK.json').write_text(json.dumps(lock))
     scene=tmp_path/'scene_08';scene.mkdir()
     path=scene/'shard_0000.npz'
