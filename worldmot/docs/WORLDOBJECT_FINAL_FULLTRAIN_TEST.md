@@ -35,9 +35,12 @@ are reported separately from cache replay. TEST Ω model-only P50 is 5.638
 pair-FPS; Ω wall P50 is 2.700 pair-FPS; total cache-step P50 is 0.668
 pair-FPS. Replay-only P50 is 153.267 (W3), 112.213 (W4), and 116.901 (W5)
 pair-FPS; these replay numbers do not include RGB decoding or Ω and are not
-online FPS. The RGB→Ω→ID live runner records a separate wall-clock route with
-RGB-read time included; its scene manifests and timings are written under the
-NAS experiment root when complete.
+online FPS. A registered RGB→Ω→ID live timing sample (100 timestamps each from
+Scenes 1, 8 and 22; 300 synchronized pairs total) includes RGB read time and
+measures 0.790 pair-FPS P50 / 0.567 pair-FPS P95. This finite sample is a
+speed measurement only, not a full-video accuracy result. W4/W5 retain their
+replay-only speed labels because their learned-head routes were not claimed as
+live measurements.
 
 ## Decision
 
