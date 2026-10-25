@@ -55,6 +55,8 @@ def test_live_scheduler_reconstructs_only_after_request_and_skips_without_old_po
     r=tracker.step(frame.images,1)
     assert geometry.calls==0 and r['omega_evidence_request']['action']==SKIP_OMEGA
     assert not any(x['geometry_valid'] for x in r['decisions'])
+    assert all(x['geometry_status']=='OMEGA_SKIPPED_NO_CURRENT_GEOMETRY' for x in r['decisions'])
+    assert all(x['source']['geometry_abstention_reason']=='SCHEDULER_SKIPPED_OMEGA' for x in r['decisions'])
     assert sum(map(len,r['tracks_2d_by_camera'].values()))==2
 
 
@@ -72,3 +74,61 @@ def test_keyframe_preserves_its_own_dynamic_masks_and_failure_abstains(monkeypat
     monkeypatch.setattr(aligner.dual,'update',reject)
     result=aligner.update(b,10)
     assert not result.result.success and len(aligner.anchors)==1
+
+
+@pytest.mark.parametrize('local_scale',[1.,2.])
+def test_live_skip_then_fresh_reconstruction_reanchors_new_local_gauge(monkeypatch,local_scale):
+    from worldmot.geometry.camera_model import CameraModel
+    from worldmot.models.geometry_interface import GeometryFrame
+    from worldmot.models.person_detector import PersonDetection
+    from worldmot.runtime.online_world_object_tracker import OnlineWorldObjectTracker
+    from worldmot.geometry.dual_view_static_alignment import DualAlignmentResult
+    from worldmot.geometry.world_alignment import estimate_sim3
+    def frame(timestamp):
+        yy,xx=np.mgrid[:32,:32]
+        depth=np.where((xx>=8)&(xx<24)&(yy>=8)&(yy<24),3.,6.)
+        points=np.stack([(xx-16)*depth/32,(yy-16)*depth/32,depth],axis=-1)
+        shift=10. if timestamp>=3 else 0.
+        if timestamp>=3:points*=local_scale
+        points[:,:,0]+=shift
+        pose=np.eye(4);pose[0,3]=shift
+        camera=CameraModel(np.array([[32.,0,16],[0,32.,16],[0,0,1.]]),pose,(32,32),(32,32),np.eye(3))
+        image=np.zeros((32,32,3),np.uint8)
+        return GeometryFrame(timestamp,{1:image,2:image},{1:points,2:points},
+            {1:np.ones((32,32))*4,2:np.ones((32,32))*4},{},np.empty((0,0)),{1:camera,2:camera},
+            image_to_model={1:np.eye(3),2:np.eye(3)})
+    class Detector:
+        def infer(self,images):
+            result={}
+            for camera in (1,2):
+                d=PersonDetection(camera,0,(4,4,24,24),.9)
+                d.detector_roi_feature=np.array([1.,0,0]);result[camera]=[d]
+            return result
+    class Geometry:
+        def __init__(self):self.calls=[]
+        def reconstruct(self,images,timestamp):self.calls.append(timestamp);return frame(timestamp)
+    c=core(enable_motion_prediction=True,enable_safe_identity_memory=True,enable_multiview_coordination=True,
+           enable_omega_scheduler=True,geometry_policy='UNCERTAINTY_SOFT',geometry_stale_ticks=3)
+    geometry=Geometry();tracker=OnlineWorldObjectTracker(Detector(),geometry,c.config,core=c);tracker.reset(1)
+    def align(old,current):
+        # Exact synthetic background correspondences, not GT identities. The
+        # new reconstruction's +10 local gauge must actually be estimated out.
+        indices=([0,0,31,31],[0,31,0,31])
+        result=estimate_sim3(current.pointmaps[1][indices],old.world_pointmaps[1][indices],
+                             threshold=1e-6,min_inliers=3)
+        np.testing.assert_allclose(result.transform.scale,1/local_scale,atol=1e-8)
+        np.testing.assert_allclose(result.transform.translation,[-10/local_scale,0,0],atol=1e-8)
+        return DualAlignmentResult(result)
+    monkeypatch.setattr(tracker.anchor_aligner.dual,'update',align)
+    initial=tracker.step(frame(0).images,0);center=c.bank.objects[1].center.copy()
+    assert gid(initial,1)==gid(initial,2)==1
+    for timestamp in (1,2):
+        row=tracker.step(frame(timestamp).images,timestamp)
+        assert row['omega_evidence_request']['action']==SKIP_OMEGA
+        assert c.bank.objects[1].spatial_state.last_trusted_geometry_timestamp==0
+    row=tracker.step(frame(3).images,3)
+    assert geometry.calls==[0,3] and row['alignment']['success']
+    assert not row['alignment']['historical_transform_reused']
+    assert gid(row,1)==gid(row,2)==1
+    assert c.bank.objects[1].spatial_state.last_trusted_geometry_timestamp==3
+    np.testing.assert_allclose(c.bank.objects[1].center,center,atol=1e-8)

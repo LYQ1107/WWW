@@ -79,6 +79,11 @@ class OnlineWorldObjectTracker:
         t=time.perf_counter()
         observations=live_observations(detections,frame,WorldFrameTransform(transform,int(timestamp),aligned),
                                       min_confidence=self.min_confidence,use_geometry=self.config.use_geometry)
+        if request is not None and request.action!=REQUEST_OMEGA:
+            for observation in observations:
+                observation.geometry_status="OMEGA_SKIPPED_NO_CURRENT_GEOMETRY"
+                observation.source={**observation.source,"current_geometry_consumed":False,
+                                    "geometry_abstention_reason":"SCHEDULER_SKIPPED_OMEGA"}
         if self.config.enable_multiview_coordination:
             from .world_object_geometry_context import with_alignment_context
             evidence={'success':aligned,'reason':reason}

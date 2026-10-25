@@ -185,7 +185,11 @@ def main():
                     for v,g in zip(scheduled_visual,observations):
                         if not np.array_equal(v.bbox_xywh,g.bbox_xywh) or v.score!=g.score or not np.array_equal(v.roi_feature,g.roi_feature):
                             raise ValueError('SCHEDULED_VISUAL_INPUT_DIFFERENCE')
-                    if request.action!=REQUEST_OMEGA:active_obs[key]=scheduled_visual
+                    if request.action!=REQUEST_OMEGA:
+                        active_obs[key]=scheduled_visual
+                        for observation in active_obs[key]:
+                            observation.geometry_status='OMEGA_SKIPPED_NO_CURRENT_GEOMETRY'
+                            observation.source['geometry_abstention_reason']='SCHEDULER_SKIPPED_OMEGA'
                     else:scheduler.observe_alignment(timestamp,bool(frame['record'].get('alignment',{}).get('success',False)))
                     request_records.append({'timestamp':timestamp,'action':request.action,'reasons':list(request.reasons),
                         'cache_alignment_provenance':'cached world coordinates were produced by the original continuous aligner',

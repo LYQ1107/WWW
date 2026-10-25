@@ -55,3 +55,15 @@ def test_alignment_quality_and_residual_inflate_noise_without_fake_independence(
     assert point_quality==1.
     a.source['alignment_confidence']=0
     with pytest.raises(ValueError,match='ALIGNMENT'):measurement_covariance(a)
+
+
+def test_corrupt_prior_covariance_abstains_then_reinitializes_from_trusted_current():
+    from worldobject_synthetic import core,gid
+    c=core(enable_motion_prediction=True,enable_safe_identity_memory=True,geometry_policy='UNCERTAINTY_SOFT')
+    c.step([obs()],0)
+    c.bank.objects[1].spatial_state.covariance[0,0]=-1.
+    assert np.linalg.eigvalsh(c.bank.objects[1].spatial_state.covariance).min()<0
+    result=c.step([obs(timestamp=1)],1)
+    assert gid(result,1)==1 and c.bank.objects[1].geometry_valid
+    assert np.linalg.eigvalsh(c.bank.objects[1].spatial_state.covariance).min()>0
+    assert c.bank.objects[1].spatial_state.last_trusted_geometry_timestamp==1
