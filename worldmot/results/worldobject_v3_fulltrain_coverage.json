@@ -11,7 +11,7 @@
     },
     "FULL_NO_GEOMETRY_V3": {
       "status": "TRAINING_NOT_FULL_GATE_PASSED",
-      "stage": "selection",
+      "stage": "final",
       "selection_history": [
         {
           "epoch": 1,
@@ -363,10 +363,127 @@
             "birth_proposal_recall": 0.8921001926782274,
             "average_history_objects": 27.415699658703073
           }
+        },
+        {
+          "epoch": 4,
+          "train": {
+            "identity_assignment": 0.03661458528847492,
+            "joint_birth": 0.0022468471614710546,
+            "cross_view_shared_identity": 0.0009746174434164129,
+            "cross_view_identity_pair": 0.010374020638036135,
+            "false_merge": 0.000999854906529617,
+            "birth": 0.02472109619704569,
+            "null": 0.0264238707162047,
+            "existence": 0.002792180582578803,
+            "update_gate": 0.00530863862343272,
+            "state_update_consistency": 2.2906251227595077e-05,
+            "total": 0.08348964194394647,
+            "frames": 22894,
+            "elapsed_s": 1376.2838474288583,
+            "diagnostics": {
+              "history_objects": 287230,
+              "history_unlabelled_or_mixed": 30263,
+              "history_identity_split_objects": 12380,
+              "current_with_multiple_history_targets": 17274,
+              "current_birth_no_matching_history": 6615,
+              "crossview_birth_positive_count": 1279,
+              "crossview_birth_negative_count": 3703600,
+              "birth_candidate_positive_retained": 1279,
+              "birth_candidate_positive_total": 1279,
+              "birth_pair_tp": 1188,
+              "birth_pair_fp": 14401,
+              "birth_pair_fn": 91,
+              "birth_positive_predictions": 474,
+              "history_objects_after": 287488,
+              "null_positive_predictions": 3738,
+              "existence_positive_predictions": 287230,
+              "death_probability_below_threshold": 0,
+              "history_prediction_count": 287230,
+              "birth_proposal_positive_retained": 1187,
+              "current_detections": 384242,
+              "identity_observations": 375470,
+              "same_person_cross_view_pairs": 138438,
+              "correct_shared_identity": 134429,
+              "different_person_cross_view_pairs": 3703600,
+              "correctly_separate": 3699887,
+              "first_appearance_split_count": 419,
+              "unmatched_or_ambiguous_detections": 8772,
+              "diagnostic_temporal_switches": 4400,
+              "same_person_split": 4009,
+              "wrong_world_object_merges": 3713,
+              "false_cross_view_merge": 3713
+            },
+            "birth_pair_precision": 0.07620758226954905,
+            "birth_pair_recall": 0.9288506645817045,
+            "birth_candidate_recall": 1.0,
+            "birth_proposal_recall": 0.928068803752932,
+            "average_history_objects": 12.546081942867128
+          },
+          "validation": {
+            "identity_assignment": 0.27052795557732734,
+            "joint_birth": 0.12783990193587397,
+            "cross_view_shared_identity": 0.031433396699624604,
+            "cross_view_identity_pair": 0.23561262572815947,
+            "false_merge": 0.014236375099640364,
+            "birth": 0.12782901617004647,
+            "null": 0.14099353930178166,
+            "existence": 0.003543546927016265,
+            "update_gate": 0.16009179021981168,
+            "state_update_consistency": 3.624542057539644e-05,
+            "total": 0.7515141736526112,
+            "frames": 5860,
+            "elapsed_s": 346.5362855568528,
+            "diagnostics": {
+              "history_objects": 156703,
+              "history_unlabelled_or_mixed": 14628,
+              "history_identity_split_objects": 13282,
+              "current_with_multiple_history_targets": 18303,
+              "current_birth_no_matching_history": 6605,
+              "crossview_birth_positive_count": 491,
+              "crossview_birth_negative_count": 1744285,
+              "birth_candidate_positive_retained": 491,
+              "birth_candidate_positive_total": 491,
+              "birth_pair_tp": 343,
+              "birth_pair_fp": 16106,
+              "birth_pair_fn": 148,
+              "birth_positive_predictions": 161,
+              "history_objects_after": 156853,
+              "null_positive_predictions": 0,
+              "existence_positive_predictions": 156703,
+              "death_probability_below_threshold": 0,
+              "history_prediction_count": 156703,
+              "birth_proposal_positive_retained": 343,
+              "current_detections": 172760,
+              "identity_observations": 164268,
+              "same_person_cross_view_pairs": 40082,
+              "correct_shared_identity": 35000,
+              "different_person_cross_view_pairs": 1744285,
+              "correctly_separate": 1740262,
+              "first_appearance_split_count": 307,
+              "teacher_prefix_diagnostic_temporal_switches": 3,
+              "predicted_prefix_diagnostic_temporal_switches": 624,
+              "teacher_prefix_same_person_split": 0,
+              "predicted_prefix_same_person_split": 795,
+              "teacher_prefix_false_cross_view_merge": 0,
+              "predicted_prefix_false_cross_view_merge": 686,
+              "teacher_prefix_first_appearance_split_count": 0,
+              "predicted_prefix_first_appearance_split_count": 145,
+              "diagnostic_temporal_switches": 3672,
+              "same_person_split": 5082,
+              "unmatched_or_ambiguous_detections": 8492,
+              "wrong_world_object_merges": 4023,
+              "false_cross_view_merge": 4023
+            },
+            "birth_pair_precision": 0.02085233144872029,
+            "birth_pair_recall": 0.6985743380855397,
+            "birth_candidate_recall": 1.0,
+            "birth_proposal_recall": 0.6985743380855397,
+            "average_history_objects": 26.74112627986348
+          }
         }
       ],
       "final_history": [],
-      "selected_epochs": null
+      "selected_epochs": 2
     },
     "HEAD_ONLY_NO_GEOMETRY_V3": {
       "status": "NOT_YET_COMPLETE",
@@ -380,27 +497,348 @@
       "status": "PARAMETER_FREE_CONTROL",
       "neural_optimizer_training_required": false,
       "actual_full_TRAIN_causal_replay": {
-        "completed_scenes": 0,
-        "completed_timestamps": 0,
-        "scenes": []
+        "completed_scenes": 18,
+        "completed_timestamps": 22447,
+        "scenes": [
+          {
+            "scene": 1,
+            "status": "COMPLETE",
+            "timestamps": 932,
+            "manifest_sha256": "2d8f43dc7fdf552371e27e54f92c340b8393de5b0d9b281a2aa817ef2f464c4f"
+          },
+          {
+            "scene": 2,
+            "status": "COMPLETE",
+            "timestamps": 1886,
+            "manifest_sha256": "254aba85261b794857d800b6f8599a0effb7500b536c1337633d020f1ff428ec"
+          },
+          {
+            "scene": 3,
+            "status": "COMPLETE",
+            "timestamps": 1200,
+            "manifest_sha256": "9b38a5c03ce53c01fd4ed8315b697ca606c2aeca50f7de75e3d80744dd9816eb"
+          },
+          {
+            "scene": 4,
+            "status": "COMPLETE",
+            "timestamps": 901,
+            "manifest_sha256": "3cb9511565b657f2e9a67a5be228b4c1a199fa2d244f78b980d14510a08e6322"
+          },
+          {
+            "scene": 5,
+            "status": "COMPLETE",
+            "timestamps": 1769,
+            "manifest_sha256": "044d7e3c6bfd34f0f2c61c58ad5b64019b18d0f5692e2de6015c234c054f2070"
+          },
+          {
+            "scene": 6,
+            "status": "COMPLETE",
+            "timestamps": 601,
+            "manifest_sha256": "733c4b8c84f8b566e95d5dc5a2553bde991dc34b565fba41c23ac05605532051"
+          },
+          {
+            "scene": 7,
+            "status": "COMPLETE",
+            "timestamps": 443,
+            "manifest_sha256": "72e86da172ab18655f02eb267aa468721e5fbdbf433c7fa52ae7cc87317a2109"
+          },
+          {
+            "scene": 8,
+            "status": "COMPLETE",
+            "timestamps": 523,
+            "manifest_sha256": "efa85f47ba90b524877b6ea1f4310449f43e809892778690205e835356afc858"
+          },
+          {
+            "scene": 9,
+            "status": "COMPLETE",
+            "timestamps": 1942,
+            "manifest_sha256": "05602b23e19e1a7282a7c44a484fc70ef51a01cf5ab2d784b7d54c40778d203c"
+          },
+          {
+            "scene": 10,
+            "status": "COMPLETE",
+            "timestamps": 2092,
+            "manifest_sha256": "dd4aef5e253c02864492e024dc470c11ccee21da0bc70d6fad2aa2903c6d28c4"
+          },
+          {
+            "scene": 11,
+            "status": "COMPLETE",
+            "timestamps": 2057,
+            "manifest_sha256": "bd586d347f8293593ff0ff162bb4fa424dee47e190ba63ef6af3a9abc7e89cb4"
+          },
+          {
+            "scene": 12,
+            "status": "COMPLETE",
+            "timestamps": 1200,
+            "manifest_sha256": "cb6264985883813c07528ff96cb6fd9b6911046466b3661c3c297ce76622a507"
+          },
+          {
+            "scene": 13,
+            "status": "COMPLETE",
+            "timestamps": 1621,
+            "manifest_sha256": "090fdd9439f77e3336d8c9c59863ece2ff6a8de8ab8241b5b1cdb9d2c100b1e2"
+          },
+          {
+            "scene": 14,
+            "status": "COMPLETE",
+            "timestamps": 969,
+            "manifest_sha256": "83650fbdd48993d144f3cb6e7792343a9e0404e8f9887b42da7acb8fd49e3c70"
+          },
+          {
+            "scene": 15,
+            "status": "COMPLETE",
+            "timestamps": 1048,
+            "manifest_sha256": "1e691fbcb672b9278175316a6604c338466436e01680a7dce73f515e56deffd5"
+          },
+          {
+            "scene": 16,
+            "status": "COMPLETE",
+            "timestamps": 1034,
+            "manifest_sha256": "8609c13b3dae70a90de20d8d44dd0d681707b189ef43146774cbd1b9cd60530c"
+          },
+          {
+            "scene": 17,
+            "status": "COMPLETE",
+            "timestamps": 1200,
+            "manifest_sha256": "6db697d09ea0aa5ea9eb3c6df770540eae82a46973215236de4b67cf086c599a"
+          },
+          {
+            "scene": 18,
+            "status": "COMPLETE",
+            "timestamps": 1029,
+            "manifest_sha256": "877071c6836714c513acdc257d382cb5715821e162f9b5b1ae9e3d2b6369be75"
+          }
+        ]
       }
     },
     "LEGACY_PAIR_THEN_MERGE_ROI_RESTORED_CONTROL": {
       "status": "PARAMETER_FREE_CONTROL",
       "neural_optimizer_training_required": false,
       "actual_full_TRAIN_causal_replay": {
-        "completed_scenes": 0,
-        "completed_timestamps": 0,
-        "scenes": []
+        "completed_scenes": 17,
+        "completed_timestamps": 21418,
+        "scenes": [
+          {
+            "scene": 1,
+            "status": "COMPLETE",
+            "timestamps": 932,
+            "manifest_sha256": "741474b2bfcbf2df0762601f5c207838b54234d58048977d5d2475790afb9d7e"
+          },
+          {
+            "scene": 2,
+            "status": "COMPLETE",
+            "timestamps": 1886,
+            "manifest_sha256": "4d092faa90fd663d7771f952a312e8e34f2030f4c3bf2d080c2d9e359fca854e"
+          },
+          {
+            "scene": 3,
+            "status": "COMPLETE",
+            "timestamps": 1200,
+            "manifest_sha256": "eeb9be6ad720f13e560137099349a8ab0031a2ee72859ecc23c0e43f0ba0f2e8"
+          },
+          {
+            "scene": 4,
+            "status": "COMPLETE",
+            "timestamps": 901,
+            "manifest_sha256": "740bac733985be8c8346983c40cc5bc9a28a4b0beb10551105f22b63a5baec31"
+          },
+          {
+            "scene": 5,
+            "status": "COMPLETE",
+            "timestamps": 1769,
+            "manifest_sha256": "d151809decf50d145382fbbaa4439fdf4aa7c92c8ea45a1e704169e7d33e2351"
+          },
+          {
+            "scene": 6,
+            "status": "COMPLETE",
+            "timestamps": 601,
+            "manifest_sha256": "11d6b673e1185883cd232957788c4342dffbec58faaaa36fa0cb0d60049250cf"
+          },
+          {
+            "scene": 7,
+            "status": "COMPLETE",
+            "timestamps": 443,
+            "manifest_sha256": "cfe939c28222889c7fc8ac485a309f5bae78d58180b30d249f230ff91cc677ba"
+          },
+          {
+            "scene": 8,
+            "status": "COMPLETE",
+            "timestamps": 523,
+            "manifest_sha256": "8819299b62e167253b19a690e937517e3c98d638464daebdf8d5a764ee373033"
+          },
+          {
+            "scene": 9,
+            "status": "COMPLETE",
+            "timestamps": 1942,
+            "manifest_sha256": "4642e3d20e85a5a122273fbc83f14c555bd78852ff232e6df1d3d4112ffc4523"
+          },
+          {
+            "scene": 10,
+            "status": "COMPLETE",
+            "timestamps": 2092,
+            "manifest_sha256": "bb0059240e9e55ba049f5eb02bd3fc23898403eac434b19f0385c5ae6bddd3e8"
+          },
+          {
+            "scene": 11,
+            "status": "COMPLETE",
+            "timestamps": 2057,
+            "manifest_sha256": "e7b2c98d58d663ad7cc2a7933e89a6607fe340b101f6f77cb159d82fca193361"
+          },
+          {
+            "scene": 12,
+            "status": "COMPLETE",
+            "timestamps": 1200,
+            "manifest_sha256": "b56d20e5b8af9e80108eafcfe90539fcc30409e4953489b55ddb19a87f15c4be"
+          },
+          {
+            "scene": 13,
+            "status": "COMPLETE",
+            "timestamps": 1621,
+            "manifest_sha256": "d8d38581ff61bf49d3fb8be63d6add61a5dec46824b2635b7466b9cd1f853cfb"
+          },
+          {
+            "scene": 14,
+            "status": "COMPLETE",
+            "timestamps": 969,
+            "manifest_sha256": "40a1bc1277b108c01f47ff4c0b9a45160fbe7fb1076b638a8e16eafb113fe4bd"
+          },
+          {
+            "scene": 15,
+            "status": "COMPLETE",
+            "timestamps": 1048,
+            "manifest_sha256": "f8584e15cc412f9b709d16621d7287a5b78883179aa4c933bd5f70aa4efae752"
+          },
+          {
+            "scene": 16,
+            "status": "COMPLETE",
+            "timestamps": 1034,
+            "manifest_sha256": "94ce9239261c76b4b0a66697e656abeddc256e20ae1d2de08686279e536e5a69"
+          },
+          {
+            "scene": 17,
+            "status": "COMPLETE",
+            "timestamps": 1200,
+            "manifest_sha256": "bb20ce4450b935bd71923d8b4560b3a93e2ccf40b78ae2dd89458999d89b58ba"
+          }
+        ]
       }
     },
     "LEGACY_PAIR_THEN_MERGE_FEATURE_OFF_CONTROL": {
       "status": "PARAMETER_FREE_CONTROL",
       "neural_optimizer_training_required": false,
       "actual_full_TRAIN_causal_replay": {
-        "completed_scenes": 0,
-        "completed_timestamps": 0,
-        "scenes": []
+        "completed_scenes": 18,
+        "completed_timestamps": 22447,
+        "scenes": [
+          {
+            "scene": 1,
+            "status": "COMPLETE",
+            "timestamps": 932,
+            "manifest_sha256": "64653aee3aefef47e998bb299b3e790c2ef7ae28486d35b15eb94f8236959f8c"
+          },
+          {
+            "scene": 2,
+            "status": "COMPLETE",
+            "timestamps": 1886,
+            "manifest_sha256": "b613c653cf7d8477a7873340a3e4ba734e2324d758443378204884df20c9b11b"
+          },
+          {
+            "scene": 3,
+            "status": "COMPLETE",
+            "timestamps": 1200,
+            "manifest_sha256": "c3bb63ab1ed2684cab313bae3cfe4b252e7db4d91a628bcfb320981ee14894ba"
+          },
+          {
+            "scene": 4,
+            "status": "COMPLETE",
+            "timestamps": 901,
+            "manifest_sha256": "51cbdec04db38a321638da52e17632fb20e852233298eb37203667a3fa9d2fe6"
+          },
+          {
+            "scene": 5,
+            "status": "COMPLETE",
+            "timestamps": 1769,
+            "manifest_sha256": "f77aa52c0edbcb8bcee36c373f8eeea0079cc00c7b6cf0d4753c454fb288a934"
+          },
+          {
+            "scene": 6,
+            "status": "COMPLETE",
+            "timestamps": 601,
+            "manifest_sha256": "8dd1800538497ad167321117e03f2df46b428b019248999aa5ed5201ecc3d870"
+          },
+          {
+            "scene": 7,
+            "status": "COMPLETE",
+            "timestamps": 443,
+            "manifest_sha256": "73056dde9dc10e3ba144900d3a5d5d34a14b24d02396447e7e6b094e7fd3e004"
+          },
+          {
+            "scene": 8,
+            "status": "COMPLETE",
+            "timestamps": 523,
+            "manifest_sha256": "3b7c770efeb45a4b619e05206de3370abccc9bdc28a10e24e39834fe419a7fd6"
+          },
+          {
+            "scene": 9,
+            "status": "COMPLETE",
+            "timestamps": 1942,
+            "manifest_sha256": "06b09a7751d980df2edce7ad6d0b793dde23151a1b73b6d5eb909fd9ed9ec4ea"
+          },
+          {
+            "scene": 10,
+            "status": "COMPLETE",
+            "timestamps": 2092,
+            "manifest_sha256": "404e3bed4d5141c5ecda8186860d5c52eba68d856218fc805239d6daacacefab"
+          },
+          {
+            "scene": 11,
+            "status": "COMPLETE",
+            "timestamps": 2057,
+            "manifest_sha256": "4ad7fe490d36e4e39344610422fa74a00ee27b392013f574b732e7454434d40f"
+          },
+          {
+            "scene": 12,
+            "status": "COMPLETE",
+            "timestamps": 1200,
+            "manifest_sha256": "50197ffe21474d6c890b226e790a01001122227105f7dc91980541ce2172cf3b"
+          },
+          {
+            "scene": 13,
+            "status": "COMPLETE",
+            "timestamps": 1621,
+            "manifest_sha256": "7d5ffed2c09f63e087820b77e73869ea23f6cf25f11e63e488f518b87bff0f6a"
+          },
+          {
+            "scene": 14,
+            "status": "COMPLETE",
+            "timestamps": 969,
+            "manifest_sha256": "a8e10856dae41312d63af58b51333a05c138057a01685925161385f5a8d2c176"
+          },
+          {
+            "scene": 15,
+            "status": "COMPLETE",
+            "timestamps": 1048,
+            "manifest_sha256": "49444dd9fd65b27a803b8ed707d0d0e8a7a2144644def1e20adc45871ae0f686"
+          },
+          {
+            "scene": 16,
+            "status": "COMPLETE",
+            "timestamps": 1034,
+            "manifest_sha256": "ec4ecc20bd40dcffdee102545dc5dd34781d15fe5d2019593bcbcebb621eb832"
+          },
+          {
+            "scene": 17,
+            "status": "COMPLETE",
+            "timestamps": 1200,
+            "manifest_sha256": "177a845f4e093f68e4902f0a3d0552d9fdbd7845a68b2584d9760a06ab5d4439"
+          },
+          {
+            "scene": 18,
+            "status": "COMPLETE",
+            "timestamps": 1029,
+            "manifest_sha256": "fc6370eb639911361cc96c1e32a1ec1b4693474c36bb6c7e970c3d85a9014240"
+          }
+        ]
       }
     },
     "GEOMETRY_ONLY_ABLATION_V3": {

@@ -214,7 +214,36 @@ The third completed no-geometry selection epoch has VAL assignment/joint-birth
 losses 0.22834/0.12993, with 6,428 same-person split pairs and 3,478 false-merge
 pairs. Both error counts exceed epoch 2. Selection and extension still follow
 the original TRAIN-only registration; this is not a reason to tune TEST or add
-seeds. The figure now includes all three completed selection epochs.
+seeds. The figure snapshot covers the first three completed selection epochs;
+the four-epoch selection record below contains the later completed epoch.
+
+## No-geometry selection complete; final all-24 training running
+
+Full no-geometry completed all four registered 18/6 selection epochs. The
+minimum VAL assignment-plus-joint-birth loss selects two final epochs. Epoch 4
+does not improve that loss by 2% over epoch 3, so the registered extension rule
+does not permit epochs 5–6. Its normalized split-plus-merge error does improve
+over epoch 1; both extension conditions are required.
+
+All rows below cover the same 5,860 synchronized times of the six TRAIN VAL
+scenes. Birth-proposal recall is conditional on each epoch's causal predicted
+history, whose positive sets differ. These are diagnostic counts, not official
+TEST MOT metrics.
+
+| Selection epoch | VAL assignment loss | VAL joint-birth loss | Same-person split pairs | Different-person merged pairs | Birth proposal recall |
+|---|---:|---:|---:|---:|---:|
+| 1 | 0.20873 | 0.13297 | 5,865 | 3,232 | 81.35% |
+| 2 (selected budget) | 0.20281 | 0.13358 | 6,293 | 2,209 | 90.95% |
+| 3 | 0.22834 | 0.12993 | 6,428 | 3,478 | 89.21% |
+| 4 | 0.27053 | 0.12784 | 5,082 | 4,023 | 69.86% |
+
+The first final-stage safe checkpoint was inspected on CPU: every model tensor
+exactly matches a fresh seed-20261025 initialization, and the optimizer has no
+accumulated state. That boundary checkpoint is preserved on NAS with SHA
+`70c21b2fa504f6b0a0b72faee6495bb7ff5c4b44b167214baf2ba50b07a1b3d1`.
+It is an untrained initialization, not a released inference weight. Actual
+all-24 final training continues from it. Full selection history, rule evaluation
+and verification are in `results/worldobject_v3_no_geometry_selection.json`.
 
 ## Posthoc attribution acceptance
 
