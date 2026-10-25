@@ -30,6 +30,9 @@ class PersistentWorldObject:
     last_observation: object | None = None
     camera_history: set = field(default_factory=set)
     decision_status: str = "BIRTH"
+    spatial_state: object | None = None
+    identity_state: object | None = None
+    spatial_state_status: str = "LEGACY"
 
     @property
     def feature(self):
@@ -60,10 +63,96 @@ class PersistentWorldObjectBank:
     def active(self):
         return sorted((q for q in self.objects.values() if q.status != "DELETED"), key=lambda q: q.global_id)
 
-    def _update(self, q, measurement, timestamp, gate=1.0, delta=None, spatial_conflict=False):
+    def predict(self,timestamp):
+        """Idempotent prediction BEFORE both head inputs and assignment."""
+        if not self.config.enable_motion_prediction:return
+        for q in self.active():
+            state=q.spatial_state
+            if state is None:continue
+            state.predict(timestamp)
+            q.center=state.position.copy();q.covariance=state.covariance[:3,:3].copy()
+            q.geometry_valid=bool(state.motion_valid)
+            q.spatial_state_status=state.uncertainty_status
+
+    def _identity_trusted(self,q,measurement,learned,qindex,indices,is_birth=False):
+        cfg=self.config
+        if is_birth:
+            return all(o.feature_valid and o.score>=cfg.min_memory_score for o in measurement.observations)
+        if q.identity_embedding is None:return False
+        history=self.active()
+        for j,o in zip(indices,measurement.observations):
+            app=float(np.dot(q.identity_embedding,o.roi_feature)) if o.feature_valid else -1.
+            others=[float(np.dot(other.identity_embedding,o.roi_feature)) for other in history
+                    if other.global_id!=q.global_id and other.identity_embedding is not None and o.feature_valid]
+            gap=app-max(others,default=-1.)
+            current=[(other_index,other) for other_index,other in enumerate(self._identity_reference_observations)
+                     if other.camera_id==o.camera_id and other.key!=o.key and other.feature_valid]
+            current_gap=app-max((float(q.identity_embedding@other.roi_feature) for _,other in current),default=-1.)
+            visual=(app>=cfg.recovery_similarity and gap>=cfg.identity_competition_margin
+                    and current_gap>=cfg.identity_competition_margin)
+            learned_strong=False
+            if learned is not None:
+                i=qindex[q.global_id];value=float(learned['assignment_logits'][i,j])
+                margins=[float(learned['assignment_logits'][k,j]) for k in range(len(qindex)) if k!=i]
+                advantage=value-max(margins,default=value-cfg.identity_learned_margin)
+                current_advantage=value-max((float(learned['assignment_logits'][i,k]) for k,_ in current),
+                    default=value-cfg.identity_learned_margin)
+                learned_strong=(value-float(learned['null_logits'][i])>=cfg.identity_learned_margin
+                    and advantage>=cfg.identity_learned_margin and current_advantage>=cfg.identity_learned_margin
+                    and app>=cfg.min_appearance_similarity)
+            if o.score>=cfg.min_memory_score and (visual or learned_strong):return True
+        return False
+
+    def _motion_update(self,q,measurement,timestamp,gate,spatial_conflict,identity_trusted):
+        from .world_object_motion_state import (PersistentWorldMotionState,conservative_measurement,
+                                              temporal_geometry_evidence,positive_covariance)
+        cfg=self.config
+        if not cfg.spatial_state_update or gate<=0:return False
+        if cfg.enable_safe_identity_memory and not identity_trusted:
+            q.spatial_state_status="IDENTITY_UNCERTAIN_SPATIAL_UPDATE_DEFERRED";return False
+        conflict=spatial_conflict
+        if cfg.enable_safe_identity_memory and q.spatial_state is not None:
+            conflict |= any(temporal_geometry_evidence(q,o,cfg)[1] for o in measurement.observations)
+        if conflict:
+            if cfg.enable_safe_identity_memory and identity_trusted and q.spatial_state is not None:
+                q.spatial_state.invalidate();q.geometry_valid=False;q.support_points=np.empty((0,3))
+                q.spatial_state_status="SPATIAL_UNCERTAIN"
+            return False
+        if cfg.enable_multiview_coordination:
+            value=conservative_measurement(measurement.observations)
+            if value is not None:value=(value[0],value[1]/max(gate,.01),value[2])
+        else:
+            support=measurement.support
+            value=None if support is None else (support.center,support.covariance/max(support.quality*gate,.01),support.quality)
+        if value is None:
+            q.spatial_state_status="NO_TRUSTED_CURRENT_GEOMETRY";return False
+        center,cov,reliability=value
+        try:
+            cov=positive_covariance(cov,3)
+            if not np.isfinite(center).all() or reliability<.6:
+                q.spatial_state_status="LOW_RELIABILITY_MEASUREMENT_ABSTAIN";return False
+            state=q.spatial_state
+            if state is None or not state.motion_valid:
+                state=PersistentWorldMotionState.initialize(center,cov,timestamp,confidence=reliability,
+                    acceleration_ratio=cfg.motion_acceleration_ratio,ticks_per_second=cfg.timestamp_ticks_per_second)
+                q.spatial_state=state;accepted=True
+            else:accepted=state.update(center,cov,timestamp,confidence=reliability)
+        except (ValueError,np.linalg.LinAlgError):
+            q.spatial_state_status="INVALID_MEASUREMENT_ABSTAIN";return False
+        if accepted:
+            q.center=state.position.copy();q.covariance=state.covariance[:3,:3].copy();q.geometry_valid=True
+            q.support_points=measurement.support.foreground_points.copy() if measurement.support is not None else np.empty((0,3))
+            state.alignment_confidence=float(min(o.source.get('alignment_confidence',1.) for o in measurement.observations))
+        q.spatial_state_status=state.uncertainty_status
+        return bool(accepted)
+
+    def _update(self, q, measurement, timestamp, gate=1.0, delta=None, spatial_conflict=False, identity_trusted=True):
         cfg = self.config
         support = measurement.support
-        if cfg.use_geometry and support is not None and not spatial_conflict and gate > 0:
+        spatial_trusted=False
+        if cfg.enable_motion_prediction:
+            spatial_trusted=self._motion_update(q,measurement,timestamp,gate,spatial_conflict,identity_trusted)
+        elif cfg.spatial_state_update and support is not None and not spatial_conflict and gate > 0:
             if q.geometry_valid:
                 q.center, q.covariance = update_world_measurement(q.center, q.covariance,
                     support.center, support.covariance, support.quality * gate)
@@ -72,9 +161,20 @@ class PersistentWorldObjectBank:
                 q.covariance = support.covariance.copy()
                 q.geometry_valid = True
             q.support_points = support.foreground_points.copy()
+            spatial_trusted=True
         actual = [o for o in measurement.observations if o.visible and o.feature_valid
                   and o.score >= cfg.min_memory_score]
-        if cfg.use_appearance and actual and gate > 0:
+        if cfg.enable_safe_identity_memory and cfg.use_appearance:
+            from .world_object_identity_memory import WorldObjectIdentityMemory
+            if q.identity_state is None:
+                q.identity_state=WorldObjectIdentityMemory(None if q.identity_embedding is None else q.identity_embedding.copy(),
+                    identity_confidence=q.identity_confidence)
+            q.identity_state.update(actual,timestamp,trusted=identity_trusted and gate>0,spatial_trusted=spatial_trusted,
+                dimension=cfg.feature_dim,momentum=cfg.memory_momentum,coordinate_views=cfg.enable_multiview_coordination,
+                update_gate=gate,memory_delta=delta)
+            q.identity_embedding=q.identity_state.long_term_embedding
+            q.identity_confidence=q.identity_state.identity_confidence
+        elif cfg.use_appearance and actual and gate > 0:
             from ..models.world_object_observation import fuse_identity_features
             candidate, confidence = fuse_identity_features(actual, cfg.feature_dim, use_geometry=cfg.use_geometry)
             old = q.identity_embedding
@@ -119,6 +219,7 @@ class PersistentWorldObjectBank:
                     raise FeatureUnavailable("FEATURE_UNAVAILABLE: choose GEOMETRY_ONLY_ABLATION_V3 explicitly")
                 normalized_feature(o.roi_feature, self.config.feature_dim)
         history = self.active()
+        self.predict(timestamp)
         if learned is not None:
             m,n=len(history),len(observations)
             shapes={"assignment_logits":(m,n),"null_logits":(m,),"existence_logits":(m,),
@@ -148,6 +249,12 @@ class PersistentWorldObjectBank:
                        for option in decision.selected)):
             raise ValueError("INVALID_JOINT_DECISION_CONSTRAINTS")
         qindex = {q.global_id: i for i, q in enumerate(history)}
+        if self.config.enable_safe_identity_memory:self._identity_reference_observations=observations
+        trusted_selected={option.global_id:self._identity_trusted(self.objects[option.global_id],
+            assigned_measurement([observations[j] for j in option.indices],0,self.config.feature_dim,self.config.use_geometry,
+                                 self.config.enable_multiview_coordination),
+            learned,qindex,option.indices) for option in decision.selected if option.global_id is not None
+            } if self.config.enable_safe_identity_memory else {}
         selected_delta={}
         if learned is not None:
             keys=[(qindex[option.global_id],j) for option in decision.selected if option.global_id is not None for j in option.indices]
@@ -171,7 +278,7 @@ class PersistentWorldObjectBank:
         for option in selections:
             obs = [observations[j] for j in option.indices]
             measurement = assigned_measurement(obs, len(self.last_hypotheses), self.config.feature_dim,
-                                               self.config.use_geometry)
+                                               self.config.use_geometry,self.config.enable_multiview_coordination)
             self.last_hypotheses.append(measurement)
             if option.global_id is not None:
                 q = self.objects[option.global_id]
@@ -181,12 +288,14 @@ class PersistentWorldObjectBank:
                     gate = float(np.min(learned["update_gate"][i, list(option.indices)]))
                     delta = np.mean([selected_delta[i,j] for j in option.indices], axis=0)
                 self._update(q, measurement, timestamp, gate, delta,
-                             option.reason == "VISUAL_RECOVERY_SPATIAL_CONFLICT")
+                             option.reason == "VISUAL_RECOVERY_SPATIAL_CONFLICT",
+                             trusted_selected.get(q.global_id,True))
             else:
                 birth_count += 1
                 prob = (min(_sigmoid(learned["birth_logits"][j]) for j in option.indices)
                         if learned is not None else 1.0)
                 support = measurement.support
+                if not self.config.spatial_state_update:support=None
                 q = PersistentWorldObject(self.next_id,
                     support.center.copy() if support is not None else np.full(3, np.nan),
                     support.covariance.copy() if support is not None else np.eye(3)*1e6,
@@ -209,7 +318,7 @@ class PersistentWorldObjectBank:
                                  _sigmoid(learned["existence_logits"][qindex[q.global_id]]) < self.config.death_threshold)
                 if q.missed > self.config.max_missed or (low_existence and q.missed >= 2):
                     q.status = "DELETED"
-                if q.geometry_valid:
+                if q.geometry_valid and self.config.spatial_state_update and not self.config.enable_motion_prediction:
                     q.covariance = q.covariance + np.eye(3)*0.02
         self.last_timestamp = int(timestamp)
         self.last_timings["identity_update_s"] = time.perf_counter()-update_started

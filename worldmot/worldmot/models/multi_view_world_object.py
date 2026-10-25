@@ -26,11 +26,14 @@ class WorldObjectHypothesis:
         return self.support.center if self.support is not None else np.full(3, np.nan)
 
 
-def assigned_measurement(observations, object_id, feature_dim, use_geometry=True):
+def assigned_measurement(observations, object_id, feature_dim, use_geometry=True, coordinate_views=False):
     observations = list(observations)
     if len({o.camera_id for o in observations}) != len(observations):
         raise ValueError("ONE_OBSERVATION_PER_CAMERA_PER_OBJECT_REQUIRED")
-    feature, _ = fuse_identity_features(observations, feature_dim, use_geometry=use_geometry)
+    if coordinate_views:
+        usable=sorted((o for o in observations if o.visible and o.feature_valid),key=lambda o:(-o.score,o.key))
+        feature=usable[0].roi_feature.copy() if usable else None
+    else:feature, _ = fuse_identity_features(observations, feature_dim, use_geometry=use_geometry)
     geometry = [o for o in observations if use_geometry and o.visible and o.world_state_update_eligible]
     support = None
     if geometry:

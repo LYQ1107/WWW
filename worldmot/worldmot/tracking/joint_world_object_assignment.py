@@ -64,11 +64,22 @@ class JointWorldObjectAssignment:
             return None
         if cfg.use_appearance and q.identity_embedding is not None and o.feature_valid:
             app = _similarity(q.identity_embedding, o.roi_feature) if app_override is None else float(app_override)
+            memory=getattr(q,"identity_state",None)
+            if cfg.enable_safe_identity_memory and memory is not None:
+                short=memory.short_term_embedding_by_camera.get(o.camera_id)
+                if short is not None:app=.8*app+.2*_similarity(short,o.roi_feature)
             if app < cfg.min_appearance_similarity and (learned_margin is None or learned_margin<cfg.learned_identity_recovery_logit):
                 return None
         spatial = None
-        if cfg.use_geometry and q.geometry_valid and o.cross_view_fusion_eligible:
+        if cfg.temporal_geometry and cfg.geometry_policy not in {"OFF","SPATIAL_ABSTAIN"} and q.geometry_valid and o.cross_view_fusion_eligible:
             spatial = spatial_distance(q.center, q.covariance, o.world_center, o.world_covariance) if spatial_override is None else float(spatial_override)
+            if cfg.geometry_policy == "UNCERTAINTY_SOFT":
+                from .world_object_motion_state import temporal_geometry_evidence
+                bonus, conflict = temporal_geometry_evidence(q,o,cfg)
+                if app is None and bonus == 0:
+                    return None
+                return float((app or 0.)+bonus), ("SPATIAL_UNCERTAIN_IDENTITY_CANDIDATE" if conflict
+                                                     else "UNCERTAINTY_WEIGHTED_HISTORY")
             if spatial > cfg.geometry_gate:
                 # A stale position must not forbid a strong reappearance.
                 if not (q.missed > 0 and app is not None and app >= cfg.recovery_similarity):
@@ -96,7 +107,7 @@ class JointWorldObjectAssignment:
             if learned_probability is None and app < (cfg.joint_birth_similarity if birth else cfg.min_appearance_similarity):
                 return None
         geom = None
-        if cfg.use_geometry and a.cross_view_fusion_eligible and b.cross_view_fusion_eligible:
+        if cfg.sync_geometry and cfg.geometry_policy != "OFF" and a.cross_view_fusion_eligible and b.cross_view_fusion_eligible:
             indices=(self._current_index.get(id(a)),self._current_index.get(id(b))) if hasattr(self,"_current_index") else (None,None)
             geom = (float(self._current_spatial[indices]) if None not in indices and self._current_spatial is not None
                     else spatial_distance(a.world_center,a.world_covariance,b.world_center,b.world_covariance))
@@ -104,7 +115,7 @@ class JointWorldObjectAssignment:
                 return None
         # New objects require both cues in the full method; no forced fusion
         # from centre proximity alone. Visual-only methods have a stricter ROI gate.
-        if birth and cfg.use_geometry and geom is None and learned_probability is None and (app is None or app<0.97):
+        if birth and cfg.sync_geometry and cfg.geometry_policy != "OFF" and geom is None and learned_probability is None and (app is None or app<0.97):
             return None
         if learned_probability is not None:
             if learned_probability<cfg.birth_pair_threshold:return None
@@ -128,8 +139,8 @@ class JointWorldObjectAssignment:
         hf=np.array([q.identity_embedding if q.identity_embedding is not None else np.zeros(cfg.feature_dim) for q in history],np.float32).reshape(m,cfg.feature_dim)
         app_matrix=np.clip(hf@of.T,-1,1) if cfg.use_appearance else None
         self._current_appearance=np.clip(of@of.T,-1,1) if cfg.use_appearance else None
-        space_matrix=spatial_distance_matrix(history,observations) if cfg.use_geometry and m and n else None
-        self._current_spatial=spatial_distance_matrix(observations,observations) if cfg.use_geometry and n else None
+        space_matrix=spatial_distance_matrix(history,observations) if cfg.temporal_geometry and m and n else None
+        self._current_spatial=spatial_distance_matrix(observations,observations) if cfg.sync_geometry and n else None
         for qi, q in enumerate(history):
             per_view = {}
             for j, o in enumerate(observations):

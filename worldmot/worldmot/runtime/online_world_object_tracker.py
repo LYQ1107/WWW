@@ -9,6 +9,8 @@ from ..geometry.world_frame_contract import WorldFrameTransform
 from ..geometry.world_alignment import Sim3
 from ..models.geometry_interface import GeometryFrame
 from ..data.worldobject_observations import live_observations
+from .omega_evidence_scheduler import OmegaEvidenceScheduler,REQUEST_OMEGA
+from ..geometry.anchored_world_alignment import AnchoredWorldAligner
 
 
 class OnlineWorldObjectTracker:
@@ -20,11 +22,14 @@ class OnlineWorldObjectTracker:
         self.aligner=DualCameraStaticAligner(min_inliers=6)
         self.previous=None;self.previous_world={};self.scene_id=None
         self.last_timings={}
+        self.scheduler=OmegaEvidenceScheduler(config) if config.enable_omega_scheduler else None
+        self.anchor_aligner=AnchoredWorldAligner() if self.scheduler else None
 
     def reset(self,scene_id):
         self.scene_id=int(scene_id)
         self.core.reset(scene_id);self.aligner.reset()
         self.previous=None;self.previous_world={};self.last_timings={}
+        if self.scheduler:self.scheduler.reset();self.anchor_aligner.reset()
 
     def step_observations(self, observations, timestamp):
         """Synthetic/live adapter seam; exactly the same core as cache replay."""
@@ -37,7 +42,13 @@ class OnlineWorldObjectTracker:
         detections=self.detector.infer(images_by_camera)
         self.last_timings={"detector":time.perf_counter()-t}
         aligned=False;reason="VISUAL_ONLY_FALLBACK";transform=Sim3()
-        if self.config.use_geometry:
+        request=None
+        if self.scheduler:
+            self.bank.predict(timestamp)
+            empty=GeometryFrame(int(timestamp),images_by_camera,{},{},{},np.empty((0,0)),{})
+            visual=live_observations(detections,empty,WorldFrameTransform(Sim3(),int(timestamp),False),use_geometry=False)
+            request=self.scheduler.decide(visual,self.bank.active(),timestamp)
+        if self.config.use_geometry and (request is None or request.action==REQUEST_OMEGA):
             t=time.perf_counter()
             frame=self.geometry.reconstruct(images_by_camera,int(timestamp))
             self.last_timings["omega"]=time.perf_counter()-t
@@ -46,7 +57,10 @@ class OnlineWorldObjectTracker:
             DetectionFirstWorldMOT._set_dynamic_masks(frame,detections)
             t=time.perf_counter()
             if frame.status=="OK":
-                if self.previous is None:
+                if self.anchor_aligner is not None:
+                    alignment=(self.anchor_aligner.initialize(frame,int(timestamp)) if not self.anchor_aligner.anchors
+                               else self.anchor_aligner.update(frame,int(timestamp)))
+                elif self.previous is None:
                     alignment=self.aligner.initialize()
                 else:
                     self.previous.world_pointmaps=self.previous_world
@@ -57,12 +71,20 @@ class OnlineWorldObjectTracker:
             else:
                 reason="INVALID_OMEGA_GEOMETRY"
             self.last_timings["alignment"]=time.perf_counter()-t
+            if self.scheduler:self.scheduler.observe_alignment(timestamp,aligned)
         else:
             frame=GeometryFrame(int(timestamp),images_by_camera,{},{},{},np.empty((0,0)),{})
             self.last_timings.update(omega=0.,alignment=0.)
+            if self.scheduler:reason="OMEGA_SKIPPED_NO_CURRENT_GEOMETRY"
         t=time.perf_counter()
         observations=live_observations(detections,frame,WorldFrameTransform(transform,int(timestamp),aligned),
                                       min_confidence=self.min_confidence,use_geometry=self.config.use_geometry)
+        if self.config.enable_multiview_coordination:
+            from .world_object_geometry_context import with_alignment_context
+            evidence={'success':aligned,'reason':reason}
+            if aligned:
+                evidence.update(inlier_ratio=alignment.result.inlier_ratio,residual_p95=alignment.result.residual_p95)
+            observations=with_alignment_context(observations,evidence)
         self.last_timings["support"]=time.perf_counter()-t
         t=time.perf_counter();result=self.step_observations(observations,timestamp)
         self.last_timings["assignment_and_state_update"]=time.perf_counter()-t
@@ -72,5 +94,8 @@ class OnlineWorldObjectTracker:
             self.previous_world={v:transform.apply(x.reshape(-1,3)).reshape(x.shape) for v,x in frame.pointmaps.items()}
         self.last_timings["total"]=time.perf_counter()-started
         result["alignment"]={"success":aligned,"reason":reason,"historical_transform_reused":False}
+        if request is not None:
+            result["omega_evidence_request"]={"action":request.action,"reasons":list(request.reasons),
+                                               "decided_before_current_geometry":True}
         result["runtime"]={"stages":dict(self.last_timings),"fps_definition":"LIVE_RGB_TO_ID"}
         return result

@@ -20,6 +20,8 @@ class WorldObjectTrackingCore:
         self.bank.reset()
 
     def forward_evidence(self, observations, timestamp, training=False):
+        self.validate_current(observations,timestamp)
+        self.bank.predict(timestamp)
         if self.model is None:
             return None
         if len(self.bank.active())*len(observations)>self.config.max_model_pairs:
@@ -33,12 +35,21 @@ class WorldObjectTrackingCore:
         with torch.set_grad_enabled(training):
             return self.model(*inputs, use_geometry=self.config.head_geometry)
 
+    def validate_current(self,observations,timestamp):
+        if self.bank.last_timestamp is not None and int(timestamp)<=self.bank.last_timestamp:
+            raise ValueError("NONCAUSAL_OR_DUPLICATE_TIMESTAMP")
+        keys=[o.key for o in observations]
+        if len(keys)!=len(set(keys)):raise ValueError("DUPLICATE_CAMERA_DETECTION_KEY")
+        if len({o.camera_id for o in observations})>2:raise ValueError("V3_TWO_CAMERA_CONTRACT")
+        if any(o.timestamp!=int(timestamp) for o in observations):raise ValueError("FUTURE_OR_STALE_OBSERVATION")
+
     def step(self, observations, timestamp, *, scene_id=None, evidence=None, training_decision=None):
         if scene_id is not None and int(scene_id) != self.scene_id:
             self.reset(scene_id)
         if self.scene_id is None:
             raise ValueError("SCENE_RESET_REQUIRED")
         observations = sorted(list(observations), key=lambda o:o.key)
+        self.validate_current(observations,timestamp)
         if training_decision is not None and not self.training_context:
             raise ValueError("TEACHER_DECISION_FORBIDDEN_IN_INFERENCE")
         evidence_started = time.perf_counter()
@@ -70,10 +81,30 @@ class WorldObjectTrackingCore:
                 "geometry_reliability":o.geometry_reliability,"cross_view_fusion_eligible":o.cross_view_fusion_eligible,
                 "world_state_update_eligible":o.world_state_update_eligible,
                 "decision":q.decision_status,"source":o.source})
-        return {"schema":"worldobject_prediction_v3","timestamp":int(timestamp),"scene_id":self.scene_id,
+        result={"schema":"worldobject_prediction_v3","timestamp":int(timestamp),"scene_id":self.scene_id,
             "method_id":self.config.method_id,"tracks_2d_by_camera":tracks,"decisions":decisions,
             "tracks_3d":[{"global_id":q.global_id,"center":q.center.tolist() if q.geometry_valid else None,
                           "geometry_valid":q.geometry_valid,"status":q.status,"missed":q.missed,
                           "visible_cameras":list(q.visible_cameras)} for q in objects],
             "bank":diag,"causal":True,"GT_in_inference":False,
             "output_policy":"CURRENT_DETECTION_ONLY"}
+        if self.config.enable_motion_prediction:
+            for row,q in zip(result['tracks_3d'],objects):
+                state=q.spatial_state
+                row['spatial_state_status']=q.spatial_state_status
+                if state is not None:
+                    row.update(position=state.position.tolist(),velocity=state.velocity.tolist(),
+                        covariance_6d=state.covariance.tolist(),motion_valid=state.motion_valid,
+                        geometry_frame_id=state.geometry_frame_id,
+                        last_prediction_timestamp=state.last_prediction_timestamp,
+                        last_trusted_geometry_timestamp=state.last_trusted_geometry_timestamp,
+                        current_trusted_3D_measurement=state.last_trusted_geometry_timestamp==int(timestamp),
+                        geometry_confidence=state.geometry_confidence,
+                        alignment_confidence=state.alignment_confidence,
+                        time_unit=state.time_unit,spatial_unit='relative_world_unit')
+                if q.identity_state is not None:
+                    row['identity_state']={'identity_confidence':q.identity_state.identity_confidence,
+                        'last_identity_confirmed_timestamp':q.identity_state.last_identity_confirmed_timestamp,
+                        'identity_update_status':q.identity_state.identity_update_status,
+                        'short_term_cameras':sorted(q.identity_state.short_term_embedding_by_camera)}
+        return result

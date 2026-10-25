@@ -7,6 +7,8 @@ BIRTH_GEOMETRY_DIM=16
 
 
 def model_inputs(history,observations,config,timestamp,device="cpu"):
+    # V4 G4 is independent of sync G1, temporal G2 and state-update G3.
+    # Zeroing G4 retains the trained 16-D geometry tensor shapes and weights.
     import torch
     m,n,d=len(history),len(observations),config.feature_dim
     q=np.zeros((m,d),np.float32);obs=np.zeros((n,d),np.float32)

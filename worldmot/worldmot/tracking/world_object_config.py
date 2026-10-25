@@ -1,4 +1,5 @@
 """Distinct registered V3 methods; no implicit no-geometry interpretation."""
+from __future__ import annotations
 from dataclasses import dataclass, asdict
 
 METHODS = {
@@ -39,6 +40,22 @@ class WorldObjectConfig:
     learned_identity_recovery_logit: float = 2.0
     birth_threshold: float = 0.5
     death_threshold: float = 0.1
+    # None retains the exact R2 defaults. These are four separate interventions.
+    enable_sync_geometry: bool | None = None
+    enable_temporal_geometry: bool | None = None
+    enable_spatial_state_update: bool | None = None
+    enable_head_geometry: bool | None = None
+    geometry_policy: str = "LEGACY_HARD"
+    enable_motion_prediction: bool = False
+    enable_safe_identity_memory: bool = False
+    enable_multiview_coordination: bool = False
+    enable_omega_scheduler: bool = False
+    timestamp_ticks_per_second: float | None = None
+    motion_acceleration_ratio: float = .01
+    geometry_stale_ticks: float = 30.
+    temporal_geometry_weight: float = .5
+    identity_competition_margin: float = .05
+    identity_learned_margin: float = 2.
 
     def __post_init__(self):
         if self.method_id in METHOD_ALIASES:
@@ -50,14 +67,31 @@ class WorldObjectConfig:
                 raise ValueError(f"invalid bound {name}")
         if not 0<=self.learned_weight<=1:
             raise ValueError("LEARNED_WEIGHT_MUST_BE_A_CONVEX_BLEND")
+        if self.geometry_policy not in {"OFF", "LEGACY_HARD", "UNCERTAINTY_SOFT", "SPATIAL_ABSTAIN"}:
+            raise ValueError("UNKNOWN_GEOMETRY_POLICY")
+        if (self.motion_acceleration_ratio < 0 or self.geometry_stale_ticks <= 0
+                or (self.timestamp_ticks_per_second is not None and self.timestamp_ticks_per_second <= 0)):
+            raise ValueError("INVALID_MOTION_TIME_OR_NOISE")
+
+    @property
+    def sync_geometry(self):
+        return METHODS[self.method_id][0] if self.enable_sync_geometry is None else self.enable_sync_geometry
+
+    @property
+    def temporal_geometry(self):
+        return METHODS[self.method_id][0] if self.enable_temporal_geometry is None else self.enable_temporal_geometry
+
+    @property
+    def spatial_state_update(self):
+        return METHODS[self.method_id][0] if self.enable_spatial_state_update is None else self.enable_spatial_state_update
 
     @property
     def use_geometry(self):
-        return METHODS[self.method_id][0]
+        return any((self.sync_geometry,self.temporal_geometry,self.spatial_state_update,self.head_geometry))
 
     @property
     def head_geometry(self):
-        return METHODS[self.method_id][1]
+        return METHODS[self.method_id][1] if self.enable_head_geometry is None else self.enable_head_geometry
 
     @property
     def use_appearance(self):

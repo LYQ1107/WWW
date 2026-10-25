@@ -21,6 +21,7 @@ class AnchorRecord:
     confidences: dict[int, np.ndarray]
     image_to_model: dict[int, np.ndarray]
     transform: Sim3
+    dynamic_masks: dict | None = None
 
 
 class AnchoredWorldAligner:
@@ -38,7 +39,8 @@ class AnchoredWorldAligner:
     def initialize(self, frame, timestamp: int) -> DualAlignmentResult:
         self.current_transform = Sim3()
         self.anchors = [AnchorRecord(int(timestamp), dict(frame.pointmaps), dict(frame.images),
-                                     dict(frame.confidences), dict(frame.image_to_model), Sim3())]
+                                     dict(frame.confidences), dict(frame.image_to_model), Sim3(),
+                                     dict(getattr(frame,"dynamic_masks",{})))]
         return self.dual.initialize()
 
     def update(self, frame, timestamp: int) -> DualAlignmentResult:
@@ -49,6 +51,7 @@ class AnchoredWorldAligner:
             old = copy(frame)
             old.pointmaps = anchor.pointmaps; old.images = anchor.images
             old.confidences = anchor.confidences; old.image_to_model = anchor.image_to_model
+            old.dynamic_masks = anchor.dynamic_masks or {}
             old.world_pointmaps = {v: anchor.transform.apply(p.reshape(-1, 3)).reshape(p.shape)
                                    for v, p in anchor.pointmaps.items()}
             result = self.dual.update(old, frame)
@@ -61,6 +64,6 @@ class AnchoredWorldAligner:
         if best.result.inlier_ratio >= 0.35 and best.result.residual_p95 <= 0.08:
             self.anchors.append(AnchorRecord(int(timestamp), dict(frame.pointmaps), dict(frame.images),
                                               dict(frame.confidences), dict(frame.image_to_model),
-                                              self.current_transform))
+                                              self.current_transform,dict(getattr(frame,"dynamic_masks",{}))))
             self.anchors = self.anchors[-self.max_anchors:]
         return best
