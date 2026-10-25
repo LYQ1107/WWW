@@ -28,6 +28,12 @@ improvement: it is 25.0419 HOTA points and 41.7776 IDF1 points below GMT
 native. W4 is below W3, and W5 is effectively identical to W4; the learned
 gate has not produced a positive TEST identity result.
 
+The official MATLAB CVIDF1 field is unavailable for these routes in this
+environment, so it is left missing rather than fabricated. A separate fixed
+IoU=0.3 post-hoc cross-view diagnostic gives 82.4702 for W3/W4/W5; this is
+not the official CVIDF1 protocol and must not be compared as a formal gain
+over GMT's 78.0613.
+
 ## Speed definitions
 
 The cache-build timings are real per-synchronized-pair wall-clock stages and
