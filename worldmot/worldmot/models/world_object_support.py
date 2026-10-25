@@ -205,17 +205,21 @@ def support_compatibility(left: WorldObjectSupport, right: WorldObjectSupport,
     normalized = float(np.linalg.norm(delta) / scale)
     cov = left.covariance + right.covariance + np.eye(3) * 1e-4
     mahal = float(np.sqrt(max(0.0, delta @ np.linalg.pinv(cov) @ delta)))
+    ok = normalized <= float(max_normalized_distance) and mahal <= 6.0
+    if not ok:
+        # Do not spend an O(P^2) support-distance computation on pairs already
+        # rejected by the cheap center/covariance gate.  The returned score
+        # and reason are unchanged; ``support_nn_median`` is only meaningful
+        # for geometrically admissible pairs.
+        return -np.inf, {"normalized_distance": normalized, "mahalanobis": mahal}, "space_incompatible"
     # Symmetric nearest-neighbour distance is deliberately soft: opposite
     # cameras see different body surfaces, so exact support overlap is not
-    # required.
+    # required.  It is evaluated only after the cheap gate above.
     a, b = left.foreground_points, right.foreground_points
     nn = max(float(np.median(np.min(np.linalg.norm(a[:, None] - b[None], axis=-1), axis=1))),
              float(np.median(np.min(np.linalg.norm(b[:, None] - a[None], axis=-1), axis=1))))
-    ok = normalized <= float(max_normalized_distance) and mahal <= 6.0
-    if not ok:
-        return -np.inf, {"normalized_distance": normalized, "mahalanobis": mahal,
-                         "support_nn_median": nn}, "space_incompatible"
     score = float(np.exp(-0.5 * (normalized / 2.0) ** 2) * np.exp(-0.5 * (mahal / 4.0) ** 2)
                   * min(1.0, (left.quality + right.quality) / 2.0 + 0.25))
     return score, {"normalized_distance": normalized, "mahalanobis": mahal,
                    "support_nn_median": nn}, "accepted"
+
