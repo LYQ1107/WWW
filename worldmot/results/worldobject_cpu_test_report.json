@@ -1,0 +1,422 @@
+{
+  "schema": "worldobject_cpu_synthetic_test_report_v3",
+  "source_commit": "41c023d7c675d529b4fe794e5b64afafe757b938",
+  "published_implementation_commit": "e499b83456a015f2df00edb76c6bbc2a12767bf0",
+  "verified_identical_implementation_tree_sha": "f7f719c3edab3fe98f46e92403d920c69ca98e25",
+  "source_sha256": "b714f30f7133fb0299a323cd6d17e4d5d4533e41ff618c79d7d05aa022775bd8",
+  "syntax": {
+    "parsed_files": 180,
+    "errors": []
+  },
+  "tests": [
+    {
+      "test": "tests/test_worldobject_feature_contract.py::test_roi_feature_survives_observation_assignment_and_bank",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_feature_contract.py::test_invisible_view_does_not_write_zero_memory",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_feature_contract.py::test_missing_features_fail_except_explicit_geometry_only",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_feature_contract.py::test_readonly_feature_join_checks_dimension_count_bbox_score_and_sha",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_feature_contract.py::test_v1_cache_gt_is_isolated_and_geometry_is_not_claimed_valid",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_feature_contract.py::test_inference_adapter_refuses_target_fields",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_camera_depth.py::test_rotated_camera_clusters_camera_depth_not_world_z",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_camera_depth.py::test_no_pose_is_explicitly_unavailable",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_camera_depth.py::test_invalid_or_behind_camera_depth_is_filtered[0.0]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_camera_depth.py::test_invalid_or_behind_camera_depth_is_filtered[-1.0]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_camera_depth.py::test_invalid_or_behind_camera_depth_is_filtered[nan]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_camera_depth.py::test_invalid_or_behind_camera_depth_is_filtered[inf]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_camera_depth.py::test_camera_pose_translation_scale_and_sim3_covariance",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_camera_depth.py::test_bbox_crop_resize_pad_and_outside_projection",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_camera_depth.py::test_depth_unprojection_extrinsic_direction_and_pixel_alignment",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_joint_assignment.py::test_close_people_with_distinct_identity_are_not_merged",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_joint_assignment.py::test_similar_appearance_spatially_separated_keeps_two_ids",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_joint_assignment.py::test_history_jointly_explains_two_cameras_without_premerge",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_joint_assignment.py::test_occlusion_outputs_only_current_detection",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_joint_assignment.py::test_conflicting_pair_competes_with_consistent_historical_option",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_joint_assignment.py::test_one_detection_per_camera_per_id_and_never_reuse_deleted_id",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_joint_assignment.py::test_large_component_is_deterministic_and_bounded",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_joint_assignment.py::test_capacity_limit_keeps_every_current_box_as_tentative_birth",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_memory.py::test_alignment_failure_cannot_overwrite_spatial_state",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_memory.py::test_unmatched_and_low_confidence_features_do_not_rewrite_other_identity",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_memory.py::test_update_gate_and_memory_delta_are_used_and_read_next_step",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_memory.py::test_birth_null_existence_and_death_outputs_affect_decisions",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_memory.py::test_strong_cross_view_visual_recovery_is_not_blocked_by_stale_position",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_identity_loss.py::test_assignment_loss_has_history_specific_gradient_and_memory_gradient",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_identity_loss.py::test_predicted_training_uses_same_core_and_resets_clip_history",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_identity_loss.py::test_duplicate_train_identity_and_annotation_id_are_not_supervised_as_identity",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_identity_loss.py::test_teacher_correction_happens_only_after_forward",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_ablation.py::test_entire_no_geometry_path_is_invariant_to_arbitrary_geometry[FULL_NO_GEOMETRY_V3]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_ablation.py::test_entire_no_geometry_path_is_invariant_to_arbitrary_geometry[APPEARANCE_CAPACITY_MATCHED_V3]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_ablation.py::test_head_only_ablation_retains_upstream_spatial_decisions",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_ablation.py::test_capacity_matched_methods_have_identical_parameter_counts",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_causal_runtime.py::test_live_and_replay_adapters_produce_identical_core_ids_boxes_and_state",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_causal_runtime.py::test_alignment_failure_in_live_frontend_does_not_reuse_transform",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_causal_runtime.py::test_invalid_time_and_duplicate_inputs_fail_before_state_mutation[future]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_causal_runtime.py::test_invalid_time_and_duplicate_inputs_fail_before_state_mutation[duplicate]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_causal_runtime.py::test_invalid_time_and_duplicate_inputs_fail_before_state_mutation[timestamp]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_causal_runtime.py::test_invalid_time_and_duplicate_inputs_fail_before_state_mutation[three_cameras]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_causal_runtime.py::test_scene_reset_clears_history_and_camera_order_is_invariant",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_causal_runtime.py::test_metadata_only_dataset_isolates_gt_and_rejects_duplicate_image_keys",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_causal_runtime.py::test_missing_approval_blocks_before_any_real_io",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_causal_runtime.py::test_old_checkpoint_gate_is_rejected_without_loading_weights",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_v2_producer_reader_feature_and_camera_contract",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_real_entrypoints_deny_without_approval_before_opening_resources[cache_worldobject_support-arguments0]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_real_entrypoints_deny_without_approval_before_opening_resources[train_world_object-arguments1]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_real_entrypoints_deny_without_approval_before_opening_resources[run_world_object_fullvideo-arguments2]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_real_entrypoints_deny_without_approval_before_opening_resources[run_world_object_live-arguments3]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_real_entrypoints_deny_without_approval_before_opening_resources[freeze_worldobject_scope-arguments4]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_real_entrypoints_deny_without_approval_before_opening_resources[evaluate_fullvideo-arguments5]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_real_entrypoints_deny_without_approval_before_opening_resources[orchestrate_worldobject_six_gpu-arguments6]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_real_entrypoints_deny_without_approval_before_opening_resources[evaluate_world_object_formation-arguments7]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_real_entrypoints_deny_without_approval_before_opening_resources[run_world_object_legacy_control-arguments8]",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_bad_model_evidence_cannot_partially_mutate_history",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_teacher_decision_is_unavailable_to_inference",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_model_pair_limit_has_explicit_causal_fallback",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_assignment_logits_change_the_selected_historical_id",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_stale_world_transform_is_rejected_even_if_marked_valid",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_detection_source_camera_id_must_match_mapping",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_posthoc_diagnostics_do_not_mutate_predictions",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_timing_summary_uses_wall_latency_and_serial_throughput",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_source_commit_reader_handles_worktree_and_packed_refs_without_fork",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_legacy_feature_control_is_explicit_and_not_imported_by_primary_core",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_delivery_contract.py::test_report_only_commit_changes_do_not_invalidate_identical_code_scope",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_core.py::test_two_views_update_one_object_and_same_camera_is_unique",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_core.py::test_close_different_people_are_not_forced_to_merge",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_core.py::test_support_is_not_a_gt_mask_and_depth_ambiguity_is_explicit",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_core.py::test_bbox_mapping_uses_model_frame_and_clips",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_worldobject_core.py::test_sim3_round_trip_direction",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_gmt_detection_cache.py::test_scene_timestamp_image_id_and_rgb_are_all_verified",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_gmt_detection_cache.py::test_shard_checksum_failure_cannot_silently_replay",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_world_alignment.py::test_sim3_ransac_recovers_known_transform_with_outliers",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_world_alignment.py::test_alignment_fails_without_enough_points",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_projection.py::test_world_projection_roundtrip",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_projection.py::test_projection_rejects_points_behind_camera_and_outside",
+      "outcome": "passed",
+      "failure": null
+    },
+    {
+      "test": "tests/test_gmt_box_storage.py::test_native_float32_xyxy_subtraction_matches_immutable_xywh_storage_exactly",
+      "outcome": "passed",
+      "failure": null
+    }
+  ],
+  "counts": {
+    "passed": 79
+  },
+  "pytest_exit_code": 0,
+  "duration_s": 3.85181937366724,
+  "status": "PASS",
+  "validation_scope": "CPU_SYNTHETIC_ONLY",
+  "CUDA_VISIBLE_DEVICES": "",
+  "real_dataset_reads": false,
+  "pretrained_weight_loads": false,
+  "MKL_THREADING_LAYER": "GNU",
+  "KMP_DUPLICATE_LIB_OK_used": false,
+  "real_training_inference_evaluation_started": false,
+  "accuracy_metrics_generated": false
+}
