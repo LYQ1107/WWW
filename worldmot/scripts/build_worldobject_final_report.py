@@ -29,7 +29,7 @@ def load(path: Path, default=None):
     return json.loads(path.read_text())
 
 
-def eval_row(route: str, path: Path, fps_by_route: dict[str, float]) -> dict:
+def eval_row(route: str, path: Path, fps_by_route: dict[str, dict[str, object]]) -> dict:
     report = load(path)
     row = {"route": route, "scope": "TEST", "status": "BLOCKED" if report is None else report.get("status", "UNKNOWN")}
     for key in ["HOTA", "AssA", "DetA", "IDF1", "MOTA", "IDSW", "Frag"]:
@@ -42,33 +42,44 @@ def eval_row(route: str, path: Path, fps_by_route: dict[str, float]) -> dict:
         mat = report.get("VisionTrack_MATLAB", {}).get("combined", {})
         row["CVIDF1"] = mat.get("CVIDF1")
         row["CVMA"] = mat.get("CVMA")
-    row["fps_pairs"] = fps_by_route.get(route)
+    speed = fps_by_route.get(route, {})
+    row["fps_pairs"] = speed.get("fps")
+    row["fps_source"] = speed.get("source")
     return row
 
 
-def fps_map(path: Path) -> dict[str, float]:
+def fps_map(path: Path) -> dict[str, dict[str, object]]:
     out = {}
     if not path.is_file():
         return out
     for row in csv.DictReader(path.open()):
-        # The official comparison uses true live RGB->ID timing.  Cache replay
-        # rows remain visible in the FPS CSV but are not silently promoted.
-        if row.get("stage") not in {"live_e2e_s", "total_cache_step_s"}:
+        # Keep the speed definition explicit.  A cache replay is useful for
+        # association profiling but is not an online RGB->ID measurement.
+        stage = row.get("stage")
+        if stage not in {"live_e2e_s", "cache_replay_s", "total_cache_step_s"}:
             continue
         route = row.get("route", "")
-        if row.get("stage") == "live_e2e_s":
-            route = "W3_PERSISTENT_BANK_LIVE"
-        elif row.get("stage") == "total_cache_step_s":
-            # Cache replay rows are route-specific after the replay runner;
-            # preserve them in the final table instead of collapsing all
-            # routes into one cache-build number.
+        if stage == "live_e2e_s":
+            route = "W3_PERSISTENT_BANK"
+            source = "live_rgb_to_id"
+        elif stage == "cache_replay_s":
+            source = "cache_replay_no_rgb_omega"
             if "W3_PERSISTENT_BANK" in route:
                 route = "W3_PERSISTENT_BANK"
             elif "W4_LEARNED_UPDATE" in route:
                 route = "W4_LEARNED_UPDATE"
             elif "W5_NO_GEOMETRY_CONTROL" in route:
                 route = "W5_NO_GEOMETRY_CONTROL"
-        out[route] = float(row["p50_fps_pairs"])
+        else:
+            # The cache-build route is intentionally not attached to a
+            # tracker route: it includes Ω and support construction.
+            route = "OMEGA_CACHE_BUILD"
+            source = "cache_step_rgb_to_support"
+        candidate = {"fps": float(row["p50_fps_pairs"]), "source": source}
+        # If a live measurement and replay measurement coexist, live wins for
+        # the final route table while the raw FPS CSV retains both rows.
+        if route not in out or source == "live_rgb_to_id":
+            out[route] = candidate
     return out
 
 
@@ -84,7 +95,7 @@ def main() -> None:
     rows = list(BASELINES)
     for route, filename in [("W3_PERSISTENT_BANK", "W3_persistent_bank/metrics.json"), ("W4_LEARNED_UPDATE", "W4_learned/metrics.json"), ("W5_NO_GEOMETRY_CONTROL", "W5_no_geometry/metrics.json")]:
         rows.append(eval_row(route, Path(a.evaluation_dir) / filename, fp))
-    fields = ["route", "scope", "status", "HOTA", "AssA", "DetA", "IDF1", "CVIDF1", "CVMA", "MOTA", "IDSW", "Frag", "fps_pairs"]
+    fields = ["route", "scope", "status", "HOTA", "AssA", "DetA", "IDF1", "CVIDF1", "CVMA", "MOTA", "IDSW", "Frag", "fps_pairs", "fps_source"]
     with (out / "worldobject_final_comparison.csv").open("w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=fields); w.writeheader(); w.writerows({k: r.get(k) for k in fields} for r in rows)
 
