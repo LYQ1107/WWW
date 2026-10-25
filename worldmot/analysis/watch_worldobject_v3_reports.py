@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import subprocess
 import time
+from sample_worldobject_v3_resources import measurements_ready
 
 
 def atomic(path,value):
@@ -23,12 +24,17 @@ def main():
     while not (a.root/"report_watcher.stop").exists():
         paths=sorted(list((a.root/"train").glob("*/progress.json"))+list((a.root/"train").glob("*/train_gate.json"))
                      +list((a.root/"evaluation").glob("*/metrics.json"))+list((a.root/"live").glob("*/coverage.json")))
-        signature=[(str(path),path.stat().st_mtime_ns,path.stat().st_size) for path in paths]
+        try:signature=[(str(path),path.stat().st_mtime_ns,path.stat().st_size) for path in paths]
+        except FileNotFoundError:
+            time.sleep(5);continue
         status=a.root/"controller_status.json"
-        try:ready=status.is_file() and json.loads(status.read_text()).get("status")=="MEASUREMENTS_READY_FOR_SCIENTIFIC_AUDIT"
-        except json.JSONDecodeError:ready=False
+        ready=measurements_ready(status)
         if signature!=previous or ready:
-            subprocess.run([a.python,str(analysis/"summarize_worldobject_v3.py"),"--run-root",str(a.root),"--output",str(output)],cwd=a.repo,env=env,check=True)
+            result=subprocess.run([a.python,str(analysis/"summarize_worldobject_v3.py"),"--run-root",str(a.root),"--output",str(output)],cwd=a.repo,env=env,capture_output=True,text=True)
+            if result.returncode:
+                atomic(a.root/"report_refresh_error.json",{"status":"RETRY_PENDING","time":time.time(),"exit_code":result.returncode,"stderr":result.stderr[-6000:]})
+                time.sleep(60);continue
+            print(result.stdout.strip(),flush=True)
             atomic(a.root/"publication_required.json",{"status":"NEW_MEASURED_ARTIFACT_SNAPSHOT","updated_at":time.time(),
                 "artifacts":signature,"scientific_goal_complete":False,"GitHub_push_still_required":True})
             previous=signature

@@ -11,6 +11,25 @@ import time
 
 from drive_worldobject_v3 import GPUS
 
+FIELDS=["time_unix","gpu_uuid","device_used_bytes","device_total_bytes","gpu_utilization_pct","jobs","nvml_status"]
+
+
+def measurements_ready(path):
+    try:return json.loads(Path(path).read_text()).get("status")=="MEASUREMENTS_READY_FOR_SCIENTIFIC_AUDIT"
+    except (FileNotFoundError,json.JSONDecodeError):return False
+
+
+def resource_log_mode(path,resume):
+    path=Path(path)
+    if not path.exists():return "x",True
+    if not resume:raise RuntimeError("PRESERVE_EXISTING_RESOURCE_LOG_BEFORE_RESTART")
+    with path.open() as stream:
+        if next(csv.reader(stream),None)!=FIELDS:raise RuntimeError("RESOURCE_LOG_HEADER_MISMATCH")
+    with path.open("rb") as stream:
+        stream.seek(-1,2)
+        if stream.read(1)!=b"\n":raise RuntimeError("PRESERVE_INCOMPLETE_RESOURCE_LOG_BEFORE_RESUME")
+    return "a",False
+
 
 class Memory(C.Structure):
     _fields_=[("total",C.c_ulonglong),("free",C.c_ulonglong),("used",C.c_ulonglong)]
@@ -32,6 +51,7 @@ def read_jobs(root):
 
 def main():
     p=argparse.ArgumentParser();p.add_argument("--root",required=True,type=Path);p.add_argument("--interval",type=float,default=.2)
+    p.add_argument("--resume",action="store_true")
     a=p.parse_args();lib=C.CDLL("libnvidia-ml.so.1")
     if lib.nvmlInit_v2()!=0:raise RuntimeError("NVML_INIT_FAILED")
     handles={}
@@ -41,10 +61,11 @@ def main():
         handles[uuid]=handle
     jobs={};refresh=0.;flush=0.;started=time.time()
     path=a.root/"logs/resource_samples.csv"
-    if path.exists():raise RuntimeError("PRESERVE_EXISTING_RESOURCE_LOG_BEFORE_RESTART")
-    with path.open("x") as stream,(a.root/"logs/resource_process_samples.jsonl").open("x") as processes:
-        fields=["time_unix","gpu_uuid","device_used_bytes","device_total_bytes","gpu_utilization_pct","jobs","nvml_status"]
-        writer=csv.DictWriter(stream,fieldnames=fields);writer.writeheader()
+    mode,header=resource_log_mode(path,a.resume)
+    with path.open(mode) as stream,(a.root/"logs/resource_process_samples.jsonl").open("a" if a.resume else "x") as processes:
+        writer=csv.DictWriter(stream,fieldnames=FIELDS)
+        if header:writer.writeheader()
+        processes.write(json.dumps({"event":"SAMPLER_RESUME" if a.resume else "SAMPLER_START","time_unix":started})+"\n")
         while not (a.root/"resource_sampler.stop").exists():
             now=time.time()
             if now-refresh>=5:
@@ -55,11 +76,9 @@ def main():
                     processes.write(json.dumps({"time_unix":time.time(),"compute_processes":rows,"jobs":jobs})+"\n")
                 except subprocess.TimeoutExpired:
                     processes.write(json.dumps({"time_unix":time.time(),"status":"PROCESS_QUERY_TIMEOUT_NVML_MEMORY_SAMPLING_CONTINUES"})+"\n")
-                status=a.root/"controller_status.json"
-                if status.is_file():
-                    try:ready=json.loads(status.read_text()).get("status")=="MEASUREMENTS_READY_FOR_SCIENTIFIC_AUDIT"
-                    except json.JSONDecodeError:ready=False
-                    if ready:break
+                except subprocess.CalledProcessError as exc:
+                    processes.write(json.dumps({"time_unix":time.time(),"status":"PROCESS_QUERY_FAILED_MEMORY_SAMPLING_CONTINUES","exit_code":exc.returncode})+"\n")
+                if measurements_ready(a.root/"controller_status.json"):break
             for uuid,handle in handles.items():
                 memory=Memory();util=Utilization()
                 rc=lib.nvmlDeviceGetMemoryInfo(handle,C.byref(memory));urc=lib.nvmlDeviceGetUtilizationRates(handle,C.byref(util))
