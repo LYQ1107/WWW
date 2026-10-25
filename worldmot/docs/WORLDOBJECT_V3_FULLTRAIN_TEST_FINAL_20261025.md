@@ -6,9 +6,9 @@ User instruction: attachment `c5d7a93f-e5e6-4068-83b2-45635a8dd642`.
 
 ## Status
 
-Phase A implementation and phase B CPU acceptance are complete. Real TRAIN preflight,
-six-GPU work, full TEST and official comparison are pending. No new accuracy result
-is claimed in this revision. This is an independent WorldMOT experiment; GMT is
+Phases A–C implementation, CPU acceptance and real TRAIN preflight are complete.
+Six registered GPU jobs are running; full TEST and official comparison are pending.
+No new accuracy result is claimed in this revision. This is an independent WorldMOT experiment; GMT is
 a frozen detector/ROI provider and a separately scored reference.
 
 ## Repairs
@@ -85,3 +85,25 @@ camera-depth/persistent-alignment cache contract.
 Training coverage, full TEST coverage, official metric comparison, birth/error
 attribution, and live runtime breakdown will be added as real jobs finish.
 The prior V3 results are preserved and are not results of this repaired model.
+
+## Phase C and six-card launch
+
+The final 178-timestamp TRAIN preflight passed with source fingerprint
+`e0ea977f7eb6f9e9e24b75520c3dd5701c09be494913e9ea237467ea310f6ad3`.
+See `results/worldobject_v3_birthfix_preflight_report.json` for raw counts, gradients,
+peak allocation and launch process IDs. Earlier passing preflights remain on NAS
+with the engineering reason for each source revision; only the final fingerprint
+gates the long jobs. This is not multiple-seed experimentation.
+
+Four UUID-bound workers prefer complete TRAIN scenes, one prefers TEST perception,
+and one trains full no-geometry on the immutable ROI join. All five reconstruction
+workers share atomic scene claims. Physical GPUs 4–9 were free at launch; other
+users' devices and processes were not changed. Dataset metadata for perception
+workers is physically annotation-free: TRAIN metadata SHA
+`92e09f77d8d98af3ba732e75f0d2dd648313aa6e02bc058fa02a2d3d6ba97d87`, TEST
+`617d76902eafe69391fccc76f581d9ba38e27bd464380681d58d14ba77efce4f`.
+Original RGB directories are read through links; no images or GT are modified.
+Only supervised TRAIN and later posthoc official scoring use original annotations.
+
+Run root: `/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v3_birthfix_20261025`.
+Large caches/checkpoints stay on NAS. A RUNNING job is not completed coverage.
