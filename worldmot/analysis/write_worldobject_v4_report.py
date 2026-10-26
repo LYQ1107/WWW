@@ -62,6 +62,8 @@ def qualify_state_variants(variants,error_attribution,*,cpu_passed,audits_comple
 def main():
     p=argparse.ArgumentParser();p.add_argument('--runtime',type=Path,required=True)
     p.add_argument('--cpu-junit',type=Path,required=True);p.add_argument('--measurements',type=Path)
+    p.add_argument('--pending-status',default='WAITING_FOR_REGISTERED_COMPLETE_MEASUREMENTS')
+    p.add_argument('--pending-reason',default='Complete registered measurements are not available; no metric is inferred.')
     a=p.parse_args();repo=Path(__file__).resolve().parents[2];out=repo/'worldmot/results';docs=repo/'worldmot/docs'
     fp=code_fingerprint(repo);junit=ET.parse(a.cpu_junit).getroot();suites=list(junit.iter('testsuite'))
     tests=sum(int(s.attrib.get('tests',0)) for s in suites);failures=sum(int(s.attrib.get('failures',0))+int(s.attrib.get('errors',0)) for s in suites)
@@ -74,17 +76,17 @@ def main():
     cpu={'status':'PASSED' if not failures else 'FAILED','tests':tests,'failures_and_errors':failures,'skipped':skipped,
         'time_s':sum(float(s.attrib.get('time',0)) for s in suites),'junit_sha256':sha256(a.cpu_junit),
         'source_sha256':fp,'python':platform.python_version(),'scope':'CPU synthetic and source-bound compatibility tests; no real identity scores',
-        'legacy_compatibility':'80 synthetic timestamps exactly match frozen b448af4 head inputs, decisions and numeric state; real checkpoint replay pending',
+        'legacy_compatibility':'80 synthetic timestamps exactly match frozen b448af4 head inputs, decisions and numeric state; real checkpoint compatibility is reported separately',
         'replay_integration':'all15 registered paths, 12 factorial edges and fixed-history G3 invariance exercised with explicitly synthetic unit-test weights'}
     write_json(out/'v4_cpu_test_report.json',cpu)
     names=['v4_gmt_synchronous_identity_comparison.json','v4_crossview_hard_cases.json','v4_frozen_geometry_factorial.json',
         'v4_closed_loop_identity_attribution.json','v4_error_correction_attribution.json','v4_runtime_analysis.json']
-    pending={'status':'WAITING_FOR_NAS_POWER_RESTORATION','reason':'user reports NAS power outage; retry no earlier than 2026-10-26 04:00 Asia/Shanghai',
+    pending={'status':a.pending_status,'reason':a.pending_reason,
         'no_metric_inferred':True,'optimizer_started':False,'V4_formal_TEST_started':False}
     for name in names:
         path=out/name;measured=a.measurements/name if a.measurements else None
         if measured and measured.is_file():shutil.copyfile(measured,path)
-        elif not path.exists() or read(path).get('status','').startswith('WAITING'):write_json(path,pending)
+        elif not path.exists() or read(path).get('status','').startswith(('WAITING','STAGING','RUNNING','INCOMPLETE')):write_json(path,pending)
     comparison=out/'v4_train_val_comparison.csv';measured=a.measurements/'v4_train_val_comparison.csv' if a.measurements else None
     if measured and measured.is_file():shutil.copyfile(measured,comparison)
     elif not comparison.exists():
@@ -111,18 +113,18 @@ def main():
         '本报告严格区分已通过的工程测试与尚未完成的真实实验。R2/R3 的原结果、权重与感知缓存不变。','',
         f'当前 CPU 测试：**{tests} 项，失败 {failures} 项，跳过 {skipped} 项**。',
         f'执行代码指纹：`{fp}`。','',
-        'GMT 原始完整轨迹已从原正式评测证据定位到 `fulltrain_20261022/test/gmt_native`，仍需恢复后逐文件复核 Manifest/轨迹 SHA。检测候选缓存不会作为 GMT Native Global ID。','',
+        'GMT 原始完整轨迹已从原正式评测证据定位到 `fulltrain_20261022/test/gmt_native`。逐文件复核 Manifest/轨迹 SHA 的完成状态以阶段 A 结果为准。检测候选缓存不会作为 GMT Native Global ID。','',
         '| 阶段 | 实际状态 |','|---|---|']
     lines += [f'| {k} | {v} |' for k,v in gate['stages'].items()]
     lines += ['','实现包括独立 G1/G2/G3/G4 控制、六维常速度预测、Joseph Kalman 更新、身份/空间分离、置信度门控长短期视觉记忆、保守多视角测量和因果 Ω 请求。',
         'C0 默认路径用冻结 R2 源码对照；CPU 合成测试的 80 时刻完全一致不等价于真实 checkpoint 的全视频复现。',
-        '完整 TRAIN 回放必须再次验证 C0 的每个输入张量、决策与数值状态。','',
+        '完整 TRAIN 回放逐时刻验证 C0 的每个输入张量、决策与数值状态；有限工程预检不能代替完整覆盖。','',
         '冻结身份头的最终 all24 TRAIN 权重已经看过六个 TRAIN VAL 场景。本轮是 TRAIN 内部机制开发，不是独立泛化验证。',
         '正式 TRAIN VAL TrackEval 仅使用原始 GT 合法的 4/8/12；16/20/24 仅作干净标注子集诊断。',
         '默认时间单位为 frame_id tick，空间单位为相对世界坐标；不假定秒或米。','',
         '未获得真实指标时，不能回答 V4 是否超过 R2、No-Geometry 或 GMT。CSV 留空未测值，不填零。',
         '缓存请求次数不等于真实 FPS；稀疏请求后的 Live keyframe 对齐和 RGB-to-ID 延迟必须另测。','',
-        '下一步：NAS 恢复后核验空间与不可变输入，先运行有限真实工程预检，随后完成预注册六场闭环及单步归因。',
+        '剩余流程以阶段状态为准：预注册六场闭环及单步归因、原始合法 TRAIN 场景评分、真实有限 RGB-to-ID 预检。输入存储故障和不完整尝试均需独立记录。',
         '本轮不启动新的 24 TRAIN 长训，不执行 V4 正式 TEST 跟踪或 TEST 参数选择。','',
         '来源与许可详见 [V4_SOURCE_ADAPTATION.md](V4_SOURCE_ADAPTATION.md)；具体固定范围见 [V4_PREREGISTRATION.md](V4_PREREGISTRATION.md)。']
     if D.get('status')=='COMPLETE':

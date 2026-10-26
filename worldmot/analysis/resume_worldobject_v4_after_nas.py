@@ -8,6 +8,7 @@ failed preflight or failed workers stop dependent work and retain their logs.
 import argparse
 from datetime import datetime,timezone
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -18,9 +19,26 @@ import time
 from worldobject_v4_audit_common import VAL_SCENES,code_fingerprint,write_json
 
 
+def verify_input_mirror(path,r2_root):
+    record=json.loads(Path(path).read_text());root=Path(r2_root).parent
+    plan_path=root/'mirror_plan.json'
+    expected={'train':{'scenes':[4,8,12,16,20,24],'timestamps':5860},
+        'test':{'scenes':list(range(1,23)),'timestamps':29019}}
+    if (record.get('schema')!='worldmot_v4_verified_input_mirror_v1' or record.get('status')!='VERIFIED'
+            or record.get('all_original_file_checksums_verified') is not True
+            or record.get('registered_scope')!=expected or record.get('verified_files')!=record.get('files')
+            or not record.get('files') or Path(record['destination_root']).resolve()!=root.resolve()
+            or hashlib.sha256(plan_path.read_bytes()).hexdigest()!=record.get('plan_sha256')):
+        raise ValueError('COMPLETE_BYTE_VERIFIED_REGISTERED_INPUT_MIRROR_REQUIRED')
+    return {'transport':'VERIFIED_LOCAL_BYTE_MIRROR','receipt_sha256':hashlib.sha256(Path(path).read_bytes()).hexdigest(),
+        'source_root':record['source_root'],'local_root':str(root),'registered_scope':expected}
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('--runtime',type=Path,required=True)
     p.add_argument('--r2-root',type=Path,required=True)
+    p.add_argument('--gmt-root',type=Path,help='Optional byte-verified local mirror of the original GMT Native predictions')
+    p.add_argument('--input-mirror-receipt',type=Path,help='Completed byte-verification receipt for local frozen inputs')
     p.add_argument('--not-before',default='2026-10-25T20:00:00+00:00');a=p.parse_args()
     repo=Path(__file__).resolve().parents[2];a.runtime.mkdir(parents=True,exist_ok=True)
     lock=(a.runtime/'controller.lock').open('w')
@@ -29,7 +47,9 @@ def main():
     receipt=json.loads((a.runtime/'cpu_receipt.json').read_text());fp=code_fingerprint(repo)
     if receipt['status']!='PASSED' or receipt['source_sha256']!=fp:raise ValueError('CURRENT_CPU_PREFLIGHT_REQUIRED')
     not_before=datetime.fromisoformat(a.not_before).timestamp()
-    state={'source_sha256':fp,'pid':os.getpid(),'not_before_UTC':a.not_before,'user_reference':
+    input_transport=verify_input_mirror(a.input_mirror_receipt,a.r2_root) if a.input_mirror_receipt else {'transport':'ORIGINAL_NAS'}
+    if a.input_mirror_receipt and a.gmt_root is None:a.gmt_root=a.r2_root.parent/'fulltrain_20261022/test/gmt_native'
+    state={'source_sha256':fp,'pid':os.getpid(),'not_before_UTC':a.not_before,'input_transport':input_transport,'user_reference':
         'NAS power outage; user explicitly said continue independent work now and resume after 04:00 Asia/Shanghai',
         'new_training_authorized':False,'new_V4_formal_TEST_authorized':False,'started_UTC':datetime.now(timezone.utc).isoformat()}
     def status(value,**extra):
@@ -55,7 +75,7 @@ def main():
             result=subprocess.run(command,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,timeout=12)
             if result.returncode==0:
                 free=json.loads(result.stdout)['free_bytes']
-                if free<25*(1<<30):status('HELD_NAS_FREE_SPACE_BELOW_25_GIB',NAS_free_bytes=free);return
+                if free<25*(1<<30):status('HELD_INPUT_STORAGE_FREE_SPACE_BELOW_25_GIB',input_storage_free_bytes=free);return
                 break
         except (subprocess.TimeoutExpired,OSError,json.JSONDecodeError):pass
         time.sleep(45)
@@ -81,7 +101,8 @@ def main():
                 available.append((index,uuid))
         return available
     stage_a=run('existing_TEST_sync_audit',[str(Path(__file__).with_name('compare_gmt_v4_synchronous_identity.py')),
-        '--r2-root',str(a.r2_root),'--output',str(root/'v4_gmt_synchronous_identity_comparison.json'),'--with-current-only'])
+        '--r2-root',str(a.r2_root),'--output',str(root/'v4_gmt_synchronous_identity_comparison.json'),'--with-current-only',
+        *(['--gmt-root',str(a.gmt_root)] if a.gmt_root else [])])
     def finish_stage_a():
         code=stage_a.wait()
         if code:
@@ -89,7 +110,7 @@ def main():
                 'exit_code':code,'GMT_sync_metrics':None,'inference_or_thresholds_not_modified':True})
         return code
     replay=str(Path(__file__).with_name('run_worldobject_v4_train_replay.py'))
-    status('REAL_CPU_PREFLIGHT_RUNNING',run_root=str(root),NAS_free_bytes=free)
+    status('REAL_CPU_PREFLIGHT_RUNNING',run_root=str(root),input_storage_free_bytes=free)
     pre=run('CPU_real_preflight',[replay,'--r2-root',str(a.r2_root),'--output',str(root/'CPU_preflight'),
         '--scene','4','--limit','16','--with-single-step'])
     code=pre.wait()

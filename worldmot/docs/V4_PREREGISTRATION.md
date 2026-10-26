@@ -141,3 +141,30 @@ score eligibility, but are not recommended for full training without equivalent
 real-case evidence. C5 LIVE requires C4 to pass both its registered aggregate
 TRAIN quality gate and this mandatory case. No weights, state parameters,
 thresholds, variant inputs, or replay ranges change in this reporting fix.
+
+## Storage-failure retry, before complete V4 outcomes
+
+The first NAS-backed attempt completed both registered 16-time engineering
+preflights with exact C0/R2 compatibility, then its six replay workers, existing
+TEST-output auditor and retained-case worker exited. NAS metadata reads also
+returned I/O errors; copied logs have no individual exception traceback. The
+incomplete original run and its readable logs remain preserved, and supply no
+complete-video association score or algorithm-failure conclusion.
+
+The retry uses a separate local mirror of the original frozen bytes and local
+logs/outputs. Its plan contains 1,394 files, 5,745,322,364 bytes: only the six
+registered TRAIN scenes, all 22 existing TEST scenes needed by A, original
+prediction files, and required frozen checkpoints/metadata. Arrays are checked
+against original shard hashes; prediction manifests against published proofs;
+the checkpoint hashes remain unchanged. The mirror generates no new detector
+features or geometry, copies no new identity supervision, and retains a 25 GiB
+local-space reserve. Interrupted copies are never accepted as complete input.
+
+The whole mirror must have a completed verification receipt before the retry
+controller launches. The current-script CPU receipt is also required. Original
+GMT Native prediction roots can be relocated explicitly; the retained epoch1
+archive is resolved under the explicit input root while its exact registered
+SHA is still mandatory. The archive's original/resolved paths are both recorded.
+No motion prior, gate, threshold, model weight, scene, camera order, GT mapping,
+or scoring protocol changes. Copy time and cache replay time are not LIVE FPS.
+All new outputs use a fresh local run root; the failed NAS run is not overwritten.

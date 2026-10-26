@@ -13,6 +13,14 @@ NO_GEOMETRY_GATE_SHA='1796b14b36f9a45381a2ed6067149b746482adceec4b233f9656779ae4
 RETAINED_EPOCH1_SHA='d4644ff95cbb7f255f70f155055fba6870863a69e7043f91b920e85ce20693dd'
 
 
+def retained_archive_path(r2_root,record):
+    """Relocate exactly the registered archive, without choosing new weights."""
+    suffix=Path('audit_snapshots/FULL_WORLD_OBJECT_V3')/(RETAINED_EPOCH1_SHA+'.pt')
+    if tuple(Path(record['path']).parts[-3:])!=tuple(suffix.parts) or record['sha256']!=RETAINED_EPOCH1_SHA:
+        raise ValueError('RETAINED_ORIGINAL_ARCHIVE_PATH_REQUIRED')
+    return Path(r2_root)/suffix
+
+
 def load_frozen_r2_head(manifest,raw_lock,device='cpu',*,method='FULL_WORLD_OBJECT_V3'):
     import torch
     path=Path(manifest)
@@ -49,13 +57,15 @@ def load_retained_epoch1_mechanism_head(r2_root,device='cpu'):
     records=json.loads(index_path.read_text())['records']
     record=next(x for x in records if x['method']=='FULL_WORLD_OBJECT_V3'
         and x.get('usable_as_selection_epoch_checkpoint') and x['selection_epochs']==1)
-    if (record['sha256']!=RETAINED_EPOCH1_SHA or sha256(record['path'])!=RETAINED_EPOCH1_SHA
+    resolved=retained_archive_path(r2_root,record)
+    if (record['sha256']!=RETAINED_EPOCH1_SHA or sha256(resolved)!=RETAINED_EPOCH1_SHA
             or not record.get('resume_metadata_SHA_matched_at_capture')):
         raise ValueError('RETAINED_ORIGINAL_FAILURE_CHECKPOINT_PROOF_REQUIRED')
-    payload=torch.load(record['path'],map_location='cpu',weights_only=False)
+    payload=torch.load(resolved,map_location='cpu',weights_only=False)
     head=WorldObjectUpdateHead(1024,128);head.load_state_dict(payload['model'],strict=True)
     head.to(device).eval().requires_grad_(False)
     return head,{'checkpoint_sha256':RETAINED_EPOCH1_SHA,'selection_epoch':1,
+        'archive_original_path':record['path'],'archive_resolved_path':str(resolved),
         'archive_index_sha256':sha256(index_path),'origin_source_sha256':R2_SOURCE,
         'scope':'exact original t704/t705 TRAIN mechanism only; not primary final-all24 comparison',
         'optimizer_used':False,'TRAIN_scenes_previously_seen_by_final_head':False}

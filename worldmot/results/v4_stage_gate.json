@@ -1,26 +1,26 @@
 {
   "schema": "worldmot_v4_stage_gate_v1",
-  "generated_utc": "2026-10-26T06:45:11.355654+00:00",
+  "generated_utc": "2026-10-26T07:34:34.385800+00:00",
   "branch": "research/worldmot-v4-persistent-state-20261025",
   "base_commit": "b448af4a7dfdf738aeab0c9dd5bc01e9a875beac",
-  "source_sha256": "72bb31ffbbff9419ce13244dc11020c953cfdece4d41a6caf7461cfc6cb3795a",
+  "source_sha256": "f3ab66e050d8e88346a9cd95fe8012a925bfa6b43943392bcef127c7b86aeee0",
   "stages": {
-    "A_GMT_SYNCHRONOUS_IDENTITY_AUDIT": "WAITING_FOR_NAS_TUNNEL_AND_MOUNT",
-    "B_FROZEN_GEOMETRY_CAUSAL_AUDIT": "WAITING_FOR_NAS_TUNNEL_AND_MOUNT",
+    "A_GMT_SYNCHRONOUS_IDENTITY_AUDIT": "STAGING_BYTE_VERIFIED_LOCAL_INPUTS",
+    "B_FROZEN_GEOMETRY_CAUSAL_AUDIT": "STAGING_BYTE_VERIFIED_LOCAL_INPUTS",
     "C_WORLD_OBJECT_STATE_IMPLEMENTATION": "CPU_PASSED_REAL_VERIFICATION_PENDING",
-    "D_TRAIN_VAL_STATE_VERIFICATION": "WAITING_FOR_NAS_TUNNEL_AND_MOUNT"
+    "D_TRAIN_VAL_STATE_VERIFICATION": "STAGING_BYTE_VERIFIED_LOCAL_INPUTS"
   },
   "CPU": {
     "status": "PASSED",
-    "tests": 271,
+    "tests": 279,
     "failures_and_errors": 0,
     "skipped": 0,
-    "time_s": 26.682,
-    "junit_sha256": "0c540a893609493f194e7bff2649cb59be3200f1414f2548307fa93b70d460f1",
-    "source_sha256": "72bb31ffbbff9419ce13244dc11020c953cfdece4d41a6caf7461cfc6cb3795a",
+    "time_s": 26.501,
+    "junit_sha256": "d7ce660b6778b97f77e69307b96eb65044e3f09b1f4f20701079db9c6fe908c8",
+    "source_sha256": "f3ab66e050d8e88346a9cd95fe8012a925bfa6b43943392bcef127c7b86aeee0",
     "python": "3.10.18",
     "scope": "CPU synthetic and source-bound compatibility tests; no real identity scores",
-    "legacy_compatibility": "80 synthetic timestamps exactly match frozen b448af4 head inputs, decisions and numeric state; real checkpoint replay pending",
+    "legacy_compatibility": "80 synthetic timestamps exactly match frozen b448af4 head inputs, decisions and numeric state; real checkpoint compatibility is reported separately",
     "replay_integration": "all15 registered paths, 12 factorial edges and fixed-history G3 invariance exercised with explicitly synthetic unit-test weights"
   },
   "scientific_gain_proven": false,
@@ -28,13 +28,5 @@
   "new_full_training_authorized": false,
   "new_V4_formal_TEST_authorized": false,
   "R2_R3_predictions_or_weights_modified": false,
-  "current_limit": "NAS power reported restored, but tunnel/mount unavailable; real V4 replay has not started and immutable assets have not been revalidated",
-  "NAS_access": {
-    "NAS_power_state": "USER_REPORTED_STARTED",
-    "reverse_tunnel_port": 24557,
-    "reverse_tunnel_listening": false,
-    "mount_available": false,
-    "last_verified_UTC": "2026-10-26T06:45:11.355654+00:00",
-    "frozen_inputs_revalidated": false
-  }
+  "current_limit": "no new real V4 measurement until immutable NAS inputs can be verified"
 }
