@@ -1,0 +1,100 @@
+"""Posthoc comparison of existing frozen predictions; no runtime/models/optimizer."""
+from pathlib import Path
+from types import SimpleNamespace
+from collections import Counter
+from contextlib import ExitStack
+import sys,json,time,hashlib
+repo=Path('/data1/liuyeqiang/WWW_worldmot_v4_persistent_state_20261025')
+sys.path[:0]=[str(repo/'worldmot'),str(repo/'worldmot/analysis')]
+from worldobject_v4_audit_common import code_fingerprint,write_json,contrast_events,verify_immutable_annotations,EXPECTED_TRAIN_ANNOTATIONS_SHA
+from run_worldobject_v4_train_replay import current_events
+from worldmot.data.visiontrack import VisionTrack
+from worldmot.training.world_object_identity_targets import match_train_identities
+FP='f3ab66e050d8e88346a9cd95fe8012a925bfa6b43943392bcef127c7b86aeee0'
+assert code_fingerprint(repo)==FP
+rt=Path('/data1/liuyeqiang/worldmot_v4_persistent_state_runtime_20261025')
+root=Path('/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state')
+out=rt/'incremental_state_attribution';out.mkdir(exist_ok=False)
+variants=['C0','C1','C2','C3','C4','C5']
+edges=list(zip(variants,variants[1:]))+[('C0','C4')]
+ds=VisionTrack('/data/DATASETS/TRACKING/JDE/VisionTrack',split='train',load_annotations=True)
+gt=verify_immutable_annotations(ds,EXPECTED_TRAIN_ANNOTATIONS_SHA)
+started=time.perf_counter();scenes={};pending=set([4,8,12,16,20,24]);totals={a+'__TO__'+b:Counter() for a,b in edges};examples=[]
+def read(p):return json.loads(p.read_text())
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def flat(row):
+ result={}
+ for cam,items in row['tracks_2d_by_camera'].items():
+  for o in items:
+   key=(int(cam),int(o['detection_id']));assert key not in result
+   assert o['visible'] and o['evaluation_eligible'] and o['output_source']=='CURRENT_GMT_DETECTION'
+   result[key]=o
+ return result
+while pending:
+ did=False
+ for sid in sorted(pending):
+  report_path=root/f'scene_{sid:02d}'/'replay_report.json'
+  if not report_path.exists():continue
+  report=read(report_path)
+  assert report['status']=='COMPLETE' and report['source_sha256']==FP
+  pairs={p.frame_id:p for p in ds.synchronized_pairs(sid)}
+  counts={v:Counter() for v in variants};contrasts={a+'__TO__'+b:Counter() for a,b in edges};last={v:{} for v in variants};sample_counts=Counter();proofs={}
+  with ExitStack() as stack:
+   streams={}
+   for v in variants:
+    p=root/f'scene_{sid:02d}'/v/f'scene_{sid:02d}'/'tracks.jsonl';manifest=read(p.parent/'manifest.json')
+    checksum=sha(p);assert checksum==manifest['tracks_sha256'];proofs[v]=checksum
+    streams[v]=stack.enter_context(p.open())
+   for index,timestamp in enumerate(sorted(pairs)):
+    rows={v:json.loads(next(f)) for v,f in streams.items()}
+    assert all(row['timestamp']==timestamp for row in rows.values())
+    boxes={v:flat(row) for v,row in rows.items()};baseline=boxes['C0'];keys=sorted(baseline)
+    for v in variants:
+     assert sorted(boxes[v])==keys
+     assert all(boxes[v][k]['bbox_xywh']==baseline[k]['bbox_xywh'] and boxes[v][k]['score']==baseline[k]['score'] for k in keys)
+    obs=[SimpleNamespace(key=k,camera_id=k[0],detection_id=k[1],bbox_xywh=baseline[k]['bbox_xywh']) for k in keys]
+    labels,_=match_train_identities(obs,ds.ground_truth_pair(pairs[timestamp]))
+    assignments={v:{k:boxes[v][k]['global_id'] for k in keys} for v in variants}
+    assert all(isinstance(gid,int) and gid>0 for a in assignments.values() for gid in a.values())
+    events={v:current_events(obs,labels,assignments[v],last[v]) for v in variants}
+    for v in variants:
+     c=counts[v];c['timestamps']+=1;c['clean_observations']+=sum(x is not None for x in labels)
+     for (kind,_),correct in events[v].items():
+      c[kind+'_events']+=1;c[kind+'_errors']+=int(not correct)
+     for o,label in zip(obs,labels):
+      if label is not None:last[v][o.camera_id,label]=(assignments[v][o.key],index)
+    for a,b in edges:
+     name=a+'__TO__'+b
+     def sample(event,corrected,a=a,b=b,name=name):
+      group=name,event[0],corrected
+      if sample_counts[group]>=3:return
+      sample_counts[group]+=1
+      chosen=([i for i,o in enumerate(obs) if (o.camera_id,labels[i])==event[1]] if event[0]=='temporal' else [i for i,o in enumerate(obs) if o.key in event[1]])
+      examples.append({'scene':sid,'timestamp':timestamp,'edge':name,'kind':event[0],'effect':'correction' if corrected else 'regression',
+       'actors':[{'camera':obs[i].camera_id,'detection_id':obs[i].detection_id,'GT_posthoc':labels[i],'left_ID':assignments[a][obs[i].key],'right_ID':assignments[b][obs[i].key],'bbox_xywh':obs[i].bbox_xywh} for i in chosen]})
+     contrast_events(events[a],events[b],contrasts[name],sample)
+   assert all(not f.read(1) for f in streams.values())
+  for v in variants:
+   expected=report['closed_loop'][v]['counts'];got=counts[v]
+   for k in ['timestamps','clean_observations']:assert got[k]==expected[k]
+   for a,b in [('same_person','same_person_splits'),('different_person','different_person_merges'),('temporal','temporal_ID_changes')]:
+    assert got[a+'_errors']==expected.get(b,0),(sid,v,a,got[a+'_errors'],expected.get(b,0))
+  for a,b in edges:
+   name=a+'__TO__'+b;c=contrasts[name]
+   for kind in ['same_person','different_person','temporal']:
+    assert c[kind+'_corrections']-c[kind+'_regressions']==counts[a][kind+'_errors']-counts[b][kind+'_errors']
+   totals[name].update(c)
+  for k,v in contrasts['C0__TO__C4'].items():assert v==report['corrections_and_regressions']['C4'].get(k,0)
+  scene={'timestamps':len(pairs),'prediction_SHA256':proofs,'original_replay_report_SHA256':sha(report_path),'edges':{k:dict(v) for k,v in contrasts.items()},'original_report_counts_exactly_reproduced':True}
+  write_json(out/f'scene_{sid:02d}.json',scene);scenes[str(sid)]=scene;pending.remove(sid);did=True
+  print(json.dumps({'posthoc_incremental_scene_complete':sid,'timestamps':len(pairs)}),flush=True)
+ write_json(out/'state.json',{'status':'READONLY_COMPLETED_SCENES_WAITING_FOR_HEALTHY_REPLAYS' if pending else 'COMPLETE','complete_scenes':list(scenes),'pending_scenes':sorted(pending)})
+ if pending and not did:time.sleep(20)
+assert code_fingerprint(repo)==FP
+write_json(out/'v4_incremental_state_attribution.json',{'schema':'worldmot_v4_posthoc_adjacent_state_events_v1','status':'COMPLETE','source_sha256':FP,'script_sha256':sha(Path(__file__)),
+ 'TRAIN_only':True,'model_inference_executed':False,'optimizer_used':False,'TEST_read':False,'prediction_files_modified':False,
+ 'original_TRAIN_annotation_proof':gt,'paired_timestamps':sum(v['timestamps'] for v in scenes.values()),'scenes':scenes,
+ 'adjacent_state_edges_all6_clean_subset':{k:dict(v) for k,v in totals.items()},
+ 'examples':examples,'all_original_counts_reproduced':True,'scope':'TRAIN posthoc events on immutable predictions, using the same TRAIN clean-label matcher. Independent trajectories compared for correctness; numerical ID values are not compared across methods. Not HOTA/CVIDF1.',
+ 'wall_s':time.perf_counter()-started})
+print(json.dumps({'posthoc_incremental_audit':'COMPLETE','paired_times':sum(v['timestamps'] for v in scenes.values())}),flush=True)
