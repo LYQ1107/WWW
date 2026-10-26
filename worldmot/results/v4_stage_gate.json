@@ -1,14 +1,14 @@
 {
   "schema": "worldmot_v4_stage_gate_v1",
-  "generated_utc": "2026-10-25T20:21:33.283184+00:00",
+  "generated_utc": "2026-10-26T06:45:11.355654+00:00",
   "branch": "research/worldmot-v4-persistent-state-20261025",
   "base_commit": "b448af4a7dfdf738aeab0c9dd5bc01e9a875beac",
   "source_sha256": "72bb31ffbbff9419ce13244dc11020c953cfdece4d41a6caf7461cfc6cb3795a",
   "stages": {
-    "A_GMT_SYNCHRONOUS_IDENTITY_AUDIT": "WAITING_FOR_NAS_POWER_RESTORATION",
-    "B_FROZEN_GEOMETRY_CAUSAL_AUDIT": "WAITING_FOR_NAS_POWER_RESTORATION",
+    "A_GMT_SYNCHRONOUS_IDENTITY_AUDIT": "WAITING_FOR_NAS_TUNNEL_AND_MOUNT",
+    "B_FROZEN_GEOMETRY_CAUSAL_AUDIT": "WAITING_FOR_NAS_TUNNEL_AND_MOUNT",
     "C_WORLD_OBJECT_STATE_IMPLEMENTATION": "CPU_PASSED_REAL_VERIFICATION_PENDING",
-    "D_TRAIN_VAL_STATE_VERIFICATION": "WAITING_FOR_NAS_POWER_RESTORATION"
+    "D_TRAIN_VAL_STATE_VERIFICATION": "WAITING_FOR_NAS_TUNNEL_AND_MOUNT"
   },
   "CPU": {
     "status": "PASSED",
@@ -28,5 +28,13 @@
   "new_full_training_authorized": false,
   "new_V4_formal_TEST_authorized": false,
   "R2_R3_predictions_or_weights_modified": false,
-  "current_limit": "no new real V4 measurement until immutable NAS inputs can be verified"
+  "current_limit": "NAS power reported restored, but tunnel/mount unavailable; real V4 replay has not started and immutable assets have not been revalidated",
+  "NAS_access": {
+    "NAS_power_state": "USER_REPORTED_STARTED",
+    "reverse_tunnel_port": 24557,
+    "reverse_tunnel_listening": false,
+    "mount_available": false,
+    "last_verified_UTC": "2026-10-26T06:45:11.355654+00:00",
+    "frozen_inputs_revalidated": false
+  }
 }
