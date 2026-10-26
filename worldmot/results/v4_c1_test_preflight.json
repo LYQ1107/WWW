@@ -1,0 +1,92 @@
+{
+  "status": "PASSED",
+  "source_sha256": "9d5ad96c9e5ba1dea5edfdaf6e98a4563fc6dea3ce33f41332f8f939efd2be3c",
+  "checkpoint_sha256": "cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8",
+  "config": {
+    "feature_dim": 1024,
+    "method_id": "FULL_WORLD_OBJECT_V3",
+    "top_k": 4,
+    "beam_width": 64,
+    "max_exact_states": 4096,
+    "max_observations": 1024,
+    "max_history": 1024,
+    "max_model_pairs": 262144,
+    "max_birth_pair_edges": 262144,
+    "birth_pair_chunk": 4096,
+    "birth_pair_threshold": 0.7,
+    "birth_pair_weight": 1.0,
+    "max_missed": 30,
+    "min_hits": 2,
+    "min_memory_score": 0.5,
+    "memory_momentum": 0.85,
+    "min_appearance_similarity": 0.55,
+    "recovery_similarity": 0.95,
+    "joint_birth_similarity": 0.9,
+    "geometry_gate": 6.0,
+    "learned_weight": 0.75,
+    "learned_identity_recovery_logit": 2.0,
+    "birth_threshold": 0.5,
+    "death_threshold": 0.1,
+    "enable_sync_geometry": null,
+    "enable_temporal_geometry": null,
+    "enable_spatial_state_update": null,
+    "enable_head_geometry": null,
+    "geometry_policy": "LEGACY_HARD",
+    "enable_motion_prediction": true,
+    "enable_safe_identity_memory": false,
+    "enable_multiview_coordination": false,
+    "enable_omega_scheduler": false,
+    "timestamp_ticks_per_second": null,
+    "motion_acceleration_ratio": 0.01,
+    "geometry_stale_ticks": 30.0,
+    "temporal_geometry_weight": 0.5,
+    "identity_competition_margin": 0.05,
+    "identity_learned_margin": 2.0
+  },
+  "scope_lock_sha256": "5ca915c281e1a8e97b2a52e6fdba5004509df13595df7674d37f9160e62e4fec",
+  "approval": {
+    "approval_sha256": "f69d4eb8856980f8df772a4d159bf7401647dd5f758aecca5437f2fcaa7ca11c",
+    "operation": "preflight",
+    "source_commit": "2020c24362bbc1bef3197e48b7a7d61a4ade77db",
+    "execution_commit": "2020c24362bbc1bef3197e48b7a7d61a4ade77db"
+  },
+  "C0_full_scene1_exact_frames": 1005,
+  "R2_package_archive_sha256": "1b38914019c43f60e62019317b081e3859127eea208401782d0b32fe0249331d",
+  "C0_manifest_sha256": "351520b7f3c1e1841e1a303422c107abd37256cec3f35f191f7ae8a43704d981",
+  "C1_scene1_manifest_sha256": "39728dc97e6c5f5760a27ff9f600889b9dba3df6275014e70ed76d23ef2362bd",
+  "C1_scene1_reused_as_official_output": true,
+  "C1_motion_checks": {
+    "finite_6d_states": 35437,
+    "objects_without_trusted_3d_state": 2439,
+    "evidence_status/V3_LEARNED_IDENTITY_ASSIGNMENT": 1005
+  },
+  "C1_idempotence": {
+    "predict_calls": 32239,
+    "effective_predict_calls": 11595,
+    "kalman_predict_effective_s": 2.5840367674827576,
+    "idempotent_predict_calls": 20644,
+    "kalman_update_s": 5.055313214659691,
+    "kalman_update_calls": 9049,
+    "kalman_updates_accepted": 9049
+  },
+  "GT_in_inference": false,
+  "parameters_changed": false,
+  "detection_bbox_score_roi_differences": 0,
+  "created_UTC": "2026-10-26T12:32:04.563132+00:00",
+  "environment_attempts": {
+    "attempts": [
+      {
+        "device": "cpu",
+        "status": "FAILED_ARCHIVED_NUMERIC_EXACTNESS",
+        "completed_timestamps": 63,
+        "error": "AssertionError('R2_COMMON_FIELD_DIFFERENCE row.tracks_3d[12].center[0]: -0.2951013356341926 != -0.2951013356355935')",
+        "C1_started": false,
+        "source_sha256": "9d5ad96c9e5ba1dea5edfdaf6e98a4563fc6dea3ce33f41332f8f939efd2be3c"
+      }
+    ],
+    "original_R2_job_sha256": "12d4fb7fbdd54d9526401be14c829b22ce0efc02b0bc0fed730ff940a1676e5d",
+    "original_device": "cuda:0",
+    "restoration": "CUDA FP32 on idle same-model V100 physical5; no parameter or tolerance changes",
+    "created_UTC": "2026-10-26T12:30:37.366871+00:00"
+  }
+}
