@@ -127,3 +127,15 @@ immutable output bytes. Their manifests are not rewritten. Posthoc identity
 analysis still waits for all110 complete outputs. The original V3/V4 locks and
 V5 TRAIN lock stay unchanged. No variant, threshold, seed, loss, training budget
 rule, output rule, GT or evaluation setting is changed by this amendment.
+
+## Scoring-order amendment for already eligible frozen controls
+
+Registered UTC: 2026-10-26T23:41:54.779672+00:00, before reading any new V5 formal TEST score. The first scheduling amendment's all3-gates-before-any-new-score rule is superseded **only for B0/B1 native scoring**. Their original replay/preflight-only authorization and scope files remain unchanged. The human's full V5 task authorizes evaluation of these frozen controls; no new model, variant, seed or parameter search is added.
+
+B0/B1 use the actual previously completed full24 R2 head, SHA `cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8`. The strict R2 compatibility loader verified its full24/28,754 gate and actual weight bytes. Both methods already completed all22/29,019 TEST paired times and548,583 candidates. Each method must pass a fresh full22 manifest and output-byte check before its own scoring process opens original TEST GT. B1 is scored first to reduce waiting; B0 follows.
+
+A new independent evaluation-only scope/authorization permits only V5_B0 and V5_B1 on TEST. It cannot authorize training, new-model replay, live timing or posthoc identity diagnostics. Its publication and registration hashes are checked before GT access. Original legal14 TrackEval/MATLAB, raw GT, input boxes/features, weights, configurations and output bytes are unchanged. Scores are written under `evaluation_frozen_references`, without overwriting prior results.
+
+B2/B3/B4 still require their original fresh full24 final gates before any TEST inference. Fit18/VAL6 selection, identical initialization, capacity, seed, optimizer, losses and the deterministic B3-only12/16 budget rule remain frozen; the training controller does not read these early scores to make decisions. No healthy training worker is stopped. A negative B1 result does not terminate or modify the registered training.
+
+Canonical reuse of the two native score artifacts requires the strict actual B2/B3/B4 final loaders, original prediction-scope adoption, identical prediction hashes, native toolkit hashes and explicit score-adoption receipts. No metric is recomputed to select a favorable result. Full paired identity attribution still waits for all110 frozen outputs; real RGB timing still waits for all5 formal native results. This amendment changes scheduling and preserves the complete requested study.

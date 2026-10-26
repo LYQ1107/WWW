@@ -422,6 +422,31 @@ class Controller:
 
     def evaluation(self, scenes):
         complete = []
+        # These are the two already eligible frozen controls. Canonical reuse
+        # still happens only here, after all three final TRAIN gates and full
+        # prediction-scope adoption; it never affects selection or budgets.
+        early = read_json(self.runtime / "frozen_reference_scoring_state.json", {})
+        parent = early.get("parent_pid")
+        if parent and early.get("parent_identity") is not None and early["parent_identity"] == process_identity(parent):
+            self.state["waiting_reason"] = "FROZEN_REFERENCE_NATIVE_JOB_STILL_LIVE_NO_DUPLICATE_SCORE"
+            return complete
+        available = [v for v in ("B0", "B1") if (self.root / f"evaluation_frozen_references/{v}/frozen_scoring_receipt.json").is_file()]
+        if available:
+            proof_path = self.private / "frozen_reference_native_score_adoption.json"
+            proof = read_json(proof_path)
+            adopted = bool(proof and proof.get("status") == "COMPLETE_FROZEN_REFERENCE_NATIVE_SCORE_ADOPTION"
+                           and proof.get("variants") == sorted(available)
+                           and proof.get("canonical_scope_sha256") == digest(self.private / "scope_v5_test.json"))
+            if not adopted:
+                if not all(len(scenes[v]) == 22 for v in available):
+                    self.state["waiting_reason"] = "WAIT_REFERENCE_PREDICTION_ADOPTION_BEFORE_METRIC_ADOPTION"
+                    return complete
+                if not self.running("adopt_frozen_reference_scores"):
+                    command = [str(self.args.python), "-u", str(self.repo / "worldmot/analysis/worldobject_v5_frozen_reference_scoring.py"),
+                        "--operation", "adopt", "--repo", str(self.repo), "--output-root", str(self.root)]
+                    self.launch("adopt_frozen_reference_scores", command)
+                return complete
+            self.mark_complete("adopt_frozen_reference_scores", {"adoption_receipt_sha256": digest(proof_path)})
         audit = read_json(self.args.mirror_root / "fulltrain_20261022/audit/data_audit.json")
         expected_names = {s["name"] for s in audit["test"]["scenes"] if s["scene"] in LEGAL}
         for v in VARIANTS:
