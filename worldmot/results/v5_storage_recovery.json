@@ -1,0 +1,165 @@
+{
+  "status": "ALL3_TRAIN_WORKERS_RESUMED_FROM_VERIFIED_SCENE_CHECKPOINTS",
+  "snapshot_UTC": "2026-10-26T21:29:47.984868+00:00",
+  "frozen_train_inference_source_sha256": "c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85688f74d89159e16f733",
+  "original_NAS_root": "/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v5_decoupled_birth_20261027",
+  "durable_local_working_root": "/data1/liuyeqiang/worldmot_v5_durable_work_20261027",
+  "failure_time_UTC_approximate": "2026-10-26T20:48:00+00:00",
+  "errors": [
+    "ConnectionAbortedError errno103",
+    "Transport endpoint is not connected errno107"
+  ],
+  "actual_failed_original_training_processes": 3,
+  "healthy_training_processes_terminated": 0,
+  "original_failed_stdout_logs": {
+    "train_B2_selection.log": {
+      "sha256": "0726c3fcba5ca564753a82a080f6c43884ac207c21d464d3c7a887810ac10ce8",
+      "bytes": 13830,
+      "actual_transport_failure_traceback": true
+    },
+    "train_B3_selection.log": {
+      "sha256": "de3fa00b20a7c4b2edf2b1f6af581a10c0f6d31902e8e93b9a13db6da3664baa",
+      "bytes": 13183,
+      "actual_transport_failure_traceback": true
+    },
+    "train_B4_selection.log": {
+      "sha256": "56c4c93769b6328925b82d89f1ab265049cabdac8f0d4c264ce1c0b1511cbb85",
+      "bytes": 14738,
+      "actual_transport_failure_traceback": true
+    }
+  },
+  "resumed_training": {
+    "B2": {
+      "failed_original_worker_PID": 23185,
+      "recovered_worker_PID": 34820,
+      "recovered_process_identity_verified": true,
+      "resume_checkpoint": {
+        "checkpoint": "resume_00059.pt",
+        "sha256": "4e8ad42f408c38e100bdaf896f775756c3e6723bd3ae1d503dc940befa161faf",
+        "bytes": 7349940
+      },
+      "current_progress": {
+        "variant": "B2",
+        "phase": "selection",
+        "epoch": 3,
+        "section": "fit",
+        "complete": false,
+        "completed_epochs": 2,
+        "current_epoch_complete_scenes": 11,
+        "current_validation_complete_scenes": 0,
+        "optimizer_steps": 15275,
+        "resume_checkpoint_sha256": "cccbc317a62c98ba0ca37ecd6eb8af92b4f5f4f8b1823300c58f9d5cc1899f8a",
+        "budget": 12,
+        "history_mode": "predicted_from_first_timestamp"
+      },
+      "device": "cpu",
+      "same_optimizer_RNG_config_restored": true
+    },
+    "B3": {
+      "failed_original_worker_PID": 38992,
+      "recovered_worker_PID": 3444,
+      "recovered_process_identity_verified": true,
+      "resume_checkpoint": {
+        "checkpoint": "resume_00056.pt",
+        "sha256": "cb723af6997c46d4f2e7ca860686789fafa45615dd64cfd6b6c704734f657d28",
+        "bytes": 7348148
+      },
+      "current_progress": {
+        "variant": "B3",
+        "phase": "selection",
+        "epoch": 3,
+        "section": "fit",
+        "complete": false,
+        "completed_epochs": 2,
+        "current_epoch_complete_scenes": 10,
+        "current_validation_complete_scenes": 0,
+        "optimizer_steps": 15012,
+        "resume_checkpoint_sha256": "9e211ecb02c7d2bb4b93ed3f92478f205311c2cae078ba405b2c206831038530",
+        "budget": 12,
+        "history_mode": "predicted_from_first_timestamp"
+      },
+      "device": "cpu",
+      "same_optimizer_RNG_config_restored": true
+    },
+    "B4": {
+      "failed_original_worker_PID": 23186,
+      "recovered_worker_PID": 3452,
+      "recovered_process_identity_verified": true,
+      "resume_checkpoint": {
+        "checkpoint": "resume_00071.pt",
+        "sha256": "c0f4cefac295d6decf4653a0924b40854628031651d19fba75c7394bb390cb94",
+        "bytes": 7356788
+      },
+      "current_progress": {
+        "variant": "B4",
+        "phase": "selection",
+        "epoch": 4,
+        "section": "fit",
+        "complete": false,
+        "completed_epochs": 3,
+        "current_epoch_complete_scenes": 7,
+        "current_validation_complete_scenes": 0,
+        "optimizer_steps": 19197,
+        "resume_checkpoint_sha256": "c3574e1980359fadbafce35cf39d6ffad566f409ee231620fb26033db41e6dc7",
+        "budget": 12,
+        "history_mode": "predicted_from_first_timestamp"
+      },
+      "device": "cpu",
+      "same_optimizer_RNG_config_restored": true
+    }
+  },
+  "preserved_scope_SHA256": {
+    "scope_v5_train.json": "c841a987453adb9f49bfdb1722c161e085e349ced682b9e57b150b6e7b6b2707",
+    "authorization_v5_train.json": "26876952093fc04771c1c250e5611c78c61db822c87b39bd306e0a5bfb35ca90",
+    "calibration_train_fit18.json": "97103af38a151ebff1baaecfe2f29ea56d021a78ea7cf85037b1eb2ded878e7a",
+    "train_input_mirror.json": "99da8d7c4050594fcf208812109c03f354362bcdfe7e3d8ad28f9bee757a6e18",
+    "scope_v5_reference_test.json": "060f3f8601cbbd46825599bdd9198938fa3310890ea47c7ced2bd3762dd1a445",
+    "authorization_v5_reference_test.json": "237bf5a8431fcba6d4b8b6bfb660378b58920cba7e8b706007edca400136aa33",
+    "reference_test_registration.json": "2836a1454dfd7aaf7c236ae8da601ff1b0e51be2bbf2b755f0970c86af43acc0"
+  },
+  "source_weights_initialization_optimizer_RNG_budget_or_GT_changed": false,
+  "past_TRAIN_logs_remain_in_original_NAS_run": true,
+  "mount_fallback_failure_sidecars_preserved": {
+    "status": "ALL_UNMOUNTED_FALLBACK_FAILURE_FILES_PRESERVED",
+    "files": {
+      "WorldMOT/worldobject_v5_decoupled_birth_20261027/predictions/B1/scene_01.incomplete.11583/failure.json": {
+        "bytes": 314,
+        "sha256": "60ee23e91426ea58a747b499cbe69211fc4b9f18440ed562feda65606416d281"
+      },
+      "WorldMOT/worldobject_v5_decoupled_birth_20261027/predictions/B0/scene_22.incomplete.11561/failure.json": {
+        "bytes": 315,
+        "sha256": "1783392be1353e57c18294b3e7092f7a4dfeed82e67fd05feca150511a232347"
+      },
+      "WorldMOT/worldobject_v5_decoupled_birth_20261027/predictions/B0/scene_21.incomplete.5202/failure.json": {
+        "bytes": 184,
+        "sha256": "8078c2e205bd944e6b24385cadcb168d270183d3dc670fb948dc67e3d84445c7"
+      }
+    },
+    "original_mount": "/data1/liuyeqiang/nas/A100",
+    "mount_supervisor_was_blocked_by_these_files": true
+  },
+  "large_predictions_preserved_on_NAS": true,
+  "completed_reference_videos_preserved": {
+    "B0": 20,
+    "B1": 0
+  },
+  "reference_status_verified_UTC": "2026-10-26T20:46:19.141714+00:00",
+  "reference_completed_video_output_bytes_require_recheck_before_scoring": true,
+  "NAS_backup": {
+    "status": "NAS_COPY_PENDING_READBACK",
+    "verified_snapshots": {
+      "B3_selection": {
+        "path": "/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v5_decoupled_birth_20261027/durable_recovery_snapshots/B3_selection_resume_00060_9e211ecb02c7d2bb4b93ed3f92478f205311c2cae078ba405b2c206831038530_82890f5349267dfb.tar.gz",
+        "bytes": 6880244,
+        "sha256": "82890f5349267dfb4e15b3bce529d899fefd74671379e2e5744663b22429db3d",
+        "verified_UTC": "2026-10-26T21:28:30.014674+00:00",
+        "checkpoint_sha256": "9e211ecb02c7d2bb4b93ed3f92478f205311c2cae078ba405b2c206831038530"
+      }
+    },
+    "pending_archive": "/data1/liuyeqiang/worldmot_v5_decoupled_birth_runtime_20261027/nas_backup_spool/B4_selection_resume_00082_c3574e1980359fadbafce35cf39d6ffad566f409ee231620fb26033db41e6dc7_e48ca0888feb1496.tar.gz",
+    "pending_since_UTC": "2026-10-26T21:28:30.567980+00:00",
+    "backup_never_blocks_or_restarts_training": true
+  },
+  "official_TEST_metrics_available": false,
+  "TEST_GT_read_or_tuning": false
+}

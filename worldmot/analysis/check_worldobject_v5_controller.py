@@ -110,6 +110,30 @@ class SchedulingChecks(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "PARTIAL_TEST_REGISTRATION"):
             self.controller.register_test()
 
+    def test_verified_local_training_survives_missing_nas_but_test_waits(self):
+        module.write_json(self.controller.private / "scope_v5_train.json", {"frozen": "synthetic"})
+        module.write_json(self.controller.private / "durable_work_preparation.json", {
+            "status": "LOCAL_DURABLE_WORK_PREPARED_FROM_VERIFIED_SCENE_BOUNDARIES",
+            "working_root": str(self.root), "preserved_scope_and_checkpoint_SHA256": {
+                "scope_v5_train.json": module.digest(self.controller.private / "scope_v5_train.json")}})
+        with patch.object(module.os.path, "ismount", return_value=False), \
+             patch.object(module.shutil, "disk_usage", return_value=SimpleNamespace(free=20 * 1024**3)), \
+             patch.object(self.controller, "training", return_value=True) as train, \
+             patch.object(self.controller, "register_test") as register, \
+             patch("worldmot.runtime.world_object_v5_contract.v5_source_fingerprint", return_value=module.FROZEN_SOURCE):
+            self.controller.tick()
+            train.assert_called_once()
+            register.assert_not_called()
+            self.assertEqual(self.controller.state["waiting_reason"], "NAS_NOT_MOUNTED_EXISTING_JOBS_NOT_TERMINATED")
+
+    def test_changed_local_scope_disables_offline_training_launch(self):
+        module.write_json(self.controller.private / "scope_v5_train.json", {"changed": True})
+        module.write_json(self.controller.private / "durable_work_preparation.json", {
+            "status": "LOCAL_DURABLE_WORK_PREPARED_FROM_VERIFIED_SCENE_BOUNDARIES",
+            "working_root": str(self.root),
+            "preserved_scope_and_checkpoint_SHA256": {"scope_v5_train.json": "wrong-sha"}})
+        self.assertFalse(self.controller.local_training_ready())
+
     def test_native_scene_names_and_full22_coverage_are_validated(self):
         audit_path = self.controller.args.mirror_root / "fulltrain_20261022/audit/data_audit.json"
         module.write_json(audit_path, {"test": {"scenes": [

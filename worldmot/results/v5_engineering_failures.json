@@ -24,6 +24,64 @@
       "failed_or_repeated_model_inference": false,
       "new_scope_watcher_checks": 3,
       "UTC": "2026-10-26T20:32:10.774410+00:00"
+    },
+    {
+      "event": "NAS_TRANSPORT_FAILURE_DURING_REAL_TRAIN_AND_REFERENCE_INFERENCE",
+      "status": "ALL3_TRAIN_WORKERS_RESUMED_FROM_VERIFIED_SCENE_CHECKPOINTS",
+      "UTC_failure_approximate": "2026-10-26T20:48:00+00:00",
+      "original_training_workers_failed": 3,
+      "normal_training_workers_stopped": 0,
+      "failed_reference_scenes": [
+        {
+          "variant": "B0",
+          "scene": 21
+        },
+        {
+          "variant": "B0",
+          "scene": 22
+        },
+        {
+          "variant": "B1",
+          "scene": 1
+        }
+      ],
+      "complete_B0_videos_preserved": 20,
+      "recovery_checkpoints": {
+        "B2": {
+          "checkpoint": "resume_00059.pt",
+          "sha256": "4e8ad42f408c38e100bdaf896f775756c3e6723bd3ae1d503dc940befa161faf",
+          "bytes": 7349940
+        },
+        "B3": {
+          "checkpoint": "resume_00056.pt",
+          "sha256": "cb723af6997c46d4f2e7ca860686789fafa45615dd64cfd6b6c704734f657d28",
+          "bytes": 7348148
+        },
+        "B4": {
+          "checkpoint": "resume_00071.pt",
+          "sha256": "c0f4cefac295d6decf4653a0924b40854628031651d19fba75c7394bb390cb94",
+          "bytes": 7356788
+        }
+      },
+      "original_stdout_logs": {
+        "train_B2_selection.log": {
+          "sha256": "0726c3fcba5ca564753a82a080f6c43884ac207c21d464d3c7a887810ac10ce8",
+          "bytes": 13830,
+          "actual_transport_failure_traceback": true
+        },
+        "train_B3_selection.log": {
+          "sha256": "de3fa00b20a7c4b2edf2b1f6af581a10c0f6d31902e8e93b9a13db6da3664baa",
+          "bytes": 13183,
+          "actual_transport_failure_traceback": true
+        },
+        "train_B4_selection.log": {
+          "sha256": "56c4c93769b6328925b82d89f1ab265049cabdac8f0d4c264ce1c0b1511cbb85",
+          "bytes": 14738,
+          "actual_transport_failure_traceback": true
+        }
+      },
+      "model_or_TRAIN_selection_or_TEST_GT_changed": false,
+      "details": "v5_storage_recovery.json"
     }
   ]
 }

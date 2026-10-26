@@ -24,6 +24,23 @@ def terminal_artifact_status(job, artifact_verified):
             or job["missing_output_checks"] >= 3 else "EXITED_PENDING_ARTIFACT")
 
 
+def prior_verified_completion(proof, manifest, manifest_sha, scope_sha, auth_sha, checkpoint_sha):
+    """Reuse an earlier output-byte verification for scheduling only.
+
+    The manifest binds all output hashes. Canonical adoption must still reread
+    every output byte after all three final TRAIN gates have been frozen.
+    """
+    return (proof.get("manifest_sha256") == manifest_sha
+            and manifest.get("status") == "COMPLETE"
+            and manifest.get("scope_sha256") == scope_sha
+            and manifest.get("approval", {}).get("approval_sha256") == auth_sha
+            and manifest.get("checkpoint_sha256") == checkpoint_sha == proof.get("checkpoint_sha256")
+            and manifest.get("GT_in_inference") is False and manifest.get("causal") is True
+            and proof.get("timestamps") == manifest.get("timestamps")
+            and proof.get("candidates") == manifest.get("candidate_count")
+            and proof.get("tracks_sha256") == manifest.get("output_sha256", {}).get("tracks.jsonl"))
+
+
 def main():
     p = argparse.ArgumentParser()
     for key in ("repo", "runtime", "output-root"):
@@ -41,6 +58,29 @@ def main():
     jobs, children = read_json(path, {}), {}
     verify = test_runner_completed()
     checked, complete = {}, {"B0": {}, "B1": {}}
+    prior = read_json(a.runtime / "reference_inference_status.json", {})
+    scope_sha, auth_sha = sha256(scope_path), sha256(auth_path)
+    if (prior.get("reference_scope_sha256") == scope_sha
+            and prior.get("reference_authorization_sha256") == auth_sha
+            and prior.get("checkpoint_sha256") == scope["frozen_C1_checkpoint_sha256"]):
+        for variant in ("B0", "B1"):
+            for scene_text, proof in prior.get("scenes", {}).get(variant, {}).items():
+                scene = int(scene_text)
+                if not 1 <= scene <= 22:
+                    raise ValueError("INVALID_PRIOR_COMPLETION_SCENE")
+                manifest = a.output_root / f"predictions/{variant}/scene_{scene:02d}/manifest.json"
+                if not manifest.is_file():
+                    continue
+                m, manifest_sha = read_json(manifest), sha256(manifest)
+                if not prior_verified_completion(proof, m, manifest_sha, scope_sha, auth_sha,
+                                                  scope["frozen_C1_checkpoint_sha256"]):
+                    raise ValueError("PRIOR_BYTE_VERIFIED_REFERENCE_MANIFEST_CHANGED")
+                if variant == "B0" and m["exact_original_C1_timestamps"] != m["timestamps"]:
+                    raise ValueError("B0_MUST_REPRODUCE_EVERY_ORIGINAL_C1_TIMESTAMP")
+                checked[variant, scene] = manifest_sha
+                complete[variant][scene_text] = {**proof,
+                    "scheduling_reused_prior_output_byte_verification": True,
+                    "canonical_adoption_still_requires_full_output_byte_verification": True}
     def record_completed(variant, scene):
         folder = a.output_root / f"predictions/{variant}/scene_{scene:02d}"
         manifest = folder / "manifest.json"
@@ -102,6 +142,7 @@ def main():
                   "reference_scope_sha256": sha256(scope_path), "reference_authorization_sha256": sha256(auth_path),
                   "checkpoint_sha256": scope["frozen_C1_checkpoint_sha256"], "scoring_executed": False,
                   "TEST_GT_used": False, "new_models_or_budget_changed": False,
+                  "canonical_adoption_still_requires_full_output_byte_verification": True,
                   "engineering_attention": sorted(set(attention)), "updated_UTC": datetime.now(timezone.utc).isoformat()}
         write_json(a.runtime / "reference_inference_status.json", status)
         write_json(path, jobs)

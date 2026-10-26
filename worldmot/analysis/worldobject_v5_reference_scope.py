@@ -52,6 +52,38 @@ def adoption_path(root, variant, scene):
     return Path(root) / f"provenance/reference_test_adoption/{variant}_scene{scene:02d}.json"
 
 
+def verify_canonical_final_models(root, canonical):
+    """Load each actual all24 checkpoint once before adopting any reference."""
+    from worldmot.runtime.world_object_v5_contract import load_v5_membership_gate
+    from worldmot.tracking.world_object_v5_config import WorldObjectV5Config
+    private = Path(root) / "provenance"
+    train_sha = sha256(private / "scope_v5_train.json")
+    budget_path = private / "common_train_budget.json"
+    budget_sha, budget = sha256(budget_path), read(budget_path)
+    if canonical["common_train_budget_sha256"] != budget_sha:
+        raise ValueError("FINAL_COMMON_BUDGET_CHANGED")
+    proofs, initials = {}, set()
+    for variant in ("B2", "B3", "B4"):
+        record = canonical["final_weights"][variant]
+        path = Path(record["train_gate"])
+        if sha256(path) != record["train_gate_sha256"]:
+            raise ValueError("FINAL_TRAIN_GATE_BYTES_CHANGED")
+        gate = read(path)
+        if (gate["scope_sha256"] != train_sha or gate["common_budget_sha256"] != budget_sha
+                or gate["calibration_sha256"] != canonical["calibration_sha256"]
+                or gate["registered_config_sha256"] != canonical["registered_config_sha256"]
+                or gate["final_epochs"] != budget["epochs"]):
+            raise ValueError("FINAL_TRAIN_PROVENANCE_OR_BUDGET_MISMATCH")
+        cfg = WorldObjectV5Config(**canonical["variant_configs"][variant])
+        model, proof = load_v5_membership_gate(path, cfg, "cpu", record["checkpoint_sha256"])
+        initials.add(gate["initial_state_tensor_sha256"])
+        proofs[variant] = proof
+        del model
+    if len(initials) != 1:
+        raise ValueError("FINAL_MODELS_INITIALIZATION_MISMATCH")
+    return proofs
+
+
 def adopt_reference_scene(root, canonical_path, variant, scene):
     root, canonical_path = Path(root), Path(canonical_path)
     private = root / "provenance"
@@ -178,6 +210,7 @@ if __name__ == "__main__":
         coverage = read(a.output_root / "provenance/reference_test_coverage.json")
         if coverage["status"] != "COMPLETE_ALL22_B0_B1_GT_FREE_INFERENCE":
             raise ValueError("COMPLETE_REFERENCE_INFERENCE_REQUIRED_BEFORE_BATCH_ADOPTION")
+        model_proofs = verify_canonical_final_models(a.output_root, read(canonical))
         receipts = {}
         for variant in ("B0", "B1"):
             for scene in range(1, 23):
@@ -186,4 +219,5 @@ if __name__ == "__main__":
                 print(json.dumps({"adopted": variant, "scene": scene}), flush=True)
         atomic_json(a.output_root / "provenance/reference_test_adoption_complete.json", {
             "status": "COMPLETE_BYTE_VERIFIED_REFERENCE_ADOPTION", "canonical_scope_sha256": sha256(canonical),
-            "per_scene_receipts": receipts, "original_weights_or_predictions_modified": False})
+            "per_scene_receipts": receipts, "all3_actual_final_checkpoint_loader_proofs": model_proofs,
+            "original_weights_or_predictions_modified": False})

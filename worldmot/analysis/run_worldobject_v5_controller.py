@@ -199,7 +199,7 @@ class Controller:
             occupied = {x["uuid"] for x in gpu_snapshot() if x["occupied"]}
             if gpu["uuid"] in occupied:
                 return False
-        if not self.storage_ready():
+        if not self.storage_ready(require_nas=not (key.startswith("train_") and self.local_training_ready())):
             return False
         attempt = (previous or {}).get("attempt", 0) + 1
         log = self.runtime / "worker_logs" / f"{key}.attempt{attempt:02d}.log"
@@ -244,9 +244,20 @@ class Controller:
             job["completion_proof"] = result
             self.event("ARTIFACT_COMPLETE", key=key, proof=result)
 
-    def storage_ready(self):
+    def local_training_ready(self):
+        receipt = read_json(self.private / "durable_work_preparation.json")
+        if not receipt:
+            return False
+        scope = self.private / "scope_v5_train.json"
+        return (receipt.get("status") == "LOCAL_DURABLE_WORK_PREPARED_FROM_VERIFIED_SCENE_BOUNDARIES"
+                and receipt.get("working_root") == str(self.root)
+                and not str(self.root).startswith("/data1/liuyeqiang/nas/")
+                and scope.is_file()
+                and digest(scope) == receipt["preserved_scope_and_checkpoint_SHA256"]["scope_v5_train.json"])
+
+    def storage_ready(self, require_nas=True):
         mount = Path("/data1/liuyeqiang/nas/A100")
-        if not os.path.ismount(mount):
+        if require_nas and not os.path.ismount(mount):
             self.state["waiting_reason"] = "NAS_NOT_MOUNTED_EXISTING_JOBS_NOT_TERMINATED"
             return False
         if shutil.disk_usage(self.runtime).free < 15 * 1024**3:
@@ -501,12 +512,15 @@ class Controller:
         if v5_source_fingerprint() != FROZEN_SOURCE:
             raise ValueError("FROZEN_TRAIN_INFERENCE_SOURCE_CHANGED_EXISTING_JOBS_NOT_TERMINATED")
         self.refresh_processes()
-        if not self.storage_ready():
+        if not self.storage_ready(require_nas=not self.local_training_ready()):
             self.save()
             return
         self.state.pop("waiting_reason", None)
         self.snapshot_training()
         final_done = self.training()
+        if final_done and not self.storage_ready():
+            self.save()
+            return
         if final_done and self.register_test():
             self.state["stage"] = "FULL22_CAUSAL_TEST_AND_NATIVE14_SCORING"
             scenes = self.inference()

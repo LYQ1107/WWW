@@ -7,9 +7,9 @@ import unittest
 from unittest.mock import patch
 
 from worldobject_v5_reference_scope import (equivalent_reference_inputs, require_canonical_or_adopted,
-    adoption_path, sha256)
+    adoption_path, sha256, verify_canonical_final_models)
 from run_worldobject_v5_controller import live_gpu_reservations
-from run_worldobject_v5_reference_queue import terminal_artifact_status
+from run_worldobject_v5_reference_queue import terminal_artifact_status, prior_verified_completion
 from worldmot.runtime.world_object_v5_contract import (BASE, SCHEMA, require_v5_scope, v5_source_fingerprint,
     registration_path)
 from worldmot.runtime.experiment_authorization import APPROVAL_SCHEMA, source_fingerprint
@@ -117,8 +117,47 @@ class ReferenceScopeChecks(unittest.TestCase):
         self.assertEqual(terminal_artifact_status(job, False), "EXITED_PENDING_ARTIFACT")
         self.assertEqual(terminal_artifact_status(job, False), "ENGINEERING_REVIEW_REQUIRED")
 
+    def test_scheduling_receipt_requires_unchanged_manifest_scope_weights_and_outputs(self):
+        proof = {"manifest_sha256": "manifest", "checkpoint_sha256": "weights", "timestamps": 5,
+                 "candidates": 30, "tracks_sha256": "tracks"}
+        manifest = {"status": "COMPLETE", "scope_sha256": "scope", "checkpoint_sha256": "weights",
+                    "approval": {"approval_sha256": "auth"}, "timestamps": 5, "candidate_count": 30,
+                    "GT_in_inference": False, "causal": True, "output_sha256": {"tracks.jsonl": "tracks"}}
+        self.assertTrue(prior_verified_completion(proof, manifest, "manifest", "scope", "auth", "weights"))
+        self.assertFalse(prior_verified_completion(proof, manifest, "changed", "scope", "auth", "weights"))
+        for key, changed in [("scope_sha256", "other"), ("checkpoint_sha256", "other"),
+                             ("GT_in_inference", True), ("causal", False), ("candidate_count", 29)]:
+            self.assertFalse(prior_verified_completion(proof, {**manifest, key: changed},
+                                                       "manifest", "scope", "auth", "weights"))
+
     def test_nonzero_exit_without_output_is_genuine_engineering_failure(self):
         self.assertEqual(terminal_artifact_status({"exit_code": 1}, False), "ENGINEERING_REVIEW_REQUIRED")
+
+    def test_actual_checkpoint_loader_failure_blocks_reference_adoption(self):
+        from dataclasses import asdict
+        from worldmot.tracking.world_object_v5_config import WorldObjectV5Config
+        private = self.root / "provenance"
+        private.mkdir()
+        train = private / "scope_v5_train.json"
+        train.write_text('{}')
+        budget = private / "common_train_budget.json"
+        budget.write_text('{"epochs":12}')
+        canonical = deepcopy(self.canonical)
+        canonical["common_train_budget_sha256"] = sha256(budget)
+        for variant in ("B2", "B3", "B4"):
+            gate = self.root / (variant + '_train_gate.json')
+            gate.write_text(json.dumps({"scope_sha256": sha256(train), "common_budget_sha256": sha256(budget),
+                "calibration_sha256": canonical["calibration_sha256"],
+                "registered_config_sha256": canonical["registered_config_sha256"], "final_epochs": 12,
+                "initial_state_tensor_sha256": "same"}))
+            canonical["variant_configs"][variant] = asdict(WorldObjectV5Config(variant=variant))
+            canonical["final_weights"][variant] = {"train_gate": str(gate), "train_gate_sha256": sha256(gate),
+                                                     "checkpoint_sha256": "not-a-real-weight"}
+        with patch("worldmot.runtime.world_object_v5_contract.load_v5_membership_gate", side_effect=ValueError("INVALID_ACTUAL_CHECKPOINT")) as loader:
+            with self.assertRaisesRegex(ValueError, "INVALID_ACTUAL_CHECKPOINT"):
+                verify_canonical_final_models(self.root, canonical)
+            self.assertEqual(loader.call_count, 1)
+        self.assertFalse((private / "reference_test_adoption").exists())
 
 
 if __name__ == "__main__":
