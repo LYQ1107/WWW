@@ -73,6 +73,69 @@ def birth_summary(root):
             "counterfactual_decisions_advance_history": False, "conditional_on_original_C1_predicted_history": True}
 
 
+def policy_summary(root):
+    scenes, totals, paired, global_pairs = {}, defaultdict(Counter), Counter(), Counter()
+    base = root / "train_frozen_policy_audit"
+    if base.is_dir():
+        for scene in (4, 8, 12, 16, 20, 24):
+            path = base / f"scene_{scene:02d}/report.json"
+            row = read(path)
+            if not row or row.get("status") != "COMPLETE_TRAIN_ONLY_FROZEN_POLICY_CLOSED_LOOPS":
+                continue
+            scenes[str(scene)] = {"timestamps": row["timestamps"], "report_sha256": sha256(path),
+                "counts": row["counts"], "paired_B1_minus_C1": row["paired_B1_minus_C1"],
+                "global_one_to_one_paired": row["global_one_to_one_paired"], "identity_graphs": row["identity_graphs"],
+                "device": row["device"], "examples": row["examples"]}
+            for key, counts in row["counts"].items():
+                totals[key].update(counts)
+            paired.update(row["paired_B1_minus_C1"])
+            global_pairs.update(row["global_one_to_one_paired"])
+    complete = len(scenes) == 6 and sum(x["timestamps"] for x in scenes.values()) == 5860
+    return {"status": "COMPLETE_TRAIN6_FROZEN_POLICY_AUDIT" if complete else "PARTIAL_TRAIN_FROZEN_POLICY_AUDIT",
+            "scenes_complete": len(scenes), "timestamps": sum(x["timestamps"] for x in scenes.values()),
+            "counts": {k: dict(v) for k, v in totals.items()}, "paired_B1_minus_C1": dict(paired),
+            "global_one_to_one_paired": dict(global_pairs), "per_scene": scenes,
+            "independent_predicted_histories": True, "frozen_R2_head_previously_saw_these_TRAIN_scenes": True,
+            "formal_TEST_metric": False, "birth_only_causal_effect": False, "optimizer_created": False,
+            "budget_or_model_selection_uses_this_audit": False}
+
+
+def training_curves(root):
+    def scene_summary(scene):
+        n = scene["timestamps"]
+        d = scene["diagnostics"]
+        same = d.get("same_person_cross_view_pairs", 0)
+        different = d.get("different_person_cross_view_pairs", 0)
+        return {"scene": scene["scene"], "paired_times": n,
+                "mean_detections_per_time": d.get("current_detections", 0) / max(1, n),
+                "per_camera_membership_loss_per_time": scene["loss_sums"]["per_camera_membership"] / max(1, n),
+                "same_person_pairs": same, "same_person_splits": d.get("same_person_split", 0),
+                "same_person_split_rate": d.get("same_person_split", 0) / max(1, same),
+                "different_person_pairs": different, "false_merges": d.get("false_cross_view_merge", 0),
+                "different_person_false_merge_rate": d.get("false_cross_view_merge", 0) / max(1, different),
+                "mean_mixed_historical_objects": d.get("mixed_historical_objects_before", 0) / max(1, n)}
+    variants = {}
+    for v in ("B2", "B3", "B4"):
+        variants[v] = {}
+        for phase in ("selection", "final"):
+            path = root / f"train/{v}/{phase}/history.json"
+            history = read(path, [])
+            rows = []
+            for epoch in history:
+                coverage = epoch.get("fit_coverage", epoch.get("coverage", []))
+                rows.append({"epoch": epoch["epoch"], "train": epoch["train"], "validation": epoch.get("validation"),
+                             "complete_training_scenes": len(coverage), "complete_training_timestamps": sum(x["timestamps"] for x in coverage),
+                             "gradient_finite": all(x["gradient_finite"] for x in coverage),
+                             "maximum_unclipped_gradient_norm": max((x["gradient_norm_max"] or 0 for x in coverage), default=None),
+                             "scene_internal_ID_resets": sum(x["scene_reset_count"] - 1 for x in coverage),
+                             "per_train_scene": [scene_summary(x) for x in coverage],
+                             "per_validation_scene": [scene_summary(x) for x in epoch.get("validation_coverage", [])]})
+            variants[v][phase] = rows
+    return {"status": "TRAIN_ONLY_CURVES", "formal_TEST_metrics": False, "variants": variants,
+            "selection_rule": "registered common B3 epoch12 convergence rule only; no TEST feedback",
+            "training_history": "genuinely predicted from scene origin; no GT ID repair"}
+
+
 def cached_runtime(root, variant):
     records, manifests = [], []
     if not (root / "predictions" / variant).is_dir():
@@ -143,11 +206,14 @@ def main():
         else:
             pending.append(v)
     birth = birth_summary(a.output_root)
+    policy = policy_summary(a.output_root)
+    curves = training_curves(a.output_root)
     attribution_path = a.output_root / "v5_identity_attribution.json"
     attribution = read(attribution_path)
     live = read(a.output_root / "live_fixed_train_prefix/runtime.json")
     final_ready = (not pending and attribution is not None and attribution.get("status") == "COMPLETE_FROZEN_ALL5_FULL22_IDENTITY_ATTRIBUTION"
                    and birth["status"] == "COMPLETE_TRAIN6_CONDITIONAL_ATTRIBUTION"
+                   and policy["status"] == "COMPLETE_TRAIN6_FROZEN_POLICY_AUDIT"
                    and live is not None and live.get("status") == "ALL5_FINITE_REAL_LIVE_COMPLETE")
     if a.final and not final_ready:
         raise ValueError("ALL5_NATIVE_SCORES_BIRTH_DIAGNOSTICS_POSTHOC_AND_REAL_LIVE_REQUIRED")
@@ -166,11 +232,14 @@ def main():
              "official_TEST_complete_variants": list(official), "official_TEST_pending_variants": pending,
              "TEST_inference_scene_counts": controller.get("completed_TEST_scenes", {v: 0 for v in VARIANTS}),
              "birth_diagnostic_complete_scenes": birth["scenes_complete"], "posthoc_complete": attribution is not None,
+             "frozen_policy_TRAIN_audit_complete_scenes": policy["scenes_complete"],
              "real_RGB_to_ID_measured": live is not None and live.get("status") == "ALL5_FINITE_REAL_LIVE_COMPLETE",
              "no_TEST_parameter_selection": True, "negative_results_preserved": True,
              "scientific_improvement_claimed": False}
     atomic_json(results / "v5_experiment_status.json", state)
     atomic_json(results / "v5_train_birth_attribution.json", birth)
+    atomic_json(results / "v5_train_frozen_policy_audit.json", policy)
+    atomic_json(results / "v5_training_curves.json", curves)
     baselines = {k: {m: row[m] for m in METRICS} for k, row in inherited["baselines"].items()}
     deltas = {}
     if "B3" in official:
@@ -242,8 +311,25 @@ def main():
         selection = progress[v]["selection"] or {}
         final = progress[v]["final"] or {}
         lines.append(f"| {v} | {selection.get('completed_epochs', 0)} | {selection.get('current_epoch_complete_scenes', 0)}/18 | {final.get('completed_epochs', 0)} | {state['final_checkpoint_SHA256'][v] or 'not available'} |")
+    lines += ["", "Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged over "
+              "paired timestamps; scene density and evolving predicted histories differ between fit18 and VAL6. "
+              "The per-scene breakdown is in v5_training_curves.json. These values do not establish convergence "
+              "or formal TEST improvement.", "",
+              "| Variant | Epoch | Fit membership loss | VAL membership loss | VAL same-person split rate | VAL different-person false-merge rate | Finite gradients |",
+              "|---|---:|---:|---:|---:|---:|---|"]
+    for v in ("B2", "B3", "B4"):
+        history = curves["variants"][v]["selection"]
+        if not history:
+            continue
+        last = history[-1]
+        val = last["validation"]
+        d = val["diagnostics"]
+        split = 100 * d.get("same_person_split", 0) / max(1, d.get("same_person_cross_view_pairs", 0))
+        merge = 100 * d.get("false_cross_view_merge", 0) / max(1, d.get("different_person_cross_view_pairs", 0))
+        lines.append(f"| {v} | {last['epoch']} | {last['train']['losses']['per_camera_membership']:.4f} | {val['losses']['per_camera_membership']:.4f} | {split:.2f}% | {merge:.2f}% | {last['gradient_finite']} |")
     lines += ["", "Selection currently uses CPU, one Torch/BLAS thread per worker. "
-              "Final B2/B3/B4 training and complete TEST use truly idle V100 FP32 workers. "
+              "Final B3/B4 training and complete TEST use truly idle V100 FP32 workers. "
+              "B2 final training uses a third idle V100 if available, otherwise one CPU thread; its resumes keep that device family. "
               "Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.", "",
               "Official MC-MOT uses original legal14 full TEST videos, after full22 causal inference "
               "(29,019 paired times / 548,583 shared candidates). Invalid8 remain separate. "
@@ -267,6 +353,16 @@ def main():
                      f"different-person pair net {counts.get('different_person_separate/net', 0):+d}; "
                      f"false-birth avoidance net {counts.get('false_birth_avoided/net', 0):+d}.")
         lines.append("")
+    lines += [f"Independent frozen C1/B1 TRAIN closed-loop audit: {policy['scenes_complete']}/6 complete scenes, "
+              f"{policy['timestamps']} paired times. Each method advances its own predicted history with no optimizer. "
+              "The frozen head was trained on these scenes, so these are mechanistic TRAIN diagnostics, not held-out TEST scores. "
+              "This audit cannot alter the registered membership model or its training budget.", ""]
+    if policy["paired_B1_minus_C1"]:
+        c = policy["paired_B1_minus_C1"]
+        lines += [f"Frozen online B1 minus C1: same-person pair corrections {c.get('same_person_shared_ID/corrections', 0)}, "
+                  f"regressions {c.get('same_person_shared_ID/regressions', 0)}, net {c.get('same_person_shared_ID/net', 0):+d}; "
+                  f"different-person separation net {c.get('different_person_separate_ID/net', 0):+d}. "
+                  f"Clean global one-to-one overlap net {policy['global_one_to_one_paired'].get('net', 0):+d} observations, not CVIDF1.", ""]
     lines += ["B1−B0 also changes explicit lifecycle and memory-write policy, so its full online delta cannot "
               "be assigned solely to Birth. B2−B1 includes a new trained head and capacity/budget changes. "
               "B3−B4 is the equal-capacity, equal-budget explicit-geometry comparison.", "",

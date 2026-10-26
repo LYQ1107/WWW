@@ -1,6 +1,6 @@
 WorldMOT V5: decoupled observation birth and persistent membership
 
-Updated UTC: 2026-10-26T18:58:20.791099+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
+Updated UTC: 2026-10-26T19:43:30.777592+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
 
 The finite B0–B4 registration, code fingerprint and original V3/V4 artifacts are frozen. The model predicts membership and a per-camera no-observation option. Birth, lifecycle, identity writes and C1 Kalman/Joseph updates use separate auditable policies. GT never repairs the predicted history.
 
@@ -10,11 +10,19 @@ All24 TRAIN inputs are verified: 28,754 paired times and 557,002 detections. Fit
 
 | Variant | Selection completed epochs | Current selection scene count | Final completed epochs | Final weight SHA-256 |
 |---|---:|---:|---:|---|
-| B2 | 0 | 12/18 | 0 | not available |
-| B3 | 0 | 10/18 | 0 | not available |
-| B4 | 0 | 17/18 | 0 | not available |
+| B2 | 1 | 4/18 | 0 | not available |
+| B3 | 1 | 1/18 | 0 | not available |
+| B4 | 1 | 10/18 | 0 | not available |
 
-Selection currently uses CPU, one Torch/BLAS thread per worker. Final B2/B3/B4 training and complete TEST use truly idle V100 FP32 workers. Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.
+Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged over paired timestamps; scene density and evolving predicted histories differ between fit18 and VAL6. The per-scene breakdown is in v5_training_curves.json. These values do not establish convergence or formal TEST improvement.
+
+| Variant | Epoch | Fit membership loss | VAL membership loss | VAL same-person split rate | VAL different-person false-merge rate | Finite gradients |
+|---|---:|---:|---:|---:|---:|---|
+| B2 | 1 | 0.1500 | 2.2751 | 39.78% | 1.32% | True |
+| B3 | 1 | 0.1463 | 2.5485 | 30.89% | 1.17% | True |
+| B4 | 1 | 0.1600 | 2.3591 | 35.37% | 1.56% | True |
+
+Selection currently uses CPU, one Torch/BLAS thread per worker. Final B3/B4 training and complete TEST use truly idle V100 FP32 workers. B2 final training uses a third idle V100 if available, otherwise one CPU thread; its resumes keep that device family. Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.
 
 Official MC-MOT uses original legal14 full TEST videos, after full22 causal inference (29,019 paired times / 548,583 shared candidates). Invalid8 remain separate. The following historical reference numbers are not new V5 measurements.
 
@@ -36,6 +44,10 @@ TRAIN conditional birth audit: 6/6 complete scenes, 5860 paired times. Only orig
 INDEPENDENT_BIRTH_FIXED_ORIGINAL_HISTORY: same-person pair corrections 0, regressions 20, net -20; different-person pair net +0; false-birth avoidance net +0.
 
 LEGACY_HISTORY_ONLY_THEN_INDEPENDENT_BIRTH: same-person pair corrections 8, regressions 20, net -12; different-person pair net +0; false-birth avoidance net +0.
+
+Independent frozen C1/B1 TRAIN closed-loop audit: 6/6 complete scenes, 5860 paired times. Each method advances its own predicted history with no optimizer. The frozen head was trained on these scenes, so these are mechanistic TRAIN diagnostics, not held-out TEST scores. This audit cannot alter the registered membership model or its training budget.
+
+Frozen online B1 minus C1: same-person pair corrections 206, regressions 18902, net -18696; different-person separation net +422. Clean global one-to-one overlap net -20908 observations, not CVIDF1.
 
 B1−B0 also changes explicit lifecycle and memory-write policy, so its full online delta cannot be assigned solely to Birth. B2−B1 includes a new trained head and capacity/budget changes. B3−B4 is the equal-capacity, equal-budget explicit-geometry comparison.
 

@@ -80,6 +80,30 @@ class SchedulingChecks(unittest.TestCase):
             popen.assert_not_called()
         self.assertIn("x", self.controller.state["engineering_attention"])
 
+    def test_unknown_exit_cannot_bypass_review_by_resume(self):
+        self.controller.state["jobs"]["x"] = {"status": "EXITED", "pid": 10, "exit_code": None, "result": None}
+        self.assertFalse(self.controller.launch("x", ["never-run", "--resume"], resume=True))
+        self.assertIn("x", self.controller.state["engineering_attention"])
+
+    def test_registered_normal_extension_can_resume(self):
+        self.controller.state["jobs"]["x"] = {"status": "EXITED", "pid": 10, "exit_code": None, "result": None}
+        with patch.object(self.controller, "storage_ready", return_value=True):
+            self.assertTrue(self.controller.launch("x", ["never-run", "--resume"], resume=True, registered_continuation=True))
+        self.assertEqual(len(self.controller.state["dry_run_launches"]), 1)
+
+    def test_two_matched_geometry_finals_wait_for_gpu_while_B2_can_use_cpu(self):
+        module.write_json(self.controller.private / "common_train_budget.json", {"epochs": 12, "v5_source_sha256": module.FROZEN_SOURCE})
+        for v in module.TRAINED:
+            module.write_json(self.root / f"train/{v}/selection/selection_gate.json",
+                              {"epochs": 12, "v5_source_sha256": module.FROZEN_SOURCE})
+        with patch.object(self.controller, "free_gpus", return_value=[]), patch.object(self.controller, "launch") as launch:
+            self.assertFalse(self.controller.training())
+            self.assertEqual(launch.call_count, 1)
+            args, kwargs = launch.call_args
+            self.assertEqual(args[0], "train_B2_final")
+            self.assertIsNone(args[2])
+            self.assertEqual(args[1][args[1].index("--device") + 1], "cpu")
+
     def test_partial_scope_is_preserved(self):
         self.controller.private.mkdir()
         module.write_json(self.controller.private / "scope_v5_test.json", {"partial": True})

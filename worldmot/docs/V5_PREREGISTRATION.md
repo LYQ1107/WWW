@@ -38,6 +38,12 @@ Resource plan: use genuinely idle V100s only. When only one GPU is available,
 B3 receives it, while B2 and the B4 selection phase may use spare CPU cores.
 The final B3/B4 full24 training uses the same V100 FP32 execution conditions;
 selection-phase CPU weights are discarded before their fresh final training.
+At the actual selection launch all10 GPUs were occupied, so all three selection
+jobs started on CPU. To avoid serializing three final jobs behind two available
+GPUs, B2's first final launch uses an idle V100 if a third is available, otherwise
+one CPU thread. B2 resumes keep that execution family. This resource rule is
+fixed before any final training or TEST. The matched B3/B4 geometry comparison
+always uses V100 FP32 for both final models; there is no CPU fallback for either.
 Actual device, thread count, and timing scope are recorded. No occupied GPU is
 claimed merely because it has free memory or temporarily reports zero load.
 

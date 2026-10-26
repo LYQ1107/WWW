@@ -145,6 +145,13 @@ class Controller:
             process = self.children.get(key)
             if process is not None and process.poll() is not None:
                 job["exit_code"] = process.returncode
+            elif process is None:
+                try:
+                    exited, status = os.waitpid(job["pid"], os.WNOHANG)
+                    if exited:
+                        job["exit_code"] = os.waitstatus_to_exitcode(status)
+                except ChildProcessError:
+                    pass  # An adopted non-child has no waitable exit status.
             identity = process_identity(job["pid"])
             if identity and identity == job["identity"]:
                 continue
@@ -157,12 +164,12 @@ class Controller:
     def running(self, key):
         return self.state["jobs"].get(key, {}).get("status") == "RUNNING"
 
-    def launch(self, key, command, gpu=None, resume=False):
+    def launch(self, key, command, gpu=None, resume=False, registered_continuation=False):
         if self.running(key):
             return False
         previous = self.state["jobs"].get(key)
         if previous and (previous.get("exit_code") not in (None, 0)
-                         or (not resume and previous.get("result") != "COMPLETE")):
+                         or (previous.get("result") != "COMPLETE" and not registered_continuation)):
             # A failed attempt requires a diagnosed, explicit retry receipt.
             retry = read_json(self.runtime / "engineering_retries" / (key + ".json"))
             if not retry or retry.get("previous_pid") != previous["pid"] or not retry.get("same_frozen_inputs"):
@@ -258,7 +265,7 @@ class Controller:
                     command.append("--resume")
                 # Selection extensions stay on their existing CPU execution
                 # family. They restore optimizer/RNG and do not restart epochs.
-                self.launch(key, command, resume=True)
+                self.launch(key, command, resume=True, registered_continuation=True)
         if not common:
             self.state["stage"] = "TRAIN_SELECTION_COMMON_B3_CONVERGENCE_RULE_PENDING"
             return False
@@ -266,9 +273,11 @@ class Controller:
             raise ValueError("COMMON_BUDGET_CHANGED")
         self.state["common_epochs"] = target
         final_policy = self.private / "final_device_contract.json"
-        policy = {"status": "FROZEN_BEFORE_FINAL_OR_TEST", "variants": ["B2", "B3", "B4"],
+        policy = {"status": "FROZEN_BEFORE_FINAL_OR_TEST", "matched_device_variants": ["B3", "B4"],
                   "device_family": "Tesla V100-DGXS-32GB", "precision": "float32",
                   "threads": 1, "fresh_initialization": True,
+                  "B2_first_final_launch": "idle_V100_if_available_else_CPU_1_thread",
+                  "B2_resumes_keep_first_final_execution_family": True,
                   "selection_execution": "CPU_1_THREAD_FOR_ALL3_DISCARDED_SELECTION_WEIGHTS",
                   "v5_source_sha256": FROZEN_SOURCE, "TEST_scores_used": False}
         if final_policy.exists():
@@ -291,13 +300,16 @@ class Controller:
             if not selected[v] or self.running(key):
                 continue
             free = self.free_gpus()
-            if not free:
+            previous = self.state["jobs"].get(key)
+            keep_cpu = previous is not None and previous["device"] == "cpu"
+            if not free and (v != "B2" or (previous is not None and not keep_cpu)):
                 continue
+            gpu = None if keep_cpu or not free else free[0]
             resume = (base / "final/RESUME.json").exists()
             command = self.command("train_worldobject_v5.py", scope_lock=self.private / "scope_v5_train.json",
                 authorization=self.private / "authorization_v5_train.json", calibration=self.private / "calibration_train_fit18.json",
-                output=base, common_budget=self.private / "common_train_budget.json", variant=v, phase="final", device="cuda:0", resume=resume)
-            self.launch(key, command, free[0], resume=resume)
+                output=base, common_budget=self.private / "common_train_budget.json", variant=v, phase="final", device="cuda:0" if gpu else "cpu", resume=resume)
+            self.launch(key, command, gpu, resume=resume)
         self.state["stage"] = "FRESH_FULL24_FINAL_TRAINING" if any(self.running(f"train_{v}_final") for v in TRAINED) else "TRAIN_SELECTION_OR_WAITING_FOR_IDLE_V100"
         return complete
 
@@ -415,6 +427,10 @@ class Controller:
             report = read_json(self.root / f"train_birth_attribution/scene_{scene:02d}/report.json")
             if not report or report.get("status") != "COMPLETE_TRAIN_ONLY_CONDITIONAL_BIRTH_DIAGNOSTIC":
                 self.state["waiting_reason"] = "TRAIN_BIRTH_ATTRIBUTION_NOT_COMPLETE"
+                return
+            policy = read_json(self.root / f"train_frozen_policy_audit/scene_{scene:02d}/report.json")
+            if not policy or policy.get("status") != "COMPLETE_TRAIN_ONLY_FROZEN_POLICY_CLOSED_LOOPS":
+                self.state["waiting_reason"] = "TRAIN_FROZEN_POLICY_AUDIT_NOT_COMPLETE"
                 return
         command = [str(self.args.python), "-u", str(self.repo / "worldmot/analysis/summarize_worldobject_v5.py"),
                    "--repo", str(self.repo), "--runtime", str(self.runtime), "--output-root", str(self.root), "--final"]
