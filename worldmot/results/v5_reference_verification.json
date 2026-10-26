@@ -1,0 +1,42 @@
+{
+  "verification_date_UTC": "2026-10-26",
+  "role": "design references; not imported single-camera trackers",
+  "sources": [
+    {
+      "name": "TrackTrack",
+      "repository": "https://github.com/kamkyu94/TrackTrack",
+      "commit": "ee7f1c5fcbdcac48ed8bfab38d52c0006bf304da",
+      "files": [
+        "3. Tracker/trackers/tracker.py",
+        "3. Tracker/trackers/utils.py"
+      ],
+      "role": "track-aware initialization, iterative high/low assignment, lifecycle",
+      "tracker_blob_sha": "e79024459c3456e01baf6d838fb5cf861cc6afdd"
+    },
+    {
+      "name": "ByteTrack",
+      "repository": "https://github.com/FoundationVision/ByteTrack",
+      "commit": "d1bf0191adff59bc8fcfeaa0b33d3d1642552a99",
+      "files": [
+        "yolox/tracker/byte_tracker.py"
+      ],
+      "role": "high-score association, low-score recovery, observed lifecycle"
+    },
+    {
+      "name": "MOTR",
+      "repository": "https://github.com/megvii-research/MOTR",
+      "commit": "8690da3392159635ca37c31975126acf40220724",
+      "files": [
+        "models/qim.py"
+      ],
+      "role": "persistent identity queries and history perturbations"
+    },
+    {
+      "name": "LA-MOTR ICCV2025",
+      "paper": "https://openaccess.thecvf.com/content/ICCV2025/html/Wang_LA-MOTR_End-to-End_Multi-Object_Tracking_by_Learnable_Association_ICCV_2025_paper.html",
+      "repository_checked": "https://github.com/PenK1nG/LA-MOTR",
+      "repository_status": "404_AT_VERIFICATION",
+      "role": "paper reference for separating detection from association; unavailable repository not assumed usable"
+    }
+  ]
+}
