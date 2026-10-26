@@ -28,4 +28,3 @@ class CausalMembershipLabels:
         for gid,values in grouped.items():
             self.identities[gid].update(values)
             if gid not in self.anchors:self.anchors[gid]=next(iter(values)) if len(values)==1 else None
-

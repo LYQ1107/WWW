@@ -30,6 +30,16 @@ budget is 12. Each final model is newly initialized and retrained on all24 scene
 for that common budget. An early selection checkpoint cannot pass the final
 TRAIN gate. Training uses AdamW, one epoch warmup and cosine decay. Resume occurs
 at verified complete-scene boundaries, retaining optimizer, schedule and RNG.
+The schedule reaches its minimum at epoch12; a registered extension continues
+at that minimum without a learning-rate restart. Scene order is a same-seed
+permutation for every epoch and every trained variant.
+
+Resource plan: use genuinely idle V100s only. When only one GPU is available,
+B3 receives it, while B2 and the B4 selection phase may use spare CPU cores.
+The final B3/B4 full24 training uses the same V100 FP32 execution conditions;
+selection-phase CPU weights are discarded before their fresh final training.
+Actual device, thread count, and timing scope are recorded. No occupied GPU is
+claimed merely because it has free memory or temporarily reports zero load.
 
 - B0: original frozen C1, exact reference on unchanged cached inputs.
 - B1: frozen C1 **membership/NULL evidence only**, new independent birth and

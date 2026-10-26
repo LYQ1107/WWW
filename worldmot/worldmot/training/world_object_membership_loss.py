@@ -68,4 +68,3 @@ def membership_loss(outputs,targets):
     terms={"per_camera_membership":per_camera,"detection_exclusivity":exclusive,"hard_negative_membership":hard_negative,
            "cross_view_membership":cross,"cross_view_visual_contrast":contrast}
     return {**terms,"total":sum(LOSS_WEIGHTS[k]*v for k,v in terms.items())}
-

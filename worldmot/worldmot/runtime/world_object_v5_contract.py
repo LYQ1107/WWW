@@ -78,10 +78,14 @@ def load_v5_membership_gate(gate_path,config,device="cpu",expected_sha=None):
     if (len(coverage)!=gate["final_epochs"] or gate.get("final_total_training_timestamps")!=28754*gate["final_epochs"]
         or any(sorted(x["scene"] for x in epoch)!=list(range(1,25)) or sum(x["timestamps"] for x in epoch)!=28754 for epoch in coverage)):
         raise ValueError("V5_EVERY_FINAL_EPOCH_COVERAGE_REQUIRED")
+    spec=gate["model_config"]
+    expected={"visual_dim":config.feature_dim,"hidden_dim":config.hidden_dim,"geometry_dim":config.geometry_dim,
+              "pair_chunk":config.pair_chunk,"dropout":config.feature_dropout}
+    if any(spec.get(k)!=v for k,v in expected.items()):raise ValueError("V5_REGISTERED_NETWORK_CAPACITY_MISMATCH")
     weights=path.parent/gate["checkpoint"];digest=sha256(weights)
     if digest!=gate["checkpoint_sha256"] or (expected_sha is not None and digest!=expected_sha):raise ValueError("V5_FROZEN_WEIGHT_SHA_MISMATCH")
     payload=torch.load(weights,map_location="cpu",weights_only=True)
     if payload.get("schema")!=MODEL_SCHEMA or payload.get("model_config")!=gate["model_config"]:raise ValueError("V5_ARCHITECTURE_MISMATCH")
-    spec=gate["model_config"];model=WorldObjectMembershipHead(spec["visual_dim"],spec["hidden_dim"],spec["geometry_dim"],spec["pair_chunk"],spec["dropout"])
+    model=WorldObjectMembershipHead(spec["visual_dim"],spec["hidden_dim"],spec["geometry_dim"],spec["pair_chunk"],spec["dropout"])
     model.load_state_dict(payload["state_dict"],strict=True);model.to(device).eval().requires_grad_(False)
     return model,{"checkpoint_sha256":digest,"train_gate_sha256":sha256(path),"final_epochs":gate["final_epochs"],"optimizer_used":False}
