@@ -9,6 +9,7 @@ from unittest.mock import patch
 from worldobject_v5_reference_scope import (equivalent_reference_inputs, require_canonical_or_adopted,
     adoption_path, sha256)
 from run_worldobject_v5_controller import live_gpu_reservations
+from run_worldobject_v5_reference_queue import terminal_artifact_status
 from worldmot.runtime.world_object_v5_contract import (BASE, SCHEMA, require_v5_scope, v5_source_fingerprint,
     registration_path)
 from worldmot.runtime.experiment_authorization import APPROVAL_SCHEMA, source_fingerprint
@@ -104,6 +105,20 @@ class ReferenceScopeChecks(unittest.TestCase):
             self.assertEqual(live_gpu_reservations({"worker": job}), {"reserved"})
         with patch("run_worldobject_v5_controller.process_identity", return_value=None):
             self.assertEqual(live_gpu_reservations({"worker": job}), set())
+
+    def test_worker_finishing_after_first_scan_is_complete_not_failed(self):
+        job = {"exit_code": 0}
+        self.assertEqual(terminal_artifact_status(job, True), "COMPLETE")
+        self.assertNotIn("missing_output_checks", job)
+
+    def test_zero_exit_waits_for_repeat_artifact_checks_without_restart(self):
+        job = {"exit_code": 0}
+        self.assertEqual(terminal_artifact_status(job, False), "EXITED_PENDING_ARTIFACT")
+        self.assertEqual(terminal_artifact_status(job, False), "EXITED_PENDING_ARTIFACT")
+        self.assertEqual(terminal_artifact_status(job, False), "ENGINEERING_REVIEW_REQUIRED")
+
+    def test_nonzero_exit_without_output_is_genuine_engineering_failure(self):
+        self.assertEqual(terminal_artifact_status({"exit_code": 1}, False), "ENGINEERING_REVIEW_REQUIRED")
 
 
 if __name__ == "__main__":

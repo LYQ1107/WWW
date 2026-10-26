@@ -179,6 +179,7 @@ def main():
     docs = a.repo / "worldmot/docs"
     baseline_path = results / "v4_c1_official_test.json"
     inherited = read(baseline_path)
+    native_smoke = read(results / "v5_native_protocol_checks.json")
     controller = read(a.runtime / "controller_state.json", {})
     reference_status = read(a.runtime / "reference_inference_status.json", {})
     reference_registration = read(a.output_root / "provenance/reference_test_registration.json")
@@ -242,6 +243,7 @@ def main():
              "real_RGB_to_ID_measured": live is not None and live.get("status") == "ALL5_FINITE_REAL_LIVE_COMPLETE",
              "no_TEST_parameter_selection": True, "negative_results_preserved": True,
              "scientific_improvement_claimed": False}
+    state["native_synthetic_toolchain_passed"] = bool(native_smoke and native_smoke.get("status") == "PASSED_SYNTHETIC_TRACKEVAL_AND_NATIVE_MATLAB_PROTOCOL")
     atomic_json(results / "v5_experiment_status.json", state)
     atomic_json(results / "v5_train_birth_attribution.json", birth)
     atomic_json(results / "v5_train_frozen_policy_audit.json", policy)
@@ -352,6 +354,10 @@ def main():
               "The following historical reference numbers are not new V5 measurements.", "",
               "| Method | HOTA | DetA | AssA | IDF1 | CVIDF1 | CVMA | MOTA | IDSW | Frag | TP | FP | FN |",
               "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    if native_smoke:
+        lines[-2:-2] = ["Native scorer engineering smoke: three generated synthetic cases and six native MATLAB jobs passed. "
+                        "No real TRAIN/TEST data or model was used. The native toolkit hashes exactly match archived V4 C1. "
+                        "This is evaluator validation, not a V5 tracking score.", ""]
     for row in metric_rows:
         values = [str(row[k]) if k in ("IDSW", "Frag", "CLR_TP", "CLR_FP", "CLR_FN") else f"{row[k]:.4f}" for k in METRICS] if "HOTA" in row else ["pending"] * len(METRICS)
         lines.append("| " + row["method"] + " | " + " | ".join(values) + " |")

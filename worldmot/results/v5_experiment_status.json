@@ -1,6 +1,6 @@
 {
   "status": "REGISTERED_RESEARCH_IN_PROGRESS",
-  "updated_UTC": "2026-10-26T20:12:52.420488+00:00",
+  "updated_UTC": "2026-10-26T20:38:43.352660+00:00",
   "v5_source_sha256": "c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85688f74d89159e16f733",
   "base_commit": "eda0761b15f4049ead1971facd17d846bbab94cf",
   "variants": {
@@ -18,14 +18,14 @@
       "selection": {
         "variant": "B2",
         "phase": "selection",
-        "epoch": 2,
+        "epoch": 3,
         "section": "fit",
         "complete": false,
-        "completed_epochs": 1,
-        "current_epoch_complete_scenes": 15,
+        "completed_epochs": 2,
+        "current_epoch_complete_scenes": 5,
         "current_validation_complete_scenes": 0,
-        "optimizer_steps": 10965,
-        "resume_checkpoint_sha256": "73119e138aede0bec4989c31feb5423b7765557d1a8461be04faa1dbf2c96d5b",
+        "optimizer_steps": 13025,
+        "resume_checkpoint_sha256": "594eff94f5c3fd5e1cde3e5392d2b624c73e8a5e93805e5d37d07cfb327574cc",
         "budget": 12,
         "history_mode": "predicted_from_first_timestamp"
       },
@@ -35,14 +35,14 @@
       "selection": {
         "variant": "B3",
         "phase": "selection",
-        "epoch": 2,
+        "epoch": 3,
         "section": "fit",
         "complete": false,
-        "completed_epochs": 1,
-        "current_epoch_complete_scenes": 12,
+        "completed_epochs": 2,
+        "current_epoch_complete_scenes": 1,
         "current_validation_complete_scenes": 0,
-        "optimizer_steps": 9892,
-        "resume_checkpoint_sha256": "83669d5981c0957d70f07d815237ca2b892d757e8aedf4a0b3971af0bd34e15c",
+        "optimizer_steps": 11932,
+        "resume_checkpoint_sha256": "8d2582802943c779b926686d3e457d38fe3a99a8dd2afd3e8a61caf26890fe30",
         "budget": 12,
         "history_mode": "predicted_from_first_timestamp"
       },
@@ -56,10 +56,10 @@
         "section": "fit",
         "complete": false,
         "completed_epochs": 2,
-        "current_epoch_complete_scenes": 6,
+        "current_epoch_complete_scenes": 14,
         "current_validation_complete_scenes": 0,
-        "optimizer_steps": 13325,
-        "resume_checkpoint_sha256": "123ee409afa893566aece6d9efc7bbf6640dcaf6167da90411951d1a473537d0",
+        "optimizer_steps": 15939,
+        "resume_checkpoint_sha256": "04a5b7ae2ac1261c68c509dddff4f3385ace55007577fee726e0ff200f1fd56d",
         "budget": 12,
         "history_mode": "predicted_from_first_timestamp"
       },
@@ -73,11 +73,7 @@
     "B4": "cpu"
   },
   "controller_stage": "TRAIN_SELECTION_COMMON_B3_CONVERGENCE_RULE_PENDING",
-  "controller_last_exception": {
-    "type": "FileNotFoundError",
-    "message": "[Errno 2] No such file or directory: '/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v5_decoupled_birth_20261027/train/B2/selection/progress.json'",
-    "UTC": "2026-10-26T20:12:07.333695+00:00"
-  },
+  "controller_last_exception": null,
   "final_checkpoint_SHA256": {
     "B2": null,
     "B3": null,
@@ -99,9 +95,9 @@
     "B4": 0
   },
   "frozen_reference_GT_free_inference": {
-    "status": "NOT_STARTED",
+    "status": "RUNNING_REFERENCE_ONLY_INFERENCE",
     "complete_scenes": {
-      "B0": 0,
+      "B0": 12,
       "B1": 0
     },
     "scoring_allowed_by_subset": false
@@ -112,5 +108,6 @@
   "real_RGB_to_ID_measured": false,
   "no_TEST_parameter_selection": true,
   "negative_results_preserved": true,
-  "scientific_improvement_claimed": false
+  "scientific_improvement_claimed": false,
+  "native_synthetic_toolchain_passed": true
 }

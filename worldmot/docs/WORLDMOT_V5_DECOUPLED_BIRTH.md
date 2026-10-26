@@ -1,6 +1,6 @@
 WorldMOT V5: decoupled observation birth and persistent membership
 
-Updated UTC: 2026-10-26T20:12:52.420488+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
+Updated UTC: 2026-10-26T20:38:43.352660+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
 
 The finite B0–B4 registration, code fingerprint and original V3/V4 artifacts are frozen. The model predicts membership and a per-camera no-observation option. Birth, lifecycle, identity writes and C1 Kalman/Joseph updates use separate auditable policies. GT never repairs the predicted history.
 
@@ -10,16 +10,16 @@ All24 TRAIN inputs are verified: 28,754 paired times and 557,002 detections. Fit
 
 | Variant | Selection completed epochs | Current selection scene count | Final completed epochs | Final weight SHA-256 |
 |---|---:|---:|---:|---|
-| B2 | 1 | 15/18 | 0 | not available |
-| B3 | 1 | 12/18 | 0 | not available |
-| B4 | 2 | 6/18 | 0 | not available |
+| B2 | 2 | 5/18 | 0 | not available |
+| B3 | 2 | 1/18 | 0 | not available |
+| B4 | 2 | 14/18 | 0 | not available |
 
 Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged over paired timestamps; scene density and evolving predicted histories differ between fit18 and VAL6. The per-scene breakdown is in v5_training_curves.json. These values do not establish convergence or formal TEST improvement.
 
 | Variant | Epoch | Fit membership loss | VAL membership loss | VAL same-person split rate | VAL different-person false-merge rate | Finite gradients |
 |---|---:|---:|---:|---:|---:|---|
-| B2 | 1 | 0.1500 | 2.2751 | 39.78% | 1.32% | True |
-| B3 | 1 | 0.1463 | 2.5485 | 30.89% | 1.17% | True |
+| B2 | 2 | 0.0830 | 1.5101 | 29.06% | 0.63% | True |
+| B3 | 2 | 0.0717 | 1.7573 | 24.31% | 1.05% | True |
 | B4 | 2 | 0.0800 | 1.8521 | 32.04% | 1.48% | True |
 
 Selection currently uses CPU, one Torch/BLAS thread per worker. Final B3/B4 training and complete TEST use truly idle V100 FP32 workers. B2 final training uses a third idle V100 if available, otherwise one CPU thread; its resumes keep that device family. Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.
@@ -27,6 +27,8 @@ Selection currently uses CPU, one Torch/BLAS thread per worker. Final B3/B4 trai
 A preregistered scheduling amendment allows already frozen B0/B1 GT-free reference inference during TRAIN selection. Its separate authorization cannot score TEST or run a new trained model. All three final-all24 gates remain required before new-model TEST or any formal scoring. Reference outputs require explicit byte-verified scope-adoption receipts before final scoring. No current model, budget rule or input is changed.
 
 Official MC-MOT uses original legal14 full TEST videos, after full22 causal inference (29,019 paired times / 548,583 shared candidates). Invalid8 remain separate. The following historical reference numbers are not new V5 measurements.
+
+Native scorer engineering smoke: three generated synthetic cases and six native MATLAB jobs passed. No real TRAIN/TEST data or model was used. The native toolkit hashes exactly match archived V4 C1. This is evaluator validation, not a V5 tracking score.
 
 | Method | HOTA | DetA | AssA | IDF1 | CVIDF1 | CVMA | MOTA | IDSW | Frag | TP | FP | FN |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -59,7 +61,7 @@ Cached replay speed and real RGB-to-final-ID speed are separate. The finite real
 
 | Method | Cached worker step FPS | Cached worker wall FPS | Real RGB-to-ID FPS | Real scope |
 |---|---:|---:|---:|---|
-| B0 | not measured | not measured | not measured | NOT_MEASURED |
+| B0 | 33.6722 | 13.0486 | not measured | NOT_MEASURED |
 | B1 | not measured | not measured | not measured | NOT_MEASURED |
 | B2 | not measured | not measured | not measured | NOT_MEASURED |
 | B3 | not measured | not measured | not measured | NOT_MEASURED |

@@ -16,6 +16,14 @@ from worldmot.runtime.world_object_v5_contract import require_v5_scope
 from worldmot.data.worldobject_cache import sha256
 
 
+def terminal_artifact_status(job, artifact_verified):
+    if artifact_verified:
+        return "COMPLETE"
+    job["missing_output_checks"] = job.get("missing_output_checks", 0) + 1
+    return ("ENGINEERING_REVIEW_REQUIRED" if job.get("exit_code") not in {None, 0}
+            or job["missing_output_checks"] >= 3 else "EXITED_PENDING_ARTIFACT")
+
+
 def main():
     p = argparse.ArgumentParser()
     for key in ("repo", "runtime", "output-root"):
@@ -33,6 +41,23 @@ def main():
     jobs, children = read_json(path, {}), {}
     verify = test_runner_completed()
     checked, complete = {}, {"B0": {}, "B1": {}}
+    def record_completed(variant, scene):
+        folder = a.output_root / f"predictions/{variant}/scene_{scene:02d}"
+        manifest = folder / "manifest.json"
+        if not manifest.exists():
+            return False
+        m = verify(folder, scope, variant, scene)
+        if (m["scope_sha256"] != sha256(scope_path) or m["approval"]["approval_sha256"] != sha256(auth_path)
+                or m["GT_in_inference"] or not m["causal"]):
+            raise ValueError("REFERENCE_PROCESS_OR_AUTHORIZATION_CHANGED")
+        if variant == "B0" and m["exact_original_C1_timestamps"] != m["timestamps"]:
+            raise ValueError("B0_MUST_REPRODUCE_EVERY_ORIGINAL_C1_TIMESTAMP")
+        checked[variant, scene] = sha256(manifest)
+        complete[variant][str(scene)] = {"manifest_sha256": checked[variant, scene],
+            "timestamps": m["timestamps"], "candidates": m["candidate_count"],
+            "tracks_sha256": m["output_sha256"]["tracks.jsonl"], "checkpoint_sha256": m["checkpoint_sha256"]}
+        return True
+
     while True:
         for variant in ("B0", "B1"):
             if not (a.output_root / "predictions" / variant).is_dir():
@@ -41,19 +66,16 @@ def main():
                 folder = a.output_root / f"predictions/{variant}/scene_{scene:02d}"
                 manifest = folder / "manifest.json"
                 if manifest.exists() and (variant, scene) not in checked:
-                    m = verify(folder, scope, variant, scene)
-                    if (m["scope_sha256"] != sha256(scope_path) or m["approval"]["approval_sha256"] != sha256(auth_path)
-                            or m["GT_in_inference"] or not m["causal"]):
-                        raise ValueError("REFERENCE_PROCESS_OR_AUTHORIZATION_CHANGED")
-                    if variant == "B0" and m["exact_original_C1_timestamps"] != m["timestamps"]:
-                        raise ValueError("B0_MUST_REPRODUCE_EVERY_ORIGINAL_C1_TIMESTAMP")
-                    checked[variant, scene] = sha256(manifest)
-                    complete[variant][str(scene)] = {"manifest_sha256": checked[variant, scene],
-                        "timestamps": m["timestamps"], "candidates": m["candidate_count"],
-                        "tracks_sha256": m["output_sha256"]["tracks.jsonl"], "checkpoint_sha256": m["checkpoint_sha256"]}
+                    record_completed(variant, scene)
         attention = []
         for key, job in jobs.items():
-            if not key.startswith("reference_test_") or job["status"] != "RUNNING":
+            if not key.startswith("reference_test_"):
+                continue
+            pair = job["variant"], job["scene"]
+            if pair in checked and job["status"] != "RUNNING":
+                job["status"] = "COMPLETE"
+                continue
+            if job["status"] not in {"RUNNING", "EXITED_PENDING_ARTIFACT"}:
                 continue
             identity = process_identity(job["pid"])
             if identity == job["identity"]:
@@ -67,9 +89,11 @@ def main():
                         job["exit_code"] = os.waitstatus_to_exitcode(status)
                 except ChildProcessError:
                     pass
-            pair = job["variant"], job["scene"]
-            job["status"] = "COMPLETE" if pair in checked else "ENGINEERING_REVIEW_REQUIRED"
-            if job["status"] != "COMPLETE":
+            # The worker may rename its complete directory AFTER the scan
+            # above but BEFORE exit is observed. Recheck at the terminal
+            # boundary; a stale scan must never create a failed experiment.
+            job["status"] = terminal_artifact_status(job, pair in checked or record_completed(*pair))
+            if job["status"] == "ENGINEERING_REVIEW_REQUIRED":
                 attention.append(key)
         attention += [key for key, job in jobs.items() if key.startswith("reference_test_") and job["status"] == "ENGINEERING_REVIEW_REQUIRED"]
         status = {"status": "COMPLETE_ALL22_B0_B1_GT_FREE_INFERENCE" if all(len(x) == 22 for x in complete.values())
