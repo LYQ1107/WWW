@@ -107,3 +107,23 @@ supports separate detection/association; its advertised public GitHub repository
 The V5 design follows previous TEST-informed V3/V4 analysis: the final TEST is
 exploratory, not a previously untouched holdout. Negative results complete the
 experiment; they do not authorize a second TEST parameter search.
+
+Scheduling amendment, registered on 2026-10-26 UTC before any V5 TEST inference:
+the preceding all-weight-gates-before-inference order is relaxed **only for
+already frozen B0 and B1, without GT or scoring**. Their head, configurations,
+calibration and complete22 input manifests are already fixed. Three V100s became
+idle while the three selection jobs were running normally on CPU. Independent
+reference inference can use those cards without restarting training. The subset
+authorization permits replay/preflight only; it cannot authorize evaluation,
+diagnostics, training, live runs, or B2/B3/B4 inference. B0 scene1 must reproduce
+every original C1 timestamp before the reference queue scales out. No TEST GT or
+new TEST metric is inspected while model/budget selection is running.
+
+All B2/B3/B4 final-all24 gates are still mandatory before their TEST inference
+or **any new formal TEST scoring**. Frozen reference predictions are adopted
+into that final scope only with explicit per-scene receipts verifying identical
+source, inputs, configurations, original head SHA, original authorization and
+immutable output bytes. Their manifests are not rewritten. Posthoc identity
+analysis still waits for all110 complete outputs. The original V3/V4 locks and
+V5 TRAIN lock stay unchanged. No variant, threshold, seed, loss, training budget
+rule, output rule, GT or evaluation setting is changed by this amendment.

@@ -185,15 +185,18 @@ def main():
     source, analysis_sha = v5_source_fingerprint(), sha256(__file__)
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
     from run_worldobject_v5_test import completed
+    from worldobject_v5_reference_scope import require_canonical_or_adopted
     proofs = {v: [] for v in VARIANTS}
     # No annotations are opened until all 110 complete outputs pass checksums.
     for v in VARIANTS:
         for scene in range(1, 23):
             folder = a.output_root / f"predictions/{v}/scene_{scene:02d}"
             m = completed(folder, scope, v, scene)
+            require_canonical_or_adopted(a.output_root, a.scope_lock, v, scene, m)
             proofs[v].append({"scene": scene, "timestamps": m["timestamps"],
                               "candidates": m["candidate_count"], "outputs": m["output_count"],
-                              "tracks_sha256": m["output_sha256"]["tracks.jsonl"]})
+                              "tracks_sha256": m["output_sha256"]["tracks.jsonl"],
+                              "original_scope_sha256": m["scope_sha256"]})
         if sum(x["timestamps"] for x in proofs[v]) != 29019 or sum(x["candidates"] for x in proofs[v]) != 548583:
             raise ValueError("ALL22_FROZEN_INPUTS_REQUIRED_FOR_EACH_VARIANT")
     from worldmot.data.visiontrack import VisionTrack

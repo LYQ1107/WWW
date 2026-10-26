@@ -9,6 +9,7 @@ engineering review instead of silently launching a different experiment.
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 from datetime import datetime, timezone
 import fcntl
 import hashlib
@@ -83,6 +84,25 @@ def gpu_snapshot():
         rows.append({"uuid": uuid, "name": name, "total_MiB": int(total),
                      "free_MiB": int(free), "occupied": uuid in occupied})
     return rows
+
+
+@contextmanager
+def gpu_launch_lock(runtime):
+    with (Path(runtime) / "gpu_launch.lock").open("a+") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        yield
+
+
+def live_gpu_reservations(*groups):
+    reserved = set()
+    for group in groups:
+        for job in group.values():
+            if job.get("status") != "RUNNING" or not job.get("GPU_UUID"):
+                continue
+            identity = process_identity(job["pid"])
+            if identity is not None and identity == job.get("identity"):
+                reserved.add(job["GPU_UUID"])
+    return reserved
 
 
 class Controller:
@@ -186,6 +206,17 @@ class Controller:
         if self.args.dry_run:
             self.state.setdefault("dry_run_launches", []).append({"key": key, "command": command, "GPU": gpu})
             return True
+        if gpu:
+            with gpu_launch_lock(self.runtime):
+                auxiliary = read_json(self.runtime / "auxiliary_jobs.json", {})
+                reserved = live_gpu_reservations(self.state["jobs"], auxiliary)
+                occupied = {g["uuid"] for g in gpu_snapshot() if g["occupied"]}
+                if len(reserved) >= 6 or gpu["uuid"] in reserved or gpu["uuid"] in occupied:
+                    return False
+                return self.start_worker(key, command, gpu, previous, attempt, log, resume)
+        return self.start_worker(key, command, gpu, previous, attempt, log, resume)
+
+    def start_worker(self, key, command, gpu, previous, attempt, log, resume):
         log.parent.mkdir(exist_ok=True)
         env = {**self.environment, "CUDA_VISIBLE_DEVICES": gpu["uuid"] if gpu else ""}
         with log.open("x") as stream:
@@ -329,6 +360,19 @@ class Controller:
 
     def inference(self):
         done = {v: [] for v in VARIANTS}
+        canonical_path = self.private / "scope_v5_test.json"
+        canonical_sha = digest(canonical_path)
+        reference_scope_exists = (self.private / "scope_v5_reference_test.json").exists()
+        if reference_scope_exists and (self.private / "reference_test_coverage.json").exists():
+            proof = read_json(self.private / "reference_test_adoption_complete.json")
+            if proof:
+                if proof["canonical_scope_sha256"] != canonical_sha:
+                    raise ValueError("REFERENCE_ADOPTION_BOUND_TO_DIFFERENT_FINAL_SCOPE")
+                self.mark_complete("adopt_frozen_references", {"receipt_sha256": digest(self.private / "reference_test_adoption_complete.json")})
+            elif not self.running("adopt_frozen_references"):
+                command = [str(self.args.python), "-u", str(self.repo / "worldmot/analysis/worldobject_v5_reference_scope.py"),
+                           "--operation", "adopt", "--output-root", str(self.root)]
+                self.launch("adopt_frozen_references", command)
         for v in VARIANTS:
             for scene in range(1, 23):
                 manifest_path = self.root / f"predictions/{v}/scene_{scene:02d}/manifest.json"
@@ -337,12 +381,21 @@ class Controller:
                     manifest = read_json(manifest_path)
                     if manifest["status"] != "COMPLETE" or manifest["v5_source_sha256"] != FROZEN_SOURCE:
                         raise ValueError("COMPLETED_TEST_SCENE_MANIFEST_MISMATCH")
+                    if manifest["scope_sha256"] != canonical_sha:
+                        if not reference_scope_exists or v not in {"B0", "B1"}:
+                            raise ValueError("UNAUTHORIZED_NONCANONICAL_MODEL_SCOPE")
+                        from worldobject_v5_reference_scope import adoption_path, require_canonical_or_adopted
+                        if not adoption_path(self.root, v, scene).exists():
+                            continue
+                        require_canonical_or_adopted(self.root, canonical_path, v, scene, manifest)
                     done[v].append(scene)
                     self.mark_complete(key, {"manifest_sha256": digest(manifest_path), "timestamps": manifest["timestamps"]})
         self.state["completed_TEST_scenes"] = {v: len(s) for v, s in done.items()}
         # All variants use V100 FP32. This is independent-scene concurrency,
         # never advertised as one video's latency or RGB-to-ID FPS.
         for v in TRAINED + ("B1", "B0"):
+            if reference_scope_exists and v in {"B0", "B1"}:
+                continue  # Their inference-only queue owns all22 reference scenes.
             for scene in range(1, 23):
                 key = f"test_{v}_scene{scene:02d}"
                 if scene in done[v] or self.running(key):

@@ -180,6 +180,9 @@ def main():
     baseline_path = results / "v4_c1_official_test.json"
     inherited = read(baseline_path)
     controller = read(a.runtime / "controller_state.json", {})
+    reference_status = read(a.runtime / "reference_inference_status.json", {})
+    reference_registration = read(a.output_root / "provenance/reference_test_registration.json")
+    reference_adoption = read(a.output_root / "provenance/reference_test_adoption_complete.json")
     initial = read(a.runtime / "selection_launches.json", {})
     mirror = read(a.runtime / "train_input_mirror.json", {})
     common = read(a.output_root / "provenance/common_train_budget.json")
@@ -231,6 +234,9 @@ def main():
              "final_checkpoint_SHA256": {v: g["checkpoint_sha256"] if g else None for v, g in final_gates.items()},
              "official_TEST_complete_variants": list(official), "official_TEST_pending_variants": pending,
              "TEST_inference_scene_counts": controller.get("completed_TEST_scenes", {v: 0 for v in VARIANTS}),
+             "frozen_reference_GT_free_inference": {"status": reference_status.get("status", "NOT_STARTED"),
+                 "complete_scenes": reference_status.get("complete_scenes", {"B0": 0, "B1": 0}),
+                 "scoring_allowed_by_subset": False},
              "birth_diagnostic_complete_scenes": birth["scenes_complete"], "posthoc_complete": attribution is not None,
              "frozen_policy_TRAIN_audit_complete_scenes": policy["scenes_complete"],
              "real_RGB_to_ID_measured": live is not None and live.get("status") == "ALL5_FINITE_REAL_LIVE_COMPLETE",
@@ -240,6 +246,10 @@ def main():
     atomic_json(results / "v5_train_birth_attribution.json", birth)
     atomic_json(results / "v5_train_frozen_policy_audit.json", policy)
     atomic_json(results / "v5_training_curves.json", curves)
+    if reference_registration:
+        atomic_json(results / "v5_reference_inference_registration.json", reference_registration)
+    if reference_adoption:
+        atomic_json(results / "v5_reference_adoption.json", reference_adoption)
     baselines = {k: {m: row[m] for m in METRICS} for k, row in inherited["baselines"].items()}
     deltas = {}
     if "B3" in official:
@@ -263,6 +273,7 @@ def main():
               "baseline_tool_comparability": inherited["baseline_tool_comparability"],
               "shared_tracking_dependency_hashes_equal_in_archived_comparison": inherited["shared_native_tracking_dependency_hashes_equal_to_baselines"],
               "checkpoint_SHA256": state["final_checkpoint_SHA256"], "v5_source_sha256": state["v5_source_sha256"],
+              "explicit_reference_scope_adoption": reference_adoption,
               "TEST_parameter_selection": False, "raw_GT_modified": False,
               "exploratory_TEST_previously_informed_design": True,
               "scientific_target_exceeded_GMT_on_HOTA_AssA_CVIDF1": bool(science_success),
@@ -331,6 +342,11 @@ def main():
               "Final B3/B4 training and complete TEST use truly idle V100 FP32 workers. "
               "B2 final training uses a third idle V100 if available, otherwise one CPU thread; its resumes keep that device family. "
               "Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.", "",
+              "A preregistered scheduling amendment allows already frozen B0/B1 GT-free reference inference "
+              "during TRAIN selection. Its separate authorization cannot score TEST or run a new trained model. "
+              "All three final-all24 gates remain required before new-model TEST or any formal scoring. "
+              "Reference outputs require explicit byte-verified scope-adoption receipts before final scoring. "
+              "No current model, budget rule or input is changed.", "",
               "Official MC-MOT uses original legal14 full TEST videos, after full22 causal inference "
               "(29,019 paired times / 548,583 shared candidates). Invalid8 remain separate. "
               "The following historical reference numbers are not new V5 measurements.", "",

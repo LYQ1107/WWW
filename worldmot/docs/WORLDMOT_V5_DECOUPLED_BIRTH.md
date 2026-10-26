@@ -1,6 +1,6 @@
 WorldMOT V5: decoupled observation birth and persistent membership
 
-Updated UTC: 2026-10-26T19:43:30.777592+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
+Updated UTC: 2026-10-26T20:12:52.420488+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
 
 The finite B0–B4 registration, code fingerprint and original V3/V4 artifacts are frozen. The model predicts membership and a per-camera no-observation option. Birth, lifecycle, identity writes and C1 Kalman/Joseph updates use separate auditable policies. GT never repairs the predicted history.
 
@@ -10,9 +10,9 @@ All24 TRAIN inputs are verified: 28,754 paired times and 557,002 detections. Fit
 
 | Variant | Selection completed epochs | Current selection scene count | Final completed epochs | Final weight SHA-256 |
 |---|---:|---:|---:|---|
-| B2 | 1 | 4/18 | 0 | not available |
-| B3 | 1 | 1/18 | 0 | not available |
-| B4 | 1 | 10/18 | 0 | not available |
+| B2 | 1 | 15/18 | 0 | not available |
+| B3 | 1 | 12/18 | 0 | not available |
+| B4 | 2 | 6/18 | 0 | not available |
 
 Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged over paired timestamps; scene density and evolving predicted histories differ between fit18 and VAL6. The per-scene breakdown is in v5_training_curves.json. These values do not establish convergence or formal TEST improvement.
 
@@ -20,9 +20,11 @@ Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged 
 |---|---:|---:|---:|---:|---:|---|
 | B2 | 1 | 0.1500 | 2.2751 | 39.78% | 1.32% | True |
 | B3 | 1 | 0.1463 | 2.5485 | 30.89% | 1.17% | True |
-| B4 | 1 | 0.1600 | 2.3591 | 35.37% | 1.56% | True |
+| B4 | 2 | 0.0800 | 1.8521 | 32.04% | 1.48% | True |
 
 Selection currently uses CPU, one Torch/BLAS thread per worker. Final B3/B4 training and complete TEST use truly idle V100 FP32 workers. B2 final training uses a third idle V100 if available, otherwise one CPU thread; its resumes keep that device family. Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.
+
+A preregistered scheduling amendment allows already frozen B0/B1 GT-free reference inference during TRAIN selection. Its separate authorization cannot score TEST or run a new trained model. All three final-all24 gates remain required before new-model TEST or any formal scoring. Reference outputs require explicit byte-verified scope-adoption receipts before final scoring. No current model, budget rule or input is changed.
 
 Official MC-MOT uses original legal14 full TEST videos, after full22 causal inference (29,019 paired times / 548,583 shared candidates). Invalid8 remain separate. The following historical reference numbers are not new V5 measurements.
 
