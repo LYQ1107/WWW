@@ -1,6 +1,6 @@
 {
-  "status": "OFFICIAL_V5_RESULTS_PENDING",
-  "updated_UTC": "2026-10-26T20:38:43.352660+00:00",
+  "status": "PARTIAL_COMPLETE_NATIVE_LEGAL14_VARIANTS",
+  "updated_UTC": "2026-10-26T23:57:32.283951+00:00",
   "official_legal_scene_ids": [
     1,
     2,
@@ -20,7 +20,7 @@
   "full_inference_scenes_per_variant": 22,
   "full_inference_paired_times_per_variant": 29019,
   "frozen_candidates_per_variant": 548583,
-  "values_are_historical_references_until_V5_completes": true,
+  "values_are_historical_references_until_V5_completes": false,
   "historical_baselines": {
     "GMT Native": {
       "HOTA": 66.06458719840953,
@@ -93,18 +93,1363 @@
       "CLR_FN": 24447
     }
   },
-  "V5_official_metrics": {},
+  "V5_official_metrics": {
+    "B0": {
+      "HOTA": 59.37124192419718,
+      "DetA": 62.97679200732477,
+      "AssA": 56.35185168218991,
+      "IDF1": 67.98956224746837,
+      "CVIDF1": 65.81689245444123,
+      "CVMA": 66.35719366651738,
+      "MOTA": 74.7746133782965,
+      "IDSW": 2607,
+      "Frag": 1561,
+      "CLR_TP": 165338,
+      "CLR_FP": 20820,
+      "CLR_FN": 24447
+    },
+    "B1": {
+      "HOTA": 57.51194205797315,
+      "DetA": 63.17284131513772,
+      "AssA": 52.68088196622108,
+      "IDF1": 65.10455042386745,
+      "CVIDF1": 55.8643198569996,
+      "CVMA": 43.08981215586057,
+      "MOTA": 71.41291461390522,
+      "IDSW": 8973,
+      "Frag": 1601,
+      "CLR_TP": 165331,
+      "CLR_FP": 20827,
+      "CLR_FN": 24454
+    }
+  },
   "pending_variants": [
-    "B0",
-    "B1",
     "B2",
     "B3",
     "B4"
   ],
+  "native_score_origins": {
+    "B0": {
+      "kind": "FROZEN_CONTROL_FORMAL_TEST_BEFORE_NEW_MODEL_FINAL_TRAIN",
+      "scope_sha256": "134f4ed8bc875023dac6fb60e99bfd940a32021204c8c183c1842d2ec9c17875",
+      "authorization_sha256": "e45611b7dcb64c771170ecbbbcbe9043140e88ab7ba488af01b86e8dc84517b8",
+      "input_byte_verification_sha256": "4019e2dd7861ad4712d71a0b27fe9b148cf8a223663b4ff74190f59781a30e69",
+      "native_scoring_receipt_sha256": "a7e659a5b394546d14b0a0cf929e5a0bc3c105031799cc594f303f0f18446108",
+      "checkpoint_sha256": "cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8",
+      "canonical_all3_final_gate_adoption_complete": false,
+      "full24_eligibility": "original frozen R2 head; no new membership training"
+    },
+    "B1": {
+      "kind": "FROZEN_CONTROL_FORMAL_TEST_BEFORE_NEW_MODEL_FINAL_TRAIN",
+      "scope_sha256": "134f4ed8bc875023dac6fb60e99bfd940a32021204c8c183c1842d2ec9c17875",
+      "authorization_sha256": "e45611b7dcb64c771170ecbbbcbe9043140e88ab7ba488af01b86e8dc84517b8",
+      "input_byte_verification_sha256": "78f26e49a2f3d467e87922fc62db1380fb4010ba17cb66d2fdd9386457584e69",
+      "native_scoring_receipt_sha256": "494980f9d516ee7e7e0b662ba54419810fd19e6a4f8b2d277b7e3d371530cf91",
+      "checkpoint_sha256": "cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8",
+      "canonical_all3_final_gate_adoption_complete": false,
+      "full24_eligibility": "original frozen R2 head; no new membership training"
+    }
+  },
+  "canonical_TEST_scope_complete_variants": [],
+  "B1_minus_B0": {
+    "HOTA": -1.8592998662240277,
+    "DetA": 0.19604930781294883,
+    "AssA": -3.6709697159688304,
+    "IDF1": -2.8850118236009195,
+    "CVIDF1": -9.95257259744163,
+    "CVMA": -23.267381510656804,
+    "MOTA": -3.361698764391278,
+    "IDSW": 6366,
+    "Frag": 40,
+    "CLR_TP": -7,
+    "CLR_FP": 7,
+    "CLR_FN": 7
+  },
   "B3_minus_reference": {},
-  "B0_native_reproduction_passed": null,
+  "B0_native_reproduction_passed": true,
   "baseline_source_sha256": "babf3ce4943ba5540332000e6c7b8aeac29e425657bc45a67aeb19204e061db3",
-  "proofs": {},
+  "proofs": {
+    "B0": {
+      "metrics_sha256": "9d854785ba039048a90c6ff43e809f8b10b0d2c5959ff9b2ea9225d3eeae2ca2",
+      "coverage": [
+        {
+          "scene": 1,
+          "frames": 1005,
+          "predictions_sha256": "941cf0680b4d5128f863f498b2d7fdcdf6d004cbf71202e2ad8f30b6a5a79954"
+        },
+        {
+          "scene": 2,
+          "frames": 1660,
+          "predictions_sha256": "dd7499ae803709b3d7922c22dcf5e572f24f82784860ffd0d87783d6e4047a63"
+        },
+        {
+          "scene": 3,
+          "frames": 900,
+          "predictions_sha256": "91b6d7de3cd047135dd8883f36d8f177fe630a4076ce1ef44252ae77cd560e0a"
+        },
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "009e723b66c52c573e956f1ec2f1318ff41554bd5e333d1d07539a52f3bb0df9"
+        },
+        {
+          "scene": 5,
+          "frames": 2533,
+          "predictions_sha256": "518929c7dda2b6ace2f50dd924ced6bfb5574bf52ceb133698dc1a31f6aaeec0"
+        },
+        {
+          "scene": 6,
+          "frames": 851,
+          "predictions_sha256": "e0b33963269dd095cac5fe7f515f706e2ad91f267c5d76edb5681b9cb7905c51"
+        },
+        {
+          "scene": 7,
+          "frames": 2055,
+          "predictions_sha256": "2243e6425cce2e442c55076cfea2680fc3ba5aa4a126e645b011bebaa3943364"
+        },
+        {
+          "scene": 8,
+          "frames": 2061,
+          "predictions_sha256": "b1d6b8c41609d1f3e693aa72ad93cb79fdcd938419e9e33891a26ea4a98af78b"
+        },
+        {
+          "scene": 9,
+          "frames": 1969,
+          "predictions_sha256": "844f3fd959af3a784c28e0c7744c47ef0ea850a9a0deeb057c6b405ef98be8a0"
+        },
+        {
+          "scene": 10,
+          "frames": 1748,
+          "predictions_sha256": "a53d015b700ce5371e315c7316c314478301fa7e0879e954ac2ee52a839c6221"
+        },
+        {
+          "scene": 11,
+          "frames": 1004,
+          "predictions_sha256": "bca1783106c8ba134f7bb934c33d6033be7408f738396eea4f5f1ea69d08a938"
+        },
+        {
+          "scene": 12,
+          "frames": 1001,
+          "predictions_sha256": "29bf1eeba523e3f725c3a9c94fb4928f790dcd6e95227359599a40abb9d50adc"
+        },
+        {
+          "scene": 13,
+          "frames": 1040,
+          "predictions_sha256": "0c28ce59aa346d5b01eb8499b22da974e009eff7c4dd0f86f7c57123d6825252"
+        },
+        {
+          "scene": 14,
+          "frames": 1043,
+          "predictions_sha256": "38a0483eb79306b4f1f3a415dfef73ea6d72c5c3bdd5b138e3cd98804d165855"
+        },
+        {
+          "scene": 15,
+          "frames": 1904,
+          "predictions_sha256": "dc2dddf02bcdfafe83b41928dd0d58c0cd33389d9397023f8758fb299eb3c4aa"
+        },
+        {
+          "scene": 16,
+          "frames": 1043,
+          "predictions_sha256": "e21d8f6255f5b2fe02ed15a8e7c20296790ed2563309d763b26fc389cf50bdde"
+        },
+        {
+          "scene": 17,
+          "frames": 1040,
+          "predictions_sha256": "00258d271ab515cd256e24a9c658923582e1134b89dffb380f68f5795441a99f"
+        },
+        {
+          "scene": 18,
+          "frames": 1001,
+          "predictions_sha256": "b480579cb9a86b428e44813f8df95625d89c4796dcaf60ff655d8396dff52fdb"
+        },
+        {
+          "scene": 19,
+          "frames": 1001,
+          "predictions_sha256": "5b3e6ab8c150730a80342db158175e9b8bb001dbe74502f6990e8bd353cbe02d"
+        },
+        {
+          "scene": 20,
+          "frames": 1006,
+          "predictions_sha256": "42a3ad166f662d30940d836e4e186c9997913ce51c696a41e62d374967b0ccc2"
+        },
+        {
+          "scene": 21,
+          "frames": 1052,
+          "predictions_sha256": "9cb991ee4135fddefb49a8f65b7f1922d0c6bbae5184fa606b1f74d582cfe26b"
+        },
+        {
+          "scene": 22,
+          "frames": 1201,
+          "predictions_sha256": "8d5c9de39c7c383f475dc27d6507a5182361d39e54729e82d7e32bcd49527517"
+        }
+      ],
+      "excluded_raw_GT_scenes": [
+        {
+          "scene": 5,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 12,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 13,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 14,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 17,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 20,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 21,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 22,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        }
+      ],
+      "TrackEval_dependency_hashes": {
+        "trackeval/__init__.py": "636586f4cc90a0be21e8aff605fb7fe97c089b3c46fafd43745d4c41bedceae3",
+        "trackeval/_timing.py": "62e60638efc675bccc35c7da65158f0f19ce31f332121efe7cc748bd92ad2b30",
+        "trackeval/datasets/__init__.py": "f0b3346f098eefd359f292cfd7b95fde2ba407f7d4698aa86de602e046b588f2",
+        "trackeval/datasets/_base_dataset.py": "9094b50490b5567ed6f22cac6aa6ec969f4d467d4d28515546e0b875ffe976f5",
+        "trackeval/datasets/_timing.py": "62e60638efc675bccc35c7da65158f0f19ce31f332121efe7cc748bd92ad2b30",
+        "trackeval/datasets/bdd100k.py": "e9d5c62f164185bc996b02c61f54f0cf02c09098a715ed04aa9971d6a8de927d",
+        "trackeval/datasets/davis.py": "4c55560bd58892e30a794b68fdf7ecb08dfdb5a1e51a9b85b1ba21fae78eaf90",
+        "trackeval/datasets/kitti_2d_box.py": "050ac54284a982b5ab400ae9f29022370f52df6d6e03566fd8b30a0be7828a97",
+        "trackeval/datasets/kitti_mots.py": "5d62bddeb7713e16107161556f619b58a39e5397c3c6eee0dba965b82cb8ea33",
+        "trackeval/datasets/mot_challenge_2d_box.py": "6935c306db2ab32c900df7ea46c009c85419931708f18dc6c61ef6fa0a327ec1",
+        "trackeval/datasets/mots_challenge.py": "23b02bbdb33916739cb10c5139347c1727c6f1467e6ee974b6af6e6072c13de7",
+        "trackeval/datasets/rob_mots.py": "418af99e5b3d849a36229e9257f97c34422d44ab39e8e404c1b1aae9f61b56e3",
+        "trackeval/datasets/rob_mots_classmap.py": "db79031762d5fb55c009999cdb89586a70d11a1deaf2e1948192387872a64d1e",
+        "trackeval/datasets/run_rob_mots.py": "5d1bb96c2bb376b7cb4e00cada1e1ecab3974d6b06fad080f9e1708358a00a4a",
+        "trackeval/datasets/tao.py": "82fb49965e30b2d108aecdd38e538d5c0a24bc383ee347e19d2195fd8b3e4f3f",
+        "trackeval/datasets/utils.py": "e20e57f0badcd7f9d768c96f244fbefc0fb2b4a9e28808f929f30e11aef6fc19",
+        "trackeval/datasets/youtube_vis.py": "aa04208b1b7e5fa9018e0066d42be03c0dd68f4bf7dfcb626c85fd7dc52cac2c",
+        "trackeval/eval.py": "559fe9dbc6c0fff7f8d81ad16f03bc2900f9e8e53f4f49cd4bdf0c24dd34eab5",
+        "trackeval/metrics/__init__.py": "98d7706e37f55b1f91736037652689636836768d3cb76bac477d15beeb08dddb",
+        "trackeval/metrics/_base_metric.py": "a16618762601ad8f4a8e5a25a7490ee8fe003ab2850b894088bb6bd4f1b9db0b",
+        "trackeval/metrics/clear.py": "349daafdbb009f6cd71cf66ff1c9b8074940cd3310fcd663151d644b7ff0e5e3",
+        "trackeval/metrics/count.py": "ffce9a3ed557f164f7a811f0a8cf66f609eec0af822dbc87d8fdaef560032163",
+        "trackeval/metrics/hota.py": "421cb37dd492ecf2591114ea7e4a0d006cd0401225551717fd0b50473c8505d5",
+        "trackeval/metrics/identity.py": "33b4ef7e11a24c47c6060eb2464cb92167aea42e8c0e6f652b10ca317872028c",
+        "trackeval/metrics/j_and_f.py": "ad1339106129664658b47e2db142a02f22c6c711664a9e0930feb9bde2cc213f",
+        "trackeval/metrics/track_map.py": "492b588ca63d1adce96530f914239530fac1b018e5a2c603f036a3337d9aefb0",
+        "trackeval/metrics/vace.py": "13db97a61cc7291e5356c80a0a4f11a88b75a9664a81fc903d6bd41a1cd6ffdc",
+        "trackeval/plotting.py": "6d3ebada977b6990527dab143e0e4a0bbf5f1dd64f46bf214701a64acadba13f",
+        "trackeval/utils.py": "e20e57f0badcd7f9d768c96f244fbefc0fb2b4a9e28808f929f30e11aef6fc19"
+      },
+      "native_MATLAB_dependency_hashes": {
+        "Demo.m": "ca0d0e0519200fe9f2d5223bd2d37f1e23822f277d4bb9103ddf77489396b2c4",
+        "average.m": "9dafb07cd513dac30e64ef02d8bbc7e249ccea6ed20317e5f6f84dd30517526a",
+        "compile.m": "cbc1d8b6a408281d5a88ff7ae22105eb11416e251cabf54e1f974aad41b26cf1",
+        "evaluateDetection.m": "49279a7a086ea00bd42b9a85919d31e087499efaf153428bdec709264dd09fea",
+        "evaluateTracking.m": "3a9de497409fc2bfc1c5534cda0f9ce9ab10a425e45c79b557526bc51fb83aae",
+        "utils/CLEAR_MOD_HUN.m": "4e7aaf3351fcf0841e5236dc006c0660c760fab464be5a7beb170cbc549782c5",
+        "utils/CLEAR_MOT_HUN.m": "d0ce5953d9c9a5f65296bf955e90e305de2944c9d045aeeeb3c4e7cbc73235c8",
+        "utils/Hungarian.m": "1d83ec20881144f6ad3839ccc0ea00bcd4a805eae3d67c0a18713e37fa516241",
+        "utils/IDmeasures.m": "90ce9ccf607978bd69d1071238ff1eb0f477489067465b267623e83bad2d1299",
+        "utils/MinCostMatching.cpp": "dd22d80d78abb900c2b41b2b7de2e5e8f525b04287a65cf5e9adbcfefebfb555",
+        "utils/MinCostMatching.mexa64": "0c44d71aff3dd90161b27568e10d237e627731e9c8e331b4dc04ed8ed3a45efc",
+        "utils/boxIntersect.m": "70971beee2ea56a596e9d783b12b61e89121cd76005eebf53fa825cf6c3175a5",
+        "utils/boxUnion.m": "b13e20376261a90938bafc5acd16df75ed38ea17da506962239c1108e3843206",
+        "utils/boxiou.m": "ca8a162b0ed29aae61d353956a13f94ed658a26368f322973de90184f2a67272",
+        "utils/camera/calib_towncentre.m": "1738b75551c9fd3951e047e001c694b2e7bfe59284fe9471124aaa29462c6c02",
+        "utils/camera/distortedToUndistortedImageCoord.m": "927bd6cfa6ae564188e6a7ff57d47589f61da4c99877198f15466fe42a8f768a",
+        "utils/camera/distortedToUndistortedSensorCoord.m": "f5fa510f5ffc05c08b03ad457ddd0d79c12bfa28a1c2fcd0f8e269e71eb8bfe7",
+        "utils/camera/getRotTrans.m": "34d185efaf1a92f027e6ceb9caeac41ca82cf79604330e91ceee9e89a604dcfd",
+        "utils/camera/imageToWorld.m": "68e26bf16414142c26c32813b0f7c6f5681b654c266d8b83f7094096b7dd1d64",
+        "utils/camera/parseCameraParameters.m": "20f4662a47bd123513187e29a901918196680808a7f94129ab2afb7b06e989a4",
+        "utils/camera/undistortedToDistortedImageCoord.m": "008ceb355b579878f7913f1abd64d18d7a4a544161cc2ad1f2815f3e84184f7a",
+        "utils/camera/undistortedToDistortedSensorCoord.m": "22d1b1bba6865e16c85f1fb2dcb4bfa954a8352e6e9f280ea4c152834507de6b",
+        "utils/camera/worldToImage.m": "a53c46baa316f13ce4b6c0177135cb08dc9ea02c332adebca8260b2be21f1560",
+        "utils/classIDToString.m": "efde74df8d8f3f1230d86d5be5d2e92594e46858787034107a615c90468d044d",
+        "utils/classStringToID.m": "e9dd4eeb313210134263f96a75a3400e5f2236bb9f71945f89a1ef84f0826c58",
+        "utils/cleanRequired.m": "8dcbfa7fc951526608df399cc9eaf87cc61fbdf1332ff47996e9367e5f60ab23",
+        "utils/clearMOTLoopMatlab.m": "b247c0f1604e8c689fd90fd7a12ecadc160687a5ce46152da80425c14469a9a9",
+        "utils/clearMOTMex.cpp": "b2ac14029f421cad40c396c44342295028e61d069d97c8b683b5b74b9bfc243f",
+        "utils/clearMOTMex.mexa64": "5e106928555c18eea53604088afded146297a8c2d1ae3cd3b0abf9feab4fde79",
+        "utils/convertMatToStruct.m": "383e9f6fbaca977771c0d83cc0b96b74e6c4546eb248657ea00bc6d634a26cd1",
+        "utils/convertTXTToStruct.m": "43683e6b2e359c1dcd347d28069bbbde104d7aaa33ef97898e33fb4757745f61",
+        "utils/costBlockMex.cpp": "32ea59674c07e5a7284cd28df1f235844b9f5d4b2a2bdea6da66f59f96ce70bf",
+        "utils/costBlockMex.mexa64": "e59649aebc376cd390de2b9968dcaa41fd919398d893110cb6ea8bf640b37a60",
+        "utils/costFunction.m": "1b072fa1e4237df59007dda3bf69335d0bc61acbe6e4c14bfa4bab4ee254cdbc",
+        "utils/evaluateBenchmark.m": "a384056c8099e453a627235b6354bab6e51cb01075f37713b446a2a6a853fcba",
+        "utils/evaluateMultiCam.m": "50625fe8d5414349971ed8393c60f0bf454815b40eee495e72aa87fb52d1bc55",
+        "utils/external/PrintTable.m": "5b969532a4a0b7ba3b557be709618ac3c563f72898bfe931dddde74537d7a5b7",
+        "utils/external/iniconfig/IniConfig.m": "6a5b0940e6580e16012871310caee9479b4eed8f8f36767e5565bf88393b6214",
+        "utils/getClassLabels.m": "d1c932ce0d16a61761ae7d5ecd4f1a75310f922a408bc08e3de9bd38c26012ed",
+        "utils/getImgExt.m": "a6dec507ba56a6d020185637ba6c2f02dad7641971e014bd903f20bf41d3788c",
+        "utils/getROIs.m": "a69d33e8c3f0fa05b9ab21dc18f1dc53ec71a17eef1c8c4ed1daaf98fc44ab1e",
+        "utils/getSeqInfoFromFile.m": "903ef0f9ba4b0a8136c7b828c1c26bb9731e5b2f3605beae31ab63e15a5cb788",
+        "utils/parseSequences2.m": "a629d0516d546851e1e8cc843448370fbaf59faeea1b4e40f8ec8d3896795246",
+        "utils/preprocessResult.m": "08d1c9f068750509b94406d586b56cdafe8d940e953546727b0b3d79572a93f9",
+        "utils/printMetrics.m": "838babd87eae7eaf5f15d8a8dd12feea54c78acf0275939bbce4e8cc1d500035",
+        "utils/printMetricsDet.m": "992731de10faa2aaebc6dd03bae8d714f32e53bcaa72db64bf9dd5309f803db9",
+        "utils/printMetricsExt.m": "34d1e4ccbd800ad169ddbb850f8a6f1a26ba12a4224954b4bc7683cbeac257c1"
+      },
+      "per_scene_TrackEval": {
+        "00001garden": {
+          "HOTA": 68.39625681595687,
+          "AssA": 69.92129393474377,
+          "DetA": 67.68709247706822,
+          "IDF1": 83.7564066346503,
+          "MOTA": 84.302420009745,
+          "IDSW": 134,
+          "Frag": 73,
+          "CLR_TP": 11490,
+          "CLR_FN": 824,
+          "CLR_FP": 975
+        },
+        "00003garden": {
+          "HOTA": 62.15909795111803,
+          "AssA": 53.756312066098054,
+          "DetA": 72.13900725518778,
+          "IDF1": 70.4886340910606,
+          "MOTA": 85.78457805338367,
+          "IDSW": 105,
+          "Frag": 90,
+          "CLR_TP": 13999,
+          "CLR_FN": 837,
+          "CLR_FP": 1167
+        },
+        "00005garden": {
+          "HOTA": 62.82497978554543,
+          "AssA": 65.69471358928807,
+          "DetA": 60.67275152287625,
+          "IDF1": 77.91837390535872,
+          "MOTA": 75.06428623907134,
+          "IDSW": 198,
+          "Frag": 248,
+          "CLR_TP": 21599,
+          "CLR_FN": 5623,
+          "CLR_FP": 967
+        },
+        "00012night": {
+          "HOTA": 63.37034214475858,
+          "AssA": 58.360023533178804,
+          "DetA": 69.10500109653593,
+          "IDF1": 64.94818652849742,
+          "MOTA": 72.64150943396226,
+          "IDSW": 182,
+          "Frag": 40,
+          "CLR_TP": 3458,
+          "CLR_FN": 146,
+          "CLR_FP": 658
+        },
+        "00019court2": {
+          "HOTA": 64.56382774455885,
+          "AssA": 54.75989176556432,
+          "DetA": 76.17806992234996,
+          "IDF1": 73.50303731559156,
+          "MOTA": 88.75739644970415,
+          "IDSW": 138,
+          "Frag": 13,
+          "CLR_TP": 3336,
+          "CLR_FN": 44,
+          "CLR_FP": 198
+        },
+        "00022gate": {
+          "HOTA": 72.13822800579536,
+          "AssA": 74.39235086479347,
+          "DetA": 69.95680173073812,
+          "IDF1": 90.78323167780037,
+          "MOTA": 85.90469234982655,
+          "IDSW": 40,
+          "Frag": 72,
+          "CLR_TP": 9577,
+          "CLR_FN": 1377,
+          "CLR_FP": 127
+        },
+        "00023court4": {
+          "HOTA": 86.4218867926749,
+          "AssA": 86.52570436089422,
+          "DetA": 86.35527866635022,
+          "IDF1": 98.43454438718936,
+          "MOTA": 98.19025218868418,
+          "IDSW": 69,
+          "Frag": 15,
+          "CLR_TP": 15227,
+          "CLR_FN": 79,
+          "CLR_FP": 129
+        },
+        "00027square": {
+          "HOTA": 60.7953144696641,
+          "AssA": 52.036653103319544,
+          "DetA": 71.08824074435175,
+          "IDF1": 69.85764528554681,
+          "MOTA": 87.17964943365185,
+          "IDSW": 73,
+          "Frag": 43,
+          "CLR_TP": 13951,
+          "CLR_FN": 1852,
+          "CLR_FP": 101
+        },
+        "00028path": {
+          "HOTA": 51.07190684231691,
+          "AssA": 36.14557286624174,
+          "DetA": 72.31522872936772,
+          "IDF1": 49.384434999267185,
+          "MOTA": 88.45295515081708,
+          "IDSW": 224,
+          "Frag": 47,
+          "CLR_TP": 12956,
+          "CLR_FN": 935,
+          "CLR_FP": 445
+        },
+        "00029path": {
+          "HOTA": 55.222687545305405,
+          "AssA": 45.69549420837717,
+          "DetA": 66.8934191196447,
+          "IDF1": 65.9664558702227,
+          "MOTA": 76.22130069788612,
+          "IDSW": 136,
+          "Frag": 54,
+          "CLR_TP": 7985,
+          "CLR_FN": 1902,
+          "CLR_FP": 313
+        },
+        "00117wood": {
+          "HOTA": 48.29123822407006,
+          "AssA": 37.17778864578259,
+          "DetA": 62.773112699944164,
+          "IDF1": 51.34850750401506,
+          "MOTA": 72.4086724086724,
+          "IDSW": 323,
+          "Frag": 162,
+          "CLR_TP": 15896,
+          "CLR_FN": 939,
+          "CLR_FP": 3383
+        },
+        "00120park": {
+          "HOTA": 55.30054645312789,
+          "AssA": 43.888383308361405,
+          "DetA": 69.98489210551742,
+          "IDF1": 62.40832400014451,
+          "MOTA": 83.7248568492145,
+          "IDSW": 256,
+          "Frag": 106,
+          "CLR_TP": 12859,
+          "CLR_FN": 763,
+          "CLR_FP": 1198
+        },
+        "00144road": {
+          "HOTA": 44.48409849463646,
+          "AssA": 51.015719928794155,
+          "DetA": 39.90895184508602,
+          "IDF1": 50.07433979184859,
+          "MOTA": 33.906902725283466,
+          "IDSW": 297,
+          "Frag": 322,
+          "CLR_TP": 14690,
+          "CLR_FN": 5418,
+          "CLR_FP": 7575
+        },
+        "00146bridge": {
+          "HOTA": 41.17394506799816,
+          "AssA": 45.19492199572744,
+          "DetA": 38.86855599386954,
+          "IDF1": 52.28659811052587,
+          "MOTA": 35.756466772020296,
+          "IDSW": 432,
+          "Frag": 276,
+          "CLR_TP": 8315,
+          "CLR_FN": 3708,
+          "CLR_FP": 3584
+        }
+      },
+      "per_scene_MATLAB": {
+        "00001garden": {
+          "CVIDF1": 83.33669639614189,
+          "CVMA": 83.75832385902225,
+          "identity_counts": {
+            "IDTP": 10325,
+            "IDFP": 2140,
+            "IDFN": 1989,
+            "n_gt": 12314,
+            "n_tr": 12465
+          },
+          "CLEAR_counts": {
+            "fn": 822,
+            "fp": 973,
+            "id_switches": 205,
+            "tp": 11492
+          }
+        },
+        "00003garden": {
+          "CVIDF1": 69.40870608626092,
+          "CVMA": 83.1558371528714,
+          "identity_counts": {
+            "IDTP": 10412,
+            "IDFP": 4754,
+            "IDFN": 4424,
+            "n_gt": 14836,
+            "n_tr": 15166
+          },
+          "CLEAR_counts": {
+            "fn": 837,
+            "fp": 1167,
+            "id_switches": 495,
+            "tp": 13999
+          }
+        },
+        "00005garden": {
+          "CVIDF1": 77.40821081385073,
+          "CVMA": 73.82999044890161,
+          "identity_counts": {
+            "IDTP": 19270,
+            "IDFP": 3296,
+            "IDFN": 7952,
+            "n_gt": 27222,
+            "n_tr": 22566
+          },
+          "CLEAR_counts": {
+            "fn": 5611,
+            "fp": 955,
+            "id_switches": 558,
+            "tp": 21611
+          }
+        },
+        "00012night": {
+          "CVIDF1": 64.94818652849742,
+          "CVMA": 52.913429522752494,
+          "identity_counts": {
+            "IDTP": 2507,
+            "IDFP": 1609,
+            "IDFN": 1097,
+            "n_gt": 3604,
+            "n_tr": 4116
+          },
+          "CLEAR_counts": {
+            "fn": 148,
+            "fp": 660,
+            "id_switches": 889,
+            "tp": 3456
+          }
+        },
+        "00019court2": {
+          "CVIDF1": 54.96094879953717,
+          "CVMA": 38.609467455621306,
+          "identity_counts": {
+            "IDTP": 1900,
+            "IDFP": 1634,
+            "IDFN": 1480,
+            "n_gt": 3380,
+            "n_tr": 3534
+          },
+          "CLEAR_counts": {
+            "fn": 43,
+            "fp": 197,
+            "id_switches": 1835,
+            "tp": 3337
+          }
+        },
+        "00022gate": {
+          "CVIDF1": 90.78323167780037,
+          "CVMA": 85.8316596677013,
+          "identity_counts": {
+            "IDTP": 9377,
+            "IDFP": 327,
+            "IDFN": 1577,
+            "n_gt": 10954,
+            "n_tr": 9704
+          },
+          "CLEAR_counts": {
+            "fn": 1377,
+            "fp": 127,
+            "id_switches": 48,
+            "tp": 9577
+          }
+        },
+        "00023court4": {
+          "CVIDF1": 98.43454438718935,
+          "CVMA": 97.71331503985365,
+          "identity_counts": {
+            "IDTP": 15091,
+            "IDFP": 265,
+            "IDFN": 215,
+            "n_gt": 15306,
+            "n_tr": 15356
+          },
+          "CLEAR_counts": {
+            "fn": 80,
+            "fp": 130,
+            "id_switches": 140,
+            "tp": 15226
+          }
+        },
+        "00027square": {
+          "CVIDF1": 69.85764528554681,
+          "CVMA": 85.47744099221667,
+          "identity_counts": {
+            "IDTP": 10428,
+            "IDFP": 3624,
+            "IDFN": 5375,
+            "n_gt": 15803,
+            "n_tr": 14052
+          },
+          "CLEAR_counts": {
+            "fn": 1852,
+            "fp": 101,
+            "id_switches": 342,
+            "tp": 13951
+          }
+        },
+        "00028path": {
+          "CVIDF1": 47.51575553275685,
+          "CVMA": 78.19451443380606,
+          "identity_counts": {
+            "IDTP": 6484,
+            "IDFP": 6917,
+            "IDFN": 7407,
+            "n_gt": 13891,
+            "n_tr": 13401
+          },
+          "CLEAR_counts": {
+            "fn": 938,
+            "fp": 448,
+            "id_switches": 1643,
+            "tp": 12953
+          }
+        },
+        "00029path": {
+          "CVIDF1": 62.68902941985153,
+          "CVMA": 60.47334884191362,
+          "identity_counts": {
+            "IDTP": 5700,
+            "IDFP": 2598,
+            "IDFN": 4187,
+            "n_gt": 9887,
+            "n_tr": 8298
+          },
+          "CLEAR_counts": {
+            "fn": 1905,
+            "fp": 316,
+            "id_switches": 1687,
+            "tp": 7982
+          }
+        },
+        "00117wood": {
+          "CVIDF1": 51.24882317106939,
+          "CVMA": 66.14790614790616,
+          "identity_counts": {
+            "IDTP": 9254,
+            "IDFP": 10025,
+            "IDFN": 7581,
+            "n_gt": 16835,
+            "n_tr": 19279
+          },
+          "CLEAR_counts": {
+            "fn": 926,
+            "fp": 3370,
+            "id_switches": 1403,
+            "tp": 15909
+          }
+        },
+        "00120park": {
+          "CVIDF1": 60.59467466310199,
+          "CVMA": 62.73674937600939,
+          "identity_counts": {
+            "IDTP": 8386,
+            "IDFP": 5671,
+            "IDFN": 5236,
+            "n_gt": 13622,
+            "n_tr": 14057
+          },
+          "CLEAR_counts": {
+            "fn": 760,
+            "fp": 1195,
+            "id_switches": 3121,
+            "tp": 12862
+          }
+        },
+        "00144road": {
+          "CVIDF1": 45.67059212234206,
+          "CVMA": 19.827929182414962,
+          "identity_counts": {
+            "IDTP": 9676,
+            "IDFP": 12589,
+            "IDFN": 10432,
+            "n_gt": 20108,
+            "n_tr": 22265
+          },
+          "CLEAR_counts": {
+            "fn": 5418,
+            "fp": 7575,
+            "id_switches": 3128,
+            "tp": 14690
+          }
+        },
+        "00146bridge": {
+          "CVIDF1": 41.024997909873754,
+          "CVMA": 13.299509273891708,
+          "identity_counts": {
+            "IDTP": 4907,
+            "IDFP": 6992,
+            "IDFN": 7116,
+            "n_gt": 12023,
+            "n_tr": 11899
+          },
+          "CLEAR_counts": {
+            "fn": 3674,
+            "fp": 3550,
+            "id_switches": 3200,
+            "tp": 8349
+          }
+        }
+      },
+      "raw_GT_modified": false
+    },
+    "B1": {
+      "metrics_sha256": "af5b4b872862b4628e99405a5d21d772930516a4952b2d3933dd6896efcf74fe",
+      "coverage": [
+        {
+          "scene": 1,
+          "frames": 1005,
+          "predictions_sha256": "62d94e73802eee817711d10c6828d966ff3bbbaaac89d095127976ac7aa815a5"
+        },
+        {
+          "scene": 2,
+          "frames": 1660,
+          "predictions_sha256": "4a83ec7158eebfaf8e9747aa11cdadfd52eca297f86fde9ef5df77e79543d1c6"
+        },
+        {
+          "scene": 3,
+          "frames": 900,
+          "predictions_sha256": "138cd6e39d9bb8ee1ae2a2bf321fc37444f6a01f57374db10adf29b70929b015"
+        },
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "5a708bd5c34823e2e1bf847ad13178d1e35ac4593c41c92146c1f16ee22f9a21"
+        },
+        {
+          "scene": 5,
+          "frames": 2533,
+          "predictions_sha256": "a840ca9938bdcd1d933d721bdb98a71ab8cf6161872327fafbcc1a879474a997"
+        },
+        {
+          "scene": 6,
+          "frames": 851,
+          "predictions_sha256": "7793c9263567bd1187080f2b97c8aa87b2d3aaf90e76fdb6593f7921d8e406a0"
+        },
+        {
+          "scene": 7,
+          "frames": 2055,
+          "predictions_sha256": "b839e7999233164b93a4f5ae3a4050681c6206faad60a9f85611421107f29e7c"
+        },
+        {
+          "scene": 8,
+          "frames": 2061,
+          "predictions_sha256": "8b81023b81926cd608e538f2c270ef634697abb97f34550973a18627b717ea7f"
+        },
+        {
+          "scene": 9,
+          "frames": 1969,
+          "predictions_sha256": "518b7dd92977fa4dfb4d3cec79b7fecf49b931b1331e0ef1b118117f9e2c7fae"
+        },
+        {
+          "scene": 10,
+          "frames": 1748,
+          "predictions_sha256": "272cfeee13e644b40b61e66f11011e9387905dbc0ab94512b48441d92624b06d"
+        },
+        {
+          "scene": 11,
+          "frames": 1004,
+          "predictions_sha256": "10617acbc323278b37b24733ec0ab6ee325e2bbcb8eff493eae764d6751b6235"
+        },
+        {
+          "scene": 12,
+          "frames": 1001,
+          "predictions_sha256": "2d3012bdd1287875a6091b7f2d2c403316d03ed62f4930e5fae51f2918b44710"
+        },
+        {
+          "scene": 13,
+          "frames": 1040,
+          "predictions_sha256": "f75a3fe33bb1697943c120676eb169c1aca8b49973bffbb665babd899413e28d"
+        },
+        {
+          "scene": 14,
+          "frames": 1043,
+          "predictions_sha256": "633d15042f5ae7a05067073349e4d507fb97b7f8622dd854c28987ce316a6352"
+        },
+        {
+          "scene": 15,
+          "frames": 1904,
+          "predictions_sha256": "0000637ef7708fb49b8098d7fb82ed48aa700e741337a7015fb6b7218e635dbf"
+        },
+        {
+          "scene": 16,
+          "frames": 1043,
+          "predictions_sha256": "9dd082a0a176d4f3c6abcb06ec854f4898e0955547d5c5999ed0e0c7cb010137"
+        },
+        {
+          "scene": 17,
+          "frames": 1040,
+          "predictions_sha256": "5871b99f05ac90c94446a22013506d2a482a529e995336838d559b13b840567b"
+        },
+        {
+          "scene": 18,
+          "frames": 1001,
+          "predictions_sha256": "7ef2646b5a7b10ae521d399884b210b31808e2377bbf8ae0c364724d7bc7dc46"
+        },
+        {
+          "scene": 19,
+          "frames": 1001,
+          "predictions_sha256": "4fa04ad53c82b023cc32de04fa77700e51e6c58c209dba53772a5b1771853b8e"
+        },
+        {
+          "scene": 20,
+          "frames": 1006,
+          "predictions_sha256": "7137332bbaed18cfd597a5e59dec6978cdeb04b21dd45e63b0727b21409bc0f6"
+        },
+        {
+          "scene": 21,
+          "frames": 1052,
+          "predictions_sha256": "d19d7f98e1ddce6807cb502e6068495460245b5e33e801971be3ac3101ad4cb7"
+        },
+        {
+          "scene": 22,
+          "frames": 1201,
+          "predictions_sha256": "357dd1cbf71517765c270993c0d86ca063a702496269614b8ad8d6397fdeade6"
+        }
+      ],
+      "excluded_raw_GT_scenes": [
+        {
+          "scene": 5,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 12,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 13,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 14,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 17,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 20,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 21,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        },
+        {
+          "scene": 22,
+          "reason": "RAW_GT_DUPLICATE_OR_VERSION_INVALID"
+        }
+      ],
+      "TrackEval_dependency_hashes": {
+        "trackeval/__init__.py": "636586f4cc90a0be21e8aff605fb7fe97c089b3c46fafd43745d4c41bedceae3",
+        "trackeval/_timing.py": "62e60638efc675bccc35c7da65158f0f19ce31f332121efe7cc748bd92ad2b30",
+        "trackeval/datasets/__init__.py": "f0b3346f098eefd359f292cfd7b95fde2ba407f7d4698aa86de602e046b588f2",
+        "trackeval/datasets/_base_dataset.py": "9094b50490b5567ed6f22cac6aa6ec969f4d467d4d28515546e0b875ffe976f5",
+        "trackeval/datasets/_timing.py": "62e60638efc675bccc35c7da65158f0f19ce31f332121efe7cc748bd92ad2b30",
+        "trackeval/datasets/bdd100k.py": "e9d5c62f164185bc996b02c61f54f0cf02c09098a715ed04aa9971d6a8de927d",
+        "trackeval/datasets/davis.py": "4c55560bd58892e30a794b68fdf7ecb08dfdb5a1e51a9b85b1ba21fae78eaf90",
+        "trackeval/datasets/kitti_2d_box.py": "050ac54284a982b5ab400ae9f29022370f52df6d6e03566fd8b30a0be7828a97",
+        "trackeval/datasets/kitti_mots.py": "5d62bddeb7713e16107161556f619b58a39e5397c3c6eee0dba965b82cb8ea33",
+        "trackeval/datasets/mot_challenge_2d_box.py": "6935c306db2ab32c900df7ea46c009c85419931708f18dc6c61ef6fa0a327ec1",
+        "trackeval/datasets/mots_challenge.py": "23b02bbdb33916739cb10c5139347c1727c6f1467e6ee974b6af6e6072c13de7",
+        "trackeval/datasets/rob_mots.py": "418af99e5b3d849a36229e9257f97c34422d44ab39e8e404c1b1aae9f61b56e3",
+        "trackeval/datasets/rob_mots_classmap.py": "db79031762d5fb55c009999cdb89586a70d11a1deaf2e1948192387872a64d1e",
+        "trackeval/datasets/run_rob_mots.py": "5d1bb96c2bb376b7cb4e00cada1e1ecab3974d6b06fad080f9e1708358a00a4a",
+        "trackeval/datasets/tao.py": "82fb49965e30b2d108aecdd38e538d5c0a24bc383ee347e19d2195fd8b3e4f3f",
+        "trackeval/datasets/utils.py": "e20e57f0badcd7f9d768c96f244fbefc0fb2b4a9e28808f929f30e11aef6fc19",
+        "trackeval/datasets/youtube_vis.py": "aa04208b1b7e5fa9018e0066d42be03c0dd68f4bf7dfcb626c85fd7dc52cac2c",
+        "trackeval/eval.py": "559fe9dbc6c0fff7f8d81ad16f03bc2900f9e8e53f4f49cd4bdf0c24dd34eab5",
+        "trackeval/metrics/__init__.py": "98d7706e37f55b1f91736037652689636836768d3cb76bac477d15beeb08dddb",
+        "trackeval/metrics/_base_metric.py": "a16618762601ad8f4a8e5a25a7490ee8fe003ab2850b894088bb6bd4f1b9db0b",
+        "trackeval/metrics/clear.py": "349daafdbb009f6cd71cf66ff1c9b8074940cd3310fcd663151d644b7ff0e5e3",
+        "trackeval/metrics/count.py": "ffce9a3ed557f164f7a811f0a8cf66f609eec0af822dbc87d8fdaef560032163",
+        "trackeval/metrics/hota.py": "421cb37dd492ecf2591114ea7e4a0d006cd0401225551717fd0b50473c8505d5",
+        "trackeval/metrics/identity.py": "33b4ef7e11a24c47c6060eb2464cb92167aea42e8c0e6f652b10ca317872028c",
+        "trackeval/metrics/j_and_f.py": "ad1339106129664658b47e2db142a02f22c6c711664a9e0930feb9bde2cc213f",
+        "trackeval/metrics/track_map.py": "492b588ca63d1adce96530f914239530fac1b018e5a2c603f036a3337d9aefb0",
+        "trackeval/metrics/vace.py": "13db97a61cc7291e5356c80a0a4f11a88b75a9664a81fc903d6bd41a1cd6ffdc",
+        "trackeval/plotting.py": "6d3ebada977b6990527dab143e0e4a0bbf5f1dd64f46bf214701a64acadba13f",
+        "trackeval/utils.py": "e20e57f0badcd7f9d768c96f244fbefc0fb2b4a9e28808f929f30e11aef6fc19"
+      },
+      "native_MATLAB_dependency_hashes": {
+        "Demo.m": "ca0d0e0519200fe9f2d5223bd2d37f1e23822f277d4bb9103ddf77489396b2c4",
+        "average.m": "9dafb07cd513dac30e64ef02d8bbc7e249ccea6ed20317e5f6f84dd30517526a",
+        "compile.m": "cbc1d8b6a408281d5a88ff7ae22105eb11416e251cabf54e1f974aad41b26cf1",
+        "evaluateDetection.m": "49279a7a086ea00bd42b9a85919d31e087499efaf153428bdec709264dd09fea",
+        "evaluateTracking.m": "3a9de497409fc2bfc1c5534cda0f9ce9ab10a425e45c79b557526bc51fb83aae",
+        "utils/CLEAR_MOD_HUN.m": "4e7aaf3351fcf0841e5236dc006c0660c760fab464be5a7beb170cbc549782c5",
+        "utils/CLEAR_MOT_HUN.m": "d0ce5953d9c9a5f65296bf955e90e305de2944c9d045aeeeb3c4e7cbc73235c8",
+        "utils/Hungarian.m": "1d83ec20881144f6ad3839ccc0ea00bcd4a805eae3d67c0a18713e37fa516241",
+        "utils/IDmeasures.m": "90ce9ccf607978bd69d1071238ff1eb0f477489067465b267623e83bad2d1299",
+        "utils/MinCostMatching.cpp": "dd22d80d78abb900c2b41b2b7de2e5e8f525b04287a65cf5e9adbcfefebfb555",
+        "utils/MinCostMatching.mexa64": "0c44d71aff3dd90161b27568e10d237e627731e9c8e331b4dc04ed8ed3a45efc",
+        "utils/boxIntersect.m": "70971beee2ea56a596e9d783b12b61e89121cd76005eebf53fa825cf6c3175a5",
+        "utils/boxUnion.m": "b13e20376261a90938bafc5acd16df75ed38ea17da506962239c1108e3843206",
+        "utils/boxiou.m": "ca8a162b0ed29aae61d353956a13f94ed658a26368f322973de90184f2a67272",
+        "utils/camera/calib_towncentre.m": "1738b75551c9fd3951e047e001c694b2e7bfe59284fe9471124aaa29462c6c02",
+        "utils/camera/distortedToUndistortedImageCoord.m": "927bd6cfa6ae564188e6a7ff57d47589f61da4c99877198f15466fe42a8f768a",
+        "utils/camera/distortedToUndistortedSensorCoord.m": "f5fa510f5ffc05c08b03ad457ddd0d79c12bfa28a1c2fcd0f8e269e71eb8bfe7",
+        "utils/camera/getRotTrans.m": "34d185efaf1a92f027e6ceb9caeac41ca82cf79604330e91ceee9e89a604dcfd",
+        "utils/camera/imageToWorld.m": "68e26bf16414142c26c32813b0f7c6f5681b654c266d8b83f7094096b7dd1d64",
+        "utils/camera/parseCameraParameters.m": "20f4662a47bd123513187e29a901918196680808a7f94129ab2afb7b06e989a4",
+        "utils/camera/undistortedToDistortedImageCoord.m": "008ceb355b579878f7913f1abd64d18d7a4a544161cc2ad1f2815f3e84184f7a",
+        "utils/camera/undistortedToDistortedSensorCoord.m": "22d1b1bba6865e16c85f1fb2dcb4bfa954a8352e6e9f280ea4c152834507de6b",
+        "utils/camera/worldToImage.m": "a53c46baa316f13ce4b6c0177135cb08dc9ea02c332adebca8260b2be21f1560",
+        "utils/classIDToString.m": "efde74df8d8f3f1230d86d5be5d2e92594e46858787034107a615c90468d044d",
+        "utils/classStringToID.m": "e9dd4eeb313210134263f96a75a3400e5f2236bb9f71945f89a1ef84f0826c58",
+        "utils/cleanRequired.m": "8dcbfa7fc951526608df399cc9eaf87cc61fbdf1332ff47996e9367e5f60ab23",
+        "utils/clearMOTLoopMatlab.m": "b247c0f1604e8c689fd90fd7a12ecadc160687a5ce46152da80425c14469a9a9",
+        "utils/clearMOTMex.cpp": "b2ac14029f421cad40c396c44342295028e61d069d97c8b683b5b74b9bfc243f",
+        "utils/clearMOTMex.mexa64": "5e106928555c18eea53604088afded146297a8c2d1ae3cd3b0abf9feab4fde79",
+        "utils/convertMatToStruct.m": "383e9f6fbaca977771c0d83cc0b96b74e6c4546eb248657ea00bc6d634a26cd1",
+        "utils/convertTXTToStruct.m": "43683e6b2e359c1dcd347d28069bbbde104d7aaa33ef97898e33fb4757745f61",
+        "utils/costBlockMex.cpp": "32ea59674c07e5a7284cd28df1f235844b9f5d4b2a2bdea6da66f59f96ce70bf",
+        "utils/costBlockMex.mexa64": "e59649aebc376cd390de2b9968dcaa41fd919398d893110cb6ea8bf640b37a60",
+        "utils/costFunction.m": "1b072fa1e4237df59007dda3bf69335d0bc61acbe6e4c14bfa4bab4ee254cdbc",
+        "utils/evaluateBenchmark.m": "a384056c8099e453a627235b6354bab6e51cb01075f37713b446a2a6a853fcba",
+        "utils/evaluateMultiCam.m": "50625fe8d5414349971ed8393c60f0bf454815b40eee495e72aa87fb52d1bc55",
+        "utils/external/PrintTable.m": "5b969532a4a0b7ba3b557be709618ac3c563f72898bfe931dddde74537d7a5b7",
+        "utils/external/iniconfig/IniConfig.m": "6a5b0940e6580e16012871310caee9479b4eed8f8f36767e5565bf88393b6214",
+        "utils/getClassLabels.m": "d1c932ce0d16a61761ae7d5ecd4f1a75310f922a408bc08e3de9bd38c26012ed",
+        "utils/getImgExt.m": "a6dec507ba56a6d020185637ba6c2f02dad7641971e014bd903f20bf41d3788c",
+        "utils/getROIs.m": "a69d33e8c3f0fa05b9ab21dc18f1dc53ec71a17eef1c8c4ed1daaf98fc44ab1e",
+        "utils/getSeqInfoFromFile.m": "903ef0f9ba4b0a8136c7b828c1c26bb9731e5b2f3605beae31ab63e15a5cb788",
+        "utils/parseSequences2.m": "a629d0516d546851e1e8cc843448370fbaf59faeea1b4e40f8ec8d3896795246",
+        "utils/preprocessResult.m": "08d1c9f068750509b94406d586b56cdafe8d940e953546727b0b3d79572a93f9",
+        "utils/printMetrics.m": "838babd87eae7eaf5f15d8a8dd12feea54c78acf0275939bbce4e8cc1d500035",
+        "utils/printMetricsDet.m": "992731de10faa2aaebc6dd03bae8d714f32e53bcaa72db64bf9dd5309f803db9",
+        "utils/printMetricsExt.m": "34d1e4ccbd800ad169ddbb850f8a6f1a26ba12a4224954b4bc7683cbeac257c1"
+      },
+      "per_scene_TrackEval": {
+        "00001garden": {
+          "HOTA": 65.78023656224927,
+          "AssA": 64.54304618657552,
+          "DetA": 67.8281313856264,
+          "IDF1": 79.93865773437184,
+          "MOTA": 80.38817605976936,
+          "IDSW": 618,
+          "Frag": 74,
+          "CLR_TP": 11491,
+          "CLR_FN": 823,
+          "CLR_FP": 974
+        },
+        "00003garden": {
+          "HOTA": 63.24718184341398,
+          "AssA": 55.701390054351826,
+          "DetA": 72.22342976993767,
+          "IDF1": 71.66188920738618,
+          "MOTA": 80.46643300080885,
+          "IDSW": 892,
+          "Frag": 91,
+          "CLR_TP": 13998,
+          "CLR_FN": 838,
+          "CLR_FP": 1168
+        },
+        "00005garden": {
+          "HOTA": 57.931429441250195,
+          "AssA": 55.839099802209034,
+          "DetA": 60.61504753116195,
+          "IDF1": 69.90439463324496,
+          "MOTA": 71.60017632797002,
+          "IDSW": 1135,
+          "Frag": 251,
+          "CLR_TP": 21596,
+          "CLR_FN": 5626,
+          "CLR_FP": 970
+        },
+        "00012night": {
+          "HOTA": 72.24527661789054,
+          "AssA": 75.34251140692164,
+          "DetA": 69.35054710476493,
+          "IDF1": 84.11917098445596,
+          "MOTA": 71.58712541620422,
+          "IDSW": 220,
+          "Frag": 39,
+          "CLR_TP": 3458,
+          "CLR_FN": 146,
+          "CLR_FP": 658
+        },
+        "00019court2": {
+          "HOTA": 72.13498957424825,
+          "AssA": 68.38855648612252,
+          "DetA": 76.10685623494867,
+          "IDF1": 85.01590974833671,
+          "MOTA": 92.24852071005917,
+          "IDSW": 20,
+          "Frag": 13,
+          "CLR_TP": 3336,
+          "CLR_FN": 44,
+          "CLR_FP": 198
+        },
+        "00022gate": {
+          "HOTA": 71.1371698835621,
+          "AssA": 72.33705606550294,
+          "DetA": 69.96301947488709,
+          "IDF1": 87.22044728434504,
+          "MOTA": 84.95526748219828,
+          "IDSW": 142,
+          "Frag": 76,
+          "CLR_TP": 9576,
+          "CLR_FN": 1378,
+          "CLR_FP": 128
+        },
+        "00023court4": {
+          "HOTA": 63.529900863576174,
+          "AssA": 46.777159989503566,
+          "DetA": 86.34323940876767,
+          "IDF1": 62.976974757028245,
+          "MOTA": 91.59153273226185,
+          "IDSW": 1077,
+          "Frag": 17,
+          "CLR_TP": 15226,
+          "CLR_FN": 80,
+          "CLR_FP": 130
+        },
+        "00027square": {
+          "HOTA": 49.81817284119797,
+          "AssA": 34.99468273464751,
+          "DetA": 71.0861906995837,
+          "IDF1": 51.314687657008875,
+          "MOTA": 83.62336265266089,
+          "IDSW": 635,
+          "Frag": 44,
+          "CLR_TP": 13951,
+          "CLR_FN": 1852,
+          "CLR_FP": 101
+        },
+        "00028path": {
+          "HOTA": 61.295198852155906,
+          "AssA": 51.48571716181055,
+          "DetA": 73.00384986578769,
+          "IDF1": 70.12311300014656,
+          "MOTA": 87.8194514433806,
+          "IDSW": 312,
+          "Frag": 61,
+          "CLR_TP": 12956,
+          "CLR_FN": 935,
+          "CLR_FP": 445
+        },
+        "00029path": {
+          "HOTA": 63.06507087868331,
+          "AssA": 59.240445351867635,
+          "DetA": 67.26698886479066,
+          "IDF1": 75.4797910365686,
+          "MOTA": 75.27055729746131,
+          "IDSW": 228,
+          "Frag": 55,
+          "CLR_TP": 7984,
+          "CLR_FN": 1903,
+          "CLR_FP": 314
+        },
+        "00117wood": {
+          "HOTA": 48.71508563124188,
+          "AssA": 37.812314191034055,
+          "DetA": 62.79374234905806,
+          "IDF1": 55.15312621144155,
+          "MOTA": 64.72230472230473,
+          "IDSW": 1623,
+          "Frag": 163,
+          "CLR_TP": 15899,
+          "CLR_FN": 936,
+          "CLR_FP": 3380
+        },
+        "00120park": {
+          "HOTA": 65.555596605916,
+          "AssA": 60.69490749744364,
+          "DetA": 71.1177697438588,
+          "IDF1": 74.04891795223816,
+          "MOTA": 83.17427690500661,
+          "IDSW": 333,
+          "Frag": 105,
+          "CLR_TP": 12860,
+          "CLR_FN": 762,
+          "CLR_FP": 1197
+        },
+        "00144road": {
+          "HOTA": 42.96919073831791,
+          "AssA": 47.41495446821893,
+          "DetA": 39.9591519451297,
+          "IDF1": 47.6152266773653,
+          "MOTA": 31.221404416152776,
+          "IDSW": 835,
+          "Frag": 328,
+          "CLR_TP": 14689,
+          "CLR_FN": 5419,
+          "CLR_FP": 7576
+        },
+        "00146bridge": {
+          "HOTA": 38.32106013242614,
+          "AssA": 39.99341295233966,
+          "DetA": 39.29927675545805,
+          "IDF1": 42.51316779533484,
+          "MOTA": 31.772436164018963,
+          "IDSW": 903,
+          "Frag": 284,
+          "CLR_TP": 8311,
+          "CLR_FN": 3712,
+          "CLR_FP": 3588
+        }
+      },
+      "per_scene_MATLAB": {
+        "00001garden": {
+          "CVIDF1": 76.69397473667219,
+          "CVMA": 71.95874614260191,
+          "identity_counts": {
+            "IDTP": 9502,
+            "IDFP": 2963,
+            "IDFN": 2812,
+            "n_gt": 12314,
+            "n_tr": 12465
+          },
+          "CLEAR_counts": {
+            "fn": 822,
+            "fp": 973,
+            "id_switches": 1658,
+            "tp": 11492
+          }
+        },
+        "00003garden": {
+          "CVIDF1": 67.7221518565429,
+          "CVMA": 62.597735238608784,
+          "identity_counts": {
+            "IDTP": 10159,
+            "IDFP": 5007,
+            "IDFN": 4677,
+            "n_gt": 14836,
+            "n_tr": 15166
+          },
+          "CLEAR_counts": {
+            "fn": 837,
+            "fp": 1167,
+            "id_switches": 3545,
+            "tp": 13999
+          }
+        },
+        "00005garden": {
+          "CVIDF1": 68.38997348758737,
+          "CVMA": 69.7854676364705,
+          "identity_counts": {
+            "IDTP": 17025,
+            "IDFP": 5541,
+            "IDFN": 10197,
+            "n_gt": 27222,
+            "n_tr": 22566
+          },
+          "CLEAR_counts": {
+            "fn": 5611,
+            "fp": 955,
+            "id_switches": 1659,
+            "tp": 21611
+          }
+        },
+        "00012night": {
+          "CVIDF1": 48.67875647668394,
+          "CVMA": -9.489456159822417,
+          "identity_counts": {
+            "IDTP": 1879,
+            "IDFP": 2237,
+            "IDFN": 1725,
+            "n_gt": 3604,
+            "n_tr": 4116
+          },
+          "CLEAR_counts": {
+            "fn": 144,
+            "fp": 656,
+            "id_switches": 3146,
+            "tp": 3460
+          }
+        },
+        "00019court2": {
+          "CVIDF1": 49.23343939832225,
+          "CVMA": -3.372781065088759,
+          "identity_counts": {
+            "IDTP": 1702,
+            "IDFP": 1832,
+            "IDFN": 1678,
+            "n_gt": 3380,
+            "n_tr": 3534
+          },
+          "CLEAR_counts": {
+            "fn": 43,
+            "fp": 197,
+            "id_switches": 3254,
+            "tp": 3337
+          }
+        },
+        "00022gate": {
+          "CVIDF1": 86.3007067479911,
+          "CVMA": 82.14350922037612,
+          "identity_counts": {
+            "IDTP": 8914,
+            "IDFP": 790,
+            "IDFN": 2040,
+            "n_gt": 10954,
+            "n_tr": 9704
+          },
+          "CLEAR_counts": {
+            "fn": 1378,
+            "fp": 128,
+            "id_switches": 450,
+            "tp": 9576
+          }
+        },
+        "00023court4": {
+          "CVIDF1": 60.10045006848868,
+          "CVMA": 70.55403109891546,
+          "identity_counts": {
+            "IDTP": 9214,
+            "IDFP": 6142,
+            "IDFN": 6092,
+            "n_gt": 15306,
+            "n_tr": 15356
+          },
+          "CLEAR_counts": {
+            "fn": 80,
+            "fp": 130,
+            "id_switches": 4297,
+            "tp": 15226
+          }
+        },
+        "00027square": {
+          "CVIDF1": 41.28621671411824,
+          "CVMA": 50.2815921027653,
+          "identity_counts": {
+            "IDTP": 6163,
+            "IDFP": 7889,
+            "IDFN": 9640,
+            "n_gt": 15803,
+            "n_tr": 14052
+          },
+          "CLEAR_counts": {
+            "fn": 1852,
+            "fp": 101,
+            "id_switches": 5904,
+            "tp": 13951
+          }
+        },
+        "00028path": {
+          "CVIDF1": 53.83262494503884,
+          "CVMA": 26.887913037218347,
+          "identity_counts": {
+            "IDTP": 7346,
+            "IDFP": 6055,
+            "IDFN": 6545,
+            "n_gt": 13891,
+            "n_tr": 13401
+          },
+          "CLEAR_counts": {
+            "fn": 936,
+            "fp": 446,
+            "id_switches": 8774,
+            "tp": 12955
+          }
+        },
+        "00029path": {
+          "CVIDF1": 56.76106681330767,
+          "CVMA": 33.29624759785577,
+          "identity_counts": {
+            "IDTP": 5161,
+            "IDFP": 3137,
+            "IDFN": 4726,
+            "n_gt": 9887,
+            "n_tr": 8298
+          },
+          "CLEAR_counts": {
+            "fn": 1903,
+            "fp": 314,
+            "id_switches": 4378,
+            "tp": 7984
+          }
+        },
+        "00117wood": {
+          "CVIDF1": 52.01860774214986,
+          "CVMA": 35.04009504009504,
+          "identity_counts": {
+            "IDTP": 9393,
+            "IDFP": 9886,
+            "IDFN": 7442,
+            "n_gt": 16835,
+            "n_tr": 19279
+          },
+          "CLEAR_counts": {
+            "fn": 928,
+            "fp": 3372,
+            "id_switches": 6636,
+            "tp": 15907
+          }
+        },
+        "00120park": {
+          "CVIDF1": 55.61617110444742,
+          "CVMA": 30.32594332697107,
+          "identity_counts": {
+            "IDTP": 7697,
+            "IDFP": 6360,
+            "IDFN": 5925,
+            "n_gt": 13622,
+            "n_tr": 14057
+          },
+          "CLEAR_counts": {
+            "fn": 760,
+            "fp": 1195,
+            "id_switches": 7536,
+            "tp": 12862
+          }
+        },
+        "00144road": {
+          "CVIDF1": 32.88886791116985,
+          "CVMA": -4.605132285657443,
+          "identity_counts": {
+            "IDTP": 6968,
+            "IDFP": 15297,
+            "IDFN": 13140,
+            "n_gt": 20108,
+            "n_tr": 22265
+          },
+          "CLEAR_counts": {
+            "fn": 5418,
+            "fp": 7575,
+            "id_switches": 8041,
+            "tp": 14690
+          }
+        },
+        "00146bridge": {
+          "CVIDF1": 32.488922330908785,
+          "CVMA": 10.105630874157868,
+          "identity_counts": {
+            "IDTP": 3886,
+            "IDFP": 8013,
+            "IDFN": 8137,
+            "n_gt": 12023,
+            "n_tr": 11899
+          },
+          "CLEAR_counts": {
+            "fn": 3674,
+            "fp": 3550,
+            "id_switches": 3584,
+            "tp": 8349
+          }
+        }
+      },
+      "raw_GT_modified": false
+    }
+  },
   "baseline_tool_comparability": {
     "GMT Native": {
       "TrackEval_29_source_hashes_equal": true,

@@ -48,6 +48,132 @@ def native_values(metrics):
     return {k: values[k] for k in METRICS}
 
 
+def frozen_native_for_reporting(root, runtime, variant):
+    """Read completed control scores without adopting a new-model TEST scope."""
+    if variant not in ("B0", "B1"):
+        return None
+    folder = root / "evaluation_frozen_references" / variant
+    receipt_path = folder / "frozen_scoring_receipt.json"
+    if not receipt_path.is_file():
+        return None
+    from worldobject_v5_frozen_reference_scoring import require_publication, validate_metric, paths, FULL_SHA
+    scope = require_publication(root, runtime, variant)
+    receipt = read(receipt_path)
+    path = folder / "metrics.json"
+    inputs_path = root / "provenance/frozen_reference_score_inputs" / (variant + ".json")
+    inputs = read(inputs_path)
+    if (receipt.get("status") != "COMPLETE_FROZEN_REFERENCE_FULL22_NATIVE14"
+            or receipt.get("variant") != variant or receipt.get("metrics_sha256") != sha256(path)
+            or receipt.get("input_byte_verification_sha256") != sha256(inputs_path)
+            or receipt.get("checkpoint_sha256") != FULL_SHA
+            or receipt.get("scope_sha256") != sha256(paths(root)[0])
+            or receipt.get("authorization_sha256") != sha256(paths(root)[1])
+            or receipt.get("original_annotations_sha256") != scope["original_TEST_annotations_sha256"]
+            or receipt.get("original_GT_modified") is not False
+            or receipt.get("TRAIN_parameters_or_budget_rules_changed") is not False
+            or inputs.get("status") != "ALL22_FROZEN_REFERENCE_OUTPUT_BYTES_VERIFIED_BEFORE_GT"
+            or inputs.get("variant") != variant or inputs.get("GT_read") is not False
+            or inputs.get("source_sha256") != scope["v5_source_sha256"]
+            or inputs.get("scope_sha256") != receipt["scope_sha256"]
+            or set(inputs["scenes"]) != {str(s) for s in range(1, 23)}
+            or sum(x["candidates"] for x in inputs["scenes"].values()) != 548583):
+        raise ValueError("COMPLETED_FROZEN_NATIVE_RECEIPT_AND_EXACT_INPUTS_REQUIRED_FOR_REPORT")
+    metric = read(path)
+    audit = Path(scope["splits"]["test"]["support_cache"]).parents[1] / "fulltrain_20261022/audit/data_audit.json"
+    validate_metric(metric, inputs, read(audit))
+    return path, metric, {"kind": "FROZEN_CONTROL_FORMAL_TEST_BEFORE_NEW_MODEL_FINAL_TRAIN",
+        "scope_sha256": receipt["scope_sha256"], "authorization_sha256": receipt["authorization_sha256"],
+        "input_byte_verification_sha256": receipt["input_byte_verification_sha256"],
+        "native_scoring_receipt_sha256": sha256(receipt_path), "checkpoint_sha256": FULL_SHA,
+        "canonical_all3_final_gate_adoption_complete": False,
+        "full24_eligibility": "original frozen R2 head; no new membership training"}
+
+
+def frozen_control_report(results, docs, official, proofs, origins, baselines, now):
+    controls = {v: official[v] for v in ("B0", "B1") if v in official}
+    if not controls:
+        return
+    reference = controls.get("B0", baselines["V4 C1"])
+    reference_label = "newly scored B0" if "B0" in controls else "archived V4 C1"
+    delta = {k: controls["B1"][k] - reference[k] for k in METRICS} if "B1" in controls else None
+    per_scene = {}
+    if "B1" in controls and "B0" in controls:
+        for name, values in proofs["B1"]["per_scene_TrackEval"].items():
+            row = {k: values[k] for k in METRICS if k not in ("CVIDF1", "CVMA")}
+            row.update({k: proofs["B1"]["per_scene_MATLAB"][name][k] for k in ("CVIDF1", "CVMA")})
+            old = proofs["B0"]["per_scene_TrackEval"][name]
+            old = {**old, **{k: proofs["B0"]["per_scene_MATLAB"][name][k] for k in ("CVIDF1", "CVMA")}}
+            per_scene[name] = {"B1": row, "B0": {k: old[k] for k in METRICS},
+                "B1_minus_B0": {k: row[k] - old[k] for k in METRICS}}
+    report = {"status": "COMPLETE_B0_B1_FULL22_NATIVE14" if len(controls) == 2 else "PARTIAL_FROZEN_CONTROL_NATIVE_RESULTS",
+        "updated_UTC": now, "metrics": controls, "native_score_origins": {v: origins[v] for v in controls},
+        "metric_sha256": {v: proofs[v]["metrics_sha256"] for v in controls},
+        "B1_minus_reference": delta, "reference": reference_label,
+        "B1_minus_GMT": {k: controls["B1"][k] - baselines["GMT Native"][k] for k in METRICS}
+            if "B1" in controls else None,
+        "per_scene": per_scene,
+        "CVIDF1_scene_improvements": sum(x["B1_minus_B0"]["CVIDF1"] > 1e-8 for x in per_scene.values()),
+        "CVIDF1_scene_regressions": sum(x["B1_minus_B0"]["CVIDF1"] < -1e-8 for x in per_scene.values()),
+        "scope_per_method": {"inference_videos": 22, "paired_times": 29019, "frozen_candidates": 548583,
+            "native_original_legal_scenes": LEGAL_TEST, "excluded_raw_GT_scenes": sorted(set(range(1, 23)) - set(LEGAL_TEST))},
+        "B0_exact_C1_all_times": "independently verified during inference; not inferred from aggregate scores",
+        "metrics_are_new_formal_control_measurements": True,
+        "B1_is_dedicated_trained_B3_model": False, "B1_minus_B0_is_birth_only_causal_effect": False,
+        "B3_minus_B4_geometry_independent_effect": "PENDING_FINAL_FULL24_TRAIN_AND_TEST",
+        "new_TEST_event_attribution_run": False, "native_per_scene_aggregates_only": True,
+        "TRAIN_model_parameters_or_budget_rule_changed_from_TEST": False, "original_GT_modified": False,
+        "B1_output_boxes_scores_ROI_preserved": True,
+        "small_CLEAR_detection_count_changes_do_not_imply_detector_changed": True,
+        "native_interleaved_CLEAR_switches_are_not_TrackEval_IDSW": True}
+    atomic_json(results / "v5_frozen_reference_native_scores.json", report)
+    save_csv(results / "v5_frozen_reference_native_scores.csv", ("method", *METRICS),
+             [{"method": v, **values} for v, values in controls.items()])
+    lines = ["WorldMOT V5 frozen controls: actual full-video native TEST results", "", "Updated UTC: " + now + ".", "",
+        "Each reported control completed all22 videos,29,019 paired times and548,583 frozen candidates. "
+        "TrackEval and the unchanged VisionTrack MATLAB toolkit scored the original legal14 videos. "
+        "The other8 were fully inferred and excluded for original GT defects. No GT was cleaned. "
+        "The early scoring order was published before reading these scores; all B2/B3/B4 training rules remain frozen.", "",
+        "| Method | HOTA | DetA | AssA | IDF1 | CVIDF1 | CVMA | MOTA | IDSW | Frag | TP | FP | FN |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
+    for name, row in {"GMT Native (historical)": baselines["GMT Native"], "V4 C1 (historical)": baselines["V4 C1"], **controls}.items():
+        cells = [str(row[k]) if k in ("IDSW", "Frag", "CLR_TP", "CLR_FP", "CLR_FN") else f"{row[k]:.4f}" for k in METRICS]
+        lines.append("| " + name + " | " + " | ".join(cells) + " |")
+    if delta:
+        lines += ["", f"B1 minus {reference_label}: HOTA {delta['HOTA']:+.4f}, AssA {delta['AssA']:+.4f}, "
+            f"IDF1 {delta['IDF1']:+.4f}, CVIDF1 {delta['CVIDF1']:+.4f}, CVMA {delta['CVMA']:+.4f}, "
+            f"MOTA {delta['MOTA']:+.4f} percentage points; IDSW {delta['IDSW']:+d}, Frag {delta['Frag']:+d}.", "",
+            "This is a negative aggregate result for replacing the old policies while retaining the old "
+            "identity head. B1 also changes history assignment, lifecycle, spatial and appearance-write "
+            "policies, so the full delta cannot isolate Birth alone. B2/B3/B4 use a newly trained dedicated "
+            "membership head; their complete results remain pending. These control scores do not establish "
+            "the independent value of Omega geometry.", "",
+            f"B1 IDF1 minus CVIDF1 is {controls['B1']['IDF1'] - controls['B1']['CVIDF1']:.4f} points; "
+            f"the reference gap is {reference['IDF1'] - reference['CVIDF1']:.4f}. "
+            "Together with the CVIDF1 regression, this is consistent with poorer cross-camera identity "
+            "agreement. It does not identify exact false births, wrong reuses or recovery failures. "
+            "The registered all110-prediction posthoc analysis will count those events after final model TEST.", "",
+            "The frozen detections were preserved. Small CLEAR TP/FP/FN differences can arise while "
+            "the candidates remain identical; these results are not evidence of a detector change. "
+            "TrackEval IDSW is the switch metric in the table. VisionTrack's interleaved-camera CLEAR "
+            "switch count has a different definition and must not replace it.", ""]
+    if per_scene:
+        lines += [f"CVIDF1 improves in {report['CVIDF1_scene_improvements']}/14 scenes and regresses in "
+            f"{report['CVIDF1_scene_regressions']}/14. Per-scene aggregates below do not alter model selection.", "",
+            "| Scene | Delta HOTA | Delta AssA | Delta IDF1 | Delta CVIDF1 | Delta IDSW |",
+            "|---|---:|---:|---:|---:|---:|"]
+        for name, row in per_scene.items():
+            d = row["B1_minus_B0"]
+            lines.append(f"| {name} | {d['HOTA']:+.4f} | {d['AssA']:+.4f} | {d['IDF1']:+.4f} | {d['CVIDF1']:+.4f} | {d['IDSW']:+d} |")
+        lines += ["", "The combined metric is the native combined result, not an unweighted mean of this table.", ""]
+    for variant in controls:
+        lines += [f"{variant} metrics SHA-256: `{proofs[variant]['metrics_sha256']}`.", ""]
+    lines += ["Both controls use frozen R2 head SHA-256 "
+        "`cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8`. "
+        "No optimizer, checkpoint selection, new-model TEST or TEST parameter search is authorized by "
+        "the control-only scoring scope. Cached replay FPS is reported separately; real RGB-to-ID timing is pending.", ""]
+    save_text(docs / "V5_FROZEN_REFERENCE_NATIVE_RESULTS.md", "\n".join(lines))
+
+
 def birth_summary(root):
     scenes = {}
     methods, contrasts = defaultdict(Counter), defaultdict(Counter)
@@ -195,10 +321,18 @@ def main():
     mirror = read(a.runtime / "train_input_mirror.json", {})
     common = read(a.output_root / "provenance/common_train_budget.json")
     final_gates = {v: read(a.output_root / f"train/{v}/train_gate.json") for v in ("B2", "B3", "B4")}
-    official, pending, proofs = {}, [], {}
+    official, pending, proofs, score_origins = {}, [], {}, {}
+    canonical_complete = []
     for v in VARIANTS:
         path = a.output_root / f"evaluation/{v}/metrics.json"
         metric = read(path)
+        if metric and metric.get("status") == "COMPLETE_VALID_SCOPE":
+            canonical_complete.append(v)
+            score_origins[v] = {"kind": "CANONICAL_REGISTERED_V5_FORMAL_TEST"}
+        else:
+            frozen = frozen_native_for_reporting(a.output_root, a.runtime, v)
+            if frozen:
+                path, metric, score_origins[v] = frozen
         if metric and metric.get("status") == "COMPLETE_VALID_SCOPE":
             if (set(metric["evaluated_scenes"]) != set(inherited["TrackEval"]["per_scene"])
                     or metric["raw_GT_modified"] or sorted(x["scene"] for x in metric["coverage"]) != list(range(1, 23))
@@ -222,7 +356,8 @@ def main():
     attribution_path = a.output_root / "v5_identity_attribution.json"
     attribution = read(attribution_path)
     live = read(a.output_root / "live_fixed_train_prefix/runtime.json")
-    final_ready = (not pending and attribution is not None and attribution.get("status") == "COMPLETE_FROZEN_ALL5_FULL22_IDENTITY_ATTRIBUTION"
+    final_ready = (not pending and canonical_complete == list(VARIANTS)
+                   and attribution is not None and attribution.get("status") == "COMPLETE_FROZEN_ALL5_FULL22_IDENTITY_ATTRIBUTION"
                    and birth["status"] == "COMPLETE_TRAIN6_CONDITIONAL_ATTRIBUTION"
                    and policy["status"] == "COMPLETE_TRAIN6_FROZEN_POLICY_AUDIT"
                    and live is not None and live.get("status") == "ALL5_FINITE_REAL_LIVE_COMPLETE")
@@ -241,10 +376,13 @@ def main():
              "controller_stage": controller.get("stage"), "controller_last_exception": controller.get("last_exception"),
              "final_checkpoint_SHA256": {v: g["checkpoint_sha256"] if g else None for v, g in final_gates.items()},
              "official_TEST_complete_variants": list(official), "official_TEST_pending_variants": pending,
+             "native_score_origins": score_origins, "canonical_TEST_scope_complete_variants": canonical_complete,
              "TEST_inference_scene_counts": controller.get("completed_TEST_scenes", {v: 0 for v in VARIANTS}),
              "frozen_reference_GT_free_inference": {"status": reference_status.get("status", "NOT_STARTED"),
                  "complete_scenes": reference_status.get("complete_scenes", {"B0": 0, "B1": 0}),
-                 "scoring_allowed_by_subset": False},
+                 "scoring_allowed_by_subset": False,
+                 "separate_frozen_control_evaluation_authorization_registered":
+                    (a.output_root / "provenance/frozen_reference_scoring_registration.json").is_file()},
              "birth_diagnostic_complete_scenes": birth["scenes_complete"], "posthoc_complete": attribution is not None,
              "frozen_policy_TRAIN_audit_complete_scenes": policy["scenes_complete"],
              "real_RGB_to_ID_measured": live is not None and live.get("status") == "ALL5_FINITE_REAL_LIVE_COMPLETE",
@@ -272,11 +410,15 @@ def main():
     science_success = (final_ready and all(official["B3"][k] > baselines["GMT Native"][k] for k in ("HOTA", "AssA", "CVIDF1")))
     state["scientific_improvement_claimed"] = bool(science_success)
     atomic_json(results / "v5_experiment_status.json", state)
-    report = {"status": "COMPLETE_NATIVE_LEGAL14_ALL5" if not pending else "OFFICIAL_V5_RESULTS_PENDING",
+    report = {"status": "COMPLETE_NATIVE_LEGAL14_ALL5" if not pending else
+              "PARTIAL_COMPLETE_NATIVE_LEGAL14_VARIANTS" if official else "OFFICIAL_V5_RESULTS_PENDING",
               "updated_UTC": now, "official_legal_scene_ids": LEGAL_TEST, "full_inference_scenes_per_variant": 22,
               "full_inference_paired_times_per_variant": 29019, "frozen_candidates_per_variant": 548583,
-              "values_are_historical_references_until_V5_completes": bool(pending),
+              "values_are_historical_references_until_V5_completes": not bool(official),
               "historical_baselines": baselines, "V5_official_metrics": official, "pending_variants": pending,
+              "native_score_origins": score_origins, "canonical_TEST_scope_complete_variants": canonical_complete,
+              "B1_minus_B0": {k: official["B1"][k] - official["B0"][k] for k in METRICS}
+                  if "B0" in official and "B1" in official else None,
               "B3_minus_reference": deltas, "B0_native_reproduction_passed": b0_reproduced,
               "baseline_source_sha256": sha256(baseline_path), "proofs": proofs,
               "baseline_tool_comparability": inherited["baseline_tool_comparability"],
@@ -288,8 +430,9 @@ def main():
               "scientific_target_exceeded_GMT_on_HOTA_AssA_CVIDF1": bool(science_success),
               "full_research_delivery_complete": final_ready}
     atomic_json(results / "v5_official_test.json", report)
+    frozen_control_report(results, docs, official, proofs, score_origins, baselines, now)
     metric_rows = [{"method": k, "kind": "historical_reference", **v} for k, v in baselines.items()]
-    metric_rows += [{"method": v, "kind": "V5_formal_TEST" if v in official else "PENDING_NO_SCORE", **official.get(v, {})} for v in VARIANTS]
+    metric_rows += [{"method": v, "kind": score_origins[v]["kind"] if v in official else "PENDING_NO_SCORE", **official.get(v, {})} for v in VARIANTS]
     save_csv(results / "v5_official_metrics.csv", ("method", "kind", *METRICS), metric_rows)
     runtimes = {v: cached_runtime(a.output_root, v) for v in VARIANTS}
     runtime_rows = []
@@ -352,10 +495,12 @@ def main():
               "B2 final training uses a third idle V100 if available, otherwise one CPU thread; its resumes keep that device family. "
               "Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.", "",
               "A preregistered scheduling amendment allows already frozen B0/B1 GT-free reference inference "
-              "during TRAIN selection. Its separate authorization cannot score TEST or run a new trained model. "
-              "All three final-all24 gates remain required before new-model TEST or any formal scoring. "
-              "Reference outputs require explicit byte-verified scope-adoption receipts before final scoring. "
-              "No current model, budget rule or input is changed.", "",
+              "during TRAIN selection. A second published scoring-order amendment permits their formal "
+              "TrackEval/MATLAB scoring only after fresh full22 output-byte checks and verification that "
+              "the original frozen R2 head completed full24 TRAIN. These are actual frozen-control TEST "
+              "measurements; B2/B3/B4 require their own completed fresh full24 training. Their common "
+              "TRAIN-only budget rule is unchanged. Canonical adoption later verifies all3 final loaders "
+              "and identical prediction bytes; all110 posthoc and all5-before-real-LIVE barriers remain.", "",
               "Official MC-MOT uses original legal14 full TEST videos, after full22 causal inference "
               "(29,019 paired times / 548,583 shared candidates). Invalid8 remain separate. "
               "The following historical reference numbers are not new V5 measurements.", "",
@@ -368,6 +513,17 @@ def main():
     for row in metric_rows:
         values = [str(row[k]) if k in ("IDSW", "Frag", "CLR_TP", "CLR_FP", "CLR_FN") else f"{row[k]:.4f}" for k in METRICS] if "HOTA" in row else ["pending"] * len(METRICS)
         lines.append("| " + row["method"] + " | " + " | ".join(values) + " |")
+    if "B1" in official:
+        control = official.get("B0", baselines["V4 C1"])
+        diff = {k: official["B1"][k] - control[k] for k in METRICS}
+        lines += ["", "The frozen B1 control keeps the old R2 identity head and changes the independent "
+                  "assignment/birth/lifecycle/write policies; it is not the trained B3 main model. "
+                  "B1 minus " + ("newly scored B0" if "B0" in official else "archived V4 C1") + ": "
+                  f"HOTA {diff['HOTA']:+.4f}, AssA {diff['AssA']:+.4f}, IDF1 {diff['IDF1']:+.4f}, "
+                  f"CVIDF1 {diff['CVIDF1']:+.4f} percentage points; IDSW {diff['IDSW']:+d}. "
+                  "The aggregate does not support a standalone improvement from the frozen-head policy "
+                  "replacement. Registered B2/B3/B4 training continues unchanged. "
+                  "See V5_FROZEN_REFERENCE_NATIVE_RESULTS.md for per-scene native results and limits.", ""]
     if "B3" in official:
         lines += ["", "B3 differences are in percentage points for percentage metrics and signed counts for event totals.", "",
                   "| Reference | ΔHOTA | ΔAssA | ΔIDF1 | ΔCVIDF1 | ΔMOTA | ΔIDSW |", "|---|---:|---:|---:|---:|---:|---:|"]

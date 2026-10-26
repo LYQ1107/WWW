@@ -1,66 +1,73 @@
 {
   "cached": {
     "B0": {
-      "status": "PARTIAL_CACHED_REPLAY",
+      "status": "COMPLETE_FULL22_CACHED_REPLAY",
       "variant": "B0",
-      "scenes": 12,
-      "paired_times": 17688,
+      "scenes": 22,
+      "paired_times": 29019,
       "timings": {
         "cache_read_and_join_s": {
-          "P50_s": 0.0019350796937942505,
-          "P95_s": 0.007890348136425017,
-          "sum_s": 71.03286208212376,
-          "measured_timestamps": 17688
+          "P50_s": 0.002544775605201721,
+          "P95_s": 0.01539492011070251,
+          "sum_s": 208.12107390910387,
+          "measured_timestamps": 29019
         },
         "complete_timestamp_s": {
-          "P50_s": 0.019905954599380493,
-          "P95_s": 0.08646158427000025,
-          "sum_s": 525.3005015701056,
-          "measured_timestamps": 17688
+          "P50_s": 0.02690459042787552,
+          "P95_s": 0.198518830537796,
+          "sum_s": 1601.723583638668,
+          "measured_timestamps": 29019
         },
         "head_and_evidence_transfer_s": {
-          "P50_s": 0.005521204322576523,
-          "P95_s": 0.01206136867403984,
-          "sum_s": 119.69520661234856,
-          "measured_timestamps": 17688
+          "P50_s": 0.006695300340652466,
+          "P95_s": 0.023022679984569538,
+          "sum_s": 271.6601371988654,
+          "measured_timestamps": 29019
         },
         "identity_update_s": {
-          "P50_s": 0.006524901837110519,
-          "P95_s": 0.030787125229835417,
-          "sum_s": 161.7888262718916,
-          "measured_timestamps": 17688
+          "P50_s": 0.009310461580753326,
+          "P95_s": 0.0658091977238655,
+          "sum_s": 510.77076832950115,
+          "measured_timestamps": 29019
         },
         "joint_assignment_s": {
-          "P50_s": 0.001448601484298706,
-          "P95_s": 0.015151289477944311,
-          "sum_s": 49.85027903318405,
-          "measured_timestamps": 17688
+          "P50_s": 0.002095334231853485,
+          "P95_s": 0.0578274942934513,
+          "sum_s": 289.986980676651,
+          "measured_timestamps": 29019
         },
         "output_serialization_s": {
-          "P50_s": 0.0008272454142570496,
-          "P95_s": 0.0031043667346239085,
-          "sum_s": 46.35316353291273,
-          "measured_timestamps": 17688
+          "P50_s": 0.0010726004838943481,
+          "P95_s": 0.0056271098554134345,
+          "sum_s": 97.83383870869875,
+          "measured_timestamps": 29019
         },
         "tracking_core_s": {
-          "P50_s": 0.01438063383102417,
-          "P95_s": 0.06094907559454436,
-          "sum_s": 346.2975523248315,
-          "measured_timestamps": 17688
+          "P50_s": 0.018940456211566925,
+          "P95_s": 0.15216023325920103,
+          "sum_s": 1111.6000928878784,
+          "measured_timestamps": 29019
         }
       },
-      "CACHED_single_worker_step_FPS": 33.67215517048083,
-      "CACHED_worker_wall_FPS_including_per_scene_initialization_and_output_hashing": 13.048560219501644,
+      "CACHED_single_worker_step_FPS": 18.117358261078323,
+      "CACHED_worker_wall_FPS_including_per_scene_initialization_and_output_hashing": 8.844456882382778,
       "LIVE_RGB_to_ID_FPS": null,
       "precision": "float32",
       "devices": [
         "cuda:0"
       ],
-      "maximum_peak_RSS_bytes": 2338729984,
-      "maximum_CUDA_peak_allocated_bytes": 28530176,
+      "maximum_peak_RSS_bytes": 2410725376,
+      "maximum_CUDA_peak_allocated_bytes": 119844864,
       "multiscene_aggregate_GPU_throughput": false,
       "stage_times_overlap_and_must_not_be_summed": true,
-      "step_timer_excludes_timing_log_write_and_final_checksums": true
+      "step_timer_excludes_timing_log_write_and_final_checksums": true,
+      "original_output_storage_scene_counts": {
+        "NAS_DIRECT": 20,
+        "LOCAL_DURABLE": 2
+      },
+      "uniform_recorded_local_output_storage": false,
+      "B0_storage_differs_from_other_methods_after_NAS_recovery": true,
+      "cached_FPS_not_a_controlled_algorithm_speed_ranking": true
     },
     "B1": {
       "status": "COMPLETE_FULL22_CACHED_REPLAY",
@@ -172,16 +179,5 @@
   "full_TEST_runs_use_frozen_perception_caches": true,
   "LIVE_input_geometry_has_actual_current_transform_unavailable_in_inherited_cache": true,
   "LIVE_accuracy_not_compared_to_cached_full_TEST": true,
-  "six_GPU_total_throughput_not_single_video_FPS": true,
-  "storage_recovery_caveat": {
-    "B0_scenes1to20_original_write_storage": "NAS_DIRECT",
-    "all_remaining_successful_new_scene_writes": "LOCAL_DURABLE",
-    "cache_wall_FPS_is_not_a_controlled_algorithm_speed_ranking": true,
-    "existing_partial_cache_measurements_are_not_new_full22_timings": true,
-    "registered_real_RGB_test_same_local_output_for_all5": true
-  },
-  "cached_measurement_snapshot_UTC_by_variant": {
-    "B0": "2026-10-26T20:38:43.352660+00:00",
-    "B1": "2026-10-26T22:15:57.404794+00:00"
-  }
+  "six_GPU_total_throughput_not_single_video_FPS": true
 }

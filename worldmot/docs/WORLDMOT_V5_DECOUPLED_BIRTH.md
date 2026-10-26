@@ -1,6 +1,6 @@
 WorldMOT V5: decoupled observation birth and persistent membership
 
-Updated UTC: 2026-10-26T23:00:43.920371+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
+Updated UTC: 2026-10-26T23:57:32.283951+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
 
 The finite B0–B4 registration, code fingerprint and original V3/V4 artifacts are frozen. The model predicts membership and a per-camera no-observation option. Birth, lifecycle, identity writes and C1 Kalman/Joseph updates use separate auditable policies. GT never repairs the predicted history.
 
@@ -10,21 +10,21 @@ All24 TRAIN inputs are verified: 28,754 paired times and 557,002 detections. Fit
 
 | Variant | Selection completed epochs | Current selection scene count | Final completed epochs | Final weight SHA-256 |
 |---|---:|---:|---:|---|
-| B2 | 4 | 7/18 | 0 | not available |
-| B3 | 4 | 1/18 | 0 | not available |
-| B4 | 5 | 15/18 | 0 | not available |
+| B2 | 5 | 8/18 | 0 | not available |
+| B3 | 5 | 6/18 | 0 | not available |
+| B4 | 7 | 4/18 | 0 | not available |
 
 Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged over paired timestamps; scene density and evolving predicted histories differ between fit18 and VAL6. The per-scene breakdown is in v5_training_curves.json. These values do not establish convergence or formal TEST improvement.
 
 | Variant | Epoch | Fit membership loss | VAL membership loss | VAL same-person split rate | VAL different-person false-merge rate | Finite gradients |
 |---|---:|---:|---:|---:|---:|---|
-| B2 | 4 | 0.0603 | 0.9165 | 29.36% | 0.25% | True |
-| B3 | 4 | 0.0603 | 0.9097 | 27.89% | 0.35% | True |
-| B4 | 5 | 0.0571 | 1.2077 | 31.80% | 0.45% | True |
+| B2 | 5 | 0.0534 | 1.5609 | 28.05% | 0.50% | True |
+| B3 | 5 | 0.0537 | 1.1418 | 23.80% | 0.38% | True |
+| B4 | 7 | 0.0493 | 1.4126 | 29.92% | 0.41% | True |
 
 Selection currently uses CPU, one Torch/BLAS thread per worker. Final B3/B4 training and complete TEST use truly idle V100 FP32 workers. B2 final training uses a third idle V100 if available, otherwise one CPU thread; its resumes keep that device family. Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.
 
-A preregistered scheduling amendment allows already frozen B0/B1 GT-free reference inference during TRAIN selection. Its separate authorization cannot score TEST or run a new trained model. All three final-all24 gates remain required before new-model TEST or any formal scoring. Reference outputs require explicit byte-verified scope-adoption receipts before final scoring. No current model, budget rule or input is changed.
+A preregistered scheduling amendment allows already frozen B0/B1 GT-free reference inference during TRAIN selection. A second published scoring-order amendment permits their formal TrackEval/MATLAB scoring only after fresh full22 output-byte checks and verification that the original frozen R2 head completed full24 TRAIN. These are actual frozen-control TEST measurements; B2/B3/B4 require their own completed fresh full24 training. Their common TRAIN-only budget rule is unchanged. Canonical adoption later verifies all3 final loaders and identical prediction bytes; all110 posthoc and all5-before-real-LIVE barriers remain.
 
 Official MC-MOT uses original legal14 full TEST videos, after full22 causal inference (29,019 paired times / 548,583 shared candidates). Invalid8 remain separate. The following historical reference numbers are not new V5 measurements.
 
@@ -37,11 +37,14 @@ Native scorer engineering smoke: three generated synthetic cases and six native 
 | Full No-Geometry V3 | 60.4318 | 63.0806 | 58.2867 | 70.1622 | 67.6049 | 64.1136 | 75.0228 | 2130 | 1575 | 165335 | 20823 | 24450 |
 | Full V3 + Omega | 56.4218 | 63.1085 | 50.7806 | 63.9655 | 61.8413 | 66.3651 | 74.6619 | 2837 | 1566 | 165346 | 20812 | 24439 |
 | V4 C1 | 59.3712 | 62.9768 | 56.3519 | 67.9896 | 65.8169 | 66.3572 | 74.7746 | 2607 | 1561 | 165338 | 20820 | 24447 |
-| B0 | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
-| B1 | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
+| B0 | 59.3712 | 62.9768 | 56.3519 | 67.9896 | 65.8169 | 66.3572 | 74.7746 | 2607 | 1561 | 165338 | 20820 | 24447 |
+| B1 | 57.5119 | 63.1728 | 52.6809 | 65.1046 | 55.8643 | 43.0898 | 71.4129 | 8973 | 1601 | 165331 | 20827 | 24454 |
 | B2 | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
 | B3 | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
 | B4 | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending | pending |
+
+The frozen B1 control keeps the old R2 identity head and changes the independent assignment/birth/lifecycle/write policies; it is not the trained B3 main model. B1 minus newly scored B0: HOTA -1.8593, AssA -3.6710, IDF1 -2.8850, CVIDF1 -9.9526 percentage points; IDSW +6366. The aggregate does not support a standalone improvement from the frozen-head policy replacement. Registered B2/B3/B4 training continues unchanged. See V5_FROZEN_REFERENCE_NATIVE_RESULTS.md for per-scene native results and limits.
+
 
 TRAIN conditional birth audit: 6/6 complete scenes, 5860 paired times. Only original C1 decisions update history; alternative births are discarded after comparison. These are TRAIN clean-label diagnostic events, not HOTA or CVIDF1.
 
@@ -59,9 +62,11 @@ The inherited cache has world-space person supports but lacks the rotation/trans
 
 Cached replay speed and real RGB-to-final-ID speed are separate. The finite real timing scope is TRAIN scenes4/8/12, first61 paired times each, after5 warm-up times and a state reset. It includes actual RGB read, detector, per-frame Ω (except B4), alignment, membership, C1 updates and final ID serialization/flush. It is not full TEST RGB-to-ID FPS.
 
+Following the NAS disconnect, B0 scenes1–20 retain their original NAS-write timing; B0 scenes21–22 and all other new outputs write local durable storage before verified NAS archival. Cached wall FPS therefore cannot rank algorithm speed under a common storage condition. The registered real RGB timing uses the same local output storage for all five methods.
+
 | Method | Cached worker step FPS | Cached worker wall FPS | Real RGB-to-ID FPS | Real scope |
 |---|---:|---:|---:|---|
-| B0 | 33.6722 | 13.0486 | not measured | NOT_MEASURED |
+| B0 | 18.1174 | 8.8445 | not measured | NOT_MEASURED |
 | B1 | 17.4946 | 16.8607 | not measured | NOT_MEASURED |
 | B2 | not measured | not measured | not measured | NOT_MEASURED |
 | B3 | not measured | not measured | not measured | NOT_MEASURED |
@@ -70,13 +75,3 @@ Cached replay speed and real RGB-to-final-ID speed are separate. The finite real
 Native tool dependencies and wrapper comparability are retained from the archived V4 report. Historical GMT/V2 exports used two-decimal coordinates; current V3/V4/V5 exports preserve .17g. Original GT and shared native tracking dependencies were verified in the archived comparison. This is a documented system-reference limitation, not permission to alter GT or re-tune TEST.
 
 V5 research remains in progress. No V5 improvement claim is made before the registered full training and formal TEST finish.
-
-Recovery update 2026-10-26T21:53:02.754725+00:00: B0 full22 exact C1 reproduction is complete; frozen B1 inference continues and all3 TRAIN selection runs remain active. See V5_STORAGE_RECOVERY.md and v5_B0_full22_reproduction.json. No new formal TEST score is available. Cached timing snapshot above predates recovery; mixed NAS/local output timing cannot rank algorithm speed.
-
-Frozen reference completion 2026-10-26T22:15:57.404794+00:00: B0 and B1 each finished22/22 TEST videos,29,019 paired times and548,583 frozen candidates. B0 exactly reproduced original C1 at every time. B1 retained all548,583 current detection boxes, with0 duplicate suppression and one state reset at each scene origin. These GT-free checks do not measure B1 identity accuracy. Native metrics remain pending until the three final full24 TRAIN gates. See v5_frozen_reference_inference.json.
-
-B1 cached replay timing now covers all22 videos; B0 cached timing above still covers its earlier12-video snapshot. The runs have mixed NAS/local original output paths and do not provide a controlled algorithm speed ranking or real RGB-to-ID FPS.
-
-Read-only RGB timing readiness 2026-10-26T23:00:43.920371+00:00: all366 original RGB images in the registered TRAIN4/8/12 first61 prefixes decoded successfully. Metadata SHA92e09f77… matches the frozen detector export; GMT checkpoint cd728238… and configuration1f2b9801… match its lock, and official Ω512 checkpoint c02da418… plus its four pinned source files match. No neural model was initialized or run, no original GT was opened, and this is not a timing or tracking result. The detector adapter source hash differs from the cached-export version only because of the float32 bbox boundary and its manifest field; the source diff does not change network, scores or ROI extraction. The registered native-scoring and final-full24 gates remain required before real LIVE timing. See v5_live_input_readiness.json and v5_cached_export_adapter_compatibility.diff.
-
-Native-scoring scheduling amendment registered 2026-10-26T23:41:54.779672+00:00: frozen B0/B1 will be evaluated under their separate evaluation-only scope after fresh full22 output checks. Their full24 R2 eligibility was verified. B2/B3/B4 training and final-all24 gates are unchanged. The old all3-before-any-score scheduling restriction is superseded only for these two frozen controls; full110 posthoc and all5-before-real-LIVE barriers remain. No new TEST metric has been read at this registration point. See V5_PREREGISTRATION.md and v5_frozen_reference_scoring_registration.json.
