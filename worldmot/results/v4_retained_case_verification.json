@@ -1,0 +1,304 @@
+{
+  "schema": "worldmot_v4_retained_original_case_v1",
+  "status": "COMPLETE_TRAIN_ORIGINAL_CASE_MECHANISM_ONLY",
+  "scope": "TRAIN scene24 first705 paired times; mechanism only, not full-video MOT or independent TEST",
+  "checkpoint": {
+    "checkpoint_sha256": "d4644ff95cbb7f255f70f155055fba6870863a69e7043f91b920e85ce20693dd",
+    "selection_epoch": 1,
+    "archive_original_path": "/data1/liuyeqiang/nas/A100/WorldMOT/worldobject_v3_birthfix_r2_20261025/audit_snapshots/FULL_WORLD_OBJECT_V3/d4644ff95cbb7f255f70f155055fba6870863a69e7043f91b920e85ce20693dd.pt",
+    "archive_resolved_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v3_birthfix_r2_20261025/audit_snapshots/FULL_WORLD_OBJECT_V3/d4644ff95cbb7f255f70f155055fba6870863a69e7043f91b920e85ce20693dd.pt",
+    "archive_index_sha256": "c8ecbbbbfaff55d9fa89e37b94ff9ff9bb190e9b9e143a695eace387977f065d",
+    "origin_source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f",
+    "scope": "exact original t704/t705 TRAIN mechanism only; not primary final-all24 comparison",
+    "optimizer_used": false,
+    "TRAIN_scenes_previously_seen_by_final_head": false
+  },
+  "source_sha256": "f3ab66e050d8e88346a9cd95fe8012a925bfa6b43943392bcef127c7b86aeee0",
+  "original_TRAIN_annotation_proof": {
+    "sha256": "9093c36204bae482c2f74997f531bfe2d8a46464f4541093703ef22db0068c85",
+    "source": "/data/DATASETS/TRACKING/JDE/VisionTrack/annotations/train.json",
+    "modified": false
+  },
+  "C0_R2_exact_frames": 705,
+  "assertions": {
+    "C0_original_158_to_162_found": true,
+    "variants": {
+      "C3": {
+        "recovered_camera_keeps_ID": true,
+        "different_current_person_merged": false,
+        "passes_targeted_mechanism": true,
+        "ID_at704": 215,
+        "ID_at705": 215
+      },
+      "C4": {
+        "recovered_camera_keeps_ID": true,
+        "different_current_person_merged": false,
+        "passes_targeted_mechanism": true,
+        "ID_at704": 188,
+        "ID_at705": 188
+      }
+    },
+    "GT_label_posthoc": "1"
+  },
+  "target_actors_t704_t705": [
+    {
+      "timestamp": 704,
+      "target_GT_posthoc": "1",
+      "assignments": {
+        "C0": [
+          {
+            "camera": 1,
+            "detection_id": 1,
+            "GT_label_posthoc": "1",
+            "ID": 1
+          },
+          {
+            "camera": 2,
+            "detection_id": 16,
+            "GT_label_posthoc": "1",
+            "ID": 158
+          }
+        ],
+        "C3": [
+          {
+            "camera": 1,
+            "detection_id": 1,
+            "GT_label_posthoc": "1",
+            "ID": 1
+          },
+          {
+            "camera": 2,
+            "detection_id": 16,
+            "GT_label_posthoc": "1",
+            "ID": 215
+          }
+        ],
+        "C4": [
+          {
+            "camera": 1,
+            "detection_id": 1,
+            "GT_label_posthoc": "1",
+            "ID": 1
+          },
+          {
+            "camera": 2,
+            "detection_id": 16,
+            "GT_label_posthoc": "1",
+            "ID": 188
+          }
+        ]
+      }
+    },
+    {
+      "timestamp": 705,
+      "target_GT_posthoc": "1",
+      "assignments": {
+        "C0": [
+          {
+            "camera": 1,
+            "detection_id": 3,
+            "GT_label_posthoc": "1",
+            "ID": 1
+          },
+          {
+            "camera": 2,
+            "detection_id": 17,
+            "GT_label_posthoc": "1",
+            "ID": 162
+          }
+        ],
+        "C3": [
+          {
+            "camera": 1,
+            "detection_id": 3,
+            "GT_label_posthoc": "1",
+            "ID": 1
+          },
+          {
+            "camera": 2,
+            "detection_id": 17,
+            "GT_label_posthoc": "1",
+            "ID": 215
+          }
+        ],
+        "C4": [
+          {
+            "camera": 1,
+            "detection_id": 3,
+            "GT_label_posthoc": "1",
+            "ID": 1
+          },
+          {
+            "camera": 2,
+            "detection_id": 17,
+            "GT_label_posthoc": "1",
+            "ID": 188
+          }
+        ]
+      }
+    }
+  ],
+  "all705_clean_subset_counts": {
+    "C0": {
+      "clean_observations": 37802,
+      "new_ID_observations": 102,
+      "different_person_pairs": 481637,
+      "correct_sync_pairs": 484467,
+      "same_person_pairs": 5944,
+      "same_person_splits": 1753,
+      "wrong_person_trusted_spatial_writes": 11780,
+      "wrong_person_long_term_identity_writes": 18180,
+      "short_term_view_writes_into_wrong_or_mixed_ID": 0,
+      "false_birth_global_IDs": 20,
+      "timestamps": 705,
+      "detections": 39355,
+      "correct_historical_ID_accepted": 15164,
+      "correct_historical_opportunities": 17634,
+      "correct_historical_ID_rejected": 574,
+      "temporal_links": 37729,
+      "temporal_ID_changes": 1155,
+      "wrong_or_mixed_historical_ID_accepted": 22536,
+      "unlabelled_historical_ID_accepted": 34,
+      "correct_history_admissible_but_not_selected": 1896,
+      "wrong_historical_ID_accepted": 69,
+      "mixed_historical_ID_accepted": 22433,
+      "reuse_of_contaminated_ID": 22325,
+      "NULL_despite_valid_observation": 1710,
+      "gap_2to30_returns": 632,
+      "gap_2to30_retained_ID": 511,
+      "different_person_merges": 1361,
+      "correct_history_rejection_reason/TEMPORAL_GEOMETRY_HARD_REJECTION": 13,
+      "correct_history_rejection_reason/APPEARANCE_REJECTION": 566,
+      "false_birth_despite_clean_active_history": 20,
+      "long_gap_over30_returns": 44,
+      "long_gap_over30_retained_ID": 10,
+      "global_one_to_one_retained_observations": 28731,
+      "global_IDs_with_clean_labels": 130,
+      "mixed_global_IDs": 68,
+      "minority_observations_in_mixed_IDs": 5204,
+      "GT_people": 56,
+      "fragmented_GT_people": 50,
+      "total_extra_ID_fragments": 251
+    },
+    "C3": {
+      "clean_observations": 37802,
+      "new_ID_observations": 193,
+      "different_person_pairs": 481637,
+      "correct_sync_pairs": 484463,
+      "same_person_pairs": 5944,
+      "same_person_splits": 1790,
+      "wrong_person_trusted_spatial_writes": 8290,
+      "wrong_person_long_term_identity_writes": 8290,
+      "short_term_view_writes_into_wrong_or_mixed_ID": 11561,
+      "false_birth_global_IDs": 68,
+      "timestamps": 705,
+      "detections": 39355,
+      "correct_historical_ID_accepted": 14978,
+      "correct_historical_opportunities": 18840,
+      "correct_historical_ID_rejected": 557,
+      "temporal_links": 37729,
+      "temporal_ID_changes": 5284,
+      "wrong_or_mixed_historical_ID_accepted": 22631,
+      "unlabelled_historical_ID_accepted": 36,
+      "correct_history_admissible_but_not_selected": 3305,
+      "wrong_historical_ID_accepted": 112,
+      "NULL_despite_valid_observation": 4639,
+      "gap_2to30_returns": 632,
+      "gap_2to30_retained_ID": 417,
+      "different_person_merges": 1328,
+      "mixed_historical_ID_accepted": 22483,
+      "reuse_of_contaminated_ID": 22253,
+      "correct_history_rejection_reason/APPEARANCE_REJECTION": 553,
+      "false_birth_despite_clean_active_history": 68,
+      "long_gap_over30_returns": 44,
+      "long_gap_over30_retained_ID": 11,
+      "correct_history_rejection_reason/OTHER_OR_CAPACITY_REJECTION": 4,
+      "global_one_to_one_retained_observations": 24019,
+      "global_IDs_with_clean_labels": 222,
+      "mixed_global_IDs": 112,
+      "minority_observations_in_mixed_IDs": 7429,
+      "GT_people": 56,
+      "fragmented_GT_people": 54,
+      "total_extra_ID_fragments": 509
+    },
+    "C4": {
+      "clean_observations": 37802,
+      "new_ID_observations": 158,
+      "different_person_pairs": 481637,
+      "correct_sync_pairs": 482972,
+      "same_person_pairs": 5944,
+      "same_person_splits": 2091,
+      "wrong_person_trusted_spatial_writes": 6988,
+      "wrong_person_long_term_identity_writes": 6988,
+      "short_term_view_writes_into_wrong_or_mixed_ID": 12503,
+      "false_birth_global_IDs": 32,
+      "timestamps": 705,
+      "detections": 39355,
+      "correct_historical_ID_accepted": 14270,
+      "correct_historical_opportunities": 18348,
+      "correct_historical_ID_rejected": 669,
+      "temporal_links": 37729,
+      "temporal_ID_changes": 5774,
+      "wrong_or_mixed_historical_ID_accepted": 23374,
+      "unlabelled_historical_ID_accepted": 30,
+      "correct_history_admissible_but_not_selected": 3409,
+      "wrong_historical_ID_accepted": 96,
+      "NULL_despite_valid_observation": 3564,
+      "gap_2to30_returns": 632,
+      "gap_2to30_retained_ID": 414,
+      "different_person_merges": 2518,
+      "mixed_historical_ID_accepted": 23248,
+      "reuse_of_contaminated_ID": 23010,
+      "correct_history_rejection_reason/APPEARANCE_REJECTION": 669,
+      "false_birth_despite_clean_active_history": 32,
+      "long_gap_over30_returns": 44,
+      "long_gap_over30_retained_ID": 12,
+      "global_one_to_one_retained_observations": 22643,
+      "global_IDs_with_clean_labels": 182,
+      "mixed_global_IDs": 95,
+      "minority_observations_in_mixed_IDs": 9710,
+      "GT_people": 56,
+      "fragmented_GT_people": 52,
+      "total_extra_ID_fragments": 460
+    }
+  },
+  "all705_corrections_and_regressions_vs_C0": {
+    "C3": {
+      "different_person_events": 481637,
+      "historical_events": 37802,
+      "same_person_events": 5944,
+      "temporal_events": 37729,
+      "temporal_regressions": 4741,
+      "historical_corrections": 3794,
+      "same_person_corrections": 292,
+      "different_person_corrections": 947,
+      "historical_regressions": 3980,
+      "temporal_corrections": 612,
+      "different_person_regressions": 914,
+      "same_person_regressions": 329
+    },
+    "C4": {
+      "different_person_events": 481637,
+      "historical_events": 37802,
+      "same_person_events": 5944,
+      "temporal_events": 37729,
+      "temporal_regressions": 5263,
+      "historical_corrections": 2706,
+      "same_person_corrections": 318,
+      "historical_regressions": 3600,
+      "different_person_regressions": 1864,
+      "temporal_corrections": 644,
+      "different_person_corrections": 707,
+      "same_person_regressions": 656
+    }
+  },
+  "causal_interpretation": "C3 and C4 bundles pass this original failure. The case alone does not isolate C3 from C1/C2, or establish a final-all24-head full-video gain.",
+  "no_wrong_merge_scope": "at t705, among current observations with evaluable matched GT; unknown/ambiguous labels are not a proof of absence",
+  "GT_role": "POSTHOC_ONLY",
+  "optimizer_used": false,
+  "TEST_read": false,
+  "native_MOT_score_claimed": false,
+  "raw_report_sha256": "55b3a4fda3f951559051c4f608b41c5ab5c478094b4567764d92be2d773f7a4b",
+  "raw_report_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/retained_case/replay_report.json",
+  "recorded_UTC": "2026-10-26T08:46:55.512830+00:00"
+}

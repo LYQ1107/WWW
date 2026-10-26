@@ -1,0 +1,1120 @@
+{
+  "schema": "worldmot_v4_native_TRAIN_legal3_v1",
+  "status": "COMPLETE_ORIGINAL_LEGAL_TRAIN_TRACKEVAL",
+  "scenes": [
+    4,
+    8,
+    12
+  ],
+  "paired_timestamps": 2624,
+  "camera_sequences": 6,
+  "protocol": "unchanged TrackEval HOTA/CLEAR/Identity, original raw GT, per-camera sequences combined by native toolkit",
+  "GT_modified": false,
+  "custom_metrics_used": false,
+  "scope_limit": "TRAIN internal development; final all24 head already saw these scenes. Not independent TEST and not a new CVIDF1 measurement.",
+  "all6_attribution_scope": "six registered TRAIN scenes /5860 times; remaining crowded-scene diagnostics continue",
+  "source_sha256": "f3ab66e050d8e88346a9cd95fe8012a925bfa6b43943392bcef127c7b86aeee0",
+  "native_tool_sha256": {
+    "trackeval/__init__.py": "636586f4cc90a0be21e8aff605fb7fe97c089b3c46fafd43745d4c41bedceae3",
+    "trackeval/_timing.py": "62e60638efc675bccc35c7da65158f0f19ce31f332121efe7cc748bd92ad2b30",
+    "trackeval/datasets/__init__.py": "f0b3346f098eefd359f292cfd7b95fde2ba407f7d4698aa86de602e046b588f2",
+    "trackeval/datasets/_base_dataset.py": "9094b50490b5567ed6f22cac6aa6ec969f4d467d4d28515546e0b875ffe976f5",
+    "trackeval/datasets/_timing.py": "62e60638efc675bccc35c7da65158f0f19ce31f332121efe7cc748bd92ad2b30",
+    "trackeval/datasets/bdd100k.py": "e9d5c62f164185bc996b02c61f54f0cf02c09098a715ed04aa9971d6a8de927d",
+    "trackeval/datasets/davis.py": "4c55560bd58892e30a794b68fdf7ecb08dfdb5a1e51a9b85b1ba21fae78eaf90",
+    "trackeval/datasets/kitti_2d_box.py": "050ac54284a982b5ab400ae9f29022370f52df6d6e03566fd8b30a0be7828a97",
+    "trackeval/datasets/kitti_mots.py": "5d62bddeb7713e16107161556f619b58a39e5397c3c6eee0dba965b82cb8ea33",
+    "trackeval/datasets/mot_challenge_2d_box.py": "6935c306db2ab32c900df7ea46c009c85419931708f18dc6c61ef6fa0a327ec1",
+    "trackeval/datasets/mots_challenge.py": "23b02bbdb33916739cb10c5139347c1727c6f1467e6ee974b6af6e6072c13de7",
+    "trackeval/datasets/rob_mots.py": "418af99e5b3d849a36229e9257f97c34422d44ab39e8e404c1b1aae9f61b56e3",
+    "trackeval/datasets/rob_mots_classmap.py": "db79031762d5fb55c009999cdb89586a70d11a1deaf2e1948192387872a64d1e",
+    "trackeval/datasets/run_rob_mots.py": "5d1bb96c2bb376b7cb4e00cada1e1ecab3974d6b06fad080f9e1708358a00a4a",
+    "trackeval/datasets/tao.py": "82fb49965e30b2d108aecdd38e538d5c0a24bc383ee347e19d2195fd8b3e4f3f",
+    "trackeval/datasets/utils.py": "e20e57f0badcd7f9d768c96f244fbefc0fb2b4a9e28808f929f30e11aef6fc19",
+    "trackeval/datasets/youtube_vis.py": "aa04208b1b7e5fa9018e0066d42be03c0dd68f4bf7dfcb626c85fd7dc52cac2c",
+    "trackeval/eval.py": "559fe9dbc6c0fff7f8d81ad16f03bc2900f9e8e53f4f49cd4bdf0c24dd34eab5",
+    "trackeval/metrics/__init__.py": "98d7706e37f55b1f91736037652689636836768d3cb76bac477d15beeb08dddb",
+    "trackeval/metrics/_base_metric.py": "a16618762601ad8f4a8e5a25a7490ee8fe003ab2850b894088bb6bd4f1b9db0b",
+    "trackeval/metrics/clear.py": "349daafdbb009f6cd71cf66ff1c9b8074940cd3310fcd663151d644b7ff0e5e3",
+    "trackeval/metrics/count.py": "ffce9a3ed557f164f7a811f0a8cf66f609eec0af822dbc87d8fdaef560032163",
+    "trackeval/metrics/hota.py": "421cb37dd492ecf2591114ea7e4a0d006cd0401225551717fd0b50473c8505d5",
+    "trackeval/metrics/identity.py": "33b4ef7e11a24c47c6060eb2464cb92167aea42e8c0e6f652b10ca317872028c",
+    "trackeval/metrics/j_and_f.py": "ad1339106129664658b47e2db142a02f22c6c711664a9e0930feb9bde2cc213f",
+    "trackeval/metrics/track_map.py": "492b588ca63d1adce96530f914239530fac1b018e5a2c603f036a3337d9aefb0",
+    "trackeval/metrics/vace.py": "13db97a61cc7291e5356c80a0a4f11a88b75a9664a81fc903d6bd41a1cd6ffdc",
+    "trackeval/plotting.py": "6d3ebada977b6990527dab143e0e4a0bbf5f1dd64f46bf214701a64acadba13f",
+    "trackeval/utils.py": "e20e57f0badcd7f9d768c96f244fbefc0fb2b4a9e28808f929f30e11aef6fc19"
+  },
+  "variants": {
+    "C0": {
+      "combined": {
+        "HOTA": 72.1051581804568,
+        "AssA": 66.66319026723968,
+        "DetA": 78.39211279412518,
+        "IDF1": 78.90333439032125,
+        "MOTA": 90.14375691138997,
+        "IDSW": 381,
+        "Frag": 204,
+        "CLR_TP": 19664,
+        "CLR_FN": 1135,
+        "CLR_FP": 534
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 68.44885795602134,
+          "AssA": 60.025536831184276,
+          "DetA": 78.1965182010636,
+          "IDF1": 76.14715719063545,
+          "MOTA": 85.13020833333333,
+          "IDSW": 214,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.62254064068776,
+          "AssA": 67.78153588442227,
+          "DetA": 86.64481495811374,
+          "IDF1": 80.02933268149597,
+          "MOTA": 91.4435946462715,
+          "IDSW": 20,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 72.17418244577274,
+          "AssA": 67.47508332325141,
+          "DetA": 77.5164330836667,
+          "IDF1": 79.44684176548537,
+          "MOTA": 91.2558014394296,
+          "IDSW": 147,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "88a042a3f805c6af2b4078fb73ef3584571af9c3176f4452b1aba80a9edc2d40"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "1ebb66151e807aa64a6bdbfc8a59546d1c6cdcdd1bda05573c04c3a47a19dc7b"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "09ff0863c420bdf7150ed98f5b7ee56b1f83cf66163a6c07c79cbf88f61fb789"
+        }
+      ],
+      "metrics_json_sha256": "684dcfdf77dc94d32d635e35f4543d1175d0d077a912b3a3b2bc0391d62c382e",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/C0/metrics.json"
+    },
+    "C1": {
+      "combined": {
+        "HOTA": 75.0746680971917,
+        "AssA": 72.27470401818962,
+        "DetA": 78.39445362112617,
+        "IDF1": 83.84028099617045,
+        "MOTA": 90.21106783979998,
+        "IDSW": 367,
+        "Frag": 204,
+        "CLR_TP": 19664,
+        "CLR_FN": 1135,
+        "CLR_FP": 534
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 68.28744229549832,
+          "AssA": 59.743995602421464,
+          "DetA": 78.1965182010636,
+          "IDF1": 76.04013377926422,
+          "MOTA": 84.609375,
+          "IDSW": 234,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 87.16149827133863,
+          "AssA": 87.68293647843782,
+          "DetA": 86.64481495811374,
+          "IDF1": 96.3578587142508,
+          "MOTA": 91.73040152963671,
+          "IDSW": 14,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 74.751907790976,
+          "AssA": 72.36172775570594,
+          "DetA": 77.51968867530206,
+          "IDF1": 84.08141075736468,
+          "MOTA": 91.44413802381112,
+          "IDSW": 119,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "d3d7eb3dcf6ef4614957e1249ec8c303f56c29484bb9442e9b1400d3e962ea73"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "e7e59bc00ec2c8e0cb5011eed3541eef5c5bb224ecff8a8afb34474ab9e88c51"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "04dadf309077c695933d5b63b7d65ea173663a09daf5b569f2f6ba5896bec18c"
+        }
+      ],
+      "metrics_json_sha256": "d17fe501695d013d324c06c3f2515de6f88007c90adef88b7e8c8fb4a54c4d53",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/C1/metrics.json"
+    },
+    "C2": {
+      "combined": {
+        "HOTA": 74.32438705689248,
+        "AssA": 70.8097968084622,
+        "DetA": 78.40200408378945,
+        "IDF1": 83.48415737736907,
+        "MOTA": 88.4465599307659,
+        "IDSW": 742,
+        "Frag": 202,
+        "CLR_TP": 19668,
+        "CLR_FN": 1131,
+        "CLR_FP": 530
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 68.28733994288837,
+          "AssA": 59.720723931024914,
+          "DetA": 78.15496045353022,
+          "IDF1": 77.77926421404683,
+          "MOTA": 78.359375,
+          "IDSW": 474,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 81.3863611925019,
+          "AssA": 76.2670844271404,
+          "DetA": 86.87337651482864,
+          "IDF1": 88.3891469078465,
+          "MOTA": 87.66730401529637,
+          "IDSW": 107,
+          "Frag": 10,
+          "CLR_TP": 1970,
+          "CLR_FN": 122,
+          "CLR_FP": 29
+        },
+        "00030path": {
+          "HOTA": 74.56770188082184,
+          "AssA": 72.00241681607125,
+          "DetA": 77.5164330836667,
+          "IDF1": 84.25129965002888,
+          "MOTA": 91.16163314723885,
+          "IDSW": 161,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "3bc540df90bda8e95421fd3ad4cd3d578fdaf0dc83999b1a9a7d05835de27963"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "2a5a2375a9096505dc190ba56d3faac01c34a59989a834825580d42b7932f925"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "c0584326d659d3962af3c244e46a225c4b0a0c84cff8ecc8d08a60131937a143"
+        }
+      ],
+      "metrics_json_sha256": "9a2f0c37faf89a27dc935f5c90c1d6b48cc2a2d68658d07bbe959a5f99b64e1b",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/C2/metrics.json"
+    },
+    "C3": {
+      "combined": {
+        "HOTA": 74.27000649823911,
+        "AssA": 70.69942669029166,
+        "DetA": 78.3981386734696,
+        "IDF1": 83.31341317657389,
+        "MOTA": 89.13890090869754,
+        "IDSW": 616,
+        "Frag": 203,
+        "CLR_TP": 19677,
+        "CLR_FN": 1122,
+        "CLR_FP": 521
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 70.93458733523657,
+          "AssA": 64.51536288514865,
+          "DetA": 78.14743781861276,
+          "IDF1": 82.96989966555184,
+          "MOTA": 83.93229166666667,
+          "IDSW": 260,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.85847524496731,
+          "AssA": 68.02739928109133,
+          "DetA": 86.86059414943325,
+          "IDF1": 79.54045465656318,
+          "MOTA": 91.77820267686424,
+          "IDSW": 21,
+          "Frag": 9,
+          "CLR_TP": 1970,
+          "CLR_FN": 122,
+          "CLR_FP": 29
+        },
+        "00030path": {
+          "HOTA": 74.53108749134769,
+          "AssA": 71.94919523972865,
+          "DetA": 77.51507425372468,
+          "IDF1": 83.92511297611362,
+          "MOTA": 90.11232931997041,
+          "IDSW": 335,
+          "Frag": 154,
+          "CLR_TP": 14148,
+          "CLR_FN": 719,
+          "CLR_FP": 416
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "541d879bc5873b3ce14aa9e713a3007a5341f879223a7132c54dcb493159b908"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "ecc789bb8b27ee0a156fe0d52befa1e1db1a61ca47e5021f2b035d1e8ba4ce1a"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "9da57a5599aabb808d3978928ba91287e1d4fffc95543e56d2c28978eb2f00a4"
+        }
+      ],
+      "metrics_json_sha256": "a8a396dc9947a045a5e0d408bfc1e7cc8de6b40549d4b00340e934faf6019232",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/C3/metrics.json"
+    },
+    "C4": {
+      "combined": {
+        "HOTA": 75.56137745392664,
+        "AssA": 73.17355454897579,
+        "DetA": 78.43960326377331,
+        "IDF1": 85.51845256970022,
+        "MOTA": 89.83604981008703,
+        "IDSW": 463,
+        "Frag": 205,
+        "CLR_TP": 19673,
+        "CLR_FN": 1126,
+        "CLR_FP": 525
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 73.76669997954691,
+          "AssA": 69.68104445801625,
+          "DetA": 78.17839489818607,
+          "IDF1": 87.51839464882943,
+          "MOTA": 84.97395833333333,
+          "IDSW": 220,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 87.41470668529244,
+          "AssA": 87.94505151068694,
+          "DetA": 86.88875043301711,
+          "IDF1": 96.3578587142508,
+          "MOTA": 91.73040152963671,
+          "IDSW": 12,
+          "Frag": 13,
+          "CLR_TP": 1965,
+          "CLR_FN": 127,
+          "CLR_FP": 34
+        },
+        "00030path": {
+          "HOTA": 74.07139844667473,
+          "AssA": 71.02775890879434,
+          "DetA": 77.56452007111562,
+          "IDF1": 83.50378852230641,
+          "MOTA": 90.82531781798615,
+          "IDSW": 231,
+          "Frag": 152,
+          "CLR_TP": 14149,
+          "CLR_FN": 718,
+          "CLR_FP": 415
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "6df38ecb43b72a2f969ab7f474a1bab0559f6c3e002f044bb10bf3a682720491"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "f08f329472cd56bb975965c7a9678af86a526b107b95fc398267c74a14d8d7bb"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "5c7dbdf60d3970c4da54188496284f9b75c0a1463f0bb3c4bbfd43908ad55807"
+        }
+      ],
+      "metrics_json_sha256": "f947b34a157407d8f507c7802599d569ab4d65990f84e0d60013d8ef9e2f9d19",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/C4/metrics.json"
+    },
+    "C5": {
+      "combined": {
+        "HOTA": 73.07265765437826,
+        "AssA": 68.40961405808316,
+        "DetA": 78.4301959406453,
+        "IDF1": 81.24496914408371,
+        "MOTA": 86.28299437472955,
+        "IDSW": 1210,
+        "Frag": 205,
+        "CLR_TP": 19677,
+        "CLR_FN": 1122,
+        "CLR_FP": 521
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 66.08964699451448,
+          "AssA": 55.950526456417535,
+          "DetA": 78.16909818739784,
+          "IDF1": 73.7123745819398,
+          "MOTA": 66.35416666666667,
+          "IDSW": 935,
+          "Frag": 42,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.50231954189343,
+          "AssA": 67.48127704718205,
+          "DetA": 86.75594620188527,
+          "IDF1": 78.80713761916401,
+          "MOTA": 90.5831739961759,
+          "IDSW": 44,
+          "Frag": 11,
+          "CLR_TP": 1969,
+          "CLR_FN": 123,
+          "CLR_FP": 30
+        },
+        "00030path": {
+          "HOTA": 74.06905886017873,
+          "AssA": 71.02339792544767,
+          "DetA": 77.56452007111562,
+          "IDF1": 83.49699296659985,
+          "MOTA": 90.82531781798615,
+          "IDSW": 231,
+          "Frag": 152,
+          "CLR_TP": 14149,
+          "CLR_FN": 718,
+          "CLR_FP": 415
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "27b5abced054b179acb7b4d365dc5edc7344d4f0208dd73a2072a04570d6e7fe"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "efb438847a8a82229e210dc0b51ef03304f11a9de7e6f325174dfc9147f30a94"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "6271455cf062c281da5d8185d4badfff6c5659cee88b15379e134c668e4521a0"
+        }
+      ],
+      "metrics_json_sha256": "245101bb3f634ebde566c60caafee750a219af31e8cdbfeed01877ca009339d5",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/C5/metrics.json"
+    },
+    "G1_0_G2_0_G3_0": {
+      "combined": {
+        "HOTA": 73.77794954050269,
+        "AssA": 69.77883572377074,
+        "DetA": 78.37804988905677,
+        "IDF1": 82.10844695953362,
+        "MOTA": 90.78321073128515,
+        "IDSW": 248,
+        "Frag": 204,
+        "CLR_TP": 19664,
+        "CLR_FN": 1135,
+        "CLR_FP": 534
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 67.50175342490036,
+          "AssA": 58.3954901740327,
+          "DetA": 78.18921117182354,
+          "IDF1": 76.04013377926422,
+          "MOTA": 87.55208333333333,
+          "IDSW": 121,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.23374474543073,
+          "AssA": 67.19751178139607,
+          "DetA": 86.51760444452383,
+          "IDF1": 79.10046443412368,
+          "MOTA": 91.4435946462715,
+          "IDSW": 20,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 74.7434456526261,
+          "AssA": 72.35204374795119,
+          "DetA": 77.51382316597362,
+          "IDF1": 84.06781964595154,
+          "MOTA": 91.52485370283178,
+          "IDSW": 107,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "825efe723cdd82aaced073ac1941024cadafce86d70725cca77dc4994f78cc7d"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "42741aed542dec14d349bfe1a209789e57831bd6e121e73adecb61a9835fb778"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "4ef1ea958ff94ef03f6ed228bc0c59a3d4ce9068d0fba25cbebedd38609adf96"
+        }
+      ],
+      "metrics_json_sha256": "3c5f7abc46f76cd6d25884c0afaf63dd139a2549d2321e6c020f4e4733a4ccab",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/G1_0_G2_0_G3_0/metrics.json"
+    },
+    "G1_0_G2_0_G3_1": {
+      "combined": {
+        "HOTA": 73.89287090748331,
+        "AssA": 69.98376762397147,
+        "DetA": 78.38614613066814,
+        "IDF1": 82.09869014805962,
+        "MOTA": 90.39857685465648,
+        "IDSW": 328,
+        "Frag": 204,
+        "CLR_TP": 19664,
+        "CLR_FN": 1135,
+        "CLR_FP": 534
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 68.48017508591063,
+          "AssA": 60.09911950731277,
+          "DetA": 78.17384412710632,
+          "IDF1": 76.62876254180601,
+          "MOTA": 85.59895833333333,
+          "IDSW": 196,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.52808286379025,
+          "AssA": 67.61515816003286,
+          "DetA": 86.64481495811374,
+          "IDF1": 79.7360058665363,
+          "MOTA": 91.34799235181644,
+          "IDSW": 22,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 74.6355625176067,
+          "AssA": 72.14120164860874,
+          "DetA": 77.51382316597362,
+          "IDF1": 83.81638408480853,
+          "MOTA": 91.50467478307661,
+          "IDSW": 110,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "9a8d17445b4b8bdab8bcfc980437cf41fa3609ec13ff98dc7af9965dfb22bf4c"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "91480fc93464b5dd98d432e08ba4ddddba3136a2578bd6f882c663d0375ce44f"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "bafbb00eb668c78c16b1689b37c1388c8e2af2f83da67ca3c982a69dee83dbc6"
+        }
+      ],
+      "metrics_json_sha256": "8c89a7127e700373e299c5351b57e8da6ef86a603977f5bff19aae8be98add2d",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/G1_0_G2_0_G3_1/metrics.json"
+    },
+    "G1_0_G2_1_G3_0": {
+      "combined": {
+        "HOTA": 73.77794954050269,
+        "AssA": 69.77883572377074,
+        "DetA": 78.37804988905677,
+        "IDF1": 82.10844695953362,
+        "MOTA": 90.78321073128515,
+        "IDSW": 248,
+        "Frag": 204,
+        "CLR_TP": 19664,
+        "CLR_FN": 1135,
+        "CLR_FP": 534
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 67.50175342490036,
+          "AssA": 58.3954901740327,
+          "DetA": 78.18921117182354,
+          "IDF1": 76.04013377926422,
+          "MOTA": 87.55208333333333,
+          "IDSW": 121,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.23374474543073,
+          "AssA": 67.19751178139607,
+          "DetA": 86.51760444452383,
+          "IDF1": 79.10046443412368,
+          "MOTA": 91.4435946462715,
+          "IDSW": 20,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 74.7434456526261,
+          "AssA": 72.35204374795119,
+          "DetA": 77.51382316597362,
+          "IDF1": 84.06781964595154,
+          "MOTA": 91.52485370283178,
+          "IDSW": 107,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "825efe723cdd82aaced073ac1941024cadafce86d70725cca77dc4994f78cc7d"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "42741aed542dec14d349bfe1a209789e57831bd6e121e73adecb61a9835fb778"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "4ef1ea958ff94ef03f6ed228bc0c59a3d4ce9068d0fba25cbebedd38609adf96"
+        }
+      ],
+      "metrics_json_sha256": "3c5f7abc46f76cd6d25884c0afaf63dd139a2549d2321e6c020f4e4733a4ccab",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/G1_0_G2_1_G3_0/metrics.json"
+    },
+    "G1_0_G2_1_G3_1": {
+      "combined": {
+        "HOTA": 72.14267734029119,
+        "AssA": 66.73253892501891,
+        "DetA": 78.39211279412518,
+        "IDF1": 79.00090250506135,
+        "MOTA": 90.43223231886148,
+        "IDSW": 321,
+        "Frag": 204,
+        "CLR_TP": 19664,
+        "CLR_FN": 1135,
+        "CLR_FP": 534
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 68.59185944429333,
+          "AssA": 60.276951632314244,
+          "DetA": 78.1965182010636,
+          "IDF1": 76.68227424749165,
+          "MOTA": 86.171875,
+          "IDSW": 174,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.52808286379025,
+          "AssA": 67.61515816003286,
+          "DetA": 86.64481495811374,
+          "IDF1": 79.7360058665363,
+          "MOTA": 91.34799235181644,
+          "IDSW": 22,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 72.20500667500457,
+          "AssA": 67.53325092479878,
+          "DetA": 77.5164330836667,
+          "IDF1": 79.48761509972478,
+          "MOTA": 91.4037801843008,
+          "IDSW": 125,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "a498c6d0cdafbab0f56a5ddbf0bbe9c1f7b5b44be3ad6354c9d5acffc84f4dd9"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "c7cc9e6ba5005893747e138a9e862ac7df2ff618d09c4bbd90c62e90fb8838ee"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "6762f1e42c30c73135bba0f67e62e4efdf5a90a6df4be1c57fc6a0f6f1cda672"
+        }
+      ],
+      "metrics_json_sha256": "8ec5d517cdd35654316e8c1cece35ce9b83032a6dc49ce00a0c162a0da3159e8",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/G1_0_G2_1_G3_1/metrics.json"
+    },
+    "G1_1_G2_0_G3_0": {
+      "combined": {
+        "HOTA": 73.74333313542472,
+        "AssA": 69.7110799497042,
+        "DetA": 78.38118208506458,
+        "IDF1": 82.07429811937459,
+        "MOTA": 90.68224433867013,
+        "IDSW": 269,
+        "Frag": 204,
+        "CLR_TP": 19664,
+        "CLR_FN": 1135,
+        "CLR_FP": 534
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 67.50134445178941,
+          "AssA": 58.38943024929141,
+          "DetA": 78.1965182010636,
+          "IDF1": 76.04013377926422,
+          "MOTA": 87.23958333333334,
+          "IDSW": 133,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.23374474543073,
+          "AssA": 67.19751178139607,
+          "DetA": 86.51760444452383,
+          "IDF1": 79.10046443412368,
+          "MOTA": 91.4435946462715,
+          "IDSW": 20,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 74.69623991223193,
+          "AssA": 72.2584310294296,
+          "DetA": 77.5164330836667,
+          "IDF1": 84.02025075600558,
+          "MOTA": 91.46431694356629,
+          "IDSW": 116,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "fa66ff4c5ae9438664f9d32dae1301336f3186c0f7e8d1d89c0934fbd331a537"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "42741aed542dec14d349bfe1a209789e57831bd6e121e73adecb61a9835fb778"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "2be924b6389273df2593a4b38554119ae84f8b05e072c162eadc5d226035fed9"
+        }
+      ],
+      "metrics_json_sha256": "115e6e99b5d9b6523b0d48b4f910e28b4b4a980cb690de973b1f0f5d3dad70f4",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/G1_1_G2_0_G3_0/metrics.json"
+    },
+    "G1_1_G2_0_G3_1": {
+      "combined": {
+        "HOTA": 73.85408970454517,
+        "AssA": 69.90634797579173,
+        "DetA": 78.39036222249631,
+        "IDF1": 81.99624362758252,
+        "MOTA": 90.09567767681138,
+        "IDSW": 391,
+        "Frag": 204,
+        "CLR_TP": 19664,
+        "CLR_FN": 1135,
+        "CLR_FP": 534
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 68.33695887009107,
+          "AssA": 59.847666969287076,
+          "DetA": 78.17384412710632,
+          "IDF1": 76.09364548494983,
+          "MOTA": 84.55729166666667,
+          "IDSW": 236,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.5720557865538,
+          "AssA": 67.69248949651904,
+          "DetA": 86.64481495811374,
+          "IDF1": 79.88266927401614,
+          "MOTA": 91.25239005736138,
+          "IDSW": 24,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 74.60978260915884,
+          "AssA": 72.08510488533396,
+          "DetA": 77.51968867530206,
+          "IDF1": 83.78920186198226,
+          "MOTA": 91.36342234479048,
+          "IDSW": 131,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "7867001091c914e8d175de4308c4d62fe894d8af0a8e34e0a4ce4377f5610942"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "9283e11df7c06bfd6a0f2f1fc29c588fd32892cb45bf022f1646db619e1e5c16"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "f9ba6828128031cb79f162250de05dae2c650c1b39b877362e3d95a83983789a"
+        }
+      ],
+      "metrics_json_sha256": "959db63f3179491f31c3c5c7ccccc4b221d8d08400636cb84097b0026cd6cf98",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/G1_1_G2_0_G3_1/metrics.json"
+    },
+    "G1_1_G2_1_G3_0": {
+      "combined": {
+        "HOTA": 73.74333313542472,
+        "AssA": 69.7110799497042,
+        "DetA": 78.38118208506458,
+        "IDF1": 82.07429811937459,
+        "MOTA": 90.68224433867013,
+        "IDSW": 269,
+        "Frag": 204,
+        "CLR_TP": 19664,
+        "CLR_FN": 1135,
+        "CLR_FP": 534
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 67.50134445178941,
+          "AssA": 58.38943024929141,
+          "DetA": 78.1965182010636,
+          "IDF1": 76.04013377926422,
+          "MOTA": 87.23958333333334,
+          "IDSW": 133,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.23374474543073,
+          "AssA": 67.19751178139607,
+          "DetA": 86.51760444452383,
+          "IDF1": 79.10046443412368,
+          "MOTA": 91.4435946462715,
+          "IDSW": 20,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 74.69623991223193,
+          "AssA": 72.2584310294296,
+          "DetA": 77.5164330836667,
+          "IDF1": 84.02025075600558,
+          "MOTA": 91.46431694356629,
+          "IDSW": 116,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "fa66ff4c5ae9438664f9d32dae1301336f3186c0f7e8d1d89c0934fbd331a537"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "42741aed542dec14d349bfe1a209789e57831bd6e121e73adecb61a9835fb778"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "2be924b6389273df2593a4b38554119ae84f8b05e072c162eadc5d226035fed9"
+        }
+      ],
+      "metrics_json_sha256": "115e6e99b5d9b6523b0d48b4f910e28b4b4a980cb690de973b1f0f5d3dad70f4",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/G1_1_G2_1_G3_0/metrics.json"
+    },
+    "G4_OFF": {
+      "combined": {
+        "HOTA": 71.8769054278767,
+        "AssA": 66.27623941025661,
+        "DetA": 78.3612434680283,
+        "IDF1": 78.78137424689612,
+        "MOTA": 90.37453723736718,
+        "IDSW": 333,
+        "Frag": 204,
+        "CLR_TP": 19664,
+        "CLR_FN": 1135,
+        "CLR_FP": 534
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 68.35403327255787,
+          "AssA": 59.91392659699171,
+          "DetA": 78.13071581250871,
+          "IDF1": 78.10033444816054,
+          "MOTA": 85.59895833333333,
+          "IDSW": 196,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.02395995961588,
+          "AssA": 66.91822597465497,
+          "DetA": 86.40162534580807,
+          "IDF1": 79.10046443412368,
+          "MOTA": 91.4435946462715,
+          "IDSW": 20,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 71.96811538928236,
+          "AssA": 67.10013311981504,
+          "DetA": 77.5164330836667,
+          "IDF1": 78.9099928646665,
+          "MOTA": 91.45759063698124,
+          "IDSW": 117,
+          "Frag": 152,
+          "CLR_TP": 14139,
+          "CLR_FN": 728,
+          "CLR_FP": 425
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "1553de25afaa8dfff16ef3111d9f68366c21950bd6f244a17bc308830c08bbf5"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "546e7e1dfd90069a676472c89f61119574a9fa688cbe4ed878958df2a03b052a"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "525223736f460ed2cb350d1370256886099a4c760b5a4516c72bce5912c06503"
+        }
+      ],
+      "metrics_json_sha256": "0e31c3be297f34109143df4cd91f2a8b9fd559c09801f4a378068245b720476f",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/G4_OFF/metrics.json"
+    },
+    "R2_NO_GEOMETRY_REFERENCE": {
+      "combined": {
+        "HOTA": 75.44557942663518,
+        "AssA": 72.87942298771361,
+        "DetA": 78.42240211392615,
+        "IDF1": 85.54284459838524,
+        "MOTA": 90.88898504735805,
+        "IDSW": 230,
+        "Frag": 207,
+        "CLR_TP": 19666,
+        "CLR_FN": 1133,
+        "CLR_FP": 532
+      },
+      "per_scene": {
+        "00014night": {
+          "HOTA": 72.81709413108499,
+          "AssA": 67.90384004072092,
+          "DetA": 78.16425401279984,
+          "IDF1": 85.53846153846155,
+          "MOTA": 88.41145833333334,
+          "IDSW": 88,
+          "Frag": 40,
+          "CLR_TP": 3559,
+          "CLR_FN": 281,
+          "CLR_FP": 76
+        },
+        "00021gate": {
+          "HOTA": 76.71208151837074,
+          "AssA": 67.83332677753927,
+          "DetA": 86.77883080009723,
+          "IDF1": 79.54045465656318,
+          "MOTA": 91.34799235181644,
+          "IDSW": 22,
+          "Frag": 12,
+          "CLR_TP": 1966,
+          "CLR_FN": 126,
+          "CLR_FP": 33
+        },
+        "00030path": {
+          "HOTA": 75.70861132021606,
+          "AssA": 74.16395487521648,
+          "DetA": 77.55365426879706,
+          "IDF1": 86.37830858618464,
+          "MOTA": 91.46431694356629,
+          "IDSW": 120,
+          "Frag": 155,
+          "CLR_TP": 14141,
+          "CLR_FN": 726,
+          "CLR_FP": 423
+        }
+      },
+      "coverage": [
+        {
+          "scene": 4,
+          "frames": 901,
+          "predictions_sha256": "0a5a5d9539880a012666d8909996ec36971e0b79d4eae7993ea1ef352f280a5c"
+        },
+        {
+          "scene": 8,
+          "frames": 523,
+          "predictions_sha256": "f98fa717fbe5069184f95c6425d320b3aab251ed87f427f3e362c7b5fcf04f3b"
+        },
+        {
+          "scene": 12,
+          "frames": 1200,
+          "predictions_sha256": "58a7eca7185b02e53c017e237ae3e01282c653e994ce04e5cd74cf5477d174cf"
+        }
+      ],
+      "metrics_json_sha256": "94e0db3509048fa1509a02b50f733c789cabc62a94d945180cd5eb1a3b29c1cc",
+      "metrics_local_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/native_TRAIN_VAL/R2_NO_GEOMETRY_REFERENCE/metrics.json"
+    }
+  },
+  "early_evaluation_wall_s": 42.111586198210716,
+  "early_scheduler_script_sha256": "4d9139851b6674e19bc0a16a70f55df3a442379e5a87bfc779506a945b227d5e",
+  "reused_by_final_aggregator": true,
+  "scores_or_model_parameters_selected_on_TEST": false,
+  "generated_UTC": "2026-10-26T08:58:14.499565+00:00"
+}
