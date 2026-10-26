@@ -4,7 +4,7 @@ from types import SimpleNamespace
 import unittest
 import numpy as np
 
-from attribute_worldobject_v5_frozen_test import DeliveredIdentityAudit, matrix_contrast
+from attribute_worldobject_v5_frozen_test import DeliveredIdentityAudit, matrix_contrast, global_retention_flags
 from worldobject_v5_audit_common import decision_events, compare_events
 
 
@@ -92,6 +92,15 @@ class IdentityEventChecks(unittest.TestCase):
         counter = Counter()
         matrix_contrast(counter, np.array([True, False]), np.array([False, True]), np.array([True, True]))
         self.assertEqual(counter, {"opportunities": 2, "corrections": 1, "regressions": 1, "net": 0})
+
+    def test_no_clean_gt_opportunities_remain_zero_without_invented_success(self):
+        audit = DeliveredIdentityAudit()
+        audit.observe(prediction(1), observations(), [None, None], 0, 1, Counter())
+        _, mapping = audit.graph()
+        flags = global_retention_flags([], 0, mapping)
+        counter = Counter()
+        matrix_contrast(counter, flags, flags, np.ones(flags.shape, bool))
+        self.assertEqual(dict(counter), {"opportunities": 0, "corrections": 0, "regressions": 0, "net": 0})
 
 
 if __name__ == "__main__":

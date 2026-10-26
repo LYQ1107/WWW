@@ -16,10 +16,20 @@ Frozen training/inference source: `c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85
 
 Three failure sidecars were written underneath the detached mount. The mount supervisor refused to cover that nonempty directory. Those three owned files were moved together to a private preservation directory with byte hashes; no old result was deleted. The existing mount configuration was retained.
 
-Running training writes local checkpoints and logs. A separate backup process publishes immutable archives under the NAS `durable_recovery_snapshots` subtree, then verifies the remote bytes. A pending copy is not a successful backup. Original NAS training artifacts remain intact. Large prediction outputs and the completed TRAIN audits retain their NAS locations.
+Running training writes local checkpoints and logs. A separate backup process publishes immutable archives under the NAS `durable_recovery_snapshots` subtree, then verifies the remote bytes. A pending copy is not a successful backup. Original NAS training artifacts remain intact. The completed TRAIN audits and B0 scenes1–20 retain their NAS locations. New scene predictions write local storage, with verified background NAS archiving.
 
-NAS reads remain slow. Previously byte-verified completed reference videos may be reused for scheduling only after confirming their immutable manifests. Explicit canonical scope adoption still rereads every prediction byte and strictly loads all three final full24 checkpoints before scoring; the inference-only reference authorization cannot run evaluators.
+NAS reads remain slow. Previously successful output-byte-verification receipts may be reused for scheduling while NAS is unavailable. This does not claim a new NAS recheck and never authorizes scoring. Explicit canonical scope adoption still rereads every prediction byte and strictly loads all three final full24 checkpoints before scoring; the inference-only reference authorization cannot run evaluators.
 
 All 43 offline analysis checks passed (14 controller, 15 reference-scope, 10 identity-event, 4 backup). The separate frozen package suite remains 304 passed. This phase changes analysis/scheduling and documentation only, with no model, training rule, threshold, GT or frozen inference-source changes.
 
 Current progress and verified backup archive hashes are recorded in [`v5_storage_recovery.json`](../results/v5_storage_recovery.json). Neither TRAIN loss nor these engineering checks demonstrate an improvement over GMT.
+
+## Continued NAS disconnects and complete B0 reproduction
+
+At 2026-10-26T21:53:02.754725+00:00, B0 has completed all22/29,019 paired times/548,583 candidates and exactly reproduced original C1 fields at every time. B1 is 17/22 at the recorded snapshot. This is GT-free inference; native scoring is still deferred until all three fresh final full24 gates.
+
+NAS disconnected again at approximately21:34 and21:49 UTC. The local trainers continued with unchanged PIDs/optimizer/RNG. The reference scheduler exited on a real errno107 during manifest precheck; no reference model was running then. New predictions now use local directories; previously completed NAS scenes remain read-only links, and the previous NAS-direct root link is preserved. Successful prior receipts prevent rerunning completed scenes.
+
+Remote writers now hold directory descriptors for the actual SSHFS mount, verify their mount IDs and revalidate the mount after remote readback. An unmount cannot redirect writes into the local underlying mount directory. Prediction archiving checks all original output bytes, never overwrites a differing NAS scene, preserves incomplete attempts, and reclaims local duplicates only after verification and model-worker exit. Atomic directory/symlink exchange preserves reader paths. Copy failures retain local originals.
+
+B0 scenes1–20 were timed with NAS output; new B0 scenes21–22 and all other new predictions use local output. Cached wall FPS must not be interpreted as a controlled algorithm speed ranking. The registered real RGB timing still uses common local output storage for all methods. The 54 offline analysis checks passed; no model, registered training rule or GT changed.

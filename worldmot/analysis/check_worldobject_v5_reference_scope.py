@@ -9,7 +9,7 @@ from unittest.mock import patch
 from worldobject_v5_reference_scope import (equivalent_reference_inputs, require_canonical_or_adopted,
     adoption_path, sha256, verify_canonical_final_models)
 from run_worldobject_v5_controller import live_gpu_reservations
-from run_worldobject_v5_reference_queue import terminal_artifact_status, prior_verified_completion
+from run_worldobject_v5_reference_queue import terminal_artifact_status, restore_scheduling_receipts
 from worldmot.runtime.world_object_v5_contract import (BASE, SCHEMA, require_v5_scope, v5_source_fingerprint,
     registration_path)
 from worldmot.runtime.experiment_authorization import APPROVAL_SCHEMA, source_fingerprint
@@ -117,18 +117,38 @@ class ReferenceScopeChecks(unittest.TestCase):
         self.assertEqual(terminal_artifact_status(job, False), "EXITED_PENDING_ARTIFACT")
         self.assertEqual(terminal_artifact_status(job, False), "ENGINEERING_REVIEW_REQUIRED")
 
-    def test_scheduling_receipt_requires_unchanged_manifest_scope_weights_and_outputs(self):
-        proof = {"manifest_sha256": "manifest", "checkpoint_sha256": "weights", "timestamps": 5,
-                 "candidates": 30, "tracks_sha256": "tracks"}
-        manifest = {"status": "COMPLETE", "scope_sha256": "scope", "checkpoint_sha256": "weights",
-                    "approval": {"approval_sha256": "auth"}, "timestamps": 5, "candidate_count": 30,
-                    "GT_in_inference": False, "causal": True, "output_sha256": {"tracks.jsonl": "tracks"}}
-        self.assertTrue(prior_verified_completion(proof, manifest, "manifest", "scope", "auth", "weights"))
-        self.assertFalse(prior_verified_completion(proof, manifest, "changed", "scope", "auth", "weights"))
-        for key, changed in [("scope_sha256", "other"), ("checkpoint_sha256", "other"),
-                             ("GT_in_inference", True), ("causal", False), ("candidate_count", 29)]:
-            self.assertFalse(prior_verified_completion(proof, {**manifest, key: changed},
-                                                       "manifest", "scope", "auth", "weights"))
+    def scheduling_fixture(self):
+        scope = {"frozen_C1_checkpoint_sha256": "weights", "splits": {"test": {"scenes": {
+            "1": {"timestamps": 5, "candidates": 30}}}}}
+        proof = {"manifest_sha256": "a" * 64, "checkpoint_sha256": "weights", "timestamps": 5,
+                 "candidates": 30, "tracks_sha256": "b" * 64}
+        prior = {"reference_scope_sha256": "scope", "reference_authorization_sha256": "auth",
+                 "checkpoint_sha256": "weights", "scoring_executed": False, "TEST_GT_used": False,
+                 "new_models_or_budget_changed": False, "scenes": {"B0": {"1": proof}}, "updated_UTC": "original"}
+        return scope, prior
+
+    def test_scheduling_receipts_need_no_nas_reads_and_preserve_original_verification_time(self):
+        scope, prior = self.scheduling_fixture()
+        with patch("pathlib.Path.open", side_effect=AssertionError("No NAS read permitted")):
+            checked, complete = restore_scheduling_receipts(scope, prior, "scope", "auth")
+        self.assertEqual(checked, {("B0", 1): "a" * 64})
+        self.assertTrue(complete["B0"]["1"]["canonical_adoption_still_requires_full_output_byte_verification"])
+        self.assertEqual(complete["B0"]["1"]["original_output_byte_verification_UTC"], "original")
+
+    def test_changed_scope_never_reuses_prior_scheduling_receipts(self):
+        scope, prior = self.scheduling_fixture()
+        checked, complete = restore_scheduling_receipts(scope, prior, "other-scope", "auth")
+        self.assertEqual(checked, {})
+        self.assertEqual(complete, {"B0": {}, "B1": {}})
+
+    def test_changed_inputs_or_test_usage_reject_scheduling_receipt(self):
+        scope, prior = self.scheduling_fixture()
+        for key in ("scoring_executed", "TEST_GT_used", "new_models_or_budget_changed"):
+            with self.assertRaisesRegex(ValueError, "INFERENCE_ONLY_PRIOR"):
+                restore_scheduling_receipts(scope, {**prior, key: True}, "scope", "auth")
+        prior["scenes"]["B0"]["1"]["candidates"] = 29
+        with self.assertRaisesRegex(ValueError, "RECEIPT_INPUT_OR_CHECKPOINT_CHANGED"):
+            restore_scheduling_receipts(scope, prior, "scope", "auth")
 
     def test_nonzero_exit_without_output_is_genuine_engineering_failure(self):
         self.assertEqual(terminal_artifact_status({"exit_code": 1}, False), "ENGINEERING_REVIEW_REQUIRED")

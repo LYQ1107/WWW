@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import fcntl
 import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import time
@@ -24,21 +25,38 @@ def terminal_artifact_status(job, artifact_verified):
             or job["missing_output_checks"] >= 3 else "EXITED_PENDING_ARTIFACT")
 
 
-def prior_verified_completion(proof, manifest, manifest_sha, scope_sha, auth_sha, checkpoint_sha):
-    """Reuse an earlier output-byte verification for scheduling only.
+def restore_scheduling_receipts(scope, prior, scope_sha, auth_sha):
+    """Reuse earlier byte-verification receipts without requiring a live NAS.
 
-    The manifest binds all output hashes. Canonical adoption must still reread
-    every output byte after all three final TRAIN gates have been frozen.
+    These receipts only prevent repeat work. Canonical adoption must reopen
+    every manifest/output and load all three actual full24 final checkpoints.
     """
-    return (proof.get("manifest_sha256") == manifest_sha
-            and manifest.get("status") == "COMPLETE"
-            and manifest.get("scope_sha256") == scope_sha
-            and manifest.get("approval", {}).get("approval_sha256") == auth_sha
-            and manifest.get("checkpoint_sha256") == checkpoint_sha == proof.get("checkpoint_sha256")
-            and manifest.get("GT_in_inference") is False and manifest.get("causal") is True
-            and proof.get("timestamps") == manifest.get("timestamps")
-            and proof.get("candidates") == manifest.get("candidate_count")
-            and proof.get("tracks_sha256") == manifest.get("output_sha256", {}).get("tracks.jsonl"))
+    checked, complete = {}, {"B0": {}, "B1": {}}
+    if (prior.get("reference_scope_sha256") != scope_sha
+            or prior.get("reference_authorization_sha256") != auth_sha
+            or prior.get("checkpoint_sha256") != scope["frozen_C1_checkpoint_sha256"]):
+        return checked, complete
+    if any(prior.get(k) is not False for k in ("scoring_executed", "TEST_GT_used", "new_models_or_budget_changed")):
+        raise ValueError("INFERENCE_ONLY_PRIOR_RECEIPT_REQUIRED")
+    for variant in ("B0", "B1"):
+        for scene_text, proof in prior.get("scenes", {}).get(variant, {}).items():
+            scene = int(scene_text)
+            if not 1 <= scene <= 22 or str(scene) != scene_text:
+                raise ValueError("INVALID_PRIOR_COMPLETION_SCENE")
+            expected = scope["splits"]["test"]["scenes"][scene_text]
+            digests_valid = all(isinstance(proof[k], str) and len(proof[k]) == 64
+                                and all(c in "0123456789abcdef" for c in proof[k])
+                                for k in ("manifest_sha256", "tracks_sha256"))
+            if (proof["timestamps"] != expected["timestamps"] or proof["candidates"] != expected["candidates"]
+                    or proof["checkpoint_sha256"] != scope["frozen_C1_checkpoint_sha256"] or not digests_valid):
+                raise ValueError("PRIOR_VERIFICATION_RECEIPT_INPUT_OR_CHECKPOINT_CHANGED")
+            checked[variant, scene] = proof["manifest_sha256"]
+            complete[variant][scene_text] = {**proof,
+                "original_output_byte_verification_UTC": proof.get("original_output_byte_verification_UTC", prior["updated_UTC"]),
+                "scheduling_reused_prior_output_byte_verification": True,
+                "current_NAS_manifest_recheck_deferred_to_canonical_adoption": True,
+                "canonical_adoption_still_requires_full_output_byte_verification": True}
+    return checked, complete
 
 
 def main():
@@ -57,30 +75,9 @@ def main():
     path = a.runtime / "auxiliary_jobs.json"
     jobs, children = read_json(path, {}), {}
     verify = test_runner_completed()
-    checked, complete = {}, {"B0": {}, "B1": {}}
     prior = read_json(a.runtime / "reference_inference_status.json", {})
     scope_sha, auth_sha = sha256(scope_path), sha256(auth_path)
-    if (prior.get("reference_scope_sha256") == scope_sha
-            and prior.get("reference_authorization_sha256") == auth_sha
-            and prior.get("checkpoint_sha256") == scope["frozen_C1_checkpoint_sha256"]):
-        for variant in ("B0", "B1"):
-            for scene_text, proof in prior.get("scenes", {}).get(variant, {}).items():
-                scene = int(scene_text)
-                if not 1 <= scene <= 22:
-                    raise ValueError("INVALID_PRIOR_COMPLETION_SCENE")
-                manifest = a.output_root / f"predictions/{variant}/scene_{scene:02d}/manifest.json"
-                if not manifest.is_file():
-                    continue
-                m, manifest_sha = read_json(manifest), sha256(manifest)
-                if not prior_verified_completion(proof, m, manifest_sha, scope_sha, auth_sha,
-                                                  scope["frozen_C1_checkpoint_sha256"]):
-                    raise ValueError("PRIOR_BYTE_VERIFIED_REFERENCE_MANIFEST_CHANGED")
-                if variant == "B0" and m["exact_original_C1_timestamps"] != m["timestamps"]:
-                    raise ValueError("B0_MUST_REPRODUCE_EVERY_ORIGINAL_C1_TIMESTAMP")
-                checked[variant, scene] = manifest_sha
-                complete[variant][scene_text] = {**proof,
-                    "scheduling_reused_prior_output_byte_verification": True,
-                    "canonical_adoption_still_requires_full_output_byte_verification": True}
+    checked, complete = restore_scheduling_receipts(scope, prior, scope_sha, auth_sha)
     def record_completed(variant, scene):
         folder = a.output_root / f"predictions/{variant}/scene_{scene:02d}"
         manifest = folder / "manifest.json"
@@ -95,7 +92,8 @@ def main():
         checked[variant, scene] = sha256(manifest)
         complete[variant][str(scene)] = {"manifest_sha256": checked[variant, scene],
             "timestamps": m["timestamps"], "candidates": m["candidate_count"],
-            "tracks_sha256": m["output_sha256"]["tracks.jsonl"], "checkpoint_sha256": m["checkpoint_sha256"]}
+            "tracks_sha256": m["output_sha256"]["tracks.jsonl"], "checkpoint_sha256": m["checkpoint_sha256"],
+            "original_output_byte_verification_UTC": datetime.now(timezone.utc).isoformat()}
         return True
 
     while True:
@@ -103,9 +101,11 @@ def main():
             if not (a.output_root / "predictions" / variant).is_dir():
                 continue
             for scene in range(1, 23):
+                if (variant, scene) in checked:
+                    continue
                 folder = a.output_root / f"predictions/{variant}/scene_{scene:02d}"
                 manifest = folder / "manifest.json"
-                if manifest.exists() and (variant, scene) not in checked:
+                if manifest.exists():
                     record_completed(variant, scene)
         attention = []
         for key, job in jobs.items():
@@ -167,7 +167,10 @@ def main():
                 continue
             idle = [g for g in gpu_snapshot() if not g["occupied"] and g["uuid"] not in reservations
                     and "V100" in g["name"] and g["free_MiB"] >= 25000]
-            if not idle or not os.path.ismount("/data1/liuyeqiang/nas/A100"):
+            local_destination = (not (a.output_root / "predictions").is_symlink()
+                                 and not str(a.output_root).startswith("/data1/liuyeqiang/nas/"))
+            if (not idle or (not local_destination and not os.path.ismount("/data1/liuyeqiang/nas/A100"))
+                    or shutil.disk_usage(a.runtime).free < 15 * 1024**3):
                 break
             gpu = idle[0]
             command = [sys.executable, "-u", str(a.repo / "worldmot/scripts/run_worldobject_v5_test.py"),

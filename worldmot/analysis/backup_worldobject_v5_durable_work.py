@@ -18,6 +18,7 @@ import tarfile
 import time
 
 from run_worldobject_v5_controller import FROZEN_SOURCE, read_json, write_json
+from worldobject_v5_durable_storage import pinned_nas_root
 
 
 def sha_bytes(value):
@@ -142,9 +143,10 @@ def main():
                     state.update({"status": "NAS_COPY_PENDING_READBACK", "pending": str(local),
                                   "pending_since_UTC": datetime.now(timezone.utc).isoformat()})
                     write_json(state_path, state)
-                    if not os.path.ismount("/data1/liuyeqiang/nas/A100"):
-                        raise OSError("NAS_MOUNT_NOT_READY_LOCAL_CHECKPOINT_PRESERVED")
-                    receipt = publish_snapshot(args.nas_root / "durable_recovery_snapshots", name, contents)
+                    with pinned_nas_root(args.nas_root) as (remote, mount_identity):
+                        receipt = publish_snapshot(remote / "durable_recovery_snapshots", name, contents)
+                    receipt.update({"path": str(args.nas_root / "durable_recovery_snapshots" / name),
+                                    "NAS_mount_identity_verified_before_and_after": mount_identity})
                     state["snapshots"][key] = {**receipt, "checkpoint_sha256": info["sha256"],
                                                "final_gate_sha256": gate_sha, "manifest": manifest}
                     state.update({"status": "VERIFIED_NAS_SNAPSHOTS", "pending": None})

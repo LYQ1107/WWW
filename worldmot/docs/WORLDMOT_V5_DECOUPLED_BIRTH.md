@@ -70,3 +70,5 @@ Cached replay speed and real RGB-to-final-ID speed are separate. The finite real
 Native tool dependencies and wrapper comparability are retained from the archived V4 report. Historical GMT/V2 exports used two-decimal coordinates; current V3/V4/V5 exports preserve .17g. Original GT and shared native tracking dependencies were verified in the archived comparison. This is a documented system-reference limitation, not permission to alter GT or re-tune TEST.
 
 V5 research remains in progress. No V5 improvement claim is made before the registered full training and formal TEST finish.
+
+Recovery update 2026-10-26T21:53:02.754725+00:00: B0 full22 exact C1 reproduction is complete; frozen B1 inference continues and all3 TRAIN selection runs remain active. See V5_STORAGE_RECOVERY.md and v5_B0_full22_reproduction.json. No new formal TEST score is available. Cached timing snapshot above predates recovery; mixed NAS/local output timing cannot rank algorithm speed.

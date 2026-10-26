@@ -174,6 +174,11 @@ def matrix_contrast(counter, left, right, mask):
     counter["net"] += int(b.sum()) - int(a.sum())
 
 
+def global_retention_flags(records, variant_index, mapping):
+    return np.asarray([gids[variant_index] is not None and mapping.get(label) == gids[variant_index]
+                       for label, gids in records], dtype=bool)
+
+
 def main():
     p = argparse.ArgumentParser()
     for key in ("scope-lock", "authorization", "output-root", "output"):
@@ -312,8 +317,8 @@ def main():
             totals[group][v].update(audits[v].counts)
         for left, right in CONTRASTS:
             li, ri = VARIANTS.index(left), VARIANTS.index(right)
-            a0 = np.asarray([gids[li] is not None and mappings[left].get(label) == gids[li] for label, gids in global_records])
-            b0 = np.asarray([gids[ri] is not None and mappings[right].get(label) == gids[ri] for label, gids in global_records])
+            a0 = global_retention_flags(global_records, li, mappings[left])
+            b0 = global_retention_flags(global_records, ri, mappings[right])
             matrix_contrast(scene_paired[right + "_minus_" + left + "/global_one_to_one_retention"], a0, b0, np.ones(a0.shape, bool))
         for kind, counter in scene_paired.items():
             paired[group][kind].update(counter)

@@ -138,6 +138,8 @@ def training_curves(root):
 
 def cached_runtime(root, variant):
     records, manifests = [], []
+    storage_modes = read(root / "provenance/prediction_output_storage_modes.json", {}).get("per_variant_scene", {})
+    storage_counts = Counter()
     if not (root / "predictions" / variant).is_dir():
         return {"status": "NOT_MEASURED", "variant": variant}
     for scene in range(1, 23):
@@ -146,6 +148,7 @@ def cached_runtime(root, variant):
         if not manifest or manifest["status"] != "COMPLETE":
             continue
         manifests.append(manifest)
+        storage_counts[storage_modes.get(variant, {}).get(str(scene), "UNRECORDED")] += 1
         with (folder / "timings.jsonl").open() as stream:
             records.extend(json.loads(line) for line in stream if line.strip())
     if not records:
@@ -166,7 +169,11 @@ def cached_runtime(root, variant):
             "maximum_CUDA_peak_allocated_bytes": max(m["CUDA_peak_allocated_bytes"] for m in manifests),
             "multiscene_aggregate_GPU_throughput": False,
             "stage_times_overlap_and_must_not_be_summed": True,
-            "step_timer_excludes_timing_log_write_and_final_checksums": True}
+            "step_timer_excludes_timing_log_write_and_final_checksums": True,
+            "original_output_storage_scene_counts": dict(storage_counts),
+            "uniform_recorded_local_output_storage": set(storage_counts) == {"LOCAL_DURABLE"},
+            "B0_storage_differs_from_other_methods_after_NAS_recovery": True,
+            "cached_FPS_not_a_controlled_algorithm_speed_ranking": True}
 
 
 def main():
@@ -397,6 +404,10 @@ def main():
               "is TRAIN scenes4/8/12, first61 paired times each, after5 warm-up times and a state reset. "
               "It includes actual RGB read, detector, per-frame Ω (except B4), alignment, membership, C1 updates "
               "and final ID serialization/flush. It is not full TEST RGB-to-ID FPS.", "",
+              "Following the NAS disconnect, B0 scenes1–20 retain their original NAS-write timing; "
+              "B0 scenes21–22 and all other new outputs write local durable storage before verified NAS archival. "
+              "Cached wall FPS therefore cannot rank algorithm speed under a common storage condition. "
+              "The registered real RGB timing uses the same local output storage for all five methods.", "",
               "| Method | Cached worker step FPS | Cached worker wall FPS | Real RGB-to-ID FPS | Real scope |",
               "|---|---:|---:|---:|---|"]
     for row in runtime_rows:
