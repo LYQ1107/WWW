@@ -9,10 +9,10 @@ GMT 原始完整轨迹已从原正式评测证据定位到 `fulltrain_20261022/t
 
 | 阶段 | 实际状态 |
 |---|---|
-| A_GMT_SYNCHRONOUS_IDENTITY_AUDIT | STAGING_BYTE_VERIFIED_LOCAL_INPUTS |
-| B_FROZEN_GEOMETRY_CAUSAL_AUDIT | STAGING_BYTE_VERIFIED_LOCAL_INPUTS |
-| C_WORLD_OBJECT_STATE_IMPLEMENTATION | CPU_PASSED_REAL_VERIFICATION_PENDING |
-| D_TRAIN_VAL_STATE_VERIFICATION | STAGING_BYTE_VERIFIED_LOCAL_INPUTS |
+| A_GMT_SYNCHRONOUS_IDENTITY_AUDIT | RUNNING_REGISTERED_COMPLETE_VIDEO_EXPERIMENTS |
+| B_FROZEN_GEOMETRY_CAUSAL_AUDIT | RUNNING_REGISTERED_COMPLETE_VIDEO_EXPERIMENTS |
+| C_WORLD_OBJECT_STATE_IMPLEMENTATION | CPU_AND_REAL_PREFLIGHT_PASSED_FULL_VIDEO_PENDING |
+| D_TRAIN_VAL_STATE_VERIFICATION | RUNNING_REGISTERED_COMPLETE_VIDEO_EXPERIMENTS |
 
 实现包括独立 G1/G2/G3/G4 控制、六维常速度预测、Joseph Kalman 更新、身份/空间分离、置信度门控长短期视觉记忆、保守多视角测量和因果 Ω 请求。
 C0 默认路径用冻结 R2 源码对照；CPU 合成测试的 80 时刻完全一致不等价于真实 checkpoint 的全视频复现。
@@ -31,3 +31,5 @@ C0 默认路径用冻结 R2 源码对照；CPU 合成测试的 80 时刻完全�
 来源与许可详见 [V4_SOURCE_ADAPTATION.md](V4_SOURCE_ADAPTATION.md)；具体固定范围见 [V4_PREREGISTRATION.md](V4_PREREGISTRATION.md)。
 
 恢复过程：第一次 NAS 输出尝试的两段真实工程预检共 32/32 时刻严格复现 C0；随后六场回放、原 TEST 输出审计及保留案例进程退出，未形成完整视频分数。同一期间观察到 NAS I/O 错误，可读取日志已保存，但缺少逐进程异常栈。详见 `results/v4_execution_attempts.json`。当前准备原 SHA 校验的本地输入镜像与本地输出，模型参数和评测范围不变。
+
+本地输入镜像已全部校验。当前修订的两段真实工程预检再次 32/32 严格复现 C0/R2；六场完整 TRAIN 回放和已有 TEST 输出审计已启动。已完成场景与输入证明见 `v4_execution_attempts.json`、`v4_input_mirror_receipt.json`；完整正式分数仍待评分。

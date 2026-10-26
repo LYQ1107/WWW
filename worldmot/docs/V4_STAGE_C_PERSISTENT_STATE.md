@@ -1,6 +1,6 @@
 # 阶段 C：持续世界对象实现
 
-实际状态：`CPU_PASSED_REAL_VERIFICATION_PENDING`。
+实际状态：`CPU_AND_REAL_PREFLIGHT_PASSED_FULL_VIDEO_PENDING`。
 
 先预测世界状态，再联合分配；身份与空间分别更新。空间冲突不会仅因过期中心硬拒绝可靠身份。C4 同一 Ω 调用的两路观测只合成一次保守更新。C5 请求只看当前视觉和过去状态。
 

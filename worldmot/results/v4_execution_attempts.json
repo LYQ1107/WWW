@@ -1,6 +1,6 @@
 {
   "schema": "worldmot_v4_execution_attempts_v1",
-  "updated_UTC": "2026-10-26T07:34:34.588408+00:00",
+  "updated_UTC": "2026-10-26T08:11:39.035078+00:00",
   "attempts": [
     {
       "attempt": 1,
@@ -138,15 +138,102 @@
         "identity_metrics_used_for_device_selection": false,
         "same_frozen_weights_inputs_precision_and_no_optimizer": true
       }
+    },
+    {
+      "attempt": 2,
+      "status": "RUNNING_FROZEN_COMPLETE_VIDEO_REPLAY",
+      "run_root": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state",
+      "source_sha256": "f3ab66e050d8e88346a9cd95fe8012a925bfa6b43943392bcef127c7b86aeee0",
+      "implementation_commit": "b9ab185cce62c7f3f57d1c5083e9942887c85ae1",
+      "controller_pid": 24142,
+      "source_bound_CPU_tests": 279,
+      "preflights": [
+        {
+          "scene": 4,
+          "status": "LIMITED_PREFLIGHT",
+          "timestamps": 16,
+          "C0_R2_exact_frames": 16,
+          "source_sha256": "f3ab66e050d8e88346a9cd95fe8012a925bfa6b43943392bcef127c7b86aeee0",
+          "checkpoint": {
+            "checkpoint_sha256": "cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8",
+            "train_gate_sha256": "363a0a687466bff7a3c8c93b2589c981ceb69a67e36fa8b58953a2d3b41aaf0d",
+            "method": "FULL_WORLD_OBJECT_V3",
+            "origin_source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f",
+            "frozen_parameters": 436870,
+            "optimizer_used": false,
+            "TRAIN_scenes_previously_seen_by_final_head": true
+          },
+          "worker_total_wall_s": 9.249274782836437,
+          "report_sha256": "77c06dd4a2fc85267b0dbffb3e3860cd79cc38590f828e1fa8649155cdbe722e",
+          "report_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/CPU_preflight/replay_report.json",
+          "timing_scope": "cache engineering preflight, not LIVE FPS"
+        },
+        {
+          "scene": 24,
+          "status": "LIMITED_PREFLIGHT",
+          "timestamps": 16,
+          "C0_R2_exact_frames": 16,
+          "source_sha256": "f3ab66e050d8e88346a9cd95fe8012a925bfa6b43943392bcef127c7b86aeee0",
+          "checkpoint": {
+            "checkpoint_sha256": "cfda40050e89b31dd4480ca4d5010e23067a94ba18ea7d0e2425d5935d3f7fb8",
+            "train_gate_sha256": "363a0a687466bff7a3c8c93b2589c981ceb69a67e36fa8b58953a2d3b41aaf0d",
+            "method": "FULL_WORLD_OBJECT_V3",
+            "origin_source_sha256": "6bcdcdb1a6b3683c4e406b0791416a77e5e9e64f165fbad4a61667698b64645f",
+            "frozen_parameters": 436870,
+            "optimizer_used": false,
+            "TRAIN_scenes_previously_seen_by_final_head": true
+          },
+          "worker_total_wall_s": 67.26043112576008,
+          "report_sha256": "c4d06c73eb525ff1415456ed64cb59d3228644b8188e2a780d360b5ef4003473",
+          "report_path": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state/CPU_crowd_preflight/replay_report.json",
+          "timing_scope": "cache engineering preflight, not LIVE FPS"
+        }
+      ],
+      "completed_full_TRAIN_scenes_at_snapshot": [
+        {
+          "scene": 4,
+          "timestamps": 901,
+          "C0_R2_exact_frames": 901,
+          "report_sha256": "d87c34bbbd974233dddb4ca5ed9d4e6dcc1f496a393975176be749b1d4730674"
+        },
+        {
+          "scene": 8,
+          "timestamps": 523,
+          "C0_R2_exact_frames": 523,
+          "report_sha256": "c4e5512d54558f7ce685458fe63afb0273fcb7d17be3c5ec86e1907fc6c32987"
+        }
+      ],
+      "requested_TRAIN_scenes": [
+        4,
+        8,
+        12,
+        16,
+        20,
+        24
+      ],
+      "requested_TRAIN_timestamps": 5860,
+      "existing_TEST_scope": "all22,29019 paired times; read-only identity audit and registered no-history diagnostic",
+      "new_training_started": false,
+      "new_V4_formal_TEST_started": false,
+      "input_receipt_sha256": "6025d75eb85872582d79c1e91b3cbe451b58708c356310e6a3568281393d7fce",
+      "hardware_choice": {
+        "selected": "cpu",
+        "CPU_crowd_compute_s": 54.933948151767254,
+        "CPU_head_fraction": 0.19082908313447175,
+        "CPU_average_variant_step_s": 0.22889145063236355,
+        "identity_metrics_used_for_device_selection": false,
+        "same_frozen_weights_inputs_precision_and_no_optimizer": true
+      },
+      "snapshot_UTC": "2026-10-26T08:11:39.035078+00:00"
     }
   ],
   "retry_storage_plan": {
-    "status": "COPYING_AND_VERIFYING",
+    "status": "VERIFIED",
     "mirror_root": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT",
     "planned_local_output_root": "/data1/liuyeqiang/worldmot_v4_verified_inputs_20261026/WorldMOT/worldobject_v4_persistent_state",
     "receipt": {
       "schema": "worldmot_v4_verified_input_mirror_v1",
-      "status": "COPYING",
+      "status": "VERIFIED",
       "plan_sha256": "34ab5156f051b6ef162e3ec7aaa5526cab2e0a4d0f4dddc1523761f13c4214b4",
       "staging_script_sha256": "eb4702a5dbcafe7e4990615eeb610c2dca915229cf8ec94055ee03f9867323bd",
       "source_root": "/data1/liuyeqiang/nas/A100/WorldMOT",
@@ -198,11 +285,13 @@
       },
       "new_features_or_geometry_produced": false,
       "GT_used_for_copy_selection": false,
-      "verified_files": 540,
-      "copied_files": 306,
-      "already_verified_files": 234,
-      "elapsed_wall_s": 514.8548884764314,
-      "last_verified_relative": "gmt_detector_comparison_20261023/raw_test_v1/scene_13/shard_0008.npz"
+      "verified_files": 1394,
+      "copied_files": 955,
+      "already_verified_files": 439,
+      "elapsed_wall_s": 2244.0503892078996,
+      "last_verified_relative": "worldobject_v3_birthfix_r2_20261025/predictions/HEAD_ONLY_NO_GEOMETRY_V3/scene_22/tracks.jsonl",
+      "all_original_file_checksums_verified": true,
+      "verified_UTC": "2026-10-26T08:03:13.070512+00:00"
     },
     "no_new_features_or_geometry": true,
     "model_parameters_or_thresholds_changed": false,
