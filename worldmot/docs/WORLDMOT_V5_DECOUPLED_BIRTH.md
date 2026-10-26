@@ -1,6 +1,6 @@
 WorldMOT V5: decoupled observation birth and persistent membership
 
-Updated UTC: 2026-10-26T20:38:43.352660+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
+Updated UTC: 2026-10-26T22:15:57.404794+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
 
 The finite B0–B4 registration, code fingerprint and original V3/V4 artifacts are frozen. The model predicts membership and a per-camera no-observation option. Birth, lifecycle, identity writes and C1 Kalman/Joseph updates use separate auditable policies. GT never repairs the predicted history.
 
@@ -10,17 +10,17 @@ All24 TRAIN inputs are verified: 28,754 paired times and 557,002 detections. Fit
 
 | Variant | Selection completed epochs | Current selection scene count | Final completed epochs | Final weight SHA-256 |
 |---|---:|---:|---:|---|
-| B2 | 2 | 5/18 | 0 | not available |
-| B3 | 2 | 1/18 | 0 | not available |
-| B4 | 2 | 14/18 | 0 | not available |
+| B2 | 3 | 11/18 | 0 | not available |
+| B3 | 3 | 7/18 | 0 | not available |
+| B4 | 4 | 12/18 | 0 | not available |
 
 Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged over paired timestamps; scene density and evolving predicted histories differ between fit18 and VAL6. The per-scene breakdown is in v5_training_curves.json. These values do not establish convergence or formal TEST improvement.
 
 | Variant | Epoch | Fit membership loss | VAL membership loss | VAL same-person split rate | VAL different-person false-merge rate | Finite gradients |
 |---|---:|---:|---:|---:|---:|---|
-| B2 | 2 | 0.0830 | 1.5101 | 29.06% | 0.63% | True |
-| B3 | 2 | 0.0717 | 1.7573 | 24.31% | 1.05% | True |
-| B4 | 2 | 0.0800 | 1.8521 | 32.04% | 1.48% | True |
+| B2 | 3 | 0.0693 | 1.7595 | 31.74% | 1.00% | True |
+| B3 | 3 | 0.0724 | 1.7671 | 34.36% | 0.79% | True |
+| B4 | 4 | 0.0586 | 1.1919 | 33.34% | 0.45% | True |
 
 Selection currently uses CPU, one Torch/BLAS thread per worker. Final B3/B4 training and complete TEST use truly idle V100 FP32 workers. B2 final training uses a third idle V100 if available, otherwise one CPU thread; its resumes keep that device family. Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.
 
@@ -62,7 +62,7 @@ Cached replay speed and real RGB-to-final-ID speed are separate. The finite real
 | Method | Cached worker step FPS | Cached worker wall FPS | Real RGB-to-ID FPS | Real scope |
 |---|---:|---:|---:|---|
 | B0 | 33.6722 | 13.0486 | not measured | NOT_MEASURED |
-| B1 | not measured | not measured | not measured | NOT_MEASURED |
+| B1 | 17.4946 | 16.8607 | not measured | NOT_MEASURED |
 | B2 | not measured | not measured | not measured | NOT_MEASURED |
 | B3 | not measured | not measured | not measured | NOT_MEASURED |
 | B4 | not measured | not measured | not measured | NOT_MEASURED |
@@ -72,3 +72,7 @@ Native tool dependencies and wrapper comparability are retained from the archive
 V5 research remains in progress. No V5 improvement claim is made before the registered full training and formal TEST finish.
 
 Recovery update 2026-10-26T21:53:02.754725+00:00: B0 full22 exact C1 reproduction is complete; frozen B1 inference continues and all3 TRAIN selection runs remain active. See V5_STORAGE_RECOVERY.md and v5_B0_full22_reproduction.json. No new formal TEST score is available. Cached timing snapshot above predates recovery; mixed NAS/local output timing cannot rank algorithm speed.
+
+Frozen reference completion 2026-10-26T22:15:57.404794+00:00: B0 and B1 each finished22/22 TEST videos,29,019 paired times and548,583 frozen candidates. B0 exactly reproduced original C1 at every time. B1 retained all548,583 current detection boxes, with0 duplicate suppression and one state reset at each scene origin. These GT-free checks do not measure B1 identity accuracy. Native metrics remain pending until the three final full24 TRAIN gates. See v5_frozen_reference_inference.json.
+
+B1 cached replay timing now covers all22 videos; B0 cached timing above still covers its earlier12-video snapshot. The runs have mixed NAS/local original output paths and do not provide a controlled algorithm speed ranking or real RGB-to-ID FPS.

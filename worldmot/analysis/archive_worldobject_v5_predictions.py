@@ -28,7 +28,7 @@ def scene_has_live_worker(runtime, variant, scene):
     return False
 
 
-def archive_scene(folder, nas_root, variant, scene):
+def archive_scene(folder, nas_root, variant, scene, copy_state_root=None):
     manifest = read_json(folder / "manifest.json")
     if (manifest["status"] != "COMPLETE" or manifest["variant"] != variant or manifest["scene"] != scene
             or manifest["v5_source_sha256"] != FROZEN_SOURCE or manifest["GT_in_inference"]
@@ -42,6 +42,7 @@ def archive_scene(folder, nas_root, variant, scene):
     if (folder / "progress.json").is_file():
         hashes["progress.json"] = digest(folder / "progress.json")
     canonical = nas_root / f"predictions/{variant}/scene_{scene:02d}"
+    copy_proofs = {}
     with pinned_nas_root(nas_root) as (remote, mount_identity):
         target = remote / f"predictions/{variant}/scene_{scene:02d}"
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -52,7 +53,8 @@ def archive_scene(folder, nas_root, variant, scene):
         stage.mkdir(exist_ok=True)
         # Publish the complete manifest after its three output files.
         for name in sorted(hashes, key=lambda name: name == "manifest.json"):
-            verified_copy(folder / name, stage / name, hashes[name])
+            state_path = (copy_state_root / f"{variant}_scene{scene:02d}" / (name + ".json")) if copy_state_root else None
+            copy_proofs[name] = verified_copy(folder / name, stage / name, hashes[name], state_path, str(canonical / name))
         if not exists:
             for name in hashes:
                 (stage / name).chmod(0o444)
@@ -62,6 +64,7 @@ def archive_scene(folder, nas_root, variant, scene):
     return {"status": "COMPLETE_NAS_SCENE_OUTPUT_READBACK_VERIFIED", "variant": variant, "scene": scene,
             "local_directory": str(folder), "NAS_directory": str(canonical),
             "manifest_sha256": manifest_sha, "file_sha256": hashes,
+            "per_file_remote_verification": copy_proofs,
             "verified_UTC": datetime.now(timezone.utc).isoformat(),
             "NAS_mount_identity_verified_before_and_after": mount_identity,
             "model_or_prediction_bytes_changed": False, "local_files_reclaimed": False}
@@ -100,7 +103,8 @@ def main():
                               "pending_since_UTC": datetime.now(timezone.utc).isoformat()})
                 write_json(state_path, state)
                 try:
-                    receipt = archive_scene(folder, args.nas_root, variant, scene)
+                    receipt = archive_scene(folder, args.nas_root, variant, scene,
+                                            args.work / "provenance/prediction_copy_state")
                     write_json(receipt_path, receipt)
                     if reclaim:
                         if scene_has_live_worker(args.runtime, variant, scene):

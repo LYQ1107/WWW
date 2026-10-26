@@ -10,7 +10,8 @@ from unittest.mock import patch
 from archive_worldobject_v5_predictions import archive_scene, FROZEN_SOURCE
 from summarize_worldobject_v5 import cached_runtime
 from worldobject_v5_durable_storage import (
-    pinned_nas_root, fd_mount_id, verified_copy, digest, replace_local_with_verified_symlink)
+    pinned_nas_root, fd_mount_id, verified_copy, digest, replace_local_with_verified_symlink,
+    resumable_verified_copy, write_json)
 
 
 class DurableStorageChecks(unittest.TestCase):
@@ -128,6 +129,67 @@ class DurableStorageChecks(unittest.TestCase):
         self.assertTrue(result["cached_FPS_not_a_controlled_algorithm_speed_ranking"])
         self.assertEqual(result["CACHED_single_worker_step_FPS"], 1.)
         self.assertIsNone(result["LIVE_RGB_to_ID_FPS"])
+
+    def interrupted_chunk_copy(self):
+        source, target, state = self.base / "chunk-source", self.root / "chunk-target", self.base / "copy-state.json"
+        source.write_bytes(b"abcdefghijklmnopq")
+        original_write = write_json
+
+        def interrupt_after_first_ack(path, value):
+            original_write(path, value)
+            raise OSError("SYNTHETIC_DISCONNECT_AFTER_FIRST_VERIFIED_CHUNK")
+
+        with patch("worldobject_v5_durable_storage.write_json", side_effect=interrupt_after_first_ack):
+            with self.assertRaisesRegex(OSError, "SYNTHETIC_DISCONNECT"):
+                resumable_verified_copy(source, target, digest(source), state, chunk_bytes=4)
+        self.assertEqual(json.loads(state.read_text())["committed_bytes"], 4)
+        self.assertFalse(target.exists())
+        return source, target, state
+
+    def test_large_copy_resumes_after_ack_without_retransmitting_committed_ranges(self):
+        source, target, state = self.interrupted_chunk_copy()
+        proof = resumable_verified_copy(source, target, digest(source), state, chunk_bytes=4)
+        self.assertEqual(target.read_bytes(), source.read_bytes())
+        chunks = json.loads(state.read_text())["chunks"]
+        self.assertEqual([chunk["offset"] for chunk in chunks], [0, 4, 8, 12, 16])
+        self.assertEqual(proof["verified_bytes"], 17)
+        self.assertEqual(proof["chunk_count"], 5)
+        self.assertTrue(proof["final_native_or_adoption_full_SHA_still_required"])
+
+    def test_changed_remote_prefix_never_becomes_a_completed_archive(self):
+        source, target, state = self.interrupted_chunk_copy()
+        partial = next(self.root.glob("chunk-target.verified-upload.*"))
+        partial.write_bytes(b"xxxx")
+        with self.assertRaisesRegex(ValueError, "REMOTE_COMMITTED_PREFIX_CHANGED"):
+            resumable_verified_copy(source, target, digest(source), state, chunk_bytes=4)
+        self.assertFalse(target.exists())
+        self.assertEqual(source.read_bytes(), b"abcdefghijklmnopq")
+
+    def test_unacknowledged_tail_is_retried_and_full_byte_equality_is_preserved(self):
+        source, target, state = self.interrupted_chunk_copy()
+        partial = next(self.root.glob("chunk-target.verified-upload.*"))
+        with partial.open("ab") as stream:
+            stream.write(b"UNACKNOWLEDGED_NETWORK_TAIL")
+        resumable_verified_copy(source, target, digest(source), state, chunk_bytes=4)
+        self.assertEqual(target.read_bytes(), source.read_bytes())
+        self.assertTrue(json.loads(state.read_text())["complete"])
+
+    def test_unrelated_existing_file_cannot_reuse_a_partial_copy_proof(self):
+        source, target, state = self.interrupted_chunk_copy()
+        target.write_bytes(b"different-existing")
+        with self.assertRaisesRegex(ValueError, "EXISTING_NAS_OUTPUT_DIFFERS"):
+            resumable_verified_copy(source, target, digest(source), state, chunk_bytes=4)
+        self.assertEqual(target.read_bytes(), b"different-existing")
+
+    def test_remote_copy_proof_stays_immutable_after_later_reverification(self):
+        source, target, state = self.interrupted_chunk_copy()
+        first = resumable_verified_copy(source, target, digest(source), state, chunk_bytes=4)
+        original = Path(first["immutable_contiguous_remote_range_proof"])
+        proof_sha = first["contiguous_remote_range_proof_sha256"]
+        second = resumable_verified_copy(source, target, digest(source), state, chunk_bytes=4)
+        self.assertEqual(digest(original), proof_sha)
+        self.assertTrue(Path(second["immutable_contiguous_remote_range_proof"]).is_file())
+        self.assertEqual(target.read_bytes(), source.read_bytes())
 
 
 if __name__ == "__main__":

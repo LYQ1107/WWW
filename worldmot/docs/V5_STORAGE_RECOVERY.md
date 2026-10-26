@@ -33,3 +33,9 @@ NAS disconnected again at approximately21:34 and21:49 UTC. The local trainers co
 Remote writers now hold directory descriptors for the actual SSHFS mount, verify their mount IDs and revalidate the mount after remote readback. An unmount cannot redirect writes into the local underlying mount directory. Prediction archiving checks all original output bytes, never overwrites a differing NAS scene, preserves incomplete attempts, and reclaims local duplicates only after verification and model-worker exit. Atomic directory/symlink exchange preserves reader paths. Copy failures retain local originals.
 
 B0 scenes1–20 were timed with NAS output; new B0 scenes21–22 and all other new predictions use local output. Cached wall FPS must not be interpreted as a controlled algorithm speed ranking. The registered real RGB timing still uses common local output storage for all methods. The 54 offline analysis checks passed; no model, registered training rule or GT changed.
+
+## Resumable large output archiving
+
+Large NAS copies now persist contiguous1MiB ranges only after remote byte comparison and fsync. A retry validates its immutable source and the last committed remote range, preserves the acknowledged prefix, and retries an unacknowledged transfer tail. Complete range coverage proves equality to the original source file; canonical adoption and native scoring still independently require the full output SHA. Completed local files remain until the remote archive passes its checks. Actual NAS copy progress is not a tracking result. The59 offline checks include interruptions, damaged prefixes, unacknowledged tails and collisions with existing files.
+
+Completed contiguous remote-byte proof ledgers are retained under immutable SHA-named versions, so later revalidation cannot erase the evidence referenced by an earlier archive receipt. The final offline analysis suite passed59 checks.

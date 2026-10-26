@@ -63,8 +63,96 @@
       "step_timer_excludes_timing_log_write_and_final_checksums": true
     },
     "B1": {
-      "status": "NOT_MEASURED",
-      "variant": "B1"
+      "status": "COMPLETE_FULL22_CACHED_REPLAY",
+      "variant": "B1",
+      "scenes": 22,
+      "paired_times": 29019,
+      "timings": {
+        "C1_motion_predict_s": {
+          "P50_s": 0.002627044916152954,
+          "P95_s": 0.024523562192916865,
+          "sum_s": 172.7927921190858,
+          "measured_timestamps": 29019
+        },
+        "C1_spatial_measurement_update_s": {
+          "P50_s": 0.007350623607635498,
+          "P95_s": 0.05113296061754224,
+          "sum_s": 405.0516920685768,
+          "measured_timestamps": 29019
+        },
+        "birth_manager_s": {
+          "P50_s": 2.6561319828033447e-05,
+          "P95_s": 9.792372584342955e-05,
+          "sum_s": 1.381354920566082,
+          "measured_timestamps": 29019
+        },
+        "cache_read_and_join_s": {
+          "P50_s": 0.0022633597254753113,
+          "P95_s": 0.014511843770742409,
+          "sum_s": 167.4773560091853,
+          "measured_timestamps": 29019
+        },
+        "complete_timestamp_s": {
+          "P50_s": 0.029895514249801636,
+          "P95_s": 0.21761013418436048,
+          "sum_s": 1658.7376946806908,
+          "measured_timestamps": 29019
+        },
+        "historical_assignment_s": {
+          "P50_s": 0.003135494887828827,
+          "P95_s": 0.04115592762827873,
+          "sum_s": 241.8976225927472,
+          "measured_timestamps": 29019
+        },
+        "identity_memory_write_s": {
+          "P50_s": 0.0015868768095970154,
+          "P95_s": 0.009637779742479324,
+          "sum_s": 84.13331175595522,
+          "measured_timestamps": 29019
+        },
+        "membership_forward_and_input_s": {
+          "P50_s": 0.004804916679859161,
+          "P95_s": 0.01212971806526184,
+          "sum_s": 185.24914390593767,
+          "measured_timestamps": 29019
+        },
+        "membership_model_only_s": {
+          "P50_s": 0.0030665770173072815,
+          "P95_s": 0.0041892856359481805,
+          "sum_s": 107.82631522417068,
+          "measured_timestamps": 29019
+        },
+        "output_serialization_s": {
+          "P50_s": 0.0008772239089012146,
+          "P95_s": 0.006306748092174521,
+          "sum_s": 48.83932085335255,
+          "measured_timestamps": 29019
+        },
+        "tracking_core_s": {
+          "P50_s": 0.024228595197200775,
+          "P95_s": 0.1790931738913059,
+          "sum_s": 1322.9183251410723,
+          "measured_timestamps": 29019
+        }
+      },
+      "CACHED_single_worker_step_FPS": 17.49462865229345,
+      "CACHED_worker_wall_FPS_including_per_scene_initialization_and_output_hashing": 16.86072583814085,
+      "LIVE_RGB_to_ID_FPS": null,
+      "precision": "float32",
+      "devices": [
+        "cuda:0"
+      ],
+      "maximum_peak_RSS_bytes": 2441355264,
+      "maximum_CUDA_peak_allocated_bytes": 254257152,
+      "multiscene_aggregate_GPU_throughput": false,
+      "stage_times_overlap_and_must_not_be_summed": true,
+      "step_timer_excludes_timing_log_write_and_final_checksums": true,
+      "original_output_storage_scene_counts": {
+        "LOCAL_DURABLE": 22
+      },
+      "uniform_recorded_local_output_storage": true,
+      "B0_storage_differs_from_other_methods_after_NAS_recovery": true,
+      "cached_FPS_not_a_controlled_algorithm_speed_ranking": true
     },
     "B2": {
       "status": "NOT_MEASURED",
@@ -85,12 +173,15 @@
   "LIVE_input_geometry_has_actual_current_transform_unavailable_in_inherited_cache": true,
   "LIVE_accuracy_not_compared_to_cached_full_TEST": true,
   "six_GPU_total_throughput_not_single_video_FPS": true,
-  "cached_measurements_last_recomputed_UTC": "2026-10-26T20:38:43.352660+00:00",
   "storage_recovery_caveat": {
     "B0_scenes1to20_original_write_storage": "NAS_DIRECT",
     "all_remaining_successful_new_scene_writes": "LOCAL_DURABLE",
     "cache_wall_FPS_is_not_a_controlled_algorithm_speed_ranking": true,
     "existing_partial_cache_measurements_are_not_new_full22_timings": true,
     "registered_real_RGB_test_same_local_output_for_all5": true
+  },
+  "cached_measurement_snapshot_UTC_by_variant": {
+    "B0": "2026-10-26T20:38:43.352660+00:00",
+    "B1": "2026-10-26T22:15:57.404794+00:00"
   }
 }
