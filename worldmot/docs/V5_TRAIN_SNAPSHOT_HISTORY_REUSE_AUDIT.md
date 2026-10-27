@@ -27,3 +27,5 @@ WorldMOT V5：固定TRAIN6历史复用快照审计注册
 - [只读CPU审计入口](../analysis/audit_worldobject_v5_train_snapshot.py)
 
 本次不会改写V5正式指标表；审计完成后另存TRAIN快照报告。
+
+执行结果另见 [完整TRAIN6快照审计结果](V5_TRAIN_SNAPSHOT_HISTORY_REUSE_RESULTS.md)。以上注册参数保持不变。

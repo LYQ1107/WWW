@@ -1,0 +1,989 @@
+{
+  "status": "COMPLETE_TRAIN6_FROZEN_B3_SNAPSHOT_IDENTITY_MONITOR",
+  "UTC": "2026-10-27T07:26:27.157047+00:00",
+  "registration_sha256": "fc8ec3ab55d4ac22b651271f6bc0157bf1f3af5a9454a139bd2dae1a7e0ec7ac",
+  "registration_publication_commit": "de489113dd50b967d1bd42793b9e84a200191409",
+  "approval": {
+    "approval_sha256": "26876952093fc04771c1c250e5611c78c61db822c87b39bd306e0a5bfb35ca90",
+    "operation": "diagnostics",
+    "source_commit": "513558910520e69fe9e6cad951605a328c9bb0d7",
+    "execution_commit": "de489113dd50b967d1bd42793b9e84a200191409"
+  },
+  "hashes": {
+    "v5_source_sha256": "c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85688f74d89159e16f733",
+    "driver_sha256": "cc8223e543d2bbe97a56b8981017a27f7698e4a63262ba4db3f396307bfaec50",
+    "event_audit_sha256": "a2b12b8d258996a4bfd73b8d943711ca4b6ec0c7cdbf485c8cc53cfbf04354d0",
+    "scope_sha256": "c841a987453adb9f49bfdb1722c161e085e349ced682b9e57b150b6e7b6b2707",
+    "authorization_sha256": "26876952093fc04771c1c250e5611c78c61db822c87b39bd306e0a5bfb35ca90",
+    "calibration_sha256": "97103af38a151ebff1baaecfe2f29ea56d021a78ea7cf85037b1eb2ded878e7a"
+  },
+  "snapshot_sha256": "e888fc1d347005b8d78fdf9c608b396f29036ad27987a6eb09c48d1c49266f2e",
+  "model_state_tensor_sha256": "1cfbadd019409b59f643a56f994a66ac7c4d72a3b62186178b4e7d50985d9851",
+  "snapshot_completed_epochs": 2,
+  "snapshot_partial_epoch": 3,
+  "snapshot_partial_epoch_scenes": [
+    11,
+    20,
+    19,
+    6,
+    2,
+    9,
+    16,
+    17,
+    10,
+    1,
+    3,
+    7,
+    12
+  ],
+  "scenes": [
+    4,
+    8,
+    12,
+    16,
+    20,
+    24
+  ],
+  "counts": {
+    "paired_timestamps": 5860,
+    "frozen_candidates": 172760,
+    "output_candidates": 172760,
+    "audited_duplicate_suppression": 0,
+    "clean_labelled_frozen_candidates": 164268,
+    "clean_labelled_candidates_retained": 164268,
+    "new_ID_clean_observations": 318,
+    "wrong_historical_ID_reuse": 936,
+    "reuse_of_cumulatively_mixed_ID": 88219,
+    "false_birth_unique_active_history_observations": 55,
+    "identity_write_timestamp_available_observations": 164268,
+    "spatial_write_timestamp_available_observations": 135966,
+    "within_timestamp_extra_birth_IDs_per_person": 19,
+    "same_person_birth_pair_opportunities": 40082,
+    "simultaneous_duplicate_birth_pairs": 19,
+    "active_mixed_object_steps": 115300,
+    "GT_join/valid_annotations": 182802,
+    "GT_join/masked_detections": 2424,
+    "GT_join/matched_identity_observations": 164268,
+    "same_person_cross_view_pairs": 40082,
+    "different_person_cross_view_pairs": 1744285,
+    "correct_same_person_shared_ID": 33036,
+    "same_person_ID_split": 7046,
+    "false_different_person_shared_ID": 2983,
+    "correct_different_person_separate": 1741302,
+    "missing_output_cross_view_pair_opportunities": 0,
+    "historical_ID_clean_observations": 163950,
+    "clean_per_camera_temporal_links": 164020,
+    "diagnostic_per_camera_ID_changes": 16267,
+    "LOST_recovery_clean_observations": 7876,
+    "LOST_recovery_correct_pure_identity": 1766,
+    "NULL_unique_active_history_opportunities": 53520,
+    "NULL_despite_current_person": 6613,
+    "detection_gap_returns_2to30": 2396,
+    "detection_gap_retained_ID_2to30": 1717,
+    "detection_gap_returns_GT_continuously_annotated": 2411,
+    "detection_gap_retained_ID_GT_continuously_annotated": 1710,
+    "wrong_person_identity_write_observations": 179,
+    "wrong_person_current_spatial_write_observations": 113,
+    "clean_observations_into_cumulatively_mixed_ID": 88473,
+    "identity_contamination_onsets": 227,
+    "detection_gap_returns_GT_absent_intervals": 133,
+    "detection_gap_retained_ID_GT_absent_intervals": 75,
+    "detection_gap_returns_over30": 148,
+    "detection_gap_retained_ID_over30": 68,
+    "unique_prior_history_state_missing_now": 32,
+    "GT_join/ambiguous_or_invalid_annotations": 2442
+  },
+  "rates": [
+    {
+      "event": "output_coverage",
+      "numerator_key": "output_candidates",
+      "denominator_key": "frozen_candidates",
+      "numerator": 172760,
+      "denominator": 172760,
+      "value": 100.0,
+      "unit": "percent"
+    },
+    {
+      "event": "clean_output_coverage",
+      "numerator_key": "clean_labelled_candidates_retained",
+      "denominator_key": "clean_labelled_frozen_candidates",
+      "numerator": 164268,
+      "denominator": 164268,
+      "value": 100.0,
+      "unit": "percent"
+    },
+    {
+      "event": "same_person_shared_ID",
+      "numerator_key": "correct_same_person_shared_ID",
+      "denominator_key": "same_person_cross_view_pairs",
+      "numerator": 33036,
+      "denominator": 40082,
+      "value": 82.42103687440746,
+      "unit": "percent"
+    },
+    {
+      "event": "same_person_ID_split",
+      "numerator_key": "same_person_ID_split",
+      "denominator_key": "same_person_cross_view_pairs",
+      "numerator": 7046,
+      "denominator": 40082,
+      "value": 17.578963125592534,
+      "unit": "percent"
+    },
+    {
+      "event": "different_person_false_merge",
+      "numerator_key": "false_different_person_shared_ID",
+      "denominator_key": "different_person_cross_view_pairs",
+      "numerator": 2983,
+      "denominator": 1744285,
+      "value": 0.17101563104653195,
+      "unit": "percent"
+    },
+    {
+      "event": "duplicate_birth_pair",
+      "numerator_key": "simultaneous_duplicate_birth_pairs",
+      "denominator_key": "same_person_birth_pair_opportunities",
+      "numerator": 19,
+      "denominator": 40082,
+      "value": 0.047402824210368746,
+      "unit": "percent"
+    },
+    {
+      "event": "extra_simultaneous_birth_IDs",
+      "numerator_key": "within_timestamp_extra_birth_IDs_per_person",
+      "denominator_key": "clean_labelled_candidates_retained",
+      "numerator": 19,
+      "denominator": 164268,
+      "value": 0.1156646455791755,
+      "unit": "per_1000_clean_retained_observations"
+    },
+    {
+      "event": "false_birth_proxy",
+      "numerator_key": "false_birth_unique_active_history_observations",
+      "denominator_key": "clean_labelled_candidates_retained",
+      "numerator": 55,
+      "denominator": 164268,
+      "value": 0.334818710887087,
+      "unit": "per_1000_clean_retained_observations"
+    },
+    {
+      "event": "wrong_historical_reuse",
+      "numerator_key": "wrong_historical_ID_reuse",
+      "denominator_key": "clean_labelled_candidates_retained",
+      "numerator": 936,
+      "denominator": 164268,
+      "value": 5.698005698005698,
+      "unit": "per_1000_clean_retained_observations"
+    },
+    {
+      "event": "NULL_despite_current_person",
+      "numerator_key": "NULL_despite_current_person",
+      "denominator_key": "NULL_unique_active_history_opportunities",
+      "numerator": 6613,
+      "denominator": 53520,
+      "value": 12.356128550074738,
+      "unit": "percent"
+    },
+    {
+      "event": "LOST_pure_identity_recovery",
+      "numerator_key": "LOST_recovery_correct_pure_identity",
+      "denominator_key": "LOST_recovery_clean_observations",
+      "numerator": 1766,
+      "denominator": 7876,
+      "value": 22.422549517521585,
+      "unit": "percent"
+    },
+    {
+      "event": "gap_2to30_ID_retained",
+      "numerator_key": "detection_gap_retained_ID_2to30",
+      "denominator_key": "detection_gap_returns_2to30",
+      "numerator": 1717,
+      "denominator": 2396,
+      "value": 71.661101836394,
+      "unit": "percent"
+    },
+    {
+      "event": "gap_over30_ID_retained",
+      "numerator_key": "detection_gap_retained_ID_over30",
+      "denominator_key": "detection_gap_returns_over30",
+      "numerator": 68,
+      "denominator": 148,
+      "value": 45.945945945945944,
+      "unit": "percent"
+    },
+    {
+      "event": "cumulatively_mixed_ID_output",
+      "numerator_key": "clean_observations_into_cumulatively_mixed_ID",
+      "denominator_key": "clean_labelled_candidates_retained",
+      "numerator": 88473,
+      "denominator": 164268,
+      "value": 53.85893783329681,
+      "unit": "percent"
+    },
+    {
+      "event": "diagnostic_temporal_ID_change",
+      "numerator_key": "diagnostic_per_camera_ID_changes",
+      "denominator_key": "clean_per_camera_temporal_links",
+      "numerator": 16267,
+      "denominator": 164020,
+      "value": 9.91769296427265,
+      "unit": "percent"
+    },
+    {
+      "event": "wrong_reuse_on_currently_written_ID",
+      "numerator_key": "wrong_person_identity_write_observations",
+      "denominator_key": "identity_write_timestamp_available_observations",
+      "numerator": 179,
+      "denominator": 164268,
+      "value": 1.0896827136143374,
+      "unit": "per_1000_observations_with_write_timestamp"
+    }
+  ],
+  "per_scene": {
+    "4": {
+      "scene": 4,
+      "paired_times": 901,
+      "counts": {
+        "paired_timestamps": 901,
+        "frozen_candidates": 3635,
+        "output_candidates": 3635,
+        "audited_duplicate_suppression": 0,
+        "clean_labelled_frozen_candidates": 3559,
+        "clean_labelled_candidates_retained": 3559,
+        "new_ID_clean_observations": 5,
+        "wrong_historical_ID_reuse": 3,
+        "reuse_of_cumulatively_mixed_ID": 933,
+        "false_birth_unique_active_history_observations": 1,
+        "identity_write_timestamp_available_observations": 3559,
+        "spatial_write_timestamp_available_observations": 3555,
+        "within_timestamp_extra_birth_IDs_per_person": 2,
+        "same_person_birth_pair_opportunities": 1521,
+        "simultaneous_duplicate_birth_pairs": 2,
+        "active_mixed_object_steps": 778,
+        "GT_join/valid_annotations": 3785,
+        "GT_join/masked_detections": 0,
+        "GT_join/matched_identity_observations": 3559,
+        "same_person_cross_view_pairs": 1521,
+        "different_person_cross_view_pairs": 1774,
+        "correct_same_person_shared_ID": 1213,
+        "same_person_ID_split": 308,
+        "false_different_person_shared_ID": 2,
+        "correct_different_person_separate": 1772,
+        "missing_output_cross_view_pair_opportunities": 0,
+        "historical_ID_clean_observations": 3554,
+        "clean_per_camera_temporal_links": 3553,
+        "diagnostic_per_camera_ID_changes": 111,
+        "LOST_recovery_clean_observations": 69,
+        "LOST_recovery_correct_pure_identity": 45,
+        "NULL_unique_active_history_opportunities": 1074,
+        "NULL_despite_current_person": 150,
+        "detection_gap_returns_2to30": 49,
+        "detection_gap_retained_ID_2to30": 41,
+        "detection_gap_returns_GT_continuously_annotated": 48,
+        "detection_gap_retained_ID_GT_continuously_annotated": 41,
+        "wrong_person_identity_write_observations": 2,
+        "wrong_person_current_spatial_write_observations": 2,
+        "clean_observations_into_cumulatively_mixed_ID": 936,
+        "identity_contamination_onsets": 2,
+        "detection_gap_returns_GT_absent_intervals": 2,
+        "detection_gap_retained_ID_GT_absent_intervals": 1,
+        "detection_gap_returns_over30": 1,
+        "detection_gap_retained_ID_over30": 1
+      },
+      "decision_log_sha256": "fe80ab704e70eb7c698f10f77b0cf819957669950512613af51e1ed500d034ef",
+      "scene_origin_resets": 1
+    },
+    "8": {
+      "scene": 8,
+      "paired_times": 523,
+      "counts": {
+        "paired_timestamps": 523,
+        "frozen_candidates": 1999,
+        "output_candidates": 1999,
+        "audited_duplicate_suppression": 0,
+        "clean_labelled_frozen_candidates": 1971,
+        "clean_labelled_candidates_retained": 1971,
+        "new_ID_clean_observations": 6,
+        "wrong_historical_ID_reuse": 2,
+        "reuse_of_cumulatively_mixed_ID": 804,
+        "false_birth_unique_active_history_observations": 1,
+        "identity_write_timestamp_available_observations": 1971,
+        "spatial_write_timestamp_available_observations": 1971,
+        "within_timestamp_extra_birth_IDs_per_person": 0,
+        "same_person_birth_pair_opportunities": 936,
+        "simultaneous_duplicate_birth_pairs": 0,
+        "active_mixed_object_steps": 513,
+        "GT_join/valid_annotations": 2092,
+        "GT_join/masked_detections": 0,
+        "GT_join/matched_identity_observations": 1971,
+        "same_person_cross_view_pairs": 936,
+        "different_person_cross_view_pairs": 926,
+        "correct_same_person_shared_ID": 916,
+        "same_person_ID_split": 20,
+        "false_different_person_shared_ID": 11,
+        "correct_different_person_separate": 915,
+        "missing_output_cross_view_pair_opportunities": 0,
+        "historical_ID_clean_observations": 1965,
+        "NULL_unique_active_history_opportunities": 530,
+        "NULL_despite_current_person": 0,
+        "clean_per_camera_temporal_links": 1967,
+        "diagnostic_per_camera_ID_changes": 20,
+        "LOST_recovery_clean_observations": 5,
+        "LOST_recovery_correct_pure_identity": 3,
+        "detection_gap_returns_2to30": 15,
+        "detection_gap_retained_ID_2to30": 6,
+        "detection_gap_returns_GT_continuously_annotated": 15,
+        "detection_gap_retained_ID_GT_continuously_annotated": 6,
+        "wrong_person_identity_write_observations": 2,
+        "wrong_person_current_spatial_write_observations": 2,
+        "clean_observations_into_cumulatively_mixed_ID": 808,
+        "identity_contamination_onsets": 2
+      },
+      "decision_log_sha256": "03ad5f3f89c045495835f822a74634091fd6b014fb60dfab9bdf6395981cfc2c",
+      "scene_origin_resets": 1
+    },
+    "12": {
+      "scene": 12,
+      "paired_times": 1200,
+      "counts": {
+        "paired_timestamps": 1200,
+        "frozen_candidates": 14564,
+        "output_candidates": 14564,
+        "audited_duplicate_suppression": 0,
+        "clean_labelled_frozen_candidates": 14141,
+        "clean_labelled_candidates_retained": 14141,
+        "new_ID_clean_observations": 40,
+        "wrong_historical_ID_reuse": 22,
+        "reuse_of_cumulatively_mixed_ID": 1882,
+        "false_birth_unique_active_history_observations": 18,
+        "identity_write_timestamp_available_observations": 14141,
+        "spatial_write_timestamp_available_observations": 12825,
+        "within_timestamp_extra_birth_IDs_per_person": 3,
+        "same_person_birth_pair_opportunities": 5343,
+        "simultaneous_duplicate_birth_pairs": 3,
+        "active_mixed_object_steps": 3167,
+        "GT_join/valid_annotations": 14867,
+        "GT_join/masked_detections": 0,
+        "GT_join/matched_identity_observations": 14141,
+        "same_person_cross_view_pairs": 5343,
+        "different_person_cross_view_pairs": 36538,
+        "correct_same_person_shared_ID": 4935,
+        "same_person_ID_split": 408,
+        "false_different_person_shared_ID": 8,
+        "correct_different_person_separate": 36530,
+        "missing_output_cross_view_pair_opportunities": 0,
+        "historical_ID_clean_observations": 14101,
+        "NULL_unique_active_history_opportunities": 4989,
+        "NULL_despite_current_person": 407,
+        "clean_per_camera_temporal_links": 14118,
+        "diagnostic_per_camera_ID_changes": 542,
+        "wrong_person_identity_write_observations": 10,
+        "wrong_person_current_spatial_write_observations": 3,
+        "clean_observations_into_cumulatively_mixed_ID": 1906,
+        "identity_contamination_onsets": 21,
+        "detection_gap_returns_2to30": 152,
+        "detection_gap_retained_ID_2to30": 112,
+        "detection_gap_returns_GT_continuously_annotated": 150,
+        "detection_gap_retained_ID_GT_continuously_annotated": 111,
+        "LOST_recovery_clean_observations": 236,
+        "LOST_recovery_correct_pure_identity": 157,
+        "detection_gap_returns_over30": 15,
+        "detection_gap_retained_ID_over30": 5,
+        "detection_gap_returns_GT_absent_intervals": 17,
+        "detection_gap_retained_ID_GT_absent_intervals": 6,
+        "unique_prior_history_state_missing_now": 2
+      },
+      "decision_log_sha256": "fa7fd58c9a28bcbc4e0c7894bfb0b6692bb1a179259353244232392b648ec252",
+      "scene_origin_resets": 1
+    },
+    "16": {
+      "scene": 16,
+      "paired_times": 1034,
+      "counts": {
+        "paired_timestamps": 1034,
+        "frozen_candidates": 58467,
+        "output_candidates": 58467,
+        "audited_duplicate_suppression": 0,
+        "clean_labelled_frozen_candidates": 54626,
+        "clean_labelled_candidates_retained": 54626,
+        "new_ID_clean_observations": 86,
+        "wrong_historical_ID_reuse": 139,
+        "reuse_of_cumulatively_mixed_ID": 27165,
+        "false_birth_unique_active_history_observations": 12,
+        "identity_write_timestamp_available_observations": 54626,
+        "spatial_write_timestamp_available_observations": 48640,
+        "within_timestamp_extra_birth_IDs_per_person": 6,
+        "same_person_birth_pair_opportunities": 12007,
+        "simultaneous_duplicate_birth_pairs": 6,
+        "active_mixed_object_steps": 30510,
+        "GT_join/valid_annotations": 58198,
+        "GT_join/masked_detections": 1679,
+        "GT_join/matched_identity_observations": 54626,
+        "same_person_cross_view_pairs": 12007,
+        "different_person_cross_view_pairs": 708167,
+        "correct_same_person_shared_ID": 10607,
+        "same_person_ID_split": 1400,
+        "false_different_person_shared_ID": 286,
+        "correct_different_person_separate": 707881,
+        "missing_output_cross_view_pair_opportunities": 0,
+        "historical_ID_clean_observations": 54540,
+        "NULL_unique_active_history_opportunities": 23150,
+        "NULL_despite_current_person": 2154,
+        "clean_per_camera_temporal_links": 54553,
+        "diagnostic_per_camera_ID_changes": 2472,
+        "detection_gap_returns_2to30": 535,
+        "detection_gap_retained_ID_2to30": 447,
+        "detection_gap_returns_GT_continuously_annotated": 527,
+        "detection_gap_retained_ID_GT_continuously_annotated": 438,
+        "wrong_person_identity_write_observations": 42,
+        "wrong_person_current_spatial_write_observations": 37,
+        "clean_observations_into_cumulatively_mixed_ID": 27232,
+        "identity_contamination_onsets": 59,
+        "LOST_recovery_clean_observations": 1314,
+        "LOST_recovery_correct_pure_identity": 419,
+        "detection_gap_returns_over30": 41,
+        "detection_gap_retained_ID_over30": 21,
+        "detection_gap_returns_GT_absent_intervals": 49,
+        "detection_gap_retained_ID_GT_absent_intervals": 30,
+        "unique_prior_history_state_missing_now": 11,
+        "GT_join/ambiguous_or_invalid_annotations": 1704
+      },
+      "decision_log_sha256": "50baccd0e1a5f5000fe533407dc682416aec136c124fc87e9ff5f353bc2d6fa2",
+      "scene_origin_resets": 1
+    },
+    "20": {
+      "scene": 20,
+      "paired_times": 1001,
+      "counts": {
+        "paired_timestamps": 1001,
+        "frozen_candidates": 24069,
+        "output_candidates": 24069,
+        "audited_duplicate_suppression": 0,
+        "clean_labelled_frozen_candidates": 23630,
+        "clean_labelled_candidates_retained": 23630,
+        "new_ID_clean_observations": 44,
+        "wrong_historical_ID_reuse": 49,
+        "reuse_of_cumulatively_mixed_ID": 7067,
+        "false_birth_unique_active_history_observations": 11,
+        "identity_write_timestamp_available_observations": 23630,
+        "spatial_write_timestamp_available_observations": 13457,
+        "within_timestamp_extra_birth_IDs_per_person": 0,
+        "same_person_birth_pair_opportunities": 9131,
+        "simultaneous_duplicate_birth_pairs": 0,
+        "active_mixed_object_steps": 8273,
+        "GT_join/valid_annotations": 26278,
+        "GT_join/masked_detections": 2,
+        "GT_join/matched_identity_observations": 23630,
+        "same_person_cross_view_pairs": 9131,
+        "different_person_cross_view_pairs": 126555,
+        "correct_same_person_shared_ID": 7605,
+        "same_person_ID_split": 1526,
+        "false_different_person_shared_ID": 60,
+        "correct_different_person_separate": 126495,
+        "missing_output_cross_view_pair_opportunities": 0,
+        "historical_ID_clean_observations": 23586,
+        "NULL_unique_active_history_opportunities": 7456,
+        "NULL_despite_current_person": 707,
+        "clean_per_camera_temporal_links": 23590,
+        "diagnostic_per_camera_ID_changes": 913,
+        "wrong_person_identity_write_observations": 19,
+        "wrong_person_current_spatial_write_observations": 8,
+        "clean_observations_into_cumulatively_mixed_ID": 7092,
+        "identity_contamination_onsets": 22,
+        "LOST_recovery_clean_observations": 499,
+        "LOST_recovery_correct_pure_identity": 290,
+        "detection_gap_returns_2to30": 382,
+        "detection_gap_retained_ID_2to30": 287,
+        "detection_gap_returns_GT_continuously_annotated": 374,
+        "detection_gap_retained_ID_GT_continuously_annotated": 275,
+        "detection_gap_returns_GT_absent_intervals": 25,
+        "detection_gap_retained_ID_GT_absent_intervals": 20,
+        "detection_gap_returns_over30": 17,
+        "detection_gap_retained_ID_over30": 8,
+        "unique_prior_history_state_missing_now": 4,
+        "GT_join/ambiguous_or_invalid_annotations": 4
+      },
+      "decision_log_sha256": "09acb7ce3b63940ad8fa58e3ccdd1da35a0f6d0e5169acadf5a4c8122db63587",
+      "scene_origin_resets": 1
+    },
+    "24": {
+      "scene": 24,
+      "paired_times": 1201,
+      "counts": {
+        "paired_timestamps": 1201,
+        "frozen_candidates": 70026,
+        "output_candidates": 70026,
+        "audited_duplicate_suppression": 0,
+        "clean_labelled_frozen_candidates": 66341,
+        "clean_labelled_candidates_retained": 66341,
+        "new_ID_clean_observations": 137,
+        "wrong_historical_ID_reuse": 721,
+        "reuse_of_cumulatively_mixed_ID": 50368,
+        "false_birth_unique_active_history_observations": 12,
+        "identity_write_timestamp_available_observations": 66341,
+        "spatial_write_timestamp_available_observations": 55518,
+        "within_timestamp_extra_birth_IDs_per_person": 8,
+        "same_person_birth_pair_opportunities": 11144,
+        "simultaneous_duplicate_birth_pairs": 8,
+        "clean_observations_into_cumulatively_mixed_ID": 50499,
+        "identity_contamination_onsets": 121,
+        "active_mixed_object_steps": 72059,
+        "GT_join/valid_annotations": 77582,
+        "GT_join/masked_detections": 743,
+        "GT_join/matched_identity_observations": 66341,
+        "same_person_cross_view_pairs": 11144,
+        "different_person_cross_view_pairs": 870325,
+        "correct_same_person_shared_ID": 7760,
+        "same_person_ID_split": 3384,
+        "false_different_person_shared_ID": 2616,
+        "correct_different_person_separate": 867709,
+        "missing_output_cross_view_pair_opportunities": 0,
+        "historical_ID_clean_observations": 66204,
+        "NULL_unique_active_history_opportunities": 16321,
+        "NULL_despite_current_person": 3195,
+        "clean_per_camera_temporal_links": 66239,
+        "diagnostic_per_camera_ID_changes": 12209,
+        "wrong_person_identity_write_observations": 104,
+        "wrong_person_current_spatial_write_observations": 61,
+        "LOST_recovery_clean_observations": 5753,
+        "LOST_recovery_correct_pure_identity": 852,
+        "detection_gap_returns_2to30": 1263,
+        "detection_gap_retained_ID_2to30": 824,
+        "detection_gap_returns_GT_continuously_annotated": 1297,
+        "detection_gap_retained_ID_GT_continuously_annotated": 839,
+        "detection_gap_returns_over30": 74,
+        "detection_gap_retained_ID_over30": 33,
+        "unique_prior_history_state_missing_now": 15,
+        "GT_join/ambiguous_or_invalid_annotations": 734,
+        "detection_gap_returns_GT_absent_intervals": 40,
+        "detection_gap_retained_ID_GT_absent_intervals": 18
+      },
+      "decision_log_sha256": "6463fd2d96d8e99cd6e433b39dec86c4eb311db5bb22ca00f14f529911f03952",
+      "scene_origin_resets": 1
+    }
+  },
+  "examples": [
+    {
+      "scene": 4,
+      "timestamp": 1,
+      "kind": "duplicate_birth_avoided",
+      "key": [
+        [
+          1,
+          0
+        ],
+        [
+          2,
+          0
+        ]
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 1,
+      "kind": "duplicate_birth_avoided",
+      "key": [
+        [
+          1,
+          1
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 400,
+      "kind": "wrong_historical_ID_reuse_avoided",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 401,
+      "kind": "mixed_history_reuse_avoided",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 401,
+      "kind": "mixed_history_reuse_avoided",
+      "key": [
+        2,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 402,
+      "kind": "mixed_history_reuse_avoided",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 402,
+      "kind": "mixed_history_reuse_avoided",
+      "key": [
+        2,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 403,
+      "kind": "mixed_history_reuse_avoided",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 403,
+      "kind": "mixed_history_reuse_avoided",
+      "key": [
+        2,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 404,
+      "kind": "mixed_history_reuse_avoided",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 404,
+      "kind": "mixed_history_reuse_avoided",
+      "key": [
+        2,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 610,
+      "kind": "LOST_recovery_correct",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 626,
+      "kind": "wrong_historical_ID_reuse_avoided",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 626,
+      "kind": "LOST_recovery_correct",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 631,
+      "kind": "LOST_recovery_correct",
+      "key": [
+        1,
+        1
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 641,
+      "kind": "LOST_recovery_correct",
+      "key": [
+        1,
+        1
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 694,
+      "kind": "LOST_recovery_correct",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 703,
+      "kind": "LOST_recovery_correct",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 709,
+      "kind": "LOST_recovery_correct",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 715,
+      "kind": "LOST_recovery_correct",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 778,
+      "kind": "false_birth_proxy_avoided",
+      "key": [
+        2,
+        2
+      ]
+    },
+    {
+      "scene": 4,
+      "timestamp": 788,
+      "kind": "wrong_historical_ID_reuse_avoided",
+      "key": [
+        2,
+        0
+      ]
+    },
+    {
+      "scene": 8,
+      "timestamp": 140,
+      "kind": "false_birth_proxy_avoided",
+      "key": [
+        1,
+        1
+      ]
+    },
+    {
+      "scene": 8,
+      "timestamp": 177,
+      "kind": "wrong_historical_ID_reuse_avoided",
+      "key": [
+        2,
+        0
+      ]
+    },
+    {
+      "scene": 8,
+      "timestamp": 292,
+      "kind": "wrong_historical_ID_reuse_avoided",
+      "key": [
+        1,
+        0
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 1,
+      "kind": "duplicate_birth_avoided",
+      "key": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          4
+        ]
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 1,
+      "kind": "duplicate_birth_avoided",
+      "key": [
+        [
+          1,
+          5
+        ],
+        [
+          2,
+          2
+        ]
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 1,
+      "kind": "duplicate_birth_avoided",
+      "key": [
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          3
+        ]
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 3,
+      "kind": "wrong_historical_ID_reuse_avoided",
+      "key": [
+        2,
+        6
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 5,
+      "kind": "false_birth_proxy_avoided",
+      "key": [
+        2,
+        8
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 11,
+      "kind": "false_birth_proxy_avoided",
+      "key": [
+        2,
+        8
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 51,
+      "kind": "false_birth_proxy_avoided",
+      "key": [
+        2,
+        1
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 56,
+      "kind": "wrong_historical_ID_reuse_avoided",
+      "key": [
+        2,
+        7
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 73,
+      "kind": "false_birth_proxy_avoided",
+      "key": [
+        2,
+        8
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 75,
+      "kind": "wrong_historical_ID_reuse_avoided",
+      "key": [
+        2,
+        8
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 320,
+      "kind": "false_birth_proxy_avoided",
+      "key": [
+        2,
+        6
+      ]
+    },
+    {
+      "scene": 12,
+      "timestamp": 324,
+      "kind": "false_birth_proxy_avoided",
+      "key": [
+        2,
+        2
+      ]
+    },
+    {
+      "scene": 16,
+      "timestamp": 1,
+      "kind": "duplicate_birth_avoided",
+      "key": [
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          1
+        ]
+      ]
+    },
+    {
+      "scene": 16,
+      "timestamp": 1,
+      "kind": "duplicate_birth_avoided",
+      "key": [
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          7
+        ]
+      ]
+    },
+    {
+      "scene": 16,
+      "timestamp": 1,
+      "kind": "duplicate_birth_avoided",
+      "key": [
+        [
+          1,
+          18
+        ],
+        [
+          2,
+          4
+        ]
+      ]
+    }
+  ],
+  "TRAIN_seen_by_snapshot": true,
+  "GT_role": "POST_DECISION_DIAGNOSTIC_ONLY",
+  "GT_repairs_history": false,
+  "TEST_read": false,
+  "formal_TrackEval_or_CVIDF1": false,
+  "optimizer_created": false,
+  "model_parameters_modified": false,
+  "model_or_budget_selection_uses_this_audit": false,
+  "no_method_comparison_or_geometry_benefit_claim": true,
+  "training_steps_retroactively_reconstructed": false,
+  "device": "cpu",
+  "threads": 1,
+  "wall_s_including_GT_audit_and_output": 634.6319148987532,
+  "timing_is_not_a_registered_inference_FPS_comparison": true
+}
