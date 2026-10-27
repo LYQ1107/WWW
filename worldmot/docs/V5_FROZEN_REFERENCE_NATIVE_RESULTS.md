@@ -1,6 +1,6 @@
 WorldMOT V5 frozen controls: actual full-video native TEST results
 
-Updated UTC: 2026-10-27T06:15:22.559222+00:00.
+Updated UTC: 2026-10-27T07:08:01.333661+00:00.
 
 Each reported control completed all22 videos,29,019 paired times and548,583 frozen candidates. TrackEval and the unchanged VisionTrack MATLAB toolkit scored the original legal14 videos. The other8 were fully inferred and excluded for original GT defects. No GT was cleaned. The early scoring order was published before reading these scores; all B2/B3/B4 training rules remain frozen.
 
