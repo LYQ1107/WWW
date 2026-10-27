@@ -1,6 +1,6 @@
 WorldMOT V5: decoupled observation birth and persistent membership
 
-Updated UTC: 2026-10-27T02:16:50.288879+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
+Updated UTC: 2026-10-27T03:18:16.822206+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
 
 The finite B0–B4 registration, code fingerprint and original V3/V4 artifacts are frozen. The model predicts membership and a per-camera no-observation option. Birth, lifecycle, identity writes and C1 Kalman/Joseph updates use separate auditable policies. GT never repairs the predicted history.
 
@@ -10,17 +10,20 @@ All24 TRAIN inputs are verified: 28,754 paired times and 557,002 detections. Fit
 
 | Variant | Selection completed epochs | Current selection scene count | Final completed epochs | Final weight SHA-256 |
 |---|---:|---:|---:|---|
-| B2 | 8 | 11/18 | 0 | not available |
-| B3 | 8 | 3/18 | 0 | not available |
-| B4 | 11 | 1/18 | 0 | not available |
+| B2 | 9 | 8/18 | 0 | not available |
+| B3 | 9 | 3/18 | 0 | not available |
+| B4 | 12 | 0/18 | 0 | not available |
+
+Completed base12 selection, waiting for B3's common12/16 decision: B4. These fit18/VAL6 checkpoints are not final fresh-all24 weights. See v5_B4_base12_selection_completion.json for the independently read-back B4 archive.
+
 
 Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged over paired timestamps; scene density and evolving predicted histories differ between fit18 and VAL6. The per-scene breakdown is in v5_training_curves.json. These values do not establish convergence or formal TEST improvement.
 
 | Variant | Epoch | Fit membership loss | VAL membership loss | VAL same-person split rate | VAL different-person false-merge rate | Finite gradients |
 |---|---:|---:|---:|---:|---:|---|
-| B2 | 8 | 0.0458 | 1.1160 | 26.92% | 0.32% | True |
-| B3 | 8 | 0.0453 | 1.0047 | 24.85% | 0.34% | True |
-| B4 | 11 | 0.0524 | 1.0096 | 28.09% | 0.35% | True |
+| B2 | 9 | 0.0459 | 1.1464 | 29.55% | 0.27% | True |
+| B3 | 9 | 0.0470 | 1.2607 | 27.97% | 0.34% | True |
+| B4 | 12 | 0.0526 | 1.1345 | 30.06% | 0.47% | True |
 
 Selection currently uses CPU, one Torch/BLAS thread per worker. Final B3/B4 training and complete TEST use truly idle V100 FP32 workers. B2 final training uses a third idle V100 if available, otherwise one CPU thread; its resumes keep that device family. Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.
 
@@ -75,5 +78,7 @@ Following the NAS disconnect, B0 scenes1–20 retain their original NAS-write ti
 Native tool dependencies and wrapper comparability are retained from the archived V4 report. Historical GMT/V2 exports used two-decimal coordinates; current V3/V4/V5 exports preserve .17g. Original GT and shared native tracking dependencies were verified in the archived comparison. This is a documented system-reference limitation, not permission to alter GT or re-tune TEST.
 
 Generated-input V100 readiness: eight FP32 CPU/CUDA forward/backward checks passed for the unchanged dedicated Membership Head, including empty history/observations and 192-history/144-observation inputs. CPU and CUDA initialization hashes match. No real dataset, trained checkpoint or optimizer was used. This does not establish convergence, full training VRAM or actual video FPS. See V5_GENERATED_CUDA_HEAD_PREFLIGHT.md and v5_cuda_head_preflight.json.
+
+Identity event interpretation: PENDING_ALL110_IDENTITY_ATTRIBUTION. See V5_FULL_TEST_IDENTITY_ANALYSIS.md and v5_identity_event_rates.csv, v5_identity_event_contrasts.csv, v5_identity_video_quarters.csv. Clean-join diagnostics remain separate from native HOTA, IDSW and CVIDF1.
 
 V5 research remains in progress. No V5 improvement claim is made before the registered full training and formal TEST finish.

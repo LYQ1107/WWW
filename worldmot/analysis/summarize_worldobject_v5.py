@@ -14,6 +14,8 @@ import numpy as np
 
 from worldmot.runtime.world_object_v5_contract import atomic_json, v5_source_fingerprint, LEGAL_TEST
 from worldmot.data.worldobject_cache import sha256
+from worldobject_v5_identity_summary import (
+    build_identity_summary, write_identity_summary, COMPLETE as IDENTITY_ANALYSIS_COMPLETE)
 
 VARIANTS = ("B0", "B1", "B2", "B3", "B4")
 METRICS = ("HOTA", "DetA", "AssA", "IDF1", "CVIDF1", "CVMA", "MOTA", "IDSW", "Frag", "CLR_TP", "CLR_FP", "CLR_FN")
@@ -361,8 +363,25 @@ def main():
     attribution_path = a.output_root / "v5_identity_attribution.json"
     attribution = read(attribution_path)
     live = read(a.output_root / "live_fixed_train_prefix/runtime.json")
+    if attribution and attribution.get("analysis_sha256") != sha256(
+            a.repo / "worldmot/analysis/attribute_worldobject_v5_frozen_test.py"):
+        raise ValueError("COMPLETED_IDENTITY_ATTRIBUTION_SOURCE_CHANGED")
+    identity_official = {
+        "status": "COMPLETE_NATIVE_LEGAL14_ALL5" if not pending else "PENDING",
+        "canonical_TEST_scope_complete_variants": canonical_complete,
+        "raw_GT_modified": False, "TEST_parameter_selection": False,
+        "v5_source_sha256": v5_source_fingerprint(),
+        "V5_official_metrics": official, "proofs": proofs,
+        "checkpoint_SHA256": {v: g["checkpoint_sha256"] if g else None for v, g in final_gates.items()},
+        "historical_baselines": inherited["baselines"],
+    }
+    identity_summary = build_identity_summary(attribution, identity_official, final_gates, common, birth)
+    if attribution:
+        identity_summary["source_attribution_sha256"] = sha256(attribution_path)
+        identity_summary["source_native_metrics_sha256"] = {v: proofs[v]["metrics_sha256"] for v in VARIANTS}
     final_ready = (not pending and canonical_complete == list(VARIANTS)
                    and attribution is not None and attribution.get("status") == "COMPLETE_FROZEN_ALL5_FULL22_IDENTITY_ATTRIBUTION"
+                   and identity_summary["status"] == IDENTITY_ANALYSIS_COMPLETE
                    and birth["status"] == "COMPLETE_TRAIN6_CONDITIONAL_ATTRIBUTION"
                    and policy["status"] == "COMPLETE_TRAIN6_FROZEN_POLICY_AUDIT"
                    and live is not None and live.get("status") == "ALL5_FINITE_REAL_LIVE_COMPLETE")
@@ -389,6 +408,7 @@ def main():
                  "separate_frozen_control_evaluation_authorization_registered":
                     (a.output_root / "provenance/frozen_reference_scoring_registration.json").is_file()},
              "birth_diagnostic_complete_scenes": birth["scenes_complete"], "posthoc_complete": attribution is not None,
+             "identity_analysis_report_status": identity_summary["status"],
              "frozen_policy_TRAIN_audit_complete_scenes": policy["scenes_complete"],
              "real_RGB_to_ID_measured": live is not None and live.get("status") == "ALL5_FINITE_REAL_LIVE_COMPLETE",
              "no_TEST_parameter_selection": True, "negative_results_preserved": True,
@@ -464,6 +484,7 @@ def main():
         atomic_json(results / "v5_failure_cases.json", {"status": "TEST_POSTHOC_NOT_YET_AVAILABLE",
                     "TRAIN_conditional_examples": [e for s in birth["per_scene"].values() for e in s["examples"]],
                     "formal_TEST_failures": None})
+    write_identity_summary(identity_summary, results, docs, live)
     lines = ["WorldMOT V5: decoupled observation birth and persistent membership", "",
              "Updated UTC: " + now + ". Status: **" + state["status"] + "**.", "",
              "The finite B0–B4 registration, code fingerprint and original V3/V4 artifacts are frozen. "
@@ -479,6 +500,11 @@ def main():
         selection = progress[v]["selection"] or {}
         final = progress[v]["final"] or {}
         lines.append(f"| {v} | {selection.get('completed_epochs', 0)} | {selection.get('current_epoch_complete_scenes', 0)}/18 | {final.get('completed_epochs', 0)} | {state['final_checkpoint_SHA256'][v] or 'not available'} |")
+    waiting = [v for v in ("B2", "B3", "B4") if (progress[v]["selection"] or {}).get("complete") and common is None]
+    if waiting:
+        lines += ["", "Completed base12 selection, waiting for B3's common12/16 decision: " + ", ".join(waiting) +
+                  ". These fit18/VAL6 checkpoints are not final fresh-all24 weights. "
+                  "See v5_B4_base12_selection_completion.json for the independently read-back B4 archive.", ""]
     lines += ["", "Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged over "
               "paired timestamps; scene density and evolving predicted histories differ between fit18 and VAL6. "
               "The per-scene breakdown is in v5_training_curves.json. These values do not establish convergence "
@@ -586,6 +612,10 @@ def main():
                   "No real dataset, trained checkpoint or optimizer was used. This does not establish "
                   "convergence, full training VRAM or actual video FPS. "
                   "See V5_GENERATED_CUDA_HEAD_PREFLIGHT.md and v5_cuda_head_preflight.json.", ""]
+    lines += ["Identity event interpretation: " + identity_summary["status"] +
+              ". See V5_FULL_TEST_IDENTITY_ANALYSIS.md and v5_identity_event_rates.csv, "
+              "v5_identity_event_contrasts.csv, v5_identity_video_quarters.csv. "
+              "Clean-join diagnostics remain separate from native HOTA, IDSW and CVIDF1.", ""]
     if final_ready:
         lines.append("The complete registered research artifacts are available. " + (
             "B3 exceeds GMT Native on all three preregistered main metrics (HOTA, AssA, CVIDF1)." if science_success else

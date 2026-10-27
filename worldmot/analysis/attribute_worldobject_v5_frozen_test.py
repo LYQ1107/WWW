@@ -343,6 +343,7 @@ def main():
             "gap": "gap between retained clean observations; GT absence may be occlusion, out-of-view or missing annotation",
             "LOST_recovery": "current clean observation reuses a prior serialized LOST ID; correctness requires pure cumulative prior identity",
             "mixed_ID": "cumulative clean GT associations; this is an identity contamination audit, not a direct embedding measurement",
+            "identity_write_coincidence": "a wrong-reused ID has a current identity-write timestamp; this does not identify the camera/observation that originated that write",
             "geometry_strata": "same B3 frozen current input support eligibility/quality>=.6 and alignment confidence>=.25 for every method, including B4",
             "global_graph": "posthoc scene-wise Hungarian one-to-one clean overlap; dropped common candidates count as failed retention, never official CVIDF1",
             "dropped_outputs": "retained in raw candidate coverage and cross-view/global event denominators; historical event pairs use common delivered opportunities"},
