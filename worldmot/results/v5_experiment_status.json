@@ -1,6 +1,6 @@
 {
   "status": "REGISTERED_RESEARCH_IN_PROGRESS",
-  "updated_UTC": "2026-10-27T04:45:28.350435+00:00",
+  "updated_UTC": "2026-10-27T05:35:36.417735+00:00",
   "v5_source_sha256": "c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85688f74d89159e16f733",
   "base_commit": "eda0761b15f4049ead1971facd17d846bbab94cf",
   "variants": {
@@ -18,35 +18,61 @@
       "selection": {
         "variant": "B2",
         "phase": "selection",
-        "epoch": 12,
+        "epoch": 13,
         "section": "fit",
-        "complete": false,
-        "completed_epochs": 11,
+        "complete": true,
+        "completed_epochs": 12,
         "current_epoch_complete_scenes": 0,
         "current_validation_complete_scenes": 0,
-        "optimizer_steps": 63030,
-        "resume_checkpoint_sha256": "67105d039f0af6712ecc3020a8790b886f8c9f90542c58471f361f46793d14e1",
+        "optimizer_steps": 68760,
+        "resume_checkpoint_sha256": "ae52a91b428ee4ed6c7a5231f33a7d7917ef569037b10f3453c1e9353e8faef2",
         "budget": 12,
         "history_mode": "predicted_from_first_timestamp"
       },
-      "final": null
+      "final": {
+        "variant": "B2",
+        "phase": "final",
+        "epoch": 1,
+        "section": "train",
+        "complete": false,
+        "completed_epochs": 0,
+        "current_epoch_complete_scenes": 2,
+        "current_validation_complete_scenes": 0,
+        "optimizer_steps": 402,
+        "resume_checkpoint_sha256": "1902b7654a66d3730b0d0a93ba40f0c61a794a51414de0682c647cc6ec590cf7",
+        "budget": 12,
+        "history_mode": "predicted_from_first_timestamp"
+      }
     },
     "B3": {
       "selection": {
         "variant": "B3",
         "phase": "selection",
-        "epoch": 12,
+        "epoch": 13,
         "section": "fit",
-        "complete": false,
-        "completed_epochs": 11,
+        "complete": true,
+        "completed_epochs": 12,
         "current_epoch_complete_scenes": 0,
         "current_validation_complete_scenes": 0,
-        "optimizer_steps": 63030,
-        "resume_checkpoint_sha256": "b46281a54529a35751afa6ec2ef0a5a756225b66386cfc23ed40ca47305014ba",
+        "optimizer_steps": 68760,
+        "resume_checkpoint_sha256": "b199504bc21c80db15559243b23bf167bf716ef5dc41a455e3c7550e521b3966",
         "budget": 12,
         "history_mode": "predicted_from_first_timestamp"
       },
-      "final": null
+      "final": {
+        "variant": "B3",
+        "phase": "final",
+        "epoch": 1,
+        "section": "train",
+        "complete": false,
+        "completed_epochs": 0,
+        "current_epoch_complete_scenes": 2,
+        "current_validation_complete_scenes": 0,
+        "optimizer_steps": 402,
+        "resume_checkpoint_sha256": "3c8893d44694c2bd5f46db384171242a0ec36a98029728db53c4300c07dff7d1",
+        "budget": 12,
+        "history_mode": "predicted_from_first_timestamp"
+      }
     },
     "B4": {
       "selection": {
@@ -63,16 +89,81 @@
         "budget": 12,
         "history_mode": "predicted_from_first_timestamp"
       },
-      "final": null
+      "final": {
+        "variant": "B4",
+        "phase": "final",
+        "epoch": 1,
+        "section": "train",
+        "complete": false,
+        "completed_epochs": 0,
+        "current_epoch_complete_scenes": 2,
+        "current_validation_complete_scenes": 0,
+        "optimizer_steps": 402,
+        "resume_checkpoint_sha256": "74007c7a8a6dfadceb16a2189460bf6028b33545fd8a12fb460368bac78cb6a4",
+        "budget": 12,
+        "history_mode": "predicted_from_first_timestamp"
+      }
     }
   },
-  "common_training_budget": null,
+  "common_training_budget": {
+    "status": "FROZEN_TRAIN_ONLY_BUDGET",
+    "epochs": 12,
+    "rule": "Common budget 16 iff B3 epoch12 predicted-history VAL membership loss < .98*mean(epoch10,epoch11) AND VAL split+false-merge rate < epoch9. Otherwise all models use 12. No TEST is read for this rule.",
+    "extension_allowed": false,
+    "decision_variant": "B3",
+    "TEST_read": false,
+    "v5_source_sha256": "c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85688f74d89159e16f733",
+    "registered_config_sha256": "07ce5975d379803213bfe6a22e67fc5018e9a2b44c483e103681796c38c2ba1f",
+    "epoch12_validation": {
+      "frames": 5860,
+      "losses": {
+        "per_camera_membership": 1.3187148049180728,
+        "detection_exclusivity": 1.2113877797301233,
+        "hard_negative_membership": 1.0768622674168509,
+        "cross_view_membership": 0.7953533938352826,
+        "cross_view_visual_contrast": 0.28654660649226943,
+        "total": 2.4640992590264896
+      },
+      "diagnostics": {
+        "current_detections": 172760,
+        "identity_observations": 164268,
+        "same_person_cross_view_pairs": 40082,
+        "same_person_split": 10704,
+        "different_person_cross_view_pairs": 1744285,
+        "correctly_separate": 1736373,
+        "mixed_historical_objects_before": 144124,
+        "history_objects_before": 210940,
+        "anchored_supervised_history_objects": 205161,
+        "pure_supervised_history_objects": 62237,
+        "clean_supervised_observations": 164268,
+        "correct_historical_membership": 118498,
+        "birth_count": 401,
+        "duplicate_suppressed": 0,
+        "LOST_recovery_count": 11102,
+        "verified_world_camera_timestamps": 6,
+        "missing_world_camera_timestamps": 5854,
+        "diagnostic_temporal_switches": 21106,
+        "correct_shared_identity": 29378,
+        "wrong_world_object_merges": 7912,
+        "false_cross_view_merge": 7912,
+        "unmatched_or_ambiguous_detections": 8492
+      },
+      "target_audit": {
+        "valid_annotations": 182802,
+        "masked_detections": 2424,
+        "matched_identity_observations": 164268,
+        "ambiguous_or_invalid_annotations": 2442
+      },
+      "wall_s": 649.0903044864535,
+      "scene_count": 6
+    }
+  },
   "selection_devices": {
     "B3": "cpu",
     "B2": "cpu",
     "B4": "cpu"
   },
-  "controller_stage": "TRAIN_SELECTION_COMMON_B3_CONVERGENCE_RULE_PENDING",
+  "controller_stage": "FRESH_FULL24_FINAL_TRAINING",
   "controller_last_exception": null,
   "final_checkpoint_SHA256": {
     "B2": null,
