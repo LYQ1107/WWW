@@ -1,17 +1,17 @@
 {
-  "status": "PARTIAL_FRESH_FULL24_TRAINING_B4_FINAL_GATE_VERIFIED",
-  "observed_UTC": "2026-10-27T12:24:54.579384+00:00",
+  "status": "PARTIAL_FRESH_FULL24_TRAINING_B2_B4_FINAL_GATES_VERIFIED",
+  "observed_UTC": "2026-10-27T12:44:32.239144+00:00",
   "v5_source_sha256": "c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85688f74d89159e16f733",
   "common_budget_epochs": 12,
   "common_budget_sha256": "8c721f9d2e1dc98d02069649e1df26302718c67a3283c9f1998559c9fcddc50d",
   "initialization_proof_sha256": "f63eff3d198e262b0aca0f60e0c8637bd6e3ae7a6af18575452913137789c28b",
   "models": {
     "B2": {
-      "live_original_PID": 33792,
+      "live_original_PID": null,
       "start_tick": "6677812387",
-      "complete_epochs": 11,
-      "full_final_gate_available": false,
-      "history_snapshot_sha256_not_final_checkpoint": "786c57bc7ef67472c712462be917d4b540c3eac395dbb87321fa88bc85232f9f",
+      "complete_epochs": 12,
+      "full_final_gate_available": true,
+      "history_snapshot_sha256_not_final_checkpoint": "558e01daf57cc52262a179682dd96facbdcff6bbbbd54b231be00cccb2f0a123",
       "verified_epochs": [
         {
           "epoch": 1,
@@ -144,8 +144,25 @@
           "one_reset_at_each_scene_origin": true,
           "GT_repaired_model_IDs": 0,
           "membership_loss_TRAIN_only": 0.05973664487520224
+        },
+        {
+          "epoch": 12,
+          "scenes": 24,
+          "paired_timestamps": 28754,
+          "candidates": 557002,
+          "all_24_actual_log_file_SHA256_verified": true,
+          "ordered_log_name_and_SHA256_chain": "2232d191653bad217fb0380928e1c89f885005816a2350104d73cc7b274bdc59",
+          "all_gradients_finite": true,
+          "one_reset_at_each_scene_origin": true,
+          "GT_repaired_model_IDs": 0,
+          "membership_loss_TRAIN_only": 0.06250032686228624
         }
-      ]
+      ],
+      "completed_original_PID": 33792,
+      "original_PID_status": "TERMINAL_NORMAL_COMPLETION_FOOTER_VERIFIED",
+      "checkpoint_sha256": "91e5c2792f215745d5ece7a918458371ee1f289107bbc3f326a42cb75c96e827",
+      "train_gate_sha256": "02d4d97b9ac5f1d43ea03fdb10e760d5b04d2ce48980a9c25ee5cd507d3682ac",
+      "strict_completion_report": "v5_B2_full24_final_training_completion.json"
     },
     "B3": {
       "live_original_PID": 33729,
