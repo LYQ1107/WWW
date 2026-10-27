@@ -55,6 +55,7 @@ def fixture():
                 "frozen_candidates": 24935 if scene != 22 else 24948, "output_candidates": 24935 if scene != 22 else 24948,
                 "clean_labelled_frozen_candidates": 20, "clean_labelled_candidates_retained": 20,
                 "same_person_cross_view_pairs": 10, "correct_same_person_shared_ID": 2,
+                "same_person_birth_pair_opportunities": 10, "simultaneous_duplicate_birth_pairs": 1,
                 "different_person_cross_view_pairs": 20, "false_different_person_shared_ID": 2,
                 "false_birth_unique_active_history_observations": 1,
                 "wrong_historical_ID_reuse": 1, "clean_observations_into_cumulatively_mixed_ID": 2}
@@ -101,6 +102,7 @@ class IdentitySummaryChecks(unittest.TestCase):
         values = {r["event"]: r for r in result["rates"] if r["scope"] == "legal14" and r["method"] == "B3"}
         self.assertAlmostEqual(values["cumulatively_mixed_ID_output"]["value"], 100 * 35 / 270)
         self.assertEqual(values["LOST_pure_identity_recovery"]["value"], 75.)
+        self.assertEqual(values["duplicate_birth_pair"]["value"], 10.)
         self.assertFalse(result["B3_vs_B4_three_primary_metrics_positive"])
         # Positive diagnostic net cannot override negative native metrics.
         self.assertGreater(next(r["net"] for r in result["contrasts"] if r["stratum"] == "all"), 0)

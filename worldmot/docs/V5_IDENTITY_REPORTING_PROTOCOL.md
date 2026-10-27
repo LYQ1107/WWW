@@ -10,7 +10,10 @@ The report keeps these units distinct:
 |---|---|
 | Current output coverage | All frozen detector candidates, including audited duplicate suppression |
 | Same-person shared-ID rate | All clean same-person cross-view pairs |
+| Same-person ID split | Clean same-person cross-view pairs with two delivered different IDs; missing output is reported separately |
 | Different-person false merge | All clean different-person cross-view pairs |
+| Simultaneous Duplicate Birth | Clean same-person cross-view pairs assigned different previously unseen IDs, over all common clean same-person pair opportunities; one dropped output cannot become a successful paired avoidance event |
+| Extra simultaneous newborn IDs | Additional distinct new IDs for the same clean person at the same timestamp, per1,000 retained clean observations; this differs from a historical ID plus one new ID |
 | False Birth proxy | New-ID observations despite a unique pure active history; displayed per1,000 retained clean observations |
 | Wrong historical reuse | Clean observations reusing an ID with different prior clean identity history, per1,000 retained clean observations |
 | NULL | Unique pure active histories remaining missed despite a current clean person, over serialized unique-history opportunities |
@@ -21,7 +24,7 @@ The report keeps these units distinct:
 
 A zero opportunity count yields N/A, never an invented0% or100%. Every rate retains its numerator, denominator and unit in CSV. Paired contrasts retain opportunities, corrections, regressions and signed net changes. A positive diagnostic net cannot override negative native HOTA, AssA or CVIDF1. Video-quarter rates aggregate exposures before division, rather than averaging scene percentages.
 
-The generated-input checks cover pending output, zero-opportunity recovery, weighted exposures, canonical-scope rejection, changed prediction hashes, full24/common-budget rejection, geometry/quarter conservation, and narrative/CSV preservation. They read no real TEST data and run no model.
+The generated-input checks cover pending output, zero-opportunity recovery, weighted exposures, canonical-scope rejection, changed prediction hashes, full24/common-budget rejection, geometry/quarter conservation, and narrative/CSV preservation. Additional delivered-output checks verify symmetric Duplicate Birth corrections/regressions, reject suppressed-output pseudo-corrections, and distinguish a historical ID plus one new ID from simultaneous multiple-ID birth. They read no real TEST data and run no model.
 
 The current reporting outputs are:
 

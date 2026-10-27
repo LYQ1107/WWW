@@ -1,6 +1,6 @@
 WorldMOT V5: decoupled observation birth and persistent membership
 
-Updated UTC: 2026-10-27T03:18:16.822206+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
+Updated UTC: 2026-10-27T03:33:26.146210+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
 
 The finite B0–B4 registration, code fingerprint and original V3/V4 artifacts are frozen. The model predicts membership and a per-camera no-observation option. Birth, lifecycle, identity writes and C1 Kalman/Joseph updates use separate auditable policies. GT never repairs the predicted history.
 
@@ -10,8 +10,8 @@ All24 TRAIN inputs are verified: 28,754 paired times and 557,002 detections. Fit
 
 | Variant | Selection completed epochs | Current selection scene count | Final completed epochs | Final weight SHA-256 |
 |---|---:|---:|---:|---|
-| B2 | 9 | 8/18 | 0 | not available |
-| B3 | 9 | 3/18 | 0 | not available |
+| B2 | 9 | 16/18 | 0 | not available |
+| B3 | 9 | 16/18 | 0 | not available |
 | B4 | 12 | 0/18 | 0 | not available |
 
 Completed base12 selection, waiting for B3's common12/16 decision: B4. These fit18/VAL6 checkpoints are not final fresh-all24 weights. See v5_B4_base12_selection_completion.json for the independently read-back B4 archive.

@@ -66,12 +66,14 @@ class DeliveredIdentityAudit:
         events = {}
         grouped = defaultdict(Counter)
         new_by_person = defaultdict(set)
+        clean_by_person = defaultdict(list)
         null_checked = set()
         counts.update(paired_timestamps=1, frozen_candidates=len(observations), output_candidates=len(boxes),
                       audited_duplicate_suppression=len(observations) - len(boxes))
         for o, label in zip(observations, labels):
             if label is None:
                 continue
+            clean_by_person[label].append(o)
             counts["clean_labelled_frozen_candidates"] += 1
             gid = assigned[o.key]
             present = gid is not None
@@ -139,6 +141,17 @@ class DeliveredIdentityAudit:
                 counts["wrong_person_identity_write_observations"] += int(state.get("last_identity_write") == row["timestamp"])
                 counts["wrong_person_current_spatial_write_observations"] += int(state.get("last_trusted_geometry_timestamp") == row["timestamp"])
         counts["within_timestamp_extra_birth_IDs_per_person"] += sum(max(0, len(ids) - 1) for ids in new_by_person.values())
+        for person_observations in clean_by_person.values():
+            for at, first in enumerate(person_observations):
+                for second in person_observations[at + 1:]:
+                    if first.camera_id == second.camera_id:
+                        continue
+                    left, right = assigned[first.key], assigned[second.key]
+                    retained = left is not None and right is not None
+                    duplicate = retained and left != right and left not in self.seen and right not in self.seen
+                    counts["same_person_birth_pair_opportunities"] += 1
+                    counts["simultaneous_duplicate_birth_pairs"] += int(duplicate)
+                    events["duplicate_birth_avoided", (first.key, second.key)] = retained and not duplicate
         for gid, values in grouped.items():
             was_mixed = len(self.people[gid]) > 1
             self.people[gid].update(values)
@@ -339,6 +352,7 @@ def main():
         "legal14_shared_input_strata": {k: dict(c) for k, c in strata.items()}, "scenes": scenes, "examples": examples,
         "definitions": {"clean_join": "unchanged greedy one-to-one original annotation IoU .5 match; not native official MC-MOT",
             "False_Birth": "new delivered ID despite exactly one pure active matching historical ID; an outcome proxy, not causal proof of Birth calibration",
+            "Duplicate_Birth": "same-timestamp clean same-person cross-view pairs assigned different previously unseen IDs; extra newborn IDs are counted separately, and dropped outputs cannot become successful paired avoidance events",
             "NULL": "a unique pure active historical ID remains serialized missed>0 despite the same current clean person",
             "gap": "gap between retained clean observations; GT absence may be occlusion, out-of-view or missing annotation",
             "LOST_recovery": "current clean observation reuses a prior serialized LOST ID; correctness requires pure cumulative prior identity",

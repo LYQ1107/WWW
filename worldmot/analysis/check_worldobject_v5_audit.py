@@ -88,6 +88,38 @@ class IdentityEventChecks(unittest.TestCase):
         self.assertEqual(audit.counts["clean_labelled_frozen_candidates"], 2)
         self.assertEqual(audit.counts["clean_labelled_candidates_dropped"], 1)
 
+    def test_delivered_duplicate_birth_corrections_and_regressions(self):
+        split, shared = DeliveredIdentityAudit(), DeliveredIdentityAudit()
+        a, _ = split.observe(prediction(1, gids=(42, 43)), observations(), ["p", "p"], 0, 1, Counter())
+        b, _ = shared.observe(prediction(1), observations(), ["p", "p"], 0, 1, Counter())
+        self.assertEqual(split.counts["simultaneous_duplicate_birth_pairs"], 1)
+        self.assertEqual(split.counts["same_person_birth_pair_opportunities"], 1)
+        self.assertEqual(split.counts["within_timestamp_extra_birth_IDs_per_person"], 1)
+        total = Counter()
+        compare_events(a, b, total)
+        self.assertEqual(total["duplicate_birth_avoided/corrections"], 1)
+        self.assertEqual(total["duplicate_birth_avoided/net"], 1)
+        compare_events(b, a, total)
+        self.assertEqual(total["duplicate_birth_avoided/regressions"], 1)
+        self.assertEqual(total["duplicate_birth_avoided/net"], 0)
+
+    def test_dropped_output_cannot_correct_duplicate_birth(self):
+        split, dropped = DeliveredIdentityAudit(), DeliveredIdentityAudit()
+        a, _ = split.observe(prediction(1, gids=(42, 43)), observations(), ["p", "p"], 0, 1, Counter())
+        b, _ = dropped.observe(prediction(1, drop=True), observations(), ["p", "p"], 0, 1, Counter())
+        total = Counter()
+        compare_events(a, b, total)
+        self.assertEqual(dropped.counts["same_person_birth_pair_opportunities"], 1)
+        self.assertEqual(total["duplicate_birth_avoided/opportunities"], 1)
+        self.assertEqual(total["duplicate_birth_avoided/corrections"], 0)
+
+    def test_history_plus_new_ID_is_not_simultaneous_duplicate_birth(self):
+        audit = DeliveredIdentityAudit()
+        audit.observe(prediction(1), observations(), ["p", "p"], 0, 2, Counter())
+        events, _ = audit.observe(prediction(2, gids=(42, 43)), observations(), ["p", "p"], 1, 2, Counter())
+        self.assertEqual(audit.counts["simultaneous_duplicate_birth_pairs"], 0)
+        self.assertTrue(events["duplicate_birth_avoided", ((1, 0), (2, 0))])
+
     def test_vector_pair_counts_include_both_changes(self):
         counter = Counter()
         matrix_contrast(counter, np.array([True, False]), np.array([False, True]), np.array([True, True]))

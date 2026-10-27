@@ -19,7 +19,10 @@ RATE_SPECS = (
     ("output_coverage", "output_candidates", "frozen_candidates", 100., "percent"),
     ("clean_output_coverage", "clean_labelled_candidates_retained", "clean_labelled_frozen_candidates", 100., "percent"),
     ("same_person_shared_ID", "correct_same_person_shared_ID", "same_person_cross_view_pairs", 100., "percent"),
+    ("same_person_ID_split", "same_person_ID_split", "same_person_cross_view_pairs", 100., "percent"),
     ("different_person_false_merge", "false_different_person_shared_ID", "different_person_cross_view_pairs", 100., "percent"),
+    ("duplicate_birth_pair", "simultaneous_duplicate_birth_pairs", "same_person_birth_pair_opportunities", 100., "percent"),
+    ("extra_simultaneous_birth_IDs", "within_timestamp_extra_birth_IDs_per_person", "clean_labelled_candidates_retained", 1000., "per_1000_clean_retained_observations"),
     ("false_birth_proxy", "false_birth_unique_active_history_observations", "clean_labelled_candidates_retained", 1000., "per_1000_clean_retained_observations"),
     ("wrong_historical_reuse", "wrong_historical_ID_reuse", "clean_labelled_candidates_retained", 1000., "per_1000_clean_retained_observations"),
     ("NULL_despite_current_person", "NULL_despite_current_person", "NULL_unique_active_history_opportunities", 100., "percent"),
@@ -254,11 +257,13 @@ def render_identity_analysis(summary, live=None):
         "正的 DetA 或少量 TP 差异可能受身份条件匹配影响，不能单据此宣称检测器改善。",
         "", "事件比例保留各自分子和机会数。False Birth 按有唯一纯净活动历史时仍生成新 ID 的观测计数，下面按每千个保留的干净观测归一化。"
         "LOST 恢复率仅以真正复用先前 LOST ID 的干净观测为分母；无机会时显示 N/A。",
-        "", "| 方法：合法14场诊断 | 输出覆盖% | 同人共享% | 异人误融合% | False Birth/千观测 | 错误历史复用/千观测 | LOST正确恢复% | 累计混合ID输出% |",
-        "|---|---:|---:|---:|---:|---:|---:|---:|"]
+        "Duplicate Birth 表示同一时刻同一个干净 GT 人物的跨视角观测获得不同的全新 ID；已有历史 ID 加一个新 ID 的分裂不算同时重复出生。"
+        "抑制一路输出不能成为成对的成功纠正。额外新生 ID 数另存 CSV。",
+        "", "| 方法：合法14场诊断 | 输出覆盖% | 同人共享% | 同人分裂% | 异人误融合% | 同时重复出生% | False Birth/千观测 | 错误历史复用/千观测 | LOST正确恢复% | 累计混合ID输出% |",
+        "|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|"]
     for variant in VARIANTS:
         values = {r["event"]: r["value"] for r in summary["rates"] if r["scope"] == "legal14" and r["method"] == variant}
-        keys = ("output_coverage", "same_person_shared_ID", "different_person_false_merge", "false_birth_proxy",
+        keys = ("output_coverage", "same_person_shared_ID", "same_person_ID_split", "different_person_false_merge", "duplicate_birth_pair", "false_birth_proxy",
                 "wrong_historical_reuse", "LOST_pure_identity_recovery", "cumulatively_mixed_ID_output")
         lines.append("| " + variant + " | " + " | ".join(fmt(values[k]) for k in keys) + " |")
     lines += ["", "累计混合 ID 表示同一个输出 ID 曾关联多个干净 GT 身份，不直接测量内部特征污染。"
