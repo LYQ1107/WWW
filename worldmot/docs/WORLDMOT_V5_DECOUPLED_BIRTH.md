@@ -1,6 +1,6 @@
 WorldMOT V5: decoupled observation birth and persistent membership
 
-Updated UTC: 2026-10-27T00:34:51.158931+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
+Updated UTC: 2026-10-27T00:54:42.790105+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
 
 The finite B0–B4 registration, code fingerprint and original V3/V4 artifacts are frozen. The model predicts membership and a per-camera no-observation option. Birth, lifecycle, identity writes and C1 Kalman/Joseph updates use separate auditable policies. GT never repairs the predicted history.
 
@@ -10,9 +10,9 @@ All24 TRAIN inputs are verified: 28,754 paired times and 557,002 detections. Fit
 
 | Variant | Selection completed epochs | Current selection scene count | Final completed epochs | Final weight SHA-256 |
 |---|---:|---:|---:|---|
-| B2 | 6 | 8/18 | 0 | not available |
-| B3 | 6 | 0/18 | 0 | not available |
-| B4 | 8 | 12/18 | 0 | not available |
+| B2 | 6 | 10/18 | 0 | not available |
+| B3 | 6 | 8/18 | 0 | not available |
+| B4 | 8 | 18/18 | 0 | not available |
 
 Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged over paired timestamps; scene density and evolving predicted histories differ between fit18 and VAL6. The per-scene breakdown is in v5_training_curves.json. These values do not establish convergence or formal TEST improvement.
 
@@ -73,5 +73,7 @@ Following the NAS disconnect, B0 scenes1–20 retain their original NAS-write ti
 | B4 | not measured | not measured | not measured | NOT_MEASURED |
 
 Native tool dependencies and wrapper comparability are retained from the archived V4 report. Historical GMT/V2 exports used two-decimal coordinates; current V3/V4/V5 exports preserve .17g. Original GT and shared native tracking dependencies were verified in the archived comparison. This is a documented system-reference limitation, not permission to alter GT or re-tune TEST.
+
+Generated-input V100 readiness: eight FP32 CPU/CUDA forward/backward checks passed for the unchanged dedicated Membership Head, including empty history/observations and 192-history/144-observation inputs. CPU and CUDA initialization hashes match. No real dataset, trained checkpoint or optimizer was used. This does not establish convergence, full training VRAM or actual video FPS. See V5_GENERATED_CUDA_HEAD_PREFLIGHT.md and v5_cuda_head_preflight.json.
 
 V5 research remains in progress. No V5 improvement claim is made before the registered full training and formal TEST finish.

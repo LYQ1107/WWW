@@ -317,6 +317,7 @@ def main():
     baseline_path = results / "v4_c1_official_test.json"
     inherited = read(baseline_path)
     native_smoke = read(results / "v5_native_protocol_checks.json")
+    cuda_head_check = read(results / "v5_cuda_head_preflight.json")
     controller = read(a.runtime / "controller_state.json", {})
     reference_status = read(a.runtime / "reference_inference_status.json", {})
     reference_registration = read(a.output_root / "provenance/reference_test_registration.json")
@@ -577,6 +578,14 @@ def main():
               "Historical GMT/V2 exports used two-decimal coordinates; current V3/V4/V5 exports preserve .17g. "
               "Original GT and shared native tracking dependencies were verified in the archived comparison. "
               "This is a documented system-reference limitation, not permission to alter GT or re-tune TEST.", ""]
+    if (cuda_head_check and cuda_head_check.get("status") == "PASSED_GENERATED_FP32_CPU_AND_V100_FORWARD_BACKWARD"
+            and cuda_head_check.get("v5_source_sha256") == state["v5_source_sha256"]):
+        lines += ["Generated-input V100 readiness: eight FP32 CPU/CUDA forward/backward checks passed "
+                  "for the unchanged dedicated Membership Head, including empty history/observations and "
+                  "192-history/144-observation inputs. CPU and CUDA initialization hashes match. "
+                  "No real dataset, trained checkpoint or optimizer was used. This does not establish "
+                  "convergence, full training VRAM or actual video FPS. "
+                  "See V5_GENERATED_CUDA_HEAD_PREFLIGHT.md and v5_cuda_head_preflight.json.", ""]
     if final_ready:
         lines.append("The complete registered research artifacts are available. " + (
             "B3 exceeds GMT Native on all three preregistered main metrics (HOTA, AssA, CVIDF1)." if science_success else

@@ -1,0 +1,203 @@
+{
+  "status": "PASSED_GENERATED_FP32_CPU_AND_V100_FORWARD_BACKWARD",
+  "source_sha256": "b02578f46706f500f44bc86963b31a5727414d8505accc8c1c40eb4471cba304",
+  "v5_source_sha256": "c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85688f74d89159e16f733",
+  "registered_config_sha256": "07ce5975d379803213bfe6a22e67fc5018e9a2b44c483e103681796c38c2ba1f",
+  "calibration_sha256": "97103af38a151ebff1baaecfe2f29ea56d021a78ea7cf85037b1eb2ded878e7a",
+  "GPU_UUID": "GPU-2121a646-b548-38b5-e6dd-ba913aa3daaf",
+  "GPU_name": "Tesla V100-DGXS-32GB",
+  "torch_version": "2.6.0+cu118",
+  "CUDA_version": "11.8",
+  "CUDA_peak_allocated_bytes": 303200768,
+  "initial_tensor_sha256_per_variant": {
+    "B2": "3fb3f3d6336e8aa32d635ecff3c05929b0d4b8f265f4a0ccf56771814d13ed23",
+    "B3": "3fb3f3d6336e8aa32d635ecff3c05929b0d4b8f265f4a0ccf56771814d13ed23",
+    "B4": "3fb3f3d6336e8aa32d635ecff3c05929b0d4b8f265f4a0ccf56771814d13ed23"
+  },
+  "parameters_per_variant": {
+    "B2": 606468,
+    "B3": 606468,
+    "B4": 606468
+  },
+  "architecture_per_variant": {
+    "B2": {
+      "schema": "worldobject_membership_v5_v1",
+      "visual_dim": 1024,
+      "hidden_dim": 256,
+      "geometry_dim": 32,
+      "pair_chunk": 4096,
+      "dropout": 0.05,
+      "prediction_heads": [
+        "membership",
+        "per_camera_no_observation"
+      ]
+    },
+    "B3": {
+      "schema": "worldobject_membership_v5_v1",
+      "visual_dim": 1024,
+      "hidden_dim": 256,
+      "geometry_dim": 32,
+      "pair_chunk": 4096,
+      "dropout": 0.05,
+      "prediction_heads": [
+        "membership",
+        "per_camera_no_observation"
+      ]
+    },
+    "B4": {
+      "schema": "worldobject_membership_v5_v1",
+      "visual_dim": 1024,
+      "hidden_dim": 256,
+      "geometry_dim": 32,
+      "pair_chunk": 4096,
+      "dropout": 0.05,
+      "prediction_heads": [
+        "membership",
+        "per_camera_no_observation"
+      ]
+    }
+  },
+  "cases": [
+    {
+      "device": "cpu",
+      "history_objects": 0,
+      "observations": 8,
+      "membership_shape": [
+        0,
+        8
+      ],
+      "camera_NULL_shape": [
+        0,
+        2
+      ],
+      "finite_outputs": true,
+      "finite_gradients": true,
+      "dtype": "float32"
+    },
+    {
+      "device": "cpu",
+      "history_objects": 8,
+      "observations": 0,
+      "membership_shape": [
+        8,
+        0
+      ],
+      "camera_NULL_shape": [
+        8,
+        2
+      ],
+      "finite_outputs": true,
+      "finite_gradients": true,
+      "dtype": "float32"
+    },
+    {
+      "device": "cpu",
+      "history_objects": 96,
+      "observations": 72,
+      "membership_shape": [
+        96,
+        72
+      ],
+      "camera_NULL_shape": [
+        96,
+        2
+      ],
+      "finite_outputs": true,
+      "finite_gradients": true,
+      "dtype": "float32"
+    },
+    {
+      "device": "cpu",
+      "history_objects": 192,
+      "observations": 144,
+      "membership_shape": [
+        192,
+        144
+      ],
+      "camera_NULL_shape": [
+        192,
+        2
+      ],
+      "finite_outputs": true,
+      "finite_gradients": true,
+      "dtype": "float32"
+    },
+    {
+      "device": "cuda:0",
+      "history_objects": 0,
+      "observations": 8,
+      "membership_shape": [
+        0,
+        8
+      ],
+      "camera_NULL_shape": [
+        0,
+        2
+      ],
+      "finite_outputs": true,
+      "finite_gradients": true,
+      "dtype": "float32"
+    },
+    {
+      "device": "cuda:0",
+      "history_objects": 8,
+      "observations": 0,
+      "membership_shape": [
+        8,
+        0
+      ],
+      "camera_NULL_shape": [
+        8,
+        2
+      ],
+      "finite_outputs": true,
+      "finite_gradients": true,
+      "dtype": "float32"
+    },
+    {
+      "device": "cuda:0",
+      "history_objects": 96,
+      "observations": 72,
+      "membership_shape": [
+        96,
+        72
+      ],
+      "camera_NULL_shape": [
+        96,
+        2
+      ],
+      "finite_outputs": true,
+      "finite_gradients": true,
+      "dtype": "float32"
+    },
+    {
+      "device": "cuda:0",
+      "history_objects": 192,
+      "observations": 144,
+      "membership_shape": [
+        192,
+        144
+      ],
+      "camera_NULL_shape": [
+        192,
+        2
+      ],
+      "finite_outputs": true,
+      "finite_gradients": true,
+      "dtype": "float32"
+    }
+  ],
+  "original_images_annotations_perception_caches_or_trained_checkpoints_read": false,
+  "optimizer_created": false,
+  "weights_updated_or_saved": false,
+  "selection_training_restarted_or_modified": false,
+  "GT_read_attempts": 0,
+  "real_training_throughput_or_RGB_FPS_measured": false,
+  "membership_head_hardware_readiness_only": true,
+  "verified_UTC": "2026-10-27T00:52:37.686861+00:00",
+  "private_receipt_sha256": "6463e568084cf9443dafd91aa2c0f0d3a77570477708a95bce3b7d604cf57161",
+  "checker_stdout": "{\"status\": \"PASSED_GENERATED_FP32_CPU_AND_V100_FORWARD_BACKWARD\", \"cases\": 8, \"GPU\": \"Tesla V100-DGXS-32GB\", \"peak_allocated_bytes\": 303200768}\n",
+  "checker_stdout_sha256": "9c7f8bb113106409f6debd811b40eef6181088163c4deaa3a7c1b07a6c740d6f",
+  "normal_training_worker_identities_unchanged": true,
+  "actual_full_training_VRAM_upper_bound_established": false
+}
