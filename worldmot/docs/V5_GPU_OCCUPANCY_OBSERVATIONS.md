@@ -19,3 +19,7 @@ First archived continuous prefix: 2026-10-27T10:46:48.446993+00:00 through 2026-
 The preserved prefix and its source/launch/protocol records were archived on the actual NAS and fully read back. [Prefix coverage and archive proof](../results/v5_gpu_observation_progress.json) preserves exact hashes. The observer continues after this snapshot.
 
 The newly completed B3 TRAIN epoch 8 used 3923.9 seconds of summed scene compute wall time. Its recorded occupancy overlaps only part of that epoch. Training elapsed time remains separate from cached inference and real RGB-to-ID speed.
+
+Second archived continuous prefix: 2026-10-27T10:46:48.446993+00:00 through 2026-10-27T12:23:22.926706+00:00. Of 1159 samples, 1159 were valid and 0 invalid. B3's GPU had another process context in 1159/1159 samples; B2's GPU had another context in 291/1159 samples. These are sampled contexts, not measured GPU kernel utilization or proof of latency causation. Samples can miss activity between queries.
+
+The observer does not modify model inputs, hyperparameters or optimization. The B2 and B3 optimizers continue updating their learned weights during their normal training. [Second prefix and NAS readback proof](../results/v5_gpu_observation_progress_02.json) retains exact timestamps and hashes.
