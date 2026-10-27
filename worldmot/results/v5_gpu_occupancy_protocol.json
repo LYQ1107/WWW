@@ -1,0 +1,45 @@
+{
+  "status": "REGISTERED_READ_ONLY_RESOURCE_OBSERVER_BEFORE_NEW_MODEL_TEST_AND_LIVE",
+  "registered_UTC": "2026-10-27T10:40:06.668434+00:00",
+  "observer_source_sha256": "c660d674326b32586f62e4675ce1377019a44904b9f106b0d181a4c0e805a90f",
+  "frozen_model_source_sha256": "c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85688f74d89159e16f733",
+  "known_goal_leaders": {
+    "controller": {
+      "pid": 3453,
+      "start_tick": "6674813081"
+    },
+    "B2_training": {
+      "pid": 33792,
+      "start_tick": "6677812387"
+    },
+    "B3_training": {
+      "pid": 33729,
+      "start_tick": "6677812270"
+    },
+    "B4_completed_training": {
+      "pid": 33784,
+      "start_tick": "6677812328"
+    }
+  },
+  "interval_seconds": 5,
+  "maximum_seconds": 28800,
+  "stop_file": "v5_research_delivery_receipt.json",
+  "start_policy": "after_GitHub_source_and_protocol_publication_verified",
+  "queries": [
+    "--query-gpu=index,uuid,name",
+    "--query-compute-apps=pid,gpu_uuid,used_memory"
+  ],
+  "model_processes_modified": false,
+  "GPU_allocation_requested": false,
+  "GT_read": false,
+  "new_models_seeds_or_optimization_trials": false,
+  "training_budget_and_parameters_changed": false,
+  "PID_reuse_guard": "each_known_leader_must_match_start_tick",
+  "unknown_process_policy": "count_as_other_GPU_workload; never ignore or stop it",
+  "query_error_policy": "invalid sample, never idle evidence",
+  "sampling_limitation": "5-second query snapshots cannot rule out activity between samples",
+  "timing_interpretation": "observed other-process overlap cannot support an uncontended speed ranking; retain actual measured latency and label the environment",
+  "quality_interpretation": "do not discard or tune tracking results based on GPU occupancy",
+  "reporting_privacy": "no unrelated PIDs, user names, command lines or project paths in observer output",
+  "existing_all3_final_gates_barrier_unchanged": true
+}
