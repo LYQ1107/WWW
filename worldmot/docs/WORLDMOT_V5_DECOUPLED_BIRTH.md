@@ -1,6 +1,6 @@
 WorldMOT V5: decoupled observation birth and persistent membership
 
-Updated UTC: 2026-10-26T23:57:32.283951+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
+Updated UTC: 2026-10-27T00:34:51.158931+00:00. Status: **REGISTERED_RESEARCH_IN_PROGRESS**.
 
 The finite B0–B4 registration, code fingerprint and original V3/V4 artifacts are frozen. The model predicts membership and a per-camera no-observation option. Birth, lifecycle, identity writes and C1 Kalman/Joseph updates use separate auditable policies. GT never repairs the predicted history.
 
@@ -10,17 +10,17 @@ All24 TRAIN inputs are verified: 28,754 paired times and 557,002 detections. Fit
 
 | Variant | Selection completed epochs | Current selection scene count | Final completed epochs | Final weight SHA-256 |
 |---|---:|---:|---:|---|
-| B2 | 5 | 8/18 | 0 | not available |
-| B3 | 5 | 6/18 | 0 | not available |
-| B4 | 7 | 4/18 | 0 | not available |
+| B2 | 6 | 8/18 | 0 | not available |
+| B3 | 6 | 0/18 | 0 | not available |
+| B4 | 8 | 12/18 | 0 | not available |
 
 Latest completed selection epochs below are TRAIN diagnostics. Loss is averaged over paired timestamps; scene density and evolving predicted histories differ between fit18 and VAL6. The per-scene breakdown is in v5_training_curves.json. These values do not establish convergence or formal TEST improvement.
 
 | Variant | Epoch | Fit membership loss | VAL membership loss | VAL same-person split rate | VAL different-person false-merge rate | Finite gradients |
 |---|---:|---:|---:|---:|---:|---|
-| B2 | 5 | 0.0534 | 1.5609 | 28.05% | 0.50% | True |
-| B3 | 5 | 0.0537 | 1.1418 | 23.80% | 0.38% | True |
-| B4 | 7 | 0.0493 | 1.4126 | 29.92% | 0.41% | True |
+| B2 | 6 | 0.0516 | 1.9681 | 30.07% | 0.63% | True |
+| B3 | 6 | 0.0531 | 2.0847 | 26.12% | 0.66% | True |
+| B4 | 8 | 0.0484 | 1.3004 | 34.06% | 0.58% | True |
 
 Selection currently uses CPU, one Torch/BLAS thread per worker. Final B3/B4 training and complete TEST use truly idle V100 FP32 workers. B2 final training uses a third idle V100 if available, otherwise one CPU thread; its resumes keep that device family. Other users' processes are never stopped. Independent-scene concurrency is not single-stream FPS.
 

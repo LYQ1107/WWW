@@ -1,6 +1,6 @@
 WorldMOT V5 frozen controls: actual full-video native TEST results
 
-Updated UTC: 2026-10-26T23:57:32.283951+00:00.
+Updated UTC: 2026-10-27T00:34:51.158931+00:00.
 
 Each reported control completed all22 videos,29,019 paired times and548,583 frozen candidates. TrackEval and the unchanged VisionTrack MATLAB toolkit scored the original legal14 videos. The other8 were fully inferred and excluded for original GT defects. No GT was cleaned. The early scoring order was published before reading these scores; all B2/B3/B4 training rules remain frozen.
 
@@ -17,7 +17,7 @@ This is a negative aggregate result for replacing the old policies while retaini
 
 B1 IDF1 minus CVIDF1 is 9.2402 points; the reference gap is 2.1727. Together with the CVIDF1 regression, this is consistent with poorer cross-camera identity agreement. It does not identify exact false births, wrong reuses or recovery failures. The registered all110-prediction posthoc analysis will count those events after final model TEST.
 
-The frozen detections were preserved. Small CLEAR TP/FP/FN differences can arise while the candidates remain identical; these results are not evidence of a detector change. TrackEval IDSW is the switch metric in the table. VisionTrack's interleaved-camera CLEAR switch count has a different definition and must not replace it.
+The frozen detections were preserved. Small CLEAR TP/FP/FN differences can arise while the candidates remain identical; these results are not evidence of a detector change. CLEAR prioritizes prior identities and HOTA uses global identity alignment before matching. A generated identical-boxes check reproduces changes in CLEAR counts and DetA from IDs alone; it does not locate the real seven events. See V5_IDENTITY_CONDITIONED_DETECTION_COUNTS.md. TrackEval IDSW is the switch metric in the table. VisionTrack's interleaved-camera CLEAR switch count has a different definition and must not replace it.
 
 CVIDF1 improves in 2/14 scenes and regresses in 12/14. Per-scene aggregates below do not alter model selection.
 

@@ -1,0 +1,143 @@
+{
+  "status": "PASSED_GENERATED_IDENTITY_CONDITIONED_MATCHING_CHECK",
+  "UTC": "2026-10-27T00:20:06.636454+00:00",
+  "source_sha256": "e44bfe14b58df4f463eb37743a6cf83bdaddfe84764c3dd68aa18fb7cdea3335",
+  "native_metric_sha256": {
+    "trackeval/metrics/clear.py": "349daafdbb009f6cd71cf66ff1c9b8074940cd3310fcd663151d644b7ff0e5e3",
+    "trackeval/metrics/hota.py": "421cb37dd492ecf2591114ea7e4a0d006cd0401225551717fd0b50473c8505d5"
+  },
+  "v5_source_sha256": "c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85688f74d89159e16f733",
+  "generated_timesteps": 2,
+  "generated_cameras": 1,
+  "generated_GT_boxes_xyxy": [
+    [
+      [
+        0.0,
+        0.0,
+        10.0,
+        10.0
+      ],
+      [
+        4.0,
+        0.0,
+        14.0,
+        10.0
+      ]
+    ],
+    [
+      [
+        0.0,
+        0.0,
+        10.0,
+        10.0
+      ],
+      [
+        4.0,
+        0.0,
+        14.0,
+        10.0
+      ]
+    ]
+  ],
+  "identical_prediction_boxes_xyxy_in_both_cases": [
+    [
+      [
+        0.0,
+        0.0,
+        10.0,
+        10.0
+      ],
+      [
+        4.0,
+        0.0,
+        14.0,
+        10.0
+      ]
+    ],
+    [
+      [
+        2.0,
+        0.0,
+        12.0,
+        10.0
+      ],
+      [
+        -2.0,
+        0.0,
+        8.0,
+        10.0
+      ]
+    ]
+  ],
+  "identical_IoU_matrices": [
+    [
+      [
+        1.0,
+        0.42857142857142855
+      ],
+      [
+        0.42857142857142855,
+        1.0
+      ]
+    ],
+    [
+      [
+        0.6666666666666666,
+        0.6666666666666666
+      ],
+      [
+        0.6666666666666666,
+        0.25
+      ]
+    ]
+  ],
+  "cases": {
+    "fixed_box_order_ids": {
+      "tracker_ids_by_time": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "CLEAR": {
+        "CLR_TP": 3,
+        "CLR_FP": 1,
+        "CLR_FN": 1,
+        "IDSW": 0
+      },
+      "HOTA_DetA_percent": 62.105263157894754,
+      "HOTA_percent": 65.60547583427257
+    },
+    "swapped_ids_at_second_time": {
+      "tracker_ids_by_time": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "CLEAR": {
+        "CLR_TP": 4,
+        "CLR_FP": 0,
+        "CLR_FN": 0,
+        "IDSW": 0
+      },
+      "HOTA_DetA_percent": 78.94736842105264,
+      "HOTA_percent": 78.94736842105264
+    }
+  },
+  "real_VisionTrack_data_or_predictions_read": false,
+  "blocked_GT_reads": 0,
+  "neural_models_run": false,
+  "formal_TEST_protocol_changed": false,
+  "actual_seven_B0_B1_TP_difference_events_identified": false,
+  "scientific_tracking_result": false,
+  "conclusion": "Native CLEAR TP/FP/FN and HOTA DetA are conditioned on identity matching; changes alone do not prove a detector changed."
+}

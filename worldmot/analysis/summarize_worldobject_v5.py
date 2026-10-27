@@ -124,6 +124,7 @@ def frozen_control_report(results, docs, official, proofs, origins, baselines, n
         "TRAIN_model_parameters_or_budget_rule_changed_from_TEST": False, "original_GT_modified": False,
         "B1_output_boxes_scores_ROI_preserved": True,
         "small_CLEAR_detection_count_changes_do_not_imply_detector_changed": True,
+        "identity_conditioned_matching_mechanism_check": read(results / "v5_identity_conditioned_metrics_check.json"),
         "native_interleaved_CLEAR_switches_are_not_TrackEval_IDSW": True}
     atomic_json(results / "v5_frozen_reference_native_scores.json", report)
     save_csv(results / "v5_frozen_reference_native_scores.csv", ("method", *METRICS),
@@ -154,6 +155,9 @@ def frozen_control_report(results, docs, official, proofs, origins, baselines, n
             "The registered all110-prediction posthoc analysis will count those events after final model TEST.", "",
             "The frozen detections were preserved. Small CLEAR TP/FP/FN differences can arise while "
             "the candidates remain identical; these results are not evidence of a detector change. "
+            "CLEAR prioritizes prior identities and HOTA uses global identity alignment before matching. "
+            "A generated identical-boxes check reproduces changes in CLEAR counts and DetA from IDs "
+            "alone; it does not locate the real seven events. See V5_IDENTITY_CONDITIONED_DETECTION_COUNTS.md. "
             "TrackEval IDSW is the switch metric in the table. VisionTrack's interleaved-camera CLEAR "
             "switch count has a different definition and must not replace it.", ""]
     if per_scene:
