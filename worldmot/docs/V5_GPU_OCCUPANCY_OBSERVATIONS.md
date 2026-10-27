@@ -13,3 +13,9 @@ Timing windows with observed other workload cannot support an uncontended speed 
 Three generated-only checks passed: process ancestry and PID reuse, distinction between shared and idle devices, and invalid-query handling. A separate real query smoke check confirmed attribution of the two current training processes and detected B3's observed sharing. These checks are separate from the earlier 304 core and 85 analysis checks; those suites were not rerun for this instrumentation change.
 
 [Observer protocol](../results/v5_gpu_occupancy_protocol.json), [generated checks](../results/v5_gpu_occupancy_checks.json), and [real query smoke evidence](../results/v5_gpu_occupancy_smoke.json) preserve the source hashes and observation scope. The frozen model source fingerprint remains `c4f9d1c0b2a290062aba52ae7c0d322176ae5376f9c85688f74d89159e16f733`.
+
+First archived continuous prefix: 2026-10-27T10:46:48.446993+00:00 through 2026-10-27T10:59:44.054780+00:00. All 156 queries were valid. The B3 device showed unrelated GPU context occupancy in 156/156 samples, with up to 17,427 MiB from that workload. The B2 device showed such occupancy in 151/156 samples, with up to 2,037 MiB. These are process-context observations, not proof of simultaneous active kernels or a causal latency estimate. Full lists of goal processes are retained as well; overlapping goal workers on the same device also prevent an uncontended single-worker speed claim.
+
+The preserved prefix and its source/launch/protocol records were archived on the actual NAS and fully read back. [Prefix coverage and archive proof](../results/v5_gpu_observation_progress.json) preserves exact hashes. The observer continues after this snapshot.
+
+The newly completed B3 TRAIN epoch 8 used 3923.9 seconds of summed scene compute wall time. Its recorded occupancy overlaps only part of that epoch. Training elapsed time remains separate from cached inference and real RGB-to-ID speed.
